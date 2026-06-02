@@ -54,6 +54,7 @@
             max-width: 800px;
             margin: 40px auto;
             padding: 0 20px;
+            padding-bottom: 60px; /* 底部留白 */
         }
 
         .section-title {
@@ -62,7 +63,8 @@
             color: var(--primary-dark);
             font-size: 1.4em;
             margin-bottom: 20px;
-            margin-top: 40px;
+            margin-top: 45px;
+            font-weight: 600;
         }
 
         .section-title span {
@@ -76,7 +78,7 @@
             padding: 0;
             margin: 0;
             display: grid;
-            gap: 16px; /* 卡片之间的间距 */
+            gap: 16px;
         }
 
         .menu-card {
@@ -115,10 +117,18 @@
             font-weight: 600;
         }
 
-        .card-desc {
+        /* 日期样式 */
+        .card-date {
             margin: 0 0 12px 0;
-            font-size: 0.95em;
+            font-size: 0.9em;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .card-date span {
+            margin-right: 6px;
         }
 
         /* 彩色小标签 */
@@ -146,9 +156,9 @@
             color: #16a34a;
         }
         
-        .tag-vocab {
-            background-color: #fdf2f8;
-            color: #db2777;
+        .tag-pending {
+            background-color: #f3f4f6;
+            color: #6b7280;
         }
 
         /* 右侧箭头 */
@@ -173,23 +183,11 @@
 
         /* 手机端适配 */
         @media screen and (max-width: 768px) {
-            .header {
-                padding: 40px 15px;
-            }
-            .header h1 {
-                font-size: 1.8em;
-            }
-            .menu-card a {
-                padding: 18px 15px;
-            }
-            .card-title {
-                font-size: 1.1em;
-            }
-            .arrow-box {
-                width: 32px;
-                height: 32px;
-                font-size: 1em;
-            }
+            .header { padding: 40px 15px; }
+            .header h1 { font-size: 1.8em; }
+            .menu-card a { padding: 18px 15px; }
+            .card-title { font-size: 1.1em; }
+            .arrow-box { width: 32px; height: 32px; font-size: 1em; }
         }
     </style>
 </head>
@@ -214,7 +212,8 @@
                 <a href="robot-companion.html">
                     <div class="card-content">
                         <h3 class="card-title">Would you like a robot companion?</h3>
-                        <p class="card-desc">Explore the future of AI and whether robots could become our friends.</p>
+                        <!2025-09-18>
+                        <div class="card-date"><span>📅</span> 04 April 2024</div> 
                         <div class="tags">
                             <span class="tag tag-bbc">Listening</span>
                             <span class="tag tag-topic">Technology / AI</span>
@@ -226,11 +225,11 @@
 
             <!-- 上一期：Degrowth -->
             <li class="menu-card">
-                <!-- 注意：这里的链接已经填了你刚才改的文件名 -->
                 <a href="250724-What-is-degrowth.html">
                     <div class="card-content">
                         <h3 class="card-title">What is economic degrowth?</h3>
-                        <p class="card-desc">Discussing the climate crisis and whether economies should stop growing.</p>
+                        <!-- 自动提取的日期 -->
+                        <div class="card-date"><span>📅</span> 25 July 2024</div> 
                         <div class="tags">
                             <span class="tag tag-bbc">Listening</span>
                             <span class="tag tag-topic">Environment / Economy</span>
@@ -241,22 +240,34 @@
             </li>
         </ul>
 
-        <!-- ================= 词汇专区 (占位，未来可扩展) ================= -->
+        <!-- ================= 词汇专区 ================= -->
         <div class="section-title">
-            <span>📖</span> Vocabulary & Grammar
+            <span>📖</span> Vocabulary
         </div>
         
         <ul class="menu-list">
             <li class="menu-card">
                 <a href="#">
                     <div class="card-content">
-                        <h3 class="card-title">Coming Soon: Academic Vocabulary</h3>
-                        <p class="card-desc">Essential words for reading comprehension and writing.</p>
-                        <div class="tags">
-                            <span class="tag tag-vocab">Vocabulary</span>
-                        </div>
+                        <h3 class="card-title" style="color: #64748b; margin-bottom: 0;">Coming soon...</h3>
                     </div>
-                    <div class="arrow-box">→</div>
+                    <div class="arrow-box" style="background-color: transparent; color: #cbd5e1;">⏳</div>
+                </a>
+            </li>
+        </ul>
+
+        <!-- ================= 语法专区 ================= -->
+        <div class="section-title">
+            <span>✍️</span> Grammar
+        </div>
+        
+        <ul class="menu-list">
+            <li class="menu-card">
+                <a href="#">
+                    <div class="card-content">
+                        <h3 class="card-title" style="color: #64748b; margin-bottom: 0;">Coming soon...</h3>
+                    </div>
+                    <div class="arrow-box" style="background-color: transparent; color: #cbd5e1;">⏳</div>
                 </a>
             </li>
         </ul>
