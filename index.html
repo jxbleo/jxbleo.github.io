@@ -1,11 +1,267 @@
-<ul class="menu-list">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leo's English Practice Hub</title>
+    <style>
+        :root {
+            --primary-dark: #1e293b;
+            --primary-blue: #3b82f6;
+            --accent-green: #10b981;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 顶部渐变横幅 */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            margin: 15px 0 0 0;
+            color: #bfdbfe;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            color: var(--primary-dark);
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .section-title span {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* 菜单卡片列表 */
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 16px; /* 卡片之间的间距 */
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+
+        .menu-card a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-content {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .card-title {
+            margin: 0 0 8px 0;
+            color: var(--primary-dark);
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .card-desc {
+            margin: 0 0 12px 0;
+            font-size: 0.95em;
+            color: var(--text-muted);
+        }
+
+        /* 彩色小标签 */
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .tag-bbc {
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+
+        .tag-topic {
+            background-color: #f0fdf4;
+            color: #16a34a;
+        }
+        
+        .tag-vocab {
+            background-color: #fdf2f8;
+            color: #db2777;
+        }
+
+        /* 右侧箭头 */
+        .arrow-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #f1f5f9;
+            border-radius: 50%;
+            color: var(--primary-blue);
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .menu-card:hover .arrow-box {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        /* 手机端适配 */
+        @media screen and (max-width: 768px) {
+            .header {
+                padding: 40px 15px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .menu-card a {
+                padding: 18px 15px;
+            }
+            .card-title {
+                font-size: 1.1em;
+            }
+            .arrow-box {
+                width: 32px;
+                height: 32px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部欢迎横幅 -->
+    <div class="header">
+        <h1>🚀 Leo's English Hub</h1>
+        <p>Master English through engaging listening & reading practice</p>
+    </div>
+
+    <div class="container">
+        
+        <!-- ================= BBC 听力专区 ================= -->
+        <div class="section-title">
+            <span>🎧</span> BBC 6 Minute English
+        </div>
+        
+        <ul class="menu-list">
+            <!-- 最新的一期：Robot Companion -->
             <li class="menu-card">
-                <!--250724-What-is-degrowth-->
-                <a href="250724-What-is-degrowth.html">
-                    <div class="card-info">
-                        <h3>What is Degrowth?</h3>
-                        <p>Topic: Environment, Economy | Type: Fill-in & MC</p>
+                <a href="robot-companion.html">
+                    <div class="card-content">
+                        <h3 class="card-title">Would you like a robot companion?</h3>
+                        <p class="card-desc">Explore the future of AI and whether robots could become our friends.</p>
+                        <div class="tags">
+                            <span class="tag tag-bbc">Listening</span>
+                            <span class="tag tag-topic">Technology / AI</span>
+                        </div>
                     </div>
-                    <div class="arrow">→</div>
+                    <div class="arrow-box">→</div>
                 </a>
             </li>
+
+            <!-- 上一期：Degrowth -->
+            <li class="menu-card">
+                <!-- 注意：这里的链接已经填了你刚才改的文件名 -->
+                <a href="250724-What-is-degrowth.html">
+                    <div class="card-content">
+                        <h3 class="card-title">What is economic degrowth?</h3>
+                        <p class="card-desc">Discussing the climate crisis and whether economies should stop growing.</p>
+                        <div class="tags">
+                            <span class="tag tag-bbc">Listening</span>
+                            <span class="tag tag-topic">Environment / Economy</span>
+                        </div>
+                    </div>
+                    <div class="arrow-box">→</div>
+                </a>
+            </li>
+        </ul>
+
+        <!-- ================= 词汇专区 (占位，未来可扩展) ================= -->
+        <div class="section-title">
+            <span>📖</span> Vocabulary & Grammar
+        </div>
+        
+        <ul class="menu-list">
+            <li class="menu-card">
+                <a href="#">
+                    <div class="card-content">
+                        <h3 class="card-title">Coming Soon: Academic Vocabulary</h3>
+                        <p class="card-desc">Essential words for reading comprehension and writing.</p>
+                        <div class="tags">
+                            <span class="tag tag-vocab">Vocabulary</span>
+                        </div>
+                    </div>
+                    <div class="arrow-box">→</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
