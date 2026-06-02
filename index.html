@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Change & Economic Degrowth - Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Fill in the blanks styling */
+        ul.fill-blanks {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        ul.fill-blanks li {
+            margin-bottom: 15px;
+        }
+
+        ul.fill-blanks ul {
+            margin-top: 10px;
+            list-style-type: circle;
+        }
+
+        .blank {
+            display: inline-block;
+            border-bottom: 2px solid var(--primary-color);
+            text-align: center;
+            margin: 0 5px;
+            color: #999;
+            font-size: 0.85em;
+            font-weight: bold;
+            padding-bottom: 2px;
+        }
+
+        /* Multiple Choice Styling */
+        .mc-question {
+            margin-bottom: 35px;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mc-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .mc-options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mc-options li {
+            background: var(--card-bg);
+            margin: 8px 0;
+            padding: 12px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .mc-options li:hover {
+            border-left-color: var(--secondary-color);
+            background: #f0f9f4;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        /* Answers Section */
+        details {
+            margin-top: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: #1a252f;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* Explanations Styling */
+        .explanation-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Climate Change & Economic Degrowth</h1>
+
+    <h2>Part 1: Fill in the Blanks</h2>
+    
+    <h3>Personal Actions and Climate Concerns</h3>
+    <ul class="fill-blanks">
+        <li>Phil admits he tends to <span class="blank" style="width: 50px;">(1)</span> rather than drive.</li>
+        <li>Phil also tries to <span class="blank" style="width: 70px;">(2)</span> things at home.</li>
+        <li>Hannah points out that dealing with climate change cannot rely on <span class="blank" style="width: 100px;">(3)</span> alone.</li>
+        <li>To address the crisis, Hannah argues we need to change the way our <span class="blank" style="width: 80px;">(4)</span> works.</li>
+    </ul>
+
+    <h3>What Degrowth Means</h3>
+    <ul class="fill-blanks">
+        <li>In the past, governments have always aimed to <span class="blank" style="width: 50px;">(5)</span> the economy.</li>
+        <li>Degrowth supporters believe economies should stop <span class="blank" style="width: 80px;">(6)</span>.</li>
+        <li>The focus should shift to using fewer of the Earth's <span class="blank" style="width: 150px;">(7)</span>.</li>
+        <li>Those who back this idea are commonly referred to as <span class="blank" style="width: 110px;">(8)</span>.</li>
+    </ul>
+
+    <h3>What Degrowthers Want to Reduce</h3>
+    <ul class="fill-blanks">
+        <li>They target production that is considered not <span class="blank" style="width: 90px;">(9)</span>.</li>
+        <li>Examples of such production include:
+            <ul>
+                <li><span class="blank" style="width: 110px;">(10)</span> (cheap, rapidly produced clothing).</li>
+                <li>private jets.</li>
+                <li>the <span class="blank" style="width: 120px;">(11)</span> industry.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Criticism of Degrowth</h3>
+    <ul class="fill-blanks">
+        <li>Many economists argue degrowth would lead to more <span class="blank" style="width: 80px;">(12)</span>.</li>
+        <li>Professor Fankhauser claims degrowth fails to appreciate the power of <span class="blank" style="width: 100px;">(13)</span>.</li>
+        <li>He also says it overlooks the need for investment in <span class="blank" style="width: 130px;">(14)</span>.</li>
+        <li>He further questions the social <span class="blank" style="width: 100px;">(15)</span> of what degrowthers propose.</li>
+    </ul>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+    <h2>Part 2: Multiple Choice Questions</h2>
+
+    <div class="mc-question">
+        <div class="mc-title">21. What is Phil's attitude towards his own environmental habits?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> He is proud of his consistent efforts to protect the environment</li>
+            <li><span class="option-label">B.</span> He admits his actions are insufficient despite making some effort</li>
+            <li><span class="option-label">C.</span> He is indifferent to environmental issues and avoids the topic</li>
+            <li><span class="option-label">D.</span> He is frustrated that others do not share his green lifestyle</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">22. What does Hannah imply when she says "it's not up to you and me"?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Individuals should be held legally responsible for climate damage</li>
+            <li><span class="option-label">B.</span> Governments alone should be blamed for the climate crisis</li>
+            <li><span class="option-label">C.</span> Personal habits are completely irrelevant to environmental outcomes</li>
+            <li><span class="option-label">D.</span> Addressing climate change requires structural economic transformation</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">23. According to Hannah, what has traditionally been the priority of governments regarding the economy?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Expanding output, employment, and material wealth continuously</li>
+            <li><span class="option-label">B.</span> Reducing dependence on fossil fuels and non-renewable resources</li>
+            <li><span class="option-label">C.</span> Balancing economic development with environmental conservation</li>
+            <li><span class="option-label">D.</span> Encouraging citizens to consume fewer goods and live sustainably</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">24. What does Alvaro Alvarez clarify about the degrowth position?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> It calls for the complete elimination of all industrial production</li>
+            <li><span class="option-label">B.</span> It focuses exclusively on reducing carbon emissions from transport</li>
+            <li><span class="option-label">C.</span> It targets the reduction of specific harmful sectors, not all production</li>
+            <li><span class="option-label">D.</span> It proposes replacing economic growth with government-controlled output</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">25. Which of the following best describes what "fast fashion" refers to, as explained in the transcript?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Clothing brands that use recycled materials to lower production costs</li>
+            <li><span class="option-label">B.</span> Garments produced at low cost and high speed to encourage frequent purchasing</li>
+            <li><span class="option-label">C.</span> A retail strategy that limits clothing supply to increase consumer demand</li>
+            <li><span class="option-label">D.</span> Fashion trends that spread rapidly through social media and online platforms</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">26. What concern do some economists raise about degrowth, according to Hannah?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> It would cause governments to lose control over monetary policy</li>
+            <li><span class="option-label">B.</span> It would slow down international trade and damage export industries</li>
+            <li><span class="option-label">C.</span> It would reduce consumer spending and destabilise financial markets</li>
+            <li><span class="option-label">D.</span> It could worsen poverty and make resolving the climate crisis more difficult</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">27. What is Professor Fankhauser's central criticism of degrowth?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> It fails to recognise the role of technological progress and new investment</li>
+            <li><span class="option-label">B.</span> It relies too heavily on government regulation to control industrial output</li>
+            <li><span class="option-label">C.</span> It ignores the economic benefits that come from international cooperation</li>
+            <li><span class="option-label">D.</span> It overestimates how quickly societies can transition to renewable energy</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">28. In Professor Fankhauser's view, what does degrowth fail to adequately consider regarding society?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> The public's willingness to pay higher taxes for environmental programmes</li>
+            <li><span class="option-label">B.</span> The speed at which developing nations can adopt sustainable technologies</li>
+            <li><span class="option-label">C.</span> The realistic likelihood that the proposed social changes can be carried out</li>
+            <li><span class="option-label">D.</span> The cultural differences that affect how communities respond to policy shifts</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">29. What does Phil suggest when he uses the word "feasible" in a sentence about the podcast?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> He is uncertain whether the discussion will cover all the planned topics</li>
+            <li><span class="option-label">B.</span> He is concerned that the episode may run significantly over its time limit</li>
+            <li><span class="option-label">C.</span> He is questioning whether degrowth is a realistic solution to climate change</li>
+            <li><span class="option-label">D.</span> He is illustrating the meaning of the word through a relatable everyday example</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">30. What conclusion can be inferred about the debate over degrowth based on the overall discussion?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Most economists have recently shifted their support towards degrowth policies</li>
+            <li><span class="option-label">B.</span> The concept remains contested, with supporters and critics holding opposing views</li>
+            <li><span class="option-label">C.</span> Degrowth has been widely adopted by governments as a response to climate change</li>
+            <li><span class="option-label">D.</span> The disagreement centres mainly on which industries should be reduced in size</li>
+        </ul>
+    </div>
+
+    <!-- Answers & Explanations Section -->
+    <details>
+        <summary>👁️ Click Here to View Answers & Explanations</summary>
+        <div class="answers-content">
+            
+            <h2>Part 1: Answer Key</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="60%">Evidence from Transcript</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>cycle</b></td><td>"maybe I cycle more than I drive"</td><td>L12</td></tr>
+                    <tr><td>2</td><td><b>recycle</b></td><td>"I try to recycle things"</td><td>L12</td></tr>
+                    <tr><td>3</td><td><b>individuals</b></td><td>"we can't just rely on individuals"</td><td>L15</td></tr>
+                    <tr><td>4</td><td><b>economy</b></td><td>"change the way our economy works"</td><td>L15</td></tr>
+                    <tr><td>5</td><td><b>grow</b></td><td>"governments have always wanted to grow the economy"</td><td>L31</td></tr>
+                    <tr><td>6</td><td><b>growing</b></td><td>"we need to stop our economies from growing"</td><td>L31</td></tr>
+                    <tr><td>7</td><td><b>natural resources</b></td><td>"using fewer of the Earth's natural resources"</td><td>L31</td></tr>
+                    <tr><td>8</td><td><b>degrowthers</b></td><td>"The people who support the idea of degrowth, are often called degrowthers"</td><td>L31</td></tr>
+                    <tr><td>9</td><td><b>beneficial</b></td><td>"elements of our production that are not beneficial"</td><td>L40</td></tr>
+                    <tr><td>10</td><td><b>fast fashion</b></td><td>"An example of those elements would be fast fashion"</td><td>L40</td></tr>
+                    <tr><td>11</td><td><b>beef and meat</b></td><td>"the beef and meat industry"</td><td>L40</td></tr>
+                    <tr><td>12</td><td><b>poverty</b></td><td>"it would create more poverty"</td><td>L52</td></tr>
+                    <tr><td>13</td><td><b>innovation</b></td><td>"degrowth underestimates the power of innovation"</td><td>L58</td></tr>
+                    <tr><td>14</td><td><b>new technology</b></td><td>"investment that we need in new technology and in new solutions"</td><td>L58</td></tr>
+                    <tr><td>15</td><td><b>feasibility</b></td><td>"degrowth underestimates the social…feasibility of what they propose"</td><td>L58</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Part 2: Multiple Choice Explanations</h2>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 21: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "I try, but I don't think I do enough. So, maybe I cycle more than I drive, and I try to recycle things, but I should be doing a lot more."（第12行）。他承认自己有所行动但仍不够，与B选项"承认行动不足但有所努力"完全吻合。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确说"I don't think I do enough"，并非感到自豪(proud)。<b>C:</b> 他积极回应并列举了行为，并非漠不关心(indifferent)。<b>D:</b> 原文未提及对他人感到沮丧(frustrated)。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 22: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "we can't just rely on individuals... We need to actually change the way our economy works."（第15行）。"change the way our economy works"即"结构性经济转型"，与D选项吻合。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 未提及法律责任(legally responsible)。<b>B:</b> 并非将责任归咎于政府(alone to blame)。<b>C:</b> 并非说个人行为"完全无关"(completely irrelevant)，属于极端表达误导。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 23: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "traditionally governments have always wanted to grow the economy. More money, more jobs and more stuff."（第31行）。"more money, more jobs and more stuff"对应A选项的"output, employment, and material wealth"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>B/C/D:</b> 均为概念偷换或信息错位。鼓励减少消费是degrowth的主张，而非传统政府目标。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 24: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Alvaro说 "degrowth is not saying that we need to reduce everything. It's saying that we need to decrease some elements of our production that are not beneficial."（第40行）。"some elements... not beneficial"对应C选项的"specific harmful sectors"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确说"not reduce everything"，"完全消除"是极端表达。<b>B:</b> 举例不仅限交通。<b>D:</b> 未提及政府控制产出。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 25: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "Fast fashion refers to clothes that are made very cheaply and quickly, so that customers can afford to buy new outfits more often."（第49行）。B选项是对原文的同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 未提及回收材料。<b>C:</b> 并非限制供应(limits supply)。<b>D:</b> 聚焦于生产方式，而非社交媒体传播。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 26: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "...Some of them argue that it would create more poverty. And some economists believe degrowth would actually make it harder to solve the climate crisis."（第52行）。D选项是对这两点批评的综合同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/C:</b> 货币政策、国际贸易、金融市场稳定等均未在文中提及，属于无中生有。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 27: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Fankhauser说 "Degrowth underestimates the power of innovation... the need for investment that we need in new technology and in new solutions."（第58行）。"technological progress"对应"innovation"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>B/C:</b> 政府监管、国际合作未提及。<b>D:</b> 批评的是低估创新，而非高估可再生能源转型速度。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 28: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "Another factor that Professor Fankhauser says is underestimated by degrowthers is the feasibility of social change."（第64行）。"realistic likelihood... can be carried out"是"feasibility"的同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/D:</b> 税收意愿、发展中国家、文化差异等均未提及。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 29: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "For example, I could say that I think it's feasible for us to finish this podcast in six minutes. I think that we can do it!"（第64行）。这是Phil在解释"feasible"一词时用播客本身举例，属于用日常情境说明词义。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/C:</b> Phil举例纯粹为了解释词汇，并非质疑degrowth，也非真的担心超时。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 30: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> 全文呈现了支持degrowth的观点（Hannah、Alvaro）与反对意见（多位经济学家、Fankhauser），形成明显对立。说明该概念仍具争议性(contested)。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确指出many economists do not think it is a good idea，并未转向支持。<b>C:</b> 未提及政府已采纳。<b>D:</b> 争议不仅限于行业缩减，还涉及贫困、创新、社会可行性等。</div>
+            </div>
+
+        </div>
+    </details>
+
+</div>
+
+</body>
+</html>
