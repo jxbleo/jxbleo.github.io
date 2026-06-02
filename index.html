@@ -243,6 +243,24 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+        /* ----- 以下是专门针对手机端的适配代码 ----- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px 5px; /* 缩小最外层边距 */
+            }
+            .container {
+                padding: 25px 15px; /* 缩小试卷内部边距 */
+            }
+            h1 {
+                font-size: 1.5em; /* 稍微缩小主标题字号 */
+            }
+            .mc-question {
+                padding: 15px 12px; /* 缩小选择题框的内边距 */
+            }
+            .answers-content {
+                padding: 20px 10px; /* 缩小答案区域的内边距 */
+            }
+        }
     </style>
 </head>
 <body>
