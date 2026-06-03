@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's Your Favourite Snack? - Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Student Info Section */
+        .student-info {
+            background: #e8f8f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-info label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .student-info input {
+            padding: 12px;
+            font-size: 1.05em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .student-info input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+        }
+
+        .student-info input:disabled {
+            background-color: #f1f1f1;
+            cursor: not-allowed;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Fill in the blanks styling */
+        ul.fill-blanks {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        ul.fill-blanks li {
+            margin-bottom: 15px;
+            line-height: 2;
+        }
+
+        ul.fill-blanks ul {
+            margin-top: 10px;
+            list-style-type: circle;
+        }
+
+        .blank-input {
+            border: none;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            text-align: center;
+            margin: 0 5px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            font-weight: bold;
+            padding-bottom: 2px;
+            width: 60px;
+            outline: none;
+            transition: border-color 0.2s, width 0.3s ease;
+        }
+
+        .blank-input:focus {
+            border-bottom-color: var(--secondary-color);
+            width: 120px;
+        }
+        
+        .blank-input::placeholder {
+            color: #ccc;
+            font-weight: normal;
+        }
+
+        .blank-input:disabled {
+            color: #7f8c8d;
+            border-bottom-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Multiple Choice Styling */
+        .mc-question {
+            margin-bottom: 35px;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mc-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .mc-options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mc-options li {
+            background: var(--card-bg);
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .mc-options li:hover:not(.disabled) {
+            border-left-color: var(--secondary-color);
+            background: #f0f9f4;
+        }
+
+        /* Modern CSS pseudo-class to highlight selected option */
+        .mc-options li:has(input[type="radio"]:checked) {
+            border-left-color: var(--secondary-color);
+            background: #e8f8f5;
+            border-color: var(--secondary-color);
+        }
+
+        .mc-options label {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 18px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .mc-options input[type="radio"] {
+            margin-top: 4px;
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .mc-options input[type="radio"]:disabled {
+            cursor: not-allowed;
+        }
+
+        .mc-options label:has(input[type="radio"]:disabled) {
+            cursor: not-allowed;
+            color: #7f8c8d;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 30px;
+            padding: 16px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: #1e8449;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Answers Section */
+        #answers-section {
+            display: none;
+            margin-top: 50px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answers-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* Explanations Styling */
+        .explanation-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        /* ----- 以下是专门针对手机端的适配代码 ----- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px 5px; /* 缩小最外层边距 */
+            }
+            .container {
+                padding: 25px 15px; /* 缩小试卷内部边距 */
+            }
+            h1 {
+                font-size: 1.5em; /* 稍微缩小主标题字号 */
+            }
+            .mc-question {
+                padding: 15px 12px; /* 缩小选择题框的内边距 */
+            }
+            .answers-content {
+                padding: 20px 10px; /* 缩小答案区域的内边距 */
+            }
+            .student-info { padding: 15px; }
+            .mc-options label { padding: 10px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>What's Your Favourite Snack?</h1>
+
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+        <div class="student-info">
+            <label for="student-name">Student Name:</label>
+            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+        </div>
+
+        <h2>Part 1: Fill in the Blanks</h2>
+
+    <h3>Global Snacking Trends</h3>
+    <ul class="fill-blanks">
+        <li>Worldwide spending on snacks reaches approximately <input type="text" name="Blank_01" class="blank-input" placeholder="(1)" autocomplete="off" required> annually        </li>
+        <li>Traditional options include popcorn and crisps        </li>
+        <li>New products like the <input type="text" name="Blank_02" class="blank-input" placeholder="(2)" autocomplete="off" required> have emerged        </li>
+    </ul>
+
+    <h3>Annie Gray (British food historian)</h3>
+    <ul class="fill-blanks">
+        <li>Enjoys <input type="text" name="Blank_03" class="blank-input" placeholder="(3)" autocomplete="off" required> combined with a banana        </li>
+    </ul>
+
+    <h3>Barbara Oievari (Argentinian chef)</h3>
+    <ul class="fill-blanks">
+        <li>Prefers 'chipa', which is a <input type="text" name="Blank_04" class="blank-input" placeholder="(4)" autocomplete="off" required>        </li>
+        <li>Made using cassava, cheese, <input type="text" name="Blank_05" class="blank-input" placeholder="(5)" autocomplete="off" required>        </li>
+    </ul>
+
+    <h3><b>Why Snacks Are So Popular</b></h3>
+    <h3>Economic factors:</h3>
+    <ul class="fill-blanks">
+        <li>Snacks serve as an <input type="text" name="Blank_06" class="blank-input" placeholder="(6)" autocomplete="off" required> for consumers        </li>
+        <li>Remain popular even when <input type="text" name="Blank_07" class="blank-input" placeholder="(7)" autocomplete="off" required> for many people        </li>
+    </ul>
+
+    <h3>Lifestyle changes:</h3>
+    <ul class="fill-blanks">
+        <li>Americans prefer smaller and more <input type="text" name="Blank_08" class="blank-input" placeholder="(8)" autocomplete="off" required>        </li>
+        <li>People no longer consume <input type="text" name="Blank_09" class="blank-input" placeholder="(9)" autocomplete="off" required> regularly        </li>
+        <li>Snacks are consumed <input type="text" name="Blank_10" class="blank-input" placeholder="(10)" autocomplete="off" required> instead        </li>
+    </ul>
+
+    <h3>Health benefits:</h3>
+    <ul class="fill-blanks">
+        <li>Modern snacks contain specific <input type="text" name="Blank_11" class="blank-input" placeholder="(11)" autocomplete="off" required>        </li>
+        <li>Target improvements in <input type="text" name="Blank_12" class="blank-input" placeholder="(12)" autocomplete="off" required>, gut health and muscle development        </li>
+        <li>These benefits come in <input type="text" name="Blank_13" class="blank-input" placeholder="(13)" autocomplete="off" required>        </li>
+    </ul>
+
+    <h3>Barbara Oievari's perspective on concerns about modern snacks:</h3>
+    <ul class="fill-blanks">
+        <li>Prefers preparing and consuming <input type="text" name="Blank_14" class="blank-input" placeholder="(14)" autocomplete="off" required> snacks        </li>
+        <li>Finds it difficult to <input type="text" name="Blank_15" class="blank-input" placeholder="(15)" autocomplete="off" required> regarding food choices        </li>
+        <li>Her son, aged <input type="text" name="Blank_16" class="blank-input" placeholder="(16)" autocomplete="off" required>, prefers packaged options        </li>
+        <li>He enjoys small <input type="text" name="Blank_17" class="blank-input" placeholder="(17)" autocomplete="off" required> snacks        </li>
+        <li>These represent a <input type="text" name="Blank_18" class="blank-input" placeholder="(18)" autocomplete="off" required> on traditional recipes        </li>
+    </ul>
+
+    <h3>British Snacking Habits</h3>
+    <ul class="fill-blanks">
+        <li>Most favoured category: <input type="text" name="Blank_19" class="blank-input" placeholder="(19)" autocomplete="off" required>        </li>
+        <li>Approximately <input type="text" name="Blank_20" class="blank-input" placeholder="(20)" autocomplete="off" required> of British people consume these weekly        </li>
+    </ul>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+        <h2>Part 2: Multiple Choice Questions</h2>
+
+    <div class="mc-question">
+        <div class="mc-title">21. What is Annie Gray's attitude towards her preferred snack combination?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_21" value="A" required> <span><span class="option-label">A.</span> She is uncertain whether it is a healthy choice</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="B" required> <span><span class="option-label">B.</span> She is genuinely satisfied with how well it meets her needs</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="C" required> <span><span class="option-label">C.</span> She is embarrassed to admit her unusual preference</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="D" required> <span><span class="option-label">D.</span> She is concerned about the nutritional value</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">22. Why does Neil admit to loving crisps despite wanting to mention something healthier?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_22" value="A" required> <span><span class="option-label">A.</span> He believes crisps are actually nutritious</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="B" required> <span><span class="option-label">B.</span> He is trying to impress Beth with his honesty</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="C" required> <span><span class="option-label">C.</span> He feels pressured by the survey results</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="D" required> <span><span class="option-label">D.</span> He is being candid about his genuine preference</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">23. According to Christine Cochran, what is the main reason snacks remain popular even during difficult economic times?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_23" value="A" required> <span><span class="option-label">A.</span> They provide an inexpensive form of indulgence</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="B" required> <span><span class="option-label">B.</span> They are heavily advertised to consumers</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="C" required> <span><span class="option-label">C.</span> They contain essential nutritional ingredients</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="D" required> <span><span class="option-label">D.</span> They are easier to prepare than regular meals</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">24. What change in eating habits does Christine Cochran observe among American consumers?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_24" value="A" required> <span><span class="option-label">A.</span> They are increasingly adopting vegetarian diets</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="B" required> <span><span class="option-label">B.</span> They are returning to traditional home cooking</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="C" required> <span><span class="option-label">C.</span> They are shifting away from conventional meal schedules</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="D" required> <span><span class="option-label">D.</span> They are consuming larger portions at each sitting</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">25. What is Christine Cochran's view on functional ingredients in snacks?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_25" value="A" required> <span><span class="option-label">A.</span> They cater to consumers' specific health objectives</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="B" required> <span><span class="option-label">B.</span> They represent unnecessary marketing gimmicks</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="C" required> <span><span class="option-label">C.</span> They should replace traditional snack ingredients</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="D" required> <span><span class="option-label">D.</span> They are too expensive for average consumers</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">26. What does the term &quot;mental clarity&quot; describe in the context of snack benefits?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_26" value="A" required> <span><span class="option-label">A.</span> A focused and engaged state of mind</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="B" required> <span><span class="option-label">B.</span> The ability to read ingredient labels carefully</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="C" required> <span><span class="option-label">C.</span> A marketing strategy targeting educated buyers</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="D" required> <span><span class="option-label">D.</span> The transparent packaging of modern snacks</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">27. Why does Barbara Oievari say she &quot;can't swim against the current&quot;?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_27" value="A" required> <span><span class="option-label">A.</span> She lacks confidence in her cooking abilities</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="B" required> <span><span class="option-label">B.</span> Her son refuses to eat anything homemade</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="C" required> <span><span class="option-label">C.</span> She finds it impractical to resist prevailing trends</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="D" required> <span><span class="option-label">D.</span> She has limited access to natural ingredients</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">28. What similarity does Barbara Oievari notice between her son's snack and her own preference?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_28" value="A" required> <span><span class="option-label">A.</span> They both originate from Argentinian cuisine</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="B" required> <span><span class="option-label">B.</span> They both feature cheese as a key component</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="C" required> <span><span class="option-label">C.</span> They both are considered unhealthy options</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="D" required> <span><span class="option-label">D.</span> They both require baking in an oven</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">29. What function does Beth's comment &quot;all those snacks have made me hungry&quot; serve in the conversation?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_29" value="A" required> <span><span class="option-label">A.</span> To genuinely express her physical hunger</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="B" required> <span><span class="option-label">B.</span> To introduce the revelation of the quiz answer</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="C" required> <span><span class="option-label">C.</span> To criticize the discussion of unhealthy foods</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="D" required> <span><span class="option-label">D.</span> To propose ending the recording session</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">30. According to the YouGov survey mentioned in the programme, what proportion of British people consume confectionery and chocolate weekly?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_30" value="A" required> <span><span class="option-label">A.</span> Around 45% partake in them regularly</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="B" required> <span><span class="option-label">B.</span> More than half select them as favorites</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="C" required> <span><span class="option-label">C.</span> Approximately one-third prefer them</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="D" required> <span><span class="option-label">D.</span> Nearly 60% consume them daily</span></label></li>
+        </ul>
+    </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
+    </form>
+
+    <div id="answers-section">
+        <div class="answers-header">
+            ✅ Answer Key & Explanations (答案解析)
+        </div>
+        <div class="answers-content">
+            <h2>Part 1: Answer Key</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="60%">Evidence from Transcript</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>$1.5 trillion</b></td><td>It seems people around the world are in love with snacks! From old favourites like popcorn and crisps to new inventions like the chocolate sandwich, snacks are big business, with an estimated $1.5 trillion a year spent globally on snacking.</td><td>L9</td></tr>
+                    <tr><td>2</td><td><b>chocolate sandwich</b></td><td>It seems people around the world are in love with snacks! From old favourites like popcorn and crisps to new inventions like the chocolate sandwich, snacks are big business</td><td>L9</td></tr>
+                    <tr><td>3</td><td><b>salted peanuts</b></td><td>I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot.</td><td>L15</td></tr>
+                    <tr><td>4</td><td><b>small, round bun</b></td><td>My favourite snack is called 'chipa'. It's a small, round bun made with cassava, cheese, butter, milk and salt.</td><td>L18</td></tr>
+                    <tr><td>5</td><td><b>butter, milk and salt</b></td><td>My favourite snack is called 'chipa'. It's a small, round bun made with cassava, cheese, butter, milk and salt.</td><td>L18</td></tr>
+                    <tr><td>6</td><td><b>affordable luxury</b></td><td>A snack is an affordable luxury, so if you've had a bad day or money is tight, this is something that you can turn to, and I think that is why you see it as so popular.</td><td>L43</td></tr>
+                    <tr><td>7</td><td><b>money is tight</b></td><td>A snack is an affordable luxury, so if you've had a bad day or money is tight, this is something that you can turn to, and I think that is why you see it as so popular.</td><td>L43</td></tr>
+                    <tr><td>8</td><td><b>convenient portions</b></td><td>Consumers, especially in the United States, are looking for smaller, more convenient portions. They're not always going to be able to sit down and have three meals a day, right?</td><td>L43</td></tr>
+                    <tr><td>9</td><td><b>three meals a day</b></td><td>Consumers, especially in the United States, are looking for smaller, more convenient portions. They're not always going to be able to sit down and have three meals a day, right? So, they're eating on the go.</td><td>L43</td></tr>
+                    <tr><td>10</td><td><b>on the go</b></td><td>They're not always going to be able to sit down and have three meals a day, right? So, they're eating on the go. And the other thing that you see is this desire for very specific functional ingredients</td><td>L43</td></tr>
+                    <tr><td>11</td><td><b>functional ingredients</b></td><td>So, they're eating on the go. And the other thing that you see is this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development, these sorts of things.</td><td>L43</td></tr>
+                    <tr><td>12</td><td><b>mental clarity</b></td><td>And the other thing that you see is this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development, these sorts of things. Again, they're nicely packaged in snack sizes.</td><td>L43</td></tr>
+                    <tr><td>13</td><td><b>snack sizes</b></td><td>So, mental clarity, gut health, muscle development, these sorts of things. Again, they're nicely packaged in snack sizes.</td><td>L43</td></tr>
+                    <tr><td>14</td><td><b>more natural, simpler</b></td><td>Personally, I enjoy cooking and eating more natural, simpler snacks, but of course I can't swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar</td><td>L61</td></tr>
+                    <tr><td>15</td><td><b>swim against current</b></td><td>Personally, I enjoy cooking and eating more natural, simpler snacks, but of course I can't swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar</td><td>L61</td></tr>
+                    <tr><td>16</td><td><b>9 / nine</b></td><td>Personally, I enjoy cooking and eating more natural, simpler snacks, but of course I can't swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar</td><td>L61</td></tr>
+                    <tr><td>17</td><td><b>baked</b></td><td>but of course I can't swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar… ironically it is something baked with cheese in it</td><td>L61</td></tr>
+                    <tr><td>18</td><td><b>modern twist</b></td><td>ironically it is something baked with cheese in it, which is similar to what I enjoy – it's just the modern twist.</td><td>L61</td></tr>
+                    <tr><td>19</td><td><b>confectionery and chocolate</b></td><td>I asked, &quot;According to a recent YouGov survey, which of the following snacks is the most popular amongst Brits? Crisps, confectionery and chocolate, or savoury snacks and biscuits.&quot; And the answer was… b) confectionery and chocolate, which 45% of Britons indulge in weekly</td><td>L70</td></tr>
+                    <tr><td>20</td><td><b>45%</b></td><td>And the answer was… b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey.</td><td>L70</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Part 2: Multiple Choice Explanations</h2>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 21: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Annie Gray说 &quot;I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot.&quot;（第15行），Beth随后解释&quot;hits the spot&quot;意为&quot;exactly what you want&quot;（第21行），表明Annie对这个组合非常满意。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：她没有表达不确定性，而是明确表示喜欢。C错误：她没有表现出尴尬，反而坦率自信地分享。D错误：她没有提及营养价值的担忧。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 22: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Neil说 &quot;Well, I want to say something healthy, but actually, you know, I really love a bag of crisps.&quot;（第24行），使用&quot;actually&quot;和&quot;you know&quot;表明他在坦诚地承认真实想法，尽管这与健康期待相矛盾。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：他明确区分了&quot;想说健康的&quot;和&quot;实际喜欢的&quot;，说明他知道薯片不够健康。B错误：没有证据显示他想给Beth留下深刻印象。C错误：此时调查结果还未公布（第40行才开始讨论）。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 23: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Christine Cochran说 &quot;A snack is an affordable luxury, so if you've had a bad day or money is tight, this is something that you can turn to, and I think that is why you see it as so popular.&quot;（第43行），&quot;affordable luxury&quot;意为&quot;负担得起的小奢侈&quot;，即使在经济困难时期也能消费。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误：她没有提及广告宣传策略。C错误：虽然后面提到功能性成分，但这不是经济困难时期流行的主要原因。D错误：准备的便利性不是她强调的核心原因。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 24: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Christine Cochran说 &quot;They're not always going to be able to sit down and have three meals a day, right? So, they're eating on the go.&quot;（第43行），表明人们不再遵循传统的一日三餐模式，而是随时随地进食。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：没有提及素食饮食。B错误：恰恰相反，人们远离传统家庭烹饪。D错误：原文提到的是&quot;smaller, more convenient portions&quot;（第43行），而非更大份量。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 25: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Christine Cochran说 &quot;And the other thing that you see is this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development, these sorts of things.&quot;（第43行），表明功能性成分满足消费者的特定健康目标。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误：她以积极态度描述这一趋势，而非批评为营销噱头。C错误：她说这些成分被添加到零食中，而非替代传统成分。D错误：她没有提及价格问题。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 26: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Neil解释说 &quot;mental clarity – a term describing a state of mind which is focused and engaged, not dull or foggy.&quot;（第55行），明确定义了这个术语的含义。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误：与阅读标签能力无关。C错误：虽然是营销术语，但原文给出了具体定义，而非仅仅是营销策略。D错误：与包装透明度无关，是指心智状态。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 27: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Barbara说 &quot;but of course I can't swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar…&quot;（第61行），Neil解释&quot;swim against the current means to act differently from other people&quot;（第64行），表明她认识到对抗主流趋势的困难。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：她说&quot;I enjoy cooking&quot;（第61行），表明她有烹饪能力。B错误：她儿子确实想吃现代零食，但她没有说他拒绝吃所有自制食品。D错误：没有提及食材获取的限制。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 28: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Barbara说 &quot;ironically it is something baked with cheese in it, which is similar to what I enjoy&quot;（第61行），而她最喜欢的零食chipa是&quot;made with cassava, cheese, butter, milk and salt&quot;（第18行），两者都含有奶酪。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：她儿子吃的是现代包装零食，不是阿根廷美食。C错误：她没有评价健康与否。D错误：虽然两者都可能需要烘焙，但她强调的相似点是&quot;cheese in it&quot;。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 29: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Beth说 &quot;Well, Neil, all those snacks have made me hungry! Now, isn't it time to reveal the answer to your question?&quot;（第67行），这句话直接引出了公布答案的环节，起到过渡作用。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误：这更像是一种修辞手法，而非真实的饥饿表达，因为紧接着就是&quot;isn't it time to reveal the answer&quot;。C错误：她没有批评不健康食品，整个节目对零食持中立态度。D错误：她是要继续节目（公布答案），而非结束录制。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 30: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Neil说 &quot;And the answer was… b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey.&quot;（第70行），明确指出45%的英国人每周食用糖果和巧克力。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误：45%不等于&quot;超过半数&quot;。C错误：45%不是&quot;约三分之一&quot;（应该是33%左右）。D错误：原文说的是&quot;weekly&quot;（每周），不是&quot;daily&quot;（每天）。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<script>
+    const form = document.getElementById("quiz-form");
+
+    async function handleFormSubmit(event) {
+        event.preventDefault(); // 防止页面跳转
+        
+        const submitBtn = document.getElementById("submit-btn");
+        const answersSection = document.getElementById("answers-section");
+        const data = new FormData(event.target);
+        const actionUrl = event.target.action;
+
+        // 改变按钮状态为“正在提交”
+        submitBtn.innerHTML = "Submitting... / 正在提交...";
+        submitBtn.disabled = true;
+
+        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
+        if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
+            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        // 使用 Fetch API 在后台发送数据给 Formspree
+        fetch(actionUrl, {
+            method: form.method,
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                // 提交成功，显示答案
+                revealAnswers(submitBtn, answersSection, form);
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form. 请检查网络或重试。");
+                    }
+                    resetButton(submitBtn);
+                })
+            }
+        }).catch(error => {
+            alert("Oops! There was a network problem. 请检查网络并重试。");
+            resetButton(submitBtn);
+        });
+    }
+
+    function revealAnswers(btn, answersDiv, formElement) {
+        // 1. 改变按钮样式和文字
+        btn.innerHTML = 'Submitted Successfully! / 提交成功！';
+        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
+        
+        // 2. 锁定所有的输入框，防止学生提交后修改答案
+        const formElements = formElement.elements;
+        for (let i = 0; i < formElements.length; i++) {
+            formElements[i].disabled = true;
+            // 为所有的li选项添加disabled类以取消hover效果
+            if(formElements[i].type === 'radio'){
+                formElements[i].closest('li').classList.add('disabled');
+            }
+        }
+
+        // 3. 显示答案解析区域并平滑滚动到该区域
+        answersDiv.style.display = 'block';
+        setTimeout(() => {
+            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function resetButton(btn) {
+        btn.innerHTML = 'Submit Answers';
+        btn.disabled = false;
+    }
+
+    // 绑定提交事件
+    form.addEventListener("submit", handleFormSubmit);
+</script>
+
+</body>
+</html>
