@@ -1,159 +1,612 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Climate Change & Economic Degrowth - Practice</title>
-  <style>
-    :root {
-      --primary-color: #2c3e50;
-      --secondary-color: #27ae60;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-main: #333333;
-      --text-light: #666666;
-      --border-color: #e0e6ed;
-      --correct-bg: #e8f8f5;
-      --wrong-bg: #fdf2e9;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Change & Economic Degrowth - Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
 
-    body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.6;
-      margin: 0;
-      padding: 40px 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      padding: 40px 50px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
 
-    h1 {
-      color: var(--primary-color);
-      text-align: center;
-      border-bottom: 2px solid var(--secondary-color);
-      padding-bottom: 15px;
-      margin-bottom: 40px;
-    }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
 
-    h2 {
-      color: var(--primary-color);
-      font-size: 1.4em;
-      margin-top: 40px;
-      border-left: 4px solid var(--secondary-color);
-      padding-left: 15px;
-    }
+        /* Student Info Section */
+        .student-info {
+            background: #e8f8f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    ol.fill-blanks {
-      list-style-type: decimal;
-      padding-left: 30px;
-      color: var(--text-light);
-      font-size: 1.05em;
-    }
+        .student-info label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
 
-    ol.fill-blanks li {
-      margin-bottom: 15px;
-    }
+        .student-info input {
+            padding: 12px;
+            font-size: 1.05em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 350px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
 
-    /* 输入框样式 */
-    .blank-input {
-      border: none;
-      border-bottom: 2px solid var(--primary-color);
-      width: 150px;
-      font-size: 1em;
-      padding: 2px 5px;
-      margin-left: 10px;
-      color: var(--primary-color);
-    }
+        .student-info input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+        }
 
-    .blank-input:focus {
-      outline: none;
-      border-color: var(--secondary-color);
-    }
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
 
-    #submit-answers {
-      background-color: var(--secondary-color);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1em;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 30px;
-      transition: background-color 0.3s ease;
-    }
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
 
-    #submit-answers:hover {
-      background-color: #22a047;
-    }
-  </style>
+        /* Fill in the blanks styling (Updated for inputs) */
+        ul.fill-blanks {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        ul.fill-blanks li {
+            margin-bottom: 15px;
+            line-height: 2;
+        }
+
+        ul.fill-blanks ul {
+            margin-top: 10px;
+            list-style-type: circle;
+        }
+
+        .blank-input {
+            border: none;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            text-align: center;
+            margin: 0 5px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            font-weight: bold;
+            padding-bottom: 2px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .blank-input:focus {
+            border-bottom-color: var(--secondary-color);
+        }
+        
+        .blank-input::placeholder {
+            color: #ccc;
+            font-weight: normal;
+        }
+
+        /* Multiple Choice Styling (Updated for Forms) */
+        .mc-question {
+            margin-bottom: 35px;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mc-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .mc-options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mc-options li {
+            background: var(--card-bg);
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .mc-options li:hover {
+            border-left-color: var(--secondary-color);
+            background: #f0f9f4;
+        }
+
+        /* Modern CSS pseudo-class to highlight selected option */
+        .mc-options li:has(input[type="radio"]:checked) {
+            border-left-color: var(--secondary-color);
+            background: #e8f8f5;
+            border-color: var(--secondary-color);
+        }
+
+        .mc-options label {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 18px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .mc-options input[type="radio"] {
+            margin-top: 4px;
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 30px;
+            padding: 16px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: #1e8449;
+        }
+
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+        }
+
+        /* Answers Section */
+        details {
+            margin-top: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: #1a252f;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .explanation-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        /* 手机端适配代码 */
+        @media screen and (max-width: 768px) {
+            body { padding: 10px 5px; }
+            .container { padding: 25px 15px; }
+            h1 { font-size: 1.5em; }
+            .mc-question { padding: 15px 12px; }
+            .answers-content { padding: 20px 10px; }
+            .student-info { padding: 15px; }
+            .mc-options label { padding: 10px 12px; }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Climate Change & Economic Degrowth - Practice</h1>
-    
-    <h2>填空题部分</h2>
-    <ol class="fill-blanks">
-      <li>
-        经济衰退的核心理念是<input type="text" class="blank-input" name="blank1" placeholder="填写答案" />
-      </li>
-      <li>
-        “去增长”运动鼓励社会寻求 <input type="text" class="blank-input" name="blank2" placeholder="填写答案" /> 的生活方式
-      </li>
-      <li>
-        资源消耗过快会导致 <input type="text" class="blank-input" name="blank3" placeholder="填写答案" />
-      </li>
-      <!-- 这里请继续补充30道题，示范中只写三个 -->
-    </ol>
 
-    <button id="submit-answers">提交答案</button>
-  </div>
+<div class="container">
+    <h1>Climate Change & Economic Degrowth</h1>
 
-  <script>
-    // 请替换成你自己的 Formspree 表单地址
-    const formspreeUrl = 'https://formspree.io/f/your_form_id';
+    <!-- FORM START: REPLACE THE ACTION URL WITH YOUR FORMSPREE ENDPOINT -->
+    <form action="https://formspree.io/f/mpqnvgel" method="POST">
+        
+        <!-- Student Information -->
+        <div class="student-info">
+            <label for="student-name">Student Name (请输入姓名):</label>
+            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+        </div>
 
-    document.getElementById('submit-answers').addEventListener('click', async () => {
-      const inputs = document.querySelectorAll('.blank-input');
-      const answers = {};
+        <h2>Part 1: Fill in the Blanks</h2>
+        
+        <h3>Personal Actions and Climate Concerns</h3>
+        <ul class="fill-blanks">
+            <li>Phil admits he tends to <input type="text" name="Blank_01" class="blank-input" style="width: 70px;" placeholder="(1)" autocomplete="off" required> rather than drive.</li>
+            <li>Phil also tries to <input type="text" name="Blank_02" class="blank-input" style="width: 90px;" placeholder="(2)" autocomplete="off" required> things at home.</li>
+            <li>Hannah points out that dealing with climate change cannot rely on <input type="text" name="Blank_03" class="blank-input" style="width: 120px;" placeholder="(3)" autocomplete="off" required> alone.</li>
+            <li>To address the crisis, Hannah argues we need to change the way our <input type="text" name="Blank_04" class="blank-input" style="width: 100px;" placeholder="(4)" autocomplete="off" required> works.</li>
+        </ul>
 
-      inputs.forEach((input, idx) => {
-        answers[`填空题${idx + 1}`] = input.value.trim();
-      });
+        <h3>What Degrowth Means</h3>
+        <ul class="fill-blanks">
+            <li>In the past, governments have always aimed to <input type="text" name="Blank_05" class="blank-input" style="width: 70px;" placeholder="(5)" autocomplete="off" required> the economy.</li>
+            <li>Degrowth supporters believe economies should stop <input type="text" name="Blank_06" class="blank-input" style="width: 100px;" placeholder="(6)" autocomplete="off" required>.</li>
+            <li>The focus should shift to using fewer of the Earth's <input type="text" name="Blank_07" class="blank-input" style="width: 170px;" placeholder="(7)" autocomplete="off" required>.</li>
+            <li>Those who back this idea are commonly referred to as <input type="text" name="Blank_08" class="blank-input" style="width: 130px;" placeholder="(8)" autocomplete="off" required>.</li>
+        </ul>
 
-      const payload = {
-        answers: answers,
-        timestamp: new Date().toISOString()
-      };
+        <h3>What Degrowthers Want to Reduce</h3>
+        <ul class="fill-blanks">
+            <li>They target production that is considered not <input type="text" name="Blank_09" class="blank-input" style="width: 110px;" placeholder="(9)" autocomplete="off" required>.</li>
+            <li>Examples of such production include:
+                <ul>
+                    <li><input type="text" name="Blank_10" class="blank-input" style="width: 130px;" placeholder="(10)" autocomplete="off" required> (cheap, rapidly produced clothing).</li>
+                    <li>private jets.</li>
+                    <li>the <input type="text" name="Blank_11" class="blank-input" style="width: 140px;" placeholder="(11)" autocomplete="off" required> industry.</li>
+                </ul>
+            </li>
+        </ul>
 
-      try {
-        const response = await fetch(https://formspree.io/f/mpqnvgel, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+        <h3>Criticism of Degrowth</h3>
+        <ul class="fill-blanks">
+            <li>Many economists argue degrowth would lead to more <input type="text" name="Blank_12" class="blank-input" style="width: 100px;" placeholder="(12)" autocomplete="off" required>.</li>
+            <li>Professor Fankhauser claims degrowth fails to appreciate the power of <input type="text" name="Blank_13" class="blank-input" style="width: 120px;" placeholder="(13)" autocomplete="off" required>.</li>
+            <li>He also says it overlooks the need for investment in <input type="text" name="Blank_14" class="blank-input" style="width: 150px;" placeholder="(14)" autocomplete="off" required>.</li>
+            <li>He further questions the social <input type="text" name="Blank_15" class="blank-input" style="width: 120px;" placeholder="(15)" autocomplete="off" required> of what degrowthers propose.</li>
+        </ul>
 
-        if (response.ok) {
-          alert('答案提交成功！感谢你的参与。');
-          // 可选：清空输入框
-          inputs.forEach(input => (input.value = ''));
-        } else {
-          alert('提交失败，请稍后重试。');
-        }
-      } catch (error) {
-        alert('提交出错，请检查网络连接。');
-        console.error('提交错误：', error);
-      }
-    });
-  </script>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+        <h2>Part 2: Multiple Choice Questions</h2>
+
+        <div class="mc-question">
+            <div class="mc-title">21. What is Phil's attitude towards his own environmental habits?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_21" value="A" required> <span><span class="option-label">A.</span> He is proud of his consistent efforts to protect the environment</span></label></li>
+                <li><label><input type="radio" name="Question_21" value="B" required> <span><span class="option-label">B.</span> He admits his actions are insufficient despite making some effort</span></label></li>
+                <li><label><input type="radio" name="Question_21" value="C" required> <span><span class="option-label">C.</span> He is indifferent to environmental issues and avoids the topic</span></label></li>
+                <li><label><input type="radio" name="Question_21" value="D" required> <span><span class="option-label">D.</span> He is frustrated that others do not share his green lifestyle</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">22. What does Hannah imply when she says "it's not up to you and me"?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_22" value="A" required> <span><span class="option-label">A.</span> Individuals should be held legally responsible for climate damage</span></label></li>
+                <li><label><input type="radio" name="Question_22" value="B" required> <span><span class="option-label">B.</span> Governments alone should be blamed for the climate crisis</span></label></li>
+                <li><label><input type="radio" name="Question_22" value="C" required> <span><span class="option-label">C.</span> Personal habits are completely irrelevant to environmental outcomes</span></label></li>
+                <li><label><input type="radio" name="Question_22" value="D" required> <span><span class="option-label">D.</span> Addressing climate change requires structural economic transformation</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">23. According to Hannah, what has traditionally been the priority of governments regarding the economy?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_23" value="A" required> <span><span class="option-label">A.</span> Expanding output, employment, and material wealth continuously</span></label></li>
+                <li><label><input type="radio" name="Question_23" value="B" required> <span><span class="option-label">B.</span> Reducing dependence on fossil fuels and non-renewable resources</span></label></li>
+                <li><label><input type="radio" name="Question_23" value="C" required> <span><span class="option-label">C.</span> Balancing economic development with environmental conservation</span></label></li>
+                <li><label><input type="radio" name="Question_23" value="D" required> <span><span class="option-label">D.</span> Encouraging citizens to consume fewer goods and live sustainably</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">24. What does Alvaro Alvarez clarify about the degrowth position?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_24" value="A" required> <span><span class="option-label">A.</span> It calls for the complete elimination of all industrial production</span></label></li>
+                <li><label><input type="radio" name="Question_24" value="B" required> <span><span class="option-label">B.</span> It focuses exclusively on reducing carbon emissions from transport</span></label></li>
+                <li><label><input type="radio" name="Question_24" value="C" required> <span><span class="option-label">C.</span> It targets the reduction of specific harmful sectors, not all production</span></label></li>
+                <li><label><input type="radio" name="Question_24" value="D" required> <span><span class="option-label">D.</span> It proposes replacing economic growth with government-controlled output</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">25. Which of the following best describes what "fast fashion" refers to, as explained in the transcript?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_25" value="A" required> <span><span class="option-label">A.</span> Clothing brands that use recycled materials to lower production costs</span></label></li>
+                <li><label><input type="radio" name="Question_25" value="B" required> <span><span class="option-label">B.</span> Garments produced at low cost and high speed to encourage frequent purchasing</span></label></li>
+                <li><label><input type="radio" name="Question_25" value="C" required> <span><span class="option-label">C.</span> A retail strategy that limits clothing supply to increase consumer demand</span></label></li>
+                <li><label><input type="radio" name="Question_25" value="D" required> <span><span class="option-label">D.</span> Fashion trends that spread rapidly through social media and online platforms</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">26. What concern do some economists raise about degrowth, according to Hannah?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_26" value="A" required> <span><span class="option-label">A.</span> It would cause governments to lose control over monetary policy</span></label></li>
+                <li><label><input type="radio" name="Question_26" value="B" required> <span><span class="option-label">B.</span> It would slow down international trade and damage export industries</span></label></li>
+                <li><label><input type="radio" name="Question_26" value="C" required> <span><span class="option-label">C.</span> It would reduce consumer spending and destabilise financial markets</span></label></li>
+                <li><label><input type="radio" name="Question_26" value="D" required> <span><span class="option-label">D.</span> It could worsen poverty and make resolving the climate crisis more difficult</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">27. What is Professor Fankhauser's central criticism of degrowth?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_27" value="A" required> <span><span class="option-label">A.</span> It fails to recognise the role of technological progress and new investment</span></label></li>
+                <li><label><input type="radio" name="Question_27" value="B" required> <span><span class="option-label">B.</span> It relies too heavily on government regulation to control industrial output</span></label></li>
+                <li><label><input type="radio" name="Question_27" value="C" required> <span><span class="option-label">C.</span> It ignores the economic benefits that come from international cooperation</span></label></li>
+                <li><label><input type="radio" name="Question_27" value="D" required> <span><span class="option-label">D.</span> It overestimates how quickly societies can transition to renewable energy</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">28. In Professor Fankhauser's view, what does degrowth fail to adequately consider regarding society?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_28" value="A" required> <span><span class="option-label">A.</span> The public's willingness to pay higher taxes for environmental programmes</span></label></li>
+                <li><label><input type="radio" name="Question_28" value="B" required> <span><span class="option-label">B.</span> The speed at which developing nations can adopt sustainable technologies</span></label></li>
+                <li><label><input type="radio" name="Question_28" value="C" required> <span><span class="option-label">C.</span> The realistic likelihood that the proposed social changes can be carried out</span></label></li>
+                <li><label><input type="radio" name="Question_28" value="D" required> <span><span class="option-label">D.</span> The cultural differences that affect how communities respond to policy shifts</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">29. What does Phil suggest when he uses the word "feasible" in a sentence about the podcast?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_29" value="A" required> <span><span class="option-label">A.</span> He is uncertain whether the discussion will cover all the planned topics</span></label></li>
+                <li><label><input type="radio" name="Question_29" value="B" required> <span><span class="option-label">B.</span> He is concerned that the episode may run significantly over its time limit</span></label></li>
+                <li><label><input type="radio" name="Question_29" value="C" required> <span><span class="option-label">C.</span> He is questioning whether degrowth is a realistic solution to climate change</span></label></li>
+                <li><label><input type="radio" name="Question_29" value="D" required> <span><span class="option-label">D.</span> He is illustrating the meaning of the word through a relatable everyday example</span></label></li>
+            </ul>
+        </div>
+
+        <div class="mc-question">
+            <div class="mc-title">30. What conclusion can be inferred about the debate over degrowth based on the overall discussion?</div>
+            <ul class="mc-options">
+                <li><label><input type="radio" name="Question_30" value="A" required> <span><span class="option-label">A.</span> Most economists have recently shifted their support towards degrowth policies</span></label></li>
+                <li><label><input type="radio" name="Question_30" value="B" required> <span><span class="option-label">B.</span> The concept remains contested, with supporters and critics holding opposing views</span></label></li>
+                <li><label><input type="radio" name="Question_30" value="C" required> <span><span class="option-label">C.</span> Degrowth has been widely adopted by governments as a response to climate change</span></label></li>
+                <li><label><input type="radio" name="Question_30" value="D" required> <span><span class="option-label">D.</span> The disagreement centres mainly on which industries should be reduced in size</span></label></li>
+            </ul>
+        </div>
+
+        <!-- Form Submission Button -->
+        <button type="submit" class="submit-btn">Submit Answers / 提交答案</button>
+
+    </form>
+    <!-- FORM END -->
+
+    <!-- Answers & Explanations Section -->
+    <details>
+        <summary>👁️ Click Here to View Answers & Explanations</summary>
+        <div class="answers-content">
+            
+            <h2>Part 1: Answer Key</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="60%">Evidence from Transcript</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>cycle</b></td><td>"maybe I cycle more than I drive"</td><td>L12</td></tr>
+                    <tr><td>2</td><td><b>recycle</b></td><td>"I try to recycle things"</td><td>L12</td></tr>
+                    <tr><td>3</td><td><b>individuals</b></td><td>"we can't just rely on individuals"</td><td>L15</td></tr>
+                    <tr><td>4</td><td><b>economy</b></td><td>"change the way our economy works"</td><td>L15</td></tr>
+                    <tr><td>5</td><td><b>grow</b></td><td>"governments have always wanted to grow the economy"</td><td>L31</td></tr>
+                    <tr><td>6</td><td><b>growing</b></td><td>"we need to stop our economies from growing"</td><td>L31</td></tr>
+                    <tr><td>7</td><td><b>natural resources</b></td><td>"using fewer of the Earth's natural resources"</td><td>L31</td></tr>
+                    <tr><td>8</td><td><b>degrowthers</b></td><td>"The people who support the idea of degrowth, are often called degrowthers"</td><td>L31</td></tr>
+                    <tr><td>9</td><td><b>beneficial</b></td><td>"elements of our production that are not beneficial"</td><td>L40</td></tr>
+                    <tr><td>10</td><td><b>fast fashion</b></td><td>"An example of those elements would be fast fashion"</td><td>L40</td></tr>
+                    <tr><td>11</td><td><b>beef and meat</b></td><td>"the beef and meat industry"</td><td>L40</td></tr>
+                    <tr><td>12</td><td><b>poverty</b></td><td>"it would create more poverty"</td><td>L52</td></tr>
+                    <tr><td>13</td><td><b>innovation</b></td><td>"degrowth underestimates the power of innovation"</td><td>L58</td></tr>
+                    <tr><td>14</td><td><b>new technology</b></td><td>"investment that we need in new technology and in new solutions"</td><td>L58</td></tr>
+                    <tr><td>15</td><td><b>feasibility</b></td><td>"degrowth underestimates the social…feasibility of what they propose"</td><td>L58</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Part 2: Multiple Choice Explanations</h2>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 21: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "I try, but I don't think I do enough. So, maybe I cycle more than I drive, and I try to recycle things, but I should be doing a lot more."（第12行）。他承认自己有所行动但仍不够，与B选项"承认行动不足但有所努力"完全吻合。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确说"I don't think I do enough"，并非感到自豪(proud)。<b>C:</b> 他积极回应并列举了行为，并非漠不关心(indifferent)。<b>D:</b> 原文未提及对他人感到沮丧(frustrated)。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 22: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "we can't just rely on individuals... We need to actually change the way our economy works."（第15行）。"change the way our economy works"即"结构性经济转型"，与D选项吻合。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 未提及法律责任(legally responsible)。<b>B:</b> 并非将责任归咎于政府(alone to blame)。<b>C:</b> 并非说个人行为"完全无关"(completely irrelevant)，属于极端表达误导。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 23: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "traditionally governments have always wanted to grow the economy. More money, more jobs and more stuff."（第31行）。"more money, more jobs and more stuff"对应A选项的"output, employment, and material wealth"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>B/C/D:</b> 均为概念偷换或信息错位。鼓励减少消费是degrowth的主张，而非传统政府目标。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 24: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Alvaro说 "degrowth is not saying that we need to reduce everything. It's saying that we need to decrease some elements of our production that are not beneficial."（第40行）。"some elements... not beneficial"对应C选项的"specific harmful sectors"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确说"not reduce everything"，"完全消除"是极端表达。<b>B:</b> 举例不仅限交通。<b>D:</b> 未提及政府控制产出。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 25: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "Fast fashion refers to clothes that are made very cheaply and quickly, so that customers can afford to buy new outfits more often."（第49行）。B选项是对原文的同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 未提及回收材料。<b>C:</b> 并非限制供应(limits supply)。<b>D:</b> 聚焦于生产方式，而非社交媒体传播。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 26: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Hannah说 "...Some of them argue that it would create more poverty. And some economists believe degrowth would actually make it harder to solve the climate crisis."（第52行）。D选项是对这两点批评的综合同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/C:</b> 货币政策、国际贸易、金融市场稳定等均未在文中提及，属于无中生有。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 27: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Fankhauser说 "Degrowth underestimates the power of innovation... the need for investment that we need in new technology and in new solutions."（第58行）。"technological progress"对应"innovation"。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>B/C:</b> 政府监管、国际合作未提及。<b>D:</b> 批评的是低估创新，而非高估可再生能源转型速度。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 28: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "Another factor that Professor Fankhauser says is underestimated by degrowthers is the feasibility of social change."（第64行）。"realistic likelihood... can be carried out"是"feasibility"的同义替换。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/D:</b> 税收意愿、发展中国家、文化差异等均未提及。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 29: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "For example, I could say that I think it's feasible for us to finish this podcast in six minutes. I think that we can do it!"（第64行）。这是Phil在解释"feasible"一词时用播客本身举例，属于用日常情境说明词义。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A/B/C:</b> Phil举例纯粹为了解释词汇，并非质疑degrowth，也非真的担心超时。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 30: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> 全文呈现了支持degrowth的观点（Hannah、Alvaro）与反对意见（多位经济学家、Fankhauser），形成明显对立。说明该概念仍具争议性(contested)。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> <b>A:</b> 明确指出many economists do not think it is a good idea，并未转向支持。<b>C:</b> 未提及政府已采纳。<b>D:</b> 争议不仅限于行业缩减，还涉及贫困、创新、社会可行性等。</div>
+            </div>
+
+        </div>
+    </details>
+
+</div>
+
 </body>
 </html>
