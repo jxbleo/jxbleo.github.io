@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Power of Lists - Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Fill in the blanks styling */
+        ul.fill-blanks {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        ul.fill-blanks li {
+            margin-bottom: 15px;
+        }
+
+        ul.fill-blanks ul {
+            margin-top: 10px;
+            list-style-type: circle;
+        }
+
+        .blank {
+            display: inline-block;
+            border-bottom: 2px solid var(--primary-color);
+            text-align: center;
+            margin: 0 5px;
+            color: #999;
+            font-size: 0.85em;
+            font-weight: bold;
+            padding-bottom: 2px;
+        }
+
+        /* Multiple Choice Styling */
+        .mc-question {
+            margin-bottom: 35px;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mc-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .mc-options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mc-options li {
+            background: var(--card-bg);
+            margin: 8px 0;
+            padding: 12px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .mc-options li:hover {
+            border-left-color: var(--secondary-color);
+            background: #f0f9f4;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        /* Answers Section */
+        details {
+            margin-top: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: #1a252f;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* Explanations Styling */
+        .explanation-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        /* ----- 以下是专门针对手机端的适配代码 ----- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px 5px; /* 缩小最外层边距 */
+            }
+            .container {
+                padding: 25px 15px; /* 缩小试卷内部边距 */
+            }
+            h1 {
+                font-size: 1.5em; /* 稍微缩小主标题字号 */
+            }
+            .mc-question {
+                padding: 15px 12px; /* 缩小选择题框的内边距 */
+            }
+            .answers-content {
+                padding: 20px 10px; /* 缩小答案区域的内边距 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>The Power of Lists</h1>
+
+    <h2>Part 1: Fill in the Blanks</h2>
+    
+    <h3>Types of lists mentioned</h3>
+    <ul class="fill-blanks">
+        <li>Shopping lists</li>
+        <li>To-do lists</li>
+        <li><span class="blank" style="width: 100px;">(1)</span> – things people want to accomplish in their lifetime</li>
+    </ul>
+
+    <h3>Jo Nolan's research</h3>
+    <ul class="fill-blanks">
+        <li>She is a <span class="blank" style="width: 160px;">(2)</span> who studies people's fondness for lists</li>
+        <li>Found a shopping list containing unusual abbreviations</li>
+    </ul>
+
+    <h3>Decoding Jo's shopping list</h3>
+    <ul class="fill-blanks">
+        <li>"Nanas" = bananas</li>
+        <li>"Shrooms" = <span class="blank" style="width: 100px;">(3)</span></li>
+        <li>"Puke" = cucumbers (her <span class="blank" style="width: 80px;">(4)</span> dislikes this vegetable)</li>
+        <li>Lists sometimes resemble <span class="blank" style="width: 110px;">(5)</span></li>
+    </ul>
+
+    <h3>Popular culture example</h3>
+    <ul class="fill-blanks">
+        <li>Famous song: <span class="blank" style="width: 160px;">(6)</span>, performed by Julie Andrews</li>
+        <li>Featured in the movie The Sound of Music</li>
+        <li>Lists items from raindrops on roses to <span class="blank" style="width: 150px;">(7)</span></li>
+    </ul>
+
+    <h3>Benefits of using lists: Efficiency advantages</h3>
+    <ul class="fill-blanks">
+        <li>Allow people to think <span class="blank" style="width: 90px;">(8)</span> and economically</li>
+        <li>Help users reach the <span class="blank" style="width: 60px;">(9)</span> of matters rapidly</li>
+        <li>Avoid wasting time creating <span class="blank" style="width: 130px;">(10)</span> or complicated vocabulary</li>
+        <li>Provide excellent <span class="blank" style="width: 120px;">(11)</span> – high value for minimal effort</li>
+    </ul>
+
+    <h3>Benefits of using lists: Decision-making tool</h3>
+    <ul class="fill-blanks">
+        <li>A friend creates <span class="blank" style="width: 120px;">(12)</span> lists to resolve dilemmas</li>
+        <li>She <span class="blank" style="width: 130px;">(13)</span> to create two sections: pros and cons</li>
+        <li>By completing the list, she understands <span class="blank" style="width: 140px;">(14)</span></li>
+    </ul>
+
+    <h3>Lists in everyday life</h3>
+    <ul class="fill-blanks">
+        <li>Found in various places like <span class="blank" style="width: 70px;">(15)</span> and bank statements</li>
+        <li>Mental health professionals suggest <span class="blank" style="width: 150px;">(16)</span> in your life</li>
+        <li>This practice can enhance <span class="blank" style="width: 110px;">(17)</span></li>
+    </ul>
+
+    <h3>Trivia question discussed</h3>
+    <ul class="fill-blanks">
+        <li>Topic: Which film earned <span class="blank" style="width: 130px;">(18)</span> ever?</li>
+        <li>Answer revealed: <span class="blank" style="width: 70px;">(19)</span></li>
+        <li>Source of information: <span class="blank" style="width: 180px;">(20)</span></li>
+    </ul>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+    <h2>Part 2: Multiple Choice Questions</h2>
+
+    <div class="mc-question">
+        <div class="mc-title">21. What is Phil's purpose in mentioning bucket lists at the beginning of the conversation?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> To explain why people create shopping lists</li>
+            <li><span class="option-label">B.</span> To illustrate the widespread use of different types of lists</li>
+            <li><span class="option-label">C.</span> To introduce Jo Nolan's research methodology</li>
+            <li><span class="option-label">D.</span> To contrast practical lists with aspirational ones</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">22. What can be inferred about Jo Nolan's approach to grocery shopping?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> She prefers to use formal language in her lists</li>
+            <li><span class="option-label">B.</span> She relies on detailed descriptions to avoid confusion</li>
+            <li><span class="option-label">C.</span> She follows her husband's preferences strictly</li>
+            <li><span class="option-label">D.</span> She employs personalised abbreviations for efficiency</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">23. Why does Phil describe lists as "secret codes"?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Because they use abbreviated forms that only the writer understands</li>
+            <li><span class="option-label">B.</span> Because they contain information meant to be hidden from others</li>
+            <li><span class="option-label">C.</span> Because they require special training to interpret correctly</li>
+            <li><span class="option-label">D.</span> Because they are written in foreign languages</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">24. What is Beth's attitude when she guesses the answer to Phil's movie question?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> She is confident about her knowledge of film history</li>
+            <li><span class="option-label">B.</span> She is dismissive of the question's relevance</li>
+            <li><span class="option-label">C.</span> She is uncertain and acknowledges possible confusion</li>
+            <li><span class="option-label">D.</span> She is critical of the movie industry's priorities</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">25. According to Jo Nolan, what is one key advantage of the song "My Favourite Things"?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> It uses sophisticated vocabulary to express emotions</li>
+            <li><span class="option-label">B.</span> It delivers significant impact through economical expression</li>
+            <li><span class="option-label">C.</span> It appeals primarily to children's sensibilities</li>
+            <li><span class="option-label">D.</span> It demonstrates advanced musical composition techniques</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">26. What does Jo Nolan suggest about how lists facilitate communication?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> They enable rapid access to core concepts without unnecessary elaboration</li>
+            <li><span class="option-label">B.</span> They require extensive explanation to be properly understood</li>
+            <li><span class="option-label">C.</span> They are most effective when using complete sentences</li>
+            <li><span class="option-label">D.</span> They work best when written in formal language</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">27. What criticism does Jo Nolan acknowledge regarding "My Favourite Things"?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> The melody is too complex for ordinary listeners</li>
+            <li><span class="option-label">B.</span> The vocabulary choices are inappropriate for children</li>
+            <li><span class="option-label">C.</span> The lyrics are overly optimistic and lack depth</li>
+            <li><span class="option-label">D.</span> The song's message is overly sentimental and insincere</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">28. What does the example of Jo Nolan's friend demonstrate?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> That lists are primarily useful for shopping purposes</li>
+            <li><span class="option-label">B.</span> That professionals rely on lists more than ordinary people</li>
+            <li><span class="option-label">C.</span> That structured lists can facilitate decision-making processes</li>
+            <li><span class="option-label">D.</span> That most people struggle to make choices without help</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">29. What can be inferred about Beth's view on the therapeutic use of lists?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> She regards it as a surprisingly effective and simple technique</li>
+            <li><span class="option-label">B.</span> She questions the scientific validity of such recommendations</li>
+            <li><span class="option-label">C.</span> She believes it only works for people with specific conditions</li>
+            <li><span class="option-label">D.</span> She thinks it requires professional guidance to be effective</li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">30. What is Phil's tone when revealing the answer to his movie question?</div>
+        <ul class="mc-options">
+            <li><span class="option-label">A.</span> Disappointed that Beth guessed correctly</li>
+            <li><span class="option-label">B.</span> Pleased to confirm Beth's accurate prediction</li>
+            <li><span class="option-label">C.</span> Surprised by the database information</li>
+            <li><span class="option-label">D.</span> Critical of Beth's reasoning process</li>
+        </ul>
+    </div>
+
+    <!-- Answers & Explanations Section -->
+    <details>
+        <summary>👁️ Click Here to View Answers & Explanations</summary>
+        <div class="answers-content">
+            
+            <h2>Part 1: Answer Key</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="60%">Evidence from Transcript</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>bucket lists</b></td><td>"shopping lists, to-do lists, even bucket lists – a list of all the things a person would like to do before they die"</td><td>L12</td></tr>
+                    <tr><td>2</td><td><b>linguistics researcher</b></td><td>"This happens a lot to Jo Nolan, a linguistics researcher whose new book explores our love of lists"</td><td>L15</td></tr>
+                    <tr><td>3</td><td><b>mushrooms</b></td><td>"And 'shrooms' – they've got to be mushrooms, right?"</td><td>L24</td></tr>
+                    <tr><td>4</td><td><b>husband</b></td><td>"my husband doesn't like cucumber, and the abbreviation for cucumber would be 'cuc'"</td><td>L33</td></tr>
+                    <tr><td>5</td><td><b>secret codes</b></td><td>"so it's a way of reminding her to buy cucumbers. Wow! Sometimes lists are like secret codes"</td><td>L36</td></tr>
+                    <tr><td>6</td><td><b>My Favourite Things</b></td><td>"one of the most famous is My Favourite Things, sung by Julie Andrews in the film The Sound of Music"</td><td>L52</td></tr>
+                    <tr><td>7</td><td><b>whiskers on kittens</b></td><td>"from 'raindrops on roses' to 'whiskers on kittens'"</td><td>L52</td></tr>
+                    <tr><td>8</td><td><b>efficiently</b></td><td>"The list encourages you to think really efficiently and economically"</td><td>L55</td></tr>
+                    <tr><td>9</td><td><b>nub</b></td><td>"You just get to the nub of things quite quickly"</td><td>L55</td></tr>
+                    <tr><td>10</td><td><b>nice sentence / a nice sentence</b></td><td>"you don't waste a lot of time and effort making a nice sentence or using long words"</td><td>L55</td></tr>
+                    <tr><td>11</td><td><b>bang for buck / big bang</b></td><td>"you get a big bang for your buck – an idiom meaning that you gain a lot in return"</td><td>L58</td></tr>
+                    <tr><td>12</td><td><b>pros and cons</b></td><td>"A friend of mine who makes pros and cons lists finds that it really helps her resolve a situation"</td><td>L67</td></tr>
+                    <tr><td>13</td><td><b>halves her page</b></td><td>"She halves her page: pros, cons"</td><td>L67</td></tr>
+                    <tr><td>14</td><td><b>what she's doing</b></td><td>"And she said by the end of it, she knows what she's doing"</td><td>L67</td></tr>
+                    <tr><td>15</td><td><b>menus</b></td><td>"you see lists everywhere – in menus and bank statements, for example"</td><td>L73</td></tr>
+                    <tr><td>16</td><td><b>listing good things</b></td><td>"therapists even recommend listing all the good things in your life to feel happier"</td><td>L73</td></tr>
+                    <tr><td>17</td><td><b>happier / feel happier</b></td><td>"listing all the good things in your life to feel happier"</td><td>L73</td></tr>
+                    <tr><td>18</td><td><b>the most money</b></td><td>"which movie had made the most money ever"</td><td>L76</td></tr>
+                    <tr><td>19</td><td><b>Avatar</b></td><td>"you said Avatar. And now, according to the Internet Movie Database… that's exactly right"</td><td>L76</td></tr>
+                    <tr><td>20</td><td><b>Internet Movie Database</b></td><td>"according to the Internet Movie Database… that's exactly right"</td><td>L76</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Part 2: Multiple Choice Explanations</h2>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 21: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "A list is a collection of items with a single item written on each line, and they're everywhere: shopping lists, to-do lists, even bucket lists"（第12行），强调lists无处不在，举bucket list是为了说明lists的广泛使用。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> Phil提到bucket lists是为了展示lists的多样性，而非解释购物清单的原因。<b>C:</b> 此时尚未深入介绍Jo Nolan的研究方法。<b>D:</b> Phil并未对比实用性和理想性清单，而是展示不同类型。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 22: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Jo Nolan的购物清单使用"Nanas, aye-aye, puke, shrooms"（第18行），这些都是个人化的缩写形式，如"puke"代表cucumber（第33行）。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> 她使用的是非正式、个人化的语言，如"puke"、"shrooms"。<b>B:</b> 她的清单恰恰相反，使用简短缩写而非详细描述。<b>C:</b> 虽然提到丈夫不喜欢cucumber，但这不是她整体购物方式的特点。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 23: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil在听到"puke"代表cucumber的解释后说"Sometimes lists are like secret codes"（第36行），因为这些缩写（如puke, shrooms）只有写清单的人能理解。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>B:</b> 清单不是为了隐藏信息，而是个人化的记忆方式。<b>C:</b> 不需要特殊训练，只是个人习惯。<b>D:</b> 清单使用的是英语缩写和俚语，非外语。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 24: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Beth回答说 "I think it might be Avatar, although that might have been the most expensive to make. I'm not sure."（第49行），明确表达了不确定性和可能的混淆。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> 她明确说"I'm not sure"，显示不确定而非自信。<b>B:</b> 她认真回答了问题，没有表现出轻视态度。<b>D:</b> 她没有批评电影产业，只是回答问题。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 25: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Jo Nolan说 "you get a big bang for your buck in that song"（第55行），意思是用较少的投入获得很大的回报，即通过简洁表达产生显著影响。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> Jo说lists "don't waste a lot of time...using long words"（第55行），恰恰相反。<b>C:</b> 文中未提及儿童感受力。<b>D:</b> 讨论的是歌词内容的效率，非音乐作曲技巧。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 26: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Jo Nolan说 "You just get to the nub of things quite quickly"（第55行），Phil解释"The nub of something means the most important or essential point"（第61行）。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>B:</b> lists的优势恰恰是不需要extensive explanation。<b>C:</b> Jo说lists不浪费时间"making a nice sentence"（第55行）。<b>D:</b> lists的特点是简洁非正式，而非正式语言。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 27: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Jo说 "it's a bit saccharine"（第55行），Beth解释"saccharine – an adjective meaning excessively sweet, sentimental or insincere"（第58行）。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> 讨论的是歌词内容，未提及旋律复杂度。<b>B:</b> 未提及词汇选择不当的问题。<b>C:</b> 虽然提到"positivity"，但saccharine的批评重点在于过分感伤和不真诚，而非缺乏深度。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 28: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Jo说朋友"makes pros and cons lists finds that it really helps her resolve a situation...by the end of it, she knows what she's doing"（第67行），Phil解释这帮助做决定（第70行）。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> 例子是关于pros and cons lists用于决策，非购物。<b>B:</b> 文中只提到"a friend"，未说明职业人士更依赖lists。<b>D:</b> 朋友通过lists成功做决定，并非struggle without help。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 29: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Beth说 "therapists even recommend listing all the good things in your life to feel happier – not bad for a few words on a scrap of paper"（第73行），"not bad"和"a few words"显示她认为这是简单却有效的方法。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>B:</b> 她以肯定语气陈述，未质疑科学有效性。<b>C:</b> 她说的是therapists推荐给一般人，非特定人群。<b>D:</b> 她强调简单性（"a few words on a scrap of paper"），未提及需要专业指导。</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 30: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil说 "And now, according to the Internet Movie Database… that's exactly right."（第76行），语气肯定且确认了Beth的正确答案，Beth随后说"Yay!"（第79行）表示高兴。</div>
+                <div class="exp-item"><span class="badge-wrong">干扰项分析</span> <b>A:</b> Phil的语气是肯定的，没有失望。<b>C:</b> 他是在确认已知信息，并非表示惊讶。<b>D:</b> 他没有批评Beth的推理，而是确认她答对了。</div>
+            </div>
+
+        </div>
+    </details>
+
+</div>
+
+</body>
+</html>
