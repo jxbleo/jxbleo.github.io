@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is the Manosphere? - Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Student Info Section */
+        .student-info {
+            background: #e8f8f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-info label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .student-info input {
+            padding: 12px;
+            font-size: 1.05em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .student-info input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+        }
+
+        .student-info input:disabled {
+            background-color: #f1f1f1;
+            cursor: not-allowed;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Fill in the blanks styling */
+        ul.fill-blanks {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+            font-size: 1.05em;
+        }
+
+        ul.fill-blanks li {
+            margin-bottom: 15px;
+            line-height: 2;
+        }
+
+        ul.fill-blanks ul {
+            margin-top: 10px;
+            list-style-type: circle;
+        }
+
+        .blank-input {
+            border: none;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            text-align: center;
+            margin: 0 5px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            font-weight: bold;
+            padding-bottom: 2px;
+            width: 60px;
+            outline: none;
+            transition: border-color 0.2s, width 0.3s ease;
+        }
+
+        .blank-input:focus {
+            border-bottom-color: var(--secondary-color);
+            width: 120px;
+        }
+        
+        .blank-input::placeholder {
+            color: #ccc;
+            font-weight: normal;
+        }
+
+        .blank-input:disabled {
+            color: #7f8c8d;
+            border-bottom-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Multiple Choice Styling */
+        .mc-question {
+            margin-bottom: 35px;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mc-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .mc-options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mc-options li {
+            background: var(--card-bg);
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .mc-options li:hover:not(.disabled) {
+            border-left-color: var(--secondary-color);
+            background: #f0f9f4;
+        }
+
+        /* Modern CSS pseudo-class to highlight selected option */
+        .mc-options li:has(input[type="radio"]:checked) {
+            border-left-color: var(--secondary-color);
+            background: #e8f8f5;
+            border-color: var(--secondary-color);
+        }
+
+        .mc-options label {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 18px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .mc-options input[type="radio"] {
+            margin-top: 4px;
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .mc-options input[type="radio"]:disabled {
+            cursor: not-allowed;
+        }
+
+        .mc-options label:has(input[type="radio"]:disabled) {
+            cursor: not-allowed;
+            color: #7f8c8d;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 30px;
+            padding: 16px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: #1e8449;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Answers Section */
+        #answers-section {
+            display: none;
+            margin-top: 50px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answers-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* Explanations Styling */
+        .explanation-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        /* ----- 以下是专门针对手机端的适配代码 ----- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px 5px; /* 缩小最外层边距 */
+            }
+            .container {
+                padding: 25px 15px; /* 缩小试卷内部边距 */
+            }
+            h1 {
+                font-size: 1.5em; /* 稍微缩小主标题字号 */
+            }
+            .mc-question {
+                padding: 15px 12px; /* 缩小选择题框的内边距 */
+            }
+            .answers-content {
+                padding: 20px 10px; /* 缩小答案区域的内边距 */
+            }
+            .student-info { padding: 15px; }
+            .mc-options label { padding: 10px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>What is the Manosphere?</h1>
+
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+        <div class="student-info">
+            <label for="student-name">Student Name:</label>
+            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+        </div>
+
+        <h2>Part 1: Fill in the Blanks</h2>
+
+    <h3>What is the Manosphere?</h3>
+    <ul class="fill-blanks">
+        <li>A network of online communities and influencers promoting certain ideas about <input type="text" name="Blank_01" class="blank-input" placeholder="(1)" autocomplete="off" required>        </li>
+        <li>Key values promoted include emotional control, material wealth and <input type="text" name="Blank_02" class="blank-input" placeholder="(2)" autocomplete="off" required> over women        </li>
+        <li>Spreads through platforms such as social media posts and <input type="text" name="Blank_03" class="blank-input" placeholder="(3)" autocomplete="off" required>        </li>
+        <li>Content targets a <input type="text" name="Blank_04" class="blank-input" placeholder="(4)" autocomplete="off" required> audience, sometimes causing harm        </li>
+        <li>Source of statistics: A <input type="text" name="Blank_05" class="blank-input" placeholder="(5)" autocomplete="off" required> called <b>Movember Foundation</b>        </li>
+        <li>Finding: <input type="text" name="Blank_06" class="blank-input" placeholder="(6)" autocomplete="off" required> of British young men regularly follow masculinity influencers online        </li>
+        <li>Core belief: the world is <input type="text" name="Blank_07" class="blank-input" placeholder="(7)" autocomplete="off" required> men        </li>
+        <li>True masculinity means being strong, wealthy and <input type="text" name="Blank_08" class="blank-input" placeholder="(8)" autocomplete="off" required> others        </li>
+    </ul>
+
+    <h3>Will's Background and Early Struggles</h3>
+    <ul class="fill-blanks">
+        <li>Stood out from peers: enjoyed ballet, acting and <input type="text" name="Blank_09" class="blank-input" placeholder="(9)" autocomplete="off" required>        </li>
+        <li>His differences made him an easy target — someone <input type="text" name="Blank_10" class="blank-input" placeholder="(10)" autocomplete="off" required> and easily exploited        </li>
+        <li>By age <input type="text" name="Blank_11" class="blank-input" placeholder="(11)" autocomplete="off" required>, he was already displaying bravado in photos        </li>
+        <li>Felt pressured to follow the 'man box' — a <input type="text" name="Blank_12" class="blank-input" placeholder="(12)" autocomplete="off" required> of ideals and rules        </li>
+        <li>Could not maintain a relationship or <input type="text" name="Blank_13" class="blank-input" placeholder="(13)" autocomplete="off" required> a job        </li>
+        <li>Believed his personal problems were <input type="text" name="Blank_14" class="blank-input" placeholder="(14)" autocomplete="off" required> women        </li>
+    </ul>
+
+    <h3>Will's Experience in the Manosphere</h3>
+    <ul class="fill-blanks">
+        <li>Influencers told him the world <input type="text" name="Blank_15" class="blank-input" placeholder="(15)" autocomplete="off" required> men        </li>
+        <li>This <input type="text" name="Blank_16" class="blank-input" placeholder="(16)" autocomplete="off" required> his worldview, making it unrealistic        </li>
+        <li>He began viewing society as <input type="text" name="Blank_17" class="blank-input" placeholder="(17)" autocomplete="off" required> — men against everyone else        </li>
+        <li>Saw women, progressives and the <input type="text" name="Blank_18" class="blank-input" placeholder="(18)" autocomplete="off" required> as opponents trying to reduce men's power        </li>
+    </ul>
+
+    <h3>Will's Recovery and Current Work</h3>
+    <ul class="fill-blanks">
+        <li>His mental health worsened until he reached <input type="text" name="Blank_19" class="blank-input" placeholder="(19)" autocomplete="off" required>        </li>
+        <li>Now travels to schools across the UK, encouraging young people to <input type="text" name="Blank_20" class="blank-input" placeholder="(20)" autocomplete="off" required> what they encounter online        </li>
+    </ul>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
+
+        <h2>Part 2: Multiple Choice Questions</h2>
+
+    <div class="mc-question">
+        <div class="mc-title">21. According to Anita Rani, which of the following best describes what the manosphere promotes as indicators of a man's value?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_21" value="A" required> <span><span class="option-label">A.</span> Financial independence, physical fitness, emotional openness, and leadership</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="B" required> <span><span class="option-label">B.</span> Emotional restraint, material success, physical looks, and control over others</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="C" required> <span><span class="option-label">C.</span> Social influence, intellectual ability, career achievement, and self-discipline</span></label></li>
+            <li><label><input type="radio" name="Question_21" value="D" required> <span><span class="option-label">D.</span> Psychological strength, online presence, competitive drive, and peer respect</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">22. What does Phil suggest about the way manosphere content reaches its audience?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_22" value="A" required> <span><span class="option-label">A.</span> It is distributed through a dedicated website targeting vulnerable teenagers</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="B" required> <span><span class="option-label">B.</span> It is broadcast via mainstream television programmes aimed at young adults</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="C" required> <span><span class="option-label">C.</span> It is shared through official men's organisations with structured membership</span></label></li>
+            <li><label><input type="radio" name="Question_22" value="D" required> <span><span class="option-label">D.</span> It spreads through social media platforms and online videos without a central hub</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">23. Why did Will Adolphy consider himself particularly susceptible to manosphere ideas during his teenage years?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_23" value="A" required> <span><span class="option-label">A.</span> His unconventional interests set him apart and left him open to being exploited</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="B" required> <span><span class="option-label">B.</span> His academic struggles made him seek validation from online communities instead</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="C" required> <span><span class="option-label">C.</span> His lack of male role models pushed him towards influencers for life guidance</span></label></li>
+            <li><label><input type="radio" name="Question_23" value="D" required> <span><span class="option-label">D.</span> His desire for fame as an actor made him vulnerable to social media manipulation</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">24. In the context of Will's behaviour at age 14, what does his use of &quot;bravado&quot; most closely suggest?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_24" value="A" required> <span><span class="option-label">A.</span> He genuinely developed confidence after receiving encouragement from his peers</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="B" required> <span><span class="option-label">B.</span> He openly rejected social expectations and embraced his artistic identity proudly</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="C" required> <span><span class="option-label">C.</span> He projected a false image of toughness that concealed his actual inner struggles</span></label></li>
+            <li><label><input type="radio" name="Question_24" value="D" required> <span><span class="option-label">D.</span> He consciously chose to follow masculine ideals after careful personal reflection</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">25. What was Will's emotional state when he first encountered manosphere influencers online?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_25" value="A" required> <span><span class="option-label">A.</span> He was sceptical of their claims but continued watching out of intellectual curiosity</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="B" required> <span><span class="option-label">B.</span> He was receptive because their messages seemed to confirm his real-life frustrations</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="C" required> <span><span class="option-label">C.</span> He was indifferent at first but gradually became convinced by repeated exposure</span></label></li>
+            <li><label><input type="radio" name="Question_25" value="D" required> <span><span class="option-label">D.</span> He was enthusiastic about self-improvement and sought out motivational content</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">26. According to Will, what impact did prolonged exposure to manosphere content have on his perception of reality?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_26" value="A" required> <span><span class="option-label">A.</span> It warped his understanding of the world into a distorted and adversarial perspective</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="B" required> <span><span class="option-label">B.</span> It motivated him to improve himself by addressing his personal weaknesses directly</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="C" required> <span><span class="option-label">C.</span> It gradually helped him identify the social injustices that men genuinely experience</span></label></li>
+            <li><label><input type="radio" name="Question_26" value="D" required> <span><span class="option-label">D.</span> It encouraged him to distance himself from toxic relationships in his personal life</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">27. When Phil explains that Will &quot;painted everyone with the same brush,&quot; what does this idiom imply about Will's thinking?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_27" value="A" required> <span><span class="option-label">A.</span> Will carefully analysed each person's behaviour before forming a negative judgement</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="B" required> <span><span class="option-label">B.</span> Will expressed his frustration through creative outlets such as writing and painting</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="C" required> <span><span class="option-label">C.</span> Will selectively targeted specific groups he believed were responsible for his problems</span></label></li>
+            <li><label><input type="radio" name="Question_27" value="D" required> <span><span class="option-label">D.</span> Will unfairly attributed the same negative traits to all people based on a few examples</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">28. Based on the description of Will's &quot;us versus them&quot; mindset, what can be inferred about how he viewed women and the mainstream media?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_28" value="A" required> <span><span class="option-label">A.</span> He regarded them as misguided but ultimately willing to understand men's struggles</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="B" required> <span><span class="option-label">B.</span> He saw them as irrelevant to his personal difficulties and largely ignored their views</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="C" required> <span><span class="option-label">C.</span> He perceived them as active opponents deliberately working to diminish male influence</span></label></li>
+            <li><label><input type="radio" name="Question_28" value="D" required> <span><span class="option-label">D.</span> He considered them to be victims of the same social pressures that affected young men</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">29. What can be inferred about the circumstances under which Will eventually disengaged from the manosphere?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_29" value="A" required> <span><span class="option-label">A.</span> He left after a trusted mentor helped him critically evaluate the content he consumed</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="B" required> <span><span class="option-label">B.</span> He withdrew voluntarily once he recognised the harmful nature of the ideology himself</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="C" required> <span><span class="option-label">C.</span> He was guided out by a school counsellor who intervened during his teenage years</span></label></li>
+            <li><label><input type="radio" name="Question_29" value="D" required> <span><span class="option-label">D.</span> His departure came only after his mental wellbeing had already seriously deteriorated</span></label></li>
+        </ul>
+    </div>
+
+    <div class="mc-question">
+        <div class="mc-title">30. What is Will Adolphy's primary purpose in visiting schools across the UK after his recovery?</div>
+        <ul class="mc-options">
+            <li><label><input type="radio" name="Question_30" value="A" required> <span><span class="option-label">A.</span> To warn educators about the dangers of unrestricted internet access for young people</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="B" required> <span><span class="option-label">B.</span> To encourage young people to maintain a critical and questioning attitude toward online content</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="C" required> <span><span class="option-label">C.</span> To promote mental health awareness by sharing clinical research on social media addiction</span></label></li>
+            <li><label><input type="radio" name="Question_30" value="D" required> <span><span class="option-label">D.</span> To advocate for government regulation of influencer content on social media platforms</span></label></li>
+        </ul>
+    </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
+    </form>
+
+    <div id="answers-section">
+        <div class="answers-header">
+            ✅ Answer Key & Explanations (答案解析)
+        </div>
+        <div class="answers-content">
+            <h2>Part 1: Answer Key</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="60%">Evidence from Transcript</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>male worth</b></td><td>&quot;…emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.&quot;</td><td>L15</td></tr>
+                    <tr><td>2</td><td><b>dominance</b></td><td>&quot;…emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.&quot;</td><td>L15</td></tr>
+                    <tr><td>3</td><td><b>TikTok videos</b></td><td>&quot;…in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience…&quot;</td><td>L18</td></tr>
+                    <tr><td>4</td><td><b>young male</b></td><td>&quot;…ideas about how to be a man are finding a young male audience, sometimes with damaging results.&quot;</td><td>L18</td></tr>
+                    <tr><td>5</td><td><b>men's self-help group</b></td><td>&quot;According to men's self-help group the Movember Foundation, a majority of British young men regularly engage with masculinity influencers online…&quot;</td><td>L24</td></tr>
+                    <tr><td>6</td><td><b>two thirds</b></td><td>&quot;And I said a) two thirds. …which was the correct answer.&quot;</td><td>L70–73</td></tr>
+                    <tr><td>7</td><td><b>biased against</b></td><td>&quot;The manosphere includes the idea that the world is biased against men.&quot;</td><td>L34</td></tr>
+                    <tr><td>8</td><td><b>controlling</b></td><td>&quot;…being a man means being strong, rich and controlling others, especially women.&quot;</td><td>L34</td></tr>
+                    <tr><td>9</td><td><b>poetry</b></td><td>&quot;…I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.&quot;</td><td>L40</td></tr>
+                    <tr><td>10</td><td><b>vulnerable</b></td><td>&quot;…an easy target – someone who's vulnerable and easily taken advantage of.&quot;</td><td>L43</td></tr>
+                    <tr><td>11</td><td><b>14</b></td><td>&quot;By the time I got to 14 years old, if you look at pictures of me, you can see bravado…&quot;</td><td>L40</td></tr>
+                    <tr><td>12</td><td><b>rigid set</b></td><td>&quot;…the 'man box', which is a kind of rigid set of ideals and rules that I may feel pressure as a boy to follow…&quot;</td><td>L40</td></tr>
+                    <tr><td>13</td><td><b>hold down</b></td><td>&quot;…Will struggled to get a girlfriend or hold down a job.&quot;</td><td>L49</td></tr>
+                    <tr><td>14</td><td><b>caused by</b></td><td>&quot;…his problems were caused by women.&quot;</td><td>L49</td></tr>
+                    <tr><td>15</td><td><b>hates</b></td><td>&quot;I had an influencer telling me, 'The world hates men,' which really felt true.&quot;</td><td>L52</td></tr>
+                    <tr><td>16</td><td><b>distorted</b></td><td>&quot;…it, kind of, distorted my worldview, where it got painted over…&quot;</td><td>L52</td></tr>
+                    <tr><td>17</td><td><b>us versus them</b></td><td>&quot;…so it was an us versus them.&quot;</td><td>L52</td></tr>
+                    <tr><td>18</td><td><b>mainstream media</b></td><td>&quot;…especially women, progressives and the mainstream media, who he believed wanted to limit their power.&quot;</td><td>L58</td></tr>
+                    <tr><td>19</td><td><b>a breakdown</b></td><td>&quot;…his mental health had declined to the point of a breakdown.&quot;</td><td>L61</td></tr>
+                    <tr><td>20</td><td><b>question</b></td><td>&quot;…reminding them always to question what they see and hear online.&quot;</td><td>L61</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Part 2: Multiple Choice Explanations</h2>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 21: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Anita Rani原文：&quot;The manosphere consists of online communities and influencers that promote the idea that emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.&quot;（第10–11行）。选项B将&quot;emotional control&quot;同义替换为&quot;emotional restraint&quot;，&quot;material wealth&quot;替换为&quot;material success&quot;，&quot;physical appearance&quot;替换为&quot;physical looks&quot;，&quot;dominance over women&quot;替换为&quot;control over others&quot;，完全对应。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（概念偷换）：&quot;emotional openness&quot;与原文&quot;emotional control&quot;意思相反，原文强调的是压抑情感而非开放表达。 C错误（信息错位组合）：&quot;intellectual ability&quot;和&quot;self-discipline&quot;均未在Anita Rani的定义中提及，属于无中生有。 D错误（推理过度）：&quot;online presence&quot;并非原文所列指标，将媒体曝光度混入男性价值标准，超出原文范围。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 22: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;You won't find any website named www.manosphere.com, but in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience.&quot;（第13–15行）。选项D将&quot;no central website&quot;同义替换为&quot;without a central hub&quot;，&quot;social media posts, TikTok videos&quot;替换为&quot;social media platforms and online videos&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（关键词误导）：原文明确指出不存在专属网站（&quot;You won't find any website named www.manosphere.com&quot;），选项A与此直接矛盾。 B错误（概念偷换）：原文内容通过社交媒体传播，并非主流电视节目，混淆了传播媒介。 C错误（信息错位组合）：原文没有提及任何有组织的男性团体负责传播这些内容，属于无中生有。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 23: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Will原文：&quot;I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.&quot;（第29–30行）；Georgie解释：&quot;Will enjoyed poetry and ballet, and he says this made him an easy target – someone who's vulnerable and easily taken advantage of.&quot;（第36–37行）。选项A将&quot;easy target&quot;替换为&quot;susceptible&quot;，&quot;vulnerable and easily taken advantage of&quot;替换为&quot;open to being exploited&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误（部分正确信息）：原文未提及Will有学业困难，将学业挣扎作为原因属于无中生有。 C错误（推理过度）：原文没有提到缺乏男性榜样，这是对原文未支持的过度推断。 D错误（因果关系错误）：Will想成为演员是他与众不同的兴趣之一，并非导致他被操控的直接原因，颠倒了细节与主因的关系。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 24: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;Will responded with bravado – a show of bravery to impress other people but which often hides someone's true feelings.&quot;（第38–39行）。选项C将&quot;show of bravery&quot;替换为&quot;false image of toughness&quot;，&quot;hides someone's true feelings&quot;替换为&quot;concealed his actual inner struggles&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（态度判断错误）：原文明确指出bravado是掩盖真实感受的表演，并非真正建立的自信，选项A误读了其本质。 B错误（概念偷换）：原文中Will是压抑自我去迎合&quot;man box&quot;，而非公开拥抱自己的艺术身份，方向相反。 D错误（时间顺序错误）：原文暗示Will是被动地、无意识地（&quot;unknowingly&quot;）遵从男性规范，并非经过深思熟虑后的主动选择。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 25: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Will原文：&quot;When I went online to search for answers, I had an influencer telling me, 'The world hates men,' which really felt true.&quot;（第47–48行）；背景是&quot;his life seemed to reflect messages he saw in the videos… that his problems were caused by women.&quot;（第44–46行）。选项B将&quot;really felt true&quot;替换为&quot;seemed to confirm his real-life frustrations&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（态度判断错误）：Will说那些话&quot;really felt true&quot;，表明他是信服的，而非持怀疑态度，选项A与原文情感基调相反。 C错误（推理过度）：原文没有描述Will是逐渐被说服的过程，他一开始就产生了强烈共鸣，&quot;gradually&quot;的描述不准确。 D错误（信息错位组合）：Will上网是为了寻找答案（&quot;search for answers&quot;），而非寻求励志内容，混淆了他的动机。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 26: A</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;Will's view of the world became distorted – twisted out of shape and unrealistic. He started seeing everyone as an enemy.&quot;（第51–52行）；Will原文：&quot;it kind of distorted my worldview… I started to feel that was really true: that everyone hates men, so it was an us versus them.&quot;（第48–50行）。选项A将&quot;distorted&quot;替换为&quot;warped&quot;，&quot;us versus them&quot;替换为&quot;adversarial perspective&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> B错误（因果关系错误）：原文中网络内容使Will的世界观扭曲，并非激励他改善自我，颠倒了实际效果。 C错误（推理过度）：Will认为&quot;everyone hates men&quot;是一种扭曲的感知，原文并未支持这是对真实社会不公的准确识别。 D错误（信息错位组合）：原文没有提到Will因此疏远了个人生活中的有毒关系，属于无中生有。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 27: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;paint everyone with the same brush – an idiom meaning to unfairly think everyone has the same bad qualities as a certain person.&quot;（第53–54行）。选项D将&quot;unfairly think everyone has the same bad qualities&quot;替换为&quot;unfairly attributed the same negative traits to all people&quot;，&quot;a certain person&quot;替换为&quot;a few examples&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（态度判断错误）：原文强调这是&quot;unfairly&quot;的笼统判断，而非经过仔细分析，选项A与成语含义完全相反。 B错误（关键词误导）：选项利用&quot;painting&quot;和&quot;brush&quot;的字面意思制造误导，但该短语是习语，与绘画无关。 C错误（部分正确信息）：Will的负面看法针对所有人（&quot;everyone&quot;），而非选择性地针对特定群体，&quot;selectively targeted&quot;与原文矛盾。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 28: C</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Georgie原文：&quot;us versus them – a phrase which is used to show hostility between two opposing groups: in this case, the men in the manosphere and everyone else, especially women, progressives and the mainstream media, who he believed wanted to limit their power.&quot;（第55–57行）。选项C将&quot;limit their power&quot;替换为&quot;diminish male influence&quot;，&quot;hostility&quot;替换为&quot;active opponents&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（态度判断错误）：原文中Will将这些群体视为敌对方，并无任何&quot;willing to understand&quot;的暗示，选项A过度软化了他的敌意。 B错误（推理过度）：原文明确指出Will将女性和媒体视为对立方，选项B说他&quot;largely ignored&quot;他们与原文直接矛盾。 D错误（概念偷换）：原文中Will将女性视为压制男性权力的对立方，而非同样受社会压力影响的受害者，混淆了两种截然不同的立场。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 29: D</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;Luckily for Will, his experiences in the online world of the manosphere ended, but not before his mental health had declined to the point of a breakdown.&quot;（第59–60行）。选项D将&quot;mental health had declined to the point of a breakdown&quot;替换为&quot;mental wellbeing had already seriously deteriorated&quot;，&quot;not before&quot;的逻辑关系保留。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（推理过度）：原文没有提到任何导师介入帮助Will离开，属于无中生有的推断。 B错误（时间顺序错误）：原文用&quot;not before his mental health had declined&quot;明确说明他并非在崩溃前主动离开，选项B暗示他是主动自我认识后离开，与原文时间逻辑相反。 C错误（信息错位组合）：原文没有提及学校辅导员的介入，且Will遭受崩溃时已是二十多岁（&quot;mid-twenties&quot;），并非青少年时期，时间错位。 --</div>
+            </div>
+
+            <div class="explanation-block">
+                <div class="exp-title">Question 30: B</div>
+                <div class="exp-item"><span class="badge-correct">正确选项证据</span> Phil原文：&quot;Now, he visits schools around the UK telling his story to young people, reminding them always to question what they see and hear online.&quot;（第60–62行）。选项B将&quot;question what they see and hear online&quot;替换为&quot;maintain a critical and questioning attitude toward online content&quot;。</div>
+                <div class="exp-item"><span class="badge-wrong">错误选项分析</span> A错误（主次关系错误）：原文强调的是培养批判性思维，而非倡导限制网络访问，选项A将手段（限制上网）误作为目的。 C错误（概念偷换）：原文中Will分享的是个人经历（&quot;telling his story&quot;），而非临床研究，混淆了个人叙述与学术研究的性质。 D错误（推理过度）：原文没有提到Will倡导政府监管，这是对其行动目的的过度延伸，超出原文支持范围。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<script>
+    const form = document.getElementById("quiz-form");
+
+    async function handleFormSubmit(event) {
+        event.preventDefault(); // 防止页面跳转
+        
+        const submitBtn = document.getElementById("submit-btn");
+        const answersSection = document.getElementById("answers-section");
+        const data = new FormData(event.target);
+        const actionUrl = event.target.action;
+
+        // 改变按钮状态为“正在提交”
+        submitBtn.innerHTML = "Submitting... / 正在提交...";
+        submitBtn.disabled = true;
+
+        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
+        if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
+            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        // 使用 Fetch API 在后台发送数据给 Formspree
+        fetch(actionUrl, {
+            method: form.method,
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                // 提交成功，显示答案
+                revealAnswers(submitBtn, answersSection, form);
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form. 请检查网络或重试。");
+                    }
+                    resetButton(submitBtn);
+                })
+            }
+        }).catch(error => {
+            alert("Oops! There was a network problem. 请检查网络并重试。");
+            resetButton(submitBtn);
+        });
+    }
+
+    function revealAnswers(btn, answersDiv, formElement) {
+        // 1. 改变按钮样式和文字
+        btn.innerHTML = 'Submitted Successfully! / 提交成功！';
+        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
+        
+        // 2. 锁定所有的输入框，防止学生提交后修改答案
+        const formElements = formElement.elements;
+        for (let i = 0; i < formElements.length; i++) {
+            formElements[i].disabled = true;
+            // 为所有的li选项添加disabled类以取消hover效果
+            if(formElements[i].type === 'radio'){
+                formElements[i].closest('li').classList.add('disabled');
+            }
+        }
+
+        // 3. 显示答案解析区域并平滑滚动到该区域
+        answersDiv.style.display = 'block';
+        setTimeout(() => {
+            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function resetButton(btn) {
+        btn.innerHTML = 'Submit Answers';
+        btn.disabled = false;
+    }
+
+    // 绑定提交事件
+    form.addEventListener("submit", handleFormSubmit);
+</script>
+
+</body>
+</html>
