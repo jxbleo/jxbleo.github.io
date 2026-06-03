@@ -68,6 +68,7 @@
             border-radius: 6px;
             width: 100%;
             max-width: 350px;
+            box-sizing: border-box; /* 新增：防止padding撑破容器触碰绿线 */
             outline: none;
             transition: border-color 0.2s;
         }
@@ -125,12 +126,14 @@
             font-size: 0.95em;
             font-weight: bold;
             padding-bottom: 2px;
+            width: 60px; /* 新增：统一变为较短的下划线 */
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, width 0.3s ease; /* 增加宽度平滑过渡 */
         }
 
         .blank-input:focus {
             border-bottom-color: var(--secondary-color);
+            width: 120px; /* 新增：学生点击输入时，自动变宽一点，方便看清长单词 */
         }
         
         .blank-input::placeholder {
@@ -384,38 +387,39 @@
         
         <h3>Personal Actions and Climate Concerns</h3>
         <ul class="fill-blanks">
-            <li>Phil admits he tends to <input type="text" name="Blank_01" class="blank-input" style="width: 70px;" placeholder="(1)" autocomplete="off" required> rather than drive.</li>
-            <li>Phil also tries to <input type="text" name="Blank_02" class="blank-input" style="width: 90px;" placeholder="(2)" autocomplete="off" required> things at home.</li>
-            <li>Hannah points out that dealing with climate change cannot rely on <input type="text" name="Blank_03" class="blank-input" style="width: 120px;" placeholder="(3)" autocomplete="off" required> alone.</li>
-            <li>To address the crisis, Hannah argues we need to change the way our <input type="text" name="Blank_04" class="blank-input" style="width: 100px;" placeholder="(4)" autocomplete="off" required> works.</li>
+            <!-- 移除了内部参差不齐的 inline style="width: xxpx;" -->
+            <li>Phil admits he tends to <input type="text" name="Blank_01" class="blank-input" placeholder="(1)" autocomplete="off" required> rather than drive.</li>
+            <li>Phil also tries to <input type="text" name="Blank_02" class="blank-input" placeholder="(2)" autocomplete="off" required> things at home.</li>
+            <li>Hannah points out that dealing with climate change cannot rely on <input type="text" name="Blank_03" class="blank-input" placeholder="(3)" autocomplete="off" required> alone.</li>
+            <li>To address the crisis, Hannah argues we need to change the way our <input type="text" name="Blank_04" class="blank-input" placeholder="(4)" autocomplete="off" required> works.</li>
         </ul>
 
         <h3>What Degrowth Means</h3>
         <ul class="fill-blanks">
-            <li>In the past, governments have always aimed to <input type="text" name="Blank_05" class="blank-input" style="width: 70px;" placeholder="(5)" autocomplete="off" required> the economy.</li>
-            <li>Degrowth supporters believe economies should stop <input type="text" name="Blank_06" class="blank-input" style="width: 100px;" placeholder="(6)" autocomplete="off" required>.</li>
-            <li>The focus should shift to using fewer of the Earth's <input type="text" name="Blank_07" class="blank-input" style="width: 170px;" placeholder="(7)" autocomplete="off" required>.</li>
-            <li>Those who back this idea are commonly referred to as <input type="text" name="Blank_08" class="blank-input" style="width: 130px;" placeholder="(8)" autocomplete="off" required>.</li>
+            <li>In the past, governments have always aimed to <input type="text" name="Blank_05" class="blank-input" placeholder="(5)" autocomplete="off" required> the economy.</li>
+            <li>Degrowth supporters believe economies should stop <input type="text" name="Blank_06" class="blank-input" placeholder="(6)" autocomplete="off" required>.</li>
+            <li>The focus should shift to using fewer of the Earth's <input type="text" name="Blank_07" class="blank-input" placeholder="(7)" autocomplete="off" required>.</li>
+            <li>Those who back this idea are commonly referred to as <input type="text" name="Blank_08" class="blank-input" placeholder="(8)" autocomplete="off" required>.</li>
         </ul>
 
         <h3>What Degrowthers Want to Reduce</h3>
         <ul class="fill-blanks">
-            <li>They target production that is considered not <input type="text" name="Blank_09" class="blank-input" style="width: 110px;" placeholder="(9)" autocomplete="off" required>.</li>
+            <li>They target production that is considered not <input type="text" name="Blank_09" class="blank-input" placeholder="(9)" autocomplete="off" required>.</li>
             <li>Examples of such production include:
                 <ul>
-                    <li><input type="text" name="Blank_10" class="blank-input" style="width: 130px;" placeholder="(10)" autocomplete="off" required> (cheap, rapidly produced clothing).</li>
+                    <li><input type="text" name="Blank_10" class="blank-input" placeholder="(10)" autocomplete="off" required> (cheap, rapidly produced clothing).</li>
                     <li>private jets.</li>
-                    <li>the <input type="text" name="Blank_11" class="blank-input" style="width: 140px;" placeholder="(11)" autocomplete="off" required> industry.</li>
+                    <li>the <input type="text" name="Blank_11" class="blank-input" placeholder="(11)" autocomplete="off" required> industry.</li>
                 </ul>
             </li>
         </ul>
 
         <h3>Criticism of Degrowth</h3>
         <ul class="fill-blanks">
-            <li>Many economists argue degrowth would lead to more <input type="text" name="Blank_12" class="blank-input" style="width: 100px;" placeholder="(12)" autocomplete="off" required>.</li>
-            <li>Professor Fankhauser claims degrowth fails to appreciate the power of <input type="text" name="Blank_13" class="blank-input" style="width: 120px;" placeholder="(13)" autocomplete="off" required>.</li>
-            <li>He also says it overlooks the need for investment in <input type="text" name="Blank_14" class="blank-input" style="width: 150px;" placeholder="(14)" autocomplete="off" required>.</li>
-            <li>He further questions the social <input type="text" name="Blank_15" class="blank-input" style="width: 120px;" placeholder="(15)" autocomplete="off" required> of what degrowthers propose.</li>
+            <li>Many economists argue degrowth would lead to more <input type="text" name="Blank_12" class="blank-input" placeholder="(12)" autocomplete="off" required>.</li>
+            <li>Professor Fankhauser claims degrowth fails to appreciate the power of <input type="text" name="Blank_13" class="blank-input" placeholder="(13)" autocomplete="off" required>.</li>
+            <li>He also says it overlooks the need for investment in <input type="text" name="Blank_14" class="blank-input" placeholder="(14)" autocomplete="off" required>.</li>
+            <li>He further questions the social <input type="text" name="Blank_15" class="blank-input" placeholder="(15)" autocomplete="off" required> of what degrowthers propose.</li>
         </ul>
 
         <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
@@ -523,7 +527,7 @@
         </div>
 
         <!-- Form Submission Button -->
-        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers / 提交答案</button>
+        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
 
     </form>
     <!-- FORM END -->
@@ -704,7 +708,7 @@
     }
 
     function resetButton(btn) {
-        btn.innerHTML = 'Submit Answers / 提交答案';
+        btn.innerHTML = 'Submit Answers';
         btn.disabled = false;
     }
 
