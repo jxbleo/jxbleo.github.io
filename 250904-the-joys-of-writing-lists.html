@@ -363,6 +363,69 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+        .inline-explanation {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .inline-explanation.wrong {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .inline-explanation.correct {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .mc-options li.wrong {
+            border-left-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            border-color: #f5c6c6 !important;
+        }
+
+        .mc-options li.wrong label {
+            color: #c0392b;
+        }
+
+        .mc-options li.correct {
+            border-left-color: #27ae60 !important;
+            background: #f0fff4 !important;
+            border-color: #b8e6c8 !important;
+        }
+
+        .blank-input.correct {
+            background: #f0fff4 !important;
+            border-bottom-color: #27ae60 !important;
+        }
+
+        .blank-input.wrong {
+            background: #fff5f5 !important;
+            border-bottom-color: #e74c3c !important;
+        }
+
+        #score-display {
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: none;
+        }
+
+        #score-display.show {
+            display: inline-block;
+        }
+
         /* ----- 以下是专门针对手机端的适配代码 ----- */
         @media screen and (max-width: 768px) {
             body {
@@ -396,7 +459,10 @@
         <!-- Student Information -->
         <div class="student-info">
             <label for="student-name">Student Name:</label>
-            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+                <span id="score-display"></span>
+            </div>
         </div>
 
         <h2>Part 1: Fill in the Blanks</h2>
@@ -676,25 +742,64 @@
 
 </div>
 
-<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<!-- JavaScript to handle form submission and show inline explanations -->
 <script>
     const form = document.getElementById("quiz-form");
 
+    const blankData = {
+        Blank_01: { answer: 'bucket lists', evidence: '"shopping lists, to-do lists, even bucket lists – a list of all the things a person would like to do before they die"' },
+        Blank_02: { answer: 'linguistics researcher', evidence: '"This happens a lot to Jo Nolan, a linguistics researcher whose new book explores our love of lists"' },
+        Blank_03: { answer: 'mushrooms', evidence: '"And \'shrooms\' – they\'ve got to be mushrooms, right?"' },
+        Blank_04: { answer: 'husband', evidence: '"my husband doesn\'t like cucumber, and the abbreviation for cucumber would be \'cuc\'"' },
+        Blank_05: { answer: 'secret codes', evidence: '"so it\'s a way of reminding her to buy cucumbers. Wow! Sometimes lists are like secret codes"' },
+        Blank_06: { answer: 'My Favourite Things', evidence: '"one of the most famous is My Favourite Things, sung by Julie Andrews in the film The Sound of Music"' },
+        Blank_07: { answer: 'whiskers on kittens', evidence: '"from \'raindrops on roses\' to \'whiskers on kittens\'"' },
+        Blank_08: { answer: 'efficiently', evidence: '"The list encourages you to think really efficiently and economically"' },
+        Blank_09: { answer: 'nub', evidence: '"You just get to the nub of things quite quickly"' },
+        Blank_10: { answer: 'a nice sentence', evidence: '"you don\'t waste a lot of time and effort making a nice sentence or using long words"' },
+        Blank_11: { answer: 'bang for buck', evidence: '"you get a big bang for your buck – an idiom meaning that you gain a lot in return"' },
+        Blank_12: { answer: 'pros and cons', evidence: '"A friend of mine who makes pros and cons lists finds that it really helps her resolve a situation"' },
+        Blank_13: { answer: 'halves her page', evidence: '"She halves her page: pros, cons"' },
+        Blank_14: { answer: 'what she\'s doing', evidence: '"And she said by the end of it, she knows what she\'s doing"' },
+        Blank_15: { answer: 'menus', evidence: '"you see lists everywhere – in menus and bank statements, for example"' },
+        Blank_16: { answer: 'listing good things', evidence: '"therapists even recommend listing all the good things in your life to feel happier"' },
+        Blank_17: { answer: 'feel happier', evidence: '"listing all the good things in your life to feel happier"' },
+        Blank_18: { answer: 'the most money', evidence: '"which movie had made the most money ever"' },
+        Blank_19: { answer: 'Avatar', evidence: '"you said Avatar. And now, according to the Internet Movie Database… that\'s exactly right"' },
+        Blank_20: { answer: 'Internet Movie Database', evidence: '"according to the Internet Movie Database… that\'s exactly right"' }
+    };
+
+    const mcData = {
+        Question_21: { answer: 'B', evidence: 'Phil: "A list is a collection of items with a single item written on each line, and they\'re everywhere: shopping lists, to-do lists, even bucket lists"' },
+        Question_22: { answer: 'D', evidence: 'Jo Nolan\'s shopping list uses \'Nanas, aye-aye, puke, shrooms\' – personalised abbreviations for efficiency' },
+        Question_23: { answer: 'A', evidence: 'Phil: "Sometimes lists are like secret codes"' },
+        Question_24: { answer: 'C', evidence: 'Beth: "I think it might be Avatar, although that might have been the most expensive to make. I\'m not sure."' },
+        Question_25: { answer: 'B', evidence: 'Jo Nolan: "you get a big bang for your buck in that song"' },
+        Question_26: { answer: 'A', evidence: 'Jo Nolan: "You just get to the nub of things quite quickly"' },
+        Question_27: { answer: 'D', evidence: 'Jo: "it\'s a bit saccharine" — meaning excessively sweet, sentimental or insincere' },
+        Question_28: { answer: 'C', evidence: 'Jo: "makes pros and cons lists finds that it really helps her resolve a situation… by the end of it, she knows what she\'s doing"' },
+        Question_29: { answer: 'A', evidence: 'Beth: "therapists even recommend listing all the good things in your life to feel happier – not bad for a few words on a scrap of paper"' },
+        Question_30: { answer: 'B', evidence: 'Phil: "And now, according to the Internet Movie Database… that\'s exactly right."' }
+    };
+
     async function handleFormSubmit(event) {
-        event.preventDefault(); // 防止页面跳转
-        
+        event.preventDefault();
+
         const submitBtn = document.getElementById("submit-btn");
-        const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
         const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+        const isLeo = studentName === "leo";
 
-        // 改变按钮状态为"正在提交"
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
 
-        if (studentName === "leo") {
-            revealAnswers(submitBtn, answersSection, form);
+        var userAnswers = collectUserAnswers();
+        var score = calcScore(userAnswers);
+        var data = new FormData(event.target);
+        data.append('Score', score.correct + '/' + score.total);
+
+        if (isLeo) {
+            showResults(submitBtn, form, userAnswers, score, true);
             return;
         }
 
@@ -717,24 +822,19 @@
             return;
         }
 
-        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
-            revealAnswers(submitBtn, answersSection, form);
+            showResults(submitBtn, form, userAnswers, score, false);
             return;
         }
 
-        // 使用 Fetch API 在后台发送数据给 Formspree
         fetch(actionUrl, {
             method: form.method,
             body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         }).then(response => {
             if (response.ok) {
-                // 提交成功，显示答案
-                revealAnswers(submitBtn, answersSection, form);
+                showResults(submitBtn, form, userAnswers, score, false);
             } else {
                 response.json().then(data => {
                     if (Object.hasOwn(data, 'errors')) {
@@ -751,78 +851,128 @@
         });
     }
 
-    function fillAnswersInForm(formElement) {
-        var answers = {
-            Blank_01: 'bucket lists',
-            Blank_02: 'linguistics researcher',
-            Blank_03: 'mushrooms',
-            Blank_04: 'husband',
-            Blank_05: 'secret codes',
-            Blank_06: 'My Favourite Things',
-            Blank_07: 'whiskers on kittens',
-            Blank_08: 'efficiently',
-            Blank_09: 'nub',
-            Blank_10: 'a nice sentence',
-            Blank_11: 'bang for buck',
-            Blank_12: 'pros and cons',
-            Blank_13: 'halves her page',
-            Blank_14: 'what she\'s doing',
-            Blank_15: 'menus',
-            Blank_16: 'listing good things',
-            Blank_17: 'feel happier',
-            Blank_18: 'the most money',
-            Blank_19: 'Avatar',
-            Blank_20: 'Internet Movie Database',
-            Question_21: 'B',
-            Question_22: 'D',
-            Question_23: 'A',
-            Question_24: 'C',
-            Question_25: 'B',
-            Question_26: 'A',
-            Question_27: 'D',
-            Question_28: 'C',
-            Question_29: 'A',
-            Question_30: 'B'
-        };
+    function collectUserAnswers() {
+        var answers = {};
+        for (var key in blankData) {
+            var el = form.querySelector('[name="' + key + '"]');
+            answers[key] = el ? el.value.trim() : '';
+        }
+        for (var key in mcData) {
+            var el = form.querySelector('[name="' + key + '"]:checked');
+            answers[key] = el ? el.value : '';
+        }
+        return answers;
+    }
 
-        for (var key in answers) {
-            var els = formElement.querySelectorAll('[name="' + key + '"]');
-            for (var j = 0; j < els.length; j++) {
-                var el = els[j];
-                if (el.type === 'radio') {
-                    if (el.value === answers[key]) {
-                        el.checked = true;
-                    }
+    function calcScore(userAnswers) {
+        var correct = 0, total = 0;
+        for (var key in blankData) {
+            total++;
+            if ((userAnswers[key] || '').toLowerCase() === blankData[key].answer.toLowerCase()) correct++;
+        }
+        for (var key in mcData) {
+            total++;
+            if ((userAnswers[key] || '') === mcData[key].answer) correct++;
+        }
+        return { correct: correct, total: total };
+    }
+
+    function applyHighlighting(userAnswers) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            var input = form.querySelector('[name="' + key + '"]');
+            if (input) {
+                input.classList.add(isCorrect ? 'correct' : 'wrong');
+                input.style.width = Math.max(userAns.length * 0.9 + 2, 8) + 'ch';
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            var correctEl = form.querySelector('[name="' + key + '"][value="' + mcData[key].answer + '"]');
+            if (correctEl) correctEl.closest('li').classList.add('correct');
+            if (!isCorrect && userAns) {
+                var wrongEl = form.querySelector('[name="' + key + '"][value="' + userAns + '"]');
+                if (wrongEl) wrongEl.closest('li').classList.add('wrong');
+            }
+        }
+    }
+
+    function showInlineExplanations(userAnswers, isLeo) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            if (!isCorrect || isLeo) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (!input) continue;
+                var li = input.closest('li');
+                if (!li) continue;
+                if (isCorrect) {
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation correct">✓ <strong>正确答案:</strong> ' + blankData[key].answer + '<br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
                 } else {
-                    el.value = answers[key];
-                    el.style.width = (answers[key].length + 2) + 'ch';
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation wrong">→ <strong style="color:#27ae60;">' + blankData[key].answer + '</strong><br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
+                }
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            if (!isCorrect || isLeo) {
+                var radio = form.querySelector('[name="' + key + '"]');
+                if (!radio) continue;
+                var mcDiv = radio.closest('.mc-question');
+                if (!mcDiv) continue;
+                if (isCorrect) {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation correct">✓ <strong>原文:</strong> ' + mcData[key].evidence + '</div>');
+                } else {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation wrong"><strong>原文:</strong> ' + mcData[key].evidence + '</div>');
                 }
             }
         }
     }
 
-    function revealAnswers(btn, answersDiv, formElement) {
-        fillAnswersInForm(formElement);
+    function showScore(score) {
+        var el = document.getElementById('score-display');
+        el.textContent = score.correct + '/' + score.total;
+        el.className = 'show';
+        if (score.correct === score.total) {
+            el.style.background = '#f0fff4';
+            el.style.color = '#1e7e34';
+            el.style.border = '1px solid #b8e6c8';
+        } else {
+            el.style.background = '#fff5f5';
+            el.style.color = '#c0392b';
+            el.style.border = '1px solid #f5c6c6';
+        }
+    }
 
-        // 1. 改变按钮样式和文字
+    function showResults(btn, formElement, userAnswers, score, isLeo) {
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.mc-options li.wrong, .mc-options li.correct').forEach(function(el) { el.classList.remove('wrong', 'correct'); });
+        document.querySelectorAll('.blank-input.correct, .blank-input.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+
+        applyHighlighting(userAnswers);
+        showInlineExplanations(userAnswers, isLeo);
+        showScore(score);
+
         btn.innerHTML = 'Submitted Successfully!';
-        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
-        
-        // 2. 锁定所有的输入框，防止学生提交后修改答案
-        const formElements = formElement.elements;
-        for (let i = 0; i < formElements.length; i++) {
+        btn.style.backgroundColor = '#117a65';
+
+        var formElements = formElement.elements;
+        for (var i = 0; i < formElements.length; i++) {
             formElements[i].disabled = true;
-            // 为所有的li选项添加disabled类以取消hover效果
-            if(formElements[i].type === 'radio'){
+            if (formElements[i].type === 'radio') {
                 formElements[i].closest('li').classList.add('disabled');
             }
         }
 
-        // 3. 显示答案解析区域并平滑滚动到该区域
-        answersDiv.style.display = 'block';
-        setTimeout(() => {
-            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        var firstExp = document.querySelector('.inline-explanation');
+        if (firstExp) {
+            setTimeout(function() {
+                firstExp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
     }
 
     function resetButton(btn) {
@@ -830,7 +980,6 @@
         btn.disabled = false;
     }
 
-    // 绑定提交事件
     form.addEventListener("submit", handleFormSubmit);
 </script>
 
