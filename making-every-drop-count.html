@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making Every Drop Count — IELTS Reading Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2563eb;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+
+        .student-info {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-info label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .student-info input {
+            padding: 12px;
+            font-size: 1.05em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .student-info input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+        }
+
+        .student-info input:disabled {
+            background-color: #f1f1f1;
+            cursor: not-allowed;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .passage {
+            font-size: 14.5px;
+            line-height: 1.9;
+            margin-bottom: 2rem;
+            padding: 20px 24px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .passage p {
+            margin-bottom: 1rem;
+            text-indent: 0;
+        }
+
+        .passage .para-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            font-size: 1.05em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .headings-ref {
+            background: #fafbfc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            columns: 2;
+            column-gap: 24px;
+        }
+
+        .headings-ref li {
+            margin-bottom: 6px;
+            break-inside: avoid;
+        }
+
+        .heading-question {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .heading-question .q-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            min-width: 130px;
+        }
+
+        .heading-question select {
+            padding: 10px 14px;
+            font-size: 0.95em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            min-width: 220px;
+            transition: border-color 0.2s;
+        }
+
+        .heading-question select:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .heading-question select:disabled {
+            background: #f1f1f1;
+            cursor: not-allowed;
+        }
+
+        .heading-question .example-note {
+            font-size: 0.88em;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .tfng-question {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tfng-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+        }
+
+        .tfng-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tfng-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .tfng-options label:hover:not(.disabled) {
+            border-color: var(--secondary-color);
+            background: #eff6ff;
+        }
+
+        .tfng-options input[type="radio"] {
+            accent-color: var(--secondary-color);
+        }
+
+        .tfng-options input[type="radio"]:disabled {
+            cursor: not-allowed;
+        }
+
+        .tfng-options label:has(input[type="radio"]:checked) {
+            border-color: var(--secondary-color);
+            background: #eff6ff;
+        }
+
+        .tfng-options label:has(input[type="radio"]:disabled) {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 30px;
+            padding: 16px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #answers-section {
+            display: none;
+            margin-top: 50px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answers-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .explanation-block {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.05em;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 6px;
+            font-size: 0.93em;
+        }
+
+        .loc-tag {
+            display: inline-block;
+            background: #eef2f7;
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        @media screen and (max-width: 768px) {
+            body { padding: 10px 5px; }
+            .container { padding: 25px 15px; }
+            h1 { font-size: 1.5em; }
+            .passage { padding: 15px; font-size: 14px; }
+            .headings-ref { columns: 1; }
+            .heading-question { flex-direction: column; align-items: stretch; }
+            .heading-question select { min-width: 100%; }
+            .tfng-options label { padding: 6px 12px; font-size: 0.85em; }
+            .answers-content { padding: 20px 10px; }
+            .student-info { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Making Every Drop Count</h1>
+    <p class="subtitle">IELTS Reading Passage 2 — Questions 14–26</p>
+
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
+        <div class="student-info">
+            <label for="student-name">Student Name:</label>
+            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+        </div>
+
+        <h2>Reading Passage</h2>
+        <div class="passage">
+            <p><span class="para-label">Paragraph A [Q14]</span><br>
+            The history of human civilisation is entwined with the history of the ways we have learned to manipulate water resources. As towns gradually expanded, water was brought from increasingly remote sources, leading to sophisticated engineering efforts such as dams and aqueducts. At the height of the Roman Empire, nine major systems, with an innovative layout of pipes and well-built sewers, supplied the occupants of Rome with as much water per person as is provided in many parts of the industrial world today.</p>
+
+            <p><span class="para-label">Paragraph B</span> (Example)<br>
+            During the industrial revolution and population explosion of the 19th and 20th centuries, the demand for water rose dramatically. Unprecedented construction of tens of thousands of monumental engineering projects designed to control floods, protect clean water supplies, and provide water for irrigation and hydropower brought great benefits to hundreds of millions of people. Food production has kept pace with soaring populations mainly because of the expansion of artificial irrigation systems that make possible the growth of 40% of the world's food. Nearly one fifth of all the electricity generated worldwide is produced by turbines spun by the power of falling water.</p>
+
+            <p><span class="para-label">Paragraph C [Q15]</span><br>
+            Yet there is a dark side to this picture: despite our progress, half of the world's population still suffers, with water services inferior to those available to the ancient Greeks and Romans. As the United Nations report on access to water reiterated in November 2001, more than one billion people lack access to clean drinking water; some two and a half billion do not have adequate sanitation services. Preventable water-related diseases kill an estimated 10,000 to 20,000 children every day, and the latest evidence suggests that we are falling behind in efforts to solve these problems.</p>
+
+            <p><span class="para-label">Paragraph D [Q16]</span><br>
+            The consequences of our water policies extend beyond jeopardising human health. Tens of millions of people have been forced to move from their homes – often with little warning or compensation – to make way for the reservoirs behind dams. More than 20% of all freshwater fish species are now threatened or endangered because dams and water withdrawals have destroyed the free-flowing river ecosystems where they thrive. Certain irrigation practices degrade soil quality and reduce agricultural productivity. Groundwater aquifers are being pumped down faster than they are naturally replenished in parts of India, China, the USA and elsewhere. And disputes over shared water resources have led to violence and continue to raise local, national and even international tensions.</p>
+
+            <p><span class="para-label">Paragraph E [Q17]</span><br>
+            At the outset of the new millennium, however, the way resource planners think about water is beginning to change. The focus is slowly shifting back to the provision of basic human and environmental needs as top priority – ensuring 'some for all,' instead of 'more for some'. Some water experts are now demanding that existing infrastructure be used in smarter ways rather than building new facilities, which is increasingly considered the option of last, not first, resort. This shift in philosophy has not been universally accepted, and it comes with strong opposition from some established water organisations. Nevertheless, it may be the only way to address successfully the pressing problems of providing everyone with clean water to drink, adequate water to grow food and a life free from preventable water-related illness.</p>
+
+            <p><span class="para-label">Paragraph F [Q18]</span><br>
+            Fortunately – and unexpectedly – the demand for water is not rising as rapidly as some predicted. As a result, the pressure to build new water infrastructures has diminished over the past two decades. Although population, industrial output and economic productivity have continued to soar in developed nations, the rate at which people withdraw water from aquifers, rivers and lakes has slowed. And in a few parts of the world, demand has actually fallen.</p>
+
+            <p><span class="para-label">Paragraph G [Q19]</span><br>
+            What explains this remarkable turn of events? Two factors: people have figured out how to use water more efficiently, and communities are rethinking their priorities for water use. Throughout the first three-quarters of the 20th century, the quantity of freshwater consumed per person doubled on average; in the USA, water withdrawals increased tenfold while the population quadrupled. But since 1980, the amount of water consumed per person has actually decreased, thanks to a range of new technologies that help to conserve water in homes and industry. In 1965, for instance, Japan used approximately 13 million gallons of water to produce $1 million of commercial output; by 1989 this had dropped to 3.5 million gallons – almost a quadrupling of water productivity. In the USA, water withdrawals have fallen by more than 20% from their peak in 1980.</p>
+
+            <p><span class="para-label">Paragraph H [Q20]</span><br>
+            On the other hand, dams, aqueducts and other kinds of infrastructure will still have to be built, particularly in developing countries where basic human needs have not been met. But such projects must be built to higher specifications and with more accountability to local people and their environment than in the past. And even in regions where new projects seem warranted, we must find ways to meet demands with fewer resources, respecting ecological criteria and to a smaller budget.</p>
+
+            <p style="font-size: 13px; color: var(--text-light); margin-top: 16px;">* aquifers: underground layers of rock containing water</p>
+        </div>
+
+        <h2>Questions</h2>
+
+        <div class="question-section">
+            <div class="section-label">Questions 14–20 — List of Headings</div>
+            <p style="font-size: 0.9em; color: var(--text-light); margin-bottom: 16px;">The passage has eight paragraphs, <strong>A–H</strong>. Choose the correct heading for paragraphs <strong>A</strong> and <strong>C–H</strong> from the list of headings below. Paragraph B has been done as an example.</p>
+
+            <div class="headings-ref">
+                <strong>List of Headings</strong>
+                <ol style="margin-top: 8px; padding-left: 20px;">
+                    <li>Scientists' call for a revision of policy</li>
+                    <li>An explanation for reduced water use</li>
+                    <li>How a global challenge was met</li>
+                    <li>Irrigation systems fall into disuse</li>
+                    <li>Environmental effects</li>
+                    <li>The financial cost of recent technological improvements</li>
+                    <li>The relevance to health</li>
+                    <li>Addressing the concern over increasing populations</li>
+                    <li>A surprising downward trend in demand for water</li>
+                    <li>The need to raise standards</li>
+                    <li>A description of ancient water supplies</li>
+                </ol>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">B (Example):</span>
+                <span class="example-note">iii — How a global challenge was met</span>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">14. Paragraph A:</span>
+                <select name="Q14" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">15. Paragraph C:</span>
+                <select name="Q15" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">16. Paragraph D:</span>
+                <select name="Q16" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">17. Paragraph E:</span>
+                <select name="Q17" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">18. Paragraph F:</span>
+                <select name="Q18" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">19. Paragraph G:</span>
+                <select name="Q19" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+
+            <div class="heading-question">
+                <span class="q-label">20. Paragraph H:</span>
+                <select name="Q20" required>
+                    <option value="">Choose...</option>
+                    <option value="i">i — Scientists' call for a revision of policy</option>
+                    <option value="ii">ii — An explanation for reduced water use</option>
+                    <option value="iii">iii — How a global challenge was met</option>
+                    <option value="iv">iv — Irrigation systems fall into disuse</option>
+                    <option value="v">v — Environmental effects</option>
+                    <option value="vi">vi — The financial cost of recent technological improvements</option>
+                    <option value="vii">vii — The relevance to health</option>
+                    <option value="viii">viii — Addressing the concern over increasing populations</option>
+                    <option value="ix">ix — A surprising downward trend in demand for water</option>
+                    <option value="x">x — The need to raise standards</option>
+                    <option value="xi">xi — A description of ancient water supplies</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="section-label">Questions 21–26 — YES / NO / NOT GIVEN</div>
+            <p style="font-size: 0.9em; color: var(--text-light); margin-bottom: 16px;">Do the following statements agree with the information given in the passage?</p>
+
+            <div class="tfng-question">
+                <div class="tfng-text">21. Water use per person is higher in the industrial world than it was in Ancient Rome.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q21" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q21" value="NO"> NO</label>
+                    <label><input type="radio" name="Q21" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">22. Feeding increasing populations is possible due primarily to improved irrigation systems.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q22" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q22" value="NO"> NO</label>
+                    <label><input type="radio" name="Q22" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">23. Modern water systems imitate those of the ancient Greeks and Romans.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q23" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q23" value="NO"> NO</label>
+                    <label><input type="radio" name="Q23" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">24. Industrial growth is increasing the overall demand for water.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q24" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q24" value="NO"> NO</label>
+                    <label><input type="radio" name="Q24" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">25. Modern technologies have led to a reduction in domestic water consumption.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q25" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q25" value="NO"> NO</label>
+                    <label><input type="radio" name="Q25" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">26. In the future, governments should maintain ownership of water infrastructures.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q26" value="YES" required> YES</label>
+                    <label><input type="radio" name="Q26" value="NO"> NO</label>
+                    <label><input type="radio" name="Q26" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
+    </form>
+
+    <div id="answers-section">
+        <div class="answers-header">
+            ✅ Answer Key
+        </div>
+        <div class="answers-content">
+            <h2>Questions 14–20: List of Headings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="8%">No.</th>
+                        <th width="10%">Answer</th>
+                        <th width="52%">Explanation</th>
+                        <th width="30%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>14</td><td><b>xi</b></td><td>描述古罗马庞大供水系统（管道、下水道），完全契合「古代供水系统描述」。</td><td>Para A — At the height of the Roman Empire...</td></tr>
+                    <tr><td>15</td><td><b>vii</b></td><td>段落核心是数十亿人缺乏洁净水、水致疾病每天杀死上万儿童，围绕「水与健康/疾病」展开。</td><td>Para C — water-related diseases kill children</td></tr>
+                    <tr><td>16</td><td><b>v</b></td><td>列举物种濒危、生态系统破坏、土壤退化、地下水枯竭等水资源政策的环境负面后果。</td><td>Para D — fish species threatened, irrigation degrade soil</td></tr>
+                    <tr><td>17</td><td><b>i</b></td><td>水专家（water experts）要求优先满足基本需求、善用现有设施，对应科学家呼吁修订政策。</td><td>Para E — water experts demanding smarter ways</td></tr>
+                    <tr><td>18</td><td><b>ix</b></td><td>「fortunately and unexpectedly」直接对应「surprising」，核心为用水需求增速放缓甚至下降。</td><td>Para F — unexpectedly, demand is not rising</td></tr>
+                    <tr><td>19</td><td><b>ii</b></td><td>以「What explains this?」开头，直接回答F段现象的原因：技术进步+社区观念转变。</td><td>Para G — What explains this remarkable turn?</td></tr>
+                    <tr><td>20</td><td><b>x</b></td><td>虽承认仍需新建基础设施，但重心在「必须达到更高规格（higher specifications）」，强调提高标准。</td><td>Para H — built to higher specifications</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Questions 21–26: YES / NO / NOT GIVEN</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="8%">No.</th>
+                        <th width="14%">Answer</th>
+                        <th width="53%">Explanation</th>
+                        <th width="25%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>21</td><td><b>NO</b></td><td>原文说古罗马人均供水量与工业世界「一样多（as much as）」，题目说「更高（higher）」与原文矛盾。</td><td>Para A — as much water per person as ... today</td></tr>
+                    <tr><td>22</td><td><b>YES</b></td><td>原文「mainly because of（主要是由于）」= 题目「due primarily to」，两者完全同义。</td><td>Para B — mainly because of the expansion of artificial irrigation</td></tr>
+                    <tr><td>23</td><td><b>NOT GIVEN</b></td><td>原文仅将现代与古代供水服务做比较，从未提及现代系统是否「模仿（imitate）」古代系统。</td><td>Para C — water services inferior to ancient</td></tr>
+                    <tr><td>24</td><td><b>NO</b></td><td>原文用「although」转折——工业产出持续攀升，但取水速率却在放缓，与题目直接矛盾。</td><td>Para F — although population/industry soared, withdrawal slowed</td></tr>
+                    <tr><td>25</td><td><b>YES</b></td><td>原文「homes（家庭）」= 题目「domestic」，「decreased」=「reduction」，词义完全对应。</td><td>Para G — decreased, thanks to new technologies ... in homes</td></tr>
+                    <tr><td>26</td><td><b>NOT GIVEN</b></td><td>段落H讨论未来基础设施须提高标准和责任，但全文对「政府所有权（ownership）」只字未提。</td><td>Para H — no mention of ownership</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("quiz-form");
+
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        
+        const submitBtn = document.getElementById("submit-btn");
+        const answersSection = document.getElementById("answers-section");
+        const actionUrl = event.target.action;
+        const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+
+        if (studentName === "leo") {
+            submitBtn.innerHTML = "Submitting...";
+            submitBtn.disabled = true;
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        let allFilled = true;
+        const required = form.querySelectorAll("[required]");
+        for (let el of required) {
+            const val = el.type === "select-one" ? el.value : el.value.trim();
+            if (!val || val === "") {
+                allFilled = false;
+                el.style.borderColor = "red";
+                el.style.borderBottomColor = "red";
+            } else {
+                el.style.borderColor = "";
+                el.style.borderBottomColor = "";
+            }
+        }
+
+        if (!allFilled) {
+            alert("Please answer all questions before submitting.");
+            return;
+        }
+
+        const data = new FormData(event.target);
+
+        submitBtn.innerHTML = "Submitting...";
+        submitBtn.disabled = true;
+
+        if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
+            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        fetch(actionUrl, {
+            method: form.method,
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            if (response.ok) {
+                revealAnswers(submitBtn, answersSection, form);
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form. 请检查网络或重试。");
+                    }
+                    resetButton(submitBtn);
+                })
+            }
+        }).catch(error => {
+            alert("Oops! There was a problem submitting your form. 请检查网络并重试。");
+            resetButton(submitBtn);
+        });
+    }
+
+    function fillAnswersInForm(formElement) {
+        var answers = {
+            Q14: 'xi',
+            Q15: 'vii',
+            Q16: 'v',
+            Q17: 'i',
+            Q18: 'ix',
+            Q19: 'ii',
+            Q20: 'x',
+            Q21: 'NO',
+            Q22: 'YES',
+            Q23: 'NOT_GIVEN',
+            Q24: 'NO',
+            Q25: 'YES',
+            Q26: 'NOT_GIVEN'
+        };
+
+        for (var key in answers) {
+            var els = formElement.querySelectorAll('[name="' + key + '"]');
+            for (var j = 0; j < els.length; j++) {
+                var el = els[j];
+                if (el.type === 'radio') {
+                    if (el.value === answers[key]) {
+                        el.checked = true;
+                    }
+                } else {
+                    el.value = answers[key];
+                }
+            }
+        }
+    }
+
+    function revealAnswers(btn, answersDiv, formElement) {
+        fillAnswersInForm(formElement);
+
+        btn.innerHTML = 'Submitted Successfully!';
+        btn.style.backgroundColor = '#1d4ed8';
+        
+        const formElements = formElement.elements;
+        for (let i = 0; i < formElements.length; i++) {
+            formElements[i].disabled = true;
+        }
+
+        answersDiv.style.display = 'block';
+        setTimeout(() => {
+            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function resetButton(btn) {
+        btn.innerHTML = 'Submit Answers';
+        btn.disabled = false;
+    }
+
+    form.addEventListener("submit", handleFormSubmit);
+</script>
+
+</body>
+</html>
