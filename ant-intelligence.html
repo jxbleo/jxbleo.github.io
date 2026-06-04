@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ant Intelligence — IELTS Reading Practice</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2563eb;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e6ed;
+            --correct-bg: #e8f8f5;
+            --wrong-bg: #fdf2e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+
+        .student-info {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-info label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .student-info input {
+            padding: 12px;
+            font-size: 1.05em;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .student-info input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+        }
+
+        .student-info input:disabled {
+            background-color: #f1f1f1;
+            cursor: not-allowed;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 40px;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Reading Passage */
+        .passage {
+            font-size: 14.5px;
+            line-height: 1.9;
+            margin-bottom: 2rem;
+            padding: 20px 24px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .passage p {
+            margin-bottom: 1rem;
+            text-indent: 0;
+        }
+
+        .passage em {
+            font-style: italic;
+        }
+
+        /* Questions layout */
+        .question-section {
+            margin-bottom: 40px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            font-size: 1.05em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* TFNG */
+        .tfng-question {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tfng-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+        }
+
+        .tfng-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tfng-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .tfng-options label:hover:not(.disabled) {
+            border-color: var(--secondary-color);
+            background: #eff6ff;
+        }
+
+        .tfng-options input[type="radio"] {
+            accent-color: var(--secondary-color);
+        }
+
+        .tfng-options input[type="radio"]:disabled {
+            cursor: not-allowed;
+        }
+
+        .tfng-options label:has(input[type="radio"]:checked) {
+            border-color: var(--secondary-color);
+            background: #eff6ff;
+        }
+
+        .tfng-options label:has(input[type="radio"]:disabled) {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Summary completion */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 24px;
+        }
+
+        .summary-question {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .summary-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .summary-text {
+            flex: 1;
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+
+        .summary-text .blank-input {
+            border: none;
+            border-bottom: 2px solid var(--primary-color);
+            background: transparent;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 0.95em;
+            font-weight: bold;
+            width: 90px;
+            outline: none;
+            transition: border-color 0.2s, width 0.3s ease;
+        }
+
+        .summary-text .blank-input:focus {
+            border-bottom-color: var(--secondary-color);
+            width: 130px;
+        }
+
+        .summary-text .blank-input:disabled {
+            color: #7f8c8d;
+            border-bottom-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 30px;
+            padding: 16px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #answers-section {
+            display: none;
+            margin-top: 50px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answers-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .answers-content {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .explanation-block {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .explanation-block:last-child {
+            border-bottom: none;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            font-size: 1.05em;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .badge-correct {
+            display: inline-block;
+            background: var(--correct-bg);
+            color: #117a65;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #a3e4d7;
+        }
+
+        .badge-wrong {
+            display: inline-block;
+            background: var(--wrong-bg);
+            color: #b9770e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 8px;
+            border: 1px solid #f5cba7;
+        }
+
+        .exp-item {
+            margin-bottom: 6px;
+            font-size: 0.93em;
+        }
+
+        @media screen and (max-width: 768px) {
+            body { padding: 10px 5px; }
+            .container { padding: 25px 15px; }
+            h1 { font-size: 1.5em; }
+            .passage { padding: 15px; font-size: 14px; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .tfng-options label { padding: 6px 12px; font-size: 0.85em; }
+            .answers-content { padding: 20px 10px; }
+            .student-info { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ant Intelligence</h1>
+    <p class="subtitle">IELTS Reading Passage — Questions 1–13</p>
+
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+        <div class="student-info">
+            <label for="student-name">Student Name:</label>
+            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+        </div>
+
+        <h2>Reading Passage</h2>
+        <div class="passage">
+            <p>When we think of intelligent members of the animal kingdom, the creatures that spring immediately to mind are apes and monkeys. But in fact the social lives of some members of the insect kingdom are sufficiently complex to suggest more than a hint of intelligence. Among these, the world of the ant has come in for considerable scrutiny lately, and the idea that ants demonstrate sparks of cognition has certainly not been rejected by those involved in these investigations.</p>
+
+            <p>Ants store food, repel attackers and use chemical signals to contact one another in case of attack. Such chemical communication can be compared to the human use of visual and auditory channels (as in religious chants, advertising images and jingles, political slogans and martial music) to arouse and propagate moods and attitudes. The biologist Lewis Thomas wrote, 'Ants are so much like human beings as to be an embarrassment. They farm fungi, raise aphids as livestock, launch armies to war, use chemical sprays to alarm and confuse enemies, capture slaves, engage in child labour, exchange information ceaselessly. They do everything but watch television.'</p>
+
+            <p>However, in ants there is no cultural transmission — everything must be encoded in the genes — whereas in humans the opposite is true. Only basic instincts are carried in the genes of a newborn baby, other skills being learned from others in the community as the child grows up. It may seem that this cultural continuity gives us a huge advantage over ants. They have never mastered fire nor progressed. Their fungus farming and aphid herding crafts are sophisticated when compared to the agricultural skills of humans five thousand years ago but have been totally overtaken by modern human agribusiness.</p>
+
+            <p>Or have they? The farming methods of ants are at least sustainable. They do not ruin environments or use enormous amounts of energy. Moreover, recent evidence suggests that the crop farming of ants may be more sophisticated and adaptable than was thought.</p>
+
+            <p>Ants were farmers fifty million years before humans were. Ants can't digest the cellulose in leaves — but some fungi can. The ants therefore cultivate these fungi in their nests, bringing them leaves to feed on, and then use them as a source of food. Farmer ants secrete antibiotics to control other fungi that might act as 'weeds', and spread waste to fertilise the crop.</p>
+
+            <p>It was once thought that the fungus that ants cultivate was a single type that they had propagated, essentially unchanged from the distant past. Not so. Ulrich Mueller of Maryland and his colleagues genetically screened 862 different types of fungi taken from ants' nests. These turned out to be highly diverse: it seems that ants are continually domesticating new species. Even more impressively, DNA analysis of the fungi suggests that the ants improve or modify the fungi by regularly swapping and sharing strains with neighbouring ant colonies.</p>
+
+            <p>Whereas prehistoric man had no exposure to urban lifestyles — the forcing house of intelligence — the evidence suggests that ants have lived in urban settings for close on a hundred million years, developing and maintaining underground cities of specialised chambers and tunnels.</p>
+
+            <p>When we survey Mexico City, Tokyo, Los Angeles, we are amazed at what has been accomplished by humans. Yet Hoelldobler and Wilson's magnificent work for ant lovers, <em>The Ants</em>, describes a supercolony of the ant <em>Formica yessensis</em> on the Ishikari Coast of Hokkaido. This 'megalopolis' was reported to be composed of 360 million workers and a million queens living in 4,500 interconnected nests across a territory of 2.7 square kilometres.</p>
+
+            <p>Such enduring and intricately meshed levels of technical achievement outstrip by far anything achieved by our distant ancestors. We hail as masterpieces the cave paintings in southern France and elsewhere, dating back some 20,000 years. Ant societies existed in something like their present form more than seventy million years ago. Beside this, prehistoric man looks technologically primitive. Is this then some kind of intelligence, albeit of a different kind?</p>
+
+            <p>Research conducted at Oxford, Sussex and Zürich Universities has shown that when desert ants return from a foraging trip, they navigate by integrating bearings and distances, which they continuously update in their heads. They combine the evidence of visual landmarks with a mental library of local directions, all within a framework which is consulted and updated. So ants can learn too.</p>
+
+            <p>And in a twelve-year programme of work, Ryabko and Reznikova have found evidence that ants can transmit very complex messages. Scouts who had located food in a maze returned to mobilise their foraging teams. They engaged in contact sessions, at the end of which the scout was removed in order to observe what her team might do. Often the foragers proceeded to the exact spot in the maze where the food had been. Elaborate precautions were taken to prevent the foraging team using odour clues. Discussion now centres on whether the route through the maze is communicated as a 'left-right' sequence of turns or as a 'compass bearing and distance' message.</p>
+
+            <p>During the course of this exhaustive study, Reznikova has grown so attached to her laboratory ants that she feels she knows them as individuals — even without the paint spots used to mark them. It's no surprise that Edward Wilson, in his essay, 'In the company of ants', advises readers who ask what to do with the ants in their kitchen to: 'Watch where you step. Be careful of little lives.'</p>
+
+            <p style="font-size: 13px; color: var(--text-light); margin-top: 16px;">* aphids: small insects of a different species from ants</p>
+        </div>
+
+        <h2>Questions</h2>
+
+        <div class="question-section">
+            <div class="section-label">Questions 1–6 — True / False / Not Given</div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">1. Ants use the same channels of communication as humans do.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q1" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q1" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q1" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">2. City life is one factor that encourages the development of intelligence.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q2" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q2" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q2" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">3. Ants can build large cities more quickly than humans do.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q3" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q3" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q3" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">4. Some ants can find their way by making calculations based on distance and position.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q4" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q4" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q4" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">5. In one experiment, foraging teams were able to use their sense of smell to find food.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q5" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q5" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q5" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+
+            <div class="tfng-question">
+                <div class="tfng-text">6. The essay, 'In the company of ants', explores ant communication.</div>
+                <div class="tfng-options">
+                    <label><input type="radio" name="Q6" value="TRUE" required> TRUE</label>
+                    <label><input type="radio" name="Q6" value="FALSE"> FALSE</label>
+                    <label><input type="radio" name="Q6" value="NOT_GIVEN"> NOT GIVEN</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="section-label">Questions 7–13 — Summary Completion</div>
+            <p style="font-size: 0.9em; color: var(--text-light); margin-bottom: 16px;">Choose <strong>one word only</strong> from the passage for each answer.</p>
+
+            <div class="summary-grid">
+                <div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#EEEDFE;color:#3C3489;">7</div>
+                        <div class="summary-text">
+                            Ants cultivate fungi which convert <input type="text" name="Q7" class="blank-input" placeholder="(7)" autocomplete="off" required> into a form which they can digest.
+                        </div>
+                    </div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#FBEAF0;color:#72243E;">8</div>
+                        <div class="summary-text">
+                            Farmer ants use their own natural <input type="text" name="Q8" class="blank-input" placeholder="(8)" autocomplete="off" required> as weed-killers.
+                        </div>
+                    </div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#FBEAF0;color:#72243E;">9</div>
+                        <div class="summary-text">
+                            Farmer ants use unwanted materials as <input type="text" name="Q9" class="blank-input" placeholder="(9)" autocomplete="off" required>.
+                        </div>
+                    </div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#EAF3DE;color:#27500A;">10</div>
+                        <div class="summary-text">
+                            Ants constantly upgrade their fungi by <input type="text" name="Q10" class="blank-input" placeholder="(10)" autocomplete="off" required> strains with neighbouring colonies.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#FAECE7;color:#712B13;">11</div>
+                        <div class="summary-text">
+                            Ant farming is environmentally friendly since they use <input type="text" name="Q11" class="blank-input" placeholder="(11)" autocomplete="off" required> methods.
+                        </div>
+                    </div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#FAECE7;color:#712B13;">12</div>
+                        <div class="summary-text">
+                            They do not affect the <input type="text" name="Q12" class="blank-input" placeholder="(12)" autocomplete="off" required>.
+                        </div>
+                    </div>
+                    <div class="summary-question">
+                        <div class="summary-num" style="background:#FAECE7;color:#712B13;">13</div>
+                        <div class="summary-text">
+                            They do not waste enormous amounts of <input type="text" name="Q13" class="blank-input" placeholder="(13)" autocomplete="off" required>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
+    </form>
+
+    <div id="answers-section">
+        <div class="answers-header">
+            ✅ Answer Key & Explanations (答案解析)
+        </div>
+        <div class="answers-content">
+            <h2>Questions 1–6: True / False / Not Given</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="8%">No.</th>
+                        <th width="18%">Answer</th>
+                        <th width="54%">Explanation</th>
+                        <th width="20%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><b>FALSE</b></td><td>原文说蚂蚁的化学通信"可被类比为"人类使用视觉和听觉渠道，并非"使用相同渠道"。</td><td>Para 2</td></tr>
+                    <tr><td>2</td><td><b>TRUE</b></td><td>原文称城市生活是"the forcing house of intelligence"（智慧的温床/促进因素）。</td><td>Para 7</td></tr>
+                    <tr><td>3</td><td><b>NOT GIVEN</b></td><td>原文只比较了蚂蚁和人类建造的城市规模与历史，未提及建造速度。</td><td>Para 7-8</td></tr>
+                    <tr><td>4</td><td><b>TRUE</b></td><td>沙漠蚂蚁通过在脑中整合方位（bearings）与距离（distances）数据来导航。</td><td>Para 10</td></tr>
+                    <tr><td>5</td><td><b>FALSE</b></td><td>实验采取严格措施"防止"（prevent）觅食团队使用气味线索（odour clues）。</td><td>Para 11</td></tr>
+                    <tr><td>6</td><td><b>NOT GIVEN</b></td><td>原文只引用了该文中的一句话，并未说明文章主题是蚂蚁交流。</td><td>Para 12</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Questions 7–13: Summary Completion</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="8%">No.</th>
+                        <th width="20%">Answer</th>
+                        <th width="57%">Evidence from Passage</th>
+                        <th width="15%">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>7</td><td><b>cellulose</b></td><td>"Ants can't digest the cellulose in leaves — but some fungi can."</td><td>Para 5</td></tr>
+                    <tr><td>8</td><td><b>secretions</b></td><td>"Farmer ants secrete antibiotics to control other fungi that might act as 'weeds'" — 即使用自身分泌物（抗生素）作为除草剂。</td><td>Para 5</td></tr>
+                    <tr><td>9</td><td><b>fertilizer(s)</b></td><td>"spread waste to fertilise the crop" — 废料被用作肥料。</td><td>Para 5</td></tr>
+                    <tr><td>10</td><td><b>exchanging</b></td><td>"by regularly swapping and sharing strains with neighbouring ant colonies" — swapping/sharing 对应 exchanging。</td><td>Para 6</td></tr>
+                    <tr><td>11</td><td><b>sustainable</b></td><td>"The farming methods of ants are at least sustainable."</td><td>Para 4</td></tr>
+                    <tr><td>12</td><td><b>environment(s)</b></td><td>"They do not ruin environments"</td><td>Para 4</td></tr>
+                    <tr><td>13</td><td><b>energy</b></td><td>"or use enormous amounts of energy"</td><td>Para 4</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("quiz-form");
+
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        
+        const submitBtn = document.getElementById("submit-btn");
+        const answersSection = document.getElementById("answers-section");
+        const data = new FormData(event.target);
+        const actionUrl = event.target.action;
+
+        submitBtn.innerHTML = "Submitting... / 正在提交...";
+        submitBtn.disabled = true;
+
+        if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
+            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        fetch(actionUrl, {
+            method: form.method,
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            if (response.ok) {
+                revealAnswers(submitBtn, answersSection, form);
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        alert(data["errors"].map(error => error["message"]).join(", "));
+                    } else {
+                        alert("Oops! There was a problem submitting your form. 请检查网络或重试。");
+                    }
+                    resetButton(submitBtn);
+                })
+            }
+        }).catch(error => {
+            alert("Oops! There was a network problem. 请检查网络并重试。");
+            resetButton(submitBtn);
+        });
+    }
+
+    function revealAnswers(btn, answersDiv, formElement) {
+        btn.innerHTML = 'Submitted Successfully! / 提交成功！';
+        btn.style.backgroundColor = '#1d4ed8';
+        
+        const formElements = formElement.elements;
+        for (let i = 0; i < formElements.length; i++) {
+            formElements[i].disabled = true;
+        }
+
+        answersDiv.style.display = 'block';
+        setTimeout(() => {
+            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function resetButton(btn) {
+        btn.innerHTML = 'Submit Answers';
+        btn.disabled = false;
+    }
+
+    form.addEventListener("submit", handleFormSubmit);
+</script>
+
+</body>
+</html>
