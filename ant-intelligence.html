@@ -698,7 +698,41 @@
         });
     }
 
+    function fillAnswersInForm(formElement) {
+        var answers = {
+            Q1: 'FALSE',
+            Q2: 'TRUE',
+            Q3: 'NOT_GIVEN',
+            Q4: 'TRUE',
+            Q5: 'FALSE',
+            Q6: 'NOT_GIVEN',
+            Q7: 'cellulose',
+            Q8: 'secretions',
+            Q9: 'fertilizer',
+            Q10: 'exchanging',
+            Q11: 'sustainable',
+            Q12: 'environment',
+            Q13: 'energy'
+        };
+
+        for (var key in answers) {
+            var els = formElement.querySelectorAll('[name="' + key + '"]');
+            for (var j = 0; j < els.length; j++) {
+                var el = els[j];
+                if (el.type === 'radio') {
+                    if (el.value === answers[key]) {
+                        el.checked = true;
+                    }
+                } else {
+                    el.value = answers[key];
+                }
+            }
+        }
+    }
+
     function revealAnswers(btn, answersDiv, formElement) {
+        fillAnswersInForm(formElement);
+
         btn.innerHTML = 'Submitted Successfully!';
         btn.style.backgroundColor = '#1d4ed8';
         
