@@ -204,6 +204,27 @@
             color: white;
         }
 
+        /* 搜索框 */
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95em;
+            outline: none;
+            box-sizing: border-box;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
         /* 手机端适配 */
         @media screen and (max-width: 768px) {
             .header { padding: 40px 15px; }
@@ -223,198 +244,31 @@
     </div>
 
     <div class="container">
-        
+
     <div class="section">
-        <!-- ================= BBC 听力专区 ================= -->
         <div class="section-title" onclick="toggleSection(this)">
             <span>🎧</span> BBC 6 Minute English
             <span class="toggle-icon">+</span>
         </div>
-        
-        <ul class="menu-list" style="display: none;">
-            <li class="menu-card">
-                <a href="260319-how-do-we-adapt-to-the-cold.html">
-                    <div class="card-content">
-                        <h3 class="card-title">How do we adapt to the cold?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2026-03-19</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Science / Health</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250911-what-causes-hearing-loss.html">
-                    <div class="card-content">
-                        <h3 class="card-title">What causes hearing loss?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-09-11</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Health / Science</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250904-the-joys-of-writing-lists.html">
-                    <div class="card-content">
-                        <h3 class="card-title">The joys of writing lists</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-09-04</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Daily Life / Psychology</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250828-whats-it-like-to-be-a-twin.html">
-                    <div class="card-content">
-                        <h3 class="card-title">What's it like to be a twin?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-08-28</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Science / Identity</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250821-whats-your-favourite-snack.html">
-                    <div class="card-content">
-                        <h3 class="card-title">What's your favourite snack?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-08-21</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Food / Lifestyle</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250814-grownups-buying-kids-toys.html">
-                    <div class="card-content">
-                        <h3 class="card-title">Grownups buying kids toys</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-08-14</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Consumer Trends / Nostalgia</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250807-are-you-flourishing.html">
-                    <div class="card-content">
-                        <h3 class="card-title">Are you flourishing?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-08-07</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Wellbeing / Psychology</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250731-what-is-the-manosphere.html">
-                    <div class="card-content">
-                        <h3 class="card-title">What is the manosphere?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-07-31</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Society / Online Culture</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-
-            <li class="menu-card">
-                <a href="250724-what-is-degrowth.html">
-                    <div class="card-content">
-                        <h3 class="card-title">What is economic degrowth?</h3>
-                        <div class="meta-row">
-                            <div class="card-date">2025-07-24</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Environment / Economy</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-        </ul>
+        <input type="text" class="search-input" placeholder="🔍 搜索日期、标题或主题..." oninput="filterSection(this)">
+        <ul class="menu-list" id="bbc-list" style="display: none;"></ul>
     </div>
 
     <div class="section">
-        <!-- ================= IELTS 专区 ================= -->
         <div class="section-title" onclick="toggleSection(this)">
             <span>🎯</span> IELTS Reading
             <span class="toggle-icon">+</span>
         </div>
-        
-        <ul class="menu-list" style="display: none;">
-            <li class="menu-card">
-                <a href="making-every-drop-count.html">
-                    <div class="card-content">
-                        <h3 class="card-title">Making Every Drop Count</h3>
-                        <div class="meta-row">
-                            <div class="card-date">IELTS Reading Passage</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Environment / Water</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-            <li class="menu-card">
-                <a href="ant-intelligence.html">
-                    <div class="card-content">
-                        <h3 class="card-title">Ant Intelligence</h3>
-                        <div class="meta-row">
-                            <div class="card-date">IELTS Reading Passage</div>
-                            <div class="tags">
-                                <span class="tag tag-topic">Science / Nature</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="arrow-box">→</div>
-                </a>
-            </li>
-        </ul>
+        <input type="text" class="search-input" placeholder="🔍 搜索标题或主题..." oninput="filterSection(this)">
+        <ul class="menu-list" id="ielts-list" style="display: none;"></ul>
     </div>
 
     <div class="section">
-        <!-- ================= 词汇专区 ================= -->
         <div class="section-title" onclick="toggleSection(this)">
             <span>📖</span> Vocabulary
             <span class="toggle-icon">+</span>
         </div>
-        
+        <input type="text" class="search-input" placeholder="🔍 搜索..." oninput="filterSection(this)">
         <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="#">
@@ -428,12 +282,11 @@
     </div>
 
     <div class="section">
-        <!-- ================= 语法专区 ================= -->
         <div class="section-title" onclick="toggleSection(this)">
             <span>✍️</span> Grammar
             <span class="toggle-icon">+</span>
         </div>
-        
+        <input type="text" class="search-input" placeholder="🔍 搜索..." oninput="filterSection(this)">
         <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="#">
@@ -449,6 +302,58 @@
     </div>
 
 <script>
+    var bbcData = [
+        { date: '2026-03-19', title: 'How do we adapt to the cold?', topic: 'Science / Health', file: '260319-how-do-we-adapt-to-the-cold.html' },
+        { date: '2025-09-11', title: 'What causes hearing loss?', topic: 'Health / Science', file: '250911-what-causes-hearing-loss.html' },
+        { date: '2025-09-04', title: 'The joys of writing lists', topic: 'Daily Life / Psychology', file: '250904-the-joys-of-writing-lists.html' },
+        { date: '2025-08-28', title: 'What\'s it like to be a twin?', topic: 'Science / Identity', file: '250828-whats-it-like-to-be-a-twin.html' },
+        { date: '2025-08-21', title: 'What\'s your favourite snack?', topic: 'Food / Lifestyle', file: '250821-whats-your-favourite-snack.html' },
+        { date: '2025-08-14', title: 'Grownups buying kids toys', topic: 'Consumer Trends / Nostalgia', file: '250814-grownups-buying-kids-toys.html' },
+        { date: '2025-08-07', title: 'Are you flourishing?', topic: 'Wellbeing / Psychology', file: '250807-are-you-flourishing.html' },
+        { date: '2025-07-31', title: 'What is the manosphere?', topic: 'Society / Online Culture', file: '250731-what-is-the-manosphere.html' },
+        { date: '2025-07-24', title: 'What is economic degrowth?', topic: 'Environment / Economy', file: '250724-what-is-degrowth.html' }
+    ];
+
+    var ieltsData = [
+        { date: '2', title: 'Making Every Drop Count', topic: 'Environment / Water', file: 'making-every-drop-count.html', label: 'IELTS Reading Passage' },
+        { date: '1', title: 'Ant Intelligence', topic: 'Science / Nature', file: 'ant-intelligence.html', label: 'IELTS Reading Passage' }
+    ];
+
+    function renderCard(item, dateLabel) {
+        return '<li class="menu-card">' +
+            '<a href="' + item.file + '">' +
+                '<div class="card-content">' +
+                    '<h3 class="card-title">' + item.title + '</h3>' +
+                    '<div class="meta-row">' +
+                        '<div class="card-date">' + (dateLabel || item.date) + '</div>' +
+                        '<div class="tags"><span class="tag tag-topic">' + item.topic + '</span></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arrow-box">→</div>' +
+            '</a>' +
+        '</li>';
+    }
+
+    function renderSection(listId, data, dateLabel) {
+        var list = document.getElementById(listId);
+        if (!list) return;
+        data.sort(function(a, b) { return b.date.localeCompare(a.date); });
+        list.innerHTML = '';
+        for (var i = 0; i < data.length; i++) {
+            list.innerHTML += renderCard(data[i], dateLabel);
+        }
+    }
+
+    function filterSection(input) {
+        var query = input.value.toLowerCase();
+        var list = input.nextElementSibling;
+        if (!list || !list.classList.contains('menu-list')) return;
+        var cards = list.querySelectorAll('.menu-card');
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].style.display = cards[i].textContent.toLowerCase().indexOf(query) !== -1 ? '' : 'none';
+        }
+    }
+
     function toggleSection(titleEl) {
         var section = titleEl.closest('.section');
         var list = section.querySelector('.menu-list');
@@ -458,6 +363,9 @@
         titleEl.classList.toggle('active', !isOpen);
         icon.textContent = isOpen ? '+' : '\u2212';
     }
+
+    renderSection('bbc-list', bbcData);
+    renderSection('ielts-list', ieltsData, 'IELTS Reading Passage');
 </script>
 
 </body>
