@@ -119,16 +119,18 @@
 
         /* 日期样式 */
         .card-date {
-            margin: 0 0 12px 0;
+            margin: 0;
             font-size: 0.9em;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
             font-weight: 500;
         }
 
-        .card-date span {
-            margin-right: 6px;
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 0 0 12px 0;
         }
 
         /* 彩色小标签 */
@@ -159,6 +161,27 @@
         .tag-pending {
             background-color: #f3f4f6;
             color: #6b7280;
+        }
+
+        .section {
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-title .toggle-icon {
+            margin-left: auto;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            font-weight: 400;
+            transition: transform 0.2s;
+        }
+
+        .section-title.active .toggle-icon {
+            transform: rotate(45deg);
         }
 
         /* 右侧箭头 */
@@ -201,19 +224,23 @@
 
     <div class="container">
         
+    <div class="section">
         <!-- ================= BBC 听力专区 ================= -->
-        <div class="section-title">
+        <div class="section-title" onclick="toggleSection(this)">
             <span>🎧</span> BBC 6 Minute English
+            <span class="toggle-icon">+</span>
         </div>
         
-        <ul class="menu-list">
+        <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="260319-how-do-we-adapt-to-the-cold.html">
                     <div class="card-content">
                         <h3 class="card-title">How do we adapt to the cold?</h3>
-                        <div class="card-date"><span>📅</span> 2026-03-19</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Science / Health</span>
+                        <div class="meta-row">
+                            <div class="card-date">2026-03-19</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Science / Health</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -224,9 +251,11 @@
                 <a href="250911-what-causes-hearing-loss.html">
                     <div class="card-content">
                         <h3 class="card-title">What causes hearing loss?</h3>
-                        <div class="card-date"><span>📅</span> 2025-09-11</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Health / Science</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-09-11</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Health / Science</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -237,9 +266,11 @@
                 <a href="250904-the-joys-of-writing-lists.html">
                     <div class="card-content">
                         <h3 class="card-title">The joys of writing lists</h3>
-                        <div class="card-date"><span>📅</span> 2025-09-04</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Daily Life / Psychology</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-09-04</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Daily Life / Psychology</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -250,9 +281,11 @@
                 <a href="250828-whats-it-like-to-be-a-twin.html">
                     <div class="card-content">
                         <h3 class="card-title">What's it like to be a twin?</h3>
-                        <div class="card-date"><span>📅</span> 2025-08-28</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Science / Identity</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-08-28</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Science / Identity</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -263,9 +296,11 @@
                 <a href="250821-whats-your-favourite-snack.html">
                     <div class="card-content">
                         <h3 class="card-title">What's your favourite snack?</h3>
-                        <div class="card-date"><span>📅</span> 2025-08-21</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Food / Lifestyle</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-08-21</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Food / Lifestyle</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -276,9 +311,11 @@
                 <a href="250814-grownups-buying-kids-toys.html">
                     <div class="card-content">
                         <h3 class="card-title">Grownups buying kids toys</h3>
-                        <div class="card-date"><span>📅</span> 2025-08-14</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Consumer Trends / Nostalgia</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-08-14</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Consumer Trends / Nostalgia</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -289,9 +326,11 @@
                 <a href="250807-are-you-flourishing.html">
                     <div class="card-content">
                         <h3 class="card-title">Are you flourishing?</h3>
-                        <div class="card-date"><span>📅</span> 2025-08-07</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Wellbeing / Psychology</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-08-07</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Wellbeing / Psychology</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -302,9 +341,11 @@
                 <a href="250731-what-is-the-manosphere.html">
                     <div class="card-content">
                         <h3 class="card-title">What is the manosphere?</h3>
-                        <div class="card-date"><span>📅</span> 2025-07-31</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Society / Online Culture</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-07-31</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Society / Online Culture</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
@@ -315,42 +356,52 @@
                 <a href="250724-what-is-degrowth.html">
                     <div class="card-content">
                         <h3 class="card-title">What is economic degrowth?</h3>
-                        <div class="card-date"><span>📅</span> 2025-07-24</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Environment / Economy</span>
+                        <div class="meta-row">
+                            <div class="card-date">2025-07-24</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Environment / Economy</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
                 </a>
             </li>
         </ul>
+    </div>
 
+    <div class="section">
         <!-- ================= IELTS 专区 ================= -->
-        <div class="section-title">
+        <div class="section-title" onclick="toggleSection(this)">
             <span>🎯</span> IELTS Reading
+            <span class="toggle-icon">+</span>
         </div>
         
-        <ul class="menu-list">
+        <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="ant-intelligence.html">
                     <div class="card-content">
                         <h3 class="card-title">Ant Intelligence</h3>
-                        <div class="card-date"><span>📅</span> IELTS Reading Passage</div>
-                        <div class="tags">
-                            <span class="tag tag-topic">Science / Nature</span>
+                        <div class="meta-row">
+                            <div class="card-date">IELTS Reading Passage</div>
+                            <div class="tags">
+                                <span class="tag tag-topic">Science / Nature</span>
+                            </div>
                         </div>
                     </div>
                     <div class="arrow-box">→</div>
                 </a>
             </li>
         </ul>
+    </div>
 
+    <div class="section">
         <!-- ================= 词汇专区 ================= -->
-        <div class="section-title">
+        <div class="section-title" onclick="toggleSection(this)">
             <span>📖</span> Vocabulary
+            <span class="toggle-icon">+</span>
         </div>
         
-        <ul class="menu-list">
+        <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="#">
                     <div class="card-content">
@@ -360,13 +411,16 @@
                 </a>
             </li>
         </ul>
+    </div>
 
+    <div class="section">
         <!-- ================= 语法专区 ================= -->
-        <div class="section-title">
+        <div class="section-title" onclick="toggleSection(this)">
             <span>✍️</span> Grammar
+            <span class="toggle-icon">+</span>
         </div>
         
-        <ul class="menu-list">
+        <ul class="menu-list" style="display: none;">
             <li class="menu-card">
                 <a href="#">
                     <div class="card-content">
@@ -376,8 +430,21 @@
                 </a>
             </li>
         </ul>
+    </div>
 
     </div>
+
+<script>
+    function toggleSection(titleEl) {
+        var section = titleEl.closest('.section');
+        var list = section.querySelector('.menu-list');
+        var icon = titleEl.querySelector('.toggle-icon');
+        var isOpen = list.style.display !== 'none';
+        list.style.display = isOpen ? 'none' : 'grid';
+        titleEl.classList.toggle('active', !isOpen);
+        icon.textContent = isOpen ? '+' : '\u2212';
+    }
+</script>
 
 </body>
 </html>
