@@ -363,6 +363,69 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+        .inline-explanation {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .inline-explanation.wrong {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .inline-explanation.correct {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .mc-options li.wrong {
+            border-left-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            border-color: #f5c6c6 !important;
+        }
+
+        .mc-options li.wrong label {
+            color: #c0392b;
+        }
+
+        .mc-options li.correct {
+            border-left-color: #27ae60 !important;
+            background: #f0fff4 !important;
+            border-color: #b8e6c8 !important;
+        }
+
+        .blank-input.correct {
+            background: #f0fff4 !important;
+            border-bottom-color: #27ae60 !important;
+        }
+
+        .blank-input.wrong {
+            background: #fff5f5 !important;
+            border-bottom-color: #e74c3c !important;
+        }
+
+        #score-display {
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: none;
+        }
+
+        #score-display.show {
+            display: inline-block;
+        }
+
         /* ----- 以下是专门针对手机端的适配代码 ----- */
         @media screen and (max-width: 768px) {
             body {
@@ -393,7 +456,10 @@
     <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
-            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+                <span id="score-display"></span>
+            </div>
         </div>
 
         <h2>Part 1: Fill in the Blanks</h2>
@@ -663,25 +729,64 @@
     </div>
 </div>
 
-<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<!-- JavaScript to handle form submission and show inline explanations -->
 <script>
     const form = document.getElementById("quiz-form");
 
+    const blankData = {
+        Blank_01: { answer: '$1.5 trillion', evidence: '"snacks are big business, with an estimated $1.5 trillion a year spent globally on snacking."' },
+        Blank_02: { answer: 'chocolate sandwich', evidence: '"From old favourites like popcorn and crisps to new inventions like the chocolate sandwich, snacks are big business"' },
+        Blank_03: { answer: 'salted peanuts', evidence: '"I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot."' },
+        Blank_04: { answer: 'small, round bun', evidence: '"My favourite snack is called \'chipa\'. It\'s a small, round bun made with cassava, cheese, butter, milk and salt."' },
+        Blank_05: { answer: 'butter, milk and salt', evidence: '"It\'s a small, round bun made with cassava, cheese, butter, milk and salt."' },
+        Blank_06: { answer: 'affordable luxury', evidence: '"A snack is an affordable luxury, so if you\'ve had a bad day or money is tight, this is something that you can turn to"' },
+        Blank_07: { answer: 'money is tight', evidence: '"if you\'ve had a bad day or money is tight, this is something that you can turn to"' },
+        Blank_08: { answer: 'convenient portions', evidence: '"Consumers, especially in the United States, are looking for smaller, more convenient portions."' },
+        Blank_09: { answer: 'three meals a day', evidence: '"They\'re not always going to be able to sit down and have three meals a day, right?"' },
+        Blank_10: { answer: 'on the go', evidence: '"So, they\'re eating on the go."' },
+        Blank_11: { answer: 'functional ingredients', evidence: '"this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development"' },
+        Blank_12: { answer: 'mental clarity', evidence: '"So, mental clarity, gut health, muscle development, these sorts of things."' },
+        Blank_13: { answer: 'snack sizes', evidence: '"Again, they\'re nicely packaged in snack sizes."' },
+        Blank_14: { answer: 'more natural, simpler', evidence: '"Personally, I enjoy cooking and eating more natural, simpler snacks"' },
+        Blank_15: { answer: 'swim against current', evidence: '"but of course I can\'t swim against the current"' },
+        Blank_16: { answer: '9', evidence: '"if my 9-year-old wants to eat the little baked snacks that have cheddar"' },
+        Blank_17: { answer: 'baked', evidence: '"the little baked snacks that have cheddar… ironically it is something baked with cheese in it"' },
+        Blank_18: { answer: 'modern twist', evidence: '"which is similar to what I enjoy – it\'s just the modern twist."' },
+        Blank_19: { answer: 'confectionery and chocolate', evidence: '"b) confectionery and chocolate, which 45% of Britons indulge in weekly"' },
+        Blank_20: { answer: '45%', evidence: '"b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey."' }
+    };
+
+    const mcData = {
+        Question_21: { answer: 'B', evidence: 'Annie Gray: "I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot."' },
+        Question_22: { answer: 'D', evidence: 'Neil: "Well, I want to say something healthy, but actually, you know, I really love a bag of crisps."' },
+        Question_23: { answer: 'A', evidence: 'Christine Cochran: "A snack is an affordable luxury, so if you\'ve had a bad day or money is tight, this is something that you can turn to"' },
+        Question_24: { answer: 'C', evidence: 'Christine Cochran: "They\'re not always going to be able to sit down and have three meals a day, right? So, they\'re eating on the go."' },
+        Question_25: { answer: 'A', evidence: 'Christine Cochran: "this desire for very specific functional ingredients… So, mental clarity, gut health, muscle development"' },
+        Question_26: { answer: 'A', evidence: 'Neil: "mental clarity – a term describing a state of mind which is focused and engaged, not dull or foggy."' },
+        Question_27: { answer: 'C', evidence: 'Barbara: "but of course I can\'t swim against the current, and if my 9-year-old wants to eat the little baked snacks that have cheddar…"' },
+        Question_28: { answer: 'B', evidence: 'Barbara: "ironically it is something baked with cheese in it, which is similar to what I enjoy"' },
+        Question_29: { answer: 'B', evidence: 'Beth: "Well, Neil, all those snacks have made me hungry! Now, isn\'t it time to reveal the answer to your question?"' },
+        Question_30: { answer: 'A', evidence: 'Neil: "And the answer was… b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey."' }
+    };
+
     async function handleFormSubmit(event) {
-        event.preventDefault(); // 防止页面跳转
-        
+        event.preventDefault();
+
         const submitBtn = document.getElementById("submit-btn");
-        const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
         const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+        const isLeo = studentName === "leo";
 
-        // 改变按钮状态为"正在提交"
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
 
-        if (studentName === "leo") {
-            revealAnswers(submitBtn, answersSection, form);
+        var userAnswers = collectUserAnswers();
+        var score = calcScore(userAnswers);
+        var data = new FormData(event.target);
+        data.append('Score', score.correct + '/' + score.total);
+
+        if (isLeo) {
+            showResults(submitBtn, form, userAnswers, score, true);
             return;
         }
 
@@ -704,24 +809,19 @@
             return;
         }
 
-        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
-            revealAnswers(submitBtn, answersSection, form);
+            showResults(submitBtn, form, userAnswers, score, false);
             return;
         }
 
-        // 使用 Fetch API 在后台发送数据给 Formspree
         fetch(actionUrl, {
             method: form.method,
             body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         }).then(response => {
             if (response.ok) {
-                // 提交成功，显示答案
-                revealAnswers(submitBtn, answersSection, form);
+                showResults(submitBtn, form, userAnswers, score, false);
             } else {
                 response.json().then(data => {
                     if (Object.hasOwn(data, 'errors')) {
@@ -738,78 +838,128 @@
         });
     }
 
-    function fillAnswersInForm(formElement) {
-        var answers = {
-            Blank_01: '$1.5 trillion',
-            Blank_02: 'chocolate sandwich',
-            Blank_03: 'salted peanuts',
-            Blank_04: 'small, round bun',
-            Blank_05: 'butter, milk and salt',
-            Blank_06: 'affordable luxury',
-            Blank_07: 'money is tight',
-            Blank_08: 'convenient portions',
-            Blank_09: 'three meals a day',
-            Blank_10: 'on the go',
-            Blank_11: 'functional ingredients',
-            Blank_12: 'mental clarity',
-            Blank_13: 'snack sizes',
-            Blank_14: 'more natural, simpler',
-            Blank_15: 'swim against current',
-            Blank_16: '9',
-            Blank_17: 'baked',
-            Blank_18: 'modern twist',
-            Blank_19: 'confectionery and chocolate',
-            Blank_20: '45%',
-            Question_21: 'B',
-            Question_22: 'D',
-            Question_23: 'A',
-            Question_24: 'C',
-            Question_25: 'A',
-            Question_26: 'A',
-            Question_27: 'C',
-            Question_28: 'B',
-            Question_29: 'B',
-            Question_30: 'A'
-        };
+    function collectUserAnswers() {
+        var answers = {};
+        for (var key in blankData) {
+            var el = form.querySelector('[name="' + key + '"]');
+            answers[key] = el ? el.value.trim() : '';
+        }
+        for (var key in mcData) {
+            var el = form.querySelector('[name="' + key + '"]:checked');
+            answers[key] = el ? el.value : '';
+        }
+        return answers;
+    }
 
-        for (var key in answers) {
-            var els = formElement.querySelectorAll('[name="' + key + '"]');
-            for (var j = 0; j < els.length; j++) {
-                var el = els[j];
-                if (el.type === 'radio') {
-                    if (el.value === answers[key]) {
-                        el.checked = true;
-                    }
+    function calcScore(userAnswers) {
+        var correct = 0, total = 0;
+        for (var key in blankData) {
+            total++;
+            if ((userAnswers[key] || '').toLowerCase() === blankData[key].answer.toLowerCase()) correct++;
+        }
+        for (var key in mcData) {
+            total++;
+            if ((userAnswers[key] || '') === mcData[key].answer) correct++;
+        }
+        return { correct: correct, total: total };
+    }
+
+    function applyHighlighting(userAnswers) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            var input = form.querySelector('[name="' + key + '"]');
+            if (input) {
+                input.classList.add(isCorrect ? 'correct' : 'wrong');
+                input.style.width = Math.max(userAns.length * 0.9 + 2, 8) + 'ch';
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            var correctEl = form.querySelector('[name="' + key + '"][value="' + mcData[key].answer + '"]');
+            if (correctEl) correctEl.closest('li').classList.add('correct');
+            if (!isCorrect && userAns) {
+                var wrongEl = form.querySelector('[name="' + key + '"][value="' + userAns + '"]');
+                if (wrongEl) wrongEl.closest('li').classList.add('wrong');
+            }
+        }
+    }
+
+    function showInlineExplanations(userAnswers, isLeo) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            if (!isCorrect || isLeo) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (!input) continue;
+                var li = input.closest('li');
+                if (!li) continue;
+                if (isCorrect) {
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation correct">✓ <strong>正确答案:</strong> ' + blankData[key].answer + '<br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
                 } else {
-                    el.value = answers[key];
-                    el.style.width = (answers[key].length + 2) + 'ch';
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation wrong">→ <strong style="color:#27ae60;">' + blankData[key].answer + '</strong><br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
+                }
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            if (!isCorrect || isLeo) {
+                var radio = form.querySelector('[name="' + key + '"]');
+                if (!radio) continue;
+                var mcDiv = radio.closest('.mc-question');
+                if (!mcDiv) continue;
+                if (isCorrect) {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation correct">✓ <strong>原文:</strong> ' + mcData[key].evidence + '</div>');
+                } else {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation wrong"><strong>原文:</strong> ' + mcData[key].evidence + '</div>');
                 }
             }
         }
     }
 
-    function revealAnswers(btn, answersDiv, formElement) {
-        fillAnswersInForm(formElement);
+    function showScore(score) {
+        var el = document.getElementById('score-display');
+        el.textContent = score.correct + '/' + score.total;
+        el.className = 'show';
+        if (score.correct === score.total) {
+            el.style.background = '#f0fff4';
+            el.style.color = '#1e7e34';
+            el.style.border = '1px solid #b8e6c8';
+        } else {
+            el.style.background = '#fff5f5';
+            el.style.color = '#c0392b';
+            el.style.border = '1px solid #f5c6c6';
+        }
+    }
 
-        // 1. 改变按钮样式和文字
+    function showResults(btn, formElement, userAnswers, score, isLeo) {
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.mc-options li.wrong, .mc-options li.correct').forEach(function(el) { el.classList.remove('wrong', 'correct'); });
+        document.querySelectorAll('.blank-input.correct, .blank-input.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+
+        applyHighlighting(userAnswers);
+        showInlineExplanations(userAnswers, isLeo);
+        showScore(score);
+
         btn.innerHTML = 'Submitted Successfully!';
-        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
-        
-        // 2. 锁定所有的输入框，防止学生提交后修改答案
-        const formElements = formElement.elements;
-        for (let i = 0; i < formElements.length; i++) {
+        btn.style.backgroundColor = '#117a65';
+
+        var formElements = formElement.elements;
+        for (var i = 0; i < formElements.length; i++) {
             formElements[i].disabled = true;
-            // 为所有的li选项添加disabled类以取消hover效果
-            if(formElements[i].type === 'radio'){
+            if (formElements[i].type === 'radio') {
                 formElements[i].closest('li').classList.add('disabled');
             }
         }
 
-        // 3. 显示答案解析区域并平滑滚动到该区域
-        answersDiv.style.display = 'block';
-        setTimeout(() => {
-            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        var firstExp = document.querySelector('.inline-explanation');
+        if (firstExp) {
+            setTimeout(function() {
+                firstExp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
     }
 
     function resetButton(btn) {
@@ -817,7 +967,6 @@
         btn.disabled = false;
     }
 
-    // 绑定提交事件
     form.addEventListener("submit", handleFormSubmit);
 </script>
 

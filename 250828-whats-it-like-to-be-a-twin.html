@@ -363,6 +363,69 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+        .inline-explanation {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .inline-explanation.wrong {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .inline-explanation.correct {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .mc-options li.wrong {
+            border-left-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            border-color: #f5c6c6 !important;
+        }
+
+        .mc-options li.wrong label {
+            color: #c0392b;
+        }
+
+        .mc-options li.correct {
+            border-left-color: #27ae60 !important;
+            background: #f0fff4 !important;
+            border-color: #b8e6c8 !important;
+        }
+
+        .blank-input.correct {
+            background: #f0fff4 !important;
+            border-bottom-color: #27ae60 !important;
+        }
+
+        .blank-input.wrong {
+            background: #fff5f5 !important;
+            border-bottom-color: #e74c3c !important;
+        }
+
+        #score-display {
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: none;
+        }
+
+        #score-display.show {
+            display: inline-block;
+        }
+
         /* ----- 以下是专门针对手机端的适配代码 ----- */
         @media screen and (max-width: 768px) {
             body {
@@ -393,7 +456,10 @@
     <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
-            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+                <span id="score-display"></span>
+            </div>
         </div>
 
         <h2>Part 1: Fill in the Blanks</h2>
@@ -663,25 +729,64 @@
     </div>
 </div>
 
-<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<!-- JavaScript to handle form submission and show inline explanations -->
 <script>
     const form = document.getElementById("quiz-form");
 
+    const blankData = {
+        Blank_01: { answer: 'two separate eggs', evidence: '"Non-identical, or fraternal, twins come from two separate eggs and share half their genes."' },
+        Blank_02: { answer: 'genes', evidence: '"identical twins, who come from a single fertilised egg and share 100% of their genes."' },
+        Blank_03: { answer: 'the same dreams', evidence: '"\'Do you have psychic powers? Have you ever swapped boyfriends? And do you have the same dreams?\'' },
+        Blank_04: { answer: 'rolling their eyes', evidence: '"if you meet a twin and you ask them one of these questions, don\'t be surprised if they roll their eyes at you."' },
+        Blank_05: { answer: '42 babies', evidence: '"In fact, one in every 42 babies is born a twin."' },
+        Blank_06: { answer: 'plain sailing', evidence: '"Being a twin isn\'t always plain sailing."' },
+        Blank_07: { answer: 'school', evidence: '"there\'s never that fear, because you\'re going through school together"' },
+        Blank_08: { answer: 'the same class', evidence: '"you\'re sometimes in the same class together, you\'re making friends together."' },
+        Blank_09: { answer: 'made easier', evidence: '"all of those milestones of childhood, in some ways, are made easier for twins."' },
+        Blank_10: { answer: 'individual', evidence: '"the more you realise how much people really think of you as a twin rather than as an individual."' },
+        Blank_11: { answer: 'identity', evidence: '"Many twins find it hard to establish their own identity as a separate and unique individual."' },
+        Blank_12: { answer: 'the genetics', evidence: '"how much of our lives is determined by nature, the genetics we\'re born with"' },
+        Blank_13: { answer: 'the environment', evidence: '"and how much by nurture, the environment we grow up in?"' },
+        Blank_14: { answer: 'differences', evidence: '"Because twins are so genetically similar, differences between them tell scientists a lot."' },
+        Blank_15: { answer: 'separated at birth', evidence: '"twins that were separated at birth, grew up in different parts of the world"' },
+        Blank_16: { answer: 'life courses', evidence: '"they kind of have these eerily similar life courses."' },
+        Blank_17: { answer: '39', evidence: '"the Jim Twins, who were reunited at age 39 after being separated at birth"' },
+        Blank_18: { answer: 'Linda', evidence: '"They both married someone called Linda and then divorced her for someone called Betty."' },
+        Blank_19: { answer: 'Toy', evidence: '"They both named their dog \'Toy\'."' },
+        Blank_20: { answer: 'crazy', evidence: '"they just had so many similarities – it was crazy!"' }
+    };
+
+    const mcData = {
+        Question_21: { answer: 'B', evidence: 'Neil: "Oh, probably quite an annoying one."' },
+        Question_22: { answer: 'D', evidence: 'Anand: "if you meet a twin and you ask them one of these questions, don\'t be surprised if they roll their eyes at you"' },
+        Question_23: { answer: 'A', evidence: 'Karen: "there\'s never that fear, because you\'re going through school together… all of those milestones of childhood, in some ways, are made easier for twins"' },
+        Question_24: { answer: 'C', evidence: 'Karen: "the more you realise how much people really think of you as a twin rather than as an individual"' },
+        Question_25: { answer: 'B', evidence: 'Beth: "Because twins are so genetically similar, differences between them tell scientists a lot"' },
+        Question_26: { answer: 'A', evidence: 'twins grew up in different parts of the world, and they kind of have these eerily similar life courses' },
+        Question_27: { answer: 'A', evidence: 'Anand: "they kind of have these eerily similar life courses. And you think, \'Gosh! How much choice have I had over the way my life\'s turned out?\'' },
+        Question_28: { answer: 'D', evidence: 'Helena: "they just had so many similarities… They both married someone called Linda and then divorced her for someone called Betty. They both named their dog \'Toy\'"' },
+        Question_29: { answer: 'C', evidence: 'Helena: "it was crazy! … It was, like, ridiculous!"' },
+        Question_30: { answer: 'B', evidence: 'Beth: "I think \'strange\', \'mysterious\' and \'fantastic\' describe being a twin quite well"' }
+    };
+
     async function handleFormSubmit(event) {
-        event.preventDefault(); // 防止页面跳转
-        
+        event.preventDefault();
+
         const submitBtn = document.getElementById("submit-btn");
-        const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
         const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+        const isLeo = studentName === "leo";
 
-        // 改变按钮状态为"正在提交"
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
 
-        if (studentName === "leo") {
-            revealAnswers(submitBtn, answersSection, form);
+        var userAnswers = collectUserAnswers();
+        var score = calcScore(userAnswers);
+        var data = new FormData(event.target);
+        data.append('Score', score.correct + '/' + score.total);
+
+        if (isLeo) {
+            showResults(submitBtn, form, userAnswers, score, true);
             return;
         }
 
@@ -704,24 +809,19 @@
             return;
         }
 
-        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
-            revealAnswers(submitBtn, answersSection, form);
+            showResults(submitBtn, form, userAnswers, score, false);
             return;
         }
 
-        // 使用 Fetch API 在后台发送数据给 Formspree
         fetch(actionUrl, {
             method: form.method,
             body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         }).then(response => {
             if (response.ok) {
-                // 提交成功，显示答案
-                revealAnswers(submitBtn, answersSection, form);
+                showResults(submitBtn, form, userAnswers, score, false);
             } else {
                 response.json().then(data => {
                     if (Object.hasOwn(data, 'errors')) {
@@ -738,78 +838,128 @@
         });
     }
 
-    function fillAnswersInForm(formElement) {
-        var answers = {
-            Blank_01: 'two separate eggs',
-            Blank_02: 'genes',
-            Blank_03: 'the same dreams',
-            Blank_04: 'rolling their eyes',
-            Blank_05: '42 babies',
-            Blank_06: 'plain sailing',
-            Blank_07: 'school',
-            Blank_08: 'the same class',
-            Blank_09: 'made easier',
-            Blank_10: 'individual',
-            Blank_11: 'identity',
-            Blank_12: 'the genetics',
-            Blank_13: 'the environment',
-            Blank_14: 'differences',
-            Blank_15: 'separated at birth',
-            Blank_16: 'life courses',
-            Blank_17: '39',
-            Blank_18: 'Linda',
-            Blank_19: 'Toy',
-            Blank_20: 'crazy',
-            Question_21: 'B',
-            Question_22: 'D',
-            Question_23: 'A',
-            Question_24: 'C',
-            Question_25: 'B',
-            Question_26: 'A',
-            Question_27: 'A',
-            Question_28: 'D',
-            Question_29: 'C',
-            Question_30: 'B'
-        };
+    function collectUserAnswers() {
+        var answers = {};
+        for (var key in blankData) {
+            var el = form.querySelector('[name="' + key + '"]');
+            answers[key] = el ? el.value.trim() : '';
+        }
+        for (var key in mcData) {
+            var el = form.querySelector('[name="' + key + '"]:checked');
+            answers[key] = el ? el.value : '';
+        }
+        return answers;
+    }
 
-        for (var key in answers) {
-            var els = formElement.querySelectorAll('[name="' + key + '"]');
-            for (var j = 0; j < els.length; j++) {
-                var el = els[j];
-                if (el.type === 'radio') {
-                    if (el.value === answers[key]) {
-                        el.checked = true;
-                    }
+    function calcScore(userAnswers) {
+        var correct = 0, total = 0;
+        for (var key in blankData) {
+            total++;
+            if ((userAnswers[key] || '').toLowerCase() === blankData[key].answer.toLowerCase()) correct++;
+        }
+        for (var key in mcData) {
+            total++;
+            if ((userAnswers[key] || '') === mcData[key].answer) correct++;
+        }
+        return { correct: correct, total: total };
+    }
+
+    function applyHighlighting(userAnswers) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            var input = form.querySelector('[name="' + key + '"]');
+            if (input) {
+                input.classList.add(isCorrect ? 'correct' : 'wrong');
+                input.style.width = Math.max(userAns.length * 0.9 + 2, 8) + 'ch';
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            var correctEl = form.querySelector('[name="' + key + '"][value="' + mcData[key].answer + '"]');
+            if (correctEl) correctEl.closest('li').classList.add('correct');
+            if (!isCorrect && userAns) {
+                var wrongEl = form.querySelector('[name="' + key + '"][value="' + userAns + '"]');
+                if (wrongEl) wrongEl.closest('li').classList.add('wrong');
+            }
+        }
+    }
+
+    function showInlineExplanations(userAnswers, isLeo) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            if (!isCorrect || isLeo) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (!input) continue;
+                var li = input.closest('li');
+                if (!li) continue;
+                if (isCorrect) {
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation correct">✓ <strong>正确答案:</strong> ' + blankData[key].answer + '<br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
                 } else {
-                    el.value = answers[key];
-                    el.style.width = (answers[key].length + 2) + 'ch';
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation wrong">→ <strong style="color:#27ae60;">' + blankData[key].answer + '</strong><br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
+                }
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            if (!isCorrect || isLeo) {
+                var radio = form.querySelector('[name="' + key + '"]');
+                if (!radio) continue;
+                var mcDiv = radio.closest('.mc-question');
+                if (!mcDiv) continue;
+                if (isCorrect) {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation correct">✓ <strong>原文:</strong> ' + mcData[key].evidence + '</div>');
+                } else {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation wrong"><strong>原文:</strong> ' + mcData[key].evidence + '</div>');
                 }
             }
         }
     }
 
-    function revealAnswers(btn, answersDiv, formElement) {
-        fillAnswersInForm(formElement);
+    function showScore(score) {
+        var el = document.getElementById('score-display');
+        el.textContent = score.correct + '/' + score.total;
+        el.className = 'show';
+        if (score.correct === score.total) {
+            el.style.background = '#f0fff4';
+            el.style.color = '#1e7e34';
+            el.style.border = '1px solid #b8e6c8';
+        } else {
+            el.style.background = '#fff5f5';
+            el.style.color = '#c0392b';
+            el.style.border = '1px solid #f5c6c6';
+        }
+    }
 
-        // 1. 改变按钮样式和文字
+    function showResults(btn, formElement, userAnswers, score, isLeo) {
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.mc-options li.wrong, .mc-options li.correct').forEach(function(el) { el.classList.remove('wrong', 'correct'); });
+        document.querySelectorAll('.blank-input.correct, .blank-input.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+
+        applyHighlighting(userAnswers);
+        showInlineExplanations(userAnswers, isLeo);
+        showScore(score);
+
         btn.innerHTML = 'Submitted Successfully!';
-        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
-        
-        // 2. 锁定所有的输入框，防止学生提交后修改答案
-        const formElements = formElement.elements;
-        for (let i = 0; i < formElements.length; i++) {
+        btn.style.backgroundColor = '#117a65';
+
+        var formElements = formElement.elements;
+        for (var i = 0; i < formElements.length; i++) {
             formElements[i].disabled = true;
-            // 为所有的li选项添加disabled类以取消hover效果
-            if(formElements[i].type === 'radio'){
+            if (formElements[i].type === 'radio') {
                 formElements[i].closest('li').classList.add('disabled');
             }
         }
 
-        // 3. 显示答案解析区域并平滑滚动到该区域
-        answersDiv.style.display = 'block';
-        setTimeout(() => {
-            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        var firstExp = document.querySelector('.inline-explanation');
+        if (firstExp) {
+            setTimeout(function() {
+                firstExp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
     }
 
     function resetButton(btn) {
@@ -817,7 +967,6 @@
         btn.disabled = false;
     }
 
-    // 绑定提交事件
     form.addEventListener("submit", handleFormSubmit);
 </script>
 

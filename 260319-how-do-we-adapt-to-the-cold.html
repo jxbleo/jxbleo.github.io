@@ -13,8 +13,8 @@
             --text-main: #333333;
             --text-light: #666666;
             --border-color: #e0e6ed;
-            --correct-bg: #e8f8f5;
-            --wrong-bg: #fdf2e9;
+            --correct-bg: #f0fff4;
+            --wrong-bg: #fff5f5;
         }
 
         body {
@@ -362,6 +362,70 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+
+        .inline-explanation {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .inline-explanation.wrong {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .inline-explanation.correct {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .mc-options li.wrong {
+            border-left-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            border-color: #f5c6c6 !important;
+        }
+
+        .mc-options li.wrong label {
+            color: #c0392b;
+        }
+
+        .mc-options li.correct {
+            border-left-color: #27ae60 !important;
+            background: #f0fff4 !important;
+            border-color: #b8e6c8 !important;
+        }
+
+        .blank-input.correct {
+            background: #f0fff4 !important;
+            border-bottom-color: #27ae60 !important;
+        }
+
+        .blank-input.wrong {
+            background: #fff5f5 !important;
+            border-bottom-color: #e74c3c !important;
+        }
+
+        #score-display {
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: none;
+        }
+
+        #score-display.show {
+            display: inline-block;
+        }
+
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px 5px;
@@ -391,7 +455,10 @@
     <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
-            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+                <span id="score-display"></span>
+            </div>
         </div>
 
         <h2>Part 1: Fill in the Blanks</h2>
@@ -640,24 +707,59 @@
     </div>
 </div>
 
-<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<!-- JavaScript to handle form submission and show inline explanations -->
 <script>
     const form = document.getElementById("quiz-form");
 
+    const blankData = {
+        Blank_01: { answer: 'Finland', evidence: '"coming from all over the world, including some of the coldest countries on Earth – places like Finland, where winter temperatures drop to -20°C"' },
+        Blank_02: { answer: '-89°C', evidence: '"the lowest temperature ever recorded was a very cold -89°C"' },
+        Blank_03: { answer: 'Antarctica', evidence: '"I\'m going to guess b) Antarctica"' },
+        Blank_04: { answer: 'place of birth', evidence: '"Our experience of cold depends on many things, including our genes, culture and place of birth"' },
+        Blank_05: { answer: '800 miles', evidence: '"lives on the icy island of Svalbard, 800 miles inside the Arctic Circle"' },
+        Blank_06: { answer: 'more tolerant', evidence: '"So, males often are more tolerant, perhaps, than females"' },
+        Blank_07: { answer: 'dealing with the cold', evidence: '"Then it\'s of course what you\'re used to. Are you used to dealing with the cold?"' },
+        Blank_08: { answer: 'cold temperatures', evidence: '"people who live in cold temperatures every day and have done for centuries"' },
+        Blank_09: { answer: 'warmer parts', evidence: '"compares it to ordinary Finns from warmer parts of the country"' },
+        Blank_10: { answer: 'far better', evidence: '"the reindeer herders, at least kind of mentally, handle the cold far better"' },
+        Blank_11: { answer: 'far less likely', evidence: '"They are far less likely to shiver"' },
+        Blank_12: { answer: 'genetic adaptations', evidence: '"including genetic adaptations passed on from parents to children"' },
+        Blank_13: { answer: 'Antarctica', evidence: '"The lowest temperature ever recorded on Earth was at the Vostok Research Station in Antarctica"' },
+        Blank_14: { answer: '1983', evidence: '"at the Vostok Research Station in Antarctica in 1983"' },
+        Blank_15: { answer: 'your muscles', evidence: '"a shiver is the shaking movement made by your muscles when you feel cold or afraid"' }
+    };
+
+    const mcData = {
+        Question_16: { answer: 'B', evidence: 'Becca: "I\'d rather be too hot and cool down than too cold and try to warm up."' },
+        Question_17: { answer: 'B', evidence: 'Phil: "Why do people feel the cold so differently? That\'s what we\'ll be discussing…"' },
+        Question_18: { answer: 'A', evidence: 'Becca: "first and foremost means more than anything else"' },
+        Question_19: { answer: 'B', evidence: 'Gunhild: "Are you used to dealing with the cold?"' },
+        Question_20: { answer: 'C', evidence: 'Phil: "There is some debate about whether men or women are more tolerant…"' },
+        Question_21: { answer: 'A', evidence: 'Phil: "someone born in Arctic Svalbard would feel less cold than someone born in Brazil"' },
+        Question_22: { answer: 'C', evidence: 'Phil: "subjectively means based on personal experience… mentally handle the cold better"' },
+        Question_23: { answer: 'C', evidence: 'Cara: "the more confusing the picture gets"' },
+        Question_24: { answer: 'C', evidence: 'Cara: "They are far less likely to shiver"' },
+        Question_25: { answer: 'A', evidence: 'Becca: "a shiver is the shaking movement made by your muscles when you feel cold or afraid"' }
+    };
+
     async function handleFormSubmit(event) {
         event.preventDefault();
-        
+
         const submitBtn = document.getElementById("submit-btn");
-        const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
         const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+        const isLeo = studentName === "leo";
 
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
 
-        if (studentName === "leo") {
-            revealAnswers(submitBtn, answersSection, form);
+        var userAnswers = collectUserAnswers();
+        var score = calcScore(userAnswers);
+        var data = new FormData(event.target);
+        data.append('Score', score.correct + '/' + score.total);
+
+        if (isLeo) {
+            showResults(submitBtn, form, userAnswers, score, true);
             return;
         }
 
@@ -682,19 +784,17 @@
 
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
-            revealAnswers(submitBtn, answersSection, form);
+            showResults(submitBtn, form, userAnswers, score, false);
             return;
         }
 
         fetch(actionUrl, {
             method: form.method,
             body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         }).then(response => {
             if (response.ok) {
-                revealAnswers(submitBtn, answersSection, form);
+                showResults(submitBtn, form, userAnswers, score, false);
             } else {
                 response.json().then(data => {
                     if (Object.hasOwn(data, 'errors')) {
@@ -711,69 +811,128 @@
         });
     }
 
-    function fillAnswersInForm(formElement) {
-        var answers = {
-            Blank_01: 'Finland',
-            Blank_02: '-89°C',
-            Blank_03: 'Antarctica',
-            Blank_04: 'place of birth',
-            Blank_05: '800 miles',
-            Blank_06: 'more tolerant',
-            Blank_07: 'dealing with the cold',
-            Blank_08: 'cold temperatures',
-            Blank_09: 'warmer parts',
-            Blank_10: 'far better',
-            Blank_11: 'far less likely',
-            Blank_12: 'genetic adaptations',
-            Blank_13: 'Antarctica',
-            Blank_14: '1983',
-            Blank_15: 'your muscles',
-            Question_16: 'B',
-            Question_17: 'B',
-            Question_18: 'A',
-            Question_19: 'B',
-            Question_20: 'C',
-            Question_21: 'A',
-            Question_22: 'C',
-            Question_23: 'C',
-            Question_24: 'C',
-            Question_25: 'A'
-        };
+    function collectUserAnswers() {
+        var answers = {};
+        for (var key in blankData) {
+            var el = form.querySelector('[name="' + key + '"]');
+            answers[key] = el ? el.value.trim() : '';
+        }
+        for (var key in mcData) {
+            var el = form.querySelector('[name="' + key + '"]:checked');
+            answers[key] = el ? el.value : '';
+        }
+        return answers;
+    }
 
-        for (var key in answers) {
-            var els = formElement.querySelectorAll('[name="' + key + '"]');
-            for (var j = 0; j < els.length; j++) {
-                var el = els[j];
-                if (el.type === 'radio') {
-                    if (el.value === answers[key]) {
-                        el.checked = true;
-                    }
+    function calcScore(userAnswers) {
+        var correct = 0, total = 0;
+        for (var key in blankData) {
+            total++;
+            if ((userAnswers[key] || '').toLowerCase() === blankData[key].answer.toLowerCase()) correct++;
+        }
+        for (var key in mcData) {
+            total++;
+            if ((userAnswers[key] || '') === mcData[key].answer) correct++;
+        }
+        return { correct: correct, total: total };
+    }
+
+    function applyHighlighting(userAnswers) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            var input = form.querySelector('[name="' + key + '"]');
+            if (input) {
+                input.classList.add(isCorrect ? 'correct' : 'wrong');
+                input.style.width = Math.max(userAns.length * 0.9 + 2, 8) + 'ch';
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            var correctEl = form.querySelector('[name="' + key + '"][value="' + mcData[key].answer + '"]');
+            if (correctEl) correctEl.closest('li').classList.add('correct');
+            if (!isCorrect && userAns) {
+                var wrongEl = form.querySelector('[name="' + key + '"][value="' + userAns + '"]');
+                if (wrongEl) wrongEl.closest('li').classList.add('wrong');
+            }
+        }
+    }
+
+    function showInlineExplanations(userAnswers, isLeo) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            if (!isCorrect || isLeo) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (!input) continue;
+                var li = input.closest('li');
+                if (!li) continue;
+                if (isCorrect) {
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation correct">✓ <strong>正确答案:</strong> ' + blankData[key].answer + '<br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
                 } else {
-                    el.value = answers[key];
-                    el.style.width = (answers[key].length + 2) + 'ch';
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation wrong">→ <strong style="color:#27ae60;">' + blankData[key].answer + '</strong><br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
+                }
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            if (!isCorrect || isLeo) {
+                var radio = form.querySelector('[name="' + key + '"]');
+                if (!radio) continue;
+                var mcDiv = radio.closest('.mc-question');
+                if (!mcDiv) continue;
+                if (isCorrect) {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation correct">✓ <strong>原文:</strong> ' + mcData[key].evidence + '</div>');
+                } else {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation wrong"><strong>原文:</strong> ' + mcData[key].evidence + '</div>');
                 }
             }
         }
     }
 
-    function revealAnswers(btn, answersDiv, formElement) {
-        fillAnswersInForm(formElement);
+    function showScore(score) {
+        var el = document.getElementById('score-display');
+        el.textContent = score.correct + '/' + score.total;
+        el.className = 'show';
+        if (score.correct === score.total) {
+            el.style.background = '#f0fff4';
+            el.style.color = '#1e7e34';
+            el.style.border = '1px solid #b8e6c8';
+        } else {
+            el.style.background = '#fff5f5';
+            el.style.color = '#c0392b';
+            el.style.border = '1px solid #f5c6c6';
+        }
+    }
+
+    function showResults(btn, formElement, userAnswers, score, isLeo) {
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.mc-options li.wrong, .mc-options li.correct').forEach(function(el) { el.classList.remove('wrong', 'correct'); });
+        document.querySelectorAll('.blank-input.correct, .blank-input.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+
+        applyHighlighting(userAnswers);
+        showInlineExplanations(userAnswers, isLeo);
+        showScore(score);
 
         btn.innerHTML = 'Submitted Successfully!';
         btn.style.backgroundColor = '#117a65';
-        
-        const formElements = formElement.elements;
-        for (let i = 0; i < formElements.length; i++) {
+
+        var formElements = formElement.elements;
+        for (var i = 0; i < formElements.length; i++) {
             formElements[i].disabled = true;
-            if(formElements[i].type === 'radio'){
+            if (formElements[i].type === 'radio') {
                 formElements[i].closest('li').classList.add('disabled');
             }
         }
 
-        answersDiv.style.display = 'block';
-        setTimeout(() => {
-            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        var firstExp = document.querySelector('.inline-explanation');
+        if (firstExp) {
+            setTimeout(function() {
+                firstExp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
     }
 
     function resetButton(btn) {

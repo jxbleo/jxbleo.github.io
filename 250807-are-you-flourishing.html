@@ -363,6 +363,69 @@
             color: var(--secondary-color);
             font-weight: 500;
         }
+        .inline-explanation {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .inline-explanation.wrong {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .inline-explanation.correct {
+            background: #f0fff4;
+            border: 1px solid #b8e6c8;
+            border-left: 4px solid #27ae60;
+            color: #1e7e34;
+        }
+
+        .mc-options li.wrong {
+            border-left-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            border-color: #f5c6c6 !important;
+        }
+
+        .mc-options li.wrong label {
+            color: #c0392b;
+        }
+
+        .mc-options li.correct {
+            border-left-color: #27ae60 !important;
+            background: #f0fff4 !important;
+            border-color: #b8e6c8 !important;
+        }
+
+        .blank-input.correct {
+            background: #f0fff4 !important;
+            border-bottom-color: #27ae60 !important;
+        }
+
+        .blank-input.wrong {
+            background: #fff5f5 !important;
+            border-bottom-color: #e74c3c !important;
+        }
+
+        #score-display {
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: none;
+        }
+
+        #score-display.show {
+            display: inline-block;
+        }
+
         /* ----- 以下是专门针对手机端的适配代码 ----- */
         @media screen and (max-width: 768px) {
             body {
@@ -393,7 +456,10 @@
     <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
-            <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
+                <span id="score-display"></span>
+            </div>
         </div>
 
         <h2>Part 1: Fill in the Blanks</h2>
@@ -653,25 +719,64 @@
     </div>
 </div>
 
-<!-- JavaScript to handle form submission via AJAX and reveal answers -->
+<!-- JavaScript to handle form submission and show inline explanations -->
 <script>
     const form = document.getElementById("quiz-form");
 
+    const blankData = {
+        Blank_01: { answer: 'wellbeing', evidence: '"you probably know the word \'wellbeing\' – it\'s a general feeling of health and happiness"' },
+        Blank_02: { answer: 'whole life', evidence: '"it\'s not just about wellbeing – it\'s about your whole life being good"' },
+        Blank_03: { answer: 'buzzword', evidence: '"\'Flourishing\' is a psychological buzzword – a word or phrase that has become fashionable"' },
+        Blank_04: { answer: 'financial security', evidence: '"People who are flourishing feel good about all aspects of their life, including happiness, health, relationships and financial security"' },
+        Blank_05: { answer: '200,000 people', evidence: '"a new survey into the lives of over 200,000 people in 22 countries"' },
+        Blank_06: { answer: '22 countries', evidence: '"a new survey into the lives of over 200,000 people in 22 countries"' },
+        Blank_07: { answer: 'six areas', evidence: '"the study investigated six areas of life, including health, finances, social relationships and religion"' },
+        Blank_08: { answer: 'material', evidence: '"high-income countries scored higher on some of the more material aspects of flourishing, so things like finance"' },
+        Blank_09: { answer: 'social cohesion', evidence: '"Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion"' },
+        Blank_10: { answer: 'nugget', evidence: '"A nugget means a small piece of something good, like wisdom, or precious, like a nugget of gold"' },
+        Blank_11: { answer: 'women', evidence: '"in Japan women flourished more than men"' },
+        Blank_12: { answer: 'opposite', evidence: '"in Brazil the opposite was true"' },
+        Blank_13: { answer: 'age of 50', evidence: '"across all countries, flourishing increased after the age of 50"' },
+        Blank_14: { answer: 'thankful', evidence: '"Being thankful for what we have is a way of increasing the amount of flourishing that we have in our lives"' },
+        Blank_15: { answer: 'connection', evidence: '"Showing kindness, which helps us to develop connection with other people"' },
+        Blank_16: { answer: 'savouring', evidence: '"just celebrating our own accomplishments – I think we\'ve spoken on the programme before about savouring"' },
+        Blank_17: { answer: 'small wins', evidence: '"small wins – minor achievements or successes which bring you a little closer to your long-term goals in life"' },
+        Blank_18: { answer: 'Indonesia', evidence: '"The correct answer is Indonesia"' },
+        Blank_19: { answer: 'savour', evidence: '"If you savour something, you enjoy something as much as possible by experiencing it slowly"' },
+        Blank_20: { answer: 'gratitude', evidence: '"Gratitude means being thankful for what you have"' }
+    };
+
+    const mcData = {
+        Question_21: { answer: 'B', evidence: 'Claudia Hammond: "This is another psychological buzzword with added evidence."' },
+        Question_22: { answer: 'D', evidence: 'Dr Olusoga: "Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion."' },
+        Question_23: { answer: 'A', evidence: 'Phil: "I think the same. I think I\'m happy and I\'ve got everything I need."' },
+        Question_24: { answer: 'C', evidence: 'Georgie: "in Japan women flourished more than men, while in Brazil the opposite was true."' },
+        Question_25: { answer: 'D', evidence: 'Dr Olusoga distinguished between high-income countries\' material aspects and middle-income countries\' meaning of relationships and kindness' },
+        Question_26: { answer: 'C', evidence: 'Dr Olusoga: "things that are as simple as just practising gratitude… is a way of increasing the amount of flourishing that we have in our lives"' },
+        Question_27: { answer: 'A', evidence: 'Georgie: "To savour means to fully enjoy something by experiencing it slowly and mindfully."' },
+        Question_28: { answer: 'C', evidence: 'Phil: "savouring each small win along the way is vital to flourishing"' },
+        Question_29: { answer: 'D', evidence: 'Phil guessed Denmark, but the correct answer was Indonesia' },
+        Question_30: { answer: 'B', evidence: 'Dr Olusoga: "practising gratitude… Showing kindness, which helps us to develop connection with other people."' }
+    };
+
     async function handleFormSubmit(event) {
-        event.preventDefault(); // 防止页面跳转
-        
+        event.preventDefault();
+
         const submitBtn = document.getElementById("submit-btn");
-        const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
         const studentName = document.getElementById("student-name").value.trim().toLowerCase();
+        const isLeo = studentName === "leo";
 
-        // 改变按钮状态为"正在提交"
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
 
-        if (studentName === "leo") {
-            revealAnswers(submitBtn, answersSection, form);
+        var userAnswers = collectUserAnswers();
+        var score = calcScore(userAnswers);
+        var data = new FormData(event.target);
+        data.append('Score', score.correct + '/' + score.total);
+
+        if (isLeo) {
+            showResults(submitBtn, form, userAnswers, score, true);
             return;
         }
 
@@ -694,24 +799,19 @@
             return;
         }
 
-        // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
-            revealAnswers(submitBtn, answersSection, form);
+            showResults(submitBtn, form, userAnswers, score, false);
             return;
         }
 
-        // 使用 Fetch API 在后台发送数据给 Formspree
         fetch(actionUrl, {
             method: form.method,
             body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         }).then(response => {
             if (response.ok) {
-                // 提交成功，显示答案
-                revealAnswers(submitBtn, answersSection, form);
+                showResults(submitBtn, form, userAnswers, score, false);
             } else {
                 response.json().then(data => {
                     if (Object.hasOwn(data, 'errors')) {
@@ -728,78 +828,128 @@
         });
     }
 
-    function fillAnswersInForm(formElement) {
-        var answers = {
-            Blank_01: 'wellbeing',
-            Blank_02: 'whole life',
-            Blank_03: 'buzzword',
-            Blank_04: 'financial security',
-            Blank_05: '200,000 people',
-            Blank_06: '22 countries',
-            Blank_07: 'six areas',
-            Blank_08: 'material',
-            Blank_09: 'social cohesion',
-            Blank_10: 'nugget',
-            Blank_11: 'women',
-            Blank_12: 'opposite',
-            Blank_13: 'age of 50',
-            Blank_14: 'thankful',
-            Blank_15: 'connection',
-            Blank_16: 'savouring',
-            Blank_17: 'small wins',
-            Blank_18: 'Indonesia',
-            Blank_19: 'savour',
-            Blank_20: 'gratitude',
-            Question_21: 'B',
-            Question_22: 'D',
-            Question_23: 'A',
-            Question_24: 'C',
-            Question_25: 'D',
-            Question_26: 'C',
-            Question_27: 'A',
-            Question_28: 'C',
-            Question_29: 'D',
-            Question_30: 'B'
-        };
+    function collectUserAnswers() {
+        var answers = {};
+        for (var key in blankData) {
+            var el = form.querySelector('[name="' + key + '"]');
+            answers[key] = el ? el.value.trim() : '';
+        }
+        for (var key in mcData) {
+            var el = form.querySelector('[name="' + key + '"]:checked');
+            answers[key] = el ? el.value : '';
+        }
+        return answers;
+    }
 
-        for (var key in answers) {
-            var els = formElement.querySelectorAll('[name="' + key + '"]');
-            for (var j = 0; j < els.length; j++) {
-                var el = els[j];
-                if (el.type === 'radio') {
-                    if (el.value === answers[key]) {
-                        el.checked = true;
-                    }
+    function calcScore(userAnswers) {
+        var correct = 0, total = 0;
+        for (var key in blankData) {
+            total++;
+            if ((userAnswers[key] || '').toLowerCase() === blankData[key].answer.toLowerCase()) correct++;
+        }
+        for (var key in mcData) {
+            total++;
+            if ((userAnswers[key] || '') === mcData[key].answer) correct++;
+        }
+        return { correct: correct, total: total };
+    }
+
+    function applyHighlighting(userAnswers) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            var input = form.querySelector('[name="' + key + '"]');
+            if (input) {
+                input.classList.add(isCorrect ? 'correct' : 'wrong');
+                input.style.width = Math.max(userAns.length * 0.9 + 2, 8) + 'ch';
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            var correctEl = form.querySelector('[name="' + key + '"][value="' + mcData[key].answer + '"]');
+            if (correctEl) correctEl.closest('li').classList.add('correct');
+            if (!isCorrect && userAns) {
+                var wrongEl = form.querySelector('[name="' + key + '"][value="' + userAns + '"]');
+                if (wrongEl) wrongEl.closest('li').classList.add('wrong');
+            }
+        }
+    }
+
+    function showInlineExplanations(userAnswers, isLeo) {
+        for (var key in blankData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns.toLowerCase() === blankData[key].answer.toLowerCase();
+            if (!isCorrect || isLeo) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (!input) continue;
+                var li = input.closest('li');
+                if (!li) continue;
+                if (isCorrect) {
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation correct">✓ <strong>正确答案:</strong> ' + blankData[key].answer + '<br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
                 } else {
-                    el.value = answers[key];
-                    el.style.width = (answers[key].length + 2) + 'ch';
+                    li.insertAdjacentHTML('afterend', '<div class="inline-explanation wrong">→ <strong style="color:#27ae60;">' + blankData[key].answer + '</strong><br><strong>原文:</strong> ' + blankData[key].evidence + '</div>');
+                }
+            }
+        }
+        for (var key in mcData) {
+            var userAns = userAnswers[key] || '';
+            var isCorrect = userAns === mcData[key].answer;
+            if (!isCorrect || isLeo) {
+                var radio = form.querySelector('[name="' + key + '"]');
+                if (!radio) continue;
+                var mcDiv = radio.closest('.mc-question');
+                if (!mcDiv) continue;
+                if (isCorrect) {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation correct">✓ <strong>原文:</strong> ' + mcData[key].evidence + '</div>');
+                } else {
+                    mcDiv.insertAdjacentHTML('beforeend', '<div class="inline-explanation wrong"><strong>原文:</strong> ' + mcData[key].evidence + '</div>');
                 }
             }
         }
     }
 
-    function revealAnswers(btn, answersDiv, formElement) {
-        fillAnswersInForm(formElement);
+    function showScore(score) {
+        var el = document.getElementById('score-display');
+        el.textContent = score.correct + '/' + score.total;
+        el.className = 'show';
+        if (score.correct === score.total) {
+            el.style.background = '#f0fff4';
+            el.style.color = '#1e7e34';
+            el.style.border = '1px solid #b8e6c8';
+        } else {
+            el.style.background = '#fff5f5';
+            el.style.color = '#c0392b';
+            el.style.border = '1px solid #f5c6c6';
+        }
+    }
 
-        // 1. 改变按钮样式和文字
+    function showResults(btn, formElement, userAnswers, score, isLeo) {
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.mc-options li.wrong, .mc-options li.correct').forEach(function(el) { el.classList.remove('wrong', 'correct'); });
+        document.querySelectorAll('.blank-input.correct, .blank-input.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+
+        applyHighlighting(userAnswers);
+        showInlineExplanations(userAnswers, isLeo);
+        showScore(score);
+
         btn.innerHTML = 'Submitted Successfully!';
-        btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功
-        
-        // 2. 锁定所有的输入框，防止学生提交后修改答案
-        const formElements = formElement.elements;
-        for (let i = 0; i < formElements.length; i++) {
+        btn.style.backgroundColor = '#117a65';
+
+        var formElements = formElement.elements;
+        for (var i = 0; i < formElements.length; i++) {
             formElements[i].disabled = true;
-            // 为所有的li选项添加disabled类以取消hover效果
-            if(formElements[i].type === 'radio'){
+            if (formElements[i].type === 'radio') {
                 formElements[i].closest('li').classList.add('disabled');
             }
         }
 
-        // 3. 显示答案解析区域并平滑滚动到该区域
-        answersDiv.style.display = 'block';
-        setTimeout(() => {
-            answersDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        var firstExp = document.querySelector('.inline-explanation');
+        if (firstExp) {
+            setTimeout(function() {
+                firstExp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
     }
 
     function resetButton(btn) {
@@ -807,7 +957,6 @@
         btn.disabled = false;
     }
 
-    // 绑定提交事件
     form.addEventListener("submit", handleFormSubmit);
 </script>
 
