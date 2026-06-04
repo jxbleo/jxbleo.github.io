@@ -661,6 +661,25 @@
             return;
         }
 
+        let allFilled = true;
+        const required = form.querySelectorAll("[required]");
+        for (let el of required) {
+            if (!el.value || el.value.trim() === "") {
+                allFilled = false;
+                el.style.borderColor = "red";
+                el.style.borderBottomColor = "red";
+            } else {
+                el.style.borderColor = "";
+                el.style.borderBottomColor = "";
+            }
+        }
+
+        if (!allFilled) {
+            alert("Please answer all questions before submitting.");
+            resetButton(submitBtn);
+            return;
+        }
+
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
             revealAnswers(submitBtn, answersSection, form);
