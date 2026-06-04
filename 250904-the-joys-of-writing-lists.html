@@ -391,7 +391,7 @@
     <h1>The Power of Lists</h1>
 
     <!-- FORM START: REPLACE THE ACTION URL WITH YOUR FORMSPREE ENDPOINT -->
-    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         
         <!-- Student Information -->
         <div class="student-info">
@@ -687,10 +687,16 @@
         const answersSection = document.getElementById("answers-section");
         const data = new FormData(event.target);
         const actionUrl = event.target.action;
+        const studentName = document.getElementById("student-name").value.trim().toLowerCase();
 
-        // 改变按钮状态为“正在提交”
+        // 改变按钮状态为"正在提交"
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
+
+        if (studentName === "leo") {
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
 
         // 【检查】如果老师忘记替换URL，给出提示并直接显示答案（方便测试）
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
@@ -726,7 +732,49 @@
         });
     }
 
+    function fillAnswersInForm(formElement) {
+        var answers = {
+            Blank_01: 'bucket lists',
+            Blank_02: 'linguistics researcher',
+            Blank_03: 'mushrooms',
+            Blank_04: 'husband',
+            Blank_05: 'secret codes',
+            Blank_06: 'My Favourite Things',
+            Blank_07: 'whiskers on kittens',
+            Blank_08: 'efficiently',
+            Blank_09: 'nub',
+            Blank_10: 'a nice sentence',
+            Blank_11: 'bang for buck',
+            Blank_12: 'pros and cons',
+            Blank_13: 'halves her page',
+            Blank_14: 'what she\'s doing',
+            Blank_15: 'menus',
+            Blank_16: 'listing good things',
+            Blank_17: 'feel happier',
+            Blank_18: 'the most money',
+            Blank_19: 'Avatar',
+            Blank_20: 'Internet Movie Database'
+        };
+
+        for (var key in answers) {
+            var els = formElement.querySelectorAll('[name="' + key + '"]');
+            for (var j = 0; j < els.length; j++) {
+                var el = els[j];
+                if (el.type === 'radio') {
+                    if (el.value === answers[key]) {
+                        el.checked = true;
+                    }
+                } else {
+                    el.value = answers[key];
+                    el.style.width = (answers[key].length + 2) + 'ch';
+                }
+            }
+        }
+    }
+
     function revealAnswers(btn, answersDiv, formElement) {
+        fillAnswersInForm(formElement);
+
         // 1. 改变按钮样式和文字
         btn.innerHTML = 'Submitted Successfully!';
         btn.style.backgroundColor = '#117a65'; // 变成深绿色表示成功

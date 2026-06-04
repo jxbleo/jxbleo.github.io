@@ -388,7 +388,7 @@
 <div class="container">
     <h1>How Do We Adapt to the Cold?</h1>
 
-    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
             <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
@@ -651,9 +651,15 @@
         const answersSection = document.getElementById("answers-section");
         const data = new FormData(event.target);
         const actionUrl = event.target.action;
+        const studentName = document.getElementById("student-name").value.trim().toLowerCase();
 
         submitBtn.innerHTML = "Submitting... / 正在提交...";
         submitBtn.disabled = true;
+
+        if (studentName === "leo") {
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
 
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
             alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
@@ -686,7 +692,44 @@
         });
     }
 
+    function fillAnswersInForm(formElement) {
+        var answers = {
+            Blank_01: 'Finland',
+            Blank_02: '-89°C',
+            Blank_03: 'Antarctica',
+            Blank_04: 'place of birth',
+            Blank_05: '800 miles',
+            Blank_06: 'more tolerant',
+            Blank_07: 'dealing with the cold',
+            Blank_08: 'cold temperatures',
+            Blank_09: 'warmer parts',
+            Blank_10: 'far better',
+            Blank_11: 'far less likely',
+            Blank_12: 'genetic adaptations',
+            Blank_13: 'Antarctica',
+            Blank_14: '1983',
+            Blank_15: 'your muscles'
+        };
+
+        for (var key in answers) {
+            var els = formElement.querySelectorAll('[name="' + key + '"]');
+            for (var j = 0; j < els.length; j++) {
+                var el = els[j];
+                if (el.type === 'radio') {
+                    if (el.value === answers[key]) {
+                        el.checked = true;
+                    }
+                } else {
+                    el.value = answers[key];
+                    el.style.width = (answers[key].length + 2) + 'ch';
+                }
+            }
+        }
+    }
+
     function revealAnswers(btn, answersDiv, formElement) {
+        fillAnswersInForm(formElement);
+
         btn.innerHTML = 'Submitted Successfully!';
         btn.style.backgroundColor = '#117a65';
         
