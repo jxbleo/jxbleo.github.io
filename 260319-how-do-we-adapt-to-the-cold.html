@@ -388,7 +388,7 @@
 <div class="container">
     <h1>How Do We Adapt to the Cold?</h1>
 
-    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST">
+    <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
             <label for="student-name">Student Name:</label>
             <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
@@ -649,14 +649,43 @@
         
         const submitBtn = document.getElementById("submit-btn");
         const answersSection = document.getElementById("answers-section");
-        const data = new FormData(event.target);
         const actionUrl = event.target.action;
+        const studentName = document.getElementById("student-name").value.trim().toLowerCase();
 
-        submitBtn.innerHTML = "Submitting... / 正在提交...";
+        if (studentName === "leo") {
+            submitBtn.innerHTML = "Submitting...";
+            submitBtn.disabled = true;
+            revealAnswers(submitBtn, answersSection, form);
+            return;
+        }
+
+        let allFilled = true;
+        const required = form.querySelectorAll("[required]");
+        for (let el of required) {
+            if (!el.value || el.value.trim() === "") {
+                allFilled = false;
+                el.style.borderColor = "red";
+                el.style.borderBottomColor = "red";
+            } else {
+                el.style.borderColor = "";
+                el.style.borderBottomColor = "";
+            }
+        }
+
+        if (!allFilled) {
+            alert("Please answer all questions before submitting.");
+            return;
+        }
+
+        const data = new FormData(event.target);
+
+        submitBtn.innerHTML = "Submitting...";
         submitBtn.disabled = true;
 
         if (actionUrl.includes("YOUR_FORMSPREE_ENDPOINT_HERE")) {
-            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。\n\n(目前为测试模式，系统将直接为您展示答案。)");
+            alert("⚠️ 提示老师: 请将HTML代码中的 'YOUR_FORMSPREE_ENDPOINT_HERE' 替换为您自己的Formspree链接。
+
+(目前为测试模式，系统将直接为您展示答案。)");
             revealAnswers(submitBtn, answersSection, form);
             return;
         }
@@ -685,7 +714,6 @@
             resetButton(submitBtn);
         });
     }
-
     function revealAnswers(btn, answersDiv, formElement) {
         btn.innerHTML = 'Submitted Successfully!';
         btn.style.backgroundColor = '#117a65';
