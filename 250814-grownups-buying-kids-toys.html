@@ -83,6 +83,17 @@
             cursor: not-allowed;
         }
 
+        .audio-player {
+            text-align: center;
+            margin: 20px 0 30px;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            max-width: 500px;
+            height: 44px;
+            border-radius: 6px;
+        }
         h2 {
             color: var(--primary-color);
             font-size: 1.4em;
@@ -452,6 +463,11 @@
 
 <div class="container">
     <h1>Grownups Buying Kids Toys</h1>
+    <div class="audio-player">
+        <audio id="bbc-audio" controls preload="metadata">
+            <source src="bbc-audio/250814-grownups-buying-kids-toys.mp3" type="audio/mpeg">
+        </audio>
+    </div>
 
     <form id="quiz-form" action="https://formspree.io/f/mpqnvgel" method="POST" novalidate>
         <div class="student-info">
