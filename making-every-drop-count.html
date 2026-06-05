@@ -415,6 +415,139 @@
             .answers-content { padding: 20px 10px; }
             .student-info { padding: 15px; }
         }
+        /* 分屏布局 — IELTS 机考风格 */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        @media (min-width: 769px) {
+            .split-layout {
+                height: calc(100vh - 360px);
+                min-height: 400px;
+            }
+            .passage-panel, .questions-panel {
+                overflow-y: auto;
+                padding: 8px 10px;
+                border: 2px solid;
+                border-radius: 8px;
+            }
+            .passage-panel,
+            .questions-panel {
+                border-color: #60a5fa;
+            }
+            .passage-panel::-webkit-scrollbar, .questions-panel::-webkit-scrollbar {
+                width: 6px;
+            }
+            .passage-panel::-webkit-scrollbar-thumb, .questions-panel::-webkit-scrollbar-thumb {
+                background: #c1c1c1;
+                border-radius: 3px;
+            }
+            .passage-panel .passage {
+                padding: 10px 14px;
+            }
+            .questions-panel .tfng-question,
+            .questions-panel .heading-question,
+            .questions-panel .summary-question {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Layout toggle button */
+        .layout-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 0.85em;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-page);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            margin-bottom: 16px;
+        }
+        .layout-toggle:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background: #eff6ff;
+        }
+        @media (max-width: 768px) {
+            .layout-toggle { display: none; }
+        }
+
+        /* Panel header */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .panel-header h2 {
+            margin: 0;
+            font-size: 1.1em;
+            border-left: 3px solid var(--secondary-color);
+            padding-left: 10px;
+        }
+
+        /* Font controls */
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .font-btn {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-page);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            line-height: 1;
+            transition: all 0.15s;
+            padding: 0;
+        }
+        .font-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background: #eff6ff;
+        }
+        .font-val {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Vertical mode */
+        .split-layout.vertical {
+            grid-template-columns: 1fr;
+            height: auto;
+            min-height: 0;
+        }
+        .split-layout.vertical .passage-panel,
+        .split-layout.vertical .questions-panel {
+            overflow-y: visible;
+            max-height: none;
+            padding: 0;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -429,8 +562,18 @@
             <input type="text" id="student-name" name="Student_Name" placeholder="Enter your full name here" required>
         </div>
 
-        <h2>Reading Passage</h2>
-        <div class="passage">
+        <button class="layout-toggle" id="layout-toggle" type="button">⇕ Stacked</button>
+        <div class="split-layout">
+            <div class="passage-panel">
+                <div class="panel-header">
+                    <h2>Reading Passage</h2>
+                    <div class="font-controls">
+                        <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
+                        <span class="font-val">16</span>
+                        <button class="font-btn font-plus" type="button" title="Increase font size">+</button>
+                    </div>
+                </div>
+                <div class="passage">
             <p><span class="para-label">Paragraph A [Q14]</span><br>
             The history of human civilisation is entwined with the history of the ways we have learned to manipulate water resources. As towns gradually expanded, water was brought from increasingly remote sources, leading to sophisticated engineering efforts such as dams and aqueducts. At the height of the Roman Empire, nine major systems, with an innovative layout of pipes and well-built sewers, supplied the occupants of Rome with as much water per person as is provided in many parts of the industrial world today.</p>
 
@@ -457,8 +600,16 @@
 
             <p style="font-size: 13px; color: var(--text-light); margin-top: 16px;">* aquifers: underground layers of rock containing water</p>
         </div>
-
-        <h2>Questions</h2>
+            </div>
+            <div class="questions-panel">
+                <div class="panel-header">
+                    <h2>Questions</h2>
+                    <div class="font-controls">
+                        <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
+                        <span class="font-val">16</span>
+                        <button class="font-btn font-plus" type="button" title="Increase font size">+</button>
+                    </div>
+                </div>
 
         <div class="question-section">
             <div class="section-label">Questions 14–20 — List of Headings</div>
@@ -671,6 +822,8 @@
                 </div>
             </div>
         </div>
+            </div>
+        </div>
 
         <button type="submit" id="submit-btn" class="submit-btn">Submit Answers</button>
     </form>
@@ -850,6 +1003,62 @@
     }
 
     form.addEventListener("submit", handleFormSubmit);
+
+    // Layout toggle with localStorage
+    (function() {
+        var toggle = document.getElementById('layout-toggle');
+        var split = document.querySelector('.split-layout');
+        if (!toggle || !split) return;
+        if (localStorage.getItem('ieltsLayout') === 'vertical') {
+            split.classList.add('vertical');
+            toggle.textContent = '⇔ Side by Side';
+        }
+        toggle.addEventListener('click', function() {
+            split.classList.toggle('vertical');
+            var v = split.classList.contains('vertical');
+            toggle.textContent = v ? '⇔ Side by Side' : '⇕ Stacked';
+            localStorage.setItem('ieltsLayout', v ? 'vertical' : 'horizontal');
+        });
+    })();
+
+    // Font size controls
+    (function() {
+        var panels = [
+            { panel: document.querySelector('.passage-panel'), key: 'ieltsFontPassage' },
+            { panel: document.querySelector('.questions-panel'), key: 'ieltsFontQuestions' }
+        ];
+        panels.forEach(function(p) {
+            if (!p.panel) return;
+            var valEl = p.panel.querySelector('.font-val');
+            var minus = p.panel.querySelector('.font-minus');
+            var plus = p.panel.querySelector('.font-plus');
+            if (!valEl || !minus || !plus) return;
+            var saved = localStorage.getItem(p.key);
+            if (saved) {
+                valEl.textContent = saved;
+                p.panel.style.fontSize = saved + 'px';
+            }
+            minus.addEventListener('click', function() {
+                var cur = parseInt(valEl.textContent);
+                if (cur > 10) {
+                    cur--;
+                    valEl.textContent = cur;
+                    p.panel.style.fontSize = cur + 'px';
+                    localStorage.setItem(p.key, cur);
+                }
+            });
+            plus.addEventListener('click', function() {
+                var cur = parseInt(valEl.textContent);
+                if (cur < 24) {
+                    cur++;
+                    valEl.textContent = cur;
+                    p.panel.style.fontSize = cur + 'px';
+                    localStorage.setItem(p.key, cur);
+                }
+            });
+        });
+    })();
+
 </script>
 
 </body>
