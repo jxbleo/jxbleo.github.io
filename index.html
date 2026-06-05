@@ -176,7 +176,9 @@
         }
 
         .search-btn {
-            display: inline-block;
+            display: block;
+            width: fit-content;
+            margin: 0 auto 12px;
             font-size: 0.85em;
             color: var(--text-muted);
             cursor: pointer;
@@ -184,7 +186,6 @@
             padding: 6px 12px;
             border-radius: 6px;
             transition: all 0.2s;
-            margin-bottom: 12px;
         }
         .search-btn:hover {
             color: var(--text-primary);
@@ -376,7 +377,7 @@
         btn.textContent = isOpen ? '[show]' : '[hide]';
         var searchBtn = section.querySelector('.search-btn');
         if (searchBtn) {
-            searchBtn.style.display = isOpen ? 'none' : 'inline-block';
+            searchBtn.style.display = isOpen ? 'none' : 'block';
         }
         if (isOpen) {
             var input = section.querySelector('.search-input');
