@@ -492,6 +492,65 @@
             .student-info { padding: 15px; }
             .mc-options label { padding: 10px 12px; }
         }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal-box p {
+            margin: 0 0 24px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #333;
+        }
+        .modal-box .modal-name {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-btn.confirm {
+            background: #27ae60;
+            color: #fff;
+        }
+        .modal-btn.confirm:hover {
+            background: #1e8449;
+        }
+        .modal-btn.cancel {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .modal-btn.cancel:hover {
+            background: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -808,6 +867,24 @@
         Question_30: { answer: 'B', evidence: 'Phil: "He visits schools around the UK telling his story to young people, reminding them always to question what they see and hear online."' }
     };
 
+    function showConfirmModal(name) {
+        return new Promise(function(resolve) {
+            var overlay = document.getElementById("confirm-modal");
+            var nameEl = document.getElementById("modal-student-name");
+            nameEl.textContent = name;
+            overlay.classList.add("show");
+            document.getElementById("modal-confirm").onclick = function() {
+                overlay.classList.remove("show");
+                resolve(true);
+            };
+            document.getElementById("modal-cancel").onclick = function() {
+                overlay.classList.remove("show");
+                resolve(false);
+            };
+        });
+    }
+
+
     async function handleFormSubmit(event) {
         event.preventDefault();
 
@@ -844,6 +921,12 @@
 
         if (!allFilled) {
             alert("Please answer all questions before submitting.");
+            resetButton(submitBtn);
+            return;
+        }
+
+        var confirmed = await showConfirmModal(studentName);
+        if (!confirmed) {
             resetButton(submitBtn);
             return;
         }
@@ -1012,5 +1095,14 @@
 <script>
 (function(){var a=document.getElementById("bbc-audio"),l=document.getElementById("audio-loading");if(a&&l){a.addEventListener("loadstart",function(){l.classList.add("show")});a.addEventListener("waiting",function(){l.classList.add("show")});a.addEventListener("canplay",function(){l.classList.remove("show")});a.addEventListener("playing",function(){l.classList.remove("show")});a.addEventListener("error",function(){l.classList.remove("show")})}})();
 </script>
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <p><span class="modal-name" id="modal-student-name"></span>, once submitted you cannot modify your answers.<br>Are you sure?</p>
+            <div class="modal-actions">
+                <button class="modal-btn confirm" id="modal-confirm">Confirm</button>
+                <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
