@@ -129,7 +129,12 @@
             display: none;
         }
         .audio-loading.loaded #loading-text {
-            color: #27ae60;
+            background: linear-gradient(90deg, #ff0000, #ff8800, #ffdd00, #00cc44, #0099ff, #6633ff, #ff00cc, #ff0000);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
         }
         .audio-loading.error .dot {
             display: none;
