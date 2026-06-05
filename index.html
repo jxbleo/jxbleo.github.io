@@ -6,13 +6,13 @@
     <title>Leo's English Practice Hub</title>
     <style>
         :root {
-            --primary-dark: #1e293b;
-            --primary-blue: #3b82f6;
-            --accent-green: #10b981;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-muted: #64748b;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --text-muted: #8f8f8f;
+            --border: #e5e7eb;
+            --bg-hover: #f1f1f1;
+            --bg-card: #ffffff;
+            --bg-page: #ffffff;
         }
 
         * {
@@ -21,33 +21,31 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             line-height: 1.6;
         }
 
-        /* 顶部渐变横幅 */
         .header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 50px 20px;
+            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+            color: #fff;
+            padding: 60px 20px 36px;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .header h1 {
             margin: 0;
             font-size: 2.2em;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            margin: 15px 0 0 0;
-            color: #bfdbfe;
-            font-size: 1.1em;
+            margin: 12px 0 0 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.05em;
         }
 
         .container {
@@ -60,16 +58,13 @@
         .section-title {
             display: flex;
             align-items: center;
-            color: var(--primary-dark);
-            font-size: 1.4em;
+            color: var(--text-primary);
+            font-size: 1.15em;
             margin-bottom: 20px;
             margin-top: 45px;
             font-weight: 600;
-        }
-
-        .section-title span {
-            margin-right: 10px;
-            font-size: 1.2em;
+            cursor: pointer;
+            user-select: none;
         }
 
         /* 菜单卡片列表 */
@@ -82,18 +77,16 @@
         }
 
         .menu-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-card);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
             overflow: hidden;
         }
 
         .menu-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border-color: #cbd5e1;
+            background: var(--bg-hover);
+            border-color: #d1d5db;
         }
 
         .menu-card a {
@@ -112,8 +105,8 @@
 
         .card-title {
             margin: 0 0 8px 0;
-            color: var(--primary-dark);
-            font-size: 1.25em;
+            color: var(--text-primary);
+            font-size: 1.15em;
             font-weight: 600;
         }
 
@@ -149,80 +142,92 @@
         }
 
         .tag-bbc {
-            background-color: #eff6ff;
-            color: #2563eb;
+            background-color: var(--bg-hover);
+            color: var(--text-muted);
         }
 
         .tag-topic {
-            background-color: #f0fdf4;
-            color: #16a34a;
+            background-color: var(--bg-hover);
+            color: var(--text-secondary);
         }
         
         .tag-pending {
-            background-color: #f3f4f6;
-            color: #6b7280;
+            background-color: var(--bg-hover);
+            color: var(--text-muted);
         }
 
         .section {
             margin-bottom: 10px;
         }
 
-        .section-title {
+        .toggle-btn {
+            margin-left: auto;
+            font-size: 0.65em;
+            color: var(--text-muted);
+            font-weight: 500;
             cursor: pointer;
             user-select: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: var(--bg-hover);
         }
 
-        .section-title .toggle-icon {
-            margin-left: auto;
+        .search-btn {
+            display: inline-block;
             font-size: 0.85em;
             color: var(--text-muted);
-            font-weight: 400;
-            transition: transform 0.2s;
+            cursor: pointer;
+            user-select: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        .search-btn:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-hover);
         }
 
-        .section-title.active .toggle-icon {
-            transform: rotate(45deg);
-        }
-
-        /* 右侧箭头 */
         .arrow-box {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: #f1f5f9;
+            width: 36px;
+            height: 36px;
+            background-color: var(--bg-hover);
             border-radius: 50%;
-            color: var(--primary-blue);
-            font-weight: bold;
-            font-size: 1.2em;
-            transition: background-color 0.3s, color 0.3s;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         .menu-card:hover .arrow-box {
-            background-color: var(--primary-blue);
-            color: white;
+            background-color: #e5e7eb;
+            color: var(--text-primary);
         }
 
-        /* 搜索框 */
         .search-input {
             width: 100%;
             padding: 10px 14px;
             margin-bottom: 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             font-size: 0.95em;
             outline: none;
             box-sizing: border-box;
-            background: #fff;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--bg-page);
+            transition: border-color 0.2s;
+            color: var(--text-primary);
         }
         .search-input:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: var(--text-primary);
         }
         .search-input::placeholder {
-            color: #9ca3af;
+            color: var(--text-muted);
         }
 
         /* 手机端适配 */
@@ -247,56 +252,64 @@
 
     <div class="section">
         <div class="section-title" onclick="toggleSection(this)">
-            <span>🎧</span> BBC 6 Minute English
-            <span class="toggle-icon">+</span>
+            BBC 6 Minute English
+            <span class="toggle-btn">[show]</span>
         </div>
-        <input type="text" class="search-input" placeholder="🔍 搜索日期、标题或主题..." oninput="filterSection(this)">
-        <ul class="menu-list" id="bbc-list" style="display: none;"></ul>
+        <div class="section-body" style="display: none;">
+            <span class="search-btn" style="display: none;" onclick="event.stopPropagation(); toggleSearch(this)">🔍 Search</span>
+            <input type="text" class="search-input" placeholder="Search title, date or topic..." oninput="filterSection(this)" style="display: none;">
+            <ul class="menu-list" id="bbc-list"></ul>
+        </div>
     </div>
 
     <div class="section">
         <div class="section-title" onclick="toggleSection(this)">
-            <span>🎯</span> IELTS Reading
-            <span class="toggle-icon">+</span>
+            IELTS Reading
+            <span class="toggle-btn">[show]</span>
         </div>
-        <input type="text" class="search-input" placeholder="🔍 搜索标题或主题..." oninput="filterSection(this)">
-        <ul class="menu-list" id="ielts-list" style="display: none;"></ul>
+        <div class="section-body" style="display: none;">
+            <span class="search-btn" style="display: none;" onclick="event.stopPropagation(); toggleSearch(this)">🔍 Search</span>
+            <input type="text" class="search-input" placeholder="Search title or topic..." oninput="filterSection(this)" style="display: none;">
+            <ul class="menu-list" id="ielts-list"></ul>
+        </div>
     </div>
 
     <div class="section">
         <div class="section-title" onclick="toggleSection(this)">
-            <span>📖</span> Vocabulary
-            <span class="toggle-icon">+</span>
+            Vocabulary
+            <span class="toggle-btn">[show]</span>
         </div>
-        <input type="text" class="search-input" placeholder="🔍 搜索..." oninput="filterSection(this)">
-        <ul class="menu-list" style="display: none;">
-            <li class="menu-card">
-                <a href="#">
-                    <div class="card-content">
-                        <h3 class="card-title" style="color: #64748b; margin-bottom: 0;">Coming soon...</h3>
-                    </div>
-                    <div class="arrow-box" style="background-color: transparent; color: #cbd5e1;">⏳</div>
-                </a>
-            </li>
-        </ul>
+        <div class="section-body" style="display: none;">
+            <ul class="menu-list">
+                <li class="menu-card">
+                    <a href="#">
+                        <div class="card-content">
+                            <h3 class="card-title" style="color: var(--text-muted); margin-bottom: 0;">Coming soon...</h3>
+                        </div>
+                        <div class="arrow-box" style="background-color: transparent; color: var(--text-muted);">⏳</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="section">
         <div class="section-title" onclick="toggleSection(this)">
-            <span>✍️</span> Grammar
-            <span class="toggle-icon">+</span>
+            Grammar
+            <span class="toggle-btn">[show]</span>
         </div>
-        <input type="text" class="search-input" placeholder="🔍 搜索..." oninput="filterSection(this)">
-        <ul class="menu-list" style="display: none;">
-            <li class="menu-card">
-                <a href="#">
-                    <div class="card-content">
-                        <h3 class="card-title" style="color: #64748b; margin-bottom: 0;">Coming soon...</h3>
-                    </div>
-                    <div class="arrow-box" style="background-color: transparent; color: #cbd5e1;">⏳</div>
-                </a>
-            </li>
-        </ul>
+        <div class="section-body" style="display: none;">
+            <ul class="menu-list">
+                <li class="menu-card">
+                    <a href="#">
+                        <div class="card-content">
+                            <h3 class="card-title" style="color: var(--text-muted); margin-bottom: 0;">Coming soon...</h3>
+                        </div>
+                        <div class="arrow-box" style="background-color: transparent; color: var(--text-muted);">⏳</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     </div>
@@ -356,12 +369,27 @@
 
     function toggleSection(titleEl) {
         var section = titleEl.closest('.section');
-        var list = section.querySelector('.menu-list');
-        var icon = titleEl.querySelector('.toggle-icon');
-        var isOpen = list.style.display !== 'none';
-        list.style.display = isOpen ? 'none' : 'grid';
-        titleEl.classList.toggle('active', !isOpen);
-        icon.textContent = isOpen ? '+' : '\u2212';
+        var body = section.querySelector('.section-body');
+        var btn = titleEl.querySelector('.toggle-btn');
+        var isOpen = body.style.display !== 'none';
+        body.style.display = isOpen ? 'none' : 'block';
+        btn.textContent = isOpen ? '[show]' : '[hide]';
+        var searchBtn = section.querySelector('.search-btn');
+        if (searchBtn) {
+            searchBtn.style.display = isOpen ? 'none' : 'inline-block';
+        }
+        if (isOpen) {
+            var input = section.querySelector('.search-input');
+            if (input) input.style.display = 'none';
+        }
+    }
+
+    function toggleSearch(btn) {
+        var section = btn.closest('.section');
+        var input = section.querySelector('.search-input');
+        var isHidden = input.style.display === 'none' || input.style.display === '';
+        input.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) input.focus();
     }
 
     renderSection('bbc-list', bbcData);
