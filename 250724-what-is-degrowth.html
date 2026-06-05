@@ -118,11 +118,32 @@
         .audio-loading .dot:nth-child(1) { animation-delay: 0s; }
         .audio-loading .dot:nth-child(2) { animation-delay: 0.2s; }
         .audio-loading .dot:nth-child(3) { animation-delay: 0.4s; }
-        .audio-loading.loaded { color: #27ae60; }
-        .audio-loading.error { color: #e74c3c; }
+        .audio-loading .play-icon {
+            display: none;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .audio-loading.loaded .play-icon {
+            display: inline-block;
+        }
+        .audio-loading.loaded .dot {
+            display: none;
+        }
+        .audio-loading.loaded #loading-text {
+            color: #27ae60;
+        }
+        .audio-loading.error .dot {
+            display: none;
+        }
+        .audio-loading.error #loading-text {
+            color: #e74c3c;
+        }
         @keyframes bounce {
             0%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-5px); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
             0%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-6px); }
@@ -544,11 +565,12 @@
             <source src="bbc-audio/250724-what-is-degrowth.mp3" type="audio/mpeg">
         </audio>
         <div class="audio-loading" id="audio-loading">
-            <span id="loading-text">Loading audio...</span>
+            <span id="loading-text">Loading. Wait a minute.</span>
             <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
-            <span id="loading-hint"> Use this time to read ahead.</span>
+            <span class="play-icon">▶</span>
+            <span id="loading-hint"> </span>
         </div>
     </div>
 
@@ -1077,7 +1099,7 @@
 </script>
 
 <script>
-window.addEventListener("load",function(){var a=document.getElementById("bbc-audio"),o=document.getElementById("audio-loading"),t=document.getElementById("loading-text"),h=document.getElementById("loading-hint");if(a&&o){o.classList.add("show");a.load();a.addEventListener("canplaythrough",function(){t.textContent="Audio loaded.";o.classList.add("loaded");h.textContent=" Press play to start."});a.addEventListener("error",function(){t.textContent="Failed to load audio.";o.classList.add("error");h.textContent=" Please retry."})}});
+window.addEventListener("load",function(){var a=document.getElementById("bbc-audio"),o=document.getElementById("audio-loading"),t=document.getElementById("loading-text"),h=document.getElementById("loading-hint");if(a&&o){o.classList.add("show");a.load();a.addEventListener("canplaythrough",function(){t.textContent="Loaded. Click to play.";o.classList.add("loaded")});a.addEventListener("error",function(){t.textContent="Failed to load audio. Please retry.";o.classList.add("error")})}});
 </script>
     <div class="modal-overlay" id="confirm-modal">
         <div class="modal-box">
