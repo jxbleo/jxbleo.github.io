@@ -94,6 +94,41 @@
             height: 44px;
             border-radius: 6px;
         }
+
+        .audio-loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .audio-loading.show {
+            display: flex;
+        }
+
+        .audio-loading .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #666;
+            animation: bounce 1.2s infinite;
+        }
+
+        .audio-loading .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .audio-loading .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
         h2 {
             color: var(--primary-color);
             font-size: 1.4em;
@@ -451,6 +486,12 @@
         <audio id="bbc-audio" controls preload="none">
             <source src="bbc-audio/250724-what-is-degrowth.mp3" type="audio/mpeg">
         </audio>
+        <div class="audio-loading" id="audio-loading">
+            <span>Loading</span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
     </div>
 
     <!-- FORM START: REPLACE THE ACTION URL WITH YOUR FORMSPREE ENDPOINT -->
@@ -953,5 +994,8 @@
     form.addEventListener("submit", handleFormSubmit);
 </script>
 
+<script>
+(function(){var a=document.getElementById("bbc-audio"),l=document.getElementById("audio-loading");if(a&&l){a.addEventListener("loadstart",function(){l.classList.add("show")});a.addEventListener("waiting",function(){l.classList.add("show")});a.addEventListener("canplay",function(){l.classList.remove("show")});a.addEventListener("playing",function(){l.classList.remove("show")});a.addEventListener("error",function(){l.classList.remove("show")})}})();
+</script>
 </body>
 </html>
