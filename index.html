@@ -649,10 +649,12 @@
     }
 
     var students = [
-        { id: 'leostu', label: 'Leo' }
+        { id: 'EI6688', label: '甘昕雨Eilene' },
+        { id: 'EV3389', label: '刘榆雯Eva' },
+        { id: 'LEO6666', label: 'jxbleo' }
     ];
 
-    var validIds = ['leostu'];
+    var validIds = ['EI6688', 'EV3389', 'LEO6666'];
 
     var pendingHref = null;
 
@@ -671,7 +673,7 @@
             var s = students[i];
             var btn = document.createElement('button');
             btn.className = 'student-btn';
-            btn.innerHTML = '<span class="stu-id">' + s.id + '</span><span class="stu-label">' + s.label + '</span>';
+            btn.innerHTML = '<span class="stu-id">' + s.id + '</span>';
             btn.addEventListener('click', function(id) {
                 return function() {
                     selectStudent(id);

@@ -562,6 +562,13 @@
             <h2>Select Student</h2>
             <p>Choose your name to continue.</p>
             <div class="student-list" id="student-list"></div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <input type="text" id="bbc-custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;background:var(--bg-page);color:var(--text-primary);" />
+                <button id="bbc-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
+            </div>
+            <div id="bbc-login-error" style="font-size:0.85em;color:var(--text-muted);margin-top:6px;min-height:1.2em;"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:0.85em;"><span style="flex:1;border-top:1px solid var(--border);"></span><span>or</span><span style="flex:1;border-top:1px solid var(--border);"></span></div>
+            <button id="bbc-visitor-btn" style="display:block;width:100%;padding:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue as Visitor</button>
         </div>
     </div>
 
@@ -617,8 +624,12 @@
     var matchCount = 0;
 
     var students = [
-        { id: 'leostu', label: 'Leo' }
+        { id: 'EI6688', label: '甘昕雨Eilene' },
+        { id: 'EV3389', label: '刘榆雯Eva' },
+        { id: 'LEO6666', label: 'jxbleo' }
     ];
+
+    var validIds = ['EI6688', 'EV3389', 'LEO6666'];
 
     function getParams() {
         var q = window.location.search.substring(1);
@@ -846,7 +857,7 @@
             var s = students[i];
             var btn = document.createElement('button');
             btn.className = 'student-btn';
-            btn.innerHTML = '<span class="stu-id">' + s.id + '</span><span class="stu-label">' + s.label + '</span>';
+            btn.innerHTML = '<span class="stu-id">' + s.id + '</span>';
             btn.addEventListener('click', (function(id) {
                 return function() {
                     selectStudent(id);
@@ -854,6 +865,41 @@
             })(s.id));
             list.appendChild(btn);
         }
+
+        var customInput = document.getElementById('bbc-custom-id-input');
+        var customBtn = document.getElementById('bbc-custom-login-btn');
+        var errorEl = document.getElementById('bbc-login-error');
+        var visitorBtn = document.getElementById('bbc-visitor-btn');
+        if (customInput) customInput.value = '';
+        if (errorEl) errorEl.textContent = '';
+
+        function handleCustomLogin() {
+            var id = customInput.value.trim();
+            if (!id) { errorEl.textContent = 'Please enter a student ID.'; return; }
+            if (validIds.indexOf(id) !== -1) {
+                errorEl.textContent = '';
+                selectStudent(id);
+            } else {
+                errorEl.textContent = 'Unknown ID: "' + id + '"';
+                if (confirm('No matching ID for "' + id + '". Continue as visitor?')) {
+                    selectVisitor();
+                }
+            }
+        }
+
+        function selectVisitor() {
+            studentId = 'VISITOR';
+            logEvent('login', { studentId: 'VISITOR' });
+            modal.classList.remove('show');
+            fetchLesson();
+        }
+
+        if (customBtn) customBtn.addEventListener('click', handleCustomLogin);
+        if (customInput) customInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleCustomLogin();
+        });
+        if (visitorBtn) visitorBtn.addEventListener('click', selectVisitor);
+
         modal.classList.add('show');
     }
 
@@ -879,7 +925,11 @@
             return;
         }
 
-        if (!studentId) {
+        if (!studentId || studentId === 'VISITOR') {
+            if (studentId === 'VISITOR') {
+                fetchLesson();
+                return;
+            }
             showLoginPrompt();
             return;
         }
