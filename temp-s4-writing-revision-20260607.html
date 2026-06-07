@@ -64,6 +64,24 @@
   .tip-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
   .tip-icon { color: #185FA5; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
   .tip-text { font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+  @media (max-width: 640px) {
+    .guide { max-width: 100%; padding: 1rem 16px; }
+    h2 { font-size: 18px; }
+    .tab-bar { gap: 6px; }
+    .tab { padding: 6px 12px; font-size: 13px; }
+    .two-col { grid-template-columns: 1fr; }
+    .phrase-grid { grid-template-columns: 1fr; }
+    .compare-table, .compare-table thead, .compare-table tbody, .compare-table tr, .compare-table th, .compare-table td { display: block; }
+    .compare-table tr { margin-bottom: 12px; }
+    .compare-table th, .compare-table td { width: 100% !important; }
+    .compare-table th { display: none; }
+    .compare-table td { padding: 8px 12px; border-bottom: none; }
+    .compare-table td:last-child { border-bottom: 0.5px solid var(--color-border-tertiary); }
+    .compare-table td::before { content: attr(data-label); display: block; font-weight: 500; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 2px; }
+    .card { padding: 0.75rem 1rem; }
+    p, li { font-size: 14px; }
+    .question-box { padding: 1rem; }
+  }
 </style>
 
 <div class="guide">
@@ -87,39 +105,39 @@
     </div>
     <table class="compare-table" style="margin-bottom:1.25rem;">
       <tr>
-        <th style="width:30%;">比较点</th>
+        <th>比较点</th>
         <th>Article 文章</th>
         <th>Essay 议论文</th>
       </tr>
       <tr>
-        <td><strong>目的</strong></td>
-        <td>分享观点、资讯、经验，可带娱乐性</td>
-        <td>论证一个立场，说服读者</td>
+        <td data-label="比较点"><strong>目的</strong></td>
+        <td data-label="Article 文章">分享观点、资讯、经验，可带娱乐性</td>
+        <td data-label="Essay 议论文">论证一个立场，说服读者</td>
       </tr>
       <tr>
-        <td><strong>语气</strong></td>
-        <td>较轻松，可半正式</td>
-        <td>正式、客观</td>
+        <td data-label="比较点"><strong>语气</strong></td>
+        <td data-label="Article 文章">较轻松，可半正式</td>
+        <td data-label="Essay 议论文">正式、客观</td>
       </tr>
       <tr>
-        <td><strong>读者</strong></td>
-        <td>杂志/校报读者，较广泛</td>
-        <td>考官 / 指定读者</td>
+        <td data-label="比较点"><strong>读者</strong></td>
+        <td data-label="Article 文章">杂志/校报读者，较广泛</td>
+        <td data-label="Essay 议论文">考官 / 指定读者</td>
       </tr>
       <tr>
-        <td><strong>标题</strong></td>
-        <td>必须有吸引眼球的标题</td>
-        <td>通常题目已给出</td>
+        <td data-label="比较点"><strong>标题</strong></td>
+        <td data-label="Article 文章">必须有吸引眼球的标题</td>
+        <td data-label="Essay 议论文">通常题目已给出</td>
       </tr>
       <tr>
-        <td><strong>首段</strong></td>
-        <td>用 hook 吸引读者</td>
-        <td>清晰表明立场 (thesis)</td>
+        <td data-label="比较点"><strong>首段</strong></td>
+        <td data-label="Article 文章">用 hook 吸引读者</td>
+        <td data-label="Essay 议论文">清晰表明立场 (thesis)</td>
       </tr>
       <tr>
-        <td><strong>举例</strong></td>
-        <td>个人故事、趣闻皆可</td>
-        <td>数据、事实、逻辑论证为主</td>
+        <td data-label="比较点"><strong>举例</strong></td>
+        <td data-label="Article 文章">个人故事、趣闻皆可</td>
+        <td data-label="Essay 议论文">数据、事实、逻辑论证为主</td>
       </tr>
     </table>
     <div class="card card-teal">
