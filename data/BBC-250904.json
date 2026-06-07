@@ -1,0 +1,199 @@
+{
+  "id": "BBC-250904",
+  "title": "The Power of Lists",
+  "audioSrc": "bbc-audio/250904-the-joys-of-writing-lists.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "_____ – things people want to accomplish in their lifetime",
+      "answer": "bucket lists",
+      "evidence": "shopping lists, to-do lists, even bucket lists – a list of all the things a person would like to do before they die"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "She is a _____ who studies people's fondness for lists",
+      "answer": "linguistics researcher",
+      "evidence": "This happens a lot to Jo Nolan, a linguistics researcher whose new book explores our love of lists"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Shrooms = _____",
+      "answer": "mushrooms",
+      "evidence": "And 'shrooms' – they've got to be mushrooms, right?"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Puke = cucumbers (her _____ dislikes this vegetable)",
+      "answer": "husband",
+      "evidence": "my husband doesn't like cucumber, and the abbreviation for cucumber would be 'cuc'"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Lists sometimes resemble _____",
+      "answer": "secret codes",
+      "evidence": "so it's a way of reminding her to buy cucumbers. Wow! Sometimes lists are like secret codes"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Famous song: _____, performed by Julie Andrews",
+      "answer": "My Favourite Things",
+      "evidence": "one of the most famous is My Favourite Things, sung by Julie Andrews in the film The Sound of Music"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Lists items from raindrops on roses to _____",
+      "answer": "whiskers on kittens",
+      "evidence": "from 'raindrops on roses' to 'whiskers on kittens'"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Allow people to think _____ and economically",
+      "answer": "efficiently",
+      "evidence": "The list encourages you to think really efficiently and economically"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Help users reach the _____ of matters rapidly",
+      "answer": "nub",
+      "evidence": "You just get to the nub of things quite quickly"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Avoid wasting time creating _____ or complicated vocabulary",
+      "answer": "a nice sentence",
+      "evidence": "you don't waste a lot of time and effort making a nice sentence or using long words"
+    },
+    {
+      "id": "fill-11",
+      "sentence": "Provide excellent _____ – high value for minimal effort",
+      "answer": "bang for buck",
+      "evidence": "you get a big bang for your buck – an idiom meaning that you gain a lot in return"
+    },
+    {
+      "id": "fill-12",
+      "sentence": "A friend creates _____ lists to resolve dilemmas",
+      "answer": "pros and cons",
+      "evidence": "A friend of mine who makes pros and cons lists finds that it really helps her resolve a situation"
+    },
+    {
+      "id": "fill-13",
+      "sentence": "She _____ to create two sections: pros and cons",
+      "answer": "halves her page",
+      "evidence": "She halves her page: pros, cons"
+    },
+    {
+      "id": "fill-14",
+      "sentence": "By completing the list, she understands _____",
+      "answer": "what she's doing",
+      "evidence": "And she said by the end of it, she knows what she's doing"
+    },
+    {
+      "id": "fill-15",
+      "sentence": "Found in various places like _____ and bank statements",
+      "answer": "menus",
+      "evidence": "you see lists everywhere – in menus and bank statements, for example"
+    },
+    {
+      "id": "fill-16",
+      "sentence": "Mental health professionals suggest _____ in your life",
+      "answer": "listing good things",
+      "evidence": "therapists even recommend listing all the good things in your life to feel happier"
+    },
+    {
+      "id": "fill-17",
+      "sentence": "This practice can enhance _____",
+      "answer": "feel happier",
+      "evidence": "listing all the good things in your life to feel happier"
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Topic: Which film earned _____ ever?",
+      "answer": "the most money",
+      "evidence": "which movie had made the most money ever"
+    },
+    {
+      "id": "fill-19",
+      "sentence": "Answer revealed: _____",
+      "answer": "Avatar",
+      "evidence": "you said Avatar. And now, according to the Internet Movie Database… that's exactly right"
+    },
+    {
+      "id": "fill-20",
+      "sentence": "Source of information: _____",
+      "answer": "Internet Movie Database",
+      "evidence": "according to the Internet Movie Database… that's exactly right"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-21",
+      "question": "What is Phil's purpose in mentioning bucket lists at the beginning of the conversation?",
+      "options": ["A. To explain why people create shopping lists", "B. To illustrate the widespread use of different types of lists", "C. To introduce Jo Nolan's research methodology", "D. To contrast practical lists with aspirational ones"],
+      "answer": "B",
+      "evidence": "Phil: 'A list is a collection of items with a single item written on each line, and they're everywhere: shopping lists, to-do lists, even bucket lists'"
+    },
+    {
+      "id": "mc-22",
+      "question": "What can be inferred about Jo Nolan's approach to grocery shopping?",
+      "options": ["A. She prefers to use formal language in her lists", "B. She relies on detailed descriptions to avoid confusion", "C. She follows her husband's preferences strictly", "D. She employs personalised abbreviations for efficiency"],
+      "answer": "D",
+      "evidence": "Jo Nolan's shopping list uses 'Nanas, aye-aye, puke, shrooms' – personalised abbreviations for efficiency"
+    },
+    {
+      "id": "mc-23",
+      "question": "Why does Phil describe lists as 'secret codes'?",
+      "options": ["A. Because they use abbreviated forms that only the writer understands", "B. Because they contain information meant to be hidden from others", "C. Because they require special training to interpret correctly", "D. Because they are written in foreign languages"],
+      "answer": "A",
+      "evidence": "Phil: 'Sometimes lists are like secret codes'"
+    },
+    {
+      "id": "mc-24",
+      "question": "What is Beth's attitude when she guesses the answer to Phil's movie question?",
+      "options": ["A. She is confident about her knowledge of film history", "B. She is dismissive of the question's relevance", "C. She is uncertain and acknowledges possible confusion", "D. She is critical of the movie industry's priorities"],
+      "answer": "C",
+      "evidence": "Beth: 'I think it might be Avatar, although that might have been the most expensive to make. I'm not sure.'"
+    },
+    {
+      "id": "mc-25",
+      "question": "According to Jo Nolan, what is one key advantage of the song 'My Favourite Things'?",
+      "options": ["A. It uses sophisticated vocabulary to express emotions", "B. It delivers significant impact through economical expression", "C. It appeals primarily to children's sensibilities", "D. It demonstrates advanced musical composition techniques"],
+      "answer": "B",
+      "evidence": "Jo Nolan: 'you get a big bang for your buck in that song'"
+    },
+    {
+      "id": "mc-26",
+      "question": "What does Jo Nolan suggest about how lists facilitate communication?",
+      "options": ["A. They enable rapid access to core concepts without unnecessary elaboration", "B. They require extensive explanation to be properly understood", "C. They are most effective when using complete sentences", "D. They work best when written in formal language"],
+      "answer": "A",
+      "evidence": "Jo Nolan: 'You just get to the nub of things quite quickly'"
+    },
+    {
+      "id": "mc-27",
+      "question": "What criticism does Jo Nolan acknowledge regarding 'My Favourite Things'?",
+      "options": ["A. The melody is too complex for ordinary listeners", "B. The vocabulary choices are inappropriate for children", "C. The lyrics are overly optimistic and lack depth", "D. The song's message is overly sentimental and insincere"],
+      "answer": "D",
+      "evidence": "Jo: 'it's a bit saccharine' — meaning excessively sweet, sentimental or insincere"
+    },
+    {
+      "id": "mc-28",
+      "question": "What does the example of Jo Nolan's friend demonstrate?",
+      "options": ["A. That lists are primarily useful for shopping purposes", "B. That professionals rely on lists more than ordinary people", "C. That structured lists can facilitate decision-making processes", "D. That most people struggle to make choices without help"],
+      "answer": "C",
+      "evidence": "Jo: 'makes pros and cons lists finds that it really helps her resolve a situation… by the end of it, she knows what she's doing'"
+    },
+    {
+      "id": "mc-29",
+      "question": "What can be inferred about Beth's view on the therapeutic use of lists?",
+      "options": ["A. She regards it as a surprisingly effective and simple technique", "B. She questions the scientific validity of such recommendations", "C. She believes it only works for people with specific conditions", "D. She thinks it requires professional guidance to be effective"],
+      "answer": "A",
+      "evidence": "Beth: 'therapists even recommend listing all the good things in your life to feel happier – not bad for a few words on a scrap of paper'"
+    },
+    {
+      "id": "mc-30",
+      "question": "What is Phil's tone when revealing the answer to his movie question?",
+      "options": ["A. Disappointed that Beth guessed correctly", "B. Pleased to confirm Beth's accurate prediction", "C. Surprised by the database information", "D. Critical of Beth's reasoning process"],
+      "answer": "B",
+      "evidence": "Phil: 'And now, according to the Internet Movie Database… that's exactly right.'"
+    }
+  ]
+}
