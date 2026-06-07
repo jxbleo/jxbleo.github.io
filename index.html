@@ -231,6 +231,22 @@
             color: var(--text-muted);
         }
 
+        .champ-section {
+            position: relative;
+        }
+        .champ-section::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 2px dashed #f97316;
+            border-radius: 12px;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .champ-section .section-title {
+            color: #ea580c;
+        }
+
         /* 手机端适配 */
         @media screen and (max-width: 768px) {
             .header { padding: 40px 15px; }
@@ -313,6 +329,17 @@
         </div>
     </div>
 
+    <div class="section champ-section">
+        <div class="section-title" onclick="toggleSection(this)">
+            <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.1em;">⚡</span> Champ</span>
+            <span class="toggle-btn">[hide]</span>
+        </div>
+        <div class="section-body" style="display: block;">
+            <p style="font-size:0.85em;color:var(--text-muted);margin:0 0 16px;line-height:1.5;">即兴课堂材料 · 随手制作，随时更新</p>
+            <ul class="menu-list" id="champ-list"></ul>
+        </div>
+    </div>
+
     </div>
 
 <script>
@@ -326,6 +353,11 @@
         { date: '2025-08-07', title: 'Are you flourishing?', topic: 'Wellbeing / Psychology', file: '250807-are-you-flourishing.html' },
         { date: '2025-07-31', title: 'What is the manosphere?', topic: 'Society / Online Culture', file: '250731-what-is-the-manosphere.html' },
         { date: '2025-07-24', title: 'What is economic degrowth?', topic: 'Environment / Economy', file: '250724-what-is-degrowth.html' }
+    ];
+
+    var champData = [
+        { date: '2026-06-07', title: 'DSE English Writing — 中四备考讲义', topic: 'Article & Essay', file: 'temp-s4-writing-revision-20260607.html' },
+        { date: '2026-06-07', title: 'DSE English Paper 2 — Writing Formats', topic: 'Letter / Report / Article…', file: 'temp-dse-english-writing-formats.html' }
     ];
 
     var ieltsData = [
@@ -395,6 +427,7 @@
 
     renderSection('bbc-list', bbcData);
     renderSection('ielts-list', ieltsData, 'IELTS Reading Passage');
+    renderSection('champ-list', champData);
 </script>
 
 </body>
