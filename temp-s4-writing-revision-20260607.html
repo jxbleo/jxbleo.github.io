@@ -1,0 +1,419 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .guide { max-width: 680px; padding: 1.5rem 0; }
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .tab.active { background: #3C3489; color: #EEEDFE; border-color: #3C3489; }
+  .tab:hover:not(.active) { background: var(--color-background-secondary); }
+  .section { display: none; }
+  .section.active { display: block; }
+  h2 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; }
+  h3 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin: 1.25rem 0 0.5rem; }
+  p, li { font-size: 15px; line-height: 1.7; color: var(--color-text-primary); }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin-bottom: 4px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .card-blue { border-left: 3px solid #185FA5; background: #E6F1FB; }
+  .card-purple { border-left: 3px solid #534AB7; background: #EEEDFE; }
+  .card-teal { border-left: 3px solid #0F6E56; background: #E1F5EE; }
+  .card-amber { border-left: 3px solid #854F0B; background: #FAEEDA; }
+  .card-red { border-left: 3px solid #A32D2D; background: #FCEBEB; }
+  .card-blue p, .card-blue li, .card-blue h3 { color: #042C53; }
+  .card-purple p, .card-purple li, .card-purple h3 { color: #26215C; }
+  .card-teal p, .card-teal li, .card-teal h3 { color: #04342C; }
+  .card-amber p, .card-amber li, .card-amber h3 { color: #412402; }
+  .card-red p, .card-red li, .card-red h3 { color: #501313; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: var(--border-radius-md); margin-right: 6px; margin-bottom: 4px; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-blue { background: #E6F1FB; color: #185FA5; }
+  .badge-amber { background: #FAEEDA; color: #633806; }
+  .badge-red { background: #FCEBEB; color: #A32D2D; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .structure-box { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+  .structure-box .step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .num-purple { background: #AFA9EC; color: #26215C; }
+  .num-teal { background: #5DCAA5; color: #04342C; }
+  .step-text { font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+  .step-label { font-weight: 500; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.25rem 0; }
+  .phrase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .phrase-item { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 6px 10px; font-size: 13px; color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .question-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+  .question-num { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .question-text { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; line-height: 1.6; }
+  .question-hint { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px; }
+  .try-btn { padding: 7px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; background: var(--color-background-primary); color: var(--color-text-primary); }
+  .try-btn:hover { background: var(--color-background-secondary); }
+  .marking-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin-right: 4px; }
+  .tag-content { background: #E1F5EE; color: #04342C; }
+  .tag-lang { background: #EEEDFE; color: #26215C; }
+  .tag-org { background: #E6F1FB; color: #042C53; }
+  .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .checklist-item:last-child { border-bottom: none; }
+  .check-icon { width: 20px; height: 20px; border: 0.5px solid var(--color-border-secondary); border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #0F6E56; background: var(--color-background-primary); }
+  .check-icon.checked { background: #E1F5EE; border-color: #0F6E56; }
+  .checklist-text { font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .compare-table th { background: var(--color-background-secondary); padding: 10px 12px; text-align: left; font-weight: 500; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .compare-table td { padding: 9px 12px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: top; }
+  .compare-table tr:nth-child(even) td { background: var(--color-background-secondary); }
+  .tip-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+  .tip-icon { color: #185FA5; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  .tip-text { font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+</style>
+
+<div class="guide">
+  <h2 style="font-size:22px; margin-bottom:6px;">DSE English Writing</h2>
+  <p style="font-size:14px; color: var(--color-text-secondary); margin-bottom:1.25rem;">中四备考讲义 · Article &amp; Essay</p>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="showTab('overview')">总览 Overview</div>
+    <div class="tab" onclick="showTab('article')">Article 文章</div>
+    <div class="tab" onclick="showTab('essay')">Essay 议论文</div>
+    <div class="tab" onclick="showTab('phrases')">实用短语</div>
+    <div class="tab" onclick="showTab('practice')">练习题</div>
+    <div class="tab" onclick="showTab('checklist')">自查清单</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="section active" id="tab-overview">
+    <div class="card card-purple">
+      <h3 style="margin-top:0;">📋 Article vs Essay — 核心区别</h3>
+      <p style="margin-bottom:8px;">两者都是 DSE Paper 2 Part B 常见题型，但写法不同：</p>
+    </div>
+    <table class="compare-table" style="margin-bottom:1.25rem;">
+      <tr>
+        <th style="width:30%;">比较点</th>
+        <th>Article 文章</th>
+        <th>Essay 议论文</th>
+      </tr>
+      <tr>
+        <td><strong>目的</strong></td>
+        <td>分享观点、资讯、经验，可带娱乐性</td>
+        <td>论证一个立场，说服读者</td>
+      </tr>
+      <tr>
+        <td><strong>语气</strong></td>
+        <td>较轻松，可半正式</td>
+        <td>正式、客观</td>
+      </tr>
+      <tr>
+        <td><strong>读者</strong></td>
+        <td>杂志/校报读者，较广泛</td>
+        <td>考官 / 指定读者</td>
+      </tr>
+      <tr>
+        <td><strong>标题</strong></td>
+        <td>必须有吸引眼球的标题</td>
+        <td>通常题目已给出</td>
+      </tr>
+      <tr>
+        <td><strong>首段</strong></td>
+        <td>用 hook 吸引读者</td>
+        <td>清晰表明立场 (thesis)</td>
+      </tr>
+      <tr>
+        <td><strong>举例</strong></td>
+        <td>个人故事、趣闻皆可</td>
+        <td>数据、事实、逻辑论证为主</td>
+      </tr>
+    </table>
+    <div class="card card-teal">
+      <h3 style="margin-top:0;">⏱ 考试时间分配建议</h3>
+      <div class="tip-row"><i class="ti ti-clock tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>5 min</strong> — 审题，确认文体，brainstorm 3个主要论点</span></div>
+      <div class="tip-row"><i class="ti ti-pencil tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>5 min</strong> — 写 outline（段落结构）</span></div>
+      <div class="tip-row"><i class="ti ti-writing tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>30 min</strong> — 正式写作</span></div>
+      <div class="tip-row"><i class="ti ti-eye tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>5 min</strong> — 检查语法、串联词、标题格式</span></div>
+    </div>
+    <div class="card card-blue">
+      <h3 style="margin-top:0;">📊 评分标准 (DSE Marking)</h3>
+      <p style="margin-bottom:8px;">
+        <span class="marking-tag tag-content">Content 内容</span> 论点是否充分、有说服力？<br style="margin-bottom:4px;">
+        <span class="marking-tag tag-lang">Language 语言</span> 词汇、语法、句式是否多样准确？<br style="margin-bottom:4px;">
+        <span class="marking-tag tag-org">Organisation 结构</span> 段落是否清晰，是否有串联词？
+      </p>
+      <p style="font-size:13px;">三者并重，目标每项达到 Level 4 = 合格。Level 5+ 需要语言亮点。</p>
+    </div>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="section" id="tab-article">
+    <h2>Article 文章写法</h2>
+    <div class="card card-purple">
+      <h3 style="margin-top:0;">常见题型</h3>
+      <p>为学校杂志/社区报/旅游网站写文章，题目如：</p>
+      <ul style="margin-top:6px;">
+        <li>Write an article about a local problem that needs attention.</li>
+        <li>Write an article for the school magazine about an unforgettable experience.</li>
+        <li>Write an article recommending a place to visit in Hong Kong.</li>
+      </ul>
+    </div>
+    <h3>文章结构（5段式）</h3>
+    <div class="structure-box">
+      <div class="step">
+        <div class="step-num num-purple">1</div>
+        <div class="step-text"><span class="step-label">Title（标题）</span><br>用疑问句、数字、惊叹句吸引眼球，如：<em>Is Your Phone Ruining Your Sleep?</em> 或 <em>3 Reasons Why You Should Visit Sai Kung</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num num-purple">2</div>
+        <div class="step-text"><span class="step-label">Hook Introduction（吸引开头）</span><br>以问题、震撼数据、短故事或大胆陈述开篇。明确说明文章主题。</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-purple">3</div>
+        <div class="step-text"><span class="step-label">Body Paragraph 1（主体段1）</span><br>主题句 + 细节/例子/解释。每段只谈一个重点。</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-purple">4</div>
+        <div class="step-text"><span class="step-label">Body Paragraph 2（主体段2）</span><br>第二个重点，同样结构。可引用真实故事或数据增加说服力。</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-purple">5</div>
+        <div class="step-text"><span class="step-label">Conclusion（结论）</span><br>总结要点，呼吁行动或发人深省的结尾句（call to action / rhetorical question）。</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <h3>Hook 开头4种方法</h3>
+    <div class="card card-blue">
+      <div class="tip-row"><i class="ti ti-question-mark tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>Rhetorical Question</strong>：Have you ever wondered why so many teenagers feel stressed all the time?</span></div>
+      <div class="tip-row"><i class="ti ti-chart-bar tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>Shocking Statistic</strong>：Over 70% of Hong Kong students sleep fewer than eight hours a night.</span></div>
+      <div class="tip-row"><i class="ti ti-book tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>Anecdote（小故事）</strong>：It was 2 a.m. when I finally put down my phone and realised I had wasted three hours scrolling.</span></div>
+      <div class="tip-row"><i class="ti ti-alert-triangle tip-icon" aria-hidden="true"></i><span class="tip-text"><strong>Bold Statement</strong>：Social media is silently destroying our ability to focus.</span></div>
+    </div>
+    <hr class="divider">
+    <h3>文章写作注意事项</h3>
+    <div class="card card-amber">
+      <ul>
+        <li>写明刊物名称（如 <em>the school magazine</em>），增加真实感</li>
+        <li>语气可以比 Essay 轻松，但不要太口语化</li>
+        <li>每段要有主题句（topic sentence），不要离题</li>
+        <li>结尾要有力，不要只写 "In conclusion, I hope you enjoyed reading this article."</li>
+        <li>字数一般约 350–400 字</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ESSAY -->
+  <div class="section" id="tab-essay">
+    <h2>Essay 议论文写法</h2>
+    <div class="card card-teal">
+      <h3 style="margin-top:0;">常见题型</h3>
+      <ul>
+        <li>Should students have smartphones at school? Write an essay expressing your views.</li>
+        <li>"Young people today are too dependent on technology." Do you agree? Write an essay.</li>
+        <li>Some people think exams should be replaced by other forms of assessment. Write an essay discussing this view.</li>
+      </ul>
+    </div>
+    <h3>论文结构（5段式 PEEL）</h3>
+    <div class="structure-box">
+      <div class="step">
+        <div class="step-num num-teal">1</div>
+        <div class="step-text"><span class="step-label">Introduction + Thesis（引言 + 立场）</span><br>引出背景 → 清晰表明你的立场（thesis statement）。如：<em>While some argue that…, I believe that… because…</em></div>
+      </div>
+      <div class="step">
+        <div class="step-num num-teal">2</div>
+        <div class="step-text"><span class="step-label">Body 1 — 论点一（最强论点）</span><br><strong>P</strong>oint → <strong>E</strong>vidence → <strong>E</strong>xplain → <strong>L</strong>ink back</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-teal">3</div>
+        <div class="step-text"><span class="step-label">Body 2 — 论点二</span><br>同样用 PEEL 结构，提出第二个理由</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-teal">4</div>
+        <div class="step-text"><span class="step-label">Counterargument + Rebuttal（反驳）</span><br>承认对立观点，再反驳。如：<em>Admittedly, … However, …</em>。这是 Level 5 的关键！</div>
+      </div>
+      <div class="step">
+        <div class="step-num num-teal">5</div>
+        <div class="step-text"><span class="step-label">Conclusion（结论）</span><br>重申立场（用不同词汇），总结论点，可提出建议或展望。</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <h3>PEEL 段落示范</h3>
+    <div class="card card-blue">
+      <p style="font-size:13px; margin-bottom:6px;"><span class="badge badge-blue">Point</span> To begin with, smartphones can be valuable educational tools.</p>
+      <p style="font-size:13px; margin-bottom:6px;"><span class="badge badge-teal">Evidence</span> For instance, students can use apps such as Quizlet to review vocabulary, or access reliable information online during research lessons.</p>
+      <p style="font-size:13px; margin-bottom:6px;"><span class="badge badge-purple">Explain</span> This means that, when used appropriately, technology can enhance learning rather than hinder it.</p>
+      <p style="font-size:13px;"><span class="badge badge-amber">Link</span> Therefore, a complete ban on smartphones may deprive students of a useful resource.</p>
+    </div>
+    <hr class="divider">
+    <h3>Counterargument 反驳模板</h3>
+    <div class="card card-amber">
+      <p style="font-size:14px; margin-bottom:6px;"><strong>承认对方：</strong>Admittedly, / It is true that / Opponents may argue that / Some people believe that…</p>
+      <p style="font-size:14px;"><strong>转折反驳：</strong>However, / Nevertheless, / Despite this, / Even so, / This does not mean that…</p>
+    </div>
+    <hr class="divider">
+    <h3>Thesis Statement 模板</h3>
+    <div class="card card-purple">
+      <p style="font-size:14px;">Although there are <em>[opposite view]</em>, I firmly believe that <em>[your position]</em> because <em>[reason 1]</em> and <em>[reason 2]</em>.</p>
+      <p style="font-size:14px; margin-top:8px;">In my opinion, <em>[topic]</em> should / should not <em>[action]</em> for the following reasons.</p>
+    </div>
+  </div>
+
+  <!-- PHRASES -->
+  <div class="section" id="tab-phrases">
+    <h2>实用短语 Useful Phrases</h2>
+    <h3>开头句</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">In recent years, … has become a growing concern.</div>
+      <div class="phrase-item">It is widely believed that…</div>
+      <div class="phrase-item">Have you ever considered…?</div>
+      <div class="phrase-item">We live in an age where…</div>
+    </div>
+    <h3>递进 / 首先</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">First and foremost,</div>
+      <div class="phrase-item">To begin with,</div>
+      <div class="phrase-item">One significant reason is that</div>
+      <div class="phrase-item">Above all,</div>
+    </div>
+    <h3>递进 / 其次</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">Furthermore,</div>
+      <div class="phrase-item">In addition to this,</div>
+      <div class="phrase-item">What is more,</div>
+      <div class="phrase-item">Another point worth noting is</div>
+    </div>
+    <h3>举例</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">For instance,</div>
+      <div class="phrase-item">To illustrate,</div>
+      <div class="phrase-item">A case in point is…</div>
+      <div class="phrase-item">Consider the example of…</div>
+    </div>
+    <h3>反驳转折</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">Admittedly,</div>
+      <div class="phrase-item">It is true that… However,</div>
+      <div class="phrase-item">Nevertheless,</div>
+      <div class="phrase-item">Despite this concern,</div>
+    </div>
+    <h3>因果关系</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">As a result,</div>
+      <div class="phrase-item">This leads to…</div>
+      <div class="phrase-item">Consequently,</div>
+      <div class="phrase-item">This means that…</div>
+    </div>
+    <h3>结尾</h3>
+    <div class="phrase-grid" style="margin-bottom:1rem;">
+      <div class="phrase-item">In conclusion,</div>
+      <div class="phrase-item">To sum up,</div>
+      <div class="phrase-item">All things considered,</div>
+      <div class="phrase-item">It is high time that…</div>
+    </div>
+    <div class="card card-red" style="margin-top:1rem;">
+      <h3 style="margin-top:0;">❌ 避免这些常见错误</h3>
+      <ul>
+        <li>不要写 "I think I think..." 重复</li>
+        <li>避免 "very, very good / very very bad" 等重复副词</li>
+        <li>不用 "In my humble opinion" — 太老套</li>
+        <li>避免 "Firstly, Secondly, Thirdly, Lastly" 全部用 — 换点花样</li>
+        <li>结尾不要只写 "That's all." 或 "Thank you for reading."（Article 结尾也不要）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PRACTICE -->
+  <div class="section" id="tab-practice">
+    <h2>练习题 Practice Questions</h2>
+    <p style="font-size:14px; color:var(--color-text-secondary); margin-bottom:1rem;">共6题，涵盖 Article 和 Essay 两种文体。点击"AI辅导"获取写作思路提示。</p>
+
+    <div class="question-box">
+      <div class="question-num">ARTICLE · Q1 · 难度：⭐⭐</div>
+      <p class="question-text">Write an article for your school magazine about a habit that has improved your life. Explain what the habit is, how you developed it, and why you would recommend it to other students. (350 words)</p>
+      <p class="question-hint"><span class="badge badge-teal">提示</span> 建议写：运动、阅读、早睡、冥想等。记得加 title 和 hook。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q1的写作大纲：Write an article about a habit that has improved your life. 帮我想3个主要内容点，以及一个吸引人的标题和hook开头句。')">获取写作思路 ↗</button>
+    </div>
+
+    <div class="question-box">
+      <div class="question-num">ARTICLE · Q2 · 难度：⭐⭐⭐</div>
+      <p class="question-text">Write an article for a community newsletter about a local place in Hong Kong that deserves more attention. Describe the place and explain why residents should visit it. (350 words)</p>
+      <p class="question-hint"><span class="badge badge-teal">提示</span> 可写：某条街、老市集、公园、博物馆等。要有具体细节，不要太笼统。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q2的写作大纲：Write an article about a local place in Hong Kong that deserves more attention. 帮我想3个段落内容，以及hook开头的建议。')">获取写作思路 ↗</button>
+    </div>
+
+    <div class="question-box">
+      <div class="question-num">ARTICLE · Q3 · 难度：⭐⭐⭐</div>
+      <p class="question-text">A local magazine is running a series called "Youth Voices". Write an article discussing the greatest challenge facing teenagers in Hong Kong today, and suggest ways to address it. (350–400 words)</p>
+      <p class="question-hint"><span class="badge badge-teal">提示</span> 可选：学业压力、心理健康、就业前景、社交媒体影响。要提出具体建议。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q3的写作大纲：Write an article about the greatest challenge facing teenagers in Hong Kong. 帮我想challenge的选择、2个问题分析段落和建议段落的大纲。')">获取写作思路 ↗</button>
+    </div>
+
+    <div class="question-box">
+      <div class="question-num">ESSAY · Q4 · 难度：⭐⭐</div>
+      <p class="question-text">"Students should not be given homework." Do you agree? Write an essay expressing your views. (350 words)</p>
+      <p class="question-hint"><span class="badge badge-purple">提示</span> 记得写 thesis statement，加 counterargument 段落，不要只写单方面。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q4的写作大纲：Essay题目是 Students should not be given homework. Do you agree? 帮我写thesis statement，两个支持论点(PEEL)，一个counterargument+rebuttal，以及结论的思路。')">获取写作思路 ↗</button>
+    </div>
+
+    <div class="question-box">
+      <div class="question-num">ESSAY · Q5 · 难度：⭐⭐⭐</div>
+      <p class="question-text">"Young people spend too much time on social media, and this is harmful to their development." To what extent do you agree with this statement? Write an essay. (350–400 words)</p>
+      <p class="question-hint"><span class="badge badge-purple">提示</span> "To what extent" 表示你可以部分同意，要讨论两面，但要有清晰立场。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q5的写作大纲：Essay题目是 Young people spend too much time on social media and this is harmful. To what extent do you agree? 帮我规划一个"部分同意"的5段结构，包括thesis、两个正面论点、一个反驳、和结论。')">获取写作思路 ↗</button>
+    </div>
+
+    <div class="question-box">
+      <div class="question-num">ESSAY · Q6 · 难度：⭐⭐⭐⭐</div>
+      <p class="question-text">"Schools should focus more on students' mental health and wellbeing, even if it means spending less time on academic subjects." Write an essay discussing this view. (400 words)</p>
+      <p class="question-hint"><span class="badge badge-purple">提示</span> 这道题是讨论型，需要平衡两面。可以先同意再反驳，结尾提出折中方案。</p>
+      <button class="try-btn" onclick="sendPrompt('请给我Q6的写作大纲：Essay题目是 Schools should focus more on students mental health even if it means less time on academic subjects. 帮我规划一个讨论型essay大纲，正反两面论点各一个，加上折中结论的思路。')">获取写作思路 ↗</button>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="section" id="tab-checklist">
+    <h2>交卷前自查清单</h2>
+    <p style="font-size:14px; color:var(--color-text-secondary); margin-bottom:1rem;">勾选完成项，确保交卷前不失分。</p>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <h3 style="margin-top:0; margin-bottom:8px; font-size:14px; color:var(--color-text-secondary);">FORMAT 格式</h3>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">Article：有标题，标题醒目有创意</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">注明文章刊登的媒体（如 school magazine）</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">Essay：首段有清晰 thesis statement</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">文章分段清晰，每段有缩进或空行</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <h3 style="margin-top:0; margin-bottom:8px; font-size:14px; color:var(--color-text-secondary);">CONTENT 内容</h3>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">每个主体段都有主题句 (topic sentence)</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">每个论点都有例子或解释支持</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">Essay：有 counterargument + rebuttal</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">结尾有力，不是草草收场</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">字数约达 350–400 字</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <h3 style="margin-top:0; margin-bottom:8px; font-size:14px; color:var(--color-text-secondary);">LANGUAGE 语言</h3>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">使用了不同的连接词（非只用 Firstly / Secondly）</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">词汇有变化，没有重复同一个词</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">检查主谓一致（he/she + verbs）</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">检查时态一致（全文统一用现在/过去）</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">没有不完整的句子（sentence fragment）</div></div>
+      <div class="checklist-item"><div class="check-icon" onclick="toggleCheck(this)"></div><div class="checklist-text">有至少一个复杂句式（relative clause / conditional）</div></div>
+    </div>
+
+    <div class="card card-teal">
+      <h3 style="margin-top:0;">💡 最后提醒</h3>
+      <div class="tip-row"><i class="ti ti-star tip-icon" aria-hidden="true"></i><span class="tip-text">Level 5 的关键：词汇亮点 + 句式变化 + 有力结尾</span></div>
+      <div class="tip-row"><i class="ti ti-alert-circle tip-icon" aria-hidden="true"></i><span class="tip-text">如果时间不足，确保开头和结尾写好——考官最先和最后看的就是这两段</span></div>
+      <div class="tip-row"><i class="ti ti-writing tip-icon" aria-hidden="true"></i><span class="tip-text">宁可字迹工整写350字，也不要潦草地写500字</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+</script>
