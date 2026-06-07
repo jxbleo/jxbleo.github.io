@@ -369,6 +369,74 @@
             color: var(--text-muted);
             margin-left: 8px;
         }
+        .custom-login {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .custom-login input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .custom-login input:focus {
+            border-color: #f97316;
+        }
+        .custom-login button {
+            padding: 12px 20px;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .custom-login button:hover {
+            background: #ea580c;
+        }
+        .modal-hint {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-top: 6px;
+            min-height: 1.2em;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-top: 1px solid var(--border);
+        }
+        .visitor-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .visitor-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
         .login-note {
             text-align: center;
             color: var(--text-muted);
@@ -478,6 +546,13 @@
             </div>
             <p>Choose your name to start practicing.</p>
             <div class="student-list" id="student-list"></div>
+            <div class="custom-login">
+                <input type="text" id="custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" />
+                <button id="custom-login-btn">Login</button>
+            </div>
+            <div id="login-error" class="modal-hint"></div>
+            <div class="divider"><span>or</span></div>
+            <button class="visitor-btn" id="visitor-btn">Continue as Visitor</button>
         </div>
     </div>
 
@@ -577,10 +652,16 @@
         { id: 'leostu', label: 'Leo' }
     ];
 
+    var validIds = ['leostu'];
+
     var pendingHref = null;
 
     function getCurrentUser() {
         return localStorage.getItem('opencode_user') || '';
+    }
+
+    function isVisitor() {
+        return localStorage.getItem('opencode_visitor') === 'true';
     }
 
     function renderStudentList(containerId) {
@@ -602,18 +683,26 @@
 
     function selectStudent(id) {
         localStorage.setItem('opencode_user', id);
+        localStorage.removeItem('opencode_visitor');
         hideLoginModal();
         updateLoginStatus();
-        if (pendingHref) {
-            var sep = pendingHref.indexOf('?') !== -1 ? '&' : '?';
-            window.location.href = pendingHref + sep + 'user=' + encodeURIComponent(id);
-        }
+        navigateAfterLogin();
+    }
+
+    function setVisitorMode() {
+        localStorage.removeItem('opencode_user');
+        localStorage.setItem('opencode_visitor', 'true');
     }
 
     function showLoginModal(href) {
         pendingHref = href;
         renderStudentList('student-list');
+        var input = document.getElementById('custom-id-input');
+        if (input) input.value = '';
+        var err = document.getElementById('login-error');
+        if (err) err.textContent = '';
         document.getElementById('login-modal').classList.add('active');
+        if (input) setTimeout(function() { input.focus(); }, 100);
     }
 
     function hideLoginModal() {
@@ -621,8 +710,42 @@
         pendingHref = null;
     }
 
+    function navigateAfterLogin() {
+        if (!pendingHref) return;
+        var user = localStorage.getItem('opencode_user');
+        if (user) {
+            var sep = pendingHref.indexOf('?') !== -1 ? '&' : '?';
+            window.location.href = pendingHref + sep + 'user=' + encodeURIComponent(user);
+        } else {
+            window.location.href = pendingHref;
+        }
+    }
+
+    function handleCustomLogin() {
+        var input = document.getElementById('custom-id-input');
+        var id = input.value.trim();
+        var errEl = document.getElementById('login-error');
+        if (!id) {
+            errEl.textContent = 'Please enter a student ID.';
+            return;
+        }
+        if (validIds.indexOf(id) !== -1) {
+            errEl.textContent = '';
+            selectStudent(id);
+        } else {
+            errEl.textContent = 'Unknown ID: "' + id + '"';
+            if (confirm('No matching ID for "' + id + '". Continue as visitor?')) {
+                setVisitorMode();
+                hideLoginModal();
+                updateLoginStatus();
+                navigateAfterLogin();
+            }
+        }
+    }
+
     function logoutUser() {
         localStorage.removeItem('opencode_user');
+        localStorage.removeItem('opencode_visitor');
         updateLoginStatus();
         var links = document.querySelectorAll('a.practice-link');
         for (var i = 0; i < links.length; i++) {
@@ -648,6 +771,7 @@
         } else {
             statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">Login</button>';
             document.getElementById('login-btn-header').addEventListener('click', function() {
+                localStorage.removeItem('opencode_visitor');
                 showLoginModal(null);
             });
         }
@@ -665,12 +789,26 @@
             window.location.href = href + sep + 'user=' + encodeURIComponent(storedUser);
             return;
         }
+        if (isVisitor()) {
+            window.location.href = href;
+            return;
+        }
         showLoginModal(href);
     });
 
     document.getElementById('modal-close').addEventListener('click', hideLoginModal);
     document.getElementById('login-modal').addEventListener('click', function(e) {
         if (e.target === this) hideLoginModal();
+    });
+    document.getElementById('custom-login-btn').addEventListener('click', handleCustomLogin);
+    document.getElementById('custom-id-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') handleCustomLogin();
+    });
+    document.getElementById('visitor-btn').addEventListener('click', function() {
+        setVisitorMode();
+        hideLoginModal();
+        updateLoginStatus();
+        navigateAfterLogin();
     });
 
     renderSection('bbc-list', bbcData, null, 'bbc');
@@ -684,6 +822,7 @@
         var user = urlUser || storedUser;
         if (urlUser && urlUser !== storedUser) {
             localStorage.setItem('opencode_user', urlUser);
+            localStorage.removeItem('opencode_visitor');
         }
         if (user) {
             var links = document.querySelectorAll('a.practice-link');
