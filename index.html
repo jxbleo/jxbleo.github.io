@@ -213,6 +213,54 @@
             background-color: var(--bg-hover);
         }
 
+        .user-dropdown {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .user-name {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+        .user-arrow {
+            font-size: 0.75em;
+            margin-left: 2px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            z-index: 1001;
+            min-width: 100px;
+            overflow: hidden;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-menu .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85em;
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .dropdown-menu .logout-btn:hover {
+            background: var(--bg-hover);
+        }
+
         .search-btn {
             display: block;
             width: fit-content;
@@ -337,37 +385,6 @@
             color: var(--text-muted);
             margin: 0 0 20px;
             font-size: 0.9em;
-        }
-        .student-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .student-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: var(--bg-page);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.15s;
-        }
-        .student-btn:hover {
-            border-color: #f97316;
-            background: #fff5ed;
-        }
-        .student-btn .stu-id {
-            font-weight: 600;
-        }
-        .student-btn .stu-label {
-            font-size: 0.8em;
-            color: var(--text-muted);
-            margin-left: 8px;
         }
         .custom-login {
             display: flex;
@@ -544,8 +561,7 @@
                 <h2>Select Student</h2>
                 <button class="modal-close" id="modal-close">&times;</button>
             </div>
-            <p>Choose your name to start practicing.</p>
-            <div class="student-list" id="student-list"></div>
+            <p>Enter your student ID to start practicing.</p>
             <div class="custom-login">
                 <input type="text" id="custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" />
                 <button id="custom-login-btn">Login</button>
@@ -666,23 +682,6 @@
         return localStorage.getItem('opencode_visitor') === 'true';
     }
 
-    function renderStudentList(containerId) {
-        var list = document.getElementById(containerId || 'student-list');
-        list.innerHTML = '';
-        for (var i = 0; i < students.length; i++) {
-            var s = students[i];
-            var btn = document.createElement('button');
-            btn.className = 'student-btn';
-            btn.innerHTML = '<span class="stu-id">' + s.id + '</span>';
-            btn.addEventListener('click', function(id) {
-                return function() {
-                    selectStudent(id);
-                };
-            }(s.id));
-            list.appendChild(btn);
-        }
-    }
-
     function selectStudent(id) {
         localStorage.setItem('opencode_user', id);
         localStorage.removeItem('opencode_visitor');
@@ -698,7 +697,6 @@
 
     function showLoginModal(href) {
         pendingHref = href;
-        renderStudentList('student-list');
         var input = document.getElementById('custom-id-input');
         if (input) input.value = '';
         var err = document.getElementById('login-error');
@@ -764,12 +762,25 @@
             for (var i = 0; i < students.length; i++) {
                 if (students[i].id === user) { label = students[i].label; break; }
             }
-            statusEl.innerHTML = '<span class="user-name">' + label + '</span>' +
-                '<button class="logout-btn" id="logout-btn">Logout</button>';
+            statusEl.innerHTML = '<div class="user-dropdown">' +
+                '<span class="user-name" id="user-name-trigger">' + label + ' <span class="user-arrow">&#9662;</span></span>' +
+                '<div class="dropdown-menu" id="dropdown-menu">' +
+                    '<button class="logout-btn" id="logout-btn">Logout</button>' +
+                '</div>' +
+            '</div>';
+            document.getElementById('user-name-trigger').addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.getElementById('dropdown-menu').classList.toggle('show');
+            });
             document.getElementById('logout-btn').addEventListener('click', function(e) {
                 e.stopPropagation();
+                document.getElementById('dropdown-menu').classList.remove('show');
                 logoutUser();
             });
+            document.addEventListener('click', function() {
+                var menu = document.getElementById('dropdown-menu');
+                if (menu) menu.classList.remove('show');
+            }, { once: false });
         } else {
             statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">Login</button>';
             document.getElementById('login-btn-header').addEventListener('click', function() {

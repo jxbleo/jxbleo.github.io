@@ -425,39 +425,6 @@
             color: #333;
         }
 
-        .student-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .student-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.15s;
-        }
-        .student-btn:hover {
-            border-color: var(--accent);
-            background: #f0fff4;
-        }
-        .student-btn .stu-id {
-            font-weight: 600;
-        }
-        .student-btn .stu-label {
-            font-size: 0.8em;
-            color: var(--text-light);
-            margin-left: 8px;
-        }
-
         .modal-actions {
             display: flex;
             gap: 12px;
@@ -560,8 +527,7 @@
     <div id="login-modal" class="modal-overlay">
         <div class="modal-box">
             <h2>Select Student</h2>
-            <p>Choose your name to continue.</p>
-            <div class="student-list" id="student-list"></div>
+            <p>Enter your student ID to continue.</p>
             <div style="display:flex;gap:8px;margin-top:14px;">
                 <input type="text" id="bbc-custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;background:var(--bg-page);color:var(--text-primary);" />
                 <button id="bbc-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
@@ -851,21 +817,6 @@
     function showLoginPrompt() {
         document.getElementById('loading-message').style.display = 'none';
         var modal = document.getElementById('login-modal');
-        var list = document.getElementById('student-list');
-        list.innerHTML = '';
-        for (var i = 0; i < students.length; i++) {
-            var s = students[i];
-            var btn = document.createElement('button');
-            btn.className = 'student-btn';
-            btn.innerHTML = '<span class="stu-id">' + s.id + '</span>';
-            btn.addEventListener('click', (function(id) {
-                return function() {
-                    selectStudent(id);
-                };
-            })(s.id));
-            list.appendChild(btn);
-        }
-
         var customInput = document.getElementById('bbc-custom-id-input');
         var customBtn = document.getElementById('bbc-custom-login-btn');
         var errorEl = document.getElementById('bbc-login-error');

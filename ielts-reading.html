@@ -32,39 +32,6 @@
         }
         .login-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 8px; }
         .login-modal p { color: var(--text-light); font-size: 0.9em; margin-bottom: 24px; }
-        .login-modal .student-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .login-modal .student-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.15s;
-        }
-        .login-modal .student-btn:hover {
-            border-color: var(--accent);
-            background: #eff6ff;
-        }
-        .login-modal .student-btn .stu-id {
-            font-weight: 600;
-        }
-        .login-modal .student-btn .stu-label {
-            font-size: 0.8em;
-            color: var(--text-light);
-            margin-left: 8px;
-        }
-
         .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
         @media (min-width: 769px) {
             .split-layout { height: calc(100vh - 320px); min-height: 450px; }
@@ -219,8 +186,7 @@
     <div id="login-overlay" class="login-overlay" style="display:none;">
         <div class="login-modal">
             <h2>Select Student</h2>
-            <p>Choose your name to begin.</p>
-            <div class="student-list" id="login-student-list"></div>
+            <p>Enter your student ID to begin.</p>
             <div class="custom-login" style="display:flex;gap:8px;margin-top:14px;">
                 <input type="text" id="ielts-custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;" />
                 <button id="ielts-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
@@ -685,25 +651,13 @@
         if (!userId || userId === 'VISITOR') {
             loginOverlay.style.display = 'flex';
             loadingDisplay.style.display = 'none';
-            var list = document.getElementById('login-student-list');
-            list.innerHTML = '';
-            for (var i = 0; i < students.length; i++) {
-                var s = students[i];
-                var btn = document.createElement('button');
-                btn.className = 'student-btn';
-                btn.innerHTML = '<span class="stu-id">' + s.id + '</span>';
-                btn.addEventListener('click', (function(id) {
-                    return function() {
-                        loginAsUser(id);
-                    };
-                })(s.id));
-                list.appendChild(btn);
-            }
-
             var customInput = document.getElementById('ielts-custom-id-input');
             var customBtn = document.getElementById('ielts-custom-login-btn');
             var errorEl = document.getElementById('ielts-login-error');
             var visitorBtn = document.getElementById('ielts-visitor-btn');
+
+            if (customInput) customInput.value = '';
+            if (errorEl) errorEl.textContent = '';
 
             function handleCustomLogin() {
                 var id = customInput.value.trim();
