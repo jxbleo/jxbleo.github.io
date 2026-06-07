@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSE English Paper 2 — Writing Formats</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --color-text-primary: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-text-info: #185FA5;
+    --color-text-success: #0F6E56;
+    --color-text-warning: #633806;
+    --color-text-danger: #A32D2D;
+    --color-border-secondary: #d1d5db;
+    --color-border-tertiary: #e5e7eb;
+    --color-border-info: #185FA5;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f3f4f6;
+    --color-background-info: #E6F1FB;
+    --color-background-success: #E1F5EE;
+    --color-background-warning: #FAEEDA;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: #f4f7f6;
+    padding: 40px 20px;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .root { padding: 1rem 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .section-title { font-size: 18px; font-weight: 500; margin: 2rem 0 1rem; border-bottom: 0.5px solid var(--color-border-secondary); padding-bottom: 8px; }
+  .genre-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .genre-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .genre-name { font-size: 15px; font-weight: 500; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); }
+  .badge-formal { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-creative { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-semi { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .field-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .field-val { font-size: 13px; line-height: 1.5; }
+  .yes { color: var(--color-text-success); }
+  .no { color: var(--color-text-danger); }
+  .maybe { color: var(--color-text-warning); }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab { font-size: 13px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); cursor: pointer; background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .tab.active { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+  .salutation-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 8px; }
+  .sal-type { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .sal-examples { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sal-chip { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; font-size: 12.5px; padding: 3px 10px; }
+  .sal-chip.highlight { border-color: var(--color-border-info); color: var(--color-text-info); }
+  .note { font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; line-height: 1.6; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 0.5rem 0 1rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  @media (max-width: 640px) {
+    body { padding: 16px 12px; }
+    .container { padding: 20px 16px; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .genre-card { padding: 0.75rem 1rem; }
+    .salutation-card { padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="root">
+  <h2 class="sr-only">DSE English Paper 2 — Writing formats and salutation reference</h2>
+
+  <div class="tab-row" id="tabs">
+    <button class="tab active" data-tab="formats">Format requirements</button>
+    <button class="tab" data-tab="open">Opening salutations</button>
+    <button class="tab" data-tab="close">Closing salutations</button>
+  </div>
+
+  <!-- FORMATS PANEL -->
+  <div class="panel active" id="panel-formats">
+
+    <!-- Letter / Email -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Letter / Email</span>
+        <span class="badge badge-formal">Formal</span>
+        <span class="badge badge-semi" style="margin-left:2px">Semi-formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Date / Address</div><div class="field-val"><span class="yes">✓ Required</span> (top-right or top-left)</div></div>
+        <div><div class="field-label">Salutation</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+        <div><div class="field-label">Subject line</div><div class="field-val"><span class="maybe">Optional</span> (adds clarity)</div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Paragraphs</div><div class="field-val"><span class="yes">✓ Needed</span> (clear structure)</div></div>
+        <div><div class="field-label">Sign-off + Name</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+      </div>
+      <p class="note">Intro para (purpose) → body paras (points) → closing para (call to action / thanks).</p>
+    </div>
+
+    <!-- Report -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Report</span>
+        <span class="badge badge-formal">Formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Title</div><div class="field-val"><span class="yes">✓ Required</span> (centred, e.g. "Report on…")</div></div>
+        <div><div class="field-label">To / From / Date</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="yes">✓ Required</span> (Introduction, Findings, Recommendations…)</div></div>
+        <div><div class="field-label">Bullet points</div><div class="field-val"><span class="maybe">Acceptable</span> under subheadings</div></div>
+        <div><div class="field-label">Salutation</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Sign-off</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+      </div>
+      <p class="note">Objective, impersonal tone. Third person preferred. No "I feel…" style language.</p>
+    </div>
+
+    <!-- Proposal -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Proposal</span>
+        <span class="badge badge-formal">Formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Title</div><div class="field-val"><span class="yes">✓ Required</span> (e.g. "Proposal for…")</div></div>
+        <div><div class="field-label">To / From / Date</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="yes">✓ Required</span> (Background, Objectives, Budget…)</div></div>
+        <div><div class="field-label">Salutation</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Sign-off</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Persuasive tone</div><div class="field-val"><span class="yes">✓ Recommended</span></div></div>
+      </div>
+      <p class="note">Similar to report layout but purpose is persuasive — argue why the proposal should be accepted.</p>
+    </div>
+
+    <!-- Article -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Article / Magazine / Newsletter</span>
+        <span class="badge badge-semi">Semi-formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Headline / Title</div><div class="field-val"><span class="yes">✓ Required</span> (eye-catching)</div></div>
+        <div><div class="field-label">By-line</div><div class="field-val"><span class="maybe">Optional</span> (e.g. "By Chris Wong")</div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="maybe">Optional</span> but show organisation</div></div>
+        <div><div class="field-label">Salutation / Sign-off</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Engaging opening</div><div class="field-val"><span class="yes">✓ Important</span></div></div>
+        <div><div class="field-label">Tone</div><div class="field-val">Varies — can be personal</div></div>
+      </div>
+      <p class="note">Hook the reader in the first sentence. End with a thought-provoking line or call to action.</p>
+    </div>
+
+    <!-- Speech / Talk -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Speech / Talk</span>
+        <span class="badge badge-semi">Semi-formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Opening address</div><div class="field-val"><span class="yes">✓ Required</span> (e.g. "Good morning, everyone.")</div></div>
+        <div><div class="field-label">Self-introduction</div><div class="field-val"><span class="yes">✓ Required</span> (state role / name)</div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="no">✗ Not used</span> (spoken, not written)</div></div>
+        <div><div class="field-label">Closing remark</div><div class="field-val"><span class="yes">✓ Required</span> (e.g. "Thank you.")</div></div>
+        <div><div class="field-label">Rhetorical devices</div><div class="field-val"><span class="yes">✓ Recommended</span></div></div>
+        <div><div class="field-label">Direct audience address</div><div class="field-val"><span class="yes">✓ Recommended</span></div></div>
+      </div>
+      <p class="note">Use "you / we / our" to involve the audience. Signpost clearly: "Firstly… Moving on… In conclusion…"</p>
+    </div>
+
+    <!-- Review -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Review</span>
+        <span class="badge badge-semi">Semi-formal</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Title of review</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+        <div><div class="field-label">Star rating / Score</div><div class="field-val"><span class="maybe">Optional</span></div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="maybe">Optional</span></div></div>
+        <div><div class="field-label">Salutation / Sign-off</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Opinion + evidence</div><div class="field-val"><span class="yes">✓ Essential</span></div></div>
+        <div><div class="field-label">Recommendation</div><div class="field-val"><span class="yes">✓ In conclusion</span></div></div>
+      </div>
+    </div>
+
+    <!-- Story / Personal Recount -->
+    <div class="genre-card">
+      <div class="genre-header">
+        <span class="genre-name">Story / Personal Recount / Diary</span>
+        <span class="badge badge-creative">Creative</span>
+      </div>
+      <div class="grid-2">
+        <div><div class="field-label">Title</div><div class="field-val"><span class="maybe">Optional</span> but recommended</div></div>
+        <div><div class="field-label">Date (diary)</div><div class="field-val"><span class="yes">✓ Required for diary</span></div></div>
+        <div><div class="field-label">Subheadings</div><div class="field-val"><span class="no">✗ Not used</span></div></div>
+        <div><div class="field-label">Salutation (diary)</div><div class="field-val"><span class="maybe">Optional</span> "Dear Diary,"</div></div>
+        <div><div class="field-label">Narrative arc</div><div class="field-val"><span class="yes">✓ Required</span></div></div>
+        <div><div class="field-label">Descriptive language</div><div class="field-val"><span class="yes">✓ Important</span></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OPENING SALUTATIONS PANEL -->
+  <div class="panel" id="panel-open">
+
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1rem;">Chips with a <span style="color:var(--color-text-info)">blue border</span> are less common — good for standing out.</p>
+
+    <div class="salutation-card">
+      <div class="sal-type">Formal — unknown recipient</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Dear Sir or Madam,</span>
+        <span class="sal-chip highlight">To Whom It May Concern,</span>
+        <span class="sal-chip highlight">Dear Members of the Committee,</span>
+        <span class="sal-chip">Dear Editor,</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Formal — known title / role</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Dear Mr / Ms [Surname],</span>
+        <span class="sal-chip highlight">Dear Principal [Surname],</span>
+        <span class="sal-chip highlight">Dear Dr [Surname],</span>
+        <span class="sal-chip highlight">Dear Professor [Surname],</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Semi-formal — known / school context</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Dear [First name],</span>
+        <span class="sal-chip highlight">Dear fellow students,</span>
+        <span class="sal-chip highlight">Dear members of [Club name],</span>
+        <span class="sal-chip highlight">Dear [School name] community,</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Speech / Talk — opening address</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Good morning / afternoon, everyone.</span>
+        <span class="sal-chip highlight">Distinguished guests, teachers and fellow students,</span>
+        <span class="sal-chip highlight">Ladies and gentlemen,</span>
+        <span class="sal-chip highlight">Dear members of the audience,</span>
+        <span class="sal-chip highlight">Welcome, everyone.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CLOSING SALUTATIONS PANEL -->
+  <div class="panel" id="panel-close">
+
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1rem;">Chips with a <span style="color:var(--color-text-info)">blue border</span> are less common and will help you stand out from "Best regards".</p>
+
+    <div class="salutation-card">
+      <div class="sal-type">Formal letters — very formal</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Yours faithfully,</span>
+        <span class="sal-chip">Yours sincerely,</span>
+        <span class="sal-chip highlight">Yours truly,</span>
+        <span class="sal-chip highlight">Respectfully yours,</span>
+      </div>
+      <p class="note">"Yours faithfully" → used when you don't know the recipient's name. "Yours sincerely" → when you addressed them by name.</p>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Formal / semi-formal — professional but warmer</div>
+      <div class="sal-examples">
+        <span class="sal-chip highlight">With appreciation,</span>
+        <span class="sal-chip highlight">With gratitude,</span>
+        <span class="sal-chip highlight">With warm regards,</span>
+        <span class="sal-chip highlight">With the highest respect,</span>
+        <span class="sal-chip highlight">With kind regards,</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Semi-formal — friendly / school context</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Best wishes,</span>
+        <span class="sal-chip highlight">Warmly,</span>
+        <span class="sal-chip highlight">Looking forward to hearing from you,</span>
+        <span class="sal-chip highlight">Hoping for a positive response,</span>
+        <span class="sal-chip highlight">I remain at your service,</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">Speech — closing remark</div>
+      <div class="sal-examples">
+        <span class="sal-chip">Thank you.</span>
+        <span class="sal-chip highlight">Thank you for your time and attention.</span>
+        <span class="sal-chip highlight">I sincerely hope this gives you food for thought.</span>
+        <span class="sal-chip highlight">I look forward to seeing this vision become a reality.</span>
+        <span class="sal-chip highlight">Together, we can make a difference. Thank you.</span>
+      </div>
+    </div>
+
+    <div class="salutation-card">
+      <div class="sal-type">⚠ Avoid these — too common / penalised</div>
+      <div class="sal-examples">
+        <span class="sal-chip" style="opacity:0.5; text-decoration:line-through">Best regards,</span>
+        <span class="sal-chip" style="opacity:0.5; text-decoration:line-through">Kind regards,</span>
+        <span class="sal-chip" style="opacity:0.5; text-decoration:line-through">Best,</span>
+      </div>
+      <p class="note">These are not "wrong" — examiners just see them in almost every script. Using a less common option signals better language range.</p>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+</script>
+</body>
+</html>
