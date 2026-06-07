@@ -1,0 +1,249 @@
+{
+  "id": "BBC-250814",
+  "title": "Grownups Buying Kids Toys",
+  "audioSrc": "bbc-audio/250814-grownups-buying-kids-toys.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Adults purchasing children's toys for personal use make up between _____ of the total toy market",
+      "answer": "30 and 40%",
+      "evidence": "\"adults buying kids' toys for themselves account for between 30 and 40% of the entire toy market\""
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Marketers have coined a new word for such consumers: _____",
+      "answer": "kidults",
+      "evidence": "\"advertisers have come up with a term for them: kidults – adults who are interested in toys and games intended for children\""
+    },
+    {
+      "id": "fill-3",
+      "sentence": "In a single three-month period ending in December, American kidults spent _____ on toys for themselves",
+      "answer": "over 1.5 billion dollars",
+      "evidence": "\"American kidults spent over 1.5 billion dollars on toys for themselves\""
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Among the most sought-after items were _____, also known as plushies",
+      "answer": "plush toys",
+      "evidence": "\"Among the most popular were plush toys, or plushies for short – toy dolls or animals made from cloth and filled with soft material\""
+    },
+    {
+      "id": "fill-5",
+      "sentence": "These toys are constructed from cloth and packed with _____",
+      "answer": "soft material",
+      "evidence": "\"toy dolls or animals made from cloth and filled with soft material\""
+    },
+    {
+      "id": "fill-6",
+      "sentence": "The growing trend is largely fuelled by _____ and social media",
+      "answer": "online shoppers",
+      "evidence": "\"the toy trend is being driven by online shoppers and social media\""
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Lisa runs a toy brand called _____, which specialises in leather plushies",
+      "answer": "Leather Monsters",
+      "evidence": "\"the owner of Leather Monsters, a brand of leather plushies which she advertises online\""
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Her business is headquartered in _____, Canada",
+      "answer": "Vancouver",
+      "evidence": "\"Lisa Lee is a toy maker based in Vancouver\""
+    },
+    {
+      "id": "fill-9",
+      "sentence": "She promotes her products _____",
+      "answer": "online",
+      "evidence": "\"a brand of leather plushies which she advertises online\""
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Her renewed interest in toys began once she secured a _____",
+      "answer": "stable job",
+      "evidence": "\"Once I kind of had a stable job with disposable income, I kind of rediscovered my love for soft toys\""
+    },
+    {
+      "id": "fill-11",
+      "sentence": "She uses her spare money — known as _____ — to fund her hobby",
+      "answer": "disposable income",
+      "evidence": "\"Disposable income is the money you have left over after paying all your expenses\""
+    },
+    {
+      "id": "fill-12",
+      "sentence": "Collecting toys helps her reconnect with her _____, a psychological concept referring to the childlike part of one's adult self",
+      "answer": "inner child",
+      "evidence": "\"help her reconnect with her inner child – a term from psychology which describes the part of your adult personality that still feels and reacts like a child\""
+    },
+    {
+      "id": "fill-13",
+      "sentence": "Jay runs a YouTube channel under the name _____",
+      "answer": "Geek Dad Life",
+      "evidence": "\"Jay Glatfelter is an enthusiastic toy collector and influencer who makes YouTube videos under the name Geek Dad Life\""
+    },
+    {
+      "id": "fill-14",
+      "sentence": "During the pandemic, a large number of new collectors entered the hobby, causing secondary market prices to _____",
+      "answer": "explode",
+      "evidence": "\"we saw the prices – the secondary market prices – like, explode once the pandemic happened\""
+    },
+    {
+      "id": "fill-15",
+      "sentence": "Many people joined because they had _____ — meaning plenty of free time — during lockdowns",
+      "answer": "time on their hands",
+      "evidence": "\"people had time on their hands – an idiom meaning to have a lot of free time and nothing to do with it\""
+    },
+    {
+      "id": "fill-16",
+      "sentence": "Others had extra funds as they were no longer _____ on going out",
+      "answer": "spending it",
+      "evidence": "\"maybe they had extra money because they're not spending it by going out\""
+    },
+    {
+      "id": "fill-17",
+      "sentence": "The cost of sought-after items such as Pokémon cards and Jellycat plushies rose _____ throughout the pandemic",
+      "answer": "dramatically",
+      "evidence": "\"the cost of collectable items, like Pokémon cards and Jellycat plushies, increasing dramatically during the pandemic\""
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Kidult: a grown-up who enjoys _____ meant for younger audiences",
+      "answer": "toys and games",
+      "evidence": "\"kidult – an adult who likes playing with toys and games intended for children\""
+    },
+    {
+      "id": "fill-19",
+      "sentence": "Plushie: a soft toy stuffed with _____",
+      "answer": "a soft cloth filling",
+      "evidence": "\"a toy doll or animal stuffed with a soft cloth filling\""
+    },
+    {
+      "id": "fill-20",
+      "sentence": "To have time on your hands: to possess _____ with little to occupy oneself",
+      "answer": "free time",
+      "evidence": "\"having free time and nothing much to do with it\""
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-1",
+      "question": "What does Beth suggest about the current trend of adults purchasing toys?",
+      "options": [
+        "It is a passing fad driven mainly by nostalgia and social pressure",
+        "It is more widespread than most people would initially expect",
+        "It is largely confined to collectors with specialist knowledge",
+        "It is a phenomenon that advertisers have been slow to recognise"
+      ],
+      "answer": "B",
+      "evidence": "Beth: \"grown-ups playing with toys is more common than you might think\""
+    },
+    {
+      "id": "mc-2",
+      "question": "According to the information given, which of the following best describes what \"kidults\" refers to?",
+      "options": [
+        "Children who prefer adult-themed entertainment over traditional play",
+        "Marketers who design products targeting both children and grown-ups",
+        "Retailers who stock both children's and adult merchandise in one store",
+        "Grown-ups who have a genuine interest in products designed for younger audiences"
+      ],
+      "answer": "D",
+      "evidence": "Beth: \"kidults – adults who are interested in toys and games intended for children\""
+    },
+    {
+      "id": "mc-3",
+      "question": "What does Lisa Lee suggest was the primary condition that allowed her to resume buying toys as an adult?",
+      "options": [
+        "Having financial stability and money to spend beyond her basic needs",
+        "Gaining recognition through her online channel and social media presence",
+        "Reconnecting with childhood friends who shared her interest in collecting",
+        "Receiving encouragement from her employer to pursue personal hobbies"
+      ],
+      "answer": "A",
+      "evidence": "Lisa Lee: \"Once I kind of had a stable job with disposable income, I kind of rediscovered my love for soft toys\""
+    },
+    {
+      "id": "mc-4",
+      "question": "According to Lisa Lee, what psychological function do toys serve for her beyond simple enjoyment?",
+      "options": [
+        "They help her manage professional stress and workplace anxiety effectively",
+        "They give her a creative outlet for designing and crafting new products",
+        "They allow her to nurture and restore a childlike aspect of her adult self",
+        "They serve as financial investments that grow in value over time"
+      ],
+      "answer": "C",
+      "evidence": "Lisa: \"reconnecting with my childhood, and healing that inner child, and I think the toys also play a part in that\""
+    },
+    {
+      "id": "mc-5",
+      "question": "What does Jay Glatfelter say happened to prices in the secondary toy market after the pandemic began?",
+      "options": [
+        "They gradually stabilised as supply chains recovered and demand levelled off",
+        "They surged dramatically as a large wave of new collectors entered the market",
+        "They dropped initially before recovering as online platforms expanded their reach",
+        "They fluctuated unpredictably due to shortages in manufacturing and distribution"
+      ],
+      "answer": "B",
+      "evidence": "Jay: \"we saw the prices – the secondary market prices – like, explode once the pandemic happened, because you had people that had time on their hands\""
+    },
+    {
+      "id": "mc-6",
+      "question": "According to Jay Glatfelter, which combination of factors contributed to the rise in adult toy collecting during the pandemic?",
+      "options": [
+        "Increased advertising by toy brands and a growing interest in retro culture",
+        "Government stimulus payments and the closure of major toy retail chains",
+        "Reduced working hours and a widespread desire to support local businesses",
+        "An abundance of free time alongside money that was no longer spent on outings"
+      ],
+      "answer": "D",
+      "evidence": "Jay: \"you had people that had time on their hands, maybe they had extra money because they're not spending it by going out, and now they're putting it into collecting toys\""
+    },
+    {
+      "id": "mc-7",
+      "question": "What can be inferred about the relationship between adult nostalgia and the cost of collectables during the pandemic?",
+      "options": [
+        "Nostalgia had little measurable impact on the pricing of collectables overall",
+        "Collectors deliberately avoided high-priced items in favour of affordable alternatives",
+        "The emotional desire to recapture childhood memories contributed to rising prices",
+        "Manufacturers lowered prices strategically to attract nostalgic adult consumers"
+      ],
+      "answer": "C",
+      "evidence": "Phil: \"the cost of collectable items, like Pokémon cards and Jellycat plushies, increasing dramatically during the pandemic\""
+    },
+    {
+      "id": "mc-8",
+      "question": "What is Phil's implied attitude when he describes the feeling of rediscovering childhood as something that \"comes at a price\"?",
+      "options": [
+        "He acknowledges that emotional fulfilment through collecting involves a financial cost",
+        "He argues that toy collecting is an irresponsible use of disposable income for adults",
+        "He suggests that childhood memories are too precious to be assigned a monetary value",
+        "He warns that the toy industry is deliberately exploiting consumers' sentimental feelings"
+      ],
+      "answer": "A",
+      "evidence": "Phil: \"the feeling of rediscovering your childhood… comes at a price, with the cost of collectable items… increasing dramatically\""
+    },
+    {
+      "id": "mc-9",
+      "question": "What does the example of the Lego Millennium Falcon most strongly suggest about the premium toy market?",
+      "options": [
+        "Licensed products based on classic films consistently outsell all other toy categories",
+        "Lego sets are generally considered poor value compared to other collectable items",
+        "The Harry Potter franchise generates more consumer interest than the Star Wars brand",
+        "Certain collectable toys can command remarkably high prices in mainstream retail"
+      ],
+      "answer": "D",
+      "evidence": "Phil mentioned the Lego Star Wars Millennium Falcon with a UK retail price of £734.99"
+    },
+    {
+      "id": "mc-10",
+      "question": "Based on the overall discussion, what broader conclusion can be drawn about the adult toy market?",
+      "options": [
+        "It is primarily sustained by a small group of wealthy enthusiasts with niche interests",
+        "It represents a significant and commercially influential segment of consumer spending",
+        "It is expected to decline once the social effects of the pandemic fully subside",
+        "It depends almost entirely on social media trends rather than genuine personal interest"
+      ],
+      "answer": "B",
+      "evidence": "Beth: \"adults buying children's toys account for between 30 and 40% of the entire toy market\"; Phil: \"American kidults spent over 1.5 billion dollars on toys for themselves\""
+    }
+  ]
+}

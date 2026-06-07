@@ -1,0 +1,249 @@
+{
+  "id": "BBC-250731",
+  "title": "What is the Manosphere?",
+  "audioSrc": "bbc-audio/250731-what-is-the-manosphere.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "A network of online communities and influencers promoting certain ideas about _____",
+      "answer": "male worth",
+      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\""
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Key values promoted include emotional control, material wealth and _____ over women",
+      "answer": "dominance",
+      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\""
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Spreads through platforms such as social media posts and _____",
+      "answer": "TikTok videos",
+      "evidence": "\"in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience\""
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Content targets a _____ audience, sometimes causing harm",
+      "answer": "young male",
+      "evidence": "\"ideas about how to be a man are finding a young male audience, sometimes with damaging results.\""
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Source of statistics: A _____ called Movember Foundation",
+      "answer": "men's self-help group",
+      "evidence": "\"According to men's self-help group the Movember Foundation, a majority of British young men regularly engage with masculinity influencers online\""
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Finding: _____ of British young men regularly follow masculinity influencers online",
+      "answer": "two thirds",
+      "evidence": "\"two thirds … which was the correct answer.\""
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Core belief: the world is _____ men",
+      "answer": "biased against",
+      "evidence": "\"The manosphere includes the idea that the world is biased against men.\""
+    },
+    {
+      "id": "fill-8",
+      "sentence": "True masculinity means being strong, wealthy and _____ others",
+      "answer": "controlling",
+      "evidence": "\"being a man means being strong, rich and controlling others, especially women.\""
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Stood out from peers: enjoyed ballet, acting and _____",
+      "answer": "poetry",
+      "evidence": "\"I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.\""
+    },
+    {
+      "id": "fill-10",
+      "sentence": "His differences made him an easy target — someone _____ and easily exploited",
+      "answer": "vulnerable",
+      "evidence": "\"an easy target – someone who's vulnerable and easily taken advantage of.\""
+    },
+    {
+      "id": "fill-11",
+      "sentence": "By age _____, he was already displaying bravado in photos",
+      "answer": "14",
+      "evidence": "\"By the time I got to 14 years old, if you look at pictures of me, you can see bravado\""
+    },
+    {
+      "id": "fill-12",
+      "sentence": "Felt pressured to follow the 'man box' — a _____ of ideals and rules",
+      "answer": "rigid set",
+      "evidence": "\"the 'man box', which is a kind of rigid set of ideals and rules that I may feel pressure as a boy to follow\""
+    },
+    {
+      "id": "fill-13",
+      "sentence": "Could not maintain a relationship or _____ a job",
+      "answer": "hold down",
+      "evidence": "\"Will struggled to get a girlfriend or hold down a job.\""
+    },
+    {
+      "id": "fill-14",
+      "sentence": "Believed his personal problems were _____ women",
+      "answer": "caused by",
+      "evidence": "\"his problems were caused by women.\""
+    },
+    {
+      "id": "fill-15",
+      "sentence": "Influencers told him the world _____ men",
+      "answer": "hates",
+      "evidence": "\"I had an influencer telling me, 'The world hates men,' which really felt true.\""
+    },
+    {
+      "id": "fill-16",
+      "sentence": "This _____ his worldview, making it unrealistic",
+      "answer": "distorted",
+      "evidence": "\"it, kind of, distorted my worldview, where it got painted over\""
+    },
+    {
+      "id": "fill-17",
+      "sentence": "He began viewing society as _____ — men against everyone else",
+      "answer": "us versus them",
+      "evidence": "\"so it was an us versus them.\""
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Saw women, progressives and the _____ as opponents trying to reduce men's power",
+      "answer": "mainstream media",
+      "evidence": "\"especially women, progressives and the mainstream media, who he believed wanted to limit their power.\""
+    },
+    {
+      "id": "fill-19",
+      "sentence": "His mental health worsened until he reached _____",
+      "answer": "a breakdown",
+      "evidence": "\"his mental health had declined to the point of a breakdown.\""
+    },
+    {
+      "id": "fill-20",
+      "sentence": "Now travels to schools across the UK, encouraging young people to _____ what they encounter online",
+      "answer": "question",
+      "evidence": "\"reminding them always to question what they see and hear online.\""
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-1",
+      "question": "According to Anita Rani, which of the following best describes what the manosphere promotes as indicators of a man's value?",
+      "options": [
+        "Financial independence, physical fitness, emotional openness, and leadership",
+        "Emotional restraint, material success, physical looks, and control over others",
+        "Social influence, intellectual ability, career achievement, and self-discipline",
+        "Psychological strength, online presence, competitive drive, and peer respect"
+      ],
+      "answer": "B",
+      "evidence": "Anita Rani: \"The manosphere consists of online communities and influencers that promote the idea that… dominance, especially over women, are markers of male worth.\""
+    },
+    {
+      "id": "mc-2",
+      "question": "What does Phil suggest about the way manosphere content reaches its audience?",
+      "options": [
+        "It is distributed through a dedicated website targeting vulnerable teenagers",
+        "It is broadcast via mainstream television programmes aimed at young adults",
+        "It is shared through official men's organisations with structured membership",
+        "It spreads through social media platforms and online videos without a central hub"
+      ],
+      "answer": "D",
+      "evidence": "Phil: \"in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience.\""
+    },
+    {
+      "id": "mc-3",
+      "question": "Why did Will Adolphy consider himself particularly susceptible to manosphere ideas during his teenage years?",
+      "options": [
+        "His unconventional interests set him apart and left him open to being exploited",
+        "His academic struggles made him seek validation from online communities instead",
+        "His lack of male role models pushed him towards influencers for life guidance",
+        "His desire for fame as an actor made him vulnerable to social media manipulation"
+      ],
+      "answer": "A",
+      "evidence": "Will: \"I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.\""
+    },
+    {
+      "id": "mc-4",
+      "question": "In the context of Will's behaviour at age 14, what does his use of \"bravado\" most closely suggest?",
+      "options": [
+        "He genuinely developed confidence after receiving encouragement from his peers",
+        "He openly rejected social expectations and embraced his artistic identity proudly",
+        "He projected a false image of toughness that concealed his actual inner struggles",
+        "He consciously chose to follow masculine ideals after careful personal reflection"
+      ],
+      "answer": "C",
+      "evidence": "Phil: \"Will responded with bravado – a show of bravery to impress other people but which often hides someone's true feelings.\""
+    },
+    {
+      "id": "mc-5",
+      "question": "What was Will's emotional state when he first encountered manosphere influencers online?",
+      "options": [
+        "He was sceptical of their claims but continued watching out of intellectual curiosity",
+        "He was receptive because their messages seemed to confirm his real-life frustrations",
+        "He was indifferent at first but gradually became convinced by repeated exposure",
+        "He was enthusiastic about self-improvement and sought out motivational content"
+      ],
+      "answer": "B",
+      "evidence": "Will: \"I had an influencer telling me, 'The world hates men,' which really felt true.\""
+    },
+    {
+      "id": "mc-6",
+      "question": "According to Will, what impact did prolonged exposure to manosphere content have on his perception of reality?",
+      "options": [
+        "It warped his understanding of the world into a distorted and adversarial perspective",
+        "It motivated him to improve himself by addressing his personal weaknesses directly",
+        "It gradually helped him identify the social injustices that men genuinely experience",
+        "It encouraged him to distance himself from toxic relationships in his personal life"
+      ],
+      "answer": "A",
+      "evidence": "Phil: \"Will's view of the world became distorted – twisted out of shape and unrealistic.\""
+    },
+    {
+      "id": "mc-7",
+      "question": "When Phil explains that Will \"painted everyone with the same brush,\" what does this idiom imply about Will's thinking?",
+      "options": [
+        "Will carefully analysed each person's behaviour before forming a negative judgement",
+        "Will expressed his frustration through creative outlets such as writing and painting",
+        "Will selectively targeted specific groups he believed were responsible for his problems",
+        "Will unfairly attributed the same negative traits to all people based on a few examples"
+      ],
+      "answer": "D",
+      "evidence": "Phil: \"paint everyone with the same brush – an idiom meaning to unfairly think everyone has the same bad qualities as a certain person.\""
+    },
+    {
+      "id": "mc-8",
+      "question": "Based on the description of Will's \"us versus them\" mindset, what can be inferred about how he viewed women and the mainstream media?",
+      "options": [
+        "He regarded them as misguided but ultimately willing to understand men's struggles",
+        "He saw them as irrelevant to his personal difficulties and largely ignored their views",
+        "He perceived them as active opponents deliberately working to diminish male influence",
+        "He considered them to be victims of the same social pressures that affected young men"
+      ],
+      "answer": "C",
+      "evidence": "Georgie: \"us versus them – a phrase which is used to show hostility between two opposing groups.\""
+    },
+    {
+      "id": "mc-9",
+      "question": "What can be inferred about the circumstances under which Will eventually disengaged from the manosphere?",
+      "options": [
+        "He left after a trusted mentor helped him critically evaluate the content he consumed",
+        "He withdrew voluntarily once he recognised the harmful nature of the ideology himself",
+        "He was guided out by a school counsellor who intervened during his teenage years",
+        "His departure came only after his mental wellbeing had already seriously deteriorated"
+      ],
+      "answer": "D",
+      "evidence": "Phil: \"his mental health had declined to the point of a breakdown.\""
+    },
+    {
+      "id": "mc-10",
+      "question": "What is Will Adolphy's primary purpose in visiting schools across the UK after his recovery?",
+      "options": [
+        "To warn educators about the dangers of unrestricted internet access for young people",
+        "To encourage young people to maintain a critical and questioning attitude toward online content",
+        "To promote mental health awareness by sharing clinical research on social media addiction",
+        "To advocate for government regulation of influencer content on social media platforms"
+      ],
+      "answer": "B",
+      "evidence": "Phil: \"He visits schools around the UK telling his story to young people, reminding them always to question what they see and hear online.\""
+    }
+  ]
+}

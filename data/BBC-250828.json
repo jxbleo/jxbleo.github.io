@@ -1,0 +1,199 @@
+{
+  "id": "BBC-250828",
+  "title": "What's It Like to Be a Twin?",
+  "audioSrc": "bbc-audio/250828-whats-it-like-to-be-a-twin.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Non-identical twins develop from _____ and share half their genes",
+      "answer": "two separate eggs",
+      "evidence": "Non-identical, or fraternal, twins come from two separate eggs and share half their genes."
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Identical twins originate from one fertilised egg and share all their _____",
+      "answer": "genes",
+      "evidence": "identical twins, who come from a single fertilised egg and share 100% of their genes."
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Examples include queries about psychic abilities, swapping partners and having _____",
+      "answer": "the same dreams",
+      "evidence": "some common questions for twins include: 'Do you have psychic powers? Have you ever swapped boyfriends? And do you have the same dreams?'"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Twins may show annoyance by _____ when asked these questions",
+      "answer": "rolling their eyes",
+      "evidence": "if you meet a twin and you ask them one of these questions, don't be surprised if they roll their eyes at you."
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Currently, one in every _____ is born a twin",
+      "answer": "42 babies",
+      "evidence": "In fact, one in every 42 babies is born a twin."
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Being a twin is not always _____",
+      "answer": "plain sailing",
+      "evidence": "Being a twin isn't always plain sailing."
+    },
+    {
+      "id": "fill-7",
+      "sentence": "However, twins never experience fear during _____",
+      "answer": "school",
+      "evidence": "there's never that fear, because you're going through school together"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Sometimes attend _____ together",
+      "answer": "the same class",
+      "evidence": "you're sometimes in the same class together, you're making friends together."
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Important developmental stages are _____ for twins",
+      "answer": "made easier",
+      "evidence": "all of those milestones of childhood, in some ways, are made easier for twins."
+    },
+    {
+      "id": "fill-10",
+      "sentence": "As twins grow older, they realise people view them as a twin rather than an _____",
+      "answer": "individual",
+      "evidence": "the more you realise how much people really think of you as a twin rather than as an individual."
+    },
+    {
+      "id": "fill-11",
+      "sentence": "Many twins struggle to establish their own _____",
+      "answer": "identity",
+      "evidence": "Many twins find it hard to establish their own identity as a separate and unique individual."
+    },
+    {
+      "id": "fill-12",
+      "sentence": "This debate examines how much of our lives is shaped by _____ we are born with",
+      "answer": "the genetics",
+      "evidence": "how much of our lives is determined by nature, the genetics we're born with"
+    },
+    {
+      "id": "fill-13",
+      "sentence": "Also considers the impact of _____ we grow up in",
+      "answer": "the environment",
+      "evidence": "and how much by nurture, the environment we grow up in?"
+    },
+    {
+      "id": "fill-14",
+      "sentence": "Because twins share similar genetics, _____ between them provide valuable scientific insights",
+      "answer": "differences",
+      "evidence": "Because twins are so genetically similar, differences between them tell scientists a lot."
+    },
+    {
+      "id": "fill-15",
+      "sentence": "The twins were _____ and grew up in different locations",
+      "answer": "separated at birth",
+      "evidence": "twins that were separated at birth, grew up in different parts of the world"
+    },
+    {
+      "id": "fill-16",
+      "sentence": "They had remarkably similar _____",
+      "answer": "life courses",
+      "evidence": "they kind of have these eerily similar life courses."
+    },
+    {
+      "id": "fill-17",
+      "sentence": "Both were reunited at age _____",
+      "answer": "39",
+      "evidence": "the Jim Twins, who were reunited at age 39 after being separated at birth"
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Both married women named _____ initially",
+      "answer": "Linda",
+      "evidence": "They both married someone called Linda and then divorced her for someone called Betty."
+    },
+    {
+      "id": "fill-19",
+      "sentence": "Both gave their dogs the name _____",
+      "answer": "Toy",
+      "evidence": "They both named their dog 'Toy'."
+    },
+    {
+      "id": "fill-20",
+      "sentence": "The case was described as _____ due to the extraordinary similarities",
+      "answer": "crazy",
+      "evidence": "they just had so many similarities – it was crazy!"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-21",
+      "question": "What is Neil's attitude towards the question he would ask a twin?",
+      "options": ["A. He considers it a thoughtful and original inquiry", "B. He recognises it would likely be irritating to twins", "C. He believes it demonstrates scientific curiosity", "D. He thinks it reveals genuine concern for twins"],
+      "answer": "B",
+      "evidence": "Neil: 'Oh, probably quite an annoying one.'"
+    },
+    {
+      "id": "mc-22",
+      "question": "According to Anand Jagatia, how might twins respond to common questions about psychic powers?",
+      "options": ["A. They would answer enthusiastically with personal stories", "B. They would appreciate the genuine interest shown", "C. They would provide scientific explanations patiently", "D. They would display signs of annoyance or frustration"],
+      "answer": "D",
+      "evidence": "Anand: 'if you meet a twin and you ask them one of these questions, don't be surprised if they roll their eyes at you'"
+    },
+    {
+      "id": "mc-23",
+      "question": "What does Professor Karen Dillon suggest about the early experiences of twins?",
+      "options": ["A. Shared developmental stages can reduce anxiety during childhood", "B. Being in separate classes helps establish individual identities", "C. Making friends independently is crucial for their development", "D. Fear of social situations is more common among twins"],
+      "answer": "A",
+      "evidence": "Karen: 'there's never that fear, because you're going through school together… all of those milestones of childhood, in some ways, are made easier for twins'"
+    },
+    {
+      "id": "mc-24",
+      "question": "What challenge does Karen Dillon identify for twins as they mature?",
+      "options": ["A. They struggle to maintain close relationships with each other", "B. They find it difficult to share childhood memories", "C. They face difficulties being recognised as distinct individuals", "D. They experience problems forming friendships with non-twins"],
+      "answer": "C",
+      "evidence": "Karen: 'the more you realise how much people really think of you as a twin rather than as an individual'"
+    },
+    {
+      "id": "mc-25",
+      "question": "Why do scientists find studying twins particularly valuable?",
+      "options": ["A. Twins provide insights into how personality develops over time", "B. Variations between genetically similar individuals reveal environmental influences", "C. Twins demonstrate how genetics alone determines life outcomes", "D. Identical twins prove that upbringing has minimal impact"],
+      "answer": "B",
+      "evidence": "Beth: 'Because twins are so genetically similar, differences between them tell scientists a lot'"
+    },
+    {
+      "id": "mc-26",
+      "question": "What does the case of the Jim Twins primarily illustrate about twins?",
+      "options": ["A. The powerful influence of genetic factors on life decisions", "B. The importance of early childhood separation", "C. The role of coincidence in human relationships", "D. The benefits of reunion after long separations"],
+      "answer": "A",
+      "evidence": "twins grew up in different parts of the world, and they kind of have these eerily similar life courses"
+    },
+    {
+      "id": "mc-27",
+      "question": "What does Anand Jagatia imply when discussing twins separated at birth?",
+      "options": ["A. Their similar life paths raise questions about personal autonomy", "B. Their different choices prove environment matters more than genes", "C. Their reunions typically reveal few meaningful similarities", "D. Their experiences confirm that genetics play no significant role"],
+      "answer": "A",
+      "evidence": "Anand: 'they kind of have these eerily similar life courses. And you think, Gosh! How much choice have I had over the way my life's turned out?'"
+    },
+    {
+      "id": "mc-28",
+      "question": "What aspect of the Jim Twins' story does Helena De Bres emphasise?",
+      "options": ["A. The length of time before they were reunited", "B. The different environments they grew up in", "C. The geographical distance between their homes", "D. The remarkable parallels in their life choices"],
+      "answer": "D",
+      "evidence": "Helena: 'they just had so many similarities… They both married someone called Linda and then divorced her for someone called Betty. They both named their dog Toy'"
+    },
+    {
+      "id": "mc-29",
+      "question": "How does Helena De Bres characterise the similarities between the Jim Twins?",
+      "options": ["A. They were scientifically predictable and expected", "B. They were limited to superficial preferences", "C. They were extraordinarily unusual and striking", "D. They were exaggerated by media reports"],
+      "answer": "C",
+      "evidence": "Helena: 'it was crazy! … It was, like, ridiculous!'"
+    },
+    {
+      "id": "mc-30",
+      "question": "What is Beth's overall perspective on the nature of being a twin?",
+      "options": ["A. It is primarily challenging and problematic", "B. It combines unusual and remarkable elements", "C. It is scientifically explainable and ordinary", "D. It requires more research and investigation"],
+      "answer": "B",
+      "evidence": "Beth: 'I think strange, mysterious and fantastic describe being a twin quite well'"
+    }
+  ]
+}

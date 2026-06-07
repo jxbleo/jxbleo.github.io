@@ -33,6 +33,7 @@
             color: #fff;
             padding: 60px 20px 36px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -48,11 +49,51 @@
             font-size: 1.05em;
         }
 
+        .login-status {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85em;
+        }
+        .login-status .user-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .login-status .user-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .login-status .user-name {
+            font-weight: 600;
+        }
+        .login-status .logout-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .login-status .logout-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+        }
+
         .container {
             max-width: 800px;
             margin: 40px auto;
             padding: 0 20px;
-            padding-bottom: 60px; /* 底部留白 */
+            padding-bottom: 60px;
         }
 
         .section-title {
@@ -67,7 +108,6 @@
             user-select: none;
         }
 
-        /* 菜单卡片列表 */
         .menu-list {
             list-style: none;
             padding: 0;
@@ -110,7 +150,6 @@
             font-weight: 600;
         }
 
-        /* 日期样式 */
         .card-date {
             margin: 0;
             font-size: 0.9em;
@@ -126,7 +165,6 @@
             margin: 0 0 12px 0;
         }
 
-        /* 彩色小标签 */
         .tags {
             display: flex;
             gap: 8px;
@@ -247,7 +285,97 @@
             color: #ea580c;
         }
 
-        /* 手机端适配 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0 4px;
+            line-height: 1;
+            border-radius: 4px;
+        }
+        .modal-close:hover {
+            background: var(--bg-hover);
+        }
+        .modal-box p {
+            color: var(--text-muted);
+            margin: 0 0 20px;
+            font-size: 0.9em;
+        }
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .student-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+        }
+        .student-btn:hover {
+            border-color: #f97316;
+            background: #fff5ed;
+        }
+        .student-btn .stu-id {
+            font-weight: 600;
+        }
+        .student-btn .stu-label {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+        .login-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8em;
+            margin-top: 16px;
+        }
+
         @media screen and (max-width: 768px) {
             .header { padding: 40px 15px; }
             .header h1 { font-size: 1.8em; }
@@ -259,8 +387,8 @@
 </head>
 <body>
 
-    <!-- 顶部欢迎横幅 -->
     <div class="header">
+        <div class="login-status" id="login-status"></div>
         <h1>🚀 Leo's English Hub</h1>
         <p>Master English through engaging listening & reading practice</p>
     </div>
@@ -342,17 +470,28 @@
 
     </div>
 
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Select Student</h2>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <p>Choose your name to start practicing.</p>
+            <div class="student-list" id="student-list"></div>
+        </div>
+    </div>
+
 <script>
     var bbcData = [
-        { date: '2026-03-19', title: 'How do we adapt to the cold?', topic: 'Science / Health', file: '260319-how-do-we-adapt-to-the-cold.html' },
-        { date: '2025-09-11', title: 'What causes hearing loss?', topic: 'Health / Science', file: '250911-what-causes-hearing-loss.html' },
-        { date: '2025-09-04', title: 'The joys of writing lists', topic: 'Daily Life / Psychology', file: '250904-the-joys-of-writing-lists.html' },
-        { date: '2025-08-28', title: 'What\'s it like to be a twin?', topic: 'Science / Identity', file: '250828-whats-it-like-to-be-a-twin.html' },
-        { date: '2025-08-21', title: 'What\'s your favourite snack?', topic: 'Food / Lifestyle', file: '250821-whats-your-favourite-snack.html' },
-        { date: '2025-08-14', title: 'Grownups buying kids toys', topic: 'Consumer Trends / Nostalgia', file: '250814-grownups-buying-kids-toys.html' },
-        { date: '2025-08-07', title: 'Are you flourishing?', topic: 'Wellbeing / Psychology', file: '250807-are-you-flourishing.html' },
-        { date: '2025-07-31', title: 'What is the manosphere?', topic: 'Society / Online Culture', file: '250731-what-is-the-manosphere.html' },
-        { date: '2025-07-24', title: 'What is economic degrowth?', topic: 'Environment / Economy', file: '250724-what-is-degrowth.html' }
+        { date: '2026-03-19', title: 'How do we adapt to the cold?', topic: 'Science / Health', file: 'bbc.html?set=BBC-260319' },
+        { date: '2025-09-11', title: 'What causes hearing loss?', topic: 'Health / Science', file: 'bbc.html?set=BBC-250911' },
+        { date: '2025-09-04', title: 'The joys of writing lists', topic: 'Daily Life / Psychology', file: 'bbc.html?set=BBC-250904' },
+        { date: '2025-08-28', title: 'What\'s it like to be a twin?', topic: 'Science / Identity', file: 'bbc.html?set=BBC-250828' },
+        { date: '2025-08-21', title: 'What\'s your favourite snack?', topic: 'Food / Lifestyle', file: 'bbc.html?set=BBC-250821' },
+        { date: '2025-08-14', title: 'Grownups buying kids toys', topic: 'Consumer Trends / Nostalgia', file: 'bbc.html?set=BBC-250814' },
+        { date: '2025-08-07', title: 'Are you flourishing?', topic: 'Wellbeing / Psychology', file: 'bbc.html?set=BBC-250807' },
+        { date: '2025-07-31', title: 'What is the manosphere?', topic: 'Society / Online Culture', file: 'bbc.html?set=BBC-250731' },
+        { date: '2025-07-24', title: 'What is economic degrowth?', topic: 'Environment / Economy', file: 'bbc.html?set=BBC-250724' }
     ];
 
     var champData = [
@@ -361,18 +500,27 @@
     ];
 
     var ieltsData = [
-        { date: '2', title: 'Making Every Drop Count', topic: 'Environment / Water', file: 'making-every-drop-count.html', label: 'IELTS Reading Passage' },
-        { date: '1', title: 'Ant Intelligence', topic: 'Science / Nature', file: 'ant-intelligence.html', label: 'IELTS Reading Passage' }
+        { date: '2', title: 'Making Every Drop Count', topic: 'Environment / Water', file: 'ielts-reading.html?set=C7-T1-P2', label: 'IELTS Reading Passage' },
+        { date: '1', title: 'Ant Intelligence', topic: 'Science / Nature', file: 'ielts-reading.html?set=C7-T3-P1', label: 'IELTS Reading Passage' }
     ];
 
-    function renderCard(item, dateLabel) {
+    function renderCard(item, dateLabel, type) {
+        var typeTag = '';
+        var linkClass = '';
+        if (type === 'bbc') {
+            typeTag = '<span class="tag tag-bbc">🎧 BBC</span>';
+            linkClass = ' class="practice-link"';
+        } else if (type === 'ielts') {
+            typeTag = '<span class="tag tag-bbc">📖 IELTS</span>';
+            linkClass = ' class="practice-link"';
+        }
         return '<li class="menu-card">' +
-            '<a href="' + item.file + '">' +
+            '<a' + linkClass + ' href="' + item.file + '">' +
                 '<div class="card-content">' +
                     '<h3 class="card-title">' + item.title + '</h3>' +
                     '<div class="meta-row">' +
                         '<div class="card-date">' + (dateLabel || item.date) + '</div>' +
-                        '<div class="tags"><span class="tag tag-topic">' + item.topic + '</span></div>' +
+                        '<div class="tags">' + typeTag + '<span class="tag tag-topic">' + item.topic + '</span></div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="arrow-box">→</div>' +
@@ -380,13 +528,13 @@
         '</li>';
     }
 
-    function renderSection(listId, data, dateLabel) {
+    function renderSection(listId, data, dateLabel, type) {
         var list = document.getElementById(listId);
         if (!list) return;
         data.sort(function(a, b) { return b.date.localeCompare(a.date); });
         list.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
-            list.innerHTML += renderCard(data[i], dateLabel);
+            list.innerHTML += renderCard(data[i], dateLabel, type);
         }
     }
 
@@ -425,9 +573,130 @@
         if (isHidden) input.focus();
     }
 
-    renderSection('bbc-list', bbcData);
-    renderSection('ielts-list', ieltsData, 'IELTS Reading Passage');
+    var students = [
+        { id: 'leostu', label: 'Leo' }
+    ];
+
+    var pendingHref = null;
+
+    function getCurrentUser() {
+        return localStorage.getItem('opencode_user') || '';
+    }
+
+    function renderStudentList(containerId) {
+        var list = document.getElementById(containerId || 'student-list');
+        list.innerHTML = '';
+        for (var i = 0; i < students.length; i++) {
+            var s = students[i];
+            var btn = document.createElement('button');
+            btn.className = 'student-btn';
+            btn.innerHTML = '<span class="stu-id">' + s.id + '</span><span class="stu-label">' + s.label + '</span>';
+            btn.addEventListener('click', function(id) {
+                return function() {
+                    selectStudent(id);
+                };
+            }(s.id));
+            list.appendChild(btn);
+        }
+    }
+
+    function selectStudent(id) {
+        localStorage.setItem('opencode_user', id);
+        hideLoginModal();
+        updateLoginStatus();
+        if (pendingHref) {
+            var sep = pendingHref.indexOf('?') !== -1 ? '&' : '?';
+            window.location.href = pendingHref + sep + 'user=' + encodeURIComponent(id);
+        }
+    }
+
+    function showLoginModal(href) {
+        pendingHref = href;
+        renderStudentList('student-list');
+        document.getElementById('login-modal').classList.add('active');
+    }
+
+    function hideLoginModal() {
+        document.getElementById('login-modal').classList.remove('active');
+        pendingHref = null;
+    }
+
+    function logoutUser() {
+        localStorage.removeItem('opencode_user');
+        updateLoginStatus();
+        var links = document.querySelectorAll('a.practice-link');
+        for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute('href');
+            if (href) links[i].href = href.replace(/[?&]user=[^&]*/, '').replace(/\?$/, '');
+        }
+    }
+
+    function updateLoginStatus() {
+        var statusEl = document.getElementById('login-status');
+        var user = getCurrentUser();
+        if (user) {
+            var label = user;
+            for (var i = 0; i < students.length; i++) {
+                if (students[i].id === user) { label = students[i].label; break; }
+            }
+            statusEl.innerHTML = '<span class="user-name">' + label + '</span>' +
+                '<button class="logout-btn" id="logout-btn">Logout</button>';
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                logoutUser();
+            });
+        } else {
+            statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">Login</button>';
+            document.getElementById('login-btn-header').addEventListener('click', function() {
+                showLoginModal(null);
+            });
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('a.practice-link');
+        if (!link) return;
+        var href = link.getAttribute('href');
+        if (!href || href.indexOf('user=') !== -1) return;
+        e.preventDefault();
+        var storedUser = localStorage.getItem('opencode_user');
+        if (storedUser) {
+            var sep = href.indexOf('?') !== -1 ? '&' : '?';
+            window.location.href = href + sep + 'user=' + encodeURIComponent(storedUser);
+            return;
+        }
+        showLoginModal(href);
+    });
+
+    document.getElementById('modal-close').addEventListener('click', hideLoginModal);
+    document.getElementById('login-modal').addEventListener('click', function(e) {
+        if (e.target === this) hideLoginModal();
+    });
+
+    renderSection('bbc-list', bbcData, null, 'bbc');
+    renderSection('ielts-list', ieltsData, 'IELTS Reading Passage', 'ielts');
     renderSection('champ-list', champData);
+
+    (function() {
+        var urlMatch = window.location.search.match(/[?&]user=([^&]*)/);
+        var urlUser = urlMatch ? decodeURIComponent(urlMatch[1].replace(/\+/g, ' ')) : null;
+        var storedUser = localStorage.getItem('opencode_user');
+        var user = urlUser || storedUser;
+        if (urlUser && urlUser !== storedUser) {
+            localStorage.setItem('opencode_user', urlUser);
+        }
+        if (user) {
+            var links = document.querySelectorAll('a.practice-link');
+            for (var i = 0; i < links.length; i++) {
+                var href = links[i].getAttribute('href');
+                if (href && href.indexOf('user=') === -1) {
+                    var sep = href.indexOf('?') !== -1 ? '&' : '?';
+                    links[i].href = href + sep + 'user=' + encodeURIComponent(user);
+                }
+            }
+        }
+        updateLoginStatus();
+    })();
 </script>
 
 </body>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading Practice</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #2563eb; --bg: #f4f7f6; --card-bg: #ffffff; --text-main: #333; --text-light: #666; --border-color: #e0e6ed; --correct-bg: #e8f8f5; --wrong-bg: #fdf2e9; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg); color: var(--text-main); line-height: 1.6;
+            margin: 0; padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); padding: 30px 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 12px; margin-bottom: 6px; }
+        .subtitle { text-align: center; color: var(--text-light); font-size: 0.95em; margin-bottom: 24px; }
+
+        .error-display { text-align: center; padding: 60px 20px; color: #b91c1c; }
+        .error-display h2 { color: #b91c1c; }
+        .loading { text-align: center; padding: 60px 20px; color: var(--text-light); }
+
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        .login-modal {
+            background: var(--card-bg); padding: 40px; border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 400px; width: 90%;
+            text-align: center;
+        }
+        .login-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 8px; }
+        .login-modal p { color: var(--text-light); font-size: 0.9em; margin-bottom: 24px; }
+        .login-modal .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .login-modal .student-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+        }
+        .login-modal .student-btn:hover {
+            border-color: var(--accent);
+            background: #eff6ff;
+        }
+        .login-modal .student-btn .stu-id {
+            font-weight: 600;
+        }
+        .login-modal .student-btn .stu-label {
+            font-size: 0.8em;
+            color: var(--text-light);
+            margin-left: 8px;
+        }
+
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+        @media (min-width: 769px) {
+            .split-layout { height: calc(100vh - 320px); min-height: 450px; }
+            .passage-panel, .questions-panel { overflow-y: auto; padding: 8px 10px; border: 2px solid #60a5fa; border-radius: 8px; }
+            .passage-panel::-webkit-scrollbar, .questions-panel::-webkit-scrollbar { width: 6px; }
+            .passage-panel::-webkit-scrollbar-thumb, .questions-panel::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px 5px; }
+            .container { padding: 20px 12px; }
+            .split-layout { grid-template-columns: 1fr; }
+            h1 { font-size: 1.4em; }
+            .passage-panel, .questions-panel { overflow-y: visible; max-height: none; padding: 0; border: none; }
+        }
+        .split-layout.vertical { grid-template-columns: 1fr; height: auto; min-height: 0; }
+        .split-layout.vertical .passage-panel, .split-layout.vertical .questions-panel { overflow-y: visible; max-height: none; padding: 0; border: none; }
+
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .panel-header h2 { margin: 0; font-size: 1.1em; border-left: 3px solid var(--accent); padding-left: 10px; color: var(--primary); }
+
+        .font-controls { display: flex; align-items: center; gap: 3px; }
+        .font-btn {
+            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border-color); border-radius: 4px;
+            background: var(--card-bg); color: var(--text-light); cursor: pointer;
+            font-size: 1em; font-weight: bold; line-height: 1; padding: 0;
+            transition: all 0.15s;
+        }
+        .font-btn:hover { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+        .font-val { font-size: 0.75em; color: var(--text-light); min-width: 20px; text-align: center; }
+
+        .layout-toggle {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; font-size: 0.85em; border: 1px solid var(--border-color);
+            border-radius: 20px; background: var(--card-bg); color: var(--text-light);
+            cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 12px;
+        }
+        .layout-toggle:hover { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+        @media (max-width: 768px) { .layout-toggle { display: none; } }
+
+        .passage { font-size: 14.5px; line-height: 1.9; padding: 16px 20px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); }
+        .passage p { margin-bottom: 1rem; text-indent: 0; }
+
+        .question-section { margin-bottom: 32px; }
+        .section-label {
+            font-weight: 600; font-size: 1.05em; color: var(--primary);
+            margin-bottom: 16px; padding: 10px 16px; background: #f1f5f9;
+            border-radius: 6px; border-left: 4px solid var(--accent);
+        }
+        .section-instruction { font-size: 0.9em; color: var(--text-light); margin-bottom: 16px; }
+
+        .tfng-question, .ynng-question {
+            margin-bottom: 16px; padding: 14px 18px; background: #fafbfc;
+            border-radius: 8px; border: 1px solid var(--border-color);
+        }
+        .tfng-text, .ynng-text { font-weight: 500; margin-bottom: 10px; color: var(--primary); font-size: 0.95em; }
+        .tfng-options, .ynng-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tfng-options label, .ynng-options label {
+            display: flex; align-items: center; gap: 5px;
+            padding: 7px 16px; border-radius: 6px; border: 1px solid var(--border-color);
+            cursor: pointer; transition: all 0.2s; font-size: 0.9em; font-weight: 500;
+        }
+        .tfng-options label:hover:not(.disabled), .ynng-options label:hover:not(.disabled) { border-color: var(--accent); background: #eff6ff; }
+        .tfng-options input[type="radio"], .ynng-options input[type="radio"] { accent-color: var(--accent); }
+        .tfng-options label:has(input[type="radio"]:checked), .ynng-options label:has(input[type="radio"]:checked) { border-color: var(--accent); background: #eff6ff; }
+        .tfng-options label.correct, .ynng-options label.correct { border-color: #27ae60 !important; background: var(--correct-bg) !important; }
+        .tfng-options label.wrong, .ynng-options label.wrong { border-color: #e67e22 !important; background: var(--wrong-bg) !important; }
+        .tfng-options label:has(input[type="radio"]:disabled), .ynng-options label:has(input[type="radio"]:disabled) { cursor: not-allowed; opacity: 0.7; }
+
+        .summary-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+        .summary-question {
+            margin-bottom: 14px; padding: 14px 18px; background: #fafbfc;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .summary-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 600; flex-shrink: 0; margin-top: 1px;
+        }
+        .summary-text { flex: 1; font-size: 0.95em; line-height: 1.7; }
+        .summary-text .blank-input {
+            border: none; border-bottom: 2px solid var(--primary);
+            background: transparent; text-align: center; color: var(--primary);
+            font-size: 0.95em; font-weight: bold; width: 90px; outline: none;
+            transition: border-color 0.2s, width 0.3s ease;
+        }
+        .summary-text .blank-input:focus { border-bottom-color: var(--accent); width: 130px; }
+        .summary-text .blank-input:disabled { color: #7f8c8d; border-bottom-color: #bdc3c7; cursor: not-allowed; }
+        .summary-text .blank-input.correct { border-bottom-color: #27ae60 !important; }
+        .summary-text .blank-input.wrong { border-bottom-color: #e67e22 !important; }
+
+        .evidence-text { font-size: 0.85em; color: #b9770e; margin-top: 6px; padding: 6px 10px; background: var(--wrong-bg); border-radius: 4px; display: none; }
+        .evidence-text.show { display: block; }
+
+        .headings-section { margin-bottom: 16px; }
+        .headings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; margin-bottom: 16px; padding: 14px 18px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9em; }
+        .headings-list .heading-item { padding: 2px 0; color: var(--text-main); }
+        .headings-list .heading-item .num { font-weight: 600; color: var(--accent); margin-right: 4px; }
+        .heading-question {
+            margin-bottom: 10px; padding: 10px 18px; background: #fafbfc;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .heading-question .para-label { font-weight: 700; color: var(--accent); font-size: 1.1em; min-width: 28px; }
+        .heading-question select {
+            padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 6px;
+            font-size: 0.9em; outline: none; background: white; cursor: pointer;
+            min-width: 80px; transition: border-color 0.2s;
+        }
+        .heading-question select:focus { border-color: var(--accent); }
+        .heading-question select:disabled { cursor: not-allowed; opacity: 0.6; }
+        .heading-question select.correct { border-color: #27ae60 !important; }
+        .heading-question select.wrong { border-color: #e67e22 !important; }
+        .heading-question.example-row { opacity: 0.7; }
+        .heading-question .evidence-text { margin-top: 0; margin-left: auto; }
+
+        .submit-btn {
+            display: block; width: 100%; max-width: 400px; margin: 30px auto 20px;
+            padding: 16px 20px; font-size: 1.2em; font-weight: bold; color: white;
+            background: var(--accent); border: none; border-radius: 8px;
+            cursor: pointer; transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(37,99,235,0.2);
+        }
+        .submit-btn:hover:not(:disabled) { background: #1d4ed8; }
+        .submit-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 4px rgba(37,99,235,0.2); }
+        .submit-btn:disabled { background: #95a5a6; cursor: not-allowed; box-shadow: none; }
+
+        .score-display {
+            text-align: center; padding: 20px; margin: 20px 0 30px;
+            border-radius: 8px; display: none;
+        }
+        .score-display.show { display: block; }
+        .score-display h2 { margin: 0 0 8px; }
+        .score-display .score-num { font-size: 2em; font-weight: bold; color: var(--accent); }
+        .score-display .score-detail { color: var(--text-light); font-size: 0.95em; }
+
+        .correct-mark { color: #27ae60; font-weight: bold; margin-left: 6px; }
+        .wrong-mark { color: #e67e22; font-weight: bold; margin-left: 6px; }
+
+        @media (max-width: 480px) {
+            .tfng-options, .ynng-options { flex-direction: column; gap: 6px; }
+            .tfng-options label, .ynng-options label { width: 100%; justify-content: center; }
+            .headings-list { grid-template-columns: 1fr; }
+            .heading-question { flex-wrap: wrap; }
+            .login-modal { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div id="login-overlay" class="login-overlay" style="display:none;">
+        <div class="login-modal">
+            <h2>Select Student</h2>
+            <p>Choose your name to begin.</p>
+            <div class="student-list" id="login-student-list"></div>
+        </div>
+    </div>
+
+    <div id="error-display" class="error-display" style="display:none;"></div>
+    <div id="loading-display" class="loading" style="display:none;">Loading lesson...</div>
+
+    <div id="main-content" style="display:none;">
+        <h1 id="title"></h1>
+        <p class="subtitle" id="subtitle"></p>
+
+        <button class="layout-toggle" id="layout-toggle" type="button">⇕ Stacked</button>
+        <div class="split-layout" id="split-layout">
+            <div class="passage-panel" id="passage-panel">
+                <div class="panel-header">
+                    <h2>Reading Passage</h2>
+                    <div class="font-controls">
+                        <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
+                        <span class="font-val" id="passage-font-val">14</span>
+                        <button class="font-btn font-plus" type="button" title="Increase font size">+</button>
+                    </div>
+                </div>
+                <div class="passage" id="passage"></div>
+            </div>
+            <div class="questions-panel" id="questions-panel">
+                <div class="panel-header">
+                    <h2>Questions</h2>
+                    <div class="font-controls">
+                        <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
+                        <span class="font-val" id="questions-font-val">14</span>
+                        <button class="font-btn font-plus" type="button" title="Increase font size">+</button>
+                    </div>
+                </div>
+                <div id="questions-container"></div>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="submit-btn">Submit Answers</button>
+        <div class="score-display" id="score-display"></div>
+    </div>
+</div>
+
+<script>
+    function logEvent(studentId, taskId, eventType, timestamp, eventData) {
+        console.log(JSON.stringify({ studentId: studentId, taskId: taskId, eventType: eventType, timestamp: timestamp, eventData: eventData }));
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    var setId = params.get('set');
+    var userId = params.get('user');
+    var lessonData = null;
+    var allQuestions = [];
+
+    var loginOverlay = document.getElementById('login-overlay');
+    var errorDisplay = document.getElementById('error-display');
+    var loadingDisplay = document.getElementById('loading-display');
+    var mainContent = document.getElementById('main-content');
+
+    function showError(msg) {
+        errorDisplay.style.display = 'block';
+        errorDisplay.innerHTML = '<h2>Error</h2><p>' + msg + '</p>';
+        loadingDisplay.style.display = 'none';
+    }
+
+    function storeAnswers() {
+        if (!setId || !userId) return;
+        var data = {};
+        var inputs = document.querySelectorAll('[data-question]');
+        inputs.forEach(function(el) {
+            if (el.type === 'radio') {
+                if (el.checked) data[el.name] = el.value;
+            } else if (el.type === 'text') {
+                data[el.name] = el.value;
+            } else if (el.tagName === 'SELECT') {
+                data[el.name] = el.value;
+            }
+        });
+        try { localStorage.setItem('ielts-' + setId + '-' + userId, JSON.stringify(data)); } catch(e) {}
+    }
+
+    function loadSavedAnswers() {
+        if (!setId || !userId) return;
+        var key = 'ielts-' + setId + '-' + userId;
+        var saved;
+        try { saved = JSON.parse(localStorage.getItem(key)); } catch(e) {}
+        if (!saved) return;
+        Object.keys(saved).forEach(function(name) {
+            var val = saved[name];
+            if (!val) return;
+            var els = document.querySelectorAll('[name="' + CSS.escape(name) + '"]');
+            els.forEach(function(el) {
+                if (el.type === 'radio') {
+                    if (el.value === val) el.checked = true;
+                } else if (el.type === 'text') {
+                    el.value = val;
+                } else if (el.tagName === 'SELECT') {
+                    el.value = val;
+                }
+            });
+        });
+    }
+
+    function renderPassage() {
+        document.getElementById('passage').innerHTML = lessonData.passage;
+    }
+
+    function renderQuestions() {
+        var container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        allQuestions = [];
+
+        lessonData.questions.forEach(function(qSet, setIdx) {
+            var sectionDiv = document.createElement('div');
+            sectionDiv.className = 'question-section';
+
+            var label = document.createElement('div');
+            label.className = 'section-label';
+            label.textContent = qSet.label;
+            sectionDiv.appendChild(label);
+
+            if (qSet.instruction) {
+                var instr = document.createElement('p');
+                instr.className = 'section-instruction';
+                instr.innerHTML = qSet.instruction;
+                sectionDiv.appendChild(instr);
+            }
+
+            if (qSet.type === 'tfng' || qSet.type === 'ynng') {
+                var isYnng = qSet.type === 'ynng';
+                var opts = isYnng ? ['YES', 'NO', 'NOT_GIVEN'] : ['TRUE', 'FALSE', 'NOT_GIVEN'];
+                var cls = isYnng ? 'ynng' : 'tfng';
+                qSet.items.forEach(function(item) {
+                    var qDiv = document.createElement('div');
+                    qDiv.className = cls + '-question';
+                    qDiv.id = 'q-' + item.id;
+
+                    var textDiv = document.createElement('div');
+                    textDiv.className = cls + '-text';
+                    textDiv.textContent = item.id.replace('Q', '') + '. ' + item.text;
+                    qDiv.appendChild(textDiv);
+
+                    var optDiv = document.createElement('div');
+                    optDiv.className = cls + '-options';
+                    opts.forEach(function(opt) {
+                        var labelEl = document.createElement('label');
+                        var radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = item.id;
+                        radio.value = opt;
+                        radio.setAttribute('data-question', item.id);
+                        radio.required = true;
+                        radio.addEventListener('change', function() {
+                            var now = Date.now();
+                            logEvent(userId, setId, 'answer_change', now, { question: item.id, value: opt });
+                            storeAnswers();
+                        });
+                        labelEl.appendChild(radio);
+                        var displayVal = opt === 'NOT_GIVEN' ? 'NOT GIVEN' : opt;
+                        labelEl.appendChild(document.createTextNode(' ' + displayVal));
+                        optDiv.appendChild(labelEl);
+                    });
+                    qDiv.appendChild(optDiv);
+
+                    var evid = document.createElement('div');
+                    evid.className = 'evidence-text';
+                    evid.id = 'ev-' + item.id;
+                    evid.textContent = 'Evidence: ' + item.evidence;
+                    qDiv.appendChild(evid);
+
+                    sectionDiv.appendChild(qDiv);
+
+                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                });
+            } else if (qSet.type === 'summary') {
+                var sumGrid = document.createElement('div');
+                sumGrid.className = 'summary-grid';
+                var badgeColors = ['#EEEDFE', '#3C3489', '#FBEAF0', '#72243E', '#EAF3DE', '#27500A', '#FAECE7', '#712B13'];
+                qSet.items.forEach(function(item, idx) {
+                    var qDiv = document.createElement('div');
+                    qDiv.className = 'summary-question';
+                    qDiv.id = 'q-' + item.id;
+
+                    var numDiv = document.createElement('div');
+                    numDiv.className = 'summary-num';
+                    var c = badgeColors[idx % badgeColors.length];
+                    var c2 = badgeColors[(idx + 1) % badgeColors.length];
+                    numDiv.style.background = (idx % 2 === 0) ? badgeColors[idx % badgeColors.length] : badgeColors[(idx + 1) % badgeColors.length];
+                    numDiv.style.color = (idx % 2 === 0) ? badgeColors[(idx + 1) % badgeColors.length] : badgeColors[idx % badgeColors.length];
+                    numDiv.textContent = item.id.replace('Q', '');
+                    qDiv.appendChild(numDiv);
+
+                    var textDiv = document.createElement('div');
+                    textDiv.className = 'summary-text';
+                    var qNum = item.id.replace('Q', '');
+                    var html = item.text.replace(/_{3,}/g, function() {
+                        return '<input type="text" name="' + item.id + '" class="blank-input" placeholder="(' + qNum + ')" autocomplete="off" data-question="' + item.id + '" required>';
+                    });
+                    textDiv.innerHTML = html;
+                    qDiv.appendChild(textDiv);
+
+                    var evid = document.createElement('div');
+                    evid.className = 'evidence-text';
+                    evid.id = 'ev-' + item.id;
+                    evid.textContent = 'Correct answer: ' + item.answer + ' — ' + item.evidence;
+                    qDiv.appendChild(evid);
+
+                    sumGrid.appendChild(qDiv);
+
+                    var inp = textDiv.querySelector('input');
+                    if (inp) {
+                        inp.addEventListener('input', function() {
+                            var now = Date.now();
+                            logEvent(userId, setId, 'answer_change', now, { question: item.id, value: inp.value });
+                            storeAnswers();
+                        });
+                    }
+
+                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                });
+                sectionDiv.appendChild(sumGrid);
+            } else if (qSet.type === 'headings') {
+                var headingsSection = document.createElement('div');
+                headingsSection.className = 'headings-section';
+
+                var hList = document.createElement('div');
+                hList.className = 'headings-list';
+                var romanNums = ['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii','xiii','xiv','xv'];
+                qSet.headings.forEach(function(h, idx) {
+                    var hItem = document.createElement('div');
+                    hItem.className = 'heading-item';
+                    hItem.innerHTML = '<span class="num">' + romanNums[idx] + '.</span> ' + h;
+                    hList.appendChild(hItem);
+                });
+                headingsSection.appendChild(hList);
+
+                if (qSet.example) {
+                    var exRow = document.createElement('div');
+                    exRow.className = 'heading-question example-row';
+                    var exLabel = document.createElement('span');
+                    exLabel.className = 'para-label';
+                    exLabel.textContent = qSet.example.paragraph;
+                    exRow.appendChild(exLabel);
+                    var exSelect = document.createElement('select');
+                    exSelect.disabled = true;
+                    var exOpt = document.createElement('option');
+                    exOpt.value = qSet.example.heading;
+                    exOpt.textContent = qSet.example.heading;
+                    exSelect.appendChild(exOpt);
+                    exRow.appendChild(exSelect);
+                    var exHint = document.createElement('span');
+                    exHint.style.fontSize = '0.85em';
+                    exHint.style.color = 'var(--text-light)';
+                    exHint.textContent = '(Example)';
+                    exRow.appendChild(exHint);
+                    headingsSection.appendChild(exRow);
+                }
+
+                qSet.items.forEach(function(item) {
+                    var qRow = document.createElement('div');
+                    qRow.className = 'heading-question';
+                    qRow.id = 'q-' + item.id;
+
+                    var pLabel = document.createElement('span');
+                    pLabel.className = 'para-label';
+                    pLabel.textContent = item.paragraph;
+                    qRow.appendChild(pLabel);
+
+                    var select = document.createElement('select');
+                    select.name = item.id;
+                    select.setAttribute('data-question', item.id);
+                    select.required = true;
+
+                    var placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = '— Select —';
+                    placeholder.disabled = true;
+                    placeholder.selected = true;
+                    select.appendChild(placeholder);
+
+                    qSet.headings.forEach(function(h, idx) {
+                        var opt = document.createElement('option');
+                        opt.value = romanNums[idx];
+                        opt.textContent = romanNums[idx];
+                        select.appendChild(opt);
+                    });
+
+                    select.addEventListener('change', function() {
+                        var now = Date.now();
+                        logEvent(userId, setId, 'answer_change', now, { question: item.id, value: select.value });
+                        storeAnswers();
+                    });
+
+                    qRow.appendChild(select);
+
+                    var evid = document.createElement('div');
+                    evid.className = 'evidence-text';
+                    evid.id = 'ev-' + item.id;
+                    evid.textContent = 'Correct heading: ' + item.answer;
+                    qRow.appendChild(evid);
+
+                    headingsSection.appendChild(qRow);
+
+                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qRow });
+                });
+
+                sectionDiv.appendChild(headingsSection);
+            }
+
+            container.appendChild(sectionDiv);
+        });
+    }
+
+    function allAnswered() {
+        var inputs = document.querySelectorAll('[data-question]');
+        for (var i = 0; i < inputs.length; i++) {
+            var el = inputs[i];
+            if (el.type === 'radio') {
+                var name = el.name;
+                var checked = document.querySelector('[name="' + CSS.escape(name) + '"]:checked');
+                if (!checked) return false;
+            } else if (el.type === 'text') {
+                if (!el.value || el.value.trim() === '') return false;
+            } else if (el.tagName === 'SELECT') {
+                if (!el.value) return false;
+            }
+        }
+        return true;
+    }
+
+    function disableAllInputs() {
+        document.querySelectorAll('[data-question]').forEach(function(el) { el.disabled = true; });
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        var now = Date.now();
+        logEvent(userId, setId, 'click', now, { action: 'submit' });
+
+        if (!allAnswered()) {
+            alert('Please answer all questions before submitting.');
+            return;
+        }
+
+        var score = 0;
+        var total = allQuestions.length;
+
+        allQuestions.forEach(function(q) {
+            var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+            var userAnswer = '';
+            if (q.type === 'tfng' || q.type === 'ynng') {
+                var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
+                userAnswer = checked ? checked.value : '';
+                var label = checked ? checked.closest('label') : null;
+                if (label) {
+                    if (userAnswer === q.answer) {
+                        label.classList.add('correct');
+                        score++;
+                    } else {
+                        label.classList.add('wrong');
+                        document.getElementById('ev-' + q.id).classList.add('show');
+                    }
+                }
+            } else if (q.type === 'summary') {
+                if (els.length) {
+                    var inp = els[0];
+                    userAnswer = inp.value.trim();
+                    if (userAnswer.toLowerCase() === q.answer.toLowerCase()) {
+                        inp.classList.add('correct');
+                        score++;
+                    } else {
+                        inp.classList.add('wrong');
+                        document.getElementById('ev-' + q.id).classList.add('show');
+                    }
+                }
+            } else if (q.type === 'headings') {
+                if (els.length) {
+                    var sel = els[0];
+                    userAnswer = sel.value;
+                    if (userAnswer === q.answer) {
+                        sel.classList.add('correct');
+                        score++;
+                    } else {
+                        sel.classList.add('wrong');
+                        document.getElementById('ev-' + q.id).classList.add('show');
+                    }
+                }
+            }
+        });
+
+        disableAllInputs();
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('submit-btn').textContent = 'Submitted';
+
+        var scoreDisplay = document.getElementById('score-display');
+        scoreDisplay.className = 'score-display show';
+        var pct = Math.round(score / total * 100);
+        var grade = pct >= 80 ? 'Excellent' : pct >= 60 ? 'Good' : pct >= 40 ? 'Fair' : 'Needs Improvement';
+        scoreDisplay.innerHTML = '<h2>Your Score</h2><div class="score-num">' + score + ' / ' + total + '</div><div class="score-detail">' + pct + '% — ' + grade + '</div>';
+
+        var formData = new FormData();
+        formData.append('Student_ID', userId);
+        formData.append('Set_ID', setId);
+        formData.append('Score', score + '/' + total);
+        allQuestions.forEach(function(q) {
+            var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+            if (els.length) {
+                if (q.type === 'tfng' || q.type === 'ynng') {
+                    var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
+                    formData.append(q.id, checked ? checked.value : '');
+                } else if (q.type === 'summary') {
+                    formData.append(q.id, els[0].value.trim());
+                } else if (q.type === 'headings') {
+                    formData.append(q.id, els[0].value);
+                }
+            }
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://formspree.io/f/mpqnvgel', true);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send(formData);
+    }
+
+    var students = [
+        { id: 'leostu', label: 'Leo' }
+    ];
+
+    function init() {
+        if (!setId) {
+            showError('No set specified. Please add <code>?set=SETID</code> to the URL, e.g. <code>?set=C7-T3-P1</code>.');
+            return;
+        }
+
+        if (!userId) {
+            loginOverlay.style.display = 'flex';
+            loadingDisplay.style.display = 'none';
+            var list = document.getElementById('login-student-list');
+            list.innerHTML = '';
+            for (var i = 0; i < students.length; i++) {
+                var s = students[i];
+                var btn = document.createElement('button');
+                btn.className = 'student-btn';
+                btn.innerHTML = '<span class="stu-id">' + s.id + '</span><span class="stu-label">' + s.label + '</span>';
+                btn.addEventListener('click', (function(id) {
+                    return function() {
+                        userId = id;
+                        loginOverlay.style.display = 'none';
+                        var url = new URL(window.location);
+                        url.searchParams.set('user', id);
+                        window.history.replaceState({}, '', url);
+                        initAfterLogin();
+                    };
+                })(s.id));
+                list.appendChild(btn);
+            }
+            return;
+        }
+
+        initAfterLogin();
+    }
+
+    function initAfterLogin() {
+        loadingDisplay.style.display = 'block';
+        errorDisplay.style.display = 'none';
+
+        fetch('data/' + setId + '.json')
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function(data) {
+                lessonData = data;
+                loadingDisplay.style.display = 'none';
+                mainContent.style.display = 'block';
+
+                document.getElementById('title').textContent = lessonData.title;
+                document.getElementById('subtitle').textContent = lessonData.source;
+
+                renderPassage();
+                renderQuestions();
+                loadSavedAnswers();
+                setupControls();
+
+                logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });
+            })
+            .catch(function(err) {
+                loadingDisplay.style.display = 'none';
+                showError('Could not load lesson data for <strong>' + setId + '</strong>. Please check the set ID and try again.');
+            });
+    }
+
+    function setupControls() {
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.addEventListener('click', handleSubmit);
+
+        var form = document.getElementById('main-content').querySelector('form');
+        if (!form) {
+            var wrap = document.createElement('form');
+            wrap.id = 'quiz-form';
+            wrap.style.display = 'contents';
+            var parent = document.getElementById('split-layout').parentNode;
+            parent.insertBefore(wrap, document.getElementById('split-layout'));
+            wrap.appendChild(document.getElementById('split-layout'));
+            wrap.appendChild(submitBtn);
+            wrap.addEventListener('submit', function(e) { e.preventDefault(); });
+        }
+
+        var toggle = document.getElementById('layout-toggle');
+        var split = document.getElementById('split-layout');
+        if (localStorage.getItem('ieltsLayout') === 'vertical') {
+            split.classList.add('vertical');
+            toggle.textContent = '⇔ Side by Side';
+        }
+        toggle.addEventListener('click', function() {
+            split.classList.toggle('vertical');
+            var v = split.classList.contains('vertical');
+            toggle.textContent = v ? '⇔ Side by Side' : '⇕ Stacked';
+            localStorage.setItem('ieltsLayout', v ? 'vertical' : 'horizontal');
+        });
+
+        var fontConfigs = [
+            { panel: document.getElementById('passage-panel'), valEl: document.getElementById('passage-font-val'), key: 'ielts-font-passage' },
+            { panel: document.getElementById('questions-panel'), valEl: document.getElementById('questions-font-val'), key: 'ielts-font-questions' }
+        ];
+        fontConfigs.forEach(function(cfg) {
+            if (!cfg.panel) return;
+            var saved = localStorage.getItem(cfg.key);
+            if (saved) {
+                cfg.valEl.textContent = saved;
+                cfg.panel.style.fontSize = saved + 'px';
+            }
+            var minus = cfg.panel.querySelector('.font-minus');
+            var plus = cfg.panel.querySelector('.font-plus');
+            if (minus) {
+                minus.addEventListener('click', function() {
+                    var cur = parseInt(cfg.valEl.textContent);
+                    if (cur > 10) {
+                        cur--;
+                        cfg.valEl.textContent = cur;
+                        cfg.panel.style.fontSize = cur + 'px';
+                        localStorage.setItem(cfg.key, cur);
+                    }
+                });
+            }
+            if (plus) {
+                plus.addEventListener('click', function() {
+                    var cur = parseInt(cfg.valEl.textContent);
+                    if (cur < 24) {
+                        cur++;
+                        cfg.valEl.textContent = cur;
+                        cfg.panel.style.fontSize = cur + 'px';
+                        localStorage.setItem(cfg.key, cur);
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener('beforeunload', function() {
+        if (userId && setId) {
+            logEvent(userId, setId, 'page_exit', Date.now(), {});
+        }
+    });
+
+    init();
+</script>
+</body>
+</html>
