@@ -5,6 +5,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const contentRoot = path.join(projectRoot, "content");
 const sectionsPath = path.join(contentRoot, "sections.json");
 const outputPath = path.join(projectRoot, "data", "home-catalog.json");
+const fallbackOutputPath = path.join(projectRoot, "data", "home-catalog.js");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -91,7 +92,12 @@ function main() {
 
   const catalog = { sections, items };
   fs.writeFileSync(outputPath, JSON.stringify(catalog, null, 2) + "\n");
+  fs.writeFileSync(
+    fallbackOutputPath,
+    "window.__HOME_CATALOG__ = " + JSON.stringify(catalog, null, 2) + ";\n"
+  );
   console.log(`Updated ${path.relative(projectRoot, outputPath)}`);
+  console.log(`Updated ${path.relative(projectRoot, fallbackOutputPath)}`);
 }
 
 main();

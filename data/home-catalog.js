@@ -1,0 +1,341 @@
+window.__HOME_CATALOG__ = {
+  "sections": [
+    {
+      "id": "bbc-six-minute-english",
+      "title": "BBC Six Minute English",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, date or topic...",
+      "sortType": "date_desc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "New BBC listening lessons will appear here."
+    },
+    {
+      "id": "ielts-reading",
+      "title": "IELTS Reading",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Reading passages will be added here."
+    },
+    {
+      "id": "ielts-listening",
+      "title": "IELTS Listening",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Listening sets will be added here."
+    },
+    {
+      "id": "vocabulary",
+      "title": "Vocabulary",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search unit code...",
+      "sortType": "number_asc",
+      "titleMode": "id",
+      "emptyMessage": "Developing",
+      "emptyNote": "Vocabulary units will open with a word list and quiz groups."
+    },
+    {
+      "id": "dse-english-paper-2",
+      "title": "DSE English Paper 2",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future DSE writing content will appear here."
+    },
+    {
+      "id": "dse-english-paper-4",
+      "title": "DSE English Paper 4",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future speaking content will appear here."
+    },
+    {
+      "id": "grammar",
+      "title": "Grammar",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Grammar practice is planned for a later phase."
+    }
+  ],
+  "items": [
+    {
+      "id": "BBC-250724",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What Is Economic Degrowth?",
+      "href": "bbc.html?set=BBC-250724",
+      "displayValue": "2025-07-24",
+      "sortValue": "2025-07-24",
+      "topic": "Environment / Economy",
+      "tags": [
+        "Environment",
+        "Economy"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250731",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What Is the Manosphere?",
+      "href": "bbc.html?set=BBC-250731",
+      "displayValue": "2025-07-31",
+      "sortValue": "2025-07-31",
+      "topic": "Society / Online Culture",
+      "tags": [
+        "Society",
+        "Online Culture"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250807",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Are You Flourishing?",
+      "href": "bbc.html?set=BBC-250807",
+      "displayValue": "2025-08-07",
+      "sortValue": "2025-08-07",
+      "topic": "Wellbeing / Psychology",
+      "tags": [
+        "Wellbeing",
+        "Psychology"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250814",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Grownups Buying Kids Toys",
+      "href": "bbc.html?set=BBC-250814",
+      "displayValue": "2025-08-14",
+      "sortValue": "2025-08-14",
+      "topic": "Consumer Trends / Nostalgia",
+      "tags": [
+        "Consumer Trends",
+        "Nostalgia"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250821",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What's Your Favourite Snack?",
+      "href": "bbc.html?set=BBC-250821",
+      "displayValue": "2025-08-21",
+      "sortValue": "2025-08-21",
+      "topic": "Food / Lifestyle",
+      "tags": [
+        "Food",
+        "Lifestyle"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250828",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What's It Like to Be a Twin?",
+      "href": "bbc.html?set=BBC-250828",
+      "displayValue": "2025-08-28",
+      "sortValue": "2025-08-28",
+      "topic": "Science / Identity",
+      "tags": [
+        "Science",
+        "Identity"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250904",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Joys of Writing Lists",
+      "href": "bbc.html?set=BBC-250904",
+      "displayValue": "2025-09-04",
+      "sortValue": "2025-09-04",
+      "topic": "Daily Life / Psychology",
+      "tags": [
+        "Daily Life",
+        "Psychology"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250911",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What Causes Hearing Loss?",
+      "href": "bbc.html?set=BBC-250911",
+      "displayValue": "2025-09-11",
+      "sortValue": "2025-09-11",
+      "topic": "Health / Science",
+      "tags": [
+        "Health",
+        "Science"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250918",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Would You Like A Robot Companion?",
+      "href": "bbc.html?set=BBC-250918",
+      "displayValue": "2025-09-18",
+      "sortValue": "2025-09-18",
+      "topic": "Technology / Society",
+      "tags": [
+        "Technology",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250925",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Criminal Trade In Ancient Objects",
+      "href": "bbc.html?set=BBC-250925",
+      "displayValue": "2025-09-25",
+      "sortValue": "2025-09-25",
+      "topic": "History / Crime",
+      "tags": [
+        "History",
+        "Crime"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-251002",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Have You Ever Seen A Whale?",
+      "href": "bbc.html?set=BBC-251002",
+      "displayValue": "2025-10-02",
+      "sortValue": "2025-10-02",
+      "topic": "Nature / Conservation",
+      "tags": [
+        "Nature",
+        "Conservation"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-251009",
+      "sectionId": "bbc-six-minute-english",
+      "title": "What Makes A Good Citizen?",
+      "href": "bbc.html?set=BBC-251009",
+      "displayValue": "2025-10-09",
+      "sortValue": "2025-10-09",
+      "topic": "Society / Politics",
+      "tags": [
+        "Society",
+        "Politics"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-251030",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Is Breakfast The Most Important Meal Of The Day?",
+      "href": "bbc.html?set=BBC-251030",
+      "displayValue": "2025-10-30",
+      "sortValue": "2025-10-30",
+      "topic": "Food / Health",
+      "tags": [
+        "Food",
+        "Health"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260319",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Do We Adapt to the Cold?",
+      "href": "bbc.html?set=BBC-260319",
+      "displayValue": "2026-03-19",
+      "sortValue": "2026-03-19",
+      "topic": "Science / Health",
+      "tags": [
+        "Science",
+        "Health"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T1-P2",
+      "sectionId": "ielts-reading",
+      "title": "C7-T1-P2 · Making Every Drop Count",
+      "href": "ielts-reading.html?set=C7-T1-P2",
+      "displayValue": "C7-T1-P2",
+      "sortValue": 70102,
+      "topic": "Environment / Water",
+      "tags": [
+        "Environment",
+        "Water"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T1-P3",
+      "sectionId": "ielts-reading",
+      "title": "C7-T1-P3 · Educating Psyche",
+      "href": "ielts-reading.html?set=C7-T1-P3",
+      "displayValue": "C7-T1-P3",
+      "sortValue": 70103,
+      "topic": "Education / Psychology",
+      "tags": [
+        "Education",
+        "Psychology",
+        "Learning"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-P1",
+      "sectionId": "ielts-reading",
+      "title": "C7-T3-P1 · Ant Intelligence",
+      "href": "ielts-reading.html?set=C7-T3-P1",
+      "displayValue": "C7-T3-P1",
+      "sortValue": 70301,
+      "topic": "Science / Nature",
+      "tags": [
+        "Science",
+        "Nature"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "NGSL-A",
+      "sectionId": "vocabulary",
+      "title": "NGSL-A",
+      "href": "vocabulary.html?set=NGSL-A",
+      "displayValue": "NGSL-A",
+      "sortValue": 1001,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    }
+  ]
+};

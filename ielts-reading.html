@@ -32,22 +32,78 @@
         }
         .login-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 8px; }
         .login-modal p { color: var(--text-light); font-size: 0.9em; margin-bottom: 24px; }
-        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+        .split-layout {
+            --passage-width: minmax(320px, 1fr);
+            display: grid;
+            grid-template-columns: minmax(320px, 1fr) 12px minmax(320px, 1fr);
+            gap: 0;
+            margin: 20px 0;
+            align-items: stretch;
+        }
         @media (min-width: 769px) {
-            .split-layout { height: calc(100vh - 320px); min-height: 450px; }
-            .passage-panel, .questions-panel { overflow-y: auto; padding: 8px 10px; border: 2px solid #60a5fa; border-radius: 8px; }
+            body { padding: 18px; }
+            .container {
+                max-width: none; width: 100%;
+                background: transparent; padding: 18px 10px 10px;
+                border-radius: 0; box-shadow: none;
+            }
+            h1 { margin-top: 0; }
+            .split-layout { height: calc(100vh - 210px); min-height: 520px; }
+            .passage-panel, .questions-panel {
+                overflow-y: auto; padding: 0 18px;
+                border: none; border-radius: 0; background: transparent;
+            }
             .passage-panel::-webkit-scrollbar, .questions-panel::-webkit-scrollbar { width: 6px; }
             .passage-panel::-webkit-scrollbar-thumb, .questions-panel::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+            .passage { padding: 0; background: transparent; border: none; border-radius: 0; }
+            .questions-panel .question-section:first-child { margin-top: 0; }
+            .submit-btn { margin-top: 20px; }
         }
         @media (max-width: 768px) {
             body { padding: 10px 5px; }
             .container { padding: 20px 12px; }
-            .split-layout { grid-template-columns: 1fr; }
+            .split-layout { grid-template-columns: 1fr; gap: 0; }
             h1 { font-size: 1.4em; }
             .passage-panel, .questions-panel { overflow-y: visible; max-height: none; padding: 0; border: none; }
         }
         .split-layout.vertical { grid-template-columns: 1fr; height: auto; min-height: 0; }
         .split-layout.vertical .passage-panel, .split-layout.vertical .questions-panel { overflow-y: visible; max-height: none; padding: 0; border: none; }
+        .split-layout.vertical .split-divider { display: none; }
+        .split-divider {
+            position: relative;
+            width: 12px;
+            cursor: col-resize;
+            user-select: none;
+            touch-action: none;
+        }
+        .split-divider::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(37,99,235,0.05), rgba(37,99,235,0.45), rgba(37,99,235,0.05));
+            border-radius: 999px;
+        }
+        .split-divider::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 64px;
+            border-radius: 999px;
+            background: rgba(37,99,235,0.15);
+        }
+        .split-layout.resizing { user-select: none; cursor: col-resize; }
+        .split-layout.resizing .split-divider::after,
+        .split-divider:hover::after { background: rgba(37,99,235,0.28); }
+        @media (max-width: 768px) {
+            .split-divider { display: none; }
+        }
 
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .panel-header h2 { margin: 0; font-size: 1.1em; border-left: 3px solid var(--accent); padding-left: 10px; color: var(--primary); }
@@ -74,6 +130,38 @@
 
         .passage { font-size: 14.5px; line-height: 1.9; padding: 16px 20px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); }
         .passage p { margin-bottom: 1rem; text-indent: 0; }
+        .passage mark.user-highlight {
+            background: linear-gradient(180deg, rgba(255, 244, 133, 0.25), rgba(255, 232, 105, 0.95));
+            color: inherit;
+            padding: 0 1px;
+            border-radius: 3px;
+        }
+        .highlight-toolbar {
+            position: fixed;
+            z-index: 1200;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: rgba(18, 35, 58, 0.96);
+            color: #fff;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.24);
+        }
+        .highlight-toolbar.show { display: inline-flex; }
+        .highlight-toolbar button {
+            border: none;
+            border-radius: 999px;
+            padding: 7px 12px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 0.82em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .highlight-toolbar button:hover { background: rgba(255,255,255,0.22); }
+        .highlight-toolbar button.primary { background: #facc15; color: #3b2f00; }
+        .highlight-toolbar button.primary:hover { background: #fde047; }
 
         .question-section { margin-bottom: 32px; }
         .section-label {
@@ -242,6 +330,7 @@
                 </div>
                 <div class="passage" id="passage"></div>
             </div>
+            <div class="split-divider" id="split-divider" aria-hidden="true"></div>
             <div class="questions-panel" id="questions-panel">
                 <div class="panel-header">
                     <h2>Questions</h2>
@@ -259,6 +348,10 @@
         <div class="score-display" id="score-display"></div>
     </div>
 </div>
+<div class="highlight-toolbar" id="highlight-toolbar">
+    <button class="primary" id="highlight-add-btn" type="button">Highlight</button>
+    <button id="highlight-clear-btn" type="button">Clear</button>
+</div>
 
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
@@ -270,11 +363,35 @@
     var userId = params.get('user');
     var lessonData = null;
     var allQuestions = [];
+    var activePassageRange = null;
+    var highlightToolbar = document.getElementById('highlight-toolbar');
+    var splitLayout = document.getElementById('split-layout');
+    var splitDivider = document.getElementById('split-divider');
 
     var loginOverlay = document.getElementById('login-overlay');
     var errorDisplay = document.getElementById('error-display');
     var loadingDisplay = document.getElementById('loading-display');
     var mainContent = document.getElementById('main-content');
+
+    function getPassageEl() {
+        return document.getElementById('passage');
+    }
+
+    function getHighlightStorageKey() {
+        return 'ielts-highlight-' + setId + '-' + (userId || 'VISITOR');
+    }
+
+    function getSplitStorageKey() {
+        return 'ielts-split-ratio';
+    }
+
+    function isDesktopViewport() {
+        return window.innerWidth >= 769;
+    }
+
+    function isHorizontalLayout() {
+        return isDesktopViewport() && !splitLayout.classList.contains('vertical');
+    }
 
     function showError(msg) {
         errorDisplay.style.display = 'block';
@@ -321,13 +438,171 @@
     }
 
     function renderPassage() {
-        document.getElementById('passage').innerHTML = lessonData.passage;
+        var passageEl = getPassageEl();
+        var saved = '';
+        try { saved = localStorage.getItem(getHighlightStorageKey()) || ''; } catch (e) {}
+        passageEl.innerHTML = saved || lessonData.passage;
+    }
+
+    function savePassageMarkup() {
+        var passageEl = getPassageEl();
+        if (!passageEl || !setId || !userId) return;
+        try { localStorage.setItem(getHighlightStorageKey(), passageEl.innerHTML); } catch (e) {}
+    }
+
+    function clearHighlightToolbar() {
+        activePassageRange = null;
+        highlightToolbar.classList.remove('show');
+    }
+
+    function closestHighlight(node) {
+        if (!node) return null;
+        if (node.nodeType === 3) node = node.parentNode;
+        return node && node.closest ? node.closest('mark.user-highlight') : null;
+    }
+
+    function canHighlightRange(range) {
+        var passageEl = getPassageEl();
+        if (!range || range.collapsed || !passageEl) return false;
+        if (!passageEl.contains(range.commonAncestorContainer)) return false;
+        if (!range.toString().trim()) return false;
+        var startEl = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+        var endEl = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
+        var startBlock = startEl && startEl.closest ? startEl.closest('p, li') : null;
+        var endBlock = endEl && endEl.closest ? endEl.closest('p, li') : null;
+        return !!startBlock && startBlock === endBlock;
+    }
+
+    function positionHighlightToolbar(range) {
+        var rect = range.getBoundingClientRect();
+        if (!rect || (!rect.width && !rect.height)) return;
+        highlightToolbar.classList.add('show');
+        var toolbarRect = highlightToolbar.getBoundingClientRect();
+        var left = rect.left + rect.width / 2 - toolbarRect.width / 2;
+        var top = rect.top - toolbarRect.height - 10;
+        left = Math.max(12, Math.min(left, window.innerWidth - toolbarRect.width - 12));
+        if (top < 12) top = rect.bottom + 10;
+        highlightToolbar.style.left = left + 'px';
+        highlightToolbar.style.top = top + 'px';
+        var clearBtn = document.getElementById('highlight-clear-btn');
+        clearBtn.disabled = !closestHighlight(range.startContainer) && !closestHighlight(range.endContainer);
+        clearBtn.style.opacity = clearBtn.disabled ? '0.45' : '1';
+        clearBtn.style.cursor = clearBtn.disabled ? 'not-allowed' : 'pointer';
+    }
+
+    function normalizePassageMarkup() {
+        var passageEl = getPassageEl();
+        if (!passageEl) return;
+        passageEl.querySelectorAll('mark.user-highlight mark.user-highlight').forEach(function(nested) {
+            var parent = nested.parentNode;
+            while (nested.firstChild) parent.insertBefore(nested.firstChild, nested);
+            parent.removeChild(nested);
+        });
+        passageEl.querySelectorAll('mark.user-highlight').forEach(function(mark) {
+            if (!mark.textContent.trim()) mark.remove();
+        });
+    }
+
+    function applyHighlight() {
+        if (!activePassageRange || !canHighlightRange(activePassageRange)) return;
+        var range = activePassageRange.cloneRange();
+        var mark = document.createElement('mark');
+        mark.className = 'user-highlight';
+        try {
+            range.surroundContents(mark);
+        } catch (err) {
+            var fragment = range.extractContents();
+            mark.appendChild(fragment);
+            range.insertNode(mark);
+        }
+        normalizePassageMarkup();
+        savePassageMarkup();
+        var selection = window.getSelection();
+        if (selection) selection.removeAllRanges();
+        clearHighlightToolbar();
+    }
+
+    function clearHighlight() {
+        var selection = window.getSelection();
+        var mark = closestHighlight(selection && selection.anchorNode) || closestHighlight(selection && selection.focusNode);
+        if (!mark) return;
+        var parent = mark.parentNode;
+        while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+        parent.removeChild(mark);
+        normalizePassageMarkup();
+        savePassageMarkup();
+        if (selection) selection.removeAllRanges();
+        clearHighlightToolbar();
+    }
+
+    function handlePassageSelection() {
+        var selection = window.getSelection();
+        if (!selection || !selection.rangeCount) {
+            clearHighlightToolbar();
+            return;
+        }
+        var range = selection.getRangeAt(0);
+        if (!canHighlightRange(range)) {
+            clearHighlightToolbar();
+            return;
+        }
+        activePassageRange = range.cloneRange();
+        positionHighlightToolbar(range);
+    }
+
+    function applySplitRatio(ratio) {
+        if (!isHorizontalLayout()) {
+            splitLayout.style.gridTemplateColumns = '';
+            return;
+        }
+        var clamped = Math.min(0.75, Math.max(0.25, ratio));
+        var available = splitLayout.clientWidth - 12;
+        var leftWidth = Math.max(320, Math.round(available * clamped));
+        splitLayout.style.gridTemplateColumns = leftWidth + 'px 12px minmax(320px, 1fr)';
+        try { localStorage.setItem(getSplitStorageKey(), clamped); } catch (e) {}
+    }
+
+    function restoreSplitRatio() {
+        if (!isHorizontalLayout()) {
+            splitLayout.style.gridTemplateColumns = '';
+            return;
+        }
+        var saved = 0.5;
+        try {
+            var raw = parseFloat(localStorage.getItem(getSplitStorageKey()));
+            if (!isNaN(raw)) saved = raw;
+        } catch (e) {}
+        applySplitRatio(saved);
+    }
+
+    function setupResizableSplit() {
+        if (!splitDivider) return;
+        splitDivider.onpointerdown = function(e) {
+            if (!isHorizontalLayout()) return;
+            e.preventDefault();
+            splitLayout.classList.add('resizing');
+            function onMove(ev) {
+                var rect = splitLayout.getBoundingClientRect();
+                var ratio = (ev.clientX - rect.left) / rect.width;
+                applySplitRatio(ratio);
+            }
+            function onUp() {
+                splitLayout.classList.remove('resizing');
+                window.removeEventListener('pointermove', onMove);
+                window.removeEventListener('pointerup', onUp);
+            }
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+        };
     }
 
     function renderQuestions() {
         var container = document.getElementById('questions-container');
         container.innerHTML = '';
         allQuestions = [];
+        function replaceToken(str, token, value) {
+            return str.split(token).join(value);
+        }
 
         lessonData.questions.forEach(function(qSet, setIdx) {
             var sectionDiv = document.createElement('div');
@@ -464,7 +739,7 @@
                     var qNum = item.id.replace('Q', '');
                     var html = item.text.replace(/_{3,}/g, function() {
                         if (choiceMarkup) {
-                            return choiceMarkup.replaceAll('__NAME__', item.id);
+                            return replaceToken(choiceMarkup, '__NAME__', item.id);
                         }
                         return '<input type="text" name="' + item.id + '" class="blank-input" placeholder="(' + qNum + ')" autocomplete="off" data-question="' + item.id + '" required>';
                     });
@@ -775,19 +1050,25 @@
                 return res.json();
             })
             .then(function(data) {
-                lessonData = data;
-                loadingDisplay.style.display = 'none';
-                mainContent.style.display = 'block';
+                try {
+                    lessonData = data;
+                    loadingDisplay.style.display = 'none';
+                    mainContent.style.display = 'block';
 
-                document.getElementById('title').textContent = lessonData.title;
-                document.getElementById('subtitle').textContent = lessonData.source;
+                    document.getElementById('title').textContent = lessonData.title;
+                    document.getElementById('subtitle').textContent = lessonData.source;
 
-                renderPassage();
-                renderQuestions();
-                loadSavedAnswers();
-                setupControls();
+                    renderPassage();
+                    renderQuestions();
+                    loadSavedAnswers();
+                    setupControls();
 
-                logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });
+                    logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });
+                } catch (renderErr) {
+                    loadingDisplay.style.display = 'none';
+                    showError('This lesson loaded, but the page hit a rendering problem. Please refresh once and try again.');
+                    console.error(renderErr);
+                }
             })
             .catch(function(err) {
                 loadingDisplay.style.display = 'none';
@@ -822,7 +1103,14 @@
             var v = split.classList.contains('vertical');
             toggle.textContent = v ? '⇔ Side by Side' : '⇕ Stacked';
             localStorage.setItem('ieltsLayout', v ? 'vertical' : 'horizontal');
+            if (v) {
+                split.style.gridTemplateColumns = '';
+            } else {
+                restoreSplitRatio();
+            }
         });
+        setupResizableSplit();
+        restoreSplitRatio();
 
         var fontConfigs = [
             { panel: document.getElementById('passage-panel'), valEl: document.getElementById('passage-font-val'), key: 'ielts-font-passage' },
@@ -860,6 +1148,17 @@
                 });
             }
         });
+
+        document.getElementById('highlight-add-btn').addEventListener('click', applyHighlight);
+        document.getElementById('highlight-clear-btn').addEventListener('click', clearHighlight);
+        document.addEventListener('selectionchange', handlePassageSelection);
+        document.addEventListener('click', function(e) {
+            var passageEl = getPassageEl();
+            if (!highlightToolbar.contains(e.target) && !passageEl.contains(e.target)) {
+                clearHighlightToolbar();
+            }
+        });
+        window.addEventListener('resize', restoreSplitRatio);
     }
 
     window.addEventListener('beforeunload', function() {
