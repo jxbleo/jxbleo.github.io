@@ -100,6 +100,22 @@
         .tfng-options label.correct, .ynng-options label.correct { border-color: #27ae60 !important; background: var(--correct-bg) !important; }
         .tfng-options label.wrong, .ynng-options label.wrong { border-color: #e67e22 !important; background: var(--wrong-bg) !important; }
         .tfng-options label:has(input[type="radio"]:disabled), .ynng-options label:has(input[type="radio"]:disabled) { cursor: not-allowed; opacity: 0.7; }
+        .mcq-question {
+            margin-bottom: 16px; padding: 14px 18px; background: #fafbfc;
+            border-radius: 8px; border: 1px solid var(--border-color);
+        }
+        .mcq-text { font-weight: 500; margin-bottom: 10px; color: var(--primary); font-size: 0.95em; }
+        .mcq-options { display: flex; flex-direction: column; gap: 8px; }
+        .mcq-options label {
+            display: flex; align-items: flex-start; gap: 8px;
+            padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            cursor: pointer; transition: all 0.2s; font-size: 0.9em;
+        }
+        .mcq-options label:hover:not(.disabled) { border-color: var(--accent); background: #eff6ff; }
+        .mcq-options input[type="radio"] { accent-color: var(--accent); margin-top: 3px; }
+        .mcq-options label:has(input[type="radio"]:checked) { border-color: var(--accent); background: #eff6ff; }
+        .mcq-options label.correct { border-color: #27ae60 !important; background: var(--correct-bg) !important; }
+        .mcq-options label.wrong { border-color: #e67e22 !important; background: var(--wrong-bg) !important; }
 
         .summary-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
         .summary-question {
@@ -123,6 +139,15 @@
         .summary-text .blank-input:disabled { color: #7f8c8d; border-bottom-color: #bdc3c7; cursor: not-allowed; }
         .summary-text .blank-input.correct { border-bottom-color: #27ae60 !important; }
         .summary-text .blank-input.wrong { border-bottom-color: #e67e22 !important; }
+        .summary-text .blank-select {
+            min-width: 150px; border: 1px solid var(--border-color); border-radius: 6px;
+            background: #fff; color: var(--primary); font-size: 0.92em; font-weight: 600;
+            padding: 5px 8px; outline: none; transition: border-color 0.2s;
+        }
+        .summary-text .blank-select:focus { border-color: var(--accent); }
+        .summary-text .blank-select:disabled { opacity: 0.65; cursor: not-allowed; }
+        .summary-text .blank-select.correct { border-color: #27ae60 !important; }
+        .summary-text .blank-select.wrong { border-color: #e67e22 !important; }
 
         .evidence-text { font-size: 0.85em; color: #b9770e; margin-top: 6px; padding: 6px 10px; background: var(--wrong-bg); border-radius: 4px; display: none; }
         .evidence-text.show { display: block; }
@@ -366,9 +391,59 @@
 
                     allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
                 });
+            } else if (qSet.type === 'mcq') {
+                qSet.items.forEach(function(item) {
+                    var qDiv = document.createElement('div');
+                    qDiv.className = 'mcq-question';
+                    qDiv.id = 'q-' + item.id;
+
+                    var textDiv = document.createElement('div');
+                    textDiv.className = 'mcq-text';
+                    textDiv.textContent = item.id.replace('Q', '') + '. ' + item.text;
+                    qDiv.appendChild(textDiv);
+
+                    var optDiv = document.createElement('div');
+                    optDiv.className = 'mcq-options';
+                    item.options.forEach(function(opt) {
+                        var labelEl = document.createElement('label');
+                        var radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = item.id;
+                        radio.value = opt.value;
+                        radio.setAttribute('data-question', item.id);
+                        radio.required = true;
+                        radio.addEventListener('change', function() {
+                            var now = Date.now();
+                            logEvent(userId, setId, 'answer_change', now, { question: item.id, value: opt.value });
+                            storeAnswers();
+                        });
+                        labelEl.appendChild(radio);
+                        labelEl.appendChild(document.createTextNode(' ' + opt.value + '. ' + opt.text));
+                        optDiv.appendChild(labelEl);
+                    });
+                    qDiv.appendChild(optDiv);
+
+                    var evid = document.createElement('div');
+                    evid.className = 'evidence-text';
+                    evid.id = 'ev-' + item.id;
+                    evid.textContent = 'Correct answer: ' + item.answer + ' — ' + item.evidence;
+                    qDiv.appendChild(evid);
+
+                    sectionDiv.appendChild(qDiv);
+
+                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                });
             } else if (qSet.type === 'summary') {
                 var sumGrid = document.createElement('div');
                 sumGrid.className = 'summary-grid';
+                var choiceMarkup = '';
+                if (qSet.choices && qSet.choices.length) {
+                    choiceMarkup = '<select name="__NAME__" class="blank-select" data-question="__NAME__" required><option value="" disabled selected>Select</option>' +
+                        qSet.choices.map(function(choice) {
+                            return '<option value="' + choice.value + '">' + choice.value + '. ' + choice.text + '</option>';
+                        }).join('') +
+                        '</select>';
+                }
                 var badgeColors = ['#EEEDFE', '#3C3489', '#FBEAF0', '#72243E', '#EAF3DE', '#27500A', '#FAECE7', '#712B13'];
                 qSet.items.forEach(function(item, idx) {
                     var qDiv = document.createElement('div');
@@ -388,6 +463,9 @@
                     textDiv.className = 'summary-text';
                     var qNum = item.id.replace('Q', '');
                     var html = item.text.replace(/_{3,}/g, function() {
+                        if (choiceMarkup) {
+                            return choiceMarkup.replaceAll('__NAME__', item.id);
+                        }
                         return '<input type="text" name="' + item.id + '" class="blank-input" placeholder="(' + qNum + ')" autocomplete="off" data-question="' + item.id + '" required>';
                     });
                     textDiv.innerHTML = html;
@@ -401,11 +479,11 @@
 
                     sumGrid.appendChild(qDiv);
 
-                    var inp = textDiv.querySelector('input');
-                    if (inp) {
-                        inp.addEventListener('input', function() {
+                    var answerField = textDiv.querySelector('input, select');
+                    if (answerField) {
+                        answerField.addEventListener(answerField.tagName === 'SELECT' ? 'change' : 'input', function() {
                             var now = Date.now();
-                            logEvent(userId, setId, 'answer_change', now, { question: item.id, value: inp.value });
+                            logEvent(userId, setId, 'answer_change', now, { question: item.id, value: answerField.value });
                             storeAnswers();
                         });
                     }
@@ -542,7 +620,7 @@
         allQuestions.forEach(function(q) {
             var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
             var userAnswer = '';
-            if (q.type === 'tfng' || q.type === 'ynng') {
+            if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
                 var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
                 userAnswer = checked ? checked.value : '';
                 var label = checked ? checked.closest('label') : null;
@@ -559,7 +637,9 @@
                 if (els.length) {
                     var inp = els[0];
                     userAnswer = inp.value.trim();
-                    if (userAnswer.toLowerCase() === q.answer.toLowerCase()) {
+                    var isSelect = inp.tagName === 'SELECT';
+                    var isCorrect = isSelect ? userAnswer === q.answer : userAnswer.toLowerCase() === q.answer.toLowerCase();
+                    if (isCorrect) {
                         inp.classList.add('correct');
                         score++;
                     } else {
@@ -599,7 +679,7 @@
         allQuestions.forEach(function(q) {
             var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
             if (els.length) {
-                if (q.type === 'tfng' || q.type === 'ynng') {
+                if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
                     var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
                     formData.append(q.id, checked ? checked.value : '');
                 } else if (q.type === 'summary') {

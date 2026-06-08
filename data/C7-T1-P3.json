@@ -1,0 +1,100 @@
+{
+  "id": "C7-T1-P3",
+  "title": "Educating Psyche",
+  "source": "Cambridge IELTS 7, Test 1, Passage 3",
+  "passage": "<p>Educating Psyche by Bernie Neville is a book which looks at radical new approaches to learning, describing the effects of emotion, imagination and the unconscious on learning. One theory discussed in the book is that proposed by George Lozanov, which focuses on the power of suggestion.</p><p>Lozanov's instructional technique is based on the evidence that the connections made in the brain through unconscious processing (which he calls non-specific mental reactivity) are more durable than those made through conscious processing. Besides the laboratory evidence for this, we know from our experience that we often remember what we have perceived peripherally, long after we have forgotten what we set out to learn. If we think of a book we studied months or years ago, we will find it easier to recall peripheral details - the colour, the binding, the typeface, the table at the library where we sat while studying it - than the content on which we were concentrating. If we think of a lecture we listened to with great concentration, we will recall the lecturer's appearance and mannerisms, our place in the auditorium, the failure of the air-conditioning, much more easily than the ideas we went to learn. Even if these peripheral details are a bit elusive, they come back readily in hypnosis or when we relive the event imaginatively, as in psychodrama. The details of the content of the lecture, on the other hand, seem to have gone forever.</p><p>This phenomenon can be partly attributed to the common counterproductive approach to study (making extreme efforts to memorise, tensing muscles, inducing fatigue), but it also simply reflects the way the brain functions. Lozanov therefore made indirect instruction (suggestion) central to his teaching system. In suggestopedia, as he called his method, consciousness is shifted away from the curriculum to focus on something peripheral. The curriculum then becomes peripheral and is dealt with by the reserve capacity of the brain.</p><p>The suggestopedic approach to foreign language learning provides a good illustration. In its most recent variant (1980), it consists of the reading of vocabulary and text while the class is listening to music. The first session is in two parts. In the first part, the music is classical (Mozart, Beethoven, Brahms) and the teacher reads the text slowly and solemnly, with attention to the dynamics of the music. The students follow the text in their books. This is followed by several minutes of silence. In the second part, they listen to baroque music (Bach, Corelli, Handel) while the teacher reads the text in a normal speaking voice. During this time they have their books closed. During the whole of this session, their attention is passive; they listen to the music but make no attempt to learn the material.</p><p>Beforehand, the students have been carefully prepared for the language learning experience. Through meeting with the staff and satisfied students they develop the expectation that learning will be easy and pleasant and that they will successfully learn several hundred words of the foreign language during the class. In a preliminary talk, the teacher introduces them to the material to be covered, but does not 'teach' it. Likewise, the students are instructed not to try to learn it during this introduction.</p><p>Some hours after the two-part session, there is a follow-up class at which the students are stimulated to recall the material presented. Once again the approach is indirect. The students do not focus their attention on trying to remember the vocabulary, but focus on using the language to communicate (e.g. through games or improvised dramatisations). Such methods are not unusual in language teaching. What is distinctive in the suggestopedic method is that they are devoted entirely to assisting recall. The 'learning' of the material is assumed to be automatic and effortless, accomplished while listening to music. The teacher's task is to assist the students to apply what they have learned paraconsciously, and in doing so to make it easily accessible to consciousness. Another difference from conventional teaching is the evidence that students can regularly learn 1000 new words of a foreign language during a suggestopedic session, as well as grammar and idiom.</p><p>Lozanov experimented with teaching by direct suggestion during sleep, hypnosis and trance states, but found such procedures unnecessary. Hypnosis, yoga, Silva mind-control, religious ceremonies and faith healing are all associated with successful suggestion, but none of their techniques seem to be essential to it. Such rituals may be seen as placebos. Lozanov acknowledges that the ritual surrounding suggestion in his own system is also a placebo, but maintains that without such a placebo people are unable or afraid to tap the reserve capacity of their brains. Like any placebo, it must be dispensed with authority to be effective. Just as a doctor calls on the full power of autocratic suggestion by insisting that the patient take precisely this white capsule precisely three times a day before meals, Lozanov is categoric in insisting that the suggestopedic session be conducted exactly in the manner designated, by trained and accredited suggestopedic teachers.</p><p>While suggestopedia has gained some notoriety through success in the teaching of modern languages, few teachers are able to emulate the spectacular results of Lozanov and his associates. We can, perhaps, attribute mediocre results to an inadequate placebo effect. The students have not developed the appropriate mind set. They are often not motivated to learn through this method. They do not have enough 'faith'. They do not see it as 'real teaching', especially as it does not seem to involve the 'work' they have learned to believe is essential to learning.</p>",
+  "questions": [
+    {
+      "type": "mcq",
+      "label": "Questions 27-30 — Multiple Choice",
+      "instruction": "Choose the correct letter, A, B, C or D.",
+      "items": [
+        {
+          "id": "Q27",
+          "text": "The book Educating Psyche is mainly concerned with",
+          "options": [
+            { "value": "A", "text": "the power of suggestion in learning." },
+            { "value": "B", "text": "a particular technique for learning based on emotions." },
+            { "value": "C", "text": "the effects of emotion on the imagination and the unconscious." },
+            { "value": "D", "text": "ways of learning which are not traditional." }
+          ],
+          "answer": "D",
+          "evidence": "开头先总述这本书讨论'激进的新学习方法'，Lozanov 的 suggestion 只是书中讨论的其中一个理论。"
+        },
+        {
+          "id": "Q28",
+          "text": "Lozanov's theory claims that, when we try to remember things,",
+          "options": [
+            { "value": "A", "text": "unimportant details are the easiest to recall." },
+            { "value": "B", "text": "concentrating hard produces the best results." },
+            { "value": "C", "text": "the most significant facts are most easily recalled." },
+            { "value": "D", "text": "peripheral vision is not important." }
+          ],
+          "answer": "A",
+          "evidence": "作者反复举例说明，我们往往更容易记住 peripheral details，而不是本来刻意去学的核心内容。"
+        },
+        {
+          "id": "Q29",
+          "text": "In this passage, the author uses the examples of a book and a lecture to illustrate that",
+          "options": [
+            { "value": "A", "text": "both of these are important for developing concentration." },
+            { "value": "B", "text": "his theory about methods of learning is valid." },
+            { "value": "C", "text": "reading is a better technique for learning than listening." },
+            { "value": "D", "text": "we can remember things more easily under hypnosis." }
+          ],
+          "answer": "B",
+          "evidence": "书和讲座两个例子都在支持前文论点：无意识或边缘感知形成的连接更持久，因此 Lozanov 的理论有依据。"
+        },
+        {
+          "id": "Q30",
+          "text": "Lozanov claims that teachers should train students to",
+          "options": [
+            { "value": "A", "text": "memorise details of the curriculum." },
+            { "value": "B", "text": "develop their own sets of indirect instructions." },
+            { "value": "C", "text": "think about something other than the curriculum content." },
+            { "value": "D", "text": "avoid overloading the capacity of the brain." }
+          ],
+          "answer": "C",
+          "evidence": "原文说 consciousness 应该从 curriculum 移开，去关注 peripheral 的东西。"
+        }
+      ]
+    },
+    {
+      "type": "tfng",
+      "label": "Questions 31-36 — True / False / Not Given",
+      "instruction": "Do the following statements agree with the information given in the passage?",
+      "items": [
+        { "id": "Q31", "text": "In the example of suggestopedic teaching in the fourth paragraph, the only variable that changes is the music.", "answer": "FALSE", "evidence": "不仅音乐变了，老师朗读方式和学生是否打开书本也发生了变化。" },
+        { "id": "Q32", "text": "Prior to the suggestopedia class, students are made aware that the language experience will be demanding.", "answer": "FALSE", "evidence": "原文恰好相反，学生被引导相信学习会 easy and pleasant。" },
+        { "id": "Q33", "text": "In the follow-up class, the teaching activities are similar to those used in conventional classes.", "answer": "TRUE", "evidence": "原文明确说这些方法在语言教学中并不罕见，区别只在于 suggestopedia 把它们专门用于帮助回忆。" },
+        { "id": "Q34", "text": "As an indirect benefit, students notice improvements in their memory.", "answer": "NOT_GIVEN", "evidence": "文中没有说学生会额外注意到自己的记忆力提升，只谈到他们如何回忆和运用所学材料。" },
+        { "id": "Q35", "text": "Teachers say they prefer suggestopedia to traditional approaches to language teaching.", "answer": "NOT_GIVEN", "evidence": "文章没有给出教师偏好对比，只说很少有教师能复制 Lozanov 的惊人成果。" },
+        { "id": "Q36", "text": "Students in a suggestopedia class retain more new vocabulary than those in ordinary classes.", "answer": "TRUE", "evidence": "原文把 suggestopedic session 和 conventional teaching 对照，并说学生能 regularly learn 1000 new words，说明词汇掌握量更高。" }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 37-40 — Summary Completion",
+      "instruction": "Complete the summary using the list of words, A-K, below.",
+      "choices": [
+        { "value": "A", "text": "spectacular" },
+        { "value": "B", "text": "teaching" },
+        { "value": "C", "text": "lesson" },
+        { "value": "D", "text": "authoritarian" },
+        { "value": "E", "text": "unpopular" },
+        { "value": "F", "text": "ritual" },
+        { "value": "G", "text": "unspectacular" },
+        { "value": "H", "text": "placebo" },
+        { "value": "I", "text": "involved" },
+        { "value": "J", "text": "appropriate" },
+        { "value": "K", "text": "well known" }
+      ],
+      "items": [
+        { "id": "Q37", "text": "Suggestopedia uses a less direct method of suggestion than other techniques such as hypnosis. However, Lozanov admits that a certain amount of _____ is necessary in order to convince students,", "answer": "F", "evidence": "Lozanov 说 suggestion 周围的 ritual 是必要的，虽然它本身也可被看作 placebo。" },
+        { "id": "Q38", "text": "even if this is just a _____.", "answer": "H", "evidence": "原文直接说这些 ritual may be seen as placebos，且他承认自己体系里的 ritual 也是 placebo。" },
+        { "id": "Q39", "text": "Furthermore, if the method is to succeed, teachers must follow a set procedure. Although Lozanov's method has become quite _____,", "answer": "K", "evidence": "suggestopedia has gained some notoriety，对应这里的 well known。" },
+        { "id": "Q40", "text": "the results of most other teachers using this method have been _____.", "answer": "G", "evidence": "few teachers are able to emulate the spectacular results，所以大多数人的结果只能是 unspectacular / mediocre。" }
+      ]
+    }
+  ]
+}
