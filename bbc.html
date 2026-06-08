@@ -6,55 +6,225 @@
     <title>BBC 6 Minute English - Listening Practice</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #27ae60;
-            --bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-light: #666666;
-            --border-color: #e0e6ed;
+            --primary: #16312f;
+            --accent: #0f766e;
+            --accent-bright: #14b8a6;
+            --bg: #f4fbf7;
+            --card-bg: rgba(255,255,255,0.78);
+            --text-main: #1f2937;
+            --text-light: #64748b;
+            --border-color: rgba(15, 118, 110, 0.16);
             --correct-bg: #e8f8f5;
             --wrong-bg: #fdf2e9;
+            --warm: #f97316;
+            --warm-soft: #fff2df;
         }
 
         * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
+            background:
+                radial-gradient(circle at top left, rgba(254, 243, 199, 0.9) 0, transparent 28%),
+                radial-gradient(circle at 90% 4%, rgba(209, 250, 229, 0.9) 0, transparent 24%),
+                linear-gradient(180deg, #f8fafc 0%, #eef8f4 100%);
             color: var(--text-main);
             line-height: 1.6;
             margin: 0;
-            padding: 40px 20px;
+            padding: 28px 16px 64px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 980px;
             margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px 50px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: transparent;
+            padding: 0;
+        }
+
+        .lesson-hero {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(135deg, #123f3c 0%, #0f766e 54%, #14b8a6 100%);
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 30px;
+            padding: 34px 30px 28px;
+            box-shadow: 0 24px 60px rgba(15, 118, 110, 0.22);
+        }
+
+        .lesson-hero::before,
+        .lesson-hero::after {
+            content: '';
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .lesson-hero::before {
+            width: 260px;
+            height: 260px;
+            right: -64px;
+            top: -78px;
+            background: radial-gradient(circle, rgba(255, 237, 213, 0.6), transparent 66%);
+        }
+
+        .lesson-hero::after {
+            width: 190px;
+            height: 190px;
+            right: 180px;
+            bottom: -90px;
+            background: radial-gradient(circle, rgba(204, 251, 241, 0.42), transparent 68%);
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            position: relative;
+            z-index: 1;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.24);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         h1 {
-            color: var(--primary);
-            text-align: center;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            color: inherit;
+            text-align: left;
+            border-bottom: none;
+            padding-bottom: 0;
+            margin: 14px 0 10px;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.02;
+            letter-spacing: -0.055em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-meta {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: rgba(255,255,255,0.82);
+            font-weight: 700;
+            font-size: 0.94rem;
         }
 
         .audio-player {
-            text-align: center;
-            margin: 20px 0 30px;
+            position: relative;
+            z-index: 1;
+            margin: 26px 0 0;
+            padding: 18px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(16px);
         }
 
         .audio-player audio {
+            display: none;
+        }
+
+        .audio-controls,
+        .sticky-player {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .player-btn {
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 900;
+            transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+        }
+
+        .play-btn {
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            color: var(--accent);
+            font-size: 1rem;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+        }
+
+        .player-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .back-btn {
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.16);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.26);
+        }
+
+        .back-btn:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+        }
+
+        .progress-wrap {
+            min-width: 0;
+        }
+
+        .progress-track {
             width: 100%;
-            max-width: 500px;
-            height: 44px;
-            border-radius: 6px;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.22);
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #fde68a, #fff);
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            color: rgba(255,255,255,0.82);
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .back-count {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.82rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .sticky-player {
+            position: sticky;
+            top: 58px;
+            z-index: 800;
+            margin: 16px 0 24px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(18, 63, 60, 0.94);
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.18);
+            backdrop-filter: blur(16px);
+        }
+
+        .sticky-player .play-btn {
+            width: 38px;
+            height: 38px;
+        }
+
+        .sticky-player .back-btn {
+            padding: 8px 11px;
         }
 
         h2 {
@@ -72,31 +242,55 @@
             margin-bottom: 10px;
         }
 
+        .content-card {
+            background: rgba(255,255,255,0.74);
+            border: 1px solid rgba(255,255,255,0.82);
+            border-radius: 26px;
+            padding: 26px;
+            margin-top: 18px;
+            box-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+            backdrop-filter: blur(18px);
+        }
+
         ul.fill-blanks {
-            list-style-type: disc;
-            padding-left: 24px;
-            color: var(--text-light);
-            font-size: 1.05em;
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+            color: var(--text-main);
+            font-size: 1.02em;
         }
 
         ul.fill-blanks li {
-            margin-bottom: 15px;
-            line-height: 2;
+            margin-bottom: 12px;
+            line-height: 1.85;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.76);
+            border: 1px solid rgba(15, 118, 110, 0.12);
+            border-radius: 16px;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
         }
         .blank-num {
-            font-weight: 700;
-            color: var(--accent);
-            margin-right: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            margin-right: 8px;
+            border-radius: 999px;
+            font-weight: 900;
+            color: #fff;
+            background: var(--accent);
         }
         .blank-section-title {
-            font-weight: 700;
-            font-size: 1.05em;
-            color: var(--text-main);
-            margin: 24px 0 10px;
-            padding: 8px 12px;
-            background: var(--card-bg);
-            border-left: 4px solid var(--accent);
-            border-radius: 4px;
+            font-weight: 900;
+            font-size: 1.03em;
+            color: var(--accent);
+            margin: 26px 0 12px;
+            padding: 12px 14px;
+            background: rgba(15, 118, 110, 0.08);
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            border-left: 5px solid var(--accent);
+            border-radius: 16px;
         }
         .blank-section-title:first-of-type {
             margin-top: 0;
@@ -104,7 +298,7 @@
 
         .blank-input {
             border: none;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 2px solid var(--accent);
             background: transparent;
             text-align: center;
             margin: 0 3px;
@@ -554,8 +748,6 @@
 <div class="identity-status" id="identity-status">Login</div>
 
 <div class="container" id="app">
-    <h1>BBC 6 Minute English</h1>
-
     <div id="loading-message">Loading lesson data...</div>
 
     <div id="error-message" class="error-container">
@@ -578,14 +770,37 @@
     </div>
 
     <div id="content" class="content-container">
-        <div id="title-area"></div>
-        <div class="audio-player">
-            <audio id="bbc-audio" controls preload="none">
-                <source id="audio-source" src="" type="audio/mpeg">
-            </audio>
+        <section class="lesson-hero">
+            <div class="hero-kicker">BBC Six Minute English</div>
+            <div id="title-area"></div>
+            <div class="hero-meta" id="hero-meta"></div>
+            <div class="audio-player">
+                <audio id="bbc-audio" preload="none">
+                    <source id="audio-source" src="" type="audio/mpeg">
+                </audio>
+                <div class="audio-controls">
+                    <button class="player-btn play-btn" id="hero-play-btn" type="button">▶</button>
+                    <div class="progress-wrap">
+                        <div class="progress-track"><div class="progress-fill" id="hero-progress-fill"></div></div>
+                        <div class="time-row"><span id="hero-current-time">0:00</span><span id="hero-duration">0:00</span></div>
+                    </div>
+                    <button class="player-btn back-btn" id="hero-back-btn" type="button">−5s</button>
+                    <div class="back-count" id="hero-back-count">7 left</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="sticky-player" id="sticky-player">
+            <button class="player-btn play-btn" id="sticky-play-btn" type="button">▶</button>
+            <div class="progress-wrap">
+                <div class="progress-track"><div class="progress-fill" id="sticky-progress-fill"></div></div>
+                <div class="time-row"><span id="sticky-current-time">0:00</span><span id="sticky-duration">0:00</span></div>
+            </div>
+            <button class="player-btn back-btn" id="sticky-back-btn" type="button">−5s</button>
+            <div class="back-count" id="sticky-back-count">7 left</div>
         </div>
 
-        <form id="quiz-form" novalidate>
+        <form id="quiz-form" class="content-card" novalidate>
             <h2>Part 1: Fill in the Blanks</h2>
             <ul class="fill-blanks" id="blanks-container"></ul>
 
@@ -627,6 +842,9 @@
     var blankCount = 0;
     var mcCount = 0;
     var matchCount = 0;
+    var backLimit = 7;
+    var backRemaining = backLimit;
+    var hasPlayedOnce = false;
 
     var students = [
         { id: 'EI6688', label: '甘昕雨Eilene' },
@@ -676,60 +894,103 @@
         console.log(JSON.stringify(entry));
     }
 
-    function storageKey() {
-        return 'bbc-' + setId + '-' + studentId;
+    function formatAudioTime(seconds) {
+        if (!isFinite(seconds) || seconds < 0) seconds = 0;
+        var min = Math.floor(seconds / 60);
+        var sec = Math.floor(seconds % 60);
+        return min + ':' + String(sec).padStart(2, '0');
     }
 
-    function saveAnswers() {
-        if (!studentId || !setId) return;
-        var data = {};
-        var form = document.getElementById('quiz-form');
-        if (!form) return;
-        var els = form.elements;
-        for (var i = 0; i < els.length; i++) {
-            var el = els[i];
-            if (el.type === 'radio') {
-                if (el.checked) data[el.name] = el.value;
-            } else if (el.type === 'text' || el.tagName === 'SELECT') {
-                data[el.name] = el.value;
+    function getAudio() {
+        return document.getElementById('bbc-audio');
+    }
+
+    function setText(id, value) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+
+    function setProgress(id, pct) {
+        var el = document.getElementById(id);
+        if (el) el.style.width = pct + '%';
+    }
+
+    function updateAudioUi() {
+        var audio = getAudio();
+        if (!audio) return;
+        var duration = audio.duration || 0;
+        var current = audio.currentTime || 0;
+        var pct = duration ? Math.min(100, Math.max(0, current / duration * 100)) : 0;
+        var playText = audio.paused ? '▶' : 'Ⅱ';
+        setText('hero-play-btn', playText);
+        setText('sticky-play-btn', playText);
+        setText('hero-current-time', formatAudioTime(current));
+        setText('sticky-current-time', formatAudioTime(current));
+        setText('hero-duration', formatAudioTime(duration));
+        setText('sticky-duration', formatAudioTime(duration));
+        setProgress('hero-progress-fill', pct);
+        setProgress('sticky-progress-fill', pct);
+        setText('hero-back-count', backRemaining + ' left');
+        setText('sticky-back-count', backRemaining + ' left');
+        var disabled = backRemaining <= 0;
+        var heroBack = document.getElementById('hero-back-btn');
+        var stickyBack = document.getElementById('sticky-back-btn');
+        if (heroBack) heroBack.disabled = disabled;
+        if (stickyBack) stickyBack.disabled = disabled;
+    }
+
+    function toggleAudioPlayback() {
+        var audio = getAudio();
+        if (!audio) return;
+        if (audio.paused) {
+            if (!hasPlayedOnce || audio.ended) {
+                backRemaining = backLimit;
             }
-        }
-        try {
-            localStorage.setItem(storageKey(), JSON.stringify(data));
-        } catch(e) {}
-    }
-
-    function loadSavedAnswers() {
-        if (!studentId || !setId) return null;
-        try {
-            var saved = localStorage.getItem(storageKey());
-            return saved ? JSON.parse(saved) : null;
-        } catch(e) {
-            return null;
-        }
-    }
-
-    function restoreAnswers(saved) {
-        if (!saved) return;
-        var form = document.getElementById('quiz-form');
-        if (!form) return;
-        for (var key in saved) {
-            var el = form.elements[key];
-            if (!el) continue;
-            if (el.type === 'radio') {
-                var radios = form.querySelectorAll('[name="' + key + '"]');
-                for (var r = 0; r < radios.length; r++) {
-                    if (radios[r].value === saved[key]) {
-                        radios[r].checked = true;
-                        break;
-                    }
-                }
-            } else if (el.type === 'text') {
-                el.value = saved[key];
-            } else if (el.tagName === 'SELECT') {
-                el.value = saved[key];
+            hasPlayedOnce = true;
+            var playPromise = audio.play();
+            if (playPromise && playPromise.catch) {
+                playPromise.catch(function() {
+                    updateAudioUi();
+                });
             }
+        } else {
+            audio.pause();
         }
+        updateAudioUi();
+    }
+
+    function backFiveSeconds() {
+        var audio = getAudio();
+        if (!audio || backRemaining <= 0) return;
+        audio.currentTime = Math.max(0, (audio.currentTime || 0) - 5);
+        backRemaining--;
+        logEvent('audio_back_5s', { remaining: backRemaining, currentTime: audio.currentTime });
+        updateAudioUi();
+    }
+
+    function setupAudioPlayer() {
+        var audio = getAudio();
+        if (!audio) return;
+        if (audio.dataset.ready !== 'true') {
+            audio.dataset.ready = 'true';
+            var playButtons = [document.getElementById('hero-play-btn'), document.getElementById('sticky-play-btn')];
+            var backButtons = [document.getElementById('hero-back-btn'), document.getElementById('sticky-back-btn')];
+            for (var i = 0; i < playButtons.length; i++) {
+                if (playButtons[i]) playButtons[i].addEventListener('click', toggleAudioPlayback);
+            }
+            for (var j = 0; j < backButtons.length; j++) {
+                if (backButtons[j]) backButtons[j].addEventListener('click', backFiveSeconds);
+            }
+            audio.addEventListener('loadedmetadata', updateAudioUi);
+            audio.addEventListener('timeupdate', updateAudioUi);
+            audio.addEventListener('play', updateAudioUi);
+            audio.addEventListener('pause', updateAudioUi);
+            audio.addEventListener('ended', function() {
+                hasPlayedOnce = false;
+                updateAudioUi();
+            });
+        }
+        updateAudioUi();
     }
 
     function renderBlanks(blanks) {
@@ -751,7 +1012,7 @@
             var sentence = b.sentence;
             var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off">';
             sentence = sentence.replace('_____', inputHtml);
-            html += '<li>' + sentence + '</li>';
+            html += '<li><span class="blank-num">' + num + '</span>' + sentence + '</li>';
         }
         container.innerHTML = html;
 
@@ -858,20 +1119,20 @@
 
         var titleEl = document.getElementById('title-area');
         titleEl.innerHTML = '<h1>' + data.title + '</h1>';
+        var totalTasks = (data.blanks || []).length + (data.multipleChoice || []).length + (data.matching || []).length;
+        document.getElementById('hero-meta').innerHTML = '<span>Listening Practice</span><span>•</span><span>' + totalTasks + ' tasks</span>';
 
         var audioSrc = document.getElementById('audio-source');
         audioSrc.src = data.audioSrc;
         var audio = document.getElementById('bbc-audio');
+        backRemaining = backLimit;
+        hasPlayedOnce = false;
         audio.load();
+        setupAudioPlayer();
 
         renderBlanks(data.blanks);
         renderMC(data.multipleChoice);
         renderMatching(data.matching);
-
-        var saved = loadSavedAnswers();
-        if (saved) {
-            restoreAnswers(saved);
-        }
 
         document.getElementById('content').style.display = 'block';
         document.getElementById('loading-message').style.display = 'none';
@@ -1218,8 +1479,6 @@
         document.getElementById('confirm-modal').classList.remove('show');
 
         var userAnswers = collectAnswers();
-        saveAnswers();
-
         var result = gradeAnswers(userAnswers);
 
         submitted = true;
@@ -1265,14 +1524,12 @@
             var target = e.target;
             if (target.type === 'radio' || target.tagName === 'SELECT') {
                 logEvent('answer_change', { name: target.name, value: target.value, type: target.type || 'select' });
-                saveAnswers();
             }
         });
 
         form.addEventListener('input', function(e) {
             if (e.target.type === 'text') {
                 logEvent('answer_change', { name: e.target.name, value: e.target.value, type: 'text' });
-                saveAnswers();
             }
         });
 
