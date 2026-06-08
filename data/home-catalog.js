@@ -3,7 +3,7 @@ window.__HOME_CATALOG__ = {
     {
       "id": "bbc-six-minute-english",
       "groupId": "general",
-      "title": "BBC Listening",
+      "title": "BBC Six Minute English",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, date or topic...",
       "sortType": "date_desc",
