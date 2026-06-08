@@ -532,6 +532,16 @@
 <script>
     var homeCatalog = null;
 
+    function injectScript(src) {
+        return new Promise(function(resolve, reject) {
+            var script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
     function escapeHtml(value) {
         return String(value || '')
             .replace(/&/g, '&amp;')
@@ -672,6 +682,11 @@
     function loadHomeCatalog() {
         var root = document.getElementById('sections-root');
         root.innerHTML = '<p class="section-description">Loading lessons...</p>';
+        if (window.__HOME_CATALOG__) {
+            homeCatalog = window.__HOME_CATALOG__;
+            renderHomeSections();
+            return Promise.resolve();
+        }
         return fetch('data/home-catalog.json?_=' + Date.now())
             .then(function(response) {
                 if (!response.ok) {
@@ -684,7 +699,15 @@
                 renderHomeSections();
             })
             .catch(function() {
-                root.innerHTML = '<p class="section-description">Unable to load the lesson catalog right now.</p>';
+                return injectScript('data/home-catalog.js?_=' + Date.now())
+                    .then(function() {
+                        if (!window.__HOME_CATALOG__) throw new Error('Fallback catalog missing');
+                        homeCatalog = window.__HOME_CATALOG__;
+                        renderHomeSections();
+                    })
+                    .catch(function() {
+                        root.innerHTML = '<p class="section-description">Unable to load the lesson catalog right now.</p>';
+                    });
             });
     }
 
