@@ -1113,15 +1113,25 @@
         restoreSplitRatio();
 
         var fontConfigs = [
-            { panel: document.getElementById('passage-panel'), valEl: document.getElementById('passage-font-val'), key: 'ielts-font-passage' },
-            { panel: document.getElementById('questions-panel'), valEl: document.getElementById('questions-font-val'), key: 'ielts-font-questions' }
+            {
+                panel: document.getElementById('passage-panel'),
+                target: document.getElementById('passage'),
+                valEl: document.getElementById('passage-font-val'),
+                key: 'ielts-font-passage'
+            },
+            {
+                panel: document.getElementById('questions-panel'),
+                target: document.getElementById('questions-container'),
+                valEl: document.getElementById('questions-font-val'),
+                key: 'ielts-font-questions'
+            }
         ];
         fontConfigs.forEach(function(cfg) {
-            if (!cfg.panel) return;
+            if (!cfg.panel || !cfg.target) return;
             var saved = localStorage.getItem(cfg.key);
             if (saved) {
                 cfg.valEl.textContent = saved;
-                cfg.panel.style.fontSize = saved + 'px';
+                cfg.target.style.fontSize = saved + 'px';
             }
             var minus = cfg.panel.querySelector('.font-minus');
             var plus = cfg.panel.querySelector('.font-plus');
@@ -1131,7 +1141,7 @@
                     if (cur > 10) {
                         cur--;
                         cfg.valEl.textContent = cur;
-                        cfg.panel.style.fontSize = cur + 'px';
+                        cfg.target.style.fontSize = cur + 'px';
                         localStorage.setItem(cfg.key, cur);
                     }
                 });
@@ -1142,7 +1152,7 @@
                     if (cur < 24) {
                         cur++;
                         cfg.valEl.textContent = cur;
-                        cfg.panel.style.fontSize = cur + 'px';
+                        cfg.target.style.fontSize = cur + 'px';
                         localStorage.setItem(cfg.key, cur);
                     }
                 });
