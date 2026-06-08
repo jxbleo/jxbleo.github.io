@@ -277,6 +277,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
             gap: 18px;
+            align-items: start;
         }
 
         .path-card {
@@ -288,7 +289,7 @@
             backdrop-filter: blur(18px);
         }
 
-        .path-card.basics {
+        .path-card.general {
             background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(220, 252, 231, 0.42));
         }
 
@@ -298,6 +299,35 @@
 
         .path-card.dse {
             background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255, 237, 213, 0.5));
+        }
+
+        .path-card.mse {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(224, 242, 254, 0.48));
+        }
+
+        .path-card.zhongkao {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(254, 249, 195, 0.5));
+        }
+
+        .path-card.gaokao {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255, 228, 230, 0.46));
+        }
+
+        .path-card.collapsed {
+            cursor: pointer;
+        }
+
+        .path-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .path-heading {
+            flex: 1;
+            min-width: 0;
         }
 
         .path-title {
@@ -313,6 +343,37 @@
             color: var(--text-secondary);
             font-size: 0.94rem;
             line-height: 1.55;
+        }
+
+        .path-toggle {
+            margin-top: 2px;
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 68px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 850;
+        }
+
+        .path-body {
+            display: none;
+        }
+
+        .path-card.expanded .path-body {
+            display: block;
+        }
+
+        .path-card.expanded .path-description {
+            margin-bottom: 18px;
+        }
+
+        .path-card.collapsed .path-description {
+            margin-bottom: 0;
         }
 
         .path-card .section {
@@ -783,9 +844,10 @@
 
     var pathGroups = [
         {
-            id: 'basics',
-            title: 'Basics',
-            description: 'Build general English skills with vocabulary, grammar, writing, and listening practice.'
+            id: 'general',
+            title: 'General',
+            description: 'Build general English skills with vocabulary, grammar, writing, and listening practice.',
+            defaultOpen: true
         },
         {
             id: 'ielts',
@@ -796,14 +858,35 @@
             id: 'dse',
             title: 'DSE',
             description: 'Prepare for DSE English Paper 1, 2, 3, and 4 with targeted practice.'
+        },
+        {
+            id: 'mse',
+            title: 'MSE',
+            description: 'Cambridge English practice for KET, PET, and FCE.'
+        },
+        {
+            id: 'zhongkao',
+            title: '中考英语',
+            description: 'Targeted practice for mainland China senior high school entrance English.'
+        },
+        {
+            id: 'gaokao',
+            title: '高考英语',
+            description: 'Targeted practice for mainland China college entrance English.'
         }
     ];
 
     function buildPathGroup(group, sectionsHtml) {
-        return '<section class="path-card ' + escapeHtml(group.id) + '">' +
-            '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
-            '<p class="path-description">' + escapeHtml(group.description) + '</p>' +
-            sectionsHtml +
+        var isOpen = group.defaultOpen === true;
+        return '<section class="path-card ' + escapeHtml(group.id) + ' ' + (isOpen ? 'expanded' : 'collapsed') + '" data-path-id="' + escapeHtml(group.id) + '">' +
+            '<div class="path-header">' +
+                '<div class="path-heading">' +
+                    '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
+                    '<p class="path-description">' + escapeHtml(group.description) + '</p>' +
+                '</div>' +
+                '<span class="path-toggle">' + (isOpen ? 'Hide' : 'Open') + '</span>' +
+            '</div>' +
+            '<div class="path-body">' + sectionsHtml + '</div>' +
         '</section>';
     }
 
@@ -843,7 +926,7 @@
         var sectionsByGroup = {};
         for (var j = 0; j < homeCatalog.sections.length; j++) {
             var section = homeCatalog.sections[j];
-            var groupId = section.groupId || 'basics';
+            var groupId = section.groupId || 'general';
             if (!sectionsByGroup[groupId]) sectionsByGroup[groupId] = '';
             sectionsByGroup[groupId] += buildSection(section, itemsBySection[section.id] || []);
         }
@@ -926,6 +1009,16 @@
         var isHidden = input.style.display === 'none' || input.style.display === '';
         input.style.display = isHidden ? 'block' : 'none';
         if (isHidden) input.focus();
+    }
+
+    function togglePathGroup(headerEl) {
+        var card = headerEl.closest('.path-card');
+        if (!card) return;
+        var isOpen = card.classList.contains('expanded');
+        card.classList.toggle('expanded', !isOpen);
+        card.classList.toggle('collapsed', isOpen);
+        var toggle = card.querySelector('.path-toggle');
+        if (toggle) toggle.textContent = isOpen ? 'Open' : 'Hide';
     }
 
     var students = [
@@ -1063,6 +1156,12 @@
     }
 
     document.addEventListener('click', function(e) {
+        var pathHeader = e.target.closest('.path-header');
+        if (pathHeader) {
+            togglePathGroup(pathHeader);
+            return;
+        }
+
         var titleEl = e.target.closest('.section-title');
         if (titleEl) {
             toggleSection(titleEl);

@@ -2,7 +2,7 @@ window.__HOME_CATALOG__ = {
   "sections": [
     {
       "id": "bbc-six-minute-english",
-      "groupId": "basics",
+      "groupId": "general",
       "title": "BBC Listening",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, date or topic...",
@@ -13,7 +13,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "vocabulary",
-      "groupId": "basics",
+      "groupId": "general",
       "title": "Vocabulary",
       "searchEnabled": true,
       "searchPlaceholder": "Search unit code...",
@@ -24,7 +24,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "grammar",
-      "groupId": "basics",
+      "groupId": "general",
       "title": "Grammar",
       "searchEnabled": false,
       "sortType": "number_asc",
@@ -34,7 +34,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "general-writing",
-      "groupId": "basics",
+      "groupId": "general",
       "title": "Writing",
       "searchEnabled": false,
       "sortType": "number_asc",
@@ -107,7 +107,7 @@ window.__HOME_CATALOG__ = {
     {
       "id": "dse-english-paper-3",
       "groupId": "dse",
-      "title": "Paper 3 Listening",
+      "title": "Paper 3 Listening and Integrated Skills",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
@@ -123,6 +123,56 @@ window.__HOME_CATALOG__ = {
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "Future DSE speaking content will appear here."
+    },
+    {
+      "id": "mse-ket",
+      "groupId": "mse",
+      "title": "KET",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "KET practice will appear here."
+    },
+    {
+      "id": "mse-pet",
+      "groupId": "mse",
+      "title": "PET",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "PET practice will appear here."
+    },
+    {
+      "id": "mse-fce",
+      "groupId": "mse",
+      "title": "FCE",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "FCE practice will appear here."
+    },
+    {
+      "id": "zhongkao-english",
+      "groupId": "zhongkao",
+      "title": "中考英语练习",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "中考英语练习内容会显示在这里。"
+    },
+    {
+      "id": "gaokao-english",
+      "groupId": "gaokao",
+      "title": "高考英语练习",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "高考英语练习内容会显示在这里。"
     }
   ],
   "items": [
