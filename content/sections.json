@@ -1,0 +1,71 @@
+{
+  "sections": [
+    {
+      "id": "bbc-six-minute-english",
+      "title": "BBC Six Minute English",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, date or topic...",
+      "sortType": "date_desc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "New BBC listening lessons will appear here."
+    },
+    {
+      "id": "ielts-reading",
+      "title": "IELTS Reading",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Reading passages will be added here."
+    },
+    {
+      "id": "ielts-listening",
+      "title": "IELTS Listening",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Listening sets will be added here."
+    },
+    {
+      "id": "vocabulary",
+      "title": "Vocabulary",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search unit code...",
+      "sortType": "number_asc",
+      "titleMode": "id",
+      "emptyMessage": "Developing",
+      "emptyNote": "Vocabulary units will open with a word list and quiz groups."
+    },
+    {
+      "id": "dse-english-paper-2",
+      "title": "DSE English Paper 2",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future DSE writing content will appear here."
+    },
+    {
+      "id": "dse-english-paper-4",
+      "title": "DSE English Paper 4",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future speaking content will appear here."
+    },
+    {
+      "id": "grammar",
+      "title": "Grammar",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Grammar practice is planned for a later phase."
+    }
+  ]
+}

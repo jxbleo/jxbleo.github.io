@@ -1,0 +1,270 @@
+{
+  "id": "BBC-251009",
+  "title": "What Makes A Good Citizen?",
+  "audioSrc": "bbc-audio/251009-what-makes-a-good-citizen.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Participates in _____ activities",
+      "answer": "volunteer",
+      "evidence": "\"people who volunteer – so, people who run clubs for children and that kind of thing. I think they're good citizens.\"",
+      "section": "Characteristics of a good citizen"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Citizens have specific rights and _____",
+      "answer": "responsibilities",
+      "evidence": "\"a member of society who enjoys certain rights in return for having certain responsibilities\"",
+      "section": "Citizenship concept"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Idea has received recent media _____",
+      "answer": "attention",
+      "evidence": "\"is an old idea that's been in the news a lot recently\"",
+      "section": "Citizenship concept"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Obeys laws and pays _____",
+      "answer": "their taxes",
+      "evidence": "\"Is it someone who follows the laws of the land and pays their taxes?\"",
+      "section": "Definition of good citizenship"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Works to enhance their _____ area",
+      "answer": "living",
+      "evidence": "\"a good citizen is one who tries to improve the place where they live\"",
+      "section": "Definition of good citizenship"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Those aged 18 to 30 feel _____ by politicians",
+      "answer": "ignored",
+      "evidence": "\"many people aged 18 to 30 say they feel ignored by politicians\"",
+      "section": "Young people and politics today"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Voting participation has _____",
+      "answer": "decreased",
+      "evidence": "\"young people today are less likely to vote\"",
+      "section": "Young people and politics today"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Helps Portuguese youth reconnect with their _____",
+      "answer": "citizenship",
+      "evidence": "\"helping young people in Portugal re-engage with their citizenship\"",
+      "section": "The MyPolis project"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Name originates from _____ states",
+      "answer": "ancient Greek",
+      "evidence": "\"The project's name, MyPolis, comes from the ancient Greek states\"",
+      "section": "The MyPolis project"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Ancient Greek word 'polis' means _____",
+      "answer": "city",
+      "evidence": "\"The right answer was c) city\"",
+      "section": "The MyPolis project"
+    },
+    {
+      "id": "fill-11",
+      "sentence": "Holds _____ where children suggest improvements",
+      "answer": "council assemblies",
+      "evidence": "\"MyPolis runs council assemblies where children can propose improvements\"",
+      "section": "How MyPolis operates"
+    },
+    {
+      "id": "fill-12",
+      "sentence": "Topics range from repairing facilities to modifying the _____",
+      "answer": "curriculum",
+      "evidence": "\"anything from fixing broken water fountains to changing the curriculum\"",
+      "section": "How MyPolis operates"
+    },
+    {
+      "id": "fill-13",
+      "sentence": "Local politicians attend and _____ to ideas",
+      "answer": "respond",
+      "evidence": "\"responding by giving their support or explaining why not\"",
+      "section": "How MyPolis operates"
+    },
+    {
+      "id": "fill-14",
+      "sentence": "Bernardo Goncalves started the initiative in his _____",
+      "answer": "20s",
+      "evidence": "\"The project was started by founder Bernardo Goncalves when he was in his 20s\"",
+      "section": "Founder's motivation"
+    },
+    {
+      "id": "fill-15",
+      "sentence": "Concerned about declining _____ in democratic institutions",
+      "answer": "trust",
+      "evidence": "\"We have seen a quick erosion in the trust of the population\"",
+      "section": "Founder's motivation"
+    },
+    {
+      "id": "fill-16",
+      "sentence": "Warned the widening gap threatens _____",
+      "answer": "democracy",
+      "evidence": "\"This is very dangerous for democracy\"",
+      "section": "Founder's motivation"
+    },
+    {
+      "id": "fill-17",
+      "sentence": "Incorporated into the _____",
+      "answer": "national curriculum",
+      "evidence": "\"it can be included as part of the national curriculum\"",
+      "section": "Programme features"
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Politicians listen and provide _____",
+      "answer": "answers",
+      "evidence": "\"taking them seriously, giving them answers\"",
+      "section": "Programme features"
+    },
+    {
+      "id": "fill-19",
+      "sentence": "Develops _____ for the future",
+      "answer": "active citizens",
+      "evidence": "\"the programme is really developing active citizens of the future\"",
+      "section": "Programme features"
+    },
+    {
+      "id": "fill-20",
+      "sentence": "Successfully replicated in Hungary, _____ and Mozambique",
+      "answer": "Italy",
+      "evidence": "\"similar programmes have been started in Italy, Hungary and Mozambique\"",
+      "section": "Programme expansion"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-21",
+      "question": "What is Neil’s opinion about what makes a good citizen?",
+      "options": [
+        "A. A good citizen is mainly someone who avoids breaking laws",
+        "B. A good citizen is someone who volunteers and helps within the community",
+        "C. A good citizen is someone who only follows legal rules without extra involvement",
+        "D. A good citizen is defined mainly by their political beliefs"
+      ],
+      "answer": "B",
+      "evidence": "Neil说 \"But also maybe people who volunteer – so, people who run clubs for children and that kind of thing. I think they’re good citizens.\"（第6行）"
+    },
+    {
+      "id": "mc-22",
+      "question": "What is the main idea expressed by Myra Anubi about good citizenship?",
+      "options": [
+        "A. Paying taxes is the most important duty of a citizen",
+        "B. Good citizens should improve their community beyond obeying laws",
+        "C. Citizenship only requires obeying existing laws and regulations",
+        "D. Voting is the only way to show good citizenship"
+      ],
+      "answer": "B",
+      "evidence": "Myra说“some people might say it should go beyond that, and a good citizen is one who tries to improve the place where they live.”（第11行）"
+    },
+    {
+      "id": "mc-23",
+      "question": "What does the term ‘law of the land’ mean as explained in the programme?",
+      "options": [
+        "A. A system of rules applied only in rural areas",
+        "B. The collection of laws and rules valid in a country",
+        "C. Laws that change based on local government decisions",
+        "D. Laws specifically related to land ownership"
+      ],
+      "answer": "B",
+      "evidence": "Georgie解释“law of the land – a term for the set of rules and laws that exists in a country.”（第13行）"
+    },
+    {
+      "id": "mc-24",
+      "question": "What problem regarding young people and politics does Neil highlight?",
+      "options": [
+        "A. Young people are more likely to participate in elections",
+        "B. Young people feel disconnected and ignored by politicians",
+        "C. Politicians rely heavily on youth votes for decisions",
+        "D. Young people are well informed but uninterested in voting"
+      ],
+      "answer": "B",
+      "evidence": "Neil说“many people aged 18 to 30 say they feel ignored by politicians.”（第15行）"
+    },
+    {
+      "id": "mc-25",
+      "question": "The name ‘MyPolis’ is derived from an Ancient Greek word. What does ‘polis’ actually mean?",
+      "options": [
+        "A. Vote",
+        "B. People",
+        "C. City",
+        "D. Government"
+      ],
+      "answer": "C",
+      "evidence": "Georgie最后透露正确答案是“city”。（第71行）"
+    },
+    {
+      "id": "mc-26",
+      "question": "According to Bernardo Goncalves, what issue does MyPolis aim to address?",
+      "options": [
+        "A. Increasing trust between citizens and political institutions",
+        "B. Making parliament sessions more entertaining for youth",
+        "C. Encouraging young people to form political parties",
+        "D. Reducing taxes to involve young citizens in democracy"
+      ],
+      "answer": "A",
+      "evidence": "Bernardo说“need to find new ways to connect children and young citizens to democratic institutions... otherwise the gap will get bigger.”（第36行）"
+    },
+    {
+      "id": "mc-27",
+      "question": "What does ‘erosion of trust’ mean in the context of this programme?",
+      "options": [
+        "A. Sudden loss of trust caused by political scandals",
+        "B. Gradual weakening of confidence in political institutions",
+        "C. Complete loss of trust in government due to war",
+        "D. Temporary decrease in trust during election campaigns"
+      ],
+      "answer": "B",
+      "evidence": "Georgie解释“erosion of trust – a term for the gradual weakening of people's confidence.”（第40行）"
+    },
+    {
+      "id": "mc-28",
+      "question": "How is MyPolis incorporated into schools, as Alison Roberts mentions?",
+      "options": [
+        "A. As a compulsory subject replacing traditional classes",
+        "B. As an optional after-school activity unrelated to curriculum",
+        "C. As a part of the national curriculum from the start",
+        "D. As a one-time event to raise awareness about citizenship"
+      ],
+      "answer": "C",
+      "evidence": "Alison提到“designed so it can be included as part of the national curriculum, rather than as an add-on.”（第45行）"
+    },
+    {
+      "id": "mc-29",
+      "question": "What impressed Myra Anubi most about the MyPolis programme?",
+      "options": [
+        "A. Politicians listen seriously to children and respond to their ideas",
+        "B. Children always succeed in changing school policies",
+        "C. Politicians rarely attend school council meetings",
+        "D. The programme is run solely by government officials"
+      ],
+      "answer": "A",
+      "evidence": "Myra说“politicians are actually listening to these kids and taking them seriously.”（第51行）"
+    },
+    {
+      "id": "mc-30",
+      "question": "What does the phrase “hard to pin down” mean as used in the programme?",
+      "options": [
+        "A. Difficult to force someone to reveal their true intentions",
+        "B. Easy to contact politicians and get clear answers",
+        "C. Physically unable to catch or hold someone",
+        "D. Someone who is frequently absent from public events"
+      ],
+      "answer": "A",
+      "evidence": "Neil解释“To pin someone down means to force them to explain their plans and intentions in detail.”（第56行）"
+    }
+  ],
+  "matching": []
+}

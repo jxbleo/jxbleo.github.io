@@ -213,6 +213,36 @@
             background-color: var(--bg-hover);
         }
 
+        .section-description {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
+
+        .card-note {
+            margin: 12px 0 0 0;
+            font-size: 0.88em;
+            color: var(--text-secondary);
+        }
+
+        .placeholder-card .menu-card-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .placeholder-card .card-title {
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .placeholder-card .card-note {
+            margin-top: 0;
+            color: var(--text-muted);
+        }
+
         .user-dropdown {
             position: relative;
             display: inline-flex;
@@ -479,80 +509,7 @@
     </div>
 
     <div class="container">
-
-    <div class="section">
-        <div class="section-title" onclick="toggleSection(this)">
-            BBC 6 Minute English
-            <span class="toggle-btn">[show]</span>
-        </div>
-        <div class="section-body" style="display: none;">
-            <span class="search-btn" style="display: none;" onclick="event.stopPropagation(); toggleSearch(this)">search</span>
-            <input type="text" class="search-input" placeholder="Search title, date or topic..." oninput="filterSection(this)" style="display: none;">
-            <ul class="menu-list" id="bbc-list"></ul>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title" onclick="toggleSection(this)">
-            IELTS Reading
-            <span class="toggle-btn">[show]</span>
-        </div>
-        <div class="section-body" style="display: none;">
-            <span class="search-btn" style="display: none;" onclick="event.stopPropagation(); toggleSearch(this)">search</span>
-            <input type="text" class="search-input" placeholder="Search title or topic..." oninput="filterSection(this)" style="display: none;">
-            <ul class="menu-list" id="ielts-list"></ul>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title" onclick="toggleSection(this)">
-            Vocabulary
-            <span class="toggle-btn">[show]</span>
-        </div>
-        <div class="section-body" style="display: none;">
-            <ul class="menu-list">
-                <li class="menu-card">
-                    <a href="#">
-                        <div class="card-content">
-                            <h3 class="card-title" style="color: var(--text-muted); margin-bottom: 0;">Coming soon...</h3>
-                        </div>
-                        <div class="arrow-box" style="background-color: transparent; color: var(--text-muted);">⏳</div>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title" onclick="toggleSection(this)">
-            Grammar
-            <span class="toggle-btn">[show]</span>
-        </div>
-        <div class="section-body" style="display: none;">
-            <ul class="menu-list">
-                <li class="menu-card">
-                    <a href="#">
-                        <div class="card-content">
-                            <h3 class="card-title" style="color: var(--text-muted); margin-bottom: 0;">Coming soon...</h3>
-                        </div>
-                        <div class="arrow-box" style="background-color: transparent; color: var(--text-muted);">⏳</div>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="section champ-section">
-        <div class="section-title" onclick="toggleSection(this)">
-            <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.1em;">⚡</span> Champ</span>
-            <span class="toggle-btn">[show]</span>
-        </div>
-        <div class="section-body" style="display: none;">
-            <p style="font-size:0.85em;color:var(--text-muted);margin:0 0 16px;line-height:1.5;">即兴课堂材料 · 随手制作，随时更新</p>
-            <ul class="menu-list" id="champ-list"></ul>
-        </div>
-    </div>
-
+        <div id="sections-root"></div>
     </div>
 
     <div class="modal-overlay" id="login-modal">
@@ -573,60 +530,162 @@
     </div>
 
 <script>
-    var bbcData = [
-        { date: '2026-03-19', title: 'How do we adapt to the cold?', topic: 'Science / Health', file: 'bbc.html?set=BBC-260319' },
-        { date: '2025-09-11', title: 'What causes hearing loss?', topic: 'Health / Science', file: 'bbc.html?set=BBC-250911' },
-        { date: '2025-09-04', title: 'The joys of writing lists', topic: 'Daily Life / Psychology', file: 'bbc.html?set=BBC-250904' },
-        { date: '2025-08-28', title: 'What\'s it like to be a twin?', topic: 'Science / Identity', file: 'bbc.html?set=BBC-250828' },
-        { date: '2025-08-21', title: 'What\'s your favourite snack?', topic: 'Food / Lifestyle', file: 'bbc.html?set=BBC-250821' },
-        { date: '2025-08-14', title: 'Grownups buying kids toys', topic: 'Consumer Trends / Nostalgia', file: 'bbc.html?set=BBC-250814' },
-        { date: '2025-08-07', title: 'Are you flourishing?', topic: 'Wellbeing / Psychology', file: 'bbc.html?set=BBC-250807' },
-        { date: '2025-07-31', title: 'What is the manosphere?', topic: 'Society / Online Culture', file: 'bbc.html?set=BBC-250731' },
-        { date: '2025-07-24', title: 'What is economic degrowth?', topic: 'Environment / Economy', file: 'bbc.html?set=BBC-250724' }
-    ];
+    var homeCatalog = null;
 
-    var champData = [
-        { date: '2026-06-07', title: 'DSE English Writing — 中四备考讲义', topic: 'Article & Essay', file: 'temp-s4-writing-revision-20260607.html' },
-        { date: '2026-06-07', title: 'DSE English Paper 2 — Writing Formats', topic: 'Letter / Report / Article…', file: 'temp-dse-english-writing-formats.html' }
-    ];
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
-    var ieltsData = [
-        { date: '2', title: 'Making Every Drop Count', topic: 'Environment / Water', file: 'ielts-reading.html?set=C7-T1-P2', label: 'IELTS Reading Passage' },
-        { date: '1', title: 'Ant Intelligence', topic: 'Science / Nature', file: 'ielts-reading.html?set=C7-T3-P1', label: 'IELTS Reading Passage' }
-    ];
-
-    function renderCard(item, dateLabel, type) {
-        var typeTag = '';
-        var linkClass = '';
-        if (type === 'bbc') {
-            typeTag = '<span class="tag tag-bbc">🎧 BBC</span>';
-            linkClass = ' class="practice-link"';
-        } else if (type === 'ielts') {
-            typeTag = '<span class="tag tag-bbc">📖 IELTS</span>';
-            linkClass = ' class="practice-link"';
+    function buildTags(tags, topic) {
+        var html = '';
+        if (topic) {
+            html += '<span class="tag tag-topic">' + escapeHtml(topic) + '</span>';
         }
+        if (tags && tags.length) {
+            for (var i = 0; i < tags.length; i++) {
+                html += '<span class="tag tag-bbc">' + escapeHtml(tags[i]) + '</span>';
+            }
+        }
+        return html;
+    }
+
+    function buildCard(item) {
         return '<li class="menu-card">' +
-            '<a' + linkClass + ' href="' + item.file + '">' +
+            '<a class="practice-link" href="' + escapeHtml(item.href) + '">' +
                 '<div class="card-content">' +
-                    '<h3 class="card-title">' + item.title + '</h3>' +
+                    '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
                     '<div class="meta-row">' +
-                        '<div class="card-date">' + (dateLabel || item.date) + '</div>' +
-                        '<div class="tags">' + typeTag + '<span class="tag tag-topic">' + item.topic + '</span></div>' +
+                        '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
+                        '<div class="tags">' + buildTags(item.tags, item.topic) + '</div>' +
                     '</div>' +
+                    (item.note ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
                 '</div>' +
                 '<div class="arrow-box">→</div>' +
             '</a>' +
         '</li>';
     }
 
-    function renderSection(listId, data, dateLabel, type) {
-        var list = document.getElementById(listId);
-        if (!list) return;
-        data.sort(function(a, b) { return b.date.localeCompare(a.date); });
-        list.innerHTML = '';
-        for (var i = 0; i < data.length; i++) {
-            list.innerHTML += renderCard(data[i], dateLabel, type);
+    function buildPlaceholderCard(section) {
+        return '<li class="menu-card placeholder-card">' +
+            '<div class="menu-card-content">' +
+                '<div class="card-content">' +
+                    '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
+                    '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p>' +
+                '</div>' +
+                '<div class="arrow-box" style="background-color: transparent; color: var(--text-muted);">⏳</div>' +
+            '</div>' +
+        '</li>';
+    }
+
+    function sortSectionItems(items, section) {
+        var sorted = items.slice();
+        if (section.sortType === 'date_desc') {
+            sorted.sort(function(a, b) {
+                return String(b.sortValue || '').localeCompare(String(a.sortValue || ''));
+            });
+        } else if (section.sortType === 'number_asc') {
+            sorted.sort(function(a, b) {
+                return Number(a.sortValue || 0) - Number(b.sortValue || 0);
+            });
+        } else if (section.sortType === 'number_desc') {
+            sorted.sort(function(a, b) {
+                return Number(b.sortValue || 0) - Number(a.sortValue || 0);
+            });
         }
+        return sorted;
+    }
+
+    function buildSection(section, items) {
+        var canSearch = section.searchEnabled && items.length > 0;
+        var cardsHtml = '';
+        if (items.length) {
+            var sortedItems = sortSectionItems(items, section);
+            for (var i = 0; i < sortedItems.length; i++) {
+                cardsHtml += buildCard(sortedItems[i]);
+            }
+        } else {
+            cardsHtml = buildPlaceholderCard(section);
+        }
+
+        return '<div class="section" data-section-id="' + escapeHtml(section.id) + '">' +
+            '<div class="section-title">' +
+                escapeHtml(section.title) +
+                '<span class="toggle-btn">[show]</span>' +
+            '</div>' +
+            '<div class="section-body" style="display: none;">' +
+                (canSearch ? '<span class="search-btn" style="display: none;">search</span>' : '') +
+                (canSearch ? '<input type="text" class="search-input" placeholder="' + escapeHtml(section.searchPlaceholder || 'Search...') + '" style="display: none;">' : '') +
+                '<ul class="menu-list">' + cardsHtml + '</ul>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function applyUserToPracticeLinks(user) {
+        var links = document.querySelectorAll('a.practice-link');
+        for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute('href');
+            if (!href) continue;
+            var cleanHref = href.replace(/[?&]user=[^&]*/, '').replace(/\?$/, '');
+            if (user) {
+                var sep = cleanHref.indexOf('?') !== -1 ? '&' : '?';
+                links[i].href = cleanHref + sep + 'user=' + encodeURIComponent(user);
+            } else {
+                links[i].href = cleanHref;
+            }
+        }
+    }
+
+    function renderHomeSections() {
+        var root = document.getElementById('sections-root');
+        if (!homeCatalog || !homeCatalog.sections) {
+            root.innerHTML = '<p class="section-description">Unable to load the home catalog.</p>';
+            return;
+        }
+
+        var itemsBySection = {};
+        var visibleItems = (homeCatalog.items || []).filter(function(item) {
+            return item.visible !== false;
+        });
+
+        for (var i = 0; i < visibleItems.length; i++) {
+            var item = visibleItems[i];
+            if (!itemsBySection[item.sectionId]) itemsBySection[item.sectionId] = [];
+            itemsBySection[item.sectionId].push(item);
+        }
+
+        var html = '';
+        for (var j = 0; j < homeCatalog.sections.length; j++) {
+            var section = homeCatalog.sections[j];
+            html += buildSection(section, itemsBySection[section.id] || []);
+        }
+        root.innerHTML = html;
+
+        var user = getCurrentUser();
+        if (user) applyUserToPracticeLinks(user);
+    }
+
+    function loadHomeCatalog() {
+        var root = document.getElementById('sections-root');
+        root.innerHTML = '<p class="section-description">Loading lessons...</p>';
+        return fetch('data/home-catalog.json?_=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Failed to load home catalog');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                homeCatalog = data;
+                renderHomeSections();
+            })
+            .catch(function() {
+                root.innerHTML = '<p class="section-description">Unable to load the lesson catalog right now.</p>';
+            });
     }
 
     function filterSection(input) {
@@ -659,6 +718,7 @@
     function toggleSearch(btn) {
         var section = btn.closest('.section');
         var input = section.querySelector('.search-input');
+        if (!input) return;
         var isHidden = input.style.display === 'none' || input.style.display === '';
         input.style.display = isHidden ? 'block' : 'none';
         if (isHidden) input.focus();
@@ -747,11 +807,7 @@
         localStorage.removeItem('opencode_user');
         localStorage.removeItem('opencode_visitor');
         updateLoginStatus();
-        var links = document.querySelectorAll('a.practice-link');
-        for (var i = 0; i < links.length; i++) {
-            var href = links[i].getAttribute('href');
-            if (href) links[i].href = href.replace(/[?&]user=[^&]*/, '').replace(/\?$/, '');
-        }
+        applyUserToPracticeLinks('');
     }
 
     function updateLoginStatus() {
@@ -791,6 +847,19 @@
     }
 
     document.addEventListener('click', function(e) {
+        var titleEl = e.target.closest('.section-title');
+        if (titleEl) {
+            toggleSection(titleEl);
+            return;
+        }
+
+        var searchBtn = e.target.closest('.search-btn');
+        if (searchBtn) {
+            e.stopPropagation();
+            toggleSearch(searchBtn);
+            return;
+        }
+
         var link = e.target.closest('a.practice-link');
         if (!link) return;
         var href = link.getAttribute('href');
@@ -824,9 +893,13 @@
         navigateAfterLogin();
     });
 
-    renderSection('bbc-list', bbcData, null, 'bbc');
-    renderSection('ielts-list', ieltsData, 'IELTS Reading Passage', 'ielts');
-    renderSection('champ-list', champData);
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('search-input')) {
+            filterSection(e.target);
+        }
+    });
+
+    loadHomeCatalog();
 
     (function() {
         var urlMatch = window.location.search.match(/[?&]user=([^&]*)/);
@@ -838,14 +911,7 @@
             localStorage.removeItem('opencode_visitor');
         }
         if (user) {
-            var links = document.querySelectorAll('a.practice-link');
-            for (var i = 0; i < links.length; i++) {
-                var href = links[i].getAttribute('href');
-                if (href && href.indexOf('user=') === -1) {
-                    var sep = href.indexOf('?') !== -1 ? '&' : '?';
-                    links[i].href = href + sep + 'user=' + encodeURIComponent(user);
-                }
-            }
+            applyUserToPracticeLinks(user);
         }
         updateLoginStatus();
     })();
