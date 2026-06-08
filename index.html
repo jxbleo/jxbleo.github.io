@@ -6,13 +6,19 @@
     <title>Leo's English Practice Hub</title>
     <style>
         :root {
-            --text-primary: #000000;
-            --text-secondary: #666666;
-            --text-muted: #8f8f8f;
-            --border: #e5e7eb;
-            --bg-hover: #f1f1f1;
-            --bg-card: #ffffff;
-            --bg-page: #ffffff;
+            --text-primary: #16312f;
+            --text-secondary: #58716c;
+            --text-muted: #78908a;
+            --border: rgba(15, 118, 110, 0.16);
+            --bg-hover: rgba(255, 255, 255, 0.72);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --bg-page: #f7fbf8;
+            --accent: #0f766e;
+            --accent-bright: #14b8a6;
+            --warm: #f97316;
+            --warm-soft: #fff2df;
+            --glass-border: rgba(255, 255, 255, 0.62);
+            --shadow-soft: 0 18px 45px rgba(15, 76, 71, 0.12);
         }
 
         * {
@@ -21,32 +27,87 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-page);
+            background:
+                radial-gradient(circle at top left, rgba(254, 243, 199, 0.95) 0, transparent 30%),
+                radial-gradient(circle at 88% 6%, rgba(209, 250, 229, 0.95) 0, transparent 24%),
+                radial-gradient(circle at 70% 92%, rgba(204, 251, 241, 0.65) 0, transparent 28%),
+                linear-gradient(180deg, #f8fafc 0%, #eef8f4 100%);
             color: var(--text-primary);
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(15, 118, 110, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 118, 110, 0.045) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.38), transparent 72%);
         }
 
         .header {
-            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+            width: min(1120px, calc(100% - 32px));
+            margin: 24px auto 0;
+            background:
+                linear-gradient(135deg, rgba(19, 78, 74, 0.96) 0%, rgba(15, 118, 110, 0.92) 54%, rgba(20, 184, 166, 0.88) 100%);
             color: #fff;
-            padding: 60px 20px 36px;
-            text-align: center;
+            padding: 58px 34px 36px;
+            text-align: left;
             position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 30px;
+            box-shadow: 0 24px 60px rgba(15, 118, 110, 0.22);
+        }
+
+        .header::before,
+        .header::after {
+            content: '';
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .header::before {
+            width: 260px;
+            height: 260px;
+            right: -60px;
+            top: -70px;
+            background: radial-gradient(circle, rgba(255, 237, 213, 0.62), transparent 66%);
+        }
+
+        .header::after {
+            width: 180px;
+            height: 180px;
+            right: 170px;
+            bottom: -80px;
+            background: radial-gradient(circle, rgba(204, 251, 241, 0.48), transparent 68%);
         }
 
         .header h1 {
             margin: 0;
-            font-size: 2.2em;
-            font-weight: 600;
-            letter-spacing: -0.5px;
+            max-width: 720px;
+            font-size: clamp(2.35rem, 7vw, 4.8rem);
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            line-height: 0.96;
+            position: relative;
+            z-index: 1;
         }
 
         .header p {
-            margin: 12px 0 0 0;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.05em;
+            margin: 18px 0 0 0;
+            max-width: 640px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1.08em;
+            position: relative;
+            z-index: 1;
         }
 
         .login-status {
@@ -59,15 +120,16 @@
             font-size: 0.85em;
         }
         .login-status .user-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.28);
             color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 999px;
             cursor: pointer;
             font-size: 0.85em;
-            font-weight: 500;
+            font-weight: 700;
             transition: all 0.2s;
+            backdrop-filter: blur(12px);
         }
         .login-status .user-btn:hover {
             background: rgba(255,255,255,0.3);
@@ -90,9 +152,9 @@
         }
 
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 1120px;
+            margin: 30px auto 0;
+            padding: 0 16px;
             padding-bottom: 60px;
         }
 
@@ -100,12 +162,12 @@
             display: flex;
             align-items: center;
             color: var(--text-primary);
-            font-size: 1.15em;
-            margin-bottom: 20px;
-            margin-top: 45px;
-            font-weight: 600;
+            font-size: 1.08em;
+            margin: 0;
+            font-weight: 800;
             cursor: pointer;
             user-select: none;
+            letter-spacing: -0.01em;
         }
 
         .menu-list {
@@ -113,27 +175,33 @@
             padding: 0;
             margin: 0;
             display: grid;
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
         }
 
         .menu-card {
             background: var(--bg-card);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            border: 1px solid var(--glass-border);
             overflow: hidden;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(18px);
         }
 
         .menu-card:hover {
-            background: var(--bg-hover);
-            border-color: #d1d5db;
+            background: rgba(255,255,255,0.86);
+            border-color: rgba(15, 118, 110, 0.28);
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-2px);
         }
 
         .menu-card a {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 24px;
+            min-height: 142px;
+            padding: 22px;
             text-decoration: none;
             color: inherit;
         }
@@ -146,15 +214,16 @@
         .card-title {
             margin: 0 0 8px 0;
             color: var(--text-primary);
-            font-size: 1.15em;
-            font-weight: 600;
+            font-size: 1.12em;
+            font-weight: 850;
+            letter-spacing: -0.02em;
         }
 
         .card-date {
             margin: 0;
             font-size: 0.9em;
-            color: var(--text-muted);
-            font-weight: 500;
+            color: var(--accent);
+            font-weight: 800;
         }
 
         .meta-row {
@@ -173,20 +242,20 @@
 
         .tag {
             font-size: 0.75em;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: 800;
             letter-spacing: 0.3px;
         }
 
         .tag-bbc {
-            background-color: var(--bg-hover);
+            background-color: rgba(15, 118, 110, 0.09);
             color: var(--text-muted);
         }
 
         .tag-topic {
-            background-color: var(--bg-hover);
-            color: var(--text-secondary);
+            background-color: rgba(249, 115, 22, 0.11);
+            color: #9a3412;
         }
         
         .tag-pending {
@@ -195,22 +264,33 @@
         }
 
         .section {
-            margin-bottom: 10px;
+            margin-bottom: 18px;
+            padding: 20px;
+            background: rgba(255,255,255,0.56);
+            border: 1px solid rgba(255,255,255,0.72);
+            border-radius: 26px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(18px);
+        }
+
+        .section-body {
+            margin-top: 18px;
         }
 
         .toggle-btn {
             margin-left: auto;
-            font-size: 0.65em;
-            color: var(--text-muted);
-            font-weight: 500;
+            font-size: 0.72em;
+            color: var(--accent);
+            font-weight: 800;
             cursor: pointer;
             user-select: none;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 999px;
             transition: background-color 0.2s;
+            background: rgba(15, 118, 110, 0.08);
         }
         .toggle-btn:hover {
-            background-color: var(--bg-hover);
+            background-color: rgba(15, 118, 110, 0.14);
         }
 
         .section-description {
@@ -221,16 +301,18 @@
         }
 
         .card-note {
-            margin: 12px 0 0 0;
+            margin: 8px 0 0 0;
             font-size: 0.88em;
             color: var(--text-secondary);
+            font-weight: 650;
         }
 
         .placeholder-card .menu-card-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 24px;
+            min-height: 142px;
+            padding: 22px;
         }
 
         .placeholder-card .card-title {
@@ -264,13 +346,14 @@
             top: 100%;
             right: 0;
             margin-top: 6px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 14px;
+            box-shadow: var(--shadow-soft);
             z-index: 1001;
             min-width: 100px;
             overflow: hidden;
+            backdrop-filter: blur(16px);
         }
         .dropdown-menu.show {
             display: block;
@@ -294,18 +377,20 @@
         .search-btn {
             display: block;
             width: fit-content;
-            margin: 0 auto 12px;
+            margin: 16px 0 12px;
             font-size: 0.85em;
-            color: var(--text-muted);
+            color: var(--accent);
             cursor: pointer;
             user-select: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
             transition: all 0.2s;
+            font-weight: 800;
         }
         .search-btn:hover {
-            color: var(--text-primary);
-            background-color: var(--bg-hover);
+            color: var(--accent);
+            background-color: rgba(15, 118, 110, 0.14);
         }
 
         .arrow-box {
@@ -314,34 +399,34 @@
             justify-content: center;
             width: 36px;
             height: 36px;
-            background-color: var(--bg-hover);
+            background-color: rgba(15, 118, 110, 0.1);
             border-radius: 50%;
-            color: var(--text-secondary);
-            font-weight: 500;
+            color: var(--accent);
+            font-weight: 900;
             font-size: 1.1em;
             transition: background-color 0.2s, color 0.2s;
         }
 
         .menu-card:hover .arrow-box {
-            background-color: #e5e7eb;
-            color: var(--text-primary);
+            background-color: var(--accent);
+            color: #fff;
         }
 
         .search-input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             margin-bottom: 16px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            border-radius: 14px;
             font-size: 0.95em;
             outline: none;
             box-sizing: border-box;
-            background: var(--bg-page);
+            background: rgba(255,255,255,0.82);
             transition: border-color 0.2s;
             color: var(--text-primary);
         }
         .search-input:focus {
-            border-color: var(--text-primary);
+            border-color: var(--accent);
         }
         .search-input::placeholder {
             color: var(--text-muted);
@@ -370,7 +455,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(13, 34, 32, 0.46);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -379,13 +465,15 @@
             display: flex;
         }
         .modal-box {
-            background: var(--bg-card);
-            border-radius: 12px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 22px;
             padding: 32px;
             max-width: 400px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
             position: relative;
+            backdrop-filter: blur(18px);
         }
 
         .modal-header {
@@ -425,28 +513,28 @@
             flex: 1;
             padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.95em;
             background: var(--bg-page);
             color: var(--text-primary);
             outline: none;
         }
         .custom-login input:focus {
-            border-color: #f97316;
+            border-color: var(--accent);
         }
         .custom-login button {
             padding: 12px 20px;
-            background: #f97316;
+            background: var(--accent);
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.95em;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
         }
         .custom-login button:hover {
-            background: #ea580c;
+            background: #0d5f59;
         }
         .modal-hint {
             font-size: 0.85em;
@@ -475,7 +563,7 @@
             background: transparent;
             color: var(--text-muted);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 0.9em;
             cursor: pointer;
             transition: all 0.15s;
@@ -492,11 +580,15 @@
         }
 
         @media screen and (max-width: 768px) {
-            .header { padding: 40px 15px; }
-            .header h1 { font-size: 1.8em; }
+            .header { width: calc(100% - 20px); margin-top: 10px; padding: 44px 22px 28px; border-radius: 24px; }
+            .header h1 { font-size: 2.35em; }
+            .container { margin-top: 18px; padding: 0 10px 44px; }
+            .section { padding: 16px; border-radius: 22px; }
+            .menu-list { grid-template-columns: 1fr; }
             .menu-card a { padding: 18px 15px; }
             .card-title { font-size: 1.1em; }
             .arrow-box { width: 32px; height: 32px; font-size: 1em; }
+            .login-status { top: 14px; right: 16px; }
         }
     </style>
 </head>
@@ -504,8 +596,8 @@
 
     <div class="header">
         <div class="login-status" id="login-status"></div>
-        <h1>🚀 Leo's English Hub</h1>
-        <p>Master English through engaging listening & reading practice</p>
+        <h1>Leo's English Hub</h1>
+        <p>A calm practice space for listening, reading, vocabulary, and classroom materials.</p>
     </div>
 
     <div class="container">
@@ -625,10 +717,10 @@
         return '<div class="section" data-section-id="' + escapeHtml(section.id) + '">' +
             '<div class="section-title">' +
                 escapeHtml(section.title) +
-                '<span class="toggle-btn">[show]</span>' +
+                '<span class="toggle-btn">Show</span>' +
             '</div>' +
             '<div class="section-body" style="display: none;">' +
-                (canSearch ? '<span class="search-btn" style="display: none;">search</span>' : '') +
+                (canSearch ? '<span class="search-btn" style="display: none;">Search</span>' : '') +
                 (canSearch ? '<input type="text" class="search-input" placeholder="' + escapeHtml(section.searchPlaceholder || 'Search...') + '" style="display: none;">' : '') +
                 '<ul class="menu-list">' + cardsHtml + '</ul>' +
             '</div>' +
@@ -727,7 +819,7 @@
         var btn = titleEl.querySelector('.toggle-btn');
         var isOpen = body.style.display !== 'none';
         body.style.display = isOpen ? 'none' : 'block';
-        btn.textContent = isOpen ? '[show]' : '[hide]';
+        btn.textContent = isOpen ? 'Show' : 'Hide';
         var searchBtn = section.querySelector('.search-btn');
         if (searchBtn) {
             searchBtn.style.display = isOpen ? 'none' : 'block';

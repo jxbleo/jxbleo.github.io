@@ -375,23 +375,10 @@
         }
 
         .dictation-input {
-            width: var(--letters, 8ch);
-            min-width: var(--letters, 8ch);
-            max-width: var(--letters, 8ch);
-            letter-spacing: 0.28em;
-            text-align: left;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-            background-image: repeating-linear-gradient(
-                to right,
-                #64748b 0,
-                #64748b 1ch,
-                transparent 1ch,
-                transparent 1.55ch
-            );
-            background-position: left calc(100% - 1px);
-            background-size: 1.55ch 2px;
-            background-repeat: repeat-x;
-            border-bottom: none;
+            display: inline-grid;
+            grid-template-columns: repeat(var(--letter-count), 2.15ch);
+            gap: 0.42ch;
+            align-items: end;
         }
 
         .part-of-speech {
@@ -404,6 +391,27 @@
             font-size: 0.78rem;
             font-weight: 800;
             letter-spacing: 0.02em;
+        }
+
+        .letter-slot {
+            width: 2.15ch;
+            border: none;
+            border-bottom: 2px solid #64748b;
+            border-radius: 0;
+            padding: 0 0 4px;
+            background: transparent;
+            color: var(--ink);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 1.08rem;
+            font-weight: 800;
+            line-height: 1.25;
+            text-align: center;
+            text-transform: lowercase;
+            outline: none;
+        }
+
+        .letter-slot:focus {
+            border-bottom-color: var(--accent);
         }
 
         .reveal {
@@ -801,15 +809,66 @@
             root.innerHTML = '<div class="word-table-wrap"><table>' +
                 '<thead><tr><th>Spell the Word</th><th>Simple Definition</th></tr></thead>' +
                 '<tbody>' + words.map(function(word) {
+                    var letters = word.word.split('').map(function(letter, index) {
+                        return '<input class="letter-slot" type="text" maxlength="1" inputmode="text" autocomplete="off" data-index="' + index + '" aria-label="Letter ' + (index + 1) + '">';
+                    }).join('');
                     return '<tr class="dictation-row" data-answer="' + word.word + '">' +
                         '<td>' +
                             '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span><br>' +
-                            '<input class="answer-input dictation-input" style="--letters:' + Math.max(4, word.word.length * 1.55) + 'ch" maxlength="' + word.word.length + '" type="text" aria-label="Spell ' + word.partOfSpeech + '">' +
+                            '<div class="dictation-input" style="--letter-count:' + word.word.length + '" data-answer="' + word.word + '">' + letters + '</div>' +
                             '<div class="reveal"></div>' +
                         '</td>' +
                         '<td>' + (word.simpleDefinition || '') + '</td>' +
                     '</tr>';
                 }).join('') + '</tbody></table></div>';
+            wireDictationSlots(root);
+        }
+
+        function getDictationValue(row) {
+            return Array.from(row.querySelectorAll('.letter-slot')).map(function(input) {
+                return input.value || '';
+            }).join('');
+        }
+
+        function fillDictationSlots(wrapper, value) {
+            var slots = Array.from(wrapper.querySelectorAll('.letter-slot'));
+            slots.forEach(function(slot) {
+                slot.value = '';
+            });
+            value.split('').slice(0, slots.length).forEach(function(char, index) {
+                slots[index].value = char.toLowerCase();
+            });
+        }
+
+        function wireDictationSlots(root) {
+            root.querySelectorAll('.dictation-input').forEach(function(wrapper) {
+                var slots = Array.from(wrapper.querySelectorAll('.letter-slot'));
+                slots.forEach(function(slot, index) {
+                    slot.addEventListener('input', function() {
+                        var cleaned = slot.value.replace(/[^a-z]/gi, '').toLowerCase();
+                        if (cleaned.length > 1) {
+                            fillDictationSlots(wrapper, cleaned);
+                            var nextIndex = Math.min(slots.length - 1, index + cleaned.length);
+                            slots[nextIndex].focus();
+                            return;
+                        }
+                        slot.value = cleaned;
+                        if (cleaned && slots[index + 1]) slots[index + 1].focus();
+                    });
+                    slot.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && !slot.value && slots[index - 1]) {
+                            slots[index - 1].focus();
+                        }
+                    });
+                    slot.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^a-z]/gi, '').toLowerCase();
+                        fillDictationSlots(wrapper, text);
+                        var nextIndex = Math.min(slots.length - 1, index + text.length);
+                        slots[nextIndex].focus();
+                    });
+                });
+            });
         }
 
         function renderDictationRangeOptions(words) {
@@ -842,15 +901,15 @@
 
         function checkDictation() {
             document.querySelectorAll('.dictation-row').forEach(function(row) {
-                var input = row.querySelector('.dictation-input');
                 var reveal = row.querySelector('.reveal');
                 var answer = row.getAttribute('data-answer');
                 row.classList.remove('correct', 'wrong', 'pending');
-                if (normalizeAnswer(input.value) === normalizeAnswer(answer)) {
+                var value = getDictationValue(row);
+                if (normalizeAnswer(value) === normalizeAnswer(answer)) {
                     row.classList.add('correct');
                     reveal.classList.remove('show');
                 } else {
-                    row.classList.add(input.value.trim() ? 'wrong' : 'pending');
+                    row.classList.add(value.trim() ? 'wrong' : 'pending');
                     reveal.innerHTML = '<strong>Answer:</strong> ' + answer;
                     reveal.classList.add('show');
                 }
