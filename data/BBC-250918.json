@@ -1,0 +1,270 @@
+{
+  "id": "BBC-250918",
+  "title": "Would You Like A Robot Companion?",
+  "audioSrc": "bbc-audio/250918-would-you-like-a-robot-companion.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Robotics - the _____ robots",
+      "answer": "design and building",
+      "evidence": "One area of technology which has been in the news a lot recently is robotics – the design and building of robots.",
+      "section": "Development of robotics"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "These machines assist with household chores and _____",
+      "answer": "babysitting the kids",
+      "evidence": "Humanoid robots, meaning robots which appear and behave like humans, are being built to help us do everything from washing the dishes to babysitting the kids.",
+      "section": "Development of robotics"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Not everyone is comfortable with having _____ in their homes",
+      "answer": "human-like robot",
+      "evidence": "But not everyone feels comfortable with the idea of inviting a human-like robot into their home.",
+      "section": "Concerns about robot technology"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Despite this, AI enables robots to form _____ with people",
+      "answer": "meaningful relationships",
+      "evidence": "With advances in AI, robots are becoming smart enough to develop meaningful relationships with humans.",
+      "section": "Concerns about robot technology"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Designer: Grace Brown, an engineer from _____",
+      "answer": "Australia",
+      "evidence": "For five months during the Covid pandemic, Australian engineer Grace Brown had no human contact.",
+      "section": "The creation of Abi"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "During the pandemic, she experienced no _____ for five months",
+      "answer": "human contact",
+      "evidence": "For five months during the Covid pandemic, Australian engineer Grace Brown had no human contact.",
+      "section": "The creation of Abi"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Built Abi to offer _____ to those feeling isolated",
+      "answer": "companionship",
+      "evidence": "She used this time to build a home companion robot, Abi, with the idea it would provide companionship to other people suffering loneliness.",
+      "section": "The creation of Abi"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Now manufactures robots for _____ through her company Andromeda",
+      "answer": "elderly residents",
+      "evidence": "Now, Grace runs her own company, Andromeda, building robots specially designed as company for elderly residents in care homes who don't get many visitors.",
+      "section": "The creation of Abi"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Target users: senior citizens in _____ with few visitors",
+      "answer": "care homes",
+      "evidence": "Now, Grace runs her own company, Andromeda, building robots specially designed as company for elderly residents in care homes who don't get many visitors.",
+      "section": "The creation of Abi"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Personality traits: _____, inquisitive and curious",
+      "answer": "sassy",
+      "evidence": "Abi, who's the humanoid robot that we build at Andromeda – people don't expect humanoid robots to have, like, so much personality. She's very, very sassy.",
+      "section": "Abi's characteristics"
+    },
+    {
+      "id": "fill-11",
+      "sentence": "Visitors are often _____ by her behaviour",
+      "answer": "taken aback",
+      "evidence": "And I think when people meet her, they're always, kind of, taken aback by… \"Oh, she's, like, got a mind of her own.\"",
+      "section": "Abi's characteristics"
+    },
+    {
+      "id": "fill-12",
+      "sentence": "Appears to possess _____ – acts independently",
+      "answer": "mind of her own / a mind",
+      "evidence": "And I think when people meet her, they're always, kind of, taken aback by… \"Oh, she's, like, got a mind of her own.\"",
+      "section": "Abi's characteristics"
+    },
+    {
+      "id": "fill-13",
+      "sentence": "Can perform entertaining actions like blowing _____",
+      "answer": "bubbles",
+      "evidence": "Unlike the unpredictable and violent robots which are sometimes portrayed in sci-fi movies, Abi is much more approachable and friendly, even funny – she can blow bubbles from her hand!",
+      "section": "Abi's characteristics"
+    },
+    {
+      "id": "fill-14",
+      "sentence": "Height: approximately _____ tall",
+      "answer": "110cm",
+      "evidence": "I originally modelled her off the size of, like, a young child – so, like a six, seven-year-old child – so she's about 110cm tall.",
+      "section": "Design features"
+    },
+    {
+      "id": "fill-15",
+      "sentence": "Similar in size to a _____",
+      "answer": "young child",
+      "evidence": "I originally modelled her off the size of, like, a young child – so, like a six, seven-year-old child – so she's about 110cm tall.",
+      "section": "Design features"
+    },
+    {
+      "id": "fill-16",
+      "sentence": "Appearance includes _____ and large eyes",
+      "answer": "different colours",
+      "evidence": "She's got a whole splash of different colours. She's got, you know, large, expressive eyes.",
+      "section": "Design features"
+    },
+    {
+      "id": "fill-17",
+      "sentence": "Eyes are highly _____, revealing emotions",
+      "answer": "expressive",
+      "evidence": "She's got a whole splash of different colours. She's got, you know, large, expressive eyes.",
+      "section": "Design features"
+    },
+    {
+      "id": "fill-18",
+      "sentence": "Design inspired by animated characters from _____",
+      "answer": "Pixar films",
+      "evidence": "So, that was – I was very much trying to replicate the kind of approachableness and the endearingness of, like, these different, like, Pixar characters that you'd watch in all of these films.",
+      "section": "Design features"
+    },
+    {
+      "id": "fill-19",
+      "sentence": "Regular conversations with Abi bring _____ and a sense of community to residents",
+      "answer": "joy",
+      "evidence": "Elderly residents who regularly chat with Abi say the robot companion brings them joy and a sense of community.",
+      "section": "Impact on users"
+    },
+    {
+      "id": "fill-20",
+      "sentence": "Regular conversations with Abi bring joy and _____ to residents",
+      "answer": "a sense of community",
+      "evidence": "Elderly residents who regularly chat with Abi say the robot companion brings them joy and a sense of community.",
+      "section": "Impact on users"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-21",
+      "question": "What is Neil's attitude towards having a humanoid robot living with him?",
+      "options": [
+        "A. He feels he already has enough people around him",
+        "B. He welcomes having a robot to help with chores",
+        "C. He is excited about the idea of a robot companion",
+        "D. He worries about the robot's safety and control"
+      ],
+      "answer": "A",
+      "evidence": "Neil说 “I really don't want to live with a robot. I have enough people in my house.” （第8-9行）"
+    },
+    {
+      "id": "mc-22",
+      "question": "According to the conversation, what is the intended purpose of building Abi, the robot?",
+      "options": [
+        "A. To entertain children by performing tricks and games",
+        "B. To provide elderly people with company and reduce loneliness",
+        "C. To carry out household cleaning and maintenance tasks",
+        "D. To replace human caregivers in nursing homes completely"
+      ],
+      "answer": "B",
+      "evidence": "Grace设计Abi是为了陪伴“elderly residents who don't get many visitors”（第26-28行）"
+    },
+    {
+      "id": "mc-23",
+      "question": "In the transcript, what does the word \"sassy\" imply about Abi's personality?",
+      "options": [
+        "A. She is shy and reserved when meeting people",
+        "B. She acts aggressively and unpredictably",
+        "C. She is bold, confident, and slightly cheeky",
+        "D. She is highly logical and unemotional"
+      ],
+      "answer": "C",
+      "evidence": "Beth解释“sassy means bold, confident and cheeky.”（第17-19行）"
+    },
+    {
+      "id": "mc-24",
+      "question": "What does it mean when Grace says Abi “has a mind of her own”?",
+      "options": [
+        "A. Abi always follows human instructions perfectly",
+        "B. Abi behaves independently, beyond human control",
+        "C. Abi is programmed to obey all commands strictly",
+        "D. Abi does not show any personality or curiosity"
+      ],
+      "answer": "B",
+      "evidence": "Neil说“mind of her own”指“acting independently of human control.”（第20-21行）"
+    },
+    {
+      "id": "mc-25",
+      "question": "Why did Grace Brown choose to model Abi to look like a young child?",
+      "options": [
+        "A. To make Abi appear approachable and endearing",
+        "B. To make Abi seem more powerful and intimidating",
+        "C. To minimize the robot's size for easier transportation",
+        "D. To ensure Abi blends in with adult users better"
+      ],
+      "answer": "A",
+      "evidence": "Grace说“trying to replicate the kind of approachableness and endearingness”像Pixar角色（第35-38行）"
+    },
+    {
+      "id": "mc-26",
+      "question": "Which of the following best expresses the effect Abi has on elderly residents?",
+      "options": [
+        "A. Abi replaces the need for family visits",
+        "B. Abi causes confusion and fear among residents",
+        "C. Abi brings joy and a feeling of community",
+        "D. Abi increases physical activity among the elderly"
+      ],
+      "answer": "C",
+      "evidence": "Neil说“Elderly residents ... say the robot companion brings them joy and a sense of community.”（第43-44行）"
+    },
+    {
+      "id": "mc-27",
+      "question": "What contrast does the conversation make between Abi and robots in sci-fi movies?",
+      "options": [
+        "A. Abi is violent and unpredictable like movie robots",
+        "B. Abi is designed for military use rather than companionship",
+        "C. Abi is friendly and approachable, unlike typical sci-fi robots",
+        "D. Abi is less advanced technologically than fictional robots"
+      ],
+      "answer": "C",
+      "evidence": "Beth说“Unlike the unpredictable and violent robots in sci-fi movies, Abi is much more approachable and friendly.”（第24-27行）"
+    },
+    {
+      "id": "mc-28",
+      "question": "What reason does Grace give for Abi having large, expressive eyes?",
+      "options": [
+        "A. To allow her to see better in dark places",
+        "B. To show emotions and make her feel more relatable",
+        "C. To give her a scary appearance to protect children",
+        "D. To focus more on surveillance and monitoring tasks"
+      ],
+      "answer": "B",
+      "evidence": "Abi有大而“expressive eyes”，即能“show what someone thinks or feels.”（第41-43行）"
+    },
+    {
+      "id": "mc-29",
+      "question": "What can be inferred about people's reaction when they first meet Abi?",
+      "options": [
+        "A. They immediately distrust her technology",
+        "B. They expect a robot to lack any personality",
+        "C. They find her dull and uninteresting at first",
+        "D. They are usually surprised by her confident attitude"
+      ],
+      "answer": "D",
+      "evidence": "Grace说人们“are always, kind of, taken aback by ... she’s got a mind of her own.”（第14-16行）"
+    },
+    {
+      "id": "mc-30",
+      "question": "Why is Abi described as having “a splash of colour” in her design?",
+      "options": [
+        "A. To hide mechanical parts from people's view",
+        "B. To imitate the colour of human skin tones",
+        "C. To camouflage her in care home environments",
+        "D. To make her visually attractive and less dull"
+      ],
+      "answer": "D",
+      "evidence": "“a splash of colour”用来“brighten up something dull.”（第39-41行）"
+    }
+  ],
+  "matching": []
+}

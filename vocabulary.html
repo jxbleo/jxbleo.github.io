@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Unit</title>
+    <style>
+        :root {
+            --ink: #1f2937;
+            --muted: #6b7280;
+            --border: #dbe2ea;
+            --soft: #f4f7fb;
+            --card: #ffffff;
+            --accent: #0f766e;
+            --accent-soft: #dbf5ef;
+            --warm: #9a3412;
+            --warm-soft: #ffedd5;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 32px 16px 64px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, #fef3c7 0, transparent 28%),
+                radial-gradient(circle at top right, #d1fae5 0, transparent 22%),
+                linear-gradient(180deg, #f8fafc 0%, #eef5f7 100%);
+        }
+
+        .shell {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #134e4a 0%, #0f766e 52%, #14b8a6 100%);
+            color: #fff;
+            border-radius: 24px;
+            padding: 32px 28px;
+            box-shadow: 0 18px 40px rgba(15, 118, 110, 0.18);
+        }
+
+        .hero-top {
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .unit-badge {
+            display: inline-flex;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.22);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .hero h1 {
+            margin: 14px 0 8px;
+            font-size: clamp(2rem, 5vw, 3.1rem);
+            line-height: 1.06;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 720px;
+            color: rgba(255,255,255,0.84);
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 18px;
+            padding: 16px 18px;
+        }
+
+        .stat-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.72);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            margin-top: 22px;
+            padding: 24px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        }
+
+        .panel h2 {
+            margin: 0 0 14px;
+            font-size: 1.15rem;
+        }
+
+        .switcher {
+            display: inline-flex;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 999px;
+            background: #e9f1f4;
+            margin-bottom: 18px;
+        }
+
+        .switch-btn {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .switch-btn.active {
+            background: #fff;
+            color: var(--ink);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .word-toolbar {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .word-search {
+            width: min(320px, 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #fff;
+        }
+
+        .word-search:focus {
+            border-color: var(--accent);
+        }
+
+        .word-table-wrap {
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: #f8fbfc;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--muted);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .emoji {
+            font-size: 1.25rem;
+            white-space: nowrap;
+        }
+
+        .group-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .group-card {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .group-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 18px 20px;
+            background: #f8fbfc;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .group-title {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .group-range {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .group-wordline {
+            margin: 10px 0 0;
+            color: var(--ink);
+            font-size: 0.93rem;
+            line-height: 1.65;
+        }
+
+        .group-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 84px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .question-list {
+            padding: 20px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .question-item {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            background: #fff;
+        }
+
+        .question-item.correct {
+            border-color: #4ade80;
+            background: #f0fdf4;
+        }
+
+        .question-item.wrong {
+            border-color: #fb923c;
+            background: #fff7ed;
+        }
+
+        .question-prompt {
+            margin: 0 0 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .answer-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .answer-input {
+            flex: 1;
+            min-width: 180px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: var(--accent);
+        }
+
+        .reveal {
+            margin-top: 12px;
+            display: none;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: var(--warm-soft);
+            color: var(--warm);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .reveal.show {
+            display: block;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            padding: 0 20px 20px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #eef2f7;
+            color: var(--ink);
+        }
+
+        .loading,
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .error {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 18px 10px 40px;
+            }
+
+            .hero,
+            .panel {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.9rem;
+            }
+
+            .group-head,
+            .question-list,
+            .group-actions {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div id="loading" class="loading">Loading vocabulary unit...</div>
+        <div id="error" class="error" style="display:none;"></div>
+        <div id="app" style="display:none;">
+            <section class="hero">
+                <div class="hero-top">
+                    <div>
+                        <span class="unit-badge" id="unit-badge"></span>
+                        <h1 id="unit-title"></h1>
+                        <p id="unit-subtitle"></p>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Word Source</div>
+                        <div class="stat-value" id="stat-source"></div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">CEFR Level</div>
+                        <div class="stat-value" id="stat-cefr"></div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Words</div>
+                        <div class="stat-value" id="stat-words"></div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Quiz Groups</div>
+                        <div class="stat-value" id="stat-groups"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="switcher">
+                    <button class="switch-btn active" data-view-target="word-list-view">Word List</button>
+                    <button class="switch-btn" data-view-target="quiz-groups-view">Quiz Groups</button>
+                </div>
+
+                <div class="view active" id="word-list-view">
+                    <div class="word-toolbar">
+                        <div>
+                            <h2>Word List</h2>
+                            <p class="section-description" style="margin:0;">Scan the unit first, then move into quiz groups when students are ready.</p>
+                        </div>
+                        <input id="word-search" class="word-search" type="text" placeholder="Search word, meaning, or word form...">
+                    </div>
+                    <div class="word-table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Word</th>
+                                    <th>Emoji</th>
+                                    <th>Meaning</th>
+                                    <th>Word Forms</th>
+                                </tr>
+                            </thead>
+                            <tbody id="word-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="view" id="quiz-groups-view">
+                    <h2>Quiz Groups</h2>
+                    <p class="section-description">Each group uses ten words. Students can attempt a group, check answers, and reveal explanations when needed.</p>
+                    <div id="quiz-groups" class="group-grid"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var setId = params.get('set') || 'NGSL-A';
+        var unitData = null;
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            var error = document.getElementById('error');
+            error.style.display = 'block';
+            error.textContent = message;
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.switch-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-view-target') === viewId);
+            });
+            document.querySelectorAll('.view').forEach(function(view) {
+                view.classList.toggle('active', view.id === viewId);
+            });
+        }
+
+        function renderHero(data) {
+            document.getElementById('unit-badge').textContent = data.id;
+            document.getElementById('unit-title').textContent = data.title;
+            document.getElementById('unit-subtitle').textContent = 'Overview first, then move into the word list or quiz groups depending on the lesson goal.';
+            document.getElementById('stat-source').textContent = data.sourceName || 'Vocabulary';
+            document.getElementById('stat-cefr').textContent = data.cefrLevel || '—';
+            document.getElementById('stat-words').textContent = String(data.wordCount || (data.words || []).length);
+            document.getElementById('stat-groups').textContent = String((data.quizGroups || []).length);
+        }
+
+        function renderWords(words) {
+            var body = document.getElementById('word-table-body');
+            body.innerHTML = words.map(function(word) {
+                return '<tr>' +
+                    '<td>' + word.number + '</td>' +
+                    '<td><strong>' + word.word + '</strong></td>' +
+                    '<td class="emoji">' + word.emoji + '</td>' +
+                    '<td>' + word.meaning + '</td>' +
+                    '<td>' + word.wordForms + '</td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function checkGroupAnswers(groupId) {
+            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
+            if (!group) return;
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById(groupId + '-question-' + index);
+                var input = card.querySelector('.answer-input');
+                var reveal = card.querySelector('.reveal');
+                var value = input.value.trim().toLowerCase();
+                var answer = (question.answer || '').trim().toLowerCase();
+                card.classList.remove('correct', 'wrong');
+                if (value && value === answer) {
+                    card.classList.add('correct');
+                    reveal.classList.remove('show');
+                } else {
+                    card.classList.add('wrong');
+                }
+            });
+        }
+
+        function revealGroupAnswers(groupId) {
+            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
+            if (!group) return;
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById(groupId + '-question-' + index);
+                var reveal = card.querySelector('.reveal');
+                reveal.innerHTML = '<strong>Answer:</strong> ' + question.answer + '<br><br>' + question.explanation;
+                reveal.classList.add('show');
+            });
+        }
+
+        function renderQuizGroups(groups) {
+            var root = document.getElementById('quiz-groups');
+            root.innerHTML = groups.map(function(group) {
+                var questions = group.questions.map(function(question, index) {
+                    return '<div class="question-item" id="' + group.id + '-question-' + index + '">' +
+                        '<p class="question-prompt">' + question.number + '. ' + question.prompt + '</p>' +
+                        '<div class="answer-box">' +
+                            '<input class="answer-input" type="text" placeholder="Type the target word...">' +
+                        '</div>' +
+                        '<div class="reveal"></div>' +
+                    '</div>';
+                }).join('');
+
+                return '<div class="group-card">' +
+                    '<div class="group-head">' +
+                        '<div>' +
+                            '<h3 class="group-title">' + group.label + '</h3>' +
+                            '<p class="group-range">Words ' + group.rangeStart + '–' + group.rangeEnd + '</p>' +
+                            '<p class="group-wordline"><strong>Word Bank:</strong> ' + group.wordList.join(' | ') + '</p>' +
+                        '</div>' +
+                        '<div class="group-status">10 items</div>' +
+                    '</div>' +
+                    '<div class="question-list">' + questions + '</div>' +
+                    '<div class="group-actions">' +
+                        '<button class="btn btn-secondary" data-action="reveal" data-group="' + group.id + '">Show Answers</button>' +
+                        '<button class="btn btn-primary" data-action="check" data-group="' + group.id + '">Check Group</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function wireEvents() {
+            document.querySelectorAll('.switch-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    switchView(btn.getAttribute('data-view-target'));
+                });
+            });
+
+            document.getElementById('word-search').addEventListener('input', function(e) {
+                var query = e.target.value.trim().toLowerCase();
+                var filtered = (unitData.words || []).filter(function(word) {
+                    return [word.word, word.meaning, word.wordForms, String(word.number)].join(' ').toLowerCase().indexOf(query) !== -1;
+                });
+                renderWords(filtered);
+            });
+
+            document.getElementById('quiz-groups').addEventListener('click', function(e) {
+                var action = e.target.getAttribute('data-action');
+                var groupId = e.target.getAttribute('data-group');
+                if (!action || !groupId) return;
+                if (action === 'check') checkGroupAnswers(groupId);
+                if (action === 'reveal') revealGroupAnswers(groupId);
+            });
+        }
+
+        function renderUnit(data) {
+            unitData = data;
+            renderHero(data);
+            renderWords(data.words || []);
+            renderQuizGroups(data.quizGroups || []);
+            wireEvents();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }
+
+        fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Vocabulary unit not found.');
+                return response.json();
+            })
+            .then(renderUnit)
+            .catch(function(error) {
+                showError(error.message || 'Unable to load vocabulary unit.');
+            });
+    </script>
+</body>
+</html>

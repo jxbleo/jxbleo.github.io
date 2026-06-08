@@ -1,0 +1,11 @@
+{
+  "id": "BBC-YYMMDD",
+  "sectionId": "bbc-six-minute-english",
+  "title": "Lesson Title Here",
+  "href": "bbc.html?set=BBC-YYMMDD",
+  "publishedOn": "YYYY-MM-DD",
+  "topic": "Topic / Subtopic",
+  "tags": ["Tag One", "Tag Two"],
+  "note": "Listening Practice",
+  "visible": true
+}
