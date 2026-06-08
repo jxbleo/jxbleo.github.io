@@ -7,191 +7,261 @@
       "id": "fill-1",
       "sentence": "The ear consists of _____ main parts",
       "answer": "three",
-      "evidence": "the ear is split up into three main parts: there's the outer ear, the middle ear and the inner ear"
+      "evidence": "the ear is split up into three main parts: there's the outer ear, the middle ear and the inner ear",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-2",
       "sentence": "Located on the _____ of your head",
       "answer": "side",
-      "evidence": "The outer ear is the bit that you see – it's on the side of your head"
+      "evidence": "The outer ear is the bit that you see – it's on the side of your head",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-3",
       "sentence": "Functions like a satellite dish to _____ sounds",
       "answer": "collects",
-      "evidence": "Think of that as the satellite dish. It collects the sounds"
+      "evidence": "Think of that as the satellite dish. It collects the sounds",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-4",
       "sentence": "Directs sounds towards the _____",
       "answer": "sense organ",
-      "evidence": "it funnels them in towards the sense organ"
+      "evidence": "it funnels them in towards the sense organ",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-5",
       "sentence": "Contains an _____ that vibrates",
       "answer": "eardrum",
-      "evidence": "That's done by having an eardrum, which catches it and then vibrates sympathetically"
+      "evidence": "That's done by having an eardrum, which catches it and then vibrates sympathetically",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-6",
       "sentence": "Its primary function is to _____ sounds",
       "answer": "amplify",
-      "evidence": "The middle ear's main job is to amplify those sounds"
+      "evidence": "The middle ear's main job is to amplify those sounds",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-7",
       "sentence": "Houses the three _____ bones in the body",
       "answer": "smallest",
-      "evidence": "And then that's passed on to the three smallest bones in the body"
+      "evidence": "And then that's passed on to the three smallest bones in the body",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-8",
       "sentence": "Contains _____ that receive sound vibrations",
       "answer": "tiny hairs",
-      "evidence": "the eardrum amplifies the sounds before transmitting them to tiny hairs in the inner ear"
+      "evidence": "the eardrum amplifies the sounds before transmitting them to tiny hairs in the inner ear",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-9",
       "sentence": "Sends _____ to the brain",
       "answer": "electrical signals",
-      "evidence": "which then sends electrical signals to the brain"
+      "evidence": "which then sends electrical signals to the brain",
+      "section": "The structure of the ear"
     },
     {
       "id": "fill-10",
       "sentence": "Damage to hearing begins from approximately the age of _____",
       "answer": "eight",
-      "evidence": "Wear and tear of your hearing starts from around the age of eight"
+      "evidence": "Wear and tear of your hearing starts from around the age of eight",
+      "section": "When hearing problems begin"
     },
     {
       "id": "fill-11",
       "sentence": "The _____ you inherit at birth",
       "answer": "genetics",
-      "evidence": "the speed at which our hearing declines is partly based on the genetics that you're born with"
+      "evidence": "the speed at which our hearing declines is partly based on the genetics that you're born with",
+      "section": "When hearing problems begin"
     },
     {
       "id": "fill-12",
       "sentence": "The _____ you are exposed to",
       "answer": "environment",
-      "evidence": "and then partly based on the environment that you're exposed to"
+      "evidence": "and then partly based on the environment that you're exposed to",
+      "section": "When hearing problems begin"
     },
     {
       "id": "fill-13",
       "sentence": "Example: certain occupations may cause a _____ decline in hearing",
       "answer": "much faster",
-      "evidence": "may have a much faster decline than someone on the other side"
+      "evidence": "may have a much faster decline than someone on the other side",
+      "section": "When hearing problems begin"
     },
     {
       "id": "fill-14",
       "sentence": "The brain performs extensive _____ to process speech",
       "answer": "computation",
-      "evidence": "your brain is doing so much computation behind the scenes just to listen to someone speaking"
+      "evidence": "your brain is doing so much computation behind the scenes just to listen to someone speaking",
+      "section": "How the brain compensates"
     },
     {
       "id": "fill-15",
       "sentence": "As hearing deteriorates, the brain raises its _____",
       "answer": "listening effort",
-      "evidence": "whilst hearing is going, the brain tends to increase its listening effort"
+      "evidence": "whilst hearing is going, the brain tends to increase its listening effort",
+      "section": "How the brain compensates"
     },
     {
       "id": "fill-16",
       "sentence": "People often don't notice they have difficulty hearing because it's a _____ process",
       "answer": "very slow",
-      "evidence": "so often it's a very slow process for you to realise that you're struggling with hearing"
+      "evidence": "so often it's a very slow process for you to realise that you're struggling with hearing",
+      "section": "How the brain compensates"
     },
     {
       "id": "fill-17",
       "sentence": "Using _____",
       "answer": "hearing aids",
-      "evidence": "there are other ways hearing loss can be helped as well, including hearing aids"
+      "evidence": "there are other ways hearing loss can be helped as well, including hearing aids",
+      "section": "Solutions for hearing loss"
     },
     {
       "id": "fill-18",
       "sentence": "Undergoing _____",
       "answer": "surgery",
-      "evidence": "including hearing aids, surgery or even just removing extra ear wax"
+      "evidence": "including hearing aids, surgery or even just removing extra ear wax",
+      "section": "Solutions for hearing loss"
     },
     {
       "id": "fill-19",
       "sentence": "Removing excess _____",
       "answer": "ear wax",
-      "evidence": "surgery or even just removing extra ear wax – not a job I would like very much"
+      "evidence": "surgery or even just removing extra ear wax – not a job I would like very much",
+      "section": "Solutions for hearing loss"
     },
     {
       "id": "fill-20",
       "sentence": "The smallest bone in the human body is the _____ bone",
       "answer": "stirrup",
-      "evidence": "It is, in fact, the stirrup bone"
+      "evidence": "It is, in fact, the stirrup bone",
+      "section": "Solutions for hearing loss"
     }
   ],
   "multipleChoice": [
     {
       "id": "mc-21",
       "question": "What is Georgie's attitude towards the increasing prevalence of hearing loss?",
-      "options": ["A. She expresses skepticism about the statistical data provided", "B. She shows concern about the growing scale of the problem", "C. She demonstrates relief that it only affects elderly people", "D. She appears indifferent to the health implications involved"],
+      "options": [
+        "A. She expresses skepticism about the statistical data provided",
+        "B. She shows concern about the growing scale of the problem",
+        "C. She demonstrates relief that it only affects elderly people",
+        "D. She appears indifferent to the health implications involved"
+      ],
       "answer": "B",
       "evidence": "Georgie: 'In the UK alone, hearing loss affects 18 million people and that number is increasing.'"
     },
     {
       "id": "mc-22",
       "question": "According to Nish Mehta, what is the primary function of the pinna?",
-      "options": ["A. To vibrate in response to different sound frequencies", "B. To protect the inner structures from external damage", "C. To transmit electrical signals directly to the brain", "D. To gather sound waves and channel them inward"],
+      "options": [
+        "A. To vibrate in response to different sound frequencies",
+        "B. To protect the inner structures from external damage",
+        "C. To transmit electrical signals directly to the brain",
+        "D. To gather sound waves and channel them inward"
+      ],
       "answer": "D",
       "evidence": "Nish Mehta: 'Think of that as the satellite dish. It collects the sounds and it funnels them in towards the sense organ.'"
     },
     {
       "id": "mc-23",
       "question": "What can be inferred about the middle ear's role in the hearing process?",
-      "options": ["A. It strengthens sound vibrations before passing them forward", "B. It filters out harmful frequencies to protect the brain", "C. It converts mechanical movements into electrical impulses", "D. It serves primarily as a protective barrier for delicate tissues"],
+      "options": [
+        "A. It strengthens sound vibrations before passing them forward",
+        "B. It filters out harmful frequencies to protect the brain",
+        "C. It converts mechanical movements into electrical impulses",
+        "D. It serves primarily as a protective barrier for delicate tissues"
+      ],
       "answer": "A",
       "evidence": "Nish Mehta: 'The middle ear's main job is to amplify those sounds.'"
     },
     {
       "id": "mc-24",
       "question": "Why does James Gallagher exclaim 'So, we're doomed already!'?",
-      "options": ["A. He is surprised that genetics play such a minor role", "B. He realizes that environmental factors cannot be controlled", "C. He is shocked that hearing deterioration begins so early", "D. He discovers that surgery cannot reverse the damage"],
+      "options": [
+        "A. He is surprised that genetics play such a minor role",
+        "B. He realizes that environmental factors cannot be controlled",
+        "C. He is shocked that hearing deterioration begins so early",
+        "D. He discovers that surgery cannot reverse the damage"
+      ],
       "answer": "C",
       "evidence": "James: 'Wear and tear of your hearing starts from around the age of eight'"
     },
     {
       "id": "mc-25",
       "question": "According to Nish Mehta, what determines how quickly someone's hearing deteriorates?",
-      "options": ["A. Only the genetic predisposition inherited from parents", "B. A combination of inherited traits and environmental exposure", "C. Primarily the type of occupation they choose in life", "D. The amount of medical intervention received in childhood"],
+      "options": [
+        "A. Only the genetic predisposition inherited from parents",
+        "B. A combination of inherited traits and environmental exposure",
+        "C. Primarily the type of occupation they choose in life",
+        "D. The amount of medical intervention received in childhood"
+      ],
       "answer": "B",
       "evidence": "Nish Mehta: 'the speed at which our hearing declines is partly based on the genetics that you're born with and then partly based on the environment that you're exposed to.'"
     },
     {
       "id": "mc-26",
       "question": "What does Nish Mehta suggest about people working with pneumatic drills?",
-      "options": ["A. They may experience faster hearing decline despite strong genetics", "B. They should avoid all noisy environments outside of work", "C. They are guaranteed to develop complete hearing loss", "D. They typically have weaker genetic protection than others"],
+      "options": [
+        "A. They may experience faster hearing decline despite strong genetics",
+        "B. They should avoid all noisy environments outside of work",
+        "C. They are guaranteed to develop complete hearing loss",
+        "D. They typically have weaker genetic protection than others"
+      ],
       "answer": "A",
       "evidence": "Nish: 'someone who has really strong genetics to protect them from hearing, but spends their life on a pneumatic drill, may have a much faster decline'"
     },
     {
       "id": "mc-27",
       "question": "According to Nish Mehta, why do people often fail to notice their hearing problems?",
-      "options": ["A. Medical check-ups are not sensitive enough to detect changes", "B. Social situations mask the severity of the condition", "C. Hearing loss only affects specific frequencies initially", "D. The brain gradually compensates, making decline less obvious"],
+      "options": [
+        "A. Medical check-ups are not sensitive enough to detect changes",
+        "B. Social situations mask the severity of the condition",
+        "C. Hearing loss only affects specific frequencies initially",
+        "D. The brain gradually compensates, making decline less obvious"
+      ],
       "answer": "D",
       "evidence": "Nish: 'whilst hearing is going, the brain tends to increase its listening effort, and so often it's a very slow process for you to realise that you're struggling with hearing.'"
     },
     {
       "id": "mc-28",
       "question": "What does the phrase 'redundancy in the system' imply about human hearing?",
-      "options": ["A. The ear has unnecessary components that serve no purpose", "B. Multiple pathways exist to prevent complete hearing failure", "C. The brain cannot adequately compensate for damaged ears", "D. Alternative backup mechanisms are built into the auditory system"],
+      "options": [
+        "A. The ear has unnecessary components that serve no purpose",
+        "B. Multiple pathways exist to prevent complete hearing failure",
+        "C. The brain cannot adequately compensate for damaged ears",
+        "D. Alternative backup mechanisms are built into the auditory system"
+      ],
       "answer": "D",
       "evidence": "Neil: 'redundancy in the system – a technical phrase meaning that there are many ways to achieve the same outcome so that a backup system can take over if other systems fail.'"
     },
     {
       "id": "mc-29",
       "question": "What is Georgie's opinion about removing ear wax as a treatment?",
-      "options": ["A. She finds it an unappealing procedure to perform", "B. She believes it is the most effective solution available", "C. She questions whether it actually improves hearing significantly", "D. She thinks it should be combined with surgical intervention"],
+      "options": [
+        "A. She finds it an unappealing procedure to perform",
+        "B. She believes it is the most effective solution available",
+        "C. She questions whether it actually improves hearing significantly",
+        "D. She thinks it should be combined with surgical intervention"
+      ],
       "answer": "A",
       "evidence": "Georgie: 'including hearing aids, surgery or even just removing extra ear wax – not a job I would like very much!'"
     },
     {
       "id": "mc-30",
       "question": "What is Neil's attitude when revealing the correct answer to his question?",
-      "options": ["A. He is apologetic about Georgie's incorrect response", "B. He adopts a playfully teasing tone toward Georgie", "C. He expresses genuine disappointment in her knowledge", "D. He shows frustration at her lack of attention"],
+      "options": [
+        "A. He is apologetic about Georgie's incorrect response",
+        "B. He adopts a playfully teasing tone toward Georgie",
+        "C. He expresses genuine disappointment in her knowledge",
+        "D. He shows frustration at her lack of attention"
+      ],
       "answer": "B",
       "evidence": "Neil: 'You did, but I'm afraid you obviously weren't listening in Biology class because you are wrong.'"
     }

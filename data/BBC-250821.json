@@ -7,121 +7,141 @@
       "id": "fill-1",
       "sentence": "Worldwide spending on snacks reaches approximately _____ annually",
       "answer": "$1.5 trillion",
-      "evidence": "\"snacks are big business, with an estimated $1.5 trillion a year spent globally on snacking.\""
+      "evidence": "\"snacks are big business, with an estimated $1.5 trillion a year spent globally on snacking.\"",
+      "section": "Global Snacking Trends"
     },
     {
       "id": "fill-2",
       "sentence": "New products like the _____ have emerged",
       "answer": "chocolate sandwich",
-      "evidence": "\"From old favourites like popcorn and crisps to new inventions like the chocolate sandwich, snacks are big business\""
+      "evidence": "\"From old favourites like popcorn and crisps to new inventions like the chocolate sandwich, snacks are big business\"",
+      "section": "Global Snacking Trends"
     },
     {
       "id": "fill-3",
       "sentence": "Enjoys _____ combined with a banana",
       "answer": "salted peanuts",
-      "evidence": "\"I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot.\""
+      "evidence": "\"I like salted peanuts and I love a banana – preferably together, actually. I find that they hit the spot.\"",
+      "section": "Annie Gray (British food historian)"
     },
     {
       "id": "fill-4",
       "sentence": "Prefers 'chipa', which is a _____",
       "answer": "small, round bun",
-      "evidence": "\"My favourite snack is called 'chipa'. It's a small, round bun made with cassava, cheese, butter, milk and salt.\""
+      "evidence": "\"My favourite snack is called 'chipa'. It's a small, round bun made with cassava, cheese, butter, milk and salt.\"",
+      "section": "Barbara Oievari (Argentinian chef)"
     },
     {
       "id": "fill-5",
       "sentence": "Made using cassava, cheese, _____",
       "answer": "butter, milk and salt",
-      "evidence": "\"It's a small, round bun made with cassava, cheese, butter, milk and salt.\""
+      "evidence": "\"It's a small, round bun made with cassava, cheese, butter, milk and salt.\"",
+      "section": "Barbara Oievari (Argentinian chef)"
     },
     {
       "id": "fill-6",
       "sentence": "Snacks serve as an _____ for consumers",
       "answer": "affordable luxury",
-      "evidence": "\"A snack is an affordable luxury, so if you've had a bad day or money is tight, this is something that you can turn to\""
+      "evidence": "\"A snack is an affordable luxury, so if you've had a bad day or money is tight, this is something that you can turn to\"",
+      "section": "Economic factors:"
     },
     {
       "id": "fill-7",
       "sentence": "Remain popular even when _____ for many people",
       "answer": "money is tight",
-      "evidence": "\"if you've had a bad day or money is tight, this is something that you can turn to\""
+      "evidence": "\"if you've had a bad day or money is tight, this is something that you can turn to\"",
+      "section": "Economic factors:"
     },
     {
       "id": "fill-8",
       "sentence": "Americans prefer smaller and more _____",
       "answer": "convenient portions",
-      "evidence": "\"Consumers, especially in the United States, are looking for smaller, more convenient portions.\""
+      "evidence": "\"Consumers, especially in the United States, are looking for smaller, more convenient portions.\"",
+      "section": "Lifestyle changes:"
     },
     {
       "id": "fill-9",
       "sentence": "People no longer consume _____ regularly",
       "answer": "three meals a day",
-      "evidence": "\"They're not always going to be able to sit down and have three meals a day, right?\""
+      "evidence": "\"They're not always going to be able to sit down and have three meals a day, right?\"",
+      "section": "Lifestyle changes:"
     },
     {
       "id": "fill-10",
       "sentence": "Snacks are consumed _____ instead",
       "answer": "on the go",
-      "evidence": "\"So, they're eating on the go.\""
+      "evidence": "\"So, they're eating on the go.\"",
+      "section": "Lifestyle changes:"
     },
     {
       "id": "fill-11",
       "sentence": "Modern snacks contain specific _____",
       "answer": "functional ingredients",
-      "evidence": "\"this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development\""
+      "evidence": "\"this desire for very specific functional ingredients, right? So, mental clarity, gut health, muscle development\"",
+      "section": "Health benefits:"
     },
     {
       "id": "fill-12",
       "sentence": "Target improvements in _____, gut health and muscle development",
       "answer": "mental clarity",
-      "evidence": "\"So, mental clarity, gut health, muscle development, these sorts of things.\""
+      "evidence": "\"So, mental clarity, gut health, muscle development, these sorts of things.\"",
+      "section": "Health benefits:"
     },
     {
       "id": "fill-13",
       "sentence": "These benefits come in _____",
       "answer": "snack sizes",
-      "evidence": "\"Again, they're nicely packaged in snack sizes.\""
+      "evidence": "\"Again, they're nicely packaged in snack sizes.\"",
+      "section": "Health benefits:"
     },
     {
       "id": "fill-14",
       "sentence": "Prefers preparing and consuming _____ snacks",
       "answer": "more natural, simpler",
-      "evidence": "\"Personally, I enjoy cooking and eating more natural, simpler snacks\""
+      "evidence": "\"Personally, I enjoy cooking and eating more natural, simpler snacks\"",
+      "section": "Barbara Oievari's perspective on concerns about modern snacks:"
     },
     {
       "id": "fill-15",
       "sentence": "Finds it difficult to _____ regarding food choices",
       "answer": "swim against current",
-      "evidence": "\"but of course I can't swim against the current\""
+      "evidence": "\"but of course I can't swim against the current\"",
+      "section": "Barbara Oievari's perspective on concerns about modern snacks:"
     },
     {
       "id": "fill-16",
       "sentence": "Her son, aged _____, prefers packaged options",
       "answer": "9",
-      "evidence": "\"if my 9-year-old wants to eat the little baked snacks that have cheddar\""
+      "evidence": "\"if my 9-year-old wants to eat the little baked snacks that have cheddar\"",
+      "section": "Barbara Oievari's perspective on concerns about modern snacks:"
     },
     {
       "id": "fill-17",
       "sentence": "He enjoys small _____ snacks",
       "answer": "baked",
-      "evidence": "\"the little baked snacks that have cheddar… ironically it is something baked with cheese in it\""
+      "evidence": "\"the little baked snacks that have cheddar… ironically it is something baked with cheese in it\"",
+      "section": "Barbara Oievari's perspective on concerns about modern snacks:"
     },
     {
       "id": "fill-18",
       "sentence": "These represent a _____ on traditional recipes",
       "answer": "modern twist",
-      "evidence": "\"which is similar to what I enjoy – it's just the modern twist.\""
+      "evidence": "\"which is similar to what I enjoy – it's just the modern twist.\"",
+      "section": "Barbara Oievari's perspective on concerns about modern snacks:"
     },
     {
       "id": "fill-19",
       "sentence": "Most favoured category: _____",
       "answer": "confectionery and chocolate",
-      "evidence": "\"b) confectionery and chocolate, which 45% of Britons indulge in weekly\""
+      "evidence": "\"b) confectionery and chocolate, which 45% of Britons indulge in weekly\"",
+      "section": "British Snacking Habits"
     },
     {
       "id": "fill-20",
       "sentence": "Approximately _____ of British people consume these weekly",
       "answer": "45%",
-      "evidence": "\"b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey.\""
+      "evidence": "\"b) confectionery and chocolate, which 45% of Britons indulge in weekly, according to that survey.\"",
+      "section": "British Snacking Habits"
     }
   ],
   "multipleChoice": [
