@@ -523,6 +523,22 @@
             display: none;
         }
 
+        .identity-status {
+            position: fixed;
+            top: 16px;
+            right: 18px;
+            z-index: 900;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.92);
+            color: var(--primary);
+            font-size: 0.86em;
+            font-weight: 700;
+            box-shadow: 0 10px 24px rgba(44, 62, 80, 0.12);
+            backdrop-filter: blur(14px);
+        }
+
         @media screen and (max-width: 768px) {
             body { padding: 10px 5px; }
             .container { padding: 25px 15px; }
@@ -535,6 +551,7 @@
     </style>
 </head>
 <body>
+<div class="identity-status" id="identity-status">Login</div>
 
 <div class="container" id="app">
     <h1>BBC 6 Minute English</h1>
@@ -549,12 +566,11 @@
 
     <div id="login-modal" class="modal-overlay">
         <div class="modal-box">
-            <h2>Select Student</h2>
-            <p>Enter your student ID to continue.</p>
             <div style="display:flex;gap:8px;margin-top:14px;">
-                <input type="text" id="bbc-custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;background:var(--bg-page);color:var(--text-primary);" />
+                <input type="text" id="bbc-custom-id-input" placeholder="Enter a student ID" autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;background:var(--bg-page);color:var(--text-primary);" />
                 <button id="bbc-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
             </div>
+            <button id="bbc-saved-identity-btn" style="display:none;width:100%;margin-top:12px;padding:12px;background:transparent;color:var(--text-light);border:1px solid var(--border-color);border-radius:8px;font-size:0.9em;cursor:pointer;"></button>
             <div id="bbc-login-error" style="font-size:0.85em;color:var(--text-muted);margin-top:6px;min-height:1.2em;"></div>
             <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:0.85em;"><span style="flex:1;border-top:1px solid var(--border);"></span><span>or</span><span style="flex:1;border-top:1px solid var(--border);"></span></div>
             <button id="bbc-visitor-btn" style="display:block;width:100%;padding:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue as Visitor</button>
@@ -619,6 +635,24 @@
     ];
 
     var validIds = ['EI6688', 'EV3389', 'LEO6666'];
+
+    function getStudentLabel(id) {
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) return students[i].label;
+        }
+        return id;
+    }
+
+    function getStoredIdentity() {
+        return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+    }
+
+    function updateIdentityStatus() {
+        var el = document.getElementById('identity-status');
+        if (!el) return;
+        var id = studentId || getStoredIdentity();
+        el.textContent = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+    }
 
     function getParams() {
         var q = window.location.search.substring(1);
@@ -857,8 +891,17 @@
         var customBtn = document.getElementById('bbc-custom-login-btn');
         var errorEl = document.getElementById('bbc-login-error');
         var visitorBtn = document.getElementById('bbc-visitor-btn');
+        var savedBtn = document.getElementById('bbc-saved-identity-btn');
         if (customInput) customInput.value = '';
         if (errorEl) errorEl.textContent = '';
+        var stored = localStorage.getItem('opencode_user') || '';
+        if (savedBtn && stored) {
+            savedBtn.style.display = 'block';
+            savedBtn.textContent = 'Continue as ' + getStudentLabel(stored);
+            savedBtn.onclick = function() { selectStudent(stored); };
+        } else if (savedBtn) {
+            savedBtn.style.display = 'none';
+        }
 
         function handleCustomLogin() {
             var id = customInput.value.trim();
@@ -876,6 +919,9 @@
 
         function selectVisitor() {
             studentId = 'VISITOR';
+            localStorage.removeItem('opencode_user');
+            localStorage.setItem('opencode_visitor', 'true');
+            updateIdentityStatus();
             logEvent('login', { studentId: 'VISITOR' });
             modal.classList.remove('show');
             fetchLesson();
@@ -892,6 +938,9 @@
 
     function selectStudent(id) {
         studentId = id;
+        localStorage.setItem('opencode_user', id);
+        localStorage.removeItem('opencode_visitor');
+        updateIdentityStatus();
         var url = new URL(window.location.href);
         url.searchParams.set('user', studentId);
         window.history.replaceState({}, '', url);
@@ -903,7 +952,15 @@
     function init() {
         var params = getParams();
         setId = params.set || '';
-        studentId = params.user || '';
+        studentId = params.user || getStoredIdentity();
+        if (params.user && params.user !== 'VISITOR') {
+            localStorage.setItem('opencode_user', params.user);
+            localStorage.removeItem('opencode_visitor');
+        } else if (params.user === 'VISITOR') {
+            localStorage.removeItem('opencode_user');
+            localStorage.setItem('opencode_visitor', 'true');
+        }
+        updateIdentityStatus();
 
         logEvent('page_enter', { set: setId, user: studentId });
 

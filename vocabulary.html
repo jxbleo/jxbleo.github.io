@@ -528,6 +528,22 @@
             display: block;
         }
 
+        .identity-status {
+            position: fixed;
+            top: 16px;
+            right: 18px;
+            z-index: 60;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.92);
+            color: var(--ink);
+            font-size: 0.86rem;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(14px);
+        }
+
         .loading,
         .error {
             text-align: center;
@@ -565,6 +581,7 @@
     </style>
 </head>
 <body>
+    <div class="identity-status" id="identity-status">Login</div>
     <div class="shell">
         <div id="loading" class="loading">Loading vocabulary unit...</div>
         <div id="error" class="error" style="display:none;"></div>
@@ -661,6 +678,34 @@
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
+        var students = [
+            { id: 'EI6688', label: '甘昕雨Eilene' },
+            { id: 'EV3389', label: '刘榆雯Eva' },
+            { id: 'LEO6666', label: 'jxbleo' }
+        ];
+
+        function getStudentLabel(id) {
+            for (var i = 0; i < students.length; i++) {
+                if (students[i].id === id) return students[i].label;
+            }
+            return id;
+        }
+
+        function updateIdentityStatus() {
+            var el = document.getElementById('identity-status');
+            if (!el) return;
+            var urlUser = params.get('user');
+            if (urlUser && urlUser !== 'VISITOR') {
+                localStorage.setItem('opencode_user', urlUser);
+                localStorage.removeItem('opencode_visitor');
+            } else if (urlUser === 'VISITOR') {
+                localStorage.removeItem('opencode_user');
+                localStorage.setItem('opencode_visitor', 'true');
+            }
+            var user = localStorage.getItem('opencode_user') || '';
+            var isVisitor = localStorage.getItem('opencode_visitor') === 'true';
+            el.textContent = user ? getStudentLabel(user) : (isVisitor ? 'Visitor' : 'Login');
+        }
 
         function showError(message) {
             document.getElementById('loading').style.display = 'none';
@@ -1046,6 +1091,8 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'block';
         }
+
+        updateIdentityStatus();
 
         fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
             .then(function(response) {

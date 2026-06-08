@@ -314,21 +314,18 @@ AI 收到后默认应做两件事：
 - 老师和学生都能看到网站的完整方向
 - 以后新增内容或合并栏目时更容易调整
 
-目前确认的首页栏目包括：
+目前首页按三条学习路径组织：
 
-- `BBC Six Minute English`
-- `IELTS Reading`
-- `IELTS Listening`
-- `Vocabulary`
-- `DSE English Paper 2`
-- `DSE English Paper 4`
-- `Grammar`
+- `Basics`：`BBC Listening`、`Vocabulary`、`Grammar`、`Writing`
+- `IELTS`：`Reading`、`Listening`、`Writing`、`Speaking`
+- `DSE`：`Paper 1 Reading`、`Paper 2 Writing`、`Paper 3 Listening`、`Paper 4 Speaking`
 
 说明：
 
-- 前四个是当前主要内容方向
-- 其余栏目目前可以先处于 `Developing` 状态
-- 以后栏目允许合并，例如 `IELTS Reading` 和 `IELTS Listening` 未来可能合并
+- `Basics` 放通用英语能力练习
+- `IELTS` 和 `DSE` 放考试专项内容
+- 暂时没有正式内容的子栏目可以先处于 `Developing` 状态
+- 以后子栏目允许调整或合并
 
 
 ## 关于临时讲义

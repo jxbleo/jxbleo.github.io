@@ -273,6 +273,60 @@
             backdrop-filter: blur(18px);
         }
 
+        .path-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 18px;
+        }
+
+        .path-card {
+            padding: 22px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+            backdrop-filter: blur(18px);
+        }
+
+        .path-card.basics {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(220, 252, 231, 0.42));
+        }
+
+        .path-card.ielts {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(204, 251, 241, 0.44));
+        }
+
+        .path-card.dse {
+            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255, 237, 213, 0.5));
+        }
+
+        .path-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.65rem;
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+
+        .path-description {
+            margin: 10px 0 18px;
+            color: var(--text-secondary);
+            font-size: 0.94rem;
+            line-height: 1.55;
+        }
+
+        .path-card .section {
+            margin-bottom: 12px;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.58);
+            box-shadow: none;
+        }
+
+        .path-card .section:last-child {
+            margin-bottom: 0;
+        }
+
         .section-body {
             margin-top: 18px;
         }
@@ -584,6 +638,7 @@
             .header h1 { font-size: 2.35em; }
             .container { margin-top: 18px; padding: 0 10px 44px; }
             .section { padding: 16px; border-radius: 22px; }
+            .path-card { padding: 16px; border-radius: 24px; }
             .menu-list { grid-template-columns: 1fr; }
             .menu-card a { padding: 18px 15px; }
             .card-title { font-size: 1.1em; }
@@ -607,14 +662,13 @@
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
             <div class="modal-header">
-                <h2>Select Student</h2>
                 <button class="modal-close" id="modal-close">&times;</button>
             </div>
-            <p>Enter your student ID to start practicing.</p>
             <div class="custom-login">
-                <input type="text" id="custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" />
+                <input type="text" id="custom-id-input" placeholder="Enter a student ID" autocomplete="off" />
                 <button id="custom-login-btn">Login</button>
             </div>
+            <button class="visitor-btn" id="saved-identity-btn" style="display:none;margin-top:12px;"></button>
             <div id="login-error" class="modal-hint"></div>
             <div class="divider"><span>or</span></div>
             <button class="visitor-btn" id="visitor-btn">Continue as Visitor</button>
@@ -727,6 +781,32 @@
         '</div>';
     }
 
+    var pathGroups = [
+        {
+            id: 'basics',
+            title: 'Basics',
+            description: 'Build general English skills with vocabulary, grammar, writing, and listening practice.'
+        },
+        {
+            id: 'ielts',
+            title: 'IELTS',
+            description: 'Practise IELTS reading, listening, writing, and speaking by skill and task type.'
+        },
+        {
+            id: 'dse',
+            title: 'DSE',
+            description: 'Prepare for DSE English Paper 1, 2, 3, and 4 with targeted practice.'
+        }
+    ];
+
+    function buildPathGroup(group, sectionsHtml) {
+        return '<section class="path-card ' + escapeHtml(group.id) + '">' +
+            '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
+            '<p class="path-description">' + escapeHtml(group.description) + '</p>' +
+            sectionsHtml +
+        '</section>';
+    }
+
     function applyUserToPracticeLinks(user) {
         var links = document.querySelectorAll('a.practice-link');
         for (var i = 0; i < links.length; i++) {
@@ -760,11 +840,20 @@
             itemsBySection[item.sectionId].push(item);
         }
 
-        var html = '';
+        var sectionsByGroup = {};
         for (var j = 0; j < homeCatalog.sections.length; j++) {
             var section = homeCatalog.sections[j];
-            html += buildSection(section, itemsBySection[section.id] || []);
+            var groupId = section.groupId || 'basics';
+            if (!sectionsByGroup[groupId]) sectionsByGroup[groupId] = '';
+            sectionsByGroup[groupId] += buildSection(section, itemsBySection[section.id] || []);
         }
+
+        var html = '<div class="path-grid">';
+        for (var k = 0; k < pathGroups.length; k++) {
+            var group = pathGroups[k];
+            html += buildPathGroup(group, sectionsByGroup[group.id] || '');
+        }
+        html += '</div>';
         root.innerHTML = html;
 
         var user = getCurrentUser();
@@ -876,6 +965,14 @@
         if (input) input.value = '';
         var err = document.getElementById('login-error');
         if (err) err.textContent = '';
+        var savedBtn = document.getElementById('saved-identity-btn');
+        var savedUser = getCurrentUser();
+        if (savedBtn && savedUser) {
+            savedBtn.style.display = 'block';
+            savedBtn.textContent = 'Continue as ' + getStudentLabel(savedUser);
+        } else if (savedBtn) {
+            savedBtn.style.display = 'none';
+        }
         document.getElementById('login-modal').classList.add('active');
         if (input) setTimeout(function() { input.focus(); }, 100);
     }
@@ -918,6 +1015,13 @@
         }
     }
 
+    function getStudentLabel(id) {
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) return students[i].label;
+        }
+        return id;
+    }
+
     function logoutUser() {
         localStorage.removeItem('opencode_user');
         localStorage.removeItem('opencode_visitor');
@@ -929,10 +1033,7 @@
         var statusEl = document.getElementById('login-status');
         var user = getCurrentUser();
         if (user) {
-            var label = user;
-            for (var i = 0; i < students.length; i++) {
-                if (students[i].id === user) { label = students[i].label; break; }
-            }
+            var label = getStudentLabel(user);
             statusEl.innerHTML = '<div class="user-dropdown">' +
                 '<span class="user-name" id="user-name-trigger">' + label + ' <span class="user-arrow">&#9662;</span></span>' +
                 '<div class="dropdown-menu" id="dropdown-menu">' +
@@ -953,7 +1054,7 @@
                 if (menu) menu.classList.remove('show');
             }, { once: false });
         } else {
-            statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">Login</button>';
+            statusEl.innerHTML = '<button class="user-btn" id="login-btn-header">' + (isVisitor() ? 'Visitor' : 'Login') + '</button>';
             document.getElementById('login-btn-header').addEventListener('click', function() {
                 localStorage.removeItem('opencode_visitor');
                 showLoginModal(null);
@@ -1003,6 +1104,11 @@
     });
     document.getElementById('visitor-btn').addEventListener('click', function() {
         setVisitorMode();
+        hideLoginModal();
+        updateLoginStatus();
+        navigateAfterLogin();
+    });
+    document.getElementById('saved-identity-btn').addEventListener('click', function() {
         hideLoginModal();
         updateLoginStatus();
         navigateAfterLogin();
