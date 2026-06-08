@@ -1,0 +1,87 @@
+{
+  "id": "C7-T2-P3",
+  "title": "Makete Integrated Rural Transport Project",
+  "source": "Cambridge IELTS 7, Test 2, Passage 3",
+  "passage": "<p><strong>Section A</strong><br>The disappointing results of many conventional road transport projects in Africa led some experts to rethink the strategy by which rural transport problems were to be tackled at the beginning of the 1980s. A request for help in improving the availability of transport within the remote Makete District of south-western Tanzania presented the opportunity to try a new approach.</p><p>The concept of 'integrated rural transport' was adopted in the task of examining the transport needs of the rural households in the district. The objective was to reduce the time and effort needed to obtain access to essential goods and services through an improved rural transport system. The underlying assumption was that the time saved would be used instead for activities that would improve the social and economic development of the communities. The Makete Integrated Rural Transport Project (MIRTP) started in 1985 with financial support from the Swiss Development Corporation and was co-ordinated with the help of the Tanzanian government.</p><p><strong>Section B</strong><br>When the project began, Makete District was virtually totally isolated during the rainy season. The regional road was in such bad shape that access to the main towns was impossible for about three months of the year. Road traffic was extremely rare within the district, and alternative means of transport were restricted to donkeys in the north of the district. People relied primarily on the paths, which were slippery and dangerous during the rains.</p><p>Before solutions could be proposed, the problems had to be understood. Little was known about the transport demands of the rural households, so Phase I, between December 1985 and December 1987, focused on research. The socio-economic survey of more than 400 households in the district indicated that a household in Makete spent, on average, seven hours a day on transporting themselves and their goods, a figure which seemed extreme but which has also been obtained in surveys in other rural areas in Africa. Interesting facts regarding transport were found: 95% was on foot; 80% was within the locality; and 70% was related to the collection of water and firewood and travelling to grinding mills.</p><p><strong>Section C</strong><br>Having determined the main transport needs, possible solutions were identified which might reduce the time and burden. During Phase II, from January to February 1991, a number of approaches were implemented in an effort to improve mobility and access to transport.</p><p>An improvement of the road network was considered necessary to ensure the import and export of goods to the district. These improvements were carried out using methods that were heavily dependent on labour. In addition to the improvement of roads, these methods provided training in the operation of a mechanical workshop and bus and truck services. However, the difference from the conventional approach was that this time consideration was given to local transport needs outside the road network.</p><p>Most goods were transported along the paths that provide short-cuts up and down the hillsides, but the paths were a real safety risk and made the journey on foot even more arduous. It made sense to improve the paths by building steps, handrails and footbridges.</p><p>It was uncommon to find means of transport that were more efficient than walking but less technologically advanced than motor vehicles. The use of bicycles was constrained by their high cost and the lack of available spare parts. Oxen were not used at all but donkeys were used by a few households in the northern part of the district. MIRTP focused on what would be most appropriate for the inhabitants of Makete in terms of what was available, how much they could afford and what they were willing to accept.</p><p>After careful consideration, the project chose the promotion of donkeys - a donkey costs less than a bicycle - and the introduction of a locally manufacturable wheelbarrow.</p><p><strong>Section D</strong><br>At the end of Phase II, it was clear that the selected approaches to Makete's transport problems had had different degrees of success. Phase III, from March 1991 to March 1993, focused on the refinement and institutionalisation of these activities.</p><p>The road improvements and accompanying maintenance system had helped make the district centre accessible throughout the year. Essential goods from outside the district had become more readily available at the market, and prices did not fluctuate as much as they had done before.</p><p>Paths and secondary roads were improved only at the request of communities who were willing to participate in construction and maintenance. However, the improved paths impressed the inhabitants, and requests for assistance greatly increased soon after only a few improvements had been completed.</p><p>The efforts to improve the efficiency of the existing transport services were not very successful because most of the motorised vehicles in the district broke down and there were no resources to repair them. Even the introduction of low-cost means of transport was difficult because of the general poverty of the district. The locally manufactured wheelbarrows were still too expensive for all but a few of the households. Modifications to the original design by local carpenters cut production time and costs. Other local carpenters have been trained in the new design so that they can respond to requests. Nevertheless, a locally produced wooden wheelbarrow which costs around 5000 Tanzanian shillings (less than US$20) in Makete, and is about one quarter the cost of a metal wheelbarrow, is still too expensive for most people.</p><p>Donkeys, which were imported to the district, have become more common and contribute, in particular, to the transportation of crops and goods to market. Those who have bought donkeys are mainly from richer households but, with an increased supply through local breeding, donkeys should become more affordable. Meanwhile, local initiatives are promoting the renting out of the existing donkeys.</p><p>It should be noted, however, that a donkey, which at 20,000 Tanzanian shillings costs less than a bicycle, is still an investment equal to an average household's income over half a year. This clearly illustrates the need for supplementary measures if one wants to assist the rural poor.</p><p><strong>Section E</strong><br>It would have been easy to criticise the MIRTP for using in the early phases a 'top-down' approach, in which decisions were made by experts and officials before being handed down to communities, but it was necessary to start the process from the level of the governmental authorities of the district. It would have been difficult to respond to the requests of villagers and other rural inhabitants without the support and understanding of district authorities.</p><p><strong>Section F</strong><br>Today, nobody in the district argues about the importance of improved paths and inexpensive means of transport. But this is the result of dedicated work over a long period, particularly from the officers in charge of community development. They played an essential role in raising awareness and interest among the rural communities.</p><p>The concept of integrated rural transport is now well established in Tanzania, where a major program of rural transport is just about to start. The experiences from Makete will help in this initiative, and Makete District will act as a reference for future work.</p>",
+  "questions": [
+    {
+      "type": "headings",
+      "label": "Questions 27-30 - Matching Headings",
+      "instruction": "Choose the correct heading for sections B, C, E and F from the list below. Section A and D are examples.",
+      "headings": [
+        "MIRTP as a future model",
+        "Identifying the main transport problems",
+        "Preference for motorised vehicles",
+        "Government authorities' instructions",
+        "Initial improvements in mobility and transport modes",
+        "Request for improved transport in Makete",
+        "Transport improvements in the northern part of the district",
+        "Improvements in the rail network",
+        "Effects of initial MIRTP measures",
+        "Co-operation of district officials",
+        "Role of wheelbarrows and donkeys"
+      ],
+      "example": { "paragraph": "A", "heading": "vi" },
+      "items": [
+        { "id": "Q27", "paragraph": "B", "answer": "ii", "evidence": "B 节重点在先调查和识别 Makete 的交通难题，Phase I 就是为此而设。" },
+        { "id": "Q28", "paragraph": "C", "answer": "v", "evidence": "C 节展示了第二阶段开始实施的初步改进方案，正是 mobility 和 transport modes 的改善。" },
+        { "id": "Q29", "paragraph": "E", "answer": "x", "evidence": "E 节核心在 district authorities 的支持与理解，也就是 district officials 的配合。" },
+        { "id": "Q30", "paragraph": "F", "answer": "i", "evidence": "F 节说 Makete will act as a reference for future work，等于未来范本。" }
+      ]
+    },
+    {
+      "type": "ynng",
+      "label": "Questions 31-35 - YES / NO / NOT GIVEN",
+      "instruction": "Do the following statements agree with the claims of the writer?",
+      "items": [
+        { "id": "Q31", "text": "MIRTP was divided into five phases.", "answer": "NO", "evidence": "文中只明确提到 Phase I、Phase II 和 Phase III，共三阶段，不是五阶段。" },
+        { "id": "Q32", "text": "Prior to the start of MIRTP, the Makete district was almost inaccessible during the rainy season.", "answer": "YES", "evidence": "B 节首句说 Makete was virtually totally isolated during the rainy season。" },
+        { "id": "Q33", "text": "Phase I of MIRTP consisted of a survey of household expenditure on transport.", "answer": "NO", "evidence": "调查的是 households spent seven hours a day on transporting，不是金钱 expenditure。" },
+        { "id": "Q34", "text": "The survey concluded that one-fifth of the household transport requirement was outside the local area.", "answer": "YES", "evidence": "原文说 80% was within the locality，反推 20% 在本地之外。" },
+        { "id": "Q35", "text": "MIRTP hoped to improve the movement of goods from Makete district to the country's capital.", "answer": "NOT_GIVEN", "evidence": "文章说改善 district 的 import and export of goods，但没有提到 specifically 到首都。" }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 36-39 - Sentence Endings",
+      "instruction": "Complete each sentence with the correct ending, A-J.",
+      "choices": [
+        { "value": "A", "text": "provided the people of Makete with experience in running bus and truck services." },
+        { "value": "B", "text": "was especially successful in the northern part of the district." },
+        { "value": "C", "text": "differed from earlier phases in that the community became less actively involved." },
+        { "value": "D", "text": "improved paths used for transport up and down hillsides." },
+        { "value": "E", "text": "was no longer a problem once the roads had been improved." },
+        { "value": "F", "text": "cost less than locally made wheelbarrows." },
+        { "value": "G", "text": "was done only at the request of local people who were willing to lend a hand." },
+        { "value": "H", "text": "was at first considered by MIRTP to be affordable for the people of the district." },
+        { "value": "I", "text": "hindered attempts to make the existing transport services more efficient." },
+        { "value": "J", "text": "was thought to be the most important objective of Phase III." }
+      ],
+      "items": [
+        { "id": "Q36", "text": "Construction of footbridges, steps and handrails ______", "answer": "D", "evidence": "C 节说这些设施是为了改善山坡上下的捷径小路运输。" },
+        { "id": "Q37", "text": "Frequent breakdown of buses and trucks in Makete ______", "answer": "I", "evidence": "D 节明确说车辆常坏，导致 improving the efficiency of existing transport services 不成功。" },
+        { "id": "Q38", "text": "The improvement of secondary roads and paths ______", "answer": "G", "evidence": "D 节说这类改善 only at the request of communities who were willing to participate in construction and maintenance。" },
+        { "id": "Q39", "text": "The isolation of Makete for part of the year ______", "answer": "E", "evidence": "D 节指出 road improvements made the district centre accessible throughout the year。" }
+      ]
+    },
+    {
+      "type": "mcq",
+      "label": "Question 40 - Multiple Choice",
+      "instruction": "Choose the correct letter, A, B, C or D.",
+      "items": [
+        {
+          "id": "Q40",
+          "text": "Which of the following phrases best describes the main aim of the passage?",
+          "options": [
+            { "value": "A", "text": "to suggest that projects such as MIRTP are needed in other countries" },
+            { "value": "B", "text": "to describe how MIRTP was implemented and how successful it was" },
+            { "value": "C", "text": "to examine how MIRTP promoted the use of donkeys" },
+            { "value": "D", "text": "to warn that projects such as MIRTP are likely to have serious problems" }
+          ],
+          "answer": "B",
+          "evidence": "全文按阶段说明 MIRTP 如何开展、采取了什么措施，以及最终取得了怎样的成效。" 
+        }
+      ]
+    }
+  ]
+}

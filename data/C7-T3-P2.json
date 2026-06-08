@@ -1,0 +1,86 @@
+{
+  "id": "C7-T3-P2",
+  "title": "Population Movements and Genetics",
+  "source": "Cambridge IELTS 7, Test 3, Passage 2",
+  "passage": "<p><strong>Section A</strong><br>Study of the origins and distribution of human populations used to be based on archaeological and fossil evidence. A number of techniques developed since the 1950s, however, have placed the study of these subjects on a sounder and more objective footing. The best information on early population movements is now being obtained from the 'archaeology of the living body', the clues to be found in genetic material.</p><p><strong>Section B</strong><br>Recent work on the problem of when people first entered the Americas is an example of the value of these new techniques. North-east Asia and Siberia have long been accepted as the launching ground for the first human colonisers of the New World. But was there one major wave of migration across the Bering Strait into the Americas, or several? And when did this event, or events, take place? In recent years, new clues have come from research into genetics, including the distribution of genetic markers in modern Native Americans.</p><p><strong>Section C</strong><br>An important project, led by the biological anthropologist Robert Williams, focused on the variants (called Gm allotypes) of one particular protein - immunoglobin G - found in the fluid portion of human blood. All proteins 'drift', or produce variants, over the generations, and members of an interbreeding human population will share a set of such variants. Thus, by comparing the Gm allotypes of two different populations, one can establish their genetic 'distance', which itself can be calibrated to give an indication of the length of time since these populations last interbred.</p><p><strong>Section D</strong><br>Williams and his colleagues sampled the blood of over 5,000 American Indians in western North America during a twenty-year period. They found that their Gm allotypes could be divided into two groups, one of which also corresponded to the genetic typing of Central and South American Indians. Other tests showed that the Inuit (or Eskimo) and Aleut formed a third group. From this evidence it was deduced that there had been three major waves of migration across the Bering Strait. The first, Paleo-Indian, wave more than 15,000 years ago was ancestral to all Central and South American Indians. The second wave, about 14,000-12,000 years ago, brought Na-Dene hunters, ancestors of the Navajo and Apache (who only migrated south from Canada about 600 or 700 years ago). The third wave, perhaps 10,000 or 9,000 years ago, saw the migration from North-east Asia of groups ancestral to the modern Eskimo and Aleut.</p><p><strong>Section E</strong><br>How far does other research support these conclusions? Geneticist Douglas Wallace has studied mitochondrial DNA in blood samples from three widely separated Native American groups: Pima-Papago Indians in Arizona, Maya Indians on the Yucatan peninsula, Mexico, and Ticuna Indians in the Upper Amazon region of Brazil. As would have been predicted by Robert Williams's work, all three groups appear to be descended from the same ancestral (Paleo-Indian) population.</p><p><strong>Section F</strong><br>There are two other kinds of research that have thrown some light on the origins of the Native American population; they involve the study of teeth and of languages. The biological anthropologist Christy Turner is an expert in the analysis of changing physical characteristics in human teeth. He argues that tooth crowns and roots have a high genetic component, minimally affected by environmental and other factors. Studies carried out by Turner of many thousands of New and Old World specimens, both ancient and modern, suggest that the majority of prehistoric Americans are linked to Northern Asian populations by crown and root traits such as incisor shoveling, single-rooted upper first premolars and triple-rooted lower first molars.</p><p>According to Turner, this ties in with the idea of a single Paleo-Indian migration out of North Asia, which he sets at before 14,000 years ago by calibrating rates of dental micro-evolution. Tooth analyses also suggest that there were two later migrations of Na-Denes and Eskimo-Aleut.</p><p><strong>Section G</strong><br>The linguist Joseph Greenberg has, since the 1950s, argued that all Native American languages belong to a single 'Amerind' family, except for Na-Dene and Eskimo-Aleut - a view that gives credence to the idea of three main migrations. Greenberg is in a minority among fellow linguists, most of whom favour the notion of a great many waves of migration to account for the more than 1,000 languages spoken at one time by American Indians. But there is no doubt that the new genetic and dental evidence provides strong backing for Greenberg's view. Dates given for the migrations should nevertheless be treated with caution, except where supported by hard archaeological evidence.</p>",
+  "questions": [
+    {
+      "type": "headings",
+      "label": "Questions 14-19 - Matching Headings",
+      "instruction": "Choose the correct headings for sections A-F from the list below. Section G is the example.",
+      "headings": [
+        "The results of the research into blood-variants",
+        "Dental evidence",
+        "Greenberg's analysis of the dental and linguistic evidence",
+        "Developments in the methods used to study early population movements",
+        "Indian migration from Canada to the U.S.A.",
+        "Further genetic evidence relating to the three-wave theory",
+        "Long-standing questions about prehistoric migration to America",
+        "Conflicting views of the three-wave theory, based on non-genetic evidence",
+        "Questions about the causes of prehistoric migration to America",
+        "How analysis of blood-variants measures the closeness of the relationship between different populations"
+      ],
+      "example": { "paragraph": "G", "heading": "viii" },
+      "items": [
+        { "id": "Q14", "paragraph": "A", "answer": "iv", "evidence": "A 节对比过去与 1950s 以来的新技术，核心就是研究方法的发展。" },
+        { "id": "Q15", "paragraph": "B", "answer": "vii", "evidence": "B 节提出长期存在的问题：何时、几波人进入美洲。" },
+        { "id": "Q16", "paragraph": "C", "answer": "x", "evidence": "C 节解释通过比较 blood variants 来测量群体之间 genetic distance。" },
+        { "id": "Q17", "paragraph": "D", "answer": "i", "evidence": "D 节给出 Williams 血液变体研究的具体发现和三波迁徙结论。" },
+        { "id": "Q18", "paragraph": "E", "answer": "vi", "evidence": "E 节用 mitochondrial DNA 进一步支持三波理论。" },
+        { "id": "Q19", "paragraph": "F", "answer": "ii", "evidence": "F 节主题就是牙齿证据及其对迁徙理论的支持。" }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 20-21 - Route Identification",
+      "instruction": "The passage links certain migration periods with routes A-F on the map. Choose the correct route letter.",
+      "choices": [
+        { "value": "A", "text": "Route A" },
+        { "value": "B", "text": "Route B" },
+        { "value": "C", "text": "Route C" },
+        { "value": "D", "text": "Route D" },
+        { "value": "E", "text": "Route E" },
+        { "value": "F", "text": "Route F" }
+      ],
+      "items": [
+        { "id": "Q20", "text": "15,000 years ago or more: ______", "answer": "E", "evidence": "第一波 Paleo-Indian 向中南美扩散，对应地图上一路南下的 E 路线。" },
+        { "id": "Q21", "text": "600 to 700 years ago: ______", "answer": "D", "evidence": "这是 Apache/Navajo 从加拿大南迁到美国西南的路线，对应 D。" }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 22-25 - Wave Classification",
+      "instruction": "Classify each group as A the first wave, B the second wave, or C the third wave.",
+      "choices": [
+        { "value": "A", "text": "the first wave" },
+        { "value": "B", "text": "the second wave" },
+        { "value": "C", "text": "the third wave" }
+      ],
+      "items": [
+        { "id": "Q22", "text": "Inuit: ______", "answer": "C", "evidence": "D 节说第三波是现代 Eskimo/Inuit 和 Aleut 的祖先。" },
+        { "id": "Q23", "text": "Apache: ______", "answer": "B", "evidence": "D 节把 Apache 归入第二波 Na-Dene hunters 的后代。" },
+        { "id": "Q24", "text": "Pima-Papago: ______", "answer": "A", "evidence": "E 节说 Pima-Papago descended from the same ancestral Paleo-Indian population。" },
+        { "id": "Q25", "text": "Ticuna: ______", "answer": "A", "evidence": "Ticuna 与 Pima-Papago、Maya 一样，都被归入 Paleo-Indian first wave。" }
+      ]
+    },
+    {
+      "type": "mcq",
+      "label": "Question 26 - Multiple Choice",
+      "instruction": "Choose the correct letter, A, B, C or D.",
+      "items": [
+        {
+          "id": "Q26",
+          "text": "Christy Turner's research involved the examination of",
+          "options": [
+            { "value": "A", "text": "teeth from both prehistoric and modern Americans and Asians." },
+            { "value": "B", "text": "thousands of people who live in either the New or the Old World." },
+            { "value": "C", "text": "dental specimens from the majority of prehistoric Americans." },
+            { "value": "D", "text": "the eating habits of American and Asian populations." }
+          ],
+          "answer": "A",
+          "evidence": "F 节说 Turner studied many thousands of New and Old World specimens, both ancient and modern, focusing on teeth traits。" 
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": "C7-T3-P3",
+  "title": "Protecting Europe's Forests",
+  "source": "Cambridge IELTS 7, Test 3, Passage 3",
+  "passage": "<p>Forests are one of the main elements of our natural heritage. The decline of Europe's forests over the last decade and a half has led to an increasing awareness and understanding of the serious imbalances which threaten them. European countries are becoming increasingly concerned by major threats to European forests, threats which know no frontiers other than those of geography or climate: air pollution, soil deterioration, the increasing number of forest fires and sometimes even the mismanagement of our woodland and forest heritage. There has been a growing awareness of the need for countries to get together to co-ordinate their policies.</p><p>In December 1990, Strasbourg hosted the first Ministerial Conference on the protection of Europe's forests. The conference brought together 31 countries from both Western and Eastern Europe. The topics discussed included the co-ordinated study of the destruction of forests, as well as how to combat forest fires and the extension of European research programs on the forest ecosystem. The preparatory work for the conference had been undertaken at two meetings of experts. Their initial task was to decide which of the many forest problems of concern to Europe involved the largest number of countries and might be the subject of joint action. Those confined to particular geographical areas, such as countries bordering the Mediterranean or the Nordic countries, therefore had to be discarded. However, this does not mean that in future they will be ignored.</p><p>As a whole, European countries see forests as performing a triple function: biological, economic and recreational. The first is to act as a 'green lung' for our planet; by means of photosynthesis, forests produce oxygen through the transformation of solar energy, thus fulfilling what for humans is the essential role of an immense, non-polluting power plant. At the same time, forests provide raw materials for human activities through their constantly renewed production of wood. Finally, they offer those condemned to spend five days a week in an urban environment an unrivalled area of freedom to unwind and take part in a range of leisure activities, such as hunting, riding and hiking. The economic importance of forests has been understood since the dawn of man - wood was the first fuel. The other aspects have been recognised only for a few centuries but they are becoming more and more important. Hence, there is a real concern throughout Europe about the damage to the forest environment which threatens these three basic roles.</p><p>The myth of the 'natural' forest has survived, yet there are effectively no remaining 'primary' forests in Europe. All European forests are artificial, having been adapted and exploited by man for thousands of years. This means that a forest policy is vital, that it must transcend national frontiers and generations of people, and that it must allow for the inevitable changes that take place in the forests, in needs, and hence in policy. The Strasbourg conference was one of the first events on such a scale to reach this conclusion. A general declaration was made that 'a central place in any ecologically coherent forest policy must be given to continuity over time and to the possible effects of unforeseen events, to ensure that the full potential of these forests is maintained'.</p><p>That general declaration was accompanied by six detailed resolutions to assist national policy-making. The first proposes the extension and systematisation of surveillance sites to monitor forest decline. Forest decline is still poorly understood but leads to the loss of a high proportion of a tree's needles or leaves. The entire continent and the majority of species are now affected: between 30% and 50% of the tree population. The condition appears to result from the cumulative effect of a number of factors, with atmospheric pollutants the principal culprits. Compounds of nitrogen and sulphur dioxide should be particularly closely watched. However, their effects are probably accentuated by climatic factors, such as drought and hard winters, or soil imbalances such as soil acidification, which damages the roots.</p><p>The second resolution concentrates on the need to preserve the genetic diversity of European forests. The aim is to reverse the decline in the number of tree species or at least to preserve the genetic material of all of them. Although forest fires do not affect all of Europe to the same extent, the amount of damage caused the experts to propose as the third resolution that the Strasbourg conference consider the establishment of a European databank on the subject. All information used in the development of national preventative policies would become generally available.</p><p>The subject of the fourth resolution discussed by the ministers was mountain forests. In Europe, it is undoubtedly the mountain ecosystem which has changed most rapidly and is most at risk. A thinly scattered permanent population and development of leisure activities, particularly skiing, have resulted in significant long-term changes to the local ecosystems. Proposed developments include a preferential research program on mountain forests.</p><p>The fifth resolution relaunched the European research network on the physiology of trees, called Eurosilva. Eurosilva should support joint European research on tree diseases and their physiological and biochemical aspects. Each country concerned could increase the number of scholarships and other financial support for doctoral theses and research projects in this area. Finally, the conference established the framework for a European research network on forest ecosystems. This would also involve harmonising activities in individual countries as well as identifying a number of priority research topics relating to the protection of forests.</p><p>The Strasbourg conference's main concern was to provide for the future. This was the initial motivation, one now shared by all 31 participants representing 31 European countries. Their final text commits them to on-going discussion between government representatives with responsibility for forests.</p>",
+  "questions": [
+    {
+      "type": "tfng",
+      "label": "Questions 27-33 - True / False / Not Given",
+      "instruction": "Do the following statements agree with the information given in the passage?",
+      "items": [
+        { "id": "Q27", "text": "Forest problems of Mediterranean countries are to be discussed at the next meeting of experts.", "answer": "NOT_GIVEN", "evidence": "文中只说这次会议暂时排除了地域性问题，并说 future they will not be ignored，但没说 next meeting 一定讨论。" },
+        { "id": "Q28", "text": "Problems in Nordic countries were excluded because they are outside the European Economic Community.", "answer": "FALSE", "evidence": "原文给出的原因是这些问题 confined to particular geographical areas，而不是因为不在 EEC。" },
+        { "id": "Q29", "text": "Forests are a renewable source of raw material.", "answer": "TRUE", "evidence": "文中明确说 forests provide raw materials through their constantly renewed production of wood。" },
+        { "id": "Q30", "text": "The biological functions of forests were recognised only in the twentieth century.", "answer": "FALSE", "evidence": "原文只说 economic 以外的功能 recognised only for a few centuries，并未限定到 twentieth century。" },
+        { "id": "Q31", "text": "Natural forests still exist in parts of Europe.", "answer": "FALSE", "evidence": "作者明确说 there are effectively no remaining primary forests in Europe。" },
+        { "id": "Q32", "text": "Forest policy should be limited by national boundaries.", "answer": "FALSE", "evidence": "文中相反地说 forest policy must transcend national frontiers。" },
+        { "id": "Q33", "text": "The Strasbourg conference decided that a forest policy must allow for the possibility of change.", "answer": "TRUE", "evidence": "作者总结会议结论之一就是政策 must allow for the inevitable changes that take place in the forests, in needs, and hence in policy。" }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 34-39 - Matching Resolutions",
+      "instruction": "Match the statements A-J to Resolutions 1-6.",
+      "choices": [
+        { "value": "A", "text": "All kinds of species of trees should be preserved." },
+        { "value": "B", "text": "Fragile mountain forests should be given priority in research programs." },
+        { "value": "C", "text": "The surviving natural forests of Europe do not need priority treatment." },
+        { "value": "D", "text": "Research is to be better co-ordinated throughout Europe." },
+        { "value": "E", "text": "Information on forest fires should be collected and shared." },
+        { "value": "F", "text": "Loss of leaves from trees should be more extensively and carefully monitored." },
+        { "value": "G", "text": "Resources should be allocated to research into tree diseases." },
+        { "value": "H", "text": "Skiing should be encouraged in thinly populated areas." },
+        { "value": "I", "text": "Soil imbalances such as acidification should be treated with compounds of nitrogen and sulphur." },
+        { "value": "J", "text": "Information is to be systematically gathered on any decline in the condition of forests." }
+      ],
+      "items": [
+        { "id": "Q34", "text": "Resolution 1: ______", "answer": "J", "evidence": "第一项决议强调 extension and systematisation of surveillance sites to monitor forest decline，最贴近系统收集森林衰退信息。" },
+        { "id": "Q35", "text": "Resolution 2: ______", "answer": "A", "evidence": "第二项决议聚焦 preserving the genetic diversity of European forests，也就是尽量保存所有树种。" },
+        { "id": "Q36", "text": "Resolution 3: ______", "answer": "E", "evidence": "第三项决议提出建立关于 forest fires 的 European databank，用于收集和共享信息。" },
+        { "id": "Q37", "text": "Resolution 4: ______", "answer": "B", "evidence": "第四项决议讨论 mountain forests，并提出 preferential research program。" },
+        { "id": "Q38", "text": "Resolution 5: ______", "answer": "G", "evidence": "第五项决议中的 Eurosilva 支持对 tree diseases 及其生理、生化层面的联合研究。" },
+        { "id": "Q39", "text": "Resolution 6: ______", "answer": "D", "evidence": "第六项决议建立 forest ecosystems 研究网络，并 harmonise activities in individual countries，核心就是欧洲范围内更好地协调研究。" }
+      ]
+    },
+    {
+      "type": "mcq",
+      "label": "Question 40 - Multiple Choice",
+      "instruction": "Choose the correct letter, A, B, C or D.",
+      "items": [
+        {
+          "id": "Q40",
+          "text": "What is the best title for the passage?",
+          "options": [
+            { "value": "A", "text": "The biological, economic and recreational role of forests" },
+            { "value": "B", "text": "Plans to protect the forests of Europe" },
+            { "value": "C", "text": "The priority of European research into ecosystems" },
+            { "value": "D", "text": "Proposals for a world-wide policy on forest management" }
+          ],
+          "answer": "B",
+          "evidence": "全文围绕欧洲国家如何共同制定和推进保护森林的计划展开，B 最概括全文主旨。" 
+        }
+      ]
+    }
+  ]
+}
