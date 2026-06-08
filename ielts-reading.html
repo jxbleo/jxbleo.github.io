@@ -32,6 +32,21 @@
         }
         .login-modal h2 { color: var(--primary); margin-top: 0; margin-bottom: 8px; }
         .login-modal p { color: var(--text-light); font-size: 0.9em; margin-bottom: 24px; }
+        .identity-status {
+            position: fixed;
+            top: 14px;
+            right: 16px;
+            z-index: 900;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.92);
+            color: var(--primary);
+            font-size: 0.86em;
+            font-weight: 700;
+            box-shadow: 0 10px 24px rgba(44, 62, 80, 0.12);
+            backdrop-filter: blur(14px);
+        }
         .split-layout {
             --passage-width: minmax(320px, 1fr);
             display: grid;
@@ -299,15 +314,15 @@
     </style>
 </head>
 <body>
+<div class="identity-status" id="identity-status">Login</div>
 <div class="container" id="app">
     <div id="login-overlay" class="login-overlay" style="display:none;">
         <div class="login-modal">
-            <h2>Select Student</h2>
-            <p>Enter your student ID to begin.</p>
             <div class="custom-login" style="display:flex;gap:8px;margin-top:14px;">
-                <input type="text" id="ielts-custom-id-input" placeholder="Or enter a student ID..." autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;" />
+                <input type="text" id="ielts-custom-id-input" placeholder="Enter a student ID" autocomplete="off" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:0.95em;outline:none;" />
                 <button id="ielts-custom-login-btn" style="padding:12px 20px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:0.95em;font-weight:600;cursor:pointer;white-space:nowrap;">Login</button>
             </div>
+            <button id="ielts-saved-identity-btn" style="display:none;width:100%;margin-top:12px;padding:12px;background:transparent;color:var(--text-light);border:1px solid var(--border-color);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue</button>
             <div id="ielts-login-error" style="font-size:0.85em;color:var(--text-muted);margin-top:6px;min-height:1.2em;"></div>
             <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:0.85em;"><span style="flex:1;border-top:1px solid var(--border);"></span><span>or</span><span style="flex:1;border-top:1px solid var(--border);"></span></div>
             <button id="ielts-visitor-btn" style="display:block;width:100%;padding:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:0.9em;cursor:pointer;">Continue as Visitor</button>
@@ -998,8 +1013,29 @@
 
     var validIds = ['EI6688', 'EV3389', 'LEO6666'];
 
+    function getStudentLabel(id) {
+        for (var i = 0; i < students.length; i++) {
+            if (students[i].id === id) return students[i].label;
+        }
+        return id;
+    }
+
+    function getStoredIdentity() {
+        return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+    }
+
+    function updateIdentityStatus() {
+        var el = document.getElementById('identity-status');
+        if (!el) return;
+        var id = userId || getStoredIdentity();
+        el.textContent = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+    }
+
     function loginAsUser(id) {
         userId = id;
+        localStorage.setItem('opencode_user', id);
+        localStorage.removeItem('opencode_visitor');
+        updateIdentityStatus();
         loginOverlay.style.display = 'none';
         var url = new URL(window.location);
         url.searchParams.set('user', id);
@@ -1009,6 +1045,9 @@
 
     function loginAsVisitor() {
         userId = 'VISITOR';
+        localStorage.removeItem('opencode_user');
+        localStorage.setItem('opencode_visitor', 'true');
+        updateIdentityStatus();
         loginOverlay.style.display = 'none';
         var url = new URL(window.location);
         url.searchParams.delete('user');
@@ -1022,16 +1061,39 @@
             return;
         }
 
+        if (!userId) userId = getStoredIdentity();
+        if (params.get('user') && params.get('user') !== 'VISITOR') {
+            localStorage.setItem('opencode_user', params.get('user'));
+            localStorage.removeItem('opencode_visitor');
+        } else if (params.get('user') === 'VISITOR') {
+            localStorage.removeItem('opencode_user');
+            localStorage.setItem('opencode_visitor', 'true');
+        }
+        updateIdentityStatus();
+
         if (!userId || userId === 'VISITOR') {
+            if (userId === 'VISITOR') {
+                initAfterLogin();
+                return;
+            }
             loginOverlay.style.display = 'flex';
             loadingDisplay.style.display = 'none';
             var customInput = document.getElementById('ielts-custom-id-input');
             var customBtn = document.getElementById('ielts-custom-login-btn');
             var errorEl = document.getElementById('ielts-login-error');
             var visitorBtn = document.getElementById('ielts-visitor-btn');
+            var savedBtn = document.getElementById('ielts-saved-identity-btn');
 
             if (customInput) customInput.value = '';
             if (errorEl) errorEl.textContent = '';
+            var stored = localStorage.getItem('opencode_user') || '';
+            if (savedBtn && stored) {
+                savedBtn.style.display = 'block';
+                savedBtn.textContent = 'Continue as ' + getStudentLabel(stored);
+                savedBtn.onclick = function() { loginAsUser(stored); };
+            } else if (savedBtn) {
+                savedBtn.style.display = 'none';
+            }
 
             function handleCustomLogin() {
                 var id = customInput.value.trim();

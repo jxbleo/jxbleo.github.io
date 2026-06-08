@@ -157,24 +157,32 @@ AI 是这个项目的开发助手，主要负责：
 
 ## 当前确认的首页栏目
 
-首页应始终显示全部正式栏目。
+首页应始终显示全部正式学习路径和子栏目。
 
-目前已确认的栏目包括：
+目前首页按三条学习路径组织：
 
-- `BBC Six Minute English`
-- `IELTS Reading`
-- `IELTS Listening`
-- `Vocabulary`
-- `DSE English Paper 2`
-- `DSE English Paper 4`
-- `Grammar`
+- `Basics`
+  - `BBC Listening`
+  - `Vocabulary`
+  - `Grammar`
+  - `Writing`
+- `IELTS`
+  - `Reading`
+  - `Listening`
+  - `Writing`
+  - `Speaking`
+- `DSE`
+  - `Paper 1 Reading`
+  - `Paper 2 Writing`
+  - `Paper 3 Listening`
+  - `Paper 4 Speaking`
 
 说明：
 
-- 前四个是当前最明确的正式内容方向。
-- 后三个栏目即使暂时没有内容，也应先显示。
-- 没有正式内容的栏目，点开后显示 `Developing`。
-- 以后栏目允许合并，例如 `IELTS Reading` 和 `IELTS Listening` 未来可能合并。
+- `Basics` 放通用英语能力练习。
+- `IELTS` 和 `DSE` 放考试专项内容。
+- 没有正式内容的子栏目，点开后显示 `Developing`。
+- 以后子栏目允许调整或合并。
 
 
 ## 未来的建设方向

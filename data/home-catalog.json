@@ -2,7 +2,8 @@
   "sections": [
     {
       "id": "bbc-six-minute-english",
-      "title": "BBC Six Minute English",
+      "groupId": "basics",
+      "title": "BBC Listening",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, date or topic...",
       "sortType": "date_desc",
@@ -11,8 +12,40 @@
       "emptyNote": "New BBC listening lessons will appear here."
     },
     {
+      "id": "vocabulary",
+      "groupId": "basics",
+      "title": "Vocabulary",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search unit code...",
+      "sortType": "number_asc",
+      "titleMode": "id",
+      "emptyMessage": "Developing",
+      "emptyNote": "Vocabulary units will open with a word list and practice modes."
+    },
+    {
+      "id": "grammar",
+      "groupId": "basics",
+      "title": "Grammar",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Grammar practice is planned for a later phase."
+    },
+    {
+      "id": "general-writing",
+      "groupId": "basics",
+      "title": "Writing",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "General writing practice will appear here."
+    },
+    {
       "id": "ielts-reading",
-      "title": "IELTS Reading",
+      "groupId": "ielts",
+      "title": "Reading",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, code or topic...",
       "sortType": "number_asc",
@@ -22,7 +55,8 @@
     },
     {
       "id": "ielts-listening",
-      "title": "IELTS Listening",
+      "groupId": "ielts",
+      "title": "Listening",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, code or topic...",
       "sortType": "number_asc",
@@ -31,18 +65,39 @@
       "emptyNote": "Listening sets will be added here."
     },
     {
-      "id": "vocabulary",
-      "title": "Vocabulary",
-      "searchEnabled": true,
-      "searchPlaceholder": "Search unit code...",
+      "id": "ielts-writing",
+      "groupId": "ielts",
+      "title": "Writing",
+      "searchEnabled": false,
       "sortType": "number_asc",
-      "titleMode": "id",
+      "titleMode": "title",
       "emptyMessage": "Developing",
-      "emptyNote": "Vocabulary units will open with a word list and quiz groups."
+      "emptyNote": "IELTS writing tasks and models will appear here."
+    },
+    {
+      "id": "ielts-speaking",
+      "groupId": "ielts",
+      "title": "Speaking",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "IELTS speaking prompts will appear here."
+    },
+    {
+      "id": "dse-english-paper-1",
+      "groupId": "dse",
+      "title": "Paper 1 Reading",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future DSE reading content will appear here."
     },
     {
       "id": "dse-english-paper-2",
-      "title": "DSE English Paper 2",
+      "groupId": "dse",
+      "title": "Paper 2 Writing",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
@@ -50,22 +105,24 @@
       "emptyNote": "Future DSE writing content will appear here."
     },
     {
-      "id": "dse-english-paper-4",
-      "title": "DSE English Paper 4",
+      "id": "dse-english-paper-3",
+      "groupId": "dse",
+      "title": "Paper 3 Listening",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
       "emptyMessage": "Developing",
-      "emptyNote": "Future speaking content will appear here."
+      "emptyNote": "Future DSE listening content will appear here."
     },
     {
-      "id": "grammar",
-      "title": "Grammar",
+      "id": "dse-english-paper-4",
+      "groupId": "dse",
+      "title": "Paper 4 Speaking",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
       "emptyMessage": "Developing",
-      "emptyNote": "Grammar practice is planned for a later phase."
+      "emptyNote": "Future DSE speaking content will appear here."
     }
   ],
   "items": [

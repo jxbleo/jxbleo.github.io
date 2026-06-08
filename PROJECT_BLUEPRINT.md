@@ -75,21 +75,17 @@
 
 ## 当前已确认的首页栏目
 
-首页应长期显示这些栏目：
+首页应长期显示这些学习路径和子栏目：
 
-- `BBC Six Minute English`
-- `IELTS Reading`
-- `IELTS Listening`
-- `Vocabulary`
-- `DSE English Paper 2`
-- `DSE English Paper 4`
-- `Grammar`
+- `Basics`：`BBC Listening`、`Vocabulary`、`Grammar`、`Writing`
+- `IELTS`：`Reading`、`Listening`、`Writing`、`Speaking`
+- `DSE`：`Paper 1 Reading`、`Paper 2 Writing`、`Paper 3 Listening`、`Paper 4 Speaking`
 
 规则：
 
-- 所有正式栏目都显示
-- 暂时没有正式内容的栏目，点开后显示 `Developing`
-- 以后栏目允许调整或合并
+- 所有正式学习路径都显示
+- 暂时没有正式内容的子栏目，点开后显示 `Developing`
+- 以后子栏目允许调整或合并
 
 
 ## 当前已确认的命名方式
