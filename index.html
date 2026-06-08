@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leo's English Practice Hub</title>
+    <title>Mr. Cat Academy</title>
     <style>
         :root {
             --text-primary: #16312f;
@@ -110,6 +110,73 @@
             z-index: 1;
         }
 
+        .global-search-card {
+            width: min(1120px, calc(100% - 32px));
+            margin: 18px auto 0;
+            position: relative;
+            z-index: 2;
+            padding: 16px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.66);
+            border: 1px solid rgba(255,255,255,0.76);
+            box-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+            backdrop-filter: blur(18px);
+        }
+
+        .global-search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .global-search-input {
+            flex: 1;
+            width: 100%;
+            padding: 13px 16px;
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.86);
+            color: var(--text-primary);
+            font-size: 0.96rem;
+            outline: none;
+        }
+
+        .global-search-input:focus {
+            border-color: rgba(15, 118, 110, 0.36);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.08);
+        }
+
+        .global-search-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 13px 18px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 850;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .global-results {
+            display: none;
+            margin-top: 14px;
+        }
+
+        .global-results.show {
+            display: block;
+        }
+
+        .global-results-title {
+            margin: 0 0 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .global-results .menu-list {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
         .login-status {
             position: absolute;
             top: 16px;
@@ -163,11 +230,22 @@
             align-items: center;
             color: var(--text-primary);
             font-size: 1.08em;
-            margin: 0;
+            padding: 10px 12px;
+            margin: -10px -12px 0;
+            border-radius: 16px;
             font-weight: 800;
             cursor: pointer;
             user-select: none;
             letter-spacing: -0.01em;
+        }
+
+        .section.is-open .section-title {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(16px);
         }
 
         .menu-list {
@@ -200,8 +278,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 142px;
-            padding: 22px;
+            min-height: 118px;
+            padding: 18px;
             text-decoration: none;
             color: inherit;
         }
@@ -224,20 +302,25 @@
             font-size: 0.9em;
             color: var(--accent);
             font-weight: 800;
+            white-space: nowrap;
         }
 
         .meta-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
-            margin: 0 0 12px 0;
+            flex-wrap: nowrap;
+            margin: 0;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .tags {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .tag {
@@ -246,6 +329,7 @@
             border-radius: 999px;
             font-weight: 800;
             letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
         .tag-bbc {
@@ -338,13 +422,6 @@
             letter-spacing: -0.05em;
         }
 
-        .path-description {
-            margin: 10px 0 18px;
-            color: var(--text-secondary);
-            font-size: 0.94rem;
-            line-height: 1.55;
-        }
-
         .path-toggle {
             margin-top: 2px;
             flex: 0 0 auto;
@@ -366,14 +443,6 @@
 
         .path-card.expanded .path-body {
             display: block;
-        }
-
-        .path-card.expanded .path-description {
-            margin-bottom: 18px;
-        }
-
-        .path-card.collapsed .path-description {
-            margin-bottom: 0;
         }
 
         .path-card .section {
@@ -697,6 +766,8 @@
         @media screen and (max-width: 768px) {
             .header { width: calc(100% - 20px); margin-top: 10px; padding: 44px 22px 28px; border-radius: 24px; }
             .header h1 { font-size: 2.35em; }
+            .global-search-card { width: calc(100% - 20px); border-radius: 22px; }
+            .global-search-row { flex-direction: column; align-items: stretch; }
             .container { margin-top: 18px; padding: 0 10px 44px; }
             .section { padding: 16px; border-radius: 22px; }
             .path-card { padding: 16px; border-radius: 24px; }
@@ -712,8 +783,16 @@
 
     <div class="header">
         <div class="login-status" id="login-status"></div>
-        <h1>Leo's English Hub</h1>
-        <p>A calm practice space for listening, reading, vocabulary, and classroom materials.</p>
+        <h1>Mr. Cat Academy</h1>
+        <p>猫先生英语 · Practice smarter, read sharper, listen closer.</p>
+    </div>
+
+    <div class="global-search-card">
+        <div class="global-search-row">
+            <input class="global-search-input" id="global-search-input" type="text" placeholder="Search all lessons..." autocomplete="off">
+            <button class="global-search-btn" id="global-search-btn" type="button">Search</button>
+        </div>
+        <div class="global-results" id="global-results"></div>
     </div>
 
     <div class="container">
@@ -771,8 +850,12 @@
         return html;
     }
 
-    function buildCard(item) {
-        return '<li class="menu-card">' +
+    function shouldShowNote(item) {
+        return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
+    }
+
+    function buildCard(item, extraClass) {
+        return '<li class="menu-card' + (extraClass ? ' ' + escapeHtml(extraClass) : '') + '">' +
             '<a class="practice-link" href="' + escapeHtml(item.href) + '">' +
                 '<div class="card-content">' +
                     '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
@@ -780,7 +863,7 @@
                         '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
                         '<div class="tags">' + buildTags(item.tags, item.topic) + '</div>' +
                     '</div>' +
-                    (item.note ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
+                    (shouldShowNote(item) ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
                 '</div>' +
                 '<div class="arrow-box">→</div>' +
             '</a>' +
@@ -882,7 +965,6 @@
             '<div class="path-header">' +
                 '<div class="path-heading">' +
                     '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
-                    '<p class="path-description">' + escapeHtml(group.description) + '</p>' +
                 '</div>' +
                 '<span class="path-toggle">' + (isOpen ? 'Hide' : 'Open') + '</span>' +
             '</div>' +
@@ -903,6 +985,55 @@
                 links[i].href = cleanHref;
             }
         }
+    }
+
+    function normalizeSearchText(value) {
+        return String(value || '').toLowerCase();
+    }
+
+    function getSearchBlob(item) {
+        return normalizeSearchText([
+            item.id,
+            item.title,
+            item.displayValue,
+            item.topic,
+            item.note,
+            (item.tags || []).join(' ')
+        ].join(' '));
+    }
+
+    function runGlobalSearch() {
+        var input = document.getElementById('global-search-input');
+        var resultsEl = document.getElementById('global-results');
+        if (!input || !resultsEl || !homeCatalog) return;
+
+        var query = normalizeSearchText(input.value).trim();
+        if (!query) {
+            resultsEl.classList.remove('show');
+            resultsEl.innerHTML = '';
+            return;
+        }
+
+        var items = (homeCatalog.items || []).filter(function(item) {
+            return item.visible !== false && getSearchBlob(item).indexOf(query) !== -1;
+        }).slice(0, 18);
+
+        if (!items.length) {
+            resultsEl.innerHTML = '<p class="global-results-title">No matching lessons yet.</p>';
+            resultsEl.classList.add('show');
+            return;
+        }
+
+        var html = '<p class="global-results-title">' + items.length + ' result' + (items.length === 1 ? '' : 's') + '</p><ul class="menu-list">';
+        for (var i = 0; i < items.length; i++) {
+            html += buildCard(items[i], 'global-result-card');
+        }
+        html += '</ul>';
+        resultsEl.innerHTML = html;
+        resultsEl.classList.add('show');
+
+        var user = getCurrentUser();
+        if (user) applyUserToPracticeLinks(user);
     }
 
     function renderHomeSections() {
@@ -941,6 +1072,8 @@
 
         var user = getCurrentUser();
         if (user) applyUserToPracticeLinks(user);
+        var globalInput = document.getElementById('global-search-input');
+        if (globalInput && globalInput.value.trim()) runGlobalSearch();
     }
 
     function loadHomeCatalog() {
@@ -991,6 +1124,7 @@
         var btn = titleEl.querySelector('.toggle-btn');
         var isOpen = body.style.display !== 'none';
         body.style.display = isOpen ? 'none' : 'block';
+        section.classList.toggle('is-open', !isOpen);
         btn.textContent = isOpen ? 'Show' : 'Hide';
         var searchBtn = section.querySelector('.search-btn');
         if (searchBtn) {
@@ -1162,6 +1296,12 @@
             return;
         }
 
+        var globalSearchBtn = e.target.closest('#global-search-btn');
+        if (globalSearchBtn) {
+            runGlobalSearch();
+            return;
+        }
+
         var titleEl = e.target.closest('.section-title');
         if (titleEl) {
             toggleSection(titleEl);
@@ -1200,6 +1340,12 @@
     document.getElementById('custom-login-btn').addEventListener('click', handleCustomLogin);
     document.getElementById('custom-id-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') handleCustomLogin();
+    });
+    document.getElementById('global-search-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') runGlobalSearch();
+    });
+    document.getElementById('global-search-input').addEventListener('input', function(e) {
+        if (!e.target.value.trim()) runGlobalSearch();
     });
     document.getElementById('visitor-btn').addEventListener('click', function() {
         setVisitorMode();
