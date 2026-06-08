@@ -170,16 +170,19 @@
             overflow: auto;
             border: 1px solid var(--border);
             border-radius: 18px;
+            background: #fff;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: #fff;
         }
 
         th, td {
-            padding: 14px 12px;
+            padding: 13px 14px;
             border-bottom: 1px solid var(--border);
             text-align: left;
             vertical-align: top;
@@ -197,7 +200,55 @@
             color: var(--muted);
         }
 
+        th + th,
+        td + td {
+            border-left: 1px solid #eef2f7;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fbfdff;
+        }
+
+        tbody tr:hover {
+            background: #f0fdfa;
+        }
+
         tr:last-child td { border-bottom: none; }
+
+        .word-table th:nth-child(1),
+        .word-table td:nth-child(1) {
+            width: 72px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .word-table th:nth-child(2),
+        .word-table td:nth-child(2) {
+            width: 130px;
+        }
+
+        .word-table th:nth-child(3),
+        .word-table td:nth-child(3) {
+            width: 74px;
+            text-align: center;
+        }
+
+        .word-table th:nth-child(4),
+        .word-table td:nth-child(4) {
+            width: 48%;
+        }
+
+        .word-table th:nth-child(5),
+        .word-table td:nth-child(5) {
+            width: 28%;
+            color: #475569;
+        }
+
+        .word-cell {
+            color: #0f766e;
+            font-size: 1.02rem;
+            letter-spacing: 0.01em;
+        }
 
         .emoji {
             font-size: 1.25rem;
@@ -298,31 +349,54 @@
         }
 
         .answer-input {
-            flex: 1;
-            min-width: 180px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 11px 12px;
-            font-size: 0.95rem;
+            width: 9ch;
+            min-width: 7ch;
+            max-width: 24ch;
+            border: none;
+            border-bottom: 2px solid #64748b;
+            border-radius: 0;
+            padding: 2px 2px 3px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
             outline: none;
+            background: transparent;
+            color: var(--ink);
+            text-align: center;
+            transition: border-color 0.2s, width 0.15s ease;
         }
 
         .answer-input:focus {
             border-color: var(--accent);
         }
 
-        .letter-guide {
-            display: block;
-            margin-top: 8px;
-            color: var(--muted);
+        .blank-input {
+            margin: 0 4px;
+        }
+
+        .dictation-input {
+            width: var(--letters, 8ch);
+            min-width: var(--letters, 8ch);
+            max-width: var(--letters, 8ch);
+            letter-spacing: 0.28em;
+            text-align: left;
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-            letter-spacing: 0.12em;
-            font-size: 0.9rem;
+            background-image: repeating-linear-gradient(
+                to right,
+                #64748b 0,
+                #64748b 1ch,
+                transparent 1ch,
+                transparent 1.55ch
+            );
+            background-position: left calc(100% - 1px);
+            background-size: 1.55ch 2px;
+            background-repeat: repeat-x;
+            border-bottom: none;
         }
 
         .part-of-speech {
             display: inline-flex;
-            margin-left: 8px;
+            margin-bottom: 8px;
             padding: 3px 8px;
             border-radius: 999px;
             background: var(--accent-soft);
@@ -352,7 +426,8 @@
             gap: 10px;
             justify-content: flex-end;
             flex-wrap: wrap;
-            padding: 0 20px 20px;
+            padding: 18px 20px 20px;
+            margin-top: 4px;
         }
 
         .btn {
@@ -372,12 +447,6 @@
         .btn-secondary {
             background: #eef2f7;
             color: var(--ink);
-        }
-
-        .mode-note {
-            color: var(--muted);
-            line-height: 1.65;
-            margin: 0 0 16px;
         }
 
         .test-setup {
@@ -407,6 +476,34 @@
             background: var(--warm-soft);
             color: var(--warm);
             font-weight: 800;
+        }
+
+        .timer.sticky {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 50;
+            box-shadow: 0 12px 28px rgba(154, 52, 18, 0.18);
+        }
+
+        .range-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #f8fbfc;
+            margin-bottom: 18px;
+        }
+
+        .range-picker select {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #fff;
+            font-size: 0.95rem;
         }
 
         .test-summary {
@@ -487,21 +584,20 @@
             <section class="panel">
                 <div class="switcher">
                     <button class="switch-btn active" data-view-target="word-list-view">Word List</button>
-                    <button class="switch-btn" data-view-target="self-study-view">Self-study Mode</button>
-                    <button class="switch-btn" data-view-target="dictation-view">Dictation Mode</button>
-                    <button class="switch-btn" data-view-target="test-view">Test Mode</button>
+                    <button class="switch-btn" data-view-target="self-study-view">Learn</button>
+                    <button class="switch-btn" data-view-target="dictation-view">Dictate</button>
+                    <button class="switch-btn" data-view-target="test-view">Test</button>
                 </div>
 
                 <div class="view active" id="word-list-view">
                     <div class="word-toolbar">
                         <div>
                             <h2>Word List</h2>
-                            <p class="section-description" style="margin:0;">Scan the unit first, then move into quiz groups when students are ready.</p>
                         </div>
                         <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
                     </div>
                     <div class="word-table-wrap">
-                        <table>
+                        <table class="word-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -517,14 +613,17 @@
                 </div>
 
                 <div class="view" id="self-study-view">
-                    <h2>Self-study Mode</h2>
-                    <p class="mode-note">Students can try the questions first, or click Check Answer directly when they want to learn from the answer and explanation.</p>
                     <div id="self-study-groups" class="group-grid"></div>
                 </div>
 
                 <div class="view" id="dictation-view">
-                    <h2>Dictation Mode</h2>
-                    <p class="mode-note">Look at the part of speech, emoji clue, and simple English definition. Then spell the target word.</p>
+                    <div class="range-picker">
+                        <label for="dictation-start"><strong>From</strong></label>
+                        <select id="dictation-start"></select>
+                        <label for="dictation-end"><strong>to</strong></label>
+                        <select id="dictation-end"></select>
+                        <button class="btn btn-secondary" id="dictation-build-btn" type="button">Shuffle Range</button>
+                    </div>
                     <div id="dictation-list" class="group-grid"></div>
                     <div class="group-actions">
                         <button class="btn btn-primary" id="dictation-check-btn" type="button">Check Dictation</button>
@@ -532,14 +631,12 @@
                 </div>
 
                 <div class="view" id="test-view">
-                    <h2>Test Mode</h2>
-                    <p class="mode-note">Choose how many fixed word groups to practise. The page will randomly pick that many groups, shuffle questions inside each group, and give 2 minutes per group.</p>
-                    <div class="test-setup">
+                    <div class="test-setup" id="test-setup">
                         <label for="test-group-count"><strong>Groups to test:</strong></label>
                         <select id="test-group-count"></select>
                         <button class="btn btn-primary" id="start-test-btn" type="button">Start Test</button>
-                        <div class="timer" id="test-timer">Not started</div>
                     </div>
+                    <div class="timer" id="test-timer">Not started</div>
                     <div id="test-summary" class="test-summary"></div>
                     <div id="test-groups" class="group-grid"></div>
                     <div class="group-actions">
@@ -573,10 +670,22 @@
             });
         }
 
+        function attachAdaptiveInput(input) {
+            function resize() {
+                input.style.width = Math.max(7, Math.min(24, (input.value.length || 0) + 2)) + 'ch';
+            }
+            input.addEventListener('input', resize);
+            resize();
+        }
+
+        function setupAdaptiveInputs(root) {
+            (root || document).querySelectorAll('.blank-input').forEach(attachAdaptiveInput);
+        }
+
         function renderHero(data) {
             document.getElementById('unit-badge').textContent = data.id;
             document.getElementById('unit-title').textContent = data.title;
-            document.getElementById('unit-subtitle').textContent = 'Study the word list first, then practise through self-study, dictation, or timed tests.';
+            document.getElementById('unit-subtitle').textContent = '';
             document.getElementById('stat-source').textContent = data.sourceName || 'Vocabulary';
             document.getElementById('stat-cefr').textContent = data.cefrLevel || '—';
         }
@@ -627,7 +736,7 @@
             body.innerHTML = words.map(function(word) {
                 return '<tr>' +
                     '<td>' + word.number + '</td>' +
-                    '<td><strong>' + word.word + '</strong></td>' +
+                    '<td><strong class="word-cell">' + word.word + '</strong></td>' +
                     '<td class="emoji">' + word.emoji + '</td>' +
                     '<td>' + (word.simpleDefinition || '') + '</td>' +
                     '<td>' + word.meaning + '</td>' +
@@ -664,7 +773,7 @@
                     return '<div class="question-item" id="self-' + group.id + '-question-' + index + '">' +
                         '<p class="question-prompt">' + question.number + '. ' + question.prompt + '</p>' +
                         '<div class="answer-box">' +
-                            '<input class="answer-input" type="text" placeholder="Type the target word...">' +
+                            '<input class="answer-input blank-input" type="text" aria-label="Answer">' +
                         '</div>' +
                         '<div class="reveal"></div>' +
                     '</div>';
@@ -684,24 +793,51 @@
                     '</div>' +
                 '</div>';
             }).join('');
+            setupAdaptiveInputs(root);
         }
 
         function renderDictation(words) {
             var root = document.getElementById('dictation-list');
             root.innerHTML = '<div class="word-table-wrap"><table>' +
-                '<thead><tr><th>Spell the Word</th><th>Emoji</th><th>Simple Definition</th></tr></thead>' +
+                '<thead><tr><th>Spell the Word</th><th>Simple Definition</th></tr></thead>' +
                 '<tbody>' + words.map(function(word) {
                     return '<tr class="dictation-row" data-answer="' + word.word + '">' +
                         '<td>' +
-                            '<input class="answer-input dictation-input" type="text" placeholder="Spell the word...">' +
-                            '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span>' +
-                            '<span class="letter-guide">' + buildLetterGuide(word.word) + '</span>' +
+                            '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span><br>' +
+                            '<input class="answer-input dictation-input" style="--letters:' + Math.max(4, word.word.length * 1.55) + 'ch" maxlength="' + word.word.length + '" type="text" aria-label="Spell ' + word.partOfSpeech + '">' +
                             '<div class="reveal"></div>' +
                         '</td>' +
-                        '<td class="emoji">' + word.emoji + '</td>' +
                         '<td>' + (word.simpleDefinition || '') + '</td>' +
                     '</tr>';
                 }).join('') + '</tbody></table></div>';
+        }
+
+        function renderDictationRangeOptions(words) {
+            var start = document.getElementById('dictation-start');
+            var end = document.getElementById('dictation-end');
+            var options = words.map(function(word) {
+                return '<option value="' + word.number + '">' + word.number + '</option>';
+            }).join('');
+            start.innerHTML = options;
+            end.innerHTML = options;
+            if (words.length) {
+                start.value = words[0].number;
+                end.value = words[Math.min(words.length - 1, 9)].number;
+            }
+        }
+
+        function buildDictationFromSelection() {
+            var start = Number(document.getElementById('dictation-start').value);
+            var end = Number(document.getElementById('dictation-end').value);
+            if (start > end) {
+                var tmp = start;
+                start = end;
+                end = tmp;
+            }
+            var selected = (unitData.words || []).filter(function(word) {
+                return word.number >= start && word.number <= end;
+            });
+            renderDictation(shuffleList(selected));
         }
 
         function checkDictation() {
@@ -731,9 +867,9 @@
 
         function renderTestQuestion(group, question, index) {
             return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-answer="' + question.answer + '">' +
-                '<p class="question-prompt">' + question.number + '. ' + question.prompt + '</p>' +
+                '<p class="question-prompt">' + question.prompt + '</p>' +
                 '<div class="answer-box">' +
-                    '<input class="answer-input" type="text" placeholder="Type the target word...">' +
+                    '<input class="answer-input blank-input" type="text" aria-label="Answer">' +
                 '</div>' +
                 '<div class="reveal"></div>' +
             '</div>';
@@ -744,6 +880,7 @@
             testRemainingSeconds = seconds;
             var timer = document.getElementById('test-timer');
             timer.textContent = formatTime(testRemainingSeconds);
+            timer.classList.add('sticky');
             testTimerId = setInterval(function() {
                 testRemainingSeconds--;
                 timer.textContent = formatTime(Math.max(0, testRemainingSeconds));
@@ -757,27 +894,28 @@
         function startTest() {
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
-            var selected = shuffleList(groups).slice(0, count).sort(function(a, b) {
-                return a.rangeStart - b.rangeStart;
-            });
+            var selected = shuffleList(groups).slice(0, count);
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
-            root.innerHTML = selected.map(function(group) {
+            document.getElementById('test-setup').classList.add('locked');
+            document.getElementById('test-setup').style.display = 'none';
+            root.innerHTML = selected.map(function(group, groupIndex) {
                 var questions = shuffleList(group.questions || []).map(function(question, index) {
                     return renderTestQuestion(group, question, index);
                 }).join('');
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
                         '<div>' +
-                            '<h3 class="group-title">' + group.label + '</h3>' +
-                            '<p class="group-range">' + getWordRangeText(group) + '</p>' +
+                            '<h3 class="group-title">测试组 ' + (groupIndex + 1) + '</h3>' +
                         '</div>' +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                 '</div>';
             }).join('');
+            setupAdaptiveInputs(root);
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
             startTimer(count * 120);
+            root.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function submitTest() {
@@ -803,7 +941,9 @@
             var summary = document.getElementById('test-summary');
             summary.textContent = 'Score: ' + score + ' / ' + questions.length;
             summary.classList.add('show');
-            document.getElementById('test-timer').textContent = 'Finished';
+            var timer = document.getElementById('test-timer');
+            timer.textContent = 'Finished';
+            timer.classList.remove('sticky');
             document.getElementById('submit-test-btn').style.display = 'none';
         }
 
@@ -829,6 +969,7 @@
                 if (action === 'check') checkGroupAnswers(groupId);
             });
 
+            document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', startTest);
             document.getElementById('submit-test-btn').addEventListener('click', submitTest);
@@ -839,7 +980,8 @@
             renderHero(data);
             renderWords(data.words || []);
             renderSelfStudyGroups(data.quizGroups || []);
-            renderDictation(data.words || []);
+            renderDictationRangeOptions(data.words || []);
+            buildDictationFromSelection();
             renderTestOptions(data.quizGroups || []);
             wireEvents();
             document.getElementById('loading').style.display = 'none';
