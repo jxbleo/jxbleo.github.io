@@ -41,16 +41,18 @@
             align-items: stretch;
         }
         @media (min-width: 769px) {
-            body { padding: 18px; }
+            body { padding: 0; }
             .container {
                 max-width: none; width: 100%;
-                background: transparent; padding: 18px 10px 10px;
+                background: transparent; padding: 10px 14px 8px;
                 border-radius: 0; box-shadow: none;
             }
-            h1 { margin-top: 0; }
-            .split-layout { height: calc(100vh - 210px); min-height: 520px; }
+            h1 { margin: 0 0 4px; padding-bottom: 8px; font-size: 1.8em; }
+            .subtitle { margin-bottom: 10px; }
+            .layout-toggle { margin-bottom: 6px; }
+            .split-layout { height: calc(100vh - 132px); min-height: 560px; margin: 8px 0 0; }
             .passage-panel, .questions-panel {
-                overflow-y: auto; padding: 0 18px;
+                overflow-y: auto; padding: 0 24px;
                 border: none; border-radius: 0; background: transparent;
             }
             .passage-panel::-webkit-scrollbar, .questions-panel::-webkit-scrollbar { width: 6px; }
@@ -105,7 +107,8 @@
             .split-divider { display: none; }
         }
 
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; min-height: 28px; }
+        .questions-panel .panel-header { justify-content: flex-end; }
         .panel-header h2 { margin: 0; font-size: 1.1em; border-left: 3px solid var(--accent); padding-left: 10px; color: var(--primary); }
 
         .font-controls { display: flex; align-items: center; gap: 3px; }
@@ -130,7 +133,8 @@
 
         .passage { font-size: 14.5px; line-height: 1.9; padding: 16px 20px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); }
         .passage p { margin-bottom: 1rem; text-indent: 0; }
-        .passage mark.user-highlight {
+        .passage mark.user-highlight,
+        #questions-container mark.user-highlight {
             background: linear-gradient(180deg, rgba(255, 244, 133, 0.25), rgba(255, 232, 105, 0.95));
             color: inherit;
             padding: 0 1px;
@@ -333,7 +337,6 @@
             <div class="split-divider" id="split-divider" aria-hidden="true"></div>
             <div class="questions-panel" id="questions-panel">
                 <div class="panel-header">
-                    <h2>Questions</h2>
                     <div class="font-controls">
                         <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
                         <span class="font-val" id="questions-font-val">14</span>
@@ -363,7 +366,7 @@
     var userId = params.get('user');
     var lessonData = null;
     var allQuestions = [];
-    var activePassageRange = null;
+    var activeHighlightRange = null;
     var highlightToolbar = document.getElementById('highlight-toolbar');
     var splitLayout = document.getElementById('split-layout');
     var splitDivider = document.getElementById('split-divider');
@@ -375,6 +378,10 @@
 
     function getPassageEl() {
         return document.getElementById('passage');
+    }
+
+    function getQuestionsEl() {
+        return document.getElementById('questions-container');
     }
 
     function getHighlightStorageKey() {
@@ -451,7 +458,7 @@
     }
 
     function clearHighlightToolbar() {
-        activePassageRange = null;
+        activeHighlightRange = null;
         highlightToolbar.classList.remove('show');
     }
 
@@ -461,16 +468,27 @@
         return node && node.closest ? node.closest('mark.user-highlight') : null;
     }
 
-    function canHighlightRange(range) {
+    function getHighlightRootForRange(range) {
         var passageEl = getPassageEl();
-        if (!range || range.collapsed || !passageEl) return false;
-        if (!passageEl.contains(range.commonAncestorContainer)) return false;
+        var questionsEl = getQuestionsEl();
+        if (!range || range.collapsed) return null;
+        if (passageEl && passageEl.contains(range.commonAncestorContainer)) return passageEl;
+        if (questionsEl && questionsEl.contains(range.commonAncestorContainer)) return questionsEl;
+        return null;
+    }
+
+    function canHighlightRange(range) {
+        var root = getHighlightRootForRange(range);
+        if (!root) return false;
         if (!range.toString().trim()) return false;
         var startEl = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
         var endEl = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
-        var startBlock = startEl && startEl.closest ? startEl.closest('p, li') : null;
-        var endBlock = endEl && endEl.closest ? endEl.closest('p, li') : null;
-        return !!startBlock && startBlock === endBlock;
+        if (!startEl || !endEl || !root.contains(startEl) || !root.contains(endEl)) return false;
+        var startBlock = startEl.closest ? startEl.closest('p, li, label, .section-label, .section-instruction, .tfng-text, .ynng-text, .mcq-text, .summary-text, .heading-item') : null;
+        var endBlock = endEl.closest ? endEl.closest('p, li, label, .section-label, .section-instruction, .tfng-text, .ynng-text, .mcq-text, .summary-text, .heading-item') : null;
+        var fragment = range.cloneContents();
+        if (fragment.querySelector && fragment.querySelector('input, select, textarea, button')) return false;
+        return !!startBlock && startBlock === endBlock && root.contains(startBlock);
     }
 
     function positionHighlightToolbar(range) {
@@ -490,22 +508,22 @@
         clearBtn.style.cursor = clearBtn.disabled ? 'not-allowed' : 'pointer';
     }
 
-    function normalizePassageMarkup() {
-        var passageEl = getPassageEl();
-        if (!passageEl) return;
-        passageEl.querySelectorAll('mark.user-highlight mark.user-highlight').forEach(function(nested) {
+    function normalizeHighlightMarkup(root) {
+        if (!root) return;
+        root.querySelectorAll('mark.user-highlight mark.user-highlight').forEach(function(nested) {
             var parent = nested.parentNode;
             while (nested.firstChild) parent.insertBefore(nested.firstChild, nested);
             parent.removeChild(nested);
         });
-        passageEl.querySelectorAll('mark.user-highlight').forEach(function(mark) {
+        root.querySelectorAll('mark.user-highlight').forEach(function(mark) {
             if (!mark.textContent.trim()) mark.remove();
         });
     }
 
     function applyHighlight() {
-        if (!activePassageRange || !canHighlightRange(activePassageRange)) return;
-        var range = activePassageRange.cloneRange();
+        if (!activeHighlightRange || !canHighlightRange(activeHighlightRange)) return;
+        var range = activeHighlightRange.cloneRange();
+        var root = getHighlightRootForRange(range);
         var mark = document.createElement('mark');
         mark.className = 'user-highlight';
         try {
@@ -515,8 +533,8 @@
             mark.appendChild(fragment);
             range.insertNode(mark);
         }
-        normalizePassageMarkup();
-        savePassageMarkup();
+        normalizeHighlightMarkup(root);
+        if (root === getPassageEl()) savePassageMarkup();
         var selection = window.getSelection();
         if (selection) selection.removeAllRanges();
         clearHighlightToolbar();
@@ -529,13 +547,14 @@
         var parent = mark.parentNode;
         while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
         parent.removeChild(mark);
-        normalizePassageMarkup();
-        savePassageMarkup();
+        var root = getPassageEl() && getPassageEl().contains(parent) ? getPassageEl() : getQuestionsEl();
+        normalizeHighlightMarkup(root);
+        if (root === getPassageEl()) savePassageMarkup();
         if (selection) selection.removeAllRanges();
         clearHighlightToolbar();
     }
 
-    function handlePassageSelection() {
+    function handleTextSelection() {
         var selection = window.getSelection();
         if (!selection || !selection.rangeCount) {
             clearHighlightToolbar();
@@ -546,7 +565,7 @@
             clearHighlightToolbar();
             return;
         }
-        activePassageRange = range.cloneRange();
+        activeHighlightRange = range.cloneRange();
         positionHighlightToolbar(range);
     }
 
@@ -1161,10 +1180,13 @@
 
         document.getElementById('highlight-add-btn').addEventListener('click', applyHighlight);
         document.getElementById('highlight-clear-btn').addEventListener('click', clearHighlight);
-        document.addEventListener('selectionchange', handlePassageSelection);
+        document.addEventListener('selectionchange', handleTextSelection);
         document.addEventListener('click', function(e) {
             var passageEl = getPassageEl();
-            if (!highlightToolbar.contains(e.target) && !passageEl.contains(e.target)) {
+            var questionsEl = getQuestionsEl();
+            if (!highlightToolbar.contains(e.target) &&
+                (!passageEl || !passageEl.contains(e.target)) &&
+                (!questionsEl || !questionsEl.contains(e.target))) {
                 clearHighlightToolbar();
             }
         });
