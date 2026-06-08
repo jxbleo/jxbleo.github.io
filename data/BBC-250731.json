@@ -7,121 +7,141 @@
       "id": "fill-1",
       "sentence": "A network of online communities and influencers promoting certain ideas about _____",
       "answer": "male worth",
-      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\""
+      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-2",
       "sentence": "Key values promoted include emotional control, material wealth and _____ over women",
       "answer": "dominance",
-      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\""
+      "evidence": "\"emotional control, material wealth, physical appearance and dominance, especially over women, are markers of male worth.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-3",
       "sentence": "Spreads through platforms such as social media posts and _____",
       "answer": "TikTok videos",
-      "evidence": "\"in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience\""
+      "evidence": "\"in social media posts, TikTok videos and other online content, ideas about how to be a man are finding a young male audience\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-4",
       "sentence": "Content targets a _____ audience, sometimes causing harm",
       "answer": "young male",
-      "evidence": "\"ideas about how to be a man are finding a young male audience, sometimes with damaging results.\""
+      "evidence": "\"ideas about how to be a man are finding a young male audience, sometimes with damaging results.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-5",
       "sentence": "Source of statistics: A _____ called Movember Foundation",
       "answer": "men's self-help group",
-      "evidence": "\"According to men's self-help group the Movember Foundation, a majority of British young men regularly engage with masculinity influencers online\""
+      "evidence": "\"According to men's self-help group the Movember Foundation, a majority of British young men regularly engage with masculinity influencers online\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-6",
       "sentence": "Finding: _____ of British young men regularly follow masculinity influencers online",
       "answer": "two thirds",
-      "evidence": "\"two thirds … which was the correct answer.\""
+      "evidence": "\"two thirds … which was the correct answer.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-7",
       "sentence": "Core belief: the world is _____ men",
       "answer": "biased against",
-      "evidence": "\"The manosphere includes the idea that the world is biased against men.\""
+      "evidence": "\"The manosphere includes the idea that the world is biased against men.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-8",
       "sentence": "True masculinity means being strong, wealthy and _____ others",
       "answer": "controlling",
-      "evidence": "\"being a man means being strong, rich and controlling others, especially women.\""
+      "evidence": "\"being a man means being strong, rich and controlling others, especially women.\"",
+      "section": "What is the Manosphere?"
     },
     {
       "id": "fill-9",
       "sentence": "Stood out from peers: enjoyed ballet, acting and _____",
       "answer": "poetry",
-      "evidence": "\"I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.\""
+      "evidence": "\"I was doing ballet, I wanted to be an actor, I wrote poetry – and I was an easy target.\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-10",
       "sentence": "His differences made him an easy target — someone _____ and easily exploited",
       "answer": "vulnerable",
-      "evidence": "\"an easy target – someone who's vulnerable and easily taken advantage of.\""
+      "evidence": "\"an easy target – someone who's vulnerable and easily taken advantage of.\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-11",
       "sentence": "By age _____, he was already displaying bravado in photos",
       "answer": "14",
-      "evidence": "\"By the time I got to 14 years old, if you look at pictures of me, you can see bravado\""
+      "evidence": "\"By the time I got to 14 years old, if you look at pictures of me, you can see bravado\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-12",
       "sentence": "Felt pressured to follow the 'man box' — a _____ of ideals and rules",
       "answer": "rigid set",
-      "evidence": "\"the 'man box', which is a kind of rigid set of ideals and rules that I may feel pressure as a boy to follow\""
+      "evidence": "\"the 'man box', which is a kind of rigid set of ideals and rules that I may feel pressure as a boy to follow\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-13",
       "sentence": "Could not maintain a relationship or _____ a job",
       "answer": "hold down",
-      "evidence": "\"Will struggled to get a girlfriend or hold down a job.\""
+      "evidence": "\"Will struggled to get a girlfriend or hold down a job.\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-14",
       "sentence": "Believed his personal problems were _____ women",
       "answer": "caused by",
-      "evidence": "\"his problems were caused by women.\""
+      "evidence": "\"his problems were caused by women.\"",
+      "section": "Will's Background and Early Struggles"
     },
     {
       "id": "fill-15",
       "sentence": "Influencers told him the world _____ men",
       "answer": "hates",
-      "evidence": "\"I had an influencer telling me, 'The world hates men,' which really felt true.\""
+      "evidence": "\"I had an influencer telling me, 'The world hates men,' which really felt true.\"",
+      "section": "Will's Experience in the Manosphere"
     },
     {
       "id": "fill-16",
       "sentence": "This _____ his worldview, making it unrealistic",
       "answer": "distorted",
-      "evidence": "\"it, kind of, distorted my worldview, where it got painted over\""
+      "evidence": "\"it, kind of, distorted my worldview, where it got painted over\"",
+      "section": "Will's Experience in the Manosphere"
     },
     {
       "id": "fill-17",
       "sentence": "He began viewing society as _____ — men against everyone else",
       "answer": "us versus them",
-      "evidence": "\"so it was an us versus them.\""
+      "evidence": "\"so it was an us versus them.\"",
+      "section": "Will's Experience in the Manosphere"
     },
     {
       "id": "fill-18",
       "sentence": "Saw women, progressives and the _____ as opponents trying to reduce men's power",
       "answer": "mainstream media",
-      "evidence": "\"especially women, progressives and the mainstream media, who he believed wanted to limit their power.\""
+      "evidence": "\"especially women, progressives and the mainstream media, who he believed wanted to limit their power.\"",
+      "section": "Will's Experience in the Manosphere"
     },
     {
       "id": "fill-19",
       "sentence": "His mental health worsened until he reached _____",
       "answer": "a breakdown",
-      "evidence": "\"his mental health had declined to the point of a breakdown.\""
+      "evidence": "\"his mental health had declined to the point of a breakdown.\"",
+      "section": "Will's Recovery and Current Work"
     },
     {
       "id": "fill-20",
       "sentence": "Now travels to schools across the UK, encouraging young people to _____ what they encounter online",
       "answer": "question",
-      "evidence": "\"reminding them always to question what they see and hear online.\""
+      "evidence": "\"reminding them always to question what they see and hear online.\"",
+      "section": "Will's Recovery and Current Work"
     }
   ],
   "multipleChoice": [

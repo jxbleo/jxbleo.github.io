@@ -7,121 +7,141 @@
       "id": "fill-1",
       "sentence": "Related to the concept of _____, which refers to a general sense of health and happiness",
       "answer": "wellbeing",
-      "evidence": "\"you probably know the word 'wellbeing' – it's a general feeling of health and happiness\""
+      "evidence": "\"you probably know the word 'wellbeing' – it's a general feeling of health and happiness\"",
+      "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-2",
       "sentence": "Goes beyond that — it means a person's _____ is good",
       "answer": "whole life",
-      "evidence": "\"it's not just about wellbeing – it's about your whole life being good\""
+      "evidence": "\"it's not just about wellbeing – it's about your whole life being good\"",
+      "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-3",
       "sentence": "Described as a psychological _____ — a term that has become popular and widely used",
       "answer": "buzzword",
-      "evidence": "\"'Flourishing' is a psychological buzzword – a word or phrase that has become fashionable\""
+      "evidence": "\"'Flourishing' is a psychological buzzword – a word or phrase that has become fashionable\"",
+      "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-4",
       "sentence": "Covers multiple life areas: happiness, health, relationships, and _____",
       "answer": "financial security",
-      "evidence": "\"People who are flourishing feel good about all aspects of their life, including happiness, health, relationships and financial security\""
+      "evidence": "\"People who are flourishing feel good about all aspects of their life, including happiness, health, relationships and financial security\"",
+      "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-5",
       "sentence": "Surveyed more than _____ participants",
       "answer": "200,000 people",
-      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\""
+      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\"",
+      "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-6",
       "sentence": "Conducted across _____ nations",
       "answer": "22 countries",
-      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\""
+      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\"",
+      "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-7",
       "sentence": "Examined _____ of life, including health, finances, social relationships, and religion",
       "answer": "six areas",
-      "evidence": "\"the study investigated six areas of life, including health, finances, social relationships and religion\""
+      "evidence": "\"the study investigated six areas of life, including health, finances, social relationships and religion\"",
+      "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-8",
       "sentence": "Wealthier nations (e.g. Sweden, USA) performed better on _____ aspects such as finance",
       "answer": "material",
-      "evidence": "\"high-income countries scored higher on some of the more material aspects of flourishing, so things like finance\""
+      "evidence": "\"high-income countries scored higher on some of the more material aspects of flourishing, so things like finance\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-9",
       "sentence": "Nations with moderate income levels (e.g. Mexico) scored higher on kindness and _____",
       "answer": "social cohesion",
-      "evidence": "\"Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion\""
+      "evidence": "\"Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-10",
       "sentence": "The term _____ refers to a small piece of something valuable or insightful",
       "answer": "nugget",
-      "evidence": "\"A nugget means a small piece of something good, like wisdom, or precious, like a nugget of gold\""
+      "evidence": "\"A nugget means a small piece of something good, like wisdom, or precious, like a nugget of gold\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-11",
       "sentence": "Gender differences were observed: in Japan, _____ had higher flourishing scores than men",
       "answer": "women",
-      "evidence": "\"in Japan women flourished more than men\""
+      "evidence": "\"in Japan women flourished more than men\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-12",
       "sentence": "In Brazil, the _____ pattern was found",
       "answer": "opposite",
-      "evidence": "\"in Brazil the opposite was true\""
+      "evidence": "\"in Brazil the opposite was true\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-13",
       "sentence": "Across all countries, flourishing levels rose after _____",
       "answer": "age of 50",
-      "evidence": "\"across all countries, flourishing increased after the age of 50\""
+      "evidence": "\"across all countries, flourishing increased after the age of 50\"",
+      "section": "Key Findings"
     },
     {
       "id": "fill-14",
       "sentence": "Practise gratitude — being _____ for what one has",
       "answer": "thankful",
-      "evidence": "\"Being thankful for what we have is a way of increasing the amount of flourishing that we have in our lives\""
+      "evidence": "\"Being thankful for what we have is a way of increasing the amount of flourishing that we have in our lives\"",
+      "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-15",
       "sentence": "Show kindness to build _____ with others",
       "answer": "connection",
-      "evidence": "\"Showing kindness, which helps us to develop connection with other people\""
+      "evidence": "\"Showing kindness, which helps us to develop connection with other people\"",
+      "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-16",
       "sentence": "Celebrate personal achievements through _____ — taking time to appreciate good moments",
       "answer": "savouring",
-      "evidence": "\"just celebrating our own accomplishments – I think we've spoken on the programme before about savouring\""
+      "evidence": "\"just celebrating our own accomplishments – I think we've spoken on the programme before about savouring\"",
+      "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-17",
       "sentence": "Focus on _____ — small successes that move you towards bigger life goals",
       "answer": "small wins",
-      "evidence": "\"small wins – minor achievements or successes which bring you a little closer to your long-term goals in life\""
+      "evidence": "\"small wins – minor achievements or successes which bring you a little closer to your long-term goals in life\"",
+      "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-18",
       "sentence": "Among all countries surveyed, _____ ranked highest overall",
       "answer": "Indonesia",
-      "evidence": "\"The correct answer is Indonesia\""
+      "evidence": "\"The correct answer is Indonesia\"",
+      "section": "Study Result"
     },
     {
       "id": "fill-19",
       "sentence": "To _____ something means to enjoy it fully by experiencing it slowly",
       "answer": "savour",
-      "evidence": "\"If you savour something, you enjoy something as much as possible by experiencing it slowly\""
+      "evidence": "\"If you savour something, you enjoy something as much as possible by experiencing it slowly\"",
+      "section": "Vocabulary Summary"
     },
     {
       "id": "fill-20",
       "sentence": "_____ means feeling appreciative for what you have",
       "answer": "gratitude",
-      "evidence": "\"Gratitude means being thankful for what you have\""
+      "evidence": "\"Gratitude means being thankful for what you have\"",
+      "section": "Vocabulary Summary"
     }
   ],
   "multipleChoice": [

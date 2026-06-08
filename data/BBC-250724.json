@@ -7,91 +7,106 @@
       "id": "fill-1",
       "sentence": "Phil admits he tends to _____ rather than drive.",
       "answer": "cycle",
-      "evidence": "\"maybe I cycle more than I drive\""
+      "evidence": "\"maybe I cycle more than I drive\"",
+      "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-2",
       "sentence": "Phil also tries to _____ things at home.",
       "answer": "recycle",
-      "evidence": "\"I try to recycle things\""
+      "evidence": "\"I try to recycle things\"",
+      "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-3",
       "sentence": "Hannah points out that dealing with climate change cannot rely on _____ alone.",
       "answer": "individuals",
-      "evidence": "\"we can't just rely on individuals\""
+      "evidence": "\"we can't just rely on individuals\"",
+      "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-4",
       "sentence": "To address the crisis, Hannah argues we need to change the way our _____ works.",
       "answer": "economy",
-      "evidence": "\"change the way our economy works\""
+      "evidence": "\"change the way our economy works\"",
+      "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-5",
       "sentence": "In the past, governments have always aimed to _____ the economy.",
       "answer": "grow",
-      "evidence": "\"governments have always wanted to grow the economy\""
+      "evidence": "\"governments have always wanted to grow the economy\"",
+      "section": "What Degrowth Means"
     },
     {
       "id": "fill-6",
       "sentence": "Degrowth supporters believe economies should stop _____.",
       "answer": "growing",
-      "evidence": "\"we need to stop our economies from growing\""
+      "evidence": "\"we need to stop our economies from growing\"",
+      "section": "What Degrowth Means"
     },
     {
       "id": "fill-7",
       "sentence": "The focus should shift to using fewer of the Earth's _____.",
       "answer": "natural resources",
-      "evidence": "\"using fewer of the Earth's natural resources\""
+      "evidence": "\"using fewer of the Earth's natural resources\"",
+      "section": "What Degrowth Means"
     },
     {
       "id": "fill-8",
       "sentence": "Those who back this idea are commonly referred to as _____.",
       "answer": "degrowthers",
-      "evidence": "\"The people who support the idea of degrowth, are often called degrowthers\""
+      "evidence": "\"The people who support the idea of degrowth, are often called degrowthers\"",
+      "section": "What Degrowth Means"
     },
     {
       "id": "fill-9",
       "sentence": "They target production that is considered not _____.",
       "answer": "beneficial",
-      "evidence": "\"elements of our production that are not beneficial\""
+      "evidence": "\"elements of our production that are not beneficial\"",
+      "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-10",
       "sentence": "_____ (cheap, rapidly produced clothing).",
       "answer": "fast fashion",
-      "evidence": "\"An example of those elements would be fast fashion\""
+      "evidence": "\"An example of those elements would be fast fashion\"",
+      "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-11",
       "sentence": "the _____ industry.",
       "answer": "beef and meat",
-      "evidence": "\"the beef and meat industry\""
+      "evidence": "\"the beef and meat industry\"",
+      "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-12",
       "sentence": "Many economists argue degrowth would lead to more _____.",
       "answer": "poverty",
-      "evidence": "\"it would create more poverty\""
+      "evidence": "\"it would create more poverty\"",
+      "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-13",
       "sentence": "Professor Fankhauser claims degrowth fails to appreciate the power of _____.",
       "answer": "innovation",
-      "evidence": "\"degrowth underestimates the power of innovation\""
+      "evidence": "\"degrowth underestimates the power of innovation\"",
+      "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-14",
       "sentence": "He also says it overlooks the need for investment in _____.",
       "answer": "new technology",
-      "evidence": "\"investment that we need in new technology and in new solutions\""
+      "evidence": "\"investment that we need in new technology and in new solutions\"",
+      "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-15",
       "sentence": "He further questions the social _____ of what degrowthers propose.",
       "answer": "feasibility",
-      "evidence": "\"degrowth underestimates the social… feasibility of what they propose\""
+      "evidence": "\"degrowth underestimates the social… feasibility of what they propose\"",
+      "section": "Criticism of Degrowth"
     }
   ],
   "multipleChoice": [

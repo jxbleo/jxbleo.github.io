@@ -689,7 +689,7 @@
         loadingDisplay.style.display = 'block';
         errorDisplay.style.display = 'none';
 
-        fetch('data/' + setId + '.json')
+        fetch('data/' + setId + '.json?_=' + Date.now())
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
