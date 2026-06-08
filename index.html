@@ -228,21 +228,31 @@
         .section-title {
             display: flex;
             align-items: center;
+            justify-content: center;
             color: var(--text-primary);
             font-size: 1.08em;
-            padding: 10px 12px;
-            margin: -10px -12px 0;
-            border-radius: 16px;
+            min-height: 92px;
+            padding: 18px 12px;
+            margin: 0;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.66);
             font-weight: 800;
             cursor: pointer;
             user-select: none;
             letter-spacing: -0.01em;
+            text-align: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.74);
         }
 
         .section.is-open .section-title {
             position: sticky;
             top: 0;
             z-index: 20;
+            justify-content: flex-start;
+            min-height: auto;
+            padding: 10px 12px;
+            margin: -10px -12px 0;
+            text-align: left;
             background: rgba(255,255,255,0.92);
             box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
             backdrop-filter: blur(16px);
@@ -439,22 +449,36 @@
 
         .path-body {
             display: none;
+            margin-top: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+            gap: 12px;
+            align-items: start;
         }
 
         .path-card.expanded .path-body {
-            display: block;
+            display: grid;
         }
 
         .path-card .section {
-            margin-bottom: 12px;
-            padding: 16px;
+            margin-bottom: 0;
+            padding: 0;
             border-radius: 20px;
             background: rgba(255,255,255,0.58);
             box-shadow: none;
+            overflow: visible;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
-        .path-card .section:last-child {
-            margin-bottom: 0;
+        .path-card .section:not(.is-open):hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.82);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .path-card .section.is-open {
+            grid-column: 1 / -1;
+            padding: 16px;
+            background: rgba(255,255,255,0.64);
         }
 
         .section-body {
@@ -462,6 +486,7 @@
         }
 
         .toggle-btn {
+            display: none;
             margin-left: auto;
             font-size: 0.72em;
             color: var(--accent);
@@ -472,6 +497,9 @@
             border-radius: 999px;
             transition: background-color 0.2s;
             background: rgba(15, 118, 110, 0.08);
+        }
+        .section.is-open .toggle-btn {
+            display: inline-flex;
         }
         .toggle-btn:hover {
             background-color: rgba(15, 118, 110, 0.14);
@@ -900,6 +928,16 @@
         return sorted;
     }
 
+    function getSectionDisplayTitle(section) {
+        var titles = {
+            'bbc-six-minute-english': 'BBC',
+            'vocabulary': 'vocab',
+            'grammar': 'grammar',
+            'general-writing': 'writing'
+        };
+        return titles[section.id] || section.title;
+    }
+
     function buildSection(section, items) {
         var canSearch = section.searchEnabled && items.length > 0;
         var cardsHtml = '';
@@ -914,7 +952,7 @@
 
         return '<div class="section" data-section-id="' + escapeHtml(section.id) + '">' +
             '<div class="section-title">' +
-                escapeHtml(section.title) +
+                escapeHtml(getSectionDisplayTitle(section)) +
                 '<span class="toggle-btn">Show</span>' +
             '</div>' +
             '<div class="section-body" style="display: none;">' +
