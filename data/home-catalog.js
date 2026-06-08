@@ -426,11 +426,11 @@ window.__HOME_CATALOG__ = {
       "sectionId": "vocabulary",
       "title": "NGSL-A",
       "href": "vocabulary.html?set=NGSL-A",
-      "displayValue": "NGSL-A",
+      "displayValue": "Words 1001-1100",
       "sortValue": 1001,
       "topic": "",
       "tags": [],
-      "note": "100 Words · 10 Quiz Groups",
+      "note": "",
       "visible": true
     }
   ]

@@ -244,19 +244,6 @@
             line-height: 1.65;
         }
 
-        .group-status {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 84px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 0.84rem;
-            font-weight: 700;
-        }
-
         .question-list {
             padding: 20px;
             display: grid;
@@ -278,6 +265,23 @@
         .question-item.wrong {
             border-color: #fb923c;
             background: #fff7ed;
+        }
+
+        .question-item.pending {
+            border-color: #facc15;
+            background: #fefce8;
+        }
+
+        .dictation-row.correct td {
+            background: #f0fdf4;
+        }
+
+        .dictation-row.wrong td {
+            background: #fff7ed;
+        }
+
+        .dictation-row.pending td {
+            background: #fefce8;
         }
 
         .question-prompt {
@@ -305,6 +309,27 @@
 
         .answer-input:focus {
             border-color: var(--accent);
+        }
+
+        .letter-guide {
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            letter-spacing: 0.12em;
+            font-size: 0.9rem;
+        }
+
+        .part-of-speech {
+            display: inline-flex;
+            margin-left: 8px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
         }
 
         .reveal {
@@ -347,6 +372,55 @@
         .btn-secondary {
             background: #eef2f7;
             color: var(--ink);
+        }
+
+        .mode-note {
+            color: var(--muted);
+            line-height: 1.65;
+            margin: 0 0 16px;
+        }
+
+        .test-setup {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #f8fbfc;
+            margin-bottom: 18px;
+        }
+
+        .test-setup select {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #fff;
+            font-size: 0.95rem;
+        }
+
+        .timer {
+            margin-left: auto;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--warm-soft);
+            color: var(--warm);
+            font-weight: 800;
+        }
+
+        .test-summary {
+            display: none;
+            margin: 16px 0;
+            padding: 16px;
+            border-radius: 16px;
+            background: var(--accent-soft);
+            color: #064e3b;
+            font-weight: 800;
+        }
+
+        .test-summary.show {
+            display: block;
         }
 
         .loading,
@@ -407,21 +481,15 @@
                         <div class="stat-label">CEFR Level</div>
                         <div class="stat-value" id="stat-cefr"></div>
                     </div>
-                    <div class="stat">
-                        <div class="stat-label">Words</div>
-                        <div class="stat-value" id="stat-words"></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Quiz Groups</div>
-                        <div class="stat-value" id="stat-groups"></div>
-                    </div>
                 </div>
             </section>
 
             <section class="panel">
                 <div class="switcher">
                     <button class="switch-btn active" data-view-target="word-list-view">Word List</button>
-                    <button class="switch-btn" data-view-target="quiz-groups-view">Quiz Groups</button>
+                    <button class="switch-btn" data-view-target="self-study-view">Self-study Mode</button>
+                    <button class="switch-btn" data-view-target="dictation-view">Dictation Mode</button>
+                    <button class="switch-btn" data-view-target="test-view">Test Mode</button>
                 </div>
 
                 <div class="view active" id="word-list-view">
@@ -430,7 +498,7 @@
                             <h2>Word List</h2>
                             <p class="section-description" style="margin:0;">Scan the unit first, then move into quiz groups when students are ready.</p>
                         </div>
-                        <input id="word-search" class="word-search" type="text" placeholder="Search word, meaning, or word form...">
+                        <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
                     </div>
                     <div class="word-table-wrap">
                         <table>
@@ -439,8 +507,8 @@
                                     <th>No.</th>
                                     <th>Word</th>
                                     <th>Emoji</th>
+                                    <th>Simple Definition</th>
                                     <th>Meaning</th>
-                                    <th>Word Forms</th>
                                 </tr>
                             </thead>
                             <tbody id="word-table-body"></tbody>
@@ -448,10 +516,35 @@
                     </div>
                 </div>
 
-                <div class="view" id="quiz-groups-view">
-                    <h2>Quiz Groups</h2>
-                    <p class="section-description">Each group uses ten words. Students can attempt a group, check answers, and reveal explanations when needed.</p>
-                    <div id="quiz-groups" class="group-grid"></div>
+                <div class="view" id="self-study-view">
+                    <h2>Self-study Mode</h2>
+                    <p class="mode-note">Students can try the questions first, or click Check Answer directly when they want to learn from the answer and explanation.</p>
+                    <div id="self-study-groups" class="group-grid"></div>
+                </div>
+
+                <div class="view" id="dictation-view">
+                    <h2>Dictation Mode</h2>
+                    <p class="mode-note">Look at the part of speech, emoji clue, and simple English definition. Then spell the target word.</p>
+                    <div id="dictation-list" class="group-grid"></div>
+                    <div class="group-actions">
+                        <button class="btn btn-primary" id="dictation-check-btn" type="button">Check Dictation</button>
+                    </div>
+                </div>
+
+                <div class="view" id="test-view">
+                    <h2>Test Mode</h2>
+                    <p class="mode-note">Choose how many fixed word groups to practise. The page will randomly pick that many groups, shuffle questions inside each group, and give 2 minutes per group.</p>
+                    <div class="test-setup">
+                        <label for="test-group-count"><strong>Groups to test:</strong></label>
+                        <select id="test-group-count"></select>
+                        <button class="btn btn-primary" id="start-test-btn" type="button">Start Test</button>
+                        <div class="timer" id="test-timer">Not started</div>
+                    </div>
+                    <div id="test-summary" class="test-summary"></div>
+                    <div id="test-groups" class="group-grid"></div>
+                    <div class="group-actions">
+                        <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit Test</button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -461,6 +554,8 @@
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
         var unitData = null;
+        var testTimerId = null;
+        var testRemainingSeconds = 0;
 
         function showError(message) {
             document.getElementById('loading').style.display = 'none';
@@ -481,11 +576,50 @@
         function renderHero(data) {
             document.getElementById('unit-badge').textContent = data.id;
             document.getElementById('unit-title').textContent = data.title;
-            document.getElementById('unit-subtitle').textContent = 'Overview first, then move into the word list or quiz groups depending on the lesson goal.';
+            document.getElementById('unit-subtitle').textContent = 'Study the word list first, then practise through self-study, dictation, or timed tests.';
             document.getElementById('stat-source').textContent = data.sourceName || 'Vocabulary';
             document.getElementById('stat-cefr').textContent = data.cefrLevel || '—';
-            document.getElementById('stat-words').textContent = String(data.wordCount || (data.words || []).length);
-            document.getElementById('stat-groups').textContent = String((data.quizGroups || []).length);
+        }
+
+        function getWordRangeText(group) {
+            return 'Words ' + group.rangeStart + '–' + group.rangeEnd;
+        }
+
+        function normalizeAnswer(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function getWordByNumber(number) {
+            return (unitData.words || []).find(function(word) { return word.number === number; });
+        }
+
+        function getWordsForGroup(group) {
+            return (unitData.words || []).filter(function(word) {
+                return word.number >= group.rangeStart && word.number <= group.rangeEnd;
+            });
+        }
+
+        function buildLetterGuide(word) {
+            return String(word || '').split('').map(function(char) {
+                return /[a-z]/i.test(char) ? '_' : char;
+            }).join(' ');
+        }
+
+        function shuffleList(list) {
+            var copy = list.slice();
+            for (var i = copy.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = copy[i];
+                copy[i] = copy[j];
+                copy[j] = tmp;
+            }
+            return copy;
+        }
+
+        function formatTime(seconds) {
+            var min = Math.floor(seconds / 60);
+            var sec = seconds % 60;
+            return min + ':' + String(sec).padStart(2, '0');
         }
 
         function renderWords(words) {
@@ -495,8 +629,8 @@
                     '<td>' + word.number + '</td>' +
                     '<td><strong>' + word.word + '</strong></td>' +
                     '<td class="emoji">' + word.emoji + '</td>' +
+                    '<td>' + (word.simpleDefinition || '') + '</td>' +
                     '<td>' + word.meaning + '</td>' +
-                    '<td>' + word.wordForms + '</td>' +
                 '</tr>';
             }).join('');
         }
@@ -505,37 +639,29 @@
             var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
             if (!group) return;
             group.questions.forEach(function(question, index) {
-                var card = document.getElementById(groupId + '-question-' + index);
+                var card = document.getElementById('self-' + groupId + '-question-' + index);
                 var input = card.querySelector('.answer-input');
                 var reveal = card.querySelector('.reveal');
-                var value = input.value.trim().toLowerCase();
-                var answer = (question.answer || '').trim().toLowerCase();
-                card.classList.remove('correct', 'wrong');
+                var value = normalizeAnswer(input.value);
+                var answer = normalizeAnswer(question.answer);
+                card.classList.remove('correct', 'wrong', 'pending');
                 if (value && value === answer) {
                     card.classList.add('correct');
-                    reveal.classList.remove('show');
+                } else if (!value) {
+                    card.classList.add('pending');
                 } else {
                     card.classList.add('wrong');
                 }
-            });
-        }
-
-        function revealGroupAnswers(groupId) {
-            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
-            if (!group) return;
-            group.questions.forEach(function(question, index) {
-                var card = document.getElementById(groupId + '-question-' + index);
-                var reveal = card.querySelector('.reveal');
                 reveal.innerHTML = '<strong>Answer:</strong> ' + question.answer + '<br><br>' + question.explanation;
                 reveal.classList.add('show');
             });
         }
 
-        function renderQuizGroups(groups) {
-            var root = document.getElementById('quiz-groups');
+        function renderSelfStudyGroups(groups) {
+            var root = document.getElementById('self-study-groups');
             root.innerHTML = groups.map(function(group) {
                 var questions = group.questions.map(function(question, index) {
-                    return '<div class="question-item" id="' + group.id + '-question-' + index + '">' +
+                    return '<div class="question-item" id="self-' + group.id + '-question-' + index + '">' +
                         '<p class="question-prompt">' + question.number + '. ' + question.prompt + '</p>' +
                         '<div class="answer-box">' +
                             '<input class="answer-input" type="text" placeholder="Type the target word...">' +
@@ -548,18 +674,137 @@
                     '<div class="group-head">' +
                         '<div>' +
                             '<h3 class="group-title">' + group.label + '</h3>' +
-                            '<p class="group-range">Words ' + group.rangeStart + '–' + group.rangeEnd + '</p>' +
+                            '<p class="group-range">' + getWordRangeText(group) + '</p>' +
                             '<p class="group-wordline"><strong>Word Bank:</strong> ' + group.wordList.join(' | ') + '</p>' +
                         '</div>' +
-                        '<div class="group-status">10 items</div>' +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                     '<div class="group-actions">' +
-                        '<button class="btn btn-secondary" data-action="reveal" data-group="' + group.id + '">Show Answers</button>' +
-                        '<button class="btn btn-primary" data-action="check" data-group="' + group.id + '">Check Group</button>' +
+                        '<button class="btn btn-primary" data-action="check" data-group="' + group.id + '">Check Answer</button>' +
                     '</div>' +
                 '</div>';
             }).join('');
+        }
+
+        function renderDictation(words) {
+            var root = document.getElementById('dictation-list');
+            root.innerHTML = '<div class="word-table-wrap"><table>' +
+                '<thead><tr><th>Spell the Word</th><th>Emoji</th><th>Simple Definition</th></tr></thead>' +
+                '<tbody>' + words.map(function(word) {
+                    return '<tr class="dictation-row" data-answer="' + word.word + '">' +
+                        '<td>' +
+                            '<input class="answer-input dictation-input" type="text" placeholder="Spell the word...">' +
+                            '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span>' +
+                            '<span class="letter-guide">' + buildLetterGuide(word.word) + '</span>' +
+                            '<div class="reveal"></div>' +
+                        '</td>' +
+                        '<td class="emoji">' + word.emoji + '</td>' +
+                        '<td>' + (word.simpleDefinition || '') + '</td>' +
+                    '</tr>';
+                }).join('') + '</tbody></table></div>';
+        }
+
+        function checkDictation() {
+            document.querySelectorAll('.dictation-row').forEach(function(row) {
+                var input = row.querySelector('.dictation-input');
+                var reveal = row.querySelector('.reveal');
+                var answer = row.getAttribute('data-answer');
+                row.classList.remove('correct', 'wrong', 'pending');
+                if (normalizeAnswer(input.value) === normalizeAnswer(answer)) {
+                    row.classList.add('correct');
+                    reveal.classList.remove('show');
+                } else {
+                    row.classList.add(input.value.trim() ? 'wrong' : 'pending');
+                    reveal.innerHTML = '<strong>Answer:</strong> ' + answer;
+                    reveal.classList.add('show');
+                }
+            });
+        }
+
+        function renderTestOptions(groups) {
+            var select = document.getElementById('test-group-count');
+            select.innerHTML = groups.map(function(group, index) {
+                var count = index + 1;
+                return '<option value="' + count + '">' + count + ' group' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min</option>';
+            }).join('');
+        }
+
+        function renderTestQuestion(group, question, index) {
+            return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-answer="' + question.answer + '">' +
+                '<p class="question-prompt">' + question.number + '. ' + question.prompt + '</p>' +
+                '<div class="answer-box">' +
+                    '<input class="answer-input" type="text" placeholder="Type the target word...">' +
+                '</div>' +
+                '<div class="reveal"></div>' +
+            '</div>';
+        }
+
+        function startTimer(seconds) {
+            clearInterval(testTimerId);
+            testRemainingSeconds = seconds;
+            var timer = document.getElementById('test-timer');
+            timer.textContent = formatTime(testRemainingSeconds);
+            testTimerId = setInterval(function() {
+                testRemainingSeconds--;
+                timer.textContent = formatTime(Math.max(0, testRemainingSeconds));
+                if (testRemainingSeconds <= 0) {
+                    clearInterval(testTimerId);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function startTest() {
+            var groups = unitData.quizGroups || [];
+            var count = Number(document.getElementById('test-group-count').value || 1);
+            var selected = shuffleList(groups).slice(0, count).sort(function(a, b) {
+                return a.rangeStart - b.rangeStart;
+            });
+            var root = document.getElementById('test-groups');
+            document.getElementById('test-summary').classList.remove('show');
+            root.innerHTML = selected.map(function(group) {
+                var questions = shuffleList(group.questions || []).map(function(question, index) {
+                    return renderTestQuestion(group, question, index);
+                }).join('');
+                return '<div class="group-card">' +
+                    '<div class="group-head">' +
+                        '<div>' +
+                            '<h3 class="group-title">' + group.label + '</h3>' +
+                            '<p class="group-range">' + getWordRangeText(group) + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="question-list">' + questions + '</div>' +
+                '</div>';
+            }).join('');
+            document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            startTimer(count * 120);
+        }
+
+        function submitTest() {
+            clearInterval(testTimerId);
+            var questions = document.querySelectorAll('.test-question');
+            if (!questions.length) return;
+            var score = 0;
+            questions.forEach(function(card) {
+                var input = card.querySelector('.answer-input');
+                var reveal = card.querySelector('.reveal');
+                var answer = card.getAttribute('data-answer');
+                card.classList.remove('correct', 'wrong', 'pending');
+                input.disabled = true;
+                if (normalizeAnswer(input.value) === normalizeAnswer(answer)) {
+                    score++;
+                    card.classList.add('correct');
+                } else {
+                    card.classList.add(input.value.trim() ? 'wrong' : 'pending');
+                    reveal.innerHTML = '<strong>Answer:</strong> ' + answer;
+                    reveal.classList.add('show');
+                }
+            });
+            var summary = document.getElementById('test-summary');
+            summary.textContent = 'Score: ' + score + ' / ' + questions.length;
+            summary.classList.add('show');
+            document.getElementById('test-timer').textContent = 'Finished';
+            document.getElementById('submit-test-btn').style.display = 'none';
         }
 
         function wireEvents() {
@@ -572,25 +817,30 @@
             document.getElementById('word-search').addEventListener('input', function(e) {
                 var query = e.target.value.trim().toLowerCase();
                 var filtered = (unitData.words || []).filter(function(word) {
-                    return [word.word, word.meaning, word.wordForms, String(word.number)].join(' ').toLowerCase().indexOf(query) !== -1;
+                    return [word.word, word.simpleDefinition, word.meaning, String(word.number)].join(' ').toLowerCase().indexOf(query) !== -1;
                 });
                 renderWords(filtered);
             });
 
-            document.getElementById('quiz-groups').addEventListener('click', function(e) {
+            document.getElementById('self-study-groups').addEventListener('click', function(e) {
                 var action = e.target.getAttribute('data-action');
                 var groupId = e.target.getAttribute('data-group');
                 if (!action || !groupId) return;
                 if (action === 'check') checkGroupAnswers(groupId);
-                if (action === 'reveal') revealGroupAnswers(groupId);
             });
+
+            document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
+            document.getElementById('start-test-btn').addEventListener('click', startTest);
+            document.getElementById('submit-test-btn').addEventListener('click', submitTest);
         }
 
         function renderUnit(data) {
             unitData = data;
             renderHero(data);
             renderWords(data.words || []);
-            renderQuizGroups(data.quizGroups || []);
+            renderSelfStudyGroups(data.quizGroups || []);
+            renderDictation(data.words || []);
+            renderTestOptions(data.quizGroups || []);
             wireEvents();
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'block';
