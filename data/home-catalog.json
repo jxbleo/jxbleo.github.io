@@ -280,6 +280,22 @@
       "visible": true
     },
     {
+      "id": "C7-T1-P1",
+      "sectionId": "ielts-reading",
+      "title": "C7-T1-P1 · Let's Go Bats",
+      "href": "ielts-reading.html?set=C7-T1-P1",
+      "displayValue": "C7-T1-P1",
+      "sortValue": 70101,
+      "topic": "Science / Animals",
+      "tags": [
+        "Science",
+        "Animals",
+        "Echolocation"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
       "id": "C7-T1-P2",
       "sectionId": "ielts-reading",
       "title": "C7-T1-P2 · Making Every Drop Count",
@@ -311,6 +327,54 @@
       "visible": true
     },
     {
+      "id": "C7-T2-P1",
+      "sectionId": "ielts-reading",
+      "title": "C7-T2-P1 · Why Pagodas Don't Fall Down",
+      "href": "ielts-reading.html?set=C7-T2-P1",
+      "displayValue": "C7-T2-P1",
+      "sortValue": 70201,
+      "topic": "Architecture / Engineering",
+      "tags": [
+        "Architecture",
+        "Engineering",
+        "Japan"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-P2",
+      "sectionId": "ielts-reading",
+      "title": "C7-T2-P2 · The True Cost of Food",
+      "href": "ielts-reading.html?set=C7-T2-P2",
+      "displayValue": "C7-T2-P2",
+      "sortValue": 70202,
+      "topic": "Environment / Agriculture",
+      "tags": [
+        "Environment",
+        "Agriculture",
+        "Food"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-P3",
+      "sectionId": "ielts-reading",
+      "title": "C7-T2-P3 · Makete Integrated Rural Transport Project",
+      "href": "ielts-reading.html?set=C7-T2-P3",
+      "displayValue": "C7-T2-P3",
+      "sortValue": 70203,
+      "topic": "Development / Transport",
+      "tags": [
+        "Development",
+        "Transport",
+        "Africa"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
       "id": "C7-T3-P1",
       "sectionId": "ielts-reading",
       "title": "C7-T3-P1 · Ant Intelligence",
@@ -321,6 +385,38 @@
       "tags": [
         "Science",
         "Nature"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-P2",
+      "sectionId": "ielts-reading",
+      "title": "C7-T3-P2 · Population Movements and Genetics",
+      "href": "ielts-reading.html?set=C7-T3-P2",
+      "displayValue": "C7-T3-P2",
+      "sortValue": 70302,
+      "topic": "Science / Genetics",
+      "tags": [
+        "Science",
+        "Genetics",
+        "Migration"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-P3",
+      "sectionId": "ielts-reading",
+      "title": "C7-T3-P3 · Protecting Europe's Forests",
+      "href": "ielts-reading.html?set=C7-T3-P3",
+      "displayValue": "C7-T3-P3",
+      "sortValue": 70303,
+      "topic": "Environment / Forests",
+      "tags": [
+        "Environment",
+        "Forests",
+        "Europe"
       ],
       "note": "Passage Practice",
       "visible": true
