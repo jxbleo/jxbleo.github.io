@@ -179,12 +179,18 @@
         }
 
         .time-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
             margin-top: 8px;
             color: rgba(255,255,255,0.82);
             font-size: 0.82rem;
             font-weight: 800;
+        }
+
+        .time-row span:last-child {
+            text-align: right;
         }
 
         .back-count {
@@ -208,13 +214,9 @@
         }
 
         .sticky-identity {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: flex-end;
-            margin-top: -4px;
             color: rgba(255,255,255,0.78);
-            font-size: 0.82rem;
-            font-weight: 800;
+            text-align: center;
+            white-space: nowrap;
         }
 
         .sticky-player .play-btn {
@@ -253,10 +255,21 @@
 
         .quiz-toolbar {
             display: flex;
-            justify-content: flex-end;
             align-items: center;
+            justify-content: space-between;
             gap: 8px;
             margin-bottom: 18px;
+        }
+
+        .quiz-toolbar h2 {
+            margin: 0;
+        }
+
+        .font-size-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 0 auto;
         }
 
         .font-size-btn {
@@ -789,19 +802,24 @@
             <button class="player-btn play-btn" id="sticky-play-btn" type="button">▶</button>
             <div class="progress-wrap">
                 <div class="progress-track"><div class="progress-fill" id="sticky-progress-fill"></div></div>
-                <div class="time-row"><span id="sticky-current-time">0:00</span><span id="sticky-duration">0:00</span></div>
+                <div class="time-row">
+                    <span id="sticky-current-time">0:00</span>
+                    <span class="sticky-identity" id="identity-status">Login</span>
+                    <span id="sticky-duration">0:00</span>
+                </div>
             </div>
             <button class="player-btn back-btn" id="sticky-back-btn" type="button">−5s</button>
             <div class="back-count" id="sticky-back-count">7 left</div>
-            <div class="sticky-identity" id="identity-status">Login</div>
         </div>
 
         <form id="quiz-form" class="content-card" novalidate>
             <div class="quiz-toolbar" aria-label="Text size controls">
-                <button class="font-size-btn" id="font-size-down" type="button" aria-label="Decrease text size">−</button>
-                <button class="font-size-btn" id="font-size-up" type="button" aria-label="Increase text size">+</button>
+                <h2>Part 1: Fill in the Blanks</h2>
+                <div class="font-size-controls">
+                    <button class="font-size-btn" id="font-size-down" type="button" aria-label="Decrease text size">−</button>
+                    <button class="font-size-btn" id="font-size-up" type="button" aria-label="Increase text size">+</button>
+                </div>
             </div>
-            <h2>Part 1: Fill in the Blanks</h2>
             <ul class="fill-blanks" id="blanks-container"></ul>
 
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 40px 0;">
