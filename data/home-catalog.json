@@ -295,6 +295,22 @@
       "visible": true
     },
     {
+      "id": "C7-T1-P3",
+      "sectionId": "ielts-reading",
+      "title": "C7-T1-P3 · Educating Psyche",
+      "href": "ielts-reading.html?set=C7-T1-P3",
+      "displayValue": "C7-T1-P3",
+      "sortValue": 70103,
+      "topic": "Education / Psychology",
+      "tags": [
+        "Education",
+        "Psychology",
+        "Learning"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
       "id": "C7-T3-P1",
       "sectionId": "ielts-reading",
       "title": "C7-T3-P1 · Ant Intelligence",
