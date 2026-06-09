@@ -353,7 +353,7 @@
             gap: 10px;
             flex-wrap: wrap;
             color: var(--muted);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 800;
         }
 
@@ -579,6 +579,17 @@
         .choice-option.selected {
             background: #0f766e;
             color: #fff;
+        }
+
+        .choice-option.clear-choice {
+            border-color: rgba(100, 116, 139, 0.22);
+            background: #fff;
+            color: var(--muted);
+        }
+
+        .choice-option.clear-choice:hover {
+            background: #eef2f7;
+            color: var(--ink);
         }
 
         .dictation-input {
@@ -1104,6 +1115,7 @@
 
         function renderChoicePanel(words) {
             return '<div class="choice-panel">' +
+                '<button class="choice-option clear-choice" type="button" data-action="clear-choice">Clear</button>' +
                 (words || []).map(function(word) {
                     return '<button class="choice-option" type="button" data-value="' + escapeHtml(word) + '">' + escapeHtml(word) + '</button>';
                 }).join('') +
@@ -1158,7 +1170,7 @@
                     '<div class="group-head">' +
                         '<div class="group-head-main">' +
                             '<div class="set-meta-row">' +
-                                '<span class="set-badge">Set ' + (groupIndex + 1) + '</span>' +
+                                '<span class="set-badge">Study Set ' + (groupIndex + 1) + '</span>' +
                                 '<span>' + getWordRangeText(group) + '</span>' +
                             '</div>' +
                             renderWordBank(group.wordList || []) +
@@ -1306,11 +1318,41 @@
             groupCard.style.setProperty('--practice-font-size', (1 + nextStep * 0.06) + 'rem');
         }
 
+        function refreshChoiceAvailability(groupCard) {
+            if (!groupCard) return;
+            var selectedValues = Array.from(groupCard.querySelectorAll('.question-item .answer-input'))
+                .map(function(input) { return normalizeAnswer(input.value); })
+                .filter(Boolean);
+
+            groupCard.querySelectorAll('.question-item').forEach(function(card) {
+                var ownValue = normalizeAnswer((card.querySelector('.answer-input') || {}).value);
+                card.querySelectorAll('.choice-option[data-value]').forEach(function(option) {
+                    var optionValue = normalizeAnswer(option.getAttribute('data-value'));
+                    var usedElsewhere = selectedValues.indexOf(optionValue) !== -1 && optionValue !== ownValue;
+                    option.hidden = usedElsewhere;
+                    option.classList.toggle('selected', optionValue === ownValue);
+                });
+            });
+        }
+
         function handleChoiceClick(e) {
             var fontButton = e.target.closest('.font-control-btn');
             if (fontButton) {
                 var action = fontButton.getAttribute('data-action');
                 adjustGroupFontSize(fontButton, action === 'font-larger' ? 1 : -1);
+                return;
+            }
+
+            var clearButton = e.target.closest('.clear-choice');
+            if (clearButton) {
+                var clearCard = clearButton.closest('.question-item');
+                var clearInput = clearCard.querySelector('.answer-input');
+                var clearTrigger = clearCard.querySelector('.blank-trigger');
+                clearInput.value = '';
+                clearTrigger.textContent = '';
+                clearTrigger.classList.remove('selected');
+                clearCard.classList.remove('choice-open');
+                refreshChoiceAvailability(clearButton.closest('.group-card'));
                 return;
             }
 
@@ -1327,6 +1369,7 @@
                     btn.classList.toggle('selected', btn === option);
                 });
                 optionCard.classList.remove('choice-open');
+                refreshChoiceAvailability(option.closest('.group-card'));
                 return;
             }
 
@@ -1335,6 +1378,7 @@
                 var triggerCard = trigger.closest('.question-item');
                 var willOpen = !triggerCard.classList.contains('choice-open');
                 closeChoicePanels(triggerCard);
+                refreshChoiceAvailability(triggerCard.closest('.group-card'));
                 triggerCard.classList.toggle('choice-open', willOpen);
                 return;
             }
