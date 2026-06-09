@@ -300,10 +300,7 @@
             position: sticky;
             top: 0;
             z-index: 40;
-            display: flex;
-            justify-content: space-between;
-            gap: 14px;
-            align-items: flex-start;
+            display: block;
             padding: 18px 20px;
             background: #f8fbfc;
             border-bottom: 1px solid var(--border);
@@ -311,14 +308,15 @@
         }
 
         .group-head-main {
-            flex: 1;
-            min-width: 0;
+            width: 100%;
         }
 
         .font-controls {
+            position: absolute;
+            top: 14px;
+            right: 20px;
             display: inline-flex;
             gap: 6px;
-            flex: 0 0 auto;
             padding: 4px;
             border-radius: 999px;
             background: rgba(15, 118, 110, 0.08);
@@ -371,6 +369,7 @@
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
+            width: 100%;
             counter-reset: word-bank;
         }
 
@@ -790,6 +789,27 @@
             .group-actions {
                 padding-left: 16px;
                 padding-right: 16px;
+            }
+
+            .font-controls {
+                right: 16px;
+            }
+
+            .word-chip-list {
+                gap: 6px;
+            }
+
+            .word-chip {
+                gap: 0.34em;
+                padding: 0.42em 0.52em;
+                font-size: 0.82em;
+                border-radius: 0.72em;
+            }
+
+            .word-chip::before {
+                width: 1.32em;
+                height: 1.32em;
+                font-size: 0.72em;
             }
         }
     </style>
