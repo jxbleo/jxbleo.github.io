@@ -342,7 +342,30 @@
 
         .group-title {
             margin: 0;
-            font-size: 1.05rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 850;
+        }
+
+        .set-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .set-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--accent);
+            font-weight: 900;
         }
 
         .group-range {
@@ -681,6 +704,7 @@
         }
 
         .timer {
+            display: none;
             margin-left: auto;
             padding: 8px 12px;
             border-radius: 999px;
@@ -690,6 +714,7 @@
         }
 
         .timer.sticky {
+            display: block;
             position: fixed;
             top: 16px;
             left: 16px;
@@ -1106,7 +1131,7 @@
 
         function renderSelfStudyGroups(groups) {
             var root = document.getElementById('self-study-groups');
-            root.innerHTML = groups.map(function(group) {
+            root.innerHTML = groups.map(function(group, groupIndex) {
                 var questions = group.questions.map(function(question, index) {
                     return '<div class="question-item" id="self-' + group.id + '-question-' + index + '">' +
                         '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
@@ -1118,7 +1143,10 @@
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
                         '<div class="group-head-main">' +
-                            '<h3 class="group-title">' + group.label + ' · ' + getWordRangeText(group) + '</h3>' +
+                            '<div class="set-meta-row">' +
+                                '<span class="set-badge">Set ' + (groupIndex + 1) + '</span>' +
+                                '<span>' + getWordRangeText(group) + '</span>' +
+                            '</div>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
                         renderFontControls() +
