@@ -813,7 +813,7 @@
 
             <section class="panel">
                 <div class="switcher">
-                    <button class="switch-btn active" data-view-target="word-list-view">Word List</button>
+                    <button class="switch-btn active" data-view-target="word-list-view">Words</button>
                     <button class="switch-btn" data-view-target="self-study-view">Learn</button>
                     <button class="switch-btn" data-view-target="dictation-view">Dictate</button>
                     <button class="switch-btn" data-view-target="test-view">Test</button>
@@ -822,7 +822,7 @@
                 <div class="view active" id="word-list-view">
                     <div class="word-toolbar">
                         <div>
-                            <h2>Word List</h2>
+                            <h2>Words</h2>
                         </div>
                         <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
                     </div>
@@ -1287,6 +1287,30 @@
             '</div>';
         }
 
+        function playTimeUpSound() {
+            var AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            try {
+                var ctx = new AudioContext();
+                var now = ctx.currentTime;
+                [740, 620, 520].forEach(function(freq, index) {
+                    var osc = ctx.createOscillator();
+                    var gain = ctx.createGain();
+                    var start = now + index * 0.16;
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(0.16, start + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.13);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(start);
+                    osc.stop(start + 0.14);
+                });
+                setTimeout(function() { ctx.close(); }, 800);
+            } catch (e) {}
+        }
+
         function startTimer(seconds) {
             clearInterval(testTimerId);
             testRemainingSeconds = seconds;
@@ -1298,6 +1322,7 @@
                 timer.textContent = formatTime(Math.max(0, testRemainingSeconds));
                 if (testRemainingSeconds <= 0) {
                     clearInterval(testTimerId);
+                    playTimeUpSound();
                     submitTest();
                 }
             }, 1000);
