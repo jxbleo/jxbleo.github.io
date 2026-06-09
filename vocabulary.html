@@ -368,6 +368,11 @@
             font-weight: 900;
         }
 
+        .set-badge.test-set {
+            background: var(--warm-soft);
+            color: var(--warm);
+        }
+
         .group-range {
             margin: 6px 0 0;
             color: var(--muted);
@@ -697,10 +702,14 @@
 
         .test-setup select {
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 12px;
-            background: #fff;
+            border-radius: 999px;
+            padding: 11px 38px 11px 14px;
+            background:
+                linear-gradient(180deg, #fff 0%, #f8fbfc 100%);
             font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--ink);
+            outline: none;
         }
 
         .timer {
@@ -727,6 +736,7 @@
             align-items: center;
             gap: 10px;
             flex-wrap: nowrap;
+            justify-content: flex-start;
             padding: 16px;
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -740,6 +750,10 @@
             padding: 10px 12px;
             background: #fff;
             font-size: 0.95rem;
+        }
+
+        .range-picker .btn {
+            margin-left: auto;
         }
 
         .test-summary {
@@ -908,7 +922,7 @@
                 <div class="view" id="test-view">
                     <div class="test-setup" id="test-setup">
                         <select id="test-group-count"></select>
-                        <button class="btn btn-primary" id="start-test-btn" type="button">Start Test</button>
+                        <button class="btn btn-primary" id="start-test-btn" type="button">Start</button>
                     </div>
                     <div class="timer" id="test-timer"></div>
                     <div id="test-summary" class="test-summary"></div>
@@ -1334,7 +1348,7 @@
             var select = document.getElementById('test-group-count');
             select.innerHTML = groups.map(function(group, index) {
                 var count = index + 1;
-                return '<option value="' + count + '">' + count + ' group' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min</option>';
+                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min</option>';
             }).join('');
         }
 
@@ -1402,7 +1416,9 @@
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
                         '<div class="group-head-main">' +
-                            '<h3 class="group-title">测试组 ' + (groupIndex + 1) + '</h3>' +
+                            '<div class="set-meta-row">' +
+                                '<span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span>' +
+                            '</div>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
                         renderFontControls() +
