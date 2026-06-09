@@ -664,7 +664,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
+            justify-content: space-between;
             padding: 16px;
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -701,7 +701,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             padding: 16px;
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -791,6 +791,17 @@
                 padding-right: 16px;
             }
 
+            .range-picker,
+            .test-setup {
+                gap: 8px;
+            }
+
+            .range-picker select,
+            .test-setup select {
+                min-width: 0;
+                padding: 9px 9px;
+            }
+
             .font-controls {
                 right: 16px;
             }
@@ -861,7 +872,7 @@
                         <select id="dictation-start"></select>
                         <label for="dictation-end"><strong>to</strong></label>
                         <select id="dictation-end"></select>
-                        <button class="btn btn-primary" id="dictation-build-btn" type="button">Shuffle and Start</button>
+                        <button class="btn btn-primary" id="dictation-build-btn" type="button">Start</button>
                     </div>
                     <div id="dictation-list" class="group-grid"></div>
                     <div class="group-actions">
@@ -871,11 +882,10 @@
 
                 <div class="view" id="test-view">
                     <div class="test-setup" id="test-setup">
-                        <label for="test-group-count"><strong>Groups to test:</strong></label>
                         <select id="test-group-count"></select>
                         <button class="btn btn-primary" id="start-test-btn" type="button">Start Test</button>
                     </div>
-                    <div class="timer" id="test-timer">Not started</div>
+                    <div class="timer" id="test-timer"></div>
                     <div id="test-summary" class="test-summary"></div>
                     <div id="test-groups" class="group-grid"></div>
                     <div class="group-actions">
@@ -1108,8 +1118,7 @@
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
                         '<div class="group-head-main">' +
-                            '<h3 class="group-title">' + group.label + '</h3>' +
-                            '<p class="group-range">' + getWordRangeText(group) + '</p>' +
+                            '<h3 class="group-title">' + group.label + ' · ' + getWordRangeText(group) + '</h3>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
                         renderFontControls() +
@@ -1204,7 +1213,7 @@
                 start.value = words[0].number;
                 end.value = words[Math.min(words.length - 1, 9)].number;
             }
-            document.getElementById('dictation-list').innerHTML = '<div class="dictation-empty">Choose a range, then start a shuffled dictation set.</div>';
+            document.getElementById('dictation-list').innerHTML = '';
             document.getElementById('dictation-check-btn').style.display = 'none';
         }
 
