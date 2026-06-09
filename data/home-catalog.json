@@ -539,6 +539,30 @@
       "tags": [],
       "note": "",
       "visible": true
+    },
+    {
+      "id": "NGSL-B",
+      "sectionId": "vocabulary",
+      "title": "NGSL-B",
+      "href": "vocabulary.html?set=NGSL-B",
+      "displayValue": "Words 1101-1200",
+      "sortValue": 1002,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NGSL-C",
+      "sectionId": "vocabulary",
+      "title": "NGSL-C",
+      "href": "vocabulary.html?set=NGSL-C",
+      "displayValue": "Words 1201-1300",
+      "sortValue": 1003,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
     }
   ]
 }

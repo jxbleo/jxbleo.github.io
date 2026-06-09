@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NGSL-B"] = {
+  "id": "NGSL-B",
+  "sectionId": "vocabulary",
+  "title": "NGSL-B",
+  "href": "vocabulary.html?set=NGSL-B",
+  "sortOrder": 1002,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1101,
+      "word": "nobody",
+      "emoji": "👤❌",
+      "meaning": "pron. 没有人，无人",
+      "partOfSpeech": "pron.",
+      "simpleDefinition": "no person; not anyone"
+    },
+    {
+      "number": 1102,
+      "word": "examine",
+      "emoji": "🔍📋",
+      "meaning": "v. 检查，调查",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to look at something carefully to learn about it"
+    },
+    {
+      "number": 1103,
+      "word": "lay",
+      "emoji": "🥚📍",
+      "meaning": "v. 放置，产卵；adj. 外行的",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put something down carefully or in a flat position"
+    },
+    {
+      "number": 1104,
+      "word": "speed",
+      "emoji": "⚡🏃",
+      "meaning": "n. 速度；v. 加速",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "how fast someone or something moves"
+    },
+    {
+      "number": 1105,
+      "word": "politics",
+      "emoji": "🏛️🗳️",
+      "meaning": "n. 政治，政见",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "ideas and activities about government and power"
+    },
+    {
+      "number": 1106,
+      "word": "reply",
+      "emoji": "💬↩️",
+      "meaning": "v. 回答，回应；n. 答复",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to answer someone in speech, writing, or action"
+    },
+    {
+      "number": 1107,
+      "word": "display",
+      "emoji": "🖼️📺",
+      "meaning": "v. 展示，显示；n. 展览，陈列",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to show something so people can see it"
+    },
+    {
+      "number": 1108,
+      "word": "transfer",
+      "emoji": "📤🔄",
+      "meaning": "v. 转移，传递；n. 转账，调任",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move someone or something from one place to another"
+    },
+    {
+      "number": 1109,
+      "word": "perfect",
+      "emoji": "⭐💯",
+      "meaning": "adj. 完美的；v. 完善",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "as good as possible, with no mistakes"
+    },
+    {
+      "number": 1110,
+      "word": "slightly",
+      "emoji": "📏🤏",
+      "meaning": "adv. 稍微，轻微地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "a little; not very much"
+    },
+    {
+      "number": 1111,
+      "word": "overall",
+      "emoji": "🌐📊",
+      "meaning": "adj. 全面的，总体的；adv. 总的来说",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "including everything or considering the whole situation"
+    },
+    {
+      "number": 1112,
+      "word": "intend",
+      "emoji": "🎯💭",
+      "meaning": "v. 打算，计划",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to plan or mean to do something"
+    },
+    {
+      "number": 1113,
+      "word": "user",
+      "emoji": "👤💻",
+      "meaning": "n. 使用者，用户",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who uses a thing, service, or system"
+    },
+    {
+      "number": 1114,
+      "word": "respond",
+      "emoji": "💬🔄",
+      "meaning": "v. 回应，反应",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to answer or react to someone or something"
+    },
+    {
+      "number": 1115,
+      "word": "dinner",
+      "emoji": "🍽️🌙",
+      "meaning": "n. 晚餐，正餐",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the main meal of the day, often eaten in the evening"
+    },
+    {
+      "number": 1116,
+      "word": "slow",
+      "emoji": "🐌⏱️",
+      "meaning": "adj. 慢的；v. 减速",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not fast, or to become less fast"
+    },
+    {
+      "number": 1117,
+      "word": "regular",
+      "emoji": "📅✅",
+      "meaning": "adj. 规则的，常规的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening often or following a normal pattern"
+    },
+    {
+      "number": 1118,
+      "word": "physical",
+      "emoji": "💪🔬",
+      "meaning": "adj. 物理的，身体的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the body or to real objects"
+    },
+    {
+      "number": 1119,
+      "word": "apart",
+      "emoji": "↔️💔",
+      "meaning": "adv. 分开，相距",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "separated by distance, time, or feeling"
+    },
+    {
+      "number": 1120,
+      "word": "suit",
+      "emoji": "👔⚖️",
+      "meaning": "n. 套装，诉讼；v. 适合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "to be right for someone, or a formal jacket and trousers"
+    },
+    {
+      "number": 1121,
+      "word": "federal",
+      "emoji": "🏛️🇺🇸",
+      "meaning": "adj. 联邦的，中央的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a central national government"
+    },
+    {
+      "number": 1122,
+      "word": "reveal",
+      "emoji": "🎭💡",
+      "meaning": "v. 揭示，透露",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something known that was hidden or secret"
+    },
+    {
+      "number": 1123,
+      "word": "percentage",
+      "emoji": "💯📊",
+      "meaning": "n. 百分比，百分率",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an amount shown as part of one hundred"
+    },
+    {
+      "number": 1124,
+      "word": "peace",
+      "emoji": "☮️🕊️",
+      "meaning": "n. 和平，平静",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a time or state without war or fighting"
+    },
+    {
+      "number": 1125,
+      "word": "status",
+      "emoji": "📊🏆",
+      "meaning": "n. 地位，状态",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone's position, rank, or official situation"
+    },
+    {
+      "number": 1126,
+      "word": "crime",
+      "emoji": "🚔⚖️",
+      "meaning": "n. 犯罪，罪行",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an illegal action that can be punished by law"
+    },
+    {
+      "number": 1127,
+      "word": "decline",
+      "emoji": "📉❌",
+      "meaning": "v. 拒绝，下降；n. 衰退",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to become less, or to politely refuse"
+    },
+    {
+      "number": 1128,
+      "word": "decade",
+      "emoji": "🗓️🔟",
+      "meaning": "n. 十年，十年期",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a period of ten years"
+    },
+    {
+      "number": 1129,
+      "word": "launch",
+      "emoji": "🚀📱",
+      "meaning": "v. 发射，发起；n. 发布",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to start, send, or introduce something new"
+    },
+    {
+      "number": 1130,
+      "word": "warn",
+      "emoji": "⚠️🔔",
+      "meaning": "v. 警告，提醒",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to tell someone about possible danger or a problem"
+    },
+    {
+      "number": 1131,
+      "word": "consumer",
+      "emoji": "🛒👤",
+      "meaning": "n. 消费者，用户",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who buys or uses goods and services"
+    },
+    {
+      "number": 1132,
+      "word": "favor",
+      "emoji": "👍💝",
+      "meaning": "n. 恩惠，赞成；v. 偏爱",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a kind action, support, or preference for someone"
+    },
+    {
+      "number": 1133,
+      "word": "dry",
+      "emoji": "🌵☀️",
+      "meaning": "adj. 干的，干燥的；v. 使干燥",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not wet, or to make something not wet"
+    },
+    {
+      "number": 1134,
+      "word": "partner",
+      "emoji": "🤝💑",
+      "meaning": "n. 伙伴，搭档；v. 与...合作",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person you work, live, or do something with"
+    },
+    {
+      "number": 1135,
+      "word": "institution",
+      "emoji": "🏛️🎓",
+      "meaning": "n. 机构，制度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large organization such as a school, bank, or hospital"
+    },
+    {
+      "number": 1136,
+      "word": "spot",
+      "emoji": "📍👀",
+      "meaning": "n. 地点，斑点；v. 发现，认出",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place, mark, or small area"
+    },
+    {
+      "number": 1137,
+      "word": "horse",
+      "emoji": "🐴🏇",
+      "meaning": "n. 马，马科动物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large animal people can ride or use for work"
+    },
+    {
+      "number": 1138,
+      "word": "eventually",
+      "emoji": "⏰✅",
+      "meaning": "adv. 最终，终于",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the end, after some time"
+    },
+    {
+      "number": 1139,
+      "word": "heat",
+      "emoji": "🔥🌡️",
+      "meaning": "n. 热，热度；v. 加热",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "warmth or high temperature"
+    },
+    {
+      "number": 1140,
+      "word": "excite",
+      "emoji": "🎉😆",
+      "meaning": "v. 使兴奋，刺激",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone feel very interested or happy"
+    },
+    {
+      "number": 1141,
+      "word": "reader",
+      "emoji": "📖👤",
+      "meaning": "n. 读者，阅读器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who reads"
+    },
+    {
+      "number": 1142,
+      "word": "importance",
+      "emoji": "⭐📌",
+      "meaning": "n. 重要性，重要",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being important or valuable"
+    },
+    {
+      "number": 1143,
+      "word": "distance",
+      "emoji": "📏🌍",
+      "meaning": "n. 距离，远处；v. 疏远",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the amount of space between two places or things"
+    },
+    {
+      "number": 1144,
+      "word": "guide",
+      "emoji": "🧭📘",
+      "meaning": "n. 向导，指南；v. 引导",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "to show someone where to go or what to do"
+    },
+    {
+      "number": 1145,
+      "word": "grant",
+      "emoji": "💰✅",
+      "meaning": "v. 授予，同意；n. 补助金",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give someone something officially"
+    },
+    {
+      "number": 1146,
+      "word": "taxi",
+      "emoji": "🚕🚖",
+      "meaning": "n. 出租车；v. 乘出租车",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a car with a driver that you pay to take you somewhere"
+    },
+    {
+      "number": 1147,
+      "word": "feed",
+      "emoji": "🍼🌾",
+      "meaning": "v. 喂养，提供；n. 饲料",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give food to a person or animal"
+    },
+    {
+      "number": 1148,
+      "word": "pain",
+      "emoji": "😖💔",
+      "meaning": "n. 疼痛，痛苦；v. 使痛苦",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an unpleasant feeling in the body or mind"
+    },
+    {
+      "number": 1149,
+      "word": "sector",
+      "emoji": "📊🏢",
+      "meaning": "n. 部门，扇形",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one part of an economy, activity, or area"
+    },
+    {
+      "number": 1150,
+      "word": "mistake",
+      "emoji": "❌🤦",
+      "meaning": "n. 错误；v. 误解，弄错",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that is wrong or done incorrectly"
+    },
+    {
+      "number": 1151,
+      "word": "ensure",
+      "emoji": "✅🔒",
+      "meaning": "v. 确保，保证",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make certain that something happens"
+    },
+    {
+      "number": 1152,
+      "word": "satisfy",
+      "emoji": "😊✅",
+      "meaning": "v. 满足，使满意",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give someone what they need or want"
+    },
+    {
+      "number": 1153,
+      "word": "chief",
+      "emoji": "👔🏆",
+      "meaning": "n. 首领，主管；adj. 主要的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "main or most important; a leader"
+    },
+    {
+      "number": 1154,
+      "word": "cool",
+      "emoji": "❄️😎",
+      "meaning": "adj. 凉爽的，冷静的；v. 使冷却",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "slightly cold, calm, or fashionable"
+    },
+    {
+      "number": 1155,
+      "word": "expert",
+      "emoji": "🎓💡",
+      "meaning": "n. 专家；adj. 熟练的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person with a lot of skill or knowledge"
+    },
+    {
+      "number": 1156,
+      "word": "wave",
+      "emoji": "🌊👋",
+      "meaning": "n. 波浪，挥手；v. 波动，招手",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "to move your hand to greet someone, or a raised line of water"
+    },
+    {
+      "number": 1157,
+      "word": "south",
+      "emoji": "🧭⬇️",
+      "meaning": "n. 南方；adj. 南方的；adv. 向南",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the direction opposite north"
+    },
+    {
+      "number": 1158,
+      "word": "labor",
+      "emoji": "💪🏗️",
+      "meaning": "n. 劳动，工作；v. 劳动",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "work, especially hard physical work"
+    },
+    {
+      "number": 1159,
+      "word": "surface",
+      "emoji": "🌊📱",
+      "meaning": "n. 表面；v. 浮出水面",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the outside or top layer of something"
+    },
+    {
+      "number": 1160,
+      "word": "library",
+      "emoji": "📚🏛️",
+      "meaning": "n. 图书馆，藏书",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where books and other materials are kept"
+    },
+    {
+      "number": 1161,
+      "word": "excellent",
+      "emoji": "⭐💯",
+      "meaning": "adj. 极好的，卓越的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very good; of very high quality"
+    },
+    {
+      "number": 1162,
+      "word": "edge",
+      "emoji": "🔪📐",
+      "meaning": "n. 边缘，优势；v. 慢慢移动",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the outside line or border of something"
+    },
+    {
+      "number": 1163,
+      "word": "camp",
+      "emoji": "⛺🏕️",
+      "meaning": "n. 营地，阵营；v. 露营",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where people stay in tents or simple buildings"
+    },
+    {
+      "number": 1164,
+      "word": "audience",
+      "emoji": "👥🎭",
+      "meaning": "n. 观众，听众",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the people watching or listening to a performance"
+    },
+    {
+      "number": 1165,
+      "word": "lift",
+      "emoji": "⬆️🏋️",
+      "meaning": "v. 举起，提升；n. 电梯",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to raise something or someone"
+    },
+    {
+      "number": 1166,
+      "word": "procedure",
+      "emoji": "📋⚙️",
+      "meaning": "n. 程序，步骤",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an official or usual way of doing something"
+    },
+    {
+      "number": 1167,
+      "word": "email",
+      "emoji": "📧💻",
+      "meaning": "n. 电子邮件；v. 发电子邮件",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a message sent by computer or phone"
+    },
+    {
+      "number": 1168,
+      "word": "global",
+      "emoji": "🌍🌐",
+      "meaning": "adj. 全球的，全面的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "relating to the whole world"
+    },
+    {
+      "number": 1169,
+      "word": "struggle",
+      "emoji": "💪😓",
+      "meaning": "v. 挣扎，奋斗；n. 斗争",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to try very hard to do something difficult"
+    },
+    {
+      "number": 1170,
+      "word": "advertise",
+      "emoji": "📺📢",
+      "meaning": "v. 做广告，宣传",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to tell people about a product, service, or event"
+    },
+    {
+      "number": 1171,
+      "word": "select",
+      "emoji": "✅🎯",
+      "meaning": "v. 选择，挑选；adj. 精选的",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to choose someone or something"
+    },
+    {
+      "number": 1172,
+      "word": "surround",
+      "emoji": "⭕🔄",
+      "meaning": "v. 包围，环绕",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be all around someone or something"
+    },
+    {
+      "number": 1173,
+      "word": "extent",
+      "emoji": "📏📊",
+      "meaning": "n. 程度，范围",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "how large, important, or serious something is"
+    },
+    {
+      "number": 1174,
+      "word": "river",
+      "emoji": "🌊🏞️",
+      "meaning": "n. 河流，江河",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long natural flow of water"
+    },
+    {
+      "number": 1175,
+      "word": "annual",
+      "emoji": "📅🗓️",
+      "meaning": "adj. 每年的；n. 年刊",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening once every year"
+    },
+    {
+      "number": 1176,
+      "word": "fully",
+      "emoji": "💯✅",
+      "meaning": "adv. 完全地，充分地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "completely"
+    },
+    {
+      "number": 1177,
+      "word": "contrast",
+      "emoji": "⚫⚪",
+      "meaning": "n. 对比，差别；v. 对比",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "to compare differences, or a clear difference"
+    },
+    {
+      "number": 1178,
+      "word": "roll",
+      "emoji": "🎲🌀",
+      "meaning": "v. 滚动，卷；n. 卷，名册",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move by turning over and over"
+    },
+    {
+      "number": 1179,
+      "word": "reality",
+      "emoji": "🌍💭",
+      "meaning": "n. 现实，真实",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the true situation, not an idea or dream"
+    },
+    {
+      "number": 1180,
+      "word": "photograph",
+      "emoji": "📷🖼️",
+      "meaning": "n. 照片；v. 拍照",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a picture made with a camera"
+    },
+    {
+      "number": 1181,
+      "word": "artist",
+      "emoji": "🎨🖌️",
+      "meaning": "n. 艺术家，画家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who creates art"
+    },
+    {
+      "number": 1182,
+      "word": "conflict",
+      "emoji": "⚔️💥",
+      "meaning": "n. 冲突，矛盾；v. 冲突",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a serious disagreement or fight"
+    },
+    {
+      "number": 1183,
+      "word": "entire",
+      "emoji": "💯🌐",
+      "meaning": "adj. 整个的，全部的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "whole or complete"
+    },
+    {
+      "number": 1184,
+      "word": "presence",
+      "emoji": "👤✨",
+      "meaning": "n. 存在，出席",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the fact that someone or something is in a place"
+    },
+    {
+      "number": 1185,
+      "word": "crowd",
+      "emoji": "👥🎪",
+      "meaning": "n. 人群，群众；v. 挤满",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large group of people together"
+    },
+    {
+      "number": 1186,
+      "word": "corner",
+      "emoji": "📐🔲",
+      "meaning": "n. 角落，拐角；v. 使走投无路",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the place where two lines, roads, or walls meet"
+    },
+    {
+      "number": 1187,
+      "word": "gas",
+      "emoji": "⛽💨",
+      "meaning": "n. 气体，汽油",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a substance like air, or fuel for a car"
+    },
+    {
+      "number": 1188,
+      "word": "shift",
+      "emoji": "🔄⏰",
+      "meaning": "v. 转移，改变；n. 转变，轮班",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move or change, or a period of work time"
+    },
+    {
+      "number": 1189,
+      "word": "net",
+      "emoji": "🎣🌐",
+      "meaning": "n. 网，净额；adj. 净的；v. 捕获",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "material with holes used to catch or hold things"
+    },
+    {
+      "number": 1190,
+      "word": "category",
+      "emoji": "📁🏷️",
+      "meaning": "n. 类别，范畴",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of people or things of the same type"
+    },
+    {
+      "number": 1191,
+      "word": "secretary",
+      "emoji": "📝💼",
+      "meaning": "n. 秘书，部长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who organizes office work and records"
+    },
+    {
+      "number": 1192,
+      "word": "defense",
+      "emoji": "🛡️⚔️",
+      "meaning": "n. 防御，辩护",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "protection from attack or criticism"
+    },
+    {
+      "number": 1193,
+      "word": "quick",
+      "emoji": "⚡🏃",
+      "meaning": "adj. 快的，敏捷的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "fast or taking little time"
+    },
+    {
+      "number": 1194,
+      "word": "cook",
+      "emoji": "👨‍🍳🍳",
+      "meaning": "v. 烹饪；n. 厨师",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to prepare food by heating it"
+    },
+    {
+      "number": 1195,
+      "word": "spread",
+      "emoji": "📢🌊",
+      "meaning": "v. 传播，展开；n. 蔓延",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move or make something move over a larger area"
+    },
+    {
+      "number": 1196,
+      "word": "nuclear",
+      "emoji": "☢️⚛️",
+      "meaning": "adj. 核能的，原子核的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the energy inside atoms"
+    },
+    {
+      "number": 1197,
+      "word": "scale",
+      "emoji": "📏⚖️",
+      "meaning": "n. 规模，天平；v. 攀登",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the size or level of something"
+    },
+    {
+      "number": 1198,
+      "word": "driver",
+      "emoji": "🚗👤",
+      "meaning": "n. 司机，驱动程序",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who drives a vehicle"
+    },
+    {
+      "number": 1199,
+      "word": "ball",
+      "emoji": "⚽🏀",
+      "meaning": "n. 球，舞会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a round object used in games"
+    },
+    {
+      "number": 1200,
+      "word": "cry",
+      "emoji": "😭📢",
+      "meaning": "v. 哭泣，喊叫；n. 哭声",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to produce tears or make a loud sound"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1101-1110",
+      "label": "第一组",
+      "rangeStart": 1101,
+      "rangeEnd": 1110,
+      "wordList": [
+        "speed",
+        "politics",
+        "slightly",
+        "transfer",
+        "examine",
+        "perfect",
+        "reply",
+        "display",
+        "lay",
+        "nobody"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The car was traveling at a high __________ when it lost control on the icy road.",
+          "answer": "speed",
+          "explanation": "语法上，\"speed\" 是名词，作介词 \"at\" 的宾语，构成 \"at a high speed\"（高速）这一固定搭配。句意是\"当车在结冰的路面上失控时，它正以高速行驶\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "She studied __________ at university and now works for the local government.",
+          "answer": "politics",
+          "explanation": "语法上，\"politics\" 是名词，作动词 \"studied\" 的宾语。句意是\"她在大学学习政治学，现在为地方政府工作\"。politics 表示\"政治学\"这一学科。"
+        },
+        {
+          "number": 3,
+          "prompt": "The medication may make you feel __________ dizzy for the first few days.",
+          "answer": "slightly",
+          "explanation": "语法上，\"slightly\" 是副词，修饰形容词 \"dizzy\"，表示程度\"轻微地\"。句意是\"这种药物可能会让你在最初几天感到轻微眩晕\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "The bank will __________ the funds to your account within three business days.",
+          "answer": "transfer",
+          "explanation": "语法上，\"transfer\" 是动词，作句子的谓语。句意是\"银行将在三个工作日内将资金转账到您的账户\"。\"transfer funds\" 是固定搭配，表示\"转账\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "The doctor will __________ your throat to determine the cause of your pain.",
+          "answer": "examine",
+          "explanation": "语法上，\"examine\" 是动词，作句子的谓语。句意是\"医生会检查你的喉咙以确定疼痛的原因\"。\"examine\" 在医学语境中表示\"检查、诊察\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "After months of practice, her piano technique was almost __________.",
+          "answer": "perfect",
+          "explanation": "语法上，\"perfect\" 是形容词，作表语，补充说明主语 \"technique\" 的状态。句意是\"经过数月的练习，她的钢琴技巧几乎完美了\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "I sent him an email last week, but he didn't __________ until yesterday.",
+          "answer": "reply",
+          "explanation": "语法上，\"reply\" 是动词，作句子的谓语。句意是\"我上周给他发了邮件，但他直到昨天才回复\"。\"reply\" 表示\"回复\"，常用于 \"reply to\" 结构。"
+        },
+        {
+          "number": 8,
+          "prompt": "The museum will __________ the new collection of ancient artifacts next month.",
+          "answer": "display",
+          "explanation": "语法上，\"display\" 是动词，作句子的谓语。句意是\"博物馆将在下个月展出新的古代文物收藏\"。\"display\" 表示\"展览、陈列\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "Please __________ the books on the table before you leave.",
+          "answer": "lay",
+          "explanation": "语法上，\"lay\" 是及物动词，表示\"放置\"，后接宾语 \"the books\"。句意是\"离开前请把书放在桌子上\"。注意区分 \"lay\"（放置，及物）和 \"lie\"（躺，不及物）。"
+        },
+        {
+          "number": 10,
+          "prompt": "After the accident, __________ was injured as everyone had evacuated in time.",
+          "answer": "nobody",
+          "explanation": "语法上，\"nobody\" 是不定代词，作句子的主语，表示\"没有人\"。句意是\"事故发生后，没有人受伤，因为每个人都及时疏散了\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1111-1120",
+      "label": "第二组",
+      "rangeStart": 1111,
+      "rangeEnd": 1120,
+      "wordList": [
+        "users",
+        "responded",
+        "regular",
+        "dinner",
+        "overall",
+        "slow",
+        "suit",
+        "intend",
+        "physical",
+        "apart"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The website provides a helpful guide for new __________ who are unfamiliar with the platform.",
+          "answer": "users",
+          "explanation": "语法上，\"user\" 是可数名词，此处用复数形式 \"users\" 作介词 \"for\" 的宾语。句意是\"该网站为不熟悉平台的新用户提供了有用的指南\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "Emergency services __________ quickly to the call about the fire.",
+          "answer": "responded",
+          "explanation": "语法上，\"respond\" 是不及物动词，此处用过去式 \"responded\"。句意是\"紧急服务部门对火灾报警迅速做出了反应\"。\"respond to\" 是固定搭配，表示\"对……做出反应\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "She goes for __________ check-ups at the doctor's office every six months.",
+          "answer": "regular",
+          "explanation": "语法上，\"regular\" 是形容词，修饰名词 \"check-ups\"。句意是\"她每六个月去医生办公室做定期检查\"。\"regular check-ups\" 表示\"定期检查\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "We're having a formal __________ with the CEO tomorrow evening.",
+          "answer": "dinner",
+          "explanation": "语法上，\"dinner\" 是名词，作动词 \"having\" 的宾语。句意是\"明天晚上我们要和首席执行官共进正式晚餐\"。\"have dinner\" 是固定搭配。"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ performance of the team has improved since the new coach arrived.",
+          "answer": "overall",
+          "explanation": "语法上，\"overall\" 是形容词，修饰名词 \"performance\"，表示\"整体的、全面的\"。句意是\"自从新教练到来后，团队的整体表现有所改善\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "Traffic tends to __________ down during rush hour in the city center.",
+          "answer": "slow",
+          "explanation": "语法上，\"slow\" 是动词，与 \"down\" 构成短语动词 \"slow down\"，表示\"减速、放慢\"。句意是\"在市中心的高峰时段，交通往往会放慢\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "This blue __________ is perfect for your job interview tomorrow.",
+          "answer": "suit",
+          "explanation": "语法上，\"suit\" 是名词，表示\"西装、套装\"。句意是\"这套蓝色西装非常适合你明天的工作面试\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "I __________ to finish this project by Friday, but I might need more time.",
+          "answer": "intend",
+          "explanation": "语法上，\"intend\" 是动词，作句子的谓语。句意是\"我打算在周五前完成这个项目，但我可能需要更多时间\"。\"intend to do\" 表示\"打算做某事\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "The job requires significant __________ strength and endurance.",
+          "answer": "physical",
+          "explanation": "语法上，\"physical\" 是形容词，修饰名词 \"strength\"。句意是\"这份工作需要相当大的体力和耐力\"。\"physical strength\" 表示\"体力\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "The couple decided to live __________ for a while before finalizing their divorce.",
+          "answer": "apart",
+          "explanation": "语法上，\"apart\" 是副词，此处用于 \"live apart\" 这一固定搭配，表示\"分开居住\"。句意是\"这对夫妇决定在最终离婚前分开住一段时间\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1121-1130",
+      "label": "第三组",
+      "rangeStart": 1121,
+      "rangeEnd": 1130,
+      "wordList": [
+        "reveal",
+        "peace",
+        "federal",
+        "status",
+        "warned",
+        "crime",
+        "decline",
+        "percentage",
+        "decade",
+        "launch"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The investigation will __________ who was responsible for the security breach.",
+          "answer": "reveal",
+          "explanation": "语法上，\"reveal\" 是动词，作句子的谓语，表示\"揭示、透露\"。句意是\"调查将揭示谁对安全漏洞负责\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "After years of conflict, the two countries finally signed a __________ treaty.",
+          "answer": "peace",
+          "explanation": "语法上，\"peace\" 是名词，修饰名词 \"treaty\"，构成 \"peace treaty\"（和平条约）这一固定搭配。句意是\"经过多年冲突后，两国终于签署了和平条约\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ government announced new regulations for all states to follow.",
+          "answer": "federal",
+          "explanation": "语法上，\"federal\" 是形容词，修饰名词 \"government\"，表示\"联邦的\"。句意是\"联邦政府宣布了所有州都要遵守的新规定\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "His __________ as a certified professional gives him credibility in the industry.",
+          "answer": "status",
+          "explanation": "语法上，\"status\" 是名词，作句子的主语，表示\"地位、身份\"。句意是\"他作为认证专业人士的身份使他在行业中具有可信度\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "The meteorologists __________ that a severe storm was approaching the coast.",
+          "answer": "warned",
+          "explanation": "语法上，\"warn\" 是动词，此处用过去式 \"warned\"。句意是\"气象学家警告说一场严重的暴风雨正在接近海岸\"。\"warn that\" 表示\"警告说……\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ rate has decreased significantly in this neighborhood over the past year.",
+          "answer": "crime",
+          "explanation": "语法上，\"crime\" 是名词，修饰名词 \"rate\"，构成 \"crime rate\"（犯罪率）这一固定搭配。句意是\"去年这个社区的犯罪率显著下降\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "I must __________ your invitation to the party as I'll be out of town.",
+          "answer": "decline",
+          "explanation": "语法上，\"decline\" 是动词，作句子的谓语，表示\"谢绝、拒绝\"。句意是\"我必须谢绝你的聚会邀请，因为我那时会出城\"。\"decline an invitation\" 表示\"谢绝邀请\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "Only a small __________ of students achieve perfect scores on the exam.",
+          "answer": "percentage",
+          "explanation": "语法上，\"percentage\" 是名词，作句子的主语，表示\"百分比、比例\"。句意是\"只有一小部分学生在考试中取得满分\"。\"a small percentage of\" 表示\"一小部分\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "It took almost a __________ to complete the construction of the new stadium.",
+          "answer": "decade",
+          "explanation": "语法上，\"decade\" 是名词，表示\"十年\"。句意是\"建造新体育场几乎花了十年时间\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "The company will __________ its new product line at next month's trade show.",
+          "answer": "launch",
+          "explanation": "语法上，\"launch\" 是动词，作句子的谓语，表示\"发布、推出\"。句意是\"该公司将在下个月的贸易展上推出其新产品线\"。\"launch a product\" 是固定搭配。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1131-1140",
+      "label": "第四组",
+      "rangeStart": 1131,
+      "rangeEnd": 1140,
+      "wordList": [
+        "dry",
+        "partner",
+        "excited",
+        "favor",
+        "eventually",
+        "horse",
+        "institution",
+        "spot",
+        "consumer",
+        "heat"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Hang the clothes outside to __________ in the sun after washing them.",
+          "answer": "dry",
+          "explanation": "语法上，\"dry\" 是动词，作不定式 \"to dry\" 的一部分，表示\"使干燥、晾干\"。句意是\"洗完衣服后把它们挂在外面晾干\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "She's my business __________ and we've been working together for five years.",
+          "answer": "partner",
+          "explanation": "语法上，\"partner\" 是名词，表示\"合伙人、搭档\"。句意是\"她是我的商业伙伴，我们已经合作五年了\"。\"business partner\" 是固定搭配。"
+        },
+        {
+          "number": 3,
+          "prompt": "The children were __________ about going to the amusement park for the first time.",
+          "answer": "excited",
+          "explanation": "语法上，\"excite\" 的过去分词 \"excited\" 作形容词，表示\"兴奋的\"。句意是\"孩子们第一次去游乐园感到很兴奋\"。\"be excited about\" 是固定搭配。"
+        },
+        {
+          "number": 4,
+          "prompt": "Could you do me a __________ and pick up my package from the post office?",
+          "answer": "favor",
+          "explanation": "语法上，\"favor\" 是名词，用于固定短语 \"do sb a favor\"，表示\"帮某人一个忙\"。句意是\"你能帮我一个忙，从邮局取我的包裹吗？\""
+        },
+        {
+          "number": 5,
+          "prompt": "Although progress was slow, they __________ completed the project on time.",
+          "answer": "eventually",
+          "explanation": "语法上，\"eventually\" 是副词，修饰整个句子，表示\"最终、终于\"。句意是\"尽管进展缓慢，他们最终按时完成了项目\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ galloped across the field with impressive speed and grace.",
+          "answer": "horse",
+          "explanation": "语法上，\"horse\" 是名词，作句子的主语，表示\"马\"。句意是\"那匹马以惊人的速度和优雅姿态飞奔过田野\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "The university is a prestigious academic __________ with a long history.",
+          "answer": "institution",
+          "explanation": "语法上，\"institution\" 是名词，表示\"机构、学院\"。句意是\"这所大学是一所历史悠久的著名学术机构\"。\"academic institution\" 表示\"学术机构\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "I found the perfect __________ for our picnic under that large oak tree.",
+          "answer": "spot",
+          "explanation": "语法上，\"spot\" 是名词，表示\"地点、场所\"。句意是\"我在那棵大橡树下找到了野餐的完美地点\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "The new policy is designed to protect __________ rights when shopping online.",
+          "answer": "consumer",
+          "explanation": "语法上，\"consumer\" 是名词，修饰名词 \"rights\"，构成 \"consumer rights\"（消费者权益）。句意是\"新政策旨在保护网上购物时的消费者权益\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "Turn on the __________ because it's getting cold in here.",
+          "answer": "heat",
+          "explanation": "语法上，\"heat\" 是名词，表示\"暖气、热量\"。句意是\"打开暖气，因为这里越来越冷了\"。\"turn on the heat\" 表示\"打开暖气\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1141-1150",
+      "label": "第五组",
+      "rangeStart": 1141,
+      "rangeEnd": 1150,
+      "wordList": [
+        "mistake",
+        "pain",
+        "guide",
+        "grant",
+        "reader",
+        "sector",
+        "taxi",
+        "importance",
+        "distance",
+        "feed"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I made a __________ in my calculations, which affected the final result.",
+          "answer": "mistake",
+          "explanation": "语法上，\"mistake\" 是名词，作动词 \"made\" 的宾语。句意是\"我在计算中犯了一个错误，影响了最终结果\"。\"make a mistake\" 是固定搭配。"
+        },
+        {
+          "number": 2,
+          "prompt": "The athlete played through the __________ of his injured shoulder during the championship game.",
+          "answer": "pain",
+          "explanation": "语法上，\"pain\" 是名词，作介词 \"through\" 的宾语。句意是\"这位运动员在锦标赛期间忍着肩伤的疼痛比赛\"。\"play through the pain\" 表示\"忍痛比赛\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "This book will __________ you through the basics of computer programming.",
+          "answer": "guide",
+          "explanation": "语法上，\"guide\" 是动词，作句子的谓语，表示\"指导、引导\"。句意是\"这本书将指导你学习计算机编程的基础知识\"。\"guide sb through sth\" 表示\"引导某人完成某事\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "The foundation will __________ scholarships to ten outstanding students this year.",
+          "answer": "grant",
+          "explanation": "语法上，\"grant\" 是动词，作句子的谓语，表示\"授予、给予\"。句意是\"该基金会今年将向十名优秀学生授予奖学金\"。\"grant scholarships\" 是固定搭配。"
+        },
+        {
+          "number": 5,
+          "prompt": "As an avid __________, she always has at least three books on her nightstand.",
+          "answer": "reader",
+          "explanation": "语法上，\"reader\" 是名词，表示\"读者、爱读书的人\"。句意是\"作为一个狂热的读者，她的床头柜上总是至少有三本书\"。\"avid reader\" 表示\"热心读者\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "The technology __________ has seen rapid growth in recent years.",
+          "answer": "sector",
+          "explanation": "语法上，\"sector\" 是名词，表示\"部门、行业\"。句意是\"近年来科技行业发展迅速\"。\"technology sector\" 表示\"科技行业\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "We took a __________ from the airport to our hotel in the city center.",
+          "answer": "taxi",
+          "explanation": "语法上，\"taxi\" 是名词，作动词 \"took\" 的宾语。句意是\"我们从机场乘出租车到市中心的酒店\"。\"take a taxi\" 是固定搭配。"
+        },
+        {
+          "number": 8,
+          "prompt": "The professor emphasized the __________ of critical thinking in academic research.",
+          "answer": "importance",
+          "explanation": "语法上，\"importance\" 是名词，作动词 \"emphasized\" 的宾语，表示\"重要性\"。句意是\"教授强调了批判性思维在学术研究中的重要性\"。\"the importance of\" 是固定搭配。"
+        },
+        {
+          "number": 9,
+          "prompt": "You can see the mountains in the __________, but it would take several hours to reach them.",
+          "answer": "distance",
+          "explanation": "语法上，\"distance\" 是名词，用于固定短语 \"in the distance\"，表示\"在远处\"。句意是\"你可以看到远处的山脉，但到达那里需要几个小时\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "Remember to __________ the pets before you leave for work in the morning.",
+          "answer": "feed",
+          "explanation": "语法上，\"feed\" 是动词，作不定式 \"to feed\" 的一部分，表示\"喂养\"。句意是\"记得在早上上班前喂宠物\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1151-1160",
+      "label": "第六组",
+      "rangeStart": 1151,
+      "rangeEnd": 1160,
+      "wordList": [
+        "satisfy",
+        "surface",
+        "labor",
+        "cool",
+        "expert",
+        "chief",
+        "south",
+        "ensure",
+        "library",
+        "waved"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "This solution should __________ the requirements of even the most demanding clients.",
+          "answer": "satisfy",
+          "explanation": "语法上，\"satisfy\" 是动词，作句子的谓语，表示\"满足\"。句意是\"这个解决方案应该能满足即使是最苛刻客户的要求\"。\"satisfy requirements\" 是固定搭配。"
+        },
+        {
+          "number": 2,
+          "prompt": "Scratch marks were visible on the __________ of the antique wooden table.",
+          "answer": "surface",
+          "explanation": "语法上，\"surface\" 是名词，表示\"表面\"。句意是\"古董木桌的表面上可见划痕\"。\"on the surface\" 表示\"在表面上\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "The construction of the pyramid required the __________ of thousands of workers.",
+          "answer": "labor",
+          "explanation": "语法上，\"labor\" 是名词，表示\"劳动、劳力\"。句意是\"金字塔的建造需要数千名工人的劳动\"。\"the labor of\" 表示\"……的劳动\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "The evening breeze made the temperature __________ down to a comfortable level.",
+          "answer": "cool",
+          "explanation": "语法上，\"cool\" 是动词，与 \"down\" 构成短语动词 \"cool down\"，表示\"冷却、降温\"。句意是\"傍晚的微风使温度降到了舒适的水平\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "They consulted an __________ in cybersecurity to protect their sensitive data.",
+          "answer": "expert",
+          "explanation": "语法上，\"expert\" 是名词，表示\"专家\"。句意是\"他们咨询了网络安全专家来保护敏感数据\"。\"an expert in\" 表示\"……方面的专家\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ executive officer announced the company's new strategic direction.",
+          "answer": "chief",
+          "explanation": "语法上，\"chief\" 是形容词，修饰名词短语 \"executive officer\"。句意是\"首席执行官宣布了公司的新战略方向\"。\"chief executive officer (CEO)\" 是固定搭配。"
+        },
+        {
+          "number": 7,
+          "prompt": "Many birds migrate __________ during the winter months to find warmer climates.",
+          "answer": "south",
+          "explanation": "语法上，\"south\" 是副词，表示方向\"向南\"。句意是\"许多鸟类在冬季向南迁徙以寻找更温暖的气候\"。\"migrate south\" 表示\"向南迁徙\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "We need to __________ that all safety protocols are followed during the event.",
+          "answer": "ensure",
+          "explanation": "语法上，\"ensure\" 是动词，作不定式 \"to ensure\" 的一部分，表示\"确保\"。句意是\"我们需要确保活动期间遵守所有安全规程\"。\"ensure that\" 是固定搭配。"
+        },
+        {
+          "number": 9,
+          "prompt": "I spent hours researching in the __________ for my history project.",
+          "answer": "library",
+          "explanation": "语法上，\"library\" 是名词，作介词 \"in\" 的宾语，表示\"图书馆\"。句意是\"我在图书馆花了几个小时为历史项目做研究\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "She __________ goodbye to her friends as the train departed from the station.",
+          "answer": "waved",
+          "explanation": "语法上，\"wave\" 是动词，此处用过去式 \"waved\"，表示\"挥手\"。句意是\"当火车从车站开出时，她向朋友们挥手告别\"。\"wave goodbye\" 是固定搭配。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1161-1170",
+      "label": "第七组",
+      "rangeStart": 1161,
+      "rangeEnd": 1170,
+      "wordList": [
+        "excellent",
+        "camp",
+        "lift",
+        "struggle",
+        "advertise",
+        "procedure",
+        "edge",
+        "audience",
+        "email",
+        "global"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The restaurant received __________ reviews from food critics and customers alike.",
+          "answer": "excellent",
+          "explanation": "语法上，\"excellent\" 是形容词，修饰名词 \"reviews\"，表示\"极好的、优秀的\"。句意是\"这家餐厅收到了美食评论家和顾客的好评\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "The children will be going to summer __________ for two weeks in July.",
+          "answer": "camp",
+          "explanation": "语法上，\"camp\" 是名词，表示\"营地、夏令营\"。句意是\"孩子们将在七月参加为期两周的夏令营\"。\"summer camp\" 是固定搭配。"
+        },
+        {
+          "number": 3,
+          "prompt": "Could you help me __________ this heavy box onto the shelf?",
+          "answer": "lift",
+          "explanation": "语法上，\"lift\" 是动词，作不定式 \"to lift\" 的一部分，表示\"举起、抬起\"。句意是\"你能帮我把这个重箱子抬到架子上吗？\""
+        },
+        {
+          "number": 4,
+          "prompt": "Many families __________ to pay their bills during the economic recession.",
+          "answer": "struggle",
+          "explanation": "语法上，\"struggle\" 是动词，作句子的谓语，表示\"挣扎、努力\"。句意是\"在经济衰退期间，许多家庭努力支付账单\"。\"struggle to do\" 表示\"努力做某事\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "Companies __________ their products on social media to reach younger consumers.",
+          "answer": "advertise",
+          "explanation": "语法上，\"advertise\" 是动词，作句子的谓语，表示\"做广告、宣传\"。句意是\"公司在社交媒体上为其产品做广告以吸引年轻消费者\"。"
+        },
+        {
+          "number": 6,
+          "prompt": "The doctor explained the surgical __________ in detail before the operation.",
+          "answer": "procedure",
+          "explanation": "语法上，\"procedure\" 是名词，表示\"程序、步骤\"。句意是\"医生在手术前详细解释了手术程序\"。\"surgical procedure\" 表示\"外科手术\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "Be careful near the __________ of the cliff as it can be dangerous.",
+          "answer": "edge",
+          "explanation": "语法上，\"edge\" 是名词，表示\"边缘\"。句意是\"小心悬崖边缘，因为那里可能很危险\"。\"the edge of\" 是固定搭配。"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ applauded enthusiastically at the end of the performance.",
+          "answer": "audience",
+          "explanation": "语法上，\"audience\" 是名词，作句子的主语，表示\"观众\"。句意是\"演出结束时，观众热烈鼓掌\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "Please send me an __________ with the details of the meeting.",
+          "answer": "email",
+          "explanation": "语法上，\"email\" 是名词，作动词 \"send\" 的宾语，表示\"电子邮件\"。句意是\"请给我发一封包含会议详情的电子邮件\"。\"send an email\" 是固定搭配。"
+        },
+        {
+          "number": 10,
+          "prompt": "Climate change is a __________ issue that affects all countries.",
+          "answer": "global",
+          "explanation": "语法上，\"global\" 是形容词，修饰名词 \"issue\"，表示\"全球的\"。句意是\"气候变化是一个影响所有国家的全球性问题\"。\"global issue\" 表示\"全球性问题\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1171-1180",
+      "label": "第八组",
+      "rangeStart": 1171,
+      "rangeEnd": 1180,
+      "wordList": [
+        "extent",
+        "river",
+        "surround",
+        "roll",
+        "annual",
+        "fully",
+        "select",
+        "contrast",
+        "photograph",
+        "reality"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I was shocked by the __________ of the damage caused by the flood.",
+          "answer": "extent",
+          "explanation": "语法上，\"extent\" 是名词，作介词 \"by\" 的宾语，表示\"程度、范围\"。句意是\"我对洪水造成的破坏程度感到震惊\"。\"the extent of\" 是固定搭配。"
+        },
+        {
+          "number": 2,
+          "prompt": "The __________ flows through the center of the city and divides it into two parts.",
+          "answer": "river",
+          "explanation": "语法上，\"river\" 是名词，作句子的主语，表示\"河流\"。句意是\"这条河流经城市中心，将城市分为两部分\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "Tall mountains __________ the valley, creating a stunning landscape.",
+          "answer": "surround",
+          "explanation": "语法上，\"surround\" 是动词，作句子的谓语，表示\"环绕、围绕\"。句意是\"高山环绕着山谷，形成了令人惊叹的景观\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "The baker will __________ the dough before shaping it into loaves.",
+          "answer": "roll",
+          "explanation": "语法上，\"roll\" 是动词，作句子的谓语，表示\"擀、滚动\"。句意是\"面包师会在把面团塑形成面包之前擀面团\"。\"roll the dough\" 是固定搭配。"
+        },
+        {
+          "number": 5,
+          "prompt": "The company holds an __________ conference for all employees in December.",
+          "answer": "annual",
+          "explanation": "语法上，\"annual\" 是形容词，修饰名词 \"conference\"，表示\"年度的\"。句意是\"该公司在十二月为所有员工举办年度会议\"。\"annual conference\" 是固定搭配。"
+        },
+        {
+          "number": 6,
+          "prompt": "I'm not __________ convinced that this is the right approach to the problem.",
+          "answer": "fully",
+          "explanation": "语法上，\"fully\" 是副词，修饰形容词 \"convinced\"，表示\"完全地\"。句意是\"我不完全相信这是解决问题的正确方法\"。\"not fully convinced\" 表示\"不完全确信\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "Please __________ a date for your appointment from the available options.",
+          "answer": "select",
+          "explanation": "语法上，\"select\" 是动词，作祈使句的谓语，表示\"选择\"。句意是\"请从可用选项中选择一个预约日期\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "The bright colors of the painting __________ sharply with the dark background.",
+          "answer": "contrast",
+          "explanation": "语法上，\"contrast\" 是动词，作句子的谓语，表示\"对比、形成对照\"。句意是\"画作的明亮色彩与深色背景形成鲜明对比\"。\"contrast with\" 是固定搭配。"
+        },
+        {
+          "number": 9,
+          "prompt": "This __________ of my grandparents was taken on their wedding day.",
+          "answer": "photograph",
+          "explanation": "语法上，\"photograph\" 是名词，表示\"照片\"。句意是\"这张我祖父母的照片是在他们的婚礼当天拍摄的\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "Sometimes our expectations don't match with __________, leading to disappointment.",
+          "answer": "reality",
+          "explanation": "语法上，\"reality\" 是名词，作介词 \"with\" 的宾语，表示\"现实\"。句意是\"有时我们的期望与现实不符，导致失望\"。\"match with reality\" 表示\"与现实相符\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1181-1190",
+      "label": "第九组",
+      "rangeStart": 1181,
+      "rangeEnd": 1190,
+      "wordList": [
+        "conflict",
+        "crowd",
+        "gas",
+        "shift",
+        "corner",
+        "entire",
+        "presence",
+        "artist",
+        "category",
+        "net"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "There's a __________ between what he says and what he actually does.",
+          "answer": "conflict",
+          "explanation": "语法上，\"conflict\" 是名词，作句子的主语，表示\"冲突、矛盾\"。句意是\"他所说的和他实际做的之间存在矛盾\"。\"a conflict between A and B\" 表示\"A和B之间的冲突\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "A large __________ gathered outside the stadium hours before the concert.",
+          "answer": "crowd",
+          "explanation": "语法上，\"crowd\" 是名词，作句子的主语，表示\"人群\"。句意是\"音乐会开始前几个小时，一大群人聚集在体育场外\"。\"a large crowd\" 表示\"一大群人\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "The price of __________ has increased significantly over the past few months.",
+          "answer": "gas",
+          "explanation": "语法上，\"gas\" 是名词，表示\"汽油、天然气\"。句意是\"过去几个月汽油价格大幅上涨\"。\"the price of gas\" 是固定搭配。"
+        },
+        {
+          "number": 4,
+          "prompt": "My work __________ changes every week, so my sleep schedule is irregular.",
+          "answer": "shift",
+          "explanation": "语法上，\"shift\" 是名词，表示\"轮班、班次\"。句意是\"我的工作班次每周都在变化，所以我的睡眠时间表不规律\"。\"work shift\" 表示\"工作班次\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "There's a coffee shop on the __________ of Main Street and Fifth Avenue.",
+          "answer": "corner",
+          "explanation": "语法上，\"corner\" 是名词，表示\"拐角、角落\"。句意是\"主街和第五大道的拐角处有一家咖啡店\"。\"on the corner of\" 是固定搭配。"
+        },
+        {
+          "number": 6,
+          "prompt": "She read the __________ book in just one day because it was so engaging.",
+          "answer": "entire",
+          "explanation": "语法上，\"entire\" 是形容词，修饰名词 \"book\"，表示\"整个的、全部的\"。句意是\"她仅用一天就读完了整本书，因为它太引人入胜了\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of security personnel helped everyone feel safer at the event.",
+          "answer": "presence",
+          "explanation": "语法上，\"presence\" 是名词，作句子的主语，表示\"在场、存在\"。句意是\"保安人员的在场使活动中的每个人都感到更安全\"。\"the presence of\" 表示\"……的存在\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "The famous __________ will exhibit her paintings in the gallery next month.",
+          "answer": "artist",
+          "explanation": "语法上，\"artist\" 是名词，表示\"艺术家\"。句意是\"这位著名艺术家下个月将在画廊展出她的画作\"。"
+        },
+        {
+          "number": 9,
+          "prompt": "This product falls into the __________ of luxury goods based on its price and quality.",
+          "answer": "category",
+          "explanation": "语法上，\"category\" 是名词，作介词 \"into\" 的宾语，表示\"类别、范畴\"。句意是\"根据价格和质量，该产品属于奢侈品类别\"。\"fall into the category of\" 表示\"属于……类别\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "Fishermen cast their __________ into the sea early in the morning.",
+          "answer": "net",
+          "explanation": "语法上，\"net\" 是名词，作动词 \"cast\" 的宾语，表示\"网\"。句意是\"渔民们一大早就把网撒到海里\"。\"cast a net\" 是固定搭配，表示\"撒网\"。\n\n---"
+        }
+      ]
+    },
+    {
+      "id": "1191-1200",
+      "label": "第十组",
+      "rangeStart": 1191,
+      "rangeEnd": 1200,
+      "wordList": [
+        "defense",
+        "secretary",
+        "spread",
+        "quick",
+        "driver",
+        "cook",
+        "cry",
+        "nuclear",
+        "scale",
+        "ball"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The lawyer presented a strong __________ argument that convinced the jury.",
+          "answer": "defense",
+          "explanation": "语法上，\"defense\" 是名词，修饰名词 \"argument\"，构成 \"defense argument\"（辩护论点）。句意是\"律师提出了有力的辩护论点，说服了陪审团\"。"
+        },
+        {
+          "number": 2,
+          "prompt": "The __________ took notes during the meeting and will distribute them later.",
+          "answer": "secretary",
+          "explanation": "语法上，\"secretary\" 是名词，作句子的主语，表示\"秘书\"。句意是\"秘书在会议期间做了笔记，稍后会分发\"。"
+        },
+        {
+          "number": 3,
+          "prompt": "News of the company's success __________ rapidly through the business community.",
+          "answer": "spread",
+          "explanation": "语法上，\"spread\" 是动词，此处用过去式 \"spread\"（过去式和原形同形），表示\"传播、扩散\"。句意是\"公司成功的消息迅速在商界传播开来\"。"
+        },
+        {
+          "number": 4,
+          "prompt": "We need a __________ solution to this problem before it gets worse.",
+          "answer": "quick",
+          "explanation": "语法上，\"quick\" 是形容词，修饰名词 \"solution\"，表示\"快速的\"。句意是\"我们需要在问题恶化之前找到快速解决方案\"。\"a quick solution\" 表示\"快速解决方案\"。"
+        },
+        {
+          "number": 5,
+          "prompt": "The bus __________ was very helpful in giving directions to tourists.",
+          "answer": "driver",
+          "explanation": "语法上，\"driver\" 是名词，表示\"司机\"。句意是\"公交车司机非常乐于助人，为游客指路\"。\"bus driver\" 是固定搭配。"
+        },
+        {
+          "number": 6,
+          "prompt": "My father loves to __________ traditional dishes from his hometown.",
+          "answer": "cook",
+          "explanation": "语法上，\"cook\" 是动词，作不定式 \"to cook\" 的一部分，表示\"烹饪\"。句意是\"我父亲喜欢烹饪家乡的传统菜肴\"。"
+        },
+        {
+          "number": 7,
+          "prompt": "The baby's __________ woke the parents in the middle of the night.",
+          "answer": "cry",
+          "explanation": "语法上，\"cry\" 是名词，表示\"哭声、叫声\"。句意是\"婴儿的哭声在半夜吵醒了父母\"。\"the baby's cry\" 表示\"婴儿的哭声\"。"
+        },
+        {
+          "number": 8,
+          "prompt": "Several countries have signed treaties to limit __________ weapons development.",
+          "answer": "nuclear",
+          "explanation": "语法上，\"nuclear\" 是形容词，修饰名词 \"weapons\"，表示\"核的\"。句意是\"几个国家签署了限制核武器发展的条约\"。\"nuclear weapons\" 是固定搭配。"
+        },
+        {
+          "number": 9,
+          "prompt": "The project was completed on a much larger __________ than initially planned.",
+          "answer": "scale",
+          "explanation": "语法上，\"scale\" 是名词，表示\"规模、范围\"。句意是\"该项目的完成规模比最初计划的要大得多\"。\"on a scale\" 表示\"以……规模\"。"
+        },
+        {
+          "number": 10,
+          "prompt": "The children were playing with a colorful __________ in the backyard.",
+          "answer": "ball",
+          "explanation": "语法上，\"ball\" 是名词，表示\"球\"。句意是\"孩子们在后院玩一个彩色的球\"。\"play with a ball\" 是固定搭配。\n\n---"
+        }
+      ]
+    }
+  ]
+};
