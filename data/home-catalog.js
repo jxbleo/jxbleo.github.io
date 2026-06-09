@@ -157,22 +157,22 @@ window.__HOME_CATALOG__ = {
     {
       "id": "zhongkao-english",
       "groupId": "zhongkao",
-      "title": "中考英语练习",
+      "title": "Zhongkao",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
       "emptyMessage": "Developing",
-      "emptyNote": "中考英语练习内容会显示在这里。"
+      "emptyNote": "Zhongkao practice will appear here."
     },
     {
       "id": "gaokao-english",
       "groupId": "gaokao",
-      "title": "高考英语练习",
+      "title": "Gaokao",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
       "emptyMessage": "Developing",
-      "emptyNote": "高考英语练习内容会显示在这里。"
+      "emptyNote": "Gaokao practice will appear here."
     }
   ],
   "items": [

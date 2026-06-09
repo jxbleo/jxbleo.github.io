@@ -166,11 +166,21 @@ function buildUnit(content, sourceFile) {
   };
 }
 
+function buildFallbackScript(unit) {
+  return "window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};\n" +
+    "window.__VOCABULARY_UNITS__[" + JSON.stringify(unit.id) + "] = " +
+    JSON.stringify(unit, null, 2) + ";\n";
+}
+
 function main() {
   const content = readFile(sourcePath);
   const unit = buildUnit(content, sourcePath);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(unit, null, 2) + "\n");
+  fs.writeFileSync(
+    outputPath.replace(/\.json$/i, ".js"),
+    buildFallbackScript(unit)
+  );
   console.log(`Created ${outputPath}`);
 }
 
