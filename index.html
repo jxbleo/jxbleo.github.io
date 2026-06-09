@@ -228,19 +228,20 @@
         .section-title {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 10px;
             color: var(--text-primary);
-            font-size: 1.08em;
-            min-height: 92px;
-            padding: 18px 12px;
+            font-size: 0.98em;
+            min-height: 68px;
+            padding: 14px 16px;
             margin: 0;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.66);
+            border-radius: 16px;
+            background: rgba(255,255,255,0.7);
             font-weight: 800;
             cursor: pointer;
             user-select: none;
-            letter-spacing: -0.01em;
-            text-align: center;
+            letter-spacing: 0;
+            text-align: left;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.74);
         }
 
@@ -368,52 +369,79 @@
         }
 
         .path-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .primary-paths {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .secondary-paths {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 18px;
-            align-items: start;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .more-paths-label {
+            margin: 8px 0 -2px;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 850;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         .path-card {
-            padding: 22px;
-            border-radius: 30px;
-            background: rgba(255,255,255,0.5);
-            border: 1px solid rgba(255,255,255,0.72);
-            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.46);
+            border: 1px solid rgba(255,255,255,0.76);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
             backdrop-filter: blur(18px);
+            transition: box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
         }
 
         .path-card.general {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(220, 252, 231, 0.42));
+            background: linear-gradient(145deg, rgba(255,255,255,0.7), rgba(220, 252, 231, 0.34));
         }
 
         .path-card.ielts {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(204, 251, 241, 0.44));
+            background: linear-gradient(145deg, rgba(255,255,255,0.68), rgba(204, 251, 241, 0.32));
         }
 
         .path-card.dse {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255, 237, 213, 0.5));
+            background: linear-gradient(145deg, rgba(255,255,255,0.68), rgba(255, 237, 213, 0.36));
         }
 
         .path-card.mse {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(224, 242, 254, 0.48));
+            background: rgba(255,255,255,0.48);
         }
 
         .path-card.zhongkao {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(254, 249, 195, 0.5));
+            background: rgba(255,255,255,0.48);
         }
 
         .path-card.gaokao {
-            background: linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255, 228, 230, 0.46));
+            background: rgba(255,255,255,0.48);
         }
 
         .path-card.collapsed {
             cursor: pointer;
         }
 
+        .path-card:hover {
+            border-color: rgba(15, 118, 110, 0.2);
+            box-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+        }
+
         .path-header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
             cursor: pointer;
             user-select: none;
@@ -427,18 +455,17 @@
         .path-title {
             margin: 0;
             color: var(--text-primary);
-            font-size: 1.65rem;
+            font-size: 1.42rem;
             line-height: 1;
-            letter-spacing: -0.05em;
+            letter-spacing: 0;
         }
 
         .path-toggle {
-            margin-top: 2px;
             flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 68px;
+            min-width: 58px;
             padding: 7px 12px;
             border-radius: 999px;
             background: rgba(15, 118, 110, 0.08);
@@ -449,8 +476,8 @@
 
         .path-body {
             display: none;
-            margin-top: 18px;
-            grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+            margin-top: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(142px, 1fr));
             gap: 12px;
             align-items: start;
         }
@@ -462,8 +489,9 @@
         .path-card .section {
             margin-bottom: 0;
             padding: 0;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.58);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.44);
+            border: 1px solid rgba(15, 118, 110, 0.08);
             box-shadow: none;
             overflow: visible;
             transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
@@ -477,12 +505,13 @@
 
         .path-card .section.is-open {
             grid-column: 1 / -1;
-            padding: 16px;
-            background: rgba(255,255,255,0.64);
+            padding: 14px;
+            background: rgba(255,255,255,0.62);
+            border-color: rgba(15, 118, 110, 0.14);
         }
 
         .section-body {
-            margin-top: 18px;
+            margin-top: 14px;
         }
 
         .toggle-btn {
@@ -497,6 +526,37 @@
             border-radius: 999px;
             transition: background-color 0.2s;
             background: rgba(15, 118, 110, 0.08);
+        }
+
+        .path-card.compact {
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
+        }
+
+        .path-card.compact .path-title {
+            font-size: 1.02rem;
+        }
+
+        .path-card.compact .path-toggle {
+            min-width: 54px;
+            padding: 6px 10px;
+            font-size: 0.72rem;
+            background: rgba(15, 118, 110, 0.07);
+        }
+
+        .path-card.compact .path-body {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .path-card.compact .section-title {
+            min-height: 54px;
+            padding: 12px 13px;
+        }
+
+        .path-card.compact .section.is-open {
+            padding: 10px;
         }
         .section.is-open .toggle-btn {
             display: inline-flex;
@@ -799,6 +859,7 @@
             .container { margin-top: 18px; padding: 0 10px 44px; }
             .section { padding: 16px; border-radius: 22px; }
             .path-card { padding: 16px; border-radius: 24px; }
+            .secondary-paths { grid-template-columns: 1fr; }
             .menu-list { grid-template-columns: 1fr; }
             .menu-card a { padding: 18px 15px; }
             .card-title { font-size: 1.1em; }
@@ -817,7 +878,7 @@
 
     <div class="global-search-card">
         <div class="global-search-row">
-            <input class="global-search-input" id="global-search-input" type="text" placeholder="Search all lessons..." autocomplete="off">
+            <input class="global-search-input" id="global-search-input" type="text" placeholder="Search all..." autocomplete="off">
             <button class="global-search-btn" id="global-search-btn" type="button">Search</button>
         </div>
         <div class="global-results" id="global-results"></div>
@@ -987,19 +1048,19 @@
         },
         {
             id: 'zhongkao',
-            title: '中考英语',
+            title: 'Zhongkao',
             description: 'Targeted practice for mainland China senior high school entrance English.'
         },
         {
             id: 'gaokao',
-            title: '高考英语',
+            title: 'Gaokao',
             description: 'Targeted practice for mainland China college entrance English.'
         }
     ];
 
-    function buildPathGroup(group, sectionsHtml) {
+    function buildPathGroup(group, sectionsHtml, isCompact) {
         var isOpen = group.defaultOpen === true;
-        return '<section class="path-card ' + escapeHtml(group.id) + ' ' + (isOpen ? 'expanded' : 'collapsed') + '" data-path-id="' + escapeHtml(group.id) + '">' +
+        return '<section class="path-card ' + escapeHtml(group.id) + (isCompact ? ' compact' : '') + ' ' + (isOpen ? 'expanded' : 'collapsed') + '" data-path-id="' + escapeHtml(group.id) + '">' +
             '<div class="path-header">' +
                 '<div class="path-heading">' +
                     '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
@@ -1100,12 +1161,19 @@
             sectionsByGroup[groupId] += buildSection(section, itemsBySection[section.id] || []);
         }
 
-        var html = '<div class="path-grid">';
+        var html = '<div class="path-grid"><div class="primary-paths">';
         for (var k = 0; k < pathGroups.length; k++) {
             var group = pathGroups[k];
-            html += buildPathGroup(group, sectionsByGroup[group.id] || '');
+            if (k < 3) {
+                html += buildPathGroup(group, sectionsByGroup[group.id] || '', false);
+            }
         }
-        html += '</div>';
+        html += '</div><div class="more-paths-label">More Paths</div><div class="secondary-paths">';
+        for (var m = 3; m < pathGroups.length; m++) {
+            var compactGroup = pathGroups[m];
+            html += buildPathGroup(compactGroup, sectionsByGroup[compactGroup.id] || '', true);
+        }
+        html += '</div></div>';
         root.innerHTML = html;
 
         var user = getCurrentUser();

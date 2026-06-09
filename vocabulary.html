@@ -295,6 +295,44 @@
             line-height: 1.65;
         }
 
+        .word-bank {
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+        }
+
+        .word-bank-label {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 850;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .word-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .word-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 7px 11px;
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            border-radius: 999px;
+            background: #f0fdfa;
+            color: #0f766e;
+            font-size: 0.9rem;
+            font-weight: 850;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
         .question-list {
             padding: 20px;
             display: grid;
@@ -408,17 +446,12 @@
 
         .dictation-table th:first-child,
         .dictation-table td:first-child {
-            width: 38%;
+            width: 46%;
         }
 
         .dictation-table th:nth-child(2),
         .dictation-table td:nth-child(2) {
-            width: 38%;
-        }
-
-        .dictation-table th:nth-child(3),
-        .dictation-table td:nth-child(3) {
-            width: 24%;
+            width: 54%;
             color: #475569;
         }
 
@@ -778,6 +811,16 @@
             error.textContent = message;
         }
 
+        function injectScript(src) {
+            return new Promise(function(resolve, reject) {
+                var script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
         function switchView(viewId) {
             document.querySelectorAll('.switch-btn').forEach(function(btn) {
                 btn.classList.toggle('active', btn.getAttribute('data-view-target') === viewId);
@@ -868,6 +911,17 @@
             }).join('');
         }
 
+        function renderWordBank(words) {
+            return '<div class="word-bank">' +
+                '<p class="word-bank-label">Word Bank</p>' +
+                '<div class="word-chip-list">' +
+                    (words || []).map(function(word) {
+                        return '<span class="word-chip">' + word + '</span>';
+                    }).join('') +
+                '</div>' +
+            '</div>';
+        }
+
         function renderPromptWithSelect(question, options) {
             var select = '<select class="answer-input blank-select" aria-label="Answer">' + buildWordOptions(options, '') + '</select>';
             if (question.prompt.indexOf('__________') !== -1) {
@@ -916,7 +970,7 @@
                         '<div>' +
                             '<h3 class="group-title">' + group.label + '</h3>' +
                             '<p class="group-range">' + getWordRangeText(group) + '</p>' +
-                            '<p class="group-wordline"><strong>Word Bank:</strong> ' + group.wordList.join(' | ') + '</p>' +
+                            renderWordBank(group.wordList || []) +
                         '</div>' +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
@@ -930,7 +984,7 @@
         function renderDictation(words) {
             var root = document.getElementById('dictation-list');
             root.innerHTML = '<div class="word-table-wrap"><table class="dictation-table">' +
-                '<thead><tr><th>Spell</th><th>Definition</th><th>中文</th></tr></thead>' +
+                '<thead><tr><th>Spell</th><th>Definition</th></tr></thead>' +
                 '<tbody>' + words.map(function(word) {
                     var letters = word.word.split('').map(function(letter, index) {
                         return '<input class="letter-slot" type="text" maxlength="1" inputmode="text" autocomplete="off" data-index="' + index + '" aria-label="Letter ' + (index + 1) + '">';
@@ -945,7 +999,6 @@
                             '<div class="reveal"></div>' +
                         '</td>' +
                         '<td>' + (word.simpleDefinition || '') + '</td>' +
-                        '<td>' + (word.meaning || '') + '</td>' +
                     '</tr>';
                 }).join('') + '</tbody></table></div>';
             wireDictationSlots(root);
@@ -1056,10 +1109,7 @@
 
         function renderTestQuestion(group, question, index) {
             return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-answer="' + question.answer + '">' +
-                '<p class="question-prompt">' + question.prompt + '</p>' +
-                '<div class="answer-box">' +
-                    '<input class="answer-input blank-input" type="text" aria-label="Answer">' +
-                '</div>' +
+                '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
                 '<div class="reveal"></div>' +
             '</div>';
         }
@@ -1096,6 +1146,8 @@
                     '<div class="group-head">' +
                         '<div>' +
                             '<h3 class="group-title">测试组 ' + (groupIndex + 1) + '</h3>' +
+                            '<p class="group-range">' + getWordRangeText(group) + '</p>' +
+                            renderWordBank(group.wordList || []) +
                         '</div>' +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
@@ -1178,11 +1230,23 @@
 
         updateIdentityStatus();
 
-        fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
-            .then(function(response) {
-                if (!response.ok) throw new Error('Vocabulary unit not found.');
-                return response.json();
-            })
+        function loadVocabularyUnit() {
+            return fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
+                .then(function(response) {
+                    if (!response.ok) throw new Error('Vocabulary unit not found.');
+                    return response.json();
+                })
+                .catch(function(fetchError) {
+                    return injectScript('content/vocabulary/' + encodeURIComponent(setId) + '.js')
+                        .then(function() {
+                            var fallback = window.__VOCABULARY_UNITS__ && window.__VOCABULARY_UNITS__[setId];
+                            if (!fallback) throw fetchError;
+                            return fallback;
+                        });
+                });
+        }
+
+        loadVocabularyUnit()
             .then(renderUnit)
             .catch(function(error) {
                 showError(error.message || 'Unable to load vocabulary unit.');
