@@ -289,13 +289,17 @@
         }
 
         .group-card {
+            --practice-font-size: 1rem;
             border: 1px solid var(--border);
             border-radius: 18px;
-            overflow: hidden;
+            overflow: visible;
             background: #fff;
         }
 
         .group-head {
+            position: sticky;
+            top: 0;
+            z-index: 40;
             display: flex;
             justify-content: space-between;
             gap: 14px;
@@ -303,6 +307,39 @@
             padding: 18px 20px;
             background: #f8fbfc;
             border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .group-head-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .font-controls {
+            display: inline-flex;
+            gap: 6px;
+            flex: 0 0 auto;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
+        }
+
+        .font-control-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.82);
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .font-control-btn:hover {
+            background: var(--accent);
+            color: #fff;
         }
 
         .group-title {
@@ -324,25 +361,8 @@
         }
 
         .word-bank {
-            position: sticky;
-            top: 0;
-            z-index: 40;
             margin-top: 12px;
-            padding: 14px;
-            border: 1px solid rgba(15, 118, 110, 0.12);
-            border-radius: 18px;
-            background:
-                linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,253,251,0.96) 100%);
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-        }
-
-        .word-bank-label {
-            margin: 0 0 10px;
-            color: var(--muted);
-            font-size: 0.78rem;
-            font-weight: 850;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+            padding: 0;
         }
 
         .word-chip-list {
@@ -390,6 +410,7 @@
             padding: 20px;
             display: grid;
             gap: 16px;
+            font-size: var(--practice-font-size);
         }
 
         .question-item {
@@ -428,7 +449,7 @@
 
         .question-prompt {
             margin: 0 0 12px;
-            font-size: 0.95rem;
+            font-size: inherit;
             line-height: 1.6;
         }
 
@@ -670,7 +691,7 @@
         .timer.sticky {
             position: fixed;
             top: 16px;
-            right: 16px;
+            left: 16px;
             z-index: 50;
             box-shadow: 0 12px 28px rgba(154, 52, 18, 0.18);
         }
@@ -990,12 +1011,18 @@
 
         function renderWordBank(words) {
             return '<div class="word-bank">' +
-                '<p class="word-bank-label">Word Bank</p>' +
                 '<div class="word-chip-list">' +
                     (words || []).map(function(word) {
                         return '<span class="word-chip">' + escapeHtml(word) + '</span>';
                     }).join('') +
                 '</div>' +
+            '</div>';
+        }
+
+        function renderFontControls() {
+            return '<div class="font-controls" aria-label="Adjust font size">' +
+                '<button class="font-control-btn" type="button" data-action="font-smaller" aria-label="Smaller text">-</button>' +
+                '<button class="font-control-btn" type="button" data-action="font-larger" aria-label="Larger text">+</button>' +
             '</div>';
         }
 
@@ -1058,11 +1085,12 @@
 
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
-                        '<div>' +
+                        '<div class="group-head-main">' +
                             '<h3 class="group-title">' + group.label + '</h3>' +
                             '<p class="group-range">' + getWordRangeText(group) + '</p>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
+                        renderFontControls() +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                     '<div class="group-actions">' +
@@ -1196,7 +1224,23 @@
             });
         }
 
+        function adjustGroupFontSize(button, delta) {
+            var groupCard = button.closest('.group-card');
+            if (!groupCard) return;
+            var currentStep = Number(groupCard.getAttribute('data-font-step') || 0);
+            var nextStep = Math.max(-3, Math.min(5, currentStep + delta));
+            groupCard.setAttribute('data-font-step', String(nextStep));
+            groupCard.style.setProperty('--practice-font-size', (1 + nextStep * 0.06) + 'rem');
+        }
+
         function handleChoiceClick(e) {
+            var fontButton = e.target.closest('.font-control-btn');
+            if (fontButton) {
+                var action = fontButton.getAttribute('data-action');
+                adjustGroupFontSize(fontButton, action === 'font-larger' ? 1 : -1);
+                return;
+            }
+
             var option = e.target.closest('.choice-option');
             if (option) {
                 var optionCard = option.closest('.question-item');
@@ -1273,10 +1317,11 @@
                 }).join('');
                 return '<div class="group-card">' +
                     '<div class="group-head">' +
-                        '<div>' +
+                        '<div class="group-head-main">' +
                             '<h3 class="group-title">测试组 ' + (groupIndex + 1) + '</h3>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
+                        renderFontControls() +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                 '</div>';
