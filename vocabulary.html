@@ -222,6 +222,67 @@
             white-space: nowrap;
         }
 
+        .word-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+
+        .word-card {
+            position: relative;
+            min-height: 176px;
+            padding: 18px;
+            border: 1px solid rgba(15, 118, 110, 0.12);
+            border-radius: 18px;
+            background:
+                linear-gradient(180deg, #ffffff 0%, #fbfefd 100%);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
+        }
+
+        .word-card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .word-card-number {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+        }
+
+        .word-card-word {
+            margin: 3px 0 0;
+            color: var(--accent);
+            font-size: 1.35rem;
+            font-weight: 900;
+            line-height: 1.05;
+        }
+
+        .word-card-emoji {
+            font-size: 1.55rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .word-card-definition {
+            margin: 0 0 12px;
+            color: var(--ink);
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        .word-card-meaning {
+            margin: 0;
+            padding-top: 12px;
+            border-top: 1px solid #edf2f7;
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.55;
+        }
+
         .group-grid {
             display: grid;
             gap: 18px;
@@ -285,8 +346,8 @@
         }
 
         .word-chip-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             counter-reset: word-bank;
         }
@@ -298,6 +359,7 @@
             gap: 8px;
             min-height: 38px;
             padding: 8px 10px;
+            flex: 0 0 auto;
             border: 1px solid rgba(15, 118, 110, 0.1);
             border-radius: 12px;
             background: #ffffff;
@@ -743,20 +805,7 @@
                         </div>
                         <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
                     </div>
-                    <div class="word-table-wrap">
-                        <table class="word-table">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Word</th>
-                                    <th>Emoji</th>
-                                    <th>Simple Definition</th>
-                                    <th>Meaning</th>
-                                </tr>
-                            </thead>
-                            <tbody id="word-table-body"></tbody>
-                        </table>
-                    </div>
+                    <div id="word-list-grid" class="word-card-grid"></div>
                 </div>
 
                 <div class="view" id="self-study-view">
@@ -914,15 +963,19 @@
         }
 
         function renderWords(words) {
-            var body = document.getElementById('word-table-body');
-            body.innerHTML = words.map(function(word) {
-                return '<tr>' +
-                    '<td>' + word.number + '</td>' +
-                    '<td><strong class="word-cell">' + word.word + '</strong></td>' +
-                    '<td class="emoji">' + word.emoji + '</td>' +
-                    '<td>' + (word.simpleDefinition || '') + '</td>' +
-                    '<td>' + word.meaning + '</td>' +
-                '</tr>';
+            var root = document.getElementById('word-list-grid');
+            root.innerHTML = words.map(function(word) {
+                return '<article class="word-card">' +
+                    '<div class="word-card-top">' +
+                        '<div>' +
+                            '<div class="word-card-number">' + escapeHtml(word.number) + '</div>' +
+                            '<h3 class="word-card-word">' + escapeHtml(word.word) + '</h3>' +
+                        '</div>' +
+                        '<div class="word-card-emoji">' + escapeHtml(word.emoji) + '</div>' +
+                    '</div>' +
+                    '<p class="word-card-definition">' + escapeHtml(word.simpleDefinition || '') + '</p>' +
+                    '<p class="word-card-meaning">' + (word.meaning || '') + '</p>' +
+                '</article>';
             }).join('');
         }
 
