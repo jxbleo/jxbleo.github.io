@@ -39,47 +39,14 @@
             background: linear-gradient(135deg, #134e4a 0%, #0f766e 52%, #14b8a6 100%);
             color: #fff;
             border-radius: 24px;
-            padding: 32px 28px;
+            padding: 24px 28px;
             box-shadow: 0 18px 40px rgba(15, 118, 110, 0.18);
-        }
-
-        .hero-top {
-            display: flex;
-            gap: 16px;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .unit-badge {
-            display: inline-flex;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.22);
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-        }
-
-        .hero h1 {
-            margin: 14px 0 8px;
-            font-size: clamp(2rem, 5vw, 3.1rem);
-            line-height: 1.06;
-        }
-
-        .hero p {
-            margin: 0;
-            max-width: 720px;
-            color: rgba(255,255,255,0.84);
-            line-height: 1.6;
         }
 
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 14px;
-            margin-top: 24px;
         }
 
         .stat {
@@ -296,11 +263,15 @@
         }
 
         .word-bank {
+            position: sticky;
+            top: 0;
+            z-index: 40;
             margin-top: 12px;
             padding: 12px;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             background: linear-gradient(180deg, #ffffff 0%, #f8fbfc 100%);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
         }
 
         .word-bank-label {
@@ -684,13 +655,6 @@
         <div id="error" class="error" style="display:none;"></div>
         <div id="app" style="display:none;">
             <section class="hero">
-                <div class="hero-top">
-                    <div>
-                        <span class="unit-badge" id="unit-badge"></span>
-                        <h1 id="unit-title"></h1>
-                        <p id="unit-subtitle"></p>
-                    </div>
-                </div>
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">Word Source</div>
@@ -843,9 +807,6 @@
         }
 
         function renderHero(data) {
-            document.getElementById('unit-badge').textContent = data.id;
-            document.getElementById('unit-title').textContent = data.title;
-            document.getElementById('unit-subtitle').textContent = '';
             document.getElementById('stat-source').textContent = data.id || data.sourceName || 'Vocabulary';
             document.getElementById('stat-cefr').textContent = data.cefrLevel || '—';
         }
