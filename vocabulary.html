@@ -387,25 +387,66 @@
             margin: 0 4px;
         }
 
-        .blank-select {
-            width: auto;
-            min-width: 12ch;
-            max-width: min(24ch, 100%);
+        .blank-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 4.5ch;
+            max-width: min(18ch, 100%);
+            min-height: 1.45em;
             margin: 0 4px;
             border: none;
             border-bottom: 2px solid #64748b;
             border-radius: 0;
-            padding: 2px 20px 3px 4px;
+            padding: 1px 2px 3px;
             background: transparent;
             color: var(--ink);
             font: inherit;
             font-weight: 800;
             outline: none;
             cursor: pointer;
+            vertical-align: baseline;
         }
 
-        .blank-select:focus {
+        .blank-trigger:focus,
+        .blank-trigger:hover {
             border-bottom-color: var(--accent);
+        }
+
+        .blank-trigger.selected {
+            min-width: 4.5ch;
+        }
+
+        .choice-panel {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            border-radius: 14px;
+            background: #f8fbfc;
+        }
+
+        .question-item.choice-open .choice-panel {
+            display: flex;
+        }
+
+        .choice-option {
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: #fff;
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 850;
+            cursor: pointer;
+        }
+
+        .choice-option:hover,
+        .choice-option.selected {
+            background: #0f766e;
+            color: #fff;
         }
 
         .dictation-input {
@@ -865,11 +906,13 @@
             }).join('');
         }
 
-        function buildWordOptions(words, selectedValue) {
-            return '<option value="">Choose</option>' + words.map(function(word) {
-                var selected = word === selectedValue ? ' selected' : '';
-                return '<option value="' + word + '"' + selected + '>' + word + '</option>';
-            }).join('');
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         function renderWordBank(words) {
@@ -877,21 +920,34 @@
                 '<p class="word-bank-label">Word Bank</p>' +
                 '<div class="word-chip-list">' +
                     (words || []).map(function(word) {
-                        return '<span class="word-chip">' + word + '</span>';
+                        return '<span class="word-chip">' + escapeHtml(word) + '</span>';
                     }).join('') +
                 '</div>' +
             '</div>';
         }
 
+        function renderAnswerBlank() {
+            return '<input class="answer-input choice-value" type="hidden">' +
+                '<button class="blank-trigger" type="button" data-action="open-choice" aria-label="Choose answer"></button>';
+        }
+
+        function renderChoicePanel(words) {
+            return '<div class="choice-panel">' +
+                (words || []).map(function(word) {
+                    return '<button class="choice-option" type="button" data-value="' + escapeHtml(word) + '">' + escapeHtml(word) + '</button>';
+                }).join('') +
+            '</div>';
+        }
+
         function renderPromptWithSelect(question, options) {
-            var select = '<select class="answer-input blank-select" aria-label="Answer">' + buildWordOptions(options, '') + '</select>';
+            var blank = renderAnswerBlank();
             if (question.prompt.indexOf('__________') !== -1) {
-                return question.prompt.replace('__________', select);
+                return question.prompt.replace('__________', blank);
             }
             if (question.prompt.indexOf('_____') !== -1) {
-                return question.prompt.replace('_____', select);
+                return question.prompt.replace('_____', blank);
             }
-            return question.prompt + ' ' + select;
+            return question.prompt + ' ' + blank;
         }
 
         function checkGroupAnswers(groupId) {
@@ -922,6 +978,7 @@
                 var questions = group.questions.map(function(question, index) {
                     return '<div class="question-item" id="self-' + group.id + '-question-' + index + '">' +
                         '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
+                        renderChoicePanel(group.wordList || []) +
                         '<div class="reveal"></div>' +
                     '</div>';
                 }).join('');
@@ -1060,6 +1117,43 @@
             });
         }
 
+        function closeChoicePanels(exceptCard) {
+            document.querySelectorAll('.question-item.choice-open').forEach(function(card) {
+                if (card !== exceptCard) card.classList.remove('choice-open');
+            });
+        }
+
+        function handleChoiceClick(e) {
+            var option = e.target.closest('.choice-option');
+            if (option) {
+                var optionCard = option.closest('.question-item');
+                var input = optionCard.querySelector('.answer-input');
+                var trigger = optionCard.querySelector('.blank-trigger');
+                var value = option.getAttribute('data-value') || '';
+                input.value = value;
+                trigger.textContent = value;
+                trigger.classList.add('selected');
+                optionCard.querySelectorAll('.choice-option').forEach(function(btn) {
+                    btn.classList.toggle('selected', btn === option);
+                });
+                optionCard.classList.remove('choice-open');
+                return;
+            }
+
+            var trigger = e.target.closest('.blank-trigger');
+            if (trigger && !trigger.disabled) {
+                var triggerCard = trigger.closest('.question-item');
+                var willOpen = !triggerCard.classList.contains('choice-open');
+                closeChoicePanels(triggerCard);
+                triggerCard.classList.toggle('choice-open', willOpen);
+                return;
+            }
+
+            if (!e.target.closest('.choice-panel')) {
+                closeChoicePanels(null);
+            }
+        }
+
         function renderTestOptions(groups) {
             var select = document.getElementById('test-group-count');
             select.innerHTML = groups.map(function(group, index) {
@@ -1071,6 +1165,7 @@
         function renderTestQuestion(group, question, index) {
             return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-answer="' + question.answer + '">' +
                 '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
+                renderChoicePanel(group.wordList || []) +
                 '<div class="reveal"></div>' +
             '</div>';
         }
@@ -1127,10 +1222,13 @@
             var score = 0;
             questions.forEach(function(card) {
                 var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
                 var reveal = card.querySelector('.reveal');
                 var answer = card.getAttribute('data-answer');
                 card.classList.remove('correct', 'wrong', 'pending');
                 input.disabled = true;
+                if (trigger) trigger.disabled = true;
+                card.classList.remove('choice-open');
                 if (normalizeAnswer(input.value) === normalizeAnswer(answer)) {
                     score++;
                     card.classList.add('correct');
@@ -1175,6 +1273,7 @@
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', startTest);
             document.getElementById('submit-test-btn').addEventListener('click', submitTest);
+            document.addEventListener('click', handleChoiceClick);
         }
 
         function renderUnit(data) {
