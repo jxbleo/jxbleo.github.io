@@ -79,17 +79,13 @@ async function createStudent(event) {
   const password = initialPassword();
   let authUid = "";
   try {
-    const createOptions = {
-      name: studentId,
-      type: "internalUser",
+    const createResult = await manager.user.createEndUser({
+      username: studentId,
       password,
-      userStatus: "ACTIVE",
-      description: `Student profile managed by ${envId}`,
-    };
-    if (name.length >= 2 && name.length <= 64) createOptions.nickName = name;
-    const createResult = await manager.user.createUser(createOptions);
-    authUid = text(createResult && createResult.Data && createResult.Data.Uid);
+    });
+    authUid = text(createResult && createResult.User && createResult.User.UUId);
     if (!authUid) throw new Error("AUTH_USER_ID_MISSING");
+    await manager.user.setEndUserStatus({ uuid: authUid, status: "ENABLE" });
   } catch (error) {
     if (error.message === "AUTH_USER_ID_MISSING") throw error;
     throw new Error(`AUTH_CREATE_FAILED:${error.code || error.message || "UNKNOWN"}`);
@@ -111,7 +107,7 @@ async function createStudent(event) {
     await db.collection("students").add({ data: student });
   } catch (error) {
     try {
-      await manager.user.deleteUsers({ uids: [authUid] });
+      await manager.user.deleteEndUsers({ userList: [authUid] });
     } catch (rollbackError) {
       console.error("Unable to roll back auth user", rollbackError);
       throw new Error("PROFILE_CREATE_FAILED_ROLLBACK_REQUIRED");
@@ -137,9 +133,9 @@ async function updateStudent(event) {
   if (Object.prototype.hasOwnProperty.call(event, "active")) {
     const active = event.active === true;
     try {
-      await manager.user.modifyUser({
-        uid: authUid,
-        userStatus: active ? "ACTIVE" : "BLOCKED",
+      await manager.user.setEndUserStatus({
+        uuid: authUid,
+        status: active ? "ENABLE" : "DISABLE",
       });
     } catch (error) {
       throw new Error(`AUTH_STATUS_FAILED:${error.code || error.message || "UNKNOWN"}`);
@@ -155,9 +151,9 @@ async function updateStudent(event) {
   } catch (error) {
     if (Object.prototype.hasOwnProperty.call(event, "active")) {
       try {
-        await manager.user.modifyUser({
-          uid: authUid,
-          userStatus: student.active === true ? "ACTIVE" : "BLOCKED",
+        await manager.user.setEndUserStatus({
+          uuid: authUid,
+          status: student.active === true ? "ENABLE" : "DISABLE",
         });
       } catch (rollbackError) {
         console.error("Unable to roll back auth status", rollbackError);
@@ -177,11 +173,11 @@ async function resetStudentPassword(event) {
 
   const password = initialPassword();
   try {
-    await manager.user.modifyUser({
-      uid: authUid,
+    await manager.user.modifyEndUser({
+      uuid: authUid,
       password,
-      userStatus: "ACTIVE",
     });
+    await manager.user.setEndUserStatus({ uuid: authUid, status: "ENABLE" });
   } catch (error) {
     throw new Error(`AUTH_RESET_FAILED:${error.code || error.message || "UNKNOWN"}`);
   }

@@ -169,7 +169,9 @@ The first version supports:
 - viewing assignment summaries
 - viewing attempt summaries without exposing answer payloads
 
-The function uses CloudBase's official `@cloudbase/manager-node` user
-management service with the cloud function runtime's temporary Tencent Cloud
+The function uses CloudBase's official `@cloudbase/manager-node` end-user
+management service (`createEndUser`, `modifyEndUser`, and end-user status
+operations), matching the username/password authentication used by the web
+login. It uses the cloud function runtime's temporary Tencent Cloud
 credentials. No permanent SecretId or SecretKey is stored in the repository
 or browser.
