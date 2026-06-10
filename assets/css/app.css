@@ -379,6 +379,7 @@ button { cursor: pointer; }
 .teacher-metrics strong { display: block; margin-top: 3px; color: var(--ink); font-size: 0.8rem; }
 .teacher-footer { display: flex; justify-content: flex-end; margin-top: 28px; }
 .teacher-logout { min-height: 42px; padding: 0 20px; border-radius: 12px; font-weight: 850; }
+.teacher-refresh { min-height: 38px; padding: 0 14px; border-radius: 11px; font-weight: 800; }
 
 .empty-card { text-align: center; padding: 34px 20px; color: var(--muted); }
 .empty-card strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 1.05rem; }
