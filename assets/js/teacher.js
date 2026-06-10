@@ -377,9 +377,12 @@
             class_group: document.getElementById('student-class').value
         }).then(function(result) {
             studentForm.reset();
-            document.getElementById('create-student-panel').hidden = true;
             state.selectedStudentUid = result.student.auth_uid;
-            showMessage('Student created. Initial password: ' + result.initial_password, 'success');
+            showMessage(
+                'Student created and activated. Login ID: ' + result.student.student_id +
+                ' · Initial password: ' + result.initial_password,
+                'success'
+            );
             state.students.push(result.student);
             fillClassFilters();
             renderStudentList();
