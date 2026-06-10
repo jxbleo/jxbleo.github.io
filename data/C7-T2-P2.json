@@ -9,19 +9,52 @@
       "label": "Questions 14-17 - Paragraph Matching",
       "instruction": "Reading Passage 2 has seven paragraphs, A-G. Which paragraph contains the following information? Choose from A-G.",
       "choices": [
-        { "value": "A", "text": "Paragraph A" },
-        { "value": "B", "text": "Paragraph B" },
-        { "value": "C", "text": "Paragraph C" },
-        { "value": "D", "text": "Paragraph D" },
-        { "value": "E", "text": "Paragraph E" },
-        { "value": "F", "text": "Paragraph F" },
-        { "value": "G", "text": "Paragraph G" }
+        {
+          "value": "A",
+          "text": "Paragraph A"
+        },
+        {
+          "value": "B",
+          "text": "Paragraph B"
+        },
+        {
+          "value": "C",
+          "text": "Paragraph C"
+        },
+        {
+          "value": "D",
+          "text": "Paragraph D"
+        },
+        {
+          "value": "E",
+          "text": "Paragraph E"
+        },
+        {
+          "value": "F",
+          "text": "Paragraph F"
+        },
+        {
+          "value": "G",
+          "text": "Paragraph G"
+        }
       ],
       "items": [
-        { "id": "Q14", "text": "A cost involved in purifying domestic water: ______", "answer": "E", "evidence": "E 段提到 water companies 清除 drinking water 中 cryptosporidium 的花费。" },
-        { "id": "Q15", "text": "The stages in the development of the farming industry: ______", "answer": "B", "evidence": "B 段按时间顺序列出 mechanisation, fertilisers, monocultures, battery rearing, genetic engineering。" },
-        { "id": "Q16", "text": "The term used to describe hidden costs: ______", "answer": "C", "evidence": "C 段明确说 economists refer to these costs as externalities。" },
-        { "id": "Q17", "text": "One effect of chemicals on water sources: ______", "answer": "B", "evidence": "B 段指出 fertiliser run-off causes algae growth in lakes。" }
+        {
+          "id": "Q14",
+          "text": "A cost involved in purifying domestic water: ______"
+        },
+        {
+          "id": "Q15",
+          "text": "The stages in the development of the farming industry: ______"
+        },
+        {
+          "id": "Q16",
+          "text": "The term used to describe hidden costs: ______"
+        },
+        {
+          "id": "Q17",
+          "text": "One effect of chemicals on water sources: ______"
+        }
       ]
     },
     {
@@ -29,10 +62,22 @@
       "label": "Questions 18-21 - YES / NO / NOT GIVEN",
       "instruction": "Do the following statements agree with the claims of the writer?",
       "items": [
-        { "id": "Q18", "text": "Several species of wildlife in the British countryside are declining.", "answer": "YES", "evidence": "B 段举了 farmland birds、wild flowers、insects 等多个物种在消失或下降。" },
-        { "id": "Q19", "text": "The taste of food has deteriorated in recent years.", "answer": "NOT_GIVEN", "evidence": "全文讨论的是环境、健康和经济成本，没有评价食物口味变化。" },
-        { "id": "Q20", "text": "The financial costs of environmental damage are widely recognised.", "answer": "NO", "evidence": "C 段说消费者 rarely make the connection，很多人甚至不把这些损失看成 financial costs。" },
-        { "id": "Q21", "text": "One of the costs calculated by Professor Pretty was illness caused by food.", "answer": "YES", "evidence": "E 段列出 169 million pounds from food poisoning，正是由食物引起的疾病成本。" }
+        {
+          "id": "Q18",
+          "text": "Several species of wildlife in the British countryside are declining."
+        },
+        {
+          "id": "Q19",
+          "text": "The taste of food has deteriorated in recent years."
+        },
+        {
+          "id": "Q20",
+          "text": "The financial costs of environmental damage are widely recognised."
+        },
+        {
+          "id": "Q21",
+          "text": "One of the costs calculated by Professor Pretty was illness caused by food."
+        }
       ]
     },
     {
@@ -40,11 +85,26 @@
       "label": "Questions 22-26 - Summary Completion",
       "instruction": "Complete the summary using NO MORE THAN THREE WORDS from the passage for each answer.",
       "items": [
-        { "id": "Q22", "text": "Professor Pretty concludes that our ______ are higher than most people realise.", "answer": "food bills", "evidence": "E 段原句：our food bills are actually threefold。" },
-        { "id": "Q23", "text": "He feels it is realistic to suggest that Britain should reduce its reliance on ______.", "answer": "industrial agriculture", "evidence": "F 段 directly discusses breaking away from industrial agriculture in Britain。" },
-        { "id": "Q24", "text": "Although most farmers would be unable to adapt to ______, Professor Pretty proposes an intermediate step.", "answer": "organic farming", "evidence": "G 段说 organic farming would be too big a jump for many farmers。" },
-        { "id": "Q25", "text": "The change should begin with what he calls a ______.", "answer": "Greener Food Standard", "evidence": "G 段明确给出这个名称。" },
-        { "id": "Q26", "text": "He believes this would help change the attitudes of both ______.", "answer": "consumers as well as farmers", "evidence": "最后一句原文就是 shifting consumers as well as farmers towards a more sustainable system。" }
+        {
+          "id": "Q22",
+          "text": "Professor Pretty concludes that our ______ are higher than most people realise."
+        },
+        {
+          "id": "Q23",
+          "text": "He feels it is realistic to suggest that Britain should reduce its reliance on ______."
+        },
+        {
+          "id": "Q24",
+          "text": "Although most farmers would be unable to adapt to ______, Professor Pretty proposes an intermediate step."
+        },
+        {
+          "id": "Q25",
+          "text": "The change should begin with what he calls a ______."
+        },
+        {
+          "id": "Q26",
+          "text": "He believes this would help change the attitudes of both ______."
+        }
       ]
     }
   ]

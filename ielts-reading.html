@@ -371,6 +371,10 @@
     <button id="highlight-clear-btn" type="button">Clear</button>
 </div>
 
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+<script src="assets/js/config.public.js"></script>
+<script src="assets/js/cloudbase-client.js"></script>
+<script src="assets/js/practice-session.js"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
         console.log(JSON.stringify({ studentId: studentId, taskId: taskId, eventType: eventType, timestamp: timestamp, eventData: eventData }));
@@ -379,6 +383,8 @@
     var params = new URLSearchParams(window.location.search);
     var setId = params.get('set');
     var userId = params.get('user');
+    var assignmentId = params.get('assignment') || '';
+    var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
     var activeHighlightRange = null;
@@ -440,6 +446,10 @@
     function loadSavedAnswers() {
         if (!setId || !userId) return;
         var key = 'ielts-' + setId + '-' + userId;
+        if (params.get('retry') === '1') {
+            localStorage.removeItem(key);
+            return;
+        }
         var saved;
         try { saved = JSON.parse(localStorage.getItem(key)); } catch(e) {}
         if (!saved) return;
@@ -693,12 +703,12 @@
                     var evid = document.createElement('div');
                     evid.className = 'evidence-text';
                     evid.id = 'ev-' + item.id;
-                    evid.textContent = 'Evidence: ' + item.evidence;
+                    evid.textContent = '';
                     qDiv.appendChild(evid);
 
                     sectionDiv.appendChild(qDiv);
 
-                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                    allQuestions.push({ id: item.id, type: qSet.type, element: qDiv });
                 });
             } else if (qSet.type === 'mcq') {
                 qSet.items.forEach(function(item) {
@@ -735,12 +745,12 @@
                     var evid = document.createElement('div');
                     evid.className = 'evidence-text';
                     evid.id = 'ev-' + item.id;
-                    evid.textContent = 'Correct answer: ' + item.answer + ' — ' + item.evidence;
+                    evid.textContent = '';
                     qDiv.appendChild(evid);
 
                     sectionDiv.appendChild(qDiv);
 
-                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                    allQuestions.push({ id: item.id, type: qSet.type, element: qDiv });
                 });
             } else if (qSet.type === 'summary') {
                 var sumGrid = document.createElement('div');
@@ -783,7 +793,7 @@
                     var evid = document.createElement('div');
                     evid.className = 'evidence-text';
                     evid.id = 'ev-' + item.id;
-                    evid.textContent = 'Correct answer: ' + item.answer + ' — ' + item.evidence;
+                    evid.textContent = '';
                     qDiv.appendChild(evid);
 
                     sumGrid.appendChild(qDiv);
@@ -797,7 +807,7 @@
                         });
                     }
 
-                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qDiv });
+                    allQuestions.push({ id: item.id, type: qSet.type, element: qDiv });
                 });
                 sectionDiv.appendChild(sumGrid);
             } else if (qSet.type === 'headings') {
@@ -877,12 +887,12 @@
                     var evid = document.createElement('div');
                     evid.className = 'evidence-text';
                     evid.id = 'ev-' + item.id;
-                    evid.textContent = 'Correct heading: ' + item.answer;
+                    evid.textContent = '';
                     qRow.appendChild(evid);
 
                     headingsSection.appendChild(qRow);
 
-                    allQuestions.push({ id: item.id, type: qSet.type, answer: item.answer, evidence: item.evidence, element: qRow });
+                    allQuestions.push({ id: item.id, type: qSet.type, element: qRow });
                 });
 
                 sectionDiv.appendChild(headingsSection);
@@ -913,6 +923,71 @@
         document.querySelectorAll('[data-question]').forEach(function(el) { el.disabled = true; });
     }
 
+    function collectSubmissionAnswers() {
+        var answers = {};
+        allQuestions.forEach(function(q) {
+            var fields = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+            if (!fields.length) return;
+            if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
+                var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
+                answers[q.id] = checked ? checked.value : '';
+            } else {
+                answers[q.id] = fields[0].value.trim();
+            }
+        });
+        return answers;
+    }
+
+    function applyServerFeedback(response, answers) {
+        var resultMap = {};
+        (response.question_results || []).forEach(function(item) {
+            resultMap[item.question_id] = item;
+        });
+
+        allQuestions.forEach(function(q) {
+            var result = resultMap[q.id];
+            if (!result) return;
+            var fields = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+            var evidence = document.getElementById('ev-' + q.id);
+
+            if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
+                var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
+                var selectedLabel = checked ? checked.closest('label') : null;
+                if (selectedLabel) selectedLabel.classList.add(result.correct ? 'correct' : 'wrong');
+                if (!result.correct && result.correct_answer != null) {
+                    var correctField = document.querySelector('[name="' + CSS.escape(q.id) + '"][value="' + CSS.escape(String(result.correct_answer)) + '"]');
+                    if (correctField && correctField.closest('label')) correctField.closest('label').classList.add('correct');
+                }
+            } else if (fields.length) {
+                fields[0].classList.add(result.correct ? 'correct' : 'wrong');
+            }
+
+            if (evidence && !result.correct) {
+                evidence.textContent = 'Correct answer: ' + result.correct_answer + (result.explanation ? ' — ' + result.explanation : '');
+                evidence.classList.add('show');
+            }
+        });
+
+        disableAllInputs();
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitted';
+
+        var scoreDisplay = document.getElementById('score-display');
+        scoreDisplay.className = 'score-display show';
+        var grade = response.percentage >= 80 ? 'Excellent' : response.percentage >= 60 ? 'Good' : response.percentage >= 40 ? 'Fair' : 'Needs Improvement';
+        scoreDisplay.innerHTML = '<h2>Your Score</h2><div class="score-num">' +
+            response.correct_count + ' / ' + response.question_count +
+            '</div><div class="score-detail">' + response.percentage + '% — ' + grade + '</div>' +
+            '<button class="submit-btn" id="try-again-btn" type="button" style="margin-top:16px;">Try Again</button>';
+        document.getElementById('try-again-btn').addEventListener('click', function() {
+            localStorage.removeItem('ielts-' + setId + '-' + userId);
+            var url = new URL(window.location.href);
+            url.searchParams.set('retry', '1');
+            window.location.href = url.toString();
+        });
+    }
+
     function handleSubmit(e) {
         e.preventDefault();
         var now = Date.now();
@@ -923,86 +998,29 @@
             return;
         }
 
-        var score = 0;
-        var total = allQuestions.length;
+        var answers = collectSubmissionAnswers();
+        var submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
 
-        allQuestions.forEach(function(q) {
-            var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
-            var userAnswer = '';
-            if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
-                var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
-                userAnswer = checked ? checked.value : '';
-                var label = checked ? checked.closest('label') : null;
-                if (label) {
-                    if (userAnswer === q.answer) {
-                        label.classList.add('correct');
-                        score++;
-                    } else {
-                        label.classList.add('wrong');
-                        document.getElementById('ev-' + q.id).classList.add('show');
-                    }
-                }
-            } else if (q.type === 'summary') {
-                if (els.length) {
-                    var inp = els[0];
-                    userAnswer = inp.value.trim();
-                    var isSelect = inp.tagName === 'SELECT';
-                    var isCorrect = isSelect ? userAnswer === q.answer : userAnswer.toLowerCase() === q.answer.toLowerCase();
-                    if (isCorrect) {
-                        inp.classList.add('correct');
-                        score++;
-                    } else {
-                        inp.classList.add('wrong');
-                        document.getElementById('ev-' + q.id).classList.add('show');
-                    }
-                }
-            } else if (q.type === 'headings') {
-                if (els.length) {
-                    var sel = els[0];
-                    userAnswer = sel.value;
-                    if (userAnswer === q.answer) {
-                        sel.classList.add('correct');
-                        score++;
-                    } else {
-                        sel.classList.add('wrong');
-                        document.getElementById('ev-' + q.id).classList.add('show');
-                    }
-                }
+        window.MrCatCloud.callFunction('submitAttempt', {
+            set_id: setId,
+            assignment_id: assignmentId || null,
+            mode: 'ielts_reading',
+            answers: answers,
+            started_at: attemptStartedAt,
+            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(attemptStartedAt).getTime()) / 1000))
+        }).then(function(response) {
+            if (!response || !response.success) {
+                throw new Error(response && response.message || 'Unable to submit this attempt.');
             }
+            localStorage.removeItem('ielts-' + setId + '-' + userId);
+            applyServerFeedback(response, answers);
+        }).catch(function(error) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Answers';
+            alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
         });
-
-        disableAllInputs();
-        document.getElementById('submit-btn').disabled = true;
-        document.getElementById('submit-btn').textContent = 'Submitted';
-
-        var scoreDisplay = document.getElementById('score-display');
-        scoreDisplay.className = 'score-display show';
-        var pct = Math.round(score / total * 100);
-        var grade = pct >= 80 ? 'Excellent' : pct >= 60 ? 'Good' : pct >= 40 ? 'Fair' : 'Needs Improvement';
-        scoreDisplay.innerHTML = '<h2>Your Score</h2><div class="score-num">' + score + ' / ' + total + '</div><div class="score-detail">' + pct + '% — ' + grade + '</div>';
-
-        var formData = new FormData();
-        formData.append('Student_ID', userId);
-        formData.append('Set_ID', setId);
-        formData.append('Score', score + '/' + total);
-        allQuestions.forEach(function(q) {
-            var els = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
-            if (els.length) {
-                if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
-                    var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
-                    formData.append(q.id, checked ? checked.value : '');
-                } else if (q.type === 'summary') {
-                    formData.append(q.id, els[0].value.trim());
-                } else if (q.type === 'headings') {
-                    formData.append(q.id, els[0].value);
-                }
-            }
-        });
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://formspree.io/f/mpqnvgel', true);
-        xhr.setRequestHeader('Accept', 'application/json');
-        xhr.send(formData);
     }
 
     var students = [

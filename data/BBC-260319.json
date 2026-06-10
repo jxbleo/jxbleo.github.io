@@ -6,106 +6,76 @@
     {
       "id": "fill-1",
       "sentence": "Listeners come from various locations worldwide, including extremely cold nations such as _____, where temperatures in winter can fall to -20°C",
-      "answer": "Finland",
-      "evidence": "coming from all over the world, including some of the coldest countries on Earth – places like Finland, where winter temperatures drop to -20°C",
       "section": "Global cold environments and record temperatures"
     },
     {
       "id": "fill-2",
       "sentence": "The coldest temperature documented on the planet was _____",
-      "answer": "-89°C",
-      "evidence": "the lowest temperature ever recorded was a very cold -89°C",
       "section": "Global cold environments and record temperatures"
     },
     {
       "id": "fill-3",
       "sentence": "This extreme cold was recorded in _____",
-      "answer": "Antarctica",
-      "evidence": "I'm going to guess b) Antarctica",
       "section": "Global cold environments and record temperatures"
     },
     {
       "id": "fill-4",
       "sentence": "People's response to cold is influenced by multiple elements, including genetic makeup, cultural background, _____, and clothing choices",
-      "answer": "place of birth",
-      "evidence": "Our experience of cold depends on many things, including our genes, culture and place of birth",
       "section": "Factors affecting cold perception and clothing choices"
     },
     {
       "id": "fill-5",
       "sentence": "Professor Gunhild Sætren resides on an icy island situated _____ inside the Arctic Circle",
-      "answer": "800 miles",
-      "evidence": "lives on the icy island of Svalbard, 800 miles inside the Arctic Circle",
       "section": "Factors affecting cold perception and clothing choices"
     },
     {
       "id": "fill-6",
       "sentence": "Gender differences: males tend to be _____ than females",
-      "answer": "more tolerant",
-      "evidence": "So, males often are more tolerant, perhaps, than females",
       "section": "Factors affecting cold perception and clothing choices"
     },
     {
       "id": "fill-7",
       "sentence": "Experience: whether someone is accustomed to _____",
-      "answer": "dealing with the cold",
-      "evidence": "Then it's of course what you're used to. Are you used to dealing with the cold?",
       "section": "Factors affecting cold perception and clothing choices"
     },
     {
       "id": "fill-8",
       "sentence": "Herders experience _____ daily and have been doing so for hundreds of years",
-      "answer": "cold temperatures",
-      "evidence": "people who live in cold temperatures every day and have done for centuries",
       "section": "Research on reindeer herders in northern Finland"
     },
     {
       "id": "fill-9",
       "sentence": "Their response is measured and contrasted with typical Finns from _____ of the nation",
-      "answer": "warmer parts",
-      "evidence": "compares it to ordinary Finns from warmer parts of the country",
       "section": "Research on reindeer herders in northern Finland"
     },
     {
       "id": "fill-10",
       "sentence": "Subjectively speaking, the herders cope with cold conditions _____",
-      "answer": "far better",
-      "evidence": "the reindeer herders, at least kind of mentally, handle the cold far better",
       "section": "Research on reindeer herders in northern Finland"
     },
     {
       "id": "fill-11",
       "sentence": "Physically, they are _____ to shiver",
-      "answer": "far less likely",
-      "evidence": "They are far less likely to shiver",
       "section": "Research on reindeer herders in northern Finland"
     },
     {
       "id": "fill-12",
       "sentence": "Cold adaptation may involve _____ inherited from parents to offspring",
-      "answer": "genetic adaptations",
-      "evidence": "including genetic adaptations passed on from parents to children",
       "section": "Research on reindeer herders in northern Finland"
     },
     {
       "id": "fill-13",
       "sentence": "The record-breaking temperature was measured at a research facility in _____",
-      "answer": "Antarctica",
-      "evidence": "The lowest temperature ever recorded on Earth was at the Vostok Research Station in Antarctica",
       "section": "Additional information"
     },
     {
       "id": "fill-14",
       "sentence": "in _____",
-      "answer": "1983",
-      "evidence": "at the Vostok Research Station in Antarctica in 1983",
       "section": "Additional information"
     },
     {
       "id": "fill-15",
       "sentence": "A shiver is a trembling motion produced by _____ when experiencing cold or fear",
-      "answer": "your muscles",
-      "evidence": "a shiver is the shaking movement made by your muscles when you feel cold or afraid",
       "section": "Additional information"
     }
   ],
@@ -118,9 +88,7 @@
         "B. She prefers being too hot rather than too cold",
         "C. She is indifferent to temperature extremes",
         "D. She dislikes both heat and cold equally"
-      ],
-      "answer": "B",
-      "evidence": "Becca: 'I'd rather be too hot and cool down than too cold and try to warm up.'"
+      ]
     },
     {
       "id": "mc-17",
@@ -130,9 +98,7 @@
         "B. To introduce the topic of varying cold tolerance",
         "C. To highlight British fashion trends in winter",
         "D. To criticize those who dress inappropriately for cold"
-      ],
-      "answer": "B",
-      "evidence": "Phil: 'Why do people feel the cold so differently? That's what we'll be discussing…'"
+      ]
     },
     {
       "id": "mc-18",
@@ -142,9 +108,7 @@
         "B. It is one of the many minor factors",
         "C. It is the least relevant consideration",
         "D. It is an outdated idea no longer true"
-      ],
-      "answer": "A",
-      "evidence": "Becca: 'first and foremost means more than anything else'"
+      ]
     },
     {
       "id": "mc-19",
@@ -154,9 +118,7 @@
         "B. Whether they are used to cold environments",
         "C. Their diet and nutrition",
         "D. Their level of physical fitness"
-      ],
-      "answer": "B",
-      "evidence": "Gunhild: 'Are you used to dealing with the cold?'"
+      ]
     },
     {
       "id": "mc-20",
@@ -166,9 +128,7 @@
         "B. To provide proof men are definitely tougher",
         "C. To introduce a disputed topic without firm conclusions",
         "D. To emphasize that gender is irrelevant"
-      ],
-      "answer": "C",
-      "evidence": "Phil: 'There is some debate about whether men or women are more tolerant…'"
+      ]
     },
     {
       "id": "mc-21",
@@ -178,9 +138,7 @@
         "B. People from Brazil are better at coping with the cold",
         "C. Place of birth has no impact on cold tolerance",
         "D. People from Svalbard dress poorly for the cold"
-      ],
-      "answer": "A",
-      "evidence": "Phil: 'someone born in Arctic Svalbard would feel less cold than someone born in Brazil'"
+      ]
     },
     {
       "id": "mc-22",
@@ -190,9 +148,7 @@
         "B. Their feelings are irrelevant to scientific study",
         "C. Their experience of cold is based on personal perception rather than hard data",
         "D. Their shivering indicates high tolerance objectively"
-      ],
-      "answer": "C",
-      "evidence": "Phil: 'subjectively means based on personal experience… mentally handle the cold better'"
+      ]
     },
     {
       "id": "mc-23",
@@ -202,9 +158,7 @@
         "B. Their study has clear and predictable results",
         "C. The findings about cold adaptation are complicated and not clear-cut",
         "D. They have not yet started collecting any data"
-      ],
-      "answer": "C",
-      "evidence": "Cara: 'the more confusing the picture gets'"
+      ]
     },
     {
       "id": "mc-24",
@@ -214,9 +168,7 @@
         "B. They shiver more frequently than people from warmer regions",
         "C. They are less likely to shiver, suggesting some physical adaptation",
         "D. They do not need any protective clothing in Arctic conditions"
-      ],
-      "answer": "C",
-      "evidence": "Cara: 'They are far less likely to shiver'"
+      ]
     },
     {
       "id": "mc-25",
@@ -226,9 +178,7 @@
         "B. Shivering is a voluntary exercise to warm up",
         "C. Shivering is a sign of enjoying cold weather",
         "D. Shivering only happens when a person is afraid"
-      ],
-      "answer": "A",
-      "evidence": "Becca: 'a shiver is the shaking movement made by your muscles when you feel cold or afraid'"
+      ]
     }
   ]
 }

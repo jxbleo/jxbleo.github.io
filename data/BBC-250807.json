@@ -6,141 +6,101 @@
     {
       "id": "fill-1",
       "sentence": "Related to the concept of _____, which refers to a general sense of health and happiness",
-      "answer": "wellbeing",
-      "evidence": "\"you probably know the word 'wellbeing' – it's a general feeling of health and happiness\"",
       "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-2",
       "sentence": "Goes beyond that — it means a person's _____ is good",
-      "answer": "whole life",
-      "evidence": "\"it's not just about wellbeing – it's about your whole life being good\"",
       "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-3",
       "sentence": "Described as a psychological _____ — a term that has become popular and widely used",
-      "answer": "buzzword",
-      "evidence": "\"'Flourishing' is a psychological buzzword – a word or phrase that has become fashionable\"",
       "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-4",
       "sentence": "Covers multiple life areas: happiness, health, relationships, and _____",
-      "answer": "financial security",
-      "evidence": "\"People who are flourishing feel good about all aspects of their life, including happiness, health, relationships and financial security\"",
       "section": "What is 'Flourishing'?"
     },
     {
       "id": "fill-5",
       "sentence": "Surveyed more than _____ participants",
-      "answer": "200,000 people",
-      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\"",
       "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-6",
       "sentence": "Conducted across _____ nations",
-      "answer": "22 countries",
-      "evidence": "\"a new survey into the lives of over 200,000 people in 22 countries\"",
       "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-7",
       "sentence": "Examined _____ of life, including health, finances, social relationships, and religion",
-      "answer": "six areas",
-      "evidence": "\"the study investigated six areas of life, including health, finances, social relationships and religion\"",
       "section": "About the Global Flourishing Study"
     },
     {
       "id": "fill-8",
       "sentence": "Wealthier nations (e.g. Sweden, USA) performed better on _____ aspects such as finance",
-      "answer": "material",
-      "evidence": "\"high-income countries scored higher on some of the more material aspects of flourishing, so things like finance\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-9",
       "sentence": "Nations with moderate income levels (e.g. Mexico) scored higher on kindness and _____",
-      "answer": "social cohesion",
-      "evidence": "\"Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-10",
       "sentence": "The term _____ refers to a small piece of something valuable or insightful",
-      "answer": "nugget",
-      "evidence": "\"A nugget means a small piece of something good, like wisdom, or precious, like a nugget of gold\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-11",
       "sentence": "Gender differences were observed: in Japan, _____ had higher flourishing scores than men",
-      "answer": "women",
-      "evidence": "\"in Japan women flourished more than men\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-12",
       "sentence": "In Brazil, the _____ pattern was found",
-      "answer": "opposite",
-      "evidence": "\"in Brazil the opposite was true\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-13",
       "sentence": "Across all countries, flourishing levels rose after _____",
-      "answer": "age of 50",
-      "evidence": "\"across all countries, flourishing increased after the age of 50\"",
       "section": "Key Findings"
     },
     {
       "id": "fill-14",
       "sentence": "Practise gratitude — being _____ for what one has",
-      "answer": "thankful",
-      "evidence": "\"Being thankful for what we have is a way of increasing the amount of flourishing that we have in our lives\"",
       "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-15",
       "sentence": "Show kindness to build _____ with others",
-      "answer": "connection",
-      "evidence": "\"Showing kindness, which helps us to develop connection with other people\"",
       "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-16",
       "sentence": "Celebrate personal achievements through _____ — taking time to appreciate good moments",
-      "answer": "savouring",
-      "evidence": "\"just celebrating our own accomplishments – I think we've spoken on the programme before about savouring\"",
       "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-17",
       "sentence": "Focus on _____ — small successes that move you towards bigger life goals",
-      "answer": "small wins",
-      "evidence": "\"small wins – minor achievements or successes which bring you a little closer to your long-term goals in life\"",
       "section": "How to Flourish: Recommended Practices"
     },
     {
       "id": "fill-18",
       "sentence": "Among all countries surveyed, _____ ranked highest overall",
-      "answer": "Indonesia",
-      "evidence": "\"The correct answer is Indonesia\"",
       "section": "Study Result"
     },
     {
       "id": "fill-19",
       "sentence": "To _____ something means to enjoy it fully by experiencing it slowly",
-      "answer": "savour",
-      "evidence": "\"If you savour something, you enjoy something as much as possible by experiencing it slowly\"",
       "section": "Vocabulary Summary"
     },
     {
       "id": "fill-20",
       "sentence": "_____ means feeling appreciative for what you have",
-      "answer": "gratitude",
-      "evidence": "\"Gratitude means being thankful for what you have\"",
       "section": "Vocabulary Summary"
     }
   ],
@@ -153,9 +113,7 @@
         "It is a trendy psychological term backed by scientific research",
         "It is a concept that focuses mainly on physical health and fitness",
         "It is a newly invented idea with no connection to existing psychology"
-      ],
-      "answer": "B",
-      "evidence": "Claudia Hammond: \"This is another psychological buzzword with added evidence.\""
+      ]
     },
     {
       "id": "mc-2",
@@ -165,9 +123,7 @@
         "They showed stronger performance in areas related to physical wellbeing",
         "They outperformed richer nations in overall happiness across all categories",
         "They ranked more highly in social bonds, generosity, and a sense of purpose"
-      ],
-      "answer": "D",
-      "evidence": "Dr Olusoga: \"Middle-income countries scored more highly on things like meaning of relationships and kindness and social cohesion.\""
+      ]
     },
     {
       "id": "mc-3",
@@ -177,9 +133,7 @@
         "He admits he is uncertain whether he truly meets the criteria for flourishing",
         "He suggests that external success matters more than personal relationships",
         "He implies that flourishing is too vague a concept to apply to himself"
-      ],
-      "answer": "A",
-      "evidence": "Phil: \"I think the same. I think I'm happy and I've got everything I need.\""
+      ]
     },
     {
       "id": "mc-4",
@@ -189,9 +143,7 @@
         "Men in most countries reported higher levels of flourishing than women did",
         "The direction of the gender gap in flourishing varied depending on the country",
         "Gender was found to be the single most important factor in determining flourishing"
-      ],
-      "answer": "C",
-      "evidence": "Georgie: \"in Japan women flourished more than men, while in Brazil the opposite was true.\""
+      ]
     },
     {
       "id": "mc-5",
@@ -201,9 +153,7 @@
         "He believes that prosperity and social fulfilment are equally distributed globally",
         "He contends that richer nations fall behind in every dimension of flourishing measured",
         "He implies that material comfort and human connection reflect different aspects of flourishing"
-      ],
-      "answer": "D",
-      "evidence": "Dr Olusoga distinguished between high-income countries' material aspects and middle-income countries' meaning of relationships and kindness"
+      ]
     },
     {
       "id": "mc-6",
@@ -213,9 +163,7 @@
         "It is most effective when combined with financial security and career achievement",
         "It is a behaviour supported by evidence that can raise one's level of flourishing",
         "It is a strategy that works only for people living in middle-income or poorer nations"
-      ],
-      "answer": "C",
-      "evidence": "Dr Olusoga: \"things that are as simple as just practising gratitude… is a way of increasing the amount of flourishing that we have in our lives\""
+      ]
     },
     {
       "id": "mc-7",
@@ -225,9 +173,7 @@
         "Reflecting on past failures in order to set more realistic goals for the future",
         "Pushing through difficulties quickly so that rewards can be enjoyed sooner",
         "Sharing personal achievements with others to strengthen social relationships"
-      ],
-      "answer": "A",
-      "evidence": "Georgie: \"To savour means to fully enjoy something by experiencing it slowly and mindfully.\""
+      ]
     },
     {
       "id": "mc-8",
@@ -237,9 +183,7 @@
         "Accumulating minor achievements is considered irrelevant to broader life satisfaction",
         "Recognising incremental progress is seen as an essential part of a fulfilling life",
         "Long-term goals should be prioritised over small wins to maximise overall wellbeing"
-      ],
-      "answer": "C",
-      "evidence": "Phil: \"savouring each small win along the way is vital to flourishing\""
+      ]
     },
     {
       "id": "mc-9",
@@ -249,9 +193,7 @@
         "Flourishing is widely believed to be determined primarily by cultural traditions",
         "Most people underestimate the role that religion plays in national happiness rankings",
         "Wealth and living standards are often mistakenly assumed to determine national flourishing"
-      ],
-      "answer": "D",
-      "evidence": "Phil guessed Denmark, but the correct answer was Indonesia"
+      ]
     },
     {
       "id": "mc-10",
@@ -261,9 +203,7 @@
         "Simple, research-backed habits such as gratitude and connection can enhance flourishing",
         "Flourishing is largely determined by age and nationality rather than personal choices",
         "The most effective path to flourishing involves achieving significant career milestones"
-      ],
-      "answer": "B",
-      "evidence": "Dr Olusoga: \"practising gratitude… Showing kindness, which helps us to develop connection with other people.\""
+      ]
     }
   ]
 }

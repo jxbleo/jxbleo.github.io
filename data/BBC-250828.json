@@ -6,141 +6,101 @@
     {
       "id": "fill-1",
       "sentence": "Non-identical twins develop from _____ and share half their genes",
-      "answer": "two separate eggs",
-      "evidence": "Non-identical, or fraternal, twins come from two separate eggs and share half their genes.",
       "section": "Types of Twins"
     },
     {
       "id": "fill-2",
       "sentence": "Identical twins originate from one fertilised egg and share all their _____",
-      "answer": "genes",
-      "evidence": "identical twins, who come from a single fertilised egg and share 100% of their genes.",
       "section": "Types of Twins"
     },
     {
       "id": "fill-3",
       "sentence": "Examples include queries about psychic abilities, swapping partners and having _____",
-      "answer": "the same dreams",
-      "evidence": "some common questions for twins include: 'Do you have psychic powers? Have you ever swapped boyfriends? And do you have the same dreams?'",
       "section": "Common Reactions When Meeting Twins"
     },
     {
       "id": "fill-4",
       "sentence": "Twins may show annoyance by _____ when asked these questions",
-      "answer": "rolling their eyes",
-      "evidence": "if you meet a twin and you ask them one of these questions, don't be surprised if they roll their eyes at you.",
       "section": "Common Reactions When Meeting Twins"
     },
     {
       "id": "fill-5",
       "sentence": "Currently, one in every _____ is born a twin",
-      "answer": "42 babies",
-      "evidence": "In fact, one in every 42 babies is born a twin.",
       "section": "Twin Statistics"
     },
     {
       "id": "fill-6",
       "sentence": "Being a twin is not always _____",
-      "answer": "plain sailing",
-      "evidence": "Being a twin isn't always plain sailing.",
       "section": "Positive aspects:"
     },
     {
       "id": "fill-7",
       "sentence": "However, twins never experience fear during _____",
-      "answer": "school",
-      "evidence": "there's never that fear, because you're going through school together",
       "section": "Positive aspects:"
     },
     {
       "id": "fill-8",
       "sentence": "Sometimes attend _____ together",
-      "answer": "the same class",
-      "evidence": "you're sometimes in the same class together, you're making friends together.",
       "section": "Positive aspects:"
     },
     {
       "id": "fill-9",
       "sentence": "Important developmental stages are _____ for twins",
-      "answer": "made easier",
-      "evidence": "all of those milestones of childhood, in some ways, are made easier for twins.",
       "section": "Positive aspects:"
     },
     {
       "id": "fill-10",
       "sentence": "As twins grow older, they realise people view them as a twin rather than an _____",
-      "answer": "individual",
-      "evidence": "the more you realise how much people really think of you as a twin rather than as an individual.",
       "section": "Negative aspects:"
     },
     {
       "id": "fill-11",
       "sentence": "Many twins struggle to establish their own _____",
-      "answer": "identity",
-      "evidence": "Many twins find it hard to establish their own identity as a separate and unique individual.",
       "section": "Negative aspects:"
     },
     {
       "id": "fill-12",
       "sentence": "This debate examines how much of our lives is shaped by _____ we are born with",
-      "answer": "the genetics",
-      "evidence": "how much of our lives is determined by nature, the genetics we're born with",
       "section": "The Nature versus Nurture Discussion"
     },
     {
       "id": "fill-13",
       "sentence": "Also considers the impact of _____ we grow up in",
-      "answer": "the environment",
-      "evidence": "and how much by nurture, the environment we grow up in?",
       "section": "The Nature versus Nurture Discussion"
     },
     {
       "id": "fill-14",
       "sentence": "Because twins share similar genetics, _____ between them provide valuable scientific insights",
-      "answer": "differences",
-      "evidence": "Because twins are so genetically similar, differences between them tell scientists a lot.",
       "section": "The Nature versus Nurture Discussion"
     },
     {
       "id": "fill-15",
       "sentence": "The twins were _____ and grew up in different locations",
-      "answer": "separated at birth",
-      "evidence": "twins that were separated at birth, grew up in different parts of the world",
       "section": "The Jim Twins Case Study"
     },
     {
       "id": "fill-16",
       "sentence": "They had remarkably similar _____",
-      "answer": "life courses",
-      "evidence": "they kind of have these eerily similar life courses.",
       "section": "The Jim Twins Case Study"
     },
     {
       "id": "fill-17",
       "sentence": "Both were reunited at age _____",
-      "answer": "39",
-      "evidence": "the Jim Twins, who were reunited at age 39 after being separated at birth",
       "section": "The Jim Twins Case Study"
     },
     {
       "id": "fill-18",
       "sentence": "Both married women named _____ initially",
-      "answer": "Linda",
-      "evidence": "They both married someone called Linda and then divorced her for someone called Betty.",
       "section": "The Jim Twins Case Study"
     },
     {
       "id": "fill-19",
       "sentence": "Both gave their dogs the name _____",
-      "answer": "Toy",
-      "evidence": "They both named their dog 'Toy'.",
       "section": "The Jim Twins Case Study"
     },
     {
       "id": "fill-20",
       "sentence": "The case was described as _____ due to the extraordinary similarities",
-      "answer": "crazy",
-      "evidence": "they just had so many similarities – it was crazy!",
       "section": "The Jim Twins Case Study"
     }
   ],
@@ -153,9 +113,7 @@
         "B. He recognises it would likely be irritating to twins",
         "C. He believes it demonstrates scientific curiosity",
         "D. He thinks it reveals genuine concern for twins"
-      ],
-      "answer": "B",
-      "evidence": "Neil: 'Oh, probably quite an annoying one.'"
+      ]
     },
     {
       "id": "mc-22",
@@ -165,9 +123,7 @@
         "B. They would appreciate the genuine interest shown",
         "C. They would provide scientific explanations patiently",
         "D. They would display signs of annoyance or frustration"
-      ],
-      "answer": "D",
-      "evidence": "Anand: 'if you meet a twin and you ask them one of these questions, don't be surprised if they roll their eyes at you'"
+      ]
     },
     {
       "id": "mc-23",
@@ -177,9 +133,7 @@
         "B. Being in separate classes helps establish individual identities",
         "C. Making friends independently is crucial for their development",
         "D. Fear of social situations is more common among twins"
-      ],
-      "answer": "A",
-      "evidence": "Karen: 'there's never that fear, because you're going through school together… all of those milestones of childhood, in some ways, are made easier for twins'"
+      ]
     },
     {
       "id": "mc-24",
@@ -189,9 +143,7 @@
         "B. They find it difficult to share childhood memories",
         "C. They face difficulties being recognised as distinct individuals",
         "D. They experience problems forming friendships with non-twins"
-      ],
-      "answer": "C",
-      "evidence": "Karen: 'the more you realise how much people really think of you as a twin rather than as an individual'"
+      ]
     },
     {
       "id": "mc-25",
@@ -201,9 +153,7 @@
         "B. Variations between genetically similar individuals reveal environmental influences",
         "C. Twins demonstrate how genetics alone determines life outcomes",
         "D. Identical twins prove that upbringing has minimal impact"
-      ],
-      "answer": "B",
-      "evidence": "Beth: 'Because twins are so genetically similar, differences between them tell scientists a lot'"
+      ]
     },
     {
       "id": "mc-26",
@@ -213,9 +163,7 @@
         "B. The importance of early childhood separation",
         "C. The role of coincidence in human relationships",
         "D. The benefits of reunion after long separations"
-      ],
-      "answer": "A",
-      "evidence": "twins grew up in different parts of the world, and they kind of have these eerily similar life courses"
+      ]
     },
     {
       "id": "mc-27",
@@ -225,9 +173,7 @@
         "B. Their different choices prove environment matters more than genes",
         "C. Their reunions typically reveal few meaningful similarities",
         "D. Their experiences confirm that genetics play no significant role"
-      ],
-      "answer": "A",
-      "evidence": "Anand: 'they kind of have these eerily similar life courses. And you think, Gosh! How much choice have I had over the way my life's turned out?'"
+      ]
     },
     {
       "id": "mc-28",
@@ -237,9 +183,7 @@
         "B. The different environments they grew up in",
         "C. The geographical distance between their homes",
         "D. The remarkable parallels in their life choices"
-      ],
-      "answer": "D",
-      "evidence": "Helena: 'they just had so many similarities… They both married someone called Linda and then divorced her for someone called Betty. They both named their dog Toy'"
+      ]
     },
     {
       "id": "mc-29",
@@ -249,9 +193,7 @@
         "B. They were limited to superficial preferences",
         "C. They were extraordinarily unusual and striking",
         "D. They were exaggerated by media reports"
-      ],
-      "answer": "C",
-      "evidence": "Helena: 'it was crazy! … It was, like, ridiculous!'"
+      ]
     },
     {
       "id": "mc-30",
@@ -261,9 +203,7 @@
         "B. It combines unusual and remarkable elements",
         "C. It is scientifically explainable and ordinary",
         "D. It requires more research and investigation"
-      ],
-      "answer": "B",
-      "evidence": "Beth: 'I think strange, mysterious and fantastic describe being a twin quite well'"
+      ]
     }
   ]
 }

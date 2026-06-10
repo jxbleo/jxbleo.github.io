@@ -21,12 +21,27 @@
         "Co-operation of district officials",
         "Role of wheelbarrows and donkeys"
       ],
-      "example": { "paragraph": "A", "heading": "vi" },
+      "example": {
+        "paragraph": "A",
+        "heading": "vi"
+      },
       "items": [
-        { "id": "Q27", "paragraph": "B", "answer": "ii", "evidence": "B 节重点在先调查和识别 Makete 的交通难题，Phase I 就是为此而设。" },
-        { "id": "Q28", "paragraph": "C", "answer": "v", "evidence": "C 节展示了第二阶段开始实施的初步改进方案，正是 mobility 和 transport modes 的改善。" },
-        { "id": "Q29", "paragraph": "E", "answer": "x", "evidence": "E 节核心在 district authorities 的支持与理解，也就是 district officials 的配合。" },
-        { "id": "Q30", "paragraph": "F", "answer": "i", "evidence": "F 节说 Makete will act as a reference for future work，等于未来范本。" }
+        {
+          "id": "Q27",
+          "paragraph": "B"
+        },
+        {
+          "id": "Q28",
+          "paragraph": "C"
+        },
+        {
+          "id": "Q29",
+          "paragraph": "E"
+        },
+        {
+          "id": "Q30",
+          "paragraph": "F"
+        }
       ]
     },
     {
@@ -34,11 +49,26 @@
       "label": "Questions 31-35 - YES / NO / NOT GIVEN",
       "instruction": "Do the following statements agree with the claims of the writer?",
       "items": [
-        { "id": "Q31", "text": "MIRTP was divided into five phases.", "answer": "NO", "evidence": "文中只明确提到 Phase I、Phase II 和 Phase III，共三阶段，不是五阶段。" },
-        { "id": "Q32", "text": "Prior to the start of MIRTP, the Makete district was almost inaccessible during the rainy season.", "answer": "YES", "evidence": "B 节首句说 Makete was virtually totally isolated during the rainy season。" },
-        { "id": "Q33", "text": "Phase I of MIRTP consisted of a survey of household expenditure on transport.", "answer": "NO", "evidence": "调查的是 households spent seven hours a day on transporting，不是金钱 expenditure。" },
-        { "id": "Q34", "text": "The survey concluded that one-fifth of the household transport requirement was outside the local area.", "answer": "YES", "evidence": "原文说 80% was within the locality，反推 20% 在本地之外。" },
-        { "id": "Q35", "text": "MIRTP hoped to improve the movement of goods from Makete district to the country's capital.", "answer": "NOT_GIVEN", "evidence": "文章说改善 district 的 import and export of goods，但没有提到 specifically 到首都。" }
+        {
+          "id": "Q31",
+          "text": "MIRTP was divided into five phases."
+        },
+        {
+          "id": "Q32",
+          "text": "Prior to the start of MIRTP, the Makete district was almost inaccessible during the rainy season."
+        },
+        {
+          "id": "Q33",
+          "text": "Phase I of MIRTP consisted of a survey of household expenditure on transport."
+        },
+        {
+          "id": "Q34",
+          "text": "The survey concluded that one-fifth of the household transport requirement was outside the local area."
+        },
+        {
+          "id": "Q35",
+          "text": "MIRTP hoped to improve the movement of goods from Makete district to the country's capital."
+        }
       ]
     },
     {
@@ -46,22 +76,64 @@
       "label": "Questions 36-39 - Sentence Endings",
       "instruction": "Complete each sentence with the correct ending, A-J.",
       "choices": [
-        { "value": "A", "text": "provided the people of Makete with experience in running bus and truck services." },
-        { "value": "B", "text": "was especially successful in the northern part of the district." },
-        { "value": "C", "text": "differed from earlier phases in that the community became less actively involved." },
-        { "value": "D", "text": "improved paths used for transport up and down hillsides." },
-        { "value": "E", "text": "was no longer a problem once the roads had been improved." },
-        { "value": "F", "text": "cost less than locally made wheelbarrows." },
-        { "value": "G", "text": "was done only at the request of local people who were willing to lend a hand." },
-        { "value": "H", "text": "was at first considered by MIRTP to be affordable for the people of the district." },
-        { "value": "I", "text": "hindered attempts to make the existing transport services more efficient." },
-        { "value": "J", "text": "was thought to be the most important objective of Phase III." }
+        {
+          "value": "A",
+          "text": "provided the people of Makete with experience in running bus and truck services."
+        },
+        {
+          "value": "B",
+          "text": "was especially successful in the northern part of the district."
+        },
+        {
+          "value": "C",
+          "text": "differed from earlier phases in that the community became less actively involved."
+        },
+        {
+          "value": "D",
+          "text": "improved paths used for transport up and down hillsides."
+        },
+        {
+          "value": "E",
+          "text": "was no longer a problem once the roads had been improved."
+        },
+        {
+          "value": "F",
+          "text": "cost less than locally made wheelbarrows."
+        },
+        {
+          "value": "G",
+          "text": "was done only at the request of local people who were willing to lend a hand."
+        },
+        {
+          "value": "H",
+          "text": "was at first considered by MIRTP to be affordable for the people of the district."
+        },
+        {
+          "value": "I",
+          "text": "hindered attempts to make the existing transport services more efficient."
+        },
+        {
+          "value": "J",
+          "text": "was thought to be the most important objective of Phase III."
+        }
       ],
       "items": [
-        { "id": "Q36", "text": "Construction of footbridges, steps and handrails ______", "answer": "D", "evidence": "C 节说这些设施是为了改善山坡上下的捷径小路运输。" },
-        { "id": "Q37", "text": "Frequent breakdown of buses and trucks in Makete ______", "answer": "I", "evidence": "D 节明确说车辆常坏，导致 improving the efficiency of existing transport services 不成功。" },
-        { "id": "Q38", "text": "The improvement of secondary roads and paths ______", "answer": "G", "evidence": "D 节说这类改善 only at the request of communities who were willing to participate in construction and maintenance。" },
-        { "id": "Q39", "text": "The isolation of Makete for part of the year ______", "answer": "E", "evidence": "D 节指出 road improvements made the district centre accessible throughout the year。" }
+        {
+          "id": "Q36",
+          "text": "Construction of footbridges, steps and handrails ______"
+        },
+        {
+          "id": "Q37",
+          "text": "Frequent breakdown of buses and trucks in Makete ______"
+        },
+        {
+          "id": "Q38",
+          "text": "The improvement of secondary roads and paths ______"
+        },
+        {
+          "id": "Q39",
+          "text": "The isolation of Makete for part of the year ______"
+        }
       ]
     },
     {
@@ -73,13 +145,23 @@
           "id": "Q40",
           "text": "Which of the following phrases best describes the main aim of the passage?",
           "options": [
-            { "value": "A", "text": "to suggest that projects such as MIRTP are needed in other countries" },
-            { "value": "B", "text": "to describe how MIRTP was implemented and how successful it was" },
-            { "value": "C", "text": "to examine how MIRTP promoted the use of donkeys" },
-            { "value": "D", "text": "to warn that projects such as MIRTP are likely to have serious problems" }
-          ],
-          "answer": "B",
-          "evidence": "全文按阶段说明 MIRTP 如何开展、采取了什么措施，以及最终取得了怎样的成效。" 
+            {
+              "value": "A",
+              "text": "to suggest that projects such as MIRTP are needed in other countries"
+            },
+            {
+              "value": "B",
+              "text": "to describe how MIRTP was implemented and how successful it was"
+            },
+            {
+              "value": "C",
+              "text": "to examine how MIRTP promoted the use of donkeys"
+            },
+            {
+              "value": "D",
+              "text": "to warn that projects such as MIRTP are likely to have serious problems"
+            }
+          ]
         }
       ]
     }

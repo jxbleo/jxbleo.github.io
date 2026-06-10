@@ -6,106 +6,76 @@
     {
       "id": "fill-1",
       "sentence": "Traditional advice suggests having a substantial morning meal and eating like a _____ in the evening",
-      "answer": "pauper",
-      "evidence": "\"I am supporting the meme 'breakfast like a king and dine like a pauper'.\"",
       "section": "Expert Opinion on Eating Patterns"
     },
     {
       "id": "fill-2",
       "sentence": "Professor Alexandra Johnstone recommends breakfast for those wanting to maintain _____ or reduce body weight",
-      "answer": "a healthy weight",
-      "evidence": "\"So, it's really important, particularly for people who are trying to maintain a healthy weight and people who are trying to lose weight.\"",
       "section": "Expert Opinion on Eating Patterns"
     },
     {
       "id": "fill-3",
       "sentence": "The body is more efficient at _____ food consumed in the morning",
-      "answer": "metabolising",
-      "evidence": "\"And so, if you can eat a large breakfast in the morning, and/or I would even say a large lunch in the morning, your body's going to be better at metabolising that food.\"",
       "section": "Benefits of Eating Earlier in the Day"
     },
     {
       "id": "fill-4",
       "sentence": "Blood sugar levels won't _____ as much when eating early",
-      "answer": "spike as high",
-      "evidence": "\"And what that means is your body's going to actually... your blood sugar levels won't spike as high, you might burn slightly more fat\"",
       "section": "Benefits of Eating Earlier in the Day"
     },
     {
       "id": "fill-5",
       "sentence": "Consuming food earlier may help burn slightly more _____",
-      "answer": "fat",
-      "evidence": "\"your blood sugar levels won't spike as high, you might burn slightly more fat, you might burn slightly more calories from eating earlier in the day.\"",
       "section": "Benefits of Eating Earlier in the Day"
     },
     {
       "id": "fill-6",
       "sentence": "Eating earlier might also burn slightly more _____",
-      "answer": "calories",
-      "evidence": "\"you might burn slightly more fat, you might burn slightly more calories from eating earlier in the day.\"",
       "section": "Benefits of Eating Earlier in the Day"
     },
     {
       "id": "fill-7",
       "sentence": "Later in the day, the body's _____ functions at a reduced rate",
-      "answer": "metabolism",
-      "evidence": "\"Whereas if you had... if you eat most of your food later in the day, your metabolism is actually slower later in the day.\"",
       "section": "Benefits of Eating Earlier in the Day"
     },
     {
       "id": "fill-8",
       "sentence": "Eating identical food at various times causes blood sugar levels to _____ more dramatically in afternoon and evening",
-      "answer": "spike significantly higher",
-      "evidence": "\"So, for instance, if you ate the same, I don't know, bowl of ice cream in the morning, the afternoon and the evening, your blood sugar levels will spike significantly higher in the afternoon and the evening.\"",
       "section": "Effects of Different Meal Timing"
     },
     {
       "id": "fill-9",
       "sentence": "Studies show individuals who consume _____ tend to have lower body fat",
-      "answer": "a regular breakfast",
-      "evidence": "\"Now, breakfast skipping is interesting because my own work would tend to suggest – and that sort of observational, large-scale, epidemiological studies would also support this – that people who have a regular breakfast are actually leaner.\"",
       "section": "Research Findings on Breakfast Habits"
     },
     {
       "id": "fill-10",
       "sentence": "Consuming the main meal during _____ provides superior regulation of hunger",
-      "answer": "the morning period",
-      "evidence": "\"And my own work would tend to suggest that having your largest meal of the day in the morning period gives you a much better appetite control\"",
       "section": "Research Findings on Breakfast Habits"
     },
     {
       "id": "fill-11",
       "sentence": "Better _____ makes managing food consumption easier throughout the day",
-      "answer": "appetite control",
-      "evidence": "\"having your largest meal of the day in the morning period gives you a much better appetite control, which then means it's much easier to control food intake later in the day.\"",
       "section": "Research Findings on Breakfast Habits"
     },
     {
       "id": "fill-12",
       "sentence": "This helps people control _____ more effectively in later hours",
-      "answer": "food intake",
-      "evidence": "\"gives you a much better appetite control, which then means it's much easier to control food intake later in the day.\"",
       "section": "Research Findings on Breakfast Habits"
     },
     {
       "id": "fill-13",
       "sentence": "People sometimes don't eat breakfast because they want to _____",
-      "answer": "save money",
-      "evidence": "\"Now, people often don't eat breakfast, sometimes because they don't have time and sometimes because they are trying to save money.\"",
       "section": "Breakfast Skipping Behaviour"
     },
     {
       "id": "fill-14",
       "sentence": "A person who is not overweight can be described as _____",
-      "answer": "lean",
-      "evidence": "\"We also heard that people who have a regular breakfast are leaner. If someone is lean, then they're not fat.\"",
       "section": "Vocabulary: Key Terms"
     },
     {
       "id": "fill-15",
       "sentence": "Survey data comes from research conducted by a _____",
-      "answer": "cereal manufacturer",
-      "evidence": "\"...which was the most popular in London, but the most popular in the country as a whole was cereal, and that's according to a survey by a cereal manufacturer.\"",
       "section": "Popular Breakfast Choices in the UK"
     }
   ],
@@ -118,9 +88,7 @@
         "B. She agrees it is important, especially for weight control",
         "C. She prefers having a small breakfast and a large dinner",
         "D. She thinks the phrase is outdated and irrelevant"
-      ],
-      "answer": "B",
-      "evidence": "Alexandra说道“it's really important, particularly for people who are trying to maintain a healthy weight and people who are trying to lose weight.”（第10-12行）"
+      ]
     },
     {
       "id": "mc-2",
@@ -130,9 +98,7 @@
         "B. It is an old-fashioned word meaning someone very poor",
         "C. It means eating breakfast very quickly",
         "D. It refers to skipping dinner completely"
-      ],
-      "answer": "B",
-      "evidence": "Phil解释“pauper is an old-fashioned word for a very poor person.”（第14-16行）"
+      ]
     },
     {
       "id": "mc-3",
@@ -142,9 +108,7 @@
         "B. Eating later in the day helps your metabolism work faster and burn more calories",
         "C. Eating large meals only at night improves fat burning throughout the day",
         "D. Your body metabolizes ice cream better in the evening than in the morning"
-      ],
-      "answer": "A",
-      "evidence": "Courtney说“your body's going to be better at metabolising that food”且“blood sugar levels won't spike as high.”（第27-35行）"
+      ]
     },
     {
       "id": "mc-4",
@@ -154,9 +118,7 @@
         "B. Chemical reactions in your body that convert food into energy",
         "C. Physical exercise that burns calories",
         "D. The process of digesting specific food types only"
-      ],
-      "answer": "B",
-      "evidence": "Phil解释“metabolism refers to the chemical processes in your body... that convert food into energy.”（第37-41行）"
+      ]
     },
     {
       "id": "mc-5",
@@ -166,9 +128,7 @@
         "B. A sudden sharp rise in the measured value",
         "C. A steady decrease over time",
         "D. Blood sugar remaining unchanged"
-      ],
-      "answer": "B",
-      "evidence": "Georgie讲“spike means a sudden increase”且“a spike is a sharp, pointed shape.”（第39-43行）"
+      ]
     },
     {
       "id": "mc-6",
@@ -178,9 +138,7 @@
         "B. Those who eat breakfast regularly tend to be leaner with better appetite regulation",
         "C. Skipping breakfast leads to faster metabolism but worse appetite control",
         "D. Eating breakfast has no impact on appetite or weight"
-      ],
-      "answer": "B",
-      "evidence": "Alexandra说“people who have a regular breakfast are actually leaner”并且“better appetite control”。（第51-58行）"
+      ]
     },
     {
       "id": "mc-7",
@@ -190,9 +148,7 @@
         "B. It ensures you get all your daily nutrients in one meal",
         "C. It prevents blood sugar from rising at all during the day",
         "D. It is easier to prepare than large dinners"
-      ],
-      "answer": "A",
-      "evidence": "Alexandra说“大早餐有助于更好的食欲控制，使得之后更容易控制进食”。（第54-57行）"
+      ]
     },
     {
       "id": "mc-8",
@@ -202,9 +158,7 @@
         "B. To spend extra time preparing breakfast",
         "C. To not eat breakfast at all",
         "D. To eat breakfast at a different time of the day"
-      ],
-      "answer": "C",
-      "evidence": "Georgie解释“if you skip a meal, it means that you don't eat it.”（第60-62行）"
+      ]
     },
     {
       "id": "mc-9",
@@ -214,9 +168,7 @@
         "B. Brain's regulation of how much food you eat",
         "C. The variety of foods you choose for breakfast",
         "D. Avoiding snacks between meals to lose weight"
-      ],
-      "answer": "B",
-      "evidence": "Phil说“appetite control is how your brain decides how much you should eat.”（第63-65行）"
+      ]
     },
     {
       "id": "mc-10",
@@ -226,9 +178,7 @@
         "B. Toast",
         "C. Cereal",
         "D. Pastry"
-      ],
-      "answer": "C",
-      "evidence": "Phil说“the most popular in the country as a whole was cereal.”（第74-78行）"
+      ]
     }
   ],
   "matching": []
