@@ -100,12 +100,14 @@ must not be committed after cutover.
 
 ## Password Functions
 
-`changePassword` and `resetStudentPassword` are intentionally not active yet:
+Teacher password resets are implemented by the teacher-authorized
+`teacherAdmin` function. The reset value comes from the server-side
+`INITIAL_STUDENT_PASSWORD` environment variable and must never be stored in the
+repository or frontend.
 
-- student password changes must use CloudBase's authenticated password API
-- teacher resets require a server-side teacher authorization policy
-- the reset password must be stored as server-side configuration, never in the
-  repository
+Student self-service password changes are not active yet. They must use
+CloudBase's authenticated password API and must never read or store the
+student's password in the database.
 
 ## Teacher Desk
 

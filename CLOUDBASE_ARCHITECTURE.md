@@ -64,7 +64,7 @@ capsules:
 
 - `Assignments`
 - `Resources`
-- `Profile`
+- `Me`
 
 ### Assignments
 
@@ -105,7 +105,7 @@ Logged-in students may complete any resource. A voluntary practice attempt is
 stored even when the resource was not assigned. It does not create an
 assignment and does not count as an assigned task completed.
 
-### Profile
+### Me
 
 The profile shows:
 
@@ -122,7 +122,7 @@ Visitors enter the same dashboard.
 
 - `Assignments` is empty.
 - `Resources` remains available for browsing.
-- `Profile` explains that the user is in Visitor Mode.
+- `Me` explains that the user is in Visitor Mode.
 - Visitors cannot type, select or submit practice answers.
 
 When a visitor first tries to interact with an answer control, show:
@@ -169,7 +169,7 @@ Student self-registration is not part of the first version.
 Passwords are managed by CloudBase authentication and are not stored in the
 `students` collection.
 
-The student can change a password from Profile after confirming the current
+The student can change a password from Me after confirming the current
 password.
 
 The teacher may force-reset a student's password to the agreed initial
@@ -612,7 +612,7 @@ Overdue unfinished assignments remain visible and receive an `Overdue` label.
 - build the three-section dashboard
 - support Visitor Mode
 - connect `test001`
-- implement Profile and forced password change
+- implement Me and forced password change
 
 ### Phase 3: Private answer migration
 

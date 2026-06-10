@@ -316,7 +316,7 @@ async function createAssignmentForStudent(student, setId, dueAt) {
   ].join("-");
   const assignment = {
     assignment_id: assignmentId,
-    student_uid: studentUid,
+    student_uid: student.auth_uid,
     set_id: setId,
     status: "not_done",
     assigned_at: now,
