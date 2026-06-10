@@ -43,9 +43,11 @@ function safeDate(value) {
 }
 
 function studentView(student) {
+  const authUid = text(student.auth_uid);
+  const studentId = text(student.student_id);
   return {
-    auth_uid: student.auth_uid,
-    student_id: student.student_id,
+    auth_uid: authUid,
+    student_id: studentId || authUid || "profile-incomplete",
     name: student.name || "",
     class_group: student.class_group || "",
     role: student.role || "student",
@@ -62,7 +64,7 @@ async function listStudents() {
     success: true,
     students: (result.data || [])
       .map(studentView)
-      .sort((a, b) => a.student_id.localeCompare(b.student_id)),
+      .sort((a, b) => String(a.student_id || "").localeCompare(String(b.student_id || ""))),
   };
 }
 
