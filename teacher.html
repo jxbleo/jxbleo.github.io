@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260610-6">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260610-7">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -16,91 +16,108 @@
 
         <section class="hero-card teacher-hero">
             <p class="eyebrow">TEACHER DESK</p>
-            <h1 id="teacher-greeting">Student management, made simple.</h1>
-            <p>Link student accounts, assign practice, and review every recorded attempt.</p>
+            <h1 id="teacher-greeting">Plan the work. See the learning.</h1>
+            <p>Assign practice, manage student accounts, and build a clearer picture of progress.</p>
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="students">Students</button>
-            <button class="tab-button" type="button" data-view="assignments">Assignments</button>
-            <button class="tab-button" type="button" data-view="attempts">Attempts</button>
+            <button class="tab-button active" type="button" data-view="assign">Assign</button>
+            <button class="tab-button" type="button" data-view="students">Students</button>
+            <button class="tab-button" type="button" data-view="data">Data</button>
         </nav>
 
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
-        <section class="dashboard-view" id="view-students">
-            <div class="teacher-grid">
-                <section class="profile-card">
-                    <h2>Create a student</h2>
-                    <p class="muted">This creates and activates the login account and student profile together.</p>
-                    <form class="teacher-form" id="student-form">
-                        <label for="student-id">Login username</label>
-                        <input id="student-id" name="student_id" type="text" autocapitalize="none" required>
-                        <label for="student-name">Student name</label>
-                        <input id="student-name" name="name" type="text" required>
-                        <label for="student-class">Class</label>
-                        <input id="student-class" name="class_group" type="text">
-                        <button class="primary-button" type="submit">Create Student</button>
-                    </form>
-                    <p class="fine-print">The initial password is stored only in the cloud function configuration.</p>
-                </section>
-
-                <section>
-                    <div class="section-heading compact-heading">
-                        <div>
-                            <h2>Students</h2>
-                            <p>Manage login access and student profiles.</p>
-                        </div>
-                        <button class="outline-button teacher-refresh" id="refresh-students" type="button">Refresh</button>
+        <section class="dashboard-view" id="view-assign">
+            <section class="profile-card assign-setup">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <h2>Assign practice</h2>
+                        <p>Choose one task, then select individuals or a whole class.</p>
                     </div>
-                    <div class="teacher-list" id="student-list">
+                </div>
+                <div class="assign-controls">
+                    <label>Practice set
+                        <select id="assign-set">
+                            <option value="">Choose a practice set</option>
+                        </select>
+                    </label>
+                    <label>Due date
+                        <input id="assign-due" type="date">
+                    </label>
+                </div>
+            </section>
+
+            <div class="assign-toolbar">
+                <input class="resource-search" id="assign-search" type="search" placeholder="Search students...">
+                <select class="filter-select" id="assign-class-filter">
+                    <option value="">All classes</option>
+                </select>
+                <button class="outline-button teacher-refresh" id="select-class" type="button">Select Available</button>
+            </div>
+            <div class="assign-legend">
+                <span><i class="status-dot available"></i>Available</span>
+                <span><i class="status-dot progress"></i>In Progress</span>
+                <span><i class="status-dot completed"></i>Completed before</span>
+            </div>
+            <div class="candidate-grid" id="assign-candidates">
+                <div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>
+            </div>
+            <div class="assign-submit-bar">
+                <span id="selected-count">0 students selected</span>
+                <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign to Selected</button>
+            </div>
+        </section>
+
+        <section class="dashboard-view" id="view-students" hidden>
+            <div class="student-page-toolbar">
+                <div>
+                    <h2>Students</h2>
+                    <p>Choose a student to view their account and learning history.</p>
+                </div>
+                <button class="primary-button compact-primary" id="toggle-create-student" type="button">Create Student Account</button>
+            </div>
+
+            <section class="profile-card create-student-panel" id="create-student-panel" hidden>
+                <div class="section-heading compact-heading">
+                    <div>
+                        <h2>Create student account</h2>
+                        <p>The login account and student profile are created together.</p>
+                    </div>
+                    <button class="outline-button teacher-refresh" id="close-create-student" type="button">Close</button>
+                </div>
+                <form class="teacher-form horizontal-form" id="student-form">
+                    <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
+                    <label>Student name<input id="student-name" type="text" required></label>
+                    <label>Class<input id="student-class" type="text"></label>
+                    <button class="primary-button" type="submit">Create Student</button>
+                </form>
+            </section>
+
+            <div class="student-directory">
+                <aside class="student-sidebar">
+                    <input class="resource-search" id="student-search" type="search" placeholder="Search students...">
+                    <select class="filter-select full-width" id="student-class-filter">
+                        <option value="">All classes</option>
+                    </select>
+                    <div class="student-picker" id="student-list">
                         <div class="empty-card loading-card">Loading students...</div>
                     </div>
+                </aside>
+                <section class="student-detail" id="student-detail">
+                    <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
                 </section>
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-assignments" hidden>
-            <div class="teacher-grid">
-                <section class="profile-card">
-                    <h2>Assign practice</h2>
-                    <form class="teacher-form" id="assignment-form">
-                        <label for="assignment-student">Student</label>
-                        <select id="assignment-student" name="student_uid" required></select>
-                        <label for="assignment-set">Practice set</label>
-                        <select id="assignment-set" name="set_id" required></select>
-                        <label for="assignment-due">Due date (optional)</label>
-                        <input id="assignment-due" name="due_at" type="date">
-                        <button class="primary-button" type="submit">Assign</button>
-                    </form>
-                </section>
-
-                <section>
-                    <div class="section-heading compact-heading">
-                        <div>
-                            <h2>Assignment history</h2>
-                            <p>Latest assignments appear first.</p>
-                        </div>
-                    </div>
-                    <div class="teacher-list" id="assignment-list">
-                        <div class="empty-card loading-card">Loading assignments...</div>
-                    </div>
-                </section>
-            </div>
-        </section>
-
-        <section class="dashboard-view" id="view-attempts" hidden>
-            <div class="section-heading">
-                <div>
-                    <h2>Recorded attempts</h2>
-                    <p>Every countable submission is retained.</p>
+        <section class="dashboard-view" id="view-data" hidden>
+            <div class="data-placeholder">
+                <p class="eyebrow accent">COMING NEXT</p>
+                <h2>Question-level learning data</h2>
+                <p>This area will compare how different students perform on each question, including correctness and answer patterns.</p>
+                <div class="data-path">
+                    <span>Practice set</span><strong>→</strong><span>Question</span><strong>→</strong><span>Student outcomes</span>
                 </div>
-            </div>
-            <div class="resource-tools">
-                <input class="resource-search" id="attempt-search" type="search" placeholder="Search student or practice set...">
-            </div>
-            <div class="teacher-list" id="attempt-list">
-                <div class="empty-card loading-card">Loading attempts...</div>
             </div>
         </section>
 
@@ -110,9 +127,9 @@
     </main>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260610-6"></script>
-    <script src="assets/js/cloudbase-client.js?v=20260610-6"></script>
-    <script src="assets/js/auth.js?v=20260610-6"></script>
-    <script src="assets/js/teacher.js?v=20260610-6"></script>
+    <script src="assets/js/config.public.js?v=20260610-7"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260610-7"></script>
+    <script src="assets/js/auth.js?v=20260610-7"></script>
+    <script src="assets/js/teacher.js?v=20260610-7"></script>
 </body>
 </html>
