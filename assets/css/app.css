@@ -516,6 +516,7 @@ button { cursor: pointer; }
 }
 .student-pick:hover { background: white; }
 .student-pick.active { border-color: #afd2c7; background: white; box-shadow: 0 7px 20px rgba(25,68,61,0.08); }
+.student-pick.incomplete-profile { cursor: default; border-color: #efc9c3; background: var(--danger-soft); }
 .student-pick strong, .student-pick small { display: block; }
 .student-pick small { margin-top: 3px; color: var(--muted); font-size: 0.7rem; }
 .student-pick i { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; }

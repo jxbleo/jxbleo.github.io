@@ -158,6 +158,8 @@ The first version supports:
 - creating and activating a CloudBase username/password user
 - creating the matching `students` profile in the same operation
 - deleting the newly created authentication user if profile creation fails
+- rejecting creation when the Login ID already exists in either CloudBase
+  authentication or the `students` collection
 - editing a student's name and class
 - activating or deactivating both authentication access and the student
   profile
