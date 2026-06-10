@@ -163,6 +163,9 @@ The first version supports:
   profile
 - resetting a student's password to the configured initial password
 - assigning visible practice sets
+- assigning one practice set to multiple students or a filtered class
+- blocking duplicate assignment while the same set is To Do or Failed
+- allowing reassignment after the student has already completed the set
 - viewing assignment summaries
 - viewing attempt summaries without exposing answer payloads
 

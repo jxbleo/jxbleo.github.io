@@ -207,21 +207,62 @@ async function listSets() {
   };
 }
 
-async function createAssignment(event) {
-  const studentUid = text(event.student_uid);
-  const setId = text(event.set_id);
-  if (!studentUid || !setId) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
+function getAssignmentState(assignments) {
+  const open = assignments.find((assignment) =>
+    assignment.status === "not_done" || assignment.status === "failed"
+  );
+  if (open) {
+    return {
+      availability: "in_progress",
+      assignment_id: open.assignment_id || open._id,
+      status: open.status || "not_done",
+    };
+  }
+  const completed = assignments.filter((assignment) => assignment.status === "done");
+  if (completed.length) {
+    return {
+      availability: "completed",
+      completed_count: completed.length,
+      best_percentage: completed.reduce((best, assignment) =>
+        Math.max(best, Number(assignment.best_percentage || 0)), 0),
+    };
+  }
+  return { availability: "available" };
+}
 
-  const student = await getOne("students", {
-    auth_uid: studentUid,
-    role: "student",
-    active: true,
+async function getAssignmentsByStudent(setId) {
+  const result = await db.collection("assignments").where({ set_id: setId }).limit(500).get();
+  const map = new Map();
+  (result.data || []).forEach((assignment) => {
+    const items = map.get(assignment.student_uid) || [];
+    items.push(assignment);
+    map.set(assignment.student_uid, items);
   });
-  if (!student) throw new Error("ACTIVE_STUDENT_NOT_FOUND");
+  return map;
+}
+
+async function getAssignmentCandidates(event) {
+  const setId = text(event.set_id);
+  if (!setId) throw new Error("SET_REQUIRED");
   if (!await getOne("sets", { set_id: setId, visible: true })) throw new Error("SET_NOT_FOUND");
 
+  const studentResult = await db.collection("students").where({
+    active: true,
+  }).limit(200).get();
+  const students = (studentResult.data || []).filter((student) => student.role !== "teacher");
+  const assignmentsByStudent = await getAssignmentsByStudent(setId);
+  const candidates = [];
+  for (const student of students) {
+    candidates.push({
+      ...studentView(student),
+      ...getAssignmentState(assignmentsByStudent.get(student.auth_uid) || []),
+    });
+  }
+  return { success: true, candidates };
+}
+
+async function createAssignmentForStudent(student, setId, dueAt) {
   const now = new Date();
-  const dueAt = safeDate(event.due_at);
   const assignmentId = [
     student.student_id,
     setId,
@@ -245,7 +286,49 @@ async function createAssignment(event) {
   };
 
   await db.collection("assignments").add({ data: assignment });
-  return { success: true, assignment_id: assignmentId };
+  return assignmentId;
+}
+
+async function createAssignments(event) {
+  const setId = text(event.set_id);
+  const studentUids = Array.isArray(event.student_uids)
+    ? [...new Set(event.student_uids.map(text).filter(Boolean))]
+    : [];
+  if (!setId || !studentUids.length) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
+  if (studentUids.length > 200) throw new Error("TOO_MANY_STUDENTS");
+  if (!await getOne("sets", { set_id: setId, visible: true })) throw new Error("SET_NOT_FOUND");
+
+  const dueAt = safeDate(event.due_at);
+  const assignmentsByStudent = await getAssignmentsByStudent(setId);
+  const created = [];
+  const skipped = [];
+  for (const studentUid of studentUids) {
+    const student = await getOne("students", {
+      auth_uid: studentUid,
+      active: true,
+    });
+    if (!student || student.role === "teacher") {
+      skipped.push({ student_uid: studentUid, reason: "inactive_or_missing" });
+      continue;
+    }
+    const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
+    if (assignmentState.availability === "in_progress") {
+      skipped.push({
+        student_uid: studentUid,
+        student_id: student.student_id,
+        reason: "in_progress",
+      });
+      continue;
+    }
+    const assignmentId = await createAssignmentForStudent(student, setId, dueAt);
+    created.push({
+      student_uid: studentUid,
+      student_id: student.student_id,
+      assignment_id: assignmentId,
+      reassigned_after_completion: assignmentState.availability === "completed",
+    });
+  }
+  return { success: true, created, skipped };
 }
 
 async function listAssignments() {
@@ -314,7 +397,8 @@ exports.main = async (event) => {
     if (action === "updateStudent") return await updateStudent(event);
     if (action === "resetStudentPassword") return await resetStudentPassword(event);
     if (action === "listSets") return await listSets();
-    if (action === "createAssignment") return await createAssignment(event);
+    if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
+    if (action === "createAssignments") return await createAssignments(event);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listAttempts") return await listAttempts();
     throw new Error("UNKNOWN_ACTION");

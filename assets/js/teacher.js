@@ -6,16 +6,16 @@
         students: [],
         sets: [],
         assignments: [],
-        attempts: []
+        attempts: [],
+        candidates: [],
+        selectedStudentUid: ''
     };
 
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
-    var assignmentList = document.getElementById('assignment-list');
-    var attemptList = document.getElementById('attempt-list');
+    var studentDetail = document.getElementById('student-detail');
     var studentForm = document.getElementById('student-form');
-    var assignmentForm = document.getElementById('assignment-form');
-    var attemptSearch = document.getElementById('attempt-search');
+    var candidateList = document.getElementById('assign-candidates');
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -39,176 +39,268 @@
             timeZone: 'Asia/Shanghai',
             year: 'numeric',
             month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            day: 'numeric'
         }).format(date);
     }
 
     function teacherCall(action, data) {
-        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({
-            action: action
-        }, data || {})).then(function(result) {
-            if (!result || !result.success) {
-                throw new Error(result && result.message || 'Teacher action failed.');
-            }
-            return result;
-        });
+        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+            .then(function(result) {
+                if (!result || !result.success) {
+                    throw new Error(result && result.message || 'Teacher action failed.');
+                }
+                return result;
+            });
     }
 
-    function statusBadge(status) {
-        var normalized = status === 'done' ? 'done' : (status === 'failed' ? 'failed' : 'todo');
-        var label = status === 'done' ? 'Done' : (status === 'failed' ? 'Failed' : 'To Do');
-        return '<span class="badge ' + normalized + '">' + label + '</span>';
+    function studentRecords() {
+        return state.students.filter(function(student) { return student.role !== 'teacher'; });
     }
 
-    function renderStudents() {
-        var students = state.students.filter(function(student) {
-            return student.role !== 'teacher';
-        });
-        studentList.innerHTML = students.length ? students.map(function(student) {
-            return '<article class="teacher-row">' +
-                '<div class="teacher-row-main">' +
-                    '<div><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                    '<span>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</span></div>' +
-                    '<span class="badge ' + (student.active ? 'done' : 'failed') + '">' + (student.active ? 'Active' : 'Inactive') + '</span>' +
-                '</div>' +
-                '<div class="teacher-row-actions">' +
-                    '<button class="outline-button student-edit" type="button" data-uid="' + escapeHtml(student.auth_uid) + '">Edit</button>' +
-                    '<button class="outline-button student-reset" type="button" data-uid="' + escapeHtml(student.auth_uid) + '">Reset Password</button>' +
-                    '<button class="' + (student.active ? 'danger-button' : 'outline-button') + ' student-toggle" type="button" data-uid="' +
-                        escapeHtml(student.auth_uid) + '" data-active="' + (student.active ? 'true' : 'false') + '">' +
-                        (student.active ? 'Deactivate' : 'Activate') + '</button>' +
-                '</div>' +
-            '</article>';
-        }).join('') : '<div class="empty-card"><strong>No students yet</strong>Create the first student account here.</div>';
-
-        studentList.querySelectorAll('.student-toggle').forEach(function(button) {
-            button.addEventListener('click', function() {
-                updateStudent(button.dataset.uid, { active: button.dataset.active !== 'true' });
-            });
-        });
-        studentList.querySelectorAll('.student-edit').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var student = state.students.find(function(item) { return item.auth_uid === button.dataset.uid; });
-                if (!student) return;
-                var name = prompt('Student name', student.name || '');
-                if (name === null) return;
-                var classGroup = prompt('Class', student.class_group || '');
-                if (classGroup === null) return;
-                updateStudent(student.auth_uid, { name: name, class_group: classGroup });
-            });
-        });
-        studentList.querySelectorAll('.student-reset').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var student = state.students.find(function(item) { return item.auth_uid === button.dataset.uid; });
-                if (!student) return;
-                if (!confirm('Reset the password for ' + student.student_id + '? Their current password will stop working.')) return;
-                button.disabled = true;
-                showMessage('Resetting password...', '');
-                teacherCall('resetStudentPassword', { auth_uid: student.auth_uid })
-                    .then(function(result) {
-                        showMessage(
-                            'Password reset for ' + student.student_id + '. Initial password: ' + result.initial_password,
-                            'success'
-                        );
-                        return teacherCall('listStudents');
-                    })
-                    .then(function(result) {
-                        state.students = result.students || [];
-                        renderStudents();
-                    })
-                    .catch(function(error) {
-                        showMessage(error.message, 'error');
-                    })
-                    .finally(function() {
-                        button.disabled = false;
-                    });
-            });
-        });
-        renderStudentOptions();
+    function classes() {
+        var seen = {};
+        return studentRecords().map(function(student) {
+            return String(student.class_group || '').trim();
+        }).filter(function(value) {
+            if (!value || seen[value]) return false;
+            seen[value] = true;
+            return true;
+        }).sort();
     }
 
-    function renderStudentOptions() {
-        var select = document.getElementById('assignment-student');
-        var students = state.students.filter(function(student) {
-            return student.role !== 'teacher' && student.active;
-        });
-        select.innerHTML = '<option value="">Choose a student</option>' + students.map(function(student) {
-            return '<option value="' + escapeHtml(student.auth_uid) + '">' +
-                escapeHtml(student.name + ' (' + student.student_id + ')') + '</option>';
+    function fillClassFilters() {
+        var options = '<option value="">All classes</option>' + classes().map(function(classGroup) {
+            return '<option value="' + escapeHtml(classGroup) + '">' + escapeHtml(classGroup) + '</option>';
         }).join('');
+        ['assign-class-filter', 'student-class-filter'].forEach(function(id) {
+            var select = document.getElementById(id);
+            var current = select.value;
+            select.innerHTML = options;
+            select.value = current;
+        });
     }
 
     function renderSetOptions() {
-        var select = document.getElementById('assignment-set');
-        select.innerHTML = '<option value="">Choose a practice set</option>' + state.sets.map(function(set) {
-            return '<option value="' + escapeHtml(set.set_id) + '">' +
-                escapeHtml(set.title + ' · ' + set.course) + '</option>';
-        }).join('');
+        document.getElementById('assign-set').innerHTML =
+            '<option value="">Choose a practice set</option>' +
+            state.sets.map(function(set) {
+                return '<option value="' + escapeHtml(set.set_id) + '">' +
+                    escapeHtml(set.title + ' · ' + set.course) + '</option>';
+            }).join('');
     }
 
-    function replaceStudent(student) {
-        var found = false;
-        state.students = state.students.map(function(item) {
-            if (item.auth_uid !== student.auth_uid) return item;
-            found = true;
-            return student;
+    function candidateStatus(candidate) {
+        if (candidate.availability === 'in_progress') {
+            return { label: 'In Progress', css: 'progress', disabled: true };
+        }
+        if (candidate.availability === 'completed') {
+            return { label: 'Completed · can reassign', css: 'completed', disabled: false };
+        }
+        return { label: 'Available', css: 'available', disabled: false };
+    }
+
+    function filteredCandidates() {
+        var query = document.getElementById('assign-search').value.trim().toLowerCase();
+        var classGroup = document.getElementById('assign-class-filter').value;
+        return state.candidates.filter(function(student) {
+            var matchesQuery = !query || [student.name, student.student_id, student.class_group]
+                .join(' ').toLowerCase().indexOf(query) !== -1;
+            return matchesQuery && (!classGroup || student.class_group === classGroup);
         });
-        if (!found) state.students.push(student);
     }
 
-    function refreshStudents(successMessage) {
+    function renderCandidates() {
+        var candidates = filteredCandidates();
+        if (!document.getElementById('assign-set').value) {
+            candidateList.innerHTML = '<div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>';
+            updateSelectedCount();
+            return;
+        }
+        candidateList.innerHTML = candidates.length ? candidates.map(function(student) {
+            var status = candidateStatus(student);
+            return '<label class="candidate-card ' + status.css + (status.disabled ? ' disabled' : '') + '">' +
+                '<input class="candidate-checkbox" type="checkbox" value="' + escapeHtml(student.auth_uid) + '"' +
+                    (status.disabled ? ' disabled' : '') + '>' +
+                '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
+                    '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
+                '<span class="candidate-status">' + escapeHtml(status.label) +
+                    (student.availability === 'completed' && student.best_percentage != null
+                        ? '<small>Best ' + escapeHtml(student.best_percentage) + '%</small>' : '') +
+                '</span>' +
+            '</label>';
+        }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
+
+        candidateList.querySelectorAll('.candidate-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+        updateSelectedCount();
+    }
+
+    function selectedCandidateUids() {
+        return Array.prototype.map.call(
+            candidateList.querySelectorAll('.candidate-checkbox:checked'),
+            function(checkbox) { return checkbox.value; }
+        );
+    }
+
+    function updateSelectedCount() {
+        var count = selectedCandidateUids().length;
+        document.getElementById('selected-count').textContent =
+            count + ' student' + (count === 1 ? '' : 's') + ' selected';
+        document.getElementById('assign-selected').disabled =
+            !count || !document.getElementById('assign-set').value;
+    }
+
+    function loadCandidates() {
+        var setId = document.getElementById('assign-set').value;
+        state.candidates = [];
+        renderCandidates();
+        if (!setId) return Promise.resolve();
+        candidateList.innerHTML = '<div class="empty-card loading-card">Checking assignment status...</div>';
+        return teacherCall('getAssignmentCandidates', { set_id: setId }).then(function(result) {
+            state.candidates = result.candidates || [];
+            renderCandidates();
+        }).catch(function(error) {
+            candidateList.innerHTML = '<div class="empty-card"><strong>Unable to load students</strong>' +
+                escapeHtml(error.message) + '</div>';
+        });
+    }
+
+    function filteredStudents() {
+        var query = document.getElementById('student-search').value.trim().toLowerCase();
+        var classGroup = document.getElementById('student-class-filter').value;
+        return studentRecords().filter(function(student) {
+            var matchesQuery = !query || [student.name, student.student_id, student.class_group]
+                .join(' ').toLowerCase().indexOf(query) !== -1;
+            return matchesQuery && (!classGroup || student.class_group === classGroup);
+        });
+    }
+
+    function renderStudentList() {
+        var students = filteredStudents();
+        studentList.innerHTML = students.length ? students.map(function(student) {
+            return '<button class="student-pick' +
+                (student.auth_uid === state.selectedStudentUid ? ' active' : '') +
+                '" type="button" data-uid="' + escapeHtml(student.auth_uid) + '">' +
+                '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
+                '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
+                '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' +
+            '</button>';
+        }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
+
+        studentList.querySelectorAll('.student-pick').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.selectedStudentUid = button.dataset.uid;
+                renderStudentList();
+                renderStudentDetail();
+            });
+        });
+    }
+
+    function assignmentSummary(assignments) {
+        var counts = { not_done: 0, failed: 0, done: 0 };
+        assignments.forEach(function(item) {
+            counts[item.status] = (counts[item.status] || 0) + 1;
+        });
+        return '<div class="summary-grid student-summary">' +
+            '<div class="summary-card"><span class="summary-value">' + counts.not_done + '</span><span class="summary-label">TO DO</span></div>' +
+            '<div class="summary-card"><span class="summary-value">' + counts.failed + '</span><span class="summary-label">FAILED</span></div>' +
+            '<div class="summary-card"><span class="summary-value">' + counts.done + '</span><span class="summary-label">DONE</span></div>' +
+        '</div>';
+    }
+
+    function renderStudentDetail() {
+        var student = state.students.find(function(item) {
+            return item.auth_uid === state.selectedStudentUid;
+        });
+        if (!student) {
+            studentDetail.innerHTML = '<div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>';
+            return;
+        }
+        var assignments = state.assignments.filter(function(item) {
+            return item.student_uid === student.auth_uid;
+        });
+        var attempts = state.attempts.filter(function(item) {
+            return item.student_uid === student.auth_uid || item.student_id === student.student_id;
+        }).slice(0, 10);
+
+        var assignmentHtml = assignments.length ? assignments.map(function(item) {
+            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_title) + '</strong>' +
+                '<small>' + escapeHtml(item.status === 'done' ? 'Done' : item.status === 'failed' ? 'Failed' : 'To Do') +
+                ' · ' + escapeHtml(item.attempt_count) + ' attempts</small></div>' +
+                '<span>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '% best') + '</span></article>';
+        }).join('') : '<p class="muted">No assignments yet.</p>';
+
+        var attemptHtml = attempts.length ? attempts.map(function(item) {
+            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_id) + '</strong>' +
+                '<small>' + escapeHtml(formatDate(item.submitted_at)) + ' · attempt ' + escapeHtml(item.attempt_number) + '</small></div>' +
+                '<span class="' + (item.passed ? 'score-pass' : 'score-fail') + '">' + escapeHtml(item.percentage) + '%</span></article>';
+        }).join('') : '<p class="muted">No recorded attempts yet.</p>';
+
+        studentDetail.innerHTML =
+            '<section class="profile-card student-account-card">' +
+                '<div class="student-detail-heading"><div><p class="eyebrow accent">STUDENT ACCOUNT</p><h2>' +
+                    escapeHtml(student.name || student.student_id) + '</h2><p>' +
+                    escapeHtml(student.student_id) + '</p></div>' +
+                    '<span class="badge ' + (student.active ? 'done' : 'failed') + '">' +
+                    (student.active ? 'Active' : 'Inactive') + '</span></div>' +
+                '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></div>' +
+                '<div class="student-account-actions">' +
+                    '<input id="detail-class" type="text" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class name">' +
+                    '<button class="outline-button" id="save-class" type="button">Assign Class</button>' +
+                    '<button class="outline-button" id="reset-password" type="button">Reset Password</button>' +
+                    '<button class="' + (student.active ? 'danger-button' : 'outline-button') + '" id="toggle-account" type="button">' +
+                        (student.active ? 'Disable Account' : 'Enable Account') + '</button>' +
+                '</div>' +
+            '</section>' +
+            assignmentSummary(assignments) +
+            '<section class="profile-card learning-section"><h3>Assigned work</h3>' + assignmentHtml + '</section>' +
+            '<section class="profile-card learning-section"><h3>Recent attempts</h3>' + attemptHtml + '</section>';
+
+        document.getElementById('save-class').addEventListener('click', function() {
+            updateStudent(student.auth_uid, { class_group: document.getElementById('detail-class').value });
+        });
+        document.getElementById('toggle-account').addEventListener('click', function() {
+            updateStudent(student.auth_uid, { active: !student.active });
+        });
+        document.getElementById('reset-password').addEventListener('click', function() {
+            if (!confirm('Reset the password for ' + student.student_id + '?')) return;
+            teacherCall('resetStudentPassword', { auth_uid: student.auth_uid }).then(function(result) {
+                showMessage('Password reset. Initial password: ' + result.initial_password, 'success');
+                return refreshStudents();
+            }).catch(function(error) {
+                showMessage(error.message, 'error');
+            });
+        });
+    }
+
+    function refreshStudents() {
         return teacherCall('listStudents').then(function(result) {
             state.students = result.students || [];
-            renderStudents();
-            if (successMessage) showMessage(successMessage, 'success');
-            return result;
+            fillClassFilters();
+            renderStudentList();
+            renderStudentDetail();
         });
     }
 
-    function renderAssignments() {
-        assignmentList.innerHTML = state.assignments.length ? state.assignments.map(function(item) {
-            return '<article class="teacher-row">' +
-                '<div class="teacher-row-main">' +
-                    '<div><strong>' + escapeHtml(item.set_title) + '</strong>' +
-                    '<span>' + escapeHtml(item.student_name || item.student_id) + ' · assigned ' +
-                        escapeHtml(formatDate(item.assigned_at, 'date unavailable')) + '</span></div>' +
-                    statusBadge(item.status) +
-                '</div>' +
-                '<div class="teacher-metrics">' +
-                    '<span>Attempts <strong>' + escapeHtml(item.attempt_count) + '</strong></span>' +
-                    '<span>Latest <strong>' + (item.latest_percentage == null ? '—' : escapeHtml(item.latest_percentage) + '%') + '</strong></span>' +
-                    '<span>Best <strong>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '%') + '</strong></span>' +
-                    '<span>Due <strong>' + escapeHtml(formatDate(item.due_at)) + '</strong></span>' +
-                '</div>' +
-            '</article>';
-        }).join('') : '<div class="empty-card"><strong>No assignments yet</strong>Choose a student and practice set to begin.</div>';
+    function updateStudent(authUid, update) {
+        showMessage('Saving student...', '');
+        return teacherCall('updateStudent', Object.assign({ auth_uid: authUid }, update))
+            .then(function() {
+                showMessage('Student updated.', 'success');
+                return refreshStudents();
+            }).catch(function(error) {
+                showMessage(error.message, 'error');
+            });
     }
 
-    function renderAttempts(query) {
-        var normalized = String(query || '').trim().toLowerCase();
-        var attempts = state.attempts.filter(function(item) {
-            if (!normalized) return true;
-            return [item.student_id, item.set_id, item.mode].join(' ').toLowerCase().indexOf(normalized) !== -1;
+    function activateView(viewName) {
+        document.querySelectorAll('.tab-button').forEach(function(button) {
+            button.classList.toggle('active', button.dataset.view === viewName);
         });
-        attemptList.innerHTML = attempts.length ? attempts.map(function(item) {
-            return '<article class="teacher-row">' +
-                '<div class="teacher-row-main">' +
-                    '<div><strong>' + escapeHtml(item.student_id || item.student_uid) + ' · ' + escapeHtml(item.set_id) + '</strong>' +
-                    '<span>' + escapeHtml(formatDate(item.submitted_at, 'date unavailable')) + ' · attempt ' +
-                        escapeHtml(item.attempt_number) + (item.selected_group_count ? ' · ' + escapeHtml(item.selected_group_count) + ' groups' : '') +
-                    '</span></div>' +
-                    '<span class="badge ' + (item.passed ? 'done' : 'failed') + '">' + (item.passed ? 'Passed' : 'Failed') + '</span>' +
-                '</div>' +
-                '<div class="teacher-metrics">' +
-                    '<span>Score <strong>' + escapeHtml(item.percentage) + '%</strong></span>' +
-                    '<span>Correct <strong>' + escapeHtml(item.correct_count) + '/' + escapeHtml(item.question_count) + '</strong></span>' +
-                    '<span>Pass mark <strong>' + escapeHtml(item.passing_percentage) + '%</strong></span>' +
-                    '<span>Source <strong>' + escapeHtml(item.practice_context || 'practice') + '</strong></span>' +
-                '</div>' +
-            '</article>';
-        }).join('') : '<div class="empty-card"><strong>No matching attempts</strong>Recorded submissions will appear here.</div>';
+        document.querySelectorAll('.dashboard-view').forEach(function(view) {
+            view.hidden = view.id !== 'view-' + viewName;
+        });
     }
 
     function loadData() {
@@ -222,40 +314,58 @@
             state.sets = results[1].sets || [];
             state.assignments = results[2].assignments || [];
             state.attempts = results[3].attempts || [];
-            renderStudents();
+            fillClassFilters();
             renderSetOptions();
-            renderAssignments();
-            renderAttempts(attemptSearch.value);
+            renderStudentList();
+            renderStudentDetail();
         });
-    }
-
-    function updateStudent(authUid, update) {
-        showMessage('Saving...', '');
-        teacherCall('updateStudent', Object.assign({ auth_uid: authUid }, update))
-            .then(function() {
-                showMessage('Student updated.', 'success');
-                return teacherCall('listStudents');
-            })
-            .then(function(result) {
-                state.students = result.students || [];
-                renderStudents();
-            })
-            .catch(function(error) {
-                showMessage(error.message, 'error');
-            });
     }
 
     document.querySelectorAll('.tab-button').forEach(function(button) {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.tab-button').forEach(function(item) {
-                item.classList.toggle('active', item === button);
-            });
-            document.querySelectorAll('.dashboard-view').forEach(function(view) {
-                view.hidden = view.id !== 'view-' + button.dataset.view;
-            });
+        button.addEventListener('click', function() { activateView(button.dataset.view); });
+    });
+    document.getElementById('assign-set').addEventListener('change', loadCandidates);
+    document.getElementById('assign-search').addEventListener('input', renderCandidates);
+    document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
+    document.getElementById('select-class').addEventListener('click', function() {
+        candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
+            checkbox.checked = true;
         });
+        updateSelectedCount();
+    });
+    document.getElementById('assign-selected').addEventListener('click', function() {
+        var button = this;
+        var studentUids = selectedCandidateUids();
+        var due = document.getElementById('assign-due').value;
+        button.disabled = true;
+        showMessage('Assigning practice...', '');
+        teacherCall('createAssignments', {
+            set_id: document.getElementById('assign-set').value,
+            student_uids: studentUids,
+            due_at: due ? due + 'T23:59:59+08:00' : null
+        }).then(function(result) {
+            showMessage(
+                result.created.length + ' assignment(s) created' +
+                (result.skipped.length ? '; ' + result.skipped.length + ' skipped.' : '.'),
+                'success'
+            );
+            return Promise.all([teacherCall('listAssignments'), loadCandidates()]);
+        }).then(function(results) {
+            state.assignments = results[0].assignments || [];
+            renderStudentDetail();
+        }).catch(function(error) {
+            showMessage(error.message, 'error');
+        }).finally(updateSelectedCount);
     });
 
+    document.getElementById('student-search').addEventListener('input', renderStudentList);
+    document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
+    document.getElementById('toggle-create-student').addEventListener('click', function() {
+        document.getElementById('create-student-panel').hidden = false;
+    });
+    document.getElementById('close-create-student').addEventListener('click', function() {
+        document.getElementById('create-student-panel').hidden = true;
+    });
     studentForm.addEventListener('submit', function(event) {
         event.preventDefault();
         var button = studentForm.querySelector('button[type="submit"]');
@@ -267,15 +377,15 @@
             class_group: document.getElementById('student-class').value
         }).then(function(result) {
             studentForm.reset();
-            replaceStudent(result.student);
-            renderStudents();
-            var successText = 'Student created. Login ID: ' + result.student.student_id +
-                ' · Initial password: ' + result.initial_password;
-            showMessage(successText, 'success');
+            document.getElementById('create-student-panel').hidden = true;
+            state.selectedStudentUid = result.student.auth_uid;
+            showMessage('Student created. Initial password: ' + result.initial_password, 'success');
+            state.students.push(result.student);
+            fillClassFilters();
+            renderStudentList();
+            renderStudentDetail();
             window.setTimeout(function() {
-                refreshStudents(successText).catch(function() {
-                    showMessage(successText + ' · Use Refresh if the list has not updated yet.', 'success');
-                });
+                refreshStudents().catch(function() {});
             }, 1000);
         }).catch(function(error) {
             showMessage(error.message, 'error');
@@ -283,59 +393,23 @@
             button.disabled = false;
         });
     });
-
-    assignmentForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        var button = assignmentForm.querySelector('button[type="submit"]');
-        var dueValue = document.getElementById('assignment-due').value;
-        button.disabled = true;
-        showMessage('Creating assignment...', '');
-        teacherCall('createAssignment', {
-            student_uid: document.getElementById('assignment-student').value,
-            set_id: document.getElementById('assignment-set').value,
-            due_at: dueValue ? dueValue + 'T23:59:59+08:00' : null
-        }).then(function() {
-            assignmentForm.reset();
-            showMessage('Assignment created.', 'success');
-            return teacherCall('listAssignments');
-        }).then(function(result) {
-            state.assignments = result.assignments || [];
-            renderAssignments();
-        }).catch(function(error) {
-            showMessage(error.message, 'error');
-        }).finally(function() {
-            button.disabled = false;
-        });
-    });
-
-    attemptSearch.addEventListener('input', function() {
-        renderAttempts(attemptSearch.value);
-    });
-    document.getElementById('refresh-students').addEventListener('click', function() {
-        showMessage('Refreshing students...', '');
-        refreshStudents('Student list refreshed.').catch(function(error) {
-            showMessage(error.message, 'error');
-        });
-    });
     document.getElementById('teacher-logout').addEventListener('click', window.MrCatAuth.logout);
 
-    window.MrCatAuth.getSession()
-        .then(function(session) {
-            if (session.mode === 'none') {
-                window.location.replace('index.html');
-                return null;
-            }
-            if (session.mode !== 'teacher') {
-                window.location.replace('dashboard.html');
-                return null;
-            }
-            state.profile = session.profile;
-            document.getElementById('teacher-chip').textContent = session.profile.student_id;
-            document.getElementById('teacher-greeting').textContent =
-                'Hi, ' + (session.profile.name || session.profile.student_id) + '.';
-            return loadData();
-        })
-        .catch(function(error) {
-            showMessage(error.message || 'Unable to load the teacher desk.', 'error');
-        });
+    window.MrCatAuth.getSession().then(function(session) {
+        if (session.mode === 'none') {
+            window.location.replace('index.html');
+            return null;
+        }
+        if (session.mode !== 'teacher') {
+            window.location.replace('dashboard.html');
+            return null;
+        }
+        state.profile = session.profile;
+        document.getElementById('teacher-chip').textContent = session.profile.student_id;
+        document.getElementById('teacher-greeting').textContent =
+            'Hi, ' + (session.profile.name || session.profile.student_id) + '.';
+        return loadData();
+    }).catch(function(error) {
+        showMessage(error.message || 'Unable to load the teacher desk.', 'error');
+    });
 })();
