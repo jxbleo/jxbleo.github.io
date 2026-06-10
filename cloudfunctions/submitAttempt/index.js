@@ -155,7 +155,7 @@ exports.main = async (event) => {
       group_results: groupResults,
     };
 
-    await db.collection("attempts").add({ data: attempt });
+    await db.collection("attempts").add(attempt);
 
     if (assignment) {
       const best = Math.max(Number(assignment.best_percentage || 0), grading.percentage);

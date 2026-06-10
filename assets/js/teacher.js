@@ -8,7 +8,7 @@
         assignments: [],
         attempts: [],
         candidates: [],
-        selectedStudentUid: ''
+        selectedStudentProfileId: ''
     };
 
     var message = document.getElementById('teacher-message');
@@ -179,9 +179,13 @@
     function renderStudentList() {
         var students = filteredStudents();
         studentList.innerHTML = students.length ? students.map(function(student) {
+            if (!student.profile_complete) {
+                return '<div class="student-pick incomplete-profile">' +
+                    '<span><strong>Profile incomplete</strong><small>Database record is missing Login ID or User ID</small></span></div>';
+            }
             return '<button class="student-pick' +
-                (student.auth_uid === state.selectedStudentUid ? ' active' : '') +
-                '" type="button" data-uid="' + escapeHtml(student.auth_uid) + '">' +
+                (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
+                '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
                 '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
                 '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
                 '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' +
@@ -189,8 +193,9 @@
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
 
         studentList.querySelectorAll('.student-pick').forEach(function(button) {
+            if (button.classList.contains('incomplete-profile')) return;
             button.addEventListener('click', function() {
-                state.selectedStudentUid = button.dataset.uid;
+                state.selectedStudentProfileId = button.dataset.profileId;
                 renderStudentList();
                 renderStudentDetail();
             });
@@ -211,7 +216,7 @@
 
     function renderStudentDetail() {
         var student = state.students.find(function(item) {
-            return item.auth_uid === state.selectedStudentUid;
+            return item.profile_id === state.selectedStudentProfileId;
         });
         if (!student) {
             studentDetail.innerHTML = '<div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>';
@@ -377,7 +382,7 @@
             class_group: document.getElementById('student-class').value
         }).then(function(result) {
             studentForm.reset();
-            state.selectedStudentUid = result.student.auth_uid;
+            state.selectedStudentProfileId = result.student.profile_id;
             showMessage(
                 'Student created and activated. Login ID: ' + result.student.student_id +
                 ' · Initial password: ' + result.initial_password,

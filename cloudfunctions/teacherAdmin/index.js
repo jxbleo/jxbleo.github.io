@@ -43,18 +43,21 @@ function safeDate(value) {
 }
 
 function studentView(student) {
-  const authUid = text(student.auth_uid);
-  const studentId = text(student.student_id);
+  const source = student || {};
+  const authUid = text(source.auth_uid);
+  const studentId = text(source.student_id);
   return {
+    profile_id: source._id || "",
     auth_uid: authUid,
-    student_id: studentId || authUid || "profile-incomplete",
-    name: student.name || "",
-    class_group: student.class_group || "",
-    role: student.role || "student",
-    active: student.active === true,
-    must_change_password: student.must_change_password === true,
-    created_at: student.created_at || null,
-    updated_at: student.updated_at || null,
+    student_id: studentId,
+    name: source.name || "",
+    class_group: source.class_group || "",
+    role: source.role || "student",
+    active: source.active === true,
+    must_change_password: source.must_change_password === true,
+    profile_complete: Boolean(authUid && studentId),
+    created_at: source.created_at || null,
+    updated_at: source.updated_at || null,
   };
 }
 
@@ -68,6 +71,39 @@ async function listStudents() {
   };
 }
 
+function uidFromEndUser(user) {
+  return text(user && (
+    user.UUId || user.Uuid || user.UUID || user.uuid || user.Uid || user.uid || user.UserId
+  ));
+}
+
+async function findEndUserByUsername(username) {
+  let offset = 0;
+  const limit = 100;
+  while (offset < 1000) {
+    const result = await manager.user.getEndUserList({ limit, offset });
+    const users = result && Array.isArray(result.Users) ? result.Users : [];
+    const match = users.find((user) =>
+      text(user.UserName || user.Username || user.userName).toLowerCase() === username.toLowerCase()
+    );
+    if (match) return match;
+    if (users.length < limit) break;
+    offset += limit;
+  }
+  return null;
+}
+
+async function resolveCreatedEndUser(createResult, username) {
+  const responseUser = createResult && (createResult.User || createResult.user);
+  if (uidFromEndUser(responseUser)) return responseUser;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const found = await findEndUserByUsername(username);
+    if (found) return found;
+    await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+  }
+  return null;
+}
+
 async function createStudent(event) {
   const studentId = text(event.student_id);
   const name = text(event.name);
@@ -75,6 +111,7 @@ async function createStudent(event) {
 
   if (!studentId || !name) throw new Error("STUDENT_FIELDS_REQUIRED");
   if (await getOne("students", { student_id: studentId })) throw new Error("STUDENT_ID_EXISTS");
+  if (await findEndUserByUsername(studentId)) throw new Error("STUDENT_ID_EXISTS");
 
   const password = initialPassword();
   let authUid = "";
@@ -83,7 +120,8 @@ async function createStudent(event) {
       username: studentId,
       password,
     });
-    authUid = text(createResult && createResult.User && createResult.User.UUId);
+    const authUser = await resolveCreatedEndUser(createResult, studentId);
+    authUid = uidFromEndUser(authUser);
     if (!authUid) throw new Error("AUTH_USER_ID_MISSING");
     await manager.user.setEndUserStatus({ uuid: authUid, status: "ENABLE" });
   } catch (error) {
@@ -103,8 +141,15 @@ async function createStudent(event) {
     created_at: now,
     updated_at: now,
   };
+  let addResult = null;
+  let verified = null;
   try {
-    await db.collection("students").add({ data: student });
+    addResult = await db.collection("students").add(student);
+    verified = await getOne("students", {
+      auth_uid: authUid,
+      student_id: studentId,
+    });
+    if (!verified) throw new Error("PROFILE_VERIFY_FAILED");
   } catch (error) {
     try {
       await manager.user.deleteEndUsers({ userList: [authUid] });
@@ -116,7 +161,7 @@ async function createStudent(event) {
   }
   return {
     success: true,
-    student: studentView(student),
+    student: studentView(verified || { ...student, _id: addResult && addResult.id }),
     initial_password: password,
   };
 }
@@ -227,9 +272,13 @@ function getAssignmentState(assignments) {
 }
 
 async function getAssignmentsByStudent(setId) {
-  const result = await db.collection("assignments").where({ set_id: setId }).limit(500).get();
+  const result = await db.collection("assignments").limit(500).get();
   const map = new Map();
-  (result.data || []).forEach((assignment) => {
+  (result.data || []).forEach((record) => {
+    const assignment = record.data && typeof record.data === "object"
+      ? { ...record.data, _id: record._id }
+      : record;
+    if (assignment.set_id !== setId) return;
     const items = map.get(assignment.student_uid) || [];
     items.push(assignment);
     map.set(assignment.student_uid, items);
@@ -281,7 +330,7 @@ async function createAssignmentForStudent(student, setId, dueAt) {
     updated_at: now,
   };
 
-  await db.collection("assignments").add({ data: assignment });
+  await db.collection("assignments").add(assignment);
   return assignmentId;
 }
 
@@ -329,16 +378,23 @@ async function createAssignments(event) {
 
 async function listAssignments() {
   const [assignmentResult, studentResult, setResult] = await Promise.all([
-    db.collection("assignments").orderBy("assigned_at", "desc").limit(500).get(),
+    db.collection("assignments").limit(500).get(),
     db.collection("students").limit(200).get(),
     db.collection("sets").limit(200).get(),
   ]);
-  const studentMap = new Map((studentResult.data || []).map((student) => [student.auth_uid, student]));
+  const rawAssignments = assignmentResult.data || [];
+  const studentMap = new Map((studentResult.data || []).map((record) => {
+    const student = record.data && typeof record.data === "object" ? record.data : record;
+    return [student.auth_uid, student];
+  }));
   const setMap = new Map((setResult.data || []).map((set) => [set.set_id, set]));
 
   return {
     success: true,
-    assignments: (assignmentResult.data || []).map((assignment) => {
+    assignments: rawAssignments.map((record) => {
+      const assignment = record.data && typeof record.data === "object"
+        ? { ...record.data, _id: record._id }
+        : record;
       const student = studentMap.get(assignment.student_uid) || {};
       const set = setMap.get(assignment.set_id) || {};
       return {
@@ -356,15 +412,20 @@ async function listAssignments() {
         due_at: assignment.due_at || null,
         completed_at: assignment.completed_at || null,
       };
-    }),
+    }).sort((a, b) => new Date(b.assigned_at || 0) - new Date(a.assigned_at || 0)),
   };
 }
 
 async function listAttempts() {
-  const result = await db.collection("attempts").orderBy("submitted_at", "desc").limit(500).get();
+  const result = await db.collection("attempts").limit(500).get();
+  const attempts = result.data || [];
   return {
     success: true,
-    attempts: (result.data || []).map((attempt) => ({
+    attempts: attempts.map((record) => {
+      const attempt = record.data && typeof record.data === "object"
+        ? { ...record.data, _id: record._id }
+        : record;
+      return {
       attempt_id: attempt.attempt_id || attempt._id,
       student_uid: attempt.student_uid,
       student_id: attempt.student_id_snapshot || "",
@@ -380,7 +441,8 @@ async function listAttempts() {
       selected_group_count: attempt.selected_group_count || null,
       submitted_at: attempt.submitted_at || null,
       practice_context: attempt.practice_context || "",
-    })),
+      };
+    }).sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
   };
 }
 
@@ -405,7 +467,9 @@ exports.main = async (event) => {
       code: error.message || "TEACHER_ADMIN_ERROR",
       message: error.message === "TEACHER_REQUIRED"
         ? "Teacher access is required."
-        : `Unable to complete this teacher action (${error.message || "TEACHER_ADMIN_ERROR"}).`,
+        : error.message === "STUDENT_ID_EXISTS"
+          ? "This Login ID already exists. Please use a different ID."
+          : `Unable to complete this teacher action (${error.message || "TEACHER_ADMIN_ERROR"}).`,
     };
   }
 };
