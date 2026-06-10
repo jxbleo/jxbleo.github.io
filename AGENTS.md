@@ -259,8 +259,10 @@ answers, per-question results, attempt number, grading version, timing, and
 assignment/resource context. Independent Resources work uses
 `assignment_id: null`.
 
-The student dashboard shows Done work for one week by default and supports two
-weeks, one month, and View All. The backend retains all attempts.
+The student dashboard labels assignment states `TO-DO`, `RE-DO`, and `STARS`.
+Its default list combines RE-DO first and TO-DO second; each type is newest
+assignment first. STARS defaults to one week and supports one month and All.
+The backend retains all attempts.
 
 ### Feedback and retry
 
@@ -368,8 +370,17 @@ approves production. Follow `CLOUDBASE_DEPLOYMENT.md`.
 Student dashboard navigation:
 
 - `Assignments`
-- `Resources`
-- `Me`
+- `Explore`
+- `Profile`
+
+Assignments has three selectable cards: `TO-DO`, `RE-DO`, and `STARS`. Do not
+add separate Failed/Done explanation sections below them.
+
+The hero has no `STUDENT DASHBOARD` label. It shows a varied English greeting
+and a randomly selected motivational sentence. Use China Standard Time for
+time-aware greetings. Student records keep the owner's simple `Chinese Name +
+English Name` format; the UI extracts the final English word for the greeting
+and top-right identity chip without adding another database field.
 
 Visitor mode uses the same learning interface but has no assignments, cannot
 fill/select answers, cannot submit, and sees a login prompt on interaction.

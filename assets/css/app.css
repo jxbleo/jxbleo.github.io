@@ -216,13 +216,21 @@ button { cursor: pointer; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
 .summary-card {
+    width: 100%;
     padding: 18px;
     border: 1px solid var(--line);
     border-radius: 18px;
+    color: var(--ink);
     background: rgba(255,255,255,0.82);
+    text-align: left;
 }
 .summary-value { display: block; font-size: 1.8rem; font-weight: 900; letter-spacing: -0.05em; }
 .summary-label { color: var(--muted); font-size: 0.76rem; font-weight: 800; }
+.assignment-filter { cursor: pointer; transition: transform 160ms ease, border-color 160ms ease, background 160ms ease; }
+.assignment-filter:hover { transform: translateY(-2px); border-color: rgba(19, 118, 109, 0.35); }
+.assignment-filter.active { color: white; border-color: var(--accent); background: var(--accent); }
+.assignment-filter.active .summary-label { color: rgba(255,255,255,0.78); }
+.assignment-list-tools { display: flex; justify-content: flex-end; margin: -10px 0 14px; }
 
 .task-list, .resource-list { display: grid; gap: 12px; }
 .task-card, .resource-card, .profile-card, .empty-card {

@@ -63,21 +63,20 @@ After login, students enter one mobile-first dashboard with three navigation
 capsules:
 
 - `Assignments`
-- `Resources`
-- `Me`
+- `Explore`
+- `Profile`
 
 ### Assignments
 
-The default view shows:
+The default view has three selectable status cards:
 
-- unfinished assignments
-- failed assignments
-- recently completed assignments
-- due dates
-- latest score
-- best score
-- attempt count
-- `Start`, `Continue` or `Try Again`
+- `TO-DO`: assignments not attempted yet
+- `RE-DO`: assignments that have a failed attempt and need another try
+- `STARS`: completed assignments
+
+On first entry, the list combines `RE-DO` and `TO-DO`. `RE-DO` appears first.
+Within each type, newly assigned work appears first. Selecting a status card
+shows only that type without extra explanatory sections.
 
 Assignment statuses are:
 
@@ -87,27 +86,25 @@ failed
 done
 ```
 
-Completed assignments default to the most recent week. The student can switch
-between:
+`STARS` defaults to the most recent week. The student can switch between:
 
 - 1 Week
-- 2 Weeks
 - 1 Month
-- View All
+- All
 
 These filters never delete database records.
 
-### Resources
+### Explore
 
-Resources contains the site's complete public learning catalog.
+Explore contains the site's complete public learning catalog.
 
 Logged-in students may complete any resource. A voluntary practice attempt is
 stored even when the resource was not assigned. It does not create an
 assignment and does not count as an assigned task completed.
 
-### Me
+### Profile
 
-The profile shows:
+Profile shows:
 
 - student name
 - Student ID
@@ -121,8 +118,8 @@ The profile shows:
 Visitors enter the same dashboard.
 
 - `Assignments` is empty.
-- `Resources` remains available for browsing.
-- `Me` explains that the user is in Visitor Mode.
+- `Explore` remains available for browsing.
+- `Profile` explains that the user is in Visitor Mode.
 - Visitors cannot type, select or submit practice answers.
 
 When a visitor first tries to interact with an answer control, show:
@@ -169,7 +166,7 @@ Student self-registration is not part of the first version.
 Passwords are managed by CloudBase authentication and are not stored in the
 `students` collection.
 
-The student can change a password from Me after confirming the current
+The student can change a password from Profile after confirming the current
 password.
 
 The teacher may force-reset a student's password to the agreed initial
@@ -612,7 +609,7 @@ Overdue unfinished assignments remain visible and receive an `Overdue` label.
 - build the three-section dashboard
 - support Visitor Mode
 - connect `test001`
-- implement Me and forced password change
+- implement Profile and forced password change
 
 ### Phase 3: Private answer migration
 

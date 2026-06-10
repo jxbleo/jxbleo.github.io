@@ -4,8 +4,43 @@
     var state = {
         session: null,
         assignments: [],
-        resources: []
+        resources: [],
+        assignmentFilter: 'all',
+        starsRange: '7'
     };
+
+    var motivationalQuotes = [
+        'Small steps every day create remarkable progress.',
+        'Your effort today is building your confidence tomorrow.',
+        'Progress matters more than perfection.',
+        'Every question you try makes you stronger.',
+        'Stay curious. That is where learning begins.',
+        'A difficult task is a chance to grow.',
+        'You do not have to be perfect to improve.',
+        'Consistency turns practice into progress.',
+        'One focused session can change your whole day.',
+        'Mistakes are proof that you are learning.',
+        'Keep going. Your future self will thank you.',
+        'The more you practise, the more possible things become.',
+        'A little courage can begin a lot of progress.',
+        'Today is another chance to surprise yourself.',
+        'Strong results begin with one honest attempt.',
+        'Learning gets easier when showing up becomes a habit.',
+        'Your pace is valid. Keep moving forward.',
+        'Focus on the next step, not the whole staircase.',
+        'Every retry carries something you learned before.',
+        'You are capable of more than one difficult moment suggests.',
+        'Make today count, one question at a time.',
+        'Confidence grows each time you choose to continue.',
+        'The work you repeat becomes the skill you keep.',
+        'Be patient with yourself and serious about your goals.',
+        'Start where you are and improve from there.',
+        'A calm mind and steady effort can go a long way.',
+        'Your best learning happens when you keep asking why.',
+        'Challenges are part of becoming more capable.',
+        'Give this moment your attention and let progress follow.',
+        'There is always something valuable in another attempt.'
+    ];
 
     var identityChip = document.getElementById('identity-chip');
     var greeting = document.getElementById('greeting');
@@ -36,10 +71,59 @@
         }).format(date);
     }
 
+    function randomItem(items) {
+        return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function englishName(profile) {
+        var fullName = String((profile && (profile.name || profile.student_id)) || '').trim();
+        var englishParts = fullName.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return englishParts && englishParts.length
+            ? englishParts[englishParts.length - 1]
+            : fullName;
+    }
+
+    function shanghaiHour() {
+        var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            hourCycle: 'h23'
+        }).formatToParts(new Date());
+        var hourPart = parts.find(function(part) { return part.type === 'hour'; });
+        return Number(hourPart ? hourPart.value : 12);
+    }
+
+    function greetingFor(name) {
+        var hour = shanghaiHour();
+        var timeGreetings = hour < 12
+            ? ['Good morning, {name}.', 'A fresh morning, {name}.', 'Morning, {name}. Ready to begin?']
+            : hour < 18
+                ? ['Good afternoon, {name}.', 'A bright afternoon, {name}.', 'Afternoon, {name}. Let us keep moving.']
+                : ['Good evening, {name}.', 'A calm evening, {name}.', 'Evening, {name}. One more step forward.'];
+        var flexibleGreetings = [
+            'Welcome back, {name}.',
+            'Great to see you, {name}.',
+            'Ready when you are, {name}.',
+            'Let us make some progress, {name}.',
+            'Here we go, {name}.',
+            'Your next win starts here, {name}.',
+            'Let us build on yesterday, {name}.',
+            'A new chance to grow, {name}.',
+            'Good to have you here, {name}.',
+            'Let us get started, {name}.',
+            'Keep the momentum going, {name}.',
+            'Today has possibilities, {name}.',
+            'One step at a time, {name}.',
+            'You are back, {name}. Let us do this.',
+            'Ready for something new, {name}?'
+        ];
+        return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
+    }
+
     function statusLabel(status) {
-        if (status === 'done') return 'Done';
-        if (status === 'failed') return 'Failed';
-        return 'To Do';
+        if (status === 'done') return 'STAR';
+        if (status === 'failed') return 'RE-DO';
+        return 'TO-DO';
     }
 
     function practiceHref(item, assignmentId) {
@@ -50,15 +134,18 @@
         return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
     }
 
-    function renderSummary(assignments) {
+    function renderAssignmentFilters(assignments) {
         var counts = { not_done: 0, failed: 0, done: 0 };
         assignments.forEach(function(item) {
             counts[item.status] = (counts[item.status] || 0) + 1;
         });
-        return '<div class="summary-grid">' +
-            '<div class="summary-card"><span class="summary-value">' + counts.not_done + '</span><span class="summary-label">TO DO</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.failed + '</span><span class="summary-label">FAILED</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.done + '</span><span class="summary-label">DONE</span></div>' +
+        return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
+                '<span class="summary-value">' + counts.not_done + '</span><span class="summary-label">TO-DO</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'redo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="redo">' +
+                '<span class="summary-value">' + counts.failed + '</span><span class="summary-label">RE-DO</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'stars' ? ' active' : '') + '" type="button" data-assignment-filter="stars">' +
+                '<span class="summary-value">' + counts.done + '</span><span class="summary-label">STARS</span></button>' +
         '</div>';
     }
 
@@ -66,12 +153,13 @@
         var set = item.set || item;
         var status = item.status || 'not_done';
         var action = status === 'not_done' ? 'Start' : 'Try Again';
+        var badgeClass = status === 'not_done' ? 'todo' : status;
         var score = item.latest_percentage == null ? '' : '<span>Latest ' + escapeHtml(item.latest_percentage) + '%</span>';
         var href = practiceHref(set, item.assignment_id);
         if (status !== 'not_done') href += '&retry=1';
         return '<article class="task-card">' +
             '<div>' +
-                '<span class="badge ' + escapeHtml(status) + '">' + statusLabel(status) + '</span>' +
+                '<span class="badge ' + escapeHtml(badgeClass) + '">' + statusLabel(status) + '</span>' +
                 '<h3>' + escapeHtml(set.title || set.set_id) + '</h3>' +
                 '<div class="card-meta">' +
                     '<span>' + escapeHtml(set.course || set.type || 'Practice') + '</span>' +
@@ -84,19 +172,13 @@
         '</article>';
     }
 
-    function renderAssignmentGroup(title, note, items, options) {
-        if (!items.length) return '';
-        var controls = '';
-        if (options && options.doneFilter) {
-            controls = '<select class="filter-select" id="done-range">' +
+    function starsControls() {
+        return '<div class="assignment-list-tools">' +
+            '<select class="filter-select" id="stars-range" aria-label="Completed assignment date range">' +
                 '<option value="7">1 Week</option>' +
-                '<option value="14">2 Weeks</option>' +
                 '<option value="30">1 Month</option>' +
-                '<option value="all">View All</option>' +
-            '</select>';
-        }
-        return '<div class="section-heading"><div><h2>' + title + '</h2><p>' + note + '</p></div>' + controls + '</div>' +
-            '<div class="task-list">' + items.map(taskCard).join('') + '</div>';
+                '<option value="all">All</option>' +
+            '</select></div>';
     }
 
     function filterDone(assignments, days) {
@@ -108,7 +190,15 @@
         });
     }
 
-    function renderAssignments(doneDays) {
+    function assignmentTime(item) {
+        return new Date(item.assigned_at || item.updated_at || 0).getTime();
+    }
+
+    function newestFirst(left, right) {
+        return assignmentTime(right) - assignmentTime(left);
+    }
+
+    function renderAssignments() {
         if (state.session.mode === 'visitor') {
             assignmentContent.innerHTML =
                 '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>';
@@ -116,27 +206,49 @@
         }
 
         var assignments = state.assignments || [];
-        var todo = assignments.filter(function(item) { return item.status === 'not_done'; });
-        var failed = assignments.filter(function(item) { return item.status === 'failed'; });
-        var allDone = assignments.filter(function(item) { return item.status === 'done'; });
-        var done = filterDone(allDone, doneDays || '7');
+        var todo = assignments.filter(function(item) { return item.status === 'not_done'; }).sort(newestFirst);
+        var redo = assignments.filter(function(item) { return item.status === 'failed'; }).sort(newestFirst);
+        var allStars = assignments.filter(function(item) { return item.status === 'done'; }).sort(function(left, right) {
+            return new Date(right.completed_at || right.updated_at || 0).getTime() -
+                new Date(left.completed_at || left.updated_at || 0).getTime();
+        });
+        var visible = [];
+        if (state.assignmentFilter === 'todo') visible = todo;
+        else if (state.assignmentFilter === 'redo') visible = redo;
+        else if (state.assignmentFilter === 'stars') visible = filterDone(allStars, state.starsRange);
+        else visible = redo.concat(todo);
 
-        var html = renderSummary(assignments);
-        html += renderAssignmentGroup('To Do', 'Start with the work still waiting for you.', todo);
-        html += renderAssignmentGroup('Failed', 'These attempts are saved. Try again when you are ready.', failed);
-        html += renderAssignmentGroup('Done', 'Completed work stays in your full history.', done, { doneFilter: true });
+        var html = renderAssignmentFilters(assignments);
+        if (state.assignmentFilter === 'stars') html += starsControls();
+        if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
-        } else if (!done.length && allDone.length) {
-            html += '<div class="empty-card">No completed assignments in this time range.</div>';
+        } else if (!visible.length) {
+            var emptyLabel = state.assignmentFilter === 'stars'
+                ? 'No stars in this time range.'
+                : state.assignmentFilter === 'redo'
+                    ? 'No work needs another try.'
+                    : state.assignmentFilter === 'todo'
+                        ? 'No new work is waiting.'
+                        : 'Nothing is waiting right now.';
+            html += '<div class="empty-card">' + emptyLabel + '</div>';
         }
         assignmentContent.innerHTML = html;
 
-        var select = document.getElementById('done-range');
+        document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var nextFilter = button.dataset.assignmentFilter;
+                state.assignmentFilter = state.assignmentFilter === nextFilter ? 'all' : nextFilter;
+                renderAssignments();
+            });
+        });
+
+        var select = document.getElementById('stars-range');
         if (select) {
-            select.value = doneDays || '7';
+            select.value = state.starsRange;
             select.addEventListener('change', function() {
-                renderAssignments(select.value);
+                state.starsRange = select.value;
+                renderAssignments();
             });
         }
     }
@@ -274,21 +386,22 @@
             state.session = session;
             if (session.mode === 'visitor') {
                 identityChip.textContent = 'Visitor';
-                greeting.textContent = 'Hello, Visitor.';
-                heroCopy.textContent = 'Browse freely. Log in when you are ready to answer and save progress.';
+                greeting.textContent = 'Welcome, Visitor.';
+                heroCopy.textContent = randomItem(motivationalQuotes);
                 return loadPublicCatalog().then(function(items) {
                     state.resources = items;
                 });
             }
 
-            identityChip.textContent = session.profile.student_id;
-            greeting.textContent = 'Hi, ' + (session.profile.name || session.profile.student_id) + '.';
-            heroCopy.textContent = 'You have a clear view of what is waiting, what needs another try, and what is done.';
+            var preferredName = englishName(session.profile);
+            identityChip.textContent = preferredName;
+            greeting.textContent = greetingFor(preferredName);
+            heroCopy.textContent = randomItem(motivationalQuotes);
             return loadStudentData();
         })
         .then(function() {
             if (!state.session) return;
-            renderAssignments('7');
+            renderAssignments();
             renderResources('');
             renderProfile();
         })
