@@ -44,7 +44,10 @@
             return window.MrCatCloud.callFunction('getCurrentStudent').then(function(result) {
                 if (!result || !result.success) throw new Error(result && result.message || 'Student profile unavailable.');
                 saveProfile(result.student);
-                return { mode: 'student', profile: result.student };
+                return {
+                    mode: result.student.role === 'teacher' ? 'teacher' : 'student',
+                    profile: result.student
+                };
             });
         });
     }

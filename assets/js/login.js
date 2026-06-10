@@ -45,7 +45,9 @@
                     throw new Error(result && result.message || 'This login is not linked to a student profile.');
                 }
                 window.MrCatAuth.saveProfile(result.student);
-                window.location.href = 'dashboard.html';
+                window.location.href = result.student.role === 'teacher'
+                    ? 'teacher.html'
+                    : 'dashboard.html';
             })
             .catch(function(error) {
                 showMessage(error && error.message ? error.message : 'Unable to sign in. Check your details and try again.');

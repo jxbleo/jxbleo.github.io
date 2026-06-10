@@ -30,7 +30,7 @@ body {
     font-family: Inter, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; }
 
 .eyebrow {
@@ -284,6 +284,102 @@ button { cursor: pointer; }
 .outline-button { border: 1px solid var(--line); color: var(--ink); background: white; }
 .danger-button { border: 1px solid #efc9c3; color: var(--danger); background: #fff; }
 
+.teacher-hero {
+    background: linear-gradient(135deg, #173b4b, #176d70 62%, #399488);
+}
+.teacher-message {
+    min-height: 24px;
+    margin: -12px 4px 10px;
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 750;
+}
+.teacher-message.success { color: var(--success); }
+.teacher-message.error { color: var(--danger); }
+.teacher-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+    gap: 18px;
+    align-items: start;
+}
+.compact-heading { margin-top: 0; }
+.teacher-form {
+    display: grid;
+    gap: 9px;
+}
+.teacher-form label {
+    margin-top: 7px;
+    font-size: 0.8rem;
+    font-weight: 850;
+}
+.teacher-form input,
+.teacher-form select {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--ink);
+    background: white;
+    outline: none;
+}
+.teacher-form input:focus,
+.teacher-form select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(19, 118, 109, 0.1);
+}
+.teacher-form .primary-button { margin-top: 10px; }
+.teacher-list { display: grid; gap: 11px; }
+.teacher-row {
+    padding: 17px;
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    background: rgba(255,255,255,0.88);
+    box-shadow: 0 8px 24px rgba(25, 68, 61, 0.05);
+}
+.teacher-row-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+.teacher-row-main strong { display: block; }
+.teacher-row-main span:not(.badge) {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+.teacher-row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 13px;
+}
+.teacher-row-actions button {
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+.teacher-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 13px;
+}
+.teacher-metrics span {
+    padding: 9px;
+    border-radius: 10px;
+    color: var(--muted);
+    background: #f6faf8;
+    font-size: 0.72rem;
+}
+.teacher-metrics strong { display: block; margin-top: 3px; color: var(--ink); font-size: 0.8rem; }
+.teacher-footer { display: flex; justify-content: flex-end; margin-top: 28px; }
+.teacher-logout { min-height: 42px; padding: 0 20px; border-radius: 12px; font-weight: 850; }
+
 .empty-card { text-align: center; padding: 34px 20px; color: var(--muted); }
 .empty-card strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 1.05rem; }
 .loading-card { animation: pulse 1.3s ease-in-out infinite; }
@@ -304,4 +400,6 @@ button { cursor: pointer; }
     .task-card, .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
     .profile-grid { grid-template-columns: 1fr; }
+    .teacher-grid { grid-template-columns: 1fr; }
+    .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

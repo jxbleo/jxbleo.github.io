@@ -106,3 +106,67 @@ must not be committed after cutover.
 - teacher resets require a server-side teacher authorization policy
 - the reset password must be stored as server-side configuration, never in the
   repository
+
+## Teacher Desk
+
+The teacher interface lives at:
+
+```text
+teacher.html
+```
+
+Before opening it, add a linked teacher profile to `students`. Replace
+`auth_uid` with the User ID shown on the CloudBase authentication user detail
+page:
+
+```json
+{
+  "auth_uid": "CLOUDBASE_USER_ID",
+  "student_id": "jxbleo",
+  "name": "Leo",
+  "class_group": "",
+  "role": "teacher",
+  "active": true,
+  "must_change_password": false
+}
+```
+
+Deploy the `teacherAdmin` cloud function from
+`deploy-packages/teacherAdmin.zip`:
+
+- Node.js 18
+- 256 MB
+- initialization timeout 65 seconds
+- execution timeout 10 seconds
+- install dependencies automatically
+
+Add this cloud-function environment variable:
+
+```text
+INITIAL_STUDENT_PASSWORD=<the agreed initial password>
+```
+
+The value must remain in the CloudBase function configuration. Do not add it
+to GitHub or frontend JavaScript.
+
+Every action checks the authenticated CloudBase UID against an active
+`students` document with `role: "teacher"`. Frontend state alone cannot grant
+teacher access.
+
+The first version supports:
+
+- creating and activating a CloudBase username/password user
+- creating the matching `students` profile in the same operation
+- deleting the newly created authentication user if profile creation fails
+- editing a student's name and class
+- activating or deactivating both authentication access and the student
+  profile
+- resetting a student's password to the configured initial password
+- assigning visible practice sets
+- viewing assignment summaries
+- viewing attempt summaries without exposing answer payloads
+
+The function uses CloudBase's official `@cloudbase/manager-node` user
+management service with the cloud function runtime's temporary Tencent Cloud
+credentials. No permanent SecretId or SecretKey is stored in the repository
+or browser.

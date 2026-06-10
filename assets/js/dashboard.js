@@ -267,6 +267,10 @@
                 window.location.replace('index.html');
                 return null;
             }
+            if (session.mode === 'teacher') {
+                window.location.replace('teacher.html');
+                return null;
+            }
             state.session = session;
             if (session.mode === 'visitor') {
                 identityChip.textContent = 'Visitor';

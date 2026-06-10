@@ -479,6 +479,17 @@ The initial backend should expose narrowly scoped functions:
 - sets `must_change_password` to true
 - must not be callable by ordinary students
 
+### teacherAdmin
+
+- verifies an active `role: "teacher"` profile on every request
+- creates active CloudBase authentication users and matching student profiles
+- rolls back a newly created authentication user if profile creation fails
+- updates safe student profile fields and active status
+- resets student passwords to a server-configured initial password
+- creates assignments
+- returns assignment and attempt summaries
+- never returns saved answers or private grading keys
+
 No admin function should rely on a frontend flag such as `role: "teacher"`.
 Teacher authorization must be verified server-side.
 
