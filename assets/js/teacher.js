@@ -148,6 +148,25 @@
         }).join('');
     }
 
+    function replaceStudent(student) {
+        var found = false;
+        state.students = state.students.map(function(item) {
+            if (item.auth_uid !== student.auth_uid) return item;
+            found = true;
+            return student;
+        });
+        if (!found) state.students.push(student);
+    }
+
+    function refreshStudents(successMessage) {
+        return teacherCall('listStudents').then(function(result) {
+            state.students = result.students || [];
+            renderStudents();
+            if (successMessage) showMessage(successMessage, 'success');
+            return result;
+        });
+    }
+
     function renderAssignments() {
         assignmentList.innerHTML = state.assignments.length ? state.assignments.map(function(item) {
             return '<article class="teacher-row">' +
@@ -248,15 +267,16 @@
             class_group: document.getElementById('student-class').value
         }).then(function(result) {
             studentForm.reset();
-            showMessage(
-                'Student created. Login ID: ' + result.student.student_id +
-                ' · Initial password: ' + result.initial_password,
-                'success'
-            );
-            return teacherCall('listStudents');
-        }).then(function(result) {
-            state.students = result.students || [];
+            replaceStudent(result.student);
             renderStudents();
+            var successText = 'Student created. Login ID: ' + result.student.student_id +
+                ' · Initial password: ' + result.initial_password;
+            showMessage(successText, 'success');
+            window.setTimeout(function() {
+                refreshStudents(successText).catch(function() {
+                    showMessage(successText + ' · Use Refresh if the list has not updated yet.', 'success');
+                });
+            }, 1000);
         }).catch(function(error) {
             showMessage(error.message, 'error');
         }).finally(function() {
@@ -290,6 +310,12 @@
 
     attemptSearch.addEventListener('input', function() {
         renderAttempts(attemptSearch.value);
+    });
+    document.getElementById('refresh-students').addEventListener('click', function() {
+        showMessage('Refreshing students...', '');
+        refreshStudents('Student list refreshed.').catch(function(error) {
+            showMessage(error.message, 'error');
+        });
     });
     document.getElementById('teacher-logout').addEventListener('click', window.MrCatAuth.logout);
 
