@@ -9,18 +9,48 @@
       "label": "Questions 1-5 - Paragraph Matching",
       "instruction": "Reading Passage 1 has five paragraphs, A-E. Which paragraph contains the following information? Choose from A-E.",
       "choices": [
-        { "value": "A", "text": "Paragraph A" },
-        { "value": "B", "text": "Paragraph B" },
-        { "value": "C", "text": "Paragraph C" },
-        { "value": "D", "text": "Paragraph D" },
-        { "value": "E", "text": "Paragraph E" }
+        {
+          "value": "A",
+          "text": "Paragraph A"
+        },
+        {
+          "value": "B",
+          "text": "Paragraph B"
+        },
+        {
+          "value": "C",
+          "text": "Paragraph C"
+        },
+        {
+          "value": "D",
+          "text": "Paragraph D"
+        },
+        {
+          "value": "E",
+          "text": "Paragraph E"
+        }
       ],
       "items": [
-        { "id": "Q1", "text": "Examples of wildlife other than bats which do not rely on vision to navigate: ______", "answer": "B", "evidence": "B 段连续举了夜飞昆虫、深海鱼、鲸、海豚等例子，都是在说明不靠视觉也要导航的动物。" },
-        { "id": "Q2", "text": "How early mammals avoided dying out: ______", "answer": "A", "evidence": "A 段说哺乳动物祖先在恐龙主宰白天时，靠夜间觅食才得以生存。" },
-        { "id": "Q3", "text": "Why bats hunt in the dark: ______", "answer": "A", "evidence": "A 段解释白天生态位已被鸟类等占据，因此自然选择让蝙蝠走上夜猎路线。" },
-        { "id": "Q4", "text": "How a particular discovery has helped our understanding of bats: ______", "answer": "E", "evidence": "E 段指出把雷达理论应用到蝙蝠研究，帮助科学家理解它们如何定位。" },
-        { "id": "Q5", "text": "Early military uses of echolocation: ______", "answer": "D", "evidence": "D 段提到二战中 Asdic、Sonar 和 Radar 被用于侦测潜艇等军事用途。" }
+        {
+          "id": "Q1",
+          "text": "Examples of wildlife other than bats which do not rely on vision to navigate: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "How early mammals avoided dying out: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Why bats hunt in the dark: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "How a particular discovery has helped our understanding of bats: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Early military uses of echolocation: ______"
+        }
       ]
     },
     {
@@ -28,10 +58,22 @@
       "label": "Questions 6-9 - Summary Completion",
       "instruction": "Complete the summary using ONE WORD ONLY from the passage for each answer.",
       "items": [
-        { "id": "Q6", "text": "Blind people say facial vision feels similar to pain from a ______ limb.", "answer": "phantom", "evidence": "原文直接说 like the referred pain in a phantom limb。" },
-        { "id": "Q7", "text": "The real ability comes from detecting ______ through the ears.", "answer": "echoes", "evidence": "D 段明确说 blind people are actually using echoes of their own footsteps and other sounds。" },
-        { "id": "Q8", "text": "The same principle was used to calculate the ______ of the sea under a ship.", "answer": "depth", "evidence": "原文举例：engineers built instruments to measure the depth of the sea under a ship。" },
-        { "id": "Q9", "text": "It was then adapted for locating ______ during wartime.", "answer": "submarines", "evidence": "原文写到 weapons designers adapted it for the detection of submarines。" }
+        {
+          "id": "Q6",
+          "text": "Blind people say facial vision feels similar to pain from a ______ limb."
+        },
+        {
+          "id": "Q7",
+          "text": "The real ability comes from detecting ______ through the ears."
+        },
+        {
+          "id": "Q8",
+          "text": "The same principle was used to calculate the ______ of the sea under a ship."
+        },
+        {
+          "id": "Q9",
+          "text": "It was then adapted for locating ______ during wartime."
+        }
       ]
     },
     {
@@ -39,10 +81,22 @@
       "label": "Questions 10-13 - Sentence Completion",
       "instruction": "Complete the sentences using NO MORE THAN TWO WORDS from the passage for each answer.",
       "items": [
-        { "id": "Q10", "text": "Long before radar was invented, ______ had already produced a sophisticated radar-like system in bats.", "answer": "natural selection", "evidence": "E 段说 bats, or rather natural selection working on bats, had perfected the system。" },
-        { "id": "Q11", "text": "Radar is not an accurate term for bats because they do not use ______.", "answer": "radio waves", "evidence": "原文直接说明 bats do not use radio waves。" },
-        { "id": "Q12", "text": "Radar and sonar depend on similar ______.", "answer": "mathematical theories", "evidence": "E 段原句为 the underlying mathematical theories of radar and sonar are very similar。" },
-        { "id": "Q13", "text": "The term 'echolocation' was coined by an American ______.", "answer": "zoologist", "evidence": "Donald Griffin 被明确介绍为 The American zoologist。" }
+        {
+          "id": "Q10",
+          "text": "Long before radar was invented, ______ had already produced a sophisticated radar-like system in bats."
+        },
+        {
+          "id": "Q11",
+          "text": "Radar is not an accurate term for bats because they do not use ______."
+        },
+        {
+          "id": "Q12",
+          "text": "Radar and sonar depend on similar ______."
+        },
+        {
+          "id": "Q13",
+          "text": "The term 'echolocation' was coined by an American ______."
+        }
       ]
     }
   ]

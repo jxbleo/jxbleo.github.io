@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Dashboard | Mr. Cat Academy</title>
+    <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="app-page">
+    <main class="app-shell">
+        <header class="app-header">
+            <p class="app-brand">Mr. Cat Academy</p>
+            <span class="student-chip" id="identity-chip">Loading...</span>
+        </header>
+
+        <section class="hero-card">
+            <p class="eyebrow">STUDENT DASHBOARD</p>
+            <h1 id="greeting">Hello.</h1>
+            <p id="hero-copy">Your assignments and learning resources live here.</p>
+        </section>
+
+        <nav class="dashboard-tabs" aria-label="Dashboard sections">
+            <button class="tab-button active" type="button" data-view="assignments">Assignments</button>
+            <button class="tab-button" type="button" data-view="resources">Resources</button>
+            <button class="tab-button" type="button" data-view="profile">Me</button>
+        </nav>
+
+        <section class="dashboard-view" id="view-assignments">
+            <div id="assignment-content">
+                <div class="empty-card loading-card">Loading assignments...</div>
+            </div>
+        </section>
+
+        <section class="dashboard-view" id="view-resources" hidden>
+            <div class="section-heading">
+                <div>
+                    <h2>Resources</h2>
+                    <p>Explore all available practice sets.</p>
+                </div>
+            </div>
+            <div class="resource-tools">
+                <input class="resource-search" id="resource-search" type="search" placeholder="Search title, course or type...">
+            </div>
+            <div class="resource-list" id="resource-list">
+                <div class="empty-card loading-card">Loading resources...</div>
+            </div>
+        </section>
+
+        <section class="dashboard-view" id="view-profile" hidden>
+            <div class="section-heading">
+                <div>
+                    <h2>Me</h2>
+                    <p>Your account and learning summary.</p>
+                </div>
+            </div>
+            <div id="profile-content"></div>
+        </section>
+    </main>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js"></script>
+    <script src="assets/js/cloudbase-client.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

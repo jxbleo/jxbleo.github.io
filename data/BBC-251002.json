@@ -6,141 +6,101 @@
     {
       "id": "fill-1",
       "sentence": "Georgie once saw a _____ while walking",
-      "answer": "baby badger",
-      "evidence": "\"I was on a walk and we saw a baby badger.\"",
       "section": "Personal experiences with wildlife"
     },
     {
       "id": "fill-2",
       "sentence": "Phil observed whales when travelling along the _____ in Patagonia",
-      "answer": "coast",
-      "evidence": "\"I was driving by the coast in Patagonia\"",
       "section": "Personal experiences with wildlife"
     },
     {
       "id": "fill-3",
       "sentence": "Whale watching has gained popularity in _____ of the world",
-      "answer": "coastal parts",
-      "evidence": "\"whale watching has become popular in many coastal parts of the world\"",
       "section": "Changes in human activities"
     },
     {
       "id": "fill-4",
       "sentence": "Previously, people engaged in whaling to obtain _____",
-      "answer": "oil and meat",
-      "evidence": "\"hunt and kill them for their oil and meat\"",
       "section": "Changes in human activities"
     },
     {
       "id": "fill-5",
       "sentence": "A global ban on commercial whale killing was introduced by the _____",
-      "answer": "International Whaling Commission",
-      "evidence": "\"the International Whaling Commission's global moratorium\"",
       "section": "Protection measures"
     },
     {
       "id": "fill-6",
       "sentence": "Three countries still continue _____ today",
-      "answer": "hunt whales",
-      "evidence": "\"Japan, Iceland and Norway continue to hunt whales\"",
       "section": "Protection measures"
     },
     {
       "id": "fill-7",
       "sentence": "The largest whale species can reach _____ in length",
-      "answer": "30m long",
-      "evidence": "\"the blue whale, growing up to 30m long\"",
       "section": "Whale characteristics"
     },
     {
       "id": "fill-8",
       "sentence": "Blue and humpback whales are capable of swimming at speeds of _____",
-      "answer": "30km/hr",
-      "evidence": "\"which can swim up to 30km/hr\"",
       "section": "Whale characteristics"
     },
     {
       "id": "fill-9",
       "sentence": "Early hunters used _____ for catching whales",
-      "answer": "wooden boats",
-      "evidence": "\"starting with small groups of hunters in slow-moving wooden boats\"",
       "section": "Historical whale hunting"
     },
     {
       "id": "fill-10",
       "sentence": "This traditional method was frequently _____",
-      "answer": "unsuccessful",
-      "evidence": "\"Catching whales like this was often unsuccessful\"",
       "section": "Historical whale hunting"
     },
     {
       "id": "fill-11",
       "sentence": "In the _____, an inventor from Norway created a new weapon",
-      "answer": "late 1800s",
-      "evidence": "\"Something happened in Norway in the late 1800s\"",
       "section": "Technological developments"
     },
     {
       "id": "fill-12",
       "sentence": "The invention of the _____ dramatically changed whale hunting",
-      "answer": "exploding harpoon",
-      "evidence": "\"he invented what we now know as the exploding harpoon\"",
       "section": "Technological developments"
     },
     {
       "id": "fill-13",
       "sentence": "Faster boats powered by _____ also contributed to increased whaling",
-      "answer": "steam",
-      "evidence": "\"the invention of faster steam-powered boats\"",
       "section": "Technological developments"
     },
     {
       "id": "fill-14",
       "sentence": "By the 20th century, more than _____ whales had been killed",
-      "answer": "three million whales",
-      "evidence": "\"over three million whales had been killed\"",
       "section": "Impact of hunting"
     },
     {
       "id": "fill-15",
       "sentence": "By the 1970s, only _____ remained",
-      "answer": "few great whales",
-      "evidence": "\"there were only a few great whales left\"",
       "section": "Impact of hunting"
     },
     {
       "id": "fill-16",
       "sentence": "Greenpeace launched a campaign called _____",
-      "answer": "Save the Whales",
-      "evidence": "\"Greenpeace started the Save the Whales campaign\"",
       "section": "Conservation efforts"
     },
     {
       "id": "fill-17",
       "sentence": "Recordings of whale sounds, known as the _____, became widely listened to",
-      "answer": "Song of the Whale",
-      "evidence": "\"It became popular to listen to the Song of the Whale\"",
       "section": "Conservation efforts"
     },
     {
       "id": "fill-18",
       "sentence": "Activists positioned their boats between _____ and whales",
-      "answer": "Soviet hunting vessels",
-      "evidence": "\"they put their Zodiacs in between Soviet hunting vessels and sperm whales\"",
       "section": "Conservation efforts"
     },
     {
       "id": "fill-19",
       "sentence": "Whales continue to face risks from _____ and plastic pollution",
-      "answer": "ocean acidification",
-      "evidence": "\"all whales still face danger from ocean acidification and plastic pollution\"",
       "section": "Current threats and protection"
     },
     {
       "id": "fill-20",
       "sentence": "The hunting ban has been in effect for _____ so far",
-      "answer": "40 years",
-      "evidence": "\"the moratorium...on hunting them has lasted 40 years\"",
       "section": "Current threats and protection"
     }
   ],
@@ -153,9 +113,7 @@
         "B. He feels indifferent because it was a common sight",
         "C. He regrets not seeing more whales that day",
         "D. He finds watching whales boring compared to other animals"
-      ],
-      "answer": "A",
-      "evidence": "Phil说 \"the most impressive one I've ever seen is actually a whale\" (lines 10-11)，表达积极印象。"
+      ]
     },
     {
       "id": "mc-22",
@@ -165,9 +123,7 @@
         "B. Whale watching is a non-harmful activity unlike whaling",
         "C. Whale watching involves hunting whales for meat",
         "D. Whale watching is illegal in many coastal areas"
-      ],
-      "answer": "B",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-23",
@@ -177,9 +133,7 @@
         "B. It led to increased whale hunting in Japan and Norway",
         "C. It prevented extinction of many whale species",
         "D. It was only effective for a few years after implementation"
-      ],
-      "answer": "C",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-24",
@@ -189,9 +143,7 @@
         "B. When whale watching became more popular than whaling",
         "C. A moment when whale populations began to recover",
         "D. The start of a major change in whaling practices"
-      ],
-      "answer": "D",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-25",
@@ -201,9 +153,7 @@
         "B. New technologies made hunting whales much easier",
         "C. Hunters started protecting whale populations",
         "D. Whales started migrating away from coastal areas"
-      ],
-      "answer": "B",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-26",
@@ -213,9 +163,7 @@
         "B. Praising their effective protection of whales",
         "C. Uncertain about their impact on public opinions",
         "D. Critical of their aggressive methods at sea"
-      ],
-      "answer": "B",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-27",
@@ -225,9 +173,7 @@
         "B. They cleverly used media to influence people’s views",
         "C. They relied on government media coverage exclusively",
         "D. They avoided media and focused on direct action"
-      ],
-      "answer": "B",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-28",
@@ -237,9 +183,7 @@
         "B. Environmental threats like pollution and ocean acidification persist",
         "C. Whale watching causes significant disturbance to their habitats",
         "D. Whales naturally have very short lifespans and low reproduction rates"
-      ],
-      "answer": "B",
-      "evidence": "Georgie说 “Many whale species are still endangered and all whales still face danger from ocean acidification and plastic pollution” (lines 54-56)。"
+      ]
     },
     {
       "id": "mc-29",
@@ -249,9 +193,7 @@
         "B. It ensures whales will no longer face danger at all",
         "C. It replaces older laws with permanent protections",
         "D. It allows only small-scale, regulated whaling activities"
-      ],
-      "answer": "A",
-      "evidence": ""
+      ]
     },
     {
       "id": "mc-30",
@@ -261,9 +203,7 @@
         "B. Because it is much smaller than what “pygmy” suggests",
         "C. Because it lives in deep ocean areas rarely seen",
         "D. Because 'pygmy' usually implies very large size"
-      ],
-      "answer": "B",
-      "evidence": ""
+      ]
     }
   ],
   "matching": []

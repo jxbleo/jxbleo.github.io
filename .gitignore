@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+config.secret.json
+service-account.json
+cloudbase-secret.json
+.cloudbase-private/
+deploy-packages/
+node_modules/
+.DS_Store

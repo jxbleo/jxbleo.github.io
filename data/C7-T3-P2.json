@@ -20,14 +20,35 @@
         "Questions about the causes of prehistoric migration to America",
         "How analysis of blood-variants measures the closeness of the relationship between different populations"
       ],
-      "example": { "paragraph": "G", "heading": "viii" },
+      "example": {
+        "paragraph": "G",
+        "heading": "viii"
+      },
       "items": [
-        { "id": "Q14", "paragraph": "A", "answer": "iv", "evidence": "A 节对比过去与 1950s 以来的新技术，核心就是研究方法的发展。" },
-        { "id": "Q15", "paragraph": "B", "answer": "vii", "evidence": "B 节提出长期存在的问题：何时、几波人进入美洲。" },
-        { "id": "Q16", "paragraph": "C", "answer": "x", "evidence": "C 节解释通过比较 blood variants 来测量群体之间 genetic distance。" },
-        { "id": "Q17", "paragraph": "D", "answer": "i", "evidence": "D 节给出 Williams 血液变体研究的具体发现和三波迁徙结论。" },
-        { "id": "Q18", "paragraph": "E", "answer": "vi", "evidence": "E 节用 mitochondrial DNA 进一步支持三波理论。" },
-        { "id": "Q19", "paragraph": "F", "answer": "ii", "evidence": "F 节主题就是牙齿证据及其对迁徙理论的支持。" }
+        {
+          "id": "Q14",
+          "paragraph": "A"
+        },
+        {
+          "id": "Q15",
+          "paragraph": "B"
+        },
+        {
+          "id": "Q16",
+          "paragraph": "C"
+        },
+        {
+          "id": "Q17",
+          "paragraph": "D"
+        },
+        {
+          "id": "Q18",
+          "paragraph": "E"
+        },
+        {
+          "id": "Q19",
+          "paragraph": "F"
+        }
       ]
     },
     {
@@ -35,16 +56,40 @@
       "label": "Questions 20-21 - Route Identification",
       "instruction": "The passage links certain migration periods with routes A-F on the map. Choose the correct route letter.",
       "choices": [
-        { "value": "A", "text": "Route A" },
-        { "value": "B", "text": "Route B" },
-        { "value": "C", "text": "Route C" },
-        { "value": "D", "text": "Route D" },
-        { "value": "E", "text": "Route E" },
-        { "value": "F", "text": "Route F" }
+        {
+          "value": "A",
+          "text": "Route A"
+        },
+        {
+          "value": "B",
+          "text": "Route B"
+        },
+        {
+          "value": "C",
+          "text": "Route C"
+        },
+        {
+          "value": "D",
+          "text": "Route D"
+        },
+        {
+          "value": "E",
+          "text": "Route E"
+        },
+        {
+          "value": "F",
+          "text": "Route F"
+        }
       ],
       "items": [
-        { "id": "Q20", "text": "15,000 years ago or more: ______", "answer": "E", "evidence": "第一波 Paleo-Indian 向中南美扩散，对应地图上一路南下的 E 路线。" },
-        { "id": "Q21", "text": "600 to 700 years ago: ______", "answer": "D", "evidence": "这是 Apache/Navajo 从加拿大南迁到美国西南的路线，对应 D。" }
+        {
+          "id": "Q20",
+          "text": "15,000 years ago or more: ______"
+        },
+        {
+          "id": "Q21",
+          "text": "600 to 700 years ago: ______"
+        }
       ]
     },
     {
@@ -52,15 +97,36 @@
       "label": "Questions 22-25 - Wave Classification",
       "instruction": "Classify each group as A the first wave, B the second wave, or C the third wave.",
       "choices": [
-        { "value": "A", "text": "the first wave" },
-        { "value": "B", "text": "the second wave" },
-        { "value": "C", "text": "the third wave" }
+        {
+          "value": "A",
+          "text": "the first wave"
+        },
+        {
+          "value": "B",
+          "text": "the second wave"
+        },
+        {
+          "value": "C",
+          "text": "the third wave"
+        }
       ],
       "items": [
-        { "id": "Q22", "text": "Inuit: ______", "answer": "C", "evidence": "D 节说第三波是现代 Eskimo/Inuit 和 Aleut 的祖先。" },
-        { "id": "Q23", "text": "Apache: ______", "answer": "B", "evidence": "D 节把 Apache 归入第二波 Na-Dene hunters 的后代。" },
-        { "id": "Q24", "text": "Pima-Papago: ______", "answer": "A", "evidence": "E 节说 Pima-Papago descended from the same ancestral Paleo-Indian population。" },
-        { "id": "Q25", "text": "Ticuna: ______", "answer": "A", "evidence": "Ticuna 与 Pima-Papago、Maya 一样，都被归入 Paleo-Indian first wave。" }
+        {
+          "id": "Q22",
+          "text": "Inuit: ______"
+        },
+        {
+          "id": "Q23",
+          "text": "Apache: ______"
+        },
+        {
+          "id": "Q24",
+          "text": "Pima-Papago: ______"
+        },
+        {
+          "id": "Q25",
+          "text": "Ticuna: ______"
+        }
       ]
     },
     {
@@ -72,13 +138,23 @@
           "id": "Q26",
           "text": "Christy Turner's research involved the examination of",
           "options": [
-            { "value": "A", "text": "teeth from both prehistoric and modern Americans and Asians." },
-            { "value": "B", "text": "thousands of people who live in either the New or the Old World." },
-            { "value": "C", "text": "dental specimens from the majority of prehistoric Americans." },
-            { "value": "D", "text": "the eating habits of American and Asian populations." }
-          ],
-          "answer": "A",
-          "evidence": "F 节说 Turner studied many thousands of New and Old World specimens, both ancient and modern, focusing on teeth traits。" 
+            {
+              "value": "A",
+              "text": "teeth from both prehistoric and modern Americans and Asians."
+            },
+            {
+              "value": "B",
+              "text": "thousands of people who live in either the New or the Old World."
+            },
+            {
+              "value": "C",
+              "text": "dental specimens from the majority of prehistoric Americans."
+            },
+            {
+              "value": "D",
+              "text": "the eating habits of American and Asian populations."
+            }
+          ]
         }
       ]
     }

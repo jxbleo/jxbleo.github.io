@@ -6,106 +6,76 @@
     {
       "id": "fill-1",
       "sentence": "Phil admits he tends to _____ rather than drive.",
-      "answer": "cycle",
-      "evidence": "\"maybe I cycle more than I drive\"",
       "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-2",
       "sentence": "Phil also tries to _____ things at home.",
-      "answer": "recycle",
-      "evidence": "\"I try to recycle things\"",
       "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-3",
       "sentence": "Hannah points out that dealing with climate change cannot rely on _____ alone.",
-      "answer": "individuals",
-      "evidence": "\"we can't just rely on individuals\"",
       "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-4",
       "sentence": "To address the crisis, Hannah argues we need to change the way our _____ works.",
-      "answer": "economy",
-      "evidence": "\"change the way our economy works\"",
       "section": "Personal Actions and Climate Concerns"
     },
     {
       "id": "fill-5",
       "sentence": "In the past, governments have always aimed to _____ the economy.",
-      "answer": "grow",
-      "evidence": "\"governments have always wanted to grow the economy\"",
       "section": "What Degrowth Means"
     },
     {
       "id": "fill-6",
       "sentence": "Degrowth supporters believe economies should stop _____.",
-      "answer": "growing",
-      "evidence": "\"we need to stop our economies from growing\"",
       "section": "What Degrowth Means"
     },
     {
       "id": "fill-7",
       "sentence": "The focus should shift to using fewer of the Earth's _____.",
-      "answer": "natural resources",
-      "evidence": "\"using fewer of the Earth's natural resources\"",
       "section": "What Degrowth Means"
     },
     {
       "id": "fill-8",
       "sentence": "Those who back this idea are commonly referred to as _____.",
-      "answer": "degrowthers",
-      "evidence": "\"The people who support the idea of degrowth, are often called degrowthers\"",
       "section": "What Degrowth Means"
     },
     {
       "id": "fill-9",
       "sentence": "They target production that is considered not _____.",
-      "answer": "beneficial",
-      "evidence": "\"elements of our production that are not beneficial\"",
       "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-10",
       "sentence": "_____ (cheap, rapidly produced clothing).",
-      "answer": "fast fashion",
-      "evidence": "\"An example of those elements would be fast fashion\"",
       "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-11",
       "sentence": "the _____ industry.",
-      "answer": "beef and meat",
-      "evidence": "\"the beef and meat industry\"",
       "section": "What Degrowthers Want to Reduce"
     },
     {
       "id": "fill-12",
       "sentence": "Many economists argue degrowth would lead to more _____.",
-      "answer": "poverty",
-      "evidence": "\"it would create more poverty\"",
       "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-13",
       "sentence": "Professor Fankhauser claims degrowth fails to appreciate the power of _____.",
-      "answer": "innovation",
-      "evidence": "\"degrowth underestimates the power of innovation\"",
       "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-14",
       "sentence": "He also says it overlooks the need for investment in _____.",
-      "answer": "new technology",
-      "evidence": "\"investment that we need in new technology and in new solutions\"",
       "section": "Criticism of Degrowth"
     },
     {
       "id": "fill-15",
       "sentence": "He further questions the social _____ of what degrowthers propose.",
-      "answer": "feasibility",
-      "evidence": "\"degrowth underestimates the social… feasibility of what they propose\"",
       "section": "Criticism of Degrowth"
     }
   ],
@@ -118,9 +88,7 @@
         "He admits his actions are insufficient despite making some effort",
         "He is indifferent to environmental issues and avoids the topic",
         "He is frustrated that others do not share his green lifestyle"
-      ],
-      "answer": "B",
-      "evidence": "Phil: \"I try, but I don't think I do enough. So, maybe I cycle more than I drive, and I try to recycle things.\""
+      ]
     },
     {
       "id": "mc-2",
@@ -130,9 +98,7 @@
         "Governments alone should be blamed for the climate crisis",
         "Personal habits are completely irrelevant to environmental outcomes",
         "Addressing climate change requires structural economic transformation"
-      ],
-      "answer": "D",
-      "evidence": "Hannah: \"we can't just rely on individuals… We need to actually change the way our economy works.\""
+      ]
     },
     {
       "id": "mc-3",
@@ -142,9 +108,7 @@
         "Reducing dependence on fossil fuels and non-renewable resources",
         "Balancing economic development with environmental conservation",
         "Encouraging citizens to consume fewer goods and live sustainably"
-      ],
-      "answer": "A",
-      "evidence": "Hannah: \"traditionally governments have always wanted to grow the economy. More money, more jobs and more stuff.\""
+      ]
     },
     {
       "id": "mc-4",
@@ -154,9 +118,7 @@
         "It focuses exclusively on reducing carbon emissions from transport",
         "It targets the reduction of specific harmful sectors, not all production",
         "It proposes replacing economic growth with government-controlled output"
-      ],
-      "answer": "C",
-      "evidence": "Alvaro: \"degrowth is not saying that we need to reduce everything. It's saying that we need to decrease some elements of our production that are not beneficial.\""
+      ]
     },
     {
       "id": "mc-5",
@@ -166,9 +128,7 @@
         "Garments produced at low cost and high speed to encourage frequent purchasing",
         "A retail strategy that limits clothing supply to increase consumer demand",
         "Fashion trends that spread rapidly through social media and online platforms"
-      ],
-      "answer": "B",
-      "evidence": "Phil: \"Fast fashion refers to clothes that are made very cheaply and quickly.\""
+      ]
     },
     {
       "id": "mc-6",
@@ -178,9 +138,7 @@
         "It would slow down international trade and damage export industries",
         "It would reduce consumer spending and destabilise financial markets",
         "It could worsen poverty and make resolving the climate crisis more difficult"
-      ],
-      "answer": "D",
-      "evidence": "Hannah: \"Some of them argue that it would create more poverty.\""
+      ]
     },
     {
       "id": "mc-7",
@@ -190,9 +148,7 @@
         "It relies too heavily on government regulation to control industrial output",
         "It ignores the economic benefits that come from international cooperation",
         "It overestimates how quickly societies can transition to renewable energy"
-      ],
-      "answer": "A",
-      "evidence": "Fankhauser: \"Degrowth underestimates the power of innovation… the need for investment in new technology.\""
+      ]
     },
     {
       "id": "mc-8",
@@ -202,9 +158,7 @@
         "The speed at which developing nations can adopt sustainable technologies",
         "The realistic likelihood that the proposed social changes can be carried out",
         "The cultural differences that affect how communities respond to policy shifts"
-      ],
-      "answer": "C",
-      "evidence": "Phil: \"Another factor that Professor Fankhauser says is underestimated by degrowthers is the feasibility of social change.\""
+      ]
     },
     {
       "id": "mc-9",
@@ -214,9 +168,7 @@
         "He is concerned that the episode may run significantly over its time limit",
         "He is questioning whether degrowth is a realistic solution to climate change",
         "He is illustrating the meaning of the word through a relatable everyday example"
-      ],
-      "answer": "D",
-      "evidence": "Phil: \"I could say that I think it's feasible for us to finish this podcast in six minutes.\""
+      ]
     },
     {
       "id": "mc-10",
@@ -226,9 +178,7 @@
         "The concept remains contested, with supporters and critics holding opposing views",
         "Degrowth has been widely adopted by governments as a response to climate change",
         "The disagreement centres mainly on which industries should be reduced in size"
-      ],
-      "answer": "B",
-      "evidence": "The programme presented both supporting views and opposing views, showing the concept remains contested."
+      ]
     }
   ]
 }

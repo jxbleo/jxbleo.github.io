@@ -9,10 +9,22 @@
       "label": "Questions 1-4 - YES / NO / NOT GIVEN",
       "instruction": "Do the following statements agree with the claims of the writer?",
       "items": [
-        { "id": "Q1", "text": "Only two Japanese pagodas have collapsed in 1400 years.", "answer": "YES", "evidence": "首段直接说 records show that only two have collapsed during the past 1400 years。" },
-        { "id": "Q2", "text": "The Hanshin earthquake of 1995 destroyed the pagoda at the Toji temple.", "answer": "NO", "evidence": "原文说 Toji pagoda remained unscathed，和 destroyed 相反。" },
-        { "id": "Q3", "text": "The other buildings near the Toji pagoda had been built in the last 30 years.", "answer": "NOT_GIVEN", "evidence": "文中只说附近一些建筑被夷平，没有交代它们具体建造年代。" },
-        { "id": "Q4", "text": "The builders of pagodas knew how to absorb some of the power produced by severe weather conditions.", "answer": "YES", "evidence": "作者明确说古代木匠知道如何让建筑 sway and settle itself rather than fight nature's forces。" }
+        {
+          "id": "Q1",
+          "text": "Only two Japanese pagodas have collapsed in 1400 years."
+        },
+        {
+          "id": "Q2",
+          "text": "The Hanshin earthquake of 1995 destroyed the pagoda at the Toji temple."
+        },
+        {
+          "id": "Q3",
+          "text": "The other buildings near the Toji pagoda had been built in the last 30 years."
+        },
+        {
+          "id": "Q4",
+          "text": "The builders of pagodas knew how to absorb some of the power produced by severe weather conditions."
+        }
       ]
     },
     {
@@ -20,17 +32,44 @@
       "label": "Questions 5-10 - Classification",
       "instruction": "Classify each feature as typical of A both Chinese and Japanese pagodas, B only Chinese pagodas, or C only Japanese pagodas.",
       "choices": [
-        { "value": "A", "text": "both Chinese and Japanese pagodas" },
-        { "value": "B", "text": "only Chinese pagodas" },
-        { "value": "C", "text": "only Japanese pagodas" }
+        {
+          "value": "A",
+          "text": "both Chinese and Japanese pagodas"
+        },
+        {
+          "value": "B",
+          "text": "only Chinese pagodas"
+        },
+        {
+          "value": "C",
+          "text": "only Japanese pagodas"
+        }
       ],
       "items": [
-        { "id": "Q5", "text": "Easy interior access to the top: ______", "answer": "B", "evidence": "中国塔有 inner staircases，而日本塔取消了楼梯。" },
-        { "id": "Q6", "text": "Tiles on the eaves: ______", "answer": "A", "evidence": "中国塔用 porcelain tiles，日本塔用 earthenware tiles，说明两者都有瓦片，只是材质不同。" },
-        { "id": "Q7", "text": "Use as an observation post: ______", "answer": "B", "evidence": "文中说中国 pagodas later were used mainly as watchtowers。" },
-        { "id": "Q8", "text": "Eaves measuring up to half the width of the structure: ______", "answer": "C", "evidence": "这种超大檐口是日本 pagoda 的显著特征，China and Korea have nothing like it。" },
-        { "id": "Q9", "text": "Original religious purpose: ______", "answer": "A", "evidence": "两者最初都随着 Buddhism 传入，并附属于重要寺庙。" },
-        { "id": "Q10", "text": "Floors fitting loosely over each other: ______", "answer": "C", "evidence": "日本 pagoda 的楼层 are simply stacked one on top of another，是其特殊结构。" }
+        {
+          "id": "Q5",
+          "text": "Easy interior access to the top: ______"
+        },
+        {
+          "id": "Q6",
+          "text": "Tiles on the eaves: ______"
+        },
+        {
+          "id": "Q7",
+          "text": "Use as an observation post: ______"
+        },
+        {
+          "id": "Q8",
+          "text": "Eaves measuring up to half the width of the structure: ______"
+        },
+        {
+          "id": "Q9",
+          "text": "Original religious purpose: ______"
+        },
+        {
+          "id": "Q10",
+          "text": "Floors fitting loosely over each other: ______"
+        }
       ]
     },
     {
@@ -42,37 +81,67 @@
           "id": "Q11",
           "text": "In a Japanese pagoda, the shinbashira",
           "options": [
-            { "value": "A", "text": "bears the full weight of the building." },
-            { "value": "B", "text": "bends under pressure like a tree." },
-            { "value": "C", "text": "connects the floors with the foundations." },
-            { "value": "D", "text": "stops the floors moving too far." }
-          ],
-          "answer": "D",
-          "evidence": "原文明确说 individual storeys after moving a certain distance banged into it，因此它限制楼层位移过大。" 
+            {
+              "value": "A",
+              "text": "bears the full weight of the building."
+            },
+            {
+              "value": "B",
+              "text": "bends under pressure like a tree."
+            },
+            {
+              "value": "C",
+              "text": "connects the floors with the foundations."
+            },
+            {
+              "value": "D",
+              "text": "stops the floors moving too far."
+            }
+          ]
         },
         {
           "id": "Q12",
           "text": "Shuzo Ishida performs experiments in order to",
           "options": [
-            { "value": "A", "text": "improve skyscraper design." },
-            { "value": "B", "text": "be able to build new pagodas." },
-            { "value": "C", "text": "learn about the dynamics of pagodas." },
-            { "value": "D", "text": "understand ancient mathematics." }
-          ],
-          "answer": "C",
-          "evidence": "他被称为 Professor Pagoda，就是因为热衷于理解 pagoda 的工作原理，并用模型测试其动态表现。" 
+            {
+              "value": "A",
+              "text": "improve skyscraper design."
+            },
+            {
+              "value": "B",
+              "text": "be able to build new pagodas."
+            },
+            {
+              "value": "C",
+              "text": "learn about the dynamics of pagodas."
+            },
+            {
+              "value": "D",
+              "text": "understand ancient mathematics."
+            }
+          ]
         },
         {
           "id": "Q13",
           "text": "The storeys of a Japanese pagoda are",
           "options": [
-            { "value": "A", "text": "linked only by wood." },
-            { "value": "B", "text": "fastened only to the central pillar." },
-            { "value": "C", "text": "fitted loosely on top of each other." },
-            { "value": "D", "text": "joined by special weights." }
-          ],
-          "answer": "C",
-          "evidence": "文章直接说 they are simply stacked one on top of another like a pile of hats。" 
+            {
+              "value": "A",
+              "text": "linked only by wood."
+            },
+            {
+              "value": "B",
+              "text": "fastened only to the central pillar."
+            },
+            {
+              "value": "C",
+              "text": "fitted loosely on top of each other."
+            },
+            {
+              "value": "D",
+              "text": "joined by special weights."
+            }
+          ]
         }
       ]
     }

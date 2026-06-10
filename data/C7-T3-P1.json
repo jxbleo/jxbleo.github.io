@@ -8,12 +8,30 @@
       "type": "tfng",
       "label": "Questions 1–6 — True / False / Not Given",
       "items": [
-        { "id": "Q1", "text": "Ants use the same channels of communication as humans do.", "answer": "FALSE", "evidence": "原文说蚂蚁的化学通信'可被类比为'人类使用视觉和听觉渠道，并非'使用相同渠道'。" },
-        { "id": "Q2", "text": "City life is one factor that encourages the development of intelligence.", "answer": "TRUE", "evidence": "原文称城市生活是'the forcing house of intelligence'（智慧的温床/促进因素）。" },
-        { "id": "Q3", "text": "Ants can build large cities more quickly than humans do.", "answer": "NOT_GIVEN", "evidence": "原文只比较了蚂蚁和人类建造的城市规模与历史，未提及建造速度。" },
-        { "id": "Q4", "text": "Some ants can find their way by making calculations based on distance and position.", "answer": "TRUE", "evidence": "沙漠蚂蚁通过在脑中整合方位（bearings）与距离（distances）数据来导航。" },
-        { "id": "Q5", "text": "In one experiment, foraging teams were able to use their sense of smell to find food.", "answer": "FALSE", "evidence": "实验采取严格措施'防止'（prevent）觅食团队使用气味线索（odour clues）。" },
-        { "id": "Q6", "text": "The essay, 'In the company of ants', explores ant communication.", "answer": "NOT_GIVEN", "evidence": "原文只引用了该文中的一句话，并未说明文章主题是蚂蚁交流。" }
+        {
+          "id": "Q1",
+          "text": "Ants use the same channels of communication as humans do."
+        },
+        {
+          "id": "Q2",
+          "text": "City life is one factor that encourages the development of intelligence."
+        },
+        {
+          "id": "Q3",
+          "text": "Ants can build large cities more quickly than humans do."
+        },
+        {
+          "id": "Q4",
+          "text": "Some ants can find their way by making calculations based on distance and position."
+        },
+        {
+          "id": "Q5",
+          "text": "In one experiment, foraging teams were able to use their sense of smell to find food."
+        },
+        {
+          "id": "Q6",
+          "text": "The essay, 'In the company of ants', explores ant communication."
+        }
       ]
     },
     {
@@ -21,13 +39,34 @@
       "label": "Questions 7–13 — Summary Completion",
       "instruction": "Choose one word only from the passage for each answer.",
       "items": [
-        { "id": "Q7", "text": "Ants cultivate fungi which convert _____ into a form which they can digest.", "answer": "cellulose", "evidence": "Ants can't digest the cellulose in leaves — but some fungi can." },
-        { "id": "Q8", "text": "Farmer ants use their own natural _____ as weed-killers.", "answer": "secretions", "evidence": "Farmer ants secrete antibiotics to control other fungi that might act as 'weeds'" },
-        { "id": "Q9", "text": "Farmer ants use unwanted materials as _____.", "answer": "fertilizer", "evidence": "spread waste to fertilise the crop" },
-        { "id": "Q10", "text": "Ants constantly upgrade their fungi by _____ strains with neighbouring colonies.", "answer": "exchanging", "evidence": "by regularly swapping and sharing strains with neighbouring ant colonies" },
-        { "id": "Q11", "text": "Ant farming is environmentally friendly since they use _____ methods.", "answer": "sustainable", "evidence": "The farming methods of ants are at least sustainable." },
-        { "id": "Q12", "text": "They do not affect the _____.", "answer": "environment", "evidence": "They do not ruin environments" },
-        { "id": "Q13", "text": "They do not waste enormous amounts of _____.", "answer": "energy", "evidence": "or use enormous amounts of energy" }
+        {
+          "id": "Q7",
+          "text": "Ants cultivate fungi which convert _____ into a form which they can digest."
+        },
+        {
+          "id": "Q8",
+          "text": "Farmer ants use their own natural _____ as weed-killers."
+        },
+        {
+          "id": "Q9",
+          "text": "Farmer ants use unwanted materials as _____."
+        },
+        {
+          "id": "Q10",
+          "text": "Ants constantly upgrade their fungi by _____ strains with neighbouring colonies."
+        },
+        {
+          "id": "Q11",
+          "text": "Ant farming is environmentally friendly since they use _____ methods."
+        },
+        {
+          "id": "Q12",
+          "text": "They do not affect the _____."
+        },
+        {
+          "id": "Q13",
+          "text": "They do not waste enormous amounts of _____."
+        }
       ]
     }
   ]

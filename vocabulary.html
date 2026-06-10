@@ -935,6 +935,7 @@
                         <select id="test-group-count"></select>
                         <button class="btn btn-primary" id="start-test-btn" type="button">Start</button>
                     </div>
+                    <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
                     <div class="timer" id="test-timer"></div>
                     <div id="test-summary" class="test-summary"></div>
                     <div id="test-groups" class="group-grid"></div>
@@ -946,12 +947,20 @@
         </div>
     </div>
 
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js"></script>
+    <script src="assets/js/cloudbase-client.js"></script>
+    <script src="assets/js/practice-session.js"></script>
     <script>
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
+        var assignmentId = params.get('assignment') || '';
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
+        var activeTestGroups = [];
+        var activeTestGroupCount = 0;
+        var testStartedAt = null;
         var students = [
             { id: 'EI6688', label: '甘昕雨Eilene' },
             { id: 'EV3389', label: '刘榆雯Eva' },
@@ -1136,22 +1145,37 @@
         function checkGroupAnswers(groupId) {
             var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
             if (!group) return;
+            var answers = {};
             group.questions.forEach(function(question, index) {
                 var card = document.getElementById('self-' + groupId + '-question-' + index);
-                var input = card.querySelector('.answer-input');
-                var reveal = card.querySelector('.reveal');
-                var value = normalizeAnswer(input.value);
-                var answer = normalizeAnswer(question.answer);
-                card.classList.remove('correct', 'wrong', 'pending');
-                if (value && value === answer) {
-                    card.classList.add('correct');
-                } else if (!value) {
-                    card.classList.add('pending');
-                } else {
-                    card.classList.add('wrong');
-                }
-                reveal.innerHTML = '<strong>Answer:</strong> ' + question.answer + '<br><br>' + question.explanation;
-                reveal.classList.add('show');
+                var key = question.questionKey || (group.id + ':' + question.number);
+                answers[key] = (card.querySelector('.answer-input') || {}).value || '';
+            });
+            window.MrCatCloud.callFunction('submitAttempt', {
+                set_id: setId,
+                mode: 'vocabulary_practice',
+                answers: answers,
+                selected_group_count: 1,
+                selected_group_ids: [groupId]
+            }).then(function(response) {
+                if (!response || !response.success) throw new Error(response && response.message || 'Unable to check answers.');
+                var resultMap = {};
+                (response.question_results || []).forEach(function(item) { resultMap[item.question_id] = item; });
+                group.questions.forEach(function(question, index) {
+                    var card = document.getElementById('self-' + groupId + '-question-' + index);
+                    var input = card.querySelector('.answer-input');
+                    var reveal = card.querySelector('.reveal');
+                    var key = question.questionKey || (group.id + ':' + question.number);
+                    var result = resultMap[key];
+                    card.classList.remove('correct', 'wrong', 'pending');
+                    if (!result) return;
+                    card.classList.add(result.correct ? 'correct' : (input.value.trim() ? 'wrong' : 'pending'));
+                    reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
+                        (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
+                    reveal.classList.add('show');
+                });
+            }).catch(function(error) {
+                alert(error && error.message ? error.message : 'Unable to check answers.');
             });
         }
 
@@ -1392,12 +1416,25 @@
             var select = document.getElementById('test-group-count');
             select.innerHTML = groups.map(function(group, index) {
                 var count = index + 1;
-                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min</option>';
+                var status = count < 5 ? ' · Self-test only' : ' · Counts toward results';
+                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min' + status + '</option>';
             }).join('');
+            updateTestCountNote();
+        }
+
+        function updateTestCountNote() {
+            var count = Number(document.getElementById('test-group-count').value || 1);
+            var note = document.getElementById('test-count-note');
+            if (count < 5) {
+                note.textContent = 'Tests with 4 groups or fewer are for self-study only. They are not saved and do not affect assignments.';
+            } else {
+                note.textContent = 'This is a counted test. Your answers, group accuracy, and overall result will be saved.';
+            }
         }
 
         function renderTestQuestion(group, question, index) {
-            return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-answer="' + question.answer + '">' +
+            var questionKey = question.questionKey || (group.id + ':' + question.number);
+            return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                 '<p class="question-prompt with-inline-answer">' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
                 renderChoicePanel(group.wordList || []) +
                 '<div class="reveal"></div>' +
@@ -1449,6 +1486,9 @@
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
             var selected = shuffleList(groups).slice(0, count);
+            activeTestGroups = selected;
+            activeTestGroupCount = count;
+            testStartedAt = new Date().toISOString();
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
@@ -1480,32 +1520,80 @@
             clearInterval(testTimerId);
             var questions = document.querySelectorAll('.test-question');
             if (!questions.length) return;
-            var score = 0;
+            submitVocabularyTest(questions);
+        }
+
+        function submitVocabularyTest(questions) {
+            var answers = {};
             questions.forEach(function(card) {
+                var key = card.getAttribute('data-question-key');
                 var input = card.querySelector('.answer-input');
-                var trigger = card.querySelector('.blank-trigger');
-                var reveal = card.querySelector('.reveal');
-                var answer = card.getAttribute('data-answer');
-                card.classList.remove('correct', 'wrong', 'pending');
-                input.disabled = true;
-                if (trigger) trigger.disabled = true;
-                card.classList.remove('choice-open');
-                if (normalizeAnswer(input.value) === normalizeAnswer(answer)) {
-                    score++;
-                    card.classList.add('correct');
-                } else {
-                    card.classList.add(input.value.trim() ? 'wrong' : 'pending');
-                    reveal.innerHTML = '<strong>Answer:</strong> ' + answer;
-                    reveal.classList.add('show');
-                }
+                answers[key] = input ? input.value : '';
             });
-            var summary = document.getElementById('test-summary');
-            summary.textContent = 'Score: ' + score + ' / ' + questions.length;
-            summary.classList.add('show');
-            var timer = document.getElementById('test-timer');
-            timer.textContent = 'Finished';
-            timer.classList.remove('sticky');
-            document.getElementById('submit-test-btn').style.display = 'none';
+
+            var submitButton = document.getElementById('submit-test-btn');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            window.MrCatCloud.callFunction('submitAttempt', {
+                set_id: setId,
+                assignment_id: assignmentId || null,
+                mode: 'vocabulary_test',
+                answers: answers,
+                selected_group_count: activeTestGroupCount,
+                selected_group_ids: activeTestGroups.map(function(group) { return group.id; }),
+                started_at: testStartedAt,
+                duration_seconds: testStartedAt
+                    ? Math.max(0, Math.round((Date.now() - new Date(testStartedAt).getTime()) / 1000))
+                    : null
+            }).then(function(response) {
+                if (!response || !response.success) {
+                    throw new Error(response && response.message || 'Unable to submit this test.');
+                }
+                var resultMap = {};
+                (response.question_results || []).forEach(function(item) {
+                    resultMap[item.question_id] = item;
+                });
+                questions.forEach(function(card) {
+                    var key = card.getAttribute('data-question-key');
+                    var result = resultMap[key];
+                    var input = card.querySelector('.answer-input');
+                    var trigger = card.querySelector('.blank-trigger');
+                    var reveal = card.querySelector('.reveal');
+                    card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
+                    if (input) input.disabled = true;
+                    if (trigger) trigger.disabled = true;
+                    if (!result) return;
+                    card.classList.add(result.correct ? 'correct' : (input && input.value.trim() ? 'wrong' : 'pending'));
+                    if (!result.correct && !response.feedback_locked) {
+                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
+                            (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
+                        reveal.classList.add('show');
+                    }
+                });
+
+                var summary = document.getElementById('test-summary');
+                var resultLabel = response.recorded
+                    ? (response.passed ? 'Passed' : 'Failed')
+                    : 'Self-test only — this result was not saved';
+                summary.innerHTML = 'Score: ' + response.correct_count + ' / ' + response.question_count +
+                    ' · ' + response.percentage + '% · ' + resultLabel +
+                    '<br><button class="btn btn-primary" id="vocab-try-again" type="button" style="margin-top:12px;">Try Again</button>';
+                summary.classList.add('show');
+                document.getElementById('vocab-try-again').addEventListener('click', function() {
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('retry', '1');
+                    window.location.href = url.toString();
+                });
+                var timer = document.getElementById('test-timer');
+                timer.textContent = 'Finished';
+                timer.classList.remove('sticky');
+                submitButton.style.display = 'none';
+            }).catch(function(error) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Test';
+                alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
+            });
         }
 
         function wireEvents() {
@@ -1534,6 +1622,7 @@
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', startTest);
             document.getElementById('submit-test-btn').addEventListener('click', submitTest);
+            document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.addEventListener('click', handleChoiceClick);
         }
 

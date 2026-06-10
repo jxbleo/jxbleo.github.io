@@ -6,141 +6,101 @@
     {
       "id": "fill-1",
       "sentence": "Purchased a Roman coin aged _____",
-      "answer": "1,800 years",
-      "evidence": "\"the 1,800-year-old Roman coin which BBC reporter Ryan Keane recently bought in London\"",
       "section": "Ryan Keane's discovery"
     },
     {
       "id": "fill-2",
       "sentence": "Research revealed extensive illegal networks involving _____",
-      "answer": "antiquities",
-      "evidence": "\"I came across reports of expansive criminal networks related to antiquities\"",
       "section": "Ryan Keane's discovery"
     },
     {
       "id": "fill-3",
       "sentence": "Many historical items sold have been taken by force and _____",
-      "answer": "trafficked",
-      "evidence": "\"Some ancient artefacts being sold online and in stores have been looted and trafficked\"",
       "section": "Ryan Keane's discovery"
     },
     {
       "id": "fill-4",
       "sentence": "Objects created by humans with historical value, e.g. coins and _____",
-      "answer": "statue",
-      "evidence": "\"which is historically interesting – for example, a coin or statue\"",
       "section": "Historical background"
     },
     {
       "id": "fill-5",
       "sentence": "During _____, items were commonly removed from their places of origin",
-      "answer": "colonial times",
-      "evidence": "\"During colonial times, it was common for artefacts to be taken\"",
       "section": "Historical background"
     },
     {
       "id": "fill-6",
       "sentence": "Relocated to _____ and museums in other countries",
-      "answer": "private collections",
-      "evidence": "\"moved to museums and private collections abroad\"",
       "section": "Historical background"
     },
     {
       "id": "fill-7",
       "sentence": "_____ has transformed the illegal trade",
-      "answer": "social media",
-      "evidence": "\"Social media is the game changer here\"",
       "section": "Impact of modern technology"
     },
     {
       "id": "fill-8",
       "sentence": "Previously, sellers needed to work with _____ to find buyers",
-      "answer": "intermediaries",
-      "evidence": "\"you had to go through intermediaries\"",
       "section": "Impact of modern technology"
     },
     {
       "id": "fill-9",
       "sentence": "This difficulty acted as a _____ in the process",
-      "answer": "bottleneck",
-      "evidence": "\"this problem, or bottleneck, is gone\"",
       "section": "Impact of modern technology"
     },
     {
       "id": "fill-10",
       "sentence": "Now communication between sellers and _____ is direct",
-      "answer": "demand side",
-      "evidence": "\"communicate with someone on the demand side\"",
       "section": "Impact of modern technology"
     },
     {
       "id": "fill-11",
       "sentence": "Museums serve as the _____ destination for many stolen items",
-      "answer": "final",
-      "evidence": "\"as the final destination for much looted treasure\"",
       "section": "Museums' responsibility"
     },
     {
       "id": "fill-12",
       "sentence": "Several institutions, such as the Louvre in _____, face allegations",
-      "answer": "Louvre",
-      "evidence": "\"including the Louvre in Paris\"",
       "section": "Museums' responsibility"
     },
     {
       "id": "fill-13",
       "sentence": "Accusations include purchasing stolen items either knowingly or _____",
-      "answer": "unknowingly",
-      "evidence": "\"Accusations of knowingly or unknowingly buying stolen objects\"",
       "section": "Museums' responsibility"
     },
     {
       "id": "fill-14",
       "sentence": "Victoria Reed works as _____ _____ at the institution",
-      "answer": "senior curator",
-      "evidence": "\"Victoria Reed is senior curator at the Museum of Fine Arts\"",
       "section": "Case study: Museum of Fine Arts"
     },
     {
       "id": "fill-15",
       "sentence": "In 2024, the museum returned a necklace taken illegally from _____",
-      "answer": "Turkey",
-      "evidence": "\"which had been taken illegally from Turkey\"",
       "section": "Case study: Museum of Fine Arts"
     },
     {
       "id": "fill-16",
       "sentence": "The theft occurred during the _____",
-      "answer": "1970s",
-      "evidence": "\"from Turkey in the 1970s\"",
       "section": "Case study: Museum of Fine Arts"
     },
     {
       "id": "fill-17",
       "sentence": "Returning items to their _____ is called repatriation",
-      "answer": "country",
-      "evidence": "\"returning artefacts to their country of origin\"",
       "section": "Debate on returning artefacts"
     },
     {
       "id": "fill-18",
       "sentence": "Victoria Reed supports practice of _____",
-      "answer": "responsible collecting",
-      "evidence": "\"I believe in responsible collecting\"",
       "section": "Debate on returning artefacts"
     },
     {
       "id": "fill-19",
       "sentence": "She also advocates for careful _____ decisions",
-      "answer": "repatriation",
-      "evidence": "\"I believe in judicious repatriation decisions\"",
       "section": "Debate on returning artefacts"
     },
     {
       "id": "fill-20",
       "sentence": "Her position is considered not extreme and acceptable – a _____ stance",
-      "answer": "middle-of-the-road",
-      "evidence": "\"Victoria takes a middle-of-the-road approach\"",
       "section": "Debate on returning artefacts"
     }
   ],
@@ -153,9 +113,7 @@
         "B. He is doubtful about the authenticity of ancient objects",
         "C. He is indifferent to how artefacts are sold online",
         "D. He is excited about finding new collectors for artefacts"
-      ],
-      "answer": "A",
-      "evidence": "Ryan说 \"I came across reports of expansive criminal networks related to antiquities\"（第8行），表明他对非法网络规模感到关注。"
+      ]
     },
     {
       "id": "mc-22",
@@ -165,9 +123,7 @@
         "B. They are valuable due to their material worth",
         "C. They are made in famous museums worldwide",
         "D. They are always linked to famous movie stories"
-      ],
-      "answer": "B",
-      "evidence": "Neil定义artefact为“any object made by humans, usually very old”（第11-12行）。"
+      ]
     },
     {
       "id": "mc-23",
@@ -177,9 +133,7 @@
         "B. Items carefully excavated by archaeologists",
         "C. Museums purchasing objects through legal channels",
         "D. Artefacts displayed with full government approval"
-      ],
-      "answer": "A",
-      "evidence": "Beth解释“looted – or stolen by force”（第17行）。"
+      ]
     },
     {
       "id": "mc-24",
@@ -189,9 +143,7 @@
         "B. Social media facilitates easy communication between sellers and buyers",
         "C. Social media increases the difficulty of selling artefacts",
         "D. Social media forces middlemen to act as barriers"
-      ],
-      "answer": "B",
-      "evidence": "Amr称“Social media is the game changer... it just opens it up”（第23-24行），强调沟通便捷。"
+      ]
     },
     {
       "id": "mc-25",
@@ -201,9 +153,7 @@
         "B. It is the blockage that slows down seller-buyer contact",
         "C. It is the shortage of ancient objects on the market",
         "D. It is the museum’s refusal to display looted artefacts"
-      ],
-      "answer": "B",
-      "evidence": "“A bottleneck is a problem that delays a process or stops it from progressing”（第26-27行），前文提到之前沟通难是瓶颈。"
+      ]
     },
     {
       "id": "mc-26",
@@ -213,9 +163,7 @@
         "B. They sell stolen objects to private collectors",
         "C. They ignore accusations related to illegal purchases",
         "D. They avoid returning artefacts to original countries"
-      ],
-      "answer": "A",
-      "evidence": "“museums have an important role... final destination for much looted treasure”（第29-30行）"
+      ]
     },
     {
       "id": "mc-27",
@@ -225,9 +173,7 @@
         "B. She takes a moderate view, balancing responsibility and caution",
         "C. She opposes repatriation completely to keep artefacts in museums",
         "D. She believes repatriation should always happen immediately"
-      ],
-      "answer": "B",
-      "evidence": "Victoria说“middle-of-the-road approach... responsible collecting... judicious repatriation decisions”（第33-35行）"
+      ]
     },
     {
       "id": "mc-28",
@@ -237,9 +183,7 @@
         "B. A balanced viewpoint acceptable to most people",
         "C. A decision made without careful consideration",
         "D. An opinion favored only by museum curators"
-      ],
-      "answer": "B",
-      "evidence": "Beth解释middle-of-the-road是“not extreme and is acceptable to most people”（第35-37行）"
+      ]
     },
     {
       "id": "mc-29",
@@ -249,9 +193,7 @@
         "B. If objects should be returned to their origin or stay in museums",
         "C. How to increase the sale of artefacts on social media",
         "D. Whether ancient objects are authentic or modern fakes"
-      ],
-      "answer": "B",
-      "evidence": "文末提到“whether artefacts find... back to their original homes or displayed in museums remains an ongoing debate”（第39-40行）"
+      ]
     },
     {
       "id": "mc-30",
@@ -261,9 +203,7 @@
         "B. It was the first item stolen from the Valley of the Kings",
         "C. It was originally kept in private collections abroad",
         "D. It was used as a prop in popular adventure movies"
-      ],
-      "answer": "A",
-      "evidence": "Neil问答确认“the Mask of Tutankhamun”于1922发现（第5行，后续）"
+      ]
     }
   ],
   "matching": []

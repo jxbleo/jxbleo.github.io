@@ -21,15 +21,39 @@
         "The need to raise standards",
         "A description of ancient water supplies"
       ],
-      "example": { "paragraph": "B", "heading": "iii" },
+      "example": {
+        "paragraph": "B",
+        "heading": "iii"
+      },
       "items": [
-        { "id": "Q14", "paragraph": "A", "answer": "xi", "evidence": "描述古罗马庞大供水系统（管道、下水道），完全契合'古代供水系统描述'。" },
-        { "id": "Q15", "paragraph": "C", "answer": "vii", "evidence": "段落核心是数十亿人缺乏洁净水、水致疾病每天杀死上万儿童，围绕'水与健康/疾病'展开。" },
-        { "id": "Q16", "paragraph": "D", "answer": "v", "evidence": "列举物种濒危、生态系统破坏、土壤退化、地下水枯竭等水资源政策的环境负面后果。" },
-        { "id": "Q17", "paragraph": "E", "answer": "i", "evidence": "水专家（water experts）要求优先满足基本需求、善用现有设施，对应科学家呼吁修订政策。" },
-        { "id": "Q18", "paragraph": "F", "answer": "ix", "evidence": "'fortunately and unexpectedly'直接对应'surprising'，核心为用水需求增速放缓甚至下降。" },
-        { "id": "Q19", "paragraph": "G", "answer": "ii", "evidence": "以'What explains this?'开头，直接回答F段现象的原因：技术进步+社区观念转变。" },
-        { "id": "Q20", "paragraph": "H", "answer": "x", "evidence": "虽承认仍需新建基础设施，但重心在'必须达到更高规格（higher specifications）'，强调提高标准。" }
+        {
+          "id": "Q14",
+          "paragraph": "A"
+        },
+        {
+          "id": "Q15",
+          "paragraph": "C"
+        },
+        {
+          "id": "Q16",
+          "paragraph": "D"
+        },
+        {
+          "id": "Q17",
+          "paragraph": "E"
+        },
+        {
+          "id": "Q18",
+          "paragraph": "F"
+        },
+        {
+          "id": "Q19",
+          "paragraph": "G"
+        },
+        {
+          "id": "Q20",
+          "paragraph": "H"
+        }
       ]
     },
     {
@@ -37,12 +61,30 @@
       "label": "Questions 21–26 — YES / NO / NOT GIVEN",
       "instruction": "Do the following statements agree with the information given in the passage?",
       "items": [
-        { "id": "Q21", "text": "Water use per person is higher in the industrial world than it was in Ancient Rome.", "answer": "NO", "evidence": "原文说古罗马人均供水量与工业世界'一样多（as much as）'，题目说'更高（higher）'与原文矛盾。" },
-        { "id": "Q22", "text": "Feeding increasing populations is possible due primarily to improved irrigation systems.", "answer": "YES", "evidence": "原文'mainly because of（主要是由于）'= 题目'due primarily to'，两者完全同义。" },
-        { "id": "Q23", "text": "Modern water systems imitate those of the ancient Greeks and Romans.", "answer": "NOT_GIVEN", "evidence": "原文仅将现代与古代供水服务做比较，从未提及现代系统是否模仿（imitate）古代系统。" },
-        { "id": "Q24", "text": "Industrial growth is increasing the overall demand for water.", "answer": "NO", "evidence": "原文用'although'转折——工业产出持续攀升，但取水速率却在放缓，与题目直接矛盾。" },
-        { "id": "Q25", "text": "Modern technologies have led to a reduction in domestic water consumption.", "answer": "YES", "evidence": "原文'homes（家庭）'= 题目'domestic'，'decreased'= 'reduction'，词义完全对应。" },
-        { "id": "Q26", "text": "In the future, governments should maintain ownership of water infrastructures.", "answer": "NOT_GIVEN", "evidence": "段落H讨论未来基础设施须提高标准和责任，但全文对'政府所有权（ownership）'只字未提。" }
+        {
+          "id": "Q21",
+          "text": "Water use per person is higher in the industrial world than it was in Ancient Rome."
+        },
+        {
+          "id": "Q22",
+          "text": "Feeding increasing populations is possible due primarily to improved irrigation systems."
+        },
+        {
+          "id": "Q23",
+          "text": "Modern water systems imitate those of the ancient Greeks and Romans."
+        },
+        {
+          "id": "Q24",
+          "text": "Industrial growth is increasing the overall demand for water."
+        },
+        {
+          "id": "Q25",
+          "text": "Modern technologies have led to a reduction in domestic water consumption."
+        },
+        {
+          "id": "Q26",
+          "text": "In the future, governments should maintain ownership of water infrastructures."
+        }
       ]
     }
   ]

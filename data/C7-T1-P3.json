@@ -13,49 +13,89 @@
           "id": "Q27",
           "text": "The book Educating Psyche is mainly concerned with",
           "options": [
-            { "value": "A", "text": "the power of suggestion in learning." },
-            { "value": "B", "text": "a particular technique for learning based on emotions." },
-            { "value": "C", "text": "the effects of emotion on the imagination and the unconscious." },
-            { "value": "D", "text": "ways of learning which are not traditional." }
-          ],
-          "answer": "D",
-          "evidence": "开头先总述这本书讨论'激进的新学习方法'，Lozanov 的 suggestion 只是书中讨论的其中一个理论。"
+            {
+              "value": "A",
+              "text": "the power of suggestion in learning."
+            },
+            {
+              "value": "B",
+              "text": "a particular technique for learning based on emotions."
+            },
+            {
+              "value": "C",
+              "text": "the effects of emotion on the imagination and the unconscious."
+            },
+            {
+              "value": "D",
+              "text": "ways of learning which are not traditional."
+            }
+          ]
         },
         {
           "id": "Q28",
           "text": "Lozanov's theory claims that, when we try to remember things,",
           "options": [
-            { "value": "A", "text": "unimportant details are the easiest to recall." },
-            { "value": "B", "text": "concentrating hard produces the best results." },
-            { "value": "C", "text": "the most significant facts are most easily recalled." },
-            { "value": "D", "text": "peripheral vision is not important." }
-          ],
-          "answer": "A",
-          "evidence": "作者反复举例说明，我们往往更容易记住 peripheral details，而不是本来刻意去学的核心内容。"
+            {
+              "value": "A",
+              "text": "unimportant details are the easiest to recall."
+            },
+            {
+              "value": "B",
+              "text": "concentrating hard produces the best results."
+            },
+            {
+              "value": "C",
+              "text": "the most significant facts are most easily recalled."
+            },
+            {
+              "value": "D",
+              "text": "peripheral vision is not important."
+            }
+          ]
         },
         {
           "id": "Q29",
           "text": "In this passage, the author uses the examples of a book and a lecture to illustrate that",
           "options": [
-            { "value": "A", "text": "both of these are important for developing concentration." },
-            { "value": "B", "text": "his theory about methods of learning is valid." },
-            { "value": "C", "text": "reading is a better technique for learning than listening." },
-            { "value": "D", "text": "we can remember things more easily under hypnosis." }
-          ],
-          "answer": "B",
-          "evidence": "书和讲座两个例子都在支持前文论点：无意识或边缘感知形成的连接更持久，因此 Lozanov 的理论有依据。"
+            {
+              "value": "A",
+              "text": "both of these are important for developing concentration."
+            },
+            {
+              "value": "B",
+              "text": "his theory about methods of learning is valid."
+            },
+            {
+              "value": "C",
+              "text": "reading is a better technique for learning than listening."
+            },
+            {
+              "value": "D",
+              "text": "we can remember things more easily under hypnosis."
+            }
+          ]
         },
         {
           "id": "Q30",
           "text": "Lozanov claims that teachers should train students to",
           "options": [
-            { "value": "A", "text": "memorise details of the curriculum." },
-            { "value": "B", "text": "develop their own sets of indirect instructions." },
-            { "value": "C", "text": "think about something other than the curriculum content." },
-            { "value": "D", "text": "avoid overloading the capacity of the brain." }
-          ],
-          "answer": "C",
-          "evidence": "原文说 consciousness 应该从 curriculum 移开，去关注 peripheral 的东西。"
+            {
+              "value": "A",
+              "text": "memorise details of the curriculum."
+            },
+            {
+              "value": "B",
+              "text": "develop their own sets of indirect instructions."
+            },
+            {
+              "value": "C",
+              "text": "think about something other than the curriculum content."
+            },
+            {
+              "value": "D",
+              "text": "avoid overloading the capacity of the brain."
+            }
+          ]
         }
       ]
     },
@@ -64,12 +104,30 @@
       "label": "Questions 31-36 — True / False / Not Given",
       "instruction": "Do the following statements agree with the information given in the passage?",
       "items": [
-        { "id": "Q31", "text": "In the example of suggestopedic teaching in the fourth paragraph, the only variable that changes is the music.", "answer": "FALSE", "evidence": "不仅音乐变了，老师朗读方式和学生是否打开书本也发生了变化。" },
-        { "id": "Q32", "text": "Prior to the suggestopedia class, students are made aware that the language experience will be demanding.", "answer": "FALSE", "evidence": "原文恰好相反，学生被引导相信学习会 easy and pleasant。" },
-        { "id": "Q33", "text": "In the follow-up class, the teaching activities are similar to those used in conventional classes.", "answer": "TRUE", "evidence": "原文明确说这些方法在语言教学中并不罕见，区别只在于 suggestopedia 把它们专门用于帮助回忆。" },
-        { "id": "Q34", "text": "As an indirect benefit, students notice improvements in their memory.", "answer": "NOT_GIVEN", "evidence": "文中没有说学生会额外注意到自己的记忆力提升，只谈到他们如何回忆和运用所学材料。" },
-        { "id": "Q35", "text": "Teachers say they prefer suggestopedia to traditional approaches to language teaching.", "answer": "NOT_GIVEN", "evidence": "文章没有给出教师偏好对比，只说很少有教师能复制 Lozanov 的惊人成果。" },
-        { "id": "Q36", "text": "Students in a suggestopedia class retain more new vocabulary than those in ordinary classes.", "answer": "TRUE", "evidence": "原文把 suggestopedic session 和 conventional teaching 对照，并说学生能 regularly learn 1000 new words，说明词汇掌握量更高。" }
+        {
+          "id": "Q31",
+          "text": "In the example of suggestopedic teaching in the fourth paragraph, the only variable that changes is the music."
+        },
+        {
+          "id": "Q32",
+          "text": "Prior to the suggestopedia class, students are made aware that the language experience will be demanding."
+        },
+        {
+          "id": "Q33",
+          "text": "In the follow-up class, the teaching activities are similar to those used in conventional classes."
+        },
+        {
+          "id": "Q34",
+          "text": "As an indirect benefit, students notice improvements in their memory."
+        },
+        {
+          "id": "Q35",
+          "text": "Teachers say they prefer suggestopedia to traditional approaches to language teaching."
+        },
+        {
+          "id": "Q36",
+          "text": "Students in a suggestopedia class retain more new vocabulary than those in ordinary classes."
+        }
       ]
     },
     {
@@ -77,23 +135,68 @@
       "label": "Questions 37-40 — Summary Completion",
       "instruction": "Complete the summary using the list of words, A-K, below.",
       "choices": [
-        { "value": "A", "text": "spectacular" },
-        { "value": "B", "text": "teaching" },
-        { "value": "C", "text": "lesson" },
-        { "value": "D", "text": "authoritarian" },
-        { "value": "E", "text": "unpopular" },
-        { "value": "F", "text": "ritual" },
-        { "value": "G", "text": "unspectacular" },
-        { "value": "H", "text": "placebo" },
-        { "value": "I", "text": "involved" },
-        { "value": "J", "text": "appropriate" },
-        { "value": "K", "text": "well known" }
+        {
+          "value": "A",
+          "text": "spectacular"
+        },
+        {
+          "value": "B",
+          "text": "teaching"
+        },
+        {
+          "value": "C",
+          "text": "lesson"
+        },
+        {
+          "value": "D",
+          "text": "authoritarian"
+        },
+        {
+          "value": "E",
+          "text": "unpopular"
+        },
+        {
+          "value": "F",
+          "text": "ritual"
+        },
+        {
+          "value": "G",
+          "text": "unspectacular"
+        },
+        {
+          "value": "H",
+          "text": "placebo"
+        },
+        {
+          "value": "I",
+          "text": "involved"
+        },
+        {
+          "value": "J",
+          "text": "appropriate"
+        },
+        {
+          "value": "K",
+          "text": "well known"
+        }
       ],
       "items": [
-        { "id": "Q37", "text": "Suggestopedia uses a less direct method of suggestion than other techniques such as hypnosis. However, Lozanov admits that a certain amount of _____ is necessary in order to convince students,", "answer": "F", "evidence": "Lozanov 说 suggestion 周围的 ritual 是必要的，虽然它本身也可被看作 placebo。" },
-        { "id": "Q38", "text": "even if this is just a _____.", "answer": "H", "evidence": "原文直接说这些 ritual may be seen as placebos，且他承认自己体系里的 ritual 也是 placebo。" },
-        { "id": "Q39", "text": "Furthermore, if the method is to succeed, teachers must follow a set procedure. Although Lozanov's method has become quite _____,", "answer": "K", "evidence": "suggestopedia has gained some notoriety，对应这里的 well known。" },
-        { "id": "Q40", "text": "the results of most other teachers using this method have been _____.", "answer": "G", "evidence": "few teachers are able to emulate the spectacular results，所以大多数人的结果只能是 unspectacular / mediocre。" }
+        {
+          "id": "Q37",
+          "text": "Suggestopedia uses a less direct method of suggestion than other techniques such as hypnosis. However, Lozanov admits that a certain amount of _____ is necessary in order to convince students,"
+        },
+        {
+          "id": "Q38",
+          "text": "even if this is just a _____."
+        },
+        {
+          "id": "Q39",
+          "text": "Furthermore, if the method is to succeed, teachers must follow a set procedure. Although Lozanov's method has become quite _____,"
+        },
+        {
+          "id": "Q40",
+          "text": "the results of most other teachers using this method have been _____."
+        }
       ]
     }
   ]

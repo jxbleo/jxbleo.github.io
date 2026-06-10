@@ -859,6 +859,10 @@
     </div>
 </div>
 
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+<script src="assets/js/config.public.js"></script>
+<script src="assets/js/cloudbase-client.js"></script>
+<script src="assets/js/practice-session.js"></script>
 <script>
 (function() {
     'use strict';
@@ -874,6 +878,8 @@
     var backRemaining = backLimit;
     var hasPlayedOnce = false;
     var quizFontScale = 1;
+    var assignmentId = '';
+    var attemptStartedAt = new Date().toISOString();
 
     var students = [
         { id: 'EI6688', label: '甘昕雨Eilene' },
@@ -1118,8 +1124,6 @@
         for (var i = 0; i < matching.length; i++) {
             var m = matching[i];
             var pairs = m.pairs;
-            var ans = m.answer || [];
-
             html += '<div class="matching-section" data-id="' + m.id + '">';
             html += '<div class="matching-instruction">' + (i + 1) + '. ' + m.instruction + '</div>';
             html += '<table class="matching-table">';
@@ -1250,6 +1254,7 @@
     function init() {
         var params = getParams();
         setId = params.set || '';
+        assignmentId = params.assignment || '';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
             localStorage.setItem('opencode_user', params.user);
@@ -1340,79 +1345,6 @@
         }
 
         return missing;
-    }
-
-    function gradeAnswers(userAnswers) {
-        var results = [];
-        var correct = 0;
-        var total = 0;
-
-        if (lessonData.blanks && lessonData.blanks.length) {
-            for (var i = 0; i < lessonData.blanks.length; i++) {
-                var b = lessonData.blanks[i];
-                total++;
-                var ua = (userAnswers[b.id] || '').toLowerCase();
-                var ca = b.answer.toLowerCase();
-                var isCorrect = ua === ca;
-                if (isCorrect) correct++;
-                results.push({
-                    type: 'blank',
-                    id: b.id,
-                    userAnswer: userAnswers[b.id] || '',
-                    correctAnswer: b.answer,
-                    isCorrect: isCorrect,
-                    evidence: b.evidence
-                });
-            }
-        }
-
-        if (lessonData.multipleChoice && lessonData.multipleChoice.length) {
-            for (var j = 0; j < lessonData.multipleChoice.length; j++) {
-                var m = lessonData.multipleChoice[j];
-                total++;
-                var isCorrect = (userAnswers[m.id] || '') === m.answer;
-                if (isCorrect) correct++;
-                results.push({
-                    type: 'mc',
-                    id: m.id,
-                    userAnswer: userAnswers[m.id] || '',
-                    correctAnswer: m.answer,
-                    isCorrect: isCorrect,
-                    evidence: m.evidence,
-                    question: m.question
-                });
-            }
-        }
-
-        if (lessonData.matching && lessonData.matching.length) {
-            var mLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-            for (var k = 0; k < lessonData.matching.length; k++) {
-                var mat = lessonData.matching[k];
-                var pairs = mat.pairs;
-                var ans = mat.answer || [];
-                for (var p = 0; p < pairs.length; p++) {
-                    total++;
-                    var key = mat.id + '-' + p;
-                    var ua = userAnswers[key] || '';
-                    var ca = (ans[p] || '');
-                    var isCorrect = ua === ca;
-                    if (isCorrect) correct++;
-                    results.push({
-                        type: 'match',
-                        id: key,
-                        userAnswer: ua,
-                        correctAnswer: ca !== '' ? ca + '. ' + pairs[p].right : '',
-                        isCorrect: isCorrect,
-                        evidence: pairs[p].right,
-                        left: pairs[p].left,
-                        right: pairs[p].right,
-                        matchIndex: p
-                    });
-                }
-            }
-        }
-
-        return { results: results, correct: correct, total: total };
     }
 
     function showScore(score) {
@@ -1516,40 +1448,63 @@
         document.getElementById('confirm-modal').classList.remove('show');
 
         var userAnswers = collectAnswers();
-        var result = gradeAnswers(userAnswers);
-
-        submitted = true;
         var btn = document.getElementById('submit-btn');
         btn.disabled = true;
-        btn.textContent = 'Submitted';
+        btn.textContent = 'Submitting...';
 
-        logEvent('submit', { score: result.correct + '/' + result.total, correct: result.correct, total: result.total });
-
-        var formData = new FormData();
-        formData.append('Student_ID', studentId);
-        formData.append('Set_ID', setId);
-        formData.append('Title', lessonData.title);
-        formData.append('Score', result.correct + '/' + result.total);
-        for (var key in userAnswers) {
-            if (userAnswers.hasOwnProperty(key)) {
-                formData.append(key, userAnswers[key]);
+        window.MrCatCloud.callFunction('submitAttempt', {
+            set_id: setId,
+            assignment_id: assignmentId || null,
+            mode: 'bbc',
+            answers: userAnswers,
+            started_at: attemptStartedAt,
+            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(attemptStartedAt).getTime()) / 1000))
+        }).then(function(response) {
+            if (!response || !response.success) {
+                throw new Error(response && response.message || 'Unable to save this attempt.');
             }
-        }
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://formspree.io/f/mpqnvgel', true);
-        xhr.setRequestHeader('Accept', 'application/json');
-        xhr.onload = function() {
-            showScore(result);
-            applyFeedback(result.results);
+            submitted = true;
+            btn.textContent = 'Submitted';
+
+            var feedback = (response.question_results || []).map(function(item) {
+                var source = null;
+                var type = 'blank';
+                if (lessonData.blanks) {
+                    source = lessonData.blanks.find(function(entry) { return entry.id === item.question_id; });
+                }
+                if (!source && lessonData.multipleChoice) {
+                    source = lessonData.multipleChoice.find(function(entry) { return entry.id === item.question_id; });
+                    if (source) type = 'mc';
+                }
+                if (!source && item.question_id.indexOf('-') !== -1) type = 'match';
+                return {
+                    type: type,
+                    id: item.question_id,
+                    userAnswer: item.submitted_answer || userAnswers[item.question_id] || '',
+                    correctAnswer: item.correct_answer,
+                    isCorrect: item.correct === true,
+                    evidence: item.explanation || '',
+                    question: source && source.question || ''
+                };
+            });
+
+            showScore({
+                correct: response.correct_count,
+                total: response.question_count
+            });
+            if (!response.feedback_locked) applyFeedback(feedback);
             disableAllInputs();
-        };
-        xhr.onerror = function() {
-            showScore(result);
-            applyFeedback(result.results);
-            disableAllInputs();
-        };
-        xhr.send(formData);
+            logEvent('submit', {
+                attemptId: response.attempt_id,
+                percentage: response.percentage,
+                passed: response.passed
+            });
+        }).catch(function(error) {
+            btn.disabled = false;
+            btn.textContent = 'Submit Answers';
+            alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
+        });
     }
 
     function attachListeners() {
