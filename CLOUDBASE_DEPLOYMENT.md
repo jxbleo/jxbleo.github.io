@@ -19,6 +19,22 @@ The following collections already exist with `ADMINONLY` permissions:
 - `grading_keys`
 - `system_config`
 
+The STAR and Argue release also requires these `ADMINONLY` collections:
+
+- `student_set_achievements`
+- `answer_disputes`
+- `grading_key_history`
+
+Create unique indexes where the console supports them:
+
+- `student_set_achievements.achievement_id`
+- `answer_disputes.dispute_id`
+- `grading_key_history.history_id`
+
+Create all three collections before deploying the corresponding updated cloud
+functions. The student Dashboard reads `student_set_achievements`, and the
+teacher page reads `answer_disputes`.
+
 Username/password authentication is enabled and anonymous authentication is
 disabled.
 
@@ -61,6 +77,26 @@ Important:
 8. Create one test assignment for `test001`.
 9. Deploy `submitAttempt`.
 10. Test the complete flow before replacing public question data.
+
+## STAR And Argue Deployment
+
+After creating the three collections above:
+
+1. Deploy `submitAttempt` from `deploy-packages/submitAttempt.zip`.
+2. Deploy `getDashboard` from `deploy-packages/getDashboard.zip`.
+3. Deploy `teacherAdmin` from `deploy-packages/teacherAdmin.zip`.
+4. Push/deploy the static website.
+5. Submit one passing Explore attempt and verify a protected STAR appears.
+6. Verify the teacher cannot assign the same set to that student.
+7. Submit a wrong answer, send one Argue request, and verify it appears under
+   Teacher `Data`.
+8. Resolve it with `Add as Accepted Answer` in development and verify:
+   - the disputed attempt improves
+   - a qualifying attempt creates a STAR
+   - the grading key version increases
+   - the history record is retained
+
+Do not deploy these function updates before the new collections exist.
 
 ## Required Test Assignment
 

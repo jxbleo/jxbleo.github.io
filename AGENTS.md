@@ -179,6 +179,9 @@ All collections use `ADMINONLY`:
 - `attempts`: immutable countable submissions
 - `grading_keys`: private answers, explanations, and scoring rules
 - `system_config`: defaults such as passing percentage
+- `student_set_achievements`: permanent protected STAR records
+- `answer_disputes`: student single-question Argue requests
+- `grading_key_history`: immutable teacher grading-rule revisions
 
 Read exact schemas in `CLOUDBASE_ARCHITECTURE.md` before adding fields.
 Preserve these stable identifiers:
@@ -222,6 +225,9 @@ and preserves the old one.
 `failed` remains the same open assignment. `Try Again` creates another attempt,
 not another assignment.
 
+A protected STAR blocks future assignment of the same `set_id`, including when
+the STAR came from Explore rather than a teacher assignment.
+
 ### Students
 
 The Students page defaults to a searchable list. Selecting a student shows:
@@ -264,6 +270,17 @@ Its default list combines RE-DO first and TO-DO second; each type is newest
 assignment first. STARS defaults to one week and supports one month and All.
 The backend retains all attempts.
 
+STAR is monotonic and permanent. Once `student_uid + set_id` earns a STAR:
+
+- it can never be revoked or downgraded by normal code
+- later failing attempts cannot remove it
+- later passing-standard changes cannot remove it
+- answer-key changes cannot remove it
+- only the best attempt reference and best percentage may improve
+
+Explore passing attempts create STAR achievements without creating fake
+assignments. Teacher assignment candidates with an existing STAR are disabled.
+
 ### Feedback and retry
 
 The current default is `feedback_policy: "always"`. Preserve the design for a
@@ -271,6 +288,35 @@ future policy that reveals complete answers only after passing.
 
 `Try Again` clears browser answers, grading marks, and explanations while
 preserving prior attempt records in CloudBase.
+
+Historical STAR review returns only the student's submitted answers and a
+correct/incorrect flag. It must never return correct answers or explanations.
+Full grading feedback is limited to the immediate response after submission.
+
+### Argue
+
+Only a wrong question in a recorded attempt can be disputed. The authenticated
+student may include an optional reason. Enforce one record per
+`attempt_id + question_id`.
+
+Teacher decisions are:
+
+- `keep`: retain the original ruling
+- `add`: add the submitted answer to accepted answers
+- `replace`: replace the future correct answer with the submitted answer
+
+`add` and `replace` update private CloudBase `grading_keys`, increment
+`grading_version`, and append `grading_key_history`. Do not put corrected
+answers back into public JSON.
+
+Only the disputed attempt is regraded, and only upward. Never automatically
+regrade other students' historical attempts. Future attempts use the new
+grading rule. If the adjusted attempt passes, create or improve its protected
+STAR.
+
+Teacher-approved CloudBase grading corrections are authoritative. Future
+content imports must not blindly overwrite revised `grading_keys`; reconcile
+their `grading_version` and `grading_key_history` first.
 
 ### Vocabulary
 

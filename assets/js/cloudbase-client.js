@@ -44,9 +44,15 @@
             name: name,
             data: data || {}
         }).then(function(response) {
-            return response && Object.prototype.hasOwnProperty.call(response, 'result')
+            var result = response && Object.prototype.hasOwnProperty.call(response, 'result')
                 ? response.result
                 : response;
+            if (name === 'submitAttempt' && result && result.success) {
+                window.dispatchEvent(new CustomEvent('mrcat:attempt-submitted', {
+                    detail: result
+                }));
+            }
+            return result;
         });
     }
 

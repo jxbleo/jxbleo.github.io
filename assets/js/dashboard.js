@@ -152,11 +152,13 @@
     function taskCard(item) {
         var set = item.set || item;
         var status = item.status || 'not_done';
-        var action = status === 'not_done' ? 'Start' : 'Try Again';
+        var action = status === 'done' ? 'Review' : (status === 'not_done' ? 'Start' : 'Try Again');
         var badgeClass = status === 'not_done' ? 'todo' : status;
         var score = item.latest_percentage == null ? '' : '<span>Latest ' + escapeHtml(item.latest_percentage) + '%</span>';
-        var href = practiceHref(set, item.assignment_id);
-        if (status !== 'not_done') href += '&retry=1';
+        var href = status === 'done' && item.review_attempt_id
+            ? 'attempt-review.html?attempt=' + encodeURIComponent(item.review_attempt_id)
+            : practiceHref(set, item.assignment_id);
+        if (status === 'failed') href += '&retry=1';
         return '<article class="task-card">' +
             '<div>' +
                 '<span class="badge ' + escapeHtml(badgeClass) + '">' + statusLabel(status) + '</span>' +
@@ -166,6 +168,7 @@
                     '<span>Due ' + escapeHtml(formatDate(item.due_at)) + '</span>' +
                     score +
                     '<span>' + escapeHtml(item.attempt_count || 0) + ' attempt' + ((item.attempt_count || 0) === 1 ? '' : 's') + '</span>' +
+                    (item.star_source === 'explore' ? '<span>Completed in Explore</span>' : '') +
                 '</div>' +
             '</div>' +
             '<a class="card-button" href="' + escapeHtml(href) + '">' + action + '</a>' +

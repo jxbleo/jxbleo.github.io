@@ -7,6 +7,7 @@
         sets: [],
         assignments: [],
         attempts: [],
+        disputes: [],
         candidates: [],
         selectedStudentProfileId: ''
     };
@@ -90,11 +91,18 @@
     }
 
     function candidateStatus(candidate) {
+        if (candidate.availability === 'starred') {
+            return {
+                label: candidate.star_source === 'explore' ? 'STAR · completed in Explore' : 'STAR · completed',
+                css: 'starred',
+                disabled: true
+            };
+        }
         if (candidate.availability === 'in_progress') {
             return { label: 'In Progress', css: 'progress', disabled: true };
         }
         if (candidate.availability === 'completed') {
-            return { label: 'Completed · can reassign', css: 'completed', disabled: false };
+            return { label: 'STAR · completed', css: 'starred', disabled: true };
         }
         return { label: 'Available', css: 'available', disabled: false };
     }
@@ -124,7 +132,7 @@
                 '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
                     '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
                 '<span class="candidate-status">' + escapeHtml(status.label) +
-                    (student.availability === 'completed' && student.best_percentage != null
+                    ((student.availability === 'completed' || student.availability === 'starred') && student.best_percentage != null
                         ? '<small>Best ' + escapeHtml(student.best_percentage) + '%</small>' : '') +
                 '</span>' +
             '</label>';
@@ -279,6 +287,76 @@
         });
     }
 
+    function answerText(value) {
+        if (Array.isArray(value)) return value.join(' / ');
+        return value == null ? '—' : String(value);
+    }
+
+    function renderDisputes() {
+        var list = document.getElementById('dispute-list');
+        var disputes = state.disputes || [];
+        list.innerHTML = disputes.length ? disputes.map(function(item) {
+            var pending = item.status === 'pending';
+            return '<article class="profile-card dispute-card ' + escapeHtml(item.status) + '" data-dispute-id="' +
+                escapeHtml(item.dispute_id) + '">' +
+                '<div class="student-detail-heading"><div><p class="eyebrow accent">' +
+                    escapeHtml(item.set_title) + '</p><h2>Question ' + escapeHtml(item.question_id) + '</h2>' +
+                    '<p>' + escapeHtml(item.student_name || item.student_id) + ' · ' +
+                    escapeHtml(formatDate(item.created_at)) + '</p></div>' +
+                    '<span class="badge ' + (pending ? 'failed' : 'done') + '">' +
+                    escapeHtml(item.status) + '</span></div>' +
+                '<div class="dispute-comparison">' +
+                    '<div><span>Student answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
+                    '<div><span>Answer at submission</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
+                '</div>' +
+                '<p class="dispute-reason"><strong>Student note:</strong> ' +
+                    escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
+                (pending
+                    ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +
+                      '<div class="dispute-actions">' +
+                        '<button class="outline-button" type="button" data-decision="keep">Keep Original Ruling</button>' +
+                        '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
+                        '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>' +
+                      '</div>'
+                    : '<p class="muted">Decision: ' + escapeHtml(item.decision || item.status) +
+                      (item.teacher_note ? ' · ' + escapeHtml(item.teacher_note) : '') + '</p>') +
+            '</article>';
+        }).join('') : '<div class="empty-card"><strong>No Argue requests</strong>New student requests will appear here.</div>';
+
+        list.querySelectorAll('[data-decision]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var card = button.closest('[data-dispute-id]');
+                var decision = button.dataset.decision;
+                if (decision === 'replace' && !confirm('Replace the correct answer for future submissions? The previous rule will remain in history.')) {
+                    return;
+                }
+                card.querySelectorAll('button').forEach(function(item) { item.disabled = true; });
+                showMessage('Resolving Argue request...', '');
+                teacherCall('resolveDispute', {
+                    dispute_id: card.dataset.disputeId,
+                    decision: decision,
+                    teacher_note: card.querySelector('.dispute-note').value
+                }).then(function() {
+                    showMessage('Argue request resolved.', 'success');
+                    return Promise.all([
+                        teacherCall('listDisputes'),
+                        teacherCall('listAssignments'),
+                        teacherCall('listAttempts')
+                    ]);
+                }).then(function(results) {
+                    state.disputes = results[0].disputes || [];
+                    state.assignments = results[1].assignments || [];
+                    state.attempts = results[2].attempts || [];
+                    renderDisputes();
+                    renderStudentDetail();
+                }).catch(function(error) {
+                    showMessage(error.message, 'error');
+                    renderDisputes();
+                });
+            });
+        });
+    }
+
     function refreshStudents() {
         return teacherCall('listStudents').then(function(result) {
             state.students = result.students || [];
@@ -313,16 +391,19 @@
             teacherCall('listStudents'),
             teacherCall('listSets'),
             teacherCall('listAssignments'),
-            teacherCall('listAttempts')
+            teacherCall('listAttempts'),
+            teacherCall('listDisputes')
         ]).then(function(results) {
             state.students = results[0].students || [];
             state.sets = results[1].sets || [];
             state.assignments = results[2].assignments || [];
             state.attempts = results[3].attempts || [];
+            state.disputes = results[4].disputes || [];
             fillClassFilters();
             renderSetOptions();
             renderStudentList();
             renderStudentDetail();
+            renderDisputes();
         });
     }
 
@@ -402,6 +483,14 @@
         });
     });
     document.getElementById('teacher-logout').addEventListener('click', window.MrCatAuth.logout);
+    document.getElementById('refresh-disputes').addEventListener('click', function() {
+        teacherCall('listDisputes').then(function(result) {
+            state.disputes = result.disputes || [];
+            renderDisputes();
+        }).catch(function(error) {
+            showMessage(error.message, 'error');
+        });
+    });
 
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
