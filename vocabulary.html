@@ -551,13 +551,19 @@
 
         .choice-panel {
             display: none;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 8px;
             margin-top: 12px;
             padding: 12px;
             border: 1px solid rgba(15, 118, 110, 0.14);
             border-radius: 14px;
             background: #f8fbfc;
+        }
+
+        .choice-options-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .question-item.choice-open .choice-panel {
@@ -582,14 +588,16 @@
         }
 
         .choice-option.clear-choice {
-            border-color: rgba(100, 116, 139, 0.22);
-            background: #fff;
-            color: var(--muted);
+            align-self: flex-end;
+            border-color: #e2c8b0;
+            background: #fff6ed;
+            color: #9a5a2a;
+            font-size: 0.82rem;
         }
 
         .choice-option.clear-choice:hover {
-            background: #eef2f7;
-            color: var(--ink);
+            background: #fde8d0;
+            color: #7a431a;
         }
 
         .dictation-input {
@@ -697,6 +705,26 @@
         .btn-secondary {
             background: #eef2f7;
             color: var(--ink);
+        }
+
+        .btn-clear-all {
+            background: #fff6ed;
+            color: #9a5a2a;
+            border: 1px solid #e2c8b0;
+        }
+
+        .btn-clear-all:hover {
+            background: #fde8d0;
+            color: #7a431a;
+        }
+
+        .btn-hide-answer {
+            background: #e0eef5;
+            color: #1a5f7a;
+        }
+
+        .btn-hide-answer:hover {
+            background: #cde2ee;
         }
 
         .test-setup {
@@ -1124,10 +1152,12 @@
 
         function renderChoicePanel(words) {
             return '<div class="choice-panel">' +
-                '<button class="choice-option clear-choice" type="button" data-action="clear-choice">Clear</button>' +
+                '<div class="choice-options-wrap">' +
                 (words || []).map(function(word) {
                     return '<button class="choice-option" type="button" data-value="' + escapeHtml(word) + '">' + escapeHtml(word) + '</button>';
                 }).join('') +
+                '</div>' +
+                '<button class="choice-option clear-choice" type="button" data-action="clear-choice">Clear</button>' +
             '</div>';
         }
 
@@ -1174,9 +1204,71 @@
                         (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
                     reveal.classList.add('show');
                 });
+                var btn = document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
+                if (btn) {
+                    btn.textContent = 'Hide Answer';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-hide-answer');
+                    btn.setAttribute('data-action', 'hide');
+                }
             }).catch(function(error) {
                 alert(error && error.message ? error.message : 'Unable to check answers.');
             });
+        }
+
+        function hideGroupAnswers(groupId) {
+            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
+            if (!group) return;
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById('self-' + groupId + '-question-' + index);
+                if (!card) return;
+                card.classList.remove('correct', 'wrong', 'pending');
+                var reveal = card.querySelector('.reveal');
+                if (reveal) {
+                    reveal.classList.remove('show');
+                    reveal.innerHTML = '';
+                }
+            });
+            var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]');
+            if (btn) {
+                btn.textContent = 'Check Answer';
+                btn.classList.remove('btn-hide-answer');
+                btn.classList.add('btn-primary');
+                btn.setAttribute('data-action', 'check');
+            }
+        }
+
+        function clearGroupAnswers(groupId) {
+            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
+            if (!group) return;
+            var groupCard = document.querySelector('[data-action="clear-all"][data-group="' + groupId + '"]');
+            if (groupCard) groupCard = groupCard.closest('.group-card');
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById('self-' + groupId + '-question-' + index);
+                if (!card) return;
+                card.classList.remove('correct', 'wrong', 'pending');
+                var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
+                var reveal = card.querySelector('.reveal');
+                if (input) input.value = '';
+                if (trigger) {
+                    trigger.textContent = '';
+                    trigger.classList.remove('selected');
+                }
+                if (reveal) {
+                    reveal.classList.remove('show');
+                    reveal.innerHTML = '';
+                }
+            });
+            if (groupCard) refreshChoiceAvailability(groupCard);
+            var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]') ||
+                      document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
+            if (btn && btn.getAttribute('data-action') === 'hide') {
+                btn.textContent = 'Check Answer';
+                btn.classList.remove('btn-hide-answer');
+                btn.classList.add('btn-primary');
+                btn.setAttribute('data-action', 'check');
+            }
         }
 
         function renderSelfStudyGroups(groups) {
@@ -1203,6 +1295,7 @@
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                     '<div class="group-actions">' +
+                        '<button class="btn btn-clear-all" data-action="clear-all" data-group="' + group.id + '">Clear All</button>' +
                         '<button class="btn btn-primary" data-action="check" data-group="' + group.id + '">Check Answer</button>' +
                     '</div>' +
                 '</div>';
@@ -1616,6 +1709,8 @@
                 var groupId = e.target.getAttribute('data-group');
                 if (!action || !groupId) return;
                 if (action === 'check') checkGroupAnswers(groupId);
+                if (action === 'hide') hideGroupAnswers(groupId);
+                if (action === 'clear-all') clearGroupAnswers(groupId);
             });
 
             document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);
