@@ -5,7 +5,7 @@
         session: null,
         assignments: [],
         resources: [],
-        assignmentFilter: 'all',
+        assignmentFilter: 'todo',
         starsRange: '7'
     };
 
@@ -161,8 +161,10 @@
         if (status === 'failed') href += '&retry=1';
         return '<article class="task-card">' +
             '<div>' +
-                '<span class="badge ' + escapeHtml(badgeClass) + '">' + statusLabel(status) + '</span>' +
-                '<h3>' + escapeHtml(set.title || set.set_id) + '</h3>' +
+                '<h3>' +
+                    '<span class="badge ' + escapeHtml(badgeClass) + '" style="margin-right:8px;vertical-align:middle;">' + statusLabel(status) + '</span>' +
+                    '<span style="vertical-align:middle;">' + escapeHtml(set.title || set.set_id) + '</span>' +
+                '</h3>' +
                 '<div class="card-meta">' +
                     '<span>' + escapeHtml(set.course || set.type || 'Practice') + '</span>' +
                     '<span>Due ' + escapeHtml(formatDate(item.due_at)) + '</span>' +
