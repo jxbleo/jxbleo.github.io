@@ -175,6 +175,8 @@
 
         .progress-wrap {
             cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .progress-track {
@@ -961,6 +963,7 @@
     var attemptStartedAt = new Date().toISOString();
     var currentArgueQuestionId = null;
     var currentArgueAttemptId = null;
+    var isDragging = false;
 
     var students = [
         { id: 'EI6688', label: '甘昕雨Eilene' },
@@ -1041,7 +1044,7 @@
         setText('sticky-play-btn', playText);
         setText('sticky-current-time', formatAudioTime(current));
         setText('sticky-duration', formatAudioTime(duration));
-        setProgress('sticky-progress-fill', pct);
+        if (!isDragging) setProgress('sticky-progress-fill', pct);
     }
 
     function toggleAudioPlayback() {
@@ -1087,13 +1090,50 @@
             audio.addEventListener('ended', updateAudioUi);
 
             var progressWrap = document.getElementById('sticky-player').querySelector('.progress-wrap');
-            if (progressWrap) {
-                progressWrap.addEventListener('click', function(e) {
-                    var rect = this.getBoundingClientRect();
-                    var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-                    if (audio.duration) audio.currentTime = pct * audio.duration;
-                });
+            var progressFill = document.getElementById('sticky-progress-fill');
+
+            function seekFromEvent(clientX) {
+                var rect = progressWrap.getBoundingClientRect();
+                var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                if (progressFill) progressFill.style.width = (pct * 100) + '%';
+                if (audio.duration) audio.currentTime = pct * audio.duration;
+                if (!audio.paused) {
+                    var playPromise = audio.play();
+                    if (playPromise && playPromise.catch) playPromise.catch(function() {});
+                }
             }
+
+            function onPointerDown(e) {
+                isDragging = true;
+                seekFromEvent(e.clientX);
+                e.preventDefault();
+            }
+
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                seekFromEvent(e.clientX);
+                e.preventDefault();
+            }
+
+            function onPointerUp() {
+                isDragging = false;
+            }
+
+            if (progressWrap) {
+                progressWrap.addEventListener('mousedown', onPointerDown);
+                progressWrap.addEventListener('touchstart', function(e) {
+                    onPointerDown(e.touches[0]);
+                }, { passive: false });
+            }
+            document.addEventListener('mousemove', onPointerMove);
+            document.addEventListener('mouseup', onPointerUp);
+            document.addEventListener('touchmove', function(e) {
+                if (isDragging) {
+                    onPointerMove(e.touches[0]);
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            document.addEventListener('touchend', onPointerUp);
         }
         updateAudioUi();
     }
