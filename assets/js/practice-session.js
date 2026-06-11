@@ -109,61 +109,6 @@
         if (visitor) installVisitorGuard(buildVisitorModal());
     }
 
-    function showArguePanel(response) {
-        if (visitor || !response || !response.recorded || !response.attempt_id) return;
-        var wrong = (response.question_results || []).filter(function(item) {
-            return item.correct !== true;
-        });
-        if (!wrong.length) return;
-
-        var previous = document.querySelector('.mrcat-argue-panel');
-        if (previous) previous.remove();
-        var panel = document.createElement('section');
-        panel.className = 'mrcat-argue-panel';
-        panel.innerHTML =
-            '<button class="mrcat-argue-close" type="button" aria-label="Close">×</button>' +
-            '<h2>Think an answer was marked incorrectly?</h2>' +
-            '<p>You can ask your teacher to review one wrong answer. A note is optional.</p>' +
-            wrong.map(function(item) {
-                return '<div class="mrcat-argue-item" data-question-id="' +
-                    String(item.question_id).replace(/"/g, '&quot;') + '">' +
-                    '<strong>Question ' + String(item.question_id).replace(/</g, '&lt;') + '</strong>' +
-                    '<small>Your answer: ' + String(item.submitted_answer == null ? '' : item.submitted_answer)
-                        .replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</small>' +
-                    '<textarea maxlength="1000" placeholder="Why should this answer be accepted? (optional)"></textarea>' +
-                    '<button type="button">Argue</button>' +
-                '</div>';
-            }).join('');
-        panel.querySelector('.mrcat-argue-close').addEventListener('click', function() {
-            panel.remove();
-        });
-        panel.querySelectorAll('.mrcat-argue-item').forEach(function(item) {
-            item.querySelector('button').addEventListener('click', function() {
-                var button = this;
-                button.disabled = true;
-                button.textContent = 'Sending...';
-                window.MrCatCloud.callFunction('getDashboard', {
-                    action: 'submitDispute',
-                    attempt_id: response.attempt_id,
-                    question_id: item.dataset.questionId,
-                    reason: item.querySelector('textarea').value
-                }).then(function(result) {
-                    if (!result || !result.success) {
-                        throw new Error(result && result.message || result && result.code || 'Unable to submit Argue.');
-                    }
-                    button.textContent = 'Sent to teacher';
-                    item.querySelector('textarea').disabled = true;
-                }).catch(function(error) {
-                    button.disabled = false;
-                    button.textContent = error.message === 'DISPUTE_ALREADY_EXISTS'
-                        ? 'Already sent'
-                        : 'Try again';
-                });
-            });
-        });
-        document.body.appendChild(panel);
-    }
-
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
@@ -172,10 +117,6 @@
 
     window.MrCatPractice = {
         isVisitor: function() { return visitor; },
-        profile: profile,
-        showArguePanel: showArguePanel
+        profile: profile
     };
-    window.addEventListener('mrcat:attempt-submitted', function(event) {
-        showArguePanel(event.detail);
-    });
 })(window, document);

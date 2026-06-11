@@ -21,14 +21,28 @@
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="assign">Assign</button>
+            <button class="tab-button active" type="button" data-view="argue">Argue</button>
+            <button class="tab-button" type="button" data-view="assign">Assign</button>
             <button class="tab-button" type="button" data-view="students">Students</button>
             <button class="tab-button" type="button" data-view="data">Data</button>
         </nav>
 
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
-        <section class="dashboard-view" id="view-assign">
+        <section class="dashboard-view" id="view-argue">
+            <div class="student-page-toolbar">
+                <div>
+                    <h2>Argue reviews</h2>
+                    <p>Review answers students believe should have been accepted.</p>
+                </div>
+                <button class="outline-button teacher-refresh" id="refresh-disputes" type="button">Refresh</button>
+            </div>
+            <div class="dispute-list" id="dispute-list">
+                <div class="empty-card loading-card">Loading Argue requests...</div>
+            </div>
+        </section>
+
+        <section class="dashboard-view" id="view-assign" hidden>
             <section class="profile-card assign-setup">
                 <div class="section-heading compact-heading">
                     <div>
@@ -111,15 +125,9 @@
         </section>
 
         <section class="dashboard-view" id="view-data" hidden>
-            <div class="student-page-toolbar">
-                <div>
-                    <h2>Argue reviews</h2>
-                    <p>Review answers students believe should have been accepted.</p>
-                </div>
-                <button class="outline-button teacher-refresh" id="refresh-disputes" type="button">Refresh</button>
-            </div>
-            <div class="dispute-list" id="dispute-list">
-                <div class="empty-card loading-card">Loading Argue requests...</div>
+            <div class="data-placeholder">
+                <h2>Data</h2>
+                <p>Question-level analytics will appear here.</p>
             </div>
         </section>
 

@@ -780,22 +780,89 @@
             background: #c0392b;
         }
 
-        .argue-modal-textarea {
+        .argue-inline {
+            margin-top: 8px;
+            padding: 10px 12px;
+            border: 1px solid #e2c8b0;
+            border-radius: 12px;
+            background: #fffaf5;
+        }
+
+        .argue-inline textarea {
             width: 100%;
-            min-height: 80px;
-            padding: 12px;
+            min-height: 52px;
+            padding: 8px 10px;
             border: 1px solid #dce8e3;
-            border-radius: 10px;
+            border-radius: 8px;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             resize: vertical;
             outline: none;
-            margin-bottom: 16px;
             box-sizing: border-box;
         }
 
-        .argue-modal-textarea:focus {
+        .argue-inline textarea:focus {
             border-color: var(--accent);
+        }
+
+        .argue-inline-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .argue-inline-actions button {
+            min-height: 32px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .argue-inline-submit {
+            border: 0;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .argue-inline-submit:hover {
+            background: var(--accent-dark);
+        }
+
+        .argue-inline-cancel {
+            border: 1px solid var(--line);
+            color: var(--ink);
+            background: #fff;
+        }
+
+        .argue-inline-cancel:hover {
+            background: #f4f8f5;
+        }
+
+        .argue-inline-done {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #237a52;
+        }
+
+        .argue-inline-close {
+            margin-left: auto;
+            border: 1px solid #dce8e3;
+            border-radius: 8px;
+            padding: 4px 12px;
+            background: #fff;
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .argue-inline-close:hover {
+            background: #f4f8f5;
         }
 
         #error-message {
@@ -922,7 +989,7 @@
 
         <div id="confirm-modal" class="modal-overlay">
             <div class="modal-box">
-                <p>Once submitted you cannot modify your answers.<br>Are you sure?</p>
+                <p>Submit all answers?</p>
                 <div class="modal-actions">
                     <button class="modal-btn primary" id="modal-confirm">Confirm</button>
                     <button class="modal-btn danger" id="modal-cancel">Cancel</button>
@@ -937,19 +1004,6 @@
                 <div class="modal-actions">
                     <button class="modal-btn primary" id="incomplete-close" type="button">Keep going</button>
                 </div>
-            </div>
-        </div>
-
-        <div id="argue-modal" class="modal-overlay">
-            <div class="modal-box" style="text-align:left;">
-                <h2 style="border:0;padding:0;margin:0 0 6px;color:var(--primary);text-align:left;">Argue</h2>
-                <p style="margin:0 0 14px;font-size:0.92rem;color:var(--text-light);">Why should this answer be reviewed? (optional)</p>
-                <textarea class="argue-modal-textarea" id="argue-reason" placeholder="Enter your reason..."></textarea>
-                <div class="modal-actions">
-                    <button class="modal-btn primary" id="argue-submit-btn">Submit</button>
-                    <button class="modal-btn danger" id="argue-cancel-btn">Cancel</button>
-                </div>
-                <p id="argue-message" style="margin:8px 0 0;font-size:0.85rem;color:var(--text-light);min-height:1.2em;"></p>
             </div>
         </div>
     </div>
@@ -973,7 +1027,6 @@
     var quizFontScale = 1;
     var assignmentId = '';
     var attemptStartedAt = new Date().toISOString();
-    var currentArgueQuestionId = null;
     var currentArgueAttemptId = null;
     var isDragging = false;
 
@@ -1524,9 +1577,9 @@
                     var argueBtn = document.createElement('button');
                     argueBtn.className = 'argue-btn';
                     argueBtn.textContent = 'Argue';
-                    argueBtn.addEventListener('click', function(qId) {
-                        return function() { openArgueModal(qId); };
-                    }(r.id));
+                    argueBtn.addEventListener('click', function(qId, barEl) {
+                        return function() { openArgueInline(qId, barEl.parentNode); };
+                    }(r.id, bar));
                     bar.appendChild(argueBtn);
                     li.parentNode.insertBefore(bar, exp.nextSibling);
                 }
@@ -1564,9 +1617,9 @@
                 var argueBtn = document.createElement('button');
                 argueBtn.className = 'argue-btn';
                 argueBtn.textContent = 'Argue';
-                argueBtn.addEventListener('click', function(qId) {
-                    return function() { openArgueModal(qId); };
-                }(r.id));
+                argueBtn.addEventListener('click', function(qId, barEl) {
+                    return function() { openArgueInline(qId, barEl.parentNode); };
+                }(r.id, bar));
                 bar.appendChild(argueBtn);
                 mcDiv.appendChild(bar);
             } else if (r.type === 'match') {
@@ -1595,9 +1648,9 @@
                     var argueBtn = document.createElement('button');
                     argueBtn.className = 'argue-btn';
                     argueBtn.textContent = 'Argue';
-                    argueBtn.addEventListener('click', function(qId) {
-                        return function() { openArgueModal(qId); };
-                    }(r.id));
+                    argueBtn.addEventListener('click', function(qId, barEl) {
+                        return function() { openArgueInline(qId, barEl.parentNode); };
+                    }(r.id, bar));
                     bar.appendChild(argueBtn);
                     td.appendChild(bar);
                 }
@@ -1605,39 +1658,57 @@
         }
     }
 
-    function openArgueModal(questionId) {
-        currentArgueQuestionId = questionId;
-        document.getElementById('argue-reason').value = '';
-        document.getElementById('argue-message').textContent = '';
-        document.getElementById('argue-submit-btn').disabled = false;
-        document.getElementById('argue-submit-btn').textContent = 'Submit';
-        document.getElementById('argue-modal').classList.add('show');
+    function openArgueInline(questionId, containerEl) {
+        var existing = containerEl.querySelector('.argue-inline');
+        if (existing) return;
+        var panel = document.createElement('div');
+        panel.className = 'argue-inline';
+        panel.innerHTML =
+            '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
+            '<div class="argue-inline-actions">' +
+                '<button class="argue-inline-submit" type="button">Submit</button>' +
+                '<button class="argue-inline-cancel" type="button">Cancel</button>' +
+            '</div>';
+        containerEl.appendChild(panel);
+
+        panel.querySelector('.argue-inline-submit').addEventListener('click', function() {
+            submitArgueInline(questionId, panel);
+        });
+        panel.querySelector('.argue-inline-cancel').addEventListener('click', function() {
+            panel.remove();
+        });
     }
 
-    function submitArgue() {
-        var reason = document.getElementById('argue-reason').value.trim();
-        var btn = document.getElementById('argue-submit-btn');
-        btn.disabled = true;
-        btn.textContent = 'Sending...';
-        document.getElementById('argue-message').textContent = '';
+    function submitArgueInline(questionId, panel) {
+        var reason = panel.querySelector('textarea').value.trim();
+        var submitBtn = panel.querySelector('.argue-inline-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
         window.MrCatCloud.callFunction('getDashboard', {
             action: 'submitDispute',
             attempt_id: currentArgueAttemptId || '',
-            question_id: currentArgueQuestionId || '',
+            question_id: questionId,
             reason: reason
         }).then(function(result) {
             if (!result || !result.success) {
                 throw new Error(result && result.message || result && result.code || 'Unable to submit Argue.');
             }
-            document.getElementById('argue-message').textContent = 'Submitted to teacher for review.';
-            document.getElementById('argue-message').style.color = '#237a52';
-            btn.textContent = 'Submitted';
+            panel.innerHTML =
+                '<div class="argue-inline-done">' +
+                    'Sent to teacher. Thank you!' +
+                    '<button class="argue-inline-close" type="button">Close</button>' +
+                '</div>';
+            panel.querySelector('.argue-inline-close').addEventListener('click', function() {
+                panel.remove();
+            });
         }).catch(function(error) {
-            btn.disabled = false;
-            btn.textContent = 'Submit';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit';
             var msg = error.message === 'DISPUTE_ALREADY_EXISTS' ? 'Already sent' : (error.message || 'Try again');
-            document.getElementById('argue-message').textContent = msg;
-            document.getElementById('argue-message').style.color = '#b54747';
+            var msgEl = document.createElement('p');
+            msgEl.style.cssText = 'margin:6px 0 0;font-size:0.82rem;color:#b54747;';
+            msgEl.textContent = msg;
+            panel.querySelector('.argue-inline-actions').after(msgEl);
         });
     }
 
@@ -1761,11 +1832,6 @@
 
         document.getElementById('incomplete-close').addEventListener('click', function() {
             document.getElementById('incomplete-modal').classList.remove('show');
-        });
-
-        document.getElementById('argue-submit-btn').addEventListener('click', submitArgue);
-        document.getElementById('argue-cancel-btn').addEventListener('click', function() {
-            document.getElementById('argue-modal').classList.remove('show');
         });
 
         document.getElementById('font-size-down').addEventListener('click', function() {
