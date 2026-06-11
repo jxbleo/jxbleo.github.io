@@ -29,6 +29,48 @@ async function getOne(collection, query) {
   return result.data && result.data[0];
 }
 
+function effectivePercentage(attempt) {
+  return Number(
+    attempt.adjusted_percentage == null ? attempt.percentage || 0 : attempt.adjusted_percentage
+  );
+}
+
+async function protectStar(student, setId, attempt, source, earnedAt) {
+  const existing = await getOne("student_set_achievements", {
+    student_uid: student.auth_uid,
+    set_id: setId,
+  });
+  const percentage = effectivePercentage(attempt);
+  const attemptId = attempt.attempt_id;
+  if (existing) {
+    const update = { updated_at: earnedAt };
+    if (percentage > Number(existing.best_percentage || 0)) {
+      update.best_percentage = percentage;
+      update.best_attempt_id = attemptId;
+    }
+    await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return existing.achievement_id || existing._id;
+  }
+
+  const achievement = {
+    achievement_id: [student.auth_uid, setId].join("::"),
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    set_id: setId,
+    status: "star",
+    protected: true,
+    source,
+    first_earned_at: earnedAt,
+    first_qualifying_attempt_id: attemptId,
+    best_attempt_id: attemptId,
+    best_percentage: percentage,
+    created_at: earnedAt,
+    updated_at: earnedAt,
+  };
+  await db.collection("student_set_achievements").add(achievement);
+  return achievement.achievement_id;
+}
+
 function gradeAnswers(submittedAnswers, gradingKey, mode) {
   const answers = gradingKey.answers || {};
   const explanations = gradingKey.explanations || {};
@@ -96,6 +138,7 @@ exports.main = async (event) => {
         status: "self_test",
         question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
           question_id: item.question_id,
+          submitted_answer: item.submitted_answer,
           correct: item.correct,
         })),
         group_results: [],
@@ -157,6 +200,16 @@ exports.main = async (event) => {
 
     await db.collection("attempts").add(attempt);
 
+    if (passed) {
+      await protectStar(
+        student,
+        setId,
+        attempt,
+        assignmentId ? "assignment" : "explore",
+        submittedAt
+      );
+    }
+
     if (assignment) {
       const best = Math.max(Number(assignment.best_percentage || 0), grading.percentage);
       const update = {
@@ -189,6 +242,7 @@ exports.main = async (event) => {
       status: passed ? "done" : "failed",
       question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
         question_id: item.question_id,
+        submitted_answer: item.submitted_answer,
         correct: item.correct,
       })),
       group_results: groupResults,

@@ -36,6 +36,66 @@ async function getOne(collection, query) {
   return result.data && result.data[0];
 }
 
+function normalized(value) {
+  return text(value).toLowerCase().replace(/\s+/g, " ");
+}
+
+function answerList(value) {
+  return (Array.isArray(value) ? value : [value])
+    .filter((item) => item != null && text(item));
+}
+
+function nextGradingVersion(value) {
+  const current = Number.parseInt(String(value || "1"), 10);
+  return String(Number.isFinite(current) ? current + 1 : 2);
+}
+
+function effectivePercentage(attempt) {
+  return Number(
+    attempt.adjusted_percentage == null ? attempt.percentage || 0 : attempt.adjusted_percentage
+  );
+}
+
+function effectivePassed(attempt) {
+  return attempt.adjusted_passed == null ? attempt.passed === true : attempt.adjusted_passed === true;
+}
+
+function effectiveQuestionResults(attempt) {
+  return attempt.adjusted_question_results || attempt.question_results || [];
+}
+
+async function protectStar(student, attempt, source, now) {
+  const existing = await getOne("student_set_achievements", {
+    student_uid: student.auth_uid,
+    set_id: attempt.set_id,
+  });
+  const percentage = effectivePercentage(attempt);
+  if (existing) {
+    const update = { updated_at: now };
+    if (percentage > Number(existing.best_percentage || 0)) {
+      update.best_percentage = percentage;
+      update.best_attempt_id = attempt.attempt_id;
+    }
+    await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return;
+  }
+  await db.collection("student_set_achievements").add({
+    achievement_id: [student.auth_uid, attempt.set_id].join("::"),
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    set_id: attempt.set_id,
+    status: "star",
+    protected: true,
+    source,
+    first_earned_at: now,
+    first_qualifying_attempt_id: attempt.attempt_id,
+    best_attempt_id: attempt.attempt_id,
+    best_percentage: percentage,
+    created_at: now,
+    updated_at: now,
+  });
+}
+
 function safeDate(value) {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(value);
@@ -296,11 +356,24 @@ async function getAssignmentCandidates(event) {
   }).limit(200).get();
   const students = (studentResult.data || []).filter((student) => student.role !== "teacher");
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
+  const achievementResult = await db.collection("student_set_achievements")
+    .where({ set_id: setId, status: "star" })
+    .limit(500)
+    .get();
+  const achievementsByStudent = new Map(
+    (achievementResult.data || []).map((item) => [item.student_uid, item])
+  );
   const candidates = [];
   for (const student of students) {
+    const achievement = achievementsByStudent.get(student.auth_uid);
     candidates.push({
       ...studentView(student),
-      ...getAssignmentState(assignmentsByStudent.get(student.auth_uid) || []),
+      ...(achievement ? {
+        availability: "starred",
+        status: "done",
+        best_percentage: achievement.best_percentage,
+        star_source: achievement.source || "explore",
+      } : getAssignmentState(assignmentsByStudent.get(student.auth_uid) || [])),
     });
   }
   return { success: true, candidates };
@@ -345,6 +418,13 @@ async function createAssignments(event) {
 
   const dueAt = safeDate(event.due_at);
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
+  const achievementResult = await db.collection("student_set_achievements")
+    .where({ set_id: setId, status: "star" })
+    .limit(500)
+    .get();
+  const starredStudents = new Set(
+    (achievementResult.data || []).map((item) => item.student_uid)
+  );
   const created = [];
   const skipped = [];
   for (const studentUid of studentUids) {
@@ -356,7 +436,23 @@ async function createAssignments(event) {
       skipped.push({ student_uid: studentUid, reason: "inactive_or_missing" });
       continue;
     }
+    if (starredStudents.has(studentUid)) {
+      skipped.push({
+        student_uid: studentUid,
+        student_id: student.student_id,
+        reason: "already_starred",
+      });
+      continue;
+    }
     const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
+    if (assignmentState.availability === "completed") {
+      skipped.push({
+        student_uid: studentUid,
+        student_id: student.student_id,
+        reason: "already_completed",
+      });
+      continue;
+    }
     if (assignmentState.availability === "in_progress") {
       skipped.push({
         student_uid: studentUid,
@@ -435,9 +531,9 @@ async function listAttempts() {
       attempt_number: Number(attempt.attempt_number || 0),
       correct_count: Number(attempt.correct_count || 0),
       question_count: Number(attempt.question_count || 0),
-      percentage: Number(attempt.percentage || 0),
+      percentage: effectivePercentage(attempt),
       passing_percentage: Number(attempt.passing_percentage || 50),
-      passed: attempt.passed === true,
+      passed: effectivePassed(attempt),
       selected_group_count: attempt.selected_group_count || null,
       submitted_at: attempt.submitted_at || null,
       practice_context: attempt.practice_context || "",
@@ -446,9 +542,194 @@ async function listAttempts() {
   };
 }
 
+async function listDisputes() {
+  const [disputeResult, studentResult, setResult] = await Promise.all([
+    db.collection("answer_disputes").limit(500).get(),
+    db.collection("students").limit(200).get(),
+    db.collection("sets").limit(200).get(),
+  ]);
+  const studentMap = new Map((studentResult.data || []).map((item) => [item.auth_uid, item]));
+  const setMap = new Map((setResult.data || []).map((item) => [item.set_id, item]));
+  return {
+    success: true,
+    disputes: (disputeResult.data || []).map((dispute) => {
+      const student = studentMap.get(dispute.student_uid) || {};
+      const set = setMap.get(dispute.set_id) || {};
+      return {
+        dispute_id: dispute.dispute_id || dispute._id,
+        student_uid: dispute.student_uid,
+        student_id: student.student_id || dispute.student_id_snapshot || "",
+        student_name: student.name || "",
+        set_id: dispute.set_id,
+        set_title: set.title || dispute.set_id,
+        attempt_id: dispute.attempt_id,
+        question_id: dispute.question_id,
+        submitted_answer: dispute.submitted_answer,
+        answer_snapshot: dispute.answer_snapshot,
+        student_reason: dispute.student_reason || "",
+        status: dispute.status || "pending",
+        decision: dispute.decision || null,
+        teacher_note: dispute.teacher_note || "",
+        created_at: dispute.created_at || null,
+        resolved_at: dispute.resolved_at || null,
+      };
+    }).sort((a, b) => {
+      if (a.status === "pending" && b.status !== "pending") return -1;
+      if (a.status !== "pending" && b.status === "pending") return 1;
+      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    }),
+  };
+}
+
+async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
+  const attempt = await getOne("attempts", {
+    attempt_id: dispute.attempt_id,
+    student_uid: dispute.student_uid,
+  });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
+  const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
+  if (!target) throw new Error("QUESTION_RESULT_NOT_FOUND");
+  if (target.correct === true) return attempt;
+
+  target.correct = true;
+  target.dispute_adjusted = true;
+  target.dispute_id = dispute.dispute_id || dispute._id;
+  const correctCount = currentResults.filter((item) => item.correct === true).length;
+  const questionCount = Number(attempt.question_count || currentResults.length);
+  const recalculated = questionCount
+    ? Math.round(correctCount / questionCount * 10000) / 100
+    : 0;
+  const percentage = Math.max(effectivePercentage(attempt), recalculated);
+  const passingPercentage = Number(attempt.passing_percentage || 50);
+  const passed = effectivePassed(attempt) || percentage >= passingPercentage;
+  const update = {
+    original_percentage: attempt.original_percentage == null
+      ? Number(attempt.percentage || 0)
+      : attempt.original_percentage,
+    original_passed: attempt.original_passed == null
+      ? attempt.passed === true
+      : attempt.original_passed,
+    adjusted_question_results: currentResults,
+    adjusted_correct_count: correctCount,
+    adjusted_percentage: percentage,
+    adjusted_passed: passed,
+    adjusted_by_dispute_id: dispute.dispute_id || dispute._id,
+    adjusted_by_teacher_uid: teacher.auth_uid,
+    adjusted_grading_version: gradingVersion,
+    adjusted_at: now,
+  };
+  await db.collection("attempts").doc(attempt._id).update(update);
+  const adjustedAttempt = { ...attempt, ...update };
+
+  if (attempt.assignment_id) {
+    const assignment = await getOne("assignments", {
+      assignment_id: attempt.assignment_id,
+      student_uid: attempt.student_uid,
+    });
+    if (assignment) {
+      const assignmentUpdate = {
+        best_percentage: Math.max(Number(assignment.best_percentage || 0), percentage),
+        updated_at: now,
+      };
+      if (assignment.latest_attempt_id === attempt.attempt_id) {
+        assignmentUpdate.latest_percentage = percentage;
+      }
+      if (passed) {
+        assignmentUpdate.status = "done";
+        if (!assignment.completed_at) assignmentUpdate.completed_at = now;
+      }
+      await db.collection("assignments").doc(assignment._id).update(assignmentUpdate);
+    }
+  }
+
+  if (passed) {
+    const student = await getOne("students", { auth_uid: attempt.student_uid });
+    if (student) {
+      await protectStar(
+        student,
+        adjustedAttempt,
+        attempt.assignment_id ? "assignment" : "explore",
+        now
+      );
+    }
+  }
+  return adjustedAttempt;
+}
+
+async function resolveDispute(event, teacher) {
+  const disputeId = text(event.dispute_id);
+  const decision = text(event.decision);
+  const teacherNote = text(event.teacher_note).slice(0, 1000);
+  if (!disputeId || !["keep", "add", "replace"].includes(decision)) {
+    throw new Error("DISPUTE_DECISION_REQUIRED");
+  }
+  const dispute = await getOne("answer_disputes", { dispute_id: disputeId });
+  if (!dispute) throw new Error("DISPUTE_NOT_FOUND");
+  if (dispute.status !== "pending") throw new Error("DISPUTE_ALREADY_RESOLVED");
+
+  const now = new Date();
+  if (decision !== "keep") {
+    if (!text(dispute.submitted_answer)) throw new Error("EMPTY_ANSWER_NOT_ACCEPTABLE");
+    const gradingKey = await getOne("grading_keys", { set_id: dispute.set_id });
+    if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+    const answers = { ...(gradingKey.answers || {}) };
+    const before = answers[dispute.question_id];
+    if (decision === "add") {
+      const accepted = answerList(before);
+      if (!accepted.some((item) => normalized(item) === normalized(dispute.submitted_answer))) {
+        accepted.push(dispute.submitted_answer);
+      }
+      answers[dispute.question_id] = accepted;
+    } else {
+      answers[dispute.question_id] = dispute.submitted_answer;
+    }
+    const newVersion = nextGradingVersion(gradingKey.grading_version);
+    const historyRecord = {
+      history_id: [dispute.set_id, dispute.question_id, Date.now()].join("::"),
+      set_id: dispute.set_id,
+      question_id: dispute.question_id,
+      dispute_id: disputeId,
+      decision,
+      answer_before: before == null ? null : before,
+      answer_after: answers[dispute.question_id],
+      grading_version_before: gradingKey.grading_version || "1",
+      grading_version_after: newVersion,
+      changed_by_teacher_uid: teacher.auth_uid,
+      changed_at: now,
+      applied: false,
+    };
+    const historyAdd = await db.collection("grading_key_history").add(historyRecord);
+    await db.collection("grading_keys").doc(gradingKey._id).update({
+      answers,
+      grading_version: newVersion,
+      updated_at: now,
+    });
+    if (historyAdd && historyAdd.id) {
+      await db.collection("grading_key_history").doc(historyAdd.id).update({
+        applied: true,
+        applied_at: now,
+      });
+    }
+    await improveDisputedAttempt(dispute, teacher, now, newVersion);
+    dispute.grading_version_after = newVersion;
+  }
+
+  await db.collection("answer_disputes").doc(dispute._id).update({
+    status: decision === "keep" ? "rejected" : "approved",
+    decision,
+    teacher_note: teacherNote,
+    resolved_by_teacher_uid: teacher.auth_uid,
+    grading_version_after: dispute.grading_version_after || null,
+    resolved_at: now,
+    updated_at: now,
+  });
+  return { success: true };
+}
+
 exports.main = async (event) => {
   try {
-    await getAuthenticatedTeacher();
+    const teacher = await getAuthenticatedTeacher();
     const action = text(event.action);
     if (action === "listStudents") return await listStudents();
     if (action === "createStudent") return await createStudent(event);
@@ -459,6 +740,8 @@ exports.main = async (event) => {
     if (action === "createAssignments") return await createAssignments(event);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listAttempts") return await listAttempts();
+    if (action === "listDisputes") return await listDisputes();
+    if (action === "resolveDispute") return await resolveDispute(event, teacher);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     console.error("teacherAdmin failed", error);

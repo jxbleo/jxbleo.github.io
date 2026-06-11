@@ -352,6 +352,62 @@ Supported feedback policies should include:
 
 The first version uses `always`.
 
+### student_set_achievements
+
+Permanent, monotonic completion records:
+
+```text
+achievement_id: unique string
+student_uid: auth UID
+student_id_snapshot: string
+set_id: string
+status: "star"
+protected: true
+source: "assignment" | "explore"
+first_earned_at: timestamp
+first_qualifying_attempt_id: string
+best_attempt_id: string
+best_percentage: number
+created_at: timestamp
+updated_at: timestamp
+```
+
+One student has at most one STAR per `set_id`. A STAR may update its best
+attempt and score, but it must never be deleted, revoked or downgraded by
+ordinary application logic. Later passing-standard changes affect future
+submissions only.
+
+### answer_disputes
+
+One student review request per `attempt_id + question_id`:
+
+```text
+dispute_id: unique string
+student_uid: auth UID
+set_id: string
+attempt_id: string
+assignment_id: string | null
+question_id: string
+submitted_answer: any
+answer_snapshot: any
+explanation_snapshot: string
+student_reason: optional string
+status: "pending" | "approved" | "rejected"
+decision: "keep" | "add" | "replace" | null
+teacher_note: optional string
+created_at: timestamp
+resolved_at: timestamp | null
+```
+
+Only a recorded wrong answer owned by the authenticated student may be
+disputed. The same question in the same attempt cannot be disputed twice.
+
+### grading_key_history
+
+Every teacher-approved answer-rule change stores the answer before and after,
+grading versions, dispute ID, teacher UID and timestamp. This history is never
+public and must not be removed when a grading key changes.
+
 ## 8. Server-Side Grading
 
 The browser submits answers, not a trusted score.
@@ -394,6 +450,37 @@ A failed attempt is still permanently stored.
 
 Once an assignment has passed, later retries do not remove its completed
 status. Later attempts are still recorded and update latest/best summaries.
+
+Passing an unassigned set from Explore also creates a protected STAR. It does
+not create a fake assignment. The Dashboard merges assignment completions and
+Explore achievements into the same STARS view.
+
+If a student already has a STAR for a set, the teacher cannot assign that set
+again. Existing historical completion satisfies the assignment requirement.
+
+Opening a STAR shows the best attempt's submitted answers and correctness only.
+Correct answers and explanations are returned only immediately after a new
+submission, never by the historical review endpoint.
+
+## 9A. Argue Review
+
+After a countable submission, each wrong result may be sent to the teacher with
+an optional note. The teacher chooses:
+
+- `Keep Original Ruling`
+- `Add as Accepted Answer`
+- `Replace Correct Answer`
+
+`Add` keeps existing accepted answers. `Replace` removes the old answer from
+future grading, while preserving it in `grading_key_history`.
+
+Approval updates the private CloudBase `grading_keys` document and increments
+`grading_version`. It regrades only the disputed student's attempt. Past
+attempts from other students never change automatically. Future submissions
+use the updated rule.
+
+Argue-based regrading may improve a historical result and create a STAR, but it
+must never reduce a score or revoke an existing STAR.
 
 ## 10. Vocabulary Rules
 

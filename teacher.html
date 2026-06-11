@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260610-8">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260611-2">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -58,7 +58,7 @@
             <div class="assign-legend">
                 <span><i class="status-dot available"></i>Available</span>
                 <span><i class="status-dot progress"></i>In Progress</span>
-                <span><i class="status-dot completed"></i>Completed before</span>
+                <span><i class="status-dot completed"></i>STAR · cannot assign again</span>
             </div>
             <div class="candidate-grid" id="assign-candidates">
                 <div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>
@@ -111,13 +111,15 @@
         </section>
 
         <section class="dashboard-view" id="view-data" hidden>
-            <div class="data-placeholder">
-                <p class="eyebrow accent">COMING NEXT</p>
-                <h2>Question-level learning data</h2>
-                <p>This area will compare how different students perform on each question, including correctness and answer patterns.</p>
-                <div class="data-path">
-                    <span>Practice set</span><strong>→</strong><span>Question</span><strong>→</strong><span>Student outcomes</span>
+            <div class="student-page-toolbar">
+                <div>
+                    <h2>Argue reviews</h2>
+                    <p>Review answers students believe should have been accepted.</p>
                 </div>
+                <button class="outline-button teacher-refresh" id="refresh-disputes" type="button">Refresh</button>
+            </div>
+            <div class="dispute-list" id="dispute-list">
+                <div class="empty-card loading-card">Loading Argue requests...</div>
             </div>
         </section>
 
@@ -127,9 +129,9 @@
     </main>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260610-8"></script>
-    <script src="assets/js/cloudbase-client.js?v=20260610-8"></script>
-    <script src="assets/js/auth.js?v=20260610-8"></script>
-    <script src="assets/js/teacher.js?v=20260610-8"></script>
+    <script src="assets/js/config.public.js?v=20260611-2"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
+    <script src="assets/js/auth.js?v=20260611-2"></script>
+    <script src="assets/js/teacher.js?v=20260611-2"></script>
 </body>
 </html>
