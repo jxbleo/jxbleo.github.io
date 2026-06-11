@@ -93,15 +93,25 @@
 
         h1 {
             color: inherit;
-            text-align: left;
+            text-align: center;
             border-bottom: none;
             padding-bottom: 0;
-            margin: 14px 0 10px;
+            margin: 10px 0 6px;
             font-size: clamp(2rem, 5vw, 3.5rem);
             line-height: 1.02;
             letter-spacing: -0.055em;
             position: relative;
             z-index: 1;
+        }
+
+        .hero-subtitle {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: rgba(255,255,255,0.72);
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
         .hero-meta {
@@ -1222,13 +1232,19 @@
         container.innerHTML = html;
     }
 
+    function formatEpisodeDate(setId) {
+        var match = String(setId || '').match(/BBC-(\d{2})(\d{2})(\d{2})/);
+        if (!match) return '';
+        return '20' + match[1] + '-' + match[2] + '-' + match[3];
+    }
+
     function renderLesson(data) {
         lessonData = data;
 
         var titleEl = document.getElementById('title-area');
-        titleEl.innerHTML = '<h1>' + data.title + '</h1>';
-        var totalTasks = (data.blanks || []).length + (data.multipleChoice || []).length + (data.matching || []).length;
-        document.getElementById('hero-meta').innerHTML = '<span style="background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.24);border-radius:999px;padding:4px 11px;font-size:0.82rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">BBC Six Minute English</span><span>' + totalTasks + ' tasks</span>';
+        titleEl.innerHTML = '<h1>' + data.title + '</h1>' +
+            '<div class="hero-subtitle">BBC Six Minute English, ' + formatEpisodeDate(setId || data.id) + '</div>';
+        document.getElementById('hero-meta').innerHTML = '';
 
         var audioSrc = document.getElementById('audio-source');
         audioSrc.src = data.audioSrc;
