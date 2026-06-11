@@ -1607,7 +1607,6 @@
 
     function openArgueModal(questionId) {
         currentArgueQuestionId = questionId;
-        currentArgueAttemptId = null;
         document.getElementById('argue-reason').value = '';
         document.getElementById('argue-message').textContent = '';
         document.getElementById('argue-submit-btn').disabled = false;
@@ -1723,8 +1722,8 @@
                 correct: response.correct_count,
                 total: response.question_count
             });
-            if (!response.feedback_locked) applyFeedback(feedback);
             disableAllInputs();
+            if (!response.feedback_locked) applyFeedback(feedback);
             logEvent('submit', {
                 attemptId: response.attempt_id,
                 percentage: response.percentage,
