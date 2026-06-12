@@ -77,6 +77,42 @@ Do not make a new permanent standalone HTML page for each exercise. Reuse the
 current schemas and shared practice pages. Temporary classroom pages may stay
 standalone when the owner requests that.
 
+### BBC standalone page lessons learned
+
+Some older BBC 6 Minute English classroom pages live as standalone root-level
+HTML files, for example `250904-the-joys-of-writing-lists.html` and
+`250724-what-is-degrowth.html`. If the owner explicitly asks to match these
+existing HTML pages, keep their current Formspree-style layout and behavior
+instead of moving the task into the shared `bbc.html` runtime during that same
+change.
+
+Useful pitfalls from the 2025 BBC batch import:
+
+- Source Markdown may be outside this repo in the owner's Obsidian/iCloud
+  folder. Quote paths with spaces, for example
+  `/Users/leoji/Library/Mobile Documents/iCloud~md~obsidian/Documents/jxbleo/BBC 6 Minute English/...`.
+- The Markdown files can already contain all exercise content: fill blanks,
+  answer-key table, multiple-choice questions, and Chinese explanations. Prefer
+  converting that structure directly over rewriting questions by hand.
+- Fill-blank pages should preserve the existing pattern: `Blank_01` through
+  `Blank_20`, `Question_21` through `Question_30`, one student-name field,
+  Formspree submit, and answer explanations revealed only after submission.
+- Be careful with nested bullets. The nested `<ul>` must be inside the parent
+  `<li>`; otherwise browsers may still render it, but the HTML is invalid and
+  future styling can break.
+- Verify generated pages mechanically: count blank inputs, multiple-choice
+  blocks, explanation blocks, and ensure every `index.html` BBC card links to an
+  existing file.
+- One known source typo: `250821 Whats your favourite snack.md` had MC Question
+  27's explanation labelled `D`, but option `C` is the correct answer. Fix the
+  generated page to show `Question 27: C`.
+- Browser verification with the in-app browser may block `file://` URLs. Start a
+  local static server and test through `http://127.0.0.1:<port>/index.html`
+  instead.
+- A `git push` can time out locally even after another terminal succeeds. Check
+  with `git log --oneline --decorate -5` and compare `git rev-parse HEAD
+  origin/main`; matching hashes mean the push reached GitHub.
+
 ## 5. Authentication Has Two Linked Layers
 
 A working student account always has both:
@@ -412,6 +448,60 @@ When a blank has multiple accepted answers, store `answer` as an array in the
 canonical `data/BBC-*.json`; `submitAttempt` accepts array answers and checks
 them with normalized exact matching. This is the correct way to support variants
 such as British/American spelling.
+
+### IELTS Reading PDF import gotchas
+
+IELTS Reading content may arrive only as PDFs. The current static reading page
+loads runtime data from `data/<set_id>.json`, while homepage/library metadata
+lives in `content/ielts-reading/<set_id>.json`. After adding or changing
+metadata, run:
+
+```bash
+node scripts/build-home-catalog.js
+```
+
+Do not hand-edit `data/home-catalog.json` or `data/home-catalog.js`; they are
+generated from `content/`.
+
+Before inventing a new IELTS question shape, inspect `ielts-reading.html`.
+During the Cambridge IELTS 7 import, the page supported these runtime types:
+
+- `tfng`
+- `ynng`
+- `mcq`
+- `summary`
+- `headings`
+
+Some original IELTS formats were represented through existing controls:
+
+- Paragraph matching can be entered as `summary` with A/B/C choices.
+- Classification can be entered as `summary` with choice labels.
+- Map/route matching can be entered as `summary` with route-letter choices.
+
+This keeps the page reusable, but it also means the data label/instruction must
+be clear for students. If the UX needs a new interaction, add it deliberately to
+the shared page and update this guide.
+
+PDF extraction has a few recurring traps:
+
+- `pdftotext` may not be installed on the machine. Check available tools before
+  assuming it exists.
+- Python `pypdf` may be available and can extract many Cambridge PDFs well.
+- File names can contain apostrophes, such as `Let's go bats` or `don't fall
+  down`; avoid fragile shell quoting when passing those paths.
+- Some PDFs have incomplete text layers. In the C7-T2-P3 Makete import, the
+  last page extracted only part of the questions. Use OCR or a verified external
+  copy for the missing part, and explicitly tell the owner if any question,
+  answer, or evidence remains uncertain.
+- Validate each new `data/C*.json` and `content/ielts-reading/C*.json` with
+  `JSON.parse`, then count expected questions before committing.
+
+Watch for schema drift around answers. Older/static IELTS runtime data may
+include `answer` and `evidence` because `ielts-reading.html` grades locally.
+New CloudBase-backed counting work should keep grading material private through
+`grading_keys` and `prepare-cloudbase-data.js`. Check the current target flow
+before adding a new set so public runtime, private grading, and teacher feedback
+do not diverge.
 
 ## 11. Cloud Functions and Deployment
 
@@ -768,3 +858,390 @@ Keep them in mind before changing the same surfaces again.
   console, create it with Node.js 18, upload `deploy-packages/changePassword.zip`,
   enable automatic dependency installation, and no extra environment variable is
   required.
+
+## 20. Session Record — Vocabulary Maintenance Notes (2026-06-13)
+
+These notes capture pitfalls from the NGSL vocabulary UI/data work. Future
+agents should read this before changing `vocabulary.html`,
+`content/vocabulary/*`, `data/home-catalog.*`, or vocabulary import scripts.
+
+### Local loading and catalog fallbacks
+
+- `vocabulary.html` fetches `content/vocabulary/<unit>.json`. Opening the page
+  directly with `file://` can show `Failed to fetch`, so vocabulary units also
+  need a script fallback at `content/vocabulary/<unit>.js` that registers data
+  on `window.__VOCABULARY_UNITS__`.
+- `data/home-catalog.json` also has a script fallback,
+  `data/home-catalog.js`, exposed as `window.__HOME_CATALOG__`. Keep the JSON
+  and JS versions in sync when changing catalog data.
+- The homepage catalog has historically carried richer hand-maintained
+  structure than `content/sections.json`. Do not blindly run
+  `node scripts/build-home-catalog.js` if it would wipe current homepage
+  groupings, paths, or section IDs. Compare the output first.
+- `scripts/import-vocabulary-unit.js` and `scripts/import-ngsl-bc.js` are the
+  current references for generating vocabulary JSON plus JS fallback files.
+
+### Vocabulary schema and NGSL imports
+
+- Use `content/vocabulary/NGSL-A.json` as the vocabulary unit template.
+  Important fields include `id`, `sectionId`, `title`, `href`, `sortOrder`,
+  `sourceName`, `cefrLevel`, `wordCount`, `words`, and `quizGroups`.
+- Each `words[]` item should include `number`, `word`, `emoji`, `meaning`,
+  `partOfSpeech`, and `simpleDefinition`.
+- `simpleDefinition` must be a short English definition. Do not map word forms
+  or inflection notes into this field.
+- The NGSL-B and NGSL-C source Markdown files use a different table shape from
+  NGSL-A, and their final column is word-form information, not a definition.
+  If definitions are uncertain, stop and ask instead of inventing or copying
+  the wrong column.
+- When a quiz answer uses a changed form of the base word, the student-facing
+  Word Bank should show the answer form, such as `warned`, `excited`,
+  `Apparently`, or `flowers`. The separate Words list should still show the
+  base vocabulary word.
+
+### Vocabulary UI rules
+
+- The four mode labels should stay short and parallel; `Word List` was renamed
+  to `Words`.
+- Learn mode uses a low-emphasis header with a `Study Set 1` capsule and small
+  grey text such as `Words 1001-1010`. Test mode uses `Test Set 1` with a
+  visually distinct capsule.
+- The Word Bank is merged into the set header. Do not reintroduce a separate
+  literal `Word Bank` label or a vertical one-word-per-line layout.
+- Word Bank chips must flex from left to right, fill each row naturally, and
+  wrap only when the row is full. This must work on mobile and desktop.
+- The `-` and `+` font controls live in the top-right of the set header. They
+  adjust both question text and Word Bank chips through the shared practice
+  font-size variable, and should not steal layout width from the chips on
+  mobile.
+- The inline answer control is a short underline button only. Do not show
+  `Choose`, and do not use a long blank line.
+- Candidate selection is a custom popup, not a native select. It should open
+  above or below the full question card so it does not cover wrapped sentence
+  text on mobile. Each popup includes `Clear`.
+- Within the same Learn/Test set, once a word is selected in one question, hide
+  it from other questions until it is cleared. This is intentional.
+- Test mode should not reveal original question numbers or `Words X-Y` ranges,
+  because students can use those to find answers in Learn mode.
+- In Test mode, the timer appears at the top-left after the test starts, away
+  from the top-right identity/status area. Time-up feedback includes a short
+  Web Audio beep, not an external audio asset.
+- Dictate mode should not show Chinese definitions. Its setup row uses a simple
+  `Start` button aligned to the right on desktop, and should not include the
+  old explanatory sentence beginning with "Choose a range".
+
+### Verification and push pitfalls
+
+- Fast checks are often enough for small static changes: parse changed JSON,
+  execute fallback JS in a VM-like `window` object, and syntax-check inline
+  scripts in `vocabulary.html`.
+- A local Python static server can be useful for browser inspection, but it has
+  caused slow or interrupted sessions. Stop any server you start. If a server
+  PID cannot be killed inside the sandbox, request escalation for that specific
+  PID only.
+- GitHub pushes have failed before with network errors such as
+  `Failed to connect to github.com port 443` or `Empty reply from server`.
+  Retry with network escalation when appropriate, and never tell the owner a
+  push succeeded unless the command output confirms the remote update.
+- Before committing or pushing, check `git status --short --branch`. This repo
+  is often edited from multiple Codex windows, so stage only files that belong
+  to the current request.
+
+## 21. Known Pitfalls And Fast Diagnosis (2026-06-13)
+
+Use this section when a future agent sees behavior that "should already be
+fixed." Most past breakages were caused by deployment order, stale CloudBase
+function code, or data shape drift rather than complex frontend bugs.
+
+### CloudBase function code can be stale
+
+- If the browser shows an error for code that is already fixed locally, first
+  check whether the CloudBase console is still running an old uploaded function.
+  Example: `Unable to complete this teacher action (studentUid is not defined)`
+  was caused by an old `teacherAdmin` deployment even though the repository and
+  ZIP already used `student.auth_uid`.
+- After editing a cloud function, always rebuild the matching ZIP and inspect
+  the ZIP contents if the bug looks impossible:
+
+```bash
+unzip -p deploy-packages/teacherAdmin.zip index.js | rg "student_uid"
+```
+
+- Deploying source changes to GitHub does not deploy CloudBase functions.
+  Function ZIP upload and static site deployment are separate steps.
+
+### Create collections before deploying code that reads them
+
+- New backend features that read new collections must be deployed in this
+  order: create CloudBase collections first, deploy functions second, deploy
+  static frontend last.
+- If static frontend is pushed before required collections exist, the page can
+  fail even though the JavaScript is correct.
+- Current extra collections beyond the original six include
+  `student_set_achievements`, `answer_disputes`, and `grading_key_history`.
+  Check the latest product rules before assuming whether STAR records are keyed
+  by `set_id` or `assignment_id`; this has changed during design.
+
+### Direct database adds only
+
+- With `@cloudbase/node-sdk`, add documents directly:
+
+```js
+await db.collection("students").add(student);
+```
+
+- Do not use `add({ data: student })`. That nests the document under `data` and
+  causes `Profile incomplete`, missing student rows, broken auth/profile
+  linking, and assignment records that look present but are not queryable by
+  the expected fields.
+- If CloudBase console shows documents wrapped like `{ "data": { ... } }`,
+  treat them as malformed and fix the write path before adding more records.
+
+### Authentication and profile linking
+
+- CloudBase Authentication users and `students` documents are two separate
+  records. A user visible in Authentication is not enough to log into the app
+  unless `students.auth_uid` matches the CloudBase user ID.
+- Teacher-created users must use `@cloudbase/manager-node` end-user APIs
+  (`createEndUser`, `modifyEndUser`, `setEndUserStatus`). Using the wrong user
+  API can create console-visible accounts that cannot sign in through the web
+  username/password flow.
+- Student Login ID uniqueness must be checked in both Authentication usernames
+  and `students.student_id`. Names may repeat; Login IDs may not.
+
+### CloudBase imports
+
+- CloudBase import for nested data such as `grading_keys` must use JSON Lines:
+  one JSON object per line. Use the generated `*-cloudbase.json` files, not
+  array-form backups.
+- CSV is not suitable for `grading_keys` because `answers` and `explanations`
+  are nested objects/arrays.
+- A submission error `GRADING_KEY_NOT_FOUND` usually means the static lesson is
+  present but the matching `grading_keys.set_id` was not imported.
+- A lesson can open directly while still missing from student Explore/Library
+  if the matching `sets` record was not imported.
+
+### Frontend cache and versioning
+
+- After changing shared assets, bump both `assets/js/config.public.js`
+  `appVersion` and the query strings in affected HTML files.
+- Practice pages may import shared scripts without cache-busting unless updated.
+  Add explicit `?v=...` query strings to `config.public.js`,
+  `cloudbase-client.js`, and `practice-session.js` when changing those files.
+- GitHub Pages and browser caches may briefly serve stale JSON/JS. When testing,
+  use a cache-busting query or check the raw GitHub file on `main`.
+
+### Argue and answer history
+
+- Historical review endpoints must not return `correct_answer` or
+  `explanation`. Those belong only to the immediate post-submit feedback or to
+  teacher-authorized views.
+- Teacher Argue decisions that add or replace answers must update private
+  CloudBase `grading_keys` and append `grading_key_history`; do not write
+  corrected answers back into public runtime JSON.
+- Do not automatically regrade all old attempts after an Argue approval unless
+  the owner explicitly asks for a separate manual correction workflow.
+
+### STAR and assignment semantics can evolve
+
+- The product has changed several times around STAR behavior. Before changing
+  `student_set_achievements`, read the current implementation in
+  `getDashboard`, `submitAttempt`, and `teacherAdmin`, not only older notes.
+- Never reintroduce localStorage as the source of truth for STAR/completion.
+  Backend records are authoritative.
+- Whatever the current key is, completion records are monotonic: normal
+  application code may create or improve them, but must not silently revoke or
+  downgrade them.
+
+### Browser and local testing notes
+
+- If in-app browser automation refuses a local URL because of a browser policy,
+  do not try to bypass it with another browser surface. Fall back to static
+  checks, syntax checks, and user-guided browser verification.
+- Local HTTP server checks are useful for static layout, but they do not prove
+  CloudBase functions are deployed or configured correctly.
+
+### Git hygiene in this repo
+
+- `.DS_Store` frequently appears modified; do not stage it.
+- `deploy-packages/` is ignored. Rebuilding ZIPs is still required for
+  deployment, but ZIP changes will not normally appear in Git status.
+- Multiple Codex sessions may leave unrelated dirty files. Stage explicit paths
+  only, and do not push if it would also publish unrelated commits from another
+  active task unless the owner asked for that.
+
+## 22. UI Runtime Maintenance Notes (2026-06-13)
+
+These notes summarize recent frontend decisions and mistakes that were already
+worked through in conversation. Future agents should preserve these unless the
+owner explicitly asks for a different behavior.
+
+### General workflow
+
+- The owner often has several agent windows editing the same repo. Treat a dirty
+  worktree as normal. Check `git status --short` before editing, and stage only
+  the files for the current request.
+- Do not "clean up" unrelated modified files. They may belong to another
+  session or to the owner.
+- This project is mostly static HTML/JSON for the current learning pages. For
+  quick safety checks, extract inline `<script>` blocks and run `new Function`
+  with Node, and validate JSON with `JSON.parse`.
+- The in-app browser may not always be available in Codex. If browser
+  verification is blocked, do not invent a workaround; run static checks and
+  report the limitation.
+
+### Home page catalog and layout
+
+- Keep `data/home-catalog.json` and `data/home-catalog.js` synchronized. The
+  JSON path is preferred, but the JS file is the fallback catalog used when
+  fetch fails.
+- Current home hierarchy is: exam/path card -> small section entry tile ->
+  expanded content cards. Do not put every lesson directly under the exam card
+  by default; it makes the home page visually crowded.
+- `General` should default open, but its children should first appear as small
+  tiles. Current General tile labels are `BBC`, `vocab`, `grammar`, and
+  `writing`.
+- Other paths such as IELTS, DSE, MSE, 中考英语, and 高考英语 should reveal their
+  section tiles only after the path card opens.
+- Section headers can become sticky after a section is expanded so the user can
+  reach `Hide` without scrolling back a long distance.
+- The top brand is `Mr. Cat Academy` / 猫先生英语. Do not revert it to older
+  names such as Leo's English Hub.
+- Home card metadata should stay compact. BBC and IELTS Reading cards should
+  not show redundant notes such as `Listening Practice` or `Passage Practice`.
+  Dates/codes and tags should stay on the same compact metadata row where
+  possible.
+- The global search box searches visible catalog items by id, title, date/code,
+  topic, note, and tags. Preserve login/user parameter handling for links shown
+  in search results.
+
+### Practice identity and login
+
+- Practice pages should display the current identity even when the user is a
+  visitor or not logged in. The home page has its own login status.
+- If a device already has a saved identity, login prompts should offer a simple
+  "continue as existing user" path. Keep `or continue as visitor` available.
+- Avoid adding extra login explanatory copy. The owner prefers a clean login
+  surface: student ID input, login button, saved identity button when present,
+  and visitor option.
+
+### BBC listening runtime
+
+- `bbc.html` should use one custom player, not two. The hero card should not
+  contain a second audio player.
+- The player should stick at the top while the student scrolls. The student
+  name belongs inside the time row between current time and duration, using the
+  same small visual weight as the times.
+- Do not restore the old fixed identity pill above the player; it caused visual
+  conflicts with the progress bar.
+- The progress bar is display-only. Students should not be able to drag or seek
+  freely.
+- Each playback session has at most seven `-5s` rewinds. Pausing does not reset
+  the allowance. Replaying after the audio ends may reset for the new session.
+- Do not reintroduce the native browser audio control. It looked unfinished and
+  did not support the rewind-limit rule.
+- If the student exits or refreshes BBC listening to get another listen, answers
+  should not be restored automatically. The owner accepts that the student must
+  rewrite answers.
+- Missing-answer submission should use an in-page modal, not `alert()`. Native
+  alerts can show browser UI such as "suppress dialogs", which the owner does
+  not want students to see.
+- BBC text-size controls belong on the same row as `Part 1: Fill in the Blanks`
+  so the card does not start with empty vertical space.
+
+### IELTS Reading runtime
+
+- Reading text should use as much page width as practical after entering a set.
+  Avoid narrow boxed layouts that waste horizontal space.
+- Do not add a redundant top `Questions` box when each question range already
+  labels itself.
+- Highlighting should work for both passage text and question text.
+- Keep the student identity visible on practice pages, following the shared
+  identity rules above.
+
+### Vocabulary runtime
+
+- The vocabulary hero should stay minimal. It only needs the two stat boxes
+  `Word Source` and `CEFR Level`. For NGSL-A, `Word Source` should display
+  `NGSL-A`, not only `NGSL`.
+- Mode labels are intentionally short: `Word List`, `Learn`, `Dictate`, and
+  `Test`. Avoid explanatory paragraphs inside each mode unless the owner asks
+  for them.
+- Learn mode should not show a second answer line under each sentence. The
+  blank inside the sentence is the answer control.
+- Learn mode answers are selected from a dropdown at the sentence blank. This
+  is faster for students than typing.
+- Dictate mode is based on the word list, not the quiz group sentences. It
+  shows English definition first and Chinese meaning on the right so students
+  prioritize the English definition.
+- Dictate mode should let students choose a word-number range, then show only
+  one start action: `Shuffle and Start`. The selected words should be shuffled
+  after start.
+- Dictate spelling needs visible per-letter short underlines so students know
+  how many letters the answer has. Avoid a design that looks like a plain box
+  with a separate guide underneath.
+- Dictate columns should stay compact. Current intent is `Spell`, `Definition`,
+  and `中文`; avoid long headers such as `Simple Definition` if they make the
+  table feel cramped.
+- Test mode groups are fixed by ranges such as 1001-1010, 1011-1020, but test
+  display should not reveal the original group/order labels to students. Use
+  generic labels such as 测试组 1.
+- Test mode gives two minutes per selected group and should randomize selected
+  groups and question order within each group.
+
+## 23. Session Record — Fast Reorientation Notes (2026-06-13)
+
+These notes come from a quick project-structure reread. They are intentionally
+short so future agents can avoid repeating the same first-pass mistakes.
+
+### Where to start
+
+- The canonical agent memory is the root `AGENTS.md`. Do not assume there is a
+  `.agents/` or `.codex/` project guide directory; those paths may be mentioned
+  by the runtime permissions but are not the project documentation.
+- Read `AGENTS.md` before `README.md`. The README explains the teaching intent
+  in friendlier language, while `AGENTS.md` contains the current backend,
+  CloudBase, grading, assignment, and deployment invariants.
+- This is no longer only a few static HTML pages. Treat it as a static frontend
+  plus CloudBase backend project with shared assets, generated catalogs,
+  content source files, public runtime data, and deployable cloud functions.
+
+### Current structure snapshot
+
+- Main shell/pages: `index.html`, `library.html`, `dashboard.html`,
+  `teacher.html`, `attempt-review.html`.
+- Practice runtimes: `bbc.html`, `ielts-reading.html`, `vocabulary.html`.
+- Shared frontend code: `assets/js/` and `assets/css/app.css`.
+- Source content: `content/bbc-six-minute-english/`,
+  `content/ielts-reading/`, `content/vocabulary/`, and
+  `content/templates/`.
+- Browser runtime data: `data/*.json`, `data/home-catalog.json`, and
+  `data/home-catalog.js`.
+- Backend source: `cloudfunctions/<function>/`; generated deployment ZIPs live
+  in `deploy-packages/` when present.
+- Scripts such as `scripts/build-home-catalog.js`,
+  `scripts/prepare-cloudbase-data.js`, and import scripts are part of the
+  content pipeline, not optional cleanup utilities.
+
+### Easy traps
+
+- A direct lesson URL can work even when Library/Explore is broken or stale.
+  Library uses `data/home-catalog.*` on the frontend and `getResources` /
+  CloudBase `sets` for authenticated resources, so check both catalog generation
+  and CloudBase import state.
+- Grading can fail while public content renders correctly. If a practice page
+  loads but submission fails, check private CloudBase `grading_keys` for the
+  exact `set_id` before changing the page.
+- Public `data/*.json` may still contain legacy answers/evidence for older
+  standalone flows, but the long-term rule is to keep grading keys private in
+  CloudBase. Do not add new public answer keys casually.
+- Many pages still use `localStorage` for identity, drafts, layout, highlights,
+  or visitor mode. Do not confuse those client conveniences with authenticated
+  CloudBase identity or countable attempt history.
+- The repo may be dirty because several agent windows or classroom import
+  sessions touch the same tree. Always inspect `git status --short` and change
+  only files relevant to the current request.
+- If an early file scan shows only a tiny static-site subset, rescan with
+  `rg --files` from the repository root before drawing conclusions; the active
+  project now includes `assets/`, `content/`, `scripts/`, `cloudfunctions/`,
+  and multiple permanent pages.
