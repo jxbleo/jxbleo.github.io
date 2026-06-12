@@ -1,0 +1,200 @@
+{
+  "id": "BBC-250626",
+  "title": "Are Plant-Based Substitutes Healthier Than Meat?",
+  "audioSrc": "bbc-audio/250626-are-plant-based-substitutes-healthier-than-meat.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Some people reduce meat for health, animal welfare, or ________ reasons.",
+      "section": "Reasons for Choosing Alternatives",
+      "answer": "environmental",
+      "evidence": "\"An increasing number of people are trying - to reduce, or even stop, eating meat. This is often for health, animal welfare or environmental reasons.\" (L9)"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Plant-based alternatives help people get their daily amount of ________.",
+      "section": "Reasons for Choosing Alternatives",
+      "answer": "protein",
+      "evidence": "\"Instead, people are getting their daily amount of protein through plant-based alternatives - meat-free sausages and burgers made using ingredients like soy, tofu or fungi...\" (L12)"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "A listener worries that vegetable sausages may contain ________, flavourings and colourings.",
+      "section": "Reasons for Choosing Alternatives",
+      "answer": "additives",
+      "evidence": "\"Looking at these vegetable sausages, how they are processed, full of additives and flavourings and colourings - are they any healthier than a pork sausage?\" (L21)"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "To copy meat, producers add ________ after breaking down proteins.",
+      "section": "Processing and Ingredients",
+      "answer": "flavourings and colourings",
+      "evidence": "\"To make meat-free sausages, for example, after the proteins are broken down, flavourings and colourings are added to reproduce the taste or texture of meat.\" (L37)"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "Quorn uses ________, a protein from fungi.",
+      "section": "Processing and Ingredients",
+      "answer": "mycoprotein",
+      "evidence": "\"Quorn, one of the best-known brands of meat-free products, uses mycoprotein, a fungi-based protein similar to the fungi used in the fermentation of yoghurt and bread.\" (L37)"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Greg asks for Graham's ________, meaning his first instinctive response.",
+      "section": "Processing and Ingredients",
+      "answer": "gut reaction",
+      "evidence": "\"What do you think about hearing about the sources of where they come from? What's your gut reaction to hearing that Quorn comes from a fungus? Greg asks Graham for his gut reaction.\" (L43-L52)"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Graham is not worried about fungus if the product is ________.",
+      "section": "Processing and Ingredients",
+      "answer": "healthy",
+      "evidence": "\"I have no problems with that... it's just another form of protein, as far as I'm concerned - it's what's the healthiest. Actually, Graham doesn't mind that his sausage protein is a fungus, as long as it's healthy.\" (L46-L55)"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Some vegetarians do not want alternative proteins to ________ meat.",
+      "section": "Consumer Preferences",
+      "answer": "resemble",
+      "evidence": "\"My mum is a long-time veggie... she says, 'I don't want my, you know, alternative proteins to resemble meat.' That's one of the reasons she says she doesn't eat meat.\" (L61)"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Graham wants the product to be similar in flavour, texture, and ________.",
+      "section": "Consumer Preferences",
+      "answer": "appearance",
+      "evidence": "\"Yeah, I've always been a meat eater, but I do need a plant-based product to be similar in terms of flavour, texture, and appearance.\" (L64)"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Because products now vary, consumers have ________ of finding what they prefer.",
+      "section": "Consumer Preferences",
+      "answer": "every chance",
+      "evidence": "\"Whether you want your veggie sausages to look, taste and feel like meat, or you prefer your protein from a plant, now there's every chance you'll find what you're looking for...\" (L70)"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-1",
+      "question": "What central question does the discussion explore?",
+      "options": [
+        "Whether plant-based foods can fully replace traditional cooking.",
+        "Whether meat-free substitutes are healthier despite being processed.",
+        "Whether vegetarian consumers should avoid products that imitate meat.",
+        "Whether fungi-based foods are better for the planet than animal foods."
+      ],
+      "answer": "B",
+      "evidence": "\"With processed meat being linked to diseases like diabetes and cancer, most doctors agree that plant-based options are healthier. But some people are worried about how plant-based alternatives are made...\" (L18-L21)"
+    },
+    {
+      "id": "mc-2",
+      "question": "What concern does Graham raise about vegetable sausages?",
+      "options": [
+        "They may not contain enough protein for a normal diet.",
+        "They may taste too different from traditional pork sausages.",
+        "They may be highly processed with added substances.",
+        "They may be too expensive for most meat eaters to buy."
+      ],
+      "answer": "C",
+      "evidence": "\"Looking at these vegetable sausages, how they are processed, full of additives and flavourings and colourings - are they any healthier than a pork sausage?\" (L21)"
+    },
+    {
+      "id": "mc-3",
+      "question": "How does Graham react to learning that Quorn comes from fungus?",
+      "options": [
+        "He is disgusted because fungus sounds unnatural.",
+        "He is doubtful because fungus is not a familiar food.",
+        "He is amused but still unwilling to try the product.",
+        "He accepts it if the product is healthy."
+      ],
+      "answer": "D",
+      "evidence": "\"What's your gut reaction to hearing that Quorn comes from a fungus? I have no problems with that... it's just another form of protein... it's what's the healthiest.\" (L43-L46)"
+    },
+    {
+      "id": "mc-4",
+      "question": "Why are flavourings and colourings added to meat-free sausages?",
+      "options": [
+        "To reproduce some qualities of meat.",
+        "To increase the amount of protein.",
+        "To remove the need for fungi.",
+        "To make the product less processed."
+      ],
+      "answer": "A",
+      "evidence": "\"To make meat-free sausages, for example, after the proteins are broken down, flavourings and colourings are added to reproduce the taste or texture of meat.\" (L37)"
+    },
+    {
+      "id": "mc-5",
+      "question": "What contrast is made between Graham and Greg's mother?",
+      "options": [
+        "Graham avoids sausages, while Greg's mother eats them regularly.",
+        "Graham wants meat-like substitutes, while Greg's mother does not.",
+        "Graham focuses on animal welfare, while Greg's mother focuses on health.",
+        "Graham prefers fungi protein, while Greg's mother prefers soy protein."
+      ],
+      "answer": "B",
+      "evidence": "\"My mum is a long-time veggie... 'I don't want my... alternative proteins to resemble meat.' ... But you, Graham, you said you do want your plant-based sausage to resemble a pork sausage.\" (L61)"
+    },
+    {
+      "id": "mc-6",
+      "question": "What opinion does Graham express about plant-based sausage?",
+      "options": [
+        "It should be cheaper than pork sausage.",
+        "It should contain no flavourings or colourings.",
+        "It should be made only from natural ingredients.",
+        "It should be similar to meat in key sensory ways."
+      ],
+      "answer": "D",
+      "evidence": "\"I've always been a meat eater, but I do need a plant-based product to be similar in terms of flavour, texture, and appearance.\" (L64)"
+    },
+    {
+      "id": "mc-7",
+      "question": "In \"I have no problems with that\", what does \"that\" refer to?",
+      "options": [
+        "The idea that Quorn comes from fungus.",
+        "The question of whether sausages are healthy.",
+        "The use of colourings in meat-free food.",
+        "The comparison between pork and vegetables."
+      ],
+      "answer": "A",
+      "evidence": "\"What's your gut reaction to hearing that Quorn comes from a fungus? I have no problems with that... it's just another form of protein...\" (L43-L46)"
+    },
+    {
+      "id": "mc-8",
+      "question": "What can be inferred about persuading meat lovers to try alternatives?",
+      "options": [
+        "Health alone may not be enough; sensory similarity also matters.",
+        "They will accept alternatives once they learn about mycoprotein.",
+        "They mostly reject vegetarian food because of environmental concerns.",
+        "They care less about taste than long-time vegetarians do."
+      ],
+      "answer": "A",
+      "evidence": "\"There are other factors influencing whether meat lovers like Graham could be persuaded to try plant-based alternatives. These include things like the taste, colour and texture of the sausage...\" (L58)"
+    },
+    {
+      "id": "mc-9",
+      "question": "Why does Greg mention his mother?",
+      "options": [
+        "To prove that vegetarians dislike all processed foods.",
+        "To explain why plant-based products are usually healthier.",
+        "To show that consumers want different things from substitutes.",
+        "To argue that long-time vegetarians should eat more protein."
+      ],
+      "answer": "C",
+      "evidence": "\"My mum is a long-time veggie... 'I don't want my... alternative proteins to resemble meat.' ... But you, Graham, you said you do want your plant-based sausage to resemble a pork sausage.\" (L61)"
+    },
+    {
+      "id": "mc-10",
+      "question": "What broader conclusion does the discussion suggest?",
+      "options": [
+        "Plant-based foods are accepted only when they perfectly copy meat.",
+        "Health, processing, and personal preference all shape food choices.",
+        "Meat eaters are unlikely to change unless doctors tell them to.",
+        "Vegetarian products are mainly designed for people who miss meat."
+      ],
+      "answer": "B",
+      "evidence": "\"Most doctors agree that plant-based options are healthier. But some people are worried about how plant-based alternatives are made... Whether you want your veggie sausages to look, taste and feel like meat, or you prefer your protein from a plant...\" (L18-L21, L70)"
+    }
+  ],
+  "matching": []
+}
