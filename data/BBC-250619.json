@@ -1,0 +1,203 @@
+{
+  "id": "BBC-250619",
+  "title": "How Do Babies Communicate?",
+  "audioSrc": "bbc-audio/250619-how-do-babies-communicate.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "Before they can talk, babies communicate through their ________.",
+      "section": "Before Babies Can Speak",
+      "answer": "bodies or crying",
+      "evidence": "\"So that's now, but as babies, we're not able to speak - we can only communicate with our bodies or by crying. We can't clothe, feed or wash ourselves - we rely on others totally for our survival.\" (L15)"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "Their basic message is that adults are needed one hundred percent for ________.",
+      "section": "Before Babies Can Speak",
+      "answer": "survival",
+      "evidence": "\"I think they want us to know that they need us one hundred percent, because without us, they won't survive. Without someone caring for them, babies wouldn't survive...\" (L24-L27)"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Most early movements are not random; around 75% are ________.",
+      "section": "Understanding Baby Movements",
+      "answer": "intentional",
+      "evidence": "\"75% of their movements are intentional, synchronised. They're not jerky - you know, to the naked eye they appear very jerky, but they're not.\" (L43)"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "These movements are also described as ________, even if they seem sudden to ordinary observers.",
+      "section": "Understanding Baby Movements",
+      "answer": [
+        "synchronised",
+        "synchronized"
+      ],
+      "evidence": "\"75% of their movements are intentional, synchronised. They're not jerky - you know, to the naked eye they appear very jerky, but they're not.\" (L43)"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "To the naked eye, babies' movements may look ________.",
+      "section": "Understanding Baby Movements",
+      "answer": "jerky",
+      "evidence": "\"They're not jerky - you know, to the naked eye they appear very jerky, but they're not. They're there to bring us in - the parents...\" (L43)"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "One purpose of these movements is to build ________ with parents.",
+      "section": "Understanding Baby Movements",
+      "answer": "a bond",
+      "evidence": "\"Babies move their arms and legs to create a bond with their parents. To the naked eye, these movements look jerky...\" (L46)"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Marie Derome's book is mainly written for ________.",
+      "section": "Bonding and Expectations",
+      "answer": "new parents",
+      "evidence": "\"Marie's book is aimed at new parents who are learning to understand their baby's body language, but she also has advice for parents who are finding it difficult to bond with their newborn...\" (L52)"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "Some parents expect an immediate feeling called ________.",
+      "section": "Bonding and Expectations",
+      "answer": "love at first sight",
+      "evidence": "\"Parenting is really hard. Falling in love with this little baby is not... you know, this idea of love at first sight - I think it's such an unhelpful cliché.\" (L55)"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "Marie calls this idea an ________ because it can create unrealistic pressure.",
+      "section": "Bonding and Expectations",
+      "answer": "unhelpful cliche",
+      "evidence": "\"She calls it an unhelpful cliche. A cliche is an overused phrase or comment... and in some cases unhelpful - for example by creating unrealistic expectations...\" (L61)"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "Such expectations may make parents feel ________.",
+      "section": "Bonding and Expectations",
+      "answer": "guilty",
+      "evidence": "\"She calls it an unhelpful cliche... in some cases unhelpful - for example by creating unrealistic expectations, or by making parents feel guilty they are not doing enough.\" (L61)"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-1",
+      "question": "What is the main point made about newborn babies at the start of the discussion?",
+      "options": [
+        "They mainly communicate because they want to copy adults.",
+        "They quickly learn spoken language by watching parents.",
+        "They depend on adults completely before they can speak.",
+        "They cry mostly when they are hungry or uncomfortable."
+      ],
+      "answer": "C",
+      "evidence": "\"As babies, we're not able to speak - we can only communicate with our bodies or by crying. We can't clothe, feed or wash ourselves - we rely on others totally for our survival.\" (L15)"
+    },
+    {
+      "id": "mc-2",
+      "question": "Why does Marie Derome use the phrase \"one hundred percent\" about babies?",
+      "options": [
+        "To stress that babies' needs are total rather than partial.",
+        "To estimate how often babies communicate with parents.",
+        "To compare babies' survival chances in different families.",
+        "To show that newborn babies understand adults perfectly."
+      ],
+      "answer": "A",
+      "evidence": "\"I think they want us to know that they need us one hundred percent, because without us, they won't survive... She uses the phrase one hundred percent to emphasise that what she said is completely true.\" (L24-L27)"
+    },
+    {
+      "id": "mc-3",
+      "question": "What attitude does Marie show towards the idea that baby movements are meaningless?",
+      "options": [
+        "She rejects it by saying the movements have a purpose.",
+        "She accepts it because the movements look uncontrolled.",
+        "She is uncertain because parents often misread babies.",
+        "She treats it as true only for very young newborns."
+      ],
+      "answer": "A",
+      "evidence": "\"75% of their movements are intentional, synchronised... They're there to bring us in - the parents... all those movements are there to say, 'Look! Come! Look at me. I need you.'\" (L43)"
+    },
+    {
+      "id": "mc-4",
+      "question": "According to the discussion, why do babies move their arms and legs?",
+      "options": [
+        "To practise the physical skills needed for walking.",
+        "To express discomfort when adults fail to feed them.",
+        "To show that their muscles are developing normally.",
+        "To attract parents and encourage emotional connection."
+      ],
+      "answer": "D",
+      "evidence": "\"They're there to bring us in - the parents... all those movements are there to say, 'Look! Come! Look at me. I need you.' Babies move their arms and legs to create a bond with their parents.\" (L43-L46)"
+    },
+    {
+      "id": "mc-5",
+      "question": "What contrast is made about babies' early movements?",
+      "options": [
+        "They are faster in public than at home.",
+        "They seem jerky but are actually purposeful.",
+        "They look playful but usually show pain.",
+        "They appear simple but require special equipment to see."
+      ],
+      "answer": "B",
+      "evidence": "\"They're not jerky - you know, to the naked eye they appear very jerky, but they're not... In reality, these jerky movements are intentional, meaning that they are planned and done for a particular purpose...\" (L43-L49)"
+    },
+    {
+      "id": "mc-6",
+      "question": "What is Marie's view of \"love at first sight\" in parenting?",
+      "options": [
+        "It is a reliable sign that parents are bonding well.",
+        "It is a useful goal for parents to work towards.",
+        "It can be an unhelpful expectation for new parents.",
+        "It happens naturally once babies begin to communicate."
+      ],
+      "answer": "C",
+      "evidence": "\"Falling in love with this little baby is not... you know, this idea of love at first sight - I think it's such an unhelpful cliché. It will take time to love that baby...\" (L55)"
+    },
+    {
+      "id": "mc-7",
+      "question": "In the phrase \"these movements\", what does \"these\" refer to?",
+      "options": [
+        "Babies moving their arms and legs.",
+        "Parents learning body language.",
+        "Babies crying for food or care.",
+        "Adults speaking to newborn babies."
+      ],
+      "answer": "A",
+      "evidence": "\"Now, if you've spent time with a baby, you've probably noticed how much they move their little arms and legs... 75% of their movements are intentional, synchronised.\" (L40-L43)"
+    },
+    {
+      "id": "mc-8",
+      "question": "What can be inferred about bonding with a newborn baby?",
+      "options": [
+        "It depends mainly on parents learning technical childcare skills.",
+        "It is easier when parents avoid thinking about expectations.",
+        "It should happen immediately if the parent is emotionally healthy.",
+        "It may develop gradually as parents get to know the baby."
+      ],
+      "answer": "D",
+      "evidence": "\"It will take time to love that baby, to get to know that baby... Marie says it takes time to get to know a newborn baby and to fall in love.\" (L55-L64)"
+    },
+    {
+      "id": "mc-9",
+      "question": "Why is the phrase \"to the naked eye\" used in the explanation?",
+      "options": [
+        "To suggest that parents need medical tests to understand babies.",
+        "To criticise ordinary people for observing babies carelessly.",
+        "To distinguish surface appearance from what is really happening.",
+        "To show that babies communicate mostly through eye contact."
+      ],
+      "answer": "C",
+      "evidence": "\"They're not jerky - you know, to the naked eye they appear very jerky, but they're not... In reality, these jerky movements are intentional...\" (L43-L49)"
+    },
+    {
+      "id": "mc-10",
+      "question": "What is the overall implication of the discussion?",
+      "options": [
+        "Babies communicate clearly only after parents receive expert training.",
+        "Parents should see baby communication and bonding as gradual processes.",
+        "New parents usually misunderstand babies because they lack experience.",
+        "Baby movements are more important than crying in every situation."
+      ],
+      "answer": "B",
+      "evidence": "\"In reality, these jerky movements are intentional... to catch their parents' attention so they will be noticed and cared for... Marie says it takes time to get to know a newborn baby and to fall in love.\" (L49-L64)"
+    }
+  ],
+  "matching": []
+}

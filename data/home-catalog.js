@@ -2,8 +2,8 @@ window.__HOME_CATALOG__ = {
   "sections": [
     {
       "id": "bbc-six-minute-english",
-      "groupId": "general",
-      "title": "BBC Six Minute English",
+      "groupId": "basics",
+      "title": "BBC Listening",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, date or topic...",
       "sortType": "date_desc",
@@ -13,7 +13,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "vocabulary",
-      "groupId": "general",
+      "groupId": "basics",
       "title": "Vocabulary",
       "searchEnabled": true,
       "searchPlaceholder": "Search unit code...",
@@ -24,7 +24,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "grammar",
-      "groupId": "general",
+      "groupId": "basics",
       "title": "Grammar",
       "searchEnabled": false,
       "sortType": "number_asc",
@@ -34,7 +34,7 @@ window.__HOME_CATALOG__ = {
     },
     {
       "id": "general-writing",
-      "groupId": "general",
+      "groupId": "basics",
       "title": "Writing",
       "searchEnabled": false,
       "sortType": "number_asc",
@@ -107,7 +107,7 @@ window.__HOME_CATALOG__ = {
     {
       "id": "dse-english-paper-3",
       "groupId": "dse",
-      "title": "Paper 3 Listening and Integrated Skills",
+      "title": "Paper 3 Listening",
       "searchEnabled": false,
       "sortType": "number_asc",
       "titleMode": "title",
@@ -123,59 +123,84 @@ window.__HOME_CATALOG__ = {
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "Future DSE speaking content will appear here."
-    },
-    {
-      "id": "mse-ket",
-      "groupId": "mse",
-      "title": "KET",
-      "searchEnabled": false,
-      "sortType": "number_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "KET practice will appear here."
-    },
-    {
-      "id": "mse-pet",
-      "groupId": "mse",
-      "title": "PET",
-      "searchEnabled": false,
-      "sortType": "number_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "PET practice will appear here."
-    },
-    {
-      "id": "mse-fce",
-      "groupId": "mse",
-      "title": "FCE",
-      "searchEnabled": false,
-      "sortType": "number_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "FCE practice will appear here."
-    },
-    {
-      "id": "zhongkao-english",
-      "groupId": "zhongkao",
-      "title": "Zhongkao",
-      "searchEnabled": false,
-      "sortType": "number_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "Zhongkao practice will appear here."
-    },
-    {
-      "id": "gaokao-english",
-      "groupId": "gaokao",
-      "title": "Gaokao",
-      "searchEnabled": false,
-      "sortType": "number_asc",
-      "titleMode": "title",
-      "emptyMessage": "Developing",
-      "emptyNote": "Gaokao practice will appear here."
     }
   ],
   "items": [
+    {
+      "id": "BBC-250619",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Do Babies Communicate?",
+      "href": "bbc.html?set=BBC-250619",
+      "displayValue": "2025-06-19",
+      "sortValue": "2025-06-19",
+      "topic": "Family / Child Development",
+      "tags": [
+        "Family",
+        "Child Development"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250626",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Are Plant-Based Substitutes Healthier Than Meat?",
+      "href": "bbc.html?set=BBC-250626",
+      "displayValue": "2025-06-26",
+      "sortValue": "2025-06-26",
+      "topic": "Food / Health",
+      "tags": [
+        "Food",
+        "Health"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250703",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Do You Say Sorry?",
+      "href": "bbc.html?set=BBC-250703",
+      "displayValue": "2025-07-03",
+      "sortValue": "2025-07-03",
+      "topic": "Culture / Communication",
+      "tags": [
+        "Culture",
+        "Communication"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250710",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Do You Need To Declutter Your Home?",
+      "href": "bbc.html?set=BBC-250710",
+      "displayValue": "2025-07-10",
+      "sortValue": "2025-07-10",
+      "topic": "Home / Wellbeing",
+      "tags": [
+        "Home",
+        "Wellbeing"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250717",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Can We Help Wild Bees?",
+      "href": "bbc.html?set=BBC-250717",
+      "displayValue": "2025-07-17",
+      "sortValue": "2025-07-17",
+      "topic": "Nature / Conservation",
+      "tags": [
+        "Nature",
+        "Conservation"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
     {
       "id": "BBC-250724",
       "sectionId": "bbc-six-minute-english",
@@ -545,11 +570,11 @@ window.__HOME_CATALOG__ = {
       "sectionId": "vocabulary",
       "title": "NGSL-B",
       "href": "vocabulary.html?set=NGSL-B",
-      "displayValue": "Words 1101-1200",
+      "displayValue": "NGSL-B",
       "sortValue": 1002,
       "topic": "",
       "tags": [],
-      "note": "",
+      "note": "100 Words · 10 Quiz Groups",
       "visible": true
     },
     {
@@ -557,11 +582,11 @@ window.__HOME_CATALOG__ = {
       "sectionId": "vocabulary",
       "title": "NGSL-C",
       "href": "vocabulary.html?set=NGSL-C",
-      "displayValue": "Words 1201-1300",
+      "displayValue": "NGSL-C",
       "sortValue": 1003,
       "topic": "",
       "tags": [],
-      "note": "",
+      "note": "100 Words · 10 Quiz Groups",
       "visible": true
     }
   ]

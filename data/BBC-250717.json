@@ -1,0 +1,200 @@
+{
+  "id": "BBC-250717",
+  "title": "How Can We Help Wild Bees?",
+  "audioSrc": "bbc-audio/250717-how-can-we-help-wild-bees.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "sentence": "In ancient times, honey was known as ________.",
+      "section": "Honey and Uncertainty",
+      "answer": "liquid gold",
+      "evidence": "\"Prized for its taste and medicinal properties, in ancient times honey was known as 'liquid gold'. But now, thanks to modern farming methods, populations of many insects, including bees, are in decline.\" (L15)"
+    },
+    {
+      "id": "fill-2",
+      "sentence": "A listener says there is a ________ around whether eating honey helps bees.",
+      "section": "Honey and Uncertainty",
+      "answer": "question mark",
+      "evidence": "\"I don't eat honey myself, but I still have a question mark around it because I know that our bee populations are declining... what Saoirse is uncertain about is whether eating honey might actually save bees.\" (L18-L24)"
+    },
+    {
+      "id": "fill-3",
+      "sentence": "Around the world, there are ________ of bee.",
+      "section": "Honey Bees and Wild Bees",
+      "answer": "20,000 species",
+      "evidence": "\"We've been talking about honey bees, but these are just one of the 20,000 species of bee which exist around the world.\" (L43)"
+    },
+    {
+      "id": "fill-4",
+      "sentence": "Honey bees are widespread and are ________.",
+      "section": "Honey Bees and Wild Bees",
+      "answer": "not endangered",
+      "evidence": "\"In fact, honey bees are one of the most widespread insects on the planet and not endangered at all.\" (L43)"
+    },
+    {
+      "id": "fill-5",
+      "sentence": "In the UK, there are ________ of bumblebee.",
+      "section": "Honey Bees and Wild Bees",
+      "answer": "26 bumblebee species",
+      "evidence": "\"In the UK, we have 26 bumblebee species but three have gone extinct.\" (L49)"
+    },
+    {
+      "id": "fill-6",
+      "sentence": "Of these, ________ have gone extinct.",
+      "section": "Honey Bees and Wild Bees",
+      "answer": "three",
+      "evidence": "\"In the UK, we have 26 bumblebee species but three have gone extinct. Many of the others are now clinging on...\" (L49)"
+    },
+    {
+      "id": "fill-7",
+      "sentence": "Some remaining bumblebee species survive in ________ of good habitat.",
+      "section": "Honey Bees and Wild Bees",
+      "answer": "isolated pockets",
+      "evidence": "\"Many of the others are now clinging on in little isolated pockets of good habitat. Honey bees have beekeepers to look after them, but nobody's looking out for the wild bees.\" (L49)"
+    },
+    {
+      "id": "fill-8",
+      "sentence": "We rely on insects to ________ and keep ecosystems working.",
+      "section": "Ecosystem Roles and Action",
+      "answer": "pollinate crops",
+      "evidence": "\"Lots of other bee species are [endangered], and this is bad news because we rely on insects to pollinate crops and to keep ecosystems functioning.\" (L55)"
+    },
+    {
+      "id": "fill-9",
+      "sentence": "________ of plant species need insects for pollination.",
+      "section": "Ecosystem Roles and Action",
+      "answer": "87%",
+      "evidence": "\"87% of all plant species need insects for pollination, so without them most plants on Earth would disappear, which would obviously be catastrophic.\" (L58)"
+    },
+    {
+      "id": "fill-10",
+      "sentence": "One suggested action is growing bee-friendly plants such as ________.",
+      "section": "Ecosystem Roles and Action",
+      "answer": "lavender",
+      "evidence": "\"While eating more honey probably won't do much to save wild bees, there are things you can do, such as growing bee-friendly plants which flower in spring, like lavender.\" (L67)"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-1",
+      "question": "What is the main question explored in the discussion?",
+      "options": [
+        "Whether eating honey is the best way to protect honey bees.",
+        "Whether honey bees are more valuable than other insect species.",
+        "Whether eating honey can help declining wild bee populations.",
+        "Whether vegan diets are responsible for lower bee numbers."
+      ],
+      "answer": "C",
+      "evidence": "\"Can honey help save bees?... I still have a question mark around it because I know that our bee populations are declining... would it be better for declining bee populations if more people ate honey?\" (L18-L27)"
+    },
+    {
+      "id": "mc-2",
+      "question": "What does Saoirse feel uncertain about?",
+      "options": [
+        "Whether honey has medicinal value.",
+        "Whether eating honey might help save bees.",
+        "Whether vegans should eat any animal products.",
+        "Whether bee populations are actually declining."
+      ],
+      "answer": "B",
+      "evidence": "\"I don't eat honey myself, but I still have a question mark around it because I know that our bee populations are declining... what Saoirse is uncertain about is whether eating honey might actually save bees.\" (L18-L24)"
+    },
+    {
+      "id": "mc-3",
+      "question": "What attitude is shown towards honey bees compared with wild bees?",
+      "options": [
+        "Honey bees are treated as the species in immediate danger.",
+        "Honey bees are presented as less threatened than many wild bees.",
+        "Honey bees are described as harmful to the survival of bumblebees.",
+        "Honey bees are dismissed as unimportant because they are managed."
+      ],
+      "answer": "B",
+      "evidence": "\"Honey bees are one of the most widespread insects on the planet and not endangered at all. But the picture isn't so good for wild bees...\" (L43-L46)"
+    },
+    {
+      "id": "mc-4",
+      "question": "Why are many wild bees struggling more than honey bees?",
+      "options": [
+        "They produce less honey and are therefore less useful to humans.",
+        "They have fewer beekeepers and less direct human protection.",
+        "They cannot pollinate crops as effectively as honey bees.",
+        "They survive only in cities rather than natural habitats."
+      ],
+      "answer": "B",
+      "evidence": "\"Many of the others are now clinging on in little isolated pockets of good habitat. Honey bees have beekeepers to look after them, but nobody's looking out for the wild bees.\" (L49)"
+    },
+    {
+      "id": "mc-5",
+      "question": "What contrast is made between honey bees and wild bees?",
+      "options": [
+        "Honey bees are widespread and cared for; wild bees may be isolated and overlooked.",
+        "Honey bees are extinct in the UK; wild bees are increasing in number.",
+        "Honey bees live only in farms; wild bees live only in forests.",
+        "Honey bees pollinate plants; wild bees mainly recycle waste."
+      ],
+      "answer": "A",
+      "evidence": "\"Honey bees are one of the most widespread insects on the planet and not endangered at all... Many of the others are now clinging on in little isolated pockets... Honey bees have beekeepers... nobody's looking out for the wild bees.\" (L43-L49)"
+    },
+    {
+      "id": "mc-6",
+      "question": "What opinion does Dave Goulson express about insects' work?",
+      "options": [
+        "Their best-known role is less useful than people believe.",
+        "Their hidden jobs are important but often unnoticed.",
+        "Their contribution matters only when crops are failing.",
+        "Their value is mostly limited to making food taste better."
+      ],
+      "answer": "B",
+      "evidence": "\"There are much less glamorous, less well-known things, like recycling cow poo and helping to keep the soil healthy and helping to control crop pests... all of which are also really important. And we... take them for granted...\" (L61)"
+    },
+    {
+      "id": "mc-7",
+      "question": "In \"that isn't the only thing\", what does \"that\" refer to?",
+      "options": [
+        "Making honey for humans.",
+        "Looking after wild bees.",
+        "Pollination by insects.",
+        "Decline in bee populations."
+      ],
+      "answer": "C",
+      "evidence": "\"87% of all plant species need insects for pollination... But according to Dave Goulson, pollination is just one of the many things bees do for us... That isn't the only thing that insects are doing...\" (L58-L61)"
+    },
+    {
+      "id": "mc-8",
+      "question": "What can be inferred about eating more honey?",
+      "options": [
+        "It may help beekeepers but is unlikely to solve wild bee decline.",
+        "It is the most practical action for people who cannot grow plants.",
+        "It will protect all bee species if enough people take part.",
+        "It is harmful because honey bees are already widespread."
+      ],
+      "answer": "A",
+      "evidence": "\"While eating more honey probably won't do much to save wild bees, there are things you can do, such as growing bee-friendly plants which flower in spring, like lavender.\" (L67)"
+    },
+    {
+      "id": "mc-9",
+      "question": "Why are examples like recycling cow poo and keeping soil healthy mentioned?",
+      "options": [
+        "To make bee behaviour sound more glamorous to listeners.",
+        "To show that insects support ecosystems in less obvious ways.",
+        "To explain why honey bees are not endangered at all.",
+        "To prove that pollination is no longer bees' main job."
+      ],
+      "answer": "B",
+      "evidence": "\"There are much less glamorous, less well-known things, like recycling cow poo and helping to keep the soil healthy and helping to control crop pests and so on, all of which are also really important.\" (L61)"
+    },
+    {
+      "id": "mc-10",
+      "question": "What is the overall implication of the discussion?",
+      "options": [
+        "Protecting bees requires focusing beyond honey bees and recognising wider ecosystem roles.",
+        "Eating honey is the simplest way for consumers to reverse insect decline.",
+        "Wild bees are declining mainly because people do not understand vegan diets.",
+        "Honey production should stop so that wild bees can recover naturally."
+      ],
+      "answer": "A",
+      "evidence": "\"Honey bees are... not endangered at all. But the picture isn't so good for wild bees... That isn't the only thing that insects are doing... While eating more honey probably won't do much to save wild bees...\" (L43-L67)"
+    }
+  ],
+  "matching": []
+}
