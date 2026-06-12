@@ -396,6 +396,8 @@
     var assignmentId = params.get('assignment') || '';
     var prefillAttemptId = params.get('prefill') || '';
     var historyAttemptId = params.get('history') || prefillAttemptId;
+    var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
+    if (isNaN(historyBestPercentage)) historyBestPercentage = null;
     var assignmentStatus = params.get('status') || '';
     var answerRevealAvailable = false;
     var answerRevealConfirmed = false;
@@ -541,6 +543,8 @@
     }
 
     function clearAllAnswers() {
+        answerRevealAvailable = false;
+        updateHistoryToolbar();
         document.querySelectorAll('[data-question]').forEach(function(el) {
             if (el.type === 'radio') el.checked = false;
             else el.value = '';
@@ -572,9 +576,21 @@
             attempt_id: historyAttemptId
         }).then(function(result) {
             if (result && result.success && result.attempt && result.attempt.answers) {
+                clearAllAnswers();
                 applyAnswers(result.attempt.answers);
             }
         }).catch(function() {});
+    }
+
+    function updateHistoryFromResponse(response) {
+        if (!response || !response.attempt_id) return;
+        var value = response.display_percentage == null ? response.percentage : response.display_percentage;
+        var percentage = value == null ? null : Number(value);
+        if (percentage != null && isNaN(percentage)) percentage = null;
+        if (!historyAttemptId || historyBestPercentage == null || percentage == null || percentage >= historyBestPercentage) {
+            historyAttemptId = response.attempt_id;
+            if (percentage != null) historyBestPercentage = percentage;
+        }
     }
 
     function renderHistoryToolbar() {
@@ -1104,7 +1120,7 @@
     }
 
     function applyServerFeedback(response, answers) {
-        historyAttemptId = response.attempt_id || historyAttemptId;
+        updateHistoryFromResponse(response);
         assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
         answerRevealAvailable = response.passed && !response.feedback_locked;
         updateHistoryToolbar();

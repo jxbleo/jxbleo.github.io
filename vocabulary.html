@@ -1039,6 +1039,8 @@
         var assignmentId = params.get('assignment') || '';
         var prefillAttemptId = params.get('prefill') || '';
         var historyAttemptId = params.get('history') || prefillAttemptId;
+        var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
+        if (isNaN(historyBestPercentage)) historyBestPercentage = null;
         var assignmentStatus = params.get('status') || '';
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
@@ -1128,6 +1130,8 @@
         }
 
         function clearAllTestAnswers() {
+            answerRevealAvailable = false;
+            updateHistoryToolbar();
             document.querySelectorAll('.test-question').forEach(function(card) {
                 card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
                 var input = card.querySelector('.answer-input');
@@ -1904,6 +1908,17 @@
             }).catch(function() { return false; });
         }
 
+        function updateHistoryFromResponse(response) {
+            if (!response || !response.attempt_id) return;
+            var value = response.display_percentage == null ? response.percentage : response.display_percentage;
+            var percentage = value == null ? null : Number(value);
+            if (percentage != null && isNaN(percentage)) percentage = null;
+            if (!historyAttemptId || historyBestPercentage == null || percentage == null || percentage >= historyBestPercentage) {
+                historyAttemptId = response.attempt_id;
+                if (percentage != null) historyBestPercentage = percentage;
+            }
+        }
+
         function startTest() {
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
@@ -1973,7 +1988,7 @@
                 if (!response || !response.success) {
                     throw new Error(response && response.message || 'Unable to submit this test.');
                 }
-                historyAttemptId = response.attempt_id || historyAttemptId;
+                updateHistoryFromResponse(response);
                 assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
                 answerRevealAvailable = response.passed && !response.feedback_locked;
                 updateHistoryToolbar();

@@ -1082,6 +1082,7 @@
     var currentArgueAttemptId = null;
     var prefillAttemptId = '';
     var historyAttemptId = '';
+    var historyBestPercentage = null;
     var assignmentStatus = '';
     var answerRevealAvailable = false;
     var isDragging = false;
@@ -1501,6 +1502,8 @@
         assignmentId = params.assignment || '';
         prefillAttemptId = params.prefill || '';
         historyAttemptId = params.history || prefillAttemptId;
+        historyBestPercentage = params.history_score === undefined ? null : Number(params.history_score);
+        if (isNaN(historyBestPercentage)) historyBestPercentage = null;
         assignmentStatus = params.status || '';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
@@ -1593,6 +1596,8 @@
     }
 
     function clearAllAnswers() {
+        answerRevealAvailable = false;
+        updateHistoryToolbar();
         var form = document.getElementById('quiz-form');
         form.querySelectorAll('input[type="text"]').forEach(function(input) {
             input.value = '';
@@ -1651,10 +1656,22 @@
             attempt_id: historyAttemptId
         }).then(function(result) {
             if (result && result.success && result.attempt && result.attempt.answers) {
+                clearAllAnswers();
                 applyAnswers(result.attempt.answers);
                 saveDraftAnswers();
             }
         }).catch(function() {});
+    }
+
+    function updateHistoryFromResponse(response) {
+        if (!response || !response.attempt_id) return;
+        var value = response.display_percentage == null ? response.percentage : response.display_percentage;
+        var percentage = value == null ? null : Number(value);
+        if (percentage != null && isNaN(percentage)) percentage = null;
+        if (!historyAttemptId || historyBestPercentage == null || percentage == null || percentage >= historyBestPercentage) {
+            historyAttemptId = response.attempt_id;
+            if (percentage != null) historyBestPercentage = percentage;
+        }
     }
 
     function renderHistoryToolbar() {
@@ -2013,7 +2030,7 @@
             submitted = true;
             btn.textContent = 'Submitted';
             currentArgueAttemptId = response.attempt_id;
-            historyAttemptId = response.attempt_id || historyAttemptId;
+            updateHistoryFromResponse(response);
             assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
             answerRevealAvailable = response.passed && !response.feedback_locked;
             updateHistoryToolbar();

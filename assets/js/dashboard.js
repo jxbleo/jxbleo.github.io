@@ -138,6 +138,7 @@
         if (item.status) params.push('status=' + encodeURIComponent(normalizedStatus(item.status)));
         if (item.prefill_attempt_id) params.push('prefill=' + encodeURIComponent(item.prefill_attempt_id));
         if (item.history_attempt_id) params.push('history=' + encodeURIComponent(item.history_attempt_id));
+        if (item.best_percentage != null) params.push('history_score=' + encodeURIComponent(item.best_percentage));
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
         return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
     }
