@@ -384,6 +384,35 @@ leaving grading inconsistent.
 
 Temporary classroom HTML may remain independent until it becomes recurring.
 
+### BBC review and import gotchas
+
+For BBC listening lessons where the owner supplies only a transcript, generate
+a teacher review draft before touching website data. Keep the review draft in
+`/private/tmp` or another non-repository location because it contains answers.
+The teacher review draft should show each question with its answer and a
+slightly longer evidence quote, using transcript line numbers only, such as
+`L23` or `L23-L25`; do not use paragraph labels like `P03-L01`. Do not include
+a separate `Why` field in the teacher review version; fold the justification
+into the evidence quote.
+
+Only after the owner approves the teacher review draft should the agent create
+or update project data. BBC fill-in-the-blank placeholders in `data/BBC-*.json`
+must use exactly five underscores:
+
+```text
+_____
+```
+
+`bbc.html` currently replaces only the first `_____` token with an input. If a
+sentence uses `________` or any longer underline, the extra underscores remain
+visible after the input field. Always scan new BBC data for `_{6,}` before
+committing.
+
+When a blank has multiple accepted answers, store `answer` as an array in the
+canonical `data/BBC-*.json`; `submitAttempt` accepts array answers and checks
+them with normalized exact matching. This is the correct way to support variants
+such as British/American spelling.
+
 ## 11. Cloud Functions and Deployment
 
 Active backend functions:
@@ -592,3 +621,79 @@ Deploy these updated function ZIPs to CloudBase development:
 Then push/deploy the static site so `teacher.html`, `dashboard.html`,
 `assets/js/teacher.js`, `assets/js/dashboard.js`, `assets/css/app.css`, and the
 practice pages are current.
+
+## 18. Session Record — BBC June/July Import Lessons Learned (2026-06-13)
+
+### What was added
+
+Five BBC listening sets were generated from owner transcript Markdown, reviewed
+by the teacher, converted into website data, and pushed to GitHub Pages:
+
+- `BBC-250619` — How Do Babies Communicate?
+- `BBC-250626` — Are Plant-Based Substitutes Healthier Than Meat?
+- `BBC-250703` — How Do You Say Sorry?
+- `BBC-250710` — Do You Need To Declutter Your Home?
+- `BBC-250717` — How Can We Help Wild Bees?
+
+### Problems encountered and confirmed fixes
+
+- Teacher review drafts should be teacher-facing, not student-facing. Show
+  `Prompt`/`Question`, options, `Answer`, longer `Evidence` quotes, and `Skill`
+  together for each question so the owner can judge quality without jumping
+  between an exercise and an answer key.
+- Evidence references should be transcript line numbers only (`L23-L25`). The
+  earlier `PXX-LXX` format was unnecessary for Markdown transcripts and made
+  review harder.
+- CloudBase console imports require the `-cloudbase.json` JSON Lines files:
+  one JSON document per line. Array-form backup files such as
+  `grading_keys.json` or an ad hoc JSON array can appear to upload but may not
+  create usable records. For partial imports, generate a partial JSON Lines
+  file from the `-cloudbase.json` source.
+- The CloudBase import modal may say it supports JSON and CSV. For
+  `grading_keys`, use JSON because `answers` and `explanations` are nested
+  objects/arrays; CSV cannot preserve them.
+- A CloudBase warning like `5 records succeeded, 0 failed` followed by
+  `failed to clean tmp file` means the database import succeeded. The temporary
+  uploaded file can be deleted later from file management; it does not block
+  grading.
+- `GRADING_KEY_NOT_FOUND` during submission means the `grading_keys` collection
+  lacks a document with the submitted `set_id`. The static page may load
+  perfectly while grading still fails. Fix by importing the corresponding
+  `grading_keys` JSON Lines records and then searching `grading_keys` for the
+  exact `set_id`.
+- Student Library/Explore uses the `getResources` cloud function first.
+  `getResources` reads the CloudBase `sets` collection. If the static catalog
+  contains a new lesson but the student Library does not show it, check whether
+  `sets` has the matching `set_id`. Direct lesson URLs can work while Library
+  is missing the item.
+- New BBC lessons therefore require both imports: `sets` for Library visibility
+  and `grading_keys` for grading. Verify both collections by searching for at
+  least one new `set_id`, for example `BBC-250619`.
+- GitHub Pages and browser caches may briefly serve stale JSON after a push.
+  Verify the raw GitHub file on `main` if needed, and use a cache-busting query
+  such as `?v=<commit>` when checking the deployed page.
+- Large audio pushes can fail once with a network error such as `Empty reply
+  from server`. Retry `git push origin main` with network access if the commit
+  is local and the first push failed.
+- Fill-in-the-blank sentences initially used eight underscores. Because
+  `bbc.html` replaces exactly `_____`, the extra underscores appeared after
+  each input field. The data was fixed by replacing all `_{6,}` placeholders in
+  the five new BBC JSON files with exactly `_____`.
+
+### Verification checklist for future BBC imports
+
+1. Review draft approved by owner before repository edits.
+2. `data/BBC-*.json` has 10 blanks and 10 MC questions, unless the owner
+   explicitly approved a different count.
+3. No `_{6,}` placeholder remains in new BBC data.
+4. Matching `content/bbc-six-minute-english/BBC-*.json` metadata exists and is
+   `visible: true`.
+5. Audio file exists at the `audioSrc` path.
+6. `node scripts/build-home-catalog.js` has been run.
+7. `node scripts/prepare-cloudbase-data.js` has been run.
+8. Public preview under `.cloudbase-private/public` has no `answer`,
+   `answers`, `evidence`, `explanation`, or `correctAnswer` fields.
+9. CloudBase `sets` contains the new `set_id`.
+10. CloudBase `grading_keys` contains the new `set_id`.
+11. Student Library shows the lesson.
+12. A logged-in student can submit and receive grading feedback.
