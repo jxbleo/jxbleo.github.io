@@ -9,7 +9,8 @@
         attempts: [],
         disputes: [],
         candidates: [],
-        selectedStudentProfileId: ''
+        selectedStudentProfileId: '',
+        expandedDisputeGroups: {}
     };
 
     var message = document.getElementById('teacher-message');
@@ -17,6 +18,80 @@
     var studentDetail = document.getElementById('student-detail');
     var studentForm = document.getElementById('student-form');
     var candidateList = document.getElementById('assign-candidates');
+
+    var questionTextCache = {};
+
+    function sameId(a, b) {
+        return String(a == null ? '' : a) === String(b == null ? '' : b);
+    }
+
+    function getQuestionTextFromData(data, questionId) {
+        if (!data) return null;
+        var i, arr, item;
+        arr = data.blanks || [];
+        for (i = 0; i < arr.length; i++) {
+            if (sameId(arr[i].id, questionId)) return arr[i].sentence || arr[i].question || arr[i].text || arr[i].title;
+        }
+        arr = data.multipleChoice || [];
+        for (i = 0; i < arr.length; i++) {
+            if (sameId(arr[i].id, questionId)) return arr[i].question || arr[i].text || arr[i].sentence;
+        }
+        arr = data.matching || [];
+        for (i = 0; i < arr.length; i++) {
+            if (sameId(arr[i].id, questionId)) return arr[i].text || arr[i].sentence || arr[i].question || arr[i].title;
+            var pairs = arr[i].pairs || [];
+            for (var pairIndex = 0; pairIndex < pairs.length; pairIndex++) {
+                if (sameId(arr[i].id + '-' + pairIndex, questionId)) {
+                    return pairs[pairIndex].left || pairs[pairIndex].text || pairs[pairIndex].question || arr[i].title;
+                }
+            }
+        }
+        arr = data.questions || [];
+        for (i = 0; i < arr.length; i++) {
+            var items = arr[i].items || [];
+            for (var j = 0; j < items.length; j++) {
+                if (sameId(items[j].id, questionId)) return items[j].text || items[j].sentence || items[j].question || items[j].title;
+            }
+        }
+        arr = data.quizGroups || [];
+        for (i = 0; i < arr.length; i++) {
+            var questions = arr[i].questions || [];
+            for (var k = 0; k < questions.length; k++) {
+                item = questions[k];
+                if (sameId(item.questionKey || (arr[i].id + ':' + item.number), questionId)) {
+                    return item.prompt || item.text || item.question || item.sentence;
+                }
+            }
+        }
+        return null;
+    }
+
+    function getQuestionText(item) {
+        return item.question_text_snapshot ||
+            getQuestionTextFromData(questionTextCache[item.set_id], item.question_id) ||
+            '';
+    }
+
+    function loadQuestionTextForDisputes() {
+        var setIds = {};
+        (state.disputes || []).forEach(function(d) {
+            if (d.set_id) setIds[d.set_id] = true;
+        });
+        var keys = Object.keys(setIds);
+        if (!keys.length) return Promise.resolve();
+        var promises = keys.map(function(setId) {
+            if (questionTextCache[setId] !== undefined) return null;
+            return fetch('data/' + setId + '.json')
+                .then(function(r) {
+                    if (r.ok) return r.json();
+                    return fetch('content/vocabulary/' + setId + '.json')
+                        .then(function(vocabResponse) { return vocabResponse.ok ? vocabResponse.json() : null; });
+                })
+                .then(function(data) { questionTextCache[setId] = data; })
+                .catch(function() { questionTextCache[setId] = null; });
+        }).filter(Boolean);
+        return Promise.all(promises);
+    }
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -289,39 +364,134 @@
 
     function answerText(value) {
         if (Array.isArray(value)) return value.join(' / ');
+        if (value && typeof value === 'object') return JSON.stringify(value);
         return value == null ? '—' : String(value);
+    }
+
+    function disputeGroupKey(item) {
+        return [
+            item.student_uid || item.student_id || 'student',
+            item.assignment_id || item.attempt_id || item.set_id || 'task'
+        ].join('::');
+    }
+
+    function groupedDisputes() {
+        var groups = {};
+        (state.disputes || []).forEach(function(item) {
+            var key = disputeGroupKey(item);
+            if (!groups[key]) {
+                groups[key] = {
+                    key: key,
+                    student_name: item.student_name || item.student_id || 'Student',
+                    student_id: item.student_id || '',
+                    set_title: item.set_title || item.set_id,
+                    set_id: item.set_id,
+                    assignment_id: item.assignment_id || null,
+                    attempt_id: item.attempt_id || null,
+                    items: [],
+                    pending_count: 0,
+                    resolved_count: 0,
+                    latest_at: item.created_at || item.resolved_at || null
+                };
+            }
+            groups[key].items.push(item);
+            if (item.status === 'pending') {
+                groups[key].pending_count += 1;
+            } else {
+                groups[key].resolved_count += 1;
+            }
+            var itemDate = item.status === 'pending'
+                ? (item.created_at || item.updated_at || item.resolved_at)
+                : (item.resolved_at || item.updated_at || item.created_at);
+            if (new Date(itemDate || 0) > new Date(groups[key].latest_at || 0)) {
+                groups[key].latest_at = itemDate;
+            }
+        });
+        return Object.keys(groups).map(function(key) {
+            var group = groups[key];
+            group.items.sort(function(a, b) {
+                if (a.status === 'pending' && b.status !== 'pending') return -1;
+                if (a.status !== 'pending' && b.status === 'pending') return 1;
+                return new Date(b.created_at || b.resolved_at || 0) - new Date(a.created_at || a.resolved_at || 0);
+            });
+            return group;
+        }).sort(function(a, b) {
+            if (a.pending_count && !b.pending_count) return -1;
+            if (!a.pending_count && b.pending_count) return 1;
+            return new Date(b.latest_at || 0) - new Date(a.latest_at || 0);
+        });
+    }
+
+    function renderDisputeDetail(item) {
+        var pending = item.status === 'pending';
+        var questionText = getQuestionText(item);
+        return '<article class="dispute-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
+            escapeHtml(item.dispute_id) + '">' +
+            '<div class="dispute-detail-head">' +
+                '<div><strong>Question ' + escapeHtml(item.question_id) + '</strong>' +
+                '<small>' + escapeHtml(formatDate(item.created_at)) + '</small></div>' +
+                '<span class="badge ' + (pending ? 'failed' : 'done') + '">' + escapeHtml(item.status) + '</span>' +
+            '</div>' +
+            (questionText
+                ? '<p class="dispute-question-text">' + escapeHtml(questionText) + '</p>'
+                : '<p class="dispute-question-text missing">Question text is not available from the current public data.</p>') +
+            '<div class="dispute-comparison">' +
+                '<div><span>Student answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
+                '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
+            '</div>' +
+            (item.explanation || item.explanation_snapshot
+                ? '<p class="dispute-explanation"><strong>Explanation:</strong> ' + escapeHtml(item.explanation || item.explanation_snapshot) + '</p>'
+                : '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>') +
+            '<p class="dispute-reason"><strong>Student note:</strong> ' +
+                escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
+            (pending
+                ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +
+                  '<div class="dispute-actions">' +
+                    '<button class="outline-button" type="button" data-decision="keep">Keep Original Ruling</button>' +
+                    '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
+                    '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>' +
+                  '</div>'
+                : '<p class="muted">Decision: ' + escapeHtml(item.decision || item.status) +
+                  (item.teacher_note ? ' · ' + escapeHtml(item.teacher_note) : '') + '</p>') +
+        '</article>';
     }
 
     function renderDisputes() {
         var list = document.getElementById('dispute-list');
-        var disputes = state.disputes || [];
-        list.innerHTML = disputes.length ? disputes.map(function(item) {
-            var pending = item.status === 'pending';
-            return '<article class="profile-card dispute-card ' + escapeHtml(item.status) + '" data-dispute-id="' +
-                escapeHtml(item.dispute_id) + '">' +
-                '<div class="student-detail-heading"><div><p class="eyebrow accent">' +
-                    escapeHtml(item.set_title) + '</p><h2>Question ' + escapeHtml(item.question_id) + '</h2>' +
-                    '<p>' + escapeHtml(item.student_name || item.student_id) + ' · ' +
-                    escapeHtml(formatDate(item.created_at)) + '</p></div>' +
-                    '<span class="badge ' + (pending ? 'failed' : 'done') + '">' +
-                    escapeHtml(item.status) + '</span></div>' +
-                '<div class="dispute-comparison">' +
-                    '<div><span>Student answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
-                    '<div><span>Answer at submission</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
-                '</div>' +
-                '<p class="dispute-reason"><strong>Student note:</strong> ' +
-                    escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
-                (pending
-                    ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +
-                      '<div class="dispute-actions">' +
-                        '<button class="outline-button" type="button" data-decision="keep">Keep Original Ruling</button>' +
-                        '<button class="primary-button" type="button" data-decision="add">Add as Accepted Answer</button>' +
-                        '<button class="danger-button" type="button" data-decision="replace">Replace Correct Answer</button>' +
-                      '</div>'
-                    : '<p class="muted">Decision: ' + escapeHtml(item.decision || item.status) +
-                      (item.teacher_note ? ' · ' + escapeHtml(item.teacher_note) : '') + '</p>') +
+        var groups = groupedDisputes();
+        list.innerHTML = groups.length ? groups.map(function(group) {
+            var expanded = state.expandedDisputeGroups[group.key] === true;
+            var total = group.items.length;
+            var badgeClass = group.pending_count ? 'failed' : 'done';
+            var badgeText = group.pending_count
+                ? group.pending_count + ' pending'
+                : 'resolved';
+            return '<article class="profile-card dispute-card ' + (group.pending_count ? 'pending' : 'resolved') +
+                '" data-dispute-group="' + escapeHtml(group.key) + '">' +
+                '<button class="dispute-capsule" type="button" data-toggle-dispute-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
+                    '<span class="dispute-capsule-copy"><strong>' + escapeHtml(group.set_title) + '</strong>' +
+                    '<small>' + escapeHtml(group.student_name) +
+                        (group.student_id ? ' · ' + escapeHtml(group.student_id) : '') +
+                        ' · ' + total + ' question' + (total === 1 ? '' : 's') +
+                    '</small></span>' +
+                    '<span class="dispute-capsule-meta">' +
+                        '<span class="badge ' + badgeClass + '">' + escapeHtml(badgeText) + '</span>' +
+                        '<small>' + escapeHtml(formatDate(group.latest_at)) + '</small>' +
+                    '</span>' +
+                '</button>' +
+                (expanded
+                    ? '<div class="dispute-group-detail">' + group.items.map(renderDisputeDetail).join('') + '</div>'
+                    : '') +
             '</article>';
         }).join('') : '<div class="empty-card"><strong>No Argue requests</strong>New student requests will appear here.</div>';
+
+        list.querySelectorAll('[data-toggle-dispute-group]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.toggleDisputeGroup;
+                state.expandedDisputeGroups[key] = state.expandedDisputeGroups[key] !== true;
+                renderDisputes();
+            });
+        });
 
         list.querySelectorAll('[data-decision]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -347,6 +517,8 @@
                     state.disputes = results[0].disputes || [];
                     state.assignments = results[1].assignments || [];
                     state.attempts = results[2].attempts || [];
+                    return loadQuestionTextForDisputes();
+                }).then(function() {
                     renderDisputes();
                     renderStudentDetail();
                 }).catch(function(error) {
@@ -403,6 +575,8 @@
             renderSetOptions();
             renderStudentList();
             renderStudentDetail();
+            return loadQuestionTextForDisputes();
+        }).then(function() {
             renderDisputes();
         });
     }
@@ -486,6 +660,8 @@
     document.getElementById('refresh-disputes').addEventListener('click', function() {
         teacherCall('listDisputes').then(function(result) {
             state.disputes = result.disputes || [];
+            return loadQuestionTextForDisputes();
+        }).then(function() {
             renderDisputes();
         }).catch(function(error) {
             showMessage(error.message, 'error');

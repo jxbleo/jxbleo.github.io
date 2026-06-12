@@ -388,6 +388,7 @@ set_id: string
 attempt_id: string
 assignment_id: string | null
 question_id: string
+question_text_snapshot: string
 submitted_answer: any
 answer_snapshot: any
 explanation_snapshot: string
