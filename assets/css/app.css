@@ -324,6 +324,7 @@ button { cursor: pointer; }
     font-weight: 850;
     text-decoration: none;
 }
+.task-go-button { min-width: 54px; padding: 0 13px; }
 .star-button { background: #d89528; }
 .star-button:hover { background: #ba7417; }
 .star-button.collected, .star-button:disabled {
@@ -332,20 +333,33 @@ button { cursor: pointer; }
     cursor: default;
     opacity: 1;
 }
-.star-burst {
-    position: absolute;
-    right: 88px;
-    top: 50%;
+.star-button.collected {
+    transform: scale(0.85);
+    opacity: 0;
+    transition: transform 160ms ease, opacity 160ms ease;
+}
+.star-flyer {
+    position: fixed;
+    z-index: 30;
+    transform: translate(-50%, -50%);
     pointer-events: none;
     color: #d89528;
-    font-size: 3rem;
-    animation: star-pop 900ms ease-out forwards;
+    font-size: 2.4rem;
+    line-height: 1;
+    text-shadow: 0 10px 22px rgba(216, 149, 40, 0.28);
+    animation: star-fly 900ms cubic-bezier(.2,.78,.2,1) forwards;
 }
 
-@keyframes star-pop {
-    0% { transform: translateY(-50%) scale(0.3) rotate(-25deg); opacity: 0; }
-    35% { transform: translateY(-75%) scale(1.15) rotate(10deg); opacity: 1; }
-    100% { transform: translateY(-135%) scale(0.8) rotate(25deg); opacity: 0; }
+@keyframes star-fly {
+    0% { transform: translate(-50%, -50%) scale(0.35) rotate(-18deg); opacity: 0; }
+    18% { transform: translate(-50%, calc(-50% - 18px)) scale(1.18) rotate(8deg); opacity: 1; }
+    78% { transform: translate(calc(-50% + var(--star-dx)), calc(-50% + var(--star-dy) - 10px)) scale(0.88) rotate(22deg); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--star-dx)), calc(-50% + var(--star-dy))) scale(0.25) rotate(32deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .star-flyer { animation-duration: 1ms; }
+    .star-counter.pop { animation-duration: 1ms; }
 }
 
 .filter-select {
@@ -746,8 +760,16 @@ button { cursor: pointer; }
     .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .summary-card { padding: 14px 10px; }
     .summary-value { font-size: 1.45rem; }
-    .task-card, .resource-card { grid-template-columns: 1fr; }
+    .task-card { grid-template-columns: 1fr auto; }
+    .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
+    .task-card .task-go-button {
+        width: 46px;
+        min-width: 46px;
+        min-height: 46px;
+        padding: 0;
+        border-radius: 14px;
+    }
     .profile-grid { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
     .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
