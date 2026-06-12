@@ -136,6 +136,7 @@
         var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
         if (assignmentId) params.push('assignment=' + encodeURIComponent(assignmentId));
         if (item.prefill_attempt_id) params.push('prefill=' + encodeURIComponent(item.prefill_attempt_id));
+        if (item.history_attempt_id) params.push('history=' + encodeURIComponent(item.history_attempt_id));
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
         return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
     }
@@ -182,7 +183,10 @@
         var status = normalizedStatus(item.status);
         var action = status === 'to_do' ? 'Start' : 'Keep Trying';
         var badgeClass = status;
-        var href = practiceHref(Object.assign({}, set, { prefill_attempt_id: item.prefill_attempt_id }), item.assignment_id);
+        var href = practiceHref(Object.assign({}, set, {
+            prefill_attempt_id: item.prefill_attempt_id,
+            history_attempt_id: item.history_attempt_id
+        }), item.assignment_id);
         var collected = isStarCollected(item);
         return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
             '<div>' +

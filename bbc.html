@@ -704,12 +704,11 @@
         .history-toolbar {
             position: fixed;
             z-index: 999;
-            left: 14px;
             right: 14px;
             bottom: 14px;
             display: flex;
             gap: 8px;
-            justify-content: center;
+            justify-content: flex-end;
             pointer-events: none;
         }
         .history-toolbar button {
@@ -1082,6 +1081,7 @@
     var attemptStartedAt = new Date().toISOString();
     var currentArgueAttemptId = null;
     var prefillAttemptId = '';
+    var historyAttemptId = '';
     var isDragging = false;
 
     var students = [
@@ -1498,6 +1498,7 @@
         setId = params.set || '';
         assignmentId = params.assignment || '';
         prefillAttemptId = params.prefill || '';
+        historyAttemptId = params.history || prefillAttemptId;
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
             localStorage.setItem('opencode_user', params.user);
@@ -1641,10 +1642,10 @@
     }
 
     function showHistoryAnswers() {
-        if (!prefillAttemptId || !window.MrCatCloud) return;
+        if (!historyAttemptId || !window.MrCatCloud) return;
         window.MrCatCloud.callFunction('getDashboard', {
             action: 'getAttemptForRetry',
-            attempt_id: prefillAttemptId
+            attempt_id: historyAttemptId
         }).then(function(result) {
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
@@ -1663,7 +1664,7 @@
             '<button type="button" id="clear-all-btn">Clear All</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
-            if (!prefillAttemptId) {
+            if (!historyAttemptId) {
                 alert('No history is available for this task yet.');
                 return;
             }
