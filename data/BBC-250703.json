@@ -5,7 +5,7 @@
   "blanks": [
     {
       "id": "fill-1",
-      "sentence": "A simple \"sorry\" may be enough after a small accident, but not after something ________.",
+      "sentence": "A simple \"sorry\" may be enough after a small accident, but not after something _____.",
       "section": "Serious Apologies and Rituals",
       "answer": [
         "serious",
@@ -15,63 +15,63 @@
     },
     {
       "id": "fill-2",
-      "sentence": "In Ghana, a journalist apologised by following ________.",
+      "sentence": "In Ghana, a journalist apologised by following _____.",
       "section": "Serious Apologies and Rituals",
       "answer": "strict traditional rules",
       "evidence": "\"Afia decided to say sorry to the King, following strict traditional rules, that she dress in black and apologise kneeling down on her knees.\" (L37)"
     },
     {
       "id": "fill-3",
-      "sentence": "She had to dress in ________ and apologise while kneeling.",
+      "sentence": "She had to dress in _____ and apologise while kneeling.",
       "section": "Serious Apologies and Rituals",
       "answer": "black",
       "evidence": "\"Afia decided to say sorry to the King, following strict traditional rules, that she dress in black and apologise kneeling down on her knees.\" (L37)"
     },
     {
       "id": "fill-4",
-      "sentence": "She had to dress in black and apologise while ________.",
+      "sentence": "She had to dress in black and apologise while _____.",
       "section": "Serious Apologies and Rituals",
       "answer": "kneeling down",
       "evidence": "\"Afia decided to say sorry to the King, following strict traditional rules, that she dress in black and apologise kneeling down on her knees.\" (L37)"
     },
     {
       "id": "fill-5",
-      "sentence": "In Pakistan, people are generally described as ________.",
+      "sentence": "In Pakistan, people are generally described as _____.",
       "section": "Pakistan: Indirect Apologies",
       "answer": "not expressive",
       "evidence": "\"I would say that Pakistanis generally - they're not really expressive, and we're also very cheeky...\" (L43)"
     },
     {
       "id": "fill-6",
-      "sentence": "They may be ________, using humour or playfulness rather than directness.",
+      "sentence": "They may be _____, using humour or playfulness rather than directness.",
       "section": "Pakistan: Indirect Apologies",
       "answer": "cheeky",
       "evidence": "\"I would say that Pakistanis generally - they're not really expressive, and we're also very cheeky... Journalist Ahsan Mahmood thinks apologising in Pakistan is different because people are not expressive...\" (L43-L52)"
     },
     {
       "id": "fill-7",
-      "sentence": "Some people avoid being very ________ about an apology.",
+      "sentence": "Some people avoid being very _____ about an apology.",
       "section": "Pakistan: Indirect Apologies",
       "answer": "upfront",
       "evidence": "\"We would slide an apology in the middle of a conversation, and then very quickly move on to a new topic so that we don't have to... be very upfront about it.\" (L43)"
     },
     {
       "id": "fill-8",
-      "sentence": "Russia has a tradition called ________.",
+      "sentence": "Russia has a tradition called _____.",
       "section": "Russia and Korea",
       "answer": "Forgiveness Sunday",
       "evidence": "\"In Russia, we also have a tradition called Forgiveness Sunday, which happens on the last Sunday before Easter.\" (L46)"
     },
     {
       "id": "fill-9",
-      "sentence": "During it, people apologise for any ________ they have caused.",
+      "sentence": "During it, people apologise for any _____ they have caused.",
       "section": "Russia and Korea",
       "answer": "sorrows",
       "evidence": "\"The tradition is that you call your family and friends and apologise for any sorrows you've caused.\" (L46)"
     },
     {
       "id": "fill-10",
-      "sentence": "In Korean, apologies are shaped by a complex ________.",
+      "sentence": "In Korean, apologies are shaped by a complex _____.",
       "section": "Russia and Korea",
       "answer": "honorific system",
       "evidence": "\"In Korea, the way of saying sorry varies depending on the relationship between the speaker and the listener, due to the complex honorific system in the language.\" (L49)"
