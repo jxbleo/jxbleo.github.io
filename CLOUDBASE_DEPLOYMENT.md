@@ -56,6 +56,8 @@ Important:
 
 - Files ending in `-cloudbase.json` use the JSON Lines format required by the
   CloudBase console.
+- JSON Lines means one complete JSON document per line. Do not wrap the records
+  in a top-level array for console import.
 - `import/sets-cloudbase.json` is safe catalog metadata.
 - `import/grading-keys-cloudbase.json` contains all correct answers and must remain
   private.
@@ -64,6 +66,31 @@ Important:
   for direct console import.
 - `public/` contains preview data with grading fields removed.
 - Never commit `.cloudbase-private/`.
+
+If importing only a few new records, create a smaller JSON Lines file by
+filtering the relevant `-cloudbase.json` file. Do not import an array-form JSON
+backup into the console. The console import modal may describe the format as
+`JSON` rather than `JSON Lines`; for these project files, still upload the
+one-document-per-line `-cloudbase.json` file.
+
+For `grading_keys`, use JSON import rather than CSV because each record contains
+nested `answers` and `explanations` objects, and some answers may be arrays of
+accepted variants.
+
+If the console reports records succeeded but failed to clean a temporary upload
+file, the database import succeeded. The temporary file can be deleted later
+from file management.
+
+After importing new exercise content, verify both collections:
+
+- `sets`: search `set_id = <NEW_SET_ID>`; this controls Student Library /
+  Explore visibility through `getResources`.
+- `grading_keys`: search `set_id = <NEW_SET_ID>`; this controls grading in
+  `submitAttempt`.
+
+If a direct practice URL loads but Library does not show the item, `sets` is
+missing or stale. If submission fails with `GRADING_KEY_NOT_FOUND`,
+`grading_keys` is missing that `set_id`.
 
 ## Deployment Order
 

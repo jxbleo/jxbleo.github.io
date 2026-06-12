@@ -226,6 +226,40 @@ AI 收到后默认应做两件事：
    - 老师下一步只需要看什么
 
 
+## BBC 新内容的推荐审核流程
+
+如果老师只提供 BBC 原文 Markdown，AI 不应直接把题目写进项目。
+推荐流程是：
+
+1. 先生成教师审核版，放在仓库外的临时位置。
+2. 教师审核版每道题直接显示题目、选项、答案、证据和技能标签。
+3. 证据引用原文 1-3 句左右，并只标 Markdown 行号，例如 `L23-L25`。
+4. 不使用 `PXX-LXX` 这种段落编号。
+5. 不单独写 `Why`；把判断依据放进 `Evidence`。
+6. 老师确认后，再生成网站数据和 CloudBase 私有答案数据。
+
+BBC 填空题在网站数据中必须使用 exactly five underscores:
+
+```text
+_____
+```
+
+不要使用 `________`。当前 `bbc.html` 只会把第一个 `_____` 替换成输入框，
+多余下划线会直接显示在输入框后面。
+
+新增 BBC 内容时，网站能打开不代表学生端 Library 会显示，也不代表能评分。
+需要同时完成：
+
+- 静态文件：`data/BBC-*.json`、`content/bbc-six-minute-english/BBC-*.json`、
+  `bbc-audio/*.mp3`、`data/home-catalog.*`
+- CloudBase `sets`：学生端 Library / Explore 依赖这里
+- CloudBase `grading_keys`：提交评分依赖这里
+
+如果直接打开练习可以加载，但学生端 Library 不显示，优先检查 `sets` 是否有
+对应 `set_id`。如果提交时报 `GRADING_KEY_NOT_FOUND`，优先检查
+`grading_keys` 是否有对应 `set_id`。
+
+
 ## 老师不需要做的事
 
 老师不需要：
