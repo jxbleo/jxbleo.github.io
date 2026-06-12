@@ -31,15 +31,15 @@ body {
 }
 
 .teacher-page {
-    --accent: #ef7a3a;
-    --accent-dark: #cc5a25;
-    --accent-soft: #fff0e7;
-    --page: #fff7f2;
-    --line: #f2d5c9;
-    --shadow: 0 22px 60px rgba(140, 72, 38, 0.13);
+    --accent: #7c3aed;
+    --accent-dark: #5b21b6;
+    --accent-soft: #f1e8ff;
+    --page: #f8f5ff;
+    --line: #ddd0f6;
+    --shadow: 0 22px 60px rgba(83, 45, 145, 0.15);
     background:
-        radial-gradient(circle at 8% 4%, rgba(255, 209, 171, 0.58), transparent 30%),
-        radial-gradient(circle at 92% 6%, rgba(255, 176, 196, 0.42), transparent 27%),
+        radial-gradient(circle at 8% 4%, rgba(216, 199, 255, 0.62), transparent 30%),
+        radial-gradient(circle at 92% 6%, rgba(189, 208, 255, 0.44), transparent 27%),
         var(--page);
 }
 
@@ -174,12 +174,12 @@ button { cursor: pointer; }
     font-weight: 800;
 }
 .teacher-page .student-chip {
-    border-color: rgba(239, 122, 58, 0.18);
+    border-color: rgba(124, 58, 237, 0.2);
     color: var(--accent-dark);
 }
-.teacher-page .tab-button.active { background: linear-gradient(135deg, #ef7a3a, #ff8fac); }
-.teacher-page .primary-button { background: linear-gradient(135deg, #ef7a3a, #ff8fac); }
-.teacher-page .primary-button:hover { background: linear-gradient(135deg, #cc5a25, #f56f92); }
+.teacher-page .tab-button.active { background: linear-gradient(135deg, #6d28d9, #8b5cf6 58%, #60a5fa); }
+.teacher-page .primary-button { background: linear-gradient(135deg, #6d28d9, #8b5cf6 58%, #60a5fa); }
+.teacher-page .primary-button:hover { background: linear-gradient(135deg, #5b21b6, #7c3aed 58%, #3b82f6); }
 .identity-cluster { display: flex; align-items: center; gap: 8px; }
 .star-counter {
     padding: 9px 13px;
@@ -208,7 +208,7 @@ button { cursor: pointer; }
     box-shadow: var(--shadow);
 }
 .teacher-page .hero-card {
-    background: linear-gradient(135deg, #773314, #ef7a3a 58%, #ff8fac);
+    background: linear-gradient(135deg, #312e81, #7c3aed 58%, #60a5fa);
 }
 .hero-card::after {
     content: "";
@@ -392,7 +392,7 @@ button { cursor: pointer; }
 .danger-button { border: 1px solid #efc9c3; color: var(--danger); background: #fff; }
 
 .teacher-hero {
-    background: linear-gradient(135deg, #173b4b, #176d70 62%, #399488);
+    background: linear-gradient(135deg, #312e81, #7c3aed 58%, #60a5fa);
 }
 .teacher-message {
     min-height: 24px;
