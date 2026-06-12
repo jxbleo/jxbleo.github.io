@@ -107,6 +107,7 @@ async function submitDispute(student, event) {
   const attemptId = String(event.attempt_id || "");
   const questionId = String(event.question_id || "");
   const reason = String(event.reason || "").trim().slice(0, 1000);
+  const questionText = String(event.question_text || "").trim().slice(0, 2000);
   if (!attemptId || !questionId) throw new Error("DISPUTE_FIELDS_REQUIRED");
 
   const attempt = await getOne("attempts", {
@@ -132,6 +133,7 @@ async function submitDispute(student, event) {
     attempt_id: attemptId,
     assignment_id: attempt.assignment_id || null,
     question_id: questionId,
+    question_text_snapshot: questionText,
     submitted_answer: question.submitted_answer == null ? "" : question.submitted_answer,
     answer_snapshot: question.correct_answer == null ? null : question.correct_answer,
     explanation_snapshot: question.explanation || "",

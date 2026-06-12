@@ -543,18 +543,22 @@ async function listAttempts() {
 }
 
 async function listDisputes() {
-  const [disputeResult, studentResult, setResult] = await Promise.all([
+  const [disputeResult, studentResult, setResult, gradingKeysResult] = await Promise.all([
     db.collection("answer_disputes").limit(500).get(),
     db.collection("students").limit(200).get(),
     db.collection("sets").limit(200).get(),
+    db.collection("grading_keys").limit(200).get(),
   ]);
   const studentMap = new Map((studentResult.data || []).map((item) => [item.auth_uid, item]));
   const setMap = new Map((setResult.data || []).map((item) => [item.set_id, item]));
+  const gradingKeysMap = new Map((gradingKeysResult.data || []).map((item) => [item.set_id, item]));
   return {
     success: true,
     disputes: (disputeResult.data || []).map((dispute) => {
       const student = studentMap.get(dispute.student_uid) || {};
       const set = setMap.get(dispute.set_id) || {};
+      const gradingKey = gradingKeysMap.get(dispute.set_id) || {};
+      const explanations = gradingKey.explanations || {};
       return {
         dispute_id: dispute.dispute_id || dispute._id,
         student_uid: dispute.student_uid,
@@ -563,7 +567,9 @@ async function listDisputes() {
         set_id: dispute.set_id,
         set_title: set.title || dispute.set_id,
         attempt_id: dispute.attempt_id,
+        assignment_id: dispute.assignment_id || null,
         question_id: dispute.question_id,
+        question_text_snapshot: dispute.question_text_snapshot || "",
         submitted_answer: dispute.submitted_answer,
         answer_snapshot: dispute.answer_snapshot,
         student_reason: dispute.student_reason || "",
@@ -571,7 +577,10 @@ async function listDisputes() {
         decision: dispute.decision || null,
         teacher_note: dispute.teacher_note || "",
         created_at: dispute.created_at || null,
+        updated_at: dispute.updated_at || null,
         resolved_at: dispute.resolved_at || null,
+        explanation_snapshot: dispute.explanation_snapshot || "",
+        explanation: explanations[dispute.question_id] || "",
       };
     }).sort((a, b) => {
       if (a.status === "pending" && b.status !== "pending") return -1;

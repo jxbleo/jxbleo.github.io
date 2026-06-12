@@ -469,3 +469,49 @@ tested.
 - Update this guide when a backend invariant or owner workflow changes.
 - End with a concise summary, tests performed, and exact owner action still
   required in CloudBase.
+
+## 15. Session Record — Teacher Argue Enhancement (2026-06-12)
+
+### What was done
+
+**Cloud function (`cloudfunctions/teacherAdmin/index.js`):**
+- `listDisputes` now also queries `grading_keys` collection and returns `explanation` (latest from grading_keys) and `explanation_snapshot` (from the raw dispute record, stored at submission time).
+- `listDisputes` returns `assignment_id`, `updated_at`, and optional `question_text_snapshot` so frontend grouping and context display are stable.
+
+**Cloud function (`cloudfunctions/getDashboard/index.js`):**
+- `submitDispute` accepts optional `question_text` and stores it as `question_text_snapshot` for future dispute records.
+
+**Frontend (`assets/js/teacher.js`):**
+- Added `questionTextCache` and `loadQuestionTextForDisputes()` that fetches `data/{set_id}.json`, with `content/vocabulary/{set_id}.json` fallback for Vocabulary.
+- Added `getQuestionTextFromData()` — searches `blanks[]`, `multipleChoice[]`, `matching[]`, IELTS-style `questions[].items[]`, matching pairs, and Vocabulary `quizGroups[].questions[]`.
+- `renderDisputes()` now groups requests into one task capsule per student assignment/attempt. Teachers click a capsule to see detailed disputed questions.
+- Pending groups sort first; fully processed groups sort underneath.
+- Detail view displays question text, student answer, correct answer snapshot, explanation, student note, and decision controls.
+- All data loading paths include null guards to prevent rendering crashes.
+
+**CSS (`assets/css/app.css`):**
+- Added task-capsule and expanded-detail styles for Argue, including `.dispute-question-text` and `.dispute-explanation`.
+
+**Version bumps:**
+- `teacher.html`: `app.css?v=20260612-2`, `teacher.js?v=20260612-2`
+
+**Deployment artifact:**
+- `deploy-packages/teacherAdmin.zip` rebuilt with latest `index.js` + `package.json`.
+- `deploy-packages/getDashboard.zip` rebuilt with latest `index.js` + `package.json`.
+
+### Current state
+
+- Frontend question text lookup was validated locally against BBC, IELTS Reading, and Vocabulary sample data.
+- Explanation display requires the updated `teacherAdmin` cloud function deployment.
+- Optional future question-text snapshots require the updated `getDashboard` cloud function deployment.
+- ZIP files are ready but have NOT been deployed to CloudBase.
+
+### TODO (next agent)
+
+1. Deploy `deploy-packages/teacherAdmin.zip` and `deploy-packages/getDashboard.zip` to the development CloudBase environment.
+2. Open owner's browser DevTools on teacher page and check:
+   - Console for JS errors
+   - Network tab: `data/{set_id}.json` requests (should be 200)
+   - Network tab: `teacherAdmin` response (should include `assignment_id`, `explanation_snapshot`, and `explanation`)
+   - Argue groups render as collapsed task capsules, expand on click, and move below pending groups after resolution.
+3. Consider passing `question_text` from each practice runtime's Argue submission path so new dispute records keep a durable question snapshot.
