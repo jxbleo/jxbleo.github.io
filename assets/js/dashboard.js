@@ -187,7 +187,7 @@
     function taskCard(item) {
         var set = item.set || item;
         var status = normalizedStatus(item.status);
-        var action = status === 'to_do' ? 'Start' : 'Keep Trying';
+        var action = status === 'to_do' ? 'Start' : (status === 'mastered' ? 'Beat Your Best' : 'Go for Mastery');
         var badgeClass = status;
         var href = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
