@@ -258,6 +258,8 @@
 
         .evidence-text { font-size: 0.85em; color: #b9770e; margin-top: 6px; padding: 6px 10px; background: var(--wrong-bg); border-radius: 4px; display: none; }
         .evidence-text.show { display: block; }
+        .teacher-argue-btn { margin-top: 6px; padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
+        .teacher-argue-btn.sent { color: #237a52; border-color: #8cc8a8; background: #ecf9f1; }
 
         .headings-section { margin-bottom: 16px; }
         .headings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; margin-bottom: 16px; padding: 14px 18px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9em; }
@@ -649,21 +651,80 @@
             el.removeAttribute('data-teacher-answer');
         });
         document.querySelectorAll('[data-teacher-correct="1"]').forEach(function(el) {
-            el.classList.remove('correct');
+            el.classList.remove('correct', 'wrong');
             el.removeAttribute('data-teacher-correct');
+        });
+        document.querySelectorAll('[data-teacher-argue]').forEach(function(el) { el.remove(); });
+    }
+
+    function normalizeAnswer(value) {
+        return String(value == null ? '' : value).trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    function answerMatches(submitted, expected) {
+        var accepted = Array.isArray(expected) ? expected : [expected];
+        return accepted.some(function(answer) {
+            return normalizeAnswer(answer) === normalizeAnswer(submitted);
         });
     }
 
-    function markTeacherCorrect(q, answer) {
+    function questionTextForTeacher(q) {
+        return q.question || q.prompt || q.instruction || '';
+    }
+
+    function submitTeacherArgue(button, q, answer) {
+        var submitted = collectSubmissionAnswers()[q.id] || '';
+        var reason = window.prompt('Teacher note for this Argue request (optional):', '') || '';
+        button.disabled = true;
+        button.textContent = 'Sending...';
+        teacherCall('submitTeacherDispute', {
+            set_id: setId,
+            question_id: q.id,
+            submitted_answer: submitted,
+            question_text: questionTextForTeacher(q),
+            reason: reason
+        }).then(function() {
+            button.classList.add('sent');
+            button.textContent = 'Argue Sent';
+        }).catch(function(error) {
+            button.disabled = false;
+            button.textContent = 'Argue';
+            alert(error.message || 'Unable to submit Argue.');
+        });
+    }
+
+    function renderTeacherArgueButton(q, answer, evidence) {
+        if (!evidence || evidence.parentNode.querySelector('[data-teacher-argue="' + CSS.escape(q.id) + '"]')) return;
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'teacher-argue-btn';
+        button.textContent = 'Argue';
+        button.setAttribute('data-teacher-argue', q.id);
+        button.addEventListener('click', function() {
+            submitTeacherArgue(button, q, answer);
+        });
+        evidence.parentNode.insertBefore(button, evidence.nextSibling);
+    }
+
+    function markTeacherCorrect(q, answer, submittedAnswer) {
         var fields = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+        var hasSubmitted = normalizeAnswer(submittedAnswer);
+        var matched = answerMatches(submittedAnswer, answer);
         if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
             var correctField = document.querySelector('[name="' + CSS.escape(q.id) + '"][value="' + CSS.escape(String(answer)) + '"]');
             if (correctField && correctField.closest('label')) {
                 correctField.closest('label').classList.add('correct');
                 correctField.closest('label').setAttribute('data-teacher-correct', '1');
             }
+            if (hasSubmitted && !matched) {
+                var checked = document.querySelector('[name="' + CSS.escape(q.id) + '"]:checked');
+                if (checked && checked.closest('label')) {
+                    checked.closest('label').classList.add('wrong');
+                    checked.closest('label').setAttribute('data-teacher-correct', '1');
+                }
+            }
         } else if (fields.length) {
-            fields[0].classList.add('correct');
+            fields[0].classList.add(hasSubmitted && !matched ? 'wrong' : 'correct');
             fields[0].setAttribute('data-teacher-correct', '1');
         }
     }
@@ -672,6 +733,7 @@
         clearTeacherAnswerDisplay();
         var answers = answerKey.answers || {};
         var explanations = answerKey.explanations || {};
+        var submittedAnswers = collectSubmissionAnswers();
         allQuestions.forEach(function(q) {
             var answer = answers[q.id];
             if (answer == null) return;
@@ -681,8 +743,9 @@
                     (explanations[q.id] ? ' - ' + explanations[q.id] : '');
                 evidence.setAttribute('data-teacher-answer', '1');
                 evidence.classList.add('show');
+                renderTeacherArgueButton(q, answer, evidence);
             }
-            markTeacherCorrect(q, answer);
+            markTeacherCorrect(q, answer, submittedAnswers[q.id]);
         });
         teacherAnswersVisible = true;
     }

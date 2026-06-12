@@ -586,6 +586,53 @@ async function listAttempts() {
   };
 }
 
+async function submitTeacherDispute(event, teacher) {
+  const setId = text(event.set_id);
+  const questionId = text(event.question_id);
+  const submittedAnswer = text(event.submitted_answer).slice(0, 1000);
+  const reason = text(event.reason).slice(0, 1000);
+  const questionText = text(event.question_text).slice(0, 2000);
+  if (!setId || !questionId) throw new Error("DISPUTE_FIELDS_REQUIRED");
+
+  const [set, gradingKey] = await Promise.all([
+    getOne("sets", { set_id: setId }),
+    getOne("grading_keys", { set_id: setId }),
+  ]);
+  if (!set) throw new Error("SET_NOT_FOUND");
+  if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+
+  const disputeId = [
+    "teacher",
+    teacher.auth_uid,
+    setId,
+    questionId,
+    Date.now(),
+  ].join("::");
+  const answers = gradingKey.answers || {};
+  const explanations = gradingKey.explanations || {};
+  const now = new Date();
+  await db.collection("answer_disputes").add({
+    dispute_id: disputeId,
+    requester_role: "teacher",
+    student_uid: teacher.auth_uid,
+    student_id_snapshot: teacher.student_id,
+    student_name_snapshot: teacher.name || teacher.student_id,
+    set_id: setId,
+    attempt_id: null,
+    assignment_id: null,
+    question_id: questionId,
+    question_text_snapshot: questionText,
+    submitted_answer: submittedAnswer,
+    answer_snapshot: answers[questionId] == null ? null : answers[questionId],
+    explanation_snapshot: explanations[questionId] || "",
+    student_reason: reason,
+    status: "pending",
+    created_at: now,
+    updated_at: now,
+  });
+  return { success: true, dispute_id: disputeId };
+}
+
 async function listDisputes() {
   const [disputeResult, studentResult, setResult, gradingKeysResult] = await Promise.all([
     db.collection("answer_disputes").limit(500).get(),
@@ -605,9 +652,10 @@ async function listDisputes() {
       const explanations = gradingKey.explanations || {};
       return {
         dispute_id: dispute.dispute_id || dispute._id,
+        requester_role: dispute.requester_role || "student",
         student_uid: dispute.student_uid,
         student_id: student.student_id || dispute.student_id_snapshot || "",
-        student_name: student.name || "",
+        student_name: student.name || dispute.student_name_snapshot || "",
         set_id: dispute.set_id,
         set_title: set.title || dispute.set_id,
         attempt_id: dispute.attempt_id,
@@ -766,7 +814,9 @@ async function resolveDispute(event, teacher) {
         applied_at: now,
       });
     }
-    await improveDisputedAttempt(dispute, teacher, now, newVersion);
+    if (dispute.attempt_id) {
+      await improveDisputedAttempt(dispute, teacher, now, newVersion);
+    }
     dispute.grading_version_after = newVersion;
   }
 
@@ -797,6 +847,7 @@ exports.main = async (event) => {
     if (action === "listAssignments") return await listAssignments();
     if (action === "listAttempts") return await listAttempts();
     if (action === "listDisputes") return await listDisputes();
+    if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
