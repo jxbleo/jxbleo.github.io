@@ -172,6 +172,55 @@
         if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
     }
 
+    function playStarSound() {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        try {
+            var context = new AudioContext();
+            var gain = context.createGain();
+            gain.connect(context.destination);
+            gain.gain.setValueAtTime(0.0001, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.16, context.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.34);
+
+            [660, 880, 1175].forEach(function(frequency, index) {
+                var oscillator = context.createOscillator();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, context.currentTime + index * 0.055);
+                oscillator.connect(gain);
+                oscillator.start(context.currentTime + index * 0.055);
+                oscillator.stop(context.currentTime + 0.32 + index * 0.03);
+            });
+
+            window.setTimeout(function() { context.close().catch(function() {}); }, 520);
+        } catch (error) {
+            // Audio feedback is decorative; never block star collection.
+        }
+    }
+
+    function animateStarToCounter(sourceElement) {
+        if (!sourceElement || !starCounter) {
+            updateStarCounter(true);
+            return;
+        }
+        var sourceRect = sourceElement.getBoundingClientRect();
+        var targetRect = starCounter.getBoundingClientRect();
+        var startX = sourceRect.left + sourceRect.width / 2;
+        var startY = sourceRect.top + sourceRect.height / 2;
+        var endX = targetRect.left + targetRect.width / 2;
+        var endY = targetRect.top + targetRect.height / 2;
+        var flyer = document.createElement('div');
+        flyer.className = 'star-flyer';
+        flyer.textContent = '★';
+        flyer.style.left = startX + 'px';
+        flyer.style.top = startY + 'px';
+        flyer.style.setProperty('--star-dx', (endX - startX) + 'px');
+        flyer.style.setProperty('--star-dy', (endY - startY) + 'px');
+        document.body.appendChild(flyer);
+        window.setTimeout(function() { updateStarCounter(true); }, 520);
+        window.setTimeout(function() { flyer.remove(); }, 950);
+    }
+
     function scorePill(item, status) {
         if (status === 'to_do') {
             if (item.best_correct_count != null && item.best_question_count != null) {
@@ -187,7 +236,7 @@
     function taskCard(item) {
         var set = item.set || item;
         var status = normalizedStatus(item.status);
-        var action = status === 'to_do' ? 'Start' : (status === 'mastered' ? 'Beat Your Best' : 'Go for Mastery');
+        var action = 'Go';
         var badgeClass = status;
         var href = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
@@ -200,14 +249,14 @@
                 '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
                 '<div class="assignment-pills">' +
                     '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
-                    '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' +
+                    (status === 'to_do' ? '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' : '') +
                     '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>' +
                 '</div>' +
             '</div>' +
-            (status === 'mastered'
-                ? '<button class="card-button star-button' + (collected ? ' collected' : '') + '" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '"' + (collected ? ' disabled' : '') + '>' + (collected ? 'Star collected' : 'Get Star') + '</button>'
+            (status === 'mastered' && !collected
+                ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
                 : '') +
-            '<a class="card-button" href="' + escapeHtml(href) + '">' + action + '</a>' +
+            '<a class="card-button task-go-button" href="' + escapeHtml(href) + '">' + action + '</a>' +
         '</article>';
     }
 
@@ -293,7 +342,6 @@
 
         document.querySelectorAll('[data-get-star]').forEach(function(button) {
             button.addEventListener('click', function() {
-                var card = button.closest('.task-card');
                 var assignmentId = button.dataset.getStar;
                 var item = assignments.find(function(candidate) { return candidate.assignment_id === assignmentId; });
                 button.disabled = true;
@@ -305,14 +353,10 @@
                     if (!result || !result.success) throw new Error(result && result.message || 'Unable to collect star.');
                     if (item) item.star_claimed = true;
                     state.starCount = Number(result.star_count || state.starCount + 1);
-                    button.textContent = 'Star collected';
+                    playStarSound();
+                    animateStarToCounter(button);
                     button.classList.add('collected');
-                    updateStarCounter(true);
-                    var burst = document.createElement('div');
-                    burst.className = 'star-burst';
-                    burst.textContent = '★';
-                    card.appendChild(burst);
-                    window.setTimeout(function() { burst.remove(); }, 900);
+                    window.setTimeout(function() { button.remove(); }, 120);
                 }).catch(function(error) {
                     button.disabled = false;
                     button.textContent = 'Get Star';
