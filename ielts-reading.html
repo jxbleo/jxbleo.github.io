@@ -401,6 +401,7 @@
     var assignmentStatus = params.get('status') || '';
     var answerRevealAvailable = false;
     var answerRevealConfirmed = false;
+    var teacherMode = params.get('teacher') === '1';
     var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
@@ -519,6 +520,7 @@
     }
 
     function confirmAnswerReveal() {
+        if (teacherMode) return true;
         if (answerRevealConfirmed) return true;
         if (assignmentStatus === 'mastered') {
             answerRevealConfirmed = true;
@@ -628,6 +630,54 @@
     function revealAllAnswers() {
         if (!confirmAnswerReveal()) return;
         document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
+    }
+
+    function teacherCall(action, data) {
+        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+            .then(function(result) {
+                if (!result || !result.success) throw new Error(result && result.message || 'Teacher action failed.');
+                return result;
+            });
+    }
+
+    function renderTeacherAnswerToolbar() {
+        if (document.getElementById('history-toolbar')) return;
+        var toolbar = document.createElement('div');
+        toolbar.className = 'history-toolbar';
+        toolbar.id = 'history-toolbar';
+        toolbar.innerHTML = '<button type="button" id="teacher-show-answers-btn">Show Answers</button>';
+        document.body.appendChild(toolbar);
+        document.getElementById('teacher-show-answers-btn').addEventListener('click', function() {
+            var button = this;
+            button.disabled = true;
+            button.textContent = 'Loading...';
+            teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+                var answers = result.answers || {};
+                var explanations = result.explanations || {};
+                allQuestions.forEach(function(q) {
+                    var answer = answers[q.id];
+                    if (answer == null) return;
+                    var evidence = document.getElementById('ev-' + q.id);
+                    if (evidence) {
+                        evidence.textContent = 'Correct answer: ' + answerText(answer) +
+                            (explanations[q.id] ? ' - ' + explanations[q.id] : '');
+                        evidence.setAttribute('data-answer-reveal', '1');
+                        evidence.classList.add('show');
+                    }
+                    var correctField = document.querySelector('[name="' + CSS.escape(q.id) + '"][value="' + CSS.escape(String(answer)) + '"]');
+                    if (correctField && correctField.closest('label')) correctField.closest('label').classList.add('correct');
+                });
+                button.textContent = 'Answers Shown';
+            }).catch(function(error) {
+                button.disabled = false;
+                button.textContent = 'Show Answers';
+                alert(error.message || 'Unable to load answers.');
+            });
+        });
+    }
+
+    function answerText(value) {
+        return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
     }
 
     function showResultOverlay(response) {
@@ -1268,6 +1318,12 @@
         }
         updateIdentityStatus();
 
+        if (teacherMode) {
+            userId = 'TEACHER';
+            initAfterLogin();
+            return;
+        }
+
         if (!userId || userId === 'VISITOR') {
             if (userId === 'VISITOR') {
                 initAfterLogin();
@@ -1338,9 +1394,15 @@
 
                     renderPassage();
                     renderQuestions();
-                    loadSavedAnswers();
-                    fetchPrefillAnswersIfNeeded();
-                    renderHistoryToolbar();
+                    if (teacherMode) {
+                        renderTeacherAnswerToolbar();
+                        document.getElementById('submit-btn').disabled = true;
+                        document.getElementById('submit-btn').textContent = 'Teacher Preview';
+                    } else {
+                        loadSavedAnswers();
+                        fetchPrefillAnswersIfNeeded();
+                        renderHistoryToolbar();
+                    }
                     setupControls();
 
                     logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });

@@ -1085,6 +1085,7 @@
     var historyBestPercentage = null;
     var assignmentStatus = '';
     var answerRevealAvailable = false;
+    var teacherMode = false;
     var isDragging = false;
 
     var students = [
@@ -1420,8 +1421,12 @@
 
         document.getElementById('content').style.display = 'block';
         document.getElementById('loading-message').style.display = 'none';
-        restoreSavedOrPrefillAnswers();
-        renderHistoryToolbar();
+        if (teacherMode) {
+            renderTeacherAnswerToolbar();
+        } else {
+            restoreSavedOrPrefillAnswers();
+            renderHistoryToolbar();
+        }
     }
 
     function showError(msg) {
@@ -1505,6 +1510,7 @@
         historyBestPercentage = params.history_score === undefined ? null : Number(params.history_score);
         if (isNaN(historyBestPercentage)) historyBestPercentage = null;
         assignmentStatus = params.status || '';
+        teacherMode = params.teacher === '1';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
             localStorage.setItem('opencode_user', params.user);
@@ -1519,6 +1525,12 @@
 
         if (!setId) {
             showError('No lesson set specified. Please add a <code>?set=BBC-XXXXXX</code> parameter to the URL.');
+            return;
+        }
+
+        if (teacherMode) {
+            studentId = 'TEACHER';
+            fetchLesson();
             return;
         }
 
@@ -1674,6 +1686,50 @@
         }
     }
 
+    function teacherCall(action, data) {
+        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+            .then(function(result) {
+                if (!result || !result.success) throw new Error(result && result.message || 'Teacher action failed.');
+                return result;
+            });
+    }
+
+    function renderTeacherAnswerToolbar() {
+        if (document.getElementById('history-toolbar')) return;
+        var toolbar = document.createElement('div');
+        toolbar.className = 'history-toolbar';
+        toolbar.id = 'history-toolbar';
+        toolbar.innerHTML = '<button type="button" id="teacher-show-answers-btn">Show Answers</button>';
+        document.body.appendChild(toolbar);
+        document.getElementById('teacher-show-answers-btn').addEventListener('click', function() {
+            var button = this;
+            button.disabled = true;
+            button.textContent = 'Loading...';
+            teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+                var feedback = [];
+                Object.keys(result.answers || {}).forEach(function(questionId) {
+                    var type = 'blank';
+                    if (lessonData && lessonData.multipleChoice && lessonData.multipleChoice.some(function(item) { return item.id === questionId; })) type = 'mc';
+                    if (questionId.indexOf('-') !== -1) type = 'match';
+                    feedback.push({
+                        type: type,
+                        id: questionId,
+                        correctAnswer: result.answers[questionId],
+                        isCorrect: true,
+                        evidence: (result.explanations || {})[questionId] || ''
+                    });
+                });
+                applyFeedback(feedback);
+                document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
+                button.textContent = 'Answers Shown';
+            }).catch(function(error) {
+                button.disabled = false;
+                button.textContent = 'Show Answers';
+                alert(error.message || 'Unable to load answers.');
+            });
+        });
+    }
+
     function renderHistoryToolbar() {
         if (document.getElementById('history-toolbar')) return;
         var toolbar = document.createElement('div');
@@ -1798,6 +1854,7 @@
 
     var answerRevealConfirmed = false;
     function confirmAnswerReveal() {
+        if (teacherMode) return true;
         if (answerRevealConfirmed) return true;
         if (assignmentStatus === 'mastered') {
             answerRevealConfirmed = true;

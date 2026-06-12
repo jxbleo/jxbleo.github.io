@@ -12,12 +12,14 @@
         selectedStudentProfileId: '',
         expandedDisputeGroups: {}
     };
+    var CURRICULUM_OPTIONS = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
 
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
     var studentDetail = document.getElementById('student-detail');
     var studentForm = document.getElementById('student-form');
     var candidateList = document.getElementById('assign-candidates');
+    var libraryList = document.getElementById('teacher-library-list');
 
     var questionTextCache = {};
 
@@ -144,6 +146,17 @@
         }).sort();
     }
 
+    function setSections() {
+        var seen = {};
+        return state.sets.map(function(set) {
+            return String(set.section || set.course || set.type || 'Other').trim();
+        }).filter(function(value) {
+            if (!value || seen[value]) return false;
+            seen[value] = true;
+            return true;
+        }).sort();
+    }
+
     function fillClassFilters() {
         var options = '<option value="">All classes</option>' + classes().map(function(classGroup) {
             return '<option value="' + escapeHtml(classGroup) + '">' + escapeHtml(classGroup) + '</option>';
@@ -156,13 +169,67 @@
         });
     }
 
+    function fillSetSectionFilters() {
+        var options = '<option value="">All columns</option>' + setSections().map(function(section) {
+            return '<option value="' + escapeHtml(section) + '">' + escapeHtml(section) + '</option>';
+        }).join('');
+        ['assign-section-filter', 'library-section-filter'].forEach(function(id) {
+            var select = document.getElementById(id);
+            if (!select) return;
+            var current = select.value;
+            select.innerHTML = options;
+            select.value = current;
+        });
+    }
+
+    function filteredSets(prefix) {
+        var section = document.getElementById(prefix + '-section-filter').value;
+        var searchEl = document.getElementById(prefix + '-set-search') || document.getElementById(prefix + '-search');
+        var query = searchEl ? searchEl.value.trim().toLowerCase() : '';
+        return state.sets.filter(function(set) {
+            var setSection = String(set.section || set.course || set.type || 'Other');
+            var matchesSection = !section || setSection === section;
+            var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
+            return matchesSection && (!query || haystack.indexOf(query) !== -1);
+        });
+    }
+
     function renderSetOptions() {
+        var sets = filteredSets('assign');
         document.getElementById('assign-set').innerHTML =
             '<option value="">Choose a practice set</option>' +
-            state.sets.map(function(set) {
+            sets.map(function(set) {
                 return '<option value="' + escapeHtml(set.set_id) + '">' +
                     escapeHtml(set.title + ' · ' + set.course) + '</option>';
             }).join('');
+        renderLibrary();
+    }
+
+    function assignmentTargetSetIds() {
+        var selected = document.getElementById('assign-set').value;
+        var section = document.getElementById('assign-section-filter').value;
+        var query = document.getElementById('assign-set-search').value.trim();
+        if (selected) return [selected];
+        if (!section && !query) return [];
+        return filteredSets('assign').map(function(set) { return set.set_id; });
+    }
+
+    function teacherPracticeHref(set) {
+        var href = set.link || '#';
+        return href + (href.indexOf('?') === -1 ? '?' : '&') + 'teacher=1';
+    }
+
+    function renderLibrary() {
+        if (!libraryList) return;
+        var sets = filteredSets('library');
+        libraryList.innerHTML = sets.length ? sets.map(function(set) {
+            return '<article class="resource-card teacher-library-card">' +
+                '<div><p class="eyebrow accent">' + escapeHtml(set.section || set.course || set.type || 'Practice') + '</p>' +
+                '<h3>' + escapeHtml(set.title || set.set_id) + '</h3>' +
+                '<p>' + escapeHtml(set.set_id) + ' · Pass ' + escapeHtml(set.passing_percentage) + '% · Master ' + escapeHtml(set.mastery_percentage) + '%</p></div>' +
+                '<a class="card-button" href="' + escapeHtml(teacherPracticeHref(set)) + '">Open</a>' +
+            '</article>';
+        }).join('') : '<div class="empty-card"><strong>No matching practice sets</strong>Try another keyword or column.</div>';
     }
 
     function candidateStatus(candidate) {
@@ -186,7 +253,7 @@
         var query = document.getElementById('assign-search').value.trim().toLowerCase();
         var classGroup = document.getElementById('assign-class-filter').value;
         return state.candidates.filter(function(student) {
-            var matchesQuery = !query || [student.name, student.student_id, student.class_group]
+            var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
                 .join(' ').toLowerCase().indexOf(query) !== -1;
             return matchesQuery && (!classGroup || student.class_group === classGroup);
         });
@@ -194,8 +261,8 @@
 
     function renderCandidates() {
         var candidates = filteredCandidates();
-        if (!document.getElementById('assign-set').value) {
-            candidateList.innerHTML = '<div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>';
+        if (!assignmentTargetSetIds().length) {
+            candidateList.innerHTML = '<div class="empty-card"><strong>Choose a practice set or column</strong>Student availability will appear here.</div>';
             updateSelectedCount();
             return;
         }
@@ -205,7 +272,8 @@
                 '<input class="candidate-checkbox" type="checkbox" value="' + escapeHtml(student.auth_uid) + '"' +
                     (status.disabled ? ' disabled' : '') + '>' +
                 '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                    '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
+                    '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
+                    (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small></span>' +
                 '<span class="candidate-status">' + escapeHtml(status.label) +
                     ((student.availability === 'completed' || student.availability === 'starred') && student.best_percentage != null
                         ? '<small>Best ' + escapeHtml(student.best_percentage) + '%</small>' : '') +
@@ -231,14 +299,22 @@
         document.getElementById('selected-count').textContent =
             count + ' student' + (count === 1 ? '' : 's') + ' selected';
         document.getElementById('assign-selected').disabled =
-            !count || !document.getElementById('assign-set').value;
+            !count || !assignmentTargetSetIds().length;
     }
 
     function loadCandidates() {
         var setId = document.getElementById('assign-set').value;
         state.candidates = [];
         renderCandidates();
-        if (!setId) return Promise.resolve();
+        if (!setId) {
+            state.candidates = studentRecords().filter(function(student) {
+                return student.active === true && student.profile_complete;
+            }).map(function(student) {
+                return Object.assign({}, student, { availability: 'available' });
+            });
+            renderCandidates();
+            return Promise.resolve();
+        }
         candidateList.innerHTML = '<div class="empty-card loading-card">Checking assignment status...</div>';
         return teacherCall('getAssignmentCandidates', { set_id: setId }).then(function(result) {
             state.candidates = result.candidates || [];
@@ -253,7 +329,7 @@
         var query = document.getElementById('student-search').value.trim().toLowerCase();
         var classGroup = document.getElementById('student-class-filter').value;
         return studentRecords().filter(function(student) {
-            var matchesQuery = !query || [student.name, student.student_id, student.class_group]
+            var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
                 .join(' ').toLowerCase().indexOf(query) !== -1;
             return matchesQuery && (!classGroup || student.class_group === classGroup);
         });
@@ -270,7 +346,8 @@
                 (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
                 '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
                 '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
+                '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
+                (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small></span>' +
                 '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' +
             '</button>';
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
@@ -334,8 +411,13 @@
                     '<span class="badge ' + (student.active ? 'done' : 'failed') + '">' +
                     (student.active ? 'Active' : 'Inactive') + '</span></div>' +
                 '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></div>' +
+                '<div class="profile-row"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></div>' +
                 '<div class="student-account-actions">' +
                     '<input id="detail-class" type="text" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class name">' +
+                    '<select id="detail-curriculum">' + CURRICULUM_OPTIONS.map(function(option) {
+                        return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
+                            escapeHtml(option || 'Not set') + '</option>';
+                    }).join('') + '</select>' +
                     '<button class="outline-button" id="save-class" type="button">Assign Class</button>' +
                     '<button class="outline-button" id="reset-password" type="button">Reset Password</button>' +
                     '<button class="' + (student.active ? 'danger-button' : 'outline-button') + '" id="toggle-account" type="button">' +
@@ -347,7 +429,10 @@
             '<section class="profile-card learning-section"><h3>Recent attempts</h3>' + attemptHtml + '</section>';
 
         document.getElementById('save-class').addEventListener('click', function() {
-            updateStudent(student.auth_uid, { class_group: document.getElementById('detail-class').value });
+            updateStudent(student.auth_uid, {
+                class_group: document.getElementById('detail-class').value,
+                curriculum_track: document.getElementById('detail-curriculum').value
+            });
         });
         document.getElementById('toggle-account').addEventListener('click', function() {
             updateStudent(student.auth_uid, { active: !student.active });
@@ -586,7 +671,9 @@
             state.attempts = results[3].attempts || [];
             state.disputes = results[4].disputes || [];
             fillClassFilters();
+            fillSetSectionFilters();
             renderSetOptions();
+            renderLibrary();
             renderStudentList();
             renderStudentDetail();
             return loadQuestionTextForDisputes();
@@ -599,8 +686,18 @@
         button.addEventListener('click', function() { activateView(button.dataset.view); });
     });
     document.getElementById('assign-set').addEventListener('change', loadCandidates);
+    document.getElementById('assign-section-filter').addEventListener('change', function() {
+        renderSetOptions();
+        loadCandidates();
+    });
+    document.getElementById('assign-set-search').addEventListener('input', function() {
+        renderSetOptions();
+        loadCandidates();
+    });
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
+    document.getElementById('library-search').addEventListener('input', renderLibrary);
+    document.getElementById('library-section-filter').addEventListener('change', renderLibrary);
     document.getElementById('select-class').addEventListener('click', function() {
         candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
             checkbox.checked = true;
@@ -614,9 +711,11 @@
         button.disabled = true;
         showMessage('Assigning practice...', '');
         teacherCall('createAssignments', {
-            set_id: document.getElementById('assign-set').value,
+            set_ids: assignmentTargetSetIds(),
             student_uids: studentUids,
-            due_at: due ? due + 'T23:59:59+08:00' : null
+            due_at: due ? due + 'T23:59:59+08:00' : null,
+            passing_percentage: document.getElementById('assign-passing').value,
+            mastery_percentage: document.getElementById('assign-mastery').value
         }).then(function(result) {
             showMessage(
                 result.created.length + ' assignment(s) created' +
@@ -649,6 +748,8 @@
             student_id: document.getElementById('student-id').value,
             name: document.getElementById('student-name').value,
             class_group: document.getElementById('student-class').value
+            ,
+            curriculum_track: document.getElementById('student-curriculum').value
         }).then(function(result) {
             studentForm.reset();
             state.selectedStudentProfileId = result.student.profile_id;

@@ -6,7 +6,8 @@
         assignments: [],
         resources: [],
         assignmentFilter: 'todo',
-        starsRange: '7'
+        starsRange: '7',
+        starCount: 0
     };
 
     var motivationalQuotes = [
@@ -43,6 +44,7 @@
     ];
 
     var identityChip = document.getElementById('identity-chip');
+    var starCounter = document.getElementById('star-counter');
     var greeting = document.getElementById('greeting');
     var heroCopy = document.getElementById('hero-copy');
     var assignmentContent = document.getElementById('assignment-content');
@@ -159,13 +161,15 @@
         '</div>';
     }
 
-    function starStorageKey(item) {
-        return 'mrcat-star-collected:' + (state.session.profile && state.session.profile.auth_uid || state.session.profile && state.session.profile.student_id || 'student') +
-            ':' + (item.assignment_id || item.set && item.set.set_id || '');
+    function isStarCollected(item) {
+        return item.star_claimed === true;
     }
 
-    function isStarCollected(item) {
-        try { return localStorage.getItem(starStorageKey(item)) === '1'; } catch (e) { return false; }
+    function updateStarCounter(animate) {
+        if (!starCounter) return;
+        starCounter.textContent = '★ ' + state.starCount;
+        starCounter.classList.toggle('pop', animate === true);
+        if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
     }
 
     function scorePill(item, status) {
@@ -187,7 +191,8 @@
         var badgeClass = status;
         var href = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
-            history_attempt_id: item.history_attempt_id
+            history_attempt_id: item.history_attempt_id,
+            best_percentage: item.best_percentage
         }), item.assignment_id);
         var collected = isStarCollected(item);
         return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
@@ -291,15 +296,28 @@
                 var card = button.closest('.task-card');
                 var assignmentId = button.dataset.getStar;
                 var item = assignments.find(function(candidate) { return candidate.assignment_id === assignmentId; });
-                try { if (item) localStorage.setItem(starStorageKey(item), '1'); } catch (e) {}
                 button.disabled = true;
-                button.textContent = 'Star collected';
-                button.classList.add('collected');
-                var burst = document.createElement('div');
-                burst.className = 'star-burst';
-                burst.textContent = '★';
-                card.appendChild(burst);
-                window.setTimeout(function() { burst.remove(); }, 900);
+                button.textContent = 'Collecting...';
+                window.MrCatCloud.callFunction('getDashboard', {
+                    action: 'claimStar',
+                    assignment_id: assignmentId
+                }).then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to collect star.');
+                    if (item) item.star_claimed = true;
+                    state.starCount = Number(result.star_count || state.starCount + 1);
+                    button.textContent = 'Star collected';
+                    button.classList.add('collected');
+                    updateStarCounter(true);
+                    var burst = document.createElement('div');
+                    burst.className = 'star-burst';
+                    burst.textContent = '★';
+                    card.appendChild(burst);
+                    window.setTimeout(function() { burst.remove(); }, 900);
+                }).catch(function(error) {
+                    button.disabled = false;
+                    button.textContent = 'Get Star';
+                    alert(error.message || 'Unable to collect star.');
+                });
             });
         });
     }
@@ -351,6 +369,7 @@
                     '<h2>' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
+                    '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>Independent practice</span><strong>' + voluntary + '</strong></div>' +
                 '</section>' +
                 '<section class="profile-card">' +
@@ -364,7 +383,23 @@
             '</div>';
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
-            alert('Password change will be enabled when the changePassword cloud function is deployed.');
+            var first = prompt('Enter your new password (at least 6 characters):');
+            if (first == null) return;
+            var second = prompt('Enter the new password again:');
+            if (second == null) return;
+            if (first !== second) {
+                alert('The two passwords do not match.');
+                return;
+            }
+            window.MrCatCloud.callFunction('changePassword', { new_password: first })
+                .then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to change password.');
+                    state.session.profile.must_change_password = false;
+                    alert('Password changed.');
+                    renderProfile();
+                }).catch(function(error) {
+                    alert(error.message || 'Unable to change password.');
+                });
         });
     }
 
@@ -401,6 +436,8 @@
             })
         ]).then(function(results) {
             state.assignments = results[0] && results[0].assignments || [];
+            state.starCount = Number(results[0] && results[0].star_count || 0);
+            updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
         });
@@ -437,6 +474,8 @@
             state.session = session;
             if (session.mode === 'visitor') {
                 identityChip.textContent = 'Visitor';
+                state.starCount = 0;
+                updateStarCounter(false);
                 greeting.textContent = 'Welcome, Visitor.';
                 heroCopy.textContent = randomItem(motivationalQuotes);
                 return loadPublicCatalog().then(function(items) {

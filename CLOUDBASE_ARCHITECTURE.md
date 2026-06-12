@@ -74,9 +74,9 @@ The default view has three selectable status cards:
 - `PASSED`: assignments at or above the passing threshold but below mastery
 - `MASTERED`: assignments at or above the mastery threshold
 
-On first entry, the list combines `RE-DO` and `TO-DO`. `RE-DO` appears first.
-Within each type, newly assigned work appears first. Selecting a status card
-shows only that type without extra explanatory sections.
+On first entry, `TO DO` is selected. Within each type, newly assigned work
+appears first. Selecting a status card shows only that type without extra
+explanatory sections.
 
 Assignment statuses are:
 
@@ -202,6 +202,7 @@ auth_uid: string
 student_id: string
 name: string
 class_group: string
+curriculum_track: "DSE" | "A-Level" | "AP" | "IB" | "Zhongkao" | "Gaokao" | ""
 role: "student"
 must_change_password: boolean
 active: boolean
@@ -262,6 +263,8 @@ set_id: string
 status: "to_do" | "passed" | "mastered"
 assigned_at: server timestamp
 due_at: timestamp | null
+passing_percentage: number
+mastery_percentage: number
 completed_at: timestamp | null
 mastered_at: timestamp | null
 latest_attempt_id: string | null
@@ -381,6 +384,8 @@ set_id: string
 status: "star"
 protected: true
 source: "assignment" | "explore"
+assignment_id: string | null
+claimed_at: timestamp | null
 first_earned_at: timestamp
 first_qualifying_attempt_id: string
 best_attempt_id: string
@@ -389,8 +394,12 @@ created_at: timestamp
 updated_at: timestamp
 ```
 
-One student has at most one STAR per `set_id`. A STAR may update its best
-attempt and score, but it must never be deleted, revoked or downgraded by
+Assignment star claims use `source: "assignment_claim"` and store
+`assignment_id`. They are counted for the student dashboard star counter and do
+not block later assignments of the same `set_id`.
+
+One student may claim one STAR per mastered assignment. A STAR may update its
+best attempt and score, but it must never be deleted, revoked or downgraded by
 ordinary application logic. Later passing-standard changes affect future
 submissions only.
 
@@ -469,12 +478,8 @@ A failed attempt is still permanently stored.
 Once an assignment has passed, later retries do not remove its completed
 status. Later attempts are still recorded and update latest/best summaries.
 
-Passing an unassigned set from Explore also creates a protected STAR. It does
-not create a fake assignment. The Dashboard merges assignment completions and
-Explore achievements into the same STARS view.
-
-If a student already has a STAR for a set, the teacher cannot assign that set
-again. Existing historical completion satisfies the assignment requirement.
+Backend star claims do not create fake assignments and do not block teachers
+from assigning the same `set_id` again later.
 
 Opening a STAR shows the best attempt's submitted answers and correctness only.
 Correct answers and explanations are returned only immediately after a new

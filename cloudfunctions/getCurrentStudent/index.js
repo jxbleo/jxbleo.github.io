@@ -29,6 +29,7 @@ exports.main = async () => {
         student_id: student.student_id,
         name: student.name,
         class_group: student.class_group || "",
+        curriculum_track: student.curriculum_track || "",
         must_change_password: student.must_change_password === true,
         role: student.role || "student",
       },

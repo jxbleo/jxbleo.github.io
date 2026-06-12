@@ -30,6 +30,19 @@ body {
     font-family: Inter, ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.teacher-page {
+    --accent: #ef7a3a;
+    --accent-dark: #cc5a25;
+    --accent-soft: #fff0e7;
+    --page: #fff7f2;
+    --line: #f2d5c9;
+    --shadow: 0 22px 60px rgba(140, 72, 38, 0.13);
+    background:
+        radial-gradient(circle at 8% 4%, rgba(255, 209, 171, 0.58), transparent 30%),
+        radial-gradient(circle at 92% 6%, rgba(255, 176, 196, 0.42), transparent 27%),
+        var(--page);
+}
+
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 
@@ -160,6 +173,30 @@ button { cursor: pointer; }
     font-size: 0.8rem;
     font-weight: 800;
 }
+.teacher-page .student-chip {
+    border-color: rgba(239, 122, 58, 0.18);
+    color: var(--accent-dark);
+}
+.teacher-page .tab-button.active { background: linear-gradient(135deg, #ef7a3a, #ff8fac); }
+.teacher-page .primary-button { background: linear-gradient(135deg, #ef7a3a, #ff8fac); }
+.teacher-page .primary-button:hover { background: linear-gradient(135deg, #cc5a25, #f56f92); }
+.identity-cluster { display: flex; align-items: center; gap: 8px; }
+.star-counter {
+    padding: 9px 13px;
+    border: 1px solid rgba(216, 149, 40, 0.24);
+    border-radius: 999px;
+    color: #9a6717;
+    background: rgba(255, 248, 224, 0.86);
+    font-size: 0.8rem;
+    font-weight: 900;
+    box-shadow: 0 8px 22px rgba(216, 149, 40, 0.12);
+}
+.star-counter.pop { animation: star-counter-pop 700ms ease-out both; }
+@keyframes star-counter-pop {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.18) rotate(-4deg); }
+    100% { transform: scale(1); }
+}
 
 .hero-card {
     position: relative;
@@ -169,6 +206,9 @@ button { cursor: pointer; }
     color: white;
     background: linear-gradient(135deg, #153f3b, #13766d 62%, #2a9b88);
     box-shadow: var(--shadow);
+}
+.teacher-page .hero-card {
+    background: linear-gradient(135deg, #773314, #ef7a3a 58%, #ff8fac);
 }
 .hero-card::after {
     content: "";
@@ -199,6 +239,7 @@ button { cursor: pointer; }
     box-shadow: 0 12px 34px rgba(25, 68, 61, 0.1);
     backdrop-filter: blur(18px);
 }
+.teacher-page .dashboard-tabs { grid-template-columns: repeat(4, 1fr); }
 .tab-button {
     min-height: 42px;
     border: 0;
