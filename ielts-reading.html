@@ -940,6 +940,7 @@
 
     function applyServerFeedback(response, answers) {
         var resultMap = {};
+        var answerRevealConfirmed = false;
         (response.question_results || []).forEach(function(item) {
             resultMap[item.question_id] = item;
         });
@@ -964,7 +965,8 @@
 
             if (evidence && !result.correct) {
                 evidence.textContent = 'Correct answer: ' + result.correct_answer + (result.explanation ? ' — ' + result.explanation : '');
-                evidence.classList.add('show');
+                evidence.classList.remove('show');
+                evidence.setAttribute('data-answer-reveal', '1');
             }
         });
 
@@ -979,7 +981,22 @@
         scoreDisplay.innerHTML = '<h2>Your Score</h2><div class="score-num">' +
             response.correct_count + ' / ' + response.question_count +
             '</div><div class="score-detail">' + response.percentage + '% — ' + grade + '</div>' +
+            (response.feedback_locked ? '' : '<button class="submit-btn" id="view-answers-btn" type="button" style="margin-top:16px;">View Answers</button>') +
             '<button class="submit-btn" id="try-again-btn" type="button" style="margin-top:16px;">Try Again</button>';
+        var viewAnswersBtn = document.getElementById('view-answers-btn');
+        if (viewAnswersBtn) {
+            viewAnswersBtn.addEventListener('click', function() {
+                if (!answerRevealConfirmed) {
+                    answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+                }
+                if (!answerRevealConfirmed) return;
+                document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) {
+                    el.classList.add('show');
+                });
+                viewAnswersBtn.disabled = true;
+                viewAnswersBtn.textContent = 'Answers Shown';
+            });
+        }
         document.getElementById('try-again-btn').addEventListener('click', function() {
             localStorage.removeItem('ielts-' + setId + '-' + userId);
             var url = new URL(window.location.href);

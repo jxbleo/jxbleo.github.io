@@ -1548,6 +1548,13 @@
         }
     }
 
+    var answerRevealConfirmed = false;
+    function confirmAnswerReveal() {
+        if (answerRevealConfirmed) return true;
+        answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+        return answerRevealConfirmed;
+    }
+
     function applyFeedback(results) {
         for (var i = 0; i < results.length; i++) {
             var r = results[i];
@@ -1569,6 +1576,7 @@
                     toggleBtn.textContent = 'Show Answer';
                     toggleBtn.addEventListener('click', function(expEl) {
                         return function() {
+                            if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
                             expEl.classList.toggle('show');
                             this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
                         };
@@ -1609,6 +1617,7 @@
                 toggleBtn.textContent = 'Show Answer';
                 toggleBtn.addEventListener('click', function(expEl) {
                     return function() {
+                        if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
                         expEl.classList.toggle('show');
                         this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
                     };
@@ -1640,6 +1649,7 @@
                     toggleBtn.textContent = 'Show Answer';
                     toggleBtn.addEventListener('click', function(expEl) {
                         return function() {
+                            if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
                             expEl.classList.toggle('show');
                             this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
                         };
