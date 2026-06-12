@@ -5,28 +5,28 @@
   "blanks": [
     {
       "id": "fill-1",
-      "sentence": "Before they can talk, babies communicate through their ________.",
+      "sentence": "Before they can talk, babies communicate through their _____.",
       "section": "Before Babies Can Speak",
       "answer": "bodies or crying",
       "evidence": "\"So that's now, but as babies, we're not able to speak - we can only communicate with our bodies or by crying. We can't clothe, feed or wash ourselves - we rely on others totally for our survival.\" (L15)"
     },
     {
       "id": "fill-2",
-      "sentence": "Their basic message is that adults are needed one hundred percent for ________.",
+      "sentence": "Their basic message is that adults are needed one hundred percent for _____.",
       "section": "Before Babies Can Speak",
       "answer": "survival",
       "evidence": "\"I think they want us to know that they need us one hundred percent, because without us, they won't survive. Without someone caring for them, babies wouldn't survive...\" (L24-L27)"
     },
     {
       "id": "fill-3",
-      "sentence": "Most early movements are not random; around 75% are ________.",
+      "sentence": "Most early movements are not random; around 75% are _____.",
       "section": "Understanding Baby Movements",
       "answer": "intentional",
       "evidence": "\"75% of their movements are intentional, synchronised. They're not jerky - you know, to the naked eye they appear very jerky, but they're not.\" (L43)"
     },
     {
       "id": "fill-4",
-      "sentence": "These movements are also described as ________, even if they seem sudden to ordinary observers.",
+      "sentence": "These movements are also described as _____, even if they seem sudden to ordinary observers.",
       "section": "Understanding Baby Movements",
       "answer": [
         "synchronised",
@@ -36,42 +36,42 @@
     },
     {
       "id": "fill-5",
-      "sentence": "To the naked eye, babies' movements may look ________.",
+      "sentence": "To the naked eye, babies' movements may look _____.",
       "section": "Understanding Baby Movements",
       "answer": "jerky",
       "evidence": "\"They're not jerky - you know, to the naked eye they appear very jerky, but they're not. They're there to bring us in - the parents...\" (L43)"
     },
     {
       "id": "fill-6",
-      "sentence": "One purpose of these movements is to build ________ with parents.",
+      "sentence": "One purpose of these movements is to build _____ with parents.",
       "section": "Understanding Baby Movements",
       "answer": "a bond",
       "evidence": "\"Babies move their arms and legs to create a bond with their parents. To the naked eye, these movements look jerky...\" (L46)"
     },
     {
       "id": "fill-7",
-      "sentence": "Marie Derome's book is mainly written for ________.",
+      "sentence": "Marie Derome's book is mainly written for _____.",
       "section": "Bonding and Expectations",
       "answer": "new parents",
       "evidence": "\"Marie's book is aimed at new parents who are learning to understand their baby's body language, but she also has advice for parents who are finding it difficult to bond with their newborn...\" (L52)"
     },
     {
       "id": "fill-8",
-      "sentence": "Some parents expect an immediate feeling called ________.",
+      "sentence": "Some parents expect an immediate feeling called _____.",
       "section": "Bonding and Expectations",
       "answer": "love at first sight",
       "evidence": "\"Parenting is really hard. Falling in love with this little baby is not... you know, this idea of love at first sight - I think it's such an unhelpful cliché.\" (L55)"
     },
     {
       "id": "fill-9",
-      "sentence": "Marie calls this idea an ________ because it can create unrealistic pressure.",
+      "sentence": "Marie calls this idea an _____ because it can create unrealistic pressure.",
       "section": "Bonding and Expectations",
       "answer": "unhelpful cliche",
       "evidence": "\"She calls it an unhelpful cliche. A cliche is an overused phrase or comment... and in some cases unhelpful - for example by creating unrealistic expectations...\" (L61)"
     },
     {
       "id": "fill-10",
-      "sentence": "Such expectations may make parents feel ________.",
+      "sentence": "Such expectations may make parents feel _____.",
       "section": "Bonding and Expectations",
       "answer": "guilty",
       "evidence": "\"She calls it an unhelpful cliche... in some cases unhelpful - for example by creating unrealistic expectations, or by making parents feel guilty they are not doing enough.\" (L61)"

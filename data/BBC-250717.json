@@ -5,70 +5,70 @@
   "blanks": [
     {
       "id": "fill-1",
-      "sentence": "In ancient times, honey was known as ________.",
+      "sentence": "In ancient times, honey was known as _____.",
       "section": "Honey and Uncertainty",
       "answer": "liquid gold",
       "evidence": "\"Prized for its taste and medicinal properties, in ancient times honey was known as 'liquid gold'. But now, thanks to modern farming methods, populations of many insects, including bees, are in decline.\" (L15)"
     },
     {
       "id": "fill-2",
-      "sentence": "A listener says there is a ________ around whether eating honey helps bees.",
+      "sentence": "A listener says there is a _____ around whether eating honey helps bees.",
       "section": "Honey and Uncertainty",
       "answer": "question mark",
       "evidence": "\"I don't eat honey myself, but I still have a question mark around it because I know that our bee populations are declining... what Saoirse is uncertain about is whether eating honey might actually save bees.\" (L18-L24)"
     },
     {
       "id": "fill-3",
-      "sentence": "Around the world, there are ________ of bee.",
+      "sentence": "Around the world, there are _____ of bee.",
       "section": "Honey Bees and Wild Bees",
       "answer": "20,000 species",
       "evidence": "\"We've been talking about honey bees, but these are just one of the 20,000 species of bee which exist around the world.\" (L43)"
     },
     {
       "id": "fill-4",
-      "sentence": "Honey bees are widespread and are ________.",
+      "sentence": "Honey bees are widespread and are _____.",
       "section": "Honey Bees and Wild Bees",
       "answer": "not endangered",
       "evidence": "\"In fact, honey bees are one of the most widespread insects on the planet and not endangered at all.\" (L43)"
     },
     {
       "id": "fill-5",
-      "sentence": "In the UK, there are ________ of bumblebee.",
+      "sentence": "In the UK, there are _____ of bumblebee.",
       "section": "Honey Bees and Wild Bees",
       "answer": "26 bumblebee species",
       "evidence": "\"In the UK, we have 26 bumblebee species but three have gone extinct.\" (L49)"
     },
     {
       "id": "fill-6",
-      "sentence": "Of these, ________ have gone extinct.",
+      "sentence": "Of these, _____ have gone extinct.",
       "section": "Honey Bees and Wild Bees",
       "answer": "three",
       "evidence": "\"In the UK, we have 26 bumblebee species but three have gone extinct. Many of the others are now clinging on...\" (L49)"
     },
     {
       "id": "fill-7",
-      "sentence": "Some remaining bumblebee species survive in ________ of good habitat.",
+      "sentence": "Some remaining bumblebee species survive in _____ of good habitat.",
       "section": "Honey Bees and Wild Bees",
       "answer": "isolated pockets",
       "evidence": "\"Many of the others are now clinging on in little isolated pockets of good habitat. Honey bees have beekeepers to look after them, but nobody's looking out for the wild bees.\" (L49)"
     },
     {
       "id": "fill-8",
-      "sentence": "We rely on insects to ________ and keep ecosystems working.",
+      "sentence": "We rely on insects to _____ and keep ecosystems working.",
       "section": "Ecosystem Roles and Action",
       "answer": "pollinate crops",
       "evidence": "\"Lots of other bee species are [endangered], and this is bad news because we rely on insects to pollinate crops and to keep ecosystems functioning.\" (L55)"
     },
     {
       "id": "fill-9",
-      "sentence": "________ of plant species need insects for pollination.",
+      "sentence": "_____ of plant species need insects for pollination.",
       "section": "Ecosystem Roles and Action",
       "answer": "87%",
       "evidence": "\"87% of all plant species need insects for pollination, so without them most plants on Earth would disappear, which would obviously be catastrophic.\" (L58)"
     },
     {
       "id": "fill-10",
-      "sentence": "One suggested action is growing bee-friendly plants such as ________.",
+      "sentence": "One suggested action is growing bee-friendly plants such as _____.",
       "section": "Ecosystem Roles and Action",
       "answer": "lavender",
       "evidence": "\"While eating more honey probably won't do much to save wild bees, there are things you can do, such as growing bee-friendly plants which flower in spring, like lavender.\" (L67)"
