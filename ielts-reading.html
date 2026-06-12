@@ -384,6 +384,7 @@
     var setId = params.get('set');
     var userId = params.get('user');
     var assignmentId = params.get('assignment') || '';
+    var prefillAttemptId = params.get('prefill') || '';
     var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
@@ -428,7 +429,7 @@
     }
 
     function storeAnswers() {
-        if (!setId || !userId) return;
+        if (!setId || (!userId && !assignmentId)) return;
         var data = {};
         var inputs = document.querySelectorAll('[data-question]');
         inputs.forEach(function(el) {
@@ -440,12 +441,12 @@
                 data[el.name] = el.value;
             }
         });
-        try { localStorage.setItem('ielts-' + setId + '-' + userId, JSON.stringify(data)); } catch(e) {}
+        try { localStorage.setItem('ielts-' + setId + '-' + (assignmentId || userId), JSON.stringify(data)); } catch(e) {}
     }
 
     function loadSavedAnswers() {
-        if (!setId || !userId) return;
-        var key = 'ielts-' + setId + '-' + userId;
+        if (!setId || (!userId && !assignmentId)) return;
+        var key = 'ielts-' + setId + '-' + (assignmentId || userId);
         if (params.get('retry') === '1') {
             localStorage.removeItem(key);
             return;
@@ -467,6 +468,38 @@
                 }
             });
         });
+    }
+
+    function fetchPrefillAnswersIfNeeded() {
+        if (!prefillAttemptId || !window.MrCatCloud) return Promise.resolve(false);
+        var key = 'ielts-' + setId + '-' + (assignmentId || userId);
+        try {
+            if (localStorage.getItem(key)) return Promise.resolve(false);
+        } catch (e) {}
+        return window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getAttemptForRetry',
+            attempt_id: prefillAttemptId
+        }).then(function(result) {
+            if (!result || !result.success || !result.attempt || !result.attempt.answers) return false;
+            Object.keys(result.attempt.answers).forEach(function(name) {
+                var val = result.attempt.answers[name];
+                var els = document.querySelectorAll('[name="' + CSS.escape(name) + '"]');
+                els.forEach(function(el) {
+                    if (el.type === 'radio') el.checked = el.value === val;
+                    else el.value = val;
+                });
+            });
+            storeAnswers();
+            return true;
+        }).catch(function() { return false; });
+    }
+
+    function recordAnswerReveal() {
+        if (!assignmentId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'revealAnswers',
+            assignment_id: assignmentId
+        }).catch(function() {});
     }
 
     function renderPassage() {
@@ -977,17 +1010,19 @@
 
         var scoreDisplay = document.getElementById('score-display');
         scoreDisplay.className = 'score-display show';
-        var grade = response.percentage >= 80 ? 'Excellent' : response.percentage >= 60 ? 'Good' : response.percentage >= 40 ? 'Fair' : 'Needs Improvement';
+        var grade = response.percentage >= 90 ? 'Mastered' : response.percentage >= 50 ? 'Passed' : 'Keep trying';
         scoreDisplay.innerHTML = '<h2>Your Score</h2><div class="score-num">' +
             response.correct_count + ' / ' + response.question_count +
-            '</div><div class="score-detail">' + response.percentage + '% — ' + grade + '</div>' +
+            '</div><div class="score-detail">' + (response.passed ? response.percentage + '% — ' : '') + grade + '</div>' +
             (response.feedback_locked ? '' : '<button class="submit-btn" id="view-answers-btn" type="button" style="margin-top:16px;">View Answers</button>') +
-            '<button class="submit-btn" id="try-again-btn" type="button" style="margin-top:16px;">Try Again</button>';
+            '<button class="submit-btn" id="keep-answers-btn" type="button" style="margin-top:16px;">Keep my answers</button>' +
+            '<button class="submit-btn" id="clear-retry-btn" type="button" style="margin-top:16px;">Clear and retry</button>';
         var viewAnswersBtn = document.getElementById('view-answers-btn');
         if (viewAnswersBtn) {
             viewAnswersBtn.addEventListener('click', function() {
                 if (!answerRevealConfirmed) {
                     answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+                    if (answerRevealConfirmed) recordAnswerReveal();
                 }
                 if (!answerRevealConfirmed) return;
                 document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) {
@@ -997,8 +1032,14 @@
                 viewAnswersBtn.textContent = 'Answers Shown';
             });
         }
-        document.getElementById('try-again-btn').addEventListener('click', function() {
+        document.getElementById('keep-answers-btn').addEventListener('click', function() {
+            var url = new URL(window.location.href);
+            url.searchParams.delete('retry');
+            window.location.href = url.toString();
+        });
+        document.getElementById('clear-retry-btn').addEventListener('click', function() {
             localStorage.removeItem('ielts-' + setId + '-' + userId);
+            localStorage.removeItem('ielts-' + setId + '-' + (assignmentId || userId));
             var url = new URL(window.location.href);
             url.searchParams.set('retry', '1');
             window.location.href = url.toString();
@@ -1031,7 +1072,6 @@
             if (!response || !response.success) {
                 throw new Error(response && response.message || 'Unable to submit this attempt.');
             }
-            localStorage.removeItem('ielts-' + setId + '-' + userId);
             applyServerFeedback(response, answers);
         }).catch(function(error) {
             submitBtn.disabled = false;
@@ -1177,6 +1217,7 @@
                     renderPassage();
                     renderQuestions();
                     loadSavedAnswers();
+                    fetchPrefillAnswersIfNeeded();
                     setupControls();
 
                     logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });

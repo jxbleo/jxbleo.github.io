@@ -34,47 +34,27 @@ function effectiveQuestionResults(attempt) {
   return attempt.adjusted_question_results || attempt.question_results || [];
 }
 
-async function protectHistoricalStars(student, attempts) {
-  const bestBySet = new Map();
-  attempts.filter(effectivePassed).forEach((attempt) => {
-    const current = bestBySet.get(attempt.set_id);
-    if (!current || effectivePercentage(attempt) > effectivePercentage(current)) {
-      bestBySet.set(attempt.set_id, attempt);
-    }
-  });
+function masteryPercentageForSet(set) {
+  return Number(!set || set.mastery_percentage == null ? 90 : set.mastery_percentage);
+}
 
-  for (const [setId, best] of bestBySet.entries()) {
-    const existing = await getOne("student_set_achievements", {
-      student_uid: student.auth_uid,
-      set_id: setId,
-    });
-    if (existing) {
-      if (effectivePercentage(best) > Number(existing.best_percentage || 0)) {
-        await db.collection("student_set_achievements").doc(existing._id).update({
-          best_percentage: effectivePercentage(best),
-          best_attempt_id: best.attempt_id,
-          updated_at: new Date(),
-        });
-      }
-      continue;
-    }
-    const earnedAt = best.submitted_at || new Date();
-    await db.collection("student_set_achievements").add({
-      achievement_id: [student.auth_uid, setId].join("::"),
-      student_uid: student.auth_uid,
-      student_id_snapshot: student.student_id,
-      set_id: setId,
-      status: "star",
-      protected: true,
-      source: best.assignment_id ? "assignment" : "explore",
-      first_earned_at: earnedAt,
-      first_qualifying_attempt_id: best.attempt_id,
-      best_attempt_id: best.attempt_id,
-      best_percentage: effectivePercentage(best),
-      created_at: earnedAt,
-      updated_at: new Date(),
-    });
-  }
+function passingPercentageForSet(set) {
+  return Number(!set || set.passing_percentage == null ? 50 : set.passing_percentage);
+}
+
+function normalizedStatus(status, percentage, passingPercentage, masteryPercentage) {
+  if (status === "mastered") return "mastered";
+  if (status === "passed") return "passed";
+  if (status === "to_do") return "to_do";
+  if (status === "done" && percentage >= masteryPercentage) return "mastered";
+  if (status === "done") return "passed";
+  if (percentage >= masteryPercentage) return "mastered";
+  if (percentage >= passingPercentage) return "passed";
+  return "to_do";
+}
+
+function displayPercentage(value) {
+  return value == null ? null : Number(value);
 }
 
 async function getAttemptReview(student, event) {
@@ -145,12 +125,62 @@ async function submitDispute(student, event) {
   return { success: true, dispute_id: disputeId };
 }
 
+async function revealAnswers(student, event) {
+  const assignmentId = String(event.assignment_id || "");
+  if (!assignmentId) throw new Error("ASSIGNMENT_REQUIRED");
+  const assignment = await getOne("assignments", {
+    assignment_id: assignmentId,
+    student_uid: student.auth_uid,
+  });
+  if (!assignment) throw new Error("ASSIGNMENT_NOT_FOUND");
+  const set = await getOne("sets", { set_id: assignment.set_id });
+  const masteryPercentage = masteryPercentageForSet(set);
+  const now = new Date();
+  const update = {
+    answer_revealed: true,
+    answer_revealed_at: assignment.answer_revealed_at || now,
+    updated_at: now,
+  };
+  if (assignment.status !== "mastered") {
+    update.mastery_locked = true;
+    update.mastery_locked_at = assignment.mastery_locked_at || now;
+    if (Number(assignment.best_percentage || 0) >= masteryPercentage) {
+      update.best_percentage = masteryPercentage - 0.01;
+    }
+    if (Number(assignment.latest_percentage || 0) >= masteryPercentage) {
+      update.latest_percentage = masteryPercentage - 0.01;
+    }
+  }
+  await db.collection("assignments").doc(assignment._id).update(update);
+  return { success: true };
+}
+
+async function getAttemptForRetry(student, event) {
+  const attemptId = String(event.attempt_id || "");
+  if (!attemptId) throw new Error("ATTEMPT_REQUIRED");
+  const attempt = await getOne("attempts", {
+    attempt_id: attemptId,
+    student_uid: student.auth_uid,
+  });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  return {
+    success: true,
+    attempt: {
+      attempt_id: attempt.attempt_id,
+      set_id: attempt.set_id,
+      answers: attempt.answers || {},
+    },
+  };
+}
+
 exports.main = async (event = {}) => {
   try {
     const student = await getAuthenticatedStudent();
     const action = String(event.action || "dashboard");
     if (action === "getAttemptReview") return await getAttemptReview(student, event);
     if (action === "submitDispute") return await submitDispute(student, event);
+    if (action === "revealAnswers") return await revealAnswers(student, event);
+    if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
 
     const assignmentResult = await db.collection("assignments")
       .where({ student_uid: student.auth_uid })
@@ -163,15 +193,8 @@ exports.main = async (event = {}) => {
       .limit(500)
       .get();
     const attempts = attemptResult.data || [];
-    await protectHistoricalStars(student, attempts);
-    const achievementResult = await db.collection("student_set_achievements")
-      .where({ student_uid: student.auth_uid, status: "star" })
-      .limit(200)
-      .get();
-    const achievements = achievementResult.data || [];
     const setIds = [...new Set(
       assignments.map((item) => item.set_id)
-        .concat(achievements.map((item) => item.set_id))
         .filter(Boolean)
     )];
     const setMap = new Map();
@@ -185,58 +208,42 @@ exports.main = async (event = {}) => {
     }
 
     const assignmentViews = assignments.map((assignment) => {
-      const achievement = achievements.find((item) => item.set_id === assignment.set_id);
+      const set = setMap.get(assignment.set_id);
+      const passingPercentage = passingPercentageForSet(set);
+      const masteryPercentage = masteryPercentageForSet(set);
+      const percentage = displayPercentage(assignment.best_percentage == null ? assignment.latest_percentage : assignment.best_percentage);
+      const status = normalizedStatus(assignment.status, Number(percentage || 0), passingPercentage, masteryPercentage);
+      const bestAttemptId = assignment.best_attempt_id || assignment.latest_attempt_id || null;
       return {
         assignment_id: assignment.assignment_id || assignment._id,
-        status: achievement ? "done" : (assignment.status || "not_done"),
+        status,
         assigned_at: assignment.assigned_at || null,
         due_at: assignment.due_at || null,
-        completed_at: achievement && achievement.first_earned_at || assignment.completed_at || null,
+        completed_at: assignment.completed_at || null,
+        mastered_at: assignment.mastered_at || null,
         updated_at: assignment.updated_at || null,
         attempt_count: assignment.attempt_count || 0,
         latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
-        best_percentage: achievement
-          ? achievement.best_percentage
-          : (assignment.best_percentage == null ? null : assignment.best_percentage),
-        review_attempt_id: achievement && achievement.best_attempt_id || assignment.latest_attempt_id || null,
-        star_protected: Boolean(achievement),
-        star_source: achievement && achievement.source || null,
-        set: setMap.get(assignment.set_id) || {
+        best_percentage: percentage,
+        best_correct_count: assignment.best_correct_count == null ? null : assignment.best_correct_count,
+        best_question_count: assignment.best_question_count == null ? null : assignment.best_question_count,
+        review_attempt_id: bestAttemptId,
+        prefill_attempt_id: status === "passed" || status === "mastered" ? bestAttemptId : null,
+        answer_revealed: assignment.answer_revealed === true,
+        mastery_locked: assignment.mastery_locked === true,
+        passing_percentage: passingPercentage,
+        mastery_percentage: masteryPercentage,
+        set: set || {
           set_id: assignment.set_id,
           title: assignment.set_id,
           link: "#",
         },
       };
-    }).filter((item, index, items) => {
-      if (item.status !== "done") return true;
-      return items.findIndex((candidate) =>
-        candidate.status === "done" && candidate.set.set_id === item.set.set_id
-      ) === index;
     });
-    const assignedSetIds = new Set(assignments.map((item) => item.set_id));
-    const exploreStars = achievements.filter((item) => !assignedSetIds.has(item.set_id)).map((achievement) => ({
-      assignment_id: null,
-      status: "done",
-      assigned_at: achievement.first_earned_at || null,
-      due_at: null,
-      completed_at: achievement.first_earned_at || null,
-      updated_at: achievement.updated_at || null,
-      attempt_count: attempts.filter((item) => item.set_id === achievement.set_id).length,
-      latest_percentage: achievement.best_percentage,
-      best_percentage: achievement.best_percentage,
-      review_attempt_id: achievement.best_attempt_id,
-      star_protected: true,
-      star_source: achievement.source || "explore",
-      set: setMap.get(achievement.set_id) || {
-        set_id: achievement.set_id,
-        title: achievement.set_id,
-        link: "#",
-      },
-    }));
 
     return {
       success: true,
-      assignments: assignmentViews.concat(exploreStars),
+      assignments: assignmentViews,
     };
   } catch (error) {
     return {

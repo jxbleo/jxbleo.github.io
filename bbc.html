@@ -475,11 +475,9 @@
         }
 
         .mc-options input[type="radio"] {
-            margin-top: 4px;
-            margin-right: 12px;
-            transform: scale(1.2);
-            accent-color: var(--accent);
-            cursor: pointer;
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .mc-options input[type="radio"]:disabled {
@@ -1028,6 +1026,7 @@
     var assignmentId = '';
     var attemptStartedAt = new Date().toISOString();
     var currentArgueAttemptId = null;
+    var prefillAttemptId = '';
     var isDragging = false;
 
     var students = [
@@ -1235,7 +1234,7 @@
                 html += '<div class="blank-section-title">' + currentSection + '</div>';
             }
             var sentence = b.sentence;
-            var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off">';
+            var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">';
             sentence = sentence.replace('_____', inputHtml);
             html += '<li><span class="blank-num">' + num + '</span>' + sentence + '</li>';
         }
@@ -1363,6 +1362,7 @@
 
         document.getElementById('content').style.display = 'block';
         document.getElementById('loading-message').style.display = 'none';
+        restoreSavedOrPrefillAnswers();
     }
 
     function showError(msg) {
@@ -1441,6 +1441,7 @@
         var params = getParams();
         setId = params.set || '';
         assignmentId = params.assignment || '';
+        prefillAttemptId = params.prefill || '';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
             localStorage.setItem('opencode_user', params.user);
@@ -1504,6 +1505,85 @@
         return answers;
     }
 
+    function answerStorageKey() {
+        return 'bbc-answers-' + setId + '-' + (assignmentId || studentId || 'visitor');
+    }
+
+    function applyAnswers(answers) {
+        if (!answers) return;
+        Object.keys(answers).forEach(function(name) {
+            var value = answers[name];
+            var fields = document.querySelectorAll('[name="' + CSS.escape(name) + '"]');
+            fields.forEach(function(el) {
+                if (el.type === 'radio') {
+                    el.checked = el.value === value;
+                } else if (el.tagName === 'SELECT') {
+                    el.value = value;
+                } else if (el.type === 'text') {
+                    el.value = value;
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            });
+        });
+    }
+
+    function saveDraftAnswers() {
+        if (!setId || !studentId || studentId === 'VISITOR') return;
+        try { localStorage.setItem(answerStorageKey(), JSON.stringify(collectAnswers())); } catch (e) {}
+    }
+
+    function restoreSavedOrPrefillAnswers() {
+        if (getParams().retry === '1') {
+            try { localStorage.removeItem(answerStorageKey()); } catch (e) {}
+            return;
+        }
+        var saved = null;
+        try { saved = JSON.parse(localStorage.getItem(answerStorageKey()) || 'null'); } catch (e) {}
+        if (saved && Object.keys(saved).length) {
+            applyAnswers(saved);
+            return;
+        }
+        if (!prefillAttemptId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getAttemptForRetry',
+            attempt_id: prefillAttemptId
+        }).then(function(result) {
+            if (result && result.success && result.attempt && result.attempt.answers) {
+                applyAnswers(result.attempt.answers);
+                saveDraftAnswers();
+            }
+        }).catch(function() {});
+    }
+
+    function renderRetryActions() {
+        var el = document.getElementById('score-display');
+        var actions = document.createElement('div');
+        actions.className = 'feedback-bar';
+        actions.innerHTML =
+            '<button class="answer-toggle-btn" id="bbc-keep-answers" type="button">Keep my answers</button>' +
+            '<button class="answer-toggle-btn" id="bbc-clear-retry" type="button">Clear and retry</button>';
+        el.appendChild(actions);
+        document.getElementById('bbc-keep-answers').addEventListener('click', function() {
+            var url = new URL(window.location.href);
+            url.searchParams.delete('retry');
+            window.location.href = url.toString();
+        });
+        document.getElementById('bbc-clear-retry').addEventListener('click', function() {
+            try { localStorage.removeItem(answerStorageKey()); } catch (e) {}
+            var url = new URL(window.location.href);
+            url.searchParams.set('retry', '1');
+            window.location.href = url.toString();
+        });
+    }
+
+    function recordAnswerReveal() {
+        if (!assignmentId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'revealAnswers',
+            assignment_id: assignmentId
+        }).catch(function() {});
+    }
+
     function checkAllAnswered(userAnswers) {
         var form = document.getElementById('quiz-form');
         var missing = [];
@@ -1552,6 +1632,7 @@
     function confirmAnswerReveal() {
         if (answerRevealConfirmed) return true;
         answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+        if (answerRevealConfirmed) recordAnswerReveal();
         return answerRevealConfirmed;
     }
 
@@ -1803,6 +1884,7 @@
                 correct: response.correct_count,
                 total: response.question_count
             });
+            renderRetryActions();
             disableAllInputs();
             if (!response.feedback_locked) applyFeedback(feedback);
             logEvent('submit', {
@@ -1826,12 +1908,14 @@
             var target = e.target;
             if (target.type === 'radio' || target.tagName === 'SELECT') {
                 logEvent('answer_change', { name: target.name, value: target.value, type: target.type || 'select' });
+                saveDraftAnswers();
             }
         });
 
         form.addEventListener('input', function(e) {
             if (e.target.type === 'text') {
                 logEvent('answer_change', { name: e.target.name, value: e.target.value, type: 'text' });
+                saveDraftAnswers();
             }
         });
 

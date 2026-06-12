@@ -154,6 +154,7 @@ function buildSet(meta, overrides = {}) {
     difficulty: overrides.difficulty || "",
     estimated_minutes: overrides.estimatedMinutes || null,
     passing_percentage: 50,
+    mastery_percentage: 90,
     feedback_policy: "always",
     visible: meta.visible !== false,
   };

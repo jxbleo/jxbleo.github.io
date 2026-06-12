@@ -304,22 +304,25 @@ async function listSets() {
       course: set.course || set.type || "",
       type: set.type || "",
       passing_percentage: set.passing_percentage == null ? 50 : set.passing_percentage,
+      mastery_percentage: set.mastery_percentage == null ? 90 : set.mastery_percentage,
     })).sort((a, b) => a.title.localeCompare(b.title)),
   };
 }
 
 function getAssignmentState(assignments) {
   const open = assignments.find((assignment) =>
-    assignment.status === "not_done" || assignment.status === "failed"
+    ["not_done", "failed", "to_do", "passed"].includes(assignment.status)
   );
   if (open) {
     return {
       availability: "in_progress",
       assignment_id: open.assignment_id || open._id,
-      status: open.status || "not_done",
+      status: open.status || "to_do",
     };
   }
-  const completed = assignments.filter((assignment) => assignment.status === "done");
+  const completed = assignments.filter((assignment) =>
+    assignment.status === "done" || assignment.status === "mastered"
+  );
   if (completed.length) {
     return {
       availability: "completed",
@@ -356,24 +359,11 @@ async function getAssignmentCandidates(event) {
   }).limit(200).get();
   const students = (studentResult.data || []).filter((student) => student.role !== "teacher");
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
-  const achievementResult = await db.collection("student_set_achievements")
-    .where({ set_id: setId, status: "star" })
-    .limit(500)
-    .get();
-  const achievementsByStudent = new Map(
-    (achievementResult.data || []).map((item) => [item.student_uid, item])
-  );
   const candidates = [];
   for (const student of students) {
-    const achievement = achievementsByStudent.get(student.auth_uid);
     candidates.push({
       ...studentView(student),
-      ...(achievement ? {
-        availability: "starred",
-        status: "done",
-        best_percentage: achievement.best_percentage,
-        star_source: achievement.source || "explore",
-      } : getAssignmentState(assignmentsByStudent.get(student.auth_uid) || [])),
+      ...getAssignmentState(assignmentsByStudent.get(student.auth_uid) || []),
     });
   }
   return { success: true, candidates };
@@ -391,7 +381,7 @@ async function createAssignmentForStudent(student, setId, dueAt) {
     assignment_id: assignmentId,
     student_uid: student.auth_uid,
     set_id: setId,
-    status: "not_done",
+    status: "to_do",
     assigned_at: now,
     due_at: dueAt,
     completed_at: null,
@@ -399,6 +389,13 @@ async function createAssignmentForStudent(student, setId, dueAt) {
     attempt_count: 0,
     latest_percentage: null,
     best_percentage: null,
+    raw_best_percentage: null,
+    best_attempt_id: null,
+    best_correct_count: null,
+    best_question_count: null,
+    answer_revealed: false,
+    mastery_locked: false,
+    mastered_at: null,
     created_at: now,
     updated_at: now,
   };
@@ -418,13 +415,6 @@ async function createAssignments(event) {
 
   const dueAt = safeDate(event.due_at);
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
-  const achievementResult = await db.collection("student_set_achievements")
-    .where({ set_id: setId, status: "star" })
-    .limit(500)
-    .get();
-  const starredStudents = new Set(
-    (achievementResult.data || []).map((item) => item.student_uid)
-  );
   const created = [];
   const skipped = [];
   for (const studentUid of studentUids) {
@@ -434,14 +424,6 @@ async function createAssignments(event) {
     });
     if (!student || student.role === "teacher") {
       skipped.push({ student_uid: studentUid, reason: "inactive_or_missing" });
-      continue;
-    }
-    if (starredStudents.has(studentUid)) {
-      skipped.push({
-        student_uid: studentUid,
-        student_id: student.student_id,
-        reason: "already_starred",
-      });
       continue;
     }
     const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
@@ -500,7 +482,7 @@ async function listAssignments() {
         student_name: student.name || "",
         set_id: assignment.set_id,
         set_title: set.title || assignment.set_id,
-        status: assignment.status || "not_done",
+        status: assignment.status || "to_do",
         attempt_count: Number(assignment.attempt_count || 0),
         latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
         best_percentage: assignment.best_percentage == null ? null : assignment.best_percentage,
@@ -637,32 +619,32 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
       student_uid: attempt.student_uid,
     });
     if (assignment) {
+      const set = await getOne("sets", { set_id: attempt.set_id });
+      const masteryPercentage = Number(!set || set.mastery_percentage == null ? 90 : set.mastery_percentage);
+      const cappedPercentage = assignment.mastery_locked === true && assignment.status !== "mastered" && percentage >= masteryPercentage
+        ? masteryPercentage - 0.01
+        : percentage;
+      const adjustedStatus = assignment.status === "mastered"
+        ? "mastered"
+        : (!assignment.mastery_locked && percentage >= masteryPercentage ? "mastered" : (passed ? "passed" : "to_do"));
       const assignmentUpdate = {
-        best_percentage: Math.max(Number(assignment.best_percentage || 0), percentage),
+        best_percentage: Math.max(Number(assignment.best_percentage || 0), cappedPercentage),
+        raw_best_percentage: Math.max(Number(assignment.raw_best_percentage || 0), percentage),
         updated_at: now,
       };
       if (assignment.latest_attempt_id === attempt.attempt_id) {
-        assignmentUpdate.latest_percentage = percentage;
+        assignmentUpdate.latest_percentage = cappedPercentage;
+        assignmentUpdate.latest_raw_percentage = percentage;
       }
       if (passed) {
-        assignmentUpdate.status = "done";
+        assignmentUpdate.status = adjustedStatus;
         if (!assignment.completed_at) assignmentUpdate.completed_at = now;
+        if (adjustedStatus === "mastered" && !assignment.mastered_at) assignmentUpdate.mastered_at = now;
       }
       await db.collection("assignments").doc(assignment._id).update(assignmentUpdate);
     }
   }
 
-  if (passed) {
-    const student = await getOne("students", { auth_uid: attempt.student_uid });
-    if (student) {
-      await protectStar(
-        student,
-        adjustedAttempt,
-        attempt.assignment_id ? "assignment" : "explore",
-        now
-      );
-    }
-  }
   return adjustedAttempt;
 }
 

@@ -515,3 +515,45 @@ tested.
    - Network tab: `teacherAdmin` response (should include `assignment_id`, `explanation_snapshot`, and `explanation`)
    - Argue groups render as collapsed task capsules, expand on click, and move below pending groups after resolution.
 3. Consider passing `question_text` from each practice runtime's Argue submission path so new dispute records keep a durable question snapshot.
+
+## 16. Session Record — Assignment Mastery Model (2026-06-12)
+
+### New product rules
+
+- Assignment statuses are now `to_do`, `passed`, and `mastered`.
+- Default passing threshold is `50%`; default mastery threshold is `90%`.
+- Sets may later override these with `passing_percentage` and `mastery_percentage`.
+- Students below passing see only `x/y` score feedback and cannot view answers.
+- Students who pass may choose to view answers or keep trying.
+- Viewing answers records `answer_revealed` on the assignment. If the assignment
+  is not already `mastered`, it sets `mastery_locked`, so later scores at or
+  above mastery are capped to `mastery_percentage - 0.01` for display/status.
+- If an assignment is already `mastered`, viewing answers does not revoke it.
+- `Get Star` is a frontend-only animation/state in the Mastered list. It does
+  not change backend learning records.
+
+### Changed files
+
+- `cloudfunctions/submitAttempt/index.js`: grades into `to_do`, `passed`, or
+  `mastered`; stores raw/display percentages and mastery lock metadata.
+- `cloudfunctions/getDashboard/index.js`: returns normalized assignment
+  statuses, supports `revealAnswers`, and supports `getAttemptForRetry`.
+- `cloudfunctions/teacherAdmin/index.js`: creates `to_do` assignments and
+  normalizes teacher candidate/assignment behavior for the new statuses.
+- `assets/js/dashboard.js`: shows `TO DO`, `PASSED`, and `MASTERED`, compact
+  assignment pills, and frontend-only `Get Star` / `Star collected`.
+- `bbc.html`, `ielts-reading.html`, `vocabulary.html`: answer reveal
+  confirmation, backend reveal locking, retry choices, draft preservation, and
+  historical-answer prefill where practical.
+- `scripts/prepare-cloudbase-data.js`: adds default `mastery_percentage: 90`.
+
+### Deployment required
+
+Deploy these updated function ZIPs to CloudBase development:
+
+- `deploy-packages/submitAttempt.zip`
+- `deploy-packages/getDashboard.zip`
+- `deploy-packages/teacherAdmin.zip`
+
+Then deploy/push the static site so `dashboard.html`, `assets/js/dashboard.js`,
+`assets/css/app.css`, and the practice pages are current.
