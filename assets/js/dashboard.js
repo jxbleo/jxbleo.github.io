@@ -236,7 +236,8 @@
     function taskCard(item) {
         var set = item.set || item;
         var status = normalizedStatus(item.status);
-        var action = 'Go';
+        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'Beat Your Best' : 'Go for Mastery');
+        var actionClass = status === 'to_do' ? ' task-go-button' : '';
         var badgeClass = status;
         var href = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
@@ -256,7 +257,7 @@
             (status === 'mastered' && !collected
                 ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
                 : '') +
-            '<a class="card-button task-go-button" href="' + escapeHtml(href) + '">' + action + '</a>' +
+            '<a class="card-button' + actionClass + '" href="' + escapeHtml(href) + '">' + action + '</a>' +
         '</article>';
     }
 
