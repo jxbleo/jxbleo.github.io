@@ -697,3 +697,74 @@ by the teacher, converted into website data, and pushed to GitHub Pages:
 10. CloudBase `grading_keys` contains the new `set_id`.
 11. Student Library shows the lesson.
 12. A logged-in student can submit and receive grading feedback.
+
+## 19. Cross-Session Maintenance Notes (2026-06-13)
+
+These are small but important lessons from the assignment/teacher/star work.
+Keep them in mind before changing the same surfaces again.
+
+### Git and parallel windows
+
+- The owner may run multiple Codex windows against the same working tree. Before
+  staging, always check `git status --short --branch` and stage only files that
+  belong to the current request.
+- Do not assume unrelated modified or untracked files are yours. In particular,
+  BBC import sessions may leave `data/home-catalog.*`, `content/bbc-*`,
+  `data/BBC-*`, and `bbc-audio/*` changes in the same repo.
+- If the current branch is ahead by multiple commits, inspect
+  `git log --oneline origin/main..HEAD` before pushing. Do not push unrelated
+  commits if the owner says another window will handle them.
+- GitHub HTTPS pushes sometimes fail with `Empty reply from server` or DNS
+  errors. If the commit is local and checks passed, retry later; do not rewrite
+  history to "fix" a network failure.
+
+### Dashboard drafts versus history
+
+- Draft answers and history answers are different concepts.
+- Drafts are frontend/localStorage state and should preserve what the student
+  has typed even if they have not submitted. Re-entering a page should prefer
+  draft answers over backend history.
+- History means submitted attempts stored in CloudBase. `Show History` should
+  restore the best submitted attempt only; if scores tie, use the newest
+  matching best attempt.
+- `Show History` intentionally overwrites the current draft after confirmation.
+  Clear the visible answers first, then apply the historical answers, so old
+  draft values and historical answers cannot mix.
+- Do not unconditionally point `Show History` at the most recent submission. A
+  lower-scoring later attempt must not replace the best history target.
+
+### Answer reveal and teacher mode
+
+- Student answer reveal goes through `getDashboard.revealAnswers`. For
+  non-mastered assignments it sets `answer_revealed` and `mastery_locked`.
+- If the assignment is already `mastered`, answer reveal must not revoke mastery
+  or show the "cannot master" warning.
+- Teacher answer reveal is separate. Practice pages opened with `teacher=1`
+  should call `teacherAdmin.getAnswerKeyForSet`, show answers/explanations, and
+  never call student reveal logic.
+- Teacher Library should reuse existing practice pages instead of creating
+  duplicate teacher-only exercise pages.
+
+### Assignment thresholds and stars
+
+- Effective thresholds resolve in this order: assignment override, set value,
+  default `50/90`.
+- When adding assignment creation paths, include `passing_percentage` and
+  `mastery_percentage` on the assignment record.
+- `Get Star` is backend-backed now. Use `getDashboard.claimStar` and count
+  `student_set_achievements`; do not reintroduce localStorage as the source of
+  truth.
+- Star claims are keyed by `assignment_id` and should not block assigning the
+  same `set_id` again later.
+
+### Deployment reminders
+
+- Frontend-only changes still need cache-version bumps in the relevant HTML
+  query strings.
+- Any change to `teacherAdmin`, `getDashboard`, `submitAttempt`,
+  `getCurrentStudent`, or `changePassword` source must be followed by rebuilding
+  the matching `deploy-packages/*.zip`.
+- `changePassword` is a real CloudBase function now. If it is missing in the
+  console, create it with Node.js 18, upload `deploy-packages/changePassword.zip`,
+  enable automatic dependency installation, and no extra environment variable is
+  required.
