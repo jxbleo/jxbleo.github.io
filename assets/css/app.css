@@ -242,6 +242,7 @@ button { cursor: pointer; }
 }
 .task-card { position: relative; display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; overflow: hidden; }
 .task-card h3, .resource-card h3 { margin: 5px 0 6px; font-size: 1.06rem; }
+.assignment-title { margin: 0 0 8px !important; color: var(--ink); letter-spacing: -0.02em; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: 0.78rem; }
 .badge { display: inline-flex; align-items: center; min-height: 25px; padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 850; }
 .badge.todo { color: #7a5528; background: #fff1da; }
@@ -260,7 +261,7 @@ button { cursor: pointer; }
     border-radius: 999px;
     background: #f6faf8;
     color: var(--muted);
-    font-size: 0.76rem;
+    font-size: 0.68rem;
     font-weight: 850;
 }
 .assignment-pill.set-id { color: var(--ink); background: white; border: 1px solid var(--line); }

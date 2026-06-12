@@ -809,6 +809,61 @@
             display: block;
         }
 
+        .result-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(15,23,42,.35);
+            backdrop-filter: blur(5px);
+        }
+
+        .result-card {
+            width: min(420px,100%);
+            padding: 26px;
+            border-radius: 24px;
+            background: #fff;
+            text-align: center;
+            box-shadow: 0 24px 70px rgba(0,0,0,.24);
+            animation: resultPop 420ms ease-out both;
+        }
+
+        .result-emoji { font-size: 3rem; }
+        .result-card h2 { margin: 8px 0; }
+        .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+        .result-copy { color: var(--muted); line-height: 1.45; }
+        .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
+
+        .history-toolbar {
+            position: fixed;
+            z-index: 999;
+            left: 14px;
+            right: 14px;
+            bottom: 14px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .history-toolbar button {
+            pointer-events: auto;
+            border: 1px solid rgba(15,118,110,.22);
+            border-radius: 999px;
+            padding: 10px 14px;
+            color: #0f5f57;
+            background: rgba(255,255,255,.94);
+            box-shadow: 0 10px 28px rgba(15,76,71,.16);
+            font-size: .82rem;
+            font-weight: 800;
+        }
+
+        @keyframes resultPop {
+            from { opacity: 0; transform: translateY(18px) scale(.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .dictation-empty {
             padding: 22px;
             border: 1px dashed var(--border);
@@ -1055,6 +1110,101 @@
                 action: 'revealAnswers',
                 assignment_id: assignmentId
             }).catch(function() {});
+        }
+
+        function clearAllTestAnswers() {
+            document.querySelectorAll('.test-question').forEach(function(card) {
+                card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
+                var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
+                var reveal = card.querySelector('.reveal');
+                if (input) {
+                    input.value = '';
+                    input.disabled = false;
+                }
+                if (trigger) {
+                    trigger.textContent = '';
+                    trigger.classList.remove('selected');
+                    trigger.disabled = false;
+                }
+                if (reveal) {
+                    reveal.classList.remove('show');
+                    reveal.innerHTML = '';
+                }
+            });
+            saveTestDraft();
+        }
+
+        function enableTestRetry() {
+            document.querySelectorAll('.test-question').forEach(function(card) {
+                card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
+                var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
+                var reveal = card.querySelector('.reveal');
+                if (input) input.disabled = false;
+                if (trigger) trigger.disabled = false;
+                if (reveal) reveal.classList.remove('show');
+            });
+            var submitButton = document.getElementById('submit-test-btn');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Test';
+            submitButton.style.display = 'inline-flex';
+            saveTestDraft();
+        }
+
+        function renderHistoryToolbar() {
+            if (document.getElementById('history-toolbar')) return;
+            var toolbar = document.createElement('div');
+            toolbar.className = 'history-toolbar';
+            toolbar.id = 'history-toolbar';
+            toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
+            document.body.appendChild(toolbar);
+            document.getElementById('show-history-btn').addEventListener('click', function() {
+                if (!prefillAttemptId) {
+                    alert('No history is available for this task yet.');
+                    return;
+                }
+                if (!confirm('Replace all current answers with your best historical attempt?')) return;
+                fetchPrefillAttempt(true);
+            });
+            document.getElementById('clear-all-btn').addEventListener('click', function() {
+                if (!confirm('Clear all answers on this page?')) return;
+                clearAllTestAnswers();
+            });
+        }
+
+        function showResultOverlay(response) {
+            var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
+            var emoji = response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
+            var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
+            var copy = response.mastered ? 'Mastered! This task moved to your Mastered list.' :
+                response.passed ? 'You passed. Keep trying if you want to master it.' :
+                'Keep going. Fix a few answers and try again.';
+            var overlay = document.createElement('div');
+            overlay.className = 'result-overlay';
+            overlay.innerHTML =
+                '<div class="result-card"><div class="result-emoji">' + emoji + '</div><h2>' + status + '</h2>' +
+                '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
+                (response.passed && !response.feedback_locked ? '<button class="btn btn-primary" type="button" data-result-action="view">View Answers</button>' : '') +
+                '<button class="btn btn-primary" type="button" data-result-action="fix">Fix Answers</button>' +
+                '<button class="btn btn-primary" type="button" data-result-action="fresh">Start Fresh</button></div></div>';
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', function(event) {
+                var action = event.target && event.target.getAttribute('data-result-action');
+                if (!action) return;
+                if (action === 'view') {
+                    if (!confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？')) return;
+                    recordAnswerReveal();
+                    document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
+                    event.target.textContent = 'Answers Shown';
+                    event.target.disabled = true;
+                    return;
+                }
+                overlay.remove();
+                enableTestRetry();
+                if (action === 'fresh') clearAllTestAnswers();
+                else saveTestDraft();
+            });
         }
 
         function showError(message) {
@@ -1713,11 +1863,11 @@
             return true;
         }
 
-        function fetchPrefillAttempt() {
+        function fetchPrefillAttempt(force) {
             if (!prefillAttemptId || !window.MrCatCloud) return Promise.resolve(false);
             if (params.get('retry') === '1') return Promise.resolve(false);
             try {
-                if (localStorage.getItem(testDraftKey())) return Promise.resolve(false);
+                if (!force && localStorage.getItem(testDraftKey())) return Promise.resolve(false);
             } catch (e) {}
             return window.MrCatCloud.callFunction('getDashboard', {
                 action: 'getAttemptForRetry',
@@ -1834,38 +1984,9 @@
                     ? (response.passed ? 'Passed' : 'Failed')
                     : 'Self-test only — this result was not saved';
                 summary.innerHTML = 'Score: ' + response.correct_count + ' / ' + response.question_count +
-                    (response.passed ? ' · ' + response.percentage + '%' : '') + ' · ' + resultLabel +
-                    (response.feedback_locked ? '' : '<br><button class="btn btn-primary" id="vocab-view-answers" type="button" style="margin-top:12px;">View Answers</button>') +
-                    '<br><button class="btn btn-primary" id="vocab-keep-answers" type="button" style="margin-top:12px;">Keep my answers</button>' +
-                    '<button class="btn btn-primary" id="vocab-clear-retry" type="button" style="margin-top:12px;margin-left:8px;">Clear and retry</button>';
+                    (response.passed ? ' · ' + response.percentage + '%' : '') + ' · ' + resultLabel;
                 summary.classList.add('show');
-                var viewAnswersBtn = document.getElementById('vocab-view-answers');
-                if (viewAnswersBtn) {
-                    viewAnswersBtn.addEventListener('click', function() {
-                        if (!answerRevealConfirmed) {
-                            answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
-                            if (answerRevealConfirmed) recordAnswerReveal();
-                        }
-                        if (!answerRevealConfirmed) return;
-                        document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) {
-                            el.classList.add('show');
-                        });
-                        viewAnswersBtn.disabled = true;
-                        viewAnswersBtn.textContent = 'Answers Shown';
-                    });
-                }
-                document.getElementById('vocab-keep-answers').addEventListener('click', function() {
-                    saveTestDraft();
-                    var url = new URL(window.location.href);
-                    url.searchParams.delete('retry');
-                    window.location.href = url.toString();
-                });
-                document.getElementById('vocab-clear-retry').addEventListener('click', function() {
-                    clearTestDraft();
-                    var url = new URL(window.location.href);
-                    url.searchParams.set('retry', '1');
-                    window.location.href = url.toString();
-                });
+                showResultOverlay(response);
                 var timer = document.getElementById('test-timer');
                 timer.textContent = 'Finished';
                 timer.classList.remove('sticky');
@@ -1923,6 +2044,7 @@
             wireEvents();
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'block';
+            renderHistoryToolbar();
             if (!restoreTestDraft()) fetchPrefillAttempt();
         }
 

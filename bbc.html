@@ -674,6 +674,61 @@
             color: #7a431a;
         }
 
+        .result-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(13, 44, 39, 0.35);
+            backdrop-filter: blur(5px);
+        }
+
+        .result-card {
+            width: min(420px, 100%);
+            padding: 26px;
+            border-radius: 24px;
+            background: #fff;
+            text-align: center;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.24);
+            animation: resultPop 420ms ease-out both;
+        }
+
+        .result-emoji { font-size: 3rem; }
+        .result-card h2 { margin: 8px 0; color: var(--primary); }
+        .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+        .result-copy { color: var(--text-secondary); line-height: 1.45; }
+        .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
+
+        .history-toolbar {
+            position: fixed;
+            z-index: 999;
+            left: 14px;
+            right: 14px;
+            bottom: 14px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .history-toolbar button {
+            pointer-events: auto;
+            border: 1px solid rgba(15,118,110,.22);
+            border-radius: 999px;
+            padding: 10px 14px;
+            color: #0f5f57;
+            background: rgba(255,255,255,.94);
+            box-shadow: 0 10px 28px rgba(15,76,71,.16);
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        @keyframes resultPop {
+            from { opacity: 0; transform: translateY(18px) scale(0.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .inline-explanation {
             margin-top: 10px;
             padding: 10px 14px;
@@ -1363,6 +1418,7 @@
         document.getElementById('content').style.display = 'block';
         document.getElementById('loading-message').style.display = 'none';
         restoreSavedOrPrefillAnswers();
+        renderHistoryToolbar();
     }
 
     function showError(msg) {
@@ -1532,6 +1588,35 @@
         try { localStorage.setItem(answerStorageKey(), JSON.stringify(collectAnswers())); } catch (e) {}
     }
 
+    function clearAllAnswers() {
+        var form = document.getElementById('quiz-form');
+        form.querySelectorAll('input[type="text"]').forEach(function(input) {
+            input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        form.querySelectorAll('input[type="radio"]').forEach(function(input) { input.checked = false; });
+        form.querySelectorAll('select').forEach(function(select) { select.value = ''; });
+        form.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
+            el.classList.remove('correct', 'wrong', 'disabled');
+        });
+        form.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        saveDraftAnswers();
+    }
+
+    function enableRetry() {
+        submitted = false;
+        document.querySelectorAll('#quiz-form input, #quiz-form select').forEach(function(el) {
+            el.disabled = false;
+        });
+        var btn = document.getElementById('submit-btn');
+        btn.disabled = false;
+        btn.textContent = 'Submit Answers';
+        document.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
+            el.classList.remove('correct', 'wrong', 'disabled');
+        });
+    }
+
     function restoreSavedOrPrefillAnswers() {
         if (getParams().retry === '1') {
             try { localStorage.removeItem(answerStorageKey()); } catch (e) {}
@@ -1555,24 +1640,80 @@
         }).catch(function() {});
     }
 
-    function renderRetryActions() {
-        var el = document.getElementById('score-display');
-        var actions = document.createElement('div');
-        actions.className = 'feedback-bar';
-        actions.innerHTML =
-            '<button class="answer-toggle-btn" id="bbc-keep-answers" type="button">Keep my answers</button>' +
-            '<button class="answer-toggle-btn" id="bbc-clear-retry" type="button">Clear and retry</button>';
-        el.appendChild(actions);
-        document.getElementById('bbc-keep-answers').addEventListener('click', function() {
-            var url = new URL(window.location.href);
-            url.searchParams.delete('retry');
-            window.location.href = url.toString();
+    function showHistoryAnswers() {
+        if (!prefillAttemptId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getAttemptForRetry',
+            attempt_id: prefillAttemptId
+        }).then(function(result) {
+            if (result && result.success && result.attempt && result.attempt.answers) {
+                applyAnswers(result.attempt.answers);
+                saveDraftAnswers();
+            }
+        }).catch(function() {});
+    }
+
+    function renderHistoryToolbar() {
+        if (document.getElementById('history-toolbar')) return;
+        var toolbar = document.createElement('div');
+        toolbar.className = 'history-toolbar';
+        toolbar.id = 'history-toolbar';
+        toolbar.innerHTML =
+            '<button type="button" id="show-history-btn">Show History</button>' +
+            '<button type="button" id="clear-all-btn">Clear All</button>';
+        document.body.appendChild(toolbar);
+        document.getElementById('show-history-btn').addEventListener('click', function() {
+            if (!prefillAttemptId) {
+                alert('No history is available for this task yet.');
+                return;
+            }
+            if (!confirm('Replace all current answers with your best historical attempt?')) return;
+            showHistoryAnswers();
         });
-        document.getElementById('bbc-clear-retry').addEventListener('click', function() {
-            try { localStorage.removeItem(answerStorageKey()); } catch (e) {}
-            var url = new URL(window.location.href);
-            url.searchParams.set('retry', '1');
-            window.location.href = url.toString();
+        document.getElementById('clear-all-btn').addEventListener('click', function() {
+            if (!confirm('Clear all answers on this page?')) return;
+            clearAllAnswers();
+        });
+    }
+
+    function showResultOverlay(response) {
+        var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
+        var emoji = response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
+        var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
+        var copy = response.mastered
+            ? 'Mastered! This task moved to your Mastered list.'
+            : response.passed
+                ? 'You passed. Keep trying if you want to master it.'
+                : 'Keep going. Fix a few answers and try again.';
+        var overlay = document.createElement('div');
+        overlay.className = 'result-overlay';
+        overlay.innerHTML =
+            '<div class="result-card">' +
+                '<div class="result-emoji">' + emoji + '</div>' +
+                '<h2>' + status + '</h2>' +
+                '<p class="result-score">' + score + '</p>' +
+                '<p class="result-copy">' + copy + '</p>' +
+                '<div class="result-actions">' +
+                    (response.passed ? '<button class="answer-toggle-btn" type="button" data-result-action="view">View Answers</button>' : '') +
+                    '<button class="answer-toggle-btn" type="button" data-result-action="fix">Fix Answers</button>' +
+                    '<button class="answer-toggle-btn" type="button" data-result-action="fresh">Start Fresh</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', function(event) {
+            var action = event.target && event.target.getAttribute('data-result-action');
+            if (!action) return;
+            if (action === 'view') {
+                if (!confirmAnswerReveal()) return;
+                document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
+                event.target.textContent = 'Answers Shown';
+                event.target.disabled = true;
+                return;
+            }
+            overlay.remove();
+            enableRetry();
+            if (action === 'fresh') clearAllAnswers();
+            else saveDraftAnswers();
         });
     }
 
@@ -1884,9 +2025,9 @@
                 correct: response.correct_count,
                 total: response.question_count
             });
-            renderRetryActions();
             disableAllInputs();
             if (!response.feedback_locked) applyFeedback(feedback);
+            showResultOverlay(response);
             logEvent('submit', {
                 attemptId: response.attempt_id,
                 percentage: response.percentage,
