@@ -1045,6 +1045,8 @@
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
         var teacherMode = params.get('teacher') === '1';
+        var teacherAnswerKey = null;
+        var teacherAnswersVisible = false;
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
@@ -1218,6 +1220,61 @@
                 });
         }
 
+        function clearTeacherAnswerDisplay() {
+            document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(reveal) {
+                reveal.classList.remove('show');
+                reveal.innerHTML = '';
+                reveal.removeAttribute('data-teacher-answer');
+            });
+        }
+
+        function renderTeacherAnswers(answerKey) {
+            clearTeacherAnswerDisplay();
+            var answers = answerKey.answers || {};
+            var explanations = answerKey.explanations || {};
+            document.querySelectorAll('.self-question, .test-question').forEach(function(card) {
+                var key = card.getAttribute('data-question-key');
+                var reveal = card.querySelector('.reveal');
+                if (!key || !reveal || answers[key] == null) return;
+                reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
+                    (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
+                reveal.setAttribute('data-teacher-answer', '1');
+                reveal.classList.add('show');
+            });
+            teacherAnswersVisible = true;
+        }
+
+        function setTeacherButtonState(button, visible) {
+            button.disabled = false;
+            button.textContent = visible ? 'Hide Answers' : 'Show Answers';
+        }
+
+        function toggleTeacherAnswers(button) {
+            if (teacherAnswersVisible) {
+                clearTeacherAnswerDisplay();
+                teacherAnswersVisible = false;
+                setTeacherButtonState(button, false);
+                return;
+            }
+
+            if (teacherAnswerKey) {
+                renderTeacherAnswers(teacherAnswerKey);
+                setTeacherButtonState(button, true);
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'Loading...';
+            teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+                teacherAnswerKey = result;
+                renderTeacherAnswers(teacherAnswerKey);
+                setTeacherButtonState(button, true);
+            }).catch(function(error) {
+                setTeacherButtonState(button, false);
+                alert(error.message || 'Unable to load answers.');
+            });
+        }
+
         function renderTeacherAnswerToolbar() {
             if (document.getElementById('history-toolbar')) return;
             var toolbar = document.createElement('div');
@@ -1226,34 +1283,7 @@
             toolbar.innerHTML = '<button type="button" id="teacher-show-answers-btn">Show Answers</button>';
             document.body.appendChild(toolbar);
             document.getElementById('teacher-show-answers-btn').addEventListener('click', function() {
-                var button = this;
-                button.disabled = true;
-                button.textContent = 'Loading...';
-                teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
-                    var answers = result.answers || {};
-                    var explanations = result.explanations || {};
-                    document.querySelectorAll('.self-question').forEach(function(card) {
-                        var key = card.getAttribute('data-question-key');
-                        var reveal = card.querySelector('.reveal');
-                        if (!key || !reveal || answers[key] == null) return;
-                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
-                            (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
-                        reveal.classList.add('show');
-                    });
-                    document.querySelectorAll('.test-question').forEach(function(card) {
-                        var key = card.getAttribute('data-question-key');
-                        var reveal = card.querySelector('.reveal');
-                        if (!key || !reveal || answers[key] == null) return;
-                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
-                            (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
-                        reveal.classList.add('show');
-                    });
-                    button.textContent = 'Answers Shown';
-                }).catch(function(error) {
-                    button.disabled = false;
-                    button.textContent = 'Show Answers';
-                    alert(error.message || 'Unable to load answers.');
-                });
+                toggleTeacherAnswers(this);
             });
         }
 

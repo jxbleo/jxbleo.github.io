@@ -117,6 +117,18 @@ function practiceLinkForSet(set) {
   return `bbc.html?set=${encodeURIComponent(set.set_id)}`;
 }
 
+function uniqueBySetId(items) {
+  const seen = new Set();
+  const output = [];
+  (items || []).forEach((item) => {
+    const key = text(item.set_id || item._id);
+    if (key && seen.has(key)) return;
+    if (key) seen.add(key);
+    output.push(item);
+  });
+  return output;
+}
+
 function studentView(student) {
   const source = student || {};
   const authUid = text(source.auth_uid);
@@ -317,7 +329,7 @@ async function listSets() {
   const result = await db.collection("sets").where({ visible: true }).limit(200).get();
   return {
     success: true,
-    sets: (result.data || []).map((set) => ({
+    sets: uniqueBySetId(result.data || []).map((set) => ({
       set_id: set.set_id,
       title: set.title || set.set_id,
       course: set.course || set.type || "",

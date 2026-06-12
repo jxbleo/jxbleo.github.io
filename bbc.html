@@ -1086,6 +1086,8 @@
     var assignmentStatus = '';
     var answerRevealAvailable = false;
     var teacherMode = false;
+    var teacherAnswerKey = null;
+    var teacherAnswersVisible = false;
     var isDragging = false;
 
     var students = [
@@ -1101,6 +1103,15 @@
             if (students[i].id === id) return students[i].label;
         }
         return id;
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     function getStoredIdentity() {
@@ -1694,6 +1705,88 @@
             });
     }
 
+    function answerText(value) {
+        return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
+    }
+
+    function clearTeacherAnswerDisplay() {
+        document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
+            el.remove();
+        });
+    }
+
+    function teacherAnswerBlock(questionId, answer, explanation) {
+        var div = document.createElement('div');
+        div.className = 'inline-explanation correct teacher-answer show';
+        div.setAttribute('data-teacher-answer', '1');
+        div.setAttribute('data-question-id', questionId);
+        div.innerHTML = '&#10004; <strong>Answer:</strong> ' + escapeHtml(answerText(answer)) +
+            (explanation ? '<br><strong>Explanation:</strong> ' + escapeHtml(explanation) : '');
+        return div;
+    }
+
+    function renderTeacherAnswers(answerKey) {
+        clearTeacherAnswerDisplay();
+        var answers = answerKey.answers || {};
+        var explanations = answerKey.explanations || {};
+        Object.keys(answers).forEach(function(questionId) {
+            var block = teacherAnswerBlock(questionId, answers[questionId], explanations[questionId] || '');
+            var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
+            var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
+
+            if (mcDiv) {
+                mcDiv.appendChild(block);
+                return;
+            }
+
+            if (input && input.tagName === 'SELECT') {
+                var tr = input.closest('tr');
+                var td = tr && tr.querySelector('td:last-child');
+                if (td) td.appendChild(block);
+                return;
+            }
+
+            if (input) {
+                var li = input.closest('li');
+                if (li && li.parentNode) li.parentNode.insertBefore(block, li.nextSibling);
+            }
+        });
+        teacherAnswersVisible = true;
+    }
+
+    function setTeacherButtonState(button, visible) {
+        button.disabled = false;
+        button.textContent = visible ? 'Hide Answers' : 'Show Answers';
+    }
+
+    function toggleTeacherAnswers(button) {
+        if (teacherAnswersVisible) {
+            document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
+                el.classList.remove('show');
+            });
+            teacherAnswersVisible = false;
+            setTeacherButtonState(button, false);
+            return;
+        }
+
+        if (teacherAnswerKey) {
+            renderTeacherAnswers(teacherAnswerKey);
+            setTeacherButtonState(button, true);
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = 'Loading...';
+        teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+            teacherAnswerKey = result;
+            renderTeacherAnswers(teacherAnswerKey);
+            setTeacherButtonState(button, true);
+        }).catch(function(error) {
+            setTeacherButtonState(button, false);
+            alert(error.message || 'Unable to load answers.');
+        });
+    }
+
     function renderTeacherAnswerToolbar() {
         if (document.getElementById('history-toolbar')) return;
         var toolbar = document.createElement('div');
@@ -1702,31 +1795,7 @@
         toolbar.innerHTML = '<button type="button" id="teacher-show-answers-btn">Show Answers</button>';
         document.body.appendChild(toolbar);
         document.getElementById('teacher-show-answers-btn').addEventListener('click', function() {
-            var button = this;
-            button.disabled = true;
-            button.textContent = 'Loading...';
-            teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
-                var feedback = [];
-                Object.keys(result.answers || {}).forEach(function(questionId) {
-                    var type = 'blank';
-                    if (lessonData && lessonData.multipleChoice && lessonData.multipleChoice.some(function(item) { return item.id === questionId; })) type = 'mc';
-                    if (questionId.indexOf('-') !== -1) type = 'match';
-                    feedback.push({
-                        type: type,
-                        id: questionId,
-                        correctAnswer: result.answers[questionId],
-                        isCorrect: true,
-                        evidence: (result.explanations || {})[questionId] || ''
-                    });
-                });
-                applyFeedback(feedback);
-                document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
-                button.textContent = 'Answers Shown';
-            }).catch(function(error) {
-                button.disabled = false;
-                button.textContent = 'Show Answers';
-                alert(error.message || 'Unable to load answers.');
-            });
+            toggleTeacherAnswers(this);
         });
     }
 
