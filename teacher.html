@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260612-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260612-4">
 </head>
-<body class="app-page">
+<body class="app-page teacher-page">
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
@@ -23,8 +23,8 @@
         <nav class="dashboard-tabs" aria-label="Teacher sections">
             <button class="tab-button active" type="button" data-view="argue">Argue</button>
             <button class="tab-button" type="button" data-view="assign">Assign</button>
+            <button class="tab-button" type="button" data-view="library">Library</button>
             <button class="tab-button" type="button" data-view="students">Students</button>
-            <button class="tab-button" type="button" data-view="data">Data</button>
         </nav>
 
         <p class="teacher-message" id="teacher-message" role="status"></p>
@@ -51,6 +51,14 @@
                     </div>
                 </div>
                 <div class="assign-controls">
+                    <label>Column
+                        <select id="assign-section-filter">
+                            <option value="">All columns</option>
+                        </select>
+                    </label>
+                    <label>Search tasks
+                        <input id="assign-set-search" type="search" placeholder="BBC, IELTS, vocabulary...">
+                    </label>
                     <label>Practice set
                         <select id="assign-set">
                             <option value="">Choose a practice set</option>
@@ -58,6 +66,12 @@
                     </label>
                     <label>Due date
                         <input id="assign-due" type="date">
+                    </label>
+                    <label>Passing %
+                        <input id="assign-passing" type="number" min="0" max="100" step="0.01" placeholder="50">
+                    </label>
+                    <label>Mastery %
+                        <input id="assign-mastery" type="number" min="0" max="100" step="0.01" placeholder="90">
                     </label>
                 </div>
             </section>
@@ -83,6 +97,24 @@
             </div>
         </section>
 
+        <section class="dashboard-view" id="view-library" hidden>
+            <div class="student-page-toolbar">
+                <div>
+                    <h2>Library</h2>
+                    <p>Open any practice set as a teacher and reveal answers without affecting students.</p>
+                </div>
+            </div>
+            <div class="assign-toolbar">
+                <input class="resource-search" id="library-search" type="search" placeholder="Search practice sets...">
+                <select class="filter-select" id="library-section-filter">
+                    <option value="">All columns</option>
+                </select>
+            </div>
+            <div class="resource-list" id="teacher-library-list">
+                <div class="empty-card loading-card">Loading library...</div>
+            </div>
+        </section>
+
         <section class="dashboard-view" id="view-students" hidden>
             <div class="student-page-toolbar">
                 <div>
@@ -104,6 +136,17 @@
                     <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
                     <label>Student name<input id="student-name" type="text" required></label>
                     <label>Class<input id="student-class" type="text"></label>
+                    <label>System
+                        <select id="student-curriculum">
+                            <option value="">Not set</option>
+                            <option value="DSE">DSE</option>
+                            <option value="A-Level">A-Level</option>
+                            <option value="AP">AP</option>
+                            <option value="IB">IB</option>
+                            <option value="Zhongkao">Zhongkao</option>
+                            <option value="Gaokao">Gaokao</option>
+                        </select>
+                    </label>
                     <button class="primary-button" type="submit">Create Student</button>
                 </form>
             </section>
@@ -124,13 +167,6 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-data" hidden>
-            <div class="data-placeholder">
-                <h2>Data</h2>
-                <p>Question-level analytics will appear here.</p>
-            </div>
-        </section>
-
         <div class="teacher-footer">
             <button class="danger-button teacher-logout" id="teacher-logout" type="button">Log Out</button>
         </div>
@@ -140,6 +176,6 @@
     <script src="assets/js/config.public.js?v=20260611-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260612-3"></script>
+    <script src="assets/js/teacher.js?v=20260612-4"></script>
 </body>
 </html>

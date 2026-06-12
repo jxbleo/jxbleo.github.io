@@ -102,6 +102,21 @@ function safeDate(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function safePercentage(value, fallback) {
+  if (value == null || value === "") return Number(fallback);
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < 0 || number > 100) throw new Error("INVALID_PERCENTAGE");
+  return number;
+}
+
+function practiceLinkForSet(set) {
+  if (set.link || set.href) return set.link || set.href;
+  const type = text(set.type || set.course).toLowerCase();
+  if (type.indexOf("vocab") !== -1) return `vocabulary.html?set=${encodeURIComponent(set.set_id)}`;
+  if (type.indexOf("ielts") !== -1 || type.indexOf("reading") !== -1) return `ielts-reading.html?set=${encodeURIComponent(set.set_id)}`;
+  return `bbc.html?set=${encodeURIComponent(set.set_id)}`;
+}
+
 function studentView(student) {
   const source = student || {};
   const authUid = text(source.auth_uid);
@@ -112,6 +127,7 @@ function studentView(student) {
     student_id: studentId,
     name: source.name || "",
     class_group: source.class_group || "",
+    curriculum_track: source.curriculum_track || "",
     role: source.role || "student",
     active: source.active === true,
     must_change_password: source.must_change_password === true,
@@ -168,6 +184,7 @@ async function createStudent(event) {
   const studentId = text(event.student_id);
   const name = text(event.name);
   const classGroup = text(event.class_group);
+  const curriculumTrack = text(event.curriculum_track);
 
   if (!studentId || !name) throw new Error("STUDENT_FIELDS_REQUIRED");
   if (await getOne("students", { student_id: studentId })) throw new Error("STUDENT_ID_EXISTS");
@@ -195,6 +212,7 @@ async function createStudent(event) {
     student_id: studentId,
     name,
     class_group: classGroup,
+    curriculum_track: curriculumTrack,
     role: "student",
     active: true,
     must_change_password: true,
@@ -235,6 +253,7 @@ async function updateStudent(event) {
   const update = { updated_at: new Date() };
   if (Object.prototype.hasOwnProperty.call(event, "name")) update.name = text(event.name);
   if (Object.prototype.hasOwnProperty.call(event, "class_group")) update.class_group = text(event.class_group);
+  if (Object.prototype.hasOwnProperty.call(event, "curriculum_track")) update.curriculum_track = text(event.curriculum_track);
   if (Object.prototype.hasOwnProperty.call(event, "active")) {
     const active = event.active === true;
     try {
@@ -303,6 +322,8 @@ async function listSets() {
       title: set.title || set.set_id,
       course: set.course || set.type || "",
       type: set.type || "",
+      section: set.section || set.section_id || set.category || set.course || set.type || "",
+      link: practiceLinkForSet(set),
       passing_percentage: set.passing_percentage == null ? 50 : set.passing_percentage,
       mastery_percentage: set.mastery_percentage == null ? 90 : set.mastery_percentage,
     })).sort((a, b) => a.title.localeCompare(b.title)),
@@ -369,7 +390,7 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
-async function createAssignmentForStudent(student, setId, dueAt) {
+async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage) {
   const now = new Date();
   const assignmentId = [
     student.student_id,
@@ -384,6 +405,8 @@ async function createAssignmentForStudent(student, setId, dueAt) {
     status: "to_do",
     assigned_at: now,
     due_at: dueAt,
+    passing_percentage: passingPercentage,
+    mastery_percentage: masteryPercentage,
     completed_at: null,
     latest_attempt_id: null,
     attempt_count: 0,
@@ -405,53 +428,80 @@ async function createAssignmentForStudent(student, setId, dueAt) {
 }
 
 async function createAssignments(event) {
-  const setId = text(event.set_id);
+  const setIds = Array.isArray(event.set_ids)
+    ? [...new Set(event.set_ids.map(text).filter(Boolean))]
+    : [text(event.set_id)].filter(Boolean);
   const studentUids = Array.isArray(event.student_uids)
     ? [...new Set(event.student_uids.map(text).filter(Boolean))]
     : [];
-  if (!setId || !studentUids.length) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
+  if (!setIds.length || !studentUids.length) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
   if (studentUids.length > 200) throw new Error("TOO_MANY_STUDENTS");
-  if (!await getOne("sets", { set_id: setId, visible: true })) throw new Error("SET_NOT_FOUND");
-
   const dueAt = safeDate(event.due_at);
-  const assignmentsByStudent = await getAssignmentsByStudent(setId);
   const created = [];
   const skipped = [];
-  for (const studentUid of studentUids) {
-    const student = await getOne("students", {
-      auth_uid: studentUid,
-      active: true,
-    });
-    if (!student || student.role === "teacher") {
-      skipped.push({ student_uid: studentUid, reason: "inactive_or_missing" });
+  for (const setId of setIds) {
+    const set = await getOne("sets", { set_id: setId, visible: true });
+    if (!set) {
+      skipped.push({ set_id: setId, reason: "set_not_found" });
       continue;
     }
-    const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
-    if (assignmentState.availability === "completed") {
-      skipped.push({
+    const passingPercentage = safePercentage(event.passing_percentage, set.passing_percentage == null ? 50 : set.passing_percentage);
+    const masteryPercentage = safePercentage(event.mastery_percentage, set.mastery_percentage == null ? 90 : set.mastery_percentage);
+    if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
+    const assignmentsByStudent = await getAssignmentsByStudent(setId);
+    for (const studentUid of studentUids) {
+      const student = await getOne("students", {
+        auth_uid: studentUid,
+        active: true,
+      });
+      if (!student || student.role === "teacher") {
+        skipped.push({ student_uid: studentUid, set_id: setId, reason: "inactive_or_missing" });
+        continue;
+      }
+      const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
+      if (assignmentState.availability === "completed") {
+        skipped.push({
+          student_uid: studentUid,
+          student_id: student.student_id,
+          set_id: setId,
+          reason: "already_completed",
+        });
+        continue;
+      }
+      if (assignmentState.availability === "in_progress") {
+        skipped.push({
+          student_uid: studentUid,
+          student_id: student.student_id,
+          set_id: setId,
+          reason: "in_progress",
+        });
+        continue;
+      }
+      const assignmentId = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage);
+      created.push({
         student_uid: studentUid,
         student_id: student.student_id,
-        reason: "already_completed",
+        set_id: setId,
+        assignment_id: assignmentId,
+        reassigned_after_completion: assignmentState.availability === "completed",
       });
-      continue;
     }
-    if (assignmentState.availability === "in_progress") {
-      skipped.push({
-        student_uid: studentUid,
-        student_id: student.student_id,
-        reason: "in_progress",
-      });
-      continue;
-    }
-    const assignmentId = await createAssignmentForStudent(student, setId, dueAt);
-    created.push({
-      student_uid: studentUid,
-      student_id: student.student_id,
-      assignment_id: assignmentId,
-      reassigned_after_completion: assignmentState.availability === "completed",
-    });
   }
   return { success: true, created, skipped };
+}
+
+async function getAnswerKeyForSet(event) {
+  const setId = text(event.set_id);
+  if (!setId) throw new Error("SET_REQUIRED");
+  const gradingKey = await getOne("grading_keys", { set_id: setId });
+  if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+  return {
+    success: true,
+    set_id: setId,
+    answers: gradingKey.answers || {},
+    explanations: gradingKey.explanations || {},
+    grading_version: gradingKey.grading_version || "1",
+  };
 }
 
 async function listAssignments() {
@@ -620,7 +670,9 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     });
     if (assignment) {
       const set = await getOne("sets", { set_id: attempt.set_id });
-      const masteryPercentage = Number(!set || set.mastery_percentage == null ? 90 : set.mastery_percentage);
+      const masteryPercentage = Number(assignment.mastery_percentage != null
+        ? assignment.mastery_percentage
+        : (!set || set.mastery_percentage == null ? 90 : set.mastery_percentage));
       const cappedPercentage = assignment.mastery_locked === true && assignment.status !== "mastered" && percentage >= masteryPercentage
         ? masteryPercentage - 0.01
         : percentage;
@@ -729,6 +781,7 @@ exports.main = async (event) => {
     if (action === "listSets") return await listSets();
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
     if (action === "createAssignments") return await createAssignments(event);
+    if (action === "getAnswerKeyForSet") return await getAnswerKeyForSet(event);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listAttempts") return await listAttempts();
     if (action === "listDisputes") return await listDisputes();

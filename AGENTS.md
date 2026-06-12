@@ -95,6 +95,7 @@ Canonical student profile:
   "student_id": "unique-login-id",
   "name": "Student Name",
   "class_group": "",
+  "curriculum_track": "",
   "role": "student",
   "active": true,
   "must_change_password": true,
@@ -198,19 +199,19 @@ ownership. This prevents same-name records from being selected together.
 
 ## 7. Assignment Rules
 
-The separate `teacher.html` interface has three capsules:
+The separate `teacher.html` interface has four capsules:
 
 - `Assign`
+- `Library`
 - `Students`
-- `Data`
-
-`Data` is currently a light placeholder for future question-level analysis.
+- `Argue`
 
 ### Assign
 
-The teacher can choose a visible set, search students, filter by
-`class_group`, select one or multiple students, assign to a filtered class,
-and optionally set a due date.
+The teacher can choose a visible set or filter by column/keyword to assign
+multiple sets, search students, filter by `class_group`, select one or multiple
+students, assign to a filtered class, and optionally set a due date, passing
+percentage, and mastery percentage.
 
 For the same student and `set_id`:
 
@@ -225,8 +226,7 @@ and preserves the old one.
 `failed` remains the same open assignment. `Try Again` creates another attempt,
 not another assignment.
 
-A protected STAR blocks future assignment of the same `set_id`, including when
-the STAR came from Explore rather than a teacher assignment.
+Backend STAR claims do not block future assignment of the same `set_id`.
 
 ### Students
 
@@ -265,12 +265,12 @@ answers, per-question results, attempt number, grading version, timing, and
 assignment/resource context. Independent Resources work uses
 `assignment_id: null`.
 
-The student dashboard labels assignment states `TO-DO`, `RE-DO`, and `STARS`.
-Its default list combines RE-DO first and TO-DO second; each type is newest
-assignment first. STARS defaults to one week and supports one month and All.
+The student dashboard labels assignment states `TO DO`, `PASSED`, and
+`MASTERED`. Each type is newest assignment first. MASTERED defaults to one week
+and supports one month and All.
 The backend retains all attempts.
 
-STAR is monotonic and permanent. Once `student_uid + set_id` earns a STAR:
+STAR claims are backend records keyed by `assignment_id`. Once claimed:
 
 - it can never be revoked or downgraded by normal code
 - later failing attempts cannot remove it
@@ -278,8 +278,7 @@ STAR is monotonic and permanent. Once `student_uid + set_id` earns a STAR:
 - answer-key changes cannot remove it
 - only the best attempt reference and best percentage may improve
 
-Explore passing attempts create STAR achievements without creating fake
-assignments. Teacher assignment candidates with an existing STAR are disabled.
+Teacher assignment candidates are not disabled by previous STAR claims.
 
 ### Feedback and retry
 
@@ -419,8 +418,8 @@ Student dashboard navigation:
 - `Explore`
 - `Profile`
 
-Assignments has three selectable cards: `TO-DO`, `RE-DO`, and `STARS`. Do not
-add separate Failed/Done explanation sections below them.
+Assignments has three selectable cards: `TO DO`, `PASSED`, and `MASTERED`. Do
+not add separate Failed/Done explanation sections below them.
 
 The hero has no `STUDENT DASHBOARD` label. It shows a varied English greeting
 and a randomly selected motivational sentence. Use China Standard Time for
@@ -523,25 +522,28 @@ tested.
 - Assignment statuses are now `to_do`, `passed`, and `mastered`.
 - Default passing threshold is `50%`; default mastery threshold is `90%`.
 - Sets may later override these with `passing_percentage` and `mastery_percentage`.
+- Assignments may override both thresholds with `passing_percentage` and
+  `mastery_percentage`; `submitAttempt` reads assignment values first, then set
+  values, then defaults.
 - Students below passing see only `x/y` score feedback and cannot view answers.
 - Students who pass may choose to view answers or keep trying.
 - Viewing answers records `answer_revealed` on the assignment. If the assignment
   is not already `mastered`, it sets `mastery_locked`, so later scores at or
   above mastery are capped to `mastery_percentage - 0.01` for display/status.
 - If an assignment is already `mastered`, viewing answers does not revoke it.
-- `Get Star` is a frontend-only animation/state in the Mastered list. It does
-  not change backend learning records.
+- `Get Star` records a backend `student_set_achievements` claim keyed by
+  `assignment_id`; the student dashboard star counter reads this backend count.
 
 ### Changed files
 
 - `cloudfunctions/submitAttempt/index.js`: grades into `to_do`, `passed`, or
   `mastered`; stores raw/display percentages and mastery lock metadata.
 - `cloudfunctions/getDashboard/index.js`: returns normalized assignment
-  statuses, supports `revealAnswers`, and supports `getAttemptForRetry`.
+  statuses, supports `revealAnswers`, `claimStar`, and `getAttemptForRetry`.
 - `cloudfunctions/teacherAdmin/index.js`: creates `to_do` assignments and
   normalizes teacher candidate/assignment behavior for the new statuses.
 - `assets/js/dashboard.js`: shows `TO DO`, `PASSED`, and `MASTERED`, compact
-  assignment pills, and frontend-only `Get Star` / `Star collected`.
+  assignment pills, backend `Get Star` / `Star collected`, and the star counter.
 - `bbc.html`, `ielts-reading.html`, `vocabulary.html`: answer reveal
   confirmation, backend reveal locking, retry choices, draft preservation, and
   historical-answer prefill where practical.
@@ -557,3 +559,36 @@ Deploy these updated function ZIPs to CloudBase development:
 
 Then deploy/push the static site so `dashboard.html`, `assets/js/dashboard.js`,
 `assets/css/app.css`, and the practice pages are current.
+
+## 17. Session Record — Teacher Library, Thresholds, Stars, Curriculum (2026-06-12)
+
+### New product rules
+
+- Teacher UI uses the orange/orange-pink theme and no longer has the placeholder
+  `Data` tab.
+- Teacher `Library` opens existing practice pages in `teacher=1` mode. Teacher
+  answer reveal calls `teacherAdmin.getAnswerKeyForSet`; it does not call
+  student reveal logic and does not lock mastery.
+- Teachers can assign by a single set, or by filtered column/keyword batch.
+  Each assignment can store `passing_percentage` and `mastery_percentage`;
+  blank values fall back to set/default `50/90`.
+- Student stars are backend records in `student_set_achievements` keyed by
+  `assignment_id`; the dashboard star counter updates after `claimStar`.
+- Student profiles may include `curriculum_track` for DSE, A-Level, AP, IB,
+  Zhongkao, or Gaokao.
+- `changePassword` now changes the authenticated end user's CloudBase password
+  and clears `must_change_password`.
+
+### Deployment required
+
+Deploy these updated function ZIPs to CloudBase development:
+
+- `deploy-packages/teacherAdmin.zip`
+- `deploy-packages/getDashboard.zip`
+- `deploy-packages/submitAttempt.zip`
+- `deploy-packages/getCurrentStudent.zip`
+- `deploy-packages/changePassword.zip`
+
+Then push/deploy the static site so `teacher.html`, `dashboard.html`,
+`assets/js/teacher.js`, `assets/js/dashboard.js`, `assets/css/app.css`, and the
+practice pages are current.

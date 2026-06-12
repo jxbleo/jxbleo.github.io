@@ -36,7 +36,23 @@ function effectivePercentage(attempt) {
 }
 
 function masteryPercentageForSet(set) {
-  return Number(set.mastery_percentage == null ? 90 : set.mastery_percentage);
+  return Number(!set || set.mastery_percentage == null ? 90 : set.mastery_percentage);
+}
+
+function passingPercentageForSet(set) {
+  return Number(!set || set.passing_percentage == null ? 50 : set.passing_percentage);
+}
+
+function passingPercentageForAssignment(assignment, set) {
+  return Number(assignment && assignment.passing_percentage != null
+    ? assignment.passing_percentage
+    : passingPercentageForSet(set));
+}
+
+function masteryPercentageForAssignment(assignment, set) {
+  return Number(assignment && assignment.mastery_percentage != null
+    ? assignment.mastery_percentage
+    : masteryPercentageForSet(set));
 }
 
 function assignmentMasteryLocked(assignment) {
@@ -101,10 +117,8 @@ exports.main = async (event) => {
 
     const grading = gradeAnswers(answers, gradingKey, mode);
     if (!grading.questionCount) throw new Error("NO_GRADED_QUESTIONS");
-    const passingPercentage = Number(
-      set.passing_percentage == null ? 50 : set.passing_percentage
-    );
-    const masteryPercentage = masteryPercentageForSet(set);
+    const passingPercentage = passingPercentageForAssignment(assignment, set);
+    const masteryPercentage = masteryPercentageForAssignment(assignment, set);
     const displayedPercentage = displayPercentage(grading.percentage, assignment, masteryPercentage);
     const status = statusForPercentage(grading.percentage, passingPercentage, masteryPercentage, assignment);
     const passed = status === "passed" || status === "mastered";

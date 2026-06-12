@@ -1044,6 +1044,7 @@
         var assignmentStatus = params.get('status') || '';
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
+        var teacherMode = params.get('teacher') === '1';
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
@@ -1118,6 +1119,7 @@
         }
 
         function confirmAnswerReveal() {
+            if (teacherMode) return true;
             if (answerRevealConfirmed) return true;
             if (assignmentStatus === 'mastered') {
                 answerRevealConfirmed = true;
@@ -1206,6 +1208,57 @@
         function revealAllAnswers() {
             if (!confirmAnswerReveal()) return;
             document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
+        }
+
+        function teacherCall(action, data) {
+            return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+                .then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Teacher action failed.');
+                    return result;
+                });
+        }
+
+        function renderTeacherAnswerToolbar() {
+            if (document.getElementById('history-toolbar')) return;
+            var toolbar = document.createElement('div');
+            toolbar.className = 'history-toolbar';
+            toolbar.id = 'history-toolbar';
+            toolbar.innerHTML = '<button type="button" id="teacher-show-answers-btn">Show Answers</button>';
+            document.body.appendChild(toolbar);
+            document.getElementById('teacher-show-answers-btn').addEventListener('click', function() {
+                var button = this;
+                button.disabled = true;
+                button.textContent = 'Loading...';
+                teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+                    var answers = result.answers || {};
+                    var explanations = result.explanations || {};
+                    document.querySelectorAll('.self-question').forEach(function(card) {
+                        var key = card.getAttribute('data-question-key');
+                        var reveal = card.querySelector('.reveal');
+                        if (!key || !reveal || answers[key] == null) return;
+                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
+                            (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
+                        reveal.classList.add('show');
+                    });
+                    document.querySelectorAll('.test-question').forEach(function(card) {
+                        var key = card.getAttribute('data-question-key');
+                        var reveal = card.querySelector('.reveal');
+                        if (!key || !reveal || answers[key] == null) return;
+                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
+                            (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
+                        reveal.classList.add('show');
+                    });
+                    button.textContent = 'Answers Shown';
+                }).catch(function(error) {
+                    button.disabled = false;
+                    button.textContent = 'Show Answers';
+                    alert(error.message || 'Unable to load answers.');
+                });
+            });
+        }
+
+        function answerText(value) {
+            return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
         }
 
         function showResultOverlay(response) {
@@ -1485,7 +1538,8 @@
             var root = document.getElementById('self-study-groups');
             root.innerHTML = groups.map(function(group, groupIndex) {
                 var questions = group.questions.map(function(question, index) {
-                    return '<div class="question-item" id="self-' + group.id + '-question-' + index + '">' +
+                    var questionKey = question.questionKey || (group.id + ':' + question.number);
+                    return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                         '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
                         renderChoicePanel(group.wordList || []) +
                         '<div class="reveal"></div>' +
@@ -2080,8 +2134,14 @@
             wireEvents();
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            renderHistoryToolbar();
-            if (!restoreTestDraft()) fetchPrefillAttempt();
+            if (teacherMode) {
+                renderTeacherAnswerToolbar();
+                document.getElementById('submit-test-btn').disabled = true;
+                document.getElementById('submit-test-btn').textContent = 'Teacher Preview';
+            } else {
+                renderHistoryToolbar();
+                if (!restoreTestDraft()) fetchPrefillAttempt();
+            }
         }
 
         updateIdentityStatus();
