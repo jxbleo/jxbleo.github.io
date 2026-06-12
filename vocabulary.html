@@ -839,12 +839,11 @@
         .history-toolbar {
             position: fixed;
             z-index: 999;
-            left: 14px;
             right: 14px;
             bottom: 14px;
             display: flex;
             gap: 8px;
-            justify-content: center;
+            justify-content: flex-end;
             pointer-events: none;
         }
         .history-toolbar button {
@@ -1039,6 +1038,7 @@
         var setId = params.get('set') || 'NGSL-A';
         var assignmentId = params.get('assignment') || '';
         var prefillAttemptId = params.get('prefill') || '';
+        var historyAttemptId = params.get('history') || prefillAttemptId;
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
@@ -1160,12 +1160,12 @@
             toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
             document.body.appendChild(toolbar);
             document.getElementById('show-history-btn').addEventListener('click', function() {
-                if (!prefillAttemptId) {
+                if (!historyAttemptId) {
                     alert('No history is available for this task yet.');
                     return;
                 }
                 if (!confirm('Replace all current answers with your best historical attempt?')) return;
-                fetchPrefillAttempt(true);
+                fetchPrefillAttempt(true, historyAttemptId);
             });
             document.getElementById('clear-all-btn').addEventListener('click', function() {
                 if (!confirm('Clear all answers on this page?')) return;
@@ -1863,15 +1863,16 @@
             return true;
         }
 
-        function fetchPrefillAttempt(force) {
-            if (!prefillAttemptId || !window.MrCatCloud) return Promise.resolve(false);
+        function fetchPrefillAttempt(force, attemptIdOverride) {
+            var targetAttemptId = attemptIdOverride || prefillAttemptId;
+            if (!targetAttemptId || !window.MrCatCloud) return Promise.resolve(false);
             if (params.get('retry') === '1') return Promise.resolve(false);
             try {
                 if (!force && localStorage.getItem(testDraftKey())) return Promise.resolve(false);
             } catch (e) {}
             return window.MrCatCloud.callFunction('getDashboard', {
                 action: 'getAttemptForRetry',
-                attempt_id: prefillAttemptId
+                attempt_id: targetAttemptId
             }).then(function(result) {
                 if (!result || !result.success || !result.attempt || !result.attempt.answers) return false;
                 var groupIds = [];

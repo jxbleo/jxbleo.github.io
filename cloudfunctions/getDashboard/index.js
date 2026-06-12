@@ -228,6 +228,7 @@ exports.main = async (event = {}) => {
         best_correct_count: assignment.best_correct_count == null ? null : assignment.best_correct_count,
         best_question_count: assignment.best_question_count == null ? null : assignment.best_question_count,
         review_attempt_id: bestAttemptId,
+        history_attempt_id: bestAttemptId,
         prefill_attempt_id: status === "passed" || status === "mastered" ? bestAttemptId : null,
         answer_revealed: assignment.answer_revealed === true,
         mastery_locked: assignment.mastery_locked === true,

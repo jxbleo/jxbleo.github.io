@@ -307,7 +307,7 @@
         .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
         .result-copy { color: var(--text-light); line-height: 1.45; }
         .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
-        .history-toolbar { position: fixed; z-index: 999; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 8px; justify-content: center; pointer-events: none; }
+        .history-toolbar { position: fixed; z-index: 999; right: 14px; bottom: 14px; display: flex; gap: 8px; justify-content: flex-end; pointer-events: none; }
         .history-toolbar button { pointer-events: auto; border: 1px solid rgba(15,118,110,.22); border-radius: 999px; padding: 10px 14px; color: #0f5f57; background: rgba(255,255,255,.94); box-shadow: 0 10px 28px rgba(15,76,71,.16); font-size: .82rem; font-weight: 800; }
         @keyframes resultPop { from { opacity: 0; transform: translateY(18px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
@@ -395,6 +395,7 @@
     var userId = params.get('user');
     var assignmentId = params.get('assignment') || '';
     var prefillAttemptId = params.get('prefill') || '';
+    var historyAttemptId = params.get('history') || prefillAttemptId;
     var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
@@ -550,10 +551,10 @@
     }
 
     function showHistoryAnswers() {
-        if (!prefillAttemptId || !window.MrCatCloud) return;
+        if (!historyAttemptId || !window.MrCatCloud) return;
         window.MrCatCloud.callFunction('getDashboard', {
             action: 'getAttemptForRetry',
-            attempt_id: prefillAttemptId
+            attempt_id: historyAttemptId
         }).then(function(result) {
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
@@ -569,7 +570,7 @@
         toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
-            if (!prefillAttemptId) {
+            if (!historyAttemptId) {
                 alert('No history is available for this task yet.');
                 return;
             }
