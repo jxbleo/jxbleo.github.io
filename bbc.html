@@ -1082,6 +1082,8 @@
     var currentArgueAttemptId = null;
     var prefillAttemptId = '';
     var historyAttemptId = '';
+    var assignmentStatus = '';
+    var answerRevealAvailable = false;
     var isDragging = false;
 
     var students = [
@@ -1499,6 +1501,7 @@
         assignmentId = params.assignment || '';
         prefillAttemptId = params.prefill || '';
         historyAttemptId = params.history || prefillAttemptId;
+        assignmentStatus = params.status || '';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
             localStorage.setItem('opencode_user', params.user);
@@ -1664,6 +1667,10 @@
             '<button type="button" id="clear-all-btn">Clear All</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
+            if (answerRevealAvailable) {
+                revealAllAnswers();
+                return;
+            }
             if (!historyAttemptId) {
                 alert('No history is available for this task yet.');
                 return;
@@ -1674,6 +1681,21 @@
         document.getElementById('clear-all-btn').addEventListener('click', function() {
             if (!confirm('Clear all answers on this page?')) return;
             clearAllAnswers();
+        });
+        updateHistoryToolbar();
+    }
+
+    function updateHistoryToolbar() {
+        var btn = document.getElementById('show-history-btn');
+        if (!btn) return;
+        btn.textContent = answerRevealAvailable ? 'Show Answers' : 'Show History';
+    }
+
+    function revealAllAnswers() {
+        if (!confirmAnswerReveal()) return;
+        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
+        document.querySelectorAll('.answer-toggle-btn').forEach(function(btn) {
+            if (btn.textContent === 'Show Answer') btn.textContent = 'Hide Answer';
         });
     }
 
@@ -1695,26 +1717,13 @@
                 '<p class="result-score">' + score + '</p>' +
                 '<p class="result-copy">' + copy + '</p>' +
                 '<div class="result-actions">' +
-                    (response.passed ? '<button class="answer-toggle-btn" type="button" data-result-action="view">View Answers</button>' : '') +
-                    '<button class="answer-toggle-btn" type="button" data-result-action="fix">Fix Answers</button>' +
-                    '<button class="answer-toggle-btn" type="button" data-result-action="fresh">Start Fresh</button>' +
+                    '<button class="answer-toggle-btn" type="button" data-result-action="close">OK</button>' +
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
         overlay.addEventListener('click', function(event) {
             var action = event.target && event.target.getAttribute('data-result-action');
-            if (!action) return;
-            if (action === 'view') {
-                if (!confirmAnswerReveal()) return;
-                document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
-                event.target.textContent = 'Answers Shown';
-                event.target.disabled = true;
-                return;
-            }
-            overlay.remove();
-            enableRetry();
-            if (action === 'fresh') clearAllAnswers();
-            else saveDraftAnswers();
+            if (action === 'close' || event.target === overlay) overlay.remove();
         });
     }
 
@@ -1773,6 +1782,11 @@
     var answerRevealConfirmed = false;
     function confirmAnswerReveal() {
         if (answerRevealConfirmed) return true;
+        if (assignmentStatus === 'mastered') {
+            answerRevealConfirmed = true;
+            recordAnswerReveal();
+            return true;
+        }
         answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
         if (answerRevealConfirmed) recordAnswerReveal();
         return answerRevealConfirmed;
@@ -1999,6 +2013,10 @@
             submitted = true;
             btn.textContent = 'Submitted';
             currentArgueAttemptId = response.attempt_id;
+            historyAttemptId = response.attempt_id || historyAttemptId;
+            assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
+            answerRevealAvailable = response.passed && !response.feedback_locked;
+            updateHistoryToolbar();
 
             var feedback = (response.question_results || []).map(function(item) {
                 var source = null;

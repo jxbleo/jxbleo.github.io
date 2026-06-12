@@ -396,6 +396,9 @@
     var assignmentId = params.get('assignment') || '';
     var prefillAttemptId = params.get('prefill') || '';
     var historyAttemptId = params.get('history') || prefillAttemptId;
+    var assignmentStatus = params.get('status') || '';
+    var answerRevealAvailable = false;
+    var answerRevealConfirmed = false;
     var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
@@ -513,6 +516,18 @@
         }).catch(function() {});
     }
 
+    function confirmAnswerReveal() {
+        if (answerRevealConfirmed) return true;
+        if (assignmentStatus === 'mastered') {
+            answerRevealConfirmed = true;
+            recordAnswerReveal();
+            return true;
+        }
+        answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+        if (answerRevealConfirmed) recordAnswerReveal();
+        return answerRevealConfirmed;
+    }
+
     function applyAnswers(answers) {
         Object.keys(answers || {}).forEach(function(name) {
             var val = answers[name];
@@ -570,6 +585,10 @@
         toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
+            if (answerRevealAvailable) {
+                revealAllAnswers();
+                return;
+            }
             if (!historyAttemptId) {
                 alert('No history is available for this task yet.');
                 return;
@@ -581,6 +600,18 @@
             if (!confirm('Clear all answers on this page?')) return;
             clearAllAnswers();
         });
+        updateHistoryToolbar();
+    }
+
+    function updateHistoryToolbar() {
+        var btn = document.getElementById('show-history-btn');
+        if (!btn) return;
+        btn.textContent = answerRevealAvailable ? 'Show Answers' : 'Show History';
+    }
+
+    function revealAllAnswers() {
+        if (!confirmAnswerReveal()) return;
+        document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
     }
 
     function showResultOverlay(response) {
@@ -595,25 +626,11 @@
         overlay.innerHTML =
             '<div class="result-card"><div class="result-emoji">' + emoji + '</div><h2>' + status + '</h2>' +
             '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
-            (response.passed ? '<button class="submit-btn" type="button" data-result-action="view">View Answers</button>' : '') +
-            '<button class="submit-btn" type="button" data-result-action="fix">Fix Answers</button>' +
-            '<button class="submit-btn" type="button" data-result-action="fresh">Start Fresh</button></div></div>';
+            '<button class="submit-btn" type="button" data-result-action="close">OK</button></div></div>';
         document.body.appendChild(overlay);
         overlay.addEventListener('click', function(event) {
             var action = event.target && event.target.getAttribute('data-result-action');
-            if (!action) return;
-            if (action === 'view') {
-                if (!confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？')) return;
-                recordAnswerReveal();
-                document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
-                event.target.textContent = 'Answers Shown';
-                event.target.disabled = true;
-                return;
-            }
-            overlay.remove();
-            enableRetry();
-            if (action === 'fresh') clearAllAnswers();
-            else storeAnswers();
+            if (action === 'close' || event.target === overlay) overlay.remove();
         });
     }
 
@@ -1087,8 +1104,11 @@
     }
 
     function applyServerFeedback(response, answers) {
+        historyAttemptId = response.attempt_id || historyAttemptId;
+        assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
+        answerRevealAvailable = response.passed && !response.feedback_locked;
+        updateHistoryToolbar();
         var resultMap = {};
-        var answerRevealConfirmed = false;
         (response.question_results || []).forEach(function(item) {
             resultMap[item.question_id] = item;
         });
