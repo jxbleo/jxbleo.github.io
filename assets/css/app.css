@@ -324,7 +324,13 @@ button { cursor: pointer; }
     font-weight: 850;
     text-decoration: none;
 }
-.task-go-button { min-width: 54px; padding: 0 13px; }
+.task-go-button {
+    width: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    border-radius: 999px;
+}
 .star-button { background: #d89528; }
 .star-button:hover { background: #ba7417; }
 .star-button.collected, .star-button:disabled {
@@ -768,7 +774,7 @@ button { cursor: pointer; }
         min-width: 46px;
         min-height: 46px;
         padding: 0;
-        border-radius: 14px;
+        border-radius: 999px;
     }
     .profile-grid { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
