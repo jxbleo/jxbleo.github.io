@@ -168,7 +168,7 @@
     function scorePill(item, status) {
         if (status === 'to_do') {
             if (item.best_correct_count != null && item.best_question_count != null) {
-                return 'Best ' + item.best_correct_count + '/' + item.best_question_count;
+                return 'Only ' + item.best_correct_count + '/' + item.best_question_count;
             }
             return 'No attempts';
         }
