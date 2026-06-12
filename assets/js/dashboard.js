@@ -186,6 +186,7 @@
         var collected = isStarCollected(item);
         return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
             '<div>' +
+                '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
                 '<div class="assignment-pills">' +
                     '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
                     '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' +
