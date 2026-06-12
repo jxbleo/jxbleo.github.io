@@ -60,14 +60,13 @@
     }
 
     function formatDate(value) {
-        if (!value) return 'No due date';
+        if (!value) return 'Due next class';
         var date = value instanceof Date ? value : new Date(value);
-        if (isNaN(date.getTime())) return 'No due date';
-        return new Intl.DateTimeFormat('en-GB', {
+        if (isNaN(date.getTime())) return 'Due next class';
+        return 'Due ' + new Intl.DateTimeFormat('en-GB', {
             timeZone: 'Asia/Shanghai',
             month: 'short',
-            day: 'numeric',
-            year: 'numeric'
+            day: 'numeric'
         }).format(date);
     }
 
@@ -121,58 +120,81 @@
     }
 
     function statusLabel(status) {
-        if (status === 'done') return 'STAR';
-        if (status === 'failed') return 'RE-DO';
+        if (status === 'mastered') return 'MASTERED';
+        if (status === 'passed') return 'PASSED';
         return 'TO-DO';
+    }
+
+    function normalizedStatus(status) {
+        if (status === 'done') return 'mastered';
+        if (status === 'failed' || status === 'not_done') return 'to_do';
+        return status || 'to_do';
     }
 
     function practiceHref(item, assignmentId) {
         var href = item.link || item.href || '#';
         var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
         if (assignmentId) params.push('assignment=' + encodeURIComponent(assignmentId));
+        if (item.prefill_attempt_id) params.push('prefill=' + encodeURIComponent(item.prefill_attempt_id));
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
         return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
     }
 
     function renderAssignmentFilters(assignments) {
-        var counts = { not_done: 0, failed: 0, done: 0 };
+        var counts = { to_do: 0, passed: 0, mastered: 0 };
         assignments.forEach(function(item) {
-            counts[item.status] = (counts[item.status] || 0) + 1;
+            var status = normalizedStatus(item.status);
+            counts[status] = (counts[status] || 0) + 1;
         });
         return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
             '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
-                '<span class="summary-value">' + counts.not_done + '</span><span class="summary-label">TO-DO</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'redo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="redo">' +
-                '<span class="summary-value">' + counts.failed + '</span><span class="summary-label">RE-DO</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'stars' ? ' active' : '') + '" type="button" data-assignment-filter="stars">' +
-                '<span class="summary-value">' + counts.done + '</span><span class="summary-label">STARS</span></button>' +
+                '<span class="summary-value">' + counts.to_do + '</span><span class="summary-label">TO DO</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'passed' ? ' active' : '') + '" type="button" data-assignment-filter="passed">' +
+                '<span class="summary-value">' + counts.passed + '</span><span class="summary-label">PASSED</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'mastered' ? ' active' : '') + '" type="button" data-assignment-filter="mastered">' +
+                '<span class="summary-value">' + counts.mastered + '</span><span class="summary-label">MASTERED</span></button>' +
         '</div>';
+    }
+
+    function starStorageKey(item) {
+        return 'mrcat-star-collected:' + (state.session.profile && state.session.profile.auth_uid || state.session.profile && state.session.profile.student_id || 'student') +
+            ':' + (item.assignment_id || item.set && item.set.set_id || '');
+    }
+
+    function isStarCollected(item) {
+        try { return localStorage.getItem(starStorageKey(item)) === '1'; } catch (e) { return false; }
+    }
+
+    function scorePill(item, status) {
+        if (status === 'to_do') {
+            if (item.best_correct_count != null && item.best_question_count != null) {
+                return 'Best ' + item.best_correct_count + '/' + item.best_question_count;
+            }
+            return 'No attempts';
+        }
+        var value = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
+        if (value == null) return statusLabel(status);
+        return status === 'mastered' ? 'Mastered ' + value + '%' : 'Passed ' + value + '%';
     }
 
     function taskCard(item) {
         var set = item.set || item;
-        var status = item.status || 'not_done';
-        var action = status === 'done' ? 'Review' : (status === 'not_done' ? 'Start' : 'Try Again');
-        var badgeClass = status === 'not_done' ? 'todo' : status;
-        var score = item.latest_percentage == null ? '' : '<span>Latest ' + escapeHtml(item.latest_percentage) + '%</span>';
-        var href = status === 'done' && item.review_attempt_id
-            ? 'attempt-review.html?attempt=' + encodeURIComponent(item.review_attempt_id)
-            : practiceHref(set, item.assignment_id);
-        if (status === 'failed') href += '&retry=1';
-        return '<article class="task-card">' +
+        var status = normalizedStatus(item.status);
+        var action = status === 'to_do' ? 'Start' : 'Keep Trying';
+        var badgeClass = status;
+        var href = practiceHref(Object.assign({}, set, { prefill_attempt_id: item.prefill_attempt_id }), item.assignment_id);
+        var collected = isStarCollected(item);
+        return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
             '<div>' +
-                '<h3>' +
-                    '<span class="badge ' + escapeHtml(badgeClass) + '" style="margin-right:8px;vertical-align:middle;">' + statusLabel(status) + '</span>' +
-                    '<span style="vertical-align:middle;">' + escapeHtml(set.title || set.set_id) + '</span>' +
-                '</h3>' +
-                '<div class="card-meta">' +
-                    '<span>' + escapeHtml(set.course || set.type || 'Practice') + '</span>' +
-                    '<span>Due ' + escapeHtml(formatDate(item.due_at)) + '</span>' +
-                    score +
-                    '<span>' + escapeHtml(item.attempt_count || 0) + ' attempt' + ((item.attempt_count || 0) === 1 ? '' : 's') + '</span>' +
-                    (item.star_source === 'explore' ? '<span>Completed in Explore</span>' : '') +
+                '<div class="assignment-pills">' +
+                    '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
+                    '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' +
+                    '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>' +
                 '</div>' +
             '</div>' +
+            (status === 'mastered'
+                ? '<button class="card-button star-button' + (collected ? ' collected' : '') + '" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '"' + (collected ? ' disabled' : '') + '>' + (collected ? 'Star collected' : 'Get Star') + '</button>'
+                : '') +
             '<a class="card-button" href="' + escapeHtml(href) + '">' + action + '</a>' +
         '</article>';
     }
@@ -190,7 +212,7 @@
         if (days === 'all') return assignments;
         var cutoff = Date.now() - Number(days) * 86400000;
         return assignments.filter(function(item) {
-            var completed = new Date(item.completed_at || item.updated_at || 0).getTime();
+            var completed = new Date(item.mastered_at || item.completed_at || item.updated_at || 0).getTime();
             return completed >= cutoff;
         });
     }
@@ -211,28 +233,28 @@
         }
 
         var assignments = state.assignments || [];
-        var todo = assignments.filter(function(item) { return item.status === 'not_done'; }).sort(newestFirst);
-        var redo = assignments.filter(function(item) { return item.status === 'failed'; }).sort(newestFirst);
-        var allStars = assignments.filter(function(item) { return item.status === 'done'; }).sort(function(left, right) {
-            return new Date(right.completed_at || right.updated_at || 0).getTime() -
-                new Date(left.completed_at || left.updated_at || 0).getTime();
+        var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
+        var passed = assignments.filter(function(item) { return normalizedStatus(item.status) === 'passed'; }).sort(newestFirst);
+        var mastered = assignments.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).sort(function(left, right) {
+            return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
+                new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
         });
         var visible = [];
         if (state.assignmentFilter === 'todo') visible = todo;
-        else if (state.assignmentFilter === 'redo') visible = redo;
-        else if (state.assignmentFilter === 'stars') visible = filterDone(allStars, state.starsRange);
-        else visible = redo.concat(todo);
+        else if (state.assignmentFilter === 'passed') visible = passed;
+        else if (state.assignmentFilter === 'mastered') visible = filterDone(mastered, state.starsRange);
+        else visible = todo;
 
         var html = renderAssignmentFilters(assignments);
-        if (state.assignmentFilter === 'stars') html += starsControls();
+        if (state.assignmentFilter === 'mastered') html += starsControls();
         if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!visible.length) {
-            var emptyLabel = state.assignmentFilter === 'stars'
-                ? 'No stars in this time range.'
-                : state.assignmentFilter === 'redo'
-                    ? 'No work needs another try.'
+            var emptyLabel = state.assignmentFilter === 'mastered'
+                ? 'No mastered work in this time range.'
+                : state.assignmentFilter === 'passed'
+                    ? 'No passed work yet.'
                     : state.assignmentFilter === 'todo'
                         ? 'No new work is waiting.'
                         : 'Nothing is waiting right now.';
@@ -256,6 +278,23 @@
                 renderAssignments();
             });
         }
+
+        document.querySelectorAll('[data-get-star]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var card = button.closest('.task-card');
+                var assignmentId = button.dataset.getStar;
+                var item = assignments.find(function(candidate) { return candidate.assignment_id === assignmentId; });
+                try { if (item) localStorage.setItem(starStorageKey(item), '1'); } catch (e) {}
+                button.disabled = true;
+                button.textContent = 'Star collected';
+                button.classList.add('collected');
+                var burst = document.createElement('div');
+                burst.className = 'star-burst';
+                burst.textContent = '★';
+                card.appendChild(burst);
+                window.setTimeout(function() { burst.remove(); }, 900);
+            });
+        });
     }
 
     function resourceCard(item) {

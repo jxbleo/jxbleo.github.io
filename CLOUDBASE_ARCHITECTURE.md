@@ -13,7 +13,7 @@ The first complete student flow is:
 4. The student completes a practice set.
 5. CloudBase grades the submission.
 6. Every attempt is stored.
-7. The assignment becomes `done` or `failed`.
+7. The assignment becomes `passed`, `mastered`, or remains `to_do`.
 8. The student can use `Try Again` without losing earlier records.
 
 The existing static practice pages should be retained and adapted instead of
@@ -70,9 +70,9 @@ capsules:
 
 The default view has three selectable status cards:
 
-- `TO-DO`: assignments not attempted yet
-- `RE-DO`: assignments that have a failed attempt and need another try
-- `STARS`: completed assignments
+- `TO DO`: assignments below the passing threshold
+- `PASSED`: assignments at or above the passing threshold but below mastery
+- `MASTERED`: assignments at or above the mastery threshold
 
 On first entry, the list combines `RE-DO` and `TO-DO`. `RE-DO` appears first.
 Within each type, newly assigned work appears first. Selecting a status card
@@ -81,12 +81,12 @@ shows only that type without extra explanatory sections.
 Assignment statuses are:
 
 ```text
-not_done
-failed
-done
+to_do
+passed
+mastered
 ```
 
-`STARS` defaults to the most recent week. The student can switch between:
+`MASTERED` defaults to the most recent week. The student can switch between:
 
 - 1 Week
 - 1 Month
@@ -230,6 +230,7 @@ link: string
 difficulty: string
 estimated_minutes: number | null
 passing_percentage: number | null
+mastery_percentage: number | null
 feedback_policy: string | null
 visible: boolean
 created_at: server timestamp
@@ -258,14 +259,23 @@ One record represents one assignment of a set to one student.
 assignment_id: string
 student_uid: string
 set_id: string
-status: "not_done" | "failed" | "done"
+status: "to_do" | "passed" | "mastered"
 assigned_at: server timestamp
 due_at: timestamp | null
 completed_at: timestamp | null
+mastered_at: timestamp | null
 latest_attempt_id: string | null
 attempt_count: number
 latest_percentage: number | null
 best_percentage: number | null
+raw_best_percentage: number | null
+best_attempt_id: string | null
+best_correct_count: number | null
+best_question_count: number | null
+answer_revealed: boolean
+answer_revealed_at: timestamp | null
+mastery_locked: boolean
+mastery_locked_at: timestamp | null
 created_at: server timestamp
 updated_at: server timestamp
 ```
@@ -291,7 +301,13 @@ correct_count: number
 question_count: number
 percentage: number
 passing_percentage: number
+mastery_percentage: number
 passed: boolean
+mastered: boolean
+raw_percentage: number
+display_percentage: number
+mastery_eligible: boolean
+mastery_blocked_reason: string
 feedback_policy: string
 started_at: timestamp
 submitted_at: server timestamp
@@ -341,6 +357,7 @@ Initial grading defaults:
 ```json
 {
   "default_passing_percentage": 50,
+  "default_mastery_percentage": 90,
   "default_feedback_policy": "always"
 }
 ```

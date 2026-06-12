@@ -983,6 +983,7 @@
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
         var assignmentId = params.get('assignment') || '';
+        var prefillAttemptId = params.get('prefill') || '';
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
@@ -1016,6 +1017,44 @@
             var user = localStorage.getItem('opencode_user') || '';
             var isVisitor = localStorage.getItem('opencode_visitor') === 'true';
             el.textContent = user ? getStudentLabel(user) : (isVisitor ? 'Visitor' : 'Login');
+        }
+
+        function currentUserId() {
+            return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+        }
+
+        function testDraftKey() {
+            return 'vocab-test-' + setId + '-' + (assignmentId || currentUserId() || 'visitor');
+        }
+
+        function saveTestDraft() {
+            if (!activeTestGroups.length || !testStartedAt) return;
+            var answers = {};
+            document.querySelectorAll('.test-question').forEach(function(card) {
+                var input = card.querySelector('.answer-input');
+                answers[card.getAttribute('data-question-key')] = input ? input.value : '';
+            });
+            try {
+                localStorage.setItem(testDraftKey(), JSON.stringify({
+                    group_ids: activeTestGroups.map(function(group) { return group.id; }),
+                    group_count: activeTestGroupCount,
+                    started_at: testStartedAt,
+                    total_seconds: activeTestGroupCount * 120,
+                    answers: answers
+                }));
+            } catch (e) {}
+        }
+
+        function clearTestDraft() {
+            try { localStorage.removeItem(testDraftKey()); } catch (e) {}
+        }
+
+        function recordAnswerReveal() {
+            if (!assignmentId || !window.MrCatCloud) return;
+            window.MrCatCloud.callFunction('getDashboard', {
+                action: 'revealAnswers',
+                assignment_id: assignmentId
+            }).catch(function() {});
         }
 
         function showError(message) {
@@ -1575,6 +1614,128 @@
             }, 1000);
         }
 
+        function restoreTestDraft() {
+            if (params.get('retry') === '1') {
+                clearTestDraft();
+                return false;
+            }
+            var draft = null;
+            try { draft = JSON.parse(localStorage.getItem(testDraftKey()) || 'null'); } catch (e) {}
+            if (!draft || !draft.group_ids || !draft.group_ids.length || !draft.started_at) return false;
+            var elapsed = Math.max(0, Math.round((Date.now() - new Date(draft.started_at).getTime()) / 1000));
+            var remaining = Math.max(0, Number(draft.total_seconds || draft.group_count * 120) - elapsed);
+            if (remaining <= 0) {
+                clearTestDraft();
+                return false;
+            }
+            var groupMap = {};
+            (unitData.quizGroups || []).forEach(function(group) { groupMap[group.id] = group; });
+            var selected = draft.group_ids.map(function(id) { return groupMap[id]; }).filter(Boolean);
+            if (!selected.length) return false;
+            activeTestGroups = selected;
+            activeTestGroupCount = Number(draft.group_count || selected.length);
+            testStartedAt = draft.started_at;
+            var root = document.getElementById('test-groups');
+            document.getElementById('test-summary').classList.remove('show');
+            document.getElementById('test-setup').classList.add('locked');
+            document.getElementById('test-setup').style.display = 'none';
+            root.innerHTML = selected.map(function(group, groupIndex) {
+                var questions = (group.questions || []).map(function(question, index) {
+                    return renderTestQuestion(group, question, index);
+                }).join('');
+                return '<div class="group-card">' +
+                    '<div class="group-head">' +
+                        '<div class="group-head-main">' +
+                            '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
+                            renderWordBank(group.wordList || []) +
+                        '</div>' +
+                        renderFontControls() +
+                    '</div>' +
+                    '<div class="question-list">' + questions + '</div>' +
+                '</div>';
+            }).join('');
+            setupAdaptiveInputs(root);
+            Object.keys(draft.answers || {}).forEach(function(key) {
+                var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
+                if (!card) return;
+                var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
+                if (input) input.value = draft.answers[key] || '';
+                if (trigger && draft.answers[key]) {
+                    trigger.textContent = draft.answers[key];
+                    trigger.classList.add('selected');
+                }
+            });
+            document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            startTimer(remaining);
+            return true;
+        }
+
+        function startTestWithGroups(selected, answers) {
+            if (!selected || !selected.length) return false;
+            activeTestGroups = selected;
+            activeTestGroupCount = selected.length;
+            testStartedAt = new Date().toISOString();
+            var root = document.getElementById('test-groups');
+            document.getElementById('test-summary').classList.remove('show');
+            document.getElementById('test-setup').classList.add('locked');
+            document.getElementById('test-setup').style.display = 'none';
+            root.innerHTML = selected.map(function(group, groupIndex) {
+                var questions = (group.questions || []).map(function(question, index) {
+                    return renderTestQuestion(group, question, index);
+                }).join('');
+                return '<div class="group-card">' +
+                    '<div class="group-head">' +
+                        '<div class="group-head-main">' +
+                            '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
+                            renderWordBank(group.wordList || []) +
+                        '</div>' +
+                        renderFontControls() +
+                    '</div>' +
+                    '<div class="question-list">' + questions + '</div>' +
+                '</div>';
+            }).join('');
+            setupAdaptiveInputs(root);
+            Object.keys(answers || {}).forEach(function(key) {
+                var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
+                if (!card) return;
+                var input = card.querySelector('.answer-input');
+                var trigger = card.querySelector('.blank-trigger');
+                if (input) input.value = answers[key] || '';
+                if (trigger && answers[key]) {
+                    trigger.textContent = answers[key];
+                    trigger.classList.add('selected');
+                }
+            });
+            document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            startTimer(selected.length * 120);
+            saveTestDraft();
+            return true;
+        }
+
+        function fetchPrefillAttempt() {
+            if (!prefillAttemptId || !window.MrCatCloud) return Promise.resolve(false);
+            if (params.get('retry') === '1') return Promise.resolve(false);
+            try {
+                if (localStorage.getItem(testDraftKey())) return Promise.resolve(false);
+            } catch (e) {}
+            return window.MrCatCloud.callFunction('getDashboard', {
+                action: 'getAttemptForRetry',
+                attempt_id: prefillAttemptId
+            }).then(function(result) {
+                if (!result || !result.success || !result.attempt || !result.attempt.answers) return false;
+                var groupIds = [];
+                Object.keys(result.attempt.answers).forEach(function(key) {
+                    var groupId = key.split(':')[0];
+                    if (groupId && groupIds.indexOf(groupId) === -1) groupIds.push(groupId);
+                });
+                var groupMap = {};
+                (unitData.quizGroups || []).forEach(function(group) { groupMap[group.id] = group; });
+                var selected = groupIds.map(function(id) { return groupMap[id]; }).filter(Boolean);
+                return startTestWithGroups(selected, result.attempt.answers);
+            }).catch(function() { return false; });
+        }
+
         function startTest() {
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
@@ -1606,6 +1767,7 @@
             setupAdaptiveInputs(root);
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
             startTimer(count * 120);
+            saveTestDraft();
             root.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
@@ -1672,15 +1834,17 @@
                     ? (response.passed ? 'Passed' : 'Failed')
                     : 'Self-test only — this result was not saved';
                 summary.innerHTML = 'Score: ' + response.correct_count + ' / ' + response.question_count +
-                    ' · ' + response.percentage + '% · ' + resultLabel +
+                    (response.passed ? ' · ' + response.percentage + '%' : '') + ' · ' + resultLabel +
                     (response.feedback_locked ? '' : '<br><button class="btn btn-primary" id="vocab-view-answers" type="button" style="margin-top:12px;">View Answers</button>') +
-                    '<br><button class="btn btn-primary" id="vocab-try-again" type="button" style="margin-top:12px;">Try Again</button>';
+                    '<br><button class="btn btn-primary" id="vocab-keep-answers" type="button" style="margin-top:12px;">Keep my answers</button>' +
+                    '<button class="btn btn-primary" id="vocab-clear-retry" type="button" style="margin-top:12px;margin-left:8px;">Clear and retry</button>';
                 summary.classList.add('show');
                 var viewAnswersBtn = document.getElementById('vocab-view-answers');
                 if (viewAnswersBtn) {
                     viewAnswersBtn.addEventListener('click', function() {
                         if (!answerRevealConfirmed) {
                             answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+                            if (answerRevealConfirmed) recordAnswerReveal();
                         }
                         if (!answerRevealConfirmed) return;
                         document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) {
@@ -1690,7 +1854,14 @@
                         viewAnswersBtn.textContent = 'Answers Shown';
                     });
                 }
-                document.getElementById('vocab-try-again').addEventListener('click', function() {
+                document.getElementById('vocab-keep-answers').addEventListener('click', function() {
+                    saveTestDraft();
+                    var url = new URL(window.location.href);
+                    url.searchParams.delete('retry');
+                    window.location.href = url.toString();
+                });
+                document.getElementById('vocab-clear-retry').addEventListener('click', function() {
+                    clearTestDraft();
                     var url = new URL(window.location.href);
                     url.searchParams.set('retry', '1');
                     window.location.href = url.toString();
@@ -1699,6 +1870,7 @@
                 timer.textContent = 'Finished';
                 timer.classList.remove('sticky');
                 submitButton.style.display = 'none';
+                clearTestDraft();
             }).catch(function(error) {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit Test';
@@ -1736,6 +1908,9 @@
             document.getElementById('submit-test-btn').addEventListener('click', submitTest);
             document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.addEventListener('click', handleChoiceClick);
+            document.getElementById('test-groups').addEventListener('change', saveTestDraft);
+            document.getElementById('test-groups').addEventListener('input', saveTestDraft);
+            window.addEventListener('beforeunload', saveTestDraft);
         }
 
         function renderUnit(data) {
@@ -1748,6 +1923,7 @@
             wireEvents();
             document.getElementById('loading').style.display = 'none';
             document.getElementById('app').style.display = 'block';
+            if (!restoreTestDraft()) fetchPrefillAttempt();
         }
 
         updateIdentityStatus();

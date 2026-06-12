@@ -286,14 +286,15 @@
     }
 
     function assignmentSummary(assignments) {
-        var counts = { not_done: 0, failed: 0, done: 0 };
+        var counts = { to_do: 0, passed: 0, mastered: 0 };
         assignments.forEach(function(item) {
-            counts[item.status] = (counts[item.status] || 0) + 1;
+            var status = normalizedAssignmentStatus(item.status);
+            counts[status] = (counts[status] || 0) + 1;
         });
         return '<div class="summary-grid student-summary">' +
-            '<div class="summary-card"><span class="summary-value">' + counts.not_done + '</span><span class="summary-label">TO DO</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.failed + '</span><span class="summary-label">FAILED</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.done + '</span><span class="summary-label">DONE</span></div>' +
+            '<div class="summary-card"><span class="summary-value">' + counts.to_do + '</span><span class="summary-label">TO DO</span></div>' +
+            '<div class="summary-card"><span class="summary-value">' + counts.passed + '</span><span class="summary-label">PASSED</span></div>' +
+            '<div class="summary-card"><span class="summary-value">' + counts.mastered + '</span><span class="summary-label">MASTERED</span></div>' +
         '</div>';
     }
 
@@ -314,7 +315,7 @@
 
         var assignmentHtml = assignments.length ? assignments.map(function(item) {
             return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_title) + '</strong>' +
-                '<small>' + escapeHtml(item.status === 'done' ? 'Done' : item.status === 'failed' ? 'Failed' : 'To Do') +
+                '<small>' + escapeHtml(assignmentStatusLabel(item.status)) +
                 ' · ' + escapeHtml(item.attempt_count) + ' attempts</small></div>' +
                 '<span>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '% best') + '</span></article>';
         }).join('') : '<p class="muted">No assignments yet.</p>';
@@ -366,6 +367,19 @@
         if (Array.isArray(value)) return value.join(' / ');
         if (value && typeof value === 'object') return JSON.stringify(value);
         return value == null ? '—' : String(value);
+    }
+
+    function normalizedAssignmentStatus(status) {
+        if (status === 'done') return 'mastered';
+        if (status === 'failed' || status === 'not_done') return 'to_do';
+        return status || 'to_do';
+    }
+
+    function assignmentStatusLabel(status) {
+        status = normalizedAssignmentStatus(status);
+        if (status === 'mastered') return 'Mastered';
+        if (status === 'passed') return 'Passed';
+        return 'To Do';
     }
 
     function disputeGroupKey(item) {

@@ -35,40 +35,23 @@ function effectivePercentage(attempt) {
   );
 }
 
-async function protectStar(student, setId, attempt, source, earnedAt) {
-  const existing = await getOne("student_set_achievements", {
-    student_uid: student.auth_uid,
-    set_id: setId,
-  });
-  const percentage = effectivePercentage(attempt);
-  const attemptId = attempt.attempt_id;
-  if (existing) {
-    const update = { updated_at: earnedAt };
-    if (percentage > Number(existing.best_percentage || 0)) {
-      update.best_percentage = percentage;
-      update.best_attempt_id = attemptId;
-    }
-    await db.collection("student_set_achievements").doc(existing._id).update(update);
-    return existing.achievement_id || existing._id;
-  }
+function masteryPercentageForSet(set) {
+  return Number(set.mastery_percentage == null ? 90 : set.mastery_percentage);
+}
 
-  const achievement = {
-    achievement_id: [student.auth_uid, setId].join("::"),
-    student_uid: student.auth_uid,
-    student_id_snapshot: student.student_id,
-    set_id: setId,
-    status: "star",
-    protected: true,
-    source,
-    first_earned_at: earnedAt,
-    first_qualifying_attempt_id: attemptId,
-    best_attempt_id: attemptId,
-    best_percentage: percentage,
-    created_at: earnedAt,
-    updated_at: earnedAt,
-  };
-  await db.collection("student_set_achievements").add(achievement);
-  return achievement.achievement_id;
+function assignmentMasteryLocked(assignment) {
+  return Boolean(assignment && assignment.mastery_locked === true && assignment.status !== "mastered");
+}
+
+function displayPercentage(rawPercentage, assignment, masteryPercentage) {
+  return assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage ? masteryPercentage - 0.01 : rawPercentage;
+}
+
+function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage, assignment) {
+  if (assignment && assignment.status === "mastered") return "mastered";
+  if (!assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage) return "mastered";
+  if (displayPercentage(rawPercentage, assignment, masteryPercentage) >= passingPercentage) return "passed";
+  return "to_do";
 }
 
 function gradeAnswers(submittedAnswers, gradingKey, mode) {
@@ -121,11 +104,17 @@ exports.main = async (event) => {
     const passingPercentage = Number(
       set.passing_percentage == null ? 50 : set.passing_percentage
     );
-    const passed = grading.percentage >= passingPercentage;
-    const feedbackPolicy = set.feedback_policy || "always";
+    const masteryPercentage = masteryPercentageForSet(set);
+    const displayedPercentage = displayPercentage(grading.percentage, assignment, masteryPercentage);
+    const status = statusForPercentage(grading.percentage, passingPercentage, masteryPercentage, assignment);
+    const passed = status === "passed" || status === "mastered";
+    const mastered = status === "mastered";
     const isUnrecordedPractice = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && Number(event.selected_group_count || 0) < 5);
-    const mayShowFeedback = feedbackPolicy === "always" || passed;
+    const feedbackPolicy = set.feedback_policy || "always";
+    const mayShowFeedback = isUnrecordedPractice
+      ? feedbackPolicy === "always" || passed
+      : passed;
     if (isUnrecordedPractice) {
       return {
         success: true,
@@ -133,8 +122,11 @@ exports.main = async (event) => {
         correct_count: grading.correctCount,
         question_count: grading.questionCount,
         percentage: grading.percentage,
+        display_percentage: grading.percentage,
         passing_percentage: passingPercentage,
+        mastery_percentage: masteryPercentage,
         passed,
+        mastered,
         status: "self_test",
         question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
           question_id: item.question_id,
@@ -184,9 +176,15 @@ exports.main = async (event) => {
       question_results: grading.results,
       correct_count: grading.correctCount,
       question_count: grading.questionCount,
-      percentage: grading.percentage,
+      raw_percentage: grading.percentage,
+      percentage: displayedPercentage,
+      display_percentage: displayedPercentage,
       passing_percentage: passingPercentage,
+      mastery_percentage: masteryPercentage,
       passed,
+      mastered,
+      mastery_eligible: mastered,
+      mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
       feedback_policy: feedbackPolicy,
       started_at: event.started_at || null,
       submitted_at: submittedAt,
@@ -200,27 +198,24 @@ exports.main = async (event) => {
 
     await db.collection("attempts").add(attempt);
 
-    if (passed) {
-      await protectStar(
-        student,
-        setId,
-        attempt,
-        assignmentId ? "assignment" : "explore",
-        submittedAt
-      );
-    }
-
     if (assignment) {
-      const best = Math.max(Number(assignment.best_percentage || 0), grading.percentage);
+      const best = Math.max(Number(assignment.best_percentage || 0), displayedPercentage);
+      const rawBest = Math.max(Number(assignment.raw_best_percentage || 0), grading.percentage);
       const update = {
-        status: passed ? "done" : (assignment.status === "done" ? "done" : "failed"),
+        status,
         latest_attempt_id: attemptId,
         attempt_count: Number(assignment.attempt_count || 0) + 1,
-        latest_percentage: grading.percentage,
+        latest_percentage: displayedPercentage,
+        latest_raw_percentage: grading.percentage,
         best_percentage: best,
+        raw_best_percentage: rawBest,
+        best_attempt_id: best === displayedPercentage ? attemptId : assignment.best_attempt_id || assignment.latest_attempt_id || null,
+        best_correct_count: best === displayedPercentage ? grading.correctCount : assignment.best_correct_count || null,
+        best_question_count: best === displayedPercentage ? grading.questionCount : assignment.best_question_count || null,
         updated_at: submittedAt,
       };
       if (passed && !assignment.completed_at) update.completed_at = submittedAt;
+      if (mastered && !assignment.mastered_at) update.mastered_at = submittedAt;
       await db.collection("assignments").doc(assignment._id).update(update);
       const verifyResult = await db.collection("assignments").doc(assignment._id).get();
       const verified = verifyResult.data && verifyResult.data[0];
@@ -236,10 +231,16 @@ exports.main = async (event) => {
       attempt_number: attemptNumber,
       correct_count: grading.correctCount,
       question_count: grading.questionCount,
-      percentage: grading.percentage,
+      raw_percentage: grading.percentage,
+      percentage: displayedPercentage,
+      display_percentage: displayedPercentage,
       passing_percentage: passingPercentage,
+      mastery_percentage: masteryPercentage,
       passed,
-      status: passed ? "done" : "failed",
+      mastered,
+      status,
+      mastery_eligible: mastered,
+      mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
       question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
         question_id: item.question_id,
         submitted_answer: item.submitted_answer,
