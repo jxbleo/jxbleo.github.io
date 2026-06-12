@@ -1618,6 +1618,7 @@
 
         function submitVocabularyTest(questions) {
             var answers = {};
+            var answerRevealConfirmed = false;
             questions.forEach(function(card) {
                 var key = card.getAttribute('data-question-key');
                 var input = card.querySelector('.answer-input');
@@ -1661,7 +1662,8 @@
                     if (!result.correct && !response.feedback_locked) {
                         reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
                             (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
-                        reveal.classList.add('show');
+                        reveal.classList.remove('show');
+                        reveal.setAttribute('data-answer-reveal', '1');
                     }
                 });
 
@@ -1671,8 +1673,23 @@
                     : 'Self-test only — this result was not saved';
                 summary.innerHTML = 'Score: ' + response.correct_count + ' / ' + response.question_count +
                     ' · ' + response.percentage + '% · ' + resultLabel +
+                    (response.feedback_locked ? '' : '<br><button class="btn btn-primary" id="vocab-view-answers" type="button" style="margin-top:12px;">View Answers</button>') +
                     '<br><button class="btn btn-primary" id="vocab-try-again" type="button" style="margin-top:12px;">Try Again</button>';
                 summary.classList.add('show');
+                var viewAnswersBtn = document.getElementById('vocab-view-answers');
+                if (viewAnswersBtn) {
+                    viewAnswersBtn.addEventListener('click', function() {
+                        if (!answerRevealConfirmed) {
+                            answerRevealConfirmed = confirm('一旦查看答案，你将无法将本题进度提升至 master 等级，也无法获得对应星星，是否确认继续查看？');
+                        }
+                        if (!answerRevealConfirmed) return;
+                        document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) {
+                            el.classList.add('show');
+                        });
+                        viewAnswersBtn.disabled = true;
+                        viewAnswersBtn.textContent = 'Answers Shown';
+                    });
+                }
                 document.getElementById('vocab-try-again').addEventListener('click', function() {
                     var url = new URL(window.location.href);
                     url.searchParams.set('retry', '1');
