@@ -679,6 +679,23 @@
             display: block;
         }
 
+        .teacher-argue-btn {
+            margin-top: 8px;
+            padding: 6px 12px;
+            border: 1px solid #d6bcfa;
+            border-radius: 999px;
+            color: #5b21b6;
+            background: #f5f0ff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .teacher-argue-btn.sent {
+            color: #237a52;
+            border-color: #8cc8a8;
+            background: #ecf9f1;
+        }
+
         .group-actions {
             display: flex;
             gap: 10px;
@@ -1226,6 +1243,55 @@
                 reveal.innerHTML = '';
                 reveal.removeAttribute('data-teacher-answer');
             });
+            document.querySelectorAll('[data-teacher-mark="1"]').forEach(function(card) {
+                card.classList.remove('correct', 'wrong', 'pending');
+                card.removeAttribute('data-teacher-mark');
+            });
+        }
+
+        function answerMatches(submitted, expected) {
+            var accepted = Array.isArray(expected) ? expected : [expected];
+            return accepted.some(function(answer) {
+                return normalizeAnswer(answer) === normalizeAnswer(submitted);
+            });
+        }
+
+        function vocabularyQuestionText(card) {
+            var sentence = card.querySelector('.question-sentence');
+            return sentence ? sentence.textContent.trim() : '';
+        }
+
+        function submitTeacherArgue(button, card, key) {
+            var input = card.querySelector('.answer-input');
+            var reason = window.prompt('Teacher note for this Argue request (optional):', '') || '';
+            button.disabled = true;
+            button.textContent = 'Sending...';
+            teacherCall('submitTeacherDispute', {
+                set_id: setId,
+                question_id: key,
+                submitted_answer: input ? input.value : '',
+                question_text: vocabularyQuestionText(card),
+                reason: reason
+            }).then(function() {
+                button.classList.add('sent');
+                button.textContent = 'Argue Sent';
+            }).catch(function(error) {
+                button.disabled = false;
+                button.textContent = 'Argue';
+                alert(error.message || 'Unable to submit Argue.');
+            });
+        }
+
+        function appendTeacherArgueButton(reveal, card, key) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'teacher-argue-btn';
+            button.textContent = 'Argue';
+            button.addEventListener('click', function() {
+                submitTeacherArgue(button, card, key);
+            });
+            reveal.appendChild(document.createElement('br'));
+            reveal.appendChild(button);
         }
 
         function renderTeacherAnswers(answerKey) {
@@ -1236,8 +1302,15 @@
                 var key = card.getAttribute('data-question-key');
                 var reveal = card.querySelector('.reveal');
                 if (!key || !reveal || answers[key] == null) return;
+                var input = card.querySelector('.answer-input');
+                var submitted = input ? input.value : '';
+                if (normalizeAnswer(submitted)) {
+                    card.classList.add(answerMatches(submitted, answers[key]) ? 'correct' : 'wrong');
+                    card.setAttribute('data-teacher-mark', '1');
+                }
                 reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
                     (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
+                appendTeacherArgueButton(reveal, card, key);
                 reveal.setAttribute('data-teacher-answer', '1');
                 reveal.classList.add('show');
             });

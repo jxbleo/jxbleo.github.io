@@ -334,6 +334,12 @@ Only a wrong question in a recorded attempt can be disputed. The authenticated
 student may include an optional reason. Enforce one record per
 `attempt_id + question_id`.
 
+Teachers can also submit Argue requests from `teacher=1` practice preview after
+showing answers. Teacher-originated disputes use `requester_role: "teacher"`
+and may have `attempt_id: null`; they are for correcting grading rules, not for
+student score recovery. Resolving a teacher-originated dispute must not call
+attempt regrading logic unless an `attempt_id` is actually present.
+
 Teacher decisions are:
 
 - `keep`: retain the original ruling

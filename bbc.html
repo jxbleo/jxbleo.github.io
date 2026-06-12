@@ -840,6 +840,32 @@
             background: #fffaf5;
         }
 
+        .argue-inline.pending {
+            border-color: #d89528;
+            background: #fff8e5;
+        }
+
+        .argue-inline.approved {
+            border-color: #8cc8a8;
+            background: #ecf9f1;
+        }
+
+        .argue-inline.rejected {
+            border-color: #efc9c3;
+            background: #fff0ed;
+        }
+
+        .feedback-bar.dispute-pending,
+        .feedback-bar.dispute-approved,
+        .feedback-bar.dispute-rejected {
+            padding: 8px;
+            border-radius: 14px;
+        }
+
+        .feedback-bar.dispute-pending { background: #fff8e5; }
+        .feedback-bar.dispute-approved { background: #ecf9f1; }
+        .feedback-bar.dispute-rejected { background: #fff0ed; }
+
         .argue-inline textarea {
             width: 100%;
             min-height: 52px;
@@ -1709,9 +1735,32 @@
         return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
     }
 
+    function normalizeAnswer(value) {
+        return String(value == null ? '' : value).trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    function answerMatches(submitted, expected) {
+        var accepted = Array.isArray(expected) ? expected : [expected];
+        return accepted.some(function(answer) {
+            return normalizeAnswer(answer) === normalizeAnswer(submitted);
+        });
+    }
+
+    function questionTextForId(questionId) {
+        var blank = (lessonData.blanks || []).find(function(item) { return item.id === questionId; });
+        if (blank) return blank.prompt || blank.sentence || '';
+        var mc = (lessonData.multipleChoice || []).find(function(item) { return item.id === questionId; });
+        if (mc) return mc.question || '';
+        return '';
+    }
+
     function clearTeacherAnswerDisplay() {
         document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
             el.remove();
+        });
+        document.querySelectorAll('[data-teacher-mark="1"]').forEach(function(el) {
+            el.classList.remove('correct', 'wrong');
+            el.removeAttribute('data-teacher-mark');
         });
     }
 
@@ -1725,30 +1774,79 @@
         return div;
     }
 
+    function markTeacherAnswer(questionId, answer, submittedAnswer) {
+        if (!normalizeAnswer(submittedAnswer)) return;
+        var matched = answerMatches(submittedAnswer, answer);
+        var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
+        var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
+        var markClass = matched ? 'correct' : 'wrong';
+
+        if (mcDiv) {
+            mcDiv.classList.add(markClass);
+            mcDiv.setAttribute('data-teacher-mark', '1');
+            var selected = mcDiv.querySelector('input:checked');
+            if (selected && selected.closest('li')) {
+                selected.closest('li').classList.add(markClass);
+                selected.closest('li').setAttribute('data-teacher-mark', '1');
+            }
+            return;
+        }
+
+        if (input) {
+            input.classList.add(markClass);
+            input.setAttribute('data-teacher-mark', '1');
+        }
+    }
+
+    function teacherArgueBar(questionId) {
+        var bar = document.createElement('div');
+        bar.className = 'feedback-bar teacher-argue-bar';
+        bar.setAttribute('data-teacher-answer', '1');
+        var argueBtn = document.createElement('button');
+        argueBtn.className = 'argue-btn';
+        argueBtn.type = 'button';
+        argueBtn.textContent = 'Argue';
+        argueBtn.addEventListener('click', function() {
+            openArgueInline(questionId, bar.parentNode);
+        });
+        bar.appendChild(argueBtn);
+        return bar;
+    }
+
     function renderTeacherAnswers(answerKey) {
         clearTeacherAnswerDisplay();
         var answers = answerKey.answers || {};
         var explanations = answerKey.explanations || {};
+        var submittedAnswers = collectAnswers();
         Object.keys(answers).forEach(function(questionId) {
             var block = teacherAnswerBlock(questionId, answers[questionId], explanations[questionId] || '');
+            var bar = teacherArgueBar(questionId);
             var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
             var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
+            markTeacherAnswer(questionId, answers[questionId], submittedAnswers[questionId]);
 
             if (mcDiv) {
                 mcDiv.appendChild(block);
+                mcDiv.appendChild(bar);
                 return;
             }
 
             if (input && input.tagName === 'SELECT') {
                 var tr = input.closest('tr');
                 var td = tr && tr.querySelector('td:last-child');
-                if (td) td.appendChild(block);
+                if (td) {
+                    td.appendChild(block);
+                    td.appendChild(bar);
+                }
                 return;
             }
 
             if (input) {
                 var li = input.closest('li');
-                if (li && li.parentNode) li.parentNode.insertBefore(block, li.nextSibling);
+                if (li && li.parentNode) {
+                    li.parentNode.insertBefore(block, li.nextSibling);
+                    li.parentNode.insertBefore(bar, block.nextSibling);
+                }
             }
         });
         teacherAnswersVisible = true;
@@ -1761,9 +1859,7 @@
 
     function toggleTeacherAnswers(button) {
         if (teacherAnswersVisible) {
-            document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
-                el.classList.remove('show');
-            });
+            clearTeacherAnswerDisplay();
             teacherAnswersVisible = false;
             setTeacherButtonState(button, false);
             return;
@@ -2067,6 +2163,49 @@
         panel.querySelector('.argue-inline-cancel').addEventListener('click', function() {
             panel.remove();
         });
+        loadArgueStatus(questionId, panel, containerEl);
+    }
+
+    function renderArgueStatus(panel, dispute) {
+        if (!dispute) return;
+        panel.classList.remove('pending', 'approved', 'rejected');
+        panel.classList.add(dispute.status || 'pending');
+        var statusText = dispute.status === 'approved'
+            ? 'Approved'
+            : dispute.status === 'rejected'
+                ? 'Original ruling kept'
+                : 'Waiting for teacher review';
+        var note = dispute.teacher_note ? '<br><strong>Teacher note:</strong> ' + escapeHtml(dispute.teacher_note) : '';
+        panel.innerHTML =
+            '<div class="argue-inline-done">' +
+                '<span>' + statusText + note + '</span>' +
+                '<button class="argue-inline-close" type="button">Close</button>' +
+            '</div>';
+        panel.querySelector('.argue-inline-close').addEventListener('click', function() {
+            panel.remove();
+        });
+    }
+
+    function markArgueBar(containerEl, status) {
+        var bar = containerEl.querySelector('.feedback-bar');
+        if (!bar) return;
+        bar.classList.remove('dispute-pending', 'dispute-approved', 'dispute-rejected');
+        bar.classList.add('dispute-' + (status || 'pending'));
+    }
+
+    function loadArgueStatus(questionId, panel, containerEl) {
+        if (teacherMode || !currentArgueAttemptId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'listDisputesForAttempt',
+            attempt_id: currentArgueAttemptId
+        }).then(function(result) {
+            var dispute = (result.disputes || []).find(function(item) {
+                return String(item.question_id) === String(questionId);
+            });
+            if (!dispute) return;
+            markArgueBar(containerEl, dispute.status);
+            renderArgueStatus(panel, dispute);
+        }).catch(function() {});
     }
 
     function submitArgueInline(questionId, panel) {
@@ -2074,18 +2213,31 @@
         var submitBtn = panel.querySelector('.argue-inline-submit');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
-        window.MrCatCloud.callFunction('getDashboard', {
-            action: 'submitDispute',
-            attempt_id: currentArgueAttemptId || '',
-            question_id: questionId,
-            reason: reason
-        }).then(function(result) {
+        var call = teacherMode
+            ? window.MrCatCloud.callFunction('teacherAdmin', {
+                action: 'submitTeacherDispute',
+                set_id: setId,
+                question_id: questionId,
+                submitted_answer: collectAnswers()[questionId] || '',
+                question_text: questionTextForId(questionId),
+                reason: reason
+            })
+            : window.MrCatCloud.callFunction('getDashboard', {
+                action: 'submitDispute',
+                attempt_id: currentArgueAttemptId || '',
+                question_id: questionId,
+                question_text: questionTextForId(questionId),
+                reason: reason
+            });
+        call.then(function(result) {
             if (!result || !result.success) {
                 throw new Error(result && result.message || result && result.code || 'Unable to submit Argue.');
             }
+            panel.classList.add('pending');
+            markArgueBar(panel.parentNode, 'pending');
             panel.innerHTML =
                 '<div class="argue-inline-done">' +
-                    'Sent to teacher. Thank you!' +
+                    (teacherMode ? 'Sent to Argue list.' : 'Sent to teacher. Thank you!') +
                     '<button class="argue-inline-close" type="button">Close</button>' +
                 '</div>';
             panel.querySelector('.argue-inline-close').addEventListener('click', function() {

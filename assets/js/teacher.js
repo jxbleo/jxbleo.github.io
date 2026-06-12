@@ -479,10 +479,12 @@
         (state.disputes || []).forEach(function(item) {
             var key = disputeGroupKey(item);
             if (!groups[key]) {
+                var requesterRole = item.requester_role || 'student';
                 groups[key] = {
                     key: key,
-                    student_name: item.student_name || item.student_id || 'Student',
+                    student_name: item.student_name || item.student_id || (requesterRole === 'teacher' ? 'Teacher' : 'Student'),
                     student_id: item.student_id || '',
+                    requester_role: requesterRole,
                     set_title: item.set_title || item.set_id,
                     set_id: item.set_id,
                     assignment_id: item.assignment_id || null,
@@ -524,6 +526,7 @@
     function renderDisputeDetail(item) {
         var pending = item.status === 'pending';
         var questionText = getQuestionText(item);
+        var requesterLabel = item.requester_role === 'teacher' ? 'Teacher note' : 'Student note';
         return '<article class="dispute-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
             escapeHtml(item.dispute_id) + '">' +
             '<div class="dispute-detail-head">' +
@@ -535,13 +538,13 @@
                 ? '<p class="dispute-question-text">' + escapeHtml(questionText) + '</p>'
                 : '<p class="dispute-question-text missing">Question text is not available from the current public data.</p>') +
             '<div class="dispute-comparison">' +
-                '<div><span>Student answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
+                '<div><span>Submitted answer</span><strong>' + escapeHtml(answerText(item.submitted_answer)) + '</strong></div>' +
                 '<div><span>Correct answer snapshot</span><strong>' + escapeHtml(answerText(item.answer_snapshot)) + '</strong></div>' +
             '</div>' +
             (item.explanation || item.explanation_snapshot
                 ? '<p class="dispute-explanation"><strong>Explanation:</strong> ' + escapeHtml(item.explanation || item.explanation_snapshot) + '</p>'
                 : '<p class="dispute-explanation missing"><strong>Explanation:</strong> No explanation is stored for this question.</p>') +
-            '<p class="dispute-reason"><strong>Student note:</strong> ' +
+            '<p class="dispute-reason"><strong>' + requesterLabel + ':</strong> ' +
                 escapeHtml(item.student_reason || 'No note provided.') + '</p>' +
             (pending
                 ? '<textarea class="dispute-note" maxlength="1000" placeholder="Teacher note (optional)"></textarea>' +

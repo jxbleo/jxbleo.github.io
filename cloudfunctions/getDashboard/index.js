@@ -137,6 +137,34 @@ async function submitDispute(student, event) {
   return { success: true, dispute_id: disputeId };
 }
 
+async function listDisputesForAttempt(student, event) {
+  const attemptId = String(event.attempt_id || "");
+  if (!attemptId) throw new Error("ATTEMPT_REQUIRED");
+  const attempt = await getOne("attempts", {
+    attempt_id: attemptId,
+    student_uid: student.auth_uid,
+  });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  const result = await db.collection("answer_disputes").where({
+    attempt_id: attemptId,
+    student_uid: student.auth_uid,
+  }).limit(100).get();
+  return {
+    success: true,
+    disputes: (result.data || []).map((item) => ({
+      dispute_id: item.dispute_id || item._id,
+      question_id: item.question_id,
+      status: item.status || "pending",
+      decision: item.decision || null,
+      teacher_note: item.teacher_note || "",
+      student_reason: item.student_reason || "",
+      created_at: item.created_at || null,
+      updated_at: item.updated_at || null,
+      resolved_at: item.resolved_at || null,
+    })),
+  };
+}
+
 async function revealAnswers(student, event) {
   const assignmentId = String(event.assignment_id || "");
   if (!assignmentId) throw new Error("ASSIGNMENT_REQUIRED");
@@ -235,6 +263,7 @@ exports.main = async (event = {}) => {
     const action = String(event.action || "dashboard");
     if (action === "getAttemptReview") return await getAttemptReview(student, event);
     if (action === "submitDispute") return await submitDispute(student, event);
+    if (action === "listDisputesForAttempt") return await listDisputesForAttempt(student, event);
     if (action === "revealAnswers") return await revealAnswers(student, event);
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
     if (action === "claimStar") return await claimStar(student, event);
