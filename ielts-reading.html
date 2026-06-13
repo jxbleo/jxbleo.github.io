@@ -56,8 +56,8 @@
         .login-modal p { color: var(--text-light); font-size: 0.9em; margin-bottom: 24px; }
         .identity-status {
             position: fixed;
-            top: 14px;
-            right: 16px;
+            left: -9999px;
+            bottom: 14px;
             z-index: 900;
             padding: 8px 14px;
             border-radius: 999px;
@@ -68,6 +68,29 @@
             font-weight: 700;
             box-shadow: 0 10px 24px rgba(44, 62, 80, 0.12);
             backdrop-filter: blur(14px);
+        }
+        body .mrcat-back {
+            left: 14px !important;
+            bottom: 14px !important;
+            min-height: 40px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 9px 15px !important;
+            border: 1px solid rgba(126, 148, 173, 0.42) !important;
+            border-radius: 999px !important;
+            color: #17233a !important;
+            background: rgba(248, 251, 255, 0.94) !important;
+            box-shadow: 0 12px 30px rgba(39, 49, 66, 0.14) !important;
+            backdrop-filter: blur(14px) !important;
+            letter-spacing: 0 !important;
+            transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease !important;
+        }
+        body .mrcat-back:hover {
+            color: var(--accent) !important;
+            border-color: rgba(37, 99, 235, 0.34) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            transform: translateY(-1px) !important;
         }
         .split-layout {
             display: grid;
@@ -110,9 +133,10 @@
         .split-divider {
             position: relative;
             width: 14px;
-            cursor: default;
+            cursor: col-resize;
             user-select: none;
-            pointer-events: none;
+            pointer-events: auto;
+            touch-action: none;
         }
         .split-divider::before {
             content: "";
@@ -135,13 +159,25 @@
             height: 64px;
             border-radius: 999px;
             background: rgba(37,99,235,0.15);
+            box-shadow: inset 0 0 0 1px rgba(37,99,235,0.12);
+            transition: background .18s ease, box-shadow .18s ease, width .18s ease;
+        }
+        .split-divider:hover::after,
+        .split-layout.resizing .split-divider::after {
+            width: 10px;
+            background: rgba(37,99,235,0.24);
+            box-shadow: inset 0 0 0 1px rgba(37,99,235,0.22), 0 8px 18px rgba(37,99,235,0.12);
+        }
+        .split-layout.resizing {
+            cursor: col-resize;
+            user-select: none;
         }
         @media (max-width: 768px) {
             .split-divider {
                 display: block;
                 width: auto;
-                height: 12px;
-                cursor: default;
+                height: 14px;
+                cursor: row-resize;
             }
             .split-divider::before {
                 left: 0;
@@ -154,6 +190,14 @@
             .split-divider::after {
                 width: 64px;
                 height: 8px;
+            }
+            .split-divider:hover::after,
+            .split-layout.resizing .split-divider::after {
+                width: 74px;
+                height: 10px;
+            }
+            .split-layout.resizing {
+                cursor: row-resize;
             }
         }
 
@@ -243,26 +287,29 @@
             display: none;
             align-items: center;
             gap: 8px;
-            padding: 8px 10px;
-            border-radius: 999px;
-            background: rgba(18, 35, 58, 0.96);
-            color: #fff;
-            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.24);
+            padding: 7px;
+            border: 1px solid rgba(126, 148, 173, 0.28);
+            border-radius: 14px;
+            background: rgba(248, 251, 255, 0.96);
+            color: var(--primary);
+            box-shadow: 0 18px 42px rgba(39, 49, 66, 0.18);
+            backdrop-filter: blur(16px);
         }
         .highlight-toolbar.show { display: inline-flex; }
         .highlight-toolbar button {
-            border: none;
-            border-radius: 999px;
-            padding: 7px 12px;
-            background: rgba(255,255,255,0.12);
-            color: #fff;
+            min-height: 32px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 6px 12px;
+            background: rgba(234, 241, 255, 0.86);
+            color: var(--primary);
             font-size: 0.82em;
-            font-weight: 600;
+            font-weight: 800;
             cursor: pointer;
         }
-        .highlight-toolbar button:hover { background: rgba(255,255,255,0.22); }
-        .highlight-toolbar button.primary { background: #facc15; color: #3b2f00; }
-        .highlight-toolbar button.primary:hover { background: #fde047; }
+        .highlight-toolbar button:hover { border-color: rgba(37,99,235,0.25); background: #fff; }
+        .highlight-toolbar button.primary { background: var(--accent); color: #fff; box-shadow: 0 8px 18px rgba(37,99,235,0.18); }
+        .highlight-toolbar button.primary:hover { background: #1d4ed8; }
 
         .question-section { margin-bottom: 0; }
         .section-label {
@@ -343,10 +390,11 @@
         .teacher-argue-btn { margin-top: 6px; padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
         .teacher-argue-btn.sent { color: #237a52; border-color: #8cc8a8; background: #ecf9f1; }
         .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
-        .teacher-argue-card { width: min(460px, 100%); padding: 22px; border-radius: 20px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
+        .teacher-argue-card { width: min(420px, 100%); padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
         .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; color: var(--primary); }
         .teacher-argue-card p { margin: 0 0 14px; color: var(--text-light); line-height: 1.45; }
-        .teacher-argue-card textarea { width: 100%; min-height: 92px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; resize: vertical; box-sizing: border-box; }
+        .teacher-argue-card textarea { width: 100%; min-height: 112px; padding: 12px 13px; border: 1px solid var(--border-color); border-radius: 14px; font-family: inherit; resize: vertical; box-sizing: border-box; outline: none; }
+        .teacher-argue-card textarea:focus { border-color: rgba(37,99,235,.48); box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
         .teacher-argue-status { margin-top: 12px !important; padding: 10px 12px; border-radius: 12px; color: #237a52 !important; background: #ecf9f1; font-weight: 700; }
         .teacher-argue-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 14px; }
         .teacher-argue-actions button { min-height: 38px; padding: 0 15px; border-radius: 11px; font-weight: 800; cursor: pointer; }
@@ -419,7 +467,21 @@
         .result-copy { color: var(--text-light); line-height: 1.45; }
         .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
         .history-toolbar { position: fixed; z-index: 999; right: 14px; bottom: 14px; display: flex; gap: 8px; justify-content: flex-end; pointer-events: none; }
-        .history-toolbar button { pointer-events: auto; border: 1px solid rgba(15,118,110,.22); border-radius: 999px; padding: 10px 14px; color: #0f5f57; background: rgba(255,255,255,.94); box-shadow: 0 10px 28px rgba(15,76,71,.16); font-size: .82rem; font-weight: 800; }
+        .history-toolbar button {
+            pointer-events: auto;
+            min-height: 40px;
+            border: 1px solid rgba(126, 148, 173, 0.42);
+            border-radius: 999px;
+            padding: 9px 15px;
+            color: #17233a;
+            background: rgba(248,251,255,.94);
+            box-shadow: 0 12px 30px rgba(39,49,66,.14);
+            backdrop-filter: blur(14px);
+            font-size: .82rem;
+            font-weight: 800;
+            transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+        }
+        .history-toolbar button:hover { color: var(--accent); border-color: rgba(37,99,235,.34); background: rgba(255,255,255,.98); transform: translateY(-1px); }
         @keyframes resultPop { from { opacity: 0; transform: translateY(18px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         .correct-mark { color: #27ae60; font-weight: bold; margin-left: 6px; }
@@ -873,8 +935,6 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="teacher-argue-card">' +
-                '<h2>Argue this question</h2>' +
-                '<p>Tell the teacher why this answer should be reviewed. This note is optional.</p>' +
                 '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
                 '<p class="teacher-argue-status" hidden></p>' +
                 '<div class="teacher-argue-actions">' +
@@ -910,8 +970,6 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="teacher-argue-card">' +
-                '<h2>Argue this question</h2>' +
-                '<p>Send this question to the Revise list. Teacher note is optional.</p>' +
                 '<textarea placeholder="Teacher note (optional)"></textarea>' +
                 '<p class="teacher-argue-status" hidden></p>' +
                 '<div class="teacher-argue-actions">' +
@@ -1104,9 +1162,10 @@
         highlightToolbar.classList.add('show');
         var toolbarRect = highlightToolbar.getBoundingClientRect();
         var left = rect.left + rect.width / 2 - toolbarRect.width / 2;
-        var top = rect.top - toolbarRect.height - 10;
+        var top = rect.bottom + 10;
         left = Math.max(12, Math.min(left, window.innerWidth - toolbarRect.width - 12));
-        if (top < 12) top = rect.bottom + 10;
+        if (top + toolbarRect.height > window.innerHeight - 12) top = rect.top - toolbarRect.height - 10;
+        top = Math.max(12, Math.min(top, window.innerHeight - toolbarRect.height - 12));
         highlightToolbar.style.left = left + 'px';
         highlightToolbar.style.top = top + 'px';
         var clearBtn = document.getElementById('highlight-clear-btn');
@@ -1179,17 +1238,18 @@
     function applySplitRatio(ratio) {
         if (!splitLayout) return;
         var clamped = Math.min(0.75, Math.max(0.25, ratio));
+        var dividerSize = 14;
         if (!isHorizontalLayout()) {
-            var heightAvailable = splitLayout.clientHeight - 12;
+            var heightAvailable = splitLayout.clientHeight - dividerSize;
             var topHeight = Math.max(170, Math.round(heightAvailable * clamped));
             splitLayout.style.gridTemplateColumns = '1fr';
-            splitLayout.style.gridTemplateRows = topHeight + 'px 12px minmax(210px, 1fr)';
+            splitLayout.style.gridTemplateRows = topHeight + 'px ' + dividerSize + 'px minmax(210px, 1fr)';
             try { localStorage.setItem(getSplitStorageKey(), clamped); } catch (e) {}
             return;
         }
-        var available = splitLayout.clientWidth - 12;
+        var available = splitLayout.clientWidth - dividerSize;
         var leftWidth = Math.max(320, Math.round(available * clamped));
-        splitLayout.style.gridTemplateColumns = leftWidth + 'px 12px minmax(320px, 1fr)';
+        splitLayout.style.gridTemplateColumns = leftWidth + 'px ' + dividerSize + 'px minmax(320px, 1fr)';
         splitLayout.style.gridTemplateRows = '';
         try { localStorage.setItem(getSplitStorageKey(), clamped); } catch (e) {}
     }
@@ -1211,9 +1271,10 @@
             splitLayout.classList.add('resizing');
             function onMove(ev) {
                 var rect = splitLayout.getBoundingClientRect();
+                var dividerSize = 14;
                 var ratio = isHorizontalLayout()
-                    ? (ev.clientX - rect.left) / Math.max(1, rect.width - 12)
-                    : (ev.clientY - rect.top) / Math.max(1, rect.height - 12);
+                    ? (ev.clientX - rect.left) / Math.max(1, rect.width - dividerSize)
+                    : (ev.clientY - rect.top) / Math.max(1, rect.height - dividerSize);
                 applySplitRatio(ratio);
             }
             function onUp() {
@@ -1632,11 +1693,26 @@
         return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
     }
 
+    function updateDashboardCapsuleLabel(label, attempt) {
+        var link = document.querySelector('.mrcat-back');
+        if (!link) {
+            if ((attempt || 0) < 20) {
+                setTimeout(function() { updateDashboardCapsuleLabel(label, (attempt || 0) + 1); }, 25);
+            }
+            return;
+        }
+        link.textContent = label || 'Dashboard';
+        link.setAttribute('aria-label', 'Back to dashboard');
+        link.title = 'Back to dashboard';
+    }
+
     function updateIdentityStatus() {
         var el = document.getElementById('identity-status');
         if (!el) return;
         var id = userId || getStoredIdentity();
-        el.textContent = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+        var label = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+        el.textContent = label;
+        updateDashboardCapsuleLabel(label);
     }
 
     function loginAsUser(id) {
@@ -1845,6 +1921,8 @@
 
         document.getElementById('highlight-add-btn').addEventListener('click', applyHighlight);
         document.getElementById('highlight-clear-btn').addEventListener('click', clearHighlight);
+        restoreSplitRatio();
+        setupResizableSplit();
         document.addEventListener('selectionchange', handleTextSelection);
         document.addEventListener('click', function(e) {
             var passageEl = getPassageEl();
