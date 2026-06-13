@@ -306,13 +306,20 @@ The student dashboard labels assignment states `TO DO`, `PASSED`, and
 and supports one month and All.
 The backend retains all attempts.
 
-STAR claims are backend records keyed by `assignment_id`. Once claimed:
+Assignment STAR records are backend records keyed by `assignment_id`. A mastered
+assignment must create or repair its protected STAR automatically in backend
+code; `claimStar` may remain as an idempotent fallback, but the dashboard count
+must not depend on localStorage or a purely frontend action. Once recorded:
 
 - it can never be revoked or downgraded by normal code
 - later failing attempts cannot remove it
 - later passing-standard changes cannot remove it
 - answer-key changes cannot remove it
 - only the best attempt reference and best percentage may improve
+
+Independent Library/Explore mastery uses a self-study STAR with
+`assignment_id: null`. `getDashboard` may repair missing historical STAR
+records from mastered attempts for both assignment and self-study work.
 
 Teacher assignment candidates are not disabled by previous STAR claims.
 
@@ -656,8 +663,9 @@ tested.
   is not already `mastered`, it sets `mastery_locked`, so later scores at or
   above mastery are capped to `mastery_percentage - 0.01` for display/status.
 - If an assignment is already `mastered`, viewing answers does not revoke it.
-- `Get Star` records a backend `student_set_achievements` claim keyed by
-  `assignment_id`; the student dashboard star counter reads this backend count.
+- Mastered assignments create a backend `student_set_achievements` record keyed
+  by `assignment_id`; the student dashboard star counter reads this backend
+  count.
 
 ### Changed files
 
@@ -697,8 +705,9 @@ Then deploy/push the static site so `dashboard.html`, `assets/js/dashboard.js`,
 - Teachers can assign by a single set, or by filtered column/keyword batch.
   Each assignment can store `passing_percentage` and `mastery_percentage`;
   blank values fall back to set/default `50/90`.
-- Student stars are backend records in `student_set_achievements` keyed by
-  `assignment_id`; the dashboard star counter updates after `claimStar`.
+- Student assignment stars are backend records in `student_set_achievements`
+  keyed by `assignment_id`; mastered assignments create or repair this record
+  automatically, and `claimStar` is only a safe fallback.
 - Student profiles may include `curriculum_track` for DSE, A-Level, AP, IB,
   Zhongkao, or Gaokao.
 - `changePassword` now changes the authenticated end user's CloudBase password
@@ -847,9 +856,12 @@ Keep them in mind before changing the same surfaces again.
   default `50/90`.
 - When adding assignment creation paths, include `passing_percentage` and
   `mastery_percentage` on the assignment record.
-- `Get Star` is backend-backed now. Use `getDashboard.claimStar` and count
-  `student_set_achievements`; do not reintroduce localStorage as the source of
-  truth.
+- Assignment STARs are backend-backed now. Count `student_set_achievements`;
+  do not reintroduce localStorage as the source of truth. `submitAttempt` and
+  `getDashboard` must create or repair assignment STAR records for mastered
+  assignments, and `getDashboard` also repairs missing self-study STAR records
+  from mastered resource attempts. `getDashboard.claimStar` is only a
+  compatibility fallback.
 - Star claims are keyed by `assignment_id` and should not block assigning the
   same `set_id` again later.
 

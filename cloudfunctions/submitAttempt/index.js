@@ -135,6 +135,47 @@ async function protectSelfStudyStar(student, attempt, now) {
   });
 }
 
+async function protectAssignmentStar(student, assignment, attempt, now) {
+  const assignmentId = assignment.assignment_id || assignment._id;
+  if (!assignmentId) return;
+  const existing = await getOne("student_set_achievements", {
+    student_uid: student.auth_uid,
+    assignment_id: assignmentId,
+  });
+  const percentage = Number(attempt.display_percentage || attempt.percentage || 0);
+  if (existing) {
+    const update = {
+      source: "assignment_claim",
+      status: "star",
+      protected: true,
+      updated_at: now,
+    };
+    if (percentage > Number(existing.best_percentage || 0)) {
+      update.best_attempt_id = attempt.attempt_id;
+      update.best_percentage = percentage;
+    }
+    await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return;
+  }
+  await db.collection("student_set_achievements").add({
+    achievement_id: [student.auth_uid, assignmentId].join("::"),
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    set_id: assignment.set_id,
+    assignment_id: assignmentId,
+    status: "star",
+    protected: true,
+    source: "assignment_claim",
+    claimed_at: now,
+    first_earned_at: now,
+    first_qualifying_attempt_id: attempt.attempt_id,
+    best_attempt_id: attempt.attempt_id,
+    best_percentage: percentage,
+    created_at: now,
+    updated_at: now,
+  });
+}
+
 exports.main = async (event) => {
   try {
     const student = await getAuthenticatedStudent();
@@ -280,6 +321,7 @@ exports.main = async (event) => {
       if (!verified || verified.latest_attempt_id !== attemptId) {
         throw new Error("ASSIGNMENT_UPDATE_FAILED");
       }
+      if (mastered) await protectAssignmentStar(student, verified, attempt, submittedAt);
     } else if (mastered) {
       await protectSelfStudyStar(student, attempt, submittedAt);
     }
