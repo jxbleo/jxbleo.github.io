@@ -1309,7 +1309,7 @@
                         if (choiceMarkup) {
                             return replaceToken(choiceMarkup, '__NAME__', item.id);
                         }
-                        return '<input type="text" name="' + item.id + '" class="blank-input" placeholder="(' + qNum + ')" autocomplete="off" data-question="' + item.id + '" required>';
+                        return '<input type="text" name="' + item.id + '" class="blank-input" placeholder="(' + qNum + ')" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-question="' + item.id + '" required>';
                     });
                     textDiv.innerHTML = html;
                     qDiv.appendChild(textDiv);
