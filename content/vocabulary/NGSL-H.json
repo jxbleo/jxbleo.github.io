@@ -1,0 +1,1518 @@
+{
+  "id": "NGSL-H",
+  "sectionId": "vocabulary",
+  "title": "NGSL-H",
+  "href": "vocabulary.html?set=NGSL-H",
+  "sortOrder": 1008,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1701,
+      "word": "reject",
+      "emoji": "🚫❌",
+      "meaning": "v. 拒绝；否决；n. 被拒之人/物",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to refuse to accept, use, or believe something"
+    },
+    {
+      "number": 1702,
+      "word": "latter",
+      "emoji": "🔚🆕",
+      "meaning": "adj. 后者的；后面的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "the second of two people or things mentioned"
+    },
+    {
+      "number": 1703,
+      "word": "plate",
+      "emoji": "🍽️🥄",
+      "meaning": "n. 盘子；金属板；v. 镀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a flat dish for food, or a thin sheet of hard material"
+    },
+    {
+      "number": 1704,
+      "word": "ban",
+      "emoji": "🚷⛔",
+      "meaning": "v. 禁止；n. 禁令",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to officially forbid something"
+    },
+    {
+      "number": 1705,
+      "word": "steal",
+      "emoji": "🕵️‍♂️🛑",
+      "meaning": "v. 偷窃",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take something that belongs to someone else"
+    },
+    {
+      "number": 1706,
+      "word": "protest",
+      "emoji": "✊🪧",
+      "meaning": "v. 抗议；n. 抗议",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to show strong disagreement, or an event showing disagreement"
+    },
+    {
+      "number": 1707,
+      "word": "index",
+      "emoji": "📈📚",
+      "meaning": "n. 索引；指数；v. 编索引",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a list or measure that helps find or compare information"
+    },
+    {
+      "number": 1708,
+      "word": "sad",
+      "emoji": "😢😭",
+      "meaning": "adj. 悲伤的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "unhappy or causing unhappiness"
+    },
+    {
+      "number": 1709,
+      "word": "frequently",
+      "emoji": "🔁⏰",
+      "meaning": "adv. 频繁地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "often"
+    },
+    {
+      "number": 1710,
+      "word": "circle",
+      "emoji": "⭕🔵",
+      "meaning": "n. 圆圈；圈子；v. 环绕",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a round shape, or a group arranged in a round shape"
+    },
+    {
+      "number": 1711,
+      "word": "helpful",
+      "emoji": "🤝👍",
+      "meaning": "adj. 有帮助的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "giving help or useful support"
+    },
+    {
+      "number": 1712,
+      "word": "command",
+      "emoji": "🫡💻",
+      "meaning": "v. 命令；n. 命令",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "an order, or to order someone to do something"
+    },
+    {
+      "number": 1713,
+      "word": "attractive",
+      "emoji": "😍✨",
+      "meaning": "adj. 有吸引力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "pleasant to look at or interesting"
+    },
+    {
+      "number": 1714,
+      "word": "sick",
+      "emoji": "🤢🤒",
+      "meaning": "adj. 生病的；恶心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "ill or feeling that you may vomit"
+    },
+    {
+      "number": 1715,
+      "word": "impression",
+      "emoji": "💭👀",
+      "meaning": "n. 印象；感觉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an idea or feeling about someone or something"
+    },
+    {
+      "number": 1716,
+      "word": "unable",
+      "emoji": "🚫🙅",
+      "meaning": "adj. 不能的；不会的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not able to do something"
+    },
+    {
+      "number": 1717,
+      "word": "joke",
+      "emoji": "😂🤣",
+      "meaning": "n. 笑话；v. 开玩笑",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something said or done to make people laugh"
+    },
+    {
+      "number": 1718,
+      "word": "sky",
+      "emoji": "🌌☁️",
+      "meaning": "n. 天空",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the space above the earth where clouds and the sun appear"
+    },
+    {
+      "number": 1719,
+      "word": "column",
+      "emoji": "🏛️📰",
+      "meaning": "n. 柱子；专栏",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a tall support, a regular article, or a vertical list"
+    },
+    {
+      "number": 1720,
+      "word": "electronic",
+      "emoji": "💻🔌",
+      "meaning": "adj. 电子的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "using or related to electricity and electronic equipment"
+    },
+    {
+      "number": 1721,
+      "word": "impose",
+      "emoji": "📜🔨",
+      "meaning": "v. 强加；征税",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to force a rule, tax, or burden on someone"
+    },
+    {
+      "number": 1722,
+      "word": "criminal",
+      "emoji": "👮‍♂️🚔",
+      "meaning": "n. 罪犯；adj. 犯罪的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who commits a crime, or related to crime"
+    },
+    {
+      "number": 1723,
+      "word": "besides",
+      "emoji": "➕🔀",
+      "meaning": "prep. 除了；adv. 此外",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "in addition to, or apart from"
+    },
+    {
+      "number": 1724,
+      "word": "properly",
+      "emoji": "✔️🛠️",
+      "meaning": "adv. 正确地；适当地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "correctly or in a suitable way"
+    },
+    {
+      "number": 1725,
+      "word": "ancient",
+      "emoji": "🏺⏳",
+      "meaning": "adj. 古老的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very old or from a long time ago"
+    },
+    {
+      "number": 1726,
+      "word": "coast",
+      "emoji": "🌊🏖️",
+      "meaning": "n. 海岸；v. 沿岸航行",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "land next to the sea"
+    },
+    {
+      "number": 1727,
+      "word": "ill",
+      "emoji": "🤒🛌",
+      "meaning": "adj. 生病的；不良的；adv. 不利地",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "sick or in bad condition"
+    },
+    {
+      "number": 1728,
+      "word": "kick",
+      "emoji": "🦵⚽",
+      "meaning": "v. 踢；n. 踢",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to hit with the foot, or a hit with the foot"
+    },
+    {
+      "number": 1729,
+      "word": "closely",
+      "emoji": "🔍👀",
+      "meaning": "adv. 密切地；紧密地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "carefully, with attention, or near in distance"
+    },
+    {
+      "number": 1730,
+      "word": "multiple",
+      "emoji": "➗🔢",
+      "meaning": "adj. 多个的；n. 倍数；多重",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "many or more than one"
+    },
+    {
+      "number": 1731,
+      "word": "yield",
+      "emoji": "🌾🛑",
+      "meaning": "v. 产生；屈服；n. 产量",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to produce, give way, or allow something"
+    },
+    {
+      "number": 1732,
+      "word": "via",
+      "emoji": "🛤️➡️",
+      "meaning": "prep. 经由，通过",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "by way of or through"
+    },
+    {
+      "number": 1733,
+      "word": "legislation",
+      "emoji": "📜🏛️",
+      "meaning": "n. 立法，法律",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "laws or the process of making laws"
+    },
+    {
+      "number": 1734,
+      "word": "county",
+      "emoji": "🗺️🏢",
+      "meaning": "n. 县，郡",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a local government area within a state or country"
+    },
+    {
+      "number": 1735,
+      "word": "unlike",
+      "emoji": "🚫🤷‍♂️",
+      "meaning": "prep. 不像；adj. 不同的",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "different from"
+    },
+    {
+      "number": 1736,
+      "word": "mobile",
+      "emoji": "📱🚗",
+      "meaning": "adj. 可移动的；n. 手机",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to move, or related to mobile phones"
+    },
+    {
+      "number": 1737,
+      "word": "assistant",
+      "emoji": "🤝🧑‍💼",
+      "meaning": "n. 助手，助理；adj. 辅助的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who helps someone with work"
+    },
+    {
+      "number": 1738,
+      "word": "implement",
+      "emoji": "🛠️✅",
+      "meaning": "v. 实施；执行；n. 工具",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put a plan or decision into action"
+    },
+    {
+      "number": 1739,
+      "word": "chart",
+      "emoji": "📊🗺️",
+      "meaning": "n. 图表；v. 制图",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a drawing or table that shows information"
+    },
+    {
+      "number": 1740,
+      "word": "attach",
+      "emoji": "📎🔗",
+      "meaning": "v. 附上，依附",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to fasten or join one thing to another"
+    },
+    {
+      "number": 1741,
+      "word": "hell",
+      "emoji": "🔥😈",
+      "meaning": "n. 地狱，苦难",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place or situation of great suffering"
+    },
+    {
+      "number": 1742,
+      "word": "everywhere",
+      "emoji": "🌍🚶‍♂️",
+      "meaning": "adv. 到处，无处不在",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in or to every place"
+    },
+    {
+      "number": 1743,
+      "word": "advise",
+      "emoji": "💡🗣️",
+      "meaning": "v. 建议，劝告",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give someone a suggestion about what to do"
+    },
+    {
+      "number": 1744,
+      "word": "household",
+      "emoji": "🏡👨‍👩‍👧‍👦",
+      "meaning": "n. 家庭，家务；adj. 家庭的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "all the people who live together in one home"
+    },
+    {
+      "number": 1745,
+      "word": "acknowledge",
+      "emoji": "👍📩",
+      "meaning": "v. 承认，认可，答谢",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to accept or recognize that something is true or important"
+    },
+    {
+      "number": 1746,
+      "word": "reward",
+      "emoji": "🏆🎁",
+      "meaning": "n. 奖励，报酬；v. 奖励",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something given for good work, or to give such a thing"
+    },
+    {
+      "number": 1747,
+      "word": "east",
+      "emoji": "🧭🌅",
+      "meaning": "n. 东方；adj. 东方的；adv. 向东",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the direction where the sun rises"
+    },
+    {
+      "number": 1748,
+      "word": "hat",
+      "emoji": "🎩🧢",
+      "meaning": "n. 帽子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a covering worn on the head"
+    },
+    {
+      "number": 1749,
+      "word": "academic",
+      "emoji": "🎓📚",
+      "meaning": "adj. 学术的，学院的；n. 学者",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to school, college, study, or research"
+    },
+    {
+      "number": 1750,
+      "word": "voter",
+      "emoji": "🗳️🧑‍🤝‍🧑",
+      "meaning": "n. 投票人，选民",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who votes in an election"
+    },
+    {
+      "number": 1751,
+      "word": "meanwhile",
+      "emoji": "⏳🔄",
+      "meaning": "adv. 与此同时",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at the same time"
+    },
+    {
+      "number": 1752,
+      "word": "furthermore",
+      "emoji": "➕🗣️",
+      "meaning": "adv. 此外，并且",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in addition to what has just been said"
+    },
+    {
+      "number": 1753,
+      "word": "accuse",
+      "emoji": "👉⚖️",
+      "meaning": "v. 指控，控告",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to say someone has done something wrong or illegal"
+    },
+    {
+      "number": 1754,
+      "word": "scientific",
+      "emoji": "🔬🧪",
+      "meaning": "adj. 科学的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to science or using scientific methods"
+    },
+    {
+      "number": 1755,
+      "word": "wage",
+      "emoji": "💵🧾",
+      "meaning": "n. 工资，报酬；v. 进行(战争、斗争)",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money paid to a worker for work"
+    },
+    {
+      "number": 1756,
+      "word": "absence",
+      "emoji": "🚫📭",
+      "meaning": "n. 缺席，不在场",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the fact that someone or something is not present"
+    },
+    {
+      "number": 1757,
+      "word": "construct",
+      "emoji": "🏗️🔧",
+      "meaning": "v. 建造，构造；n. 构造物，概念",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to build or create something"
+    },
+    {
+      "number": 1758,
+      "word": "remark",
+      "emoji": "💬📝",
+      "meaning": "n. 评论，话语；v. 评论，谈论",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that someone says as a comment"
+    },
+    {
+      "number": 1759,
+      "word": "medicine",
+      "emoji": "💊🩺",
+      "meaning": "n. 药，医学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a substance used to treat illness"
+    },
+    {
+      "number": 1760,
+      "word": "professor",
+      "emoji": "👨‍🏫👩‍🏫",
+      "meaning": "n. 教授",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a teacher at a college or university"
+    },
+    {
+      "number": 1761,
+      "word": "rare",
+      "emoji": "🦄🌟",
+      "meaning": "adj. 稀有的，罕见的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not common or not often seen"
+    },
+    {
+      "number": 1762,
+      "word": "intention",
+      "emoji": "🎯📝",
+      "meaning": "n. 意图，目的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a plan or purpose"
+    },
+    {
+      "number": 1763,
+      "word": "dozen",
+      "emoji": "1️⃣2️⃣",
+      "meaning": "n. 一打，十二个",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of twelve"
+    },
+    {
+      "number": 1764,
+      "word": "settlement",
+      "emoji": "🏘️🤝",
+      "meaning": "n. 定居点，协议",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where people start to live, or an agreement"
+    },
+    {
+      "number": 1765,
+      "word": "gap",
+      "emoji": "🕳️🔓",
+      "meaning": "n. 缝隙，差距",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a space, opening, or difference between things"
+    },
+    {
+      "number": 1766,
+      "word": "widely",
+      "emoji": "🌐📢",
+      "meaning": "adv. 广泛地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "by many people or over a large area"
+    },
+    {
+      "number": 1767,
+      "word": "minimum",
+      "emoji": "🔽📉",
+      "meaning": "n. 最小值；adj. 最小的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the smallest amount or level allowed or possible"
+    },
+    {
+      "number": 1768,
+      "word": "northern",
+      "emoji": "🧭❄️",
+      "meaning": "adj. 北方的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "in or from the north"
+    },
+    {
+      "number": 1769,
+      "word": "estate",
+      "emoji": "🏰🏠",
+      "meaning": "n. 房地产，庄园",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large area of land or property"
+    },
+    {
+      "number": 1770,
+      "word": "equally",
+      "emoji": "⚖️➗",
+      "meaning": "adv. 平等地，同样地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the same amount or degree"
+    },
+    {
+      "number": 1771,
+      "word": "expose",
+      "emoji": "📸🪧",
+      "meaning": "v. 暴露，揭露",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to show something hidden or leave something unprotected"
+    },
+    {
+      "number": 1772,
+      "word": "alive",
+      "emoji": "❤️🌱",
+      "meaning": "adj. 活着的，有活力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "living and not dead"
+    },
+    {
+      "number": 1773,
+      "word": "shut",
+      "emoji": "🚪🔒",
+      "meaning": "v. 关闭，停止",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to close something"
+    },
+    {
+      "number": 1774,
+      "word": "victory",
+      "emoji": "🏆🥇",
+      "meaning": "n. 胜利，成功",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "success in a fight, competition, or difficult situation"
+    },
+    {
+      "number": 1775,
+      "word": "resolve",
+      "emoji": "🧠🤝",
+      "meaning": "v. 解决，决定；n. 决心",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to solve a problem or decide firmly"
+    },
+    {
+      "number": 1776,
+      "word": "critic",
+      "emoji": "🧑‍⚖️🗣️",
+      "meaning": "n. 批评家，评论家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who judges or reviews art, books, films, or ideas"
+    },
+    {
+      "number": 1777,
+      "word": "variable",
+      "emoji": "🔀🎛️",
+      "meaning": "adj. 可变的；n. 变量",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to change, or a factor that can change"
+    },
+    {
+      "number": 1778,
+      "word": "enormous",
+      "emoji": "🦣🏔️",
+      "meaning": "adj. 巨大的，庞大的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "extremely large"
+    },
+    {
+      "number": 1779,
+      "word": "sweet",
+      "emoji": "🍬🍭",
+      "meaning": "adj. 甜的，亲切的；n. 甜食",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "tasting like sugar, or kind and pleasant"
+    },
+    {
+      "number": 1780,
+      "word": "permanent",
+      "emoji": "♾️📆",
+      "meaning": "adj. 永久的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "lasting for a long time or forever"
+    },
+    {
+      "number": 1781,
+      "word": "emotion",
+      "emoji": "😭😡",
+      "meaning": "n. 情感，情绪",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a strong feeling such as joy, fear, or anger"
+    },
+    {
+      "number": 1782,
+      "word": "pursue",
+      "emoji": "🏃‍♂️🎯",
+      "meaning": "v. 追赶，追求",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to follow, chase, or try to achieve something"
+    },
+    {
+      "number": 1783,
+      "word": "tall",
+      "emoji": "📏🌲",
+      "meaning": "adj. 高的，身材高的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "greater than average height"
+    },
+    {
+      "number": 1784,
+      "word": "urge",
+      "emoji": "💪🔥",
+      "meaning": "v. 敦促，力劝；n. 强烈欲望",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to strongly advise, or a strong desire to do something"
+    },
+    {
+      "number": 1785,
+      "word": "enemy",
+      "emoji": "⚔️😈",
+      "meaning": "n. 敌人，敌军",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person or group that is against another"
+    },
+    {
+      "number": 1786,
+      "word": "appoint",
+      "emoji": "📅👔",
+      "meaning": "v. 任命，指定",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to choose someone officially for a job or role"
+    },
+    {
+      "number": 1787,
+      "word": "milk",
+      "emoji": "🥛🐄",
+      "meaning": "n. 牛奶；v. 挤奶",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a white liquid from cows or other animals"
+    },
+    {
+      "number": 1788,
+      "word": "talent",
+      "emoji": "🌟🎤",
+      "meaning": "n. 天赋，人才",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a natural ability to do something well"
+    },
+    {
+      "number": 1789,
+      "word": "smell",
+      "emoji": "👃🌸",
+      "meaning": "n. 气味；v. 闻",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality sensed by the nose, or to sense something by the nose"
+    },
+    {
+      "number": 1790,
+      "word": "prior",
+      "emoji": "⏮️🔝",
+      "meaning": "adj. 在先的，优先的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "earlier or before something else"
+    },
+    {
+      "number": 1791,
+      "word": "priority",
+      "emoji": "⏩🏅",
+      "meaning": "n. 优先，优先权",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that is more important than other things"
+    },
+    {
+      "number": 1792,
+      "word": "online",
+      "emoji": "🌐💻",
+      "meaning": "adj. 在线的，联网的；adv. 在线地",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected to or using the internet"
+    },
+    {
+      "number": 1793,
+      "word": "phrase",
+      "emoji": "📝💬",
+      "meaning": "n. 短语，措辞；v. 措辞",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small group of words with a meaning"
+    },
+    {
+      "number": 1794,
+      "word": "pilot",
+      "emoji": "👨‍✈️✈️",
+      "meaning": "n. 飞行员；v. 驾驶，引导；adj. 试点的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who flies an aircraft"
+    },
+    {
+      "number": 1795,
+      "word": "stable",
+      "emoji": "🐎🏠",
+      "meaning": "adj. 稳定的；n. 马厩",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "steady and not likely to change or fall"
+    },
+    {
+      "number": 1796,
+      "word": "merely",
+      "emoji": "🙅‍♂️🪶",
+      "meaning": "adv. 仅仅，只不过",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "only or just"
+    },
+    {
+      "number": 1797,
+      "word": "resolution",
+      "emoji": "🖼️📝",
+      "meaning": "n. 决议，解决，分辨率",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a formal decision, solution, or level of image detail"
+    },
+    {
+      "number": 1798,
+      "word": "communicate",
+      "emoji": "🗣️📧",
+      "meaning": "v. 交流，沟通",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to share information, thoughts, or feelings"
+    },
+    {
+      "number": 1799,
+      "word": "injury",
+      "emoji": "🤕🚑",
+      "meaning": "n. 受伤，伤害",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "physical harm or damage to the body"
+    },
+    {
+      "number": 1800,
+      "word": "vast",
+      "emoji": "🏞️🌌",
+      "meaning": "adj. 巨大的，广阔的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "extremely large in area, amount, or degree"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1701-1710",
+      "label": "第一组",
+      "rangeStart": 1701,
+      "rangeEnd": 1710,
+      "wordList": [
+        "sad",
+        "ban",
+        "latter",
+        "plate",
+        "reject",
+        "protest",
+        "frequently",
+        "steal",
+        "index",
+        "circle"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She felt __________ when she heard the news about her friend's accident.",
+          "questionKey": "1701-1710:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The government decided to completely __________ smoking in all public buildings.",
+          "questionKey": "1701-1710:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Between the first and second options, I prefer the __________ as it seems more practical.",
+          "questionKey": "1701-1710:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The restaurant serves all main courses on a large ceramic __________.",
+          "questionKey": "1701-1710:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The committee decided to __________ the proposal due to budget constraints.",
+          "questionKey": "1701-1710:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Workers organized a __________ against the unfair working conditions.",
+          "questionKey": "1701-1710:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Thousands of people __________ gather in the town square for the weekly market.",
+          "questionKey": "1701-1710:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The police arrested the man who tried to __________ jewelry from the shop.",
+          "questionKey": "1701-1710:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The library uses an __________ system to help visitors find books more easily.",
+          "questionKey": "1701-1710:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The children sat in a __________ around the teacher during story time.",
+          "questionKey": "1701-1710:10"
+        }
+      ]
+    },
+    {
+      "id": "1711-1720",
+      "label": "第二组",
+      "rangeStart": 1711,
+      "rangeEnd": 1720,
+      "wordList": [
+        "command",
+        "joke",
+        "attractive",
+        "sick",
+        "sky",
+        "unable",
+        "helpful",
+        "column",
+        "impression",
+        "electronic"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The military officer gave a direct __________ to his soldiers to retreat.",
+          "questionKey": "1711-1720:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The comedian told a funny __________ that made everyone laugh.",
+          "questionKey": "1711-1720:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The model was hired because of her __________ appearance.",
+          "questionKey": "1711-1720:3"
+        },
+        {
+          "number": 4,
+          "prompt": "My son stayed home from school today because he was __________.",
+          "questionKey": "1711-1720:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ was filled with colorful clouds during the sunset.",
+          "questionKey": "1711-1720:5"
+        },
+        {
+          "number": 6,
+          "prompt": "He was __________ to attend the meeting because he was out of town.",
+          "questionKey": "1711-1720:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The teacher was very __________ when I asked for extra assistance with my homework.",
+          "questionKey": "1711-1720:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The ancient Greek temple had six large __________ at the entrance.",
+          "questionKey": "1711-1720:8"
+        },
+        {
+          "number": 9,
+          "prompt": "She made a positive __________ during her job interview.",
+          "questionKey": "1711-1720:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Most modern devices are __________ and require batteries or electricity.",
+          "questionKey": "1711-1720:10"
+        }
+      ]
+    },
+    {
+      "id": "1721-1730",
+      "label": "第三组",
+      "rangeStart": 1721,
+      "rangeEnd": 1730,
+      "wordList": [
+        "Besides",
+        "kick",
+        "criminal",
+        "properly",
+        "coast",
+        "ancient",
+        "ill",
+        "multiple",
+        "impose",
+        "closely"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "__________ studying English, she also takes French and Spanish classes.",
+          "questionKey": "1721-1730:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The football player scored by a powerful __________ into the top corner.",
+          "questionKey": "1721-1730:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ was sentenced to five years in prison for robbery.",
+          "questionKey": "1721-1730:3"
+        },
+        {
+          "number": 4,
+          "prompt": "You need to follow the instructions __________ to assemble this furniture.",
+          "questionKey": "1721-1730:4"
+        },
+        {
+          "number": 5,
+          "prompt": "They bought a holiday home on the west __________ of Florida.",
+          "questionKey": "1721-1730:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The archaeologists discovered __________ ruins dating back to 3000 BCE.",
+          "questionKey": "1721-1730:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The doctor advised him to rest as he had been __________ for several days.",
+          "questionKey": "1721-1730:7"
+        },
+        {
+          "number": 8,
+          "prompt": "There are __________ reasons why this project might fail.",
+          "questionKey": "1721-1730:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The government plans to __________ new taxes on luxury goods next year.",
+          "questionKey": "1721-1730:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The detective __________ examined the evidence at the crime scene.",
+          "questionKey": "1721-1730:10"
+        }
+      ]
+    },
+    {
+      "id": "1731-1740",
+      "label": "第四组",
+      "rangeStart": 1731,
+      "rangeEnd": 1740,
+      "wordList": [
+        "implement",
+        "assistant",
+        "chart",
+        "legislation",
+        "attach",
+        "county",
+        "Unlike",
+        "yield",
+        "via",
+        "mobile"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The company will __________ the new policies starting next month.",
+          "questionKey": "1731-1740:1"
+        },
+        {
+          "number": 2,
+          "prompt": "She works as a personal __________ to the company director.",
+          "questionKey": "1731-1740:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The teacher used a __________ to show the class how temperatures had changed over time.",
+          "questionKey": "1731-1740:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The new __________ will make it illegal to use phones while driving.",
+          "questionKey": "1731-1740:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Please __________ your resume to the job application form.",
+          "questionKey": "1731-1740:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The rural __________ has a population of about 50,000 people.",
+          "questionKey": "1731-1740:6"
+        },
+        {
+          "number": 7,
+          "prompt": "__________ his brother, John enjoys outdoor activities and sports.",
+          "questionKey": "1731-1740:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The farmer expects the wheat field to __________ a good harvest this year.",
+          "questionKey": "1731-1740:8"
+        },
+        {
+          "number": 9,
+          "prompt": "You can send the documents __________ email or regular mail.",
+          "questionKey": "1731-1740:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Most people now use __________ phones instead of landlines.",
+          "questionKey": "1731-1740:10"
+        }
+      ]
+    },
+    {
+      "id": "1741-1750",
+      "label": "第五组",
+      "rangeStart": 1741,
+      "rangeEnd": 1750,
+      "wordList": [
+        "household",
+        "hat",
+        "reward",
+        "advise",
+        "east",
+        "voter",
+        "hell",
+        "everywhere",
+        "academic",
+        "acknowledge"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The average __________ spends about $200 per month on groceries.",
+          "questionKey": "1741-1750:1"
+        },
+        {
+          "number": 2,
+          "prompt": "She put on her __________ before going out into the sunny garden.",
+          "questionKey": "1741-1750:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The company will __________ employees who suggest cost-saving ideas.",
+          "questionKey": "1741-1750:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I would __________ you to save some money before quitting your job.",
+          "questionKey": "1741-1750:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The sun rises in the __________ and sets in the west.",
+          "questionKey": "1741-1750:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Every __________ should research the candidates before an election.",
+          "questionKey": "1741-1750:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The room was so hot it felt like __________.",
+          "questionKey": "1741-1750:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The dog followed me __________, even into the bathroom!",
+          "questionKey": "1741-1750:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The university offers excellent __________ programs in science and humanities.",
+          "questionKey": "1741-1750:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The manager didn't __________ my contribution to the project.",
+          "questionKey": "1741-1750:10"
+        }
+      ]
+    },
+    {
+      "id": "1751-1760",
+      "label": "第六组",
+      "rangeStart": 1751,
+      "rangeEnd": 1760,
+      "wordList": [
+        "scientific",
+        "remark",
+        "construct",
+        "furthermore",
+        "wage",
+        "Meanwhile",
+        "professor",
+        "absence",
+        "accuse",
+        "medicine"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The research was conducted using proper __________ methods.",
+          "questionKey": "1751-1760:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The speaker made an interesting __________ about climate change during the lecture.",
+          "questionKey": "1751-1760:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The company plans to __________ a new office building next year.",
+          "questionKey": "1751-1760:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The evidence is convincing; __________, it is supported by multiple witnesses.",
+          "questionKey": "1751-1760:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The minimum __________ in this country is $15 per hour.",
+          "questionKey": "1751-1760:5"
+        },
+        {
+          "number": 6,
+          "prompt": "__________, the police were investigating other suspects in the case.",
+          "questionKey": "1751-1760:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The university __________ has published several books on economics.",
+          "questionKey": "1751-1760:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ of any clear policy has led to confusion among staff.",
+          "questionKey": "1751-1760:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The lawyer did not have enough evidence to __________ the defendant of theft.",
+          "questionKey": "1751-1760:9"
+        },
+        {
+          "number": 10,
+          "prompt": "She takes __________ every morning to control her blood pressure.",
+          "questionKey": "1751-1760:10"
+        }
+      ]
+    },
+    {
+      "id": "1761-1770",
+      "label": "第七组",
+      "rangeStart": 1761,
+      "rangeEnd": 1770,
+      "wordList": [
+        "dozen",
+        "settlement",
+        "intention",
+        "minimum",
+        "widely",
+        "rare",
+        "northern",
+        "equally",
+        "gap",
+        "estate"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I bought a __________ eggs at the supermarket.",
+          "questionKey": "1761-1770:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The colonial __________ was established in 1620.",
+          "questionKey": "1761-1770:2"
+        },
+        {
+          "number": 3,
+          "prompt": "It was never my __________ to hurt your feelings.",
+          "questionKey": "1761-1770:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ wage will increase by 5% next year.",
+          "questionKey": "1761-1770:4"
+        },
+        {
+          "number": 5,
+          "prompt": "This book is __________ regarded as one of the best novels of the century.",
+          "questionKey": "1761-1770:5"
+        },
+        {
+          "number": 6,
+          "prompt": "It is __________ to see that type of bird in this region.",
+          "questionKey": "1761-1770:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ lights can be seen in the sky in winter.",
+          "questionKey": "1761-1770:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The two candidates are __________ qualified for the position.",
+          "questionKey": "1761-1770:8"
+        },
+        {
+          "number": 9,
+          "prompt": "There's a significant __________ between what people earn and what they spend.",
+          "questionKey": "1761-1770:9"
+        },
+        {
+          "number": 10,
+          "prompt": "They inherited a large __________ with several houses and farmland.",
+          "questionKey": "1761-1770:10"
+        }
+      ]
+    },
+    {
+      "id": "1771-1780",
+      "label": "第八组",
+      "rangeStart": 1771,
+      "rangeEnd": 1780,
+      "wordList": [
+        "permanent",
+        "variable",
+        "expose",
+        "enormous",
+        "alive",
+        "critic",
+        "victory",
+        "shut",
+        "resolve",
+        "sweet"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The company is looking for a __________ solution to the technical problem.",
+          "questionKey": "1771-1780:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The scientist identified several __________ factors that could affect the experiment results.",
+          "questionKey": "1771-1780:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The newspaper article will __________ the corruption in the local government.",
+          "questionKey": "1771-1780:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The elephant is an __________ animal that can weigh up to 6 tons.",
+          "questionKey": "1771-1780:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The doctors worked hard to keep the patient __________ after the serious accident.",
+          "questionKey": "1771-1780:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The movie __________ praised the director's unique visual style.",
+          "questionKey": "1771-1780:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The team celebrated their __________ with champagne after winning the championship.",
+          "questionKey": "1771-1780:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Please __________ the door when you leave the room.",
+          "questionKey": "1771-1780:8"
+        },
+        {
+          "number": 9,
+          "prompt": "We need to __________ this conflict before it gets worse.",
+          "questionKey": "1771-1780:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The cake was too __________ for my taste.",
+          "questionKey": "1771-1780:10"
+        }
+      ]
+    },
+    {
+      "id": "1781-1790",
+      "label": "第九组",
+      "rangeStart": 1781,
+      "rangeEnd": 1790,
+      "wordList": [
+        "pursue",
+        "milk",
+        "smell",
+        "appoint",
+        "urge",
+        "tall",
+        "emotion",
+        "prior",
+        "talent",
+        "enemy"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She decided to __________ a career in medicine after graduating.",
+          "questionKey": "1781-1790:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Children need to drink __________ for strong bones.",
+          "questionKey": "1781-1790:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ of freshly baked bread filled the kitchen.",
+          "questionKey": "1781-1790:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The president will __________ a new judge to the Supreme Court.",
+          "questionKey": "1781-1790:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I felt a strong __________ to call my mother after having a bad dream.",
+          "questionKey": "1781-1790:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The basketball team recruits players who are __________ and athletic.",
+          "questionKey": "1781-1790:6"
+        },
+        {
+          "number": 7,
+          "prompt": "She couldn't hide her __________ when she heard the good news.",
+          "questionKey": "1781-1790:7"
+        },
+        {
+          "number": 8,
+          "prompt": "You need __________ experience in teaching to apply for this job.",
+          "questionKey": "1781-1790:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The chef has a natural __________ for creating delicious dishes.",
+          "questionKey": "1781-1790:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The general considered the neighboring country to be an __________.",
+          "questionKey": "1781-1790:10"
+        }
+      ]
+    },
+    {
+      "id": "1791-1800",
+      "label": "第十组",
+      "rangeStart": 1791,
+      "rangeEnd": 1800,
+      "wordList": [
+        "pilot",
+        "resolution",
+        "vast",
+        "stable",
+        "communicate",
+        "priority",
+        "online",
+        "injury",
+        "merely",
+        "phrase"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ safely landed the plane despite the bad weather.",
+          "questionKey": "1791-1800:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company board passed a __________ to increase funding for research.",
+          "questionKey": "1791-1800:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The desert covers a __________ area of the country.",
+          "questionKey": "1791-1800:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The country has maintained a __________ economy for the past decade.",
+          "questionKey": "1791-1800:4"
+        },
+        {
+          "number": 5,
+          "prompt": "It's important to __________ clearly with your team members.",
+          "questionKey": "1791-1800:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Safety should be the main __________ when working with machinery.",
+          "questionKey": "1791-1800:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Many people now shop __________ instead of going to physical stores.",
+          "questionKey": "1791-1800:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The athlete suffered a serious knee __________ during the match.",
+          "questionKey": "1791-1800:8"
+        },
+        {
+          "number": 9,
+          "prompt": "This is not a complete solution; it's __________ a temporary fix.",
+          "questionKey": "1791-1800:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The common __________ \"time will tell\" means that the truth will become clear eventually.",
+          "questionKey": "1791-1800:10"
+        }
+      ]
+    }
+  ]
+}

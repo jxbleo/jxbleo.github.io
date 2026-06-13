@@ -588,6 +588,30 @@ window.__HOME_CATALOG__ = {
       "tags": [],
       "note": "100 Words · 10 Quiz Groups",
       "visible": true
+    },
+    {
+      "id": "NGSL-G",
+      "sectionId": "vocabulary",
+      "title": "NGSL-G",
+      "href": "vocabulary.html?set=NGSL-G",
+      "displayValue": "Words 1601-1700",
+      "sortValue": 1007,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "NGSL-H",
+      "sectionId": "vocabulary",
+      "title": "NGSL-H",
+      "href": "vocabulary.html?set=NGSL-H",
+      "displayValue": "Words 1701-1800",
+      "sortValue": 1008,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
     }
   ]
 };
