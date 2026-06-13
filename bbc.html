@@ -400,6 +400,12 @@
             cursor: not-allowed;
         }
 
+        .blank-input.attempt-locked {
+            color: #8f3b28;
+            background: #fff1e8 !important;
+            border-bottom-color: #d66b4d !important;
+        }
+
         .blank-input.correct {
             background: var(--correct-bg) !important;
             border-bottom-color: var(--accent) !important;
@@ -1448,7 +1454,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260613-10"></script>
+<script src="assets/js/config.public.js?v=20260613-12"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
 <script src="assets/js/practice-session.js?v=20260611-2"></script>
 <script>
@@ -1477,6 +1483,8 @@
     var isDragging = false;
     var resultAudioCtx = null;
     var lastEncouragementIndex = -1;
+    var blankAttemptLimit = 3;
+    var blankAttemptState = {};
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -1856,7 +1864,9 @@
         if (teacherMode) {
             renderTeacherAnswerToolbar();
         } else {
+            loadBlankAttemptState();
             restoreSavedOrPrefillAnswers();
+            applyBlankAttemptLocks();
             renderHistoryToolbar();
         }
     }
@@ -2016,6 +2026,88 @@
         return 'bbc-answers-' + setId + '-' + (assignmentId || studentId || 'visitor');
     }
 
+    function blankAttemptStorageKey() {
+        return 'bbc-blank-attempts-' + setId + '-' + (assignmentId || studentId || 'visitor');
+    }
+
+    function loadBlankAttemptState() {
+        if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) {
+            blankAttemptState = {};
+            return;
+        }
+        try {
+            blankAttemptState = JSON.parse(localStorage.getItem(blankAttemptStorageKey()) || '{}') || {};
+        } catch (e) {
+            blankAttemptState = {};
+        }
+    }
+
+    function saveBlankAttemptState() {
+        if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) return;
+        try { localStorage.setItem(blankAttemptStorageKey(), JSON.stringify(blankAttemptState)); } catch (e) {}
+    }
+
+    function blankAttemptEntry(questionId) {
+        if (!blankAttemptState[questionId]) {
+            blankAttemptState[questionId] = { attempts: 0, locked: false, value: '' };
+        }
+        return blankAttemptState[questionId];
+    }
+
+    function updateBlankLockUi(input, entry) {
+        if (!input || !entry) return;
+        input.classList.toggle('attempt-locked', entry.locked === true);
+        input.disabled = entry.locked === true || submitted === true;
+        if (entry.locked) {
+            input.title = 'Three tries used. This answer is locked.';
+        } else if (entry.attempts > 0) {
+            input.title = (blankAttemptLimit - entry.attempts) + ' tries left for this blank.';
+        } else {
+            input.removeAttribute('title');
+        }
+    }
+
+    function applyBlankAttemptLocks() {
+        Object.keys(blankAttemptState || {}).forEach(function(questionId) {
+            var entry = blankAttemptState[questionId];
+            var input = document.querySelector('[name="' + CSS.escape(questionId) + '"].blank-input');
+            if (!input || !entry) return;
+            if (entry.locked) {
+                input.value = entry.value || input.value;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            updateBlankLockUi(input, entry);
+        });
+    }
+
+    function recordBlankAttemptResults(results) {
+        if (teacherMode || !results || !results.length) return;
+        var changed = false;
+        results.forEach(function(result) {
+            if (result.type !== 'blank') return;
+            var input = document.querySelector('[name="' + CSS.escape(result.id) + '"].blank-input');
+            if (!input) return;
+            if (result.isCorrect) {
+                if (blankAttemptState[result.id]) {
+                    delete blankAttemptState[result.id];
+                    changed = true;
+                }
+                input.classList.remove('attempt-locked');
+                input.removeAttribute('title');
+                return;
+            }
+            var entry = blankAttemptEntry(result.id);
+            if (!entry.locked) {
+                entry.attempts = Math.min(blankAttemptLimit, Number(entry.attempts || 0) + 1);
+                entry.value = input.value.trim();
+                entry.locked = entry.attempts >= blankAttemptLimit;
+                changed = true;
+            }
+            updateBlankLockUi(input, entry);
+        });
+        if (changed) saveBlankAttemptState();
+    }
+
     function applyAnswers(answers) {
         if (!answers) return;
         Object.keys(answers).forEach(function(name) {
@@ -2044,6 +2136,8 @@
         updateHistoryToolbar();
         var form = document.getElementById('quiz-form');
         form.querySelectorAll('input[type="text"]').forEach(function(input) {
+            var entry = blankAttemptState[input.name];
+            if (entry && entry.locked) return;
             input.value = '';
             input.dispatchEvent(new Event('input', { bubbles: true }));
         });
@@ -2053,6 +2147,7 @@
             el.classList.remove('correct', 'wrong', 'disabled');
         });
         form.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        applyBlankAttemptLocks();
         saveDraftAnswers();
     }
 
@@ -2061,6 +2156,7 @@
         document.querySelectorAll('#quiz-form input, #quiz-form select').forEach(function(el) {
             el.disabled = false;
         });
+        applyBlankAttemptLocks();
         var btn = document.getElementById('submit-btn');
         btn.disabled = false;
         btn.textContent = 'Submit Answers';
@@ -2079,6 +2175,7 @@
         try { saved = JSON.parse(localStorage.getItem(answerStorageKey()) || 'null'); } catch (e) {}
         if (saved && Object.keys(saved).length) {
             applyAnswers(saved);
+            applyBlankAttemptLocks();
             return;
         }
         if (!prefillAttemptId || !window.MrCatCloud) return;
@@ -2088,6 +2185,7 @@
         }).then(function(result) {
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
+                applyBlankAttemptLocks();
                 saveDraftAnswers();
             }
         }).catch(function() {});
@@ -2102,6 +2200,7 @@
             if (result && result.success && result.attempt && result.attempt.answers) {
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
+                applyBlankAttemptLocks();
                 saveDraftAnswers();
             }
         }).catch(function() {});
@@ -2585,6 +2684,9 @@
                     exp.className = 'inline-explanation' + (r.isCorrect ? ' correct' : ' wrong');
                     var prefix = r.isCorrect ? '&#10004;' : '&#10060;';
                     exp.innerHTML = prefix + ' <strong>Correct answer:</strong> ' + r.correctAnswer + (r.evidence ? '<br><strong>Evidence:</strong> ' + r.evidence : '');
+                    if (!r.isCorrect && blankAttemptState[r.id] && blankAttemptState[r.id].locked) {
+                        exp.innerHTML += '<br><strong>Three tries used:</strong> This blank is now locked with your last answer.';
+                    }
                     li.parentNode.insertBefore(exp, li.nextSibling);
                     var bar = document.createElement('div');
                     bar.className = 'feedback-bar';
@@ -2881,7 +2983,10 @@
             });
 
             disableAllInputs();
-            if (!response.feedback_locked) applyFeedback(feedback);
+            if (!response.feedback_locked) {
+                recordBlankAttemptResults(feedback);
+                applyFeedback(feedback);
+            }
             showResultOverlay(response);
             logEvent('submit', {
                 attemptId: response.attempt_id,

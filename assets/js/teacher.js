@@ -592,12 +592,13 @@
             { id: 'approved', label: 'Approved' },
             { id: 'rejected', label: 'Rejected' }
         ];
-        var tabs = '<div class="sub-tabs revise-tabs">' +
+        var tabs = '<div class="summary-grid assignment-filters revise-tabs" role="tablist" aria-label="Revise status">' +
             filters.map(function(filter) {
-                return '<button class="sub-tab' + (state.disputeFilter === filter.id ? ' active' : '') +
+                return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
                     '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +
-                    escapeHtml(filter.label) +
-                    (counts[filter.id] ? '<span class="notice-dot">' + counts[filter.id] + '</span>' : '') +
+                    '<span class="summary-value">' + counts[filter.id] + '</span>' +
+                    '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' +
+                    (filter.id === 'pending' && counts.pending ? '<span class="notice-dot">' + counts.pending + '</span>' : '') +
                 '</button>';
             }).join('') +
         '</div>';
