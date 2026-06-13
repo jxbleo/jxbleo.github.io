@@ -357,7 +357,7 @@
         .summary-question {
             margin-bottom: 14px; padding: 14px 18px; background: #fafbfc;
             border-radius: 8px; border: 1px solid var(--border-color);
-            display: flex; align-items: flex-start; gap: 10px;
+            display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;
         }
         .summary-num {
             width: 26px; height: 26px; border-radius: 50%;
@@ -385,9 +385,23 @@
         .summary-text .blank-select.correct { border-color: #27ae60 !important; }
         .summary-text .blank-select.wrong { border-color: #e67e22 !important; }
 
-        .evidence-text { font-size: 0.85em; color: #b9770e; margin-top: 6px; padding: 6px 10px; background: var(--wrong-bg); border-radius: 4px; display: none; }
+        .evidence-text {
+            width: 100%; max-width: 100%; box-sizing: border-box;
+            font-size: 0.88em; line-height: 1.55; color: #8a4f08;
+            margin-top: 8px; padding: 10px 12px; background: #fff7ed;
+            border: 1px solid rgba(217,119,6,.18); border-radius: 8px;
+            display: none; white-space: pre-wrap; overflow-wrap: anywhere;
+        }
         .evidence-text.show { display: block; }
-        .teacher-argue-btn { margin-top: 6px; padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
+        .evidence-text.explanation-open { background: #fffaf0; border-color: rgba(180,83,9,.24); }
+        .question-action-row {
+            width: 100%; display: flex; align-items: center; justify-content: flex-end;
+            gap: 8px; margin-top: 8px; flex-wrap: wrap;
+        }
+        .summary-question .question-action-row,
+        .summary-question .evidence-text { flex: 0 0 100%; }
+        .teacher-argue-btn { padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
+        .teacher-argue-btn.explain-open { color: #7c2d12; border-color: #fed7aa; background: #fff7ed; }
         .teacher-argue-btn.sent { color: #237a52; border-color: #8cc8a8; background: #ecf9f1; }
         .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
         .teacher-argue-card { width: min(420px, 100%); padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
@@ -421,7 +435,8 @@
         .heading-question select.correct { border-color: #27ae60 !important; }
         .heading-question select.wrong { border-color: #e67e22 !important; }
         .heading-question.example-row { opacity: 0.7; }
-        .heading-question .evidence-text { margin-top: 0; margin-left: auto; }
+        .heading-question .question-action-row,
+        .heading-question .evidence-text { grid-column: 1 / -1; margin-left: 0; }
 
         .submit-area {
             flex: 0 0 auto;
@@ -743,7 +758,10 @@
         document.querySelectorAll('.evidence-text').forEach(function(el) {
             el.classList.remove('show');
             el.textContent = '';
+            resetEvidenceAnswerData(el);
         });
+        document.querySelectorAll('[data-student-argue],[data-explain-question]').forEach(function(el) { el.remove(); });
+        removeEmptyQuestionActionRows();
         var submitBtn = document.getElementById('submit-btn');
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -755,7 +773,12 @@
     function enableRetry() {
         document.querySelectorAll('[data-question]').forEach(function(el) { el.disabled = false; });
         document.querySelectorAll('.correct,.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
-        document.querySelectorAll('.evidence-text').forEach(function(el) { el.classList.remove('show'); });
+        document.querySelectorAll('.evidence-text').forEach(function(el) {
+            el.classList.remove('show');
+            resetEvidenceAnswerData(el);
+        });
+        document.querySelectorAll('[data-student-argue],[data-explain-question]').forEach(function(el) { el.remove(); });
+        removeEmptyQuestionActionRows();
         var submitBtn = document.getElementById('submit-btn');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit Answers';
@@ -817,9 +840,91 @@
         btn.textContent = answerRevealAvailable ? 'Show Answers' : 'History';
     }
 
+    function resetEvidenceAnswerData(el) {
+        el.removeAttribute('data-answer-text');
+        el.removeAttribute('data-explanation-text');
+        el.removeAttribute('data-answer-visible');
+        el.removeAttribute('data-answer-reveal');
+        el.removeAttribute('data-explanation-visible');
+        el.classList.remove('explanation-open');
+    }
+
+    function removeEmptyQuestionActionRows() {
+        document.querySelectorAll('.question-action-row').forEach(function(row) {
+            if (!row.children.length) row.remove();
+        });
+    }
+
+    function questionActionRow(evidence) {
+        if (!evidence || !evidence.parentNode) return null;
+        var row = evidence.parentNode.querySelector('.question-action-row');
+        if (!row) {
+            row = document.createElement('div');
+            row.className = 'question-action-row';
+            evidence.parentNode.insertBefore(row, evidence);
+        }
+        return row;
+    }
+
+    function setEvidenceAnswer(evidence, answer, explanation) {
+        evidence.setAttribute('data-answer-text', answer || '');
+        evidence.setAttribute('data-explanation-text', explanation || '');
+        evidence.setAttribute('data-explanation-visible', '0');
+        evidence.textContent = answer || '';
+        evidence.classList.remove('explanation-open');
+    }
+
+    function showEvidenceAnswer(evidence) {
+        evidence.textContent = evidence.getAttribute('data-answer-text') || evidence.textContent || '';
+        evidence.setAttribute('data-answer-visible', '1');
+        evidence.setAttribute('data-explanation-visible', '0');
+        evidence.classList.remove('explanation-open');
+        evidence.classList.add('show');
+    }
+
+    function showEvidenceExplanation(evidence) {
+        var answer = evidence.getAttribute('data-answer-text') || '';
+        var explanation = evidence.getAttribute('data-explanation-text') || '';
+        evidence.textContent = explanation ? answer + '\n\nExplanation: ' + explanation : answer;
+        evidence.setAttribute('data-answer-visible', '1');
+        evidence.setAttribute('data-explanation-visible', explanation ? '1' : '0');
+        evidence.classList.toggle('explanation-open', !!explanation);
+        evidence.classList.add('show');
+    }
+
+    function toggleEvidenceExplanation(button, evidence) {
+        if (evidence.getAttribute('data-explanation-visible') === '1') {
+            showEvidenceAnswer(evidence);
+            button.textContent = 'Explain';
+            button.classList.remove('explain-open');
+            return;
+        }
+        if (evidence.getAttribute('data-answer-reveal') === '1' && evidence.getAttribute('data-answer-visible') !== '1') {
+            if (!confirmAnswerReveal()) return;
+        }
+        showEvidenceExplanation(evidence);
+        button.textContent = 'Hide Explain';
+        button.classList.add('explain-open');
+    }
+
+    function renderExplainButton(q, evidence) {
+        if (!evidence || !evidence.getAttribute('data-explanation-text') || evidence.parentNode.querySelector('[data-explain-question="' + CSS.escape(q.id) + '"]')) return;
+        var row = questionActionRow(evidence);
+        if (!row) return;
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'teacher-argue-btn';
+        button.textContent = 'Explain';
+        button.setAttribute('data-explain-question', q.id);
+        button.addEventListener('click', function() {
+            toggleEvidenceExplanation(button, evidence);
+        });
+        row.appendChild(button);
+    }
+
     function revealAllAnswers() {
         if (!confirmAnswerReveal()) return;
-        document.querySelectorAll('[data-answer-reveal="1"]').forEach(function(el) { el.classList.add('show'); });
+        document.querySelectorAll('[data-answer-reveal="1"]').forEach(showEvidenceAnswer);
     }
 
     function teacherCall(action, data) {
@@ -834,13 +939,15 @@
         document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
             el.classList.remove('show');
             el.textContent = '';
+            resetEvidenceAnswerData(el);
             el.removeAttribute('data-teacher-answer');
         });
         document.querySelectorAll('[data-teacher-correct="1"]').forEach(function(el) {
             el.classList.remove('correct', 'wrong');
             el.removeAttribute('data-teacher-correct');
         });
-        document.querySelectorAll('[data-teacher-argue]').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('[data-teacher-argue],[data-explain-question]').forEach(function(el) { el.remove(); });
+        removeEmptyQuestionActionRows();
     }
 
     function normalizeAnswer(value) {
@@ -952,6 +1059,8 @@
 
     function renderStudentArgueButton(q, evidence) {
         if (!evidence || !currentArgueAttemptId || evidence.parentNode.querySelector('[data-student-argue="' + CSS.escape(q.id) + '"]')) return;
+        var row = questionActionRow(evidence);
+        if (!row) return;
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'teacher-argue-btn';
@@ -960,7 +1069,7 @@
         button.addEventListener('click', function() {
             openStudentArgueModal(button, q);
         });
-        evidence.parentNode.insertBefore(button, evidence.nextSibling);
+        row.appendChild(button);
     }
 
     function openTeacherArgueModal(button, q, answer) {
@@ -987,6 +1096,8 @@
 
     function renderTeacherArgueButton(q, answer, evidence) {
         if (!evidence || evidence.parentNode.querySelector('[data-teacher-argue="' + CSS.escape(q.id) + '"]')) return;
+        var row = questionActionRow(evidence);
+        if (!row) return;
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'teacher-argue-btn';
@@ -995,7 +1106,7 @@
         button.addEventListener('click', function() {
             openTeacherArgueModal(button, q, answer);
         });
-        evidence.parentNode.insertBefore(button, evidence.nextSibling);
+        row.appendChild(button);
     }
 
     function markTeacherCorrect(q, answer, submittedAnswer) {
@@ -1031,10 +1142,10 @@
             if (answer == null) return;
             var evidence = document.getElementById('ev-' + q.id);
             if (evidence) {
-                evidence.textContent = 'Correct answer: ' + answerText(answer) +
-                    (explanations[q.id] ? ' - ' + explanations[q.id] : '');
+                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(answer), explanations[q.id] || '');
                 evidence.setAttribute('data-teacher-answer', '1');
-                evidence.classList.add('show');
+                showEvidenceAnswer(evidence);
+                renderExplainButton(q, evidence);
                 renderTeacherArgueButton(q, answer, evidence);
             }
             markTeacherCorrect(q, answer, submittedAnswers[q.id]);
@@ -1619,9 +1730,11 @@
             }
 
             if (evidence && !result.correct) {
-                evidence.textContent = 'Correct answer: ' + result.correct_answer + (result.explanation ? ' — ' + result.explanation : '');
+                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(result.correct_answer), result.explanation || '');
                 evidence.classList.remove('show');
+                evidence.removeAttribute('data-answer-visible');
                 evidence.setAttribute('data-answer-reveal', '1');
+                if (answerRevealAvailable) renderExplainButton(q, evidence);
                 renderStudentArgueButton(q, evidence);
             }
         });
