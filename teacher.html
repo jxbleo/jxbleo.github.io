@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260613-15">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260613-18">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -115,13 +115,24 @@
         </section>
 
         <section class="dashboard-view" id="view-check" hidden>
-            <div class="student-page-toolbar">
-                <div>
-                    <h2>Check progress</h2>
-                    <p>Choose a student to review progress, assignments, and account details.</p>
+            <section class="profile-card student-select-card">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <h2>Student info</h2>
+                        <p>Search and choose one student.</p>
+                    </div>
+                    <button class="primary-button compact-primary" id="toggle-create-student" type="button">Create Student Account</button>
                 </div>
-                <button class="primary-button compact-primary" id="toggle-create-student" type="button">Create Student Account</button>
-            </div>
+                <div class="student-search-popover">
+                    <input class="resource-search" id="student-search" type="search" placeholder="Search students..." autocomplete="off">
+                    <select class="filter-select full-width" id="student-class-filter" hidden>
+                        <option value="">All classes</option>
+                    </select>
+                    <div class="student-picker" id="student-list">
+                        <div class="empty-card loading-card">Loading students...</div>
+                    </div>
+                </div>
+            </section>
 
             <section class="profile-card create-student-panel" id="create-student-panel" hidden>
                 <div class="section-heading compact-heading">
@@ -150,20 +161,9 @@
                 </form>
             </section>
 
-            <div class="student-directory">
-                <aside class="student-sidebar">
-                    <input class="resource-search" id="student-search" type="search" placeholder="Search students...">
-                    <select class="filter-select full-width" id="student-class-filter">
-                        <option value="">All classes</option>
-                    </select>
-                    <div class="student-picker" id="student-list">
-                        <div class="empty-card loading-card">Loading students...</div>
-                    </div>
-                </aside>
-                <section class="student-detail" id="student-detail">
-                    <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
-                </section>
-            </div>
+            <section class="student-detail" id="student-detail">
+                <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
+            </section>
         </section>
 
         <div class="teacher-footer">
@@ -175,6 +175,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260613-16"></script>
+    <script src="assets/js/teacher.js?v=20260613-18"></script>
 </body>
 </html>

@@ -598,22 +598,31 @@ async function listAttempts() {
       const attempt = record.data && typeof record.data === "object"
         ? { ...record.data, _id: record._id }
         : record;
+      const questionResults = effectiveQuestionResults(attempt).map((item) => ({
+        question_id: item.question_id,
+        submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
+        correct: item.correct === true,
+      }));
       return {
-      attempt_id: attempt.attempt_id || attempt._id,
-      student_uid: attempt.student_uid,
-      student_id: attempt.student_id_snapshot || "",
-      set_id: attempt.set_id,
-      assignment_id: attempt.assignment_id || null,
-      mode: attempt.mode || "",
-      attempt_number: Number(attempt.attempt_number || 0),
-      correct_count: Number(attempt.correct_count || 0),
-      question_count: Number(attempt.question_count || 0),
-      percentage: effectivePercentage(attempt),
-      passing_percentage: Number(attempt.passing_percentage || 50),
-      passed: effectivePassed(attempt),
-      selected_group_count: attempt.selected_group_count || null,
-      submitted_at: attempt.submitted_at || null,
-      practice_context: attempt.practice_context || "",
+        attempt_id: attempt.attempt_id || attempt._id,
+        student_uid: attempt.student_uid,
+        student_id: attempt.student_id_snapshot || "",
+        set_id: attempt.set_id,
+        assignment_id: attempt.assignment_id || null,
+        mode: attempt.mode || "",
+        attempt_number: Number(attempt.attempt_number || 0),
+        correct_count: Number(attempt.correct_count || 0),
+        question_count: Number(attempt.question_count || 0),
+        percentage: effectivePercentage(attempt),
+        passing_percentage: Number(attempt.passing_percentage || 50),
+        mastery_percentage: Number(attempt.mastery_percentage || 90),
+        passed: effectivePassed(attempt),
+        mastered: attempt.adjusted_mastered == null ? attempt.mastered === true : attempt.adjusted_mastered === true,
+        selected_group_count: attempt.selected_group_count || null,
+        submitted_at: attempt.submitted_at || null,
+        practice_context: attempt.practice_context || "",
+        duration_seconds: attempt.duration_seconds == null ? null : Number(attempt.duration_seconds),
+        question_results: questionResults,
       };
     }).sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
   };
