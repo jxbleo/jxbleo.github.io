@@ -733,6 +733,7 @@ button { cursor: pointer; }
     box-shadow: 0 10px 24px rgba(83,45,145,0.07);
 }
 .revise-tabs { margin-bottom: 14px; }
+.revise-tabs .revise-filter { position: relative; }
 .sub-tab {
     position: relative;
     min-height: 40px;
