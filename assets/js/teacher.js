@@ -22,8 +22,6 @@
         { id: 'grammar', label: 'Grammar' },
         { id: 'listening', label: 'Listening' }
     ];
-    var CURRICULUM_OPTIONS = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
-
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
     var studentDetail = document.getElementById('student-detail');
@@ -421,6 +419,35 @@
         if (card) card.classList.toggle('picker-open', open === true);
     }
 
+    function selectStudent(profileId) {
+        state.selectedStudentProfileId = profileId;
+        var selected = state.students.find(function(item) {
+            return item.profile_id === state.selectedStudentProfileId;
+        });
+        if (selected) {
+            document.getElementById('student-search').value = selected.name || selected.student_id || '';
+        }
+        state.studentProgressFilter = 'to_do';
+        state.studentProgressView = 'assignment';
+        state.expandedAttemptSets = {};
+        setStudentPickerOpen(false);
+        renderStudentList();
+        renderStudentDetail();
+    }
+
+    function confirmStudentSearch() {
+        var firstMatch = filteredStudents().find(function(student) {
+            return student.profile_complete;
+        });
+        if (!firstMatch) {
+            showMessage('No matching student found.', 'error');
+            setStudentPickerOpen(true);
+            renderStudentList();
+            return;
+        }
+        selectStudent(firstMatch.profile_id);
+    }
+
     function renderStudentList() {
         var students = filteredStudents();
         studentList.innerHTML = students.length ? students.map(function(student) {
@@ -441,19 +468,7 @@
         studentList.querySelectorAll('.student-pick').forEach(function(button) {
             if (button.classList.contains('incomplete-profile')) return;
             button.addEventListener('click', function() {
-                state.selectedStudentProfileId = button.dataset.profileId;
-                var selected = state.students.find(function(item) {
-                    return item.profile_id === state.selectedStudentProfileId;
-                });
-                if (selected) {
-                    document.getElementById('student-search').value = selected.name || selected.student_id || '';
-                }
-                state.studentProgressFilter = 'to_do';
-                state.studentProgressView = 'assignment';
-                state.expandedAttemptSets = {};
-                setStudentPickerOpen(false);
-                renderStudentList();
-                renderStudentDetail();
+                selectStudent(button.dataset.profileId);
             });
         });
     }
@@ -465,15 +480,18 @@
             counts[status] = (counts[status] || 0) + 1;
         });
         var filters = [
-            { id: 'to_do', label: 'TO DO', count: counts.to_do },
-            { id: 'passed', label: 'PASSED', count: counts.passed },
-            { id: 'mastered', label: 'MASTERED', count: counts.mastered }
+            { id: 'to_do', label: 'TO DO', count: counts.to_do, tone: 'pending' },
+            { id: 'passed', label: 'PASSED', count: counts.passed, tone: 'approved' },
+            { id: 'mastered', label: 'MASTERED', count: counts.mastered, tone: 'rejected' }
         ];
-        return '<div class="summary-grid student-summary" role="tablist" aria-label="Student progress">' +
+        return '<div class="summary-grid student-summary" role="tablist" aria-label="Assignment status">' +
             filters.map(function(filter) {
-                return '<button class="summary-card assignment-filter' + (state.studentProgressFilter === filter.id ? ' active' : '') +
+                return '<button class="summary-card assignment-filter progress-status-filter ' + escapeHtml(filter.tone) +
+                    (state.studentProgressFilter === filter.id ? ' active' : '') +
                     '" type="button" data-student-progress-filter="' + escapeHtml(filter.id) + '">' +
-                    '<span class="summary-value">' + filter.count + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span></button>';
+                    '<span class="summary-value">' + filter.count + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span>' +
+                    (filter.id === 'to_do' && filter.count ? '<span class="notice-dot danger">' + filter.count + '</span>' : '') +
+                    '</button>';
             }).join('') +
         '</div>';
     }
@@ -485,8 +503,8 @@
 
     function progressModeTabs() {
         var tabs = [
-            { id: 'assignment', label: 'Assignment' },
-            { id: 'attempt', label: 'Attempt' }
+            { id: 'assignment', label: 'Assignments' },
+            { id: 'attempt', label: 'Attempts' }
         ];
         return '<div class="progress-mode-tabs" role="tablist" aria-label="Progress detail type">' +
             tabs.map(function(tab) {
@@ -603,9 +621,9 @@
         if (!student) {
             studentDetail.innerHTML =
                 '<section class="profile-card student-profile-card empty-check-card">' +
-                    '<h2>Basic information</h2><p class="muted">Select a student to see their profile.</p></section>' +
+                    '<p class="eyebrow accent">INFO</p><p class="muted">Select a student to see their profile.</p></section>' +
                 '<section class="profile-card student-progress-card empty-check-card">' +
-                    '<h2>Progress</h2><p class="muted">Assignments and recent attempts will appear here.</p></section>';
+                    '<p class="eyebrow accent">PROGRESS</p><p class="muted">Assignments and recent attempts will appear here.</p></section>';
             return;
         }
         var assignments = state.assignments.filter(function(item) {
@@ -620,36 +638,25 @@
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card">' +
-                '<div class="student-detail-heading"><div><p class="eyebrow accent">BASIC INFORMATION</p><h2>' +
-                    escapeHtml(student.name || student.student_id) + '</h2><p>' +
-                    escapeHtml(student.student_id) + '</p></div>' +
-                    '<span class="badge ' + (student.active ? 'done' : 'failed') + '">' +
-                    (student.active ? 'Active' : 'Inactive') + '</span></div>' +
-                '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></div>' +
-                '<div class="profile-row"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></div>' +
+                '<p class="eyebrow accent">INFO</p>' +
+                '<div class="student-info-grid">' +
+                    '<div class="student-info-item"><span>Name</span><strong>' + escapeHtml(student.name || 'Not set') + '</strong></div>' +
+                    '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
+                    '<div class="student-info-item"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></div>' +
+                    '<div class="student-info-item"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></div>' +
+                    '<div class="student-info-item"><span>Status</span><strong>' + escapeHtml(student.active ? 'Active' : 'Inactive') + '</strong></div>' +
+                '</div>' +
                 '<div class="student-account-actions">' +
-                    '<input id="detail-class" type="text" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class name">' +
-                    '<select id="detail-curriculum">' + CURRICULUM_OPTIONS.map(function(option) {
-                        return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
-                            escapeHtml(option || 'Not set') + '</option>';
-                    }).join('') + '</select>' +
-                    '<button class="outline-button" id="save-class" type="button">Assign Class</button>' +
-                    '<button class="outline-button" id="reset-password" type="button">Reset Password</button>' +
+                    '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
                     '<button class="' + (student.active ? 'danger-button' : 'outline-button') + '" id="toggle-account" type="button">' +
                         (student.active ? 'Disable Account' : 'Enable Account') + '</button>' +
                 '</div>' +
             '</section>' +
             '<section class="profile-card student-progress-card">' +
-                '<div class="student-detail-heading"><div><p class="eyebrow accent">PROGRESS</p><h2>Student progress</h2></div></div>' +
+                '<p class="eyebrow accent">PROGRESS</p>' +
                 progressModeTabs() + progressHtml +
             '</section>';
 
-        document.getElementById('save-class').addEventListener('click', function() {
-            updateStudent(student.auth_uid, {
-                class_group: document.getElementById('detail-class').value,
-                curriculum_track: document.getElementById('detail-curriculum').value
-            });
-        });
         document.getElementById('toggle-account').addEventListener('click', function() {
             updateStudent(student.auth_uid, { active: !student.active });
         });
@@ -976,6 +983,13 @@
         setStudentPickerOpen(true);
         renderStudentList();
     });
+    document.getElementById('student-search').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            confirmStudentSearch();
+        }
+    });
+    document.getElementById('confirm-student-search').addEventListener('click', confirmStudentSearch);
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
         var card = document.querySelector('.student-select-card');
