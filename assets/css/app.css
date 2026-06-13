@@ -385,7 +385,43 @@ button { cursor: pointer; }
     background: white;
     outline: none;
 }
+.library-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+}
+.library-tab {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.76);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.library-tab.active {
+    color: #fff;
+    border-color: var(--accent);
+    background: var(--accent);
+}
 .resource-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; }
+.resource-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 5px;
+}
+.resource-card-head .eyebrow { margin: 0; }
+.resource-card-head span {
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .profile-card h2 { margin-top: 0; }
