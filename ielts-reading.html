@@ -139,7 +139,7 @@
             touch-action: none;
         }
         .split-divider::before {
-            content: "";
+            content: none;
             position: absolute;
             left: 50%;
             top: 0;
@@ -790,7 +790,7 @@
         var toolbar = document.createElement('div');
         toolbar.className = 'history-toolbar';
         toolbar.id = 'history-toolbar';
-        toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
+        toolbar.innerHTML = '<button type="button" id="show-history-btn">History</button><button type="button" id="clear-all-btn">Clear</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
             if (answerRevealAvailable) {
@@ -814,7 +814,7 @@
     function updateHistoryToolbar() {
         var btn = document.getElementById('show-history-btn');
         if (!btn) return;
-        btn.textContent = answerRevealAvailable ? 'Show Answers' : 'Show History';
+        btn.textContent = answerRevealAvailable ? 'Show Answers' : 'History';
     }
 
     function revealAllAnswers() {
