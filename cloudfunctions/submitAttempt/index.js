@@ -91,6 +91,52 @@ function gradeAnswers(submittedAnswers, gradingKey, mode) {
   return { results, correctCount, questionCount: questionIds.length, percentage };
 }
 
+function isBbcMultipleChoiceQuestion(questionId) {
+  return /^mc-/i.test(String(questionId || ""));
+}
+
+function bbcMultipleChoiceQuestionIds(gradingKey) {
+  return Object.keys((gradingKey && gradingKey.answers) || {}).filter(isBbcMultipleChoiceQuestion);
+}
+
+function normalizeRecord(record) {
+  return record && record.data && typeof record.data === "object"
+    ? { ...record.data, _id: record._id }
+    : record;
+}
+
+function lockedBbcMultipleChoiceAnswers(previousAttempts, questionIds) {
+  const locked = {};
+  const mcIds = new Set(questionIds || []);
+  (previousAttempts || [])
+    .map(normalizeRecord)
+    .sort((left, right) => new Date(left.submitted_at || 0) - new Date(right.submitted_at || 0))
+    .forEach((attempt) => {
+      const answers = attempt && attempt.bbc_mc_locked_answers && typeof attempt.bbc_mc_locked_answers === "object"
+        ? attempt.bbc_mc_locked_answers
+        : attempt && attempt.answers && typeof attempt.answers === "object"
+          ? attempt.answers
+          : {};
+      (questionIds && questionIds.length ? questionIds : Object.keys(answers)).forEach((questionId) => {
+        if (!mcIds.size && !isBbcMultipleChoiceQuestion(questionId)) return;
+        if (mcIds.size && !mcIds.has(questionId)) return;
+        if (Object.prototype.hasOwnProperty.call(locked, questionId)) return;
+        if (!Object.prototype.hasOwnProperty.call(answers, questionId)) return;
+        locked[questionId] = answers[questionId] == null ? "" : answers[questionId];
+      });
+    });
+  return locked;
+}
+
+function bbcMultipleChoiceAnswers(answers, questionIds) {
+  const locked = {};
+  (questionIds && questionIds.length ? questionIds : Object.keys(answers || {})).forEach((questionId) => {
+    if (!isBbcMultipleChoiceQuestion(questionId)) return;
+    locked[questionId] = answers && answers[questionId] != null ? answers[questionId] : "";
+  });
+  return locked;
+}
+
 async function protectSelfStudyStar(student, attempt, now) {
   const result = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -182,7 +228,7 @@ exports.main = async (event) => {
     const setId = String(event.set_id || "");
     const assignmentId = event.assignment_id ? String(event.assignment_id) : null;
     const mode = String(event.mode || "default");
-    const answers = event.answers && typeof event.answers === "object" ? event.answers : {};
+    let answers = event.answers && typeof event.answers === "object" ? event.answers : {};
 
     if (!setId) throw new Error("SET_REQUIRED");
     const set = await getOne("sets", { set_id: setId, visible: true });
@@ -198,6 +244,17 @@ exports.main = async (event) => {
         set_id: setId,
       });
       if (!assignment) throw new Error("ASSIGNMENT_NOT_FOUND");
+    }
+
+    const bbcMcQuestionIds = mode === "bbc" ? bbcMultipleChoiceQuestionIds(gradingKey) : [];
+    if (mode === "bbc") {
+      const previousAttemptResult = await db.collection("attempts").where({
+        student_uid: student.auth_uid,
+        set_id: setId,
+        assignment_id: assignmentId,
+      }).limit(500).get();
+      const bbcMcLockedAnswers = lockedBbcMultipleChoiceAnswers(previousAttemptResult.data || [], bbcMcQuestionIds);
+      answers = { ...answers, ...bbcMcLockedAnswers };
     }
 
     const grading = gradeAnswers(answers, gradingKey, mode);
@@ -293,6 +350,7 @@ exports.main = async (event) => {
       selected_group_count: event.selected_group_count || null,
       selected_group_ids: event.selected_group_ids || [],
       group_results: groupResults,
+      bbc_mc_locked_answers: mode === "bbc" ? bbcMultipleChoiceAnswers(answers, bbcMcQuestionIds) : null,
     };
 
     await db.collection("attempts").add(attempt);
@@ -348,6 +406,7 @@ exports.main = async (event) => {
         submitted_answer: item.submitted_answer,
         correct: item.correct,
       })),
+      bbc_mc_locked_answers: mode === "bbc" ? bbcMultipleChoiceAnswers(answers, bbcMcQuestionIds) : {},
       group_results: groupResults,
       feedback_locked: !mayShowFeedback,
     };

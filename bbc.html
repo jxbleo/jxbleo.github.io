@@ -1485,6 +1485,7 @@
     var lastEncouragementIndex = -1;
     var blankAttemptLimit = 0;
     var blankAttemptState = {};
+    var mcLockedAnswers = {};
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -1865,8 +1866,10 @@
             renderTeacherAnswerToolbar();
         } else {
             loadBlankAttemptState();
+            loadMcLockState();
             restoreSavedOrPrefillAnswers();
             applyBlankAttemptLocks();
+            applyMcLocks();
             renderHistoryToolbar();
         }
     }
@@ -2030,6 +2033,62 @@
         return 'bbc-blank-attempts-' + setId + '-' + (assignmentId || studentId || 'visitor');
     }
 
+    function mcLockStorageKey() {
+        return 'bbc-mc-locks-' + setId + '-' + (assignmentId || studentId || 'visitor');
+    }
+
+    function isMcQuestionId(questionId) {
+        return /^mc-/i.test(String(questionId || ''));
+    }
+
+    function loadMcLockState() {
+        if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) {
+            mcLockedAnswers = {};
+            return;
+        }
+        try {
+            mcLockedAnswers = JSON.parse(localStorage.getItem(mcLockStorageKey()) || '{}') || {};
+        } catch (e) {
+            mcLockedAnswers = {};
+        }
+    }
+
+    function saveMcLockState() {
+        if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) return;
+        try { localStorage.setItem(mcLockStorageKey(), JSON.stringify(mcLockedAnswers)); } catch (e) {}
+    }
+
+    function setMcQuestionDisabled(questionId, disabled) {
+        document.querySelectorAll('[name="' + CSS.escape(questionId) + '"]').forEach(function(input) {
+            input.disabled = disabled === true;
+            var li = input.closest('li');
+            if (li) li.classList.toggle('disabled', disabled === true);
+        });
+    }
+
+    function applyMcLocks() {
+        Object.keys(mcLockedAnswers || {}).forEach(function(questionId) {
+            var value = mcLockedAnswers[questionId];
+            document.querySelectorAll('[name="' + CSS.escape(questionId) + '"]').forEach(function(input) {
+                input.checked = input.value === value;
+            });
+            setMcQuestionDisabled(questionId, true);
+        });
+    }
+
+    function rememberMcLocks(answers) {
+        var changed = false;
+        Object.keys(answers || {}).forEach(function(questionId) {
+            if (!isMcQuestionId(questionId)) return;
+            if (mcLockedAnswers[questionId]) return;
+            if (answers[questionId] == null || String(answers[questionId]) === '') return;
+            mcLockedAnswers[questionId] = answers[questionId];
+            changed = true;
+        });
+        if (changed) saveMcLockState();
+        applyMcLocks();
+    }
+
     function blankAttemptLocksEnabled() {
         return Number(blankAttemptLimit || 0) > 0;
     }
@@ -2165,13 +2224,23 @@
             input.value = '';
             input.dispatchEvent(new Event('input', { bubbles: true }));
         });
-        form.querySelectorAll('input[type="radio"]').forEach(function(input) { input.checked = false; });
+        form.querySelectorAll('input[type="radio"]').forEach(function(input) {
+            if (mcLockedAnswers[input.name]) {
+                input.checked = input.value === mcLockedAnswers[input.name];
+                return;
+            }
+            input.checked = false;
+            input.disabled = false;
+            var li = input.closest('li');
+            if (li) li.classList.remove('disabled');
+        });
         form.querySelectorAll('select').forEach(function(select) { select.value = ''; });
         form.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
         });
         form.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
         applyBlankAttemptLocks();
+        applyMcLocks();
         var submitBtn = document.getElementById('submit-btn');
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -2186,6 +2255,7 @@
             el.disabled = false;
         });
         applyBlankAttemptLocks();
+        applyMcLocks();
         var btn = document.getElementById('submit-btn');
         btn.disabled = false;
         btn.textContent = 'Submit Answers';
@@ -2205,6 +2275,7 @@
         if (saved && Object.keys(saved).length) {
             applyAnswers(saved);
             applyBlankAttemptLocks();
+            applyMcLocks();
             return;
         }
         if (!prefillAttemptId || !window.MrCatCloud) return;
@@ -2215,6 +2286,7 @@
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
                 applyBlankAttemptLocks();
+                rememberMcLocks(result.attempt.answers);
                 saveDraftAnswers();
             }
         }).catch(function() {});
@@ -2230,6 +2302,7 @@
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
                 applyBlankAttemptLocks();
+                rememberMcLocks(result.attempt.answers);
                 saveDraftAnswers();
             }
         }).catch(function() {});
@@ -2988,6 +3061,7 @@
             assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
             answerRevealAvailable = response.passed && !response.feedback_locked;
             updateHistoryToolbar();
+            rememberMcLocks(response.bbc_mc_locked_answers || userAnswers);
 
             var feedback = (response.question_results || []).map(function(item) {
                 var source = null;
@@ -3012,6 +3086,7 @@
             });
 
             disableAllInputs();
+            applyMcLocks();
             if (!response.feedback_locked) {
                 recordBlankAttemptResults(feedback);
                 applyFeedback(feedback);
