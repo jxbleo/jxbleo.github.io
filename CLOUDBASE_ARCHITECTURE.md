@@ -394,11 +394,15 @@ created_at: timestamp
 updated_at: timestamp
 ```
 
-Assignment star claims use `source: "assignment_claim"` and store
-`assignment_id`. They are counted for the student dashboard star counter and do
-not block later assignments of the same `set_id`.
+Mastered assignment stars use `source: "assignment_claim"` and store
+`assignment_id`. `submitAttempt` creates or updates this record when an
+assignment reaches mastery, and `getDashboard` may repair missing historical
+records while loading the student dashboard. Self-study stars use
+`assignment_id: null`, and `getDashboard` may also repair missing self-study
+records from mastered independent attempts. They are counted for the student
+dashboard star counter and do not block later assignments of the same `set_id`.
 
-One student may claim one STAR per mastered assignment. A STAR may update its
+One student may have one STAR per mastered assignment. A STAR may update its
 best attempt and score, but it must never be deleted, revoked or downgraded by
 ordinary application logic. Later passing-standard changes affect future
 submissions only.
