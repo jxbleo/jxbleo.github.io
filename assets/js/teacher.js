@@ -10,9 +10,12 @@
         disputes: [],
         candidates: [],
         selectedStudentProfileId: '',
+        studentProgressFilter: 'to_do',
+        studentProgressView: 'assignment',
         disputeFilter: 'pending',
         libraryFilter: 'vocabulary',
-        expandedDisputes: {}
+        expandedDisputes: {},
+        expandedAttemptSets: {}
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -81,10 +84,10 @@
             '';
     }
 
-    function loadQuestionTextForDisputes() {
+    function loadQuestionTextForRecords(records) {
         var setIds = {};
-        (state.disputes || []).forEach(function(d) {
-            if (d.set_id) setIds[d.set_id] = true;
+        (records || []).forEach(function(record) {
+            if (record.set_id) setIds[record.set_id] = true;
         });
         var keys = Object.keys(setIds);
         if (!keys.length) return Promise.resolve();
@@ -100,6 +103,14 @@
                 .catch(function() { questionTextCache[setId] = null; });
         }).filter(Boolean);
         return Promise.all(promises);
+    }
+
+    function loadQuestionTextForDisputes() {
+        return loadQuestionTextForRecords(state.disputes || []);
+    }
+
+    function loadQuestionTextForAttempts() {
+        return loadQuestionTextForRecords(state.attempts || []);
     }
 
     function escapeHtml(value) {
@@ -129,6 +140,20 @@
             month: 'short',
             day: 'numeric'
         }).format(date);
+    }
+
+    function formatDateTime(value, fallback) {
+        if (!value) return fallback || '—';
+        var date = new Date(value);
+        if (isNaN(date.getTime())) return fallback || '—';
+        var day = date.toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+        var time = date.toLocaleTimeString('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+        return day + ' ' + time;
     }
 
     function englishName(value) {
@@ -391,6 +416,11 @@
         });
     }
 
+    function setStudentPickerOpen(open) {
+        var card = document.querySelector('.student-select-card');
+        if (card) card.classList.toggle('picker-open', open === true);
+    }
+
     function renderStudentList() {
         var students = filteredStudents();
         studentList.innerHTML = students.length ? students.map(function(student) {
@@ -412,6 +442,16 @@
             if (button.classList.contains('incomplete-profile')) return;
             button.addEventListener('click', function() {
                 state.selectedStudentProfileId = button.dataset.profileId;
+                var selected = state.students.find(function(item) {
+                    return item.profile_id === state.selectedStudentProfileId;
+                });
+                if (selected) {
+                    document.getElementById('student-search').value = selected.name || selected.student_id || '';
+                }
+                state.studentProgressFilter = 'to_do';
+                state.studentProgressView = 'assignment';
+                state.expandedAttemptSets = {};
+                setStudentPickerOpen(false);
                 renderStudentList();
                 renderStudentDetail();
             });
@@ -424,11 +464,136 @@
             var status = normalizedAssignmentStatus(item.status);
             counts[status] = (counts[status] || 0) + 1;
         });
-        return '<div class="summary-grid student-summary">' +
-            '<div class="summary-card"><span class="summary-value">' + counts.to_do + '</span><span class="summary-label">TO DO</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.passed + '</span><span class="summary-label">PASSED</span></div>' +
-            '<div class="summary-card"><span class="summary-value">' + counts.mastered + '</span><span class="summary-label">MASTERED</span></div>' +
+        var filters = [
+            { id: 'to_do', label: 'TO DO', count: counts.to_do },
+            { id: 'passed', label: 'PASSED', count: counts.passed },
+            { id: 'mastered', label: 'MASTERED', count: counts.mastered }
+        ];
+        return '<div class="summary-grid student-summary" role="tablist" aria-label="Student progress">' +
+            filters.map(function(filter) {
+                return '<button class="summary-card assignment-filter' + (state.studentProgressFilter === filter.id ? ' active' : '') +
+                    '" type="button" data-student-progress-filter="' + escapeHtml(filter.id) + '">' +
+                    '<span class="summary-value">' + filter.count + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span></button>';
+            }).join('') +
         '</div>';
+    }
+
+    function setTitleFor(setId) {
+        var set = state.sets.find(function(item) { return item.set_id === setId; });
+        return set ? set.title || setId : setId;
+    }
+
+    function progressModeTabs() {
+        var tabs = [
+            { id: 'assignment', label: 'Assignment' },
+            { id: 'attempt', label: 'Attempt' }
+        ];
+        return '<div class="progress-mode-tabs" role="tablist" aria-label="Progress detail type">' +
+            tabs.map(function(tab) {
+                return '<button class="progress-mode-tab' + (state.studentProgressView === tab.id ? ' active' : '') +
+                    '" type="button" data-progress-view="' + escapeHtml(tab.id) + '">' +
+                    escapeHtml(tab.label) + '</button>';
+            }).join('') +
+        '</div>';
+    }
+
+    function questionTextFor(setId, questionId) {
+        return getQuestionTextFromData(questionTextCache[setId], questionId) || '';
+    }
+
+    function wrongResults(attempt) {
+        return (attempt.question_results || []).filter(function(result) {
+            return result && result.correct === false;
+        });
+    }
+
+    function renderWrongQuestions(attempt) {
+        var wrong = wrongResults(attempt);
+        if (!wrong.length) return '<p class="attempt-all-correct">All checked answers were correct.</p>';
+        return '<div class="wrong-question-list">' + wrong.map(function(result) {
+            var questionText = questionTextFor(attempt.set_id, result.question_id);
+            return '<div class="wrong-question">' +
+                '<strong>' + escapeHtml(result.question_id || 'Question') + '</strong>' +
+                (questionText ? '<p>' + escapeHtml(questionText) + '</p>' : '') +
+                '<small>Student answer: ' + escapeHtml(answerText(result.submitted_answer)) + '</small>' +
+            '</div>';
+        }).join('') + '</div>';
+    }
+
+    function groupAttemptsBySet(attempts) {
+        var groups = {};
+        attempts.forEach(function(attempt) {
+            var key = attempt.set_id || 'unknown';
+            if (!groups[key]) {
+                groups[key] = { set_id: key, title: setTitleFor(key), attempts: [], latest_at: attempt.submitted_at || null };
+            }
+            groups[key].attempts.push(attempt);
+            if (new Date(attempt.submitted_at || 0) > new Date(groups[key].latest_at || 0)) {
+                groups[key].latest_at = attempt.submitted_at || null;
+            }
+        });
+        return Object.keys(groups).map(function(key) {
+            groups[key].attempts.sort(function(a, b) {
+                return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
+            });
+            return groups[key];
+        }).sort(function(a, b) {
+            return new Date(b.latest_at || 0) - new Date(a.latest_at || 0);
+        });
+    }
+
+    function renderAssignmentProgress(assignments) {
+        var visibleAssignments = assignments.filter(function(item) {
+            return normalizedAssignmentStatus(item.status) === state.studentProgressFilter;
+        });
+        var assignmentHtml = visibleAssignments.length ? visibleAssignments.map(function(item) {
+            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_title) + '</strong>' +
+                '<small>' + escapeHtml(assignmentStatusLabel(item.status)) +
+                ' · ' + escapeHtml(item.attempt_count) + ' attempts</small></div>' +
+                '<span>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '% best') + '</span></article>';
+        }).join('') : '<p class="muted">No ' + escapeHtml(assignmentStatusLabel(state.studentProgressFilter).toLowerCase()) + ' assignments.</p>';
+
+        return assignmentSummary(assignments) +
+            '<div class="learning-section"><h3>' + escapeHtml(assignmentStatusLabel(state.studentProgressFilter)) + ' assignments</h3>' +
+                assignmentHtml + '</div>';
+    }
+
+    function renderAttemptProgress(attempts) {
+        var groups = groupAttemptsBySet(attempts);
+        if (!groups.length) {
+            return '<div class="learning-section"><h3>Attempts</h3><p class="muted">No recorded attempts yet.</p></div>';
+        }
+        return '<div class="learning-section attempt-set-list"><h3>Attempts</h3>' + groups.map(function(group) {
+            var expanded = state.expandedAttemptSets[group.set_id] === true;
+            var latest = group.attempts[0] || {};
+            var latestWrong = wrongResults(latest).length;
+            return '<article class="attempt-set-capsule' + (expanded ? ' expanded' : '') + '">' +
+                '<button class="attempt-set-head" type="button" data-attempt-set="' + escapeHtml(group.set_id) + '">' +
+                    '<span><strong>' + escapeHtml(group.title) + '</strong>' +
+                    '<small>Set ID: ' + escapeHtml(group.set_id) + ' · ' + group.attempts.length + ' attempt' +
+                    (group.attempts.length === 1 ? '' : 's') + ' · latest ' + escapeHtml(formatDateTime(group.latest_at)) + '</small></span>' +
+                    '<span class="' + (latest.passed ? 'score-pass' : 'score-fail') + '">' +
+                        escapeHtml(latest.percentage == null ? '—' : latest.percentage + '%') +
+                        '<small>' + (latestWrong ? latestWrong + ' wrong' : 'clear') + '</small>' +
+                    '</span>' +
+                '</button>' +
+                (expanded ? '<div class="attempt-detail-list">' + group.attempts.map(function(attempt) {
+                    var wrong = wrongResults(attempt);
+                    return '<section class="attempt-detail-row">' +
+                        '<div class="attempt-detail-head"><div><strong>Attempt ' + escapeHtml(attempt.attempt_number || 1) + '</strong>' +
+                        '<small>Submitted: ' + escapeHtml(formatDateTime(attempt.submitted_at)) +
+                        (attempt.assignment_id ? ' · assigned work' : ' · self-study') + '</small></div>' +
+                        '<span class="' + (attempt.passed ? 'score-pass' : 'score-fail') + '">' +
+                        escapeHtml(attempt.percentage == null ? '—' : attempt.percentage + '%') +
+                        ' · ' + escapeHtml(attempt.correct_count) + '/' + escapeHtml(attempt.question_count) + '</span></div>' +
+                        (wrong.length ? '<p class="wrong-summary">Wrong: ' + escapeHtml(wrong.map(function(result) {
+                            return result.question_id || 'Question';
+                        }).join(', ')) + '</p>' : '') +
+                        renderWrongQuestions(attempt) +
+                    '</section>';
+                }).join('') + '</div>' : '') +
+            '</article>';
+        }).join('') + '</div>';
     }
 
     function renderStudentDetail() {
@@ -436,7 +601,11 @@
             return item.profile_id === state.selectedStudentProfileId;
         });
         if (!student) {
-            studentDetail.innerHTML = '<div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>';
+            studentDetail.innerHTML =
+                '<section class="profile-card student-profile-card empty-check-card">' +
+                    '<h2>Basic information</h2><p class="muted">Select a student to see their profile.</p></section>' +
+                '<section class="profile-card student-progress-card empty-check-card">' +
+                    '<h2>Progress</h2><p class="muted">Assignments and recent attempts will appear here.</p></section>';
             return;
         }
         var assignments = state.assignments.filter(function(item) {
@@ -444,24 +613,14 @@
         });
         var attempts = state.attempts.filter(function(item) {
             return item.student_uid === student.auth_uid || item.student_id === student.student_id;
-        }).slice(0, 10);
-
-        var assignmentHtml = assignments.length ? assignments.map(function(item) {
-            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_title) + '</strong>' +
-                '<small>' + escapeHtml(assignmentStatusLabel(item.status)) +
-                ' · ' + escapeHtml(item.attempt_count) + ' attempts</small></div>' +
-                '<span>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '% best') + '</span></article>';
-        }).join('') : '<p class="muted">No assignments yet.</p>';
-
-        var attemptHtml = attempts.length ? attempts.map(function(item) {
-            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_id) + '</strong>' +
-                '<small>' + escapeHtml(formatDate(item.submitted_at)) + ' · attempt ' + escapeHtml(item.attempt_number) + '</small></div>' +
-                '<span class="' + (item.passed ? 'score-pass' : 'score-fail') + '">' + escapeHtml(item.percentage) + '%</span></article>';
-        }).join('') : '<p class="muted">No recorded attempts yet.</p>';
+        });
+        var progressHtml = state.studentProgressView === 'attempt'
+            ? renderAttemptProgress(attempts)
+            : renderAssignmentProgress(assignments);
 
         studentDetail.innerHTML =
-            '<section class="profile-card student-account-card">' +
-                '<div class="student-detail-heading"><div><p class="eyebrow accent">STUDENT ACCOUNT</p><h2>' +
+            '<section class="profile-card student-profile-card">' +
+                '<div class="student-detail-heading"><div><p class="eyebrow accent">BASIC INFORMATION</p><h2>' +
                     escapeHtml(student.name || student.student_id) + '</h2><p>' +
                     escapeHtml(student.student_id) + '</p></div>' +
                     '<span class="badge ' + (student.active ? 'done' : 'failed') + '">' +
@@ -480,9 +639,10 @@
                         (student.active ? 'Disable Account' : 'Enable Account') + '</button>' +
                 '</div>' +
             '</section>' +
-            assignmentSummary(assignments) +
-            '<section class="profile-card learning-section"><h3>Assigned work</h3>' + assignmentHtml + '</section>' +
-            '<section class="profile-card learning-section"><h3>Recent attempts</h3>' + attemptHtml + '</section>';
+            '<section class="profile-card student-progress-card">' +
+                '<div class="student-detail-heading"><div><p class="eyebrow accent">PROGRESS</p><h2>Student progress</h2></div></div>' +
+                progressModeTabs() + progressHtml +
+            '</section>';
 
         document.getElementById('save-class').addEventListener('click', function() {
             updateStudent(student.auth_uid, {
@@ -500,6 +660,25 @@
                 return refreshStudents();
             }).catch(function(error) {
                 showMessage(error.message, 'error');
+            });
+        });
+        studentDetail.querySelectorAll('[data-student-progress-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentProgressFilter = button.dataset.studentProgressFilter;
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-progress-view]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentProgressView = button.dataset.progressView;
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-attempt-set]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var setId = button.dataset.attemptSet;
+                state.expandedAttemptSets[setId] = state.expandedAttemptSets[setId] !== true;
+                renderStudentDetail();
             });
         });
     }
@@ -673,7 +852,7 @@
                     state.disputes = results[0].disputes || [];
                     state.assignments = results[1].assignments || [];
                     state.attempts = results[2].attempts || [];
-                    return loadQuestionTextForDisputes();
+                    return Promise.all([loadQuestionTextForDisputes(), loadQuestionTextForAttempts()]);
                 }).then(function() {
                     renderDisputes();
                     renderStudentDetail();
@@ -733,7 +912,7 @@
             renderLibrary();
             renderStudentList();
             renderStudentDetail();
-            return loadQuestionTextForDisputes();
+            return Promise.all([loadQuestionTextForDisputes(), loadQuestionTextForAttempts()]);
         }).then(function() {
             renderDisputes();
         });
@@ -788,8 +967,20 @@
         }).finally(updateSelectedCount);
     });
 
-    document.getElementById('student-search').addEventListener('input', renderStudentList);
+    document.getElementById('student-search').addEventListener('focus', function() {
+        this.select();
+        setStudentPickerOpen(true);
+        renderStudentList();
+    });
+    document.getElementById('student-search').addEventListener('input', function() {
+        setStudentPickerOpen(true);
+        renderStudentList();
+    });
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
+    document.addEventListener('click', function(event) {
+        var card = document.querySelector('.student-select-card');
+        if (card && !card.contains(event.target)) setStudentPickerOpen(false);
+    });
     document.getElementById('toggle-create-student').addEventListener('click', function() {
         document.getElementById('create-student-panel').hidden = false;
     });
