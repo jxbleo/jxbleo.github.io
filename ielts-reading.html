@@ -260,6 +260,16 @@
         .evidence-text.show { display: block; }
         .teacher-argue-btn { margin-top: 6px; padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
         .teacher-argue-btn.sent { color: #237a52; border-color: #8cc8a8; background: #ecf9f1; }
+        .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
+        .teacher-argue-card { width: min(460px, 100%); padding: 22px; border-radius: 20px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
+        .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; color: var(--primary); }
+        .teacher-argue-card p { margin: 0 0 14px; color: var(--text-light); line-height: 1.45; }
+        .teacher-argue-card textarea { width: 100%; min-height: 92px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; resize: vertical; box-sizing: border-box; }
+        .teacher-argue-status { margin-top: 12px !important; padding: 10px 12px; border-radius: 12px; color: #237a52 !important; background: #ecf9f1; font-weight: 700; }
+        .teacher-argue-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 14px; }
+        .teacher-argue-actions button { min-height: 38px; padding: 0 15px; border-radius: 11px; font-weight: 800; cursor: pointer; }
+        .teacher-argue-submit { border: 0; color: #fff; background: var(--accent); }
+        .teacher-argue-cancel { border: 1px solid var(--border-color); color: var(--primary); background: #fff; }
 
         .headings-section { margin-bottom: 16px; }
         .headings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; margin-bottom: 16px; padding: 14px 18px; background: #fafbfc; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9em; }
@@ -384,7 +394,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260611-2"></script>
+<script src="assets/js/config.public.js?v=20260613-8"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
 <script src="assets/js/practice-session.js?v=20260611-2"></script>
 <script>
@@ -406,6 +416,7 @@
     var teacherMode = params.get('teacher') === '1';
     var teacherAnswerKey = null;
     var teacherAnswersVisible = false;
+    var currentArgueAttemptId = historyAttemptId || '';
     var attemptStartedAt = new Date().toISOString();
     var lessonData = null;
     var allQuestions = [];
@@ -672,11 +683,15 @@
         return q.question || q.prompt || q.instruction || '';
     }
 
-    function submitTeacherArgue(button, q, answer) {
+    function submitTeacherArgue(button, q, answer, modal) {
         var submitted = collectSubmissionAnswers()[q.id] || '';
-        var reason = window.prompt('Teacher note for this Argue request (optional):', '') || '';
+        var reason = modal.querySelector('textarea').value.trim();
+        var submit = modal.querySelector('.teacher-argue-submit');
+        var status = modal.querySelector('.teacher-argue-status');
         button.disabled = true;
         button.textContent = 'Sending...';
+        submit.disabled = true;
+        submit.textContent = 'Sending...';
         teacherCall('submitTeacherDispute', {
             set_id: setId,
             question_id: q.id,
@@ -686,11 +701,117 @@
         }).then(function() {
             button.classList.add('sent');
             button.textContent = 'Argue Sent';
+            status.hidden = false;
+            status.textContent = 'Sent to the Revise list.';
+            modal.querySelector('textarea').disabled = true;
+            submit.hidden = true;
+            modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
         }).catch(function(error) {
             button.disabled = false;
             button.textContent = 'Argue';
-            alert(error.message || 'Unable to submit Argue.');
+            submit.disabled = false;
+            submit.textContent = 'Submit';
+            status.hidden = false;
+            status.style.color = '#b54747';
+            status.style.background = '#fff0ed';
+            status.textContent = error.message || 'Unable to submit Argue.';
         });
+    }
+
+    function submitStudentArgue(button, q, modal) {
+        var reason = modal.querySelector('textarea').value.trim();
+        var submit = modal.querySelector('.teacher-argue-submit');
+        var status = modal.querySelector('.teacher-argue-status');
+        button.disabled = true;
+        button.textContent = 'Sending...';
+        submit.disabled = true;
+        submit.textContent = 'Sending...';
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'submitDispute',
+            attempt_id: currentArgueAttemptId || '',
+            question_id: q.id,
+            question_text: questionTextForTeacher(q),
+            reason: reason
+        }).then(function(result) {
+            if (!result || !result.success) throw new Error(result && result.message || 'Unable to submit Argue.');
+            button.classList.add('sent');
+            button.textContent = 'Argue Sent';
+            status.hidden = false;
+            status.textContent = 'Sent to teacher. Thank you!';
+            modal.querySelector('textarea').disabled = true;
+            submit.hidden = true;
+            modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
+        }).catch(function(error) {
+            button.disabled = false;
+            button.textContent = 'Argue';
+            submit.disabled = false;
+            submit.textContent = 'Submit';
+            status.hidden = false;
+            status.style.color = '#b54747';
+            status.style.background = '#fff0ed';
+            status.textContent = error.message === 'DISPUTE_ALREADY_EXISTS' ? 'Already sent' : (error.message || 'Unable to submit Argue.');
+        });
+    }
+
+    function openStudentArgueModal(button, q) {
+        var modal = document.createElement('div');
+        modal.className = 'teacher-argue-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.innerHTML =
+            '<div class="teacher-argue-card">' +
+                '<h2>Argue this question</h2>' +
+                '<p>Tell the teacher why this answer should be reviewed. This note is optional.</p>' +
+                '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
+                '<p class="teacher-argue-status" hidden></p>' +
+                '<div class="teacher-argue-actions">' +
+                    '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
+                    '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(modal);
+        modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
+            submitStudentArgue(button, q, modal);
+        });
+        modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
+        modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
+    }
+
+    function renderStudentArgueButton(q, evidence) {
+        if (!evidence || !currentArgueAttemptId || evidence.parentNode.querySelector('[data-student-argue="' + CSS.escape(q.id) + '"]')) return;
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'teacher-argue-btn';
+        button.textContent = 'Argue';
+        button.setAttribute('data-student-argue', q.id);
+        button.addEventListener('click', function() {
+            openStudentArgueModal(button, q);
+        });
+        evidence.parentNode.insertBefore(button, evidence.nextSibling);
+    }
+
+    function openTeacherArgueModal(button, q, answer) {
+        var modal = document.createElement('div');
+        modal.className = 'teacher-argue-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.innerHTML =
+            '<div class="teacher-argue-card">' +
+                '<h2>Argue this question</h2>' +
+                '<p>Send this question to the Revise list. Teacher note is optional.</p>' +
+                '<textarea placeholder="Teacher note (optional)"></textarea>' +
+                '<p class="teacher-argue-status" hidden></p>' +
+                '<div class="teacher-argue-actions">' +
+                    '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
+                    '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(modal);
+        modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
+            submitTeacherArgue(button, q, answer, modal);
+        });
+        modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
+        modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
     }
 
     function renderTeacherArgueButton(q, answer, evidence) {
@@ -701,7 +822,7 @@
         button.textContent = 'Argue';
         button.setAttribute('data-teacher-argue', q.id);
         button.addEventListener('click', function() {
-            submitTeacherArgue(button, q, answer);
+            openTeacherArgueModal(button, q, answer);
         });
         evidence.parentNode.insertBefore(button, evidence.nextSibling);
     }
@@ -1287,6 +1408,7 @@
     }
 
     function applyServerFeedback(response, answers) {
+        if (response && response.attempt_id) currentArgueAttemptId = response.attempt_id;
         updateHistoryFromResponse(response);
         assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
         answerRevealAvailable = response.passed && !response.feedback_locked;
@@ -1318,6 +1440,7 @@
                 evidence.textContent = 'Correct answer: ' + result.correct_answer + (result.explanation ? ' — ' + result.explanation : '');
                 evidence.classList.remove('show');
                 evidence.setAttribute('data-answer-reveal', '1');
+                renderStudentArgueButton(q, evidence);
             }
         });
 

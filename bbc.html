@@ -674,6 +674,88 @@
             color: #7a431a;
         }
 
+        .argue-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1300;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(13, 44, 39, 0.38);
+            backdrop-filter: blur(6px);
+        }
+
+        .argue-modal-card {
+            width: min(460px, 100%);
+            padding: 22px;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 24px 80px rgba(17, 54, 48, 0.22);
+        }
+
+        .argue-modal-card h2 {
+            margin: 0 0 7px;
+            color: var(--ink);
+            font-size: 1.25rem;
+        }
+
+        .argue-modal-card p {
+            margin: 0 0 14px;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .argue-modal-card textarea {
+            width: 100%;
+            min-height: 92px;
+            padding: 10px 12px;
+            border: 1px solid #dce8e3;
+            border-radius: 12px;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .argue-modal-status {
+            margin: 0 0 12px !important;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f6faf8;
+            font-size: 0.88rem;
+        }
+
+        .argue-modal-status.pending { color: #7a5528; background: #fff8e5; }
+        .argue-modal-status.approved { color: #237a52; background: #ecf9f1; }
+        .argue-modal-status.rejected { color: #b54747; background: #fff0ed; }
+
+        .argue-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+            margin-top: 14px;
+        }
+
+        .argue-modal-actions button {
+            min-height: 38px;
+            padding: 0 15px;
+            border-radius: 11px;
+            font-weight: 850;
+            cursor: pointer;
+        }
+
+        .argue-modal-submit {
+            border: 0;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .argue-modal-cancel {
+            border: 1px solid var(--line);
+            color: var(--ink);
+            background: #fff;
+        }
+
         .result-overlay {
             position: fixed;
             inset: 0;
@@ -1088,7 +1170,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260611-2"></script>
+<script src="assets/js/config.public.js?v=20260613-8"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
 <script src="assets/js/practice-session.js?v=20260611-2"></script>
 <script>
@@ -2145,45 +2227,51 @@
     }
 
     function openArgueInline(questionId, containerEl) {
-        var existing = containerEl.querySelector('.argue-inline');
-        if (existing) return;
-        var panel = document.createElement('div');
-        panel.className = 'argue-inline';
-        panel.innerHTML =
-            '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
-            '<div class="argue-inline-actions">' +
-                '<button class="argue-inline-submit" type="button">Submit</button>' +
-                '<button class="argue-inline-cancel" type="button">Cancel</button>' +
+        var modal = document.createElement('div');
+        modal.className = 'argue-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.innerHTML =
+            '<div class="argue-modal-card">' +
+                '<h2>Argue this question</h2>' +
+                '<p class="argue-modal-copy">Tell the teacher why this answer should be reviewed. This note is optional.</p>' +
+                '<p class="argue-modal-status" hidden></p>' +
+                '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
+                '<div class="argue-modal-actions">' +
+                    '<button class="argue-modal-cancel" type="button">Cancel</button>' +
+                    '<button class="argue-modal-submit" type="button">Submit</button>' +
+                '</div>' +
             '</div>';
-        containerEl.appendChild(panel);
+        document.body.appendChild(modal);
 
-        panel.querySelector('.argue-inline-submit').addEventListener('click', function() {
-            submitArgueInline(questionId, panel);
+        modal.querySelector('.argue-modal-submit').addEventListener('click', function() {
+            submitArgueInline(questionId, modal, containerEl);
         });
-        panel.querySelector('.argue-inline-cancel').addEventListener('click', function() {
-            panel.remove();
+        modal.querySelector('.argue-modal-cancel').addEventListener('click', function() {
+            modal.remove();
         });
-        loadArgueStatus(questionId, panel, containerEl);
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) modal.remove();
+        });
+        loadArgueStatus(questionId, modal, containerEl);
     }
 
-    function renderArgueStatus(panel, dispute) {
+    function renderArgueStatus(modal, dispute) {
         if (!dispute) return;
-        panel.classList.remove('pending', 'approved', 'rejected');
-        panel.classList.add(dispute.status || 'pending');
+        var status = modal.querySelector('.argue-modal-status');
         var statusText = dispute.status === 'approved'
             ? 'Approved'
             : dispute.status === 'rejected'
                 ? 'Original ruling kept'
                 : 'Waiting for teacher review';
-        var note = dispute.teacher_note ? '<br><strong>Teacher note:</strong> ' + escapeHtml(dispute.teacher_note) : '';
-        panel.innerHTML =
-            '<div class="argue-inline-done">' +
-                '<span>' + statusText + note + '</span>' +
-                '<button class="argue-inline-close" type="button">Close</button>' +
-            '</div>';
-        panel.querySelector('.argue-inline-close').addEventListener('click', function() {
-            panel.remove();
-        });
+        status.hidden = false;
+        status.className = 'argue-modal-status ' + (dispute.status || 'pending');
+        status.innerHTML = '<strong>' + statusText + '</strong>' +
+            (dispute.teacher_note ? '<br>Teacher note: ' + escapeHtml(dispute.teacher_note) : '');
+        modal.querySelector('textarea').disabled = true;
+        modal.querySelector('textarea').value = dispute.student_reason || '';
+        modal.querySelector('.argue-modal-submit').hidden = true;
+        modal.querySelector('.argue-modal-cancel').textContent = 'Close';
     }
 
     function markArgueBar(containerEl, status) {
@@ -2193,7 +2281,7 @@
         bar.classList.add('dispute-' + (status || 'pending'));
     }
 
-    function loadArgueStatus(questionId, panel, containerEl) {
+    function loadArgueStatus(questionId, modal, containerEl) {
         if (teacherMode || !currentArgueAttemptId || !window.MrCatCloud) return;
         window.MrCatCloud.callFunction('getDashboard', {
             action: 'listDisputesForAttempt',
@@ -2204,13 +2292,14 @@
             });
             if (!dispute) return;
             markArgueBar(containerEl, dispute.status);
-            renderArgueStatus(panel, dispute);
+            renderArgueStatus(modal, dispute);
         }).catch(function() {});
     }
 
-    function submitArgueInline(questionId, panel) {
-        var reason = panel.querySelector('textarea').value.trim();
-        var submitBtn = panel.querySelector('.argue-inline-submit');
+    function submitArgueInline(questionId, modal, containerEl) {
+        var reason = modal.querySelector('textarea').value.trim();
+        var submitBtn = modal.querySelector('.argue-modal-submit');
+        var status = modal.querySelector('.argue-modal-status');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
         var call = teacherMode
@@ -2233,24 +2322,20 @@
             if (!result || !result.success) {
                 throw new Error(result && result.message || result && result.code || 'Unable to submit Argue.');
             }
-            panel.classList.add('pending');
-            markArgueBar(panel.parentNode, 'pending');
-            panel.innerHTML =
-                '<div class="argue-inline-done">' +
-                    (teacherMode ? 'Sent to Argue list.' : 'Sent to teacher. Thank you!') +
-                    '<button class="argue-inline-close" type="button">Close</button>' +
-                '</div>';
-            panel.querySelector('.argue-inline-close').addEventListener('click', function() {
-                panel.remove();
-            });
+            markArgueBar(containerEl, 'pending');
+            status.hidden = false;
+            status.className = 'argue-modal-status pending';
+            status.textContent = teacherMode ? 'Sent to the Revise list.' : 'Sent to teacher. Thank you!';
+            modal.querySelector('textarea').disabled = true;
+            submitBtn.hidden = true;
+            modal.querySelector('.argue-modal-cancel').textContent = 'Close';
         }).catch(function(error) {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit';
             var msg = error.message === 'DISPUTE_ALREADY_EXISTS' ? 'Already sent' : (error.message || 'Try again');
-            var msgEl = document.createElement('p');
-            msgEl.style.cssText = 'margin:6px 0 0;font-size:0.82rem;color:#b54747;';
-            msgEl.textContent = msg;
-            panel.querySelector('.argue-inline-actions').after(msgEl);
+            status.hidden = false;
+            status.className = 'argue-modal-status rejected';
+            status.textContent = msg;
         });
     }
 
