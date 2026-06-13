@@ -703,7 +703,11 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     : 0;
   const percentage = Math.max(effectivePercentage(attempt), recalculated);
   const passingPercentage = Number(attempt.passing_percentage || 50);
+  const masteryPercentage = Number(attempt.mastery_percentage || 90);
   const passed = effectivePassed(attempt) || percentage >= passingPercentage;
+  const mastered = attempt.adjusted_mastered == null
+    ? (attempt.mastered === true || percentage >= masteryPercentage)
+    : (attempt.adjusted_mastered === true || percentage >= masteryPercentage);
   const update = {
     original_percentage: attempt.original_percentage == null
       ? Number(attempt.percentage || 0)
@@ -715,6 +719,7 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     adjusted_correct_count: correctCount,
     adjusted_percentage: percentage,
     adjusted_passed: passed,
+    adjusted_mastered: mastered,
     adjusted_by_dispute_id: dispute.dispute_id || dispute._id,
     adjusted_by_teacher_uid: teacher.auth_uid,
     adjusted_grading_version: gradingVersion,
@@ -730,22 +735,26 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     });
     if (assignment) {
       const set = await getOne("sets", { set_id: attempt.set_id });
-      const masteryPercentage = Number(assignment.mastery_percentage != null
+      const effectiveMasteryPercentage = Number(assignment.mastery_percentage != null
         ? assignment.mastery_percentage
         : (!set || set.mastery_percentage == null ? 90 : set.mastery_percentage));
-      const cappedPercentage = assignment.mastery_locked === true && assignment.status !== "mastered" && percentage >= masteryPercentage
-        ? masteryPercentage - 0.01
-        : percentage;
       const adjustedStatus = assignment.status === "mastered"
         ? "mastered"
-        : (!assignment.mastery_locked && percentage >= masteryPercentage ? "mastered" : (passed ? "passed" : "to_do"));
+        : (percentage >= effectiveMasteryPercentage ? "mastered" : (passed ? "passed" : "to_do"));
+      const currentBest = Number(assignment.best_percentage || 0);
+      const improvesBest = percentage >= currentBest;
       const assignmentUpdate = {
-        best_percentage: Math.max(Number(assignment.best_percentage || 0), cappedPercentage),
+        best_percentage: Math.max(currentBest, percentage),
         raw_best_percentage: Math.max(Number(assignment.raw_best_percentage || 0), percentage),
         updated_at: now,
       };
+      if (improvesBest) {
+        assignmentUpdate.best_attempt_id = attempt.attempt_id;
+        assignmentUpdate.best_correct_count = correctCount;
+        assignmentUpdate.best_question_count = questionCount;
+      }
       if (assignment.latest_attempt_id === attempt.attempt_id) {
-        assignmentUpdate.latest_percentage = cappedPercentage;
+        assignmentUpdate.latest_percentage = percentage;
         assignmentUpdate.latest_raw_percentage = percentage;
       }
       if (passed) {

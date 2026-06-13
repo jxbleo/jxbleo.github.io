@@ -763,7 +763,7 @@ button { cursor: pointer; }
 }
 .dispute-list { display: grid; gap: 12px; }
 .dispute-card { padding: 0; overflow: hidden; }
-.dispute-card.resolved { opacity: 0.78; }
+.dispute-card.approved, .dispute-card.rejected { opacity: 0.82; }
 .dispute-capsule {
     width: 100%;
     display: grid;
@@ -784,6 +784,8 @@ button { cursor: pointer; }
 .dispute-capsule-meta { display: grid; justify-items: end; gap: 4px; }
 .badge.pending { color: #7a5528; background: #fff1da; }
 .badge.resolved { color: var(--success); background: var(--success-soft); }
+.badge.approved { color: var(--success); background: var(--success-soft); }
+.badge.rejected { color: var(--danger); background: var(--danger-soft); }
 .badge.dispute-status.pending { color: #7a5528; background: #fff1da; }
 .badge.dispute-status.approved { color: var(--success); background: var(--success-soft); }
 .badge.dispute-status.rejected { color: var(--danger); background: var(--danger-soft); }

@@ -12,7 +12,7 @@
         selectedStudentProfileId: '',
         disputeFilter: 'pending',
         libraryFilter: 'vocabulary',
-        expandedDisputeGroups: {}
+        expandedDisputes: {}
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -523,77 +523,28 @@
         return 'To Do';
     }
 
-    function disputeGroupKey(item) {
-        return [
-            item.student_uid || item.student_id || 'student',
-            item.assignment_id || item.attempt_id || item.set_id || 'task'
-        ].join('::');
-    }
-
-    function groupedDisputes() {
-        var groups = {};
-        (state.disputes || []).forEach(function(item) {
-            var key = disputeGroupKey(item);
-            if (!groups[key]) {
-                var requesterRole = item.requester_role || 'student';
-                groups[key] = {
-                    key: key,
-                    student_name: item.student_name || item.student_id || (requesterRole === 'teacher' ? 'Teacher' : 'Student'),
-                    student_id: item.student_id || '',
-                    requester_role: requesterRole,
-                    set_title: item.set_title || item.set_id,
-                    set_id: item.set_id,
-                    assignment_id: item.assignment_id || null,
-                    attempt_id: item.attempt_id || null,
-                    items: [],
-                    pending_count: 0,
-                    resolved_count: 0,
-                    latest_at: item.created_at || item.resolved_at || null
-                };
-            }
-            groups[key].items.push(item);
-            if (item.status === 'pending') {
-                groups[key].pending_count += 1;
-            } else {
-                groups[key].resolved_count += 1;
-            }
-            var itemDate = item.status === 'pending'
-                ? (item.created_at || item.updated_at || item.resolved_at)
-                : (item.resolved_at || item.updated_at || item.created_at);
-            if (new Date(itemDate || 0) > new Date(groups[key].latest_at || 0)) {
-                groups[key].latest_at = itemDate;
-            }
-        });
-        return Object.keys(groups).map(function(key) {
-            var group = groups[key];
-            group.items.sort(function(a, b) {
-                if (a.status === 'pending' && b.status !== 'pending') return -1;
-                if (a.status !== 'pending' && b.status === 'pending') return 1;
-                return new Date(b.created_at || b.resolved_at || 0) - new Date(a.created_at || a.resolved_at || 0);
-            });
-            return group;
-        }).sort(function(a, b) {
-            if (a.pending_count && !b.pending_count) return -1;
-            if (!a.pending_count && b.pending_count) return 1;
-            return new Date(b.latest_at || 0) - new Date(a.latest_at || 0);
-        });
-    }
-
-    function filteredDisputeGroups() {
-        var groups = groupedDisputes();
-        if (state.disputeFilter === 'resolved') {
-            return groups.filter(function(group) { return group.pending_count === 0; });
-        }
-        return groups.filter(function(group) { return group.pending_count > 0; });
-    }
-
     function disputeCounts() {
-        var counts = { pending: 0, resolved: 0 };
-        groupedDisputes().forEach(function(group) {
-            if (group.pending_count > 0) counts.pending += 1;
-            else counts.resolved += 1;
+        var counts = { pending: 0, approved: 0, rejected: 0 };
+        (state.disputes || []).forEach(function(item) {
+            var status = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
+            counts[status] += 1;
         });
         return counts;
+    }
+
+    function filteredDisputes() {
+        return (state.disputes || []).filter(function(item) {
+            var status = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
+            return status === state.disputeFilter;
+        }).sort(function(a, b) {
+            var aDate = a.status === 'pending'
+                ? (a.created_at || a.updated_at || a.resolved_at)
+                : (a.resolved_at || a.updated_at || a.created_at);
+            var bDate = b.status === 'pending'
+                ? (b.created_at || b.updated_at || b.resolved_at)
+                : (b.resolved_at || b.updated_at || b.created_at);
+            return new Date(bDate || 0) - new Date(aDate || 0);
+        });
     }
 
     function renderDisputeDetail(item) {
@@ -635,41 +586,50 @@
     function renderDisputes() {
         var list = document.getElementById('dispute-list');
         var counts = disputeCounts();
-        var groups = filteredDisputeGroups();
+        var disputes = filteredDisputes();
+        var filters = [
+            { id: 'pending', label: 'Pending' },
+            { id: 'approved', label: 'Approved' },
+            { id: 'rejected', label: 'Rejected' }
+        ];
         var tabs = '<div class="sub-tabs revise-tabs">' +
-            '<button class="sub-tab' + (state.disputeFilter === 'pending' ? ' active' : '') + '" type="button" data-dispute-filter="pending">Pending' +
-                (counts.pending ? '<span class="notice-dot">' + counts.pending + '</span>' : '') +
-            '</button>' +
-            '<button class="sub-tab' + (state.disputeFilter === 'resolved' ? ' active' : '') + '" type="button" data-dispute-filter="resolved">Resolved</button>' +
+            filters.map(function(filter) {
+                return '<button class="sub-tab' + (state.disputeFilter === filter.id ? ' active' : '') +
+                    '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +
+                    escapeHtml(filter.label) +
+                    (counts[filter.id] ? '<span class="notice-dot">' + counts[filter.id] + '</span>' : '') +
+                '</button>';
+            }).join('') +
         '</div>';
-        var body = groups.length ? groups.map(function(group) {
-            var expanded = state.expandedDisputeGroups[group.key] === true;
-            var total = group.items.length;
-            var badgeClass = group.pending_count ? 'pending' : 'resolved';
-            var badgeText = group.pending_count ? 'pending' : 'resolved';
-            var displayDate = group.pending_count
-                ? (group.items.filter(function(item) { return item.status === 'pending'; })[0] || group.items[0]).created_at
-                : group.latest_at;
-            return '<article class="profile-card dispute-card ' + (group.pending_count ? 'pending' : 'resolved') +
-                '" data-dispute-group="' + escapeHtml(group.key) + '">' +
-                '<button class="dispute-capsule" type="button" data-toggle-dispute-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
+        var body = disputes.length ? disputes.map(function(item) {
+            var status = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
+            var expanded = state.expandedDisputes[item.dispute_id] === true;
+            var requester = item.requester_role === 'teacher'
+                ? 'Teacher preview'
+                : englishName(item.student_name || item.student_id || 'Student');
+            var displayDate = status === 'pending'
+                ? (item.created_at || item.updated_at || item.resolved_at)
+                : (item.resolved_at || item.updated_at || item.created_at);
+            return '<article class="profile-card dispute-card ' + escapeHtml(status) +
+                '" data-dispute-card="' + escapeHtml(item.dispute_id) + '">' +
+                '<button class="dispute-capsule" type="button" data-toggle-dispute="' + escapeHtml(item.dispute_id) + '" aria-expanded="' + expanded + '">' +
                     '<span class="dispute-capsule-copy">' +
-                        '<strong>' + escapeHtml(group.set_title) + '</strong>' +
-                        '<small>' + escapeHtml(englishName(group.student_name)) +
-                            ' · ' + total + ' question' + (total === 1 ? '' : 's') +
-                            ' · ' + escapeHtml(group.set_id) +
+                        '<strong>' + escapeHtml(item.set_title || item.set_id) + '</strong>' +
+                        '<small>' + escapeHtml(requester) +
+                            ' · Question ' + escapeHtml(item.question_id) +
+                            ' · ' + escapeHtml(item.set_id) +
                             ' · ' + escapeHtml(formatDate(displayDate, '—', 'compact')) +
                         '</small>' +
                     '</span>' +
                     '<span class="dispute-capsule-meta">' +
-                        '<span class="badge ' + badgeClass + '">' + escapeHtml(badgeText) + '</span>' +
+                        '<span class="badge ' + escapeHtml(status) + '">' + escapeHtml(status) + '</span>' +
                     '</span>' +
                 '</button>' +
                 (expanded
-                    ? '<div class="dispute-group-detail">' + group.items.map(renderDisputeDetail).join('') + '</div>'
+                    ? '<div class="dispute-group-detail">' + renderDisputeDetail(item) + '</div>'
                     : '') +
             '</article>';
-        }).join('') : '<div class="empty-card"><strong>No ' + escapeHtml(state.disputeFilter) + ' Revise requests</strong>' +
+        }).join('') : '<div class="empty-card"><strong>No ' + escapeHtml(state.disputeFilter) + ' requests</strong>' +
             (state.disputeFilter === 'pending' ? 'New requests will appear here.' : 'Handled requests will appear here.') +
             '</div>';
         list.innerHTML = tabs + body;
@@ -681,10 +641,10 @@
             });
         });
 
-        list.querySelectorAll('[data-toggle-dispute-group]').forEach(function(button) {
+        list.querySelectorAll('[data-toggle-dispute]').forEach(function(button) {
             button.addEventListener('click', function() {
-                var key = button.dataset.toggleDisputeGroup;
-                state.expandedDisputeGroups[key] = state.expandedDisputeGroups[key] !== true;
+                var key = button.dataset.toggleDispute;
+                state.expandedDisputes[key] = state.expandedDisputes[key] !== true;
                 renderDisputes();
             });
         });
@@ -869,16 +829,6 @@
         });
     });
     document.getElementById('teacher-logout').addEventListener('click', window.MrCatAuth.logout);
-    document.getElementById('refresh-disputes').addEventListener('click', function() {
-        teacherCall('listDisputes').then(function(result) {
-            state.disputes = result.disputes || [];
-            return loadQuestionTextForDisputes();
-        }).then(function() {
-            renderDisputes();
-        }).catch(function(error) {
-            showMessage(error.message, 'error');
-        });
-    });
 
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
