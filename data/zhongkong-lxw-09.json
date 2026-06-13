@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-09",
+  "title": "中考六选五 9: Reading Food Labels",
+  "source": "中考六选五",
+  "passage": "<p>Many students choose food by taste, price or packaging. A snack with bright colours may look attractive, and a drink may seem healthy because of its name. 1. ______ Reading food labels can help students make better choices.</p><p>The first thing to check is the ingredient list. Ingredients are usually listed from the largest amount to the smallest. 2. ______ If sugar appears near the beginning, the food may contain more sugar than expected.</p><p>Students should also look at serving size. A bottle of juice may seem to have only a little sugar, but the label may show that the bottle contains two servings. 3. ______ If you drink the whole bottle, you may actually take in twice the amount.</p><p>Another useful habit is to be careful with health words. Words like “natural” or “low-fat” can sound good, but they do not always mean the food is healthy. 4. ______ The real information is usually in the details of the label.</p><p>Learning to read labels takes time, but it gives students more control over what they eat. 5. ______ Instead of being guided only by advertisements, they can make choices based on information.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "This means the numbers may not describe the whole bottle or package."
+        },
+        {
+          "value": "B",
+          "text": "However, these things do not always tell us what is inside the food."
+        },
+        {
+          "value": "C",
+          "text": "The earlier an ingredient appears, the more of it the food usually has."
+        },
+        {
+          "value": "D",
+          "text": "Students should judge the full label instead of trusting one attractive word."
+        },
+        {
+          "value": "E",
+          "text": "It helps them become wiser consumers."
+        },
+        {
+          "value": "F",
+          "text": "Students should stop eating all packaged food."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

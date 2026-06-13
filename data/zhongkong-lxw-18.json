@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-18",
+  "title": "中考六选五 18: The Meaning of Fairness",
+  "source": "中考六选五",
+  "passage": "<p>Students often talk about fairness. They may say it is unfair when someone gets more praise, a better seat or an easier task. 1. ______ But fairness is not always as simple as giving everyone exactly the same thing.</p><p>Sometimes fairness means treating people differently according to their needs. For example, a student with poor eyesight may need to sit closer to the blackboard. 2. ______ Giving the same seat to everyone may look equal, but it may not truly help everyone learn.</p><p>Fairness also includes responsibility. If two students work on a project, but only one of them makes real effort, equal praise may not be fair. 3. ______ In this case, fairness means noticing both the result and the effort behind it.</p><p>However, people may disagree about what is fair. Each person usually sees the situation from his or her own side. 4. ______ That is why calm communication is important when students feel something is unfair.</p><p>A mature understanding of fairness requires more than emotion. Students need to ask: What are the facts? What does each person need? Who has taken responsibility? 5. ______ These questions can help them judge fairness more wisely.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "The harder-working student may feel that his or her effort has been ignored."
+        },
+        {
+          "value": "B",
+          "text": "This feeling is common, especially when students compare themselves with others."
+        },
+        {
+          "value": "C",
+          "text": "Answering them can prevent students from making quick and one-sided judgments."
+        },
+        {
+          "value": "D",
+          "text": "Different needs may require different support."
+        },
+        {
+          "value": "E",
+          "text": "As a result, the same event may be understood in different ways."
+        },
+        {
+          "value": "F",
+          "text": "Fairness means everyone should always receive exactly the same result."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

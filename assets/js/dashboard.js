@@ -15,6 +15,7 @@
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
         { id: 'grammar', label: 'Grammar' },
+        { id: 'reading', label: 'Reading' },
         { id: 'listening', label: 'Listening' }
     ];
 
@@ -416,6 +417,9 @@
         ].join(' ').toLowerCase();
         if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
         if (haystack.indexOf('grammar') !== -1) return 'grammar';
+        if (haystack.indexOf('reading') !== -1 || haystack.indexOf('dse') !== -1 ||
+            haystack.indexOf('zhongkao') !== -1 || haystack.indexOf('zhongkong') !== -1 ||
+            haystack.indexOf('六选五') !== -1) return 'reading';
         if (haystack.indexOf('listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'listening';
         return 'other';
     }

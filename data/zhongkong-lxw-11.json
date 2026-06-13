@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-11",
+  "title": "中考六选五 11: The Value of Boredom",
+  "source": "中考六选五",
+  "passage": "<p>Many teenagers dislike boredom. Whenever they have a few free minutes, they quickly take out their phones. 1. ______ But boredom is not always something we should escape from immediately.</p><p>When the mind is not filled with outside information, it has space to wander. This may sound useless, but it can lead to new ideas. 2. ______ Some creative thoughts appear when people are walking, waiting or simply doing nothing.</p><p>Boredom can also show us what we truly care about. If students are always entertained, they may never ask themselves what they really want to do. 3. ______ A quiet moment can make hidden interests easier to notice.</p><p>However, boredom is only useful when we face it properly. If we just complain or become lazy, little will happen. 4. ______ Students can use boring moments to think, plan or observe the world around them.</p><p>This does not mean phones and entertainment are bad. The problem is using them every time silence appears. 5. ______ Sometimes, leaving the mind alone for a while is exactly what it needs.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "They may feel uncomfortable when there is nothing exciting to do."
+        },
+        {
+          "value": "B",
+          "text": "The brain often connects ideas when it is not forced to focus on one task."
+        },
+        {
+          "value": "C",
+          "text": "Instead, they need to turn empty time into thinking time."
+        },
+        {
+          "value": "D",
+          "text": "Constant entertainment can cover up these questions."
+        },
+        {
+          "value": "E",
+          "text": "We should give ourselves some screen-free moments."
+        },
+        {
+          "value": "F",
+          "text": "Boredom is useful only when students have no homework."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-03",
+  "title": "中考六选五 3: The Hidden Cost of Multitasking",
+  "source": "中考六选五",
+  "passage": "<p>Many students believe they can do several things at the same time. They may listen to music, reply to messages and do homework together. 1. ______ However, what feels efficient is not always truly efficient.</p><p>The human brain is not as good at multitasking as many people think. When students move from one task to another, their attention has to restart. 2. ______ This small loss of attention happens again and again, making the work slower.</p><p>Multitasking can also reduce the quality of learning. If students check their phones while reading, they may still finish the page. 3. ______ They may remember fewer details and misunderstand important ideas.</p><p>There is also an emotional cost. Constant switching can make the mind feel busy and restless. 4. ______ After a while, students may feel tired even if they have not done much serious work.</p><p>To study better, students should create blocks of focused time. For example, they can study for twenty-five minutes and then take a short break. 5. ______ This simple habit can make learning calmer and more effective.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "But finishing a page does not mean understanding it well."
+        },
+        {
+          "value": "B",
+          "text": "During that time, phones and unrelated tabs should be kept away."
+        },
+        {
+          "value": "C",
+          "text": "This makes them feel as if they are saving time."
+        },
+        {
+          "value": "D",
+          "text": "Their brains need extra time to return to the main task."
+        },
+        {
+          "value": "E",
+          "text": "A quiet environment is useful, but it cannot solve every study problem."
+        },
+        {
+          "value": "F",
+          "text": "The mind never gets enough time to settle deeply on one thing."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

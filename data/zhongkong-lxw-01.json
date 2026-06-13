@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-01",
+  "title": "中考六选五 1: The Problem with Easy Answers",
+  "source": "中考六选五",
+  "passage": "<p>When students face a difficult question, many of them want a quick answer. They may ask a classmate, search online or use an AI tool. Getting help is not wrong. 1. ______ If students only copy the answer, they miss the chance to think.</p><p>A difficult question is valuable because it forces students to slow down. They need to read carefully, compare ideas and test possible answers. 2. ______ This process may feel uncomfortable, but it builds real understanding.</p><p>However, some students mistake “getting the answer” for “learning the skill”. These two things are not the same. 3. ______ A student may know the final answer but still be unable to solve a similar question next time.</p><p>Teachers can help by asking students to explain their thinking. Instead of only checking whether an answer is correct, teachers can ask, “How did you get it?” 4. ______ In this way, students learn to value the thinking process.</p><p>For students, the best habit is to use help wisely. They can look at hints, compare methods or ask for explanations. 5. ______ The goal is not to avoid difficulty, but to learn from it.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "But the way they use help matters more than the help itself."
+        },
+        {
+          "value": "B",
+          "text": "A correct answer without understanding is often a weak kind of success."
+        },
+        {
+          "value": "C",
+          "text": "These questions push students to show the steps behind their answers."
+        },
+        {
+          "value": "D",
+          "text": "They should still try to solve the problem before accepting someone else’s answer."
+        },
+        {
+          "value": "E",
+          "text": "In fact, the struggle is often where learning really happens."
+        },
+        {
+          "value": "F",
+          "text": "Students can improve faster if they collect more answers from different sources."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

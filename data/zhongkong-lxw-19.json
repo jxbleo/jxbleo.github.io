@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-19",
+  "title": "中考六选五 19: When Confidence Becomes Carelessness",
+  "source": "中考六选五",
+  "passage": "<p>Confidence is important for students. It helps them speak up, try difficult tasks and continue after failure. 1. ______ When confidence becomes too strong, however, it may turn into carelessness.</p><p>One sign of overconfidence is skipping basic steps. A student may think a maths problem is easy and stop checking the question carefully. 2. ______ Many mistakes happen not because the student cannot solve the problem, but because he or she moves too fast.</p><p>Another sign is refusing feedback. Confident students may believe their first answer must be right. 3. ______ If they cannot listen to correction, their progress will slow down.</p><p>True confidence is different from thinking you are always right. It allows students to try bravely, but also to check honestly. 4. ______ A truly confident learner is not afraid to find and fix mistakes.</p><p>Students should keep a balance. They should believe in their ability, but they should also respect the difficulty of each task. 5. ______ This balance can help them perform better in exams and in life.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "As a result, they may miss important details."
+        },
+        {
+          "value": "B",
+          "text": "But confidence does not mean ignoring possible problems."
+        },
+        {
+          "value": "C",
+          "text": "They may treat advice as unnecessary criticism."
+        },
+        {
+          "value": "D",
+          "text": "Careful confidence is stronger than blind confidence."
+        },
+        {
+          "value": "E",
+          "text": "It is one of the qualities that supports successful learning."
+        },
+        {
+          "value": "F",
+          "text": "Students should avoid confidence because it usually leads to mistakes."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

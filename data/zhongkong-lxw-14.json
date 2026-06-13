@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-14",
+  "title": "中考六选五 14: Maps, Apps and Sense of Direction",
+  "source": "中考六选五",
+  "passage": "<p>Navigation apps have made travelling much easier. People can type in a place and follow the route step by step. 1. ______ But depending completely on apps may weaken our sense of direction.</p><p>When people only follow instructions, they may stop noticing their surroundings. They turn left or right because the phone says so, not because they understand the area. 2. ______ Later, they may be unable to find the same place without the app.</p><p>A good sense of direction is not just about memory. It comes from observing landmarks, understanding distances and building a mental map. 3. ______ These skills grow stronger when people actively pay attention while moving around.</p><p>This does not mean navigation apps are bad. They are useful, especially in new or complex places. 4. ______ The problem appears when people let the app do all the thinking.</p><p>A better habit is to use apps and observation together. Before starting, look at the whole route instead of only the next turn. 5. ______ Over time, you may become less dependent on the screen.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "Try to remember important roads, buildings or directions along the way."
+        },
+        {
+          "value": "B",
+          "text": "As a result, the journey becomes easier but less meaningful for the brain."
+        },
+        {
+          "value": "C",
+          "text": "These abilities help people understand where they are, not just where to go."
+        },
+        {
+          "value": "D",
+          "text": "This saves time and reduces the fear of getting lost."
+        },
+        {
+          "value": "E",
+          "text": "They should be treated as tools rather than replacements for awareness."
+        },
+        {
+          "value": "F",
+          "text": "People should never use navigation apps in familiar cities."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

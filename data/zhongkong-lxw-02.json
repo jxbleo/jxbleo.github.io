@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-02",
+  "title": "中考六选五 2: Why We Compare Ourselves",
+  "source": "中考六选五",
+  "passage": "<p>It is natural for teenagers to compare themselves with others. They may compare grades, clothes, appearance, popularity or family background. 1. ______ But too much comparison can quietly damage their confidence.</p><p>Comparison is not always harmful. Sometimes it can show us what is possible. If a classmate studies well, we may learn useful habits from him or her. 2. ______ In this case, comparison becomes a source of motivation.</p><p>The problem begins when students compare only results, not effort. They see another person’s high score but do not see the hours of practice behind it. 3. ______ This can make them feel that others are simply “better”, while they themselves are not good enough.</p><p>Another problem is that comparison often focuses on the wrong things. Social media makes this worse. People usually show their best moments online, not their ordinary problems. 4. ______ Comparing your full life with someone else’s selected moments is unfair.</p><p>A healthier way is to compare yourself with your past self. Ask whether you have improved, learned something new or handled a problem better than before. 5. ______ This kind of comparison gives you direction without destroying your self-worth.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "It can even encourage us to work harder when we use it correctly."
+        },
+        {
+          "value": "B",
+          "text": "As a result, students may make unfair judgments about themselves."
+        },
+        {
+          "value": "C",
+          "text": "This makes comparison common, especially in school life."
+        },
+        {
+          "value": "D",
+          "text": "What looks perfect may only be a small part of the whole story."
+        },
+        {
+          "value": "E",
+          "text": "Progress is usually a better measure than being better than someone else."
+        },
+        {
+          "value": "F",
+          "text": "Students should stop caring about what other people do completely."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

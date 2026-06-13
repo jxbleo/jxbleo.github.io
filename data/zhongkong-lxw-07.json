@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-07",
+  "title": "中考六选五 7: Learning from Different Opinions",
+  "source": "中考六选五",
+  "passage": "<p>People do not always agree with each other. In class discussions, online comments or family conversations, different opinions appear all the time. 1. ______ If we handle them well, they can help us think more clearly.</p><p>The first step is to listen carefully. Many people listen only to prepare their own reply. 2. ______ They may miss the real reason behind the other person’s idea.</p><p>A different opinion does not always mean the other person is wrong. Sometimes people focus on different facts or have different experiences. 3. ______ Understanding this can make a discussion less emotional and more useful.</p><p>Of course, listening does not mean agreeing with everything. We still need to judge whether an opinion is based on facts and logic. 4. ______ A calm mind is better than a loud voice when we try to find the truth.</p><p>When students learn to discuss properly, they become better thinkers. They can explain their own ideas and improve them at the same time. 5. ______ In this way, disagreement becomes a chance to learn rather than a reason to fight.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "But disagreement is not always a problem."
+        },
+        {
+          "value": "B",
+          "text": "This makes it hard for them to truly understand others."
+        },
+        {
+          "value": "C",
+          "text": "The same situation may look different from another person’s side."
+        },
+        {
+          "value": "D",
+          "text": "We should ask for reasons instead of accepting or rejecting too quickly."
+        },
+        {
+          "value": "E",
+          "text": "They may even discover weaknesses in their own thinking."
+        },
+        {
+          "value": "F",
+          "text": "Students should avoid people who disagree with them."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}
