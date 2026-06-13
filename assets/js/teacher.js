@@ -592,7 +592,7 @@
             { id: 'approved', label: 'Approved' },
             { id: 'rejected', label: 'Rejected' }
         ];
-        var tabs = '<div class="summary-grid assignment-filters revise-tabs" role="tablist" aria-label="Revise status">' +
+        var tabs = '<div class="summary-grid assignment-filters revise-tabs" role="tablist" aria-label="Review status">' +
             filters.map(function(filter) {
                 return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
                     '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +

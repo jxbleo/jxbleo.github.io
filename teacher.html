@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260613-14">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260613-15">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -21,17 +21,17 @@
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="argue">Revise</button>
+            <button class="tab-button active" type="button" data-view="argue">Review</button>
             <button class="tab-button" type="button" data-view="assign">Assign</button>
+            <button class="tab-button" type="button" data-view="check">Check</button>
             <button class="tab-button" type="button" data-view="library">Library</button>
-            <button class="tab-button" type="button" data-view="students">Students</button>
         </nav>
 
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
         <section class="dashboard-view" id="view-argue">
             <div class="dispute-list" id="dispute-list">
-                <div class="empty-card loading-card">Loading Revise requests...</div>
+                <div class="empty-card loading-card">Loading review requests...</div>
             </div>
         </section>
 
@@ -69,25 +69,33 @@
                 </div>
             </section>
 
-            <div class="assign-toolbar">
-                <input class="resource-search" id="assign-search" type="search" placeholder="Search students...">
-                <select class="filter-select" id="assign-class-filter">
-                    <option value="">All classes</option>
-                </select>
-                <button class="outline-button teacher-refresh" id="select-class" type="button">Select Available</button>
-            </div>
-            <div class="assign-legend">
-                <span><i class="status-dot available"></i>Available</span>
-                <span><i class="status-dot progress"></i>In Progress</span>
-                <span><i class="status-dot completed"></i>STAR · cannot assign again</span>
-            </div>
-            <div class="candidate-grid" id="assign-candidates">
-                <div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>
-            </div>
-            <div class="assign-submit-bar">
-                <span id="selected-count">0 students selected</span>
-                <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign to Selected</button>
-            </div>
+            <section class="profile-card assign-students-panel">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <h2>Select students</h2>
+                        <p>Search, filter by class, then select the students who should receive this practice.</p>
+                    </div>
+                    <button class="outline-button teacher-refresh" id="select-class" type="button">Select Available</button>
+                </div>
+                <div class="assign-toolbar">
+                    <input class="resource-search" id="assign-search" type="search" placeholder="Search students...">
+                    <select class="filter-select" id="assign-class-filter">
+                        <option value="">All classes</option>
+                    </select>
+                </div>
+                <div class="assign-legend">
+                    <span><i class="status-dot available"></i>Available</span>
+                    <span><i class="status-dot progress"></i>In Progress</span>
+                    <span><i class="status-dot completed"></i>STAR · cannot assign again</span>
+                </div>
+                <div class="candidate-grid" id="assign-candidates">
+                    <div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>
+                </div>
+                <div class="assign-submit-bar">
+                    <span id="selected-count">0 students selected</span>
+                    <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign to Selected</button>
+                </div>
+            </section>
         </section>
 
         <section class="dashboard-view" id="view-library" hidden>
@@ -106,11 +114,11 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-students" hidden>
+        <section class="dashboard-view" id="view-check" hidden>
             <div class="student-page-toolbar">
                 <div>
-                    <h2>Students</h2>
-                    <p>Choose a student to view their account and learning history.</p>
+                    <h2>Check progress</h2>
+                    <p>Choose a student to review progress, assignments, and account details.</p>
                 </div>
                 <button class="primary-button compact-primary" id="toggle-create-student" type="button">Create Student Account</button>
             </div>
@@ -167,6 +175,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260613-14"></script>
+    <script src="assets/js/teacher.js?v=20260613-15"></script>
 </body>
 </html>
