@@ -234,17 +234,6 @@ button { cursor: pointer; }
 .hero-card h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(2.2rem, 6vw, 4rem); letter-spacing: -0.055em; }
 .hero-card p { position: relative; z-index: 1; max-width: 600px; margin: 13px 0 0; color: rgba(255,255,255,0.78); }
 
-.teacher-nav-row {
-    position: sticky;
-    z-index: 5;
-    top: 10px;
-    display: grid;
-    grid-template-columns: 44px minmax(0, 560px) 44px;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    margin: 18px 0 28px;
-}
 .dashboard-tabs {
     position: sticky;
     z-index: 5;
@@ -261,7 +250,6 @@ button { cursor: pointer; }
     box-shadow: 0 12px 34px rgba(25, 68, 61, 0.1);
     backdrop-filter: blur(18px);
 }
-.teacher-nav-row .dashboard-tabs { position: static; z-index: auto; top: auto; margin: 0; }
 .teacher-page .dashboard-tabs { grid-template-columns: repeat(4, 1fr); }
 .teacher-create-capsule {
     width: 42px;
@@ -593,6 +581,14 @@ button { cursor: pointer; }
     color: var(--ink);
     background: white;
 }
+.assign-controls select[multiple] {
+    min-height: 146px;
+    padding: 8px;
+}
+.assign-controls select[multiple] option {
+    padding: 8px 9px;
+    border-radius: 8px;
+}
 .assign-toolbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 210px auto;
@@ -705,7 +701,7 @@ button { cursor: pointer; }
 .student-select-card > .eyebrow { margin: 0 0 12px; }
 .student-search-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 8px;
     align-items: center;
     width: min(680px, 100%);
@@ -1172,8 +1168,7 @@ button { cursor: pointer; }
     .candidate-grid { grid-template-columns: 1fr; }
     .student-page-toolbar { align-items: stretch; flex-direction: column; }
     .compact-primary { width: 100%; }
-    .teacher-create-capsule { top: 12px; left: 12px; }
-    .student-search-actions { grid-template-columns: minmax(0, 1fr) auto; }
+    .student-search-actions { grid-template-columns: minmax(0, 1fr) auto auto; }
     .student-select-card .student-picker { left: 14px; right: 14px; }
     .student-account-actions { justify-content: stretch; }
     .student-account-actions button { flex: 1 1 140px; }
