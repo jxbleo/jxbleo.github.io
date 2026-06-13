@@ -675,15 +675,27 @@ button { cursor: pointer; }
     z-index: 8;
     margin-bottom: 14px;
 }
-.student-search-popover {
-    position: relative;
-    width: min(420px, 100%);
+.student-select-card > .eyebrow { margin: 0 0 12px; }
+.student-search-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px;
+    align-items: center;
+    width: min(680px, 100%);
+}
+.student-confirm-button,
+.student-add-button {
+    min-width: 46px;
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-weight: 900;
 }
 .student-select-card .student-picker {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 8px);
+    left: 20px;
+    right: 20px;
+    top: calc(100% - 10px);
     z-index: 20;
     display: none;
     grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
@@ -733,30 +745,85 @@ button { cursor: pointer; }
 .student-detail-heading { display: flex; align-items: start; justify-content: space-between; gap: 14px; }
 .student-detail-heading h2 { margin: 0; }
 .student-detail-heading p:not(.eyebrow) { margin: 5px 0 0; color: var(--muted); }
-.student-account-actions {
+.student-profile-card > .eyebrow,
+.student-progress-card > .eyebrow { margin: 0 0 14px; }
+.student-info-grid {
     display: grid;
-    grid-template-columns: minmax(130px, 1fr) auto auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+.student-info-item {
+    min-height: 70px;
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: #f8fbfa;
+}
+.student-info-item span,
+.student-info-item strong { display: block; }
+.student-info-item span {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.student-info-item strong {
+    margin-top: 7px;
+    color: var(--ink);
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+}
+.student-account-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 16px;
 }
-.student-account-actions input,
 .student-account-actions button {
     min-height: 40px;
     border-radius: 10px;
 }
-.student-account-actions input { padding: 0 11px; border: 1px solid var(--line); }
 .student-account-actions button { padding: 0 11px; font-size: 0.75rem; font-weight: 800; }
 .student-summary { margin: 14px 0; }
-.student-summary .summary-card { border: 1px solid transparent; cursor: pointer; }
-.student-summary .summary-card.active {
-    border-color: rgba(124, 58, 237, 0.22);
-    background: #f7f2ff;
-    box-shadow: 0 10px 28px rgba(83, 45, 145, 0.10);
+.student-summary .summary-card {
+    position: relative;
+    overflow: visible;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+.student-summary .progress-status-filter.pending {
+    border-color: #f1d7a9;
+    border-left: 5px solid #d69a45;
+    background: #fff8ec;
+}
+.student-summary .progress-status-filter.approved {
+    border-color: rgba(89, 166, 116, 0.28);
+    border-left: 5px solid var(--success);
+    background: var(--success-soft);
+}
+.student-summary .progress-status-filter.rejected {
+    border-color: rgba(186, 82, 82, 0.24);
+    border-left: 5px solid var(--danger);
+    background: var(--danger-soft);
+}
+.student-summary .progress-status-filter.active {
+    color: var(--ink);
+    box-shadow: 0 10px 28px rgba(25,68,61,0.10), inset 0 0 0 2px rgba(255,255,255,0.9);
+    transform: translateY(-1px);
+}
+.student-summary .progress-status-filter.active .summary-label { color: var(--muted); }
+.student-summary .progress-status-filter.pending .summary-value { color: #8a5a1c; }
+.student-summary .progress-status-filter.approved .summary-value { color: var(--success); }
+.student-summary .progress-status-filter.rejected .summary-value { color: var(--danger); }
+.student-summary .progress-status-filter .notice-dot {
+    top: -9px;
+    right: -6px;
 }
 .progress-mode-tabs {
     display: inline-flex;
     gap: 5px;
-    margin-top: 14px;
+    margin: 0 0 2px;
     padding: 4px;
     border: 1px solid rgba(220,232,227,0.92);
     border-radius: 999px;
@@ -776,9 +843,13 @@ button { cursor: pointer; }
     cursor: pointer;
 }
 .progress-mode-tab.active {
-    color: #7c2d12;
-    background: #fff1df;
+    color: #7a5528;
+    background: #fff1da;
     box-shadow: 0 6px 18px rgba(202, 103, 2, 0.12);
+}
+.progress-mode-tab:nth-child(2).active {
+    color: var(--success);
+    background: var(--success-soft);
 }
 .learning-section { margin-top: 14px; }
 .learning-section h3 { margin: 0 0 10px; }
@@ -1057,8 +1128,10 @@ button { cursor: pointer; }
     .candidate-grid { grid-template-columns: 1fr; }
     .student-page-toolbar { align-items: stretch; flex-direction: column; }
     .compact-primary { width: 100%; }
-    .student-account-actions { grid-template-columns: 1fr 1fr; }
-    .student-account-actions input { grid-column: 1 / -1; }
+    .student-search-actions { grid-template-columns: minmax(0, 1fr) auto auto; }
+    .student-select-card .student-picker { left: 14px; right: 14px; }
+    .student-account-actions { justify-content: stretch; }
+    .student-account-actions button { flex: 1 1 140px; }
     .dispute-capsule { grid-template-columns: 1fr auto; }
     .dispute-capsule-meta { justify-items: end; }
     .sub-tabs { width: 100%; }

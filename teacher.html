@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260613-18">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260613-19">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -116,21 +116,17 @@
 
         <section class="dashboard-view" id="view-check" hidden>
             <section class="profile-card student-select-card">
-                <div class="section-heading compact-heading">
-                    <div>
-                        <h2>Student info</h2>
-                        <p>Search and choose one student.</p>
-                    </div>
-                    <button class="primary-button compact-primary" id="toggle-create-student" type="button">Create Student Account</button>
-                </div>
-                <div class="student-search-popover">
+                <p class="eyebrow accent">STUDENT</p>
+                <div class="student-search-actions">
                     <input class="resource-search" id="student-search" type="search" placeholder="Search students..." autocomplete="off">
+                    <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">OK</button>
+                    <button class="outline-button student-add-button" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <select class="filter-select full-width" id="student-class-filter" hidden>
                         <option value="">All classes</option>
                     </select>
-                    <div class="student-picker" id="student-list">
-                        <div class="empty-card loading-card">Loading students...</div>
-                    </div>
+                </div>
+                <div class="student-picker" id="student-list">
+                    <div class="empty-card loading-card">Loading students...</div>
                 </div>
             </section>
 
@@ -175,6 +171,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260613-18"></script>
+    <script src="assets/js/teacher.js?v=20260613-19"></script>
 </body>
 </html>
