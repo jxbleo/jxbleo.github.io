@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260613-23">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260613-24">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -19,15 +19,12 @@
             <p id="teacher-hero-copy">Small steps every day create remarkable progress.</p>
         </section>
 
-        <div class="teacher-nav-row">
-            <button class="teacher-create-capsule" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
-            <nav class="dashboard-tabs" aria-label="Teacher sections">
-                <button class="tab-button active" type="button" data-view="argue">Review</button>
-                <button class="tab-button" type="button" data-view="assign">Assign</button>
-                <button class="tab-button" type="button" data-view="check">Progress</button>
-                <button class="tab-button" type="button" data-view="library">Library</button>
-            </nav>
-        </div>
+        <nav class="dashboard-tabs" aria-label="Teacher sections">
+            <button class="tab-button active" type="button" data-view="argue">Review</button>
+            <button class="tab-button" type="button" data-view="assign">Assign</button>
+            <button class="tab-button" type="button" data-view="check">Progress</button>
+            <button class="tab-button" type="button" data-view="library">Library</button>
+        </nav>
 
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
@@ -54,9 +51,8 @@
                     <label>Search tasks
                         <input id="assign-set-search" type="search" placeholder="BBC, IELTS, vocabulary...">
                     </label>
-                    <label>Practice set
-                        <select id="assign-set">
-                            <option value="">Choose a practice set</option>
+                    <label>Practice sets
+                        <select id="assign-set" multiple size="6">
                         </select>
                     </label>
                     <label>Due date
@@ -121,7 +117,8 @@
                 <p class="eyebrow accent">STUDENT</p>
                 <div class="student-search-actions">
                     <input class="resource-search" id="student-search" type="search" placeholder="Select" autocomplete="off">
-                    <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">OK</button>
+                    <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">Confirm</button>
+                    <button class="teacher-create-capsule" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <select class="filter-select full-width" id="student-class-filter" hidden>
                         <option value="">All classes</option>
                     </select>
@@ -172,6 +169,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260613-23"></script>
+    <script src="assets/js/teacher.js?v=20260613-24"></script>
 </body>
 </html>
