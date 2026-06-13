@@ -1483,7 +1483,7 @@
     var isDragging = false;
     var resultAudioCtx = null;
     var lastEncouragementIndex = -1;
-    var blankAttemptLimit = 3;
+    var blankAttemptLimit = 0;
     var blankAttemptState = {};
 
     var resultEncouragements = [
@@ -2030,9 +2030,14 @@
         return 'bbc-blank-attempts-' + setId + '-' + (assignmentId || studentId || 'visitor');
     }
 
+    function blankAttemptLocksEnabled() {
+        return Number(blankAttemptLimit || 0) > 0;
+    }
+
     function loadBlankAttemptState() {
-        if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) {
+        if (!blankAttemptLocksEnabled() || !setId || !studentId || studentId === 'VISITOR' || teacherMode) {
             blankAttemptState = {};
+            try { localStorage.removeItem(blankAttemptStorageKey()); } catch (e) {}
             return;
         }
         try {
@@ -2043,6 +2048,10 @@
     }
 
     function saveBlankAttemptState() {
+        if (!blankAttemptLocksEnabled()) {
+            try { localStorage.removeItem(blankAttemptStorageKey()); } catch (e) {}
+            return;
+        }
         if (!setId || !studentId || studentId === 'VISITOR' || teacherMode) return;
         try { localStorage.setItem(blankAttemptStorageKey(), JSON.stringify(blankAttemptState)); } catch (e) {}
     }
@@ -2056,6 +2065,12 @@
 
     function updateBlankLockUi(input, entry) {
         if (!input || !entry) return;
+        if (!blankAttemptLocksEnabled()) {
+            input.classList.remove('attempt-locked');
+            input.disabled = submitted === true;
+            input.removeAttribute('title');
+            return;
+        }
         input.classList.toggle('attempt-locked', entry.locked === true);
         input.disabled = entry.locked === true || submitted === true;
         if (entry.locked) {
@@ -2068,6 +2083,14 @@
     }
 
     function applyBlankAttemptLocks() {
+        if (!blankAttemptLocksEnabled()) {
+            document.querySelectorAll('.blank-input.attempt-locked').forEach(function(input) {
+                input.classList.remove('attempt-locked');
+                input.removeAttribute('title');
+                input.disabled = submitted === true;
+            });
+            return;
+        }
         Object.keys(blankAttemptState || {}).forEach(function(questionId) {
             var entry = blankAttemptState[questionId];
             var input = document.querySelector('[name="' + CSS.escape(questionId) + '"].blank-input');
@@ -2081,7 +2104,7 @@
     }
 
     function recordBlankAttemptResults(results) {
-        if (teacherMode || !results || !results.length) return;
+        if (!blankAttemptLocksEnabled() || teacherMode || !results || !results.length) return;
         var changed = false;
         results.forEach(function(result) {
             if (result.type !== 'blank') return;
@@ -2132,6 +2155,7 @@
     }
 
     function clearAllAnswers() {
+        submitted = false;
         answerRevealAvailable = false;
         updateHistoryToolbar();
         var form = document.getElementById('quiz-form');
@@ -2148,6 +2172,11 @@
         });
         form.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
         applyBlankAttemptLocks();
+        var submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Answers';
+        }
         saveDraftAnswers();
     }
 

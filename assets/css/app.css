@@ -234,6 +234,17 @@ button { cursor: pointer; }
 .hero-card h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(2.2rem, 6vw, 4rem); letter-spacing: -0.055em; }
 .hero-card p { position: relative; z-index: 1; max-width: 600px; margin: 13px 0 0; color: rgba(255,255,255,0.78); }
 
+.teacher-nav-row {
+    position: sticky;
+    z-index: 5;
+    top: 10px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 560px) 44px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 18px 0 28px;
+}
 .dashboard-tabs {
     position: sticky;
     z-index: 5;
@@ -250,23 +261,23 @@ button { cursor: pointer; }
     box-shadow: 0 12px 34px rgba(25, 68, 61, 0.1);
     backdrop-filter: blur(18px);
 }
+.teacher-nav-row .dashboard-tabs { position: static; z-index: auto; top: auto; margin: 0; }
 .teacher-page .dashboard-tabs { grid-template-columns: repeat(4, 1fr); }
 .teacher-create-capsule {
-    position: fixed;
-    top: 18px;
-    left: 18px;
-    z-index: 40;
-    min-height: 38px;
-    padding: 0 15px;
-    border: 1px solid rgba(20, 83, 75, 0.28);
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgba(139, 92, 246, 0.36);
     border-radius: 999px;
     color: white;
-    background: #14534b;
-    box-shadow: 0 12px 30px rgba(20, 83, 75, 0.22);
-    font-size: 0.78rem;
+    background: linear-gradient(135deg, #5b21b6, #7c3aed 58%, #60a5fa);
+    box-shadow: 0 12px 30px rgba(109, 40, 217, 0.22);
+    font-size: 1.25rem;
+    line-height: 1;
     font-weight: 900;
 }
-.teacher-create-capsule:hover { background: #0f453f; }
+.teacher-create-capsule:hover { background: linear-gradient(135deg, #4c1d95, #6d28d9 58%, #3b82f6); }
 .tab-button {
     min-height: 42px;
     border: 0;
