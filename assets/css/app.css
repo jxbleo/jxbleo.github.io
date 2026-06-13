@@ -251,6 +251,22 @@ button { cursor: pointer; }
     backdrop-filter: blur(18px);
 }
 .teacher-page .dashboard-tabs { grid-template-columns: repeat(4, 1fr); }
+.teacher-create-capsule {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 40;
+    min-height: 38px;
+    padding: 0 15px;
+    border: 1px solid rgba(20, 83, 75, 0.28);
+    border-radius: 999px;
+    color: white;
+    background: #14534b;
+    box-shadow: 0 12px 30px rgba(20, 83, 75, 0.22);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.teacher-create-capsule:hover { background: #0f453f; }
 .tab-button {
     min-height: 42px;
     border: 0;
@@ -678,13 +694,12 @@ button { cursor: pointer; }
 .student-select-card > .eyebrow { margin: 0 0 12px; }
 .student-search-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
     align-items: center;
     width: min(680px, 100%);
 }
-.student-confirm-button,
-.student-add-button {
+.student-confirm-button {
     min-width: 46px;
     min-height: 42px;
     padding: 0 14px;
@@ -875,6 +890,18 @@ button { cursor: pointer; }
     border-radius: 16px;
     background: #fbfdfc;
 }
+.attempt-set-capsule.assignment-capsule.pending {
+    border-left: 5px solid #d69a45;
+    background: #fffaf0;
+}
+.attempt-set-capsule.assignment-capsule.approved {
+    border-left: 5px solid var(--success);
+    background: #f4fbf6;
+}
+.attempt-set-capsule.assignment-capsule.rejected {
+    border-left: 5px solid var(--danger);
+    background: #fff7f7;
+}
 .attempt-set-capsule.expanded {
     border-color: rgba(175, 210, 199, 0.95);
     background: white;
@@ -992,7 +1019,13 @@ button { cursor: pointer; }
     box-shadow: 0 10px 24px rgba(83,45,145,0.07);
 }
 .revise-tabs { margin-bottom: 14px; }
-.revise-tabs .revise-filter { position: relative; }
+.revise-tabs .revise-filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 .revise-tabs .summary-label { display: block; color: inherit; font-size: 0.82rem; letter-spacing: 0.04em; }
 .sub-tab {
     position: relative;
@@ -1128,7 +1161,8 @@ button { cursor: pointer; }
     .candidate-grid { grid-template-columns: 1fr; }
     .student-page-toolbar { align-items: stretch; flex-direction: column; }
     .compact-primary { width: 100%; }
-    .student-search-actions { grid-template-columns: minmax(0, 1fr) auto auto; }
+    .teacher-create-capsule { top: 12px; left: 12px; }
+    .student-search-actions { grid-template-columns: minmax(0, 1fr) auto; }
     .student-select-card .student-picker { left: 14px; right: 14px; }
     .student-account-actions { justify-content: stretch; }
     .student-account-actions button { flex: 1 1 140px; }

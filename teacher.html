@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260613-19">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260613-22">
 </head>
 <body class="app-page teacher-page">
+    <button class="teacher-create-capsule" id="toggle-create-student" type="button">+ Student</button>
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
@@ -15,15 +16,14 @@
         </header>
 
         <section class="hero-card teacher-hero">
-            <p class="eyebrow">TEACHER DESK</p>
-            <h1 id="teacher-greeting">Plan the work. See the learning.</h1>
-            <p>Assign practice, manage student accounts, and build a clearer picture of progress.</p>
+            <h1 id="teacher-greeting">Hello.</h1>
+            <p id="teacher-hero-copy">Small steps every day create remarkable progress.</p>
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
             <button class="tab-button active" type="button" data-view="argue">Review</button>
             <button class="tab-button" type="button" data-view="assign">Assign</button>
-            <button class="tab-button" type="button" data-view="check">Check</button>
+            <button class="tab-button" type="button" data-view="check">Progress</button>
             <button class="tab-button" type="button" data-view="library">Library</button>
         </nav>
 
@@ -118,9 +118,8 @@
             <section class="profile-card student-select-card">
                 <p class="eyebrow accent">STUDENT</p>
                 <div class="student-search-actions">
-                    <input class="resource-search" id="student-search" type="search" placeholder="Search students..." autocomplete="off">
+                    <input class="resource-search" id="student-search" type="search" placeholder="Select" autocomplete="off">
                     <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">OK</button>
-                    <button class="outline-button student-add-button" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <select class="filter-select full-width" id="student-class-filter" hidden>
                         <option value="">All classes</option>
                     </select>
@@ -171,6 +170,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260613-19"></script>
+    <script src="assets/js/teacher.js?v=20260613-22"></script>
 </body>
 </html>

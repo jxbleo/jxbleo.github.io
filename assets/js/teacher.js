@@ -6,21 +6,51 @@
         students: [],
         sets: [],
         assignments: [],
-        attempts: [],
         disputes: [],
         candidates: [],
         selectedStudentProfileId: '',
-        studentProgressFilter: 'to_do',
-        studentProgressView: 'assignment',
+        studentProgressView: 'to_do',
         disputeFilter: 'pending',
         libraryFilter: 'vocabulary',
         expandedDisputes: {},
-        expandedAttemptSets: {}
+        expandedAssignmentSets: {}
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
         { id: 'grammar', label: 'Grammar' },
         { id: 'listening', label: 'Listening' }
+    ];
+    var motivationalQuotes = [
+        'Small steps every day create remarkable progress.',
+        'Your effort today is building your confidence tomorrow.',
+        'Progress matters more than perfection.',
+        'Every question you try makes you stronger.',
+        'Stay curious. That is where learning begins.',
+        'A difficult task is a chance to grow.',
+        'You do not have to be perfect to improve.',
+        'Consistency turns practice into progress.',
+        'One focused session can change your whole day.',
+        'Mistakes are proof that you are learning.',
+        'Keep going. Your future self will thank you.',
+        'The more you practise, the more possible things become.',
+        'A little courage can begin a lot of progress.',
+        'Today is another chance to surprise yourself.',
+        'Strong results begin with one honest attempt.',
+        'Learning gets easier when showing up becomes a habit.',
+        'Your pace is valid. Keep moving forward.',
+        'Focus on the next step, not the whole staircase.',
+        'Every retry carries something you learned before.',
+        'You are capable of more than one difficult moment suggests.',
+        'Make today count, one question at a time.',
+        'Confidence grows each time you choose to continue.',
+        'The work you repeat becomes the skill you keep.',
+        'Be patient with yourself and serious about your goals.',
+        'Start where you are and improve from there.',
+        'A calm mind and steady effort can go a long way.',
+        'Your best learning happens when you keep asking why.',
+        'Challenges are part of becoming more capable.',
+        'Give this moment your attention and let progress follow.',
+        'There is always something valuable in another attempt.'
     ];
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
@@ -107,10 +137,6 @@
         return loadQuestionTextForRecords(state.disputes || []);
     }
 
-    function loadQuestionTextForAttempts() {
-        return loadQuestionTextForRecords(state.attempts || []);
-    }
-
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
@@ -154,12 +180,56 @@
         return day + ' ' + time;
     }
 
-    function englishName(value) {
-        var textValue = String(value || '').trim();
-        if (!textValue) return 'Student';
-        var parts = textValue.split(/\s+/).filter(Boolean);
-        return parts[parts.length - 1] || textValue;
+    function randomItem(items) {
+        return items[Math.floor(Math.random() * items.length)];
     }
+
+    function englishName(value) {
+        var textValue = String(value && (value.name || value.student_id) || value || '').trim();
+        if (!textValue) return 'Teacher';
+        var englishParts = textValue.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return englishParts && englishParts.length
+            ? englishParts[englishParts.length - 1]
+            : textValue;
+    }
+
+    function shanghaiHour() {
+        var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            hourCycle: 'h23'
+        }).formatToParts(new Date());
+        var hourPart = parts.find(function(part) { return part.type === 'hour'; });
+        return Number(hourPart ? hourPart.value : 12);
+    }
+
+    function greetingFor(name) {
+        var hour = shanghaiHour();
+        var timeGreetings = hour < 12
+            ? ['Good morning, {name}.', 'A fresh morning, {name}.', 'Morning, {name}. Ready to begin?']
+            : hour < 18
+                ? ['Good afternoon, {name}.', 'A bright afternoon, {name}.', 'Afternoon, {name}. Let us keep moving.']
+                : ['Good evening, {name}.', 'A calm evening, {name}.', 'Evening, {name}. One more step forward.'];
+        var flexibleGreetings = [
+            'Welcome back, {name}.',
+            'Great to see you, {name}.',
+            'Ready when you are, {name}.',
+            'Let us make some progress, {name}.',
+            'Here we go, {name}.',
+            'Your next win starts here, {name}.',
+            'Let us build on yesterday, {name}.',
+            'A new chance to grow, {name}.',
+            'Good to have you here, {name}.',
+            'Let us get started, {name}.',
+            'Keep the momentum going, {name}.',
+            'Today has possibilities, {name}.',
+            'One step at a time, {name}.',
+            'You are back, {name}. Let us do this.',
+            'Ready for something new, {name}?'
+        ];
+        return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
+    }
+
 
     function teacherCall(action, data) {
         return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
@@ -416,7 +486,29 @@
 
     function setStudentPickerOpen(open) {
         var card = document.querySelector('.student-select-card');
+        var input = document.getElementById('student-search');
         if (card) card.classList.toggle('picker-open', open === true);
+        if (input) {
+            input.placeholder = open === true ? 'Search' : 'Select';
+            if (open !== true && !input.value.trim()) {
+                input.value = selectedStudentLabel();
+            }
+        }
+    }
+
+    function selectedStudentLabel() {
+        var selected = state.students.find(function(item) {
+            return item.profile_id === state.selectedStudentProfileId;
+        });
+        return selected ? selected.name || selected.student_id || '' : '';
+    }
+
+    function openStudentSelector(input) {
+        var selectedLabel = selectedStudentLabel();
+        if (selectedLabel && input.value === selectedLabel) input.value = '';
+        input.select();
+        setStudentPickerOpen(true);
+        renderStudentList();
     }
 
     function selectStudent(profileId) {
@@ -427,9 +519,8 @@
         if (selected) {
             document.getElementById('student-search').value = selected.name || selected.student_id || '';
         }
-        state.studentProgressFilter = 'to_do';
-        state.studentProgressView = 'assignment';
-        state.expandedAttemptSets = {};
+        state.studentProgressView = 'to_do';
+        state.expandedAssignmentSets = {};
         setStudentPickerOpen(false);
         renderStudentList();
         renderStudentDetail();
@@ -473,24 +564,30 @@
         });
     }
 
-    function assignmentSummary(assignments) {
+    function assignmentStatusCounts(assignments) {
         var counts = { to_do: 0, passed: 0, mastered: 0 };
         assignments.forEach(function(item) {
             var status = normalizedAssignmentStatus(item.status);
             counts[status] = (counts[status] || 0) + 1;
         });
-        var filters = [
-            { id: 'to_do', label: 'TO DO', count: counts.to_do, tone: 'pending' },
-            { id: 'passed', label: 'PASSED', count: counts.passed, tone: 'approved' },
-            { id: 'mastered', label: 'MASTERED', count: counts.mastered, tone: 'rejected' }
+        return counts;
+    }
+
+    function progressModeTabs(assignments) {
+        var counts = assignmentStatusCounts(assignments);
+        var finishedCount = counts.passed + counts.mastered;
+        var tabs = [
+            { id: 'to_do', label: 'To Do', count: counts.to_do, tone: 'pending' },
+            { id: 'finished', label: 'Finished', count: finishedCount, tone: 'approved' },
+            { id: 'data', label: 'Data', count: null, tone: 'rejected' }
         ];
-        return '<div class="summary-grid student-summary" role="tablist" aria-label="Assignment status">' +
-            filters.map(function(filter) {
-                return '<button class="summary-card assignment-filter progress-status-filter ' + escapeHtml(filter.tone) +
-                    (state.studentProgressFilter === filter.id ? ' active' : '') +
-                    '" type="button" data-student-progress-filter="' + escapeHtml(filter.id) + '">' +
-                    '<span class="summary-value">' + filter.count + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span>' +
-                    (filter.id === 'to_do' && filter.count ? '<span class="notice-dot danger">' + filter.count + '</span>' : '') +
+        return '<div class="summary-grid student-summary" role="tablist" aria-label="Progress sections">' +
+            tabs.map(function(tab) {
+                return '<button class="summary-card assignment-filter progress-status-filter ' + escapeHtml(tab.tone) +
+                    (state.studentProgressView === tab.id ? ' active' : '') +
+                    '" type="button" data-progress-view="' + escapeHtml(tab.id) + '">' +
+                    '<span class="summary-value">' + (tab.count == null ? '—' : tab.count) + '</span><span class="summary-label">' + escapeHtml(tab.label) + '</span>' +
+                    (tab.id === 'to_do' && tab.count ? '<span class="notice-dot danger">' + tab.count + '</span>' : '') +
                     '</button>';
             }).join('') +
         '</div>';
@@ -501,117 +598,61 @@
         return set ? set.title || setId : setId;
     }
 
-    function progressModeTabs() {
-        var tabs = [
-            { id: 'assignment', label: 'Assignments' },
-            { id: 'attempt', label: 'Attempts' }
-        ];
-        return '<div class="progress-mode-tabs" role="tablist" aria-label="Progress detail type">' +
-            tabs.map(function(tab) {
-                return '<button class="progress-mode-tab' + (state.studentProgressView === tab.id ? ' active' : '') +
-                    '" type="button" data-progress-view="' + escapeHtml(tab.id) + '">' +
-                    escapeHtml(tab.label) + '</button>';
-            }).join('') +
-        '</div>';
+    function assignmentSortDate(assignment) {
+        return assignment.completed_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
     }
 
-    function questionTextFor(setId, questionId) {
-        return getQuestionTextFromData(questionTextCache[setId], questionId) || '';
-    }
-
-    function wrongResults(attempt) {
-        return (attempt.question_results || []).filter(function(result) {
-            return result && result.correct === false;
-        });
-    }
-
-    function renderWrongQuestions(attempt) {
-        var wrong = wrongResults(attempt);
-        if (!wrong.length) return '<p class="attempt-all-correct">All checked answers were correct.</p>';
-        return '<div class="wrong-question-list">' + wrong.map(function(result) {
-            var questionText = questionTextFor(attempt.set_id, result.question_id);
-            return '<div class="wrong-question">' +
-                '<strong>' + escapeHtml(result.question_id || 'Question') + '</strong>' +
-                (questionText ? '<p>' + escapeHtml(questionText) + '</p>' : '') +
-                '<small>Student answer: ' + escapeHtml(answerText(result.submitted_answer)) + '</small>' +
-            '</div>';
-        }).join('') + '</div>';
-    }
-
-    function groupAttemptsBySet(attempts) {
-        var groups = {};
-        attempts.forEach(function(attempt) {
-            var key = attempt.set_id || 'unknown';
-            if (!groups[key]) {
-                groups[key] = { set_id: key, title: setTitleFor(key), attempts: [], latest_at: attempt.submitted_at || null };
-            }
-            groups[key].attempts.push(attempt);
-            if (new Date(attempt.submitted_at || 0) > new Date(groups[key].latest_at || 0)) {
-                groups[key].latest_at = attempt.submitted_at || null;
-            }
-        });
-        return Object.keys(groups).map(function(key) {
-            groups[key].attempts.sort(function(a, b) {
-                return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
-            });
-            return groups[key];
+    function visibleProgressAssignments(assignments) {
+        return assignments.filter(function(item) {
+            var status = normalizedAssignmentStatus(item.status);
+            if (state.studentProgressView === 'finished') return status === 'passed' || status === 'mastered';
+            return status === 'to_do';
         }).sort(function(a, b) {
-            return new Date(b.latest_at || 0) - new Date(a.latest_at || 0);
+            return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0);
         });
+    }
+
+    function renderAssignmentCapsule(assignment) {
+        var key = assignment.assignment_id || assignment.set_id;
+        var expanded = state.expandedAssignmentSets[key] === true;
+        var status = normalizedAssignmentStatus(assignment.status);
+        var tone = status === 'to_do' ? 'pending' : (status === 'passed' ? 'approved' : 'rejected');
+        var score = assignment.best_percentage == null ? '—' : assignment.best_percentage + '%';
+        return '<article class="attempt-set-capsule assignment-capsule ' + escapeHtml(tone) + (expanded ? ' expanded' : '') + '">' +
+            '<button class="attempt-set-head" type="button" data-assignment-set="' + escapeHtml(key) + '">' +
+                '<span><strong>' + escapeHtml(assignment.set_title || setTitleFor(assignment.set_id)) + '</strong>' +
+                '<small>Set ID: ' + escapeHtml(assignment.set_id) +
+                ' · ' + escapeHtml(assignmentStatusLabel(assignment.status)) +
+                ' · ' + escapeHtml(assignment.attempt_count) + ' attempt' + (Number(assignment.attempt_count) === 1 ? '' : 's') + '</small></span>' +
+                '<span class="' + (status === 'to_do' ? 'score-fail' : 'score-pass') + '">' +
+                    escapeHtml(score) + '<small>' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small>' +
+                '</span>' +
+            '</button>' +
+            (expanded ? '<div class="attempt-detail-list">' +
+                '<section class="attempt-detail-row">' +
+                    '<div class="attempt-detail-head"><div><strong>' + escapeHtml(assignmentStatusLabel(assignment.status)) + '</strong>' +
+                    '<small>Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) +
+                    (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
+                    '<span>' + escapeHtml(score) + ' best</span></div>' +
+                    '<p class="wrong-summary">Latest: ' + escapeHtml(assignment.latest_percentage == null ? '—' : assignment.latest_percentage + '%') +
+                    ' · Submissions: ' + escapeHtml(assignment.attempt_count) + '</p>' +
+                '</section>' +
+            '</div>' : '') +
+        '</article>';
     }
 
     function renderAssignmentProgress(assignments) {
-        var visibleAssignments = assignments.filter(function(item) {
-            return normalizedAssignmentStatus(item.status) === state.studentProgressFilter;
-        });
-        var assignmentHtml = visibleAssignments.length ? visibleAssignments.map(function(item) {
-            return '<article class="learning-row"><div><strong>' + escapeHtml(item.set_title) + '</strong>' +
-                '<small>' + escapeHtml(assignmentStatusLabel(item.status)) +
-                ' · ' + escapeHtml(item.attempt_count) + ' attempts</small></div>' +
-                '<span>' + (item.best_percentage == null ? '—' : escapeHtml(item.best_percentage) + '% best') + '</span></article>';
-        }).join('') : '<p class="muted">No ' + escapeHtml(assignmentStatusLabel(state.studentProgressFilter).toLowerCase()) + ' assignments.</p>';
-
-        return assignmentSummary(assignments) +
-            '<div class="learning-section"><h3>' + escapeHtml(assignmentStatusLabel(state.studentProgressFilter)) + ' assignments</h3>' +
-                assignmentHtml + '</div>';
-    }
-
-    function renderAttemptProgress(attempts) {
-        var groups = groupAttemptsBySet(attempts);
-        if (!groups.length) {
-            return '<div class="learning-section"><h3>Attempts</h3><p class="muted">No recorded attempts yet.</p></div>';
+        if (state.studentProgressView === 'data') {
+            return '<div class="learning-section attempt-set-list"><h3>Data</h3>' +
+                '<p class="muted">Data analysis will appear here later.</p></div>';
         }
-        return '<div class="learning-section attempt-set-list"><h3>Attempts</h3>' + groups.map(function(group) {
-            var expanded = state.expandedAttemptSets[group.set_id] === true;
-            var latest = group.attempts[0] || {};
-            var latestWrong = wrongResults(latest).length;
-            return '<article class="attempt-set-capsule' + (expanded ? ' expanded' : '') + '">' +
-                '<button class="attempt-set-head" type="button" data-attempt-set="' + escapeHtml(group.set_id) + '">' +
-                    '<span><strong>' + escapeHtml(group.title) + '</strong>' +
-                    '<small>Set ID: ' + escapeHtml(group.set_id) + ' · ' + group.attempts.length + ' attempt' +
-                    (group.attempts.length === 1 ? '' : 's') + ' · latest ' + escapeHtml(formatDateTime(group.latest_at)) + '</small></span>' +
-                    '<span class="' + (latest.passed ? 'score-pass' : 'score-fail') + '">' +
-                        escapeHtml(latest.percentage == null ? '—' : latest.percentage + '%') +
-                        '<small>' + (latestWrong ? latestWrong + ' wrong' : 'clear') + '</small>' +
-                    '</span>' +
-                '</button>' +
-                (expanded ? '<div class="attempt-detail-list">' + group.attempts.map(function(attempt) {
-                    var wrong = wrongResults(attempt);
-                    return '<section class="attempt-detail-row">' +
-                        '<div class="attempt-detail-head"><div><strong>Attempt ' + escapeHtml(attempt.attempt_number || 1) + '</strong>' +
-                        '<small>Submitted: ' + escapeHtml(formatDateTime(attempt.submitted_at)) +
-                        (attempt.assignment_id ? ' · assigned work' : ' · self-study') + '</small></div>' +
-                        '<span class="' + (attempt.passed ? 'score-pass' : 'score-fail') + '">' +
-                        escapeHtml(attempt.percentage == null ? '—' : attempt.percentage + '%') +
-                        ' · ' + escapeHtml(attempt.correct_count) + '/' + escapeHtml(attempt.question_count) + '</span></div>' +
-                        (wrong.length ? '<p class="wrong-summary">Wrong: ' + escapeHtml(wrong.map(function(result) {
-                            return result.question_id || 'Question';
-                        }).join(', ')) + '</p>' : '') +
-                        renderWrongQuestions(attempt) +
-                    '</section>';
-                }).join('') + '</div>' : '') +
-            '</article>';
-        }).join('') + '</div>';
+        var visibleAssignments = visibleProgressAssignments(assignments);
+        var label = state.studentProgressView === 'finished' ? 'Finished' : 'To Do';
+        var assignmentHtml = visibleAssignments.length ? visibleAssignments.map(renderAssignmentCapsule).join('') :
+            '<p class="muted">No ' + escapeHtml(label.toLowerCase()) + ' assignments.</p>';
+
+        return '<div class="learning-section attempt-set-list"><h3>' + escapeHtml(label) + '</h3>' +
+                assignmentHtml + '</div>';
     }
 
     function renderStudentDetail() {
@@ -623,18 +664,13 @@
                 '<section class="profile-card student-profile-card empty-check-card">' +
                     '<p class="eyebrow accent">INFO</p><p class="muted">Select a student to see their profile.</p></section>' +
                 '<section class="profile-card student-progress-card empty-check-card">' +
-                    '<p class="eyebrow accent">PROGRESS</p><p class="muted">Assignments and recent attempts will appear here.</p></section>';
+                    '<p class="eyebrow accent">PROGRESS</p><p class="muted">To Do, Finished, and Data will appear here.</p></section>';
             return;
         }
         var assignments = state.assignments.filter(function(item) {
             return item.student_uid === student.auth_uid;
         });
-        var attempts = state.attempts.filter(function(item) {
-            return item.student_uid === student.auth_uid || item.student_id === student.student_id;
-        });
-        var progressHtml = state.studentProgressView === 'attempt'
-            ? renderAttemptProgress(attempts)
-            : renderAssignmentProgress(assignments);
+        var progressHtml = renderAssignmentProgress(assignments);
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card">' +
@@ -654,7 +690,7 @@
             '</section>' +
             '<section class="profile-card student-progress-card">' +
                 '<p class="eyebrow accent">PROGRESS</p>' +
-                progressModeTabs() + progressHtml +
+                progressModeTabs(assignments) + progressHtml +
             '</section>';
 
         document.getElementById('toggle-account').addEventListener('click', function() {
@@ -669,22 +705,16 @@
                 showMessage(error.message, 'error');
             });
         });
-        studentDetail.querySelectorAll('[data-student-progress-filter]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                state.studentProgressFilter = button.dataset.studentProgressFilter;
-                renderStudentDetail();
-            });
-        });
         studentDetail.querySelectorAll('[data-progress-view]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.studentProgressView = button.dataset.progressView;
                 renderStudentDetail();
             });
         });
-        studentDetail.querySelectorAll('[data-attempt-set]').forEach(function(button) {
+        studentDetail.querySelectorAll('[data-assignment-set]').forEach(function(button) {
             button.addEventListener('click', function() {
-                var setId = button.dataset.attemptSet;
-                state.expandedAttemptSets[setId] = state.expandedAttemptSets[setId] !== true;
+                var setId = button.dataset.assignmentSet;
+                state.expandedAssignmentSets[setId] = state.expandedAssignmentSets[setId] !== true;
                 renderStudentDetail();
             });
         });
@@ -852,14 +882,12 @@
                     showMessage('Argue request resolved.', 'success');
                     return Promise.all([
                         teacherCall('listDisputes'),
-                        teacherCall('listAssignments'),
-                        teacherCall('listAttempts')
+                        teacherCall('listAssignments')
                     ]);
                 }).then(function(results) {
                     state.disputes = results[0].disputes || [];
                     state.assignments = results[1].assignments || [];
-                    state.attempts = results[2].attempts || [];
-                    return Promise.all([loadQuestionTextForDisputes(), loadQuestionTextForAttempts()]);
+                    return loadQuestionTextForDisputes();
                 }).then(function() {
                     renderDisputes();
                     renderStudentDetail();
@@ -905,21 +933,19 @@
             teacherCall('listStudents'),
             teacherCall('listSets'),
             teacherCall('listAssignments'),
-            teacherCall('listAttempts'),
             teacherCall('listDisputes')
         ]).then(function(results) {
             state.students = results[0].students || [];
             state.sets = results[1].sets || [];
             state.assignments = results[2].assignments || [];
-            state.attempts = results[3].attempts || [];
-            state.disputes = results[4].disputes || [];
+            state.disputes = results[3].disputes || [];
             fillClassFilters();
             fillSetSectionFilters();
             renderSetOptions();
             renderLibrary();
             renderStudentList();
             renderStudentDetail();
-            return Promise.all([loadQuestionTextForDisputes(), loadQuestionTextForAttempts()]);
+            return loadQuestionTextForDisputes();
         }).then(function() {
             renderDisputes();
         });
@@ -975,9 +1001,7 @@
     });
 
     document.getElementById('student-search').addEventListener('focus', function() {
-        this.select();
-        setStudentPickerOpen(true);
-        renderStudentList();
+        openStudentSelector(this);
     });
     document.getElementById('student-search').addEventListener('input', function() {
         setStudentPickerOpen(true);
@@ -1045,9 +1069,10 @@
             return null;
         }
         state.profile = session.profile;
+        var preferredName = englishName(session.profile);
         document.getElementById('teacher-chip').textContent = session.profile.student_id;
-        document.getElementById('teacher-greeting').textContent =
-            'Hi, ' + (session.profile.name || session.profile.student_id) + '.';
+        document.getElementById('teacher-greeting').textContent = greetingFor(preferredName);
+        document.getElementById('teacher-hero-copy').textContent = randomItem(motivationalQuotes);
         return loadData();
     }).catch(function(error) {
         showMessage(error.message || 'Unable to load the teacher desk.', 'error');
