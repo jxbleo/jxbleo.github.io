@@ -404,6 +404,25 @@ async function getAssignmentCandidates(event) {
 
 async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage) {
   const now = new Date();
+  const achievementResult = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+    set_id: setId,
+  }).limit(100).get();
+  const selfStudyStar = (achievementResult.data || []).find((item) =>
+    !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+  );
+  const selfStudyAttempt = selfStudyStar && selfStudyStar.best_attempt_id
+    ? await getOne("attempts", {
+        attempt_id: selfStudyStar.best_attempt_id,
+        student_uid: student.auth_uid,
+      })
+    : null;
+  const selfStudyPercentage = Number(
+    selfStudyStar && selfStudyStar.best_percentage != null
+      ? selfStudyStar.best_percentage
+      : (selfStudyAttempt ? effectivePercentage(selfStudyAttempt) : 0)
+  );
+  const convertsSelfStudy = Boolean(selfStudyStar && selfStudyPercentage >= masteryPercentage);
   const assignmentId = [
     student.student_id,
     setId,
@@ -414,29 +433,42 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     assignment_id: assignmentId,
     student_uid: student.auth_uid,
     set_id: setId,
-    status: "to_do",
+    status: convertsSelfStudy ? "mastered" : "to_do",
     assigned_at: now,
     due_at: dueAt,
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
-    completed_at: null,
-    latest_attempt_id: null,
-    attempt_count: 0,
-    latest_percentage: null,
-    best_percentage: null,
-    raw_best_percentage: null,
-    best_attempt_id: null,
-    best_correct_count: null,
-    best_question_count: null,
+    completed_at: convertsSelfStudy ? (selfStudyStar.first_earned_at || now) : null,
+    latest_attempt_id: convertsSelfStudy ? selfStudyStar.best_attempt_id || null : null,
+    attempt_count: convertsSelfStudy ? 1 : 0,
+    latest_percentage: convertsSelfStudy ? selfStudyPercentage : null,
+    best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
+    raw_best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
+    best_attempt_id: convertsSelfStudy ? selfStudyStar.best_attempt_id || null : null,
+    best_correct_count: convertsSelfStudy && selfStudyAttempt ? selfStudyAttempt.correct_count : null,
+    best_question_count: convertsSelfStudy && selfStudyAttempt ? selfStudyAttempt.question_count : null,
     answer_revealed: false,
     mastery_locked: false,
-    mastered_at: null,
+    mastered_at: convertsSelfStudy ? (selfStudyStar.first_earned_at || now) : null,
+    converted_from_self_study: convertsSelfStudy,
+    converted_self_study_achievement_id: convertsSelfStudy ? selfStudyStar.achievement_id || selfStudyStar._id : null,
     created_at: now,
     updated_at: now,
   };
 
   await db.collection("assignments").add(assignment);
-  return assignmentId;
+  if (convertsSelfStudy) {
+    await db.collection("student_set_achievements").doc(selfStudyStar._id).update({
+      achievement_id: [student.auth_uid, assignmentId].join("::"),
+      assignment_id: assignmentId,
+      source: "assignment_claim",
+      converted_from_self_study: true,
+      converted_at: now,
+      claimed_at: selfStudyStar.claimed_at || now,
+      updated_at: now,
+    });
+  }
+  return { assignmentId, convertedFromSelfStudy: convertsSelfStudy };
 }
 
 async function createAssignments(event) {
@@ -489,13 +521,14 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentId = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage);
+      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage);
       created.push({
         student_uid: studentUid,
         student_id: student.student_id,
         set_id: setId,
-        assignment_id: assignmentId,
+        assignment_id: assignmentResult.assignmentId,
         reassigned_after_completion: assignmentState.availability === "completed",
+        converted_from_self_study: assignmentResult.convertedFromSelfStudy,
       });
     }
   }
