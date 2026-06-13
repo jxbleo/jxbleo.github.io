@@ -123,6 +123,17 @@
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "Future DSE speaking content will appear here."
+    },
+    {
+      "id": "zhongkao-reading",
+      "groupId": "zhongkao",
+      "title": "Reading",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Zhongkao reading practice will appear here."
     }
   ]
 }

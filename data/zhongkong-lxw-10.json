@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-10",
+  "title": "中考六选五 10: Group Work Is Not Always Teamwork",
+  "source": "中考六选五",
+  "passage": "<p>Group work is common in school. Teachers ask students to prepare posters, do experiments or make presentations together. 1. ______ But simply putting students into a group does not always create real teamwork.</p><p>One problem is that some students do most of the work while others do very little. This may happen because the active students want a good result quickly. 2. ______ In the end, the group finishes the task, but not everyone learns.</p><p>Another problem is unclear roles. If nobody knows who should collect information, design slides or speak in front of the class, time may be wasted. 3. ______ Clear roles make the work fairer and more efficient.</p><p>Good teamwork also needs communication. Students should not only divide tasks, but also check whether their parts fit together. 4. ______ Otherwise, the final work may look like several separate pieces put together carelessly.</p><p>After the project, it is useful for the group to reflect. They can ask what went well and what should be improved next time. 5. ______ This makes group work a real learning experience, not just a shared assignment.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "As a result, quieter students may not get the chance to practise."
+        },
+        {
+          "value": "B",
+          "text": "This can help students learn from both success and problems."
+        },
+        {
+          "value": "C",
+          "text": "In theory, group work can help students learn cooperation."
+        },
+        {
+          "value": "D",
+          "text": "A short discussion before starting can prevent confusion later."
+        },
+        {
+          "value": "E",
+          "text": "They need to make sure the whole project has one clear direction."
+        },
+        {
+          "value": "F",
+          "text": "The best group is always the one with the highest score."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}

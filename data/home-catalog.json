@@ -123,6 +123,17 @@
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "Future DSE speaking content will appear here."
+    },
+    {
+      "id": "zhongkao-reading",
+      "groupId": "zhongkao",
+      "title": "Reading",
+      "searchEnabled": true,
+      "searchPlaceholder": "Search title, code or topic...",
+      "sortType": "number_asc",
+      "titleMode": "id_title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Zhongkao reading practice will appear here."
     }
   ],
   "items": [
@@ -587,6 +598,326 @@
       "topic": "",
       "tags": [],
       "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-01",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-01 · 中考六选五 1: The Problem with Easy Answers",
+      "href": "ielts-reading.html?set=zhongkong-lxw-01",
+      "displayValue": "zhongkong-lxw-01",
+      "sortValue": 50101,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-02",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-02 · 中考六选五 2: Why We Compare Ourselves",
+      "href": "ielts-reading.html?set=zhongkong-lxw-02",
+      "displayValue": "zhongkong-lxw-02",
+      "sortValue": 50102,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-03",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-03 · 中考六选五 3: The Hidden Cost of Multitasking",
+      "href": "ielts-reading.html?set=zhongkong-lxw-03",
+      "displayValue": "zhongkong-lxw-03",
+      "sortValue": 50103,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-04",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-04 · 中考六选五 4: When Advice Becomes Pressure",
+      "href": "ielts-reading.html?set=zhongkong-lxw-04",
+      "displayValue": "zhongkong-lxw-04",
+      "sortValue": 50104,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-05",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-05 · 中考六选五 5: Learning in the Age of Short Videos",
+      "href": "ielts-reading.html?set=zhongkong-lxw-05",
+      "displayValue": "zhongkong-lxw-05",
+      "sortValue": 50105,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-06",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-06 · 中考六选五 6: The Trap of Looking Busy",
+      "href": "ielts-reading.html?set=zhongkong-lxw-06",
+      "displayValue": "zhongkong-lxw-06",
+      "sortValue": 50106,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-07",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-07 · 中考六选五 7: Learning from Different Opinions",
+      "href": "ielts-reading.html?set=zhongkong-lxw-07",
+      "displayValue": "zhongkong-lxw-07",
+      "sortValue": 50107,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-08",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-08 · 中考六选五 8: Why Museums Still Matter",
+      "href": "ielts-reading.html?set=zhongkong-lxw-08",
+      "displayValue": "zhongkong-lxw-08",
+      "sortValue": 50108,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-09",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-09 · 中考六选五 9: Reading Food Labels",
+      "href": "ielts-reading.html?set=zhongkong-lxw-09",
+      "displayValue": "zhongkong-lxw-09",
+      "sortValue": 50109,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-10",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-10 · 中考六选五 10: Group Work Is Not Always Teamwork",
+      "href": "ielts-reading.html?set=zhongkong-lxw-10",
+      "displayValue": "zhongkong-lxw-10",
+      "sortValue": 50110,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-11",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-11 · 中考六选五 11: The Value of Boredom",
+      "href": "ielts-reading.html?set=zhongkong-lxw-11",
+      "displayValue": "zhongkong-lxw-11",
+      "sortValue": 50111,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-12",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-12 · 中考六选五 12: Speaking in Public",
+      "href": "ielts-reading.html?set=zhongkong-lxw-12",
+      "displayValue": "zhongkong-lxw-12",
+      "sortValue": 50112,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-13",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-13 · 中考六选五 13: Repairing Instead of Replacing",
+      "href": "ielts-reading.html?set=zhongkong-lxw-13",
+      "displayValue": "zhongkong-lxw-13",
+      "sortValue": 50113,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-14",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-14 · 中考六选五 14: Maps, Apps and Sense of Direction",
+      "href": "ielts-reading.html?set=zhongkong-lxw-14",
+      "displayValue": "zhongkong-lxw-14",
+      "sortValue": 50114,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-15",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-15 · 中考六选五 15: Choosing a Role Model Wisely",
+      "href": "ielts-reading.html?set=zhongkong-lxw-15",
+      "displayValue": "zhongkong-lxw-15",
+      "sortValue": 50115,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-16",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-16 · 中考六选五 16: The Problem with “Almost Understanding”",
+      "href": "ielts-reading.html?set=zhongkong-lxw-16",
+      "displayValue": "zhongkong-lxw-16",
+      "sortValue": 50116,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-17",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-17 · 中考六选五 17: Why Small Habits Matter",
+      "href": "ielts-reading.html?set=zhongkong-lxw-17",
+      "displayValue": "zhongkong-lxw-17",
+      "sortValue": 50117,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-18",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-18 · 中考六选五 18: The Meaning of Fairness",
+      "href": "ielts-reading.html?set=zhongkong-lxw-18",
+      "displayValue": "zhongkong-lxw-18",
+      "sortValue": 50118,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-19",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-19 · 中考六选五 19: When Confidence Becomes Carelessness",
+      "href": "ielts-reading.html?set=zhongkong-lxw-19",
+      "displayValue": "zhongkong-lxw-19",
+      "sortValue": 50119,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
+      "visible": true
+    },
+    {
+      "id": "zhongkong-lxw-20",
+      "sectionId": "zhongkao-reading",
+      "title": "zhongkong-lxw-20 · 中考六选五 20: The Value of Asking Better Questions",
+      "href": "ielts-reading.html?set=zhongkong-lxw-20",
+      "displayValue": "zhongkong-lxw-20",
+      "sortValue": 50120,
+      "topic": "Reading / 六选五",
+      "tags": [
+        "中考",
+        "Reading",
+        "六选五"
+      ],
+      "note": "5 Questions",
       "visible": true
     }
   ]

@@ -1,0 +1,61 @@
+{
+  "id": "zhongkong-lxw-15",
+  "title": "中考六选五 15: Choosing a Role Model Wisely",
+  "source": "中考六选五",
+  "passage": "<p>Many teenagers have role models. They may admire athletes, singers, businesspeople, teachers or even classmates. 1. ______ A good role model can give students direction, but a poor choice can lead them to value the wrong things.</p><p>Some students admire only success itself. They see fame, money or awards and want the same results. 2. ______ If they ignore the effort behind success, they may develop unrealistic expectations.</p><p>A better way is to look at the qualities behind achievement. Does the person work hard? Do they treat others responsibly? Do they keep improving after failure? 3. ______ These questions help students learn from the person, not just worship the person.</p><p>Students should also remember that no role model is perfect. A person may be excellent in one area but weak in another. 4. ______ Blind admiration can stop students from thinking clearly.</p><p>Finally, students can have more than one role model. They may learn discipline from an athlete, creativity from an artist and kindness from a teacher. 5. ______ In this way, role models become sources of useful qualities rather than objects of blind following.</p>",
+  "questions": [
+    {
+      "type": "summary",
+      "label": "Questions 1-5 - Sentence Insertion",
+      "instruction": "Choose the best sentence from A-F for each blank in the passage. There is one extra sentence you do not need.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "However, the person we choose to admire matters."
+        },
+        {
+          "value": "B",
+          "text": "But they may not notice the years of practice, failure and self-control."
+        },
+        {
+          "value": "C",
+          "text": "This can help them build a richer and more balanced idea of growth."
+        },
+        {
+          "value": "D",
+          "text": "So students should admire strengths while still keeping judgment."
+        },
+        {
+          "value": "E",
+          "text": "The real value of a role model is not only what they have, but how they became better."
+        },
+        {
+          "value": "F",
+          "text": "Students should copy everything their role models do."
+        }
+      ],
+      "items": [
+        {
+          "id": "Q1",
+          "text": "Gap 1: ______"
+        },
+        {
+          "id": "Q2",
+          "text": "Gap 2: ______"
+        },
+        {
+          "id": "Q3",
+          "text": "Gap 3: ______"
+        },
+        {
+          "id": "Q4",
+          "text": "Gap 4: ______"
+        },
+        {
+          "id": "Q5",
+          "text": "Gap 5: ______"
+        }
+      ]
+    }
+  ]
+}
