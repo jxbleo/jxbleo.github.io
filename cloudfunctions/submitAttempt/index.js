@@ -137,6 +137,12 @@ function bbcMultipleChoiceAnswers(answers, questionIds) {
   return locked;
 }
 
+function isSelfStudyAchievement(item) {
+  return Boolean(
+    item && !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+  );
+}
+
 async function protectSelfStudyStar(student, attempt, now) {
   const result = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -145,9 +151,7 @@ async function protectSelfStudyStar(student, attempt, now) {
   const achievements = result.data || [];
   const existingAssignmentStar = achievements.find((item) => item.assignment_id);
   if (existingAssignmentStar) return;
-  const existing = achievements.find((item) =>
-    !item.assignment_id && (item.source === "self_study" || item.source === "explore")
-  );
+  const existing = achievements.find(isSelfStudyAchievement);
   const update = {
     source: "self_study",
     status: "star",
@@ -184,11 +188,11 @@ async function protectSelfStudyStar(student, attempt, now) {
 async function protectAssignmentStar(student, assignment, attempt, now) {
   const assignmentId = assignment.assignment_id || assignment._id;
   if (!assignmentId) return;
+  const percentage = Number(attempt.display_percentage || attempt.percentage || 0);
   const existing = await getOne("student_set_achievements", {
     student_uid: student.auth_uid,
     assignment_id: assignmentId,
   });
-  const percentage = Number(attempt.display_percentage || attempt.percentage || 0);
   if (existing) {
     const update = {
       source: "assignment_claim",
@@ -201,6 +205,30 @@ async function protectAssignmentStar(student, assignment, attempt, now) {
       update.best_percentage = percentage;
     }
     await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return;
+  }
+  const sameSetResult = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+    set_id: assignment.set_id,
+  }).limit(100).get();
+  const selfStudyStar = (sameSetResult.data || []).find(isSelfStudyAchievement);
+  if (selfStudyStar) {
+    const update = {
+      achievement_id: [student.auth_uid, assignmentId].join("::"),
+      assignment_id: assignmentId,
+      source: "assignment_claim",
+      status: "star",
+      protected: true,
+      converted_from_self_study: true,
+      converted_at: now,
+      claimed_at: selfStudyStar.claimed_at || now,
+      first_earned_at: selfStudyStar.first_earned_at || now,
+      first_qualifying_attempt_id: selfStudyStar.first_qualifying_attempt_id || attempt.attempt_id,
+      best_attempt_id: attempt.attempt_id || selfStudyStar.best_attempt_id || null,
+      best_percentage: Math.max(percentage, Number(selfStudyStar.best_percentage || 0)),
+      updated_at: now,
+    };
+    await db.collection("student_set_achievements").doc(selfStudyStar._id).update(update);
     return;
   }
   await db.collection("student_set_achievements").add({
