@@ -10,6 +10,7 @@
         disputes: [],
         candidates: [],
         selectedStudentProfileId: '',
+        disputeFilter: 'pending',
         expandedDisputeGroups: {}
     };
     var CURRICULUM_OPTIONS = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
@@ -109,16 +110,26 @@
         message.className = 'teacher-message' + (type ? ' ' + type : '');
     }
 
-    function formatDate(value, fallback) {
+    function formatDate(value, fallback, mode) {
         if (!value) return fallback || '—';
         var date = new Date(value);
         if (isNaN(date.getTime())) return fallback || '—';
+        if (mode === 'compact') {
+            return date.toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+        }
         return new Intl.DateTimeFormat('en-GB', {
             timeZone: 'Asia/Shanghai',
             year: 'numeric',
             month: 'short',
             day: 'numeric'
         }).format(date);
+    }
+
+    function englishName(value) {
+        var textValue = String(value || '').trim();
+        if (!textValue) return 'Student';
+        var parts = textValue.split(/\s+/).filter(Boolean);
+        return parts[parts.length - 1] || textValue;
     }
 
     function teacherCall(action, data) {
@@ -523,16 +534,34 @@
         });
     }
 
+    function filteredDisputeGroups() {
+        var groups = groupedDisputes();
+        if (state.disputeFilter === 'resolved') {
+            return groups.filter(function(group) { return group.pending_count === 0; });
+        }
+        return groups.filter(function(group) { return group.pending_count > 0; });
+    }
+
+    function disputeCounts() {
+        var counts = { pending: 0, resolved: 0 };
+        groupedDisputes().forEach(function(group) {
+            if (group.pending_count > 0) counts.pending += 1;
+            else counts.resolved += 1;
+        });
+        return counts;
+    }
+
     function renderDisputeDetail(item) {
         var pending = item.status === 'pending';
         var questionText = getQuestionText(item);
         var requesterLabel = item.requester_role === 'teacher' ? 'Teacher note' : 'Student note';
+        var statusText = item.status === 'rejected' ? 'rejected' : item.status;
         return '<article class="dispute-detail ' + escapeHtml(item.status) + '" data-dispute-id="' +
             escapeHtml(item.dispute_id) + '">' +
             '<div class="dispute-detail-head">' +
                 '<div><strong>Question ' + escapeHtml(item.question_id) + '</strong>' +
                 '<small>' + escapeHtml(formatDate(item.created_at)) + '</small></div>' +
-                '<span class="badge ' + (pending ? 'failed' : 'done') + '">' + escapeHtml(item.status) + '</span>' +
+                '<span class="badge dispute-status ' + escapeHtml(pending ? 'pending' : item.status) + '">' + escapeHtml(statusText) + '</span>' +
             '</div>' +
             (questionText
                 ? '<p class="dispute-question-text">' + escapeHtml(questionText) + '</p>'
@@ -560,32 +589,52 @@
 
     function renderDisputes() {
         var list = document.getElementById('dispute-list');
-        var groups = groupedDisputes();
-        list.innerHTML = groups.length ? groups.map(function(group) {
+        var counts = disputeCounts();
+        var groups = filteredDisputeGroups();
+        var tabs = '<div class="sub-tabs revise-tabs">' +
+            '<button class="sub-tab' + (state.disputeFilter === 'pending' ? ' active' : '') + '" type="button" data-dispute-filter="pending">Pending' +
+                (counts.pending ? '<span class="notice-dot">' + counts.pending + '</span>' : '') +
+            '</button>' +
+            '<button class="sub-tab' + (state.disputeFilter === 'resolved' ? ' active' : '') + '" type="button" data-dispute-filter="resolved">Resolved</button>' +
+        '</div>';
+        var body = groups.length ? groups.map(function(group) {
             var expanded = state.expandedDisputeGroups[group.key] === true;
             var total = group.items.length;
-            var badgeClass = group.pending_count ? 'failed' : 'done';
-            var badgeText = group.pending_count
-                ? group.pending_count + ' pending'
-                : 'resolved';
+            var badgeClass = group.pending_count ? 'pending' : 'resolved';
+            var badgeText = group.pending_count ? 'pending' : 'resolved';
+            var displayDate = group.pending_count
+                ? (group.items.filter(function(item) { return item.status === 'pending'; })[0] || group.items[0]).created_at
+                : group.latest_at;
             return '<article class="profile-card dispute-card ' + (group.pending_count ? 'pending' : 'resolved') +
                 '" data-dispute-group="' + escapeHtml(group.key) + '">' +
                 '<button class="dispute-capsule" type="button" data-toggle-dispute-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
-                    '<span class="dispute-capsule-copy"><strong>' + escapeHtml(group.set_title) + '</strong>' +
-                    '<small>' + escapeHtml(group.student_name) +
-                        (group.student_id ? ' · ' + escapeHtml(group.student_id) : '') +
-                        ' · ' + total + ' question' + (total === 1 ? '' : 's') +
-                    '</small></span>' +
+                    '<span class="dispute-capsule-copy">' +
+                        '<strong>' + escapeHtml(group.set_title) + '</strong>' +
+                        '<small>' + escapeHtml(englishName(group.student_name)) +
+                            ' · ' + total + ' question' + (total === 1 ? '' : 's') +
+                            ' · ' + escapeHtml(group.set_id) +
+                            ' · ' + escapeHtml(formatDate(displayDate, '—', 'compact')) +
+                        '</small>' +
+                    '</span>' +
                     '<span class="dispute-capsule-meta">' +
                         '<span class="badge ' + badgeClass + '">' + escapeHtml(badgeText) + '</span>' +
-                        '<small>' + escapeHtml(formatDate(group.latest_at)) + '</small>' +
                     '</span>' +
                 '</button>' +
                 (expanded
                     ? '<div class="dispute-group-detail">' + group.items.map(renderDisputeDetail).join('') + '</div>'
                     : '') +
             '</article>';
-        }).join('') : '<div class="empty-card"><strong>No Argue requests</strong>New student requests will appear here.</div>';
+        }).join('') : '<div class="empty-card"><strong>No ' + escapeHtml(state.disputeFilter) + ' Revise requests</strong>' +
+            (state.disputeFilter === 'pending' ? 'New requests will appear here.' : 'Handled requests will appear here.') +
+            '</div>';
+        list.innerHTML = tabs + body;
+
+        list.querySelectorAll('[data-dispute-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.disputeFilter = button.dataset.disputeFilter;
+                renderDisputes();
+            });
+        });
 
         list.querySelectorAll('[data-toggle-dispute-group]').forEach(function(button) {
             button.addEventListener('click', function() {

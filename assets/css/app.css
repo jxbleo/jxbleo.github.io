@@ -686,6 +686,45 @@ button { cursor: pointer; }
 .review-answer h2 { margin: 7px 0; font-size: 1rem; }
 .review-answer p { margin: 0; color: var(--ink); white-space: pre-wrap; }
 .review-status { color: var(--muted); font-size: 0.72rem; font-weight: 850; text-transform: uppercase; }
+.sub-tabs {
+    display: inline-grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    box-shadow: 0 10px 24px rgba(83,45,145,0.07);
+}
+.revise-tabs { margin-bottom: 14px; }
+.sub-tab {
+    position: relative;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--muted);
+    background: transparent;
+    font-weight: 900;
+}
+.sub-tab.active { color: #fff; background: var(--accent); }
+.notice-dot {
+    position: absolute;
+    top: -7px;
+    right: -3px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--danger);
+    font-size: 0.68rem;
+    line-height: 1;
+}
 .dispute-list { display: grid; gap: 12px; }
 .dispute-card { padding: 0; overflow: hidden; }
 .dispute-card.resolved { opacity: 0.78; }
@@ -694,7 +733,7 @@ button { cursor: pointer; }
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 16px;
-    align-items: center;
+    align-items: start;
     padding: 18px 20px;
     border: 0;
     color: inherit;
@@ -702,11 +741,16 @@ button { cursor: pointer; }
     text-align: left;
     cursor: pointer;
 }
-.dispute-capsule:hover { background: rgba(19,118,109,0.045); }
+.dispute-capsule:hover { background: rgba(124,58,237,0.055); }
 .dispute-capsule-copy strong, .dispute-capsule-copy small, .dispute-capsule-meta small { display: block; }
 .dispute-capsule-copy strong { font-size: 1.02rem; }
 .dispute-capsule-copy small, .dispute-capsule-meta small { margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
 .dispute-capsule-meta { display: grid; justify-items: end; gap: 4px; }
+.badge.pending { color: #7a5528; background: #fff1da; }
+.badge.resolved { color: var(--success); background: var(--success-soft); }
+.badge.dispute-status.pending { color: #7a5528; background: #fff1da; }
+.badge.dispute-status.approved { color: var(--success); background: var(--success-soft); }
+.badge.dispute-status.rejected { color: var(--danger); background: var(--danger-soft); }
 .dispute-group-detail { display: grid; gap: 12px; padding: 0 20px 20px; }
 .dispute-detail {
     padding: 15px;
@@ -785,7 +829,8 @@ button { cursor: pointer; }
     .compact-primary { width: 100%; }
     .student-account-actions { grid-template-columns: 1fr 1fr; }
     .student-account-actions input { grid-column: 1 / -1; }
-    .dispute-capsule { grid-template-columns: 1fr; }
-    .dispute-capsule-meta { justify-items: start; }
+    .dispute-capsule { grid-template-columns: 1fr auto; }
+    .dispute-capsule-meta { justify-items: end; }
+    .sub-tabs { width: 100%; }
     .dispute-comparison, .dispute-actions { grid-template-columns: 1fr; }
 }
