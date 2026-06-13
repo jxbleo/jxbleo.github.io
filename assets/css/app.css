@@ -460,6 +460,94 @@ button { cursor: pointer; }
 .outline-button { border: 1px solid var(--line); color: var(--ink); background: white; }
 .danger-button { border: 1px solid #efc9c3; color: var(--danger); background: #fff; }
 
+.password-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(24, 51, 47, 0.34);
+    backdrop-filter: blur(8px);
+}
+.password-dialog {
+    position: relative;
+    width: min(440px, 100%);
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.84);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: var(--shadow);
+}
+.password-dialog h2 {
+    margin: 0 0 18px;
+    font-size: 1.45rem;
+}
+.dialog-close-button {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: #fff;
+    font-size: 1.3rem;
+    line-height: 1;
+}
+.dialog-close-button:hover { color: var(--ink); border-color: rgba(19, 118, 109, 0.38); }
+.password-form {
+    display: grid;
+    gap: 10px;
+}
+.password-form label {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+.password-form input {
+    min-height: 46px;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 13px;
+    color: var(--ink);
+    background: #fff;
+}
+.password-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(19, 118, 109, 0.1);
+}
+.password-hint {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+.password-message {
+    min-height: 20px;
+    margin: 0;
+    font-size: 0.84rem;
+    font-weight: 750;
+}
+.password-message.error { color: var(--danger); }
+.password-message.success { color: var(--success); }
+.dialog-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+}
+.dialog-actions button {
+    min-height: 44px;
+    border-radius: 12px;
+    font-weight: 850;
+}
+
 .teacher-hero {
     background: linear-gradient(135deg, #312e81, #7c3aed 58%, #60a5fa);
 }
@@ -811,33 +899,19 @@ button { cursor: pointer; }
 .student-summary .summary-card {
     position: relative;
     overflow: visible;
-    border: 1px solid transparent;
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    background: rgba(255,255,255,0.86);
     cursor: pointer;
-}
-.student-summary .progress-status-filter.pending {
-    border-color: #f1d7a9;
-    border-left: 5px solid #d69a45;
-    background: #fff8ec;
-}
-.student-summary .progress-status-filter.approved {
-    border-color: rgba(89, 166, 116, 0.28);
-    border-left: 5px solid var(--success);
-    background: var(--success-soft);
-}
-.student-summary .progress-status-filter.rejected {
-    border-color: rgba(186, 82, 82, 0.24);
-    border-left: 5px solid var(--danger);
-    background: var(--danger-soft);
 }
 .student-summary .progress-status-filter.active {
     color: var(--ink);
-    box-shadow: 0 10px 28px rgba(25,68,61,0.10), inset 0 0 0 2px rgba(255,255,255,0.9);
+    border-color: rgba(124, 58, 237, 0.36);
+    background: var(--accent-soft);
+    box-shadow: 0 10px 28px rgba(83, 45, 145, 0.12), inset 0 0 0 2px rgba(255,255,255,0.9);
     transform: translateY(-1px);
 }
 .student-summary .progress-status-filter.active .summary-label { color: var(--muted); }
-.student-summary .progress-status-filter.pending .summary-value { color: #8a5a1c; }
-.student-summary .progress-status-filter.approved .summary-value { color: var(--success); }
-.student-summary .progress-status-filter.rejected .summary-value { color: var(--danger); }
+.student-summary .progress-status-filter .summary-value { color: var(--accent-dark); }
 .student-summary .progress-status-filter .notice-dot {
     top: -9px;
     right: -6px;
@@ -893,26 +967,14 @@ button { cursor: pointer; }
 .attempt-set-list { display: grid; gap: 10px; }
 .attempt-set-capsule {
     overflow: hidden;
-    border: 1px solid rgba(220,232,227,0.9);
+    border: 1px solid rgba(124, 58, 237, 0.18);
     border-radius: 16px;
-    background: #fbfdfc;
-}
-.attempt-set-capsule.assignment-capsule.pending {
-    border-left: 5px solid #d69a45;
-    background: #fffaf0;
-}
-.attempt-set-capsule.assignment-capsule.approved {
-    border-left: 5px solid var(--success);
-    background: #f4fbf6;
-}
-.attempt-set-capsule.assignment-capsule.rejected {
-    border-left: 5px solid var(--danger);
-    background: #fff7f7;
+    background: rgba(255,255,255,0.82);
 }
 .attempt-set-capsule.expanded {
-    border-color: rgba(175, 210, 199, 0.95);
+    border-color: rgba(124, 58, 237, 0.36);
     background: white;
-    box-shadow: 0 12px 30px rgba(25,68,61,0.08);
+    box-shadow: 0 12px 30px rgba(83,45,145,0.10);
 }
 .attempt-set-head {
     display: flex;
@@ -946,6 +1008,7 @@ button { cursor: pointer; }
     font-size: 0.82rem;
     font-weight: 900;
 }
+.assignment-best-score { color: var(--accent-dark); }
 .attempt-set-head > span:last-child small {
     color: inherit;
     opacity: 0.78;
@@ -957,9 +1020,9 @@ button { cursor: pointer; }
 }
 .attempt-detail-row {
     padding: 11px;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(124, 58, 237, 0.14);
     border-radius: 13px;
-    background: #f8fbfa;
+    background: #fbf9ff;
 }
 .attempt-detail-head {
     display: flex;
@@ -975,10 +1038,98 @@ button { cursor: pointer; }
 }
 .wrong-summary {
     margin: 8px 0 7px;
-    color: var(--danger);
+    color: var(--accent-dark);
     font-size: 0.76rem;
     font-weight: 800;
 }
+.attempt-history-empty {
+    margin-top: 10px;
+    padding: 11px;
+    border: 1px dashed rgba(124, 58, 237, 0.22);
+    border-radius: 12px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.72);
+    font-size: 0.78rem;
+    font-weight: 750;
+}
+.attempt-trend {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(44px, 1fr);
+    align-items: end;
+    gap: 8px;
+    min-height: 132px;
+    margin-top: 12px;
+    padding: 12px 10px 8px;
+    border: 1px solid rgba(124, 58, 237, 0.12);
+    border-radius: 12px;
+    background:
+        linear-gradient(to top, rgba(124, 58, 237, 0.08) 1px, transparent 1px) 0 0 / 100% 25%,
+        rgba(255,255,255,0.72);
+    overflow-x: auto;
+}
+.attempt-trend-point {
+    display: grid;
+    grid-template-rows: 22px 76px 18px;
+    align-items: end;
+    justify-items: center;
+    min-width: 42px;
+}
+.attempt-trend-value {
+    color: var(--accent-dark);
+    font-size: 0.68rem;
+    font-weight: 900;
+}
+.attempt-trend-bar {
+    width: 18px;
+    min-height: 6px;
+    border-radius: 999px 999px 5px 5px;
+    background: linear-gradient(180deg, #a78bfa, var(--accent-dark));
+    box-shadow: 0 8px 18px rgba(91, 33, 182, 0.14);
+}
+.attempt-trend-point.best .attempt-trend-bar {
+    background: linear-gradient(180deg, #f0abfc, var(--accent));
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.24);
+}
+.attempt-trend-label {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 850;
+}
+.attempt-history-list {
+    display: grid;
+    gap: 7px;
+    margin-top: 9px;
+}
+.attempt-history-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 9px 10px;
+    border: 1px solid rgba(124, 58, 237, 0.12);
+    border-radius: 11px;
+    background: white;
+}
+.attempt-history-main strong,
+.attempt-history-main small,
+.attempt-history-score strong,
+.attempt-history-score small {
+    display: block;
+}
+.attempt-history-main strong,
+.attempt-history-score strong {
+    color: var(--ink);
+    font-size: 0.79rem;
+}
+.attempt-history-main small,
+.attempt-history-score small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.69rem;
+    font-weight: 750;
+}
+.attempt-history-score { text-align: right; }
 .attempt-all-correct {
     margin: 9px 0 0;
     color: var(--success);
@@ -1162,6 +1313,8 @@ button { cursor: pointer; }
         border-radius: 999px;
     }
     .profile-grid { grid-template-columns: 1fr; }
+    .password-dialog { padding: 22px 18px; }
+    .dialog-actions { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
     .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .assign-controls, .assign-toolbar, .horizontal-form, .student-directory { grid-template-columns: 1fr; }

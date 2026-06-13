@@ -166,8 +166,21 @@ Student self-registration is not part of the first version.
 Passwords are managed by CloudBase authentication and are not stored in the
 `students` collection.
 
-The student can change a password from Profile after confirming the current
-password.
+The student can change a password from Profile while already authenticated.
+The password is changed by the `changePassword` cloud function and is never
+stored in the database.
+
+CloudBase rejects weak passwords even when they meet a length minimum. Pure
+digits and repeated-character values such as `666666` or `88888888` are not
+valid. Keep the UI and cloud function validation aligned with a short but
+complex pattern:
+
+```text
+at least 6 characters + uppercase + lowercase + number + symbol
+```
+
+A six-character value such as `Aa_888` is the intended lower-bound shape for
+student-friendly passwords, subject to CloudBase's current validation.
 
 The teacher may force-reset a student's password to the agreed initial
 password. Because CloudBase requires password complexity, the effective

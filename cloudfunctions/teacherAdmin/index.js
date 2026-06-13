@@ -611,7 +611,9 @@ async function listAttempts() {
         assignment_id: attempt.assignment_id || null,
         mode: attempt.mode || "",
         attempt_number: Number(attempt.attempt_number || 0),
-        correct_count: Number(attempt.correct_count || 0),
+        correct_count: Number(
+          attempt.adjusted_correct_count == null ? attempt.correct_count || 0 : attempt.adjusted_correct_count
+        ),
         question_count: Number(attempt.question_count || 0),
         percentage: effectivePercentage(attempt),
         passing_percentage: Number(attempt.passing_percentage || 50),

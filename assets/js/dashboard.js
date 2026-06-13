@@ -248,6 +248,111 @@
         return status === 'mastered' ? 'Mastered ' + value + '%' : 'Passed ' + value + '%';
     }
 
+    function passwordValidationMessage(password) {
+        if (password.length < 6) return 'Password must be at least 6 characters.';
+        if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+            return 'Use uppercase and lowercase letters, a number, and a symbol. A short example is Aa_888.';
+        }
+        if (/^(.)\1+$/.test(password)) return 'Please avoid passwords made from one repeated character.';
+        return '';
+    }
+
+    function openChangePasswordDialog() {
+        var existing = document.querySelector('.password-dialog-overlay');
+        if (existing) existing.remove();
+
+        var overlay = document.createElement('div');
+        overlay.className = 'password-dialog-overlay';
+        overlay.innerHTML =
+            '<div class="password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title">' +
+                '<button class="dialog-close-button" type="button" aria-label="Close password dialog">×</button>' +
+                '<p class="eyebrow accent">Account</p>' +
+                '<h2 id="password-dialog-title">Change Password</h2>' +
+                '<form class="password-form" id="password-form">' +
+                    '<label for="new-password">New password</label>' +
+                    '<input id="new-password" name="new-password" type="password" autocomplete="new-password" required>' +
+                    '<label for="confirm-password">Confirm password</label>' +
+                    '<input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required>' +
+                    '<p class="password-hint">Minimum 6 characters with uppercase, lowercase, number, and symbol. Avoid repeated digits like 88888888.</p>' +
+                    '<p class="password-message" id="password-message" aria-live="polite"></p>' +
+                    '<div class="dialog-actions">' +
+                        '<button class="outline-button" type="button" data-dialog-cancel>Cancel</button>' +
+                        '<button class="primary-button" type="submit">Save Password</button>' +
+                    '</div>' +
+                '</form>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        var form = overlay.querySelector('#password-form');
+        var passwordInput = overlay.querySelector('#new-password');
+        var confirmInput = overlay.querySelector('#confirm-password');
+        var message = overlay.querySelector('#password-message');
+        var submitButton = form.querySelector('button[type="submit"]');
+        var closeButton = overlay.querySelector('.dialog-close-button');
+        var cancelButton = overlay.querySelector('[data-dialog-cancel]');
+
+        function close() {
+            document.removeEventListener('keydown', onKeydown);
+            overlay.remove();
+        }
+
+        function setMessage(text, kind) {
+            message.textContent = text || '';
+            message.classList.toggle('success', kind === 'success');
+            message.classList.toggle('error', kind === 'error');
+        }
+
+        function onKeydown(event) {
+            if (event.key === 'Escape') close();
+        }
+
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) close();
+        });
+        closeButton.addEventListener('click', close);
+        cancelButton.addEventListener('click', close);
+        document.addEventListener('keydown', onKeydown);
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var first = passwordInput.value.trim();
+            var second = confirmInput.value.trim();
+            var validation = passwordValidationMessage(first);
+            if (validation) {
+                setMessage(validation, 'error');
+                passwordInput.focus();
+                return;
+            }
+            if (first !== second) {
+                setMessage('The two passwords do not match.', 'error');
+                confirmInput.focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+            setMessage('', '');
+            window.MrCatCloud.callFunction('changePassword', { new_password: first })
+                .then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to change password.');
+                    state.session.profile.must_change_password = false;
+                    setMessage('Password changed.', 'success');
+                    window.setTimeout(function() {
+                        close();
+                        renderProfile();
+                    }, 650);
+                }).catch(function(error) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Save Password';
+                    setMessage(error.message || 'Unable to change password.', 'error');
+                });
+        });
+
+        window.setTimeout(function() {
+            passwordInput.focus();
+        }, 0);
+    }
+
     function taskCard(item) {
         var set = item.set || item;
         var status = normalizedStatus(item.status);
@@ -483,23 +588,7 @@
             '</div>';
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
-            var first = prompt('Enter your new password (at least 6 characters):');
-            if (first == null) return;
-            var second = prompt('Enter the new password again:');
-            if (second == null) return;
-            if (first !== second) {
-                alert('The two passwords do not match.');
-                return;
-            }
-            window.MrCatCloud.callFunction('changePassword', { new_password: first })
-                .then(function(result) {
-                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to change password.');
-                    state.session.profile.must_change_password = false;
-                    alert('Password changed.');
-                    renderProfile();
-                }).catch(function(error) {
-                    alert(error.message || 'Unable to change password.');
-                });
+            openChangePasswordDialog();
         });
     }
 

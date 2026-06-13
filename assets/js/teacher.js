@@ -6,6 +6,7 @@
         students: [],
         sets: [],
         assignments: [],
+        attempts: [],
         disputes: [],
         candidates: [],
         selectedStudentProfileId: '',
@@ -585,17 +586,16 @@
         var counts = assignmentStatusCounts(assignments);
         var finishedCount = counts.passed + counts.mastered;
         var tabs = [
-            { id: 'to_do', label: 'To Do', count: counts.to_do, tone: 'pending' },
-            { id: 'finished', label: 'Finished', count: finishedCount, tone: 'approved' },
-            { id: 'data', label: 'Data', count: null, tone: 'rejected' }
+            { id: 'to_do', label: 'TO DO', count: counts.to_do },
+            { id: 'finished', label: 'Finished', count: finishedCount },
+            { id: 'data', label: 'Data', count: null }
         ];
         return '<div class="summary-grid student-summary" role="tablist" aria-label="Progress sections">' +
             tabs.map(function(tab) {
-                return '<button class="summary-card assignment-filter progress-status-filter ' + escapeHtml(tab.tone) +
+                return '<button class="summary-card assignment-filter progress-status-filter' +
                     (state.studentProgressView === tab.id ? ' active' : '') +
                     '" type="button" data-progress-view="' + escapeHtml(tab.id) + '">' +
                     '<span class="summary-value">' + (tab.count == null ? '—' : tab.count) + '</span><span class="summary-label">' + escapeHtml(tab.label) + '</span>' +
-                    (tab.id === 'to_do' && tab.count ? '<span class="notice-dot danger">' + tab.count + '</span>' : '') +
                     '</button>';
             }).join('') +
         '</div>';
@@ -620,32 +620,125 @@
         });
     }
 
+    function progressAttemptsForAssignment(assignment) {
+        var assignmentId = assignment.assignment_id;
+        var attempts = (state.attempts || []).filter(function(attempt) {
+            if (assignmentId && attempt.assignment_id) return attempt.assignment_id === assignmentId;
+            return attempt.student_uid === assignment.student_uid && attempt.set_id === assignment.set_id;
+        });
+        return attempts.sort(function(a, b) {
+            return new Date(a.submitted_at || 0) - new Date(b.submitted_at || 0);
+        });
+    }
+
+    function formatPercent(value) {
+        if (value == null || value === '') return '—';
+        var number = Number(value);
+        if (!isFinite(number)) return '—';
+        return (Math.round(number * 10) / 10).toString().replace(/\.0$/, '') + '%';
+    }
+
+    function attemptCorrectCount(attempt) {
+        if (attempt.correct_count != null) return Number(attempt.correct_count || 0);
+        return (attempt.question_results || []).filter(function(item) { return item.correct === true; }).length;
+    }
+
+    function attemptQuestionCount(attempt) {
+        if (attempt.question_count != null) return Number(attempt.question_count || 0);
+        return (attempt.question_results || []).length;
+    }
+
+    function attemptWrongCount(attempt) {
+        return Math.max(attemptQuestionCount(attempt) - attemptCorrectCount(attempt), 0);
+    }
+
+    function formatDuration(seconds) {
+        if (seconds == null || seconds === '') return '';
+        var total = Number(seconds);
+        if (!isFinite(total) || total < 0) return '';
+        var minutes = Math.floor(total / 60);
+        var remainder = Math.round(total % 60);
+        if (!minutes) return remainder + 's';
+        if (!remainder) return minutes + 'm';
+        return minutes + 'm ' + remainder + 's';
+    }
+
+    function renderAttemptTrend(attempts, assignment) {
+        if (!attempts.length) {
+            return '<div class="attempt-history-empty">No attempt records yet.</div>';
+        }
+        var best = Number(assignment.best_percentage == null ? 0 : assignment.best_percentage);
+        return '<div class="attempt-trend" aria-label="Attempt score trend">' +
+            attempts.map(function(attempt, index) {
+                var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
+                var isBest = best && Math.abs(percent - best) < 0.01;
+                return '<div class="attempt-trend-point' + (isBest ? ' best' : '') + '">' +
+                    '<span class="attempt-trend-value">' + escapeHtml(formatPercent(percent)) + '</span>' +
+                    '<span class="attempt-trend-bar" style="height:' + escapeHtml(Math.max(percent, 6)) + '%"></span>' +
+                    '<span class="attempt-trend-label">#' + escapeHtml(attempt.attempt_number || index + 1) + '</span>' +
+                '</div>';
+            }).join('') +
+        '</div>';
+    }
+
+    function renderAttemptHistory(attempts) {
+        if (!attempts.length) return '';
+        return '<div class="attempt-history-list">' +
+            attempts.slice().reverse().map(function(attempt, index) {
+                var number = attempt.attempt_number || (attempts.length - index);
+                var score = formatPercent(attempt.percentage);
+                var correct = attemptCorrectCount(attempt);
+                var total = attemptQuestionCount(attempt);
+                var wrong = attemptWrongCount(attempt);
+                var duration = formatDuration(attempt.duration_seconds);
+                return '<section class="attempt-history-row">' +
+                    '<div class="attempt-history-main">' +
+                        '<strong>Attempt #' + escapeHtml(number) + '</strong>' +
+                        '<small>' + escapeHtml(formatDateTime(attempt.submitted_at)) +
+                        (duration ? ' · ' + escapeHtml(duration) : '') + '</small>' +
+                    '</div>' +
+                    '<div class="attempt-history-score">' +
+                        '<strong>' + escapeHtml(score) + '</strong>' +
+                        '<small>' + escapeHtml(correct) + '/' + escapeHtml(total) +
+                        ' · ' + escapeHtml(wrong) + ' wrong</small>' +
+                    '</div>' +
+                '</section>';
+            }).join('') +
+        '</div>';
+    }
+
+    function renderAssignmentDetails(assignment, attempts) {
+        var latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+        return '<div class="attempt-detail-list">' +
+            '<section class="attempt-detail-row">' +
+                '<div class="attempt-detail-head"><div><strong>Attempt History</strong>' +
+                '<small>Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) +
+                (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
+                '<span>' + escapeHtml(formatPercent(assignment.best_percentage)) + ' best</span></div>' +
+                renderAttemptTrend(attempts, assignment) +
+                (latestAttempt ? '<p class="wrong-summary">Latest: ' + escapeHtml(formatPercent(latestAttempt.percentage)) +
+                    ' · ' + escapeHtml(attemptCorrectCount(latestAttempt)) + '/' + escapeHtml(attemptQuestionCount(latestAttempt)) +
+                    ' · ' + escapeHtml(attemptWrongCount(latestAttempt)) + ' wrong</p>' : '') +
+                renderAttemptHistory(attempts) +
+            '</section>' +
+        '</div>';
+    }
+
     function renderAssignmentCapsule(assignment) {
         var key = assignment.assignment_id || assignment.set_id;
         var expanded = state.expandedAssignmentSets[key] === true;
-        var status = normalizedAssignmentStatus(assignment.status);
-        var tone = status === 'to_do' ? 'pending' : (status === 'passed' ? 'approved' : 'rejected');
-        var score = assignment.best_percentage == null ? '—' : assignment.best_percentage + '%';
-        return '<article class="attempt-set-capsule assignment-capsule ' + escapeHtml(tone) + (expanded ? ' expanded' : '') + '">' +
+        var attempts = progressAttemptsForAssignment(assignment);
+        var score = formatPercent(assignment.best_percentage);
+        var attemptCount = Math.max(Number(assignment.attempt_count || 0), attempts.length);
+        return '<article class="attempt-set-capsule assignment-capsule' + (expanded ? ' expanded' : '') + '">' +
             '<button class="attempt-set-head" type="button" data-assignment-set="' + escapeHtml(key) + '">' +
                 '<span><strong>' + escapeHtml(assignment.set_title || setTitleFor(assignment.set_id)) + '</strong>' +
-                '<small>Set ID: ' + escapeHtml(assignment.set_id) +
-                ' · ' + escapeHtml(assignmentStatusLabel(assignment.status)) +
-                ' · ' + escapeHtml(assignment.attempt_count) + ' attempt' + (Number(assignment.attempt_count) === 1 ? '' : 's') + '</small></span>' +
-                '<span class="' + (status === 'to_do' ? 'score-fail' : 'score-pass') + '">' +
-                    escapeHtml(score) + '<small>' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small>' +
-                '</span>' +
+                '<small>' + escapeHtml(assignment.set_id) +
+                ' · ' + escapeHtml(attemptCount) + ' attempt' + (attemptCount === 1 ? '' : 's') +
+                ' · ' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small></span>' +
+                '<span class="assignment-best-score">' + escapeHtml(score) + '</span>' +
             '</button>' +
-            (expanded ? '<div class="attempt-detail-list">' +
-                '<section class="attempt-detail-row">' +
-                    '<div class="attempt-detail-head"><div><strong>' + escapeHtml(assignmentStatusLabel(assignment.status)) + '</strong>' +
-                    '<small>Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) +
-                    (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
-                    '<span>' + escapeHtml(score) + ' best</span></div>' +
-                    '<p class="wrong-summary">Latest: ' + escapeHtml(assignment.latest_percentage == null ? '—' : assignment.latest_percentage + '%') +
-                    ' · Submissions: ' + escapeHtml(assignment.attempt_count) + '</p>' +
-                '</section>' +
-            '</div>' : '') +
+            (expanded ? renderAssignmentDetails(assignment, attempts) : '') +
         '</article>';
     }
 
@@ -890,11 +983,13 @@
                     showMessage('Argue request resolved.', 'success');
                     return Promise.all([
                         teacherCall('listDisputes'),
-                        teacherCall('listAssignments')
+                        teacherCall('listAssignments'),
+                        teacherCall('listAttempts')
                     ]);
                 }).then(function(results) {
                     state.disputes = results[0].disputes || [];
                     state.assignments = results[1].assignments || [];
+                    state.attempts = results[2].attempts || [];
                     return loadQuestionTextForDisputes();
                 }).then(function() {
                     renderDisputes();
@@ -941,12 +1036,14 @@
             teacherCall('listStudents'),
             teacherCall('listSets'),
             teacherCall('listAssignments'),
-            teacherCall('listDisputes')
+            teacherCall('listDisputes'),
+            teacherCall('listAttempts')
         ]).then(function(results) {
             state.students = results[0].students || [];
             state.sets = results[1].sets || [];
             state.assignments = results[2].assignments || [];
             state.disputes = results[3].disputes || [];
+            state.attempts = results[4].attempts || [];
             fillClassFilters();
             fillSetSectionFilters();
             renderSetOptions();
