@@ -9,7 +9,11 @@
         attempts: [],
         disputes: [],
         candidates: [],
+        selectedAssignSetIds: {},
+        selectedAssignStudentUids: {},
         selectedStudentProfileId: '',
+        studentPickerMode: 'choose',
+        assignPanels: { sets: false, students: false, options: false },
         studentProgressView: 'to_do',
         disputeFilter: 'pending',
         libraryFilter: 'vocabulary',
@@ -342,27 +346,105 @@
     function renderSetOptions() {
         var sets = filteredSets('assign');
         var select = document.getElementById('assign-set');
-        var selected = Array.prototype.map.call(select.selectedOptions || [], function(option) {
-            return option.value;
-        });
         select.innerHTML = sets.map(function(set) {
             return '<option value="' + escapeHtml(set.set_id) + '"' +
-                (selected.indexOf(set.set_id) !== -1 ? ' selected' : '') + '>' +
+                (state.selectedAssignSetIds[set.set_id] ? ' selected' : '') + '>' +
                 escapeHtml(set.title + ' · ' + set.course) + '</option>';
         }).join('');
+        updateAssignSummary();
         renderLibrary();
     }
 
-    function assignmentTargetSetIds() {
+    function syncSelectedAssignSets() {
         var select = document.getElementById('assign-set');
-        var selected = Array.prototype.map.call(select.selectedOptions || [], function(option) {
-            return option.value;
-        }).filter(Boolean);
-        var section = document.getElementById('assign-section-filter').value;
-        var query = document.getElementById('assign-set-search').value.trim();
-        if (selected.length) return selected;
-        if (!section && !query) return [];
-        return filteredSets('assign').map(function(set) { return set.set_id; });
+        state.selectedAssignSetIds = {};
+        Array.prototype.forEach.call(select.selectedOptions || [], function(option) {
+            if (option.value) state.selectedAssignSetIds[option.value] = true;
+        });
+    }
+
+    function assignmentTargetSetIds() {
+        return Object.keys(state.selectedAssignSetIds || {});
+    }
+
+    function selectedSetRecords() {
+        var selected = assignmentTargetSetIds();
+        return selected.map(function(setId) {
+            return state.sets.find(function(set) { return set.set_id === setId; }) || { set_id: setId, title: setId };
+        });
+    }
+
+    function selectedCandidateRecords() {
+        var selected = selectedCandidateUids();
+        return selected.map(function(uid) {
+            return state.candidates.find(function(student) { return student.auth_uid === uid; }) ||
+                state.students.find(function(student) { return student.auth_uid === uid; }) ||
+                { auth_uid: uid, name: uid };
+        });
+    }
+
+    function renderAssignChips(containerId, items, labelFn) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        if (!items.length) {
+            container.innerHTML = '<span class="assign-empty-chip">Nothing selected yet</span>';
+            return;
+        }
+        var visible = items.slice(0, 3);
+        container.innerHTML = visible.map(function(item) {
+            return '<span class="assign-chip">' + escapeHtml(labelFn(item)) + '</span>';
+        }).join('') + (items.length > visible.length
+            ? '<span class="assign-chip more">+ ' + escapeHtml(items.length - visible.length) + ' more</span>'
+            : '');
+    }
+
+    function updateAssignOptionsSummary() {
+        var summary = document.getElementById('assign-options-summary');
+        if (!summary) return;
+        var parts = [];
+        var due = document.getElementById('assign-due').value;
+        var passing = document.getElementById('assign-passing').value;
+        var mastery = document.getElementById('assign-mastery').value;
+        if (due) parts.push('Due ' + due);
+        if (passing) parts.push('Pass ' + passing + '%');
+        if (mastery) parts.push('Mastery ' + mastery + '%');
+        summary.textContent = parts.length ? parts.join(' · ') : 'Default';
+    }
+
+    function updateAssignPanelState() {
+        [
+            { key: 'sets', panel: 'assign-sets-panel', button: 'toggle-assign-sets' },
+            { key: 'students', panel: 'assign-students-panel', button: 'toggle-assign-students' },
+            { key: 'options', panel: 'assign-options-panel', button: 'toggle-assign-options' }
+        ].forEach(function(item) {
+            var open = state.assignPanels[item.key] === true;
+            var panel = document.getElementById(item.panel);
+            var button = document.getElementById(item.button);
+            if (panel) panel.hidden = !open;
+            if (button) button.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (button) button.closest('.profile-card').classList.toggle('expanded', open);
+        });
+    }
+
+    function setAssignPanel(key, open) {
+        state.assignPanels[key] = open;
+        updateAssignPanelState();
+    }
+
+    function updateAssignSummary() {
+        var sets = selectedSetRecords();
+        var students = selectedCandidateRecords();
+        var setCount = document.getElementById('assign-set-count');
+        var studentCount = document.getElementById('assign-student-count');
+        if (setCount) setCount.textContent = sets.length
+            ? sets.length + ' selected'
+            : 'None selected';
+        if (studentCount) studentCount.textContent = students.length
+            ? students.length + ' selected'
+            : 'None selected';
+        renderAssignChips('assign-set-chips', sets, function(set) { return set.set_id || set.title; });
+        renderAssignChips('assign-student-chips', students, function(student) { return student.name || student.student_id || student.auth_uid; });
+        updateAssignOptionsSummary();
     }
 
     function teacherPracticeHref(set) {
@@ -415,6 +497,26 @@
         });
     }
 
+    function rememberSelectedCandidates() {
+        candidateList.querySelectorAll('.candidate-checkbox').forEach(function(checkbox) {
+            if (checkbox.checked) {
+                state.selectedAssignStudentUids[checkbox.value] = true;
+            } else {
+                delete state.selectedAssignStudentUids[checkbox.value];
+            }
+        });
+    }
+
+    function pruneSelectedCandidates() {
+        var available = {};
+        (state.candidates || []).forEach(function(student) {
+            if (!candidateStatus(student).disabled) available[student.auth_uid] = true;
+        });
+        Object.keys(state.selectedAssignStudentUids || {}).forEach(function(uid) {
+            if (!available[uid]) delete state.selectedAssignStudentUids[uid];
+        });
+    }
+
     function renderCandidates() {
         var candidates = filteredCandidates();
         if (!assignmentTargetSetIds().length) {
@@ -426,6 +528,7 @@
             var status = candidateStatus(student);
             return '<label class="candidate-card ' + status.css + (status.disabled ? ' disabled' : '') + '">' +
                 '<input class="candidate-checkbox" type="checkbox" value="' + escapeHtml(student.auth_uid) + '"' +
+                    (state.selectedAssignStudentUids[student.auth_uid] && !status.disabled ? ' checked' : '') +
                     (status.disabled ? ' disabled' : '') + '>' +
                 '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
                     '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
@@ -438,26 +541,32 @@
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
 
         candidateList.querySelectorAll('.candidate-checkbox').forEach(function(checkbox) {
-            checkbox.addEventListener('change', updateSelectedCount);
+            checkbox.addEventListener('change', function() {
+                rememberSelectedCandidates();
+                updateSelectedCount();
+            });
         });
         updateSelectedCount();
     }
 
     function selectedCandidateUids() {
-        return Array.prototype.map.call(
-            candidateList.querySelectorAll('.candidate-checkbox:checked'),
-            function(checkbox) { return checkbox.value; }
-        );
+        return Object.keys(state.selectedAssignStudentUids || {});
     }
 
     function updateSelectedCount() {
         var count = selectedCandidateUids().length;
         var taskCount = assignmentTargetSetIds().length;
         document.getElementById('selected-count').textContent =
-            count + ' student' + (count === 1 ? '' : 's') + ' selected · ' +
-            taskCount + ' task' + (taskCount === 1 ? '' : 's');
+            taskCount + ' practice' + (taskCount === 1 ? '' : 's') + ' · ' +
+            count + ' student' + (count === 1 ? '' : 's');
+        document.getElementById('assign-selected').textContent =
+            taskCount && count
+                ? 'Assign ' + taskCount + ' practice' + (taskCount === 1 ? '' : 's') + ' to ' +
+                    count + ' student' + (count === 1 ? '' : 's')
+                : 'Assign';
         document.getElementById('assign-selected').disabled =
             !count || !assignmentTargetSetIds().length;
+        updateAssignSummary();
     }
 
     function loadCandidates() {
@@ -470,12 +579,14 @@
             }).map(function(student) {
                 return Object.assign({}, student, { availability: 'available' });
             });
+            pruneSelectedCandidates();
             renderCandidates();
             return Promise.resolve();
         }
         candidateList.innerHTML = '<div class="empty-card loading-card">Checking assignment status...</div>';
         return teacherCall('getAssignmentCandidates', { set_id: targetSetIds[0] }).then(function(result) {
             state.candidates = result.candidates || [];
+            pruneSelectedCandidates();
             renderCandidates();
         }).catch(function(error) {
             candidateList.innerHTML = '<div class="empty-card"><strong>Unable to load students</strong>' +
@@ -486,6 +597,7 @@
     function filteredStudents() {
         var query = document.getElementById('student-search').value.trim().toLowerCase();
         var classGroup = document.getElementById('student-class-filter').value;
+        if (state.studentPickerMode !== 'search') query = '';
         return studentRecords().filter(function(student) {
             var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
                 .join(' ').toLowerCase().indexOf(query) !== -1;
@@ -493,16 +605,35 @@
         });
     }
 
-    function setStudentPickerOpen(open) {
+    function updateSelectedStudentLabel() {
+        var label = document.getElementById('selected-student-label');
+        if (!label) return;
+        var selected = state.students.find(function(item) {
+            return item.profile_id === state.selectedStudentProfileId;
+        });
+        label.textContent = selected ? selected.name || selected.student_id || 'Selected student' : 'No student selected';
+        label.classList.toggle('empty', !selected);
+    }
+
+    function setStudentPickerOpen(open, mode) {
+        if (mode) state.studentPickerMode = mode;
         var card = document.querySelector('.student-select-card');
         var input = document.getElementById('student-search');
+        var searchbar = document.getElementById('student-picker-searchbar');
+        var chooseButton = document.getElementById('choose-student');
+        var searchButton = document.getElementById('search-student');
         if (card) card.classList.toggle('picker-open', open === true);
-        if (input) {
-            input.placeholder = open === true ? 'Search' : 'Select';
-            if (open !== true && !input.value.trim()) {
-                input.value = selectedStudentLabel();
-            }
+        if (card) {
+            card.classList.toggle('picker-choose', open === true && state.studentPickerMode === 'choose');
+            card.classList.toggle('picker-search', open === true && state.studentPickerMode === 'search');
         }
+        if (searchbar) searchbar.hidden = !(open === true && state.studentPickerMode === 'search');
+        if (chooseButton) chooseButton.classList.toggle('active', open === true && state.studentPickerMode === 'choose');
+        if (searchButton) searchButton.classList.toggle('active', open === true && state.studentPickerMode === 'search');
+        if (input) {
+            if (open === true && state.studentPickerMode === 'choose') input.value = '';
+        }
+        updateSelectedStudentLabel();
     }
 
     function selectedStudentLabel() {
@@ -512,12 +643,15 @@
         return selected ? selected.name || selected.student_id || '' : '';
     }
 
-    function openStudentSelector(input) {
-        var selectedLabel = selectedStudentLabel();
-        if (selectedLabel && input.value === selectedLabel) input.value = '';
-        input.select();
-        setStudentPickerOpen(true);
+    function openStudentSelector(mode) {
+        setStudentPickerOpen(true, mode || 'choose');
         renderStudentList();
+        if (state.studentPickerMode === 'search') {
+            window.setTimeout(function() {
+                var input = document.getElementById('student-search');
+                if (input) input.focus();
+            }, 0);
+        }
     }
 
     function selectStudent(profileId) {
@@ -525,9 +659,7 @@
         var selected = state.students.find(function(item) {
             return item.profile_id === state.selectedStudentProfileId;
         });
-        if (selected) {
-            document.getElementById('student-search').value = selected.name || selected.student_id || '';
-        }
+        if (selected && document.getElementById('student-search')) document.getElementById('student-search').value = '';
         state.studentProgressView = 'to_do';
         state.expandedAssignmentSets = {};
         setStudentPickerOpen(false);
@@ -536,12 +668,17 @@
     }
 
     function confirmStudentSearch() {
+        var card = document.querySelector('.student-select-card');
+        if (state.selectedStudentProfileId && (!card || !card.classList.contains('picker-open'))) {
+            renderStudentDetail();
+            return;
+        }
         var firstMatch = filteredStudents().find(function(student) {
             return student.profile_complete;
         });
         if (!firstMatch) {
             showMessage('No matching student found.', 'error');
-            setStudentPickerOpen(true);
+            setStudentPickerOpen(true, state.studentPickerMode);
             renderStudentList();
             return;
         }
@@ -550,20 +687,23 @@
 
     function renderStudentList() {
         var students = filteredStudents();
+        var searchMode = state.studentPickerMode === 'search';
+        updateSelectedStudentLabel();
         studentList.innerHTML = students.length ? students.map(function(student) {
             if (!student.profile_complete) {
                 return '<div class="student-pick incomplete-profile">' +
                     '<span><strong>Profile incomplete</strong><small>Database record is missing Login ID or User ID</small></span></div>';
             }
-            return '<button class="student-pick' +
+            return '<button class="student-pick' + (searchMode ? '' : ' compact') +
                 (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
                 '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
                 '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
-                (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small></span>' +
-                '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' +
+                (searchMode ? '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
+                (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small>' : '') + '</span>' +
+                (searchMode ? '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' : '') +
             '</button>';
-        }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
+        }).join('') : '<div class="empty-card"><strong>No matching students</strong>' +
+            (searchMode ? 'Try another search.' : 'No student accounts are available.') + '</div>';
 
         studentList.querySelectorAll('.student-pick').forEach(function(button) {
             if (button.classList.contains('incomplete-profile')) return;
@@ -1059,21 +1199,44 @@
     document.querySelectorAll('.tab-button').forEach(function(button) {
         button.addEventListener('click', function() { activateView(button.dataset.view); });
     });
-    document.getElementById('assign-set').addEventListener('change', loadCandidates);
+    document.getElementById('toggle-assign-sets').addEventListener('click', function() {
+        setAssignPanel('sets', state.assignPanels.sets !== true);
+    });
+    document.getElementById('toggle-assign-students').addEventListener('click', function() {
+        setAssignPanel('students', state.assignPanels.students !== true);
+    });
+    document.getElementById('toggle-assign-options').addEventListener('click', function() {
+        setAssignPanel('options', state.assignPanels.options !== true);
+    });
+    document.getElementById('assign-sets-done').addEventListener('click', function() {
+        setAssignPanel('sets', false);
+    });
+    document.getElementById('assign-students-done').addEventListener('click', function() {
+        rememberSelectedCandidates();
+        updateSelectedCount();
+        setAssignPanel('students', false);
+    });
+    document.getElementById('assign-set').addEventListener('change', function() {
+        syncSelectedAssignSets();
+        updateSelectedCount();
+        loadCandidates();
+    });
     document.getElementById('assign-section-filter').addEventListener('change', function() {
         renderSetOptions();
-        loadCandidates();
     });
     document.getElementById('assign-set-search').addEventListener('input', function() {
         renderSetOptions();
-        loadCandidates();
     });
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
+    ['assign-due', 'assign-passing', 'assign-mastery'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', updateAssignOptionsSummary);
+    });
     document.getElementById('library-search').addEventListener('input', renderLibrary);
     renderLibraryTabs();
     document.getElementById('select-class').addEventListener('click', function() {
         candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
+            state.selectedAssignStudentUids[checkbox.value] = true;
             checkbox.checked = true;
         });
         updateSelectedCount();
@@ -1096,20 +1259,31 @@
                 (result.skipped.length ? '; ' + result.skipped.length + ' skipped.' : '.'),
                 'success'
             );
+            state.selectedAssignSetIds = {};
+            state.selectedAssignStudentUids = {};
+            document.getElementById('assign-set-search').value = '';
+            document.getElementById('assign-section-filter').value = '';
+            document.getElementById('assign-search').value = '';
+            document.getElementById('assign-class-filter').value = '';
+            document.getElementById('assign-set').selectedIndex = -1;
             return Promise.all([teacherCall('listAssignments'), loadCandidates()]);
         }).then(function(results) {
             state.assignments = results[0].assignments || [];
+            renderSetOptions();
             renderStudentDetail();
         }).catch(function(error) {
             showMessage(error.message, 'error');
         }).finally(updateSelectedCount);
     });
 
-    document.getElementById('student-search').addEventListener('focus', function() {
-        openStudentSelector(this);
+    document.getElementById('choose-student').addEventListener('click', function() {
+        openStudentSelector('choose');
+    });
+    document.getElementById('search-student').addEventListener('click', function() {
+        openStudentSelector('search');
     });
     document.getElementById('student-search').addEventListener('input', function() {
-        setStudentPickerOpen(true);
+        setStudentPickerOpen(true, 'search');
         renderStudentList();
     });
     document.getElementById('student-search').addEventListener('keydown', function(event) {
@@ -1125,6 +1299,7 @@
         if (card && !card.contains(event.target)) setStudentPickerOpen(false);
     });
     document.getElementById('toggle-create-student').addEventListener('click', function() {
+        setStudentPickerOpen(false);
         document.getElementById('create-student-panel').hidden = false;
     });
     document.getElementById('close-create-student').addEventListener('click', function() {

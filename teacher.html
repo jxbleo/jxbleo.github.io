@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260614-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260614-3">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -35,63 +35,80 @@
         </section>
 
         <section class="dashboard-view" id="view-assign" hidden>
-            <section class="profile-card assign-setup">
-                <div class="section-heading compact-heading">
-                    <div>
-                        <h2>Assign practice</h2>
-                        <p>Choose one task, then select individuals or a whole class.</p>
+            <section class="assign-flow">
+                <article class="profile-card assign-step-card" id="assign-sets-card">
+                    <button class="assign-step-summary" id="toggle-assign-sets" type="button" aria-expanded="false">
+                        <span><strong>Practice Sets</strong><small id="assign-set-count">None selected</small></span>
+                        <span class="assign-step-action">Choose</span>
+                    </button>
+                    <div class="assign-chip-list" id="assign-set-chips"></div>
+                    <div class="assign-step-panel" id="assign-sets-panel" hidden>
+                        <div class="assign-controls compact">
+                            <label>Column
+                                <select id="assign-section-filter">
+                                    <option value="">All columns</option>
+                                </select>
+                            </label>
+                            <label>Search tasks
+                                <input id="assign-set-search" type="search" placeholder="BBC, IELTS, vocabulary...">
+                            </label>
+                        </div>
+                        <label class="assign-list-label">Practice sets
+                            <select id="assign-set" multiple size="7"></select>
+                        </label>
+                        <button class="primary-button assign-done-button" id="assign-sets-done" type="button">Done</button>
                     </div>
-                </div>
-                <div class="assign-controls">
-                    <label>Column
-                        <select id="assign-section-filter">
-                            <option value="">All columns</option>
-                        </select>
-                    </label>
-                    <label>Search tasks
-                        <input id="assign-set-search" type="search" placeholder="BBC, IELTS, vocabulary...">
-                    </label>
-                    <label>Practice sets
-                        <select id="assign-set" multiple size="6">
-                        </select>
-                    </label>
-                    <label>Due date
-                        <input id="assign-due" type="date">
-                    </label>
-                    <label>Passing %
-                        <input id="assign-passing" type="number" min="0" max="100" step="0.01" placeholder="50">
-                    </label>
-                    <label>Mastery %
-                        <input id="assign-mastery" type="number" min="0" max="100" step="0.01" placeholder="90">
-                    </label>
-                </div>
-            </section>
+                </article>
 
-            <section class="profile-card assign-students-panel">
-                <div class="section-heading compact-heading">
-                    <div>
-                        <h2>Select students</h2>
-                        <p>Search, filter by class, then select the students who should receive this practice.</p>
+                <article class="profile-card assign-step-card" id="assign-students-card">
+                    <button class="assign-step-summary" id="toggle-assign-students" type="button" aria-expanded="false">
+                        <span><strong>Students</strong><small id="assign-student-count">None selected</small></span>
+                        <span class="assign-step-action">Choose</span>
+                    </button>
+                    <div class="assign-chip-list" id="assign-student-chips"></div>
+                    <div class="assign-step-panel" id="assign-students-panel" hidden>
+                        <div class="assign-toolbar compact">
+                            <input class="resource-search" id="assign-search" type="search" placeholder="Search students...">
+                            <select class="filter-select" id="assign-class-filter">
+                                <option value="">All classes</option>
+                            </select>
+                            <button class="outline-button teacher-refresh" id="select-class" type="button">Select Available</button>
+                        </div>
+                        <div class="assign-legend">
+                            <span><i class="status-dot available"></i>Available</span>
+                            <span><i class="status-dot progress"></i>In Progress</span>
+                            <span><i class="status-dot completed"></i>STAR · cannot assign again</span>
+                        </div>
+                        <div class="candidate-grid" id="assign-candidates">
+                            <div class="empty-card"><strong>Choose practice sets</strong>Student availability will appear here.</div>
+                        </div>
+                        <button class="primary-button assign-done-button" id="assign-students-done" type="button">Done</button>
                     </div>
-                    <button class="outline-button teacher-refresh" id="select-class" type="button">Select Available</button>
-                </div>
-                <div class="assign-toolbar">
-                    <input class="resource-search" id="assign-search" type="search" placeholder="Search students...">
-                    <select class="filter-select" id="assign-class-filter">
-                        <option value="">All classes</option>
-                    </select>
-                </div>
-                <div class="assign-legend">
-                    <span><i class="status-dot available"></i>Available</span>
-                    <span><i class="status-dot progress"></i>In Progress</span>
-                    <span><i class="status-dot completed"></i>STAR · cannot assign again</span>
-                </div>
-                <div class="candidate-grid" id="assign-candidates">
-                    <div class="empty-card"><strong>Choose a practice set</strong>Student availability will appear here.</div>
-                </div>
+                </article>
+
+                <article class="profile-card assign-options-card">
+                    <button class="assign-step-summary compact-summary" id="toggle-assign-options" type="button" aria-expanded="false">
+                        <span><strong>Options</strong><small id="assign-options-summary">Default</small></span>
+                        <span class="assign-step-action">Edit</span>
+                    </button>
+                    <div class="assign-options-panel" id="assign-options-panel" hidden>
+                        <div class="assign-controls compact">
+                            <label>Due date
+                                <input id="assign-due" type="date">
+                            </label>
+                            <label>Passing %
+                                <input id="assign-passing" type="number" min="0" max="100" step="0.01" placeholder="50">
+                            </label>
+                            <label>Mastery %
+                                <input id="assign-mastery" type="number" min="0" max="100" step="0.01" placeholder="90">
+                            </label>
+                        </div>
+                    </div>
+                </article>
+
                 <div class="assign-submit-bar">
-                    <span id="selected-count">0 students selected</span>
-                    <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign to Selected</button>
+                    <span id="selected-count">0 practices · 0 students</span>
+                    <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign</button>
                 </div>
             </section>
         </section>
@@ -116,15 +133,24 @@
             <section class="profile-card student-select-card">
                 <p class="eyebrow accent">STUDENT</p>
                 <div class="student-search-actions">
-                    <input class="resource-search" id="student-search" type="search" placeholder="Select" autocomplete="off">
+                    <div class="student-mode-buttons" aria-label="Student picker mode">
+                        <button class="student-mode-button" id="choose-student" type="button">Choose</button>
+                        <button class="student-mode-button" id="search-student" type="button">Search</button>
+                    </div>
+                    <span class="selected-student-pill" id="selected-student-label">No student selected</span>
                     <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">Confirm</button>
                     <button class="teacher-create-capsule" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <select class="filter-select full-width" id="student-class-filter" hidden>
                         <option value="">All classes</option>
                     </select>
                 </div>
-                <div class="student-picker" id="student-list">
-                    <div class="empty-card loading-card">Loading students...</div>
+                <div class="student-picker-shell" id="student-picker-shell">
+                    <div class="student-picker-searchbar" id="student-picker-searchbar" hidden>
+                        <input class="resource-search" id="student-search" type="search" placeholder="Search by name, Login ID, class..." autocomplete="off">
+                    </div>
+                    <div class="student-picker" id="student-list">
+                        <div class="empty-card loading-card">Loading students...</div>
+                    </div>
                 </div>
             </section>
 
@@ -134,7 +160,7 @@
                         <h2>Create student account</h2>
                         <p>The login account and student profile are created together.</p>
                     </div>
-                    <button class="outline-button teacher-refresh" id="close-create-student" type="button">Close</button>
+                    <button class="create-student-close" id="close-create-student" type="button" aria-label="Close create student panel">x</button>
                 </div>
                 <form class="teacher-form horizontal-form" id="student-form">
                     <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
@@ -169,6 +195,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260614-1"></script>
+    <script src="assets/js/teacher.js?v=20260614-3"></script>
 </body>
 </html>
