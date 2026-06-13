@@ -91,6 +91,50 @@ function gradeAnswers(submittedAnswers, gradingKey, mode) {
   return { results, correctCount, questionCount: questionIds.length, percentage };
 }
 
+async function protectSelfStudyStar(student, attempt, now) {
+  const result = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+    set_id: attempt.set_id,
+  }).limit(100).get();
+  const achievements = result.data || [];
+  const existingAssignmentStar = achievements.find((item) => item.assignment_id);
+  if (existingAssignmentStar) return;
+  const existing = achievements.find((item) =>
+    !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+  );
+  const update = {
+    source: "self_study",
+    status: "star",
+    protected: true,
+    updated_at: now,
+  };
+  if (!existing || Number(attempt.display_percentage || attempt.percentage || 0) > Number(existing.best_percentage || 0)) {
+    update.best_attempt_id = attempt.attempt_id;
+    update.best_percentage = Number(attempt.display_percentage || attempt.percentage || 0);
+  }
+  if (existing) {
+    await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return;
+  }
+  await db.collection("student_set_achievements").add({
+    achievement_id: [student.auth_uid, attempt.set_id, "self"].join("::"),
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    set_id: attempt.set_id,
+    assignment_id: null,
+    status: "star",
+    protected: true,
+    source: "self_study",
+    claimed_at: now,
+    first_earned_at: now,
+    first_qualifying_attempt_id: attempt.attempt_id,
+    best_attempt_id: attempt.attempt_id,
+    best_percentage: Number(attempt.display_percentage || attempt.percentage || 0),
+    created_at: now,
+    updated_at: now,
+  });
+}
+
 exports.main = async (event) => {
   try {
     const student = await getAuthenticatedStudent();
@@ -236,6 +280,8 @@ exports.main = async (event) => {
       if (!verified || verified.latest_attempt_id !== attemptId) {
         throw new Error("ASSIGNMENT_UPDATE_FAILED");
       }
+    } else if (mastered) {
+      await protectSelfStudyStar(student, attempt, submittedAt);
     }
 
     return {

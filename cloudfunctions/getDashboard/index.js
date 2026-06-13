@@ -234,6 +234,18 @@ async function starCount(student) {
   return (result.data || []).length;
 }
 
+function splitStarCounts(achievements) {
+  const selfStudy = achievements.filter((item) =>
+    !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+  ).length;
+  const assignment = achievements.length - selfStudy;
+  return {
+    assignment_star_count: assignment,
+    self_study_star_count: selfStudy,
+    star_count: assignment + selfStudy,
+  };
+}
+
 async function claimStar(student, event) {
   const assignmentId = String(event.assignment_id || "");
   if (!assignmentId) throw new Error("ASSIGNMENT_REQUIRED");
@@ -268,7 +280,10 @@ async function claimStar(student, event) {
       updated_at: now,
     });
   }
-  return { success: true, star_count: await starCount(student) };
+  const starResult = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+  }).limit(500).get();
+  return { success: true, ...splitStarCounts(starResult.data || []) };
 }
 
 async function getAttemptForRetry(student, event) {
@@ -311,17 +326,23 @@ exports.main = async (event = {}) => {
       .limit(500)
       .get();
     const attempts = attemptResult.data || [];
-    const setIds = [...new Set(
-      assignments.map((item) => item.set_id)
-        .filter(Boolean)
-    )];
     const setMap = new Map();
     const starResult = await db.collection("student_set_achievements").where({
       student_uid: student.auth_uid,
     }).limit(500).get();
+    const achievements = starResult.data || [];
+    const starCounts = splitStarCounts(achievements);
     const claimedAssignmentIds = new Set((starResult.data || [])
       .map((item) => item.assignment_id)
       .filter(Boolean));
+    const selfStudyStars = achievements.filter((item) =>
+      !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+    );
+    const setIds = [...new Set(
+      assignments.map((item) => item.set_id)
+        .concat(selfStudyStars.map((item) => item.set_id))
+        .filter(Boolean)
+    )];
 
     for (const setId of setIds) {
       const setResult = await db.collection("sets").where({
@@ -408,11 +429,47 @@ exports.main = async (event = {}) => {
         },
       };
     });
+    const selfStudyViews = selfStudyStars.map((achievement) => {
+      const set = setMap.get(achievement.set_id);
+      const attempt = attempts.find((item) => item.attempt_id === achievement.best_attempt_id) || null;
+      const percentage = achievement.best_percentage == null
+        ? (attempt ? effectivePercentage(attempt) : null)
+        : Number(achievement.best_percentage);
+      return {
+        assignment_id: null,
+        achievement_id: achievement.achievement_id || achievement._id,
+        source: "self_study",
+        status: "mastered",
+        assigned_at: achievement.first_earned_at || achievement.created_at || null,
+        due_at: null,
+        completed_at: achievement.first_earned_at || achievement.created_at || null,
+        mastered_at: achievement.first_earned_at || achievement.created_at || null,
+        updated_at: achievement.updated_at || achievement.created_at || null,
+        attempt_count: 1,
+        latest_percentage: percentage,
+        best_percentage: percentage,
+        best_correct_count: attempt ? attemptCorrectCount(attempt) : null,
+        best_question_count: attempt ? attemptQuestionCount(attempt) : null,
+        review_attempt_id: achievement.best_attempt_id || null,
+        history_attempt_id: achievement.best_attempt_id || null,
+        prefill_attempt_id: achievement.best_attempt_id || null,
+        answer_revealed: false,
+        mastery_locked: false,
+        star_claimed: true,
+        passing_percentage: set ? passingPercentageForSet(set) : 50,
+        mastery_percentage: set ? masteryPercentageForSet(set) : 90,
+        set: set || {
+          set_id: achievement.set_id,
+          title: achievement.set_id,
+          link: "#",
+        },
+      };
+    });
 
     return {
       success: true,
-      assignments: assignmentViews,
-      star_count: (starResult.data || []).length,
+      assignments: assignmentViews.concat(selfStudyViews),
+      ...starCounts,
     };
   } catch (error) {
     return {

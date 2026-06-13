@@ -191,6 +191,17 @@ button { cursor: pointer; }
     font-weight: 900;
     box-shadow: 0 8px 22px rgba(216, 149, 40, 0.12);
 }
+.assignment-star-counter {
+    border-color: rgba(216, 149, 40, 0.24);
+    color: #9a6717;
+    background: rgba(255, 248, 224, 0.86);
+}
+.self-study-star-counter {
+    border-color: rgba(31, 111, 135, 0.2);
+    color: #1f6f87;
+    background: #e3f4fb;
+    box-shadow: 0 8px 22px rgba(31, 111, 135, 0.1);
+}
 .star-counter.pop { animation: star-counter-pop 700ms ease-out both; }
 @keyframes star-counter-pop {
     0% { transform: scale(1); }
@@ -310,6 +321,7 @@ button { cursor: pointer; }
 .assignment-pill.status.to_do { color: #7a5528; background: #fff1da; }
 .assignment-pill.status.passed { color: #1f6f87; background: #e3f4fb; }
 .assignment-pill.status.mastered { color: var(--success); background: var(--success-soft); }
+.assignment-pill.source.self-study { color: #1f6f87; background: #e3f4fb; }
 .card-button {
     display: inline-flex;
     align-items: center;

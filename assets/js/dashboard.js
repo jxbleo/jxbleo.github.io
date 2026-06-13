@@ -8,7 +8,9 @@
         assignmentFilter: 'todo',
         starsRange: '7',
         resourceFilter: 'vocabulary',
-        starCount: 0
+        starCount: 0,
+        assignmentStarCount: 0,
+        selfStudyStarCount: 0
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -51,6 +53,7 @@
 
     var identityChip = document.getElementById('identity-chip');
     var starCounter = document.getElementById('star-counter');
+    var selfStudyStarCounter = document.getElementById('self-study-star-counter');
     var greeting = document.getElementById('greeting');
     var heroCopy = document.getElementById('hero-copy');
     var assignmentContent = document.getElementById('assignment-content');
@@ -172,10 +175,16 @@
     }
 
     function updateStarCounter(animate) {
-        if (!starCounter) return;
-        starCounter.textContent = '★ ' + state.starCount;
-        starCounter.classList.toggle('pop', animate === true);
-        if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
+        if (selfStudyStarCounter) {
+            selfStudyStarCounter.textContent = '★ ' + state.selfStudyStarCount;
+            selfStudyStarCounter.classList.toggle('pop', animate === true);
+            if (animate) window.setTimeout(function() { selfStudyStarCounter.classList.remove('pop'); }, 700);
+        }
+        if (starCounter) {
+            starCounter.textContent = '★ ' + state.assignmentStarCount;
+            starCounter.classList.toggle('pop', animate === true);
+            if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
+        }
     }
 
     function playStarSound() {
@@ -251,10 +260,14 @@
             best_percentage: item.best_percentage
         }), item.assignment_id);
         var collected = isStarCollected(item);
+        var sourcePill = item.source === 'self_study'
+            ? '<span class="assignment-pill source self-study">SELF STUDY</span>'
+            : '';
         return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
             '<div>' +
                 '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
                 '<div class="assignment-pills">' +
+                    sourcePill +
                     '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
                     (status === 'to_do' ? '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' : '') +
                     '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>' +
@@ -360,6 +373,8 @@
                     if (!result || !result.success) throw new Error(result && result.message || 'Unable to collect star.');
                     if (item) item.star_claimed = true;
                     state.starCount = Number(result.star_count || state.starCount + 1);
+                    state.assignmentStarCount = Number(result.assignment_star_count == null ? state.assignmentStarCount + 1 : result.assignment_star_count);
+                    state.selfStudyStarCount = Number(result.self_study_star_count == null ? state.selfStudyStarCount : result.self_study_star_count);
                     playStarSound();
                     animateStarToCounter(button);
                     button.classList.add('collected');
@@ -520,8 +535,11 @@
                 return { success: false, resources: [] };
             })
         ]).then(function(results) {
-            state.assignments = results[0] && results[0].assignments || [];
-            state.starCount = Number(results[0] && results[0].star_count || 0);
+            var dashboard = results[0] || {};
+            state.assignments = dashboard.assignments || [];
+            state.starCount = Number(dashboard.star_count || 0);
+            state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
+            state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
