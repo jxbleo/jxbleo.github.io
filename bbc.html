@@ -18,6 +18,15 @@
             --wrong-bg: #fdf2e9;
             --warm: #f97316;
             --warm-soft: #fff2df;
+            --ink: #18352f;
+            --muted: #6d807a;
+            --line: rgba(15, 118, 110, 0.16);
+            --border: rgba(15, 118, 110, 0.16);
+            --bg-page: #f4fbf7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --text-muted: #64748b;
+            --accent-dark: #0b5f59;
         }
 
         * { box-sizing: border-box; }
@@ -763,25 +772,258 @@
             display: grid;
             place-items: center;
             padding: 20px;
-            background: rgba(13, 44, 39, 0.35);
-            backdrop-filter: blur(5px);
+            background: rgba(13, 44, 39, 0.38);
+            backdrop-filter: blur(8px);
         }
 
         .result-card {
-            width: min(420px, 100%);
-            padding: 26px;
-            border-radius: 24px;
-            background: #fff;
+            position: relative;
+            width: min(390px, 100%);
+            padding: 32px 26px 0;
+            border: 1px solid rgba(24, 53, 47, 0.1);
+            border-radius: 30px;
+            background: rgba(255,255,255,0.95);
             text-align: center;
-            box-shadow: 0 24px 70px rgba(0,0,0,0.24);
-            animation: resultPop 420ms ease-out both;
+            box-shadow: 0 28px 78px rgba(24,53,47,0.22);
+            animation: resultPop 720ms cubic-bezier(.18,.95,.26,1.18) both;
+            overflow: visible;
         }
 
-        .result-emoji { font-size: 3rem; }
-        .result-card h2 { margin: 8px 0; color: var(--primary); }
-        .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
-        .result-copy { color: var(--text-secondary); line-height: 1.45; }
-        .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
+        .result-card.mastered {
+            box-shadow:
+                0 28px 78px rgba(24,53,47,0.22),
+                0 0 42px rgba(255, 192, 45, 0.24);
+        }
+
+        .result-gold-glow {
+            position: absolute;
+            inset: 18px;
+            border-radius: 30px;
+            pointer-events: none;
+            opacity: 0;
+            background:
+                radial-gradient(circle at 50% 30%, rgba(255, 226, 111, .50), transparent 32%),
+                radial-gradient(circle at 72% 18%, rgba(255, 181, 30, .35), transparent 18%);
+            filter: blur(10px);
+        }
+
+        .result-card.celebrate .result-gold-glow {
+            opacity: 1;
+            animation: resultGoldGlow 2.6s ease-in-out infinite;
+        }
+
+        .result-stamp {
+            position: absolute;
+            z-index: 7;
+            right: -18px;
+            top: -22px;
+            display: grid;
+            place-items: center;
+            width: 210px;
+            height: 82px;
+            border: 5px solid currentColor;
+            border-radius: 16px;
+            pointer-events: none;
+            font-size: 31px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            mix-blend-mode: multiply;
+            opacity: 0;
+            transform: rotate(9deg) scale(1.35);
+            filter: contrast(1.08) blur(1px);
+            box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset;
+            text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
+        }
+
+        .result-stamp.show {
+            animation: resultStampIn 560ms cubic-bezier(.2,.95,.3,1.35) both;
+        }
+
+        .result-stamp::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background:
+                radial-gradient(circle at 18% 24%, rgba(255,255,255,.42) 0 2px, transparent 3px),
+                radial-gradient(circle at 76% 32%, rgba(255,255,255,.34) 0 1px, transparent 2px),
+                radial-gradient(circle at 42% 74%, rgba(255,255,255,.30) 0 2px, transparent 3px),
+                repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.13) 8px 9px);
+            opacity: .72;
+            mix-blend-mode: screen;
+        }
+
+        .result-stamp::after {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border: 2px solid currentColor;
+            border-radius: inherit;
+            opacity: .72;
+        }
+
+        .result-stamp.passed { color: #147964; }
+        .result-stamp.mastered {
+            color: #f2ad1f;
+            background: radial-gradient(circle at 32% 28%, rgba(255, 246, 173, .28), transparent 34%);
+            box-shadow:
+                0 0 0 2px rgba(255,255,255,.34) inset,
+                0 0 18px rgba(255, 205, 74, .38),
+                0 0 44px rgba(255, 176, 32, .28);
+            text-shadow:
+                0 0 8px rgba(255, 222, 99, .46),
+                1px 0 0 rgba(255,255,255,.18),
+                -1px 0 0 rgba(255,255,255,.10);
+        }
+        .result-stamp.failed {
+            color: #c76624;
+            opacity: .88;
+            transform: rotate(9deg) scale(1);
+            filter: contrast(1.08);
+        }
+
+        .result-score {
+            position: relative;
+            z-index: 3;
+            margin: 18px 0 8px;
+            font-size: 4.2rem;
+            line-height: .98;
+            font-weight: 950;
+            letter-spacing: -.07em;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+        }
+
+        .result-score.pulse { animation: resultScorePulse 160ms ease-out; }
+
+        .result-score small {
+            color: var(--muted);
+            font-size: 1.7rem;
+            letter-spacing: -.04em;
+        }
+
+        .result-card.mastered .result-score {
+            color: #6f4000;
+            text-shadow: 0 0 18px rgba(255, 212, 75, .28);
+        }
+
+        .result-card.failed .result-score { color: #9a4c14; }
+
+        .result-copy {
+            position: relative;
+            z-index: 2;
+            min-height: 48px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .result-actions { margin-top: 18px; }
+
+        .result-review-btn {
+            width: 100%;
+            border: 0;
+            border-radius: 999px;
+            padding: 13px 18px;
+            color: #fff;
+            background: var(--ink);
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 12px 22px rgba(24,53,47,.16);
+        }
+
+        .result-ribbon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: calc(100% + 52px);
+            margin: 18px -26px 0;
+            padding: 14px 18px;
+            border-radius: 0 0 30px 30px;
+            font-weight: 950;
+            letter-spacing: -.02em;
+        }
+
+        .result-ribbon .mini {
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,.58);
+            box-shadow: inset 0 -4px 8px rgba(90,52,0,.10);
+        }
+
+        .result-card.passed .result-ribbon {
+            background: linear-gradient(90deg, #dcf6ec, #a7ead7);
+            color: #0d5e4e;
+        }
+
+        .result-card.mastered .result-ribbon {
+            background: linear-gradient(90deg, #fff2b7, #ffd34f 48%, #ffb72f);
+            color: #5d3600;
+            box-shadow: 0 -8px 26px rgba(255, 190, 45, .24);
+        }
+
+        .result-card.failed .result-ribbon {
+            background: linear-gradient(90deg, #fff0df, #ffd1a6);
+            color: #8b3f0d;
+        }
+
+        .result-confetti,
+        .result-spark {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .result-card.celebrate .result-confetti,
+        .result-card.celebrate .result-spark { opacity: 1; }
+
+        .result-confetti span,
+        .result-spark span {
+            position: absolute;
+            display: block;
+            pointer-events: none;
+        }
+
+        .result-confetti span {
+            top: -28px;
+            width: 10px;
+            height: 18px;
+            border-radius: 3px;
+            background: #f4b43e;
+            animation: resultFall 2.4s linear infinite;
+        }
+
+        .result-confetti span:nth-child(2n) { background: #147964; animation-duration: 2.55s; }
+        .result-confetti span:nth-child(3n) { background: #e87695; animation-duration: 2.18s; }
+        .result-confetti span:nth-child(4n) { background: #5b8def; animation-duration: 2.78s; }
+        .result-confetti span:nth-child(1) { left: 7%; animation-delay: 0s; }
+        .result-confetti span:nth-child(2) { left: 17%; animation-delay: .26s; }
+        .result-confetti span:nth-child(3) { left: 28%; animation-delay: .06s; }
+        .result-confetti span:nth-child(4) { left: 41%; animation-delay: .38s; }
+        .result-confetti span:nth-child(5) { left: 54%; animation-delay: .14s; }
+        .result-confetti span:nth-child(6) { left: 67%; animation-delay: .48s; }
+        .result-confetti span:nth-child(7) { left: 79%; animation-delay: .30s; }
+        .result-confetti span:nth-child(8) { left: 91%; animation-delay: .11s; }
+
+        .result-spark span {
+            width: 13px;
+            height: 13px;
+            background: #f4b43e;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 35%);
+            animation: resultStarPop 1.6s ease-out infinite;
+        }
+
+        .result-spark span:nth-child(1) { left: 19%; top: 23%; animation-delay: .1s; }
+        .result-spark span:nth-child(2) { left: 77%; top: 24%; animation-delay: .34s; }
+        .result-spark span:nth-child(3) { left: 70%; top: 72%; animation-delay: .66s; }
+        .result-spark span:nth-child(4) { left: 22%; top: 68%; animation-delay: .84s; }
+
+        .result-card.failed { animation: resultPop 720ms cubic-bezier(.18,.95,.26,1.18) both, resultSoftShake 650ms 880ms ease both; }
 
         .history-toolbar {
             position: fixed;
@@ -808,6 +1050,42 @@
         @keyframes resultPop {
             from { opacity: 0; transform: translateY(18px) scale(0.94); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes resultScorePulse {
+            from { transform: scale(1.08); }
+            to { transform: scale(1); }
+        }
+
+        @keyframes resultStampIn {
+            from { opacity: 0; transform: rotate(9deg) scale(1.35); filter: contrast(1.08) blur(1px); }
+            72% { opacity: .92; transform: rotate(9deg) scale(.94); }
+            to { opacity: .88; transform: rotate(9deg) scale(1); filter: contrast(1.08) blur(0); }
+        }
+
+        @keyframes resultFall {
+            from { transform: translateY(-24px) rotate(0deg); opacity: 0; }
+            12% { opacity: 1; }
+            to { transform: translateY(410px) rotate(340deg); opacity: 0; }
+        }
+
+        @keyframes resultStarPop {
+            0% { opacity: 0; transform: translateY(10px) scale(.35) rotate(0deg); }
+            28% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-28px) scale(1.2) rotate(80deg); }
+        }
+
+        @keyframes resultSoftShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+
+        @keyframes resultGoldGlow {
+            0%, 100% { transform: scale(.98); opacity: .72; }
+            50% { transform: scale(1.05); opacity: 1; }
         }
 
         .inline-explanation {
@@ -1170,7 +1448,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260613-8"></script>
+<script src="assets/js/config.public.js?v=20260613-10"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
 <script src="assets/js/practice-session.js?v=20260611-2"></script>
 <script>
@@ -1197,6 +1475,41 @@
     var teacherAnswerKey = null;
     var teacherAnswersVisible = false;
     var isDragging = false;
+    var resultAudioCtx = null;
+    var lastEncouragementIndex = -1;
+
+    var resultEncouragements = [
+        'Small steps, sharp ears, real progress.',
+        'You stayed with the details and it shows.',
+        'Good listening is built one careful answer at a time.',
+        'You caught more than words; you caught meaning.',
+        'That focus is becoming a habit.',
+        'Keep this rhythm. Your ear is getting stronger.',
+        'You are training attention, not just memory.',
+        'Every careful retry makes the next one easier.',
+        'You listened with purpose today.',
+        'This is how fluency starts to feel natural.',
+        'A strong result from steady concentration.',
+        'You are building the skill behind the score.',
+        'Clear effort, clear progress.',
+        'Your listening muscles are waking up.',
+        'The details are starting to stick.',
+        'You handled the challenge with patience.',
+        'Nice work. Now review the clues you used.',
+        'A better ear comes from moments like this.',
+        'You are closer to automatic understanding.',
+        'That was focused, useful practice.',
+        'Good answers begin with calm attention.',
+        'You are learning to hear the structure.',
+        'Progress is quiet, then suddenly obvious.',
+        'This result is one step in a bigger climb.',
+        'You gave your brain a real workout.',
+        'Strong listening starts with strong noticing.',
+        'The next task will meet a sharper version of you.',
+        'You are turning practice into instinct.',
+        'Well done. Let the review make the score useful.',
+        'Keep going. Your English ear is getting cleaner.'
+    ];
 
     var students = [
         { id: 'EI6688', label: '甘昕雨Eilene' },
@@ -2019,28 +2332,174 @@
         });
     }
 
+    function pickResultEncouragement() {
+        var next = Math.floor(Math.random() * resultEncouragements.length);
+        if (resultEncouragements.length > 1 && next === lastEncouragementIndex) {
+            next = (next + 1) % resultEncouragements.length;
+        }
+        lastEncouragementIndex = next;
+        return resultEncouragements[next];
+    }
+
+    function getResultAudioContext() {
+        var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return null;
+        if (!resultAudioCtx) resultAudioCtx = new AudioContextClass();
+        return resultAudioCtx;
+    }
+
+    function unlockResultAudio() {
+        try {
+            var ctx = getResultAudioContext();
+            if (ctx && ctx.state === 'suspended') ctx.resume();
+        } catch (e) {}
+    }
+
+    function playResultTone(freq, start, duration, options) {
+        var ctx = getResultAudioContext();
+        if (!ctx) return;
+        options = options || {};
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        var filter = ctx.createBiquadFilter();
+        var now = ctx.currentTime;
+        osc.type = options.type || 'sine';
+        osc.frequency.setValueAtTime(freq, now + start);
+        if (options.to) osc.frequency.exponentialRampToValueAtTime(options.to, now + start + duration);
+        filter.type = options.filter || 'lowpass';
+        filter.frequency.setValueAtTime(options.filterFreq || 9000, now + start);
+        gain.gain.setValueAtTime(0.0001, now + start);
+        gain.gain.exponentialRampToValueAtTime(options.volume || 0.14, now + start + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + start + duration);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + start);
+        osc.stop(now + start + duration + 0.02);
+    }
+
+    function playResultNoise(start, duration, options) {
+        var ctx = getResultAudioContext();
+        if (!ctx) return;
+        options = options || {};
+        var buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * duration)), ctx.sampleRate);
+        var data = buffer.getChannelData(0);
+        var decay = options.decay || 2;
+        var last = 0;
+        for (var i = 0; i < data.length; i++) {
+            var t = i / Math.max(1, data.length);
+            var raw = Math.random() * 2 - 1;
+            last = last * 0.82 + raw * 0.18;
+            data[i] = last * Math.pow(1 - t, decay);
+        }
+        var source = ctx.createBufferSource();
+        var gain = ctx.createGain();
+        var filter = ctx.createBiquadFilter();
+        var now = ctx.currentTime;
+        source.buffer = buffer;
+        filter.type = options.filter || 'lowpass';
+        filter.frequency.setValueAtTime(options.filterFreq || 1200, now + start);
+        gain.gain.setValueAtTime(options.volume || 0.08, now + start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + start + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(now + start);
+    }
+
+    function playResultSound(state) {
+        try {
+            unlockResultAudio();
+            if (state === 'passed') {
+                playResultTone(392, 0, .13, { volume: .11 });
+                playResultTone(523.25, .11, .14, { volume: .13 });
+                playResultTone(783.99, .24, .28, { volume: .16 });
+            } else if (state === 'mastered') {
+                playResultTone(523.25, 0, .13, { volume: .12, type: 'triangle' });
+                playResultTone(659.25, .12, .13, { volume: .12, type: 'triangle' });
+                playResultTone(783.99, .24, .15, { volume: .135, type: 'triangle' });
+                playResultTone(1046.5, .39, .34, { volume: .16, type: 'triangle' });
+                playResultTone(1318.51, .54, .22, { volume: .065 });
+            } else {
+                playResultTone(392, 0, .16, { volume: .08, to: 329.63, type: 'triangle' });
+                playResultTone(440, .2, .18, { volume: .075, type: 'triangle' });
+            }
+        } catch (e) {}
+    }
+
+    function animateResultScore(card, target, state) {
+        var scoreNumber = card.querySelector('.result-score-number');
+        var scoreBox = card.querySelector('.result-score');
+        var stamp = card.querySelector('.result-stamp');
+        if (!scoreNumber || !stamp) return;
+        if (state === 'failed') {
+            scoreNumber.textContent = target;
+            playResultSound(state);
+            return;
+        }
+        var current = Math.min(1, target);
+        scoreNumber.textContent = current;
+        if (target <= 1) {
+            window.setTimeout(function() {
+                stamp.classList.add('show');
+                card.classList.add('celebrate');
+                playResultSound(state);
+            }, 260);
+            return;
+        }
+        var timer = window.setInterval(function() {
+            current += 1;
+            scoreNumber.textContent = current;
+            if (scoreBox) {
+                scoreBox.classList.remove('pulse');
+                void scoreBox.offsetWidth;
+                scoreBox.classList.add('pulse');
+            }
+            if (current >= target) {
+                window.clearInterval(timer);
+                window.setTimeout(function() {
+                    stamp.classList.add('show');
+                    card.classList.add('celebrate');
+                    playResultSound(state);
+                }, 260);
+            }
+        }, 90);
+    }
+
     function showResultOverlay(response) {
-        var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
-        var emoji = response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
-        var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
-        var copy = response.mastered
-            ? 'Mastered! This task moved to your Mastered list.'
-            : response.passed
-                ? 'You passed. Keep trying if you want to master it.'
-                : 'Keep going. Fix a few answers and try again.';
+        var state = response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
+        var stampText = response.mastered ? 'MASTERED' : response.passed ? 'PASSED' : 'TRY AGAIN';
+        var score = Number(response.correct_count || 0);
+        var total = Number(response.question_count || 0);
+        var copy = state === 'failed'
+            ? 'Review the misses, then try once more.'
+            : pickResultEncouragement();
+        var ribbon = state === 'mastered'
+            ? '<span class="mini">★</span> Mastery Challenge Complete'
+            : state === 'passed'
+                ? '<span class="mini">✓</span> Listening Challenge Complete'
+                : '<span class="mini">↻</span> Review, then try again';
+        var celebration = state === 'failed' ? '' :
+            '<div class="result-confetti"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>';
+        var spark = state === 'mastered' ? '<div class="result-spark"><span></span><span></span><span></span><span></span></div>' : '';
+        var glow = state === 'mastered' ? '<div class="result-gold-glow"></div>' : '';
         var overlay = document.createElement('div');
         overlay.className = 'result-overlay';
         overlay.innerHTML =
-            '<div class="result-card">' +
-                '<div class="result-emoji">' + emoji + '</div>' +
-                '<h2>' + status + '</h2>' +
-                '<p class="result-score">' + score + '</p>' +
-                '<p class="result-copy">' + copy + '</p>' +
+            '<div class="result-card ' + state + '">' +
+                glow +
+                celebration +
+                spark +
+                '<div class="result-stamp ' + state + (state === 'failed' ? ' show' : '') + '">' + stampText + '</div>' +
+                '<div class="result-score"><span class="result-score-number">' + (state === 'failed' ? score : Math.min(1, score)) + '</span><small>/' + total + '</small></div>' +
+                '<p class="result-copy">' + escapeHtml(copy) + '</p>' +
                 '<div class="result-actions">' +
-                    '<button class="answer-toggle-btn" type="button" data-result-action="close">OK</button>' +
+                    '<button class="result-review-btn" type="button" data-result-action="close">Review Answers</button>' +
                 '</div>' +
+                '<div class="result-ribbon">' + ribbon + '</div>' +
             '</div>';
         document.body.appendChild(overlay);
+        animateResultScore(overlay.querySelector('.result-card'), score, state);
         overlay.addEventListener('click', function(event) {
             var action = event.target && event.target.getAttribute('data-result-action');
             if (action === 'close' || event.target === overlay) overlay.remove();
@@ -2372,6 +2831,7 @@
 
     function doSubmit() {
         document.getElementById('confirm-modal').classList.remove('show');
+        unlockResultAudio();
 
         var userAnswers = collectAnswers();
         var btn = document.getElementById('submit-btn');
@@ -2420,10 +2880,6 @@
                 };
             });
 
-            showScore({
-                correct: response.correct_count,
-                total: response.question_count
-            });
             disableAllInputs();
             if (!response.feedback_locked) applyFeedback(feedback);
             showResultOverlay(response);
