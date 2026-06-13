@@ -387,22 +387,28 @@
 
         .evidence-text {
             width: 100%; max-width: 100%; box-sizing: border-box;
-            font-size: 0.88em; line-height: 1.55; color: #8a4f08;
-            margin-top: 8px; padding: 10px 12px; background: #fff7ed;
-            border: 1px solid rgba(217,119,6,.18); border-radius: 8px;
+            font-size: 0.88em; line-height: 1.55; color: #1e3a8a;
+            margin-top: 8px; padding: 10px 12px; background: #eff6ff;
+            border: 1px solid rgba(37,99,235,.18); border-radius: 8px;
             display: none; white-space: pre-wrap; overflow-wrap: anywhere;
         }
         .evidence-text.show { display: block; }
-        .evidence-text.explanation-open { background: #fffaf0; border-color: rgba(180,83,9,.24); }
+        .evidence-text.explanation-open { background: #eef2ff; border-color: rgba(37,99,235,.26); }
         .question-action-row {
             width: 100%; display: flex; align-items: center; justify-content: flex-end;
             gap: 8px; margin-top: 8px; flex-wrap: wrap;
         }
         .summary-question .question-action-row,
         .summary-question .evidence-text { flex: 0 0 100%; }
-        .teacher-argue-btn { padding: 6px 12px; border: 1px solid #d6bcfa; border-radius: 999px; color: #5b21b6; background: #f5f0ff; font-weight: 800; cursor: pointer; }
-        .teacher-argue-btn.explain-open { color: #7c2d12; border-color: #fed7aa; background: #fff7ed; }
-        .teacher-argue-btn.sent { color: #237a52; border-color: #8cc8a8; background: #ecf9f1; }
+        .teacher-argue-btn {
+            padding: 6px 12px; border: 1px solid rgba(37,99,235,.26);
+            border-radius: 999px; color: var(--accent); background: #eff6ff;
+            font-weight: 800; cursor: pointer;
+            transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+        }
+        .teacher-argue-btn:hover:not(:disabled) { background: #dbeafe; border-color: rgba(37,99,235,.4); transform: translateY(-1px); }
+        .teacher-argue-btn.explain-open,
+        .teacher-argue-btn.sent { color: #1d4ed8; border-color: rgba(37,99,235,.36); background: #dbeafe; }
         .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
         .teacher-argue-card { width: min(420px, 100%); padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
         .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; color: var(--primary); }
@@ -416,7 +422,7 @@
         .teacher-argue-cancel { border: 1px solid var(--border-color); color: var(--primary); background: #fff; }
 
         .headings-section { margin-bottom: 16px; }
-        .headings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; margin-bottom: 16px; padding: 14px 18px; background: #fbfdff; border-radius: 12px; border: 1px solid var(--border-color); font-size: 0.9em; }
+        .headings-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 8px 18px; margin-bottom: 16px; padding: 14px 18px; background: #fbfdff; border-radius: 12px; border: 1px solid var(--border-color); font-size: 0.9em; }
         .headings-list .heading-item { padding: 2px 0; color: var(--text-main); }
         .headings-list .heading-item .num { font-weight: 600; color: var(--accent); margin-right: 4px; }
         .heading-question {
@@ -842,6 +848,7 @@
 
     function resetEvidenceAnswerData(el) {
         el.removeAttribute('data-answer-text');
+        el.removeAttribute('data-answer-value');
         el.removeAttribute('data-explanation-text');
         el.removeAttribute('data-answer-visible');
         el.removeAttribute('data-answer-reveal');
@@ -866,41 +873,54 @@
         return row;
     }
 
-    function setEvidenceAnswer(evidence, answer, explanation) {
+    function primaryAnswerValue(value) {
+        return Array.isArray(value) ? value[0] : value;
+    }
+
+    function setEvidenceAnswer(evidence, answer, explanation, rawAnswer) {
+        var answerValue = primaryAnswerValue(rawAnswer == null ? answer : rawAnswer);
         evidence.setAttribute('data-answer-text', answer || '');
+        evidence.setAttribute('data-answer-value', String(answerValue == null ? '' : answerValue));
         evidence.setAttribute('data-explanation-text', explanation || '');
         evidence.setAttribute('data-explanation-visible', '0');
-        evidence.textContent = answer || '';
+        evidence.textContent = '';
         evidence.classList.remove('explanation-open');
     }
 
     function showEvidenceAnswer(evidence) {
-        evidence.textContent = evidence.getAttribute('data-answer-text') || evidence.textContent || '';
         evidence.setAttribute('data-answer-visible', '1');
         evidence.setAttribute('data-explanation-visible', '0');
         evidence.classList.remove('explanation-open');
-        evidence.classList.add('show');
+        evidence.classList.remove('show');
     }
 
     function showEvidenceExplanation(evidence) {
-        var answer = evidence.getAttribute('data-answer-text') || '';
         var explanation = evidence.getAttribute('data-explanation-text') || '';
-        evidence.textContent = explanation ? answer + '\n\nExplanation: ' + explanation : answer;
+        evidence.textContent = explanation || evidence.getAttribute('data-answer-text') || '';
         evidence.setAttribute('data-answer-visible', '1');
         evidence.setAttribute('data-explanation-visible', explanation ? '1' : '0');
         evidence.classList.toggle('explanation-open', !!explanation);
         evidence.classList.add('show');
     }
 
-    function toggleEvidenceExplanation(button, evidence) {
+    function hideEvidenceExplanation(evidence) {
+        evidence.textContent = '';
+        evidence.setAttribute('data-explanation-visible', '0');
+        evidence.classList.remove('show', 'explanation-open');
+    }
+
+    function toggleEvidenceExplanation(button, evidence, q) {
         if (evidence.getAttribute('data-explanation-visible') === '1') {
-            showEvidenceAnswer(evidence);
+            hideEvidenceExplanation(evidence);
             button.textContent = 'Explain';
             button.classList.remove('explain-open');
             return;
         }
         if (evidence.getAttribute('data-answer-reveal') === '1' && evidence.getAttribute('data-answer-visible') !== '1') {
             if (!confirmAnswerReveal()) return;
+        }
+        if (q && evidence.getAttribute('data-answer-value')) {
+            applyCorrectAnswerToQuestion(q, evidence.getAttribute('data-answer-value'));
         }
         showEvidenceExplanation(evidence);
         button.textContent = 'Hide Explain';
@@ -917,14 +937,65 @@
         button.textContent = 'Explain';
         button.setAttribute('data-explain-question', q.id);
         button.addEventListener('click', function() {
-            toggleEvidenceExplanation(button, evidence);
+            toggleEvidenceExplanation(button, evidence, q);
         });
         row.appendChild(button);
     }
 
+    function rememberTeacherOriginalAnswer(q) {
+        document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]').forEach(function(field) {
+            if (field.type === 'radio') {
+                if (!field.hasAttribute('data-teacher-original-checked')) {
+                    field.setAttribute('data-teacher-original-checked', field.checked ? '1' : '0');
+                }
+            } else if (!field.hasAttribute('data-teacher-original-value')) {
+                field.setAttribute('data-teacher-original-value', field.value || '');
+            }
+        });
+    }
+
+    function restoreTeacherOriginalAnswers() {
+        document.querySelectorAll('[data-teacher-original-checked]').forEach(function(field) {
+            field.checked = field.getAttribute('data-teacher-original-checked') === '1';
+            field.removeAttribute('data-teacher-original-checked');
+        });
+        document.querySelectorAll('[data-teacher-original-value]').forEach(function(field) {
+            field.value = field.getAttribute('data-teacher-original-value') || '';
+            field.removeAttribute('data-teacher-original-value');
+        });
+    }
+
+    function applyCorrectAnswerToQuestion(q, answer, markTeacher) {
+        var answerValue = String(answer == null ? '' : answer);
+        var fields = document.querySelectorAll('[name="' + CSS.escape(q.id) + '"]');
+        if (!fields.length) return;
+        if (q.type === 'tfng' || q.type === 'ynng' || q.type === 'mcq') {
+            fields.forEach(function(field) {
+                field.checked = field.value === answerValue;
+                var label = field.closest('label');
+                if (label) label.classList.remove('wrong', 'correct');
+            });
+            var correctField = document.querySelector('[name="' + CSS.escape(q.id) + '"][value="' + CSS.escape(answerValue) + '"]');
+            if (correctField && correctField.closest('label')) {
+                correctField.closest('label').classList.add('correct');
+                if (markTeacher) correctField.closest('label').setAttribute('data-teacher-correct', '1');
+            }
+        } else {
+            fields[0].value = answerValue;
+            fields[0].classList.remove('wrong');
+            fields[0].classList.add('correct');
+            if (markTeacher) fields[0].setAttribute('data-teacher-correct', '1');
+        }
+    }
+
     function revealAllAnswers() {
         if (!confirmAnswerReveal()) return;
-        document.querySelectorAll('[data-answer-reveal="1"]').forEach(showEvidenceAnswer);
+        allQuestions.forEach(function(q) {
+            var evidence = document.getElementById('ev-' + q.id);
+            if (!evidence || evidence.getAttribute('data-answer-reveal') !== '1') return;
+            applyCorrectAnswerToQuestion(q, evidence.getAttribute('data-answer-value'));
+            showEvidenceAnswer(evidence);
+        });
     }
 
     function teacherCall(action, data) {
@@ -936,6 +1007,7 @@
     }
 
     function clearTeacherAnswerDisplay() {
+        restoreTeacherOriginalAnswers();
         document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
             el.classList.remove('show');
             el.textContent = '';
@@ -1136,19 +1208,19 @@
         clearTeacherAnswerDisplay();
         var answers = answerKey.answers || {};
         var explanations = answerKey.explanations || {};
-        var submittedAnswers = collectSubmissionAnswers();
         allQuestions.forEach(function(q) {
             var answer = answers[q.id];
             if (answer == null) return;
+            rememberTeacherOriginalAnswer(q);
             var evidence = document.getElementById('ev-' + q.id);
             if (evidence) {
-                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(answer), explanations[q.id] || '');
+                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(answer), explanations[q.id] || '', answer);
                 evidence.setAttribute('data-teacher-answer', '1');
                 showEvidenceAnswer(evidence);
                 renderExplainButton(q, evidence);
                 renderTeacherArgueButton(q, answer, evidence);
             }
-            markTeacherCorrect(q, answer, submittedAnswers[q.id]);
+            applyCorrectAnswerToQuestion(q, primaryAnswerValue(answer), true);
         });
         teacherAnswersVisible = true;
     }
@@ -1730,7 +1802,7 @@
             }
 
             if (evidence && !result.correct) {
-                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(result.correct_answer), result.explanation || '');
+                setEvidenceAnswer(evidence, 'Correct answer: ' + answerText(result.correct_answer), result.explanation || '', result.correct_answer);
                 evidence.classList.remove('show');
                 evidence.removeAttribute('data-answer-visible');
                 evidence.setAttribute('data-answer-reveal', '1');
