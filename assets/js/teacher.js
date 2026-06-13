@@ -11,8 +11,14 @@
         candidates: [],
         selectedStudentProfileId: '',
         disputeFilter: 'pending',
+        libraryFilter: 'vocabulary',
         expandedDisputeGroups: {}
     };
+    var LIBRARY_FILTERS = [
+        { id: 'vocabulary', label: 'Vocabulary' },
+        { id: 'grammar', label: 'Grammar' },
+        { id: 'listening', label: 'Listening' }
+    ];
     var CURRICULUM_OPTIONS = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
 
     var message = document.getElementById('teacher-message');
@@ -168,6 +174,38 @@
         }).sort();
     }
 
+    function setCategory(set) {
+        var haystack = [
+            set.set_id,
+            set.title,
+            set.course,
+            set.type,
+            set.section,
+            set.section_id,
+            set.category
+        ].join(' ').toLowerCase();
+        if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
+        if (haystack.indexOf('grammar') !== -1) return 'grammar';
+        if (haystack.indexOf('listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'listening';
+        return 'other';
+    }
+
+    function renderLibraryTabs() {
+        var container = document.getElementById('teacher-library-tabs');
+        if (!container) return;
+        container.innerHTML = LIBRARY_FILTERS.map(function(filter) {
+            return '<button class="library-tab' + (state.libraryFilter === filter.id ? ' active' : '') +
+                '" type="button" data-library-filter="' + escapeHtml(filter.id) + '">' +
+                escapeHtml(filter.label) + '</button>';
+        }).join('');
+        container.querySelectorAll('[data-library-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.libraryFilter = button.dataset.libraryFilter;
+                renderLibrary();
+            });
+        });
+    }
+
     function fillClassFilters() {
         var options = '<option value="">All classes</option>' + classes().map(function(classGroup) {
             return '<option value="' + escapeHtml(classGroup) + '">' + escapeHtml(classGroup) + '</option>';
@@ -184,7 +222,7 @@
         var options = '<option value="">All columns</option>' + setSections().map(function(section) {
             return '<option value="' + escapeHtml(section) + '">' + escapeHtml(section) + '</option>';
         }).join('');
-        ['assign-section-filter', 'library-section-filter'].forEach(function(id) {
+        ['assign-section-filter'].forEach(function(id) {
             var select = document.getElementById(id);
             if (!select) return;
             var current = select.value;
@@ -194,14 +232,16 @@
     }
 
     function filteredSets(prefix) {
-        var section = document.getElementById(prefix + '-section-filter').value;
+        var sectionEl = document.getElementById(prefix + '-section-filter');
+        var section = sectionEl ? sectionEl.value : '';
         var searchEl = document.getElementById(prefix + '-set-search') || document.getElementById(prefix + '-search');
         var query = searchEl ? searchEl.value.trim().toLowerCase() : '';
         return state.sets.filter(function(set) {
             var setSection = String(set.section || set.course || set.type || 'Other');
             var matchesSection = !section || setSection === section;
+            var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter || query;
             var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
-            return matchesSection && (!query || haystack.indexOf(query) !== -1);
+            return matchesSection && matchesLibrary && (!query || haystack.indexOf(query) !== -1);
         });
     }
 
@@ -232,12 +272,17 @@
 
     function renderLibrary() {
         if (!libraryList) return;
+        renderLibraryTabs();
         var sets = filteredSets('library');
         libraryList.innerHTML = sets.length ? sets.map(function(set) {
             return '<article class="resource-card teacher-library-card">' +
-                '<div><p class="eyebrow accent">' + escapeHtml(set.section || set.course || set.type || 'Practice') + '</p>' +
-                '<h3>' + escapeHtml(set.title || set.set_id) + '</h3>' +
-                '<p>' + escapeHtml(set.set_id) + ' · Pass ' + escapeHtml(set.passing_percentage) + '% · Master ' + escapeHtml(set.mastery_percentage) + '%</p></div>' +
+                '<div>' +
+                    '<div class="resource-card-head">' +
+                        '<p class="eyebrow accent">' + escapeHtml(set.section || set.course || set.type || 'Practice') + '</p>' +
+                        '<span>' + escapeHtml(set.set_id) + '</span>' +
+                    '</div>' +
+                    '<h3>' + escapeHtml(set.title || set.set_id) + '</h3>' +
+                '</div>' +
                 '<a class="card-button" href="' + escapeHtml(teacherPracticeHref(set)) + '">Open</a>' +
             '</article>';
         }).join('') : '<div class="empty-card"><strong>No matching practice sets</strong>Try another keyword or column.</div>';
@@ -749,7 +794,7 @@
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
     document.getElementById('library-search').addEventListener('input', renderLibrary);
-    document.getElementById('library-section-filter').addEventListener('change', renderLibrary);
+    renderLibraryTabs();
     document.getElementById('select-class').addEventListener('click', function() {
         candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
             checkbox.checked = true;

@@ -7,8 +7,14 @@
         resources: [],
         assignmentFilter: 'todo',
         starsRange: '7',
+        resourceFilter: 'vocabulary',
         starCount: 0
     };
+    var LIBRARY_FILTERS = [
+        { id: 'vocabulary', label: 'Vocabulary' },
+        { id: 'grammar', label: 'Grammar' },
+        { id: 'listening', label: 'Listening' }
+    ];
 
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
@@ -382,10 +388,44 @@
         '</article>';
     }
 
+    function resourceCategory(item) {
+        var haystack = [
+            item.set_id,
+            item.id,
+            item.title,
+            item.course,
+            item.type,
+            item.sectionTitle,
+            item.section_id,
+            item.topic
+        ].join(' ').toLowerCase();
+        if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
+        if (haystack.indexOf('grammar') !== -1) return 'grammar';
+        if (haystack.indexOf('listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'listening';
+        return 'other';
+    }
+
+    function renderResourceTabs() {
+        var container = document.getElementById('student-library-tabs');
+        if (!container) return;
+        container.innerHTML = LIBRARY_FILTERS.map(function(filter) {
+            return '<button class="library-tab' + (state.resourceFilter === filter.id ? ' active' : '') +
+                '" type="button" data-resource-filter="' + escapeHtml(filter.id) + '">' +
+                escapeHtml(filter.label) + '</button>';
+        }).join('');
+        container.querySelectorAll('[data-resource-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.resourceFilter = button.dataset.resourceFilter;
+                renderResources(resourceSearch.value);
+            });
+        });
+    }
+
     function renderResources(query) {
         var normalized = String(query || '').trim().toLowerCase();
+        renderResourceTabs();
         var items = state.resources.filter(function(item) {
-            if (!normalized) return true;
+            if (!normalized) return resourceCategory(item) === state.resourceFilter;
             return [
                 item.title, item.set_id, item.id, item.course, item.type, item.sectionTitle, item.topic
             ].join(' ').toLowerCase().indexOf(normalized) !== -1;
