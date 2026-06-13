@@ -2183,7 +2183,10 @@
                     trigger.classList.add('selected');
                 }
             });
-            document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            var submitButton = document.getElementById('submit-test-btn');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Test';
+            submitButton.style.display = 'inline-flex';
             startTimer(selected.length * 120);
             saveTestDraft();
             return true;

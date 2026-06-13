@@ -682,6 +682,11 @@
             el.classList.remove('show');
             el.textContent = '';
         });
+        var submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Answers';
+        }
         storeAnswers();
     }
 
