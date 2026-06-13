@@ -205,6 +205,10 @@ profile. Never trust a role, UID, or Student ID sent by browser code.
 - Disabling/enabling a student updates both CloudBase Authentication status and
   `students.active`.
 - Student password changes must use an authenticated CloudBase/server flow.
+- CloudBase rejects weak passwords such as pure repeated digits, even at six or
+  eight characters. Keep frontend and `changePassword` validation aligned with
+  the short complex pattern: at least 6 characters with uppercase, lowercase,
+  number, and symbol.
 
 ## 6. Database Collections
 

@@ -168,9 +168,16 @@ Teacher password resets are implemented by the teacher-authorized
 `INITIAL_STUDENT_PASSWORD` environment variable and must never be stored in the
 repository or frontend.
 
-Student self-service password changes are not active yet. They must use
-CloudBase's authenticated password API and must never read or store the
-student's password in the database.
+Student self-service password changes are handled by the `changePassword`
+function. The function uses the authenticated caller context, updates only that
+student's CloudBase Authentication password, and clears `must_change_password`
+after success. It must never read or store the student's password in the
+database.
+
+CloudBase rejects weak values such as pure repeated digits, even when the
+length is six or eight characters. Use at least 6 characters with uppercase,
+lowercase, number, and symbol; for example, `Aa_888` is the intended short
+format.
 
 ## Teacher Desk
 
