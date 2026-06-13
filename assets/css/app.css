@@ -734,6 +734,7 @@ button { cursor: pointer; }
 }
 .revise-tabs { margin-bottom: 14px; }
 .revise-tabs .revise-filter { position: relative; }
+.revise-tabs .summary-label { display: block; color: inherit; font-size: 0.82rem; letter-spacing: 0.04em; }
 .sub-tab {
     position: relative;
     min-height: 40px;
@@ -762,6 +763,8 @@ button { cursor: pointer; }
     font-size: 0.68rem;
     line-height: 1;
 }
+.notice-dot.success { background: var(--success); }
+.notice-dot.danger { background: var(--danger); }
 .dispute-list { display: grid; gap: 12px; }
 .dispute-card { padding: 0; overflow: hidden; }
 .dispute-card.approved, .dispute-card.rejected { opacity: 0.82; }

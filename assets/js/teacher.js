@@ -596,9 +596,8 @@
             filters.map(function(filter) {
                 return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
                     '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +
-                    '<span class="summary-value">' + counts[filter.id] + '</span>' +
                     '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' +
-                    (filter.id === 'pending' && counts.pending ? '<span class="notice-dot">' + counts.pending + '</span>' : '') +
+                    (counts[filter.id] ? '<span class="notice-dot ' + (filter.id === 'pending' ? 'danger' : 'success') + '">' + counts[filter.id] + '</span>' : '') +
                 '</button>';
             }).join('') +
         '</div>';
