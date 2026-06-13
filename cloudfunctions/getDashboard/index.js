@@ -69,6 +69,38 @@ function displayPercentage(value) {
   return value == null ? null : Number(value);
 }
 
+function dateValue(value) {
+  const date = value instanceof Date ? value : new Date(value || 0);
+  const time = date.getTime();
+  return Number.isFinite(time) ? time : 0;
+}
+
+function attemptCorrectCount(attempt) {
+  return attempt.adjusted_correct_count == null
+    ? attempt.correct_count
+    : attempt.adjusted_correct_count;
+}
+
+function attemptQuestionCount(attempt) {
+  return attempt.question_count == null
+    ? (effectiveQuestionResults(attempt) || []).length
+    : attempt.question_count;
+}
+
+function newestAttempt(attempts) {
+  return attempts.slice().sort((left, right) =>
+    dateValue(right.submitted_at) - dateValue(left.submitted_at)
+  )[0] || null;
+}
+
+function bestAttempt(attempts) {
+  return attempts.slice().sort((left, right) => {
+    const byScore = effectivePercentage(right) - effectivePercentage(left);
+    if (byScore) return byScore;
+    return dateValue(right.submitted_at) - dateValue(left.submitted_at);
+  })[0] || null;
+}
+
 async function getAttemptReview(student, event) {
   const attemptId = String(event.attempt_id || "");
   if (!attemptId) throw new Error("ATTEMPT_REQUIRED");
@@ -299,26 +331,68 @@ exports.main = async (event = {}) => {
       if (setResult.data && setResult.data[0]) setMap.set(setId, setResult.data[0]);
     }
 
+    const attemptsByAssignment = new Map();
+    attempts.forEach((attempt) => {
+      if (!attempt.assignment_id) return;
+      const items = attemptsByAssignment.get(attempt.assignment_id) || [];
+      items.push(attempt);
+      attemptsByAssignment.set(attempt.assignment_id, items);
+    });
+
     const assignmentViews = assignments.map((assignment) => {
       const set = setMap.get(assignment.set_id);
       const passingPercentage = passingPercentageForAssignment(assignment, set);
       const masteryPercentage = masteryPercentageForAssignment(assignment, set);
-      const percentage = displayPercentage(assignment.best_percentage == null ? assignment.latest_percentage : assignment.best_percentage);
+      const assignmentId = assignment.assignment_id || assignment._id;
+      const assignmentAttempts = attemptsByAssignment.get(assignmentId) || [];
+      const computedBestAttempt = bestAttempt(assignmentAttempts);
+      const computedLatestAttempt = newestAttempt(assignmentAttempts);
+      const computedBestPercentage = computedBestAttempt ? effectivePercentage(computedBestAttempt) : null;
+      const savedBestPercentage = assignment.best_percentage == null ? null : Number(assignment.best_percentage);
+      const useComputedBest = computedBestAttempt && (
+        !assignment.best_attempt_id
+        || savedBestPercentage == null
+        || computedBestPercentage >= savedBestPercentage
+      );
+      const bestSource = useComputedBest ? computedBestAttempt : null;
+      const fallbackLatestSource = computedLatestAttempt || null;
+      const bestAttemptId = bestSource
+        ? bestSource.attempt_id
+        : (assignment.best_attempt_id || assignment.latest_attempt_id || (fallbackLatestSource && fallbackLatestSource.attempt_id) || null);
+      const bestValue = bestSource
+        ? computedBestPercentage
+        : (assignment.best_percentage == null
+          ? (computedBestPercentage == null ? assignment.latest_percentage : computedBestPercentage)
+          : assignment.best_percentage);
+      const percentage = displayPercentage(bestValue);
       const status = normalizedStatus(assignment.status, Number(percentage || 0), passingPercentage, masteryPercentage);
-      const bestAttemptId = assignment.best_attempt_id || assignment.latest_attempt_id || null;
+      const completedAt = assignment.completed_at
+        || (status === "passed" || status === "mastered"
+          ? (computedBestAttempt && computedBestAttempt.submitted_at) || null
+          : null);
+      const masteredAt = assignment.mastered_at
+        || (status === "mastered"
+          ? (computedBestAttempt && computedBestAttempt.submitted_at) || completedAt
+          : null);
       return {
-        assignment_id: assignment.assignment_id || assignment._id,
+        assignment_id: assignmentId,
         status,
         assigned_at: assignment.assigned_at || null,
         due_at: assignment.due_at || null,
-        completed_at: assignment.completed_at || null,
-        mastered_at: assignment.mastered_at || null,
-        updated_at: assignment.updated_at || null,
-        attempt_count: assignment.attempt_count || 0,
-        latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
+        completed_at: completedAt,
+        mastered_at: masteredAt,
+        updated_at: assignment.updated_at || (computedLatestAttempt && computedLatestAttempt.submitted_at) || null,
+        attempt_count: Math.max(Number(assignment.attempt_count || 0), assignmentAttempts.length),
+        latest_percentage: assignment.latest_percentage == null
+          ? (computedLatestAttempt ? effectivePercentage(computedLatestAttempt) : null)
+          : assignment.latest_percentage,
         best_percentage: percentage,
-        best_correct_count: assignment.best_correct_count == null ? null : assignment.best_correct_count,
-        best_question_count: assignment.best_question_count == null ? null : assignment.best_question_count,
+        best_correct_count: assignment.best_correct_count == null
+          ? (computedBestAttempt ? attemptCorrectCount(computedBestAttempt) : null)
+          : assignment.best_correct_count,
+        best_question_count: assignment.best_question_count == null
+          ? (computedBestAttempt ? attemptQuestionCount(computedBestAttempt) : null)
+          : assignment.best_question_count,
         review_attempt_id: bestAttemptId,
         history_attempt_id: bestAttemptId,
         prefill_attempt_id: status === "passed" || status === "mastered" ? bestAttemptId : null,
