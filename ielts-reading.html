@@ -440,12 +440,38 @@
         .teacher-argue-btn.explain-open,
         .teacher-argue-btn.sent { color: #1d4ed8; border-color: rgba(37,99,235,.36); background: #dbeafe; }
         .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
-        .teacher-argue-card { width: min(420px, 100%); padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
+        .teacher-argue-card { position: relative; overflow: hidden; width: min(420px, 100%); min-height: 252px; padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
         .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; color: var(--primary); }
         .teacher-argue-card p { margin: 0 0 14px; color: var(--text-light); line-height: 1.45; }
         .teacher-argue-card textarea { width: 100%; min-height: 112px; padding: 12px 13px; border: 1px solid var(--border-color); border-radius: 14px; font-family: inherit; resize: vertical; box-sizing: border-box; outline: none; }
         .teacher-argue-card textarea:focus { border-color: rgba(37,99,235,.48); box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+        .teacher-argue-content { position: relative; z-index: 1; display: grid; gap: 12px; }
+        .teacher-argue-card.sent { animation: argueSentPop .74s cubic-bezier(.2,.82,.2,1) both; }
+        .teacher-argue-card.sent::before { content: ""; position: absolute; inset: 0; opacity: 0; background: linear-gradient(135deg, rgba(219,234,254,.98), rgba(236,253,245,.96)); animation: argueSentWash .82s cubic-bezier(.2,.82,.2,1) forwards; }
+        .teacher-argue-card.sent .teacher-argue-content { animation: argueContentOut .62s ease forwards; }
         .teacher-argue-status { margin-top: 12px !important; padding: 10px 12px; border-radius: 12px; color: #237a52 !important; background: #ecf9f1; font-weight: 700; }
+        .teacher-argue-status.pending { color: #7a5528 !important; background: #fff8e5; }
+        .teacher-argue-status.approved { color: #237a52 !important; background: #ecf9f1; }
+        .teacher-argue-status.rejected { color: #b54747 !important; background: #fff0ed; }
+        .teacher-argue-status.sent { color: #1d4ed8 !important; background: linear-gradient(135deg, #dbeafe, #ecfdf5); }
+        .teacher-argue-sent-message { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 28px; text-align: center; opacity: 0; transform: translateY(18px) scale(.92); pointer-events: none; }
+        .teacher-argue-card.sent .teacher-argue-sent-message { animation: argueMessageIn .72s .43s cubic-bezier(.2,.82,.2,1) forwards; }
+        .teacher-argue-heart { display: inline-grid; place-items: center; width: 68px; height: 58px; margin: 0 0 10px; }
+        .teacher-argue-heart svg { width: 56px; height: 56px; overflow: visible; }
+        .teacher-argue-heart-main { fill: #f08b76; transform-origin: center; }
+        .teacher-argue-heart-small { fill: #e2556f; opacity: 0; }
+        .teacher-argue-card.sent .teacher-argue-heart { animation: argueHeartIn .68s .65s cubic-bezier(.17,.89,.32,1.35) both; }
+        .teacher-argue-card.sent .teacher-argue-heart-main { animation: argueHeartPop .9s .82s ease both; }
+        .teacher-argue-card.sent .teacher-argue-heart-small { animation: argueTinyHeart 1s .96s ease both; }
+        .teacher-argue-sent-message strong { display: block; color: #1d4ed8; font-size: 1.45rem; line-height: 1.08; }
+        .teacher-argue-sent-message > div > span:not(.teacher-argue-heart) { display: block; margin-top: 10px; color: var(--text-light); font-weight: 800; }
+        @keyframes argueContentOut { 0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 55% { opacity: .32; transform: translateY(-8px) scale(.985); filter: blur(1.6px); } 100% { opacity: 0; transform: translateY(-16px) scale(.97); filter: blur(4px); } }
+        @keyframes argueSentWash { 0% { opacity: 0; transform: translateX(-18%); } 52% { opacity: 1; transform: translateX(0); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes argueSentPop { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-8px) scale(1.015); } 100% { transform: translateY(0) scale(1); } }
+        @keyframes argueMessageIn { 0% { opacity: 0; transform: translateY(18px) scale(.92); filter: blur(4px); } 58% { opacity: 1; transform: translateY(-3px) scale(1.025); filter: blur(0); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes argueHeartIn { 0% { transform: translateY(8px) scale(.72); opacity: 0; } 65% { transform: translateY(-2px) scale(1.08); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes argueHeartPop { 0% { transform: scale(.68); opacity: 0; } 45% { transform: scale(1.24); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes argueTinyHeart { 0% { transform: translateY(8px) scale(.4); opacity: 0; } 45% { opacity: 1; } 100% { transform: translateY(-18px) scale(1); opacity: 0; } }
         .teacher-argue-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 14px; }
         .teacher-argue-actions button { min-height: 38px; padding: 0 15px; border-radius: 11px; font-weight: 800; cursor: pointer; }
         .teacher-argue-submit { border: 0; color: #fff; background: var(--accent); }
@@ -533,6 +559,20 @@
             transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
         }
         .history-toolbar button:hover { color: var(--accent); border-color: rgba(37,99,235,.34); background: rgba(255,255,255,.98); transform: translateY(-1px); }
+        .history-disputed { box-shadow: 0 0 0 3px rgba(37,99,235,.16) !important; }
+        .history-dispute-approved { box-shadow: 0 0 0 3px rgba(39,174,96,.20) !important; }
+        .history-dispute-rejected { box-shadow: 0 0 0 3px rgba(181,71,71,.16) !important; }
+        .history-dispute-note { margin-top: 8px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--border-color); background: #f8fbfa; font-size: .84rem; }
+        .history-dispute-note.correct { border-color: rgba(39,174,96,.28); background: var(--correct-bg); }
+        .history-dispute-note.wrong { border-color: rgba(231,76,60,.24); background: var(--wrong-bg); }
+        .history-dispute-note.pending { border-color: #eed08e; background: #fff8e5; }
+        .history-dispute-note.approved { border-color: rgba(39,174,96,.28); background: var(--correct-bg); }
+        .history-dispute-note.rejected { border-color: rgba(231,76,60,.24); background: var(--wrong-bg); }
+        .history-dispute-note strong,
+        .history-dispute-note span,
+        .history-dispute-note small { display: block; }
+        .history-dispute-note span { margin-top: 3px; font-weight: 800; }
+        .history-dispute-note small { margin-top: 4px; color: var(--text-light); }
         @keyframes resultPop { from { opacity: 0; transform: translateY(18px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         .exam-bottom-nav {
@@ -962,6 +1002,10 @@
             var label = el.closest('label');
             if (label) label.classList.remove('correct', 'wrong');
         });
+        document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
+            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
+        });
+        document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
         document.querySelectorAll('.evidence-text').forEach(function(el) {
             el.classList.remove('show');
             el.textContent = '';
@@ -980,6 +1024,10 @@
     function enableRetry() {
         document.querySelectorAll('[data-question]').forEach(function(el) { el.disabled = false; });
         document.querySelectorAll('.correct,.wrong').forEach(function(el) { el.classList.remove('correct', 'wrong'); });
+        document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
+            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
+        });
+        document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
         document.querySelectorAll('.evidence-text').forEach(function(el) {
             el.classList.remove('show');
             resetEvidenceAnswerData(el);
@@ -993,15 +1041,59 @@
 
     function showHistoryAnswers() {
         if (!historyAttemptId || !window.MrCatCloud) return;
-        window.MrCatCloud.callFunction('getDashboard', {
+        var prefill = window.MrCatCloud.callFunction('getDashboard', {
             action: 'getAttemptForRetry',
             attempt_id: historyAttemptId
-        }).then(function(result) {
+        });
+        var review = window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getAttemptReview',
+            attempt_id: historyAttemptId
+        }).catch(function() { return null; });
+        Promise.all([prefill, review]).then(function(results) {
+            var result = results[0];
             if (result && result.success && result.attempt && result.attempt.answers) {
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
+                if (results[1] && results[1].review) markHistoryReview(results[1].review);
             }
         }).catch(function() {});
+    }
+
+    function disputeForQuestion(disputes, questionId) {
+        return (disputes || []).find(function(item) {
+            return String(item.question_id) === String(questionId);
+        }) || null;
+    }
+
+    function historyDisputeLabel(dispute) {
+        if (!dispute) return '';
+        if (dispute.status === 'approved') return dispute.decision === 'replace' ? 'Teacher updated rule' : 'Teacher accepted';
+        if (dispute.status === 'rejected') return 'Teacher reviewed';
+        return 'Argued · Waiting';
+    }
+
+    function markHistoryReview(review) {
+        (review.answers || []).forEach(function(item) {
+            var qid = item.question_id;
+            var dispute = disputeForQuestion(review.disputes || [], qid);
+            var question = allQuestions.find(function(q) { return String(q.id) === String(qid); });
+            var field = document.querySelector('[name="' + CSS.escape(qid) + '"]:checked') ||
+                document.querySelector('[name="' + CSS.escape(qid) + '"]');
+            var target = field && field.closest('label') || field;
+            if (!target) return;
+            target.classList.add(item.correct ? 'correct' : 'wrong');
+            if (dispute) target.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
+            var holder = document.getElementById('ev-' + qid) || target.parentNode;
+            if (!holder || holder.parentNode.querySelector('[data-history-dispute="' + CSS.escape(qid) + '"]')) return;
+            var note = document.createElement('div');
+            note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong') + (dispute ? ' ' + (dispute.status || 'pending') : '');
+            note.setAttribute('data-history-dispute', qid);
+            note.innerHTML = '<strong>' + (item.correct ? 'Correct in history' : 'Incorrect in history') + '</strong>' +
+                (dispute ? '<span>' + historyDisputeLabel(dispute) + '</span>' : '') +
+                (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
+            holder.parentNode.insertBefore(note, holder.nextSibling);
+            if (!item.correct && question) renderStudentArgueButton(question, holder);
+        });
     }
 
     function updateHistoryFromResponse(response) {
@@ -1279,9 +1371,9 @@
             reason: reason
         }).then(function() {
             button.classList.add('sent');
+            button.disabled = false;
             button.textContent = 'Argue Sent';
-            status.hidden = false;
-            status.textContent = 'Sent to the Revise list.';
+            modal.querySelector('.teacher-argue-card').classList.add('sent');
             modal.querySelector('textarea').disabled = true;
             submit.hidden = true;
             modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
@@ -1314,9 +1406,9 @@
         }).then(function(result) {
             if (!result || !result.success) throw new Error(result && result.message || 'Unable to submit Argue.');
             button.classList.add('sent');
+            button.disabled = false;
             button.textContent = 'Argue Sent';
-            status.hidden = false;
-            status.textContent = 'Sent to teacher. Thank you!';
+            modal.querySelector('.teacher-argue-card').classList.add('sent');
             modal.querySelector('textarea').disabled = true;
             submit.hidden = true;
             modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
@@ -1332,6 +1424,39 @@
         });
     }
 
+    function renderStudentArgueStatus(button, modal, dispute) {
+        if (!dispute) return;
+        var status = modal.querySelector('.teacher-argue-status');
+        var statusText = dispute.status === 'approved'
+            ? (dispute.decision === 'replace' ? 'Answer rule updated' : 'Teacher accepted')
+            : dispute.status === 'rejected'
+                ? 'Original ruling kept'
+                : 'Sent to teacher. Waiting for review.';
+        button.classList.add('sent');
+        button.textContent = dispute.status === 'pending' ? 'Argue Sent' : 'Reviewed';
+        status.hidden = false;
+        status.className = 'teacher-argue-status ' + (dispute.status || 'pending');
+        status.innerHTML = '<strong>' + escapeHtml(statusText) + '</strong>' +
+            (dispute.teacher_note ? '<br>Teacher note: ' + escapeHtml(dispute.teacher_note) : '');
+        modal.querySelector('textarea').value = dispute.student_reason || '';
+        modal.querySelector('textarea').disabled = true;
+        modal.querySelector('.teacher-argue-submit').hidden = true;
+        modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
+    }
+
+    function loadStudentArgueStatus(button, q, modal) {
+        if (!currentArgueAttemptId || !window.MrCatCloud) return;
+        window.MrCatCloud.callFunction('getDashboard', {
+            action: 'listDisputesForAttempt',
+            attempt_id: currentArgueAttemptId
+        }).then(function(result) {
+            var dispute = (result.disputes || []).find(function(item) {
+                return String(item.question_id) === String(q.id);
+            });
+            renderStudentArgueStatus(button, modal, dispute);
+        }).catch(function() {});
+    }
+
     function openStudentArgueModal(button, q) {
         var modal = document.createElement('div');
         modal.className = 'teacher-argue-modal';
@@ -1339,12 +1464,22 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="teacher-argue-card">' +
-                '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
-                '<p class="teacher-argue-status" hidden></p>' +
-                '<div class="teacher-argue-actions">' +
-                    '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
-                    '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                '<div class="teacher-argue-content">' +
+                    '<h2>Tell me why.</h2>' +
+                    '<textarea aria-label="Argue note"></textarea>' +
+                    '<p class="teacher-argue-status" hidden></p>' +
+                    '<div class="teacher-argue-actions">' +
+                        '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
+                        '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                    '</div>' +
                 '</div>' +
+                '<div class="teacher-argue-sent-message" aria-live="polite"><div>' +
+                    '<span class="teacher-argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
+                        '<path class="teacher-argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
+                        '<path class="teacher-argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
+                    '</svg></span>' +
+                    '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
+                '</div></div>' +
             '</div>';
         document.body.appendChild(modal);
         modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
@@ -1352,6 +1487,7 @@
         });
         modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
         modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
+        loadStudentArgueStatus(button, q, modal);
     }
 
     function renderStudentArgueButton(q, evidence) {
@@ -1376,12 +1512,22 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="teacher-argue-card">' +
-                '<textarea placeholder="Teacher note (optional)"></textarea>' +
-                '<p class="teacher-argue-status" hidden></p>' +
-                '<div class="teacher-argue-actions">' +
-                    '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
-                    '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                '<div class="teacher-argue-content">' +
+                    '<h2>Tell me why.</h2>' +
+                    '<textarea aria-label="Argue note"></textarea>' +
+                    '<p class="teacher-argue-status" hidden></p>' +
+                    '<div class="teacher-argue-actions">' +
+                        '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
+                        '<button class="teacher-argue-submit" type="button">Submit</button>' +
+                    '</div>' +
                 '</div>' +
+                '<div class="teacher-argue-sent-message" aria-live="polite"><div>' +
+                    '<span class="teacher-argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
+                        '<path class="teacher-argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
+                        '<path class="teacher-argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
+                    '</svg></span>' +
+                    '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
+                '</div></div>' +
             '</div>';
         document.body.appendChild(modal);
         modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {

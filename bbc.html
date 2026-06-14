@@ -701,7 +701,10 @@
         }
 
         .argue-modal-card {
+            position: relative;
+            overflow: hidden;
             width: min(460px, 100%);
+            min-height: 252px;
             padding: 22px;
             border-radius: 22px;
             background: #fff;
@@ -743,6 +746,121 @@
         .argue-modal-status.pending { color: #7a5528; background: #fff8e5; }
         .argue-modal-status.approved { color: #237a52; background: #ecf9f1; }
         .argue-modal-status.rejected { color: #b54747; background: #fff0ed; }
+        .argue-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 12px;
+        }
+        .argue-modal-card.sent {
+            animation: argueSentPop 740ms cubic-bezier(.2,.82,.2,1) both;
+        }
+        .argue-modal-card.sent::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            background: linear-gradient(135deg, rgba(228, 246, 236, 0.98), rgba(255, 247, 233, 0.96));
+            animation: argueSentWash 820ms cubic-bezier(.2,.82,.2,1) forwards;
+        }
+        .argue-modal-card.sent .argue-content {
+            animation: argueContentOut 620ms ease forwards;
+        }
+        .argue-modal-status.sent {
+            color: #13766d;
+            background: linear-gradient(135deg, #ecf9f1, #fffaf0);
+        }
+        .argue-sent-message {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            padding: 28px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(18px) scale(0.92);
+            pointer-events: none;
+        }
+        .argue-modal-card.sent .argue-sent-message {
+            animation: argueMessageIn 720ms 430ms cubic-bezier(.2,.82,.2,1) forwards;
+        }
+        .argue-heart {
+            display: inline-grid;
+            place-items: center;
+            width: 68px;
+            height: 58px;
+            margin: 0 0 10px;
+        }
+        .argue-heart svg {
+            width: 56px;
+            height: 56px;
+            overflow: visible;
+        }
+        .argue-heart-main {
+            fill: #f08b76;
+            transform-origin: center;
+        }
+        .argue-heart-small {
+            fill: #e2556f;
+            opacity: 0;
+        }
+        .argue-modal-card.sent .argue-heart {
+            animation: argueHeartIn 680ms 650ms cubic-bezier(.17,.89,.32,1.35) both;
+        }
+        .argue-modal-card.sent .argue-heart-main {
+            animation: argueHeartPop 900ms 820ms ease both;
+        }
+        .argue-modal-card.sent .argue-heart-small {
+            animation: argueTinyHeart 1000ms 960ms ease both;
+        }
+        .argue-sent-message strong {
+            display: block;
+            color: var(--accent);
+            font-size: 1.45rem;
+            line-height: 1.08;
+        }
+        .argue-sent-message > div > span:not(.argue-heart) {
+            display: block;
+            margin-top: 10px;
+            color: var(--muted);
+            font-weight: 850;
+        }
+        @keyframes argueContentOut {
+            0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            55% { opacity: 0.32; transform: translateY(-8px) scale(0.985); filter: blur(1.6px); }
+            100% { opacity: 0; transform: translateY(-16px) scale(0.97); filter: blur(4px); }
+        }
+        @keyframes argueSentWash {
+            0% { opacity: 0; transform: translateX(-18%); }
+            52% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes argueSentPop {
+            0% { transform: translateY(0) scale(1); }
+            44% { transform: translateY(-8px) scale(1.015); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes argueMessageIn {
+            0% { opacity: 0; transform: translateY(18px) scale(0.92); filter: blur(4px); }
+            58% { opacity: 1; transform: translateY(-3px) scale(1.025); filter: blur(0); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes argueHeartIn {
+            0% { transform: translateY(8px) scale(0.72); opacity: 0; }
+            65% { transform: translateY(-2px) scale(1.08); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes argueHeartPop {
+            0% { transform: scale(0.68); opacity: 0; }
+            45% { transform: scale(1.24); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes argueTinyHeart {
+            0% { transform: translateY(8px) scale(0.4); opacity: 0; }
+            45% { opacity: 1; }
+            100% { transform: translateY(-18px) scale(1); opacity: 0; }
+        }
 
         .argue-modal-actions {
             display: flex;
@@ -1231,6 +1349,41 @@
         .feedback-bar.dispute-pending { background: #fff8e5; }
         .feedback-bar.dispute-approved { background: #ecf9f1; }
         .feedback-bar.dispute-rejected { background: #fff0ed; }
+        .history-disputed {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14) !important;
+        }
+        .history-dispute-approved {
+            box-shadow: 0 0 0 3px rgba(35, 122, 82, 0.18) !important;
+        }
+        .history-dispute-rejected {
+            box-shadow: 0 0 0 3px rgba(181, 71, 71, 0.14) !important;
+        }
+        .history-dispute-note {
+            margin-top: 8px;
+            padding: 9px 11px;
+            border-radius: 12px;
+            border: 1px solid #dce8e3;
+            background: #f8fbfa;
+            font-size: 0.84rem;
+        }
+        .history-dispute-note.correct { border-color: #b8e6c8; background: #ecf9f1; }
+        .history-dispute-note.wrong { border-color: #efc9c3; background: #fff0ed; }
+        .history-dispute-note.pending { border-color: #eed08e; background: #fff8e5; }
+        .history-dispute-note.approved { border-color: #8cc8a8; background: #ecf9f1; }
+        .history-dispute-note.rejected { border-color: #efc9c3; background: #fff0ed; }
+        .history-dispute-note strong,
+        .history-dispute-note span,
+        .history-dispute-note small {
+            display: block;
+        }
+        .history-dispute-note span {
+            margin-top: 3px;
+            font-weight: 850;
+        }
+        .history-dispute-note small {
+            margin-top: 4px;
+            color: var(--muted);
+        }
 
         .argue-inline textarea {
             width: 100%;
@@ -2238,7 +2391,10 @@
         form.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
         });
-        form.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        form.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
+            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
+        });
+        form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note').forEach(function(el) { el.remove(); });
         applyBlankAttemptLocks();
         applyMcLocks();
         var submitBtn = document.getElementById('submit-btn');
@@ -2260,8 +2416,12 @@
         btn.disabled = false;
         btn.textContent = 'Submit Answers';
         document.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
         document.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
+        });
+        document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
+            el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
         });
     }
 
@@ -2292,18 +2452,73 @@
         }).catch(function() {});
     }
 
+    function disputeForQuestion(disputes, questionId) {
+        return (disputes || []).find(function(item) {
+            return String(item.question_id) === String(questionId);
+        }) || null;
+    }
+
+    function historyDisputeLabel(dispute) {
+        if (!dispute) return '';
+        if (dispute.status === 'approved') return dispute.decision === 'replace' ? 'Teacher updated rule' : 'Teacher accepted';
+        if (dispute.status === 'rejected') return 'Teacher reviewed';
+        return 'Argued · Waiting';
+    }
+
+    function markHistoryReview(review) {
+        var answers = review && review.answers || [];
+        var disputes = review && review.disputes || [];
+        answers.forEach(function(item) {
+            var qid = item.question_id;
+            var dispute = disputeForQuestion(disputes, qid);
+            var target = document.querySelector('[name="' + CSS.escape(qid) + '"]') ||
+                document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
+            if (!target) return;
+            target.classList.add(item.correct ? 'correct' : 'wrong');
+            if (dispute) target.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
+            var row = target.closest('tr');
+            var container = target.closest('li') || target.closest('[data-id]') || (row && row.querySelector('td:last-child')) || target.parentNode;
+            if (!container || container.querySelector('[data-history-dispute="' + CSS.escape(qid) + '"]')) return;
+            var note = document.createElement('div');
+            note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong') + (dispute ? ' ' + (dispute.status || 'pending') : '');
+            note.setAttribute('data-history-dispute', qid);
+            note.innerHTML = '<strong>' + (item.correct ? 'Correct in history' : 'Incorrect in history') + '</strong>' +
+                (dispute ? '<span>' + escapeHtml(historyDisputeLabel(dispute)) + '</span>' : '') +
+                (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
+            if (!item.correct) {
+                var argueButton = document.createElement('button');
+                argueButton.type = 'button';
+                argueButton.className = 'argue-btn';
+                argueButton.textContent = dispute && dispute.status !== 'pending' ? 'Reviewed' : (dispute ? 'Argue Sent' : 'Argue');
+                argueButton.addEventListener('click', function(q, containerEl) {
+                    return function() { openArgueInline(q, containerEl); };
+                }(qid, container));
+                note.appendChild(argueButton);
+            }
+            container.appendChild(note);
+        });
+    }
+
     function showHistoryAnswers() {
         if (!historyAttemptId || !window.MrCatCloud) return;
-        window.MrCatCloud.callFunction('getDashboard', {
+        var prefill = window.MrCatCloud.callFunction('getDashboard', {
             action: 'getAttemptForRetry',
             attempt_id: historyAttemptId
-        }).then(function(result) {
+        });
+        var review = window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getAttemptReview',
+            attempt_id: historyAttemptId
+        }).catch(function() { return null; });
+        Promise.all([prefill, review]).then(function(results) {
+            var result = results[0];
             if (result && result.success && result.attempt && result.attempt.answers) {
+                currentArgueAttemptId = historyAttemptId;
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
                 applyBlankAttemptLocks();
                 rememberMcLocks(result.attempt.answers);
                 saveDraftAnswers();
+                if (results[1] && results[1].review) markHistoryReview(results[1].review);
             }
         }).catch(function() {});
     }
@@ -2920,14 +3135,22 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="argue-modal-card">' +
-                '<h2>Argue this question</h2>' +
-                '<p class="argue-modal-copy">Tell the teacher why this answer should be reviewed. This note is optional.</p>' +
-                '<p class="argue-modal-status" hidden></p>' +
-                '<textarea placeholder="Why should this answer be reviewed? (optional)"></textarea>' +
-                '<div class="argue-modal-actions">' +
-                    '<button class="argue-modal-cancel" type="button">Cancel</button>' +
-                    '<button class="argue-modal-submit" type="button">Submit</button>' +
+                '<div class="argue-content">' +
+                    '<h2>Tell me why.</h2>' +
+                    '<p class="argue-modal-status" hidden></p>' +
+                    '<textarea aria-label="Argue note"></textarea>' +
+                    '<div class="argue-modal-actions">' +
+                        '<button class="argue-modal-cancel" type="button">Cancel</button>' +
+                        '<button class="argue-modal-submit" type="button">Submit</button>' +
+                    '</div>' +
                 '</div>' +
+                '<div class="argue-sent-message" aria-live="polite"><div>' +
+                    '<span class="argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
+                        '<path class="argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
+                        '<path class="argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
+                    '</svg></span>' +
+                    '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
+                '</div></div>' +
             '</div>';
         document.body.appendChild(modal);
 
@@ -3009,9 +3232,7 @@
                 throw new Error(result && result.message || result && result.code || 'Unable to submit Argue.');
             }
             markArgueBar(containerEl, 'pending');
-            status.hidden = false;
-            status.className = 'argue-modal-status pending';
-            status.textContent = teacherMode ? 'Sent to the Revise list.' : 'Sent to teacher. Thank you!';
+            modal.querySelector('.argue-modal-card').classList.add('sent');
             modal.querySelector('textarea').disabled = true;
             submitBtn.hidden = true;
             modal.querySelector('.argue-modal-cancel').textContent = 'Close';
