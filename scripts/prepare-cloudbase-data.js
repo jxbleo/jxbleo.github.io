@@ -10,6 +10,10 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
+function readJsonIfExists(filePath) {
+  return fs.existsSync(filePath) ? readJson(filePath) : null;
+}
+
 function writeJson(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + "\n");
@@ -35,6 +39,7 @@ function writeVocabularyFallback(filePath, unit) {
 }
 
 function listJson(dirPath) {
+  if (!fs.existsSync(dirPath)) return [];
   return fs.readdirSync(dirPath)
     .filter((name) => name.endsWith(".json"))
     .sort()
@@ -108,6 +113,28 @@ function extractIelts(source) {
       answers,
       explanations,
       scoring_rules: { type: "ielts_normalized" },
+    },
+  };
+}
+
+function privateSourceFor(kind, setId) {
+  const candidates = [
+    path.join(outputRoot, "source", kind, `${setId}.json`),
+    path.join(projectRoot, ".cloudbase-private", "source", kind, `${setId}.json`),
+  ];
+  return candidates.map(readJsonIfExists).find(Boolean);
+}
+
+function extractIeltsListening(source, privateSource) {
+  if (!privateSource || !privateSource.answers) return null;
+  return {
+    publicData: withoutPrivateFields(source),
+    gradingKey: {
+      set_id: source.id,
+      grading_version: privateSource.grading_version || "1",
+      answers: privateSource.answers || {},
+      explanations: privateSource.explanations || {},
+      scoring_rules: privateSource.scoring_rules || { type: "ielts_listening_normalized" },
     },
   };
 }
@@ -186,6 +213,29 @@ function main() {
       writeJson(path.join(publicRoot, "data", path.basename(filePath)), extracted.publicData);
     });
 
+  listJson(path.join(projectRoot, "content", "ielts-listening"))
+    .forEach((metaPath) => {
+      const meta = readJson(metaPath);
+      const dataPath = path.join(projectRoot, "data", `${meta.id}.json`);
+      if (!fs.existsSync(dataPath)) {
+        console.warn(`Missing IELTS Listening data for ${meta.id}`);
+        return;
+      }
+      const source = readJson(dataPath);
+      const extracted = extractIeltsListening(source, privateSourceFor("ielts-listening", source.id));
+      sets.push(buildSet(meta, {
+        type: "listening",
+        course: "IELTS Listening",
+        estimatedMinutes: source.durationMinutes || null,
+      }));
+      writeJson(path.join(publicRoot, "data", path.basename(dataPath)), withoutPrivateFields(source));
+      if (extracted) {
+        gradingKeys.push(extracted.gradingKey);
+      } else {
+        console.warn(`Missing private IELTS Listening grading source for ${source.id}`);
+      }
+    });
+
   listJson(path.join(projectRoot, "content", "vocabulary")).forEach((filePath) => {
     const source = readJson(filePath);
     const extracted = extractVocabulary(source);
@@ -202,6 +252,7 @@ function main() {
     config_key: "grading_defaults",
     value: {
       default_passing_percentage: 50,
+      default_mastery_percentage: 90,
       default_feedback_policy: "always",
       vocabulary_minimum_countable_groups: 5,
     },

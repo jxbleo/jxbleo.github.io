@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Practice</title>
+    <style>
+        :root {
+            --top: #1d2430;
+            --top2: #111827;
+            --page: #edf2f8;
+            --panel: #ffffff;
+            --paper: #fbfbfd;
+            --line: #cfd8e3;
+            --text: #1f2937;
+            --muted: #667085;
+            --blue: #38bdf8;
+            --blue-dark: #0369a1;
+            --correct: #e8f8f0;
+            --wrong: #fff1f2;
+            --wrong-line: #fb7185;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--page);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            letter-spacing: 0;
+        }
+        button, input { font: inherit; }
+        .exam-shell {
+            display: grid;
+            grid-template-rows: 44px 98px minmax(0, 1fr) 78px;
+            height: 100dvh;
+            background: #e6edf6;
+        }
+        .exam-topbar {
+            display: grid;
+            grid-template-columns: minmax(130px, 1fr) auto minmax(180px, 1fr);
+            align-items: center;
+            gap: 12px;
+            padding: 0 14px;
+            color: #f8fafc;
+            background: linear-gradient(180deg, var(--top), var(--top2));
+            box-shadow: inset 0 -1px rgba(255,255,255,.18), 0 1px 4px rgba(15,23,42,.28);
+        }
+        .candidate {
+            min-width: 0;
+            color: #cbd5e1;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .timer {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 7px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .timer strong { font-size: 25px; line-height: 1; }
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-actions button, .teacher-toggle {
+            min-height: 28px;
+            padding: 0 13px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 4px;
+            color: #111827;
+            background: linear-gradient(180deg, #ffffff, #dbe2ec);
+            box-shadow: inset 0 1px #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .volume {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+        .volume input { width: 76px; accent-color: #e2e8f0; }
+        .part-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 18px;
+            margin: 10px 18px 8px;
+            padding: 16px 16px;
+            border: 1px solid #d8e0eb;
+            background: #fff;
+            box-shadow: 0 1px 5px rgba(15,23,42,.08);
+        }
+        .part-header h1 {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.1;
+            color: #111827;
+        }
+        .part-header p {
+            margin: 0;
+            font-size: 15px;
+        }
+        .workspace {
+            min-height: 0;
+            margin: 0 18px;
+            border: 1px solid #d8e0eb;
+            background: var(--paper);
+            overflow-y: auto;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
+        }
+        .workspace-inner {
+            max-width: 980px;
+            min-height: 100%;
+            padding: 18px 22px 84px;
+        }
+        .audio-dock {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 12px;
+            max-width: 760px;
+            margin: 0 0 22px;
+            padding: 10px 12px;
+            border: 1px solid #d8e0eb;
+            border-radius: 6px;
+            background: #f8fafc;
+        }
+        .audio-button {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 32px;
+            border: 1px solid #9fb3c8;
+            border-radius: 4px;
+            color: #0f172a;
+            background: linear-gradient(180deg, #fff, #e2e8f0);
+            cursor: pointer;
+        }
+        .audio-progress {
+            width: 100%;
+            accent-color: var(--blue-dark);
+        }
+        .audio-time {
+            min-width: 88px;
+            color: var(--muted);
+            font-size: 13px;
+            text-align: right;
+        }
+        .question-section {
+            margin: 0 0 26px;
+            padding: 0 0 8px;
+        }
+        .question-section h2 {
+            margin: 24px 0 28px;
+            font-size: 19px;
+            color: #111827;
+        }
+        .section-label {
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .section-instruction {
+            margin: 0 0 28px;
+            font-size: 15px;
+        }
+        .example-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin: 4px 0 24px;
+        }
+        .example-answer {
+            display: inline-block;
+            min-width: 98px;
+            padding: 2px 12px;
+            border-bottom: 1px solid #111827;
+            text-align: center;
+            font-weight: 700;
+        }
+        .ielts-notes {
+            display: grid;
+            gap: 14px;
+            max-width: 720px;
+            margin: 0;
+            padding-left: 24px;
+            font-size: 15px;
+        }
+        .ielts-notes ul {
+            display: grid;
+            gap: 6px;
+            margin: 7px 0 0;
+            padding-left: 28px;
+        }
+        .gap-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin: 0 3px;
+            vertical-align: middle;
+        }
+        .gap-num {
+            min-width: 19px;
+            color: #111827;
+            font-weight: 700;
+            text-align: center;
+        }
+        .gap-input {
+            width: 132px;
+            height: 26px;
+            padding: 2px 6px;
+            border: 2px solid #b7d3db;
+            border-radius: 2px;
+            background: #fff;
+            outline: none;
+            text-align: center;
+            font-weight: 700;
+        }
+        .gap-input:focus {
+            border-color: #67c7dc;
+            background: #effcff;
+        }
+        .gap-input.correct {
+            border-color: #22c55e;
+            background: var(--correct);
+        }
+        .gap-input.wrong {
+            border-color: var(--wrong-line);
+            background: var(--wrong);
+        }
+        .booking-form {
+            width: min(920px, 100%);
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 15px;
+        }
+        .booking-form th,
+        .booking-form td {
+            padding: 12px 14px;
+            border: 1px solid #d5dde8;
+            vertical-align: middle;
+            text-align: left;
+        }
+        .booking-form th {
+            width: 150px;
+            background: #f3f6fb;
+            color: #111827;
+        }
+        .feedback {
+            display: none;
+            max-width: 620px;
+            margin: 8px 0 0;
+            padding: 8px 10px;
+            border-left: 3px solid var(--wrong-line);
+            background: #fff7f7;
+            color: #7f1d1d;
+            font-size: 13px;
+            white-space: pre-line;
+        }
+        .feedback.show { display: block; }
+        .bottom-nav {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 18px;
+            border-top: 1px solid #cbd5e1;
+            background: #e9f0f8;
+            box-shadow: 0 -2px 8px rgba(15,23,42,.08);
+        }
+        .review {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #475569;
+            font-size: 13px;
+        }
+        .question-map {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 14px;
+            min-width: 0;
+        }
+        .part-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .part-label {
+            margin-right: 2px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .q-nav {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid #0f172a;
+            border-radius: 3px;
+            color: #fff;
+            background: linear-gradient(180deg, #2d3748, #05070b);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .q-nav.active {
+            border-color: #0ea5e9;
+            background: linear-gradient(180deg, #7dd3fc, #0284c7);
+        }
+        .q-nav.answered::after {
+            content: "";
+            position: absolute;
+        }
+        .submit-btn {
+            min-width: 112px;
+            min-height: 44px;
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            background: #0f172a;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(15,23,42,.22);
+        }
+        .submit-btn:disabled {
+            opacity: .58;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .result-bar {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: none;
+            width: min(520px, calc(100% - 32px));
+            padding: 14px 16px;
+            border: 1px solid #d8e0eb;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 18px 50px rgba(15,23,42,.22);
+            text-align: center;
+        }
+        .result-bar.show { display: block; }
+        .result-bar strong { display: block; font-size: 18px; }
+        .result-bar span { display: block; margin-top: 3px; color: var(--muted); }
+        .toolbar {
+            position: fixed;
+            right: 18px;
+            bottom: 92px;
+            z-index: 30;
+            display: none;
+            gap: 8px;
+        }
+        .toolbar.show { display: flex; }
+        .toolbar button {
+            min-height: 36px;
+            padding: 0 14px;
+            border: 1px solid #d8e0eb;
+            border-radius: 999px;
+            background: #fff;
+            color: #111827;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(15,23,42,.12);
+        }
+        .error {
+            padding: 26px;
+            color: #9f1239;
+            font-weight: 700;
+        }
+        @media (max-width: 820px) {
+            body { overflow: hidden; }
+            .exam-shell { grid-template-rows: 42px 86px minmax(0, 1fr) 112px; }
+            .exam-topbar { grid-template-columns: 1fr auto; }
+            .candidate { display: none; }
+            .top-actions { display: none; }
+            .part-header { margin: 8px; padding: 12px; gap: 10px; }
+            .part-header h1 { font-size: 21px; }
+            .workspace { margin: 0 8px; }
+            .workspace-inner { padding: 14px 14px 110px; }
+            .audio-dock { grid-template-columns: auto 1fr; }
+            .audio-time { grid-column: 1 / -1; text-align: left; }
+            .booking-form, .booking-form tbody, .booking-form tr, .booking-form th, .booking-form td {
+                display: block;
+                width: 100%;
+            }
+            .booking-form tr { border: 1px solid #d5dde8; border-bottom: 0; }
+            .booking-form th, .booking-form td { border: 0; }
+            .booking-form th { padding-bottom: 4px; }
+            .booking-form td { padding-top: 4px; }
+            .bottom-nav {
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto auto;
+            }
+            .review { grid-column: 1 / -1; }
+            .question-map { max-height: 54px; overflow: auto; }
+            .q-nav { width: 26px; height: 26px; }
+            .submit-btn { min-width: 92px; }
+        }
+    </style>
+</head>
+<body>
+<main class="exam-shell">
+    <header class="exam-topbar">
+        <div class="candidate">XXXX XXXXXXX - 123456</div>
+        <div class="timer" aria-live="polite"><strong id="minutes-left">60</strong><span>minutes left</span></div>
+        <div class="top-actions">
+            <button type="button">Settings</button>
+            <button type="button">Help</button>
+            <button type="button">Hide</button>
+            <label class="volume">Volume <input id="volume-control" type="range" min="0" max="1" step="0.01" value="0.9"></label>
+        </div>
+    </header>
+    <section class="part-header">
+        <h1 id="part-title">Part 1</h1>
+        <p id="part-intro">Listen and answer questions 1-10.</p>
+    </section>
+    <section class="workspace" id="workspace">
+        <div class="workspace-inner" id="content"><p class="error">Loading listening practice...</p></div>
+    </section>
+    <nav class="bottom-nav" aria-label="Question navigation">
+        <label class="review"><input id="review-checkbox" type="checkbox"> Review</label>
+        <div class="question-map" id="question-map"></div>
+        <button class="submit-btn" id="submit-btn" type="button">Submit</button>
+    </nav>
+</main>
+<div class="toolbar" id="teacher-toolbar">
+    <button type="button" id="teacher-show-answers">Show Answers</button>
+</div>
+<div class="result-bar" id="result-bar" role="status" aria-live="polite"></div>
+
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+<script src="assets/js/config.public.js?v=20260614-1"></script>
+<script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
+<script src="assets/js/practice-session.js?v=20260611-2"></script>
+<script>
+(function() {
+    'use strict';
+
+    var params = new URLSearchParams(window.location.search);
+    var setId = params.get('set') || 'C7-T1-S1';
+    var assignmentId = params.get('assignment') || '';
+    var teacherMode = params.get('teacher') === '1';
+    var startedAt = new Date().toISOString();
+    var lesson = null;
+    var questionMap = {};
+    var teacherAnswerKey = null;
+    var teacherAnswersVisible = false;
+    var timerEnd = Date.now() + 60 * 60 * 1000;
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function questionById(id) {
+        return questionMap[id] || { id: id, number: String(id).replace(/\D/g, '') || id };
+    }
+
+    function inputHtml(questionId) {
+        var question = questionById(questionId);
+        return '<span class="gap-wrap" id="wrap-' + escapeHtml(questionId) + '">' +
+            '<span class="gap-num">' + escapeHtml(question.number) + '</span>' +
+            '<input class="gap-input" name="' + escapeHtml(questionId) + '" data-question="' + escapeHtml(questionId) + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">' +
+            '</span>';
+    }
+
+    function templateHtml(html) {
+        return String(html || '').replace(/\{\{(Q\d+)\}\}/g, function(_, questionId) {
+            return inputHtml(questionId);
+        });
+    }
+
+    function formatTime(seconds) {
+        seconds = Math.max(0, Math.floor(seconds || 0));
+        var mins = Math.floor(seconds / 60);
+        var secs = seconds % 60;
+        return mins + ':' + String(secs).padStart(2, '0');
+    }
+
+    function updateTimer() {
+        var remaining = Math.max(0, timerEnd - Date.now());
+        var minutes = Math.ceil(remaining / 60000);
+        document.getElementById('minutes-left').textContent = minutes;
+    }
+
+    function renderAudio() {
+        return '<div class="audio-dock">' +
+            '<audio id="listening-audio" preload="metadata" src="' + escapeHtml(lesson.audioSrc || '') + '"></audio>' +
+            '<button class="audio-button" id="play-btn" type="button" aria-label="Play or pause">▶</button>' +
+            '<input class="audio-progress" id="audio-progress" type="range" min="0" max="1000" value="0" aria-label="Audio progress">' +
+            '<div class="audio-time" id="audio-time">0:00 / 0:00</div>' +
+        '</div>';
+    }
+
+    function renderContent() {
+        lesson.questions.forEach(function(question) { questionMap[question.id] = question; });
+        var part = lesson.parts[0];
+        document.getElementById('part-title').textContent = part.title || ('Part ' + part.number);
+        document.getElementById('part-intro').textContent = part.intro || '';
+        document.title = lesson.id + ' IELTS Listening';
+
+        var html = renderAudio();
+        (part.sections || []).forEach(function(section) {
+            html += '<section class="question-section">' +
+                '<div class="section-label">' + escapeHtml(section.label || '') + '</div>' +
+                '<p class="section-instruction">' + (section.instruction || '') + '</p>' +
+                templateHtml(section.html || '') +
+            '</section>';
+        });
+        document.getElementById('content').innerHTML = html;
+        renderQuestionMap();
+        setupAudio();
+        restoreDraft();
+        updateNavState();
+        if (teacherMode) setupTeacherMode();
+    }
+
+    function renderQuestionMap() {
+        var byPart = {};
+        lesson.questions.forEach(function(question) {
+            var part = question.part || 1;
+            if (!byPart[part]) byPart[part] = [];
+            byPart[part].push(question);
+        });
+        document.getElementById('question-map').innerHTML = Object.keys(byPart).sort(function(a, b) {
+            return Number(a) - Number(b);
+        }).map(function(partNo) {
+            return '<span class="part-group"><span class="part-label">Part ' + escapeHtml(partNo) + '</span>' +
+                byPart[partNo].map(function(question) {
+                    return '<button class="q-nav" type="button" data-jump="' + escapeHtml(question.id) + '">' + escapeHtml(question.number) + '</button>';
+                }).join('') +
+            '</span>';
+        }).join('');
+    }
+
+    function setupAudio() {
+        var audio = document.getElementById('listening-audio');
+        var play = document.getElementById('play-btn');
+        var progress = document.getElementById('audio-progress');
+        var time = document.getElementById('audio-time');
+        var volume = document.getElementById('volume-control');
+        if (!audio || !play || !progress || !time) return;
+        audio.volume = volume ? Number(volume.value || 0.9) : 0.9;
+        function sync() {
+            var duration = audio.duration || 0;
+            var current = audio.currentTime || 0;
+            play.textContent = audio.paused ? '▶' : 'Ⅱ';
+            progress.value = duration ? Math.round(current / duration * 1000) : 0;
+            time.textContent = formatTime(current) + ' / ' + formatTime(duration);
+        }
+        play.addEventListener('click', function() {
+            if (audio.paused) {
+                var promise = audio.play();
+                if (promise && promise.catch) promise.catch(function() {});
+            } else {
+                audio.pause();
+            }
+        });
+        progress.addEventListener('input', function() {
+            if (!audio.duration) return;
+            audio.currentTime = Number(progress.value || 0) / 1000 * audio.duration;
+        });
+        if (volume) {
+            volume.addEventListener('input', function() {
+                audio.volume = Number(volume.value || 0);
+            });
+        }
+        audio.addEventListener('loadedmetadata', sync);
+        audio.addEventListener('timeupdate', sync);
+        audio.addEventListener('play', sync);
+        audio.addEventListener('pause', sync);
+        audio.addEventListener('ended', sync);
+        sync();
+    }
+
+    function draftKey() {
+        var profile = window.MrCatPractice && window.MrCatPractice.profile;
+        var student = profile && profile.student_id ? profile.student_id : 'local';
+        return 'mrcat_ielts_listening_' + setId + '_' + student;
+    }
+
+    function collectAnswers() {
+        var answers = {};
+        lesson.questions.forEach(function(question) {
+            var input = document.querySelector('[name="' + CSS.escape(question.id) + '"]');
+            answers[question.id] = input ? input.value.trim() : '';
+        });
+        return answers;
+    }
+
+    function saveDraft() {
+        try { localStorage.setItem(draftKey(), JSON.stringify(collectAnswers())); } catch (error) {}
+    }
+
+    function restoreDraft() {
+        try {
+            var saved = JSON.parse(localStorage.getItem(draftKey()) || '{}');
+            Object.keys(saved).forEach(function(questionId) {
+                var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
+                if (input) input.value = saved[questionId];
+            });
+        } catch (error) {}
+    }
+
+    function allAnswered() {
+        return lesson.questions.every(function(question) {
+            var input = document.querySelector('[name="' + CSS.escape(question.id) + '"]');
+            return input && input.value.trim();
+        });
+    }
+
+    function updateNavState() {
+        document.querySelectorAll('.q-nav').forEach(function(button) {
+            var questionId = button.getAttribute('data-jump');
+            var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
+            button.classList.toggle('answered', !!(input && input.value.trim()));
+        });
+    }
+
+    function jumpToQuestion(questionId) {
+        var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
+        if (!input) return;
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function() { input.focus(); }, 280);
+    }
+
+    function answerText(value) {
+        return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
+    }
+
+    function showFeedback(questionId, result) {
+        var wrap = document.getElementById('wrap-' + questionId);
+        if (!wrap) return;
+        var input = wrap.querySelector('input');
+        if (input) input.classList.add(result.correct ? 'correct' : 'wrong');
+        var existing = wrap.parentNode.querySelector('[data-feedback="' + CSS.escape(questionId) + '"]');
+        if (existing) existing.remove();
+        if (result.correct) return;
+        var feedback = document.createElement('div');
+        feedback.className = 'feedback show';
+        feedback.setAttribute('data-feedback', questionId);
+        var parts = [];
+        if (result.correct_answer != null) parts.push('Correct answer: ' + answerText(result.correct_answer));
+        if (result.explanation) parts.push(result.explanation);
+        feedback.textContent = parts.length ? parts.join('\n') : 'Not correct. Try again after reviewing the audio.';
+        wrap.parentNode.insertBefore(feedback, wrap.nextSibling);
+    }
+
+    function applyFeedback(response) {
+        var results = {};
+        (response.question_results || []).forEach(function(result) { results[result.question_id] = result; });
+        lesson.questions.forEach(function(question) {
+            if (results[question.id]) showFeedback(question.id, results[question.id]);
+            var input = document.querySelector('[name="' + CSS.escape(question.id) + '"]');
+            if (input) input.disabled = true;
+        });
+        var submit = document.getElementById('submit-btn');
+        submit.disabled = true;
+        submit.textContent = 'Submitted';
+        var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Keep trying';
+        var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
+        var bar = document.getElementById('result-bar');
+        bar.innerHTML = '<strong>' + escapeHtml(status) + '</strong><span>' + escapeHtml(score) + '</span>';
+        bar.classList.add('show');
+    }
+
+    function submitAttempt() {
+        if (teacherMode) return;
+        if (!allAnswered()) {
+            alert('Please answer all questions before submitting.');
+            return;
+        }
+        var submit = document.getElementById('submit-btn');
+        submit.disabled = true;
+        submit.textContent = 'Submitting...';
+        window.MrCatCloud.callFunction('submitAttempt', {
+            set_id: setId,
+            assignment_id: assignmentId || null,
+            mode: 'ielts_listening',
+            answers: collectAnswers(),
+            started_at: startedAt,
+            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))
+        }).then(function(response) {
+            if (!response || !response.success) throw new Error(response && response.message || 'Unable to submit.');
+            applyFeedback(response);
+        }).catch(function(error) {
+            submit.disabled = false;
+            submit.textContent = 'Submit';
+            alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
+        });
+    }
+
+    function teacherCall(action, data) {
+        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+            .then(function(result) {
+                if (!result || !result.success) throw new Error(result && result.message || 'Teacher action failed.');
+                return result;
+            });
+    }
+
+    function showTeacherAnswers(answerKey) {
+        var answers = answerKey.answers || {};
+        var explanations = answerKey.explanations || {};
+        lesson.questions.forEach(function(question) {
+            var result = {
+                correct: true,
+                correct_answer: answers[question.id],
+                explanation: explanations[question.id] || ''
+            };
+            if (answers[question.id] == null) return;
+            showFeedback(question.id, result);
+            var feedback = document.querySelector('[data-feedback="' + CSS.escape(question.id) + '"]');
+            if (!feedback) {
+                var wrap = document.getElementById('wrap-' + question.id);
+                if (!wrap) return;
+                feedback = document.createElement('div');
+                feedback.className = 'feedback show';
+                feedback.setAttribute('data-feedback', question.id);
+                feedback.textContent = 'Correct answer: ' + answerText(answers[question.id]) +
+                    (explanations[question.id] ? '\n' + explanations[question.id] : '');
+                wrap.parentNode.insertBefore(feedback, wrap.nextSibling);
+            }
+        });
+        teacherAnswersVisible = true;
+    }
+
+    function clearTeacherAnswers() {
+        document.querySelectorAll('.gap-input.correct,.gap-input.wrong').forEach(function(input) {
+            input.classList.remove('correct', 'wrong');
+        });
+        document.querySelectorAll('[data-feedback]').forEach(function(el) { el.remove(); });
+        teacherAnswersVisible = false;
+    }
+
+    function setupTeacherMode() {
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('submit-btn').textContent = 'Teacher Preview';
+        document.getElementById('teacher-toolbar').classList.add('show');
+        document.getElementById('teacher-show-answers').addEventListener('click', function() {
+            var button = this;
+            if (teacherAnswersVisible) {
+                clearTeacherAnswers();
+                button.textContent = 'Show Answers';
+                return;
+            }
+            if (teacherAnswerKey) {
+                showTeacherAnswers(teacherAnswerKey);
+                button.textContent = 'Hide Answers';
+                return;
+            }
+            button.disabled = true;
+            button.textContent = 'Loading...';
+            teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
+                teacherAnswerKey = result;
+                showTeacherAnswers(result);
+                button.textContent = 'Hide Answers';
+            }).catch(function(error) {
+                button.textContent = 'Show Answers';
+                alert(error.message || 'Unable to load answers.');
+            }).then(function() {
+                button.disabled = false;
+            });
+        });
+    }
+
+    function bindEvents() {
+        document.addEventListener('input', function(event) {
+            if (!event.target.matches('[data-question]')) return;
+            saveDraft();
+            updateNavState();
+        });
+        document.getElementById('question-map').addEventListener('click', function(event) {
+            var button = event.target.closest('[data-jump]');
+            if (!button) return;
+            jumpToQuestion(button.getAttribute('data-jump'));
+        });
+        document.getElementById('submit-btn').addEventListener('click', submitAttempt);
+        document.getElementById('workspace').addEventListener('focusin', function(event) {
+            var questionId = event.target && event.target.getAttribute('data-question');
+            document.querySelectorAll('.q-nav').forEach(function(button) {
+                button.classList.toggle('active', button.getAttribute('data-jump') === questionId);
+            });
+        });
+    }
+
+    function init() {
+        bindEvents();
+        updateTimer();
+        setInterval(updateTimer, 30000);
+        fetch('data/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('LISTENING_DATA_NOT_FOUND');
+                return response.json();
+            })
+            .then(function(data) {
+                lesson = data;
+                renderContent();
+            })
+            .catch(function(error) {
+                document.getElementById('content').innerHTML = '<p class="error">' + escapeHtml(error.message || 'Unable to load this listening practice.') + '</p>';
+            });
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>

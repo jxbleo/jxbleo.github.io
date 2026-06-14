@@ -1,0 +1,41 @@
+{
+  "id": "C7-T1-S1",
+  "title": "Transport from Airport to Milton",
+  "source": "Cambridge IELTS 7, Test 1, Section 1",
+  "testLabel": "Test 1",
+  "audioSrc": "assets/audio/ielts-listening/C7-T1-S1.mp3",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "label": "Questions 1-5",
+          "instruction": "Complete the notes below. Write <strong>NO MORE THAN THREE WORDS</strong> for each answer.",
+          "html": "<h2>Transport from Airport to Milton</h2><div class=\"example-line\"><strong>Example</strong><span>Distance:</span><span class=\"example-answer\">147</span><span>miles</span></div><h3>Options:</h3><ul class=\"ielts-notes\"><li><strong>Car hire</strong><ul><li>don't want to drive</li></ul></li><li>{{Q1}}<ul><li>expensive</li></ul></li><li><strong>Greyhound bus</strong><ul><li>$15 single, $27.50 return</li><li>direct to the {{Q2}}</li><li>long {{Q3}}</li></ul></li><li><strong>Airport Shuttle</strong><ul><li>{{Q4}} service</li><li>every 2 hours</li><li>$35 single, $65 return</li><li>need to {{Q5}}</li></ul></li></ul>"
+        },
+        {
+          "label": "Questions 6-10",
+          "instruction": "Complete the booking form below. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>Airport Shuttle Booking Form</h2><table class=\"booking-form\"><tbody><tr><th>To:</th><td>Milton</td><th>From:</th><td>London Heathrow</td></tr><tr><th>Date:</th><td>{{Q6}}</td><th>No. of passengers:</th><td>One</td></tr><tr><th>Bus Time:</th><td>{{Q7}} pm</td><th>Type of ticket:</th><td>Single</td></tr><tr><th>Name:</th><td>Janet {{Q8}}</td><th>Fare:</th><td>$35</td></tr><tr><th>Flight No:</th><td>{{Q9}}</td><th>Credit Card No. (Visa):</th><td>{{Q10}}</td></tr><tr><th>Address in Milton:</th><td colspan=\"3\">Vacation Motel, 24, Kitchener Street</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    { "id": "Q1", "number": 1, "part": 1, "type": "completion" },
+    { "id": "Q2", "number": 2, "part": 1, "type": "completion" },
+    { "id": "Q3", "number": 3, "part": 1, "type": "completion" },
+    { "id": "Q4", "number": 4, "part": 1, "type": "completion" },
+    { "id": "Q5", "number": 5, "part": 1, "type": "completion" },
+    { "id": "Q6", "number": 6, "part": 1, "type": "completion" },
+    { "id": "Q7", "number": 7, "part": 1, "type": "completion" },
+    { "id": "Q8", "number": 8, "part": 1, "type": "completion" },
+    { "id": "Q9", "number": 9, "part": 1, "type": "completion" },
+    { "id": "Q10", "number": 10, "part": 1, "type": "completion" }
+  ]
+}
