@@ -370,6 +370,20 @@ Teacher-approved CloudBase grading corrections are authoritative. Future
 content imports must not blindly overwrite revised `grading_keys`; reconcile
 their `grading_version` and `grading_key_history` first.
 
+Student Argue replies have two student-facing surfaces:
+
+- the original question's Argue dialog is the permanent status/reply view
+- Dashboard `Teacher Replies` is only a temporary unread prompt
+
+When a teacher resolves a student Argue request, set `student_seen: false` and
+`student_seen_at: null`. Once the student opens the Dashboard replies prompt,
+`getDashboard.markTeacherRepliesSeen` marks those disputes seen so the prompt
+disappears until a new teacher reply arrives. Historical answer views may show
+Argue status and teacher notes, but must still not reveal correct answers or
+explanations outside the immediate grading response. When a student reopens
+completed work and clicks `Show History`, each historically wrong question must
+still render the student Argue entry point against that historical `attempt_id`.
+
 ### Vocabulary
 
 Only Vocabulary `Test Mode` can count:
@@ -582,6 +596,12 @@ Student dashboard navigation:
 
 Assignments has three selectable cards: `TO DO`, `PASSED`, and `MASTERED`. Do
 not add separate Failed/Done explanation sections below them.
+
+`Teacher Replies` may appear above Assignments only when the student has
+unread resolved Argue replies. It is a transient prompt, not a permanent inbox;
+after the student views it, the prompt should be marked seen and hidden. The
+original exercise question remains the durable place to review that Argue
+status and teacher note.
 
 The hero has no `STUDENT DASHBOARD` label. It shows a varied English greeting
 and a randomly selected motivational sentence. Use China Standard Time for
@@ -1094,6 +1114,9 @@ await db.collection("students").add(student);
 - Historical review endpoints must not return `correct_answer` or
   `explanation`. Those belong only to the immediate post-submit feedback or to
   teacher-authorized views.
+- Historical review UI may distinguish ordinary correct/incorrect states from
+  questions that were argued, including pending/approved/rejected Argue status
+  and teacher note text.
 - Teacher Argue decisions that add or replace answers must update private
   CloudBase `grading_keys` and append `grading_key_history`; do not write
   corrected answers back into public runtime JSON.
