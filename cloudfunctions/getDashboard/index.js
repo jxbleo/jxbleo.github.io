@@ -158,6 +158,11 @@ async function getAttemptReview(student, event) {
   });
   if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
   const set = await getOne("sets", { set_id: attempt.set_id });
+  const assignment = attempt.assignment_id ? await getOne("assignments", {
+    assignment_id: attempt.assignment_id,
+    student_uid: student.auth_uid,
+  }) : null;
+  const canShowFeedback = Boolean(assignment && assignment.answer_revealed === true);
   const disputeResult = await db.collection("answer_disputes").where({
     attempt_id: attemptId,
     student_uid: student.auth_uid,
@@ -172,10 +177,14 @@ async function getAttemptReview(student, event) {
       set_title: set && set.title || attempt.set_id,
       percentage: effectivePercentage(attempt),
       submitted_at: attempt.submitted_at || null,
+      feedback_available: canShowFeedback,
       answers: effectiveQuestionResults(attempt).map((item) => ({
         question_id: item.question_id,
         submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
         correct: item.correct === true,
+        feedback_available: canShowFeedback,
+        correct_answer: canShowFeedback && item.correct_answer != null ? item.correct_answer : null,
+        explanation: canShowFeedback ? item.explanation || "" : "",
       })),
       disputes: ownedDisputes.map((item) => disputeReplyView(item, set)),
     },

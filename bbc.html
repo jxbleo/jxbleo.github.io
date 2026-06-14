@@ -1384,6 +1384,12 @@
             margin-top: 4px;
             color: var(--muted);
         }
+        .history-review-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
 
         .argue-inline textarea {
             width: 100%;
@@ -1639,6 +1645,7 @@
     var blankAttemptLimit = 0;
     var blankAttemptState = {};
     var mcLockedAnswers = {};
+    var answerRevealSavePromise = null;
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -2465,6 +2472,26 @@
         return 'Argued · Waiting';
     }
 
+    function appendHistoryExplainButton(actions, item) {
+        if (!item || !item.feedback_available) return;
+        var detail = document.createElement('div');
+        detail.className = 'inline-explanation ' + (item.correct ? 'correct' : 'wrong');
+        detail.innerHTML = (item.correct ? '&#10004;' : '&#10060;') +
+            ' <strong>Correct answer:</strong> ' + escapeHtml(item.correct_answer == null ? '' : item.correct_answer) +
+            (item.explanation ? '<br><strong>Evidence:</strong> ' + escapeHtml(item.explanation) : '');
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'answer-toggle-btn';
+        button.textContent = 'Explain';
+        button.addEventListener('click', function() {
+            detail.classList.toggle('show');
+            button.textContent = detail.classList.contains('show') ? 'Hide' : 'Explain';
+        });
+        actions.appendChild(button);
+        actions.parentNode.appendChild(detail);
+    }
+
     function markHistoryReview(review) {
         var answers = review && review.answers || [];
         var disputes = review && review.disputes || [];
@@ -2485,6 +2512,10 @@
             note.innerHTML = '<strong>' + (item.correct ? 'Correct in history' : 'Incorrect in history') + '</strong>' +
                 (dispute ? '<span>' + escapeHtml(historyDisputeLabel(dispute)) + '</span>' : '') +
                 (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
+            var actions = document.createElement('div');
+            actions.className = 'history-review-actions';
+            note.appendChild(actions);
+            appendHistoryExplainButton(actions, item);
             if (!item.correct) {
                 var argueButton = document.createElement('button');
                 argueButton.type = 'button';
@@ -2493,7 +2524,7 @@
                 argueButton.addEventListener('click', function(q, containerEl) {
                     return function() { openArgueInline(q, containerEl); };
                 }(qid, container));
-                note.appendChild(argueButton);
+                actions.appendChild(argueButton);
             }
             container.appendChild(note);
         });
@@ -2501,15 +2532,18 @@
 
     function showHistoryAnswers() {
         if (!historyAttemptId || !window.MrCatCloud) return;
-        var prefill = window.MrCatCloud.callFunction('getDashboard', {
-            action: 'getAttemptForRetry',
-            attempt_id: historyAttemptId
-        });
-        var review = window.MrCatCloud.callFunction('getDashboard', {
-            action: 'getAttemptReview',
-            attempt_id: historyAttemptId
-        }).catch(function() { return null; });
-        Promise.all([prefill, review]).then(function(results) {
+        var ready = answerRevealSavePromise || Promise.resolve();
+        ready.then(function() {
+            var prefill = window.MrCatCloud.callFunction('getDashboard', {
+                action: 'getAttemptForRetry',
+                attempt_id: historyAttemptId
+            });
+            var review = window.MrCatCloud.callFunction('getDashboard', {
+                action: 'getAttemptReview',
+                attempt_id: historyAttemptId
+            }).catch(function() { return null; });
+            return Promise.all([prefill, review]);
+        }).then(function(results) {
             var result = results[0];
             if (result && result.success && result.attempt && result.attempt.answers) {
                 currentArgueAttemptId = historyAttemptId;
@@ -2736,8 +2770,8 @@
         toolbar.className = 'history-toolbar';
         toolbar.id = 'history-toolbar';
         toolbar.innerHTML =
-            '<button type="button" id="show-history-btn">Show History</button>' +
-            '<button type="button" id="clear-all-btn">Clear All</button>';
+            '<button type="button" id="show-history-btn">History</button>' +
+            '<button type="button" id="clear-all-btn">Clear</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
             if (answerRevealAvailable) {
@@ -2761,7 +2795,7 @@
     function updateHistoryToolbar() {
         var btn = document.getElementById('show-history-btn');
         if (!btn) return;
-        btn.textContent = answerRevealAvailable ? 'Show Answers' : 'Show History';
+        btn.textContent = answerRevealAvailable ? 'Answers' : 'History';
     }
 
     function revealAllAnswers() {
@@ -2770,6 +2804,8 @@
         document.querySelectorAll('.answer-toggle-btn').forEach(function(btn) {
             if (btn.textContent === 'Show Answer') btn.textContent = 'Hide Answer';
         });
+        answerRevealAvailable = false;
+        updateHistoryToolbar();
     }
 
     function pickResultEncouragement() {
@@ -2947,11 +2983,12 @@
     }
 
     function recordAnswerReveal() {
-        if (!assignmentId || !window.MrCatCloud) return;
-        window.MrCatCloud.callFunction('getDashboard', {
+        if (!assignmentId || !window.MrCatCloud) return Promise.resolve(null);
+        answerRevealSavePromise = window.MrCatCloud.callFunction('getDashboard', {
             action: 'revealAnswers',
             assignment_id: assignmentId
-        }).catch(function() {});
+        }).catch(function() { return null; });
+        return answerRevealSavePromise;
     }
 
     function checkAllAnswered(userAnswers) {

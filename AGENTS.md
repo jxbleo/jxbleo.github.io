@@ -335,9 +335,11 @@ future policy that reveals complete answers only after passing.
 `Try Again` clears browser answers, grading marks, and explanations while
 preserving prior attempt records in CloudBase.
 
-Historical STAR review returns only the student's submitted answers and a
-correct/incorrect flag. It must never return correct answers or explanations.
-Full grading feedback is limited to the immediate response after submission.
+Historical STAR review normally returns only the student's submitted answers and
+a correct/incorrect flag. It must not return correct answers or explanations
+unless the linked assignment has already recorded `answer_revealed: true`. After
+answers have been revealed, history review may return the historical attempt's
+correct answer and explanation for a collapsed, per-question `Explain` action.
 
 ### Argue
 
@@ -379,10 +381,11 @@ When a teacher resolves a student Argue request, set `student_seen: false` and
 `student_seen_at: null`. Once the student opens the Dashboard replies prompt,
 `getDashboard.markTeacherRepliesSeen` marks those disputes seen so the prompt
 disappears until a new teacher reply arrives. Historical answer views may show
-Argue status and teacher notes, but must still not reveal correct answers or
-explanations outside the immediate grading response. When a student reopens
-completed work and clicks `Show History`, each historically wrong question must
-still render the student Argue entry point against that historical `attempt_id`.
+Argue status and teacher notes. When a student reopens completed work and clicks
+`History`, each historically wrong question must still render the student Argue
+entry point against that historical `attempt_id`; if the assignment has already
+recorded `answer_revealed: true`, history may also show a collapsed per-question
+`Explain` action.
 
 ### Vocabulary
 
