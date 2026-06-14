@@ -1199,11 +1199,35 @@
         });
     }
 
+    function teacherFriendlyError(error) {
+        var message = error && (error.message || error.code || String(error)) || '';
+        if (/t\.scope|null is not an object|AUTH_REQUIRED|TEACHER_REQUIRED|TEACHER_LOGIN_REQUIRED/i.test(message)) {
+            return new Error('Teacher login is not active in this browser. Please open teacher.html, log in again, then open this practice from Library.');
+        }
+        return error instanceof Error ? error : new Error(message || 'Teacher action failed.');
+    }
+
+    function ensureTeacherSession() {
+        if (!window.MrCatCloud || typeof window.MrCatCloud.getLoginState !== 'function') {
+            return Promise.reject(new Error('TEACHER_LOGIN_REQUIRED'));
+        }
+        return window.MrCatCloud.getLoginState().then(function(state) {
+            if (!state) throw new Error('TEACHER_LOGIN_REQUIRED');
+            return true;
+        }).catch(function(error) {
+            throw teacherFriendlyError(error);
+        });
+    }
+
     function teacherCall(action, data) {
-        return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}))
+        return ensureTeacherSession().then(function() {
+            return window.MrCatCloud.callFunction('teacherAdmin', Object.assign({ action: action }, data || {}));
+        })
             .then(function(result) {
                 if (!result || !result.success) throw new Error(result && result.message || 'Teacher action failed.');
                 return result;
+            }).catch(function(error) {
+                throw teacherFriendlyError(error);
             });
     }
 
