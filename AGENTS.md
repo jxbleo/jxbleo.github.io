@@ -520,6 +520,32 @@ New CloudBase-backed counting work should keep grading material private through
 before adding a new set so public runtime, private grading, and teacher feedback
 do not diverge.
 
+### IELTS Listening PDF/audio import gotchas
+
+IELTS Listening uses the shared runtime page `ielts-listening.html`. Do not
+create a permanent standalone page for each section or test.
+
+For a new listening set:
+
+- Put homepage/library metadata in `content/ielts-listening/<set_id>.json`.
+- Put public runtime question data in `data/<set_id>.json`.
+- Put audio under `assets/audio/ielts-listening/` and reference it from the
+  runtime JSON.
+- Use `{{Q1}}`, `{{Q2}}`, etc. placeholders in public question HTML; the runtime
+  replaces them with answer inputs.
+- Do not put answers, accepted variants, explanations, or answer-key screenshots
+  in public runtime JSON.
+- Put private answer material in ignored local source files such as
+  `.cloudbase-private/source/ielts-listening/<set_id>.json`; `scripts/prepare-cloudbase-data.js`
+  reads these files to create `grading_keys`.
+
+Cambridge Listening materials may arrive as separate question PDFs, tapescript
+PDFs, answer-key images, and audio files. `pdftotext` may be unavailable;
+Python `pypdf` can often extract the question sheets and tapescripts well enough
+for Section 1-style completion tasks. Always validate question IDs, accepted
+variants such as British/American spelling, and the generated private grading
+key count before importing to CloudBase.
+
 ## 11. Cloud Functions and Deployment
 
 Active backend functions:
