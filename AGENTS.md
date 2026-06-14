@@ -593,6 +593,16 @@ Visitor mode uses the same learning interface but has no assignments, cannot
 fill/select answers, cannot submit, and sees a login prompt on interaction.
 Entry offers Login and `Continue as Visitor`.
 
+Teacher preview pages opened from `teacher.html` must not call `teacherAdmin`
+directly from `Show Answers` or teacher-originated Argue buttons. First verify
+`window.MrCatCloud.getLoginState()` and wrap CloudBase SDK failures such as
+`null is not an object (evaluating 't.scope')` or `TEACHER_REQUIRED` with a
+clear instruction to reopen `teacher.html`, log in again, and open the practice
+from Library. `ielts-reading.html`, `ielts-listening.html`, `bbc.html`, and
+`vocabulary.html` should keep the same `ensureTeacherSession` /
+`teacherFriendlyError` pattern so an expired or missing teacher session never
+surfaces the raw SDK error.
+
 When changing frontend assets, preserve the cache-version pattern in
 `assets/js/config.public.js` and HTML query strings so deployed clients do not
 retain stale JavaScript.
