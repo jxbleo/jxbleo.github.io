@@ -236,8 +236,8 @@ button { cursor: pointer; }
 
 .dashboard-tabs {
     position: sticky;
-    z-index: 5;
-    top: 10px;
+    z-index: 80;
+    top: 8px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 6px;
@@ -267,6 +267,7 @@ button { cursor: pointer; }
 }
 .teacher-create-capsule:hover { background: linear-gradient(135deg, #4c1d95, #6d28d9 58%, #3b82f6); }
 .tab-button {
+    position: relative;
     min-height: 42px;
     border: 0;
     border-radius: 999px;
@@ -274,6 +275,7 @@ button { cursor: pointer; }
     background: transparent;
     font-weight: 850;
 }
+.tab-button .notice-dot { top: -9px; right: -5px; }
 .tab-button.active { color: white; background: var(--accent); }
 
 .dashboard-view[hidden] { display: none; }
@@ -647,6 +649,106 @@ button { cursor: pointer; }
 .assign-flow {
     display: grid;
     gap: 10px;
+}
+.assign-tabs {
+    margin: 0 0 12px;
+}
+.assign-tabs .summary-card,
+.revise-tabs .summary-card {
+    min-height: 48px;
+    padding: 12px 16px;
+    text-align: center;
+}
+.assign-view-panel[hidden] { display: none; }
+.assignment-overview { display: grid; gap: 12px; }
+.assignment-overview-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+.assignment-overview-metric {
+    padding: 13px;
+    border: 1px solid rgba(124,58,237,0.14);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.86);
+}
+.assignment-overview-metric span,
+.assignment-overview-metric strong {
+    display: block;
+}
+.assignment-overview-metric span {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.assignment-overview-metric strong {
+    margin-top: 4px;
+    color: var(--accent-dark);
+    font-size: 1.25rem;
+    font-weight: 950;
+}
+.assignment-table {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid rgba(124,58,237,0.16);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.88);
+}
+.assignment-table-head,
+.assignment-table-row {
+    display: grid;
+    grid-template-columns: minmax(130px, 1.1fr) minmax(180px, 1.6fr) minmax(96px, .7fr) minmax(80px, .45fr) minmax(80px, .45fr) minmax(120px, .8fr);
+    gap: 10px;
+    align-items: center;
+}
+.assignment-table-head {
+    padding: 11px 13px;
+    color: var(--muted);
+    background: rgba(124,58,237,0.07);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.assignment-table-row {
+    width: 100%;
+    padding: 13px;
+    border: 0;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    color: var(--ink);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.assignment-table-row:hover { background: rgba(124,58,237,0.045); }
+.assignment-table-row strong,
+.assignment-table-row small {
+    display: block;
+}
+.assignment-table-row small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.7rem;
+}
+.assignment-status-pill,
+.assignment-alert-pill {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 9px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+.assignment-status-pill.to_do { color: #7a5528; background: #fff1da; }
+.assignment-status-pill.passed,
+.assignment-status-pill.mastered { color: var(--success); background: var(--success-soft); }
+.assignment-alert-pill.ok { color: var(--success); background: var(--success-soft); }
+.assignment-alert-pill.watch { color: #7a5528; background: #fff1da; }
+.assignment-alert-pill.danger { color: var(--danger); background: var(--danger-soft); }
+.assignment-overview-detail {
+    padding: 0 13px 13px;
+    border-top: 1px solid rgba(124,58,237,0.10);
 }
 .assign-setup { margin-bottom: 14px; }
 .assign-step-card,
@@ -1088,6 +1190,63 @@ button { cursor: pointer; }
 .account-inactive { background: var(--danger); }
 .student-detail { display: grid; gap: 12px; }
 .student-profile-card, .student-progress-card { min-height: 160px; }
+.student-info-head {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.student-info-head .eyebrow { margin: 0; }
+.student-info-name {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.18rem;
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+.student-info-edit {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.student-info-edit strong::after {
+    content: " Edit";
+    margin-left: 6px;
+    color: var(--accent-dark);
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.student-info-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 7px;
+    align-items: center;
+    margin-top: 10px;
+}
+.student-info-editor input,
+.student-info-editor select {
+    min-width: 0;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid rgba(124,58,237,0.22);
+    border-radius: 9px;
+    background: white;
+    color: var(--ink);
+    font: inherit;
+}
+.student-info-editor button {
+    min-height: 36px;
+    padding: 0 10px;
+    border-radius: 9px;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
 .empty-check-card h2 { margin: 0 0 8px; }
 .student-detail-heading { display: flex; align-items: start; justify-content: space-between; gap: 14px; }
 .student-detail-heading h2 { margin: 0; }
@@ -1453,6 +1612,67 @@ button { cursor: pointer; }
 .notice-dot.success { background: var(--success); }
 .notice-dot.danger { background: var(--danger); }
 .dispute-list { display: grid; gap: 12px; }
+.review-merge-toggle {
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(124,58,237,0.22);
+    border-radius: 999px;
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.86);
+    font-size: 0.74rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+.review-merge-toggle.active {
+    color: white;
+    border-color: transparent;
+    background: var(--accent);
+}
+.dispute-merge-card { padding: 0; overflow: hidden; }
+.dispute-merge-head {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 18px 20px;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.dispute-merge-head:hover { background: rgba(124,58,237,0.055); }
+.dispute-merge-head strong,
+.dispute-merge-head small { display: block; }
+.dispute-merge-head small { margin-top: 4px; color: var(--muted); font-size: 0.76rem; }
+.dispute-merge-viz {
+    display: grid;
+    gap: 10px;
+    padding: 0 20px 18px;
+}
+.merge-bars { display: grid; gap: 8px; }
+.merge-bar-row {
+    display: grid;
+    grid-template-columns: minmax(80px, .45fr) minmax(0, 1fr) auto;
+    gap: 9px;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.merge-bar-track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(124,58,237,0.10);
+}
+.merge-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6 58%, #60a5fa);
+}
 .dispute-card { padding: 0; overflow: hidden; }
 .dispute-card.approved, .dispute-card.rejected { opacity: 0.82; }
 .dispute-capsule {
@@ -1584,6 +1804,18 @@ button { cursor: pointer; }
     }
     .student-account-actions { justify-content: stretch; }
     .student-account-actions button { flex: 1 1 140px; }
+    .student-info-head { grid-template-columns: 1fr; text-align: center; }
+    .student-info-head .eyebrow { justify-self: center; }
+    .student-info-editor { grid-template-columns: 1fr; }
+    .assignment-overview-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .assignment-table-head { display: none; }
+    .assignment-table-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .assignment-status-pill,
+    .assignment-alert-pill { justify-self: start; }
+    .merge-bar-row { grid-template-columns: 1fr; }
     .dispute-capsule { grid-template-columns: 1fr auto; }
     .dispute-capsule-meta { justify-items: end; }
     .sub-tabs { width: 100%; }
