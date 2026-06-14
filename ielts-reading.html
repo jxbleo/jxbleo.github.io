@@ -21,15 +21,65 @@
         * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg); color: var(--text-main); line-height: 1.6;
+            display: grid;
+            grid-template-rows: 44px minmax(0, 1fr) 78px;
+            height: 100dvh;
+            background: #e7edf5; color: var(--text-main); line-height: 1.6;
             margin: 0; padding: 0; overflow: hidden;
+        }
+        button, input, select { font: inherit; }
+        .exam-topbar {
+            display: grid;
+            grid-template-columns: minmax(130px, 1fr) auto minmax(190px, 1fr);
+            align-items: center;
+            gap: 12px;
+            padding: 0 14px;
+            color: #f8fafc;
+            background: linear-gradient(180deg, #202838, #111827);
+            box-shadow: inset 0 -1px rgba(255,255,255,.18), 0 1px 4px rgba(15,23,42,.28);
+        }
+        .exam-set-id {
+            min-width: 0;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .exam-timer {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 7px;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+        .exam-timer strong { font-size: 25px; line-height: 1; }
+        .exam-timer.urgent { color: #f87171; }
+        .exam-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+        .exam-actions button {
+            min-height: 28px;
+            padding: 0 13px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 4px;
+            color: #111827;
+            background: linear-gradient(180deg, #ffffff, #dbe2ec);
+            box-shadow: inset 0 1px #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
         }
         .container {
             width: 100%;
-            height: 100dvh;
+            height: 100%;
             margin: 0 auto;
-            background: linear-gradient(180deg, #f8fbff 0%, #eef3f8 100%);
-            padding: 10px 14px;
+            background: #e7edf5;
+            padding: 8px 14px;
             position: relative;
             overflow: hidden;
         }
@@ -70,34 +120,14 @@
             backdrop-filter: blur(14px);
         }
         body .mrcat-back {
-            left: 14px !important;
-            bottom: 14px !important;
-            min-height: 40px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 9px 15px !important;
-            border: 1px solid rgba(126, 148, 173, 0.42) !important;
-            border-radius: 999px !important;
-            color: #17233a !important;
-            background: rgba(248, 251, 255, 0.94) !important;
-            box-shadow: 0 12px 30px rgba(39, 49, 66, 0.14) !important;
-            backdrop-filter: blur(14px) !important;
-            letter-spacing: 0 !important;
-            transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease !important;
-        }
-        body .mrcat-back:hover {
-            color: var(--accent) !important;
-            border-color: rgba(37, 99, 235, 0.34) !important;
-            background: rgba(255, 255, 255, 0.98) !important;
-            transform: translateY(-1px) !important;
+            display: none !important;
         }
         .split-layout {
             display: grid;
             grid-template-columns: minmax(360px, 1.04fr) 14px minmax(360px, 0.96fr);
             gap: 0;
-            height: calc(100dvh - 20px);
-            min-height: 560px;
+            height: 100%;
+            min-height: 0;
             margin: 0;
             align-items: stretch;
             overflow: hidden;
@@ -119,7 +149,7 @@
             }
             #main-content { height: 100%; overflow: hidden; }
             .split-layout {
-                height: calc(100dvh - 16px);
+                height: 100%;
                 min-height: 0;
                 grid-template-columns: 1fr;
                 grid-template-rows: minmax(170px, 43%) 12px minmax(230px, 1fr);
@@ -206,10 +236,10 @@
             flex-direction: column;
             min-width: 0;
             overflow: hidden;
-            border: 1px solid rgba(217,226,236,0.92);
-            border-radius: 18px;
-            background: rgba(255,255,255,0.94);
-            box-shadow: var(--panel-shadow);
+            border: 1px solid #cfd8e3;
+            border-radius: 4px;
+            background: #fbfbfd;
+            box-shadow: 0 1px 5px rgba(15, 23, 42, 0.08);
         }
         .panel-header {
             flex: 0 0 auto;
@@ -220,7 +250,7 @@
             min-height: 48px;
             padding: 10px 14px;
             border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(180deg, #ffffff, #f8fbff);
+            background: linear-gradient(180deg, #ffffff, #f3f6fb);
         }
         .questions-panel .panel-header { justify-content: space-between; }
         .panel-title { min-width: 0; }
@@ -446,13 +476,13 @@
 
         .submit-area {
             flex: 0 0 auto;
-            display: grid;
+            display: none;
             gap: 10px;
             margin-top: 8px;
             padding: 16px;
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            background: linear-gradient(180deg, #ffffff, #f8fbff);
+            border-radius: 4px;
+            background: #fff;
         }
         .submit-hint {
             margin: 0;
@@ -487,7 +517,7 @@
         .result-score { margin: 0; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
         .result-copy { color: var(--text-light); line-height: 1.45; }
         .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
-        .history-toolbar { position: fixed; z-index: 999; right: 14px; bottom: 14px; display: flex; gap: 8px; justify-content: flex-end; pointer-events: none; }
+        .history-toolbar { position: fixed; z-index: 999; right: 14px; bottom: 92px; display: flex; gap: 8px; justify-content: flex-end; pointer-events: none; }
         .history-toolbar button {
             pointer-events: auto;
             min-height: 40px;
@@ -505,8 +535,137 @@
         .history-toolbar button:hover { color: var(--accent); border-color: rgba(37,99,235,.34); background: rgba(255,255,255,.98); transform: translateY(-1px); }
         @keyframes resultPop { from { opacity: 0; transform: translateY(18px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
+        .exam-bottom-nav {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 18px;
+            border-top: 1px solid #cbd5e1;
+            background: #e9f0f8;
+            box-shadow: 0 -2px 8px rgba(15,23,42,.08);
+        }
+        .exam-review {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #475569;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .exam-review input { accent-color: #0f172a; }
+        .exam-question-map {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 14px;
+            min-width: 0;
+        }
+        .exam-part-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .exam-part-label {
+            margin-right: 2px;
+            color: #111827;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .exam-q-nav {
+            position: relative;
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid #0f172a;
+            border-radius: 3px;
+            color: #fff;
+            background: linear-gradient(180deg, #2d3748, #05070b);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .exam-q-nav.current {
+            border-color: #0ea5e9;
+            background: linear-gradient(180deg, #7dd3fc, #0284c7);
+        }
+        .exam-q-nav.answered {
+            box-shadow: inset 0 -4px 0 #94a3b8;
+        }
+        .exam-q-nav.reviewed::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: -2px;
+            width: 9px;
+            height: 9px;
+            border: 1px solid rgba(15,23,42,.45);
+            border-radius: 2px;
+            background: #facc15;
+        }
+        .exam-submit-btn {
+            min-width: 112px;
+            min-height: 44px;
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            background: #0f172a;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(15,23,42,.22);
+        }
+        .exam-submit-btn:hover:not(:disabled) { background: #1e293b; }
+        .exam-submit-btn:disabled {
+            opacity: .58;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .correct-mark { color: #27ae60; font-weight: bold; margin-left: 6px; }
         .wrong-mark { color: #e67e22; font-weight: bold; margin-left: 6px; }
+
+        @media (max-width: 820px) {
+            body {
+                grid-template-rows: 42px minmax(0, 1fr) 112px;
+            }
+            .exam-topbar {
+                grid-template-columns: minmax(76px, 1fr) auto minmax(96px, 1fr);
+                gap: 8px;
+                padding: 0 8px;
+            }
+            .exam-set-id { font-size: 11px; }
+            .exam-timer { gap: 4px; }
+            .exam-timer strong { font-size: 20px; }
+            .exam-timer span { font-size: 11px; }
+            .exam-actions { gap: 4px; }
+            .exam-actions button {
+                min-height: 27px;
+                padding: 0 7px;
+                font-size: 11px;
+            }
+            .container { padding: 8px; }
+            .exam-bottom-nav {
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto auto;
+                gap: 8px;
+                padding: 8px;
+            }
+            .exam-review { grid-column: 1 / -1; }
+            .exam-question-map {
+                max-height: 54px;
+                overflow: auto;
+                flex-wrap: nowrap;
+            }
+            .exam-q-nav {
+                width: 26px;
+                height: 26px;
+                flex: 0 0 auto;
+            }
+            .exam-submit-btn {
+                min-width: 92px;
+            }
+        }
 
         @media (max-width: 480px) {
             .tfng-options, .ynng-options { flex-direction: column; gap: 6px; }
@@ -518,6 +677,15 @@
     </style>
 </head>
 <body>
+<header class="exam-topbar">
+    <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
+    <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
+    <div class="exam-actions">
+        <button type="button" id="exam-dashboard-btn">Dashboard</button>
+        <button type="button">Settings</button>
+        <button type="button">Help</button>
+    </div>
+</header>
 <div class="identity-status" id="identity-status">Login</div>
 <div class="container" id="app">
     <div id="login-overlay" class="login-overlay" style="display:none;">
@@ -570,8 +738,6 @@
                 <div class="panel-scroll question-scroll">
                     <div id="questions-container"></div>
                     <div class="submit-area">
-                        <p class="submit-hint">Review your answers, then submit from here.</p>
-                        <button class="submit-btn" id="submit-btn" type="button">Submit Answers</button>
                         <div class="score-display" id="score-display"></div>
                     </div>
                 </div>
@@ -583,11 +749,16 @@
     <button class="primary" id="highlight-add-btn" type="button">Highlight</button>
     <button id="highlight-clear-btn" type="button">Clear</button>
 </div>
+<nav class="exam-bottom-nav" aria-label="Question navigation">
+    <label class="exam-review"><input id="exam-review-checkbox" type="checkbox"> Review</label>
+    <div class="exam-question-map" id="exam-question-map"></div>
+    <button class="exam-submit-btn" id="submit-btn" type="button">Submit</button>
+</nav>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260613-14"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-<script src="assets/js/practice-session.js?v=20260611-2"></script>
+<script src="assets/js/practice-session.js?v=20260614-3"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
         console.log(JSON.stringify({ studentId: studentId, taskId: taskId, eventType: eventType, timestamp: timestamp, eventData: eventData }));
@@ -615,6 +786,11 @@
     var highlightToolbar = document.getElementById('highlight-toolbar');
     var splitLayout = document.getElementById('split-layout');
     var splitDivider = document.getElementById('split-divider');
+    var readingDurationSeconds = 60 * 60;
+    var readingTimerStartedAt = Date.now();
+    var readingTimerInterval = null;
+    var activeQuestionId = '';
+    var reviewedQuestions = {};
 
     var loginOverlay = document.getElementById('login-overlay');
     var errorDisplay = document.getElementById('error-display');
@@ -649,6 +825,31 @@
         errorDisplay.style.display = 'block';
         errorDisplay.innerHTML = '<h2>Error</h2><p>' + msg + '</p>';
         loadingDisplay.style.display = 'none';
+    }
+
+    function updateReadingTimer() {
+        var number = document.getElementById('exam-time-left');
+        var label = document.getElementById('exam-time-label');
+        var display = document.getElementById('exam-timer');
+        if (!number || !label || !display) return;
+        var elapsed = Math.floor((Date.now() - readingTimerStartedAt) / 1000);
+        var remaining = Math.max(0, readingDurationSeconds - elapsed);
+        if (remaining <= 60) {
+            number.textContent = remaining;
+            label.textContent = remaining === 1 ? 'second left' : 'seconds left';
+            display.classList.add('urgent');
+            return;
+        }
+        number.textContent = Math.ceil(remaining / 60);
+        label.textContent = 'minutes left';
+        display.classList.remove('urgent');
+    }
+
+    function startReadingTimer() {
+        readingTimerStartedAt = Date.now();
+        updateReadingTimer();
+        if (readingTimerInterval) clearInterval(readingTimerInterval);
+        readingTimerInterval = setInterval(updateReadingTimer, 1000);
     }
 
     function storeAnswers() {
@@ -1736,6 +1937,78 @@
         });
     }
 
+    function questionNumber(questionId) {
+        var match = String(questionId || '').match(/\d+/);
+        return match ? Number(match[0]) : 0;
+    }
+
+    function passageNumberForQuestion(questionId) {
+        var number = questionNumber(questionId);
+        if (number >= 27) return 3;
+        if (number >= 14) return 2;
+        return 1;
+    }
+
+    function isQuestionAnswered(questionId) {
+        var fields = document.querySelectorAll('[name="' + CSS.escape(questionId) + '"]');
+        if (!fields.length) return false;
+        var first = fields[0];
+        if (first.type === 'radio') {
+            return !!document.querySelector('[name="' + CSS.escape(questionId) + '"]:checked');
+        }
+        if (first.tagName === 'SELECT') return !!first.value;
+        return !!String(first.value || '').trim();
+    }
+
+    function renderExamQuestionNav() {
+        var nav = document.getElementById('exam-question-map');
+        if (!nav) return;
+        var grouped = {};
+        allQuestions.forEach(function(question) {
+            var passage = passageNumberForQuestion(question.id);
+            if (!grouped[passage]) grouped[passage] = [];
+            grouped[passage].push(question);
+        });
+        nav.innerHTML = Object.keys(grouped).sort(function(a, b) {
+            return Number(a) - Number(b);
+        }).map(function(passage) {
+            return '<span class="exam-part-group"><span class="exam-part-label">Passage ' + passage + '</span>' +
+                grouped[passage].map(function(question) {
+                    var number = questionNumber(question.id) || question.id;
+                    return '<button class="exam-q-nav" type="button" data-question-jump="' + question.id + '">' + number + '</button>';
+                }).join('') +
+            '</span>';
+        }).join('');
+        if (!activeQuestionId && allQuestions[0]) activeQuestionId = allQuestions[0].id;
+        updateQuestionNav();
+    }
+
+    function setActiveQuestion(questionId) {
+        if (!questionId) return;
+        activeQuestionId = questionId;
+        var checkbox = document.getElementById('exam-review-checkbox');
+        if (checkbox) checkbox.checked = !!reviewedQuestions[questionId];
+        updateQuestionNav();
+    }
+
+    function updateQuestionNav() {
+        document.querySelectorAll('.exam-q-nav').forEach(function(button) {
+            var questionId = button.getAttribute('data-question-jump');
+            button.classList.toggle('current', questionId === activeQuestionId);
+            button.classList.toggle('answered', isQuestionAnswered(questionId));
+            button.classList.toggle('reviewed', !!reviewedQuestions[questionId]);
+        });
+    }
+
+    function jumpToQuestion(questionId) {
+        var question = allQuestions.find(function(item) { return item.id === questionId; });
+        if (!question || !question.element) return;
+        setActiveQuestion(questionId);
+        question.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var firstField = question.element.querySelector('[data-question="' + CSS.escape(questionId) + '"]');
+        if (firstField) setTimeout(function() { firstField.focus(); }, 250);
+    }
+
     function allAnswered() {
         var inputs = document.querySelectorAll('[data-question]');
         for (var i = 0; i < inputs.length; i++) {
@@ -1929,6 +2202,8 @@
             showError('No set specified. Please add <code>?set=SETID</code> to the URL, e.g. <code>?set=C7-T3-P1</code>.');
             return;
         }
+        document.getElementById('exam-set-id').textContent = setId;
+        startReadingTimer();
 
         if (!userId) userId = getStoredIdentity();
         if (params.get('user') && params.get('user') !== 'VISITOR') {
@@ -2018,6 +2293,7 @@
 
                     renderPassage();
                     renderQuestions();
+                    renderExamQuestionNav();
                     if (teacherMode) {
                         renderTeacherAnswerToolbar();
                         document.getElementById('submit-btn').disabled = true;
@@ -2045,6 +2321,32 @@
     function setupControls() {
         var submitBtn = document.getElementById('submit-btn');
         submitBtn.addEventListener('click', handleSubmit);
+        var dashboardBtn = document.getElementById('exam-dashboard-btn');
+        if (dashboardBtn) {
+            dashboardBtn.onclick = function() {
+                window.location.href = 'dashboard.html';
+            };
+        }
+        var reviewCheckbox = document.getElementById('exam-review-checkbox');
+        if (reviewCheckbox) {
+            reviewCheckbox.onchange = function() {
+                if (!activeQuestionId) return;
+                if (reviewCheckbox.checked) {
+                    reviewedQuestions[activeQuestionId] = true;
+                } else {
+                    delete reviewedQuestions[activeQuestionId];
+                }
+                updateQuestionNav();
+            };
+        }
+        var questionMap = document.getElementById('exam-question-map');
+        if (questionMap) {
+            questionMap.onclick = function(event) {
+                var button = event.target.closest('[data-question-jump]');
+                if (!button) return;
+                jumpToQuestion(button.getAttribute('data-question-jump'));
+            };
+        }
 
         var form = document.getElementById('main-content').querySelector('form');
         if (!form) {
@@ -2106,6 +2408,22 @@
 
         document.getElementById('highlight-add-btn').addEventListener('click', applyHighlight);
         document.getElementById('highlight-clear-btn').addEventListener('click', clearHighlight);
+        document.addEventListener('change', function(event) {
+            var questionId = event.target && event.target.getAttribute && event.target.getAttribute('data-question');
+            if (!questionId) return;
+            setActiveQuestion(questionId);
+            updateQuestionNav();
+        });
+        document.addEventListener('input', function(event) {
+            var questionId = event.target && event.target.getAttribute && event.target.getAttribute('data-question');
+            if (!questionId) return;
+            setActiveQuestion(questionId);
+            updateQuestionNav();
+        });
+        document.addEventListener('focusin', function(event) {
+            var questionId = event.target && event.target.getAttribute && event.target.getAttribute('data-question');
+            if (questionId) setActiveQuestion(questionId);
+        });
         restoreSplitRatio();
         setupResizableSplit();
         document.addEventListener('selectionchange', handleTextSelection);
