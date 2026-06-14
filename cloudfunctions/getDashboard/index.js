@@ -7,12 +7,15 @@ async function getAuthenticatedStudent() {
   const userInfo = await app.auth().getUserInfo();
   const uid = userInfo && (userInfo.uid || userInfo.userId);
   if (!uid) throw new Error("AUTH_REQUIRED");
+  const authUid = String(uid);
   const result = await db.collection("students").where({
-    auth_uid: String(uid),
+    auth_uid: authUid,
     active: true,
   }).limit(1).get();
   if (!result.data || !result.data[0]) throw new Error("STUDENT_NOT_LINKED");
-  return result.data[0];
+  const student = result.data[0];
+  if (String(student.auth_uid || "") !== authUid) throw new Error("STUDENT_NOT_LINKED");
+  return student;
 }
 
 async function getOne(collection, query) {
@@ -109,6 +112,15 @@ function disputeSeen(item) {
   return item.student_seen === true || Boolean(item.student_seen_at);
 }
 
+function disputeBelongsToStudent(item, student) {
+  const studentUid = String(student && student.auth_uid || "");
+  return Boolean(studentUid && item && String(item.student_uid || "") === studentUid);
+}
+
+function filterDisputesForStudent(items, student) {
+  return (items || []).filter((item) => disputeBelongsToStudent(item, student));
+}
+
 function disputeReplyView(item, set) {
   return {
     dispute_id: item.dispute_id || item._id,
@@ -129,8 +141,8 @@ function disputeReplyView(item, set) {
   };
 }
 
-function resolvedTeacherReplyItems(items) {
-  return (items || []).filter((item) =>
+function resolvedTeacherReplyItems(items, student) {
+  return filterDisputesForStudent(items, student).filter((item) =>
     item && item.status !== "pending" && !disputeSeen(item)
   ).sort((left, right) =>
     dateValue(right.resolved_at || right.updated_at) - dateValue(left.resolved_at || left.updated_at)
@@ -150,6 +162,8 @@ async function getAttemptReview(student, event) {
     attempt_id: attemptId,
     student_uid: student.auth_uid,
   }).limit(100).get();
+  const ownedDisputes = filterDisputesForStudent(disputeResult.data || [], student)
+    .filter((item) => String(item.attempt_id || "") === attemptId);
   return {
     success: true,
     review: {
@@ -163,7 +177,7 @@ async function getAttemptReview(student, event) {
         submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
         correct: item.correct === true,
       })),
-      disputes: (disputeResult.data || []).map((item) => disputeReplyView(item, set)),
+      disputes: ownedDisputes.map((item) => disputeReplyView(item, set)),
     },
   };
 }
@@ -222,9 +236,11 @@ async function listDisputesForAttempt(student, event) {
     attempt_id: attemptId,
     student_uid: student.auth_uid,
   }).limit(100).get();
+  const ownedDisputes = filterDisputesForStudent(result.data || [], student)
+    .filter((item) => String(item.attempt_id || "") === attemptId);
   return {
     success: true,
-    disputes: (result.data || []).map((item) => ({
+    disputes: ownedDisputes.map((item) => ({
       dispute_id: item.dispute_id || item._id,
       question_id: item.question_id,
       question_text: item.question_text_snapshot || "",
@@ -246,7 +262,7 @@ async function listTeacherReplies(student) {
   const result = await db.collection("answer_disputes").where({
     student_uid: student.auth_uid,
   }).limit(200).get();
-  const resolved = resolvedTeacherReplyItems(result.data || []);
+  const resolved = resolvedTeacherReplyItems(result.data || [], student);
   const setIds = [...new Set(resolved.map((item) => item.set_id).filter(Boolean))];
   const setMap = new Map();
   await Promise.all(setIds.map(async (setId) => {
@@ -269,7 +285,7 @@ async function markTeacherRepliesSeen(student, event) {
   let seenCount = 0;
   for (const item of result.data || []) {
     const disputeId = item.dispute_id || item._id;
-    if (!idSet.has(disputeId) || item.status === "pending") continue;
+    if (!disputeBelongsToStudent(item, student) || !idSet.has(disputeId) || item.status === "pending") continue;
     await db.collection("answer_disputes").doc(item._id).update({
       student_seen: true,
       student_seen_at: now,
@@ -552,7 +568,7 @@ exports.main = async (event = {}) => {
     const disputeResult = await db.collection("answer_disputes").where({
       student_uid: student.auth_uid,
     }).limit(500).get();
-    const teacherReplyItems = resolvedTeacherReplyItems(disputeResult.data || []);
+    const teacherReplyItems = resolvedTeacherReplyItems(disputeResult.data || [], student);
     const starResult = await db.collection("student_set_achievements").where({
       student_uid: student.auth_uid,
     }).limit(500).get();
