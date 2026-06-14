@@ -10,7 +10,8 @@
         resourceFilter: 'vocabulary',
         starCount: 0,
         assignmentStarCount: 0,
-        selfStudyStarCount: 0
+        selfStudyStarCount: 0,
+        teacherReplies: []
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -142,6 +143,30 @@
         return status || 'to_do';
     }
 
+    function isFinishedStatus(status) {
+        var normalized = normalizedStatus(status);
+        return normalized === 'passed' || normalized === 'mastered';
+    }
+
+    function assignmentBucket(status) {
+        return isFinishedStatus(status) ? 'finished' : 'todo';
+    }
+
+    function teacherReplyCount(item) {
+        if (!item) return 0;
+        if (item.teacher_reply_count != null) return Number(item.teacher_reply_count || 0);
+        return Array.isArray(item.teacher_replies) ? item.teacher_replies.length : 0;
+    }
+
+    function replyKeyForItem(item) {
+        var set = item && (item.set || item) || {};
+        return String(item && (item.assignment_id || item.achievement_id) || set.set_id || set.id || '');
+    }
+
+    function replyIds(replies) {
+        return (replies || []).map(function(reply) { return reply.dispute_id; }).filter(Boolean);
+    }
+
     function practiceHref(item, assignmentId) {
         var href = item.link || item.href || '#';
         var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
@@ -155,18 +180,24 @@
     }
 
     function renderAssignmentFilters(assignments) {
-        var counts = { to_do: 0, passed: 0, mastered: 0 };
+        var counts = { todo: 0, finished: 0 };
+        var replies = { todo: 0, finished: 0 };
         assignments.forEach(function(item) {
-            var status = normalizedStatus(item.status);
-            counts[status] = (counts[status] || 0) + 1;
+            var bucket = assignmentBucket(item.status);
+            counts[bucket] = (counts[bucket] || 0) + 1;
+            replies[bucket] += teacherReplyCount(item);
         });
+        var todoNotice = replies.todo
+            ? '<span class="reply-count-badge filter-reply-count">' + replies.todo + '</span>'
+            : '';
+        var finishedNotice = replies.finished
+            ? '<span class="reply-count-badge filter-reply-count">' + replies.finished + '</span>'
+            : '';
         return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
             '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
-                '<span class="summary-value">' + counts.to_do + '</span><span class="summary-label">TO DO</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'passed' ? ' active' : '') + '" type="button" data-assignment-filter="passed">' +
-                '<span class="summary-value">' + counts.passed + '</span><span class="summary-label">PASSED</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'mastered' ? ' active' : '') + '" type="button" data-assignment-filter="mastered">' +
-                '<span class="summary-value">' + counts.mastered + '</span><span class="summary-label">MASTERED</span></button>' +
+                todoNotice + '<span class="summary-value">' + counts.todo + '</span><span class="summary-label">TO DO</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'finished' ? ' active' : '') + '" type="button" data-assignment-filter="finished">' +
+                finishedNotice + '<span class="summary-value">' + counts.finished + '</span><span class="summary-label">FINISHED</span></button>' +
         '</div>';
     }
 
@@ -244,8 +275,8 @@
             return 'No attempts';
         }
         var value = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
-        if (value == null) return statusLabel(status);
-        return status === 'mastered' ? 'Mastered ' + value + '%' : 'Passed ' + value + '%';
+        if (value == null) return 'FINISHED';
+        return 'Accuracy ' + value + '%';
     }
 
     function passwordValidationMessage(password) {
@@ -356,9 +387,12 @@
     function taskCard(item) {
         var set = item.set || item;
         var status = normalizedStatus(item.status);
-        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'Beat Your Best' : 'Go for Mastery');
+        var finished = isFinishedStatus(status);
+        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'Beat Your Best' : 'Improve Accuracy');
         var actionClass = status === 'to_do' ? ' task-go-button' : '';
-        var badgeClass = status;
+        var badgeClass = finished ? 'finished' : status;
+        var replyCount = teacherReplyCount(item);
+        var replyKey = replyKeyForItem(item);
         var href = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
             history_attempt_id: item.history_attempt_id,
@@ -368,19 +402,28 @@
         var sourcePill = item.source === 'self_study'
             ? '<span class="assignment-pill source self-study">SELF STUDY</span>'
             : '';
-        return '<article class="task-card" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '">' +
+        var milestonePill = finished
+            ? '<span class="assignment-pill milestone ' + escapeHtml(status) + '">' + escapeHtml(statusLabel(status)) + '</span>'
+            : '';
+        var replyButton = replyCount
+            ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
+                'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
+            : '';
+        return '<article class="task-card' + (replyCount ? ' has-teacher-replies' : '') + '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '">' +
             '<div>' +
                 '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
                 '<div class="assignment-pills">' +
                     sourcePill +
                     '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
                     (status === 'to_do' ? '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' : '') +
+                    milestonePill +
                     '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>' +
                 '</div>' +
             '</div>' +
             (status === 'mastered' && !collected
                 ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
                 : '') +
+            replyButton +
             '<a class="card-button' + actionClass + '" href="' + escapeHtml(href) + '">' + action + '</a>' +
         '</article>';
     }
@@ -411,6 +454,106 @@
         return assignmentTime(right) - assignmentTime(left);
     }
 
+    function teacherReplyTotal() {
+        return (state.teacherReplies || []).length;
+    }
+
+    function updateDashboardTabNotices() {
+        var count = teacherReplyTotal();
+        var button = document.querySelector('.tab-button[data-view="assignments"]');
+        if (!button) return;
+        var existing = button.querySelector('.notice-dot');
+        if (existing) existing.remove();
+        if (!count) return;
+        var dot = document.createElement('span');
+        dot.className = 'notice-dot';
+        dot.textContent = count > 9 ? '9+' : String(count);
+        button.appendChild(dot);
+    }
+
+    function clearTeacherReplies(seenIds) {
+        var idSet = new Set(seenIds || []);
+        if (!idSet.size) return;
+        state.teacherReplies = (state.teacherReplies || []).filter(function(reply) {
+            return !idSet.has(reply.dispute_id);
+        });
+        (state.assignments || []).forEach(function(item) {
+            if (!Array.isArray(item.teacher_replies)) return;
+            item.teacher_replies = item.teacher_replies.filter(function(reply) {
+                return !idSet.has(reply.dispute_id);
+            });
+            item.teacher_reply_count = item.teacher_replies.length;
+        });
+        updateDashboardTabNotices();
+    }
+
+    function replyStatusClass(reply) {
+        if (reply.status === 'approved') return 'approved';
+        if (reply.status === 'rejected') return 'rejected';
+        return 'pending';
+    }
+
+    function renderTeacherRepliesPrompt() {
+        var replies = state.teacherReplies || [];
+        if (!replies.length) return '';
+        return '<section class="teacher-replies-card">' +
+            '<div>' +
+                '<span class="badge neutral">Teacher Replies</span>' +
+                '<h3>Your teacher replied to ' + replies.length + ' question' + (replies.length === 1 ? '' : 's') + '.</h3>' +
+            '</div>' +
+            '<button class="primary-button" id="open-teacher-replies" type="button">View replies</button>' +
+        '</section>';
+    }
+
+    function openTeacherRepliesDialog(replyItems) {
+        var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
+        if (!replies.length) return;
+        var overlay = document.createElement('div');
+        overlay.className = 'teacher-replies-overlay';
+        overlay.innerHTML =
+            '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
+                '<button class="dialog-close-button" type="button" aria-label="Close teacher replies">×</button>' +
+                '<p class="eyebrow accent">Teacher Replies</p>' +
+                '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+                '<div class="teacher-replies-list">' + replies.map(function(reply) {
+                    return '<article class="teacher-reply-item ' + escapeHtml(replyStatusClass(reply)) + '">' +
+                        '<strong>' + escapeHtml(reply.set_title || reply.set_id || 'Practice') + ' · ' + escapeHtml(reply.question_id || 'Question') + '</strong>' +
+                        '<span>' + escapeHtml(reply.decision_label || reply.status || 'Reviewed') + '</span>' +
+                        (reply.teacher_note ? '<p>Teacher note: ' + escapeHtml(reply.teacher_note) + '</p>' : '') +
+                        (reply.submitted_answer ? '<small>Your answer: ' + escapeHtml(reply.submitted_answer) + '</small>' : '') +
+                    '</article>';
+                }).join('') + '</div>' +
+                '<div class="dialog-actions">' +
+                    '<button class="primary-button" id="teacher-replies-done" type="button">Done</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        function close(markSeen) {
+            document.removeEventListener('keydown', onKeydown);
+            overlay.remove();
+            if (!markSeen) return;
+            var ids = replyIds(replies);
+            clearTeacherReplies(ids);
+            renderAssignments();
+            window.MrCatCloud.callFunction('getDashboard', {
+                action: 'markTeacherRepliesSeen',
+                dispute_ids: ids
+            }).catch(function() {});
+        }
+
+        function onKeydown(event) {
+            if (event.key === 'Escape') close(true);
+        }
+
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) close(true);
+        });
+        overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
+        overlay.querySelector('#teacher-replies-done').addEventListener('click', function() { close(true); });
+        document.addEventListener('keydown', onKeydown);
+    }
+
     function renderAssignments() {
         if (state.session.mode === 'visitor') {
             assignmentContent.innerHTML =
@@ -420,39 +563,50 @@
 
         var assignments = state.assignments || [];
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
-        var passed = assignments.filter(function(item) { return normalizedStatus(item.status) === 'passed'; }).sort(newestFirst);
-        var mastered = assignments.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).sort(function(left, right) {
+        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); }).sort(function(left, right) {
+            var byReply = teacherReplyCount(right) - teacherReplyCount(left);
+            if (byReply) return byReply;
             return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
                 new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
         });
         var visible = [];
         if (state.assignmentFilter === 'todo') visible = todo;
-        else if (state.assignmentFilter === 'passed') visible = passed;
-        else if (state.assignmentFilter === 'mastered') visible = filterDone(mastered, state.starsRange);
+        else if (state.assignmentFilter === 'finished') visible = finished;
         else visible = todo;
 
-        var html = renderAssignmentFilters(assignments);
-        if (state.assignmentFilter === 'mastered') html += starsControls();
+        var html = renderTeacherRepliesPrompt() + renderAssignmentFilters(assignments);
         if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!visible.length) {
-            var emptyLabel = state.assignmentFilter === 'mastered'
-                ? 'No mastered work in this time range.'
-                : state.assignmentFilter === 'passed'
-                    ? 'No passed work yet.'
-                    : state.assignmentFilter === 'todo'
-                        ? 'No new work is waiting.'
-                        : 'Nothing is waiting right now.';
+            var emptyLabel = state.assignmentFilter === 'finished'
+                ? 'No finished work yet.'
+                : state.assignmentFilter === 'todo'
+                    ? 'No new work is waiting.'
+                    : 'Nothing is waiting right now.';
             html += '<div class="empty-card">' + emptyLabel + '</div>';
         }
         assignmentContent.innerHTML = html;
+        updateDashboardTabNotices();
 
         document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var nextFilter = button.dataset.assignmentFilter;
                 state.assignmentFilter = state.assignmentFilter === nextFilter ? 'all' : nextFilter;
                 renderAssignments();
+            });
+        });
+
+        var repliesButton = document.getElementById('open-teacher-replies');
+        if (repliesButton) repliesButton.addEventListener('click', openTeacherRepliesDialog);
+
+        document.querySelectorAll('[data-teacher-replies-key]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.teacherRepliesKey;
+                var item = assignments.find(function(candidate) {
+                    return replyKeyForItem(candidate) === key;
+                });
+                openTeacherRepliesDialog(item && item.teacher_replies || []);
             });
         });
 
@@ -629,6 +783,7 @@
             state.starCount = Number(dashboard.star_count || 0);
             state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
             state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
+            state.teacherReplies = dashboard.teacher_replies || [];
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });

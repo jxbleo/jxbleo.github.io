@@ -98,6 +98,45 @@ function bestAttempt(attempts) {
   })[0] || null;
 }
 
+function disputeStatusLabel(item) {
+  if ((item.decision || "") === "keep" || item.status === "rejected") return "Original ruling kept";
+  if ((item.decision || "") === "replace") return "Answer rule updated";
+  if ((item.decision || "") === "add" || item.status === "approved") return "Accepted";
+  return "Waiting for teacher";
+}
+
+function disputeSeen(item) {
+  return item.student_seen === true || Boolean(item.student_seen_at);
+}
+
+function disputeReplyView(item, set) {
+  return {
+    dispute_id: item.dispute_id || item._id,
+    set_id: item.set_id,
+    set_title: set && set.title || item.set_id,
+    attempt_id: item.attempt_id || null,
+    assignment_id: item.assignment_id || null,
+    question_id: item.question_id,
+    question_text: item.question_text_snapshot || "",
+    submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
+    student_reason: item.student_reason || "",
+    status: item.status || "pending",
+    decision: item.decision || null,
+    decision_label: disputeStatusLabel(item),
+    teacher_note: item.teacher_note || "",
+    resolved_at: item.resolved_at || item.updated_at || null,
+    student_seen: disputeSeen(item),
+  };
+}
+
+function resolvedTeacherReplyItems(items) {
+  return (items || []).filter((item) =>
+    item && item.status !== "pending" && !disputeSeen(item)
+  ).sort((left, right) =>
+    dateValue(right.resolved_at || right.updated_at) - dateValue(left.resolved_at || left.updated_at)
+  );
+}
+
 async function getAttemptReview(student, event) {
   const attemptId = String(event.attempt_id || "");
   if (!attemptId) throw new Error("ATTEMPT_REQUIRED");
@@ -107,6 +146,10 @@ async function getAttemptReview(student, event) {
   });
   if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
   const set = await getOne("sets", { set_id: attempt.set_id });
+  const disputeResult = await db.collection("answer_disputes").where({
+    attempt_id: attemptId,
+    student_uid: student.auth_uid,
+  }).limit(100).get();
   return {
     success: true,
     review: {
@@ -120,6 +163,7 @@ async function getAttemptReview(student, event) {
         submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
         correct: item.correct === true,
       })),
+      disputes: (disputeResult.data || []).map((item) => disputeReplyView(item, set)),
     },
   };
 }
@@ -183,15 +227,57 @@ async function listDisputesForAttempt(student, event) {
     disputes: (result.data || []).map((item) => ({
       dispute_id: item.dispute_id || item._id,
       question_id: item.question_id,
+      question_text: item.question_text_snapshot || "",
+      submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
       status: item.status || "pending",
       decision: item.decision || null,
+      decision_label: disputeStatusLabel(item),
       teacher_note: item.teacher_note || "",
       student_reason: item.student_reason || "",
+      student_seen: disputeSeen(item),
       created_at: item.created_at || null,
       updated_at: item.updated_at || null,
       resolved_at: item.resolved_at || null,
     })),
   };
+}
+
+async function listTeacherReplies(student) {
+  const result = await db.collection("answer_disputes").where({
+    student_uid: student.auth_uid,
+  }).limit(200).get();
+  const resolved = resolvedTeacherReplyItems(result.data || []);
+  const setIds = [...new Set(resolved.map((item) => item.set_id).filter(Boolean))];
+  const setMap = new Map();
+  await Promise.all(setIds.map(async (setId) => {
+    const set = await getOne("sets", { set_id: setId });
+    if (set) setMap.set(setId, set);
+  }));
+  return resolved.slice(0, 50).map((item) => disputeReplyView(item, setMap.get(item.set_id)));
+}
+
+async function markTeacherRepliesSeen(student, event) {
+  const ids = Array.isArray(event.dispute_ids)
+    ? event.dispute_ids.map((item) => String(item || "")).filter(Boolean)
+    : [];
+  if (!ids.length) return { success: true, seen_count: 0 };
+  const result = await db.collection("answer_disputes").where({
+    student_uid: student.auth_uid,
+  }).limit(200).get();
+  const idSet = new Set(ids);
+  const now = new Date();
+  let seenCount = 0;
+  for (const item of result.data || []) {
+    const disputeId = item.dispute_id || item._id;
+    if (!idSet.has(disputeId) || item.status === "pending") continue;
+    await db.collection("answer_disputes").doc(item._id).update({
+      student_seen: true,
+      student_seen_at: now,
+      updated_at: now,
+    });
+    seenCount += 1;
+  }
+  return { success: true, seen_count: seenCount };
 }
 
 async function revealAnswers(student, event) {
@@ -446,6 +532,7 @@ exports.main = async (event = {}) => {
     if (action === "getAttemptReview") return await getAttemptReview(student, event);
     if (action === "submitDispute") return await submitDispute(student, event);
     if (action === "listDisputesForAttempt") return await listDisputesForAttempt(student, event);
+    if (action === "markTeacherRepliesSeen") return await markTeacherRepliesSeen(student, event);
     if (action === "revealAnswers") return await revealAnswers(student, event);
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
     if (action === "claimStar") return await claimStar(student, event);
@@ -462,6 +549,10 @@ exports.main = async (event = {}) => {
       .get();
     const attempts = attemptResult.data || [];
     const setMap = new Map();
+    const disputeResult = await db.collection("answer_disputes").where({
+      student_uid: student.auth_uid,
+    }).limit(500).get();
+    const teacherReplyItems = resolvedTeacherReplyItems(disputeResult.data || []);
     const starResult = await db.collection("student_set_achievements").where({
       student_uid: student.auth_uid,
     }).limit(500).get();
@@ -476,6 +567,7 @@ exports.main = async (event = {}) => {
       assignments.map((item) => item.set_id)
         .concat(selfStudyStars.map((item) => item.set_id))
         .concat(resourceAttempts.map((item) => item.set_id))
+        .concat(teacherReplyItems.map((item) => item.set_id))
         .filter(Boolean)
     )];
 
@@ -522,6 +614,23 @@ exports.main = async (event = {}) => {
       const items = attemptsByAssignment.get(attempt.assignment_id) || [];
       items.push(attempt);
       attemptsByAssignment.set(attempt.assignment_id, items);
+    });
+    const teacherRepliesByAssignment = new Map();
+    const teacherRepliesBySelfStudySet = new Map();
+    teacherReplyItems.forEach((item) => {
+      if (item.assignment_id) {
+        const key = String(item.assignment_id);
+        const items = teacherRepliesByAssignment.get(key) || [];
+        items.push(item);
+        teacherRepliesByAssignment.set(key, items);
+        return;
+      }
+      if (item.set_id) {
+        const key = String(item.set_id);
+        const items = teacherRepliesBySelfStudySet.get(key) || [];
+        items.push(item);
+        teacherRepliesBySelfStudySet.set(key, items);
+      }
     });
 
     const assignmentViews = [];
@@ -578,6 +687,8 @@ exports.main = async (event = {}) => {
           }
         }
       }
+      const teacherReplies = (teacherRepliesByAssignment.get(String(assignmentId)) || [])
+        .map((item) => disputeReplyView(item, set));
       assignmentViews.push({
         assignment_id: assignmentId,
         status,
@@ -605,6 +716,8 @@ exports.main = async (event = {}) => {
         star_claimed: claimedAssignmentIds.has(assignment.assignment_id || assignment._id),
         passing_percentage: passingPercentage,
         mastery_percentage: masteryPercentage,
+        teacher_replies: teacherReplies,
+        teacher_reply_count: teacherReplies.length,
         set: set || {
           set_id: assignment.set_id,
           title: assignment.set_id,
@@ -618,6 +731,8 @@ exports.main = async (event = {}) => {
       const percentage = achievement.best_percentage == null
         ? (attempt ? effectivePercentage(attempt) : null)
         : Number(achievement.best_percentage);
+      const teacherReplies = (teacherRepliesBySelfStudySet.get(String(achievement.set_id)) || [])
+        .map((item) => disputeReplyView(item, set));
       return {
         assignment_id: null,
         achievement_id: achievement.achievement_id || achievement._id,
@@ -641,6 +756,8 @@ exports.main = async (event = {}) => {
         star_claimed: true,
         passing_percentage: set ? passingPercentageForSet(set) : 50,
         mastery_percentage: set ? masteryPercentageForSet(set) : 90,
+        teacher_replies: teacherReplies,
+        teacher_reply_count: teacherReplies.length,
         set: set || {
           set_id: achievement.set_id,
           title: achievement.set_id,
@@ -652,6 +769,7 @@ exports.main = async (event = {}) => {
     return {
       success: true,
       assignments: assignmentViews.concat(selfStudyViews),
+      teacher_replies: teacherReplyItems.slice(0, 50).map((item) => disputeReplyView(item, setMap.get(item.set_id))),
       ...splitStarCounts(achievements),
     };
   } catch (error) {
