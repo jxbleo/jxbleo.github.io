@@ -6,6 +6,7 @@
         students: [],
         sets: [],
         assignments: [],
+        progressItems: [],
         attempts: [],
         disputes: [],
         candidates: [],
@@ -244,6 +245,12 @@
                 }
                 return result;
             });
+    }
+
+    function loadProgressData() {
+        return teacherCall('listProgress').catch(function() {
+            return { progress: [] };
+        });
     }
 
     function studentRecords() {
@@ -747,7 +754,7 @@
     }
 
     function assignmentSortDate(assignment) {
-        return assignment.completed_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
+        return assignment.completed_at || assignment.latest_submitted_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
     }
 
     function visibleProgressAssignments(assignments) {
@@ -761,6 +768,11 @@
     }
 
     function progressAttemptsForAssignment(assignment) {
+        if (Array.isArray(assignment.attempts)) {
+            return assignment.attempts.slice().sort(function(a, b) {
+                return new Date(a.submitted_at || 0) - new Date(b.submitted_at || 0);
+            });
+        }
         var assignmentId = assignment.assignment_id;
         var attempts = (state.attempts || []).filter(function(attempt) {
             if (assignmentId && attempt.assignment_id) return attempt.assignment_id === assignmentId;
@@ -849,10 +861,11 @@
 
     function renderAssignmentDetails(assignment, attempts) {
         var latestAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+        var sourceLabel = assignment.source === 'self_study' ? 'Self-study' : 'Assigned';
         return '<div class="attempt-detail-list">' +
             '<section class="attempt-detail-row">' +
                 '<div class="attempt-detail-head"><div><strong>Attempt History</strong>' +
-                '<small>Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) +
+                '<small>' + escapeHtml(sourceLabel) + (assignment.assigned_at ? ' · Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) : '') +
                 (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
                 '<span>' + escapeHtml(formatPercent(assignment.best_percentage)) + ' best</span></div>' +
                 renderAttemptTrend(attempts, assignment) +
@@ -865,15 +878,16 @@
     }
 
     function renderAssignmentCapsule(assignment) {
-        var key = assignment.assignment_id || assignment.set_id;
+        var key = assignment.progress_id || assignment.assignment_id || assignment.set_id;
         var expanded = state.expandedAssignmentSets[key] === true;
         var attempts = progressAttemptsForAssignment(assignment);
         var score = formatPercent(assignment.best_percentage);
         var attemptCount = Math.max(Number(assignment.attempt_count || 0), attempts.length);
+        var sourceLabel = assignment.source === 'self_study' ? 'Self-study' : 'Assigned';
         return '<article class="attempt-set-capsule assignment-capsule' + (expanded ? ' expanded' : '') + '">' +
             '<button class="attempt-set-head" type="button" data-assignment-set="' + escapeHtml(key) + '">' +
                 '<span><strong>' + escapeHtml(assignment.set_title || setTitleFor(assignment.set_id)) + '</strong>' +
-                '<small>' + escapeHtml(assignment.set_id) +
+                '<small>' + escapeHtml(assignment.set_id) + ' · ' + escapeHtml(sourceLabel) +
                 ' · ' + escapeHtml(attemptCount) + ' attempt' + (attemptCount === 1 ? '' : 's') +
                 ' · ' + escapeHtml(formatDateTime(assignmentSortDate(assignment))) + '</small></span>' +
                 '<span class="assignment-best-score">' + escapeHtml(score) + '</span>' +
@@ -890,7 +904,7 @@
         var visibleAssignments = visibleProgressAssignments(assignments);
         var label = state.studentProgressView === 'finished' ? 'Finished' : 'To Do';
         var assignmentHtml = visibleAssignments.length ? visibleAssignments.map(renderAssignmentCapsule).join('') :
-            '<p class="muted">No ' + escapeHtml(label.toLowerCase()) + ' assignments.</p>';
+            '<p class="muted">No ' + escapeHtml(label.toLowerCase()) + ' work yet.</p>';
 
         return '<div class="learning-section attempt-set-list"><h3>' + escapeHtml(label) + '</h3>' +
                 assignmentHtml + '</div>';
@@ -908,7 +922,7 @@
                     '<p class="eyebrow accent">PROGRESS</p><p class="muted">To Do, Finished, and Data will appear here.</p></section>';
             return;
         }
-        var assignments = state.assignments.filter(function(item) {
+        var assignments = (state.progressItems.length ? state.progressItems : state.assignments).filter(function(item) {
             return item.student_uid === student.auth_uid;
         });
         var progressHtml = renderAssignmentProgress(assignments);
@@ -1124,12 +1138,14 @@
                     return Promise.all([
                         teacherCall('listDisputes'),
                         teacherCall('listAssignments'),
-                        teacherCall('listAttempts')
+                        teacherCall('listAttempts'),
+                        loadProgressData()
                     ]);
                 }).then(function(results) {
                     state.disputes = results[0].disputes || [];
                     state.assignments = results[1].assignments || [];
                     state.attempts = results[2].attempts || [];
+                    state.progressItems = results[3].progress || [];
                     return loadQuestionTextForDisputes();
                 }).then(function() {
                     renderDisputes();
@@ -1177,13 +1193,15 @@
             teacherCall('listSets'),
             teacherCall('listAssignments'),
             teacherCall('listDisputes'),
-            teacherCall('listAttempts')
+            teacherCall('listAttempts'),
+            loadProgressData()
         ]).then(function(results) {
             state.students = results[0].students || [];
             state.sets = results[1].sets || [];
             state.assignments = results[2].assignments || [];
             state.disputes = results[3].disputes || [];
             state.attempts = results[4].attempts || [];
+            state.progressItems = results[5].progress || [];
             fillClassFilters();
             fillSetSectionFilters();
             renderSetOptions();
@@ -1266,9 +1284,10 @@
             document.getElementById('assign-search').value = '';
             document.getElementById('assign-class-filter').value = '';
             document.getElementById('assign-set').selectedIndex = -1;
-            return Promise.all([teacherCall('listAssignments'), loadCandidates()]);
+            return Promise.all([teacherCall('listAssignments'), loadProgressData(), loadCandidates()]);
         }).then(function(results) {
             state.assignments = results[0].assignments || [];
+            state.progressItems = results[1].progress || [];
             renderSetOptions();
             renderStudentDetail();
         }).catch(function(error) {
