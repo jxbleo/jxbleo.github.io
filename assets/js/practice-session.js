@@ -75,6 +75,7 @@
         var control = target.closest('input, select, textarea, button');
         if (!control) return false;
         if (control.closest('.mrcat-visitor-modal')) return false;
+        if (control.id === 'exam-review-checkbox') return false;
         if (control.type === 'button' && (
             control.id.indexOf('play') !== -1
             || control.id.indexOf('back') !== -1
