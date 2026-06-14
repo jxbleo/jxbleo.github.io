@@ -15,11 +15,16 @@
         selectedStudentProfileId: '',
         studentPickerMode: 'choose',
         assignPanels: { sets: false, students: false, options: false },
+        assignView: 'new',
         studentProgressView: 'to_do',
+        studentInfoEdit: '',
         disputeFilter: 'pending',
+        disputeMerge: false,
         libraryFilter: 'vocabulary',
         expandedDisputes: {},
-        expandedAssignmentSets: {}
+        expandedAssignmentSets: {},
+        expandedAssignProgress: {},
+        expandedDisputeMerges: {}
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -155,6 +160,30 @@
     function showMessage(text, type) {
         message.textContent = text || '';
         message.className = 'teacher-message' + (type ? ' ' + type : '');
+    }
+
+    function pendingReviewCount() {
+        return (state.disputes || []).filter(function(item) {
+            return item.status !== 'approved' && item.status !== 'rejected';
+        }).length;
+    }
+
+    function updateTopBadges() {
+        var button = document.querySelector('.tab-button[data-view="argue"]');
+        if (!button) return;
+        var count = pendingReviewCount();
+        button.innerHTML = 'Review' + (count ? '<span class="notice-dot danger">' + escapeHtml(count) + '</span>' : '');
+    }
+
+    function updateAssignView() {
+        document.querySelectorAll('[data-assign-view]').forEach(function(button) {
+            button.classList.toggle('active', button.dataset.assignView === state.assignView);
+        });
+        var newPanel = document.getElementById('assign-new-panel');
+        var progressPanel = document.getElementById('assign-progress-panel');
+        if (newPanel) newPanel.hidden = state.assignView !== 'new';
+        if (progressPanel) progressPanel.hidden = state.assignView !== 'progress';
+        if (state.assignView === 'progress') renderAssignmentOverview();
     }
 
     function formatDate(value, fallback, mode) {
@@ -910,6 +939,95 @@
                 assignmentHtml + '</div>';
     }
 
+    function assignedProgressItems() {
+        var source = state.progressItems.length ? state.progressItems : state.assignments;
+        return source.filter(function(item) {
+            return !item.source || item.source === 'assigned';
+        });
+    }
+
+    function assignmentAlert(item) {
+        var status = normalizedAssignmentStatus(item.status);
+        var attempts = progressAttemptsForAssignment(item);
+        var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
+        var best = item.best_percentage == null ? null : Number(item.best_percentage);
+        var dueDate = item.due_at ? new Date(item.due_at) : null;
+        var overdue = dueDate && !isNaN(dueDate.getTime()) && dueDate < new Date() && status === 'to_do';
+        if (overdue) return { label: 'Overdue', css: 'danger', rank: 0 };
+        if (status === 'to_do' && attemptCount >= 2) return { label: 'Stuck', css: 'danger', rank: 1 };
+        if (status === 'to_do' && best != null && best < Number(item.passing_percentage || 50)) {
+            return { label: 'Low score', css: 'watch', rank: 2 };
+        }
+        if (status === 'to_do' && !attemptCount) return { label: 'Not started', css: 'watch', rank: 3 };
+        if (status === 'to_do') return { label: 'Working', css: 'watch', rank: 4 };
+        return { label: status === 'mastered' ? 'Mastered' : 'Finished', css: 'ok', rank: 5 };
+    }
+
+    function assignmentOverviewMetrics(items) {
+        return items.reduce(function(counts, item) {
+            var status = normalizedAssignmentStatus(item.status);
+            var alert = assignmentAlert(item);
+            counts.total += 1;
+            if (status === 'passed' || status === 'mastered') counts.finished += 1;
+            if (status === 'to_do') counts.open += 1;
+            if (alert.css === 'danger') counts.alerts += 1;
+            return counts;
+        }, { total: 0, open: 0, finished: 0, alerts: 0 });
+    }
+
+    function renderAssignmentOverview() {
+        var container = document.getElementById('assignment-overview');
+        if (!container) return;
+        var items = assignedProgressItems().slice().sort(function(a, b) {
+            var alertA = assignmentAlert(a);
+            var alertB = assignmentAlert(b);
+            if (alertA.rank !== alertB.rank) return alertA.rank - alertB.rank;
+            return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0);
+        });
+        var metrics = assignmentOverviewMetrics(items);
+        if (!items.length) {
+            container.innerHTML = '<div class="empty-card"><strong>No assigned work yet</strong>Assignments will appear here after you create them.</div>';
+            return;
+        }
+        var metricHtml = '<div class="assignment-overview-metrics">' +
+            '<div class="assignment-overview-metric"><span>Total</span><strong>' + escapeHtml(metrics.total) + '</strong></div>' +
+            '<div class="assignment-overview-metric"><span>Open</span><strong>' + escapeHtml(metrics.open) + '</strong></div>' +
+            '<div class="assignment-overview-metric"><span>Finished</span><strong>' + escapeHtml(metrics.finished) + '</strong></div>' +
+            '<div class="assignment-overview-metric"><span>Needs attention</span><strong>' + escapeHtml(metrics.alerts) + '</strong></div>' +
+        '</div>';
+        var rows = items.map(function(item) {
+            var key = item.progress_id || item.assignment_id || [item.student_uid, item.set_id].join('::');
+            var expanded = state.expandedAssignProgress[key] === true;
+            var alert = assignmentAlert(item);
+            var status = normalizedAssignmentStatus(item.status);
+            var attempts = progressAttemptsForAssignment(item);
+            var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
+            return '<div class="assignment-table-item">' +
+                '<button class="assignment-table-row" type="button" data-assign-progress="' + escapeHtml(key) + '">' +
+                    '<span><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong><small>' + escapeHtml(item.student_id || '') + '</small></span>' +
+                    '<span><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id)) + '</strong><small>' + escapeHtml(item.set_id || '') + '</small></span>' +
+                    '<span class="assignment-status-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
+                    '<span><strong>' + escapeHtml(attemptCount) + '</strong><small>attempts</small></span>' +
+                    '<span><strong>' + escapeHtml(formatPercent(item.best_percentage)) + '</strong><small>best</small></span>' +
+                    '<span class="assignment-alert-pill ' + escapeHtml(alert.css) + '">' + escapeHtml(alert.label) + '</span>' +
+                '</button>' +
+                (expanded ? '<div class="assignment-overview-detail">' + renderAssignmentDetails(item, attempts) + '</div>' : '') +
+            '</div>';
+        }).join('');
+        container.innerHTML = metricHtml +
+            '<div class="assignment-table">' +
+                '<div class="assignment-table-head"><span>Student</span><span>Practice</span><span>Status</span><span>Attempts</span><span>Best</span><span>Signal</span></div>' +
+                rows +
+            '</div>';
+        container.querySelectorAll('[data-assign-progress]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.assignProgress;
+                state.expandedAssignProgress[key] = state.expandedAssignProgress[key] !== true;
+                renderAssignmentOverview();
+            });
+        });
+    }
+
     function renderStudentDetail() {
         var student = state.students.find(function(item) {
             return item.profile_id === state.selectedStudentProfileId;
@@ -926,15 +1044,36 @@
             return item.student_uid === student.auth_uid;
         });
         var progressHtml = renderAssignmentProgress(assignments);
+        var classEditing = state.studentInfoEdit === 'class';
+        var systemEditing = state.studentInfoEdit === 'system';
+        var systemOptions = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card">' +
-                '<p class="eyebrow accent">INFO</p>' +
+                '<div class="student-info-head">' +
+                    '<p class="eyebrow accent">INFO</p>' +
+                    '<h2 class="student-info-name">' + escapeHtml(student.name || student.student_id || 'Student') + '</h2>' +
+                    '<span></span>' +
+                '</div>' +
                 '<div class="student-info-grid">' +
-                    '<div class="student-info-item"><span>Name</span><strong>' + escapeHtml(student.name || 'Not set') + '</strong></div>' +
                     '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
-                    '<div class="student-info-item"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></div>' +
-                    '<div class="student-info-item"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></div>' +
+                    '<div class="student-info-item">' +
+                        '<button class="student-info-edit" type="button" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></button>' +
+                        (classEditing ? '<form class="student-info-editor" data-student-info-editor="class">' +
+                            '<input type="text" name="class_group" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class">' +
+                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                        '</form>' : '') +
+                    '</div>' +
+                    '<div class="student-info-item">' +
+                        '<button class="student-info-edit" type="button" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
+                        (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
+                            '<select name="curriculum_track">' + systemOptions.map(function(option) {
+                                return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
+                                    escapeHtml(option || 'Not set') + '</option>';
+                            }).join('') + '</select>' +
+                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                        '</form>' : '') +
+                    '</div>' +
                     '<div class="student-info-item"><span>Status</span><strong>' + escapeHtml(student.active ? 'Active' : 'Inactive') + '</strong></div>' +
                 '</div>' +
                 '<div class="student-account-actions">' +
@@ -964,6 +1103,30 @@
             button.addEventListener('click', function() {
                 state.studentProgressView = button.dataset.progressView;
                 renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-edit-student-field]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentInfoEdit = state.studentInfoEdit === button.dataset.editStudentField ? '' : button.dataset.editStudentField;
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-cancel-student-info]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentInfoEdit = '';
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-student-info-editor]').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var field = form.dataset.studentInfoEditor;
+                state.studentInfoEdit = '';
+                if (field === 'class') {
+                    updateStudent(student.auth_uid, { class_group: form.elements.class_group.value.trim() });
+                    return;
+                }
+                updateStudent(student.auth_uid, { curriculum_track: form.elements.curriculum_track.value });
             });
         });
         studentDetail.querySelectorAll('[data-assignment-set]').forEach(function(button) {
@@ -1018,6 +1181,82 @@
         });
     }
 
+    function mergeDisputesBySet(disputes) {
+        var groups = {};
+        disputes.forEach(function(item) {
+            var key = item.set_id || 'unknown';
+            if (!groups[key]) groups[key] = {
+                key: key,
+                set_id: item.set_id || '',
+                set_title: item.set_title || item.set_id || 'Unknown set',
+                records: []
+            };
+            groups[key].records.push(item);
+        });
+        return Object.keys(groups).map(function(key) {
+            var group = groups[key];
+            group.records.sort(function(a, b) {
+                return new Date((b.resolved_at || b.updated_at || b.created_at) || 0) -
+                    new Date((a.resolved_at || a.updated_at || a.created_at) || 0);
+            });
+            return group;
+        }).sort(function(a, b) {
+            return b.records.length - a.records.length ||
+                String(a.set_title).localeCompare(String(b.set_title));
+        });
+    }
+
+    function countBy(records, getter) {
+        return records.reduce(function(map, item) {
+            var key = getter(item) || 'Unknown';
+            map[key] = (map[key] || 0) + 1;
+            return map;
+        }, {});
+    }
+
+    function renderMergeBars(counts, total) {
+        var rows = Object.keys(counts).sort(function(a, b) {
+            return counts[b] - counts[a] || String(a).localeCompare(String(b));
+        }).slice(0, 8);
+        return '<div class="merge-bars">' + rows.map(function(key) {
+            var value = counts[key];
+            var width = total ? Math.max(6, Math.round(value / total * 100)) : 0;
+            return '<div class="merge-bar-row">' +
+                '<span>' + escapeHtml(key) + '</span>' +
+                '<span class="merge-bar-track"><span class="merge-bar-fill" style="width:' + escapeHtml(width) + '%"></span></span>' +
+                '<strong>' + escapeHtml(value) + '</strong>' +
+            '</div>';
+        }).join('') + '</div>';
+    }
+
+    function renderDisputeMergeGroup(group) {
+        var key = group.key + '::' + state.disputeFilter;
+        var expanded = state.expandedDisputeMerges[key] === true;
+        var decisionCounts = countBy(group.records, function(item) { return item.decision || item.status; });
+        var questionCounts = countBy(group.records, function(item) { return 'Q' + item.question_id; });
+        var requesterCount = Object.keys(countBy(group.records, function(item) {
+            return item.requester_role === 'teacher'
+                ? 'Teacher'
+                : (item.student_id || item.student_name || 'Student');
+        })).length;
+        return '<article class="profile-card dispute-merge-card">' +
+            '<button class="dispute-merge-head" type="button" data-toggle-dispute-merge="' + escapeHtml(key) + '">' +
+                '<span><strong>' + escapeHtml(group.set_title) + '</strong>' +
+                '<small>' + escapeHtml(group.set_id) + ' · ' + escapeHtml(group.records.length) +
+                ' record' + (group.records.length === 1 ? '' : 's') + ' · ' + escapeHtml(requesterCount) +
+                ' requester' + (requesterCount === 1 ? '' : 's') + '</small></span>' +
+                '<span class="badge ' + escapeHtml(state.disputeFilter) + '">' + escapeHtml(state.disputeFilter) + '</span>' +
+            '</button>' +
+            (expanded ? '<div class="dispute-merge-viz">' +
+                '<div class="attempt-detail-row"><div class="attempt-detail-head"><div><strong>Question distribution</strong><small>Where requests clustered inside this set</small></div><span>' +
+                escapeHtml(group.records.length) + ' total</span></div>' + renderMergeBars(questionCounts, group.records.length) + '</div>' +
+                '<div class="attempt-detail-row"><div class="attempt-detail-head"><div><strong>Decision distribution</strong><small>How these requests were resolved</small></div></div>' +
+                renderMergeBars(decisionCounts, group.records.length) + '</div>' +
+                '<div class="dispute-group-detail">' + group.records.map(renderDisputeDetail).join('') + '</div>' +
+            '</div>' : '') +
+        '</article>';
+    }
+
     function renderDisputeDetail(item) {
         var pending = item.status === 'pending';
         var questionText = getQuestionText(item);
@@ -1056,8 +1295,10 @@
 
     function renderDisputes() {
         var list = document.getElementById('dispute-list');
+        updateTopBadges();
         var counts = disputeCounts();
         var disputes = filteredDisputes();
+        if (state.disputeFilter === 'pending') state.disputeMerge = false;
         var filters = [
             { id: 'pending', label: 'Pending' },
             { id: 'approved', label: 'Approved' },
@@ -1072,7 +1313,13 @@
                 '</button>';
             }).join('') +
         '</div>';
-        var body = disputes.length ? disputes.map(function(item) {
+        var mergeToggle = state.disputeFilter === 'pending' ? '' :
+            '<div class="assignment-list-tools"><button class="review-merge-toggle' + (state.disputeMerge ? ' active' : '') +
+            '" type="button" data-review-merge="1">' + (state.disputeMerge ? 'List' : 'Merge') + '</button></div>';
+        var body = state.disputeMerge
+            ? (disputes.length ? mergeDisputesBySet(disputes).map(renderDisputeMergeGroup).join('') :
+                '<div class="empty-card"><strong>No merged records</strong>Handled requests will appear here.</div>')
+            : (disputes.length ? disputes.map(function(item) {
             var status = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
             var expanded = state.expandedDisputes[item.dispute_id] === true;
             var requester = item.requester_role === 'teacher'
@@ -1102,12 +1349,28 @@
             '</article>';
         }).join('') : '<div class="empty-card"><strong>No ' + escapeHtml(state.disputeFilter) + ' requests</strong>' +
             (state.disputeFilter === 'pending' ? 'New requests will appear here.' : 'Handled requests will appear here.') +
-            '</div>';
-        list.innerHTML = tabs + body;
+            '</div>');
+        list.innerHTML = tabs + mergeToggle + body;
 
         list.querySelectorAll('[data-dispute-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.disputeFilter = button.dataset.disputeFilter;
+                if (state.disputeFilter === 'pending') state.disputeMerge = false;
+                renderDisputes();
+            });
+        });
+
+        list.querySelectorAll('[data-review-merge]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.disputeMerge = state.disputeMerge !== true;
+                renderDisputes();
+            });
+        });
+
+        list.querySelectorAll('[data-toggle-dispute-merge]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.toggleDisputeMerge;
+                state.expandedDisputeMerges[key] = state.expandedDisputeMerges[key] !== true;
                 renderDisputes();
             });
         });
@@ -1208,6 +1471,7 @@
             renderLibrary();
             renderStudentList();
             renderStudentDetail();
+            updateAssignView();
             return loadQuestionTextForDisputes();
         }).then(function() {
             renderDisputes();
@@ -1215,7 +1479,16 @@
     }
 
     document.querySelectorAll('.tab-button').forEach(function(button) {
-        button.addEventListener('click', function() { activateView(button.dataset.view); });
+        button.addEventListener('click', function() {
+            activateView(button.dataset.view);
+            if (button.dataset.view === 'assign') updateAssignView();
+        });
+    });
+    document.querySelectorAll('[data-assign-view]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            state.assignView = button.dataset.assignView;
+            updateAssignView();
+        });
     });
     document.getElementById('toggle-assign-sets').addEventListener('click', function() {
         setAssignPanel('sets', state.assignPanels.sets !== true);
@@ -1290,6 +1563,7 @@
             state.progressItems = results[1].progress || [];
             renderSetOptions();
             renderStudentDetail();
+            updateAssignView();
         }).catch(function(error) {
             showMessage(error.message, 'error');
         }).finally(updateSelectedCount);

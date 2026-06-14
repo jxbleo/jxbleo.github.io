@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260614-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260614-4">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -35,7 +35,16 @@
         </section>
 
         <section class="dashboard-view" id="view-assign" hidden>
-            <section class="assign-flow">
+            <div class="summary-grid assignment-filters assign-tabs" role="tablist" aria-label="Assign sections">
+                <button class="summary-card assignment-filter assign-view-filter active" type="button" data-assign-view="new">
+                    <span class="summary-label">ASSIGN NEW</span>
+                </button>
+                <button class="summary-card assignment-filter assign-view-filter" type="button" data-assign-view="progress">
+                    <span class="summary-label">IN PROGRESS</span>
+                </button>
+            </div>
+
+            <section class="assign-flow assign-view-panel" id="assign-new-panel">
                 <article class="profile-card assign-step-card" id="assign-sets-card">
                     <button class="assign-step-summary" id="toggle-assign-sets" type="button" aria-expanded="false">
                         <span><strong>Practice Sets</strong><small id="assign-set-count">None selected</small></span>
@@ -109,6 +118,12 @@
                 <div class="assign-submit-bar">
                     <span id="selected-count">0 practices · 0 students</span>
                     <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign</button>
+                </div>
+            </section>
+
+            <section class="assign-view-panel" id="assign-progress-panel" hidden>
+                <div class="assignment-overview" id="assignment-overview">
+                    <div class="empty-card loading-card">Loading assignment progress...</div>
                 </div>
             </section>
         </section>
@@ -195,6 +210,6 @@
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260614-4"></script>
+    <script src="assets/js/teacher.js?v=20260614-5"></script>
 </body>
 </html>
