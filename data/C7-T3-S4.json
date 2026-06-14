@@ -1,0 +1,79 @@
+{
+  "id": "C7-T3-S4",
+  "title": "Hotels and the Tourist Industry",
+  "source": "Cambridge IELTS 7, Test 3, Section 4",
+  "testLabel": "Test 3",
+  "audioSrc": "assets/audio/ielts-listening/C7-T3-S4.mp3?v=20260614-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 31-34",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q31",
+              "text": "According to the speaker, how might a guest feel when staying in a luxury hotel?",
+              "options": [
+                { "value": "A", "text": "impressed with the facilities" },
+                { "value": "B", "text": "depressed by the experience" },
+                { "value": "C", "text": "concerned at the high costs" }
+              ]
+            },
+            {
+              "id": "Q32",
+              "text": "According to recent research, luxury hotels overlook the need to",
+              "options": [
+                { "value": "A", "text": "provide for the demands of important guests." },
+                { "value": "B", "text": "create a comfortable environment." },
+                { "value": "C", "text": "offer an individual and personal welcome." }
+              ]
+            },
+            {
+              "id": "Q33",
+              "text": "The company focused their research on",
+              "options": [
+                { "value": "A", "text": "a wide variety of hotels." },
+                { "value": "B", "text": "large, luxury hotel chains." },
+                { "value": "C", "text": "exotic holiday hotels." }
+              ]
+            },
+            {
+              "id": "Q34",
+              "text": "What is the impact of the outside environment on a hotel guest?",
+              "options": [
+                { "value": "A", "text": "It has a considerable effect." },
+                { "value": "B", "text": "It has a very limited effect." },
+                { "value": "C", "text": "It has no effect whatsoever." }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 35-40",
+          "instruction": "Complete the notes below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Hotels and the tourist industry</h2><h3>A company providing luxury serviced apartments aims to:</h3><ul class=\"ielts-notes\"><li>cater specifically for {{Q35}} travellers</li><li>provide a stylish {{Q36}} for guests to use</li><li>set a trend throughout the {{Q37}} which becomes permanent</li></ul><h3>Traditional holiday hotels attract people by:</h3><ul class=\"ielts-notes\"><li>offering the chance to {{Q38}} their ordinary routine life</li><li>making sure that they are cared for in all respects - like a {{Q39}}</li><li>leaving small treats in their rooms - e.g. cosmetics or {{Q40}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    { "id": "Q31", "number": 31, "part": 4, "type": "mcq" },
+    { "id": "Q32", "number": 32, "part": 4, "type": "mcq" },
+    { "id": "Q33", "number": 33, "part": 4, "type": "mcq" },
+    { "id": "Q34", "number": 34, "part": 4, "type": "mcq" },
+    { "id": "Q35", "number": 35, "part": 4, "type": "completion" },
+    { "id": "Q36", "number": 36, "part": 4, "type": "completion" },
+    { "id": "Q37", "number": 37, "part": 4, "type": "completion" },
+    { "id": "Q38", "number": 38, "part": 4, "type": "completion" },
+    { "id": "Q39", "number": 39, "part": 4, "type": "completion" },
+    { "id": "Q40", "number": 40, "part": 4, "type": "completion" }
+  ]
+}
