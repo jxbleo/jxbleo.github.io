@@ -428,6 +428,24 @@
       "visible": true
     },
     {
+      "id": "C7-T3-S4",
+      "sectionId": "ielts-listening",
+      "title": "C7-T3-S4 · Hotels and the Tourist Industry",
+      "href": "ielts-listening.html?set=C7-T3-S4",
+      "displayValue": "C7-T3-S4",
+      "sortValue": 70304,
+      "topic": "Hospitality / Tourism",
+      "tags": [
+        "Hospitality",
+        "Tourism",
+        "Hotels",
+        "Multiple Choice",
+        "Note Completion"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
       "id": "C7-T1-P1",
       "sectionId": "ielts-reading",
       "title": "C7-T1-P1 · Let's Go Bats",
