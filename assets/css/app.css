@@ -284,7 +284,9 @@ button { cursor: pointer; }
 .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.assignment-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .summary-card {
+    position: relative;
     width: 100%;
     padding: 18px;
     border: 1px solid var(--line);
@@ -299,6 +301,7 @@ button { cursor: pointer; }
 .assignment-filter:hover { transform: translateY(-2px); border-color: rgba(19, 118, 109, 0.35); }
 .assignment-filter.active { color: white; border-color: var(--accent); background: var(--accent); }
 .assignment-filter.active .summary-label { color: rgba(255,255,255,0.78); }
+.assignment-filter .filter-reply-count { position: absolute; top: -8px; right: -7px; }
 .assignment-list-tools { display: flex; justify-content: flex-end; margin: -10px 0 14px; }
 
 .task-list, .resource-list { display: grid; gap: 12px; }
@@ -309,7 +312,12 @@ button { cursor: pointer; }
     background: rgba(255,255,255,0.86);
     box-shadow: 0 10px 28px rgba(25, 68, 61, 0.055);
 }
-.task-card { position: relative; display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; overflow: hidden; }
+.task-card { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 10px; align-items: center; overflow: hidden; }
+.task-card.has-teacher-replies {
+    border-color: rgba(124, 58, 237, 0.28);
+    background: linear-gradient(135deg, rgba(248, 245, 255, 0.94), rgba(255,255,255,0.9));
+    box-shadow: 0 14px 34px rgba(91, 33, 182, 0.08);
+}
 .task-card h3, .resource-card h3 { margin: 5px 0 6px; font-size: 1.06rem; }
 .assignment-title { margin: 0 0 8px !important; color: var(--ink); letter-spacing: -0.02em; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: 0.78rem; }
@@ -338,6 +346,9 @@ button { cursor: pointer; }
 .assignment-pill.status.to_do { color: #7a5528; background: #fff1da; }
 .assignment-pill.status.passed { color: #1f6f87; background: #e3f4fb; }
 .assignment-pill.status.mastered { color: var(--success); background: var(--success-soft); }
+.assignment-pill.status.finished { color: #334155; background: #eef2f7; }
+.assignment-pill.milestone.passed { color: #1f6f87; background: #e3f4fb; }
+.assignment-pill.milestone.mastered { color: var(--success); background: var(--success-soft); }
 .assignment-pill.source.self-study { color: #1f6f87; background: #e3f4fb; }
 .card-button {
     display: inline-flex;
@@ -352,6 +363,27 @@ button { cursor: pointer; }
     background: var(--accent);
     font-weight: 850;
     text-decoration: none;
+}
+.reply-button {
+    gap: 7px;
+    color: #fff;
+    background: #6d28d9;
+}
+.reply-button:hover { background: #5b21b6; }
+.reply-count-badge {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    color: #fff;
+    background: #e11d48;
+    font-size: 0.68rem;
+    line-height: 1;
+    font-weight: 900;
 }
 .task-go-button {
     width: 46px;
@@ -548,6 +580,93 @@ button { cursor: pointer; }
     min-height: 44px;
     border-radius: 12px;
     font-weight: 850;
+}
+
+.teacher-replies-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 14px;
+    padding: 17px;
+    border: 1px solid rgba(19, 118, 109, 0.18);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(223, 244, 237, 0.92), rgba(255, 255, 255, 0.96));
+    box-shadow: 0 14px 34px rgba(25, 68, 61, 0.1);
+}
+.teacher-replies-card h3 {
+    margin: 7px 0 0;
+    font-size: 1rem;
+}
+.teacher-replies-card .primary-button {
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-weight: 850;
+}
+.teacher-replies-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 51;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(24, 51, 47, 0.34);
+    backdrop-filter: blur(8px);
+}
+.teacher-replies-dialog {
+    position: relative;
+    width: min(560px, 100%);
+    max-height: min(680px, calc(100vh - 40px));
+    overflow: auto;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.84);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: var(--shadow);
+}
+.teacher-replies-dialog h2 {
+    margin: 0 0 18px;
+    font-size: 1.45rem;
+}
+.teacher-replies-list {
+    display: grid;
+    gap: 10px;
+}
+.teacher-reply-item {
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #f8fbfa;
+}
+.teacher-reply-item.approved {
+    border-color: rgba(35, 122, 82, 0.22);
+    background: var(--success-soft);
+}
+.teacher-reply-item.rejected {
+    border-color: rgba(181, 71, 71, 0.2);
+    background: var(--danger-soft);
+}
+.teacher-reply-item strong,
+.teacher-reply-item span,
+.teacher-reply-item small {
+    display: block;
+}
+.teacher-reply-item span {
+    margin-top: 5px;
+    color: var(--accent-dark);
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+.teacher-reply-item p {
+    margin: 8px 0 0;
+    color: var(--ink);
+    line-height: 1.45;
+}
+.teacher-reply-item small {
+    margin-top: 7px;
+    color: var(--muted);
+    font-weight: 750;
 }
 
 .teacher-hero {
@@ -1757,9 +1876,10 @@ button { cursor: pointer; }
     .app-header { padding-top: 20px; }
     .hero-card { border-radius: 24px; }
     .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .assignment-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .summary-card { padding: 14px 10px; }
     .summary-value { font-size: 1.45rem; }
-    .task-card { grid-template-columns: 1fr auto; }
+    .task-card { grid-template-columns: 1fr; }
     .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
     .task-card .task-go-button {
@@ -1771,6 +1891,9 @@ button { cursor: pointer; }
     }
     .profile-grid { grid-template-columns: 1fr; }
     .password-dialog { padding: 22px 18px; }
+    .teacher-replies-card { grid-template-columns: 1fr; }
+    .teacher-replies-card .primary-button { width: 100%; }
+    .teacher-replies-dialog { padding: 22px 18px; }
     .dialog-actions { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
     .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
