@@ -1,0 +1,1463 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["THINK2-U1"] = {
+  "id": "THINK2-U1",
+  "sectionId": "vocabulary",
+  "title": "THINK2-U1",
+  "href": "vocabulary.html?set=THINK2-U1",
+  "sortOrder": 3001,
+  "displayValue": "U1 · 90 Words",
+  "topic": "THINK 2 Vocabulary",
+  "tags": [
+    "THINK 2",
+    "U1"
+  ],
+  "note": "90 Words · 9 Quiz Groups",
+  "visible": true,
+  "sourceName": "THINK 2",
+  "cefrLevel": "A2",
+  "wordCount": 90,
+  "words": [
+    {
+      "number": 1,
+      "word": "earthquake",
+      "emoji": "🌋🏚️",
+      "meaning": "地震",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "When the ground shakes very hard",
+      "wordForms": "--"
+    },
+    {
+      "number": 2,
+      "word": "dig",
+      "emoji": "🪓🕳️",
+      "meaning": "挖掘",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make a hole in the ground using hands or tools",
+      "wordForms": "--"
+    },
+    {
+      "number": 3,
+      "word": "mole",
+      "emoji": "🐭🌱",
+      "meaning": "鼹鼠",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A small animal that lives underground and has tiny eyes",
+      "wordForms": "--"
+    },
+    {
+      "number": 4,
+      "word": "reason",
+      "emoji": "🤔💭",
+      "meaning": "原因",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Why something happens or why someone does something",
+      "wordForms": "--"
+    },
+    {
+      "number": 5,
+      "word": "powerful",
+      "emoji": "💪⚡",
+      "meaning": "强大的，有力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very strong and able to make big changes",
+      "wordForms": "--"
+    },
+    {
+      "number": 6,
+      "word": "save lives",
+      "emoji": "🚑❤️",
+      "meaning": "救命",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To help people not die in dangerous situations",
+      "wordForms": "--"
+    },
+    {
+      "number": 7,
+      "word": "underground",
+      "emoji": "🌍⬇️",
+      "meaning": "地下",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Below the surface of the earth",
+      "wordForms": "--"
+    },
+    {
+      "number": 8,
+      "word": "fallen",
+      "emoji": "📉🍂",
+      "meaning": "倒塌的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Something that has come down from standing position",
+      "wordForms": "--"
+    },
+    {
+      "number": 9,
+      "word": "happen",
+      "emoji": "📅🎬",
+      "meaning": "发生",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "When something takes place or occurs",
+      "wordForms": "--"
+    },
+    {
+      "number": 10,
+      "word": "bury",
+      "emoji": "📦🏔️",
+      "meaning": "掩埋",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To cover something completely with something else",
+      "wordForms": "--"
+    },
+    {
+      "number": 11,
+      "word": "bravery",
+      "emoji": "🦸‍♀️🛡️",
+      "meaning": "勇敢",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Being brave and not afraid in dangerous situations",
+      "wordForms": "--"
+    },
+    {
+      "number": 12,
+      "word": "building",
+      "emoji": "🏢 🏗️",
+      "meaning": "建筑物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A structure with walls and a roof",
+      "wordForms": "--"
+    },
+    {
+      "number": 13,
+      "word": "rubble",
+      "emoji": "🧱🗑️",
+      "meaning": "瓦砾",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Broken pieces from destroyed buildings",
+      "wordForms": "--"
+    },
+    {
+      "number": 14,
+      "word": "tsunami",
+      "emoji": "🌊🏄",
+      "meaning": "海啸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A very big ocean wave caused by an earthquake",
+      "wordForms": "--"
+    },
+    {
+      "number": 15,
+      "word": "travel",
+      "emoji": "🧳✈️",
+      "meaning": "旅行",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To go from one place to another, especially far away",
+      "wordForms": "--"
+    },
+    {
+      "number": 16,
+      "word": "form a group",
+      "emoji": "👥🤝",
+      "meaning": "组建团队",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To create a team of people who share one goal",
+      "wordForms": "--"
+    },
+    {
+      "number": 17,
+      "word": "well known for",
+      "emoji": "🌟👏",
+      "meaning": "因...而出名",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Famous or recognized because of something",
+      "wordForms": "--"
+    },
+    {
+      "number": 18,
+      "word": "terrible",
+      "emoji": "😱😞",
+      "meaning": "可怕的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very bad or causing fear",
+      "wordForms": "--"
+    },
+    {
+      "number": 19,
+      "word": "attack",
+      "emoji": "👊💥",
+      "meaning": "袭击",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A violent action against someone or something",
+      "wordForms": "--"
+    },
+    {
+      "number": 20,
+      "word": "disaster zone",
+      "emoji": "🌪️🆘",
+      "meaning": "灾区",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "An area where something very bad has happened",
+      "wordForms": "--"
+    },
+    {
+      "number": 21,
+      "word": "engineer",
+      "emoji": "👷‍♂️🔧",
+      "meaning": "工程师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who designs or builds machines or structures",
+      "wordForms": "--"
+    },
+    {
+      "number": 22,
+      "word": "grow",
+      "emoji": "📈🌱",
+      "meaning": "成长",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To become bigger or develop",
+      "wordForms": "--"
+    },
+    {
+      "number": 23,
+      "word": "member",
+      "emoji": "👤👥",
+      "meaning": "成员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who belongs to a group",
+      "wordForms": "--"
+    },
+    {
+      "number": 24,
+      "word": "serious",
+      "emoji": "😐 ⚠️",
+      "meaning": "严重的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very bad or dangerous",
+      "wordForms": "--"
+    },
+    {
+      "number": 25,
+      "word": "altogether",
+      "emoji": "🔢🧮",
+      "meaning": "总共",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "In total or completely",
+      "wordForms": "--"
+    },
+    {
+      "number": 26,
+      "word": "professional",
+      "emoji": "💼👔",
+      "meaning": "专业的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Related to a job that requires special training",
+      "wordForms": "--"
+    },
+    {
+      "number": 27,
+      "word": "psychologist",
+      "emoji": "🧠💬",
+      "meaning": "心理学家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who studies how people think and feel",
+      "wordForms": "--"
+    },
+    {
+      "number": 28,
+      "word": "specialist",
+      "emoji": "🔬🧠",
+      "meaning": "专家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Someone who knows a lot about one subject",
+      "wordForms": "--"
+    },
+    {
+      "number": 29,
+      "word": "on average",
+      "emoji": "📊🔄",
+      "meaning": "平均",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "The usual or typical amount",
+      "wordForms": "--"
+    },
+    {
+      "number": 30,
+      "word": "kill",
+      "emoji": "💀⚰️",
+      "meaning": "杀死",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make someone or something die",
+      "wordForms": "--"
+    },
+    {
+      "number": 31,
+      "word": "local",
+      "emoji": "🏙️📍",
+      "meaning": "当地的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Belonging to or connected with the place you're talking about",
+      "wordForms": "--"
+    },
+    {
+      "number": 32,
+      "word": "pay",
+      "emoji": "💰💳",
+      "meaning": "支付",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To give money for something",
+      "wordForms": "--"
+    },
+    {
+      "number": 33,
+      "word": "rescue",
+      "emoji": "🚁🆘",
+      "meaning": "救援",
+      "partOfSpeech": "n./v.",
+      "simpleDefinition": "To save someone from danger",
+      "wordForms": "--"
+    },
+    {
+      "number": 34,
+      "word": "manage",
+      "emoji": "🎮🧩",
+      "meaning": "处理",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To deal with or control something",
+      "wordForms": "--"
+    },
+    {
+      "number": 35,
+      "word": "offer",
+      "emoji": "🎁🤲",
+      "meaning": "提供",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To give or present something",
+      "wordForms": "--"
+    },
+    {
+      "number": 36,
+      "word": "so far",
+      "emoji": "📆👉",
+      "meaning": "至今为止",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Up until now or the present time",
+      "wordForms": "--"
+    },
+    {
+      "number": 37,
+      "word": "government",
+      "emoji": "🏛️👔",
+      "meaning": "政府",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "people who make rules for a country",
+      "wordForms": "--"
+    },
+    {
+      "number": 38,
+      "word": "continue",
+      "emoji": "⏩🔄",
+      "meaning": "继续",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To keep doing something without stopping",
+      "wordForms": "--"
+    },
+    {
+      "number": 39,
+      "word": "alone",
+      "emoji": "1️⃣🔂",
+      "meaning": "单独地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Without help from others",
+      "wordForms": "--"
+    },
+    {
+      "number": 40,
+      "word": "lose one's life",
+      "emoji": "💔⚰️",
+      "meaning": "丧生",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To die, especially in an accident",
+      "wordForms": "--"
+    },
+    {
+      "number": 41,
+      "word": "hard work",
+      "emoji": "💪 😓",
+      "meaning": "艰苦的工作",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Effort that takes a lot of energy and time",
+      "wordForms": "--"
+    },
+    {
+      "number": 42,
+      "word": "train",
+      "emoji": "🏋️‍♂️📚",
+      "meaning": "训练，培养",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to practice to get better at something",
+      "wordForms": "--"
+    },
+    {
+      "number": 43,
+      "word": "smile",
+      "emoji": "😊 😁",
+      "meaning": "微笑",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To show a happy expression on your face",
+      "wordForms": "--"
+    },
+    {
+      "number": 44,
+      "word": "amazing",
+      "emoji": "🤩 ✨",
+      "meaning": "令人惊叹的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very surprising and impressive",
+      "wordForms": "--"
+    },
+    {
+      "number": 45,
+      "word": "bring up",
+      "emoji": "👨‍👧 🌱",
+      "meaning": "抚养，养育",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To take care of a child until they are grown up",
+      "wordForms": "--"
+    },
+    {
+      "number": 46,
+      "word": "keen",
+      "emoji": "🔥 👀",
+      "meaning": "热衷的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very interested and enthusiastic",
+      "wordForms": "--"
+    },
+    {
+      "number": 47,
+      "word": "on her own",
+      "emoji": "👩 🔄",
+      "meaning": "独自地",
+      "partOfSpeech": "",
+      "simpleDefinition": "Alone, without help from others",
+      "wordForms": "--"
+    },
+    {
+      "number": 48,
+      "word": "athlete",
+      "emoji": "🏃‍♀️ 🏆",
+      "meaning": "运动员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who is good at sports",
+      "wordForms": "--"
+    },
+    {
+      "number": 49,
+      "word": "win a race",
+      "emoji": "🥇 🏁",
+      "meaning": "赢得比赛",
+      "partOfSpeech": "",
+      "simpleDefinition": "To be the first person to finish a competition",
+      "wordForms": "--"
+    },
+    {
+      "number": 50,
+      "word": "marathon",
+      "emoji": "🏃‍♂️ 🛣️",
+      "meaning": "马拉松",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A very long running race (42 kilometers)",
+      "wordForms": "--"
+    },
+    {
+      "number": 51,
+      "word": "charming",
+      "emoji": "😊 ✨",
+      "meaning": "有魅力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Pleasant and attractive",
+      "wordForms": "--"
+    },
+    {
+      "number": 52,
+      "word": "active",
+      "emoji": "🏃 💪",
+      "meaning": "活跃的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Doing lots of things and having energy",
+      "wordForms": "--"
+    },
+    {
+      "number": 53,
+      "word": "incredible",
+      "emoji": "😲 🌟",
+      "meaning": "难以置信的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Amazing and hard to believe",
+      "wordForms": "--"
+    },
+    {
+      "number": 54,
+      "word": "have difficulty (in) doing sth",
+      "emoji": "😕📘",
+      "meaning": "做某事有困难",
+      "partOfSpeech": "",
+      "simpleDefinition": "to find something hard to do",
+      "wordForms": "--"
+    },
+    {
+      "number": 55,
+      "word": "hope",
+      "emoji": "🙏✨",
+      "meaning": "希望",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A feeling that something good might happen",
+      "wordForms": "--"
+    },
+    {
+      "number": 56,
+      "word": "stay positive",
+      "emoji": "😀 ⬆️",
+      "meaning": "保持积极",
+      "partOfSpeech": "",
+      "simpleDefinition": "To keep a happy attitude despite difficulties",
+      "wordForms": "--"
+    },
+    {
+      "number": 57,
+      "word": "stop sb (from) doing sth",
+      "emoji": "🛑✋",
+      "meaning": "阻止某人做某事",
+      "partOfSpeech": "",
+      "simpleDefinition": "to prevent someone from doing something",
+      "wordForms": "--"
+    },
+    {
+      "number": 58,
+      "word": "elderly",
+      "emoji": "👴 🧓",
+      "meaning": "年长的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Old or aging",
+      "wordForms": "--"
+    },
+    {
+      "number": 59,
+      "word": "performer",
+      "emoji": "🎭 🎹",
+      "meaning": "表演者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Someone who works to entertain others",
+      "wordForms": "--"
+    },
+    {
+      "number": 60,
+      "word": "talented",
+      "emoji": "🎯 🌟",
+      "meaning": "有天赋的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Having natural skill",
+      "wordForms": "--"
+    },
+    {
+      "number": 61,
+      "word": "lesson",
+      "emoji": "📚 🧠",
+      "meaning": "课程",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A period of teaching",
+      "wordForms": "--"
+    },
+    {
+      "number": 62,
+      "word": "interesting",
+      "emoji": "🧐 💡",
+      "meaning": "有趣的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Making you want to know more",
+      "wordForms": "--"
+    },
+    {
+      "number": 63,
+      "word": "concert",
+      "emoji": "🎵 👥",
+      "meaning": "音乐会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A musical performance in front of people",
+      "wordForms": "--"
+    },
+    {
+      "number": 64,
+      "word": "wonderful",
+      "emoji": "🤩 👏",
+      "meaning": "精彩的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very good or amazing",
+      "wordForms": "--"
+    },
+    {
+      "number": 65,
+      "word": "quiet",
+      "emoji": "🤫 😶",
+      "meaning": "安静的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Not making much noise or not talking much",
+      "wordForms": "--"
+    },
+    {
+      "number": 66,
+      "word": "memory",
+      "emoji": "🧠 💭",
+      "meaning": "记忆力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The ability to remember things",
+      "wordForms": "--"
+    },
+    {
+      "number": 67,
+      "word": "neighbourhood",
+      "emoji": "🏘️ 👥",
+      "meaning": "社区，街区",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The area where people live near each other",
+      "wordForms": "--"
+    },
+    {
+      "number": 68,
+      "word": "free",
+      "emoji": "🆓 💝",
+      "meaning": "免费的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Not costing any money",
+      "wordForms": "--"
+    },
+    {
+      "number": 69,
+      "word": "shy",
+      "emoji": "😳 🙈",
+      "meaning": "害羞的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Nervous or uncomfortable with other people",
+      "wordForms": "--"
+    },
+    {
+      "number": 70,
+      "word": "artist",
+      "emoji": "🎨 👨‍🎨",
+      "meaning": "艺术家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Someone who creates art",
+      "wordForms": "--"
+    },
+    {
+      "number": 71,
+      "word": "draw",
+      "emoji": "🖌️✏️",
+      "meaning": "绘画",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make a picture using a pencil, pen or brush",
+      "wordForms": "--"
+    },
+    {
+      "number": 72,
+      "word": "laid-back",
+      "emoji": "😎 🛋️",
+      "meaning": "放松的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Relaxed and not worried",
+      "wordForms": "--"
+    },
+    {
+      "number": 73,
+      "word": "imagination",
+      "emoji": "💭 🦄",
+      "meaning": "想象力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The ability to form pictures in your mind",
+      "wordForms": "--"
+    },
+    {
+      "number": 74,
+      "word": "creative",
+      "emoji": "💡 🎨",
+      "meaning": "有创造力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Good at making or thinking of new things",
+      "wordForms": "--"
+    },
+    {
+      "number": 75,
+      "word": "exactly",
+      "emoji": "✅ 💯",
+      "meaning": "精确地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Completely correct in every detail",
+      "wordForms": "--"
+    },
+    {
+      "number": 76,
+      "word": "building",
+      "emoji": "🏢 🏗️",
+      "meaning": "建筑物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A structure with walls and a roof",
+      "wordForms": "--"
+    },
+    {
+      "number": 77,
+      "word": "be born with",
+      "emoji": "👶 🧬",
+      "meaning": "天生的",
+      "partOfSpeech": "",
+      "simpleDefinition": "Having something from birth",
+      "wordForms": "--"
+    },
+    {
+      "number": 78,
+      "word": "in real life",
+      "emoji": "🌍 👁️",
+      "meaning": "在现实生活中",
+      "partOfSpeech": "",
+      "simpleDefinition": "In the actual world, not in pictures or stories",
+      "wordForms": "--"
+    },
+    {
+      "number": 79,
+      "word": "paint",
+      "emoji": "🖌️ 🎨",
+      "meaning": "绘画",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make pictures using colors",
+      "wordForms": "--"
+    },
+    {
+      "number": 80,
+      "word": "success",
+      "emoji": "🏆 ⭐",
+      "meaning": "成功",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "When you achieve what you wanted",
+      "wordForms": "--"
+    },
+    {
+      "number": 81,
+      "word": "complain",
+      "emoji": "😤 🗣️",
+      "meaning": "抱怨",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To say you are unhappy about something",
+      "wordForms": "--"
+    },
+    {
+      "number": 82,
+      "word": "weak",
+      "emoji": "🥴 💪",
+      "meaning": "虚弱的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Not strong or healthy",
+      "wordForms": "--"
+    },
+    {
+      "number": 83,
+      "word": "serious",
+      "emoji": "😐 ⚠️",
+      "meaning": "严重的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Very bad or dangerous",
+      "wordForms": "--"
+    },
+    {
+      "number": 84,
+      "word": "seem",
+      "emoji": "👀🤔",
+      "meaning": "似乎，看起来",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to appear to be something",
+      "wordForms": "--"
+    },
+    {
+      "number": 85,
+      "word": "operation",
+      "emoji": "🏥 🔪",
+      "meaning": "手术",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Doctors cut into someone's body to fix a problem",
+      "wordForms": "--"
+    },
+    {
+      "number": 86,
+      "word": "brave",
+      "emoji": "🦸 💪",
+      "meaning": "勇敢的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Not afraid in dangerous situations",
+      "wordForms": "--"
+    },
+    {
+      "number": 87,
+      "word": "pass an exam",
+      "emoji": "📝 🎉",
+      "meaning": "通过考试",
+      "partOfSpeech": "",
+      "simpleDefinition": "To succeed in a test at school",
+      "wordForms": "--"
+    },
+    {
+      "number": 88,
+      "word": "incredibly",
+      "emoji": "😮 💯",
+      "meaning": "非常地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "In a way that is hard to believe",
+      "wordForms": "--"
+    },
+    {
+      "number": 89,
+      "word": "cheerful",
+      "emoji": "😄 ☀️",
+      "meaning": "开朗的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Happy and positive",
+      "wordForms": "--"
+    },
+    {
+      "number": 90,
+      "word": "wheelchair",
+      "emoji": "👩‍🦽 🪑",
+      "meaning": "轮椅",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A chair with wheels for people who cannot walk",
+      "wordForms": "--"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1-10",
+      "label": "第一组",
+      "rangeStart": 1,
+      "rangeEnd": 10,
+      "wordList": [
+        "earthquake",
+        "dig",
+        "mole",
+        "reason",
+        "powerful",
+        "save lives",
+        "underground",
+        "fallen",
+        "happen",
+        "bury"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "A strong __________ shook the city at 3 AM this morning.",
+          "questionKey": "1-10:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The workers will __________ a hole in the garden to plant the new tree.",
+          "questionKey": "1-10:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The small __________ lives in tunnels beneath our garden.",
+          "questionKey": "1-10:3"
+        },
+        {
+          "number": 4,
+          "prompt": "What was the __________ you were late for school today?",
+          "questionKey": "1-10:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The storm was so __________ that it broke many trees.",
+          "questionKey": "1-10:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The rescue team worked hard to __________ people trapped under the collapsed building.",
+          "questionKey": "1-10:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The subway trains run __________ in tunnels below the city.",
+          "questionKey": "1-10:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ tree blocked the road after the storm.",
+          "questionKey": "1-10:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The accident will __________ at the busy crossroads if we don't put traffic lights there.",
+          "questionKey": "1-10:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The heavy snow will __________ the small plants in the garden.",
+          "questionKey": "1-10:10"
+        }
+      ]
+    },
+    {
+      "id": "11-20",
+      "label": "第二组",
+      "rangeStart": 11,
+      "rangeEnd": 20,
+      "wordList": [
+        "bravery",
+        "building",
+        "rubble",
+        "tsunami",
+        "travel",
+        "form a group",
+        "be known for",
+        "terrible",
+        "attack",
+        "disaster zone"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The soldiers showed great __________ when they saved the children from the fire.",
+          "questionKey": "11-20:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The old __________ has twenty floors and many offices.",
+          "questionKey": "11-20:2"
+        },
+        {
+          "number": 3,
+          "prompt": "After the bombing, there was __________ everywhere in the street.",
+          "questionKey": "11-20:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ destroyed many houses near the beach.",
+          "questionKey": "11-20:4"
+        },
+        {
+          "number": 5,
+          "prompt": "We like to __________ to different countries during our holidays.",
+          "questionKey": "11-20:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The students decided to __________ to work on the science project together.",
+          "questionKey": "11-20:6"
+        },
+        {
+          "number": 7,
+          "prompt": "That restaurant __________ its delicious pizza.",
+          "questionKey": "11-20:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The weather was __________ yesterday - it rained all day.",
+          "questionKey": "11-20:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The army prepared for the enemy __________ on the city.",
+          "questionKey": "11-20:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Doctors and nurses rushed to help people in the __________.",
+          "questionKey": "11-20:10"
+        }
+      ]
+    },
+    {
+      "id": "21-30",
+      "label": "第三组",
+      "rangeStart": 21,
+      "rangeEnd": 30,
+      "wordList": [
+        "engineer",
+        "grow",
+        "member",
+        "serious",
+        "altogether",
+        "professional",
+        "psychologist",
+        "specialist",
+        "on average",
+        "kill"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ designed a new bridge for the city.",
+          "questionKey": "21-30:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Children __________ very quickly when they are young.",
+          "questionKey": "21-30:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Every __________ of our football team must come to practice.",
+          "questionKey": "21-30:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The car accident was very __________ and three people went to hospital.",
+          "questionKey": "21-30:4"
+        },
+        {
+          "number": 5,
+          "prompt": "There are fifteen students in the class __________.",
+          "questionKey": "21-30:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My sister wants to become a __________ tennis player.",
+          "questionKey": "21-30:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ helped me understand my feelings better.",
+          "questionKey": "21-30:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The doctor is a heart __________ who only treats heart problems.",
+          "questionKey": "21-30:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Students in this school study six hours __________ each day.",
+          "questionKey": "21-30:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The hunter didn't want to __________ the beautiful deer.",
+          "questionKey": "21-30:10"
+        }
+      ]
+    },
+    {
+      "id": "31-40",
+      "label": "第四组",
+      "rangeStart": 31,
+      "rangeEnd": 40,
+      "wordList": [
+        "local",
+        "pay",
+        "rescue",
+        "manage",
+        "offer",
+        "so far",
+        "government",
+        "continue",
+        "alone",
+        "lose one's life"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ newspaper has stories about our town.",
+          "questionKey": "31-40:1"
+        },
+        {
+          "number": 2,
+          "prompt": "We must __________ for our food at the restaurant.",
+          "questionKey": "31-40:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The firefighters came to __________ the cat from the tall tree.",
+          "questionKey": "31-40:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I can __________ this heavy box by myself.",
+          "questionKey": "31-40:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The shop will __________ free coffee to all customers today.",
+          "questionKey": "31-40:5"
+        },
+        {
+          "number": 6,
+          "prompt": "We have visited five countries __________ on our trip.",
+          "questionKey": "31-40:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ builds new schools and hospitals for people.",
+          "questionKey": "31-40:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Please __________ reading your book - don't stop now.",
+          "questionKey": "31-40:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My grandmother likes to live __________ in her small house.",
+          "questionKey": "31-40:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The old man didn't __________ in the accident because he wore his seatbelt.",
+          "questionKey": "31-40:10"
+        }
+      ]
+    },
+    {
+      "id": "41-50",
+      "label": "第五组",
+      "rangeStart": 41,
+      "rangeEnd": 50,
+      "wordList": [
+        "hard work",
+        "train",
+        "smile",
+        "amazing",
+        "bring up",
+        "keen",
+        "on his own",
+        "athlete",
+        "win a race",
+        "marathon"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Preparing for the competition needs a lot of __________.",
+          "questionKey": "41-50:1"
+        },
+        {
+          "number": 2,
+          "prompt": "You must __________ every day if you want to improve your skills.",
+          "questionKey": "41-50:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Always __________ when you meet new people.",
+          "questionKey": "41-50:3"
+        },
+        {
+          "number": 4,
+          "prompt": "It was an __________ experience to see the mountain from the top.",
+          "questionKey": "41-50:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She had to __________ her little brother after school every day.",
+          "questionKey": "41-50:5"
+        },
+        {
+          "number": 6,
+          "prompt": "She is very __________ on playing the piano and practices every day.",
+          "questionKey": "41-50:6"
+        },
+        {
+          "number": 7,
+          "prompt": "He fixed the bike __________ without any help.",
+          "questionKey": "41-50:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ ran very fast and won many competitions.",
+          "questionKey": "41-50:8"
+        },
+        {
+          "number": 9,
+          "prompt": "After many months of training, she was happy to __________.",
+          "questionKey": "41-50:9"
+        },
+        {
+          "number": 10,
+          "prompt": "He ran a __________ last weekend, which is 42 kilometers long.",
+          "questionKey": "41-50:10"
+        }
+      ]
+    },
+    {
+      "id": "51-60",
+      "label": "第六组",
+      "rangeStart": 51,
+      "rangeEnd": 60,
+      "wordList": [
+        "charming",
+        "active",
+        "incredible",
+        "have difficulty (in)",
+        "hope",
+        "stay positive",
+        "stop",
+        "elderly",
+        "performer",
+        "talented"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She is a very __________ person and makes friends easily.",
+          "questionKey": "51-60:1"
+        },
+        {
+          "number": 2,
+          "prompt": "My dog is very __________ and loves to play outside.",
+          "questionKey": "51-60:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The magician’s show was __________ and amazed everyone.",
+          "questionKey": "51-60:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Some children __________ learning to ride a bike at first.",
+          "questionKey": "51-60:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I __________ that the weather will be good for the picnic tomorrow.",
+          "questionKey": "51-60:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Even when things go wrong, try to __________ and be happy.",
+          "questionKey": "51-60:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Don’t __________ your little brother from trying new things.",
+          "questionKey": "51-60:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ man needs help crossing the street.",
+          "questionKey": "51-60:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The __________ sang on the stage during the concert.",
+          "questionKey": "51-60:9"
+        },
+        {
+          "number": 10,
+          "prompt": "He is a __________ musician who plays several instruments well.",
+          "questionKey": "51-60:10"
+        }
+      ]
+    },
+    {
+      "id": "61-70",
+      "label": "第七组",
+      "rangeStart": 61,
+      "rangeEnd": 70,
+      "wordList": [
+        "lesson",
+        "interesting",
+        "concert",
+        "wonderful",
+        "quiet",
+        "memory",
+        "neighbourhood",
+        "free",
+        "shy",
+        "artist"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Today’s English __________ was about animals.",
+          "questionKey": "61-70:1"
+        },
+        {
+          "number": 2,
+          "prompt": "That book is very __________; I couldn’t stop reading it.",
+          "questionKey": "61-70:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We went to a music __________ last Friday evening.",
+          "questionKey": "61-70:3"
+        },
+        {
+          "number": 4,
+          "prompt": "We had a __________ time at the party last night.",
+          "questionKey": "61-70:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Please be __________ in the library so others can study.",
+          "questionKey": "61-70:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My grandmother has a good __________ and remembers many stories.",
+          "questionKey": "61-70:6"
+        },
+        {
+          "number": 7,
+          "prompt": "He lives in a friendly __________ near the park.",
+          "questionKey": "61-70:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The museum entrance is __________ on Sundays.",
+          "questionKey": "61-70:8"
+        },
+        {
+          "number": 9,
+          "prompt": "She is very __________ and doesn’t like to talk a lot.",
+          "questionKey": "61-70:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Picasso was a famous __________ who painted many pictures.",
+          "questionKey": "61-70:10"
+        }
+      ]
+    },
+    {
+      "id": "71-80",
+      "label": "第八组",
+      "rangeStart": 71,
+      "rangeEnd": 80,
+      "wordList": [
+        "draw",
+        "laid-back",
+        "imagination",
+        "creative",
+        "exactly",
+        "building",
+        "be born with",
+        "in real life",
+        "paint",
+        "success"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I like to __________ pictures of animals at home.",
+          "questionKey": "71-80:1"
+        },
+        {
+          "number": 2,
+          "prompt": "My grandfather is very __________ and enjoys relaxing at home.",
+          "questionKey": "71-80:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Children use their __________ to create new stories and games.",
+          "questionKey": "71-80:3"
+        },
+        {
+          "number": 4,
+          "prompt": "He is very __________ and often makes amazing art.",
+          "questionKey": "71-80:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She is __________ ten years old, no more, no less.",
+          "questionKey": "71-80:5"
+        },
+        {
+          "number": 6,
+          "prompt": "That tall __________ is the new school in our city.",
+          "questionKey": "71-80:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Some people seem to __________ musical talent since birth.",
+          "questionKey": "71-80:7"
+        },
+        {
+          "number": 8,
+          "prompt": "We see superheroes on TV, but what are they like __________?",
+          "questionKey": "71-80:8"
+        },
+        {
+          "number": 9,
+          "prompt": "She can __________ colorful landscapes very well and often sells them at school art fairs.",
+          "questionKey": "71-80:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Hard work often leads to __________ in life.",
+          "questionKey": "71-80:10"
+        }
+      ]
+    },
+    {
+      "id": "81-90",
+      "label": "第九组",
+      "rangeStart": 81,
+      "rangeEnd": 90,
+      "wordList": [
+        "complain",
+        "weak",
+        "serious",
+        "seems",
+        "operation",
+        "brave",
+        "pass an exam",
+        "incredibly",
+        "cheerful",
+        "wheelchair"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Don’t __________ about the small problems; try to find solutions.",
+          "questionKey": "81-90:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After being sick, he felt very __________ and tired.",
+          "questionKey": "81-90:2"
+        },
+        {
+          "number": 3,
+          "prompt": "He was very __________ after his accident and had to stay in bed.",
+          "questionKey": "81-90:3"
+        },
+        {
+          "number": 4,
+          "prompt": "She __________ happy, but I think she is worried about the test.",
+          "questionKey": "81-90:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The doctor said he needs an __________ to fix his leg.",
+          "questionKey": "81-90:5"
+        },
+        {
+          "number": 6,
+          "prompt": "It’s __________ to help others even when it’s hard.",
+          "questionKey": "81-90:6"
+        },
+        {
+          "number": 7,
+          "prompt": "If you study hard, you will __________ next week’s test.",
+          "questionKey": "81-90:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The magic trick was __________ good!",
+          "questionKey": "81-90:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My little sister is always __________ and makes everyone smile.",
+          "questionKey": "81-90:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The old man uses a __________ to move around the house.",
+          "questionKey": "81-90:10"
+        }
+      ]
+    }
+  ]
+};

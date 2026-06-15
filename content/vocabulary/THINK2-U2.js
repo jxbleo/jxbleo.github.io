@@ -1,0 +1,1938 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["THINK2-U2"] = {
+  "id": "THINK2-U2",
+  "sectionId": "vocabulary",
+  "title": "THINK2-U2",
+  "href": "vocabulary.html?set=THINK2-U2",
+  "sortOrder": 3002,
+  "displayValue": "U2 · 119 Words",
+  "topic": "THINK 2 Vocabulary",
+  "tags": [
+    "THINK 2",
+    "U2"
+  ],
+  "note": "119 Words · 13 Quiz Groups",
+  "visible": true,
+  "sourceName": "THINK 2",
+  "cefrLevel": "A2",
+  "wordCount": 119,
+  "words": [
+    {
+      "number": 1,
+      "word": "charity",
+      "emoji": "❤️🤝",
+      "meaning": "慈善机构",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group that helps people for free",
+      "wordForms": "--"
+    },
+    {
+      "number": 2,
+      "word": "cause",
+      "emoji": "🔄➡️",
+      "meaning": "导致，引起",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make something happen",
+      "wordForms": "--"
+    },
+    {
+      "number": 3,
+      "word": "millions of",
+      "emoji": "🔢👥",
+      "meaning": "数百万的",
+      "partOfSpeech": "",
+      "simpleDefinition": "a very very large number of people or things",
+      "wordForms": "--"
+    },
+    {
+      "number": 4,
+      "word": "provide sb with…",
+      "emoji": "🎁📤",
+      "meaning": "给某人提供…",
+      "partOfSpeech": "",
+      "simpleDefinition": "To give someone what they need",
+      "wordForms": "--"
+    },
+    {
+      "number": 5,
+      "word": "hit",
+      "emoji": "🎯💥",
+      "meaning": "击中，袭击",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "when something strikes or touches something else with force",
+      "wordForms": "--"
+    },
+    {
+      "number": 6,
+      "word": "heavy rains",
+      "emoji": "🌧️💧",
+      "meaning": "大雨",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "lots of water falling from the sky",
+      "wordForms": "--"
+    },
+    {
+      "number": 7,
+      "word": "electricity",
+      "emoji": "⚡🔌",
+      "meaning": "电",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Energy that makes lights and machines work",
+      "wordForms": "--"
+    },
+    {
+      "number": 8,
+      "word": "floods",
+      "emoji": "🌊🏠",
+      "meaning": "洪水",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "when too much water covers the land",
+      "wordForms": "--"
+    },
+    {
+      "number": 9,
+      "word": "force",
+      "emoji": "💪🚫",
+      "meaning": "强迫",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone do something they don't want to do",
+      "wordForms": "--"
+    },
+    {
+      "number": 10,
+      "word": "areas",
+      "emoji": "📍🗺️",
+      "meaning": "地区，区域",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "places or parts of a country",
+      "wordForms": "--"
+    },
+    {
+      "number": 11,
+      "word": "is fitted with",
+      "emoji": "🔧📦",
+      "meaning": "装备有",
+      "partOfSpeech": "",
+      "simpleDefinition": "has something special put inside it",
+      "wordForms": "--"
+    },
+    {
+      "number": 12,
+      "word": "on board",
+      "emoji": "🚢✅",
+      "meaning": "在船上",
+      "partOfSpeech": "",
+      "simpleDefinition": "inside a boat, train, or plane",
+      "wordForms": "--"
+    },
+    {
+      "number": 13,
+      "word": "nearby",
+      "emoji": "📍👀",
+      "meaning": "附近的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "close to where you are",
+      "wordForms": "--"
+    },
+    {
+      "number": 14,
+      "word": "climate change",
+      "emoji": "🌍🌡️",
+      "meaning": "气候变化",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "when the weather around the world gets different",
+      "wordForms": "--"
+    },
+    {
+      "number": 15,
+      "word": "education",
+      "emoji": "📚🎓",
+      "meaning": "教育",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "learning things at school",
+      "wordForms": "--"
+    },
+    {
+      "number": 16,
+      "word": "protect",
+      "emoji": "🛡️💚",
+      "meaning": "保护",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to keep something safe from harm",
+      "wordForms": "--"
+    },
+    {
+      "number": 17,
+      "word": "internet access",
+      "emoji": "💻🌐",
+      "meaning": "网络连接",
+      "partOfSpeech": "",
+      "simpleDefinition": "being able to use the internet",
+      "wordForms": "--"
+    },
+    {
+      "number": 18,
+      "word": "floating",
+      "emoji": "🛥️💧",
+      "meaning": "漂浮的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "staying on top of water without sinking",
+      "wordForms": "--"
+    },
+    {
+      "number": 19,
+      "word": "solar",
+      "emoji": "☀️⚡",
+      "meaning": "太阳能的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "using power from the sun",
+      "wordForms": "--"
+    },
+    {
+      "number": 20,
+      "word": "environment",
+      "emoji": "🌱🌍",
+      "meaning": "环境",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the air, water, and land around us",
+      "wordForms": "--"
+    },
+    {
+      "number": 21,
+      "word": "platforms",
+      "emoji": "🚂🏗️",
+      "meaning": "站台",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the place where you wait for trains",
+      "wordForms": "--"
+    },
+    {
+      "number": 22,
+      "word": "exist",
+      "emoji": "✨🌍",
+      "meaning": "存在",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be real or be there",
+      "wordForms": "--"
+    },
+    {
+      "number": 23,
+      "word": "beg",
+      "emoji": "🙏💰",
+      "meaning": "乞讨",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to ask people for money because you are poor",
+      "wordForms": "--"
+    },
+    {
+      "number": 24,
+      "word": "hope",
+      "emoji": "🙏✨",
+      "meaning": "希望",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A feeling that something good might happen",
+      "wordForms": "--"
+    },
+    {
+      "number": 25,
+      "word": "railway stations",
+      "emoji": "🚉🚂",
+      "meaning": "火车站",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "places where trains stop for people",
+      "wordForms": "--"
+    },
+    {
+      "number": 26,
+      "word": "set up",
+      "emoji": "🏗️🔨",
+      "meaning": "建立，创建",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To start or establish something new",
+      "wordForms": "--"
+    },
+    {
+      "number": 27,
+      "word": "still",
+      "emoji": "⏰✅",
+      "meaning": "仍然",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "continuing to happen now",
+      "wordForms": "--"
+    },
+    {
+      "number": 28,
+      "word": "adults",
+      "emoji": "👨👩",
+      "meaning": "成年人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "grown-up people, not children",
+      "wordForms": "--"
+    },
+    {
+      "number": 29,
+      "word": "futures",
+      "emoji": "🔮⏰",
+      "meaning": "未来",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the time that will come later",
+      "wordForms": "--"
+    },
+    {
+      "number": 30,
+      "word": "without",
+      "emoji": "❌🚫",
+      "meaning": "没有",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "not having something",
+      "wordForms": "--"
+    },
+    {
+      "number": 31,
+      "word": "own",
+      "emoji": "🏠✋",
+      "meaning": "拥有",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to have something that belongs to you",
+      "wordForms": "--"
+    },
+    {
+      "number": 32,
+      "word": "medicine",
+      "emoji": "💊🏥",
+      "meaning": "药物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "things that help sick people feel better",
+      "wordForms": "--"
+    },
+    {
+      "number": 33,
+      "word": "specially-designed",
+      "emoji": "✨🎨",
+      "meaning": "专门设计的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "made in a special way for a particular purpose",
+      "wordForms": "--"
+    },
+    {
+      "number": 34,
+      "word": "traditional",
+      "emoji": "👴📜",
+      "meaning": "传统的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "the old way of doing things",
+      "wordForms": "--"
+    },
+    {
+      "number": 35,
+      "word": "drama",
+      "emoji": "🎭🎪",
+      "meaning": "戏剧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "acting out stories like in a play",
+      "wordForms": "--"
+    },
+    {
+      "number": 36,
+      "word": "full-time",
+      "emoji": "⏰📚",
+      "meaning": "全日制的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening all day, every day",
+      "wordForms": "--"
+    },
+    {
+      "number": 37,
+      "word": "whiteboards",
+      "emoji": "⬜✏️",
+      "meaning": "白板",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "white boards that teachers write on",
+      "wordForms": "--"
+    },
+    {
+      "number": 38,
+      "word": "methods",
+      "emoji": "🔧📋",
+      "meaning": "方法",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "ways of doing something",
+      "wordForms": "--"
+    },
+    {
+      "number": 39,
+      "word": "transfer",
+      "emoji": "🔄📍",
+      "meaning": "转移",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move from one place to another",
+      "wordForms": "--"
+    },
+    {
+      "number": 40,
+      "word": "instead",
+      "emoji": "🔄🔁",
+      "meaning": "反而，取而代之",
+      "partOfSpeech": "",
+      "simpleDefinition": "In place of something else",
+      "wordForms": "--"
+    },
+    {
+      "number": 41,
+      "word": "popular",
+      "emoji": "👥❤️",
+      "meaning": "受欢迎的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "liked by many people",
+      "wordForms": "--"
+    },
+    {
+      "number": 42,
+      "word": "follow one’s example",
+      "emoji": "👥🔄",
+      "meaning": "效仿某人",
+      "partOfSpeech": "",
+      "simpleDefinition": "to do the same thing as someone else",
+      "wordForms": "--"
+    },
+    {
+      "number": 43,
+      "word": "technology",
+      "emoji": "💻🔧",
+      "meaning": "技术",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "machines and computers that help us do things",
+      "wordForms": "--"
+    },
+    {
+      "number": 44,
+      "word": "get high marks",
+      "emoji": "📊⭐",
+      "meaning": "取得高分",
+      "partOfSpeech": "",
+      "simpleDefinition": "to do very well on tests",
+      "wordForms": "--"
+    },
+    {
+      "number": 45,
+      "word": "improve",
+      "emoji": "📈✨",
+      "meaning": "改善",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to become better than before",
+      "wordForms": "--"
+    },
+    {
+      "number": 46,
+      "word": "town",
+      "emoji": "🏘️🏪",
+      "meaning": "城镇",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where many people live and work",
+      "wordForms": "--"
+    },
+    {
+      "number": 47,
+      "word": "imagine",
+      "emoji": "🤔💭",
+      "meaning": "想象",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think about something that is not real",
+      "wordForms": "--"
+    },
+    {
+      "number": 48,
+      "word": "test",
+      "emoji": "📝✏️",
+      "meaning": "考试",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "questions you answer to show what you know",
+      "wordForms": "--"
+    },
+    {
+      "number": 49,
+      "word": "islands",
+      "emoji": "🏝️🌊",
+      "meaning": "岛屿",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "pieces of land with water all around them",
+      "wordForms": "--"
+    },
+    {
+      "number": 50,
+      "word": "around",
+      "emoji": "🔄📍",
+      "meaning": "大约",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "close to a number but not exactly",
+      "wordForms": "--"
+    },
+    {
+      "number": 51,
+      "word": "be home to",
+      "emoji": "🏠👨‍👩‍👧‍👦",
+      "meaning": "是...的家园",
+      "partOfSpeech": "",
+      "simpleDefinition": "the place where people or animals live",
+      "wordForms": "--"
+    },
+    {
+      "number": 52,
+      "word": "come first",
+      "emoji": "🥇🏆",
+      "meaning": "排第一",
+      "partOfSpeech": "",
+      "simpleDefinition": "to be the best or win in a competition",
+      "wordForms": "--"
+    },
+    {
+      "number": 53,
+      "word": "by boat",
+      "emoji": "⛵🚤",
+      "meaning": "乘船",
+      "partOfSpeech": "",
+      "simpleDefinition": "traveling on water using a boat",
+      "wordForms": "--"
+    },
+    {
+      "number": 54,
+      "word": "coast",
+      "emoji": "🏖️🌊",
+      "meaning": "海岸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the land next to the sea",
+      "wordForms": "--"
+    },
+    {
+      "number": 55,
+      "word": "remote",
+      "emoji": "🏝️📡",
+      "meaning": "偏远的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very far away from other places",
+      "wordForms": "--"
+    },
+    {
+      "number": 56,
+      "word": "apart from",
+      "emoji": "🚫➕",
+      "meaning": "除了...以外",
+      "partOfSpeech": "",
+      "simpleDefinition": "Not including something or someone",
+      "wordForms": "--"
+    },
+    {
+      "number": 57,
+      "word": "each week",
+      "emoji": "📅🔄",
+      "meaning": "每周",
+      "partOfSpeech": "",
+      "simpleDefinition": "every seven days",
+      "wordForms": "--"
+    },
+    {
+      "number": 58,
+      "word": "school playground",
+      "emoji": "🏫🎮",
+      "meaning": "学校操场",
+      "partOfSpeech": "",
+      "simpleDefinition": "an area at school where children play",
+      "wordForms": "--"
+    },
+    {
+      "number": 59,
+      "word": "church",
+      "emoji": "⛪🙏",
+      "meaning": "教堂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a building where people pray to God",
+      "wordForms": "--"
+    },
+    {
+      "number": 60,
+      "word": "several",
+      "emoji": "🔢👥",
+      "meaning": "几个",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "more than two but not very many",
+      "wordForms": "--"
+    },
+    {
+      "number": 61,
+      "word": "secondary school",
+      "emoji": "🎓📚",
+      "meaning": "中学",
+      "partOfSpeech": "",
+      "simpleDefinition": "school for older children after primary school",
+      "wordForms": "--"
+    },
+    {
+      "number": 62,
+      "word": "including",
+      "emoji": "➕📋",
+      "meaning": "包括",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "Having something as part of a group or set",
+      "wordForms": "--"
+    },
+    {
+      "number": 63,
+      "word": "problem",
+      "emoji": "❓😟",
+      "meaning": "问题",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something difficult that needs to be fixed",
+      "wordForms": "--"
+    },
+    {
+      "number": 64,
+      "word": "until",
+      "emoji": "⏰🛑",
+      "meaning": "直到",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "up to the time when something happens",
+      "wordForms": "--"
+    },
+    {
+      "number": 65,
+      "word": "community hall",
+      "emoji": "🏢👥",
+      "meaning": "社区活动中心",
+      "partOfSpeech": "",
+      "simpleDefinition": "a building where people meet for activities",
+      "wordForms": "--"
+    },
+    {
+      "number": 66,
+      "word": "costs",
+      "emoji": "💰💳",
+      "meaning": "花费",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to need money to buy something",
+      "wordForms": "--"
+    },
+    {
+      "number": 67,
+      "word": "close down",
+      "emoji": "🚪🔒",
+      "meaning": "关闭",
+      "partOfSpeech": "",
+      "simpleDefinition": "to stop a place from working",
+      "wordForms": "--"
+    },
+    {
+      "number": 68,
+      "word": "government",
+      "emoji": "🏛️👔",
+      "meaning": "政府",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "people who make rules for a country",
+      "wordForms": "--"
+    },
+    {
+      "number": 69,
+      "word": "education",
+      "emoji": "📚🎓",
+      "meaning": "教育",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "learning things at school",
+      "wordForms": "--"
+    },
+    {
+      "number": 70,
+      "word": "explore",
+      "emoji": "🔍🗺️",
+      "meaning": "探索",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "look around new places to learn about them",
+      "wordForms": "--"
+    },
+    {
+      "number": 71,
+      "word": "private school",
+      "emoji": "🏫💰",
+      "meaning": "私立学校",
+      "partOfSpeech": "",
+      "simpleDefinition": "a school that costs money to attend",
+      "wordForms": "--"
+    },
+    {
+      "number": 72,
+      "word": "cheap",
+      "emoji": "💰✅",
+      "meaning": "便宜的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not costing much money",
+      "wordForms": "--"
+    },
+    {
+      "number": 73,
+      "word": "dive",
+      "emoji": "🏊‍♂️💦",
+      "meaning": "跳水",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "jumping into water head first",
+      "wordForms": "--"
+    },
+    {
+      "number": 74,
+      "word": "twice",
+      "emoji": "✌️🔢",
+      "meaning": "两倍",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "two times as much",
+      "wordForms": "--"
+    },
+    {
+      "number": 75,
+      "word": "pier",
+      "emoji": "🌉🚢",
+      "meaning": "码头",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long platform that goes into the water",
+      "wordForms": "--"
+    },
+    {
+      "number": 76,
+      "word": "factory",
+      "emoji": "🏭⚙️",
+      "meaning": "工厂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a building where things are made",
+      "wordForms": "--"
+    },
+    {
+      "number": 77,
+      "word": "be known as",
+      "emoji": "📛👤",
+      "meaning": "被称为",
+      "partOfSpeech": "",
+      "simpleDefinition": "what people call someone or something",
+      "wordForms": "--"
+    },
+    {
+      "number": 78,
+      "word": "salmon",
+      "emoji": "🐟🍣",
+      "meaning": "三文鱼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a big fish that people like to eat",
+      "wordForms": "--"
+    },
+    {
+      "number": 79,
+      "word": "lonely",
+      "emoji": "😢👤",
+      "meaning": "孤独的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "feeling sad because you have no friends nearby",
+      "wordForms": "--"
+    },
+    {
+      "number": 80,
+      "word": "local",
+      "emoji": "🏙️📍",
+      "meaning": "当地的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Belonging to or connected with the place you're talking about",
+      "wordForms": "--"
+    },
+    {
+      "number": 81,
+      "word": "move away",
+      "emoji": "📦🚚",
+      "meaning": "搬走了",
+      "partOfSpeech": "",
+      "simpleDefinition": "leave a place to live somewhere else",
+      "wordForms": "--"
+    },
+    {
+      "number": 82,
+      "word": "games console",
+      "emoji": "🎮📺",
+      "meaning": "游戏机",
+      "partOfSpeech": "",
+      "simpleDefinition": "a machine for playing video games",
+      "wordForms": "--"
+    },
+    {
+      "number": 83,
+      "word": "full of",
+      "emoji": "🪣💯",
+      "meaning": "充满",
+      "partOfSpeech": "",
+      "simpleDefinition": "having a lot of something inside",
+      "wordForms": "--"
+    },
+    {
+      "number": 84,
+      "word": "impossible",
+      "emoji": "❌🚫",
+      "meaning": "不可能的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Something that cannot be done",
+      "wordForms": "--"
+    },
+    {
+      "number": 85,
+      "word": "mark",
+      "emoji": "✏️📊",
+      "meaning": "批改，评分",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give a grade or score to school work",
+      "wordForms": "--"
+    },
+    {
+      "number": 86,
+      "word": "suddenly",
+      "emoji": "⚡😲",
+      "meaning": "突然地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "happening very quickly without warning",
+      "wordForms": "--"
+    },
+    {
+      "number": 87,
+      "word": "simple",
+      "emoji": "✨😊",
+      "meaning": "简单的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "easy to do or understand",
+      "wordForms": "--"
+    },
+    {
+      "number": 88,
+      "word": "understand",
+      "emoji": "🧠💡",
+      "meaning": "理解，明白",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to know what something means",
+      "wordForms": "--"
+    },
+    {
+      "number": 89,
+      "word": "introduce",
+      "emoji": "👋🆕",
+      "meaning": "介绍，引入",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to bring something new or tell about something",
+      "wordForms": "--"
+    },
+    {
+      "number": 90,
+      "word": "exam",
+      "emoji": "📝🎓",
+      "meaning": "考试",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a test to see how much you know",
+      "wordForms": "--"
+    },
+    {
+      "number": 91,
+      "word": "add",
+      "emoji": "➕📝",
+      "meaning": "添加，加上",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put something extra with other things",
+      "wordForms": "--"
+    },
+    {
+      "number": 92,
+      "word": "seem",
+      "emoji": "👀🤔",
+      "meaning": "似乎，看起来",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to appear to be something",
+      "wordForms": "--"
+    },
+    {
+      "number": 93,
+      "word": "system",
+      "emoji": "⚙️📋",
+      "meaning": "系统，制度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a way of doing things with rules",
+      "wordForms": "--"
+    },
+    {
+      "number": 94,
+      "word": "score",
+      "emoji": "🎯📊",
+      "meaning": "分数，得分",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the number of points you get in a test",
+      "wordForms": "--"
+    },
+    {
+      "number": 95,
+      "word": "expert",
+      "emoji": "👨‍🎓🏆",
+      "meaning": "专家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who knows a lot about something",
+      "wordForms": "--"
+    },
+    {
+      "number": 96,
+      "word": "journey",
+      "emoji": "🚶‍♂️🛤️",
+      "meaning": "旅程，过程",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "going from one place to another, or learning process",
+      "wordForms": "--"
+    },
+    {
+      "number": 97,
+      "word": "end",
+      "emoji": "🏁⏹️",
+      "meaning": "终点，结束",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the last part of something",
+      "wordForms": "--"
+    },
+    {
+      "number": 98,
+      "word": "a growth mindset",
+      "emoji": "🌱🧠",
+      "meaning": "成长型思维",
+      "partOfSpeech": "",
+      "simpleDefinition": "believing you can get better at things",
+      "wordForms": "--"
+    },
+    {
+      "number": 99,
+      "word": "reach",
+      "emoji": "🤲🎯",
+      "meaning": "到达，达到",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to get to a place or goal",
+      "wordForms": "--"
+    },
+    {
+      "number": 100,
+      "word": "motivation",
+      "emoji": "🔥💪",
+      "meaning": "动机，积极性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "feeling excited to do something",
+      "wordForms": "--"
+    },
+    {
+      "number": 101,
+      "word": "recognise",
+      "emoji": "👁️💭",
+      "meaning": "认出，意识到",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to understand or realize something",
+      "wordForms": "--"
+    },
+    {
+      "number": 102,
+      "word": "failure",
+      "emoji": "😞❌",
+      "meaning": "失败者，失败",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who doesn't succeed",
+      "wordForms": "--"
+    },
+    {
+      "number": 103,
+      "word": "challenge",
+      "emoji": "🏔️💪",
+      "meaning": "挑战",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something difficult that tests you",
+      "wordForms": "--"
+    },
+    {
+      "number": 104,
+      "word": "develop",
+      "emoji": "🌱📈",
+      "meaning": "发展，培养",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to grow or make something better",
+      "wordForms": "--"
+    },
+    {
+      "number": 105,
+      "word": "a fixed mindset",
+      "emoji": "🧊🧠",
+      "meaning": "固定型思维",
+      "partOfSpeech": "",
+      "simpleDefinition": "believing you cannot change or improve",
+      "wordForms": "--"
+    },
+    {
+      "number": 106,
+      "word": "focus on",
+      "emoji": "🔍👁️",
+      "meaning": "专注于",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to pay attention to one thing",
+      "wordForms": "--"
+    },
+    {
+      "number": 107,
+      "word": "clearly",
+      "emoji": "🔍✨",
+      "meaning": "清楚地，明显地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a way that is easy to see or understand",
+      "wordForms": "--"
+    },
+    {
+      "number": 108,
+      "word": "in contrast",
+      "emoji": "↔️🔄",
+      "meaning": "相比之下",
+      "partOfSpeech": "",
+      "simpleDefinition": "showing the difference between two things",
+      "wordForms": "--"
+    },
+    {
+      "number": 109,
+      "word": "worried",
+      "emoji": "😰💭",
+      "meaning": "担心的，焦虑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "feeling scared that something bad will happen",
+      "wordForms": "--"
+    },
+    {
+      "number": 110,
+      "word": "train",
+      "emoji": "🏋️‍♂️📚",
+      "meaning": "训练，培养",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to practice to get better at something",
+      "wordForms": "--"
+    },
+    {
+      "number": 111,
+      "word": "give up",
+      "emoji": "🙅‍♂️⛔",
+      "meaning": "放弃",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To stop trying to do something",
+      "wordForms": "--"
+    },
+    {
+      "number": 112,
+      "word": "concentrate",
+      "emoji": "🎯👀",
+      "meaning": "专注，集中注意力",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think hard about one thing",
+      "wordForms": "--"
+    },
+    {
+      "number": 113,
+      "word": "once",
+      "emoji": "1️⃣⏰",
+      "meaning": "一旦",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "when something happens",
+      "wordForms": "--"
+    },
+    {
+      "number": 114,
+      "word": "before",
+      "emoji": "⏰📅",
+      "meaning": "以前",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at an earlier time",
+      "wordForms": "--"
+    },
+    {
+      "number": 115,
+      "word": "believe",
+      "emoji": "💭✨",
+      "meaning": "相信",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think something is true",
+      "wordForms": "--"
+    },
+    {
+      "number": 116,
+      "word": "remember",
+      "emoji": "🧠💭",
+      "meaning": "记住",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to keep something in your mind",
+      "wordForms": "--"
+    },
+    {
+      "number": 117,
+      "word": "wonder",
+      "emoji": "🤔💭",
+      "meaning": "想知道",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think about something and want to know",
+      "wordForms": "--"
+    },
+    {
+      "number": 118,
+      "word": "powerful",
+      "emoji": "💪⚡",
+      "meaning": "强大的，有力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very strong and able to make big changes",
+      "wordForms": "--"
+    },
+    {
+      "number": 119,
+      "word": "question",
+      "emoji": "❓🤔",
+      "meaning": "质疑，询问",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to ask about something or doubt it",
+      "wordForms": "--"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1-10",
+      "label": "第一组",
+      "rangeStart": 1,
+      "rangeEnd": 10,
+      "wordList": [
+        "charity",
+        "cause",
+        "Millions of",
+        "provide",
+        "hit",
+        "heavy rains",
+        "electricity",
+        "floods",
+        "force",
+        "areas"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ helped poor families by giving them food and clothes.",
+          "questionKey": "1-10:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The broken pipe will __________ water to flow everywhere in the house.",
+          "questionKey": "1-10:2"
+        },
+        {
+          "number": 3,
+          "prompt": "__________ people live in this big city.",
+          "questionKey": "1-10:3"
+        },
+        {
+          "number": 4,
+          "prompt": "My parents __________ me with everything I need for school.",
+          "questionKey": "1-10:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The storm will __________ our town tonight, so we need to prepare.",
+          "questionKey": "1-10:5"
+        },
+        {
+          "number": 6,
+          "prompt": "During the storm, __________ fell for three days without stopping.",
+          "questionKey": "1-10:6"
+        },
+        {
+          "number": 7,
+          "prompt": "When there is no __________, we can't use our computers or turn on the lights.",
+          "questionKey": "1-10:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The river __________ covered many houses and roads near the water.",
+          "questionKey": "1-10:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The teacher had to __________ the students to sit down and be quiet.",
+          "questionKey": "1-10:9"
+        },
+        {
+          "number": 10,
+          "prompt": "There are many different __________ in our country, from mountains to beaches.",
+          "questionKey": "1-10:10"
+        }
+      ]
+    },
+    {
+      "id": "11-20",
+      "label": "第二组",
+      "rangeStart": 11,
+      "rangeEnd": 20,
+      "wordList": [
+        "is fitted with",
+        "on board",
+        "nearby",
+        "Climate change",
+        "education",
+        "protect",
+        "internet access",
+        "floating",
+        "solar",
+        "environment"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The boat __________ a kitchen and two bedrooms.",
+          "questionKey": "11-20:1"
+        },
+        {
+          "number": 2,
+          "prompt": "All the passengers were safely __________ when the ship left the port.",
+          "questionKey": "11-20:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ school is just down the street from our house.",
+          "questionKey": "11-20:3"
+        },
+        {
+          "number": 4,
+          "prompt": "__________ is making the weather hotter around the world.",
+          "questionKey": "11-20:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Children need good __________ to learn how to read and write.",
+          "questionKey": "11-20:5"
+        },
+        {
+          "number": 6,
+          "prompt": "We need to __________ the trees and animals in the forest.",
+          "questionKey": "11-20:6"
+        },
+        {
+          "number": 7,
+          "prompt": "We don't have __________ in our village, so we can't use the internet.",
+          "questionKey": "11-20:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ duck stayed on top of the water without sinking.",
+          "questionKey": "11-20:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The __________ panels on the roof use sunlight to make electricity.",
+          "questionKey": "11-20:9"
+        },
+        {
+          "number": 10,
+          "prompt": "We should keep our __________ clean by not throwing trash everywhere.",
+          "questionKey": "11-20:10"
+        }
+      ]
+    },
+    {
+      "id": "21-30",
+      "label": "第三组",
+      "rangeStart": 21,
+      "rangeEnd": 30,
+      "wordList": [
+        "platforms",
+        "exist",
+        "beg",
+        "hope",
+        "railway stations",
+        "set up",
+        "still",
+        "Adults",
+        "futures",
+        "Without"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "We waited on the __________ for our train to arrive.",
+          "questionKey": "21-30:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Dinosaurs don't __________ anymore because they all died long ago.",
+          "questionKey": "21-30:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The poor man had to __________ for money on the street corner.",
+          "questionKey": "21-30:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The children have __________ that they will have better lives someday.",
+          "questionKey": "21-30:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Many trains stop at these busy __________ every day.",
+          "questionKey": "21-30:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The students will __________ a new club for reading books together.",
+          "questionKey": "21-30:6"
+        },
+        {
+          "number": 7,
+          "prompt": "My grandmother is __________ living in the same house after 50 years.",
+          "questionKey": "21-30:7"
+        },
+        {
+          "number": 8,
+          "prompt": "__________ like parents and teachers help children learn important things.",
+          "questionKey": "21-30:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The children are studying hard to have bright __________ when they grow up.",
+          "questionKey": "21-30:9"
+        },
+        {
+          "number": 10,
+          "prompt": "__________ good food, the plants in the garden will not grow well.",
+          "questionKey": "21-30:10"
+        }
+      ]
+    },
+    {
+      "id": "31-40",
+      "label": "第四组",
+      "rangeStart": 31,
+      "rangeEnd": 40,
+      "wordList": [
+        "own",
+        "medicine",
+        "specially designed",
+        "traditional",
+        "drama",
+        "full-time",
+        "whiteboards",
+        "methods",
+        "transfer",
+        "instead"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Each student has their __________ desk and chair in the classroom.",
+          "questionKey": "31-40:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The sick boy needs __________ to help him feel better.",
+          "questionKey": "31-40:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new building was __________ for children who use wheelchairs.",
+          "questionKey": "31-40:3"
+        },
+        {
+          "number": 4,
+          "prompt": "We will study __________ stories and poems from long ago.",
+          "questionKey": "31-40:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The students acted in a __________ about a brave princess.",
+          "questionKey": "31-40:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My sister works __________ at the hospital from morning until evening.",
+          "questionKey": "31-40:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The teacher wrote the math problem on one of the __________.",
+          "questionKey": "31-40:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Teachers use different __________ to help students learn new things.",
+          "questionKey": "31-40:8"
+        },
+        {
+          "number": 9,
+          "prompt": "When we move to a new city, I will __________ to a different school.",
+          "questionKey": "31-40:9"
+        },
+        {
+          "number": 10,
+          "prompt": "I wanted ice cream, but I had fruit __________.",
+          "questionKey": "31-40:10"
+        }
+      ]
+    },
+    {
+      "id": "41-45",
+      "label": "第五组",
+      "rangeStart": 41,
+      "rangeEnd": 45,
+      "wordList": [
+        "popular",
+        "follow their example",
+        "technology",
+        "get high marks",
+        "improve"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "This singer is very __________ because everyone loves her music.",
+          "questionKey": "41-45:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The good students work hard, so others should __________.",
+          "questionKey": "41-45:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We use __________ like computers and phones to make life easier.",
+          "questionKey": "41-45:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The smart student will __________ on the test because she studied hard.",
+          "questionKey": "41-45:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I want to __________ my English by reading more books.",
+          "questionKey": "41-45:5"
+        }
+      ]
+    },
+    {
+      "id": "46-55",
+      "label": "第六组",
+      "rangeStart": 46,
+      "rangeEnd": 55,
+      "wordList": [
+        "town",
+        "imagine",
+        "test",
+        "islands",
+        "around",
+        "is home to",
+        "come first",
+        "by boat",
+        "coast",
+        "remote"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The small __________ has only 200 people living there.",
+          "questionKey": "46-55:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Can you __________ living without your mobile phone for a week?",
+          "questionKey": "46-55:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We have a math __________ tomorrow morning at 9 o'clock.",
+          "questionKey": "46-55:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The beautiful __________ are surrounded by clear blue water.",
+          "questionKey": "46-55:4"
+        },
+        {
+          "number": 5,
+          "prompt": "There are __________ 50 students in our English class.",
+          "questionKey": "46-55:5"
+        },
+        {
+          "number": 6,
+          "prompt": "This national park __________ many different types of birds and animals.",
+          "questionKey": "46-55:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Safety should always __________ when you're driving a car.",
+          "questionKey": "46-55:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The only way to reach the island is __________ because there's no bridge.",
+          "questionKey": "46-55:8"
+        },
+        {
+          "number": 9,
+          "prompt": "We walked along the __________ and collected shells on the beach.",
+          "questionKey": "46-55:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The village is very __________ - the nearest city is 300 kilometers away.",
+          "questionKey": "46-55:10"
+        }
+      ]
+    },
+    {
+      "id": "56-65",
+      "label": "第七组",
+      "rangeStart": 56,
+      "rangeEnd": 65,
+      "wordList": [
+        "Apart from",
+        "each week",
+        "school playground",
+        "church",
+        "several",
+        "secondary school",
+        "including",
+        "problem",
+        "until",
+        "community hall"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "__________ English, she also speaks French and German very well.",
+          "questionKey": "56-65:1"
+        },
+        {
+          "number": 2,
+          "prompt": "We go shopping __________ on Saturday mornings.",
+          "questionKey": "56-65:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The children play football on the __________ during their lunch break.",
+          "questionKey": "56-65:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The wedding ceremony will take place in the old __________ next Sunday.",
+          "questionKey": "56-65:4"
+        },
+        {
+          "number": 5,
+          "prompt": "There are __________ reasons why I can't come to the party tonight.",
+          "questionKey": "56-65:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My brother goes to the local __________ and he's in Year 10.",
+          "questionKey": "56-65:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Many people in our town, __________ my neighbors, work in the city.",
+          "questionKey": "56-65:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The main __________ with this plan is that it costs too much money.",
+          "questionKey": "56-65:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The library is open __________ 6 o'clock in the evening.",
+          "questionKey": "56-65:9"
+        },
+        {
+          "number": 10,
+          "prompt": "We're having a meeting in the __________ to discuss the new park.",
+          "questionKey": "56-65:10"
+        }
+      ]
+    },
+    {
+      "id": "66-75",
+      "label": "第八组",
+      "rangeStart": 66,
+      "rangeEnd": 75,
+      "wordList": [
+        "costs",
+        "close down",
+        "government",
+        "education",
+        "explore",
+        "private school",
+        "cheap",
+        "dive",
+        "twice",
+        "pier"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "This jacket only __________ £20, so it's very good value.",
+          "questionKey": "66-75:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The restaurant will __________ next month because not enough people eat there.",
+          "questionKey": "66-75:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ is building new hospitals in every city.",
+          "questionKey": "66-75:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Good __________ is important for finding a well-paid job.",
+          "questionKey": "66-75:4"
+        },
+        {
+          "number": 5,
+          "prompt": "We like to __________ new places when we go on holiday.",
+          "questionKey": "66-75:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Their daughter goes to a __________ where the classes are very small.",
+          "questionKey": "66-75:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The fish and chips shop has very __________ prices for students.",
+          "questionKey": "66-75:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The children love to __________ into the swimming pool on hot days.",
+          "questionKey": "66-75:8"
+        },
+        {
+          "number": 9,
+          "prompt": "She goes to the gym __________ a week - on Monday and Thursday.",
+          "questionKey": "66-75:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The fishing boats come back to the __________ every evening.",
+          "questionKey": "66-75:10"
+        }
+      ]
+    },
+    {
+      "id": "76-82",
+      "label": "第九组",
+      "rangeStart": 76,
+      "rangeEnd": 82,
+      "wordList": [
+        "factory",
+        "is known as",
+        "salmon",
+        "lonely",
+        "local",
+        "move away",
+        "games console"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The new __________ will provide jobs for 500 people in our area.",
+          "questionKey": "76-82:1"
+        },
+        {
+          "number": 2,
+          "prompt": "This restaurant __________ the best place for fresh fish in the city.",
+          "questionKey": "76-82:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We had grilled __________ with vegetables for dinner last night.",
+          "questionKey": "76-82:3"
+        },
+        {
+          "number": 4,
+          "prompt": "She felt __________ when she started at her new school.",
+          "questionKey": "76-82:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ newspaper writes about events in our town every week.",
+          "questionKey": "76-82:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My best friend will __________ next year when his family goes to Australia.",
+          "questionKey": "76-82:6"
+        },
+        {
+          "number": 7,
+          "prompt": "My brother got a new __________ for his birthday and plays games every day.",
+          "questionKey": "76-82:7"
+        }
+      ]
+    },
+    {
+      "id": "83-92",
+      "label": "第十组",
+      "rangeStart": 83,
+      "rangeEnd": 92,
+      "wordList": [
+        "full of",
+        "impossible",
+        "mark",
+        "suddenly",
+        "simple",
+        "understand",
+        "introduce",
+        "exam",
+        "add",
+        "seem"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "My bag is __________ books and I can't carry any more.",
+          "questionKey": "83-92:1"
+        },
+        {
+          "number": 2,
+          "prompt": "It's __________ to fly without wings, but birds can do it naturally.",
+          "questionKey": "83-92:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The teacher will __________ our test papers tomorrow and give us the results.",
+          "questionKey": "83-92:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The weather can change __________ in spring - one moment it's sunny, then it rains.",
+          "questionKey": "83-92:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The math problem looks difficult, but it's actually quite __________ once you know the steps.",
+          "questionKey": "83-92:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Can you help me __________ this story? I don't know what it means.",
+          "questionKey": "83-92:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Let me __________ you to my best friend Sarah.",
+          "questionKey": "83-92:7"
+        },
+        {
+          "number": 8,
+          "prompt": "We have a big __________ next week, so I need to study hard.",
+          "questionKey": "83-92:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Please __________ your name to the list of students going on the trip.",
+          "questionKey": "83-92:9"
+        },
+        {
+          "number": 10,
+          "prompt": "You __________ tired today. Did you sleep well last night?",
+          "questionKey": "83-92:10"
+        }
+      ]
+    },
+    {
+      "id": "93-102",
+      "label": "第十一组",
+      "rangeStart": 93,
+      "rangeEnd": 102,
+      "wordList": [
+        "system",
+        "score",
+        "expert",
+        "journey",
+        "end",
+        "a growth mindset",
+        "reach",
+        "motivation",
+        "recognise",
+        "failure"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Our school has a new __________ for borrowing library books using computers.",
+          "questionKey": "93-102:1"
+        },
+        {
+          "number": 2,
+          "prompt": "I got a high __________ on my English test because I studied every day.",
+          "questionKey": "93-102:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The doctor is an __________ in children's health and knows a lot about keeping kids healthy.",
+          "questionKey": "93-102:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ from home to school takes me 20 minutes by bike.",
+          "questionKey": "93-102:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The movie will __________ at 9 o'clock, so we can go home after that.",
+          "questionKey": "93-102:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Students with __________ believe they can get better at anything with practice.",
+          "questionKey": "93-102:6"
+        },
+        {
+          "number": 7,
+          "prompt": "We will __________ the top of the mountain if we keep walking up.",
+          "questionKey": "93-102:7"
+        },
+        {
+          "number": 8,
+          "prompt": "My teacher gives me __________ to study harder by saying nice things about my work.",
+          "questionKey": "93-102:8"
+        },
+        {
+          "number": 9,
+          "prompt": "I didn't __________ my old friend at first because she had cut her hair very short.",
+          "questionKey": "93-102:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Don't think of yourself as a __________ just because you made one mistake.",
+          "questionKey": "93-102:10"
+        }
+      ]
+    },
+    {
+      "id": "103-112",
+      "label": "第十二组",
+      "rangeStart": 103,
+      "rangeEnd": 112,
+      "wordList": [
+        "challenge",
+        "develop",
+        "a fixed mindset",
+        "focus on",
+        "clearly",
+        "In contrast",
+        "worried",
+        "train",
+        "give up",
+        "concentrate"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Learning to ride a bike is a big __________ for young children.",
+          "questionKey": "103-112:1"
+        },
+        {
+          "number": 2,
+          "prompt": "You can __________ your memory by practicing every day.",
+          "questionKey": "103-112:2"
+        },
+        {
+          "number": 3,
+          "prompt": "People with __________ think they cannot change or learn new things.",
+          "questionKey": "103-112:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Please __________ your homework and stop watching TV.",
+          "questionKey": "103-112:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The instructions are written __________, so everyone can understand them easily.",
+          "questionKey": "103-112:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My brother likes chocolate ice cream. __________, I prefer vanilla.",
+          "questionKey": "103-112:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I am __________ about my pet cat because she hasn't eaten today.",
+          "questionKey": "103-112:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Athletes __________ every day to get stronger and faster.",
+          "questionKey": "103-112:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Never __________ on your dreams, even when things seem difficult.",
+          "questionKey": "103-112:9"
+        },
+        {
+          "number": 10,
+          "prompt": "It's hard to __________ on reading when there's loud music playing.",
+          "questionKey": "103-112:10"
+        }
+      ]
+    },
+    {
+      "id": "113-119",
+      "label": "第13组",
+      "rangeStart": 113,
+      "rangeEnd": 119,
+      "wordList": [
+        "Once",
+        "before",
+        "believe",
+        "remember",
+        "wonder",
+        "powerful",
+        "question"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "__________ you learn to swim, you can play safely in the pool.",
+          "questionKey": "113-119:1"
+        },
+        {
+          "number": 2,
+          "prompt": "I had never seen snow __________ moving to this cold country.",
+          "questionKey": "113-119:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Do you __________ in magic, or do you think it's just tricks?",
+          "questionKey": "113-119:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I always __________ to brush my teeth before going to bed.",
+          "questionKey": "113-119:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I __________ what my friends are doing right now at home.",
+          "questionKey": "113-119:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The king was very __________ and could make important decisions for his country.",
+          "questionKey": "113-119:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Students should __________ things they don't understand by asking their teacher.",
+          "questionKey": "113-119:7"
+        }
+      ]
+    }
+  ]
+};
