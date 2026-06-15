@@ -76,6 +76,9 @@
             gap: 9px;
             min-width: min(420px, 44vw);
         }
+        .top-audio [hidden] {
+            display: none !important;
+        }
         .top-audio audio {
             display: none;
         }
@@ -597,7 +600,7 @@
         <div class="candidate" id="set-code">C7-T1-S1</div>
         <div class="top-audio" id="top-audio">
             <audio id="listening-audio" preload="metadata"></audio>
-            <button class="top-audio-start" id="top-audio-start" type="button">Start Audio</button>
+            <button class="top-audio-start" id="top-audio-start" type="button" hidden>Start Audio</button>
             <button class="top-audio-resume" id="top-audio-resume" type="button" hidden>Resume Audio</button>
             <div class="timer" id="timer-display" aria-live="polite" hidden><strong id="time-left">--</strong><span id="time-left-label">minutes left</span></div>
             <div class="top-audio-review" id="top-audio-review">
@@ -665,7 +668,7 @@
     var audioTimerInterval = null;
     var activeQuestionId = '';
     var reviewedQuestions = {};
-    var audioMode = 'ready';
+    var audioMode = 'loading';
     var audioStarted = false;
     var audioStartPromptShown = false;
 
@@ -849,6 +852,12 @@
         return null;
     }
 
+    function setControlVisible(element, visible) {
+        if (!element) return;
+        element.hidden = !visible;
+        element.style.display = visible ? '' : 'none';
+    }
+
     function updateAudioUi() {
         var start = document.getElementById('top-audio-start');
         var resume = document.getElementById('top-audio-resume');
@@ -856,11 +865,12 @@
         var review = document.getElementById('top-audio-review');
         var status = document.getElementById('top-audio-status');
         if (!start || !resume || !timer || !review || !status) return;
-        start.hidden = audioMode !== 'ready';
-        resume.hidden = audioMode !== 'resume';
-        timer.hidden = audioMode !== 'confirming' && audioMode !== 'exam';
+        setControlVisible(start, audioMode === 'ready');
+        setControlVisible(resume, audioMode === 'resume');
+        setControlVisible(timer, audioMode === 'confirming' || audioMode === 'exam');
         review.classList.toggle('show', audioMode === 'review');
-        status.hidden = audioMode !== 'missing';
+        setControlVisible(review, audioMode === 'review');
+        setControlVisible(status, audioMode === 'missing');
         if (audioMode === 'missing') status.textContent = 'Audio pending';
         syncAudioUi();
     }
