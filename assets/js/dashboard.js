@@ -16,7 +16,9 @@
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
         { id: 'grammar', label: 'Grammar' },
-        { id: 'listening', label: 'Listening' }
+        { id: 'bbc-listening', label: 'BBC Listening' },
+        { id: 'ielts-reading', label: 'IELTS Reading' },
+        { id: 'ielts-listening', label: 'IELTS Listening' }
     ];
 
     var motivationalQuotes = [
@@ -671,11 +673,14 @@
             item.type,
             item.sectionTitle,
             item.section_id,
+            item.sectionId,
             item.topic
         ].join(' ').toLowerCase();
+        if (haystack.indexOf('ielts-reading') !== -1 || haystack.indexOf('ielts reading') !== -1) return 'ielts-reading';
+        if (haystack.indexOf('ielts-listening') !== -1 || haystack.indexOf('ielts listening') !== -1) return 'ielts-listening';
+        if (haystack.indexOf('bbc-six-minute-english') !== -1 || haystack.indexOf('bbc listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'bbc-listening';
         if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
         if (haystack.indexOf('grammar') !== -1) return 'grammar';
-        if (haystack.indexOf('listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'listening';
         return 'other';
     }
 

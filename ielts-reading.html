@@ -721,7 +721,7 @@
     <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
     <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
     <div class="exam-actions">
-        <button type="button" id="exam-dashboard-btn">Homepage</button>
+        <button type="button" id="exam-dashboard-btn">Dashboard</button>
     </div>
 </header>
 <div class="identity-status" id="identity-status">Login</div>
@@ -824,7 +824,7 @@
     var highlightToolbar = document.getElementById('highlight-toolbar');
     var splitLayout = document.getElementById('split-layout');
     var splitDivider = document.getElementById('split-divider');
-    var readingDurationSeconds = 60 * 60;
+    var readingDurationSeconds = readingDurationSecondsForSet(setId);
     var readingTimerStartedAt = Date.now();
     var readingTimerInterval = null;
     var activeQuestionId = '';
@@ -863,6 +863,15 @@
         errorDisplay.style.display = 'block';
         errorDisplay.innerHTML = '<h2>Error</h2><p>' + msg + '</p>';
         loadingDisplay.style.display = 'none';
+    }
+
+    function readingDurationSecondsForSet(value) {
+        var match = String(value || '').match(/-P([123])(?:\b|$)/i);
+        var passageNumber = match ? Number(match[1]) : 0;
+        if (passageNumber === 1) return 15 * 60;
+        if (passageNumber === 2) return 20 * 60;
+        if (passageNumber === 3) return 25 * 60;
+        return 60 * 60;
     }
 
     function updateReadingTimer() {
