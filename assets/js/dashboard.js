@@ -11,8 +11,7 @@
         starCount: 0,
         assignmentStarCount: 0,
         selfStudyStarCount: 0,
-        teacherReplies: [],
-        todoPromptDismissed: false
+        teacherReplies: []
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -530,39 +529,6 @@
         button.appendChild(dot);
     }
 
-    function dismissTodoPrompt() {
-        state.todoPromptDismissed = true;
-        var existing = document.querySelector('.assignment-todo-popover');
-        if (existing) existing.remove();
-    }
-
-    function updateAssignmentTodoPrompt() {
-        var tabs = document.querySelector('.dashboard-tabs');
-        var button = document.querySelector('.tab-button[data-view="assignments"]');
-        var existing = document.querySelector('.assignment-todo-popover');
-        if (existing) existing.remove();
-        if (!tabs || !button || state.todoPromptDismissed || !state.session || state.session.mode !== 'student') return;
-        var todo = todoAssignments();
-        if (!todo.length) return;
-        var first = todo[0];
-        var firstSet = first && (first.set || first) || {};
-        var popover = document.createElement('div');
-        popover.className = 'assignment-todo-popover';
-        popover.innerHTML =
-            '<button class="todo-popover-close" type="button" aria-label="Dismiss assignment reminder">×</button>' +
-            '<strong>' + todo.length + ' assignment' + (todo.length === 1 ? '' : 's') + ' waiting</strong>' +
-            '<span>' + escapeHtml(compactAssignmentTitle(firstSet.title || firstSet.set_id || firstSet.id || 'Start your next task')) + '</span>' +
-            '<button class="todo-popover-action" type="button">Show To Do</button>';
-        tabs.appendChild(popover);
-        popover.querySelector('.todo-popover-close').addEventListener('click', dismissTodoPrompt);
-        popover.querySelector('.todo-popover-action').addEventListener('click', function() {
-            state.assignmentFilter = 'todo';
-            activateView('assignments');
-            dismissTodoPrompt();
-            renderAssignments();
-        });
-    }
-
     function clearTeacherReplies(seenIds) {
         var idSet = new Set(seenIds || []);
         if (!idSet.size) return;
@@ -680,7 +646,6 @@
         }
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
-        updateAssignmentTodoPrompt();
 
         document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
