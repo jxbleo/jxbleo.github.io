@@ -1035,6 +1035,8 @@ async function resolveDispute(event, teacher) {
     teacher_note: teacherNote,
     resolved_by_teacher_uid: teacher.auth_uid,
     grading_version_after: dispute.grading_version_after || null,
+    student_seen: false,
+    student_seen_at: null,
     resolved_at: now,
     updated_at: now,
   });

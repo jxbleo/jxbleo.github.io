@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+.qa-secrets.local
 *.key
 *.pem
 secrets.json

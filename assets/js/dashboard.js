@@ -136,7 +136,7 @@
     function statusLabel(status) {
         if (status === 'mastered') return 'MASTERED';
         if (status === 'passed') return 'PASSED';
-        return 'TO-DO';
+        return 'TO DO';
     }
 
     function normalizedStatus(status) {
@@ -150,8 +150,11 @@
         return normalized === 'passed' || normalized === 'mastered';
     }
 
-    function assignmentBucket(status) {
-        return isFinishedStatus(status) ? 'finished' : 'todo';
+    function assignmentFilterForStatus(status) {
+        var normalized = normalizedStatus(status);
+        if (normalized === 'mastered') return 'mastered';
+        if (normalized === 'passed') return 'passed';
+        return 'todo';
     }
 
     function teacherReplyCount(item) {
@@ -182,24 +185,26 @@
     }
 
     function renderAssignmentFilters(assignments) {
-        var counts = { todo: 0, finished: 0 };
-        var replies = { todo: 0, finished: 0 };
+        var filters = [
+            { id: 'todo', label: 'TO DO' },
+            { id: 'passed', label: 'PASSED' },
+            { id: 'mastered', label: 'MASTERED' }
+        ];
+        var counts = { todo: 0, passed: 0, mastered: 0 };
+        var replies = { todo: 0, passed: 0, mastered: 0 };
         assignments.forEach(function(item) {
-            var bucket = assignmentBucket(item.status);
+            var bucket = assignmentFilterForStatus(item.status);
             counts[bucket] = (counts[bucket] || 0) + 1;
             replies[bucket] += teacherReplyCount(item);
         });
-        var todoNotice = replies.todo
-            ? '<span class="reply-count-badge filter-reply-count">' + replies.todo + '</span>'
-            : '';
-        var finishedNotice = replies.finished
-            ? '<span class="reply-count-badge filter-reply-count">' + replies.finished + '</span>'
-            : '';
         return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
-                todoNotice + '<span class="summary-value">' + counts.todo + '</span><span class="summary-label">TO DO</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'finished' ? ' active' : '') + '" type="button" data-assignment-filter="finished">' +
-                finishedNotice + '<span class="summary-value">' + counts.finished + '</span><span class="summary-label">FINISHED</span></button>' +
+            filters.map(function(filter) {
+                var notice = replies[filter.id]
+                    ? '<span class="reply-count-badge filter-reply-count">' + replies[filter.id] + '</span>'
+                    : '';
+                return '<button class="summary-card assignment-filter' + (state.assignmentFilter === filter.id ? ' active' : '') + '" type="button" data-assignment-filter="' + escapeHtml(filter.id) + '">' +
+                    notice + '<span class="summary-value">' + counts[filter.id] + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span></button>';
+            }).join('') +
         '</div>';
     }
 
@@ -620,27 +625,33 @@
 
         var assignments = state.assignments || [];
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
-        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); }).sort(function(left, right) {
+        var sortFinished = function(left, right) {
             var byReply = teacherReplyCount(right) - teacherReplyCount(left);
             if (byReply) return byReply;
             return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
                 new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
-        });
+        };
+        var passed = assignments.filter(function(item) { return normalizedStatus(item.status) === 'passed'; }).sort(sortFinished);
+        var mastered = assignments.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).sort(sortFinished);
         var visible = [];
         if (state.assignmentFilter === 'todo') visible = todo;
-        else if (state.assignmentFilter === 'finished') visible = finished;
+        else if (state.assignmentFilter === 'passed') visible = passed;
+        else if (state.assignmentFilter === 'mastered') visible = filterDone(mastered, state.starsRange);
         else visible = todo;
 
         var html = renderTeacherRepliesPrompt() + renderAssignmentFilters(assignments);
+        if (state.assignmentFilter === 'mastered' && mastered.length) html += starsControls();
         if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!visible.length) {
-            var emptyLabel = state.assignmentFilter === 'finished'
-                ? 'No finished work yet.'
-                : state.assignmentFilter === 'todo'
-                    ? 'No new work is waiting.'
-                    : 'Nothing is waiting right now.';
+            var emptyLabel = state.assignmentFilter === 'passed'
+                ? 'No passed work yet.'
+                : state.assignmentFilter === 'mastered'
+                    ? 'No mastered work in this range.'
+                    : state.assignmentFilter === 'todo'
+                        ? 'No new work is waiting.'
+                        : 'Nothing is waiting right now.';
             html += '<div class="empty-card">' + emptyLabel + '</div>';
         }
         assignmentContent.innerHTML = html;
@@ -649,7 +660,7 @@
         document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var nextFilter = button.dataset.assignmentFilter;
-                state.assignmentFilter = state.assignmentFilter === nextFilter ? 'all' : nextFilter;
+                state.assignmentFilter = nextFilter;
                 renderAssignments();
             });
         });
