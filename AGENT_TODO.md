@@ -34,6 +34,10 @@ cp .qa-secrets.example .qa-secrets.local
       preview once dedicated development test accounts are available.
 - [ ] Consider passing durable `question_text` from each practice runtime's
       Argue submission path.
+- [ ] If NAWL-X through NAWL-Z2 still do not appear in student Explore or
+      teacher Library after the static site is published, import the matching
+      CloudBase `sets` records for visibility and `grading_keys` records for
+      grading in the development environment.
 - [ ] Investigate teacher Progress data freshness: after a dev student completed
       assignment `BBC-250717` at 100%, the student dashboard showed it under
       FINISHED, but teacher Progress still showed the older `5 TO DO / 4
@@ -48,6 +52,23 @@ cp .qa-secrets.example .qa-secrets.local
       counts, but they appear only as adjacent `★` numbers.
 
 ## Done
+
+### 2026-06-16
+
+- Fixed IELTS Listening teacher preview audio startup: `teacher=1` no longer
+  blocks the shared `Start Audio` confirmation flow.
+- Added the public app version to teacher Library practice links and bumped the
+  static config cache version to `20260616-1` so devices fetch the updated
+  practice page URL.
+- Verified locally that IELTS Listening teacher preview opens `C7-T1-S1`, sees
+  the audio source, and shows the start-audio dialog after clicking `Start
+  Audio`.
+- Verified NAWL-X through NAWL-Z2 JSON/JS fallback files parse, are listed in
+  the static home catalog, and `NAWL-Z2` renders locally with 63 words and 6
+  test groups.
+- CloudBase: no deployment or import performed. Static publish is required for
+  the audio fix; CloudBase `sets` and `grading_keys` import is required if NAWL
+  items are missing from authenticated Library/Explore or grading.
 
 ### 2026-06-15
 

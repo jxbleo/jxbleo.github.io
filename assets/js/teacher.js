@@ -492,7 +492,11 @@
 
     function teacherPracticeHref(set) {
         var href = set.link || '#';
-        return href + (href.indexOf('?') === -1 ? '?' : '&') + 'teacher=1';
+        var params = ['teacher=1'];
+        if (window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion) {
+            params.push('app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion));
+        }
+        return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
     }
 
     function renderLibrary() {

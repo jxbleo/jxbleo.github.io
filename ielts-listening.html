@@ -664,7 +664,7 @@
 </div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260615-1"></script>
+<script src="assets/js/config.public.js?v=20260616-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
 <script src="assets/js/practice-session.js?v=20260615-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260615-1"></script>
@@ -907,7 +907,7 @@
     }
 
     function showAudioStartDialog(force) {
-        if (teacherMode || !lesson || !lesson.audioSrc || (audioMode !== 'ready' && audioMode !== 'confirming') || (!force && audioStartPromptShown)) return;
+        if (!lesson || !lesson.audioSrc || (audioMode !== 'ready' && audioMode !== 'confirming') || (!force && audioStartPromptShown)) return;
         audioStartPromptShown = true;
         audioMode = 'confirming';
         updateAudioUi();
