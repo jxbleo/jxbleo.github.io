@@ -664,6 +664,20 @@ tested.
 - End with a concise summary, tests performed, and exact owner action still
   required in CloudBase.
 
+### Agent QA memory
+
+- Use `AGENT_TODO.md` as the shared QA and iteration log for Codex-assisted
+  testing, bug fixing, and verification.
+- After a QA pass, bug fix, content import, or browser verification, add a short
+  entry that records what was checked, what changed, the verification result,
+  and any owner action still required.
+- Keep open issues under `Open` and move verified fixes to `Done`.
+- Never write passwords, CloudBase secrets, private grading keys, accepted
+  answers, explanations, or long raw command output into `AGENT_TODO.md`.
+- Automated login tests may read dedicated development test credentials from
+  `.qa-secrets.local`; this file must remain ignored by Git and must not contain
+  real owner or real student accounts.
+
 ## 15. Session Record — Teacher Argue Enhancement (2026-06-12)
 
 ### What was done
