@@ -223,6 +223,7 @@ All collections use `ADMINONLY`:
 - `student_set_achievements`: permanent protected STAR records
 - `answer_disputes`: student single-question Argue requests
 - `grading_key_history`: immutable teacher grading-rule revisions
+- `student_vocabulary_items`: student-owned saved words and phrases
 
 Read exact schemas in `CLOUDBASE_ARCHITECTURE.md` before adding fields.
 Preserve these stable identifiers:
@@ -305,9 +306,11 @@ answers, per-question results, attempt number, grading version, timing, and
 assignment/resource context. Independent Resources work uses
 `assignment_id: null`.
 
-The student dashboard labels assignment states `TO DO`, `PASSED`, and
-`MASTERED`. Each type is newest assignment first. MASTERED defaults to one week
-and supports one month and All.
+The student dashboard groups assignments into `TO DO` and `FINISHED`. Backend
+statuses may still be `to_do`, `passed`, or `mastered`, but the student
+Assignments screen intentionally merges passed/mastered work into `FINISHED`.
+Do not reintroduce separate `PASSED` / `MASTERED` dashboard tabs or the old
+MASTERED one-week/one-month/all range selector unless the owner explicitly asks.
 The backend retains all attempts.
 
 Assignment STAR records are backend records keyed by `assignment_id`. A mastered
@@ -571,6 +574,7 @@ Active backend functions:
 - `getDashboard`: assignments and student summary
 - `getResources`: visible practice sets
 - `submitAttempt`: grading, attempt storage, assignment update
+- `studentVocabulary`: authenticated student personal word list
 - `teacherAdmin`: teacher-only account, assignment, and data actions
 
 Source lives in `cloudfunctions/<name>/`; deployment ZIPs live in
@@ -597,8 +601,18 @@ Student dashboard navigation:
 - `Explore`
 - `Profile`
 
-Assignments has three selectable cards: `TO DO`, `PASSED`, and `MASTERED`. Do
-not add separate Failed/Done explanation sections below them.
+Assignments has two selectable cards: `TO DO` and `FINISHED`. Do not split the
+student dashboard back into separate `PASSED` and `MASTERED` cards unless the
+owner explicitly asks, and do not add separate Failed/Done explanation sections
+below them.
+
+Students may select a word or short phrase on student-facing pages and save it
+to their personal My Words list. This data belongs in
+`student_vocabulary_items`, not `attempts`, `assignments`, or `grading_keys`.
+The browser must call the `studentVocabulary` cloud function; it must never
+write this collection directly or trust a browser-provided Student ID for
+ownership. Visitor mode and teacher preview must not save personal student
+words.
 
 `Teacher Replies` may appear above Assignments only when the student has
 unread resolved Argue replies. It is a transient prompt, not a permanent inbox;
@@ -647,6 +661,8 @@ For backend/data work verify at least:
 - independent practice uses `assignment_id: null`
 - vocabulary 1-4 groups are not recorded
 - vocabulary 5+ groups are recorded with group details
+- personal vocabulary saves are owned by authenticated `auth_uid`
+- visitors and teacher preview cannot save personal vocabulary
 - catalog links and practice pages load
 
 For substantial frontend changes, run the local site and inspect the affected
@@ -752,7 +768,8 @@ tested.
   statuses, supports `revealAnswers`, `claimStar`, and `getAttemptForRetry`.
 - `cloudfunctions/teacherAdmin/index.js`: creates `to_do` assignments and
   normalizes teacher candidate/assignment behavior for the new statuses.
-- `assets/js/dashboard.js`: shows `TO DO`, `PASSED`, and `MASTERED`, compact
+- `assets/js/dashboard.js`: currently shows `TO DO` and `FINISHED` on the
+  student dashboard while preserving backend passed/mastered state, compact
   assignment pills, backend `Get Star` / `Star collected`, and the star counter.
 - `bbc.html`, `ielts-reading.html`, `vocabulary.html`: answer reveal
   confirmation, backend reveal locking, retry choices, draft preservation, and

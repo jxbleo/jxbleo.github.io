@@ -618,6 +618,66 @@ button { cursor: pointer; }
 .profile-actions button { min-height: 44px; border-radius: 12px; font-weight: 850; }
 .outline-button { border: 1px solid var(--line); color: var(--ink); background: white; }
 .danger-button { border: 1px solid #efc9c3; color: var(--danger); background: #fff; }
+.my-words-card { grid-column: 1 / -1; }
+.my-words-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.my-words-head .eyebrow { margin-bottom: 5px; }
+.my-words-head h2 { margin: 0; }
+.my-words-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.my-word-refresh, .my-word-action {
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-weight: 850;
+}
+.my-words-list {
+    display: grid;
+    border-top: 1px solid var(--line);
+}
+.my-word-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+}
+.my-word-main { min-width: 0; }
+.my-word-main strong {
+    display: block;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.25;
+}
+.my-word-main span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+.my-word-main p {
+    margin: 7px 0 0;
+    color: #49645e;
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+.my-words-empty {
+    padding: 18px 0 4px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
 
 .password-dialog-overlay {
     position: fixed;
@@ -2141,6 +2201,9 @@ button { cursor: pointer; }
         border-radius: 999px;
     }
     .profile-grid { grid-template-columns: 1fr; }
+    .my-words-tools { grid-template-columns: 1fr; }
+    .my-word-item { grid-template-columns: 1fr; }
+    .my-word-action { width: 100%; }
     .password-dialog { padding: 22px 18px; }
     .teacher-replies-card { grid-template-columns: 1fr; }
     .teacher-replies-card .primary-button { width: 100%; }

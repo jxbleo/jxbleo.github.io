@@ -36,7 +36,7 @@ cp .qa-secrets.example .qa-secrets.local
       Argue submission path.
 - [ ] Investigate teacher Progress data freshness: after a dev student completed
       assignment `BBC-250717` at 100%, the student dashboard showed it under
-      MASTERED, but teacher Progress still showed the older `5 TO DO / 4
+      FINISHED, but teacher Progress still showed the older `5 TO DO / 4
       Finished` summary and did not list that assignment after reload.
 - [ ] Reconcile reassignment rules for completed/STAR work. Teacher Assign
       correctly detected the completed `BBC-250717` result, but both frontend
@@ -51,6 +51,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-15
 
+- Added the personal My Words feature source: new `studentVocabulary` cloud
+  function, shared `personal-vocab.js` selection UI, Dashboard My Words panel,
+  docs, and `deploy-packages/studentVocabulary.zip`.
+- Verified `studentVocabulary`, `personal-vocab.js`, and `dashboard.js` with
+  `node --check`; browser-smoked local BBC visitor loading and local Visitor
+  Dashboard with no console errors.
+- CloudBase: owner already created `student_vocabulary_items` and indexes.
+  Deploy `studentVocabulary`, then publish the static site and test saving with
+  a dedicated development student account.
 - Investigated IELTS Listening `Start Audio` not playing. Verified
   `C7-T3-S4.mp3` serves locally as `audio/mpeg`; fixed the start/resume state
   machine so one tap cannot double-trigger `touchend`/`click` and invalidate
@@ -59,15 +68,18 @@ cp .qa-secrets.example .qa-secrets.local
 - Ran a dev end-to-end QA pass with dedicated teacher/student test accounts:
   teacher assigned `BBC-250717`, student opened it from dashboard, submitted a
   correct countable attempt, and the student dashboard moved it from TO DO to
-  MASTERED.
+  FINISHED.
 - Verified teacher BBC preview `Show Answers` works with an authenticated
   teacher session and does not surface a raw CloudBase SDK error.
-- Fixed the student dashboard assignment filters to show `TO DO`, `PASSED`, and
-  `MASTERED` instead of merging completed work into `FINISHED`; MASTERED now
-  uses the existing `1 Week / 1 Month / All` range selector.
-- Verified `assets/js/dashboard.js` with `node --check`, browser-tested the
-  three filters locally, and bumped `dashboard.html` to
-  `dashboard.js?v=20260615-7`.
+- Confirmed owner correction: the current student dashboard is intentionally
+  two groups, `TO DO` and `FINISHED`; do not split it into `PASSED` and
+  `MASTERED` without a new owner request.
+- Reverted the accidental three-filter dashboard change and removed the
+  residual MASTERED `1 Week / 1 Month / All` code path; bumped `dashboard.html`
+  to `dashboard.js?v=20260615-8`.
+- Updated `AGENTS.md` so future agents know the student dashboard is currently
+  a two-group `TO DO` / `FINISHED` design.
+- Verified `assets/js/dashboard.js` with `node --check`.
 - CloudBase: no deployment performed. Test data created in development:
   one assignment and one attempt for the dedicated student test account.
 - Added PWA/iOS icon assets from the supplied cat-logo references, wired
