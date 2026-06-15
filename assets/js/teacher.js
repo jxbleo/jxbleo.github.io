@@ -16,6 +16,7 @@
         studentPickerMode: 'choose',
         assignPanels: { sets: false, students: false, options: false },
         assignView: 'new',
+        assignProgressMode: 'student',
         studentProgressView: 'to_do',
         studentInfoEdit: '',
         disputeFilter: 'pending',
@@ -24,6 +25,7 @@
         expandedDisputes: {},
         expandedAssignmentSets: {},
         expandedAssignProgress: {},
+        expandedAssignProgressGroups: {},
         expandedDisputeMerges: {}
     };
     var LIBRARY_FILTERS = [
@@ -975,15 +977,111 @@
         }, { total: 0, open: 0, finished: 0, alerts: 0 });
     }
 
-    function renderAssignmentOverview() {
-        var container = document.getElementById('assignment-overview');
-        if (!container) return;
-        var items = assignedProgressItems().slice().sort(function(a, b) {
+    function sortAssignmentOverviewItems(items) {
+        return items.slice().sort(function(a, b) {
             var alertA = assignmentAlert(a);
             var alertB = assignmentAlert(b);
             if (alertA.rank !== alertB.rank) return alertA.rank - alertB.rank;
             return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0);
         });
+    }
+
+    function assignmentProgressKey(item) {
+        return item.progress_id || item.assignment_id || [item.student_uid, item.set_id].join('::');
+    }
+
+    function renderAssignmentOverviewRow(item) {
+        var key = assignmentProgressKey(item);
+        var expanded = state.expandedAssignProgress[key] === true;
+        var alert = assignmentAlert(item);
+        var status = normalizedAssignmentStatus(item.status);
+        var attempts = progressAttemptsForAssignment(item);
+        var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
+        return '<div class="assignment-table-item">' +
+            '<button class="assignment-table-row" type="button" data-assign-progress="' + escapeHtml(key) + '">' +
+                '<span><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong><small>' + escapeHtml(item.student_id || '') + '</small></span>' +
+                '<span><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id)) + '</strong><small>' + escapeHtml(item.set_id || '') + '</small></span>' +
+                '<span class="assignment-status-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
+                '<span><strong>' + escapeHtml(attemptCount) + '</strong><small>attempts</small></span>' +
+                '<span><strong>' + escapeHtml(formatPercent(item.best_percentage)) + '</strong><small>best</small></span>' +
+                '<span class="assignment-alert-pill ' + escapeHtml(alert.css) + '">' + escapeHtml(alert.label) + '</span>' +
+            '</button>' +
+            (expanded ? '<div class="assignment-overview-detail">' + renderAssignmentDetails(item, attempts) + '</div>' : '') +
+        '</div>';
+    }
+
+    function assignmentProgressGroups(items, mode) {
+        var groupMap = {};
+        items.forEach(function(item) {
+            var isTaskMode = mode === 'task';
+            var id = isTaskMode
+                ? String(item.set_id || 'unknown-task')
+                : String(item.student_uid || item.auth_uid || item.student_id || 'unknown-student');
+            var key = (isTaskMode ? 'task::' : 'student::') + id;
+            if (!groupMap[key]) {
+                groupMap[key] = {
+                    key: key,
+                    title: isTaskMode
+                        ? (item.set_title || setTitleFor(item.set_id))
+                        : (item.student_name || item.student_id || 'Student'),
+                    subtitle: isTaskMode
+                        ? (item.set_id || '')
+                        : (item.student_id || ''),
+                    items: []
+                };
+            }
+            groupMap[key].items.push(item);
+        });
+        return Object.keys(groupMap).map(function(key) {
+            var group = groupMap[key];
+            group.items = sortAssignmentOverviewItems(group.items);
+            group.metrics = assignmentOverviewMetrics(group.items);
+            group.alertRank = group.items.reduce(function(rank, item) {
+                return Math.min(rank, assignmentAlert(item).rank);
+            }, 99);
+            return group;
+        }).sort(function(a, b) {
+            if (a.alertRank !== b.alertRank) return a.alertRank - b.alertRank;
+            if (b.metrics.open !== a.metrics.open) return b.metrics.open - a.metrics.open;
+            return String(a.title).localeCompare(String(b.title));
+        });
+    }
+
+    function renderAssignmentProgressGroup(group) {
+        var expanded = state.expandedAssignProgressGroups[group.key] === true;
+        var metrics = group.metrics || assignmentOverviewMetrics(group.items);
+        return '<article class="assignment-progress-group' + (expanded ? ' expanded' : '') + '">' +
+            '<button class="assignment-progress-group-head" type="button" data-assign-progress-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
+                '<span class="assignment-progress-group-copy"><strong>' + escapeHtml(group.title || 'Group') + '</strong>' +
+                    '<small>' + escapeHtml(group.subtitle || '') + '</small></span>' +
+                '<span class="assignment-progress-group-stats">' +
+                    '<span><strong>' + escapeHtml(metrics.open) + '</strong><small>Open</small></span>' +
+                    '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
+                    '<span><strong>' + escapeHtml(metrics.alerts) + '</strong><small>Watch</small></span>' +
+                '</span>' +
+            '</button>' +
+            (expanded ? '<div class="assignment-progress-group-body">' +
+                '<div class="assignment-table compact">' +
+                    group.items.map(renderAssignmentOverviewRow).join('') +
+                '</div>' +
+            '</div>' : '') +
+        '</article>';
+    }
+
+    function renderAssignmentProgressModeTabs() {
+        var mode = state.assignProgressMode || 'student';
+        return '<div class="assignment-overview-toolbar">' +
+            '<div class="assignment-progress-mode-tabs" role="tablist" aria-label="Assignment progress view">' +
+                '<button class="assignment-progress-mode-tab' + (mode === 'student' ? ' active' : '') + '" type="button" data-assign-progress-mode="student">By student</button>' +
+                '<button class="assignment-progress-mode-tab' + (mode === 'task' ? ' active' : '') + '" type="button" data-assign-progress-mode="task">By task</button>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function renderAssignmentOverview() {
+        var container = document.getElementById('assignment-overview');
+        if (!container) return;
+        var items = sortAssignmentOverviewItems(assignedProgressItems());
         var metrics = assignmentOverviewMetrics(items);
         if (!items.length) {
             container.innerHTML = '<div class="empty-card"><strong>No assigned work yet</strong>Assignments will appear here after you create them.</div>';
@@ -995,30 +1093,24 @@
             '<div class="assignment-overview-metric"><span>Finished</span><strong>' + escapeHtml(metrics.finished) + '</strong></div>' +
             '<div class="assignment-overview-metric"><span>Needs attention</span><strong>' + escapeHtml(metrics.alerts) + '</strong></div>' +
         '</div>';
-        var rows = items.map(function(item) {
-            var key = item.progress_id || item.assignment_id || [item.student_uid, item.set_id].join('::');
-            var expanded = state.expandedAssignProgress[key] === true;
-            var alert = assignmentAlert(item);
-            var status = normalizedAssignmentStatus(item.status);
-            var attempts = progressAttemptsForAssignment(item);
-            var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
-            return '<div class="assignment-table-item">' +
-                '<button class="assignment-table-row" type="button" data-assign-progress="' + escapeHtml(key) + '">' +
-                    '<span><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong><small>' + escapeHtml(item.student_id || '') + '</small></span>' +
-                    '<span><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id)) + '</strong><small>' + escapeHtml(item.set_id || '') + '</small></span>' +
-                    '<span class="assignment-status-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
-                    '<span><strong>' + escapeHtml(attemptCount) + '</strong><small>attempts</small></span>' +
-                    '<span><strong>' + escapeHtml(formatPercent(item.best_percentage)) + '</strong><small>best</small></span>' +
-                    '<span class="assignment-alert-pill ' + escapeHtml(alert.css) + '">' + escapeHtml(alert.label) + '</span>' +
-                '</button>' +
-                (expanded ? '<div class="assignment-overview-detail">' + renderAssignmentDetails(item, attempts) + '</div>' : '') +
+        var groups = assignmentProgressGroups(items, state.assignProgressMode || 'student');
+        container.innerHTML = metricHtml + renderAssignmentProgressModeTabs() +
+            '<div class="assignment-progress-groups">' +
+                groups.map(renderAssignmentProgressGroup).join('') +
             '</div>';
-        }).join('');
-        container.innerHTML = metricHtml +
-            '<div class="assignment-table">' +
-                '<div class="assignment-table-head"><span>Student</span><span>Practice</span><span>Status</span><span>Attempts</span><span>Best</span><span>Signal</span></div>' +
-                rows +
-            '</div>';
+        container.querySelectorAll('[data-assign-progress-mode]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.assignProgressMode = button.dataset.assignProgressMode;
+                renderAssignmentOverview();
+            });
+        });
+        container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.assignProgressGroup;
+                state.expandedAssignProgressGroups[key] = state.expandedAssignProgressGroups[key] !== true;
+                renderAssignmentOverview();
+            });
+        });
         container.querySelectorAll('[data-assign-progress]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgress;
