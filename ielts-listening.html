@@ -953,11 +953,18 @@
         updateAudioUi();
     }
 
+    function markAudioStarted() {
+        audioStarted = true;
+        audioStartInFlight = false;
+        audioMode = 'exam';
+        updateAudioUi();
+    }
+
     function startExamAudio(event) {
         if (event && typeof event.preventDefault === 'function') event.preventDefault();
         var audio = audioEl();
         if (!audio || !lesson || !lesson.audioSrc) return;
-        if (audioStartInFlight && !audio.paused) return;
+        if (audioStartInFlight) return;
         var attemptId = ++audioStartAttemptId;
         audioStartInFlight = true;
         startedAt = new Date().toISOString();
@@ -972,6 +979,10 @@
         hideAudioStartDialog();
         audioMode = 'exam';
         updateAudioUi();
+        if (!audio.paused) {
+            markAudioStarted();
+            return;
+        }
         setTimeout(function() {
             if (attemptId === audioStartAttemptId && audioMode === 'exam' && audio.paused && !audioStarted) {
                 handleAudioPlayFailure(new Error('Audio playback did not start. Tap Resume Audio to try again.'));
@@ -980,23 +991,22 @@
         if (promise && promise.then) {
             promise.then(function() {
                 if (attemptId !== audioStartAttemptId) return;
-                audioStarted = true;
-                audioStartInFlight = false;
-                audioMode = 'exam';
-                updateAudioUi();
+                markAudioStarted();
             }).catch(function(error) {
                 if (attemptId !== audioStartAttemptId) return;
                 handleAudioPlayFailure(error);
             });
             return;
         }
-        audioStarted = true;
-        audioStartInFlight = false;
+        markAudioStarted();
     }
 
-    function resumeExamAudio() {
+    function resumeExamAudio(event) {
+        if (event && typeof event.preventDefault === 'function') event.preventDefault();
         var audio = audioEl();
         if (!audio || audioMode !== 'resume') return;
+        if (audioStartInFlight) return;
+        audioStartInFlight = true;
         var promise = null;
         try {
             promise = audio.play();
@@ -1008,12 +1018,10 @@
         updateAudioUi();
         if (promise && promise.then) {
             promise.then(function() {
-                audioStarted = true;
-                audioMode = 'exam';
-                updateAudioUi();
+                markAudioStarted();
             }).catch(handleAudioPlayFailure);
         } else {
-            audioStarted = true;
+            markAudioStarted();
         }
     }
 
@@ -1378,8 +1386,7 @@
             syncAudioUi();
         });
         var audioStartConfirm = document.getElementById('audio-start-confirm');
-        audioStartConfirm.addEventListener('touchend', startExamAudio, { passive: false });
-        audioStartConfirm.addEventListener('click', startExamAudio);
+        audioStartConfirm.addEventListener(window.PointerEvent ? 'pointerup' : 'click', startExamAudio);
         document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
         document.getElementById('leave-page-cancel').addEventListener('click', hideLeavePageDialog);
         document.getElementById('leave-page-confirm').addEventListener('click', goToDashboard);
