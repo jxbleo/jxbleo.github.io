@@ -42,7 +42,7 @@
         var link = document.createElement('a');
         link.className = 'mrcat-back';
         link.href = 'dashboard.html';
-        link.textContent = 'Back to Dashboard';
+        link.textContent = 'Home';
         document.body.appendChild(link);
     }
 
