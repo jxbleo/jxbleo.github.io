@@ -1,0 +1,1188 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["THINK2-U3"] = {
+  "id": "THINK2-U3",
+  "sectionId": "vocabulary",
+  "title": "THINK2-U3",
+  "href": "vocabulary.html?set=THINK2-U3",
+  "sortOrder": 3003,
+  "displayValue": "U3 · 73 Words",
+  "topic": "THINK 2 Vocabulary",
+  "tags": [
+    "THINK 2",
+    "U3"
+  ],
+  "note": "73 Words · 7 Quiz Groups",
+  "visible": true,
+  "sourceName": "THINK 2",
+  "cefrLevel": "A2",
+  "wordCount": 73,
+  "words": [
+    {
+      "number": 1,
+      "word": "animator",
+      "emoji": "👨‍🎨🎬",
+      "meaning": "动画师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who makes cartoons and moving pictures",
+      "wordForms": "--"
+    },
+    {
+      "number": 2,
+      "word": "award",
+      "emoji": "🏆🎖️",
+      "meaning": "奖项",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A prize given to someone for doing something well",
+      "wordForms": "--"
+    },
+    {
+      "number": 3,
+      "word": "leave school",
+      "emoji": "🎓👋",
+      "meaning": "离开学校",
+      "partOfSpeech": "",
+      "simpleDefinition": "To finish studying and not go to school anymore",
+      "wordForms": "--"
+    },
+    {
+      "number": 4,
+      "word": "back garden",
+      "emoji": "🏡🌿",
+      "meaning": "后花园",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The outdoor space behind a house with grass and plants",
+      "wordForms": "--"
+    },
+    {
+      "number": 5,
+      "word": "cartoon series",
+      "emoji": "📺🎨",
+      "meaning": "动画系列",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Many cartoon shows that tell a story together",
+      "wordForms": "--"
+    },
+    {
+      "number": 6,
+      "word": "director",
+      "emoji": "🎬📽️",
+      "meaning": "导演",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person who tells actors what to do in a movie",
+      "wordForms": "--"
+    },
+    {
+      "number": 7,
+      "word": "style",
+      "emoji": "🎨✨",
+      "meaning": "风格",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The special way someone does art or work",
+      "wordForms": "--"
+    },
+    {
+      "number": 8,
+      "word": "horror film",
+      "emoji": "👻😱",
+      "meaning": "恐怖电影",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A scary movie that makes people afraid",
+      "wordForms": "--"
+    },
+    {
+      "number": 9,
+      "word": "include",
+      "emoji": "📝✅",
+      "meaning": "包括",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To have something as part of a group",
+      "wordForms": "--"
+    },
+    {
+      "number": 10,
+      "word": "animation",
+      "emoji": "🎞️✏️",
+      "meaning": "动画制作",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Making pictures move to tell a story",
+      "wordForms": "--"
+    },
+    {
+      "number": 11,
+      "word": "superhero",
+      "emoji": "🦸‍♂️💪",
+      "meaning": "超级英雄",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A special person with magic powers who helps people",
+      "wordForms": "--"
+    },
+    {
+      "number": 12,
+      "word": "comedy",
+      "emoji": "😂🎭",
+      "meaning": "喜剧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A funny movie or show that makes people laugh",
+      "wordForms": "--"
+    },
+    {
+      "number": 13,
+      "word": "successful",
+      "emoji": "🌟👍",
+      "meaning": "成功的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "When something works very well and people like it",
+      "wordForms": "--"
+    },
+    {
+      "number": 14,
+      "word": "own",
+      "emoji": "🏠✋",
+      "meaning": "拥有",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to have something that belongs to you",
+      "wordForms": "--"
+    },
+    {
+      "number": 15,
+      "word": "upset",
+      "emoji": "😢😠",
+      "meaning": "不高兴的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Feeling sad or angry about something",
+      "wordForms": "--"
+    },
+    {
+      "number": 16,
+      "word": "in fact",
+      "emoji": "💡✅",
+      "meaning": "事实上",
+      "partOfSpeech": "",
+      "simpleDefinition": "Really, the truth is",
+      "wordForms": "--"
+    },
+    {
+      "number": 17,
+      "word": "choose",
+      "emoji": "👆🤔",
+      "meaning": "选择",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To pick one thing from many things",
+      "wordForms": "--"
+    },
+    {
+      "number": 18,
+      "word": "human",
+      "emoji": "👨👩",
+      "meaning": "人类的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Like a real person, not an animal or robot",
+      "wordForms": "--"
+    },
+    {
+      "number": 19,
+      "word": "character",
+      "emoji": "🎭👤",
+      "meaning": "角色",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A person in a story or movie",
+      "wordForms": "--"
+    },
+    {
+      "number": 20,
+      "word": "ordinary",
+      "emoji": "👤📏",
+      "meaning": "普通的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Normal, not special or different",
+      "wordForms": "--"
+    },
+    {
+      "number": 21,
+      "word": "advantage",
+      "emoji": "⭐💪",
+      "meaning": "优势",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Something good that helps you do better",
+      "wordForms": "--"
+    },
+    {
+      "number": 22,
+      "word": "exhibition",
+      "emoji": "🖼️🏛️",
+      "meaning": "展览",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A place where people show art or interesting things",
+      "wordForms": "--"
+    },
+    {
+      "number": 23,
+      "word": "laugh at",
+      "emoji": "😂👉",
+      "meaning": "嘲笑",
+      "partOfSpeech": "",
+      "simpleDefinition": "To make fun of someone in a mean way",
+      "wordForms": "--"
+    },
+    {
+      "number": 24,
+      "word": "instead of",
+      "emoji": "🔄↔️",
+      "meaning": "而不是",
+      "partOfSpeech": "",
+      "simpleDefinition": "In place of something else",
+      "wordForms": "--"
+    },
+    {
+      "number": 25,
+      "word": "original",
+      "emoji": "🆕1️⃣",
+      "meaning": "原始的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "The first one, not a copy",
+      "wordForms": "--"
+    },
+    {
+      "number": 26,
+      "word": "produce",
+      "emoji": "🏭📦",
+      "meaning": "生产",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To make something",
+      "wordForms": "--"
+    },
+    {
+      "number": 27,
+      "word": "latest",
+      "emoji": "🆕⏰",
+      "meaning": "最新的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "The most recent or newest",
+      "wordForms": "--"
+    },
+    {
+      "number": 28,
+      "word": "plot",
+      "emoji": "📖🎬",
+      "meaning": "情节",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "The story of what happens in a movie or book",
+      "wordForms": "--"
+    },
+    {
+      "number": 29,
+      "word": "scary",
+      "emoji": "👻😰",
+      "meaning": "可怕的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Making you feel afraid or frightened",
+      "wordForms": "--"
+    },
+    {
+      "number": 30,
+      "word": "scissors",
+      "emoji": "✂️🔧",
+      "meaning": "剪刀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A tool with two sharp parts for cutting things",
+      "wordForms": "--"
+    },
+    {
+      "number": 31,
+      "word": "nowadays",
+      "emoji": "🕐✨",
+      "meaning": "现在，如今",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at the present time",
+      "wordForms": "--"
+    },
+    {
+      "number": 32,
+      "word": "close to",
+      "emoji": "📏👥",
+      "meaning": "靠近",
+      "partOfSpeech": "",
+      "simpleDefinition": "very near to something",
+      "wordForms": "--"
+    },
+    {
+      "number": 33,
+      "word": "luxury item",
+      "emoji": "💎💰",
+      "meaning": "奢侈品",
+      "partOfSpeech": "",
+      "simpleDefinition": "something expensive that you don't really need",
+      "wordForms": "--"
+    },
+    {
+      "number": 34,
+      "word": "frequently",
+      "emoji": "🔄⏰",
+      "meaning": "频繁地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "happening many times",
+      "wordForms": "--"
+    },
+    {
+      "number": 35,
+      "word": "over the years",
+      "emoji": "📅🔄",
+      "meaning": "多年来",
+      "partOfSpeech": "",
+      "simpleDefinition": "during many years that have passed",
+      "wordForms": "--"
+    },
+    {
+      "number": 36,
+      "word": "generation",
+      "emoji": "👨‍👩‍👧‍👦🔄",
+      "meaning": "一代人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "people born around the same time",
+      "wordForms": "--"
+    },
+    {
+      "number": 37,
+      "word": "device",
+      "emoji": "📱💻",
+      "meaning": "设备",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a machine that does a special job",
+      "wordForms": "--"
+    },
+    {
+      "number": 38,
+      "word": "significantly",
+      "emoji": "📈⭐",
+      "meaning": "显著地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a big and important way",
+      "wordForms": "--"
+    },
+    {
+      "number": 39,
+      "word": "channel",
+      "emoji": "📺📡",
+      "meaning": "频道",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a TV station that shows programs",
+      "wordForms": "--"
+    },
+    {
+      "number": 40,
+      "word": "consequently",
+      "emoji": "➡️📝",
+      "meaning": "因此，结果",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "as a result of something",
+      "wordForms": "--"
+    },
+    {
+      "number": 41,
+      "word": "soap opera",
+      "emoji": "📺💕",
+      "meaning": "肥皂剧",
+      "partOfSpeech": "",
+      "simpleDefinition": "a TV show about people's daily lives",
+      "wordForms": "--"
+    },
+    {
+      "number": 42,
+      "word": "button",
+      "emoji": "🔘👆",
+      "meaning": "按钮",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something you press to make things work",
+      "wordForms": "--"
+    },
+    {
+      "number": 43,
+      "word": "via",
+      "emoji": "🛤️➡️",
+      "meaning": "通过",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "using something to go somewhere",
+      "wordForms": "--"
+    },
+    {
+      "number": 44,
+      "word": "become",
+      "emoji": "🔄✨",
+      "meaning": "变成",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to start being something different",
+      "wordForms": "--"
+    },
+    {
+      "number": 45,
+      "word": "episode",
+      "emoji": "📺📖",
+      "meaning": "集，剧集",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one part of a TV show",
+      "wordForms": "--"
+    },
+    {
+      "number": 46,
+      "word": "patiently",
+      "emoji": "⏳😌",
+      "meaning": "耐心地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "waiting calmly without getting upset",
+      "wordForms": "--"
+    },
+    {
+      "number": 47,
+      "word": "broadcaster",
+      "emoji": "📡📺",
+      "meaning": "广播公司",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a company that makes TV shows",
+      "wordForms": "--"
+    },
+    {
+      "number": 48,
+      "word": "own",
+      "emoji": "🏠✋",
+      "meaning": "拥有",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to have something that belongs to you",
+      "wordForms": "--"
+    },
+    {
+      "number": 49,
+      "word": "available",
+      "emoji": "✅📦",
+      "meaning": "可获得的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "ready to use or get",
+      "wordForms": "--"
+    },
+    {
+      "number": 50,
+      "word": "on-demand",
+      "emoji": "🎯⏰",
+      "meaning": "点播的",
+      "partOfSpeech": "",
+      "simpleDefinition": "when you can choose what to watch",
+      "wordForms": "--"
+    },
+    {
+      "number": 51,
+      "word": "prefer",
+      "emoji": "💖⭐",
+      "meaning": "更喜欢",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to like one thing better than another",
+      "wordForms": "--"
+    },
+    {
+      "number": 52,
+      "word": "sports event",
+      "emoji": "⚽🏆",
+      "meaning": "体育赛事",
+      "partOfSpeech": "",
+      "simpleDefinition": "a game or competition with sports",
+      "wordForms": "--"
+    },
+    {
+      "number": 53,
+      "word": "binge-watch",
+      "emoji": "📺🍿",
+      "meaning": "疯狂追剧",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to watch many episodes at one time",
+      "wordForms": "--"
+    },
+    {
+      "number": 54,
+      "word": "documentary",
+      "emoji": "🎬📚",
+      "meaning": "纪录片",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a film that teaches about real things",
+      "wordForms": "--"
+    },
+    {
+      "number": 55,
+      "word": "decade",
+      "emoji": "📅🔟",
+      "meaning": "十年",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a period of ten years",
+      "wordForms": "--"
+    },
+    {
+      "number": 56,
+      "word": "sitcom",
+      "emoji": "😂📺",
+      "meaning": "情景喜剧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a funny TV show about the same people",
+      "wordForms": "--"
+    },
+    {
+      "number": 57,
+      "word": "major",
+      "emoji": "🌟📏",
+      "meaning": "重大的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very big and important",
+      "wordForms": "--"
+    },
+    {
+      "number": 58,
+      "word": "miss",
+      "emoji": "❌😢",
+      "meaning": "错过",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to not see something you wanted to see",
+      "wordForms": "--"
+    },
+    {
+      "number": 59,
+      "word": "straight away",
+      "emoji": "⚡🏃",
+      "meaning": "立即",
+      "partOfSpeech": "",
+      "simpleDefinition": "right now, without waiting",
+      "wordForms": "--"
+    },
+    {
+      "number": 60,
+      "word": "reality show",
+      "emoji": "📺🌟",
+      "meaning": "真人秀",
+      "partOfSpeech": "",
+      "simpleDefinition": "a TV show about real people's lives",
+      "wordForms": "--"
+    },
+    {
+      "number": 61,
+      "word": "in the past",
+      "emoji": "🕰️📜",
+      "meaning": "在过去",
+      "partOfSpeech": "",
+      "simpleDefinition": "in earlier times before now",
+      "wordForms": "--"
+    },
+    {
+      "number": 62,
+      "word": "live",
+      "emoji": "🔴⏰",
+      "meaning": "直播的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening right now, not recorded",
+      "wordForms": "--"
+    },
+    {
+      "number": 63,
+      "word": "smartphone",
+      "emoji": "📱💡",
+      "meaning": "智能手机",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a phone that can do many things",
+      "wordForms": "--"
+    },
+    {
+      "number": 64,
+      "word": "average",
+      "emoji": "📊⚖️",
+      "meaning": "平均的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "normal or typical",
+      "wordForms": "--"
+    },
+    {
+      "number": 65,
+      "word": "games console",
+      "emoji": "🎮📺",
+      "meaning": "游戏机",
+      "partOfSpeech": "",
+      "simpleDefinition": "a machine for playing video games",
+      "wordForms": "--"
+    },
+    {
+      "number": 66,
+      "word": "entertainment",
+      "emoji": "🎭🎉",
+      "meaning": "娱乐",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "fun things like shows and games",
+      "wordForms": "--"
+    },
+    {
+      "number": 67,
+      "word": "almost",
+      "emoji": "👌🔜",
+      "meaning": "几乎",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Nearly but not completely",
+      "wordForms": "--"
+    },
+    {
+      "number": 68,
+      "word": "streaming",
+      "emoji": "🌊📺",
+      "meaning": "流媒体",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "watching shows on the internet",
+      "wordForms": "--"
+    },
+    {
+      "number": 69,
+      "word": "mean",
+      "emoji": "💭➡️",
+      "meaning": "意味着",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to have a particular result",
+      "wordForms": "--"
+    },
+    {
+      "number": 70,
+      "word": "post",
+      "emoji": "📝📤",
+      "meaning": "发布",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To publish content online for others to see",
+      "wordForms": "--"
+    },
+    {
+      "number": 71,
+      "word": "tweet",
+      "emoji": "🐦💬",
+      "meaning": "发推特",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to write a short message on Twitter",
+      "wordForms": "--"
+    },
+    {
+      "number": 72,
+      "word": "as well as",
+      "emoji": "➕🤝",
+      "meaning": "除了...还有",
+      "partOfSpeech": "",
+      "simpleDefinition": "in addition to something",
+      "wordForms": "--"
+    },
+    {
+      "number": 73,
+      "word": "add up to",
+      "emoji": "➕📊",
+      "meaning": "总计为",
+      "partOfSpeech": "",
+      "simpleDefinition": "to make a total amount",
+      "wordForms": "--"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1-10",
+      "label": "第一组",
+      "rangeStart": 1,
+      "rangeEnd": 10,
+      "wordList": [
+        "animator",
+        "award",
+        "leave school",
+        "back garden",
+        "cartoon series",
+        "director",
+        "style",
+        "horror film",
+        "include",
+        "animation"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "My brother wants to be an __________ because he loves drawing moving pictures.",
+          "questionKey": "1-10:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The movie won an __________ for best picture at the film festival.",
+          "questionKey": "1-10:2"
+        },
+        {
+          "number": 3,
+          "prompt": "After you __________, you can go to university or find a job.",
+          "questionKey": "1-10:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The family likes to have barbecues in their __________ during summer.",
+          "questionKey": "1-10:4"
+        },
+        {
+          "number": 5,
+          "prompt": "My favorite __________ has ten episodes about a funny cat and dog.",
+          "questionKey": "1-10:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ told the actors where to stand and what to say.",
+          "questionKey": "1-10:6"
+        },
+        {
+          "number": 7,
+          "prompt": "She has her own special __________ of painting that looks different from others.",
+          "questionKey": "1-10:7"
+        },
+        {
+          "number": 8,
+          "prompt": "I don't like watching __________ because they make me too scared to sleep.",
+          "questionKey": "1-10:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The art class will __________ drawing, painting, and making sculptures.",
+          "questionKey": "1-10:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The studio uses computer __________ to make the characters move smoothly.",
+          "questionKey": "1-10:10"
+        }
+      ]
+    },
+    {
+      "id": "11-20",
+      "label": "第二组",
+      "rangeStart": 11,
+      "rangeEnd": 20,
+      "wordList": [
+        "superhero",
+        "comedy",
+        "successful",
+        "own",
+        "upset",
+        "in fact",
+        "choose",
+        "human",
+        "character",
+        "ordinary"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Superman is my favorite __________ because he can fly and is very strong.",
+          "questionKey": "11-20:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The funny __________ made everyone in the theater laugh out loud.",
+          "questionKey": "11-20:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The movie was very __________ and made lots of money at the cinema.",
+          "questionKey": "11-20:3"
+        },
+        {
+          "number": 4,
+          "prompt": "She has her __________ bedroom and doesn't share it with anyone.",
+          "questionKey": "11-20:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She was __________ when her friend couldn't come to her birthday party.",
+          "questionKey": "11-20:5"
+        },
+        {
+          "number": 6,
+          "prompt": "I thought the test was easy, but __________ it was quite difficult.",
+          "questionKey": "11-20:6"
+        },
+        {
+          "number": 7,
+          "prompt": "You can __________ any book you want from the library shelf.",
+          "questionKey": "11-20:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The robot looks almost __________ but it's really a machine.",
+          "questionKey": "11-20:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The main __________ in the story is a brave little girl.",
+          "questionKey": "11-20:9"
+        },
+        {
+          "number": 10,
+          "prompt": "He looks like an __________ person, but he has special magic powers.",
+          "questionKey": "11-20:10"
+        }
+      ]
+    },
+    {
+      "id": "21-30",
+      "label": "第三组",
+      "rangeStart": 21,
+      "rangeEnd": 30,
+      "wordList": [
+        "advantage",
+        "exhibition",
+        "laugh at",
+        "instead of",
+        "original",
+        "produce",
+        "latest",
+        "plot",
+        "scary",
+        "scissors"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Being tall is an __________ when you want to reach high shelves.",
+          "questionKey": "21-30:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The art museum has a new __________ showing paintings by famous artists.",
+          "questionKey": "21-30:2"
+        },
+        {
+          "number": 3,
+          "prompt": "It's not nice to __________ people when they make mistakes.",
+          "questionKey": "21-30:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I used my colored pencils __________ my regular pencils for the drawing.",
+          "questionKey": "21-30:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ drawing was much better than all the copies.",
+          "questionKey": "21-30:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The movie company will __________ three new films this year.",
+          "questionKey": "21-30:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Have you seen the __________ episode of your favorite TV show?",
+          "questionKey": "21-30:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ of the movie was about a boy who finds a magic lamp.",
+          "questionKey": "21-30:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The monster in the movie was very __________ and made children hide.",
+          "questionKey": "21-30:9"
+        },
+        {
+          "number": 10,
+          "prompt": "I need __________ to cut this paper for my art project.",
+          "questionKey": "21-30:10"
+        }
+      ]
+    },
+    {
+      "id": "31-40",
+      "label": "第四组",
+      "rangeStart": 31,
+      "rangeEnd": 40,
+      "wordList": [
+        "Nowadays",
+        "close to",
+        "luxury item",
+        "frequently",
+        "Over the years",
+        "generation",
+        "device",
+        "significantly",
+        "channel",
+        "consequently"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "__________, most children have their own tablets and phones to watch videos.",
+          "questionKey": "31-40:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The new student sits __________ the teacher because he can't see the board very well.",
+          "questionKey": "31-40:2"
+        },
+        {
+          "number": 3,
+          "prompt": "My grandmother tells me that cars were a __________ when she was young, but now most families have one.",
+          "questionKey": "31-40:3"
+        },
+        {
+          "number": 4,
+          "prompt": "My little brother watches cartoons __________ - almost every day after school.",
+          "questionKey": "31-40:4"
+        },
+        {
+          "number": 5,
+          "prompt": "__________, technology has become much more important in our daily lives.",
+          "questionKey": "31-40:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My parents' __________ didn't have computers when they were children, but we use them every day.",
+          "questionKey": "31-40:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I can watch my favorite show on any __________ I want - my phone, tablet, or computer.",
+          "questionKey": "31-40:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The weather has changed __________ this year - it's much hotter than usual.",
+          "questionKey": "31-40:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My dad always watches the news on __________ 5 because he likes their reporters.",
+          "questionKey": "31-40:9"
+        },
+        {
+          "number": 10,
+          "prompt": "It rained all weekend, and __________ we had to cancel our picnic in the park.",
+          "questionKey": "31-40:10"
+        }
+      ]
+    },
+    {
+      "id": "41-50",
+      "label": "第五组",
+      "rangeStart": 41,
+      "rangeEnd": 50,
+      "wordList": [
+        "soap opera",
+        "button",
+        "via",
+        "become",
+        "episode",
+        "patiently",
+        "broadcaster",
+        "own",
+        "available",
+        "on-demand"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "My mom watches her favorite __________ every afternoon - it's about a family who lives in a small town.",
+          "questionKey": "41-50:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The red __________ on the remote control turns the TV on and off.",
+          "questionKey": "41-50:2"
+        },
+        {
+          "number": 3,
+          "prompt": "I can watch movies __________ the internet instead of going to the cinema.",
+          "questionKey": "41-50:3"
+        },
+        {
+          "number": 4,
+          "prompt": "My sister wants to __________ a doctor when she grows up because she likes helping people.",
+          "questionKey": "41-50:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The new __________ of my favorite cartoon show comes out every Friday.",
+          "questionKey": "41-50:5"
+        },
+        {
+          "number": 6,
+          "prompt": "We had to wait __________ for two hours at the doctor's office.",
+          "questionKey": "41-50:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The local __________ makes programs about our town and the people who live here.",
+          "questionKey": "41-50:7"
+        },
+        {
+          "number": 8,
+          "prompt": "My family doesn't __________ a car, so we take the bus to school every day.",
+          "questionKey": "41-50:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The library books I wanted weren't __________ today, so I'll come back tomorrow.",
+          "questionKey": "41-50:9"
+        },
+        {
+          "number": 10,
+          "prompt": "With __________ TV, I can choose exactly what I want to watch and when.",
+          "questionKey": "41-50:10"
+        }
+      ]
+    },
+    {
+      "id": "51-60",
+      "label": "第六组",
+      "rangeStart": 51,
+      "rangeEnd": 60,
+      "wordList": [
+        "prefer",
+        "sports event",
+        "binge-watch",
+        "documentary",
+        "decade",
+        "sitcom",
+        "major",
+        "miss",
+        "straight away",
+        "reality show"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I __________ chocolate ice cream to vanilla because it tastes better to me.",
+          "questionKey": "51-60:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The Olympics is a __________ that happens every four years with athletes from around the world.",
+          "questionKey": "51-60:2"
+        },
+        {
+          "number": 3,
+          "prompt": "My brother likes to __________ his favorite series on weekends - he can watch six episodes in one day!",
+          "questionKey": "51-60:3"
+        },
+        {
+          "number": 4,
+          "prompt": "We're watching a __________ about penguins in school - it teaches us how they live in Antarctica.",
+          "questionKey": "51-60:4"
+        },
+        {
+          "number": 5,
+          "prompt": "In the past __________, phones have become much smarter and can do many new things.",
+          "questionKey": "51-60:5"
+        },
+        {
+          "number": 6,
+          "prompt": "\"Friends\" is a popular __________ about six people who live in New York and have funny adventures.",
+          "questionKey": "51-60:6"
+        },
+        {
+          "number": 7,
+          "prompt": "My teacher said this is a __________ test that will affect our final grade, so we need to study hard.",
+          "questionKey": "51-60:7"
+        },
+        {
+          "number": 8,
+          "prompt": "I don't want to __________ my friend's birthday party next Saturday.",
+          "questionKey": "51-60:8"
+        },
+        {
+          "number": 9,
+          "prompt": "When mom calls me for dinner, I have to come __________ or the food will get cold.",
+          "questionKey": "51-60:9"
+        },
+        {
+          "number": 10,
+          "prompt": "My sister loves watching a __________ where people live in a house and cameras film everything they do.",
+          "questionKey": "51-60:10"
+        }
+      ]
+    },
+    {
+      "id": "61-73",
+      "label": "第七组",
+      "rangeStart": 61,
+      "rangeEnd": 73,
+      "wordList": [
+        "In the past",
+        "live",
+        "smartphone",
+        "average",
+        "games console",
+        "entertainment",
+        "almost",
+        "streaming",
+        "mean",
+        "post",
+        "tweet",
+        "as well as",
+        "add up to"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "__________, people had to go to the library to find information, but now we can search online.",
+          "questionKey": "61-73:1"
+        },
+        {
+          "number": 2,
+          "prompt": "My dad watches football matches __________ on TV because he wants to see the goals as they happen.",
+          "questionKey": "61-73:2"
+        },
+        {
+          "number": 3,
+          "prompt": "I use my __________ to take photos, send messages, and play games.",
+          "questionKey": "61-73:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ child in my class is 8 years old, but some are 7 and some are 9.",
+          "questionKey": "61-73:4"
+        },
+        {
+          "number": 5,
+          "prompt": "We use our __________ to play video games on the big TV in the living room.",
+          "questionKey": "61-73:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Movies, music, and games are all forms of __________ that help us have fun.",
+          "questionKey": "61-73:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I'm __________ finished with my homework - I just have one more math problem to solve.",
+          "questionKey": "61-73:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Many people watch shows through __________ services instead of regular TV channels.",
+          "questionKey": "61-73:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Dark clouds usually __________ that it's going to rain soon.",
+          "questionKey": "61-73:9"
+        },
+        {
+          "number": 10,
+          "prompt": "My mom likes to __________ about funny things our cat does during the day.",
+          "questionKey": "61-73:10"
+        },
+        {
+          "number": 11,
+          "prompt": "My sister wrote a __________ on social media about our family vacation with lots of photos.",
+          "questionKey": "61-73:11"
+        },
+        {
+          "number": 12,
+          "prompt": "I like to read books __________ watch movies in my free time.",
+          "questionKey": "61-73:12"
+        },
+        {
+          "number": 13,
+          "prompt": "All the hours I spend watching TV each week __________ about 10 hours total.",
+          "questionKey": "61-73:13"
+        }
+      ]
+    }
+  ]
+};
