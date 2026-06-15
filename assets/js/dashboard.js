@@ -471,9 +471,8 @@
                 '<div class="assignment-pills">' +
                     sourcePill +
                     '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
-                    (status === 'to_do' ? '<span class="assignment-pill due">' + escapeHtml(formatDate(item.due_at)) + '</span>' : '') +
                     milestonePill +
-                    '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>' +
+                    (status === 'to_do' ? '' : '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>') +
                 '</div>' +
             '</div>' +
             (status === 'mastered' && !collected
