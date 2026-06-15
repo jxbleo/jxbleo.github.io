@@ -1143,7 +1143,7 @@
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260613-14"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-    <script src="assets/js/practice-session.js?v=20260611-2"></script>
+    <script src="assets/js/practice-session.js?v=20260615-1"></script>
     <script>
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
@@ -1294,31 +1294,22 @@
             var toolbar = document.createElement('div');
             toolbar.className = 'history-toolbar';
             toolbar.id = 'history-toolbar';
-            toolbar.innerHTML = '<button type="button" id="show-history-btn">Show History</button><button type="button" id="clear-all-btn">Clear All</button>';
+            toolbar.innerHTML = '<button type="button" id="show-history-btn">Show Answers</button>';
             document.body.appendChild(toolbar);
             document.getElementById('show-history-btn').addEventListener('click', function() {
                 if (answerRevealAvailable) {
                     revealAllAnswers();
-                    return;
                 }
-                if (!historyAttemptId) {
-                    alert('No history is available for this task yet.');
-                    return;
-                }
-                if (!confirm('Replace all current answers with your best historical attempt?')) return;
-                fetchPrefillAttempt(true, historyAttemptId);
-            });
-            document.getElementById('clear-all-btn').addEventListener('click', function() {
-                if (!confirm('Clear all answers on this page?')) return;
-                clearAllTestAnswers();
             });
             updateHistoryToolbar();
         }
 
         function updateHistoryToolbar() {
+            var toolbar = document.getElementById('history-toolbar');
             var btn = document.getElementById('show-history-btn');
-            if (!btn) return;
-            btn.textContent = answerRevealAvailable ? 'Show Answers' : 'Show History';
+            if (!toolbar || !btn) return;
+            toolbar.hidden = !answerRevealAvailable;
+            btn.textContent = 'Show Answers';
         }
 
         function revealAllAnswers() {

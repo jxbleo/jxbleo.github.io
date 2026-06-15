@@ -721,7 +721,7 @@
     <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
     <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
     <div class="exam-actions">
-        <button type="button" id="exam-dashboard-btn">Dashboard</button>
+        <button type="button" id="exam-dashboard-btn">Home</button>
     </div>
 </header>
 <div class="identity-status" id="identity-status">Login</div>
@@ -796,7 +796,7 @@
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260613-14"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-<script src="assets/js/practice-session.js?v=20260614-3"></script>
+<script src="assets/js/practice-session.js?v=20260615-1"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
         console.log(JSON.stringify({ studentId: studentId, taskId: taskId, eventType: eventType, timestamp: timestamp, eventData: eventData }));
@@ -2360,9 +2360,9 @@
             }
             return;
         }
-        link.textContent = label || 'Dashboard';
-        link.setAttribute('aria-label', 'Back to dashboard');
-        link.title = 'Back to dashboard';
+        link.textContent = label || 'Home';
+        link.setAttribute('aria-label', 'Home');
+        link.title = 'Home';
     }
 
     function updateIdentityStatus() {
