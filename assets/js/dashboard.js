@@ -11,7 +11,8 @@
         starCount: 0,
         assignmentStarCount: 0,
         selfStudyStarCount: 0,
-        teacherReplies: []
+        teacherReplies: [],
+        todoPromptDismissed: false
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -281,6 +282,59 @@
         return 'Accuracy ' + value + '%';
     }
 
+    function percentValue(value, fallback) {
+        var number = Number(value);
+        if (!isFinite(number)) number = Number(fallback || 0);
+        return Math.max(0, Math.min(100, number));
+    }
+
+    function scoreValue(item) {
+        var value = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
+        return percentValue(value, 0);
+    }
+
+    function compactAssignmentTitle(title) {
+        return String(title || 'Practice')
+            .replace(/^\s*BBC\s+6\s+Minute\s+English\s*[:|-]\s*/i, '')
+            .replace(/^\s*BBC\s+Six\s+Minute\s+English\s*[:|-]\s*/i, '')
+            .replace(/^\s*IELTS\s+Reading\s*[:|-]\s*/i, '')
+            .replace(/^\s*IELTS\s+Listening\s*[:|-]\s*/i, '')
+            .replace(/^\s*Vocabulary\s*[:|-]\s*/i, '')
+            .trim() || String(title || 'Practice');
+    }
+
+    function todoAssignments() {
+        return (state.assignments || [])
+            .filter(function(item) { return normalizedStatus(item.status) === 'to_do'; })
+            .sort(newestFirst);
+    }
+
+    function finishedTaskCard(item, set, status, href, replyCount, replyKey, collected) {
+        var score = scoreValue(item);
+        var pass = percentValue(item.passing_percentage, 50);
+        var mastery = percentValue(item.mastery_percentage, 90);
+        var stateClass = status === 'mastered' ? 'mastered' : 'passed';
+        var replyButton = replyCount
+            ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
+                'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
+            : '';
+        return '<article class="task-card finished-task-card ' + escapeHtml(stateClass) + (replyCount ? ' has-teacher-replies' : '') + '" role="link" tabindex="0" data-open-href="' + escapeHtml(href) + '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '" style="--score: ' + score + '%; --pass: ' + pass + '%; --mastery: ' + mastery + '%;">' +
+            '<div class="finished-task-main">' +
+                '<h3 class="assignment-title finished-title">' + escapeHtml(compactAssignmentTitle(set.title || set.set_id || set.id || 'Practice')) + '</h3>' +
+                '<div class="finished-progress-wrap" aria-hidden="true">' +
+                    '<span class="finished-marker pass"><span class="finished-pennant"></span></span>' +
+                    '<span class="finished-marker mastery"><span class="finished-star">★</span></span>' +
+                    '<span class="finished-progress"><span class="finished-progress-fill"></span></span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="finished-score-rail"><span class="finished-score">' + score + '%</span></div>' +
+            (status === 'mastered' && !collected
+                ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
+                : '') +
+            replyButton +
+        '</article>';
+    }
+
     function passwordValidationMessage(password) {
         if (password.length < 6) return 'Password must be at least 6 characters.';
         if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
@@ -411,6 +465,7 @@
             ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
                 'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
             : '';
+        if (finished) return finishedTaskCard(item, set, status, href, replyCount, replyKey, collected);
         return '<article class="task-card' + (replyCount ? ' has-teacher-replies' : '') + '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '">' +
             '<div>' +
                 '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
@@ -461,16 +516,51 @@
     }
 
     function updateDashboardTabNotices() {
-        var count = teacherReplyTotal();
+        var todoCount = todoAssignments().length;
+        var replyCount = teacherReplyTotal();
+        var count = todoCount || replyCount;
         var button = document.querySelector('.tab-button[data-view="assignments"]');
         if (!button) return;
         var existing = button.querySelector('.notice-dot');
         if (existing) existing.remove();
         if (!count) return;
         var dot = document.createElement('span');
-        dot.className = 'notice-dot';
+        dot.className = 'notice-dot' + (todoCount ? ' todo' : '');
         dot.textContent = count > 9 ? '9+' : String(count);
         button.appendChild(dot);
+    }
+
+    function dismissTodoPrompt() {
+        state.todoPromptDismissed = true;
+        var existing = document.querySelector('.assignment-todo-popover');
+        if (existing) existing.remove();
+    }
+
+    function updateAssignmentTodoPrompt() {
+        var tabs = document.querySelector('.dashboard-tabs');
+        var button = document.querySelector('.tab-button[data-view="assignments"]');
+        var existing = document.querySelector('.assignment-todo-popover');
+        if (existing) existing.remove();
+        if (!tabs || !button || state.todoPromptDismissed || !state.session || state.session.mode !== 'student') return;
+        var todo = todoAssignments();
+        if (!todo.length) return;
+        var first = todo[0];
+        var firstSet = first && (first.set || first) || {};
+        var popover = document.createElement('div');
+        popover.className = 'assignment-todo-popover';
+        popover.innerHTML =
+            '<button class="todo-popover-close" type="button" aria-label="Dismiss assignment reminder">×</button>' +
+            '<strong>' + todo.length + ' assignment' + (todo.length === 1 ? '' : 's') + ' waiting</strong>' +
+            '<span>' + escapeHtml(compactAssignmentTitle(firstSet.title || firstSet.set_id || firstSet.id || 'Start your next task')) + '</span>' +
+            '<button class="todo-popover-action" type="button">Show To Do</button>';
+        tabs.appendChild(popover);
+        popover.querySelector('.todo-popover-close').addEventListener('click', dismissTodoPrompt);
+        popover.querySelector('.todo-popover-action').addEventListener('click', function() {
+            state.assignmentFilter = 'todo';
+            activateView('assignments');
+            dismissTodoPrompt();
+            renderAssignments();
+        });
     }
 
     function clearTeacherReplies(seenIds) {
@@ -590,6 +680,7 @@
         }
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
+        updateAssignmentTodoPrompt();
 
         document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -609,6 +700,20 @@
                     return replyKeyForItem(candidate) === key;
                 });
                 openTeacherRepliesDialog(item && item.teacher_replies || []);
+            });
+        });
+
+        document.querySelectorAll('[data-open-href]').forEach(function(card) {
+            function openCard(event) {
+                if (event && event.target && event.target.closest('button, a')) return;
+                var href = card.dataset.openHref;
+                if (href) window.location.href = href;
+            }
+            card.addEventListener('click', openCard);
+            card.addEventListener('keydown', function(event) {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                openCard(event);
             });
         });
 
