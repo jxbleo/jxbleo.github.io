@@ -6,12 +6,13 @@
         assignments: [],
         resources: [],
         assignmentFilter: 'todo',
-        starsRange: '7',
         resourceFilter: 'vocabulary',
         starCount: 0,
         assignmentStarCount: 0,
         selfStudyStarCount: 0,
-        teacherReplies: []
+        teacherReplies: [],
+        vocabItems: [],
+        vocabSearch: ''
     };
     var LIBRARY_FILTERS = [
         { id: 'vocabulary', label: 'Vocabulary' },
@@ -84,6 +85,17 @@
         }).format(date);
     }
 
+    function formatShortDate(value) {
+        if (!value) return '';
+        var date = value instanceof Date ? value : new Date(value);
+        if (isNaN(date.getTime())) return '';
+        return new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            month: 'short',
+            day: 'numeric'
+        }).format(date);
+    }
+
     function randomItem(items) {
         return items[Math.floor(Math.random() * items.length)];
     }
@@ -136,7 +148,7 @@
     function statusLabel(status) {
         if (status === 'mastered') return 'MASTERED';
         if (status === 'passed') return 'PASSED';
-        return 'TO DO';
+        return 'TO-DO';
     }
 
     function normalizedStatus(status) {
@@ -150,11 +162,8 @@
         return normalized === 'passed' || normalized === 'mastered';
     }
 
-    function assignmentFilterForStatus(status) {
-        var normalized = normalizedStatus(status);
-        if (normalized === 'mastered') return 'mastered';
-        if (normalized === 'passed') return 'passed';
-        return 'todo';
+    function assignmentBucket(status) {
+        return isFinishedStatus(status) ? 'finished' : 'todo';
     }
 
     function teacherReplyCount(item) {
@@ -185,26 +194,24 @@
     }
 
     function renderAssignmentFilters(assignments) {
-        var filters = [
-            { id: 'todo', label: 'TO DO' },
-            { id: 'passed', label: 'PASSED' },
-            { id: 'mastered', label: 'MASTERED' }
-        ];
-        var counts = { todo: 0, passed: 0, mastered: 0 };
-        var replies = { todo: 0, passed: 0, mastered: 0 };
+        var counts = { todo: 0, finished: 0 };
+        var replies = { todo: 0, finished: 0 };
         assignments.forEach(function(item) {
-            var bucket = assignmentFilterForStatus(item.status);
+            var bucket = assignmentBucket(item.status);
             counts[bucket] = (counts[bucket] || 0) + 1;
             replies[bucket] += teacherReplyCount(item);
         });
+        var todoNotice = replies.todo
+            ? '<span class="reply-count-badge filter-reply-count">' + replies.todo + '</span>'
+            : '';
+        var finishedNotice = replies.finished
+            ? '<span class="reply-count-badge filter-reply-count">' + replies.finished + '</span>'
+            : '';
         return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
-            filters.map(function(filter) {
-                var notice = replies[filter.id]
-                    ? '<span class="reply-count-badge filter-reply-count">' + replies[filter.id] + '</span>'
-                    : '';
-                return '<button class="summary-card assignment-filter' + (state.assignmentFilter === filter.id ? ' active' : '') + '" type="button" data-assignment-filter="' + escapeHtml(filter.id) + '">' +
-                    notice + '<span class="summary-value">' + counts[filter.id] + '</span><span class="summary-label">' + escapeHtml(filter.label) + '</span></button>';
-            }).join('') +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
+                todoNotice + '<span class="summary-value">' + counts.todo + '</span><span class="summary-label">TO DO</span></button>' +
+            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'finished' ? ' active' : '') + '" type="button" data-assignment-filter="finished">' +
+                finishedNotice + '<span class="summary-value">' + counts.finished + '</span><span class="summary-label">FINISHED</span></button>' +
         '</div>';
     }
 
@@ -488,24 +495,6 @@
         '</article>';
     }
 
-    function starsControls() {
-        return '<div class="assignment-list-tools">' +
-            '<select class="filter-select" id="stars-range" aria-label="Completed assignment date range">' +
-                '<option value="7">1 Week</option>' +
-                '<option value="30">1 Month</option>' +
-                '<option value="all">All</option>' +
-            '</select></div>';
-    }
-
-    function filterDone(assignments, days) {
-        if (days === 'all') return assignments;
-        var cutoff = Date.now() - Number(days) * 86400000;
-        return assignments.filter(function(item) {
-            var completed = new Date(item.mastered_at || item.completed_at || item.updated_at || 0).getTime();
-            return completed >= cutoff;
-        });
-    }
-
     function assignmentTime(item) {
         return new Date(item.assigned_at || item.updated_at || 0).getTime();
     }
@@ -625,33 +614,27 @@
 
         var assignments = state.assignments || [];
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
-        var sortFinished = function(left, right) {
+        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); }).sort(function(left, right) {
             var byReply = teacherReplyCount(right) - teacherReplyCount(left);
             if (byReply) return byReply;
             return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
                 new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
-        };
-        var passed = assignments.filter(function(item) { return normalizedStatus(item.status) === 'passed'; }).sort(sortFinished);
-        var mastered = assignments.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).sort(sortFinished);
+        });
         var visible = [];
         if (state.assignmentFilter === 'todo') visible = todo;
-        else if (state.assignmentFilter === 'passed') visible = passed;
-        else if (state.assignmentFilter === 'mastered') visible = filterDone(mastered, state.starsRange);
+        else if (state.assignmentFilter === 'finished') visible = finished;
         else visible = todo;
 
         var html = renderTeacherRepliesPrompt() + renderAssignmentFilters(assignments);
-        if (state.assignmentFilter === 'mastered' && mastered.length) html += starsControls();
         if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!visible.length) {
-            var emptyLabel = state.assignmentFilter === 'passed'
-                ? 'No passed work yet.'
-                : state.assignmentFilter === 'mastered'
-                    ? 'No mastered work in this range.'
-                    : state.assignmentFilter === 'todo'
-                        ? 'No new work is waiting.'
-                        : 'Nothing is waiting right now.';
+            var emptyLabel = state.assignmentFilter === 'finished'
+                ? 'No finished work yet.'
+                : state.assignmentFilter === 'todo'
+                    ? 'No new work is waiting.'
+                    : 'Nothing is waiting right now.';
             html += '<div class="empty-card">' + emptyLabel + '</div>';
         }
         assignmentContent.innerHTML = html;
@@ -660,7 +643,7 @@
         document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var nextFilter = button.dataset.assignmentFilter;
-                state.assignmentFilter = nextFilter;
+                state.assignmentFilter = state.assignmentFilter === nextFilter ? 'all' : nextFilter;
                 renderAssignments();
             });
         });
@@ -691,15 +674,6 @@
                 openCard(event);
             });
         });
-
-        var select = document.getElementById('stars-range');
-        if (select) {
-            select.value = state.starsRange;
-            select.addEventListener('change', function() {
-                state.starsRange = select.value;
-                renderAssignments();
-            });
-        }
 
         document.querySelectorAll('[data-get-star]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -794,6 +768,149 @@
             : '<div class="empty-card"><strong>No matching resources</strong>Try a different title, course or type.</div>';
     }
 
+    function wordSourceLabel(word) {
+        return word.source_title || word.source_set_id || word.source_path || 'Saved from Mr. Cat Academy';
+    }
+
+    function wordTimeLabel(word) {
+        return formatShortDate(word.last_added_at || word.updated_at || word.created_at);
+    }
+
+    function sortedVocabItems(items) {
+        return (items || []).slice().sort(function(left, right) {
+            return new Date(right.updated_at || right.last_added_at || right.created_at || 0).getTime() -
+                new Date(left.updated_at || left.last_added_at || left.created_at || 0).getTime();
+        });
+    }
+
+    function filteredVocabItems() {
+        var query = String(state.vocabSearch || '').trim().toLowerCase();
+        return sortedVocabItems(state.vocabItems || []).filter(function(word) {
+            if ((word.status || 'active') !== 'active') return false;
+            if (!query) return true;
+            return [
+                word.text,
+                word.normalized_text,
+                word.source_title,
+                word.source_set_id,
+                word.context
+            ].join(' ').toLowerCase().indexOf(query) !== -1;
+        });
+    }
+
+    function myWordsListHtml() {
+        var words = filteredVocabItems();
+        if (!words.length) {
+            return '<div class="my-words-empty">' +
+                (state.vocabSearch ? 'No saved words match this search.' : 'Select a word or short phrase anywhere in the site to save it here.') +
+            '</div>';
+        }
+        return words.map(function(word) {
+            var source = wordSourceLabel(word);
+            var date = wordTimeLabel(word);
+            return '<article class="my-word-item">' +
+                '<div class="my-word-main">' +
+                    '<strong>' + escapeHtml(word.text || '') + '</strong>' +
+                    '<span>' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</span>' +
+                    (word.context ? '<p>' + escapeHtml(word.context) + '</p>' : '') +
+                '</div>' +
+                '<button class="outline-button my-word-action" type="button" data-archive-word="' + escapeHtml(word.vocab_id || '') + '">Archive</button>' +
+            '</article>';
+        }).join('');
+    }
+
+    function bindMyWordActions() {
+        document.querySelectorAll('[data-archive-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var vocabId = button.dataset.archiveWord;
+                if (!vocabId) return;
+                button.disabled = true;
+                button.textContent = 'Archiving...';
+                window.MrCatCloud.callFunction('studentVocabulary', {
+                    action: 'archive',
+                    vocab_id: vocabId
+                }).then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to archive this word.');
+                    state.vocabItems = (state.vocabItems || []).filter(function(word) {
+                        return word.vocab_id !== vocabId;
+                    });
+                    renderMyWordsList();
+                }).catch(function(error) {
+                    button.disabled = false;
+                    button.textContent = 'Archive';
+                    alert(error.message || 'Unable to archive this word.');
+                });
+            });
+        });
+    }
+
+    function renderMyWordsList() {
+        var list = document.getElementById('my-words-list');
+        var count = document.getElementById('my-words-count');
+        if (count) {
+            var activeCount = (state.vocabItems || []).filter(function(word) {
+                return (word.status || 'active') === 'active';
+            }).length;
+            count.textContent = activeCount + ' saved';
+        }
+        if (!list) return;
+        list.innerHTML = myWordsListHtml();
+        bindMyWordActions();
+    }
+
+    function bindMyWordsCard() {
+        var search = document.getElementById('my-words-search');
+        if (search) {
+            search.value = state.vocabSearch;
+            search.addEventListener('input', function() {
+                state.vocabSearch = search.value;
+                renderMyWordsList();
+            });
+        }
+        var refresh = document.getElementById('my-words-refresh');
+        if (refresh) {
+            refresh.addEventListener('click', function() {
+                refresh.disabled = true;
+                refresh.textContent = 'Refreshing...';
+                window.MrCatCloud.callFunction('studentVocabulary', {
+                    action: 'list',
+                    status: 'active',
+                    limit: 100
+                }).then(function(result) {
+                    if (!result || !result.success) throw new Error(result && result.message || 'Unable to load My Words.');
+                    state.vocabItems = result.words || [];
+                    renderMyWordsList();
+                }).catch(function(error) {
+                    alert(error.message || 'Unable to load My Words.');
+                }).finally(function() {
+                    refresh.disabled = false;
+                    refresh.textContent = 'Refresh';
+                });
+            });
+        }
+        bindMyWordActions();
+    }
+
+    function renderMyWordsCard() {
+        var activeCount = (state.vocabItems || []).filter(function(word) {
+            return (word.status || 'active') === 'active';
+        }).length;
+        return '<section class="profile-card my-words-card">' +
+            '<div class="my-words-head">' +
+                '<div>' +
+                    '<p class="eyebrow accent">My Words</p>' +
+                    '<h2>My Words</h2>' +
+                '</div>' +
+                '<span class="badge neutral" id="my-words-count">' + activeCount + ' saved</span>' +
+            '</div>' +
+            '<div class="my-words-tools">' +
+                '<input id="my-words-search" class="resource-search" type="search" placeholder="Search saved words...">' +
+                '<button class="outline-button my-word-refresh" id="my-words-refresh" type="button">Refresh</button>' +
+            '</div>' +
+            '<div class="my-words-list" id="my-words-list">' + myWordsListHtml() + '</div>' +
+        '</section>';
+    }
+
     function renderProfile() {
         if (state.session.mode === 'visitor') {
             profileContent.innerHTML =
@@ -824,11 +941,13 @@
                         '<button class="danger-button" id="logout-button" type="button">Log Out</button>' +
                     '</div>' +
                 '</section>' +
+                renderMyWordsCard() +
             '</div>';
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
             openChangePasswordDialog();
         });
+        bindMyWordsCard();
     }
 
     function loadPublicCatalog() {
@@ -861,6 +980,13 @@
             }),
             window.MrCatCloud.callFunction('getResources').catch(function() {
                 return { success: false, resources: [] };
+            }),
+            window.MrCatCloud.callFunction('studentVocabulary', {
+                action: 'list',
+                status: 'active',
+                limit: 100
+            }).catch(function() {
+                return { success: false, words: [] };
             })
         ]).then(function(results) {
             var dashboard = results[0] || {};
@@ -871,6 +997,7 @@
             state.teacherReplies = dashboard.teacher_replies || [];
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
+            state.vocabItems = results[2] && results[2].words || [];
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
         });
     }
@@ -891,6 +1018,18 @@
     });
     resourceSearch.addEventListener('input', function() {
         renderResources(resourceSearch.value);
+    });
+
+    window.addEventListener('mrcat:vocab-saved', function(event) {
+        if (!state.session || state.session.mode !== 'student') return;
+        var word = event.detail;
+        if (!word || !word.vocab_id) return;
+        state.vocabItems = (state.vocabItems || []).filter(function(item) {
+            return item.vocab_id !== word.vocab_id;
+        });
+        state.vocabItems.unshift(word);
+        var profileView = document.getElementById('view-profile');
+        if (profileView && !profileView.hidden) renderProfile();
     });
 
     window.MrCatAuth.getSession()

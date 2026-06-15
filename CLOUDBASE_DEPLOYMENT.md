@@ -25,15 +25,27 @@ The STAR and Argue release also requires these `ADMINONLY` collections:
 - `answer_disputes`
 - `grading_key_history`
 
+The personal vocabulary feature also requires this `ADMINONLY` collection:
+
+- `student_vocabulary_items`
+
 Create unique indexes where the console supports them:
 
 - `student_set_achievements.achievement_id`
 - `answer_disputes.dispute_id`
 - `grading_key_history.history_id`
+- `student_vocabulary_items.vocab_id`
+- `student_vocabulary_items.student_uid + normalized_text`
 
-Create all three collections before deploying the corresponding updated cloud
-functions. The student Dashboard reads `student_set_achievements`, and the
-teacher page reads `answer_disputes`.
+Create the non-unique query index for the student word list:
+
+- `student_vocabulary_items.student_uid + status + updated_at`
+
+Create the STAR and Argue collections before deploying the corresponding
+updated cloud functions. The student Dashboard reads
+`student_set_achievements`, and the teacher page reads `answer_disputes`.
+Create `student_vocabulary_items` before deploying `studentVocabulary` or the
+static My Words UI.
 
 Username/password authentication is enabled and anonymous authentication is
 disabled.
@@ -124,6 +136,22 @@ After creating the three collections above:
    - the history record is retained
 
 Do not deploy these function updates before the new collections exist.
+
+## Personal Vocabulary Deployment
+
+After creating `student_vocabulary_items` with `ADMINONLY` permissions and the
+indexes listed above:
+
+1. Deploy `studentVocabulary` from
+   `deploy-packages/studentVocabulary.zip`.
+2. Push/deploy the static website.
+3. Log in as a development student, select a word on a practice page, and save
+   it to My Words.
+4. Verify the document is owned by that student's `auth_uid`.
+5. Verify Dashboard `Progress` lists the saved word and `Archive` removes it
+   from the active list.
+
+Visitors and teacher preview should not create personal vocabulary records.
 
 ## Required Test Assignment
 

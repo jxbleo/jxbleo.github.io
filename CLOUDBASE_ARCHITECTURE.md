@@ -452,6 +452,39 @@ Every teacher-approved answer-rule change stores the answer before and after,
 grading versions, dispute ID, teacher UID and timestamp. This history is never
 public and must not be removed when a grading key changes.
 
+### student_vocabulary_items
+
+One record stores one authenticated student's saved word or short phrase.
+This collection is student-owned personal study data and is independent of
+assignments, attempts, STAR records, and grading keys.
+
+```text
+vocab_id: unique string
+student_uid: auth UID
+student_id_snapshot: string
+text: selected word or phrase
+normalized_text: lowercase normalized text
+status: "active" | "archived"
+source_set_id: string | null
+source_title: string
+source_path: string
+context: short surrounding text
+times_added: number
+created_at: timestamp
+updated_at: timestamp
+last_added_at: timestamp
+```
+
+Required indexes:
+
+- unique `vocab_id`
+- `student_uid + status + updated_at`
+- unique `student_uid + normalized_text` where the console supports it
+
+The browser must never write this collection directly. `studentVocabulary`
+derives ownership from authenticated context and rejects visitors, unlinked
+accounts, and teacher profiles.
+
 ## 8. Server-Side Grading
 
 The browser submits answers, not a trusted score.
@@ -596,6 +629,15 @@ The initial backend should expose narrowly scoped functions:
 - changes only the authenticated student's password
 - clears `must_change_password` after success
 
+### studentVocabulary
+
+- saves a selected word or short phrase for the authenticated student
+- lists only that student's active or archived words
+- archives, restores, or deletes only words owned by that student
+- rejects visitor, teacher, inactive, or unlinked accounts
+- stores only public selected text and short source context, never grading keys
+  or private answer material
+
 ### resetStudentPassword
 
 - teacher-only operation
@@ -636,6 +678,7 @@ CloudBase private storage contains:
 - student profiles
 - assignments
 - attempts and scores
+- student personal vocabulary items
 
 The existing public JSON files currently contain answers. Migration is
 therefore a required project step, not an optional later enhancement.
@@ -678,6 +721,7 @@ cloudfunctions/
   getDashboard/
   getResources/
   submitAttempt/
+  studentVocabulary/
   changePassword/
   resetStudentPassword/
 
