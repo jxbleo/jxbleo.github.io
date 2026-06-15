@@ -33,7 +33,7 @@
         button, input { font: inherit; }
         .exam-shell {
             display: grid;
-            grid-template-rows: 44px 98px minmax(0, 1fr) 78px;
+            grid-template-rows: 44px minmax(0, 1fr) 78px;
             min-height: 0;
             height: 100vh;
             height: 100dvh;
@@ -69,6 +69,60 @@
         .timer.urgent {
             color: #f87171;
         }
+        .top-audio {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-width: min(420px, 44vw);
+        }
+        .top-audio audio {
+            display: none;
+        }
+        .top-audio-start,
+        .top-audio-resume,
+        .top-audio-play {
+            min-height: 30px;
+            padding: 0 14px;
+            border: 1px solid rgba(255,255,255,.36);
+            border-radius: 4px;
+            color: #111827;
+            background: linear-gradient(180deg, #ffffff, #dbe2ec);
+            box-shadow: inset 0 1px #fff;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .top-audio-resume {
+            color: #7f1d1d;
+            border-color: rgba(248,113,113,.64);
+            background: linear-gradient(180deg, #fff7f7, #fecaca);
+        }
+        .top-audio-status {
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .top-audio-review {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            min-width: min(420px, 44vw);
+        }
+        .top-audio-review.show {
+            display: inline-flex;
+        }
+        .top-audio-progress {
+            width: min(300px, 28vw);
+            accent-color: #38bdf8;
+        }
+        .top-audio-time {
+            min-width: 76px;
+            color: #e2e8f0;
+            font-size: 12px;
+            text-align: right;
+            white-space: nowrap;
+        }
         .top-actions {
             display: flex;
             justify-content: flex-end;
@@ -90,30 +144,9 @@
         body .mrcat-back {
             display: none !important;
         }
-        .part-header {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 18px;
-            margin: 10px 18px 8px;
-            padding: 16px 16px;
-            border: 1px solid #d8e0eb;
-            background: #fff;
-            box-shadow: 0 1px 5px rgba(15,23,42,.08);
-        }
-        .part-header h1 {
-            margin: 0;
-            font-size: 24px;
-            line-height: 1.1;
-            color: #111827;
-        }
-        .part-header p {
-            margin: 0;
-            font-size: 15px;
-        }
         .workspace {
             min-height: 0;
-            margin: 0 18px;
+            margin: 10px 18px 0;
             border: 1px solid #d8e0eb;
             background: var(--paper);
             overflow-y: auto;
@@ -127,46 +160,6 @@
             max-width: 980px;
             min-height: 100%;
             padding: 18px 22px 84px;
-        }
-        .audio-dock {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: center;
-            gap: 12px;
-            max-width: 760px;
-            margin: 0 0 22px;
-            padding: 10px 12px;
-            border: 1px solid #d8e0eb;
-            border-radius: 6px;
-            background: #f8fafc;
-        }
-        .audio-button {
-            display: inline-grid;
-            place-items: center;
-            width: 36px;
-            height: 32px;
-            border: 1px solid #9fb3c8;
-            border-radius: 4px;
-            color: #0f172a;
-            background: linear-gradient(180deg, #fff, #e2e8f0);
-            cursor: pointer;
-        }
-        .audio-progress {
-            width: 100%;
-            accent-color: var(--blue-dark);
-        }
-        .audio-time {
-            min-width: 88px;
-            color: var(--muted);
-            font-size: 13px;
-            text-align: right;
-        }
-        .audio-missing {
-            grid-template-columns: auto 1fr;
-            color: var(--muted);
-        }
-        .audio-missing .audio-time {
-            text-align: left;
         }
         .question-section {
             margin: 0 0 26px;
@@ -357,6 +350,9 @@
             color: #475569;
             font-size: 13px;
         }
+        .review input {
+            accent-color: #0f172a;
+        }
         .question-map {
             display: flex;
             flex-wrap: wrap;
@@ -401,6 +397,17 @@
             content: "";
             position: absolute;
         }
+        .q-nav.reviewed::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: -2px;
+            width: 9px;
+            height: 9px;
+            border: 1px solid rgba(15,23,42,.45);
+            border-radius: 2px;
+            background: #facc15;
+        }
         .submit-btn {
             min-width: 112px;
             min-height: 44px;
@@ -435,6 +442,22 @@
         .result-bar.show { display: block; }
         .result-bar strong { display: block; font-size: 18px; }
         .result-bar span { display: block; margin-top: 3px; color: var(--muted); }
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .result-actions button {
+            min-height: 34px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            background: #0f172a;
+            font-weight: 800;
+            cursor: pointer;
+        }
         .toolbar {
             position: fixed;
             right: 18px;
@@ -460,10 +483,63 @@
             color: #9f1239;
             font-weight: 700;
         }
+        .audio-start-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: none;
+            place-items: center;
+            padding: 20px;
+            background: rgba(15,23,42,.42);
+            backdrop-filter: blur(4px);
+        }
+        .audio-start-modal.show {
+            display: grid;
+        }
+        .audio-start-box {
+            width: min(430px, 100%);
+            padding: 22px;
+            border: 1px solid #d8e0eb;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 22px 70px rgba(15,23,42,.28);
+        }
+        .audio-start-box h2 {
+            margin: 0 0 8px;
+            color: #111827;
+            font-size: 20px;
+        }
+        .audio-start-box p {
+            margin: 0 0 18px;
+            color: #475569;
+            line-height: 1.55;
+        }
+        .audio-start-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .audio-start-actions button {
+            min-height: 38px;
+            padding: 0 14px;
+            border-radius: 5px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .audio-start-cancel {
+            border: 1px solid #cbd5e1;
+            color: #111827;
+            background: #fff;
+        }
+        .audio-start-confirm {
+            border: 0;
+            color: #fff;
+            background: #0f172a;
+        }
         @media (max-width: 820px) {
             html, body { height: 100%; }
             body { overflow: hidden; }
-            .exam-shell { grid-template-rows: 42px 86px minmax(0, 1fr) 112px; }
+            .exam-shell { grid-template-rows: 42px minmax(0, 1fr) 112px; }
             .exam-topbar {
                 grid-template-columns: minmax(76px, 1fr) auto minmax(96px, 1fr);
                 gap: 8px;
@@ -473,18 +549,25 @@
             .timer { gap: 4px; }
             .timer strong { font-size: 20px; }
             .timer span { font-size: 11px; }
+            .top-audio { min-width: 0; }
+            .top-audio-start,
+            .top-audio-resume,
+            .top-audio-play {
+                min-height: 27px;
+                padding: 0 8px;
+                font-size: 11px;
+            }
+            .top-audio-review { min-width: 0; gap: 5px; }
+            .top-audio-progress { width: 86px; }
+            .top-audio-time { min-width: 58px; font-size: 10px; }
             .top-actions { gap: 4px; }
             .top-actions button {
                 min-height: 27px;
                 padding: 0 7px;
                 font-size: 11px;
             }
-            .part-header { margin: 8px; padding: 12px; gap: 10px; }
-            .part-header h1 { font-size: 21px; }
-            .workspace { margin: 0 8px; min-height: 0; }
+            .workspace { margin: 8px 8px 0; min-height: 0; }
             .workspace-inner { padding: 14px 14px 110px; }
-            .audio-dock { grid-template-columns: auto 1fr; }
-            .audio-time { grid-column: 1 / -1; text-align: left; }
             .booking-form, .booking-form tbody, .booking-form tr, .booking-form th, .booking-form td {
                 display: block;
                 width: 100%;
@@ -512,17 +595,22 @@
 <main class="exam-shell">
     <header class="exam-topbar">
         <div class="candidate" id="set-code">C7-T1-S1</div>
-        <div class="timer" id="timer-display" aria-live="polite"><strong id="time-left">--</strong><span id="time-left-label">minutes left</span></div>
+        <div class="top-audio" id="top-audio">
+            <audio id="listening-audio" preload="metadata"></audio>
+            <button class="top-audio-start" id="top-audio-start" type="button">Start Audio</button>
+            <button class="top-audio-resume" id="top-audio-resume" type="button" hidden>Resume Audio</button>
+            <div class="timer" id="timer-display" aria-live="polite" hidden><strong id="time-left">--</strong><span id="time-left-label">minutes left</span></div>
+            <div class="top-audio-review" id="top-audio-review">
+                <button class="top-audio-play" id="top-audio-play" type="button" aria-label="Play or pause">▶</button>
+                <input class="top-audio-progress" id="top-audio-progress" type="range" min="0" max="1000" value="0" aria-label="Audio progress">
+                <div class="top-audio-time" id="top-audio-time">0:00 / 0:00</div>
+            </div>
+            <div class="top-audio-status" id="top-audio-status" hidden>Audio pending</div>
+        </div>
         <div class="top-actions">
-            <button type="button" id="dashboard-btn">Dashboard</button>
-            <button type="button">Settings</button>
-            <button type="button">Help</button>
+            <button type="button" id="dashboard-btn">Homepage</button>
         </div>
     </header>
-    <section class="part-header">
-        <h1 id="part-title">Part 1</h1>
-        <p id="part-intro">Listen and answer questions 1-10.</p>
-    </section>
     <section class="workspace" id="workspace">
         <div class="workspace-inner" id="content"><p class="error">Loading listening practice...</p></div>
     </section>
@@ -536,11 +624,21 @@
     <button type="button" id="teacher-show-answers">Show Answers</button>
 </div>
 <div class="result-bar" id="result-bar" role="status" aria-live="polite"></div>
+<div class="audio-start-modal" id="audio-start-modal" role="dialog" aria-modal="true" aria-labelledby="audio-start-title">
+    <div class="audio-start-box">
+        <h2 id="audio-start-title">Start IELTS Listening Audio</h2>
+        <p>Once the audio starts, it cannot be paused, replayed, or dragged back during the exam. After you submit, the audio controls will unlock for review.</p>
+        <div class="audio-start-actions">
+            <button class="audio-start-cancel" id="audio-start-cancel" type="button">Not Yet</button>
+            <button class="audio-start-confirm" id="audio-start-confirm" type="button">Start Audio</button>
+        </div>
+    </div>
+</div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260614-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-<script src="assets/js/practice-session.js?v=20260611-2"></script>
+<script src="assets/js/practice-session.js?v=20260615-1"></script>
 <script>
 (function() {
     'use strict';
@@ -555,6 +653,11 @@
     var teacherAnswerKey = null;
     var teacherAnswersVisible = false;
     var audioTimerInterval = null;
+    var activeQuestionId = '';
+    var reviewedQuestions = {};
+    var audioMode = 'ready';
+    var audioStarted = false;
+    var audioStartPromptShown = false;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -567,6 +670,20 @@
 
     function questionById(id) {
         return questionMap[id] || { id: id, number: String(id).replace(/\D/g, '') || id };
+    }
+
+    function englishName(profile) {
+        var fullName = String((profile && (profile.name || profile.student_id)) || '').trim();
+        var englishParts = fullName.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return englishParts && englishParts.length
+            ? englishParts[englishParts.length - 1]
+            : fullName || 'Student';
+    }
+
+    function examIdentityLabel() {
+        var profile = window.MrCatPractice && window.MrCatPractice.profile;
+        var name = teacherMode ? 'Teacher' : window.MrCatPractice && window.MrCatPractice.isVisitor && window.MrCatPractice.isVisitor() ? 'Visitor' : englishName(profile);
+        return name + ' · ' + (lesson && lesson.id || setId);
     }
 
     function inputHtml(questionId) {
@@ -637,30 +754,13 @@
         display.classList.remove('urgent');
     }
 
-    function renderAudio() {
-        if (!lesson.audioSrc) {
-            return '<div class="audio-dock audio-missing">' +
-                '<button class="audio-button" type="button" aria-label="Audio pending" disabled>▶</button>' +
-                '<div class="audio-time">Audio pending</div>' +
-            '</div>';
-        }
-        return '<div class="audio-dock">' +
-            '<audio id="listening-audio" preload="metadata" src="' + escapeHtml(lesson.audioSrc || '') + '"></audio>' +
-            '<button class="audio-button" id="play-btn" type="button" aria-label="Play or pause">▶</button>' +
-            '<input class="audio-progress" id="audio-progress" type="range" min="0" max="1000" value="0" aria-label="Audio progress">' +
-            '<div class="audio-time" id="audio-time">0:00 / 0:00</div>' +
-        '</div>';
-    }
-
     function renderContent() {
         lesson.questions.forEach(function(question) { questionMap[question.id] = question; });
         var part = lesson.parts[0];
-        document.getElementById('set-code').textContent = lesson.id || setId;
-        document.getElementById('part-title').textContent = part.title || ('Part ' + part.number);
-        document.getElementById('part-intro').textContent = part.intro || '';
+        document.getElementById('set-code').textContent = examIdentityLabel();
         document.title = lesson.id + ' IELTS Listening';
 
-        var html = renderAudio();
+        var html = '';
         (part.sections || []).forEach(function(section) {
             html += '<section class="question-section">' +
                 '<div class="section-label">' + escapeHtml(section.label || '') + '</div>' +
@@ -693,42 +793,143 @@
                 }).join('') +
             '</span>';
         }).join('');
+        if (!activeQuestionId && lesson.questions[0]) activeQuestionId = lesson.questions[0].id;
     }
 
     function setupAudio() {
         var audio = document.getElementById('listening-audio');
-        var play = document.getElementById('play-btn');
-        var progress = document.getElementById('audio-progress');
-        var time = document.getElementById('audio-time');
-        if (!audio || !play || !progress || !time) return;
-        function sync() {
-            var duration = audio.duration || 0;
-            var current = audio.currentTime || 0;
-            play.textContent = audio.paused ? '▶' : 'Ⅱ';
-            progress.value = duration ? Math.round(current / duration * 1000) : 0;
-            time.textContent = formatTime(current) + ' / ' + formatTime(duration);
+        if (!audio) return;
+        audio.src = lesson.audioSrc || '';
+        audioMode = lesson.audioSrc ? 'ready' : 'missing';
+        updateAudioUi();
+        audio.addEventListener('loadedmetadata', syncAudioUi);
+        audio.addEventListener('timeupdate', syncAudioUi);
+        audio.addEventListener('play', syncAudioUi);
+        audio.addEventListener('pause', function() {
+            if (audioMode === 'exam' && !audio.ended) {
+                var resume = audio.play();
+                if (resume && resume.catch) {
+                    resume.catch(function() {
+                        audioMode = 'resume';
+                        updateAudioUi();
+                    });
+                }
+                return;
+            }
+            syncAudioUi();
+        });
+        audio.addEventListener('ended', function() {
+            if (audioMode === 'exam') updateTimer(0);
+            syncAudioUi();
+        });
+        if (audioTimerInterval) clearInterval(audioTimerInterval);
+        audioTimerInterval = setInterval(syncAudioUi, 1000);
+        syncAudioUi();
+        if (lesson.audioSrc && !teacherMode) {
+            setTimeout(showAudioStartDialog, 350);
+        }
+    }
+
+    function audioEl() {
+        return document.getElementById('listening-audio');
+    }
+
+    function updateAudioUi() {
+        var start = document.getElementById('top-audio-start');
+        var resume = document.getElementById('top-audio-resume');
+        var timer = document.getElementById('timer-display');
+        var review = document.getElementById('top-audio-review');
+        var status = document.getElementById('top-audio-status');
+        if (!start || !resume || !timer || !review || !status) return;
+        start.hidden = audioMode !== 'ready';
+        resume.hidden = audioMode !== 'resume';
+        timer.hidden = audioMode !== 'exam';
+        review.classList.toggle('show', audioMode === 'review');
+        status.hidden = audioMode !== 'missing';
+        if (audioMode === 'missing') status.textContent = 'Audio pending';
+        syncAudioUi();
+    }
+
+    function syncAudioUi() {
+        var audio = audioEl();
+        var reviewPlay = document.getElementById('top-audio-play');
+        var progress = document.getElementById('top-audio-progress');
+        var time = document.getElementById('top-audio-time');
+        if (!audio) return;
+        var duration = audio.duration || 0;
+        var current = audio.currentTime || 0;
+        if (audioMode === 'exam') {
             updateTimer(duration ? duration - current : null);
         }
-        play.addEventListener('click', function() {
-            if (audio.paused) {
-                var promise = audio.play();
-                if (promise && promise.catch) promise.catch(function() {});
-            } else {
-                audio.pause();
-            }
-        });
-        progress.addEventListener('input', function() {
-            if (!audio.duration) return;
-            audio.currentTime = Number(progress.value || 0) / 1000 * audio.duration;
-        });
-        audio.addEventListener('loadedmetadata', sync);
-        audio.addEventListener('timeupdate', sync);
-        audio.addEventListener('play', sync);
-        audio.addEventListener('pause', sync);
-        audio.addEventListener('ended', sync);
-        if (audioTimerInterval) clearInterval(audioTimerInterval);
-        audioTimerInterval = setInterval(sync, 1000);
-        sync();
+        if (reviewPlay) reviewPlay.textContent = audio.paused ? '▶' : 'Ⅱ';
+        if (progress) progress.value = duration ? Math.round(current / duration * 1000) : 0;
+        if (time) time.textContent = formatTime(current) + ' / ' + formatTime(duration);
+    }
+
+    function showAudioStartDialog(force) {
+        if (teacherMode || !lesson || !lesson.audioSrc || audioMode !== 'ready' || (!force && audioStartPromptShown)) return;
+        audioStartPromptShown = true;
+        var modal = document.getElementById('audio-start-modal');
+        if (modal) modal.classList.add('show');
+    }
+
+    function hideAudioStartDialog() {
+        var modal = document.getElementById('audio-start-modal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    function startExamAudio() {
+        var audio = audioEl();
+        if (!audio || !lesson || !lesson.audioSrc) return;
+        hideAudioStartDialog();
+        audioMode = 'exam';
+        audioStarted = true;
+        startedAt = new Date().toISOString();
+        updateAudioUi();
+        audio.currentTime = 0;
+        var promise = audio.play();
+        if (promise && promise.catch) {
+            promise.catch(function() {
+                audioMode = 'resume';
+                updateAudioUi();
+            });
+        }
+    }
+
+    function resumeExamAudio() {
+        var audio = audioEl();
+        if (!audio || audioMode !== 'resume') return;
+        audioMode = 'exam';
+        updateAudioUi();
+        var promise = audio.play();
+        if (promise && promise.catch) {
+            promise.catch(function() {
+                audioMode = 'resume';
+                updateAudioUi();
+            });
+        }
+    }
+
+    function enterReviewAudioMode() {
+        var audio = audioEl();
+        if (!audio || !lesson || !lesson.audioSrc) return;
+        audioMode = 'review';
+        updateAudioUi();
+        syncAudioUi();
+    }
+
+    function resetAudioForRetry() {
+        var audio = audioEl();
+        if (audio) {
+            audio.pause();
+            try { audio.currentTime = 0; } catch (error) {}
+        }
+        audioMode = lesson && lesson.audioSrc ? 'ready' : 'missing';
+        audioStarted = false;
+        audioStartPromptShown = false;
+        startedAt = new Date().toISOString();
+        updateAudioUi();
+        showAudioStartDialog();
     }
 
     function draftKey() {
@@ -796,10 +997,20 @@
         });
     }
 
+    function setActiveQuestion(questionId) {
+        if (!questionId) return;
+        activeQuestionId = questionId;
+        var checkbox = document.getElementById('review-checkbox');
+        if (checkbox) checkbox.checked = !!reviewedQuestions[questionId];
+        updateNavState();
+    }
+
     function updateNavState() {
         document.querySelectorAll('.q-nav').forEach(function(button) {
             var questionId = button.getAttribute('data-jump');
+            button.classList.toggle('active', questionId === activeQuestionId);
             button.classList.toggle('answered', !!questionValue(questionById(questionId)));
+            button.classList.toggle('reviewed', !!reviewedQuestions[questionId]);
         });
     }
 
@@ -807,6 +1018,7 @@
         var target = feedbackAnchor(questionId);
         var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
         if (!target || !input) return;
+        setActiveQuestion(questionId);
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(function() { input.focus(); }, 280);
     }
@@ -863,12 +1075,19 @@
         var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Keep trying';
         var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
         var bar = document.getElementById('result-bar');
-        bar.innerHTML = '<strong>' + escapeHtml(status) + '</strong><span>' + escapeHtml(score) + '</span>';
+        bar.innerHTML = '<strong>' + escapeHtml(status) + '</strong><span>' + escapeHtml(score) + '</span>' +
+            '<div class="result-actions"><button type="button" id="try-again-btn">Try Again</button></div>';
         bar.classList.add('show');
+        enterReviewAudioMode();
     }
 
     function submitAttempt() {
         if (teacherMode) return;
+        if (lesson && lesson.audioSrc && !audioStarted) {
+            showAudioStartDialog(true);
+            alert('Please start the listening audio before submitting.');
+            return;
+        }
         if (!allAnswered()) {
             alert('Please answer all questions before submitting.');
             return;
@@ -891,6 +1110,34 @@
             submit.textContent = 'Submit';
             alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
         });
+    }
+
+    function clearAttemptForRetry() {
+        lesson.questions.forEach(function(question) {
+            setQuestionDisabled(question, false);
+            document.querySelectorAll('[name="' + CSS.escape(question.id) + '"]').forEach(function(input) {
+                if (input.type === 'radio') input.checked = false;
+                else input.value = '';
+                input.classList.remove('correct', 'wrong');
+            });
+        });
+        document.querySelectorAll('.listening-mcq-option.correct,.listening-mcq-option.wrong').forEach(function(option) {
+            option.classList.remove('correct', 'wrong');
+        });
+        document.querySelectorAll('[data-feedback]').forEach(function(el) { el.remove(); });
+        var submit = document.getElementById('submit-btn');
+        submit.disabled = false;
+        submit.textContent = 'Submit';
+        var bar = document.getElementById('result-bar');
+        bar.classList.remove('show');
+        bar.innerHTML = '';
+        reviewedQuestions = {};
+        activeQuestionId = lesson.questions[0] ? lesson.questions[0].id : '';
+        var reviewCheckbox = document.getElementById('review-checkbox');
+        if (reviewCheckbox) reviewCheckbox.checked = false;
+        try { localStorage.removeItem(draftKey()); } catch (error) {}
+        resetAudioForRetry();
+        updateNavState();
     }
 
     function teacherFriendlyError(error) {
@@ -1002,6 +1249,28 @@
         document.getElementById('dashboard-btn').addEventListener('click', function() {
             window.location.href = 'dashboard.html';
         });
+        document.getElementById('top-audio-start').addEventListener('click', function() {
+            showAudioStartDialog(true);
+        });
+        document.getElementById('top-audio-resume').addEventListener('click', resumeExamAudio);
+        document.getElementById('top-audio-play').addEventListener('click', function() {
+            var audio = audioEl();
+            if (!audio || audioMode !== 'review') return;
+            if (audio.paused) {
+                var promise = audio.play();
+                if (promise && promise.catch) promise.catch(function() {});
+            } else {
+                audio.pause();
+            }
+        });
+        document.getElementById('top-audio-progress').addEventListener('input', function(event) {
+            var audio = audioEl();
+            if (!audio || audioMode !== 'review' || !audio.duration) return;
+            audio.currentTime = Number(event.target.value || 0) / 1000 * audio.duration;
+            syncAudioUi();
+        });
+        document.getElementById('audio-start-confirm').addEventListener('click', startExamAudio);
+        document.getElementById('audio-start-cancel').addEventListener('click', hideAudioStartDialog);
         function handleQuestionInput(event) {
             if (!event.target.matches('[data-question]')) return;
             saveDraft();
@@ -1009,23 +1278,37 @@
         }
         document.addEventListener('input', handleQuestionInput);
         document.addEventListener('change', handleQuestionInput);
+        var reviewCheckbox = document.getElementById('review-checkbox');
+        if (reviewCheckbox) {
+            reviewCheckbox.addEventListener('change', function() {
+                if (!activeQuestionId && lesson && lesson.questions[0]) activeQuestionId = lesson.questions[0].id;
+                if (!activeQuestionId) return;
+                if (reviewCheckbox.checked) {
+                    reviewedQuestions[activeQuestionId] = true;
+                } else {
+                    delete reviewedQuestions[activeQuestionId];
+                }
+                updateNavState();
+            });
+        }
         document.getElementById('question-map').addEventListener('click', function(event) {
             var button = event.target.closest('[data-jump]');
             if (!button) return;
             jumpToQuestion(button.getAttribute('data-jump'));
         });
         document.getElementById('submit-btn').addEventListener('click', submitAttempt);
+        document.getElementById('result-bar').addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'try-again-btn') clearAttemptForRetry();
+        });
         document.getElementById('workspace').addEventListener('focusin', function(event) {
             var questionId = event.target && event.target.getAttribute('data-question');
-            document.querySelectorAll('.q-nav').forEach(function(button) {
-                button.classList.toggle('active', button.getAttribute('data-jump') === questionId);
-            });
+            if (questionId) setActiveQuestion(questionId);
         });
     }
 
     function init() {
         bindEvents();
-        document.getElementById('set-code').textContent = setId;
+        document.getElementById('set-code').textContent = examIdentityLabel();
         updateTimer(null);
         fetch('data/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
             .then(function(response) {
