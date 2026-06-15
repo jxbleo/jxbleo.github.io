@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NAWL-U"] = {
+  "id": "NAWL-U",
+  "sectionId": "vocabulary",
+  "title": "NAWL-U",
+  "href": "vocabulary.html?set=NAWL-U",
+  "sortOrder": 2021,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NAWL",
+  "cefrLevel": "C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 201,
+      "word": "embed",
+      "emoji": "📌🔗",
+      "meaning": "v. 嵌入，植入，使深留脑中",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to place something firmly inside something else",
+      "wordForms": "embedded (adj.), embedding (n.)"
+    },
+    {
+      "number": 202,
+      "word": "acute",
+      "emoji": "🔪⚡",
+      "meaning": "adj. 急性的，严重的，敏锐的，锐角的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "severe, sharp, or very serious",
+      "wordForms": "acutely (adv.), acuteness (n.)"
+    },
+    {
+      "number": 203,
+      "word": "utility",
+      "emoji": "🔧💡",
+      "meaning": "n. 效用，实用，公用事业",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "usefulness, or a public service company",
+      "wordForms": "utilitarian (adj.), utilize (v.)"
+    },
+    {
+      "number": 204,
+      "word": "complement",
+      "emoji": "🧩➕",
+      "meaning": "n. 补充物，补语；v. 补充，补足",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that completes or improves another thing",
+      "wordForms": "complementary (adj.)"
+    },
+    {
+      "number": 205,
+      "word": "leaf",
+      "emoji": "🍃📄",
+      "meaning": "n. 叶子，页，薄片",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a plant part or a page in a book",
+      "wordForms": "leafy (adj.), leafless (adj.)"
+    },
+    {
+      "number": 206,
+      "word": "verbal",
+      "emoji": "💬🗣️",
+      "meaning": "adj. 言语的，口头的，动词的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to words or speech",
+      "wordForms": "verbally (adv.), verbalize (v.)"
+    },
+    {
+      "number": 207,
+      "word": "aggregate",
+      "emoji": "📊🔢",
+      "meaning": "n. 总计，集合体；v. 聚集，合计；adj. 聚合的，总计的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a total made by combining parts",
+      "wordForms": "aggregation (n.)"
+    },
+    {
+      "number": 208,
+      "word": "equality",
+      "emoji": "⚖️🟰",
+      "meaning": "n. 平等，相等，等式",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of being equal",
+      "wordForms": "equal (adj./v.), equalize (v.)"
+    },
+    {
+      "number": 209,
+      "word": "corpus",
+      "emoji": "📚💾",
+      "meaning": "n. 语料库，全集，主体",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large collection of texts or a body of work",
+      "wordForms": "corpora (n. 复数形式)"
+    },
+    {
+      "number": 210,
+      "word": "organ",
+      "emoji": "🫀🎹",
+      "meaning": "n. 器官，机构，风琴",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a body part with a special function",
+      "wordForms": "organic (adj.), organism (n.)"
+    },
+    {
+      "number": 211,
+      "word": "gradient",
+      "emoji": "📈⛰️",
+      "meaning": "n. 梯度，斜率，倾斜度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a slope or rate of change",
+      "wordForms": "grade (n./v.), gradual (adj.)"
+    },
+    {
+      "number": 212,
+      "word": "methodology",
+      "emoji": "🔬📋",
+      "meaning": "n. 方法论，方法学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system of methods used in study or work",
+      "wordForms": "methodological (adj.), method (n.)"
+    },
+    {
+      "number": 213,
+      "word": "entity",
+      "emoji": "🏢✨",
+      "meaning": "n. 实体，存在，本质",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that exists as a separate thing",
+      "wordForms": "-"
+    },
+    {
+      "number": 214,
+      "word": "tumor",
+      "emoji": "🎗️🔬",
+      "meaning": "n. 肿瘤，赘生物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an abnormal growth of body tissue",
+      "wordForms": "tumorous (adj.)"
+    },
+    {
+      "number": 215,
+      "word": "fiber",
+      "emoji": "🧵🌾",
+      "meaning": "n. 纤维，纤维质，品质",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a thin threadlike material",
+      "wordForms": "fibrous (adj.), fibril (n.)"
+    },
+    {
+      "number": 216,
+      "word": "paradigm",
+      "emoji": "💭🔄",
+      "meaning": "n. 范式，典范，词形变化表",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a model or pattern for thinking or doing something",
+      "wordForms": "paradigmatic (adj.)"
+    },
+    {
+      "number": 217,
+      "word": "psychology",
+      "emoji": "🧠💭",
+      "meaning": "n. 心理学，心理",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the study of the mind and behavior",
+      "wordForms": "psychological (adj.), psychologist (n.)"
+    },
+    {
+      "number": 218,
+      "word": "infinite",
+      "emoji": "♾️🌌",
+      "meaning": "adj. 无限的，无穷的，极大的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "without limit or end",
+      "wordForms": "infinitely (adv.), infinity (n.)"
+    },
+    {
+      "number": 219,
+      "word": "diverse",
+      "emoji": "🌈🎨",
+      "meaning": "adj. 多样的，不同的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "including many different kinds",
+      "wordForms": "diversely (adv.), diversity (n.), diversify (v.)"
+    },
+    {
+      "number": 220,
+      "word": "diagnostic",
+      "emoji": "🔍🩺",
+      "meaning": "adj. 诊断的，特征的；n. 诊断",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "used to identify a disease or problem",
+      "wordForms": "diagnostically (adv.), diagnose (v.), diagnosis (n.)"
+    },
+    {
+      "number": 221,
+      "word": "continuity",
+      "emoji": "➡️🔗",
+      "meaning": "n. 连续性，持续性，连贯性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of continuing without interruption",
+      "wordForms": "continuous (adj.), continue (v.)"
+    },
+    {
+      "number": 222,
+      "word": "variability",
+      "emoji": "📊🎲",
+      "meaning": "n. 可变性，变化性，变异性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being changeable",
+      "wordForms": "variable (adj./n.), vary (v.)"
+    },
+    {
+      "number": 223,
+      "word": "outer",
+      "emoji": "🌐⭕",
+      "meaning": "adj. 外部的，外面的，远离中心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "on or near the outside",
+      "wordForms": "outward (adj./adv.), outside (adj./n./prep.)"
+    },
+    {
+      "number": 224,
+      "word": "notation",
+      "emoji": "✍️🎵",
+      "meaning": "n. 记号，标记法，注释",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system of written symbols",
+      "wordForms": "notate (v.), note (n./v.)"
+    },
+    {
+      "number": 225,
+      "word": "probe",
+      "emoji": "🔭🔍",
+      "meaning": "n. 探针，探测器，调查；v. 探查，探测",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a tool or action used to investigate something",
+      "wordForms": "probing (adj.)"
+    },
+    {
+      "number": 226,
+      "word": "migration",
+      "emoji": "🦅✈️",
+      "meaning": "n. 迁移，移居，迁徙",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "movement from one place to another",
+      "wordForms": "migrate (v.), migrant (n./adj.), migratory (adj.)"
+    },
+    {
+      "number": 227,
+      "word": "mathematical",
+      "emoji": "➗📐",
+      "meaning": "adj. 数学的，数学上的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to mathematics",
+      "wordForms": "mathematically (adv.), mathematics (n.), mathematician (n.)"
+    },
+    {
+      "number": 228,
+      "word": "likelihood",
+      "emoji": "📊🎯",
+      "meaning": "n. 可能性，可能",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the chance that something will happen",
+      "wordForms": "likely (adj./adv.)"
+    },
+    {
+      "number": 229,
+      "word": "comparable",
+      "emoji": "⚖️↔️",
+      "meaning": "adj. 可比较的，类似的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to be compared, or similar in some way",
+      "wordForms": "comparably (adv.), compare (v.), comparison (n.)"
+    },
+    {
+      "number": 230,
+      "word": "magnitude",
+      "emoji": "📏⭐",
+      "meaning": "n. 大小，量级，重要性，星等",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "great size, amount, or importance",
+      "wordForms": "-"
+    },
+    {
+      "number": 231,
+      "word": "array",
+      "emoji": "🎯📊",
+      "meaning": "n. 数组，阵列，排列；v. 排列，布置",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an ordered group or arrangement",
+      "wordForms": "-"
+    },
+    {
+      "number": 232,
+      "word": "inclusion",
+      "emoji": "🤝➕",
+      "meaning": "n. 包含，包括物，内含物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of including someone or something",
+      "wordForms": "include (v.), inclusive (adj.)"
+    },
+    {
+      "number": 233,
+      "word": "emission",
+      "emoji": "💨🌫️",
+      "meaning": "n. 排放，发射，散发",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the release of gas, light, heat, or energy",
+      "wordForms": "emit (v.), emissive (adj.)"
+    },
+    {
+      "number": 234,
+      "word": "inference",
+      "emoji": "🧠💡",
+      "meaning": "n. 推理，推论，推断",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a conclusion based on evidence and reasoning",
+      "wordForms": "infer (v.), inferential (adj.)"
+    },
+    {
+      "number": 235,
+      "word": "non",
+      "emoji": "🚫❌",
+      "meaning": "prefix 非，不，无",
+      "partOfSpeech": "prefix",
+      "simpleDefinition": "a prefix meaning not or without",
+      "wordForms": "-"
+    },
+    {
+      "number": 236,
+      "word": "consciousness",
+      "emoji": "🧠💭",
+      "meaning": "n. 意识，知觉，觉悟",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "awareness of yourself and your surroundings",
+      "wordForms": "conscious (adj.), consciously (adv.)"
+    },
+    {
+      "number": 237,
+      "word": "simultaneously",
+      "emoji": "⏱️🔀",
+      "meaning": "adv. 同时地，一起",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at the same time",
+      "wordForms": "simultaneous (adj.)"
+    },
+    {
+      "number": 238,
+      "word": "disturbance",
+      "emoji": "🌪️⚠️",
+      "meaning": "n. 干扰，扰乱，骚动",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an interruption or unwanted change",
+      "wordForms": "disturb (v.), disturbing (adj.)"
+    },
+    {
+      "number": 239,
+      "word": "hierarchy",
+      "emoji": "🏛️📊",
+      "meaning": "n. 等级制度，层次，阶层",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system with levels of rank or importance",
+      "wordForms": "hierarchical (adj.), hierarchically (adv.)"
+    },
+    {
+      "number": 240,
+      "word": "rotation",
+      "emoji": "🔄🌀",
+      "meaning": "n. 旋转，轮换，循环",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of turning around a center point",
+      "wordForms": "rotate (v.), rotational (adj.), rotary (adj.)"
+    },
+    {
+      "number": 241,
+      "word": "validity",
+      "emoji": "✅📋",
+      "meaning": "n. 有效性，正确性，合法性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being true, sound, or acceptable",
+      "wordForms": "valid (adj.), validate (v.), invalidate (v.)"
+    },
+    {
+      "number": 242,
+      "word": "periodic",
+      "emoji": "🔄📅",
+      "meaning": "adj. 周期的，定期的，间歇的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening at regular times",
+      "wordForms": "periodically (adv.), period (n.)"
+    },
+    {
+      "number": 243,
+      "word": "archaeology",
+      "emoji": "🏺⛏️",
+      "meaning": "n. 考古学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the study of ancient people through objects and remains",
+      "wordForms": "archaeological (adj.), archaeologist (n.)"
+    },
+    {
+      "number": 244,
+      "word": "atom",
+      "emoji": "⚛️🔬",
+      "meaning": "n. 原子，微粒，微量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the smallest unit of a chemical element",
+      "wordForms": "atomic (adj.), atomize (v.)"
+    },
+    {
+      "number": 245,
+      "word": "modification",
+      "emoji": "✏️🔧",
+      "meaning": "n. 修改，改变，修饰",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a change made to something",
+      "wordForms": "modify (v.), modified (adj.)"
+    },
+    {
+      "number": 246,
+      "word": "partition",
+      "emoji": "🧱📂",
+      "meaning": "n. 分割，隔板，分区；v. 分割，划分",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a division or wall separating parts",
+      "wordForms": "-"
+    },
+    {
+      "number": 247,
+      "word": "initiate",
+      "emoji": "🚀▶️",
+      "meaning": "v. 开始，发起，使初步了解；n. 新成员；adj. 新加入的",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to start something",
+      "wordForms": "initiation (n.), initiative (n./adj.), initial (adj.)"
+    },
+    {
+      "number": 248,
+      "word": "autonomy",
+      "emoji": "🗽⚖️",
+      "meaning": "n. 自治，自主权，自治权",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability or right to govern yourself",
+      "wordForms": "autonomous (adj.), autonomously (adv.)"
+    },
+    {
+      "number": 249,
+      "word": "inhibit",
+      "emoji": "🚫⛔",
+      "meaning": "v. 抑制，约束，禁止",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to slow down, prevent, or hold back",
+      "wordForms": "inhibition (n.), inhibitor (n.), inhibitory (adj.)"
+    },
+    {
+      "number": 250,
+      "word": "consonant",
+      "emoji": "🔤📢",
+      "meaning": "n. 辅音；adj. 一致的，协调的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a speech sound made by blocking air, or its letter",
+      "wordForms": "consonance (n.), consonantal (adj.)"
+    },
+    {
+      "number": 251,
+      "word": "biology",
+      "emoji": "🧬🔬",
+      "meaning": "n. 生物学，生物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the study of living things",
+      "wordForms": "biological (adj.), biologist (n.), biologically (adv.)"
+    },
+    {
+      "number": 252,
+      "word": "scenario",
+      "emoji": "🎬📝",
+      "meaning": "n. 情景，方案，剧本",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a possible situation or sequence of events",
+      "wordForms": "-"
+    },
+    {
+      "number": 253,
+      "word": "conditional",
+      "emoji": "❓🔀",
+      "meaning": "adj. 有条件的，假定的；n. 条件句",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "depending on a condition",
+      "wordForms": "conditionally (adv.), condition (n./v.)"
+    },
+    {
+      "number": 254,
+      "word": "contrary",
+      "emoji": "↔️🔄",
+      "meaning": "adj. 相反的，对立的；n. 相反，对立面",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "opposite or different from what was expected",
+      "wordForms": "contrarily (adv.), contrast (n./v.)"
+    },
+    {
+      "number": 255,
+      "word": "discrete",
+      "emoji": "🔢🎯",
+      "meaning": "adj. 离散的，分离的，不连续的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "separate and clearly distinct",
+      "wordForms": "discretely (adv.), discreteness (n.)"
+    },
+    {
+      "number": 256,
+      "word": "classroom",
+      "emoji": "🏫📚",
+      "meaning": "n. 教室，课堂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a room where lessons take place",
+      "wordForms": "-"
+    },
+    {
+      "number": 257,
+      "word": "morphological",
+      "emoji": "🔬📊",
+      "meaning": "adj. 形态学的，形态的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to form or structure",
+      "wordForms": "morphologically (adv.), morphology (n.)"
+    },
+    {
+      "number": 258,
+      "word": "lateral",
+      "emoji": "↔️📐",
+      "meaning": "adj. 侧面的，横向的；n. 侧部",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "on or toward the side",
+      "wordForms": "laterally (adv.)"
+    },
+    {
+      "number": 259,
+      "word": "injection",
+      "emoji": "💉🔬",
+      "meaning": "n. 注射，注入，插入",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of putting liquid into something with a needle",
+      "wordForms": "inject (v.), injectable (adj.)"
+    },
+    {
+      "number": 260,
+      "word": "effectiveness",
+      "emoji": "✅💪",
+      "meaning": "n. 有效性，效力，效果",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "how well something works",
+      "wordForms": "effective (adj.), effectively (adv.)"
+    },
+    {
+      "number": 261,
+      "word": "insect",
+      "emoji": "🐛🦗",
+      "meaning": "n. 昆虫，虫",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small animal with six legs",
+      "wordForms": "insectile (adj.)"
+    },
+    {
+      "number": 262,
+      "word": "logical",
+      "emoji": "🧠💡",
+      "meaning": "adj. 逻辑的，合理的，必然的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "based on clear reasoning",
+      "wordForms": "logically (adv.), logic (n.), illogical (adj.)"
+    },
+    {
+      "number": 263,
+      "word": "calculus",
+      "emoji": "∫📐",
+      "meaning": "n. 微积分，结石",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a branch of mathematics about change and accumulation",
+      "wordForms": "calculate (v.), calculation (n.)"
+    },
+    {
+      "number": 264,
+      "word": "usage",
+      "emoji": "📖💬",
+      "meaning": "n. 使用，用法，惯用法",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way something is used",
+      "wordForms": "use (v./n.), usable (adj.)"
+    },
+    {
+      "number": 265,
+      "word": "longitudinal",
+      "emoji": "↕️📊",
+      "meaning": "adj. 纵向的，经度的，长期的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to length or long-term study",
+      "wordForms": "longitudinally (adv.), longitude (n.)"
+    },
+    {
+      "number": 266,
+      "word": "neutral",
+      "emoji": "⚪⚖️",
+      "meaning": "adj. 中立的，中性的，中和的；n. 中立者",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not supporting either side",
+      "wordForms": "neutrally (adv.), neutrality (n.), neutralize (v.)"
+    },
+    {
+      "number": 267,
+      "word": "marginal",
+      "emoji": "📝🔚",
+      "meaning": "adj. 边缘的，边际的，微小的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "small, slight, or at the edge",
+      "wordForms": "marginally (adv.), margin (n.), marginalize (v.)"
+    },
+    {
+      "number": 268,
+      "word": "client",
+      "emoji": "👤💼",
+      "meaning": "n. 客户，委托人，当事人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who receives professional services",
+      "wordForms": "clientele (n.)"
+    },
+    {
+      "number": 269,
+      "word": "characterization",
+      "emoji": "🎭📝",
+      "meaning": "n. 特性描述，刻画，表征",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way someone or something is described",
+      "wordForms": "characterize (v.), characteristic (adj./n.)"
+    },
+    {
+      "number": 270,
+      "word": "ethical",
+      "emoji": "⚖️💭",
+      "meaning": "adj. 伦理的，道德的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to moral principles",
+      "wordForms": "ethically (adv.), ethics (n.), ethic (n.)"
+    },
+    {
+      "number": 271,
+      "word": "superior",
+      "emoji": "👑⬆️",
+      "meaning": "adj. 优越的，上级的，高傲的；n. 上级，长者",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "better, higher in rank, or above something else",
+      "wordForms": "superiority (n.), superiorly (adv.)"
+    },
+    {
+      "number": 272,
+      "word": "approximate",
+      "emoji": "≈🎯",
+      "meaning": "adj. 近似的，大约的；v. 近似，接近",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "close to the correct amount but not exact",
+      "wordForms": "approximately (adv.), approximation (n.)"
+    },
+    {
+      "number": 273,
+      "word": "composer",
+      "emoji": "🎵✍️",
+      "meaning": "n. 作曲家，作曲者，创作者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who writes music",
+      "wordForms": "compose (v.), composition (n.)"
+    },
+    {
+      "number": 274,
+      "word": "singular",
+      "emoji": "1️⃣⭐",
+      "meaning": "adj. 单数的，单一的，非凡的；n. 单数",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "one only, unusual, or the grammar form for one",
+      "wordForms": "singularly (adv.), singularity (n.)"
+    },
+    {
+      "number": 275,
+      "word": "converge",
+      "emoji": "🎯➡️",
+      "meaning": "v. 会聚，汇集，趋同",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move toward the same point or result",
+      "wordForms": "convergence (n.), convergent (adj.)"
+    },
+    {
+      "number": 276,
+      "word": "fetal",
+      "emoji": "👶🤰",
+      "meaning": "adj. 胎儿的，胎的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to an unborn baby",
+      "wordForms": "fetus (n.)"
+    },
+    {
+      "number": 277,
+      "word": "comprehension",
+      "emoji": "🧠💡",
+      "meaning": "n. 理解，理解力，包含",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "understanding",
+      "wordForms": "comprehend (v.), comprehensive (adj.), comprehensible (adj.)"
+    },
+    {
+      "number": 278,
+      "word": "implicit",
+      "emoji": "🤫💭",
+      "meaning": "adj. 含蓄的，暗示的，内含的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "suggested but not directly stated",
+      "wordForms": "implicitly (adv.), implicitness (n.)"
+    },
+    {
+      "number": 279,
+      "word": "span",
+      "emoji": "🌉📏",
+      "meaning": "n. 跨度，范围，时间；v. 跨越，持续",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the full length, distance, or period of something",
+      "wordForms": "-"
+    },
+    {
+      "number": 280,
+      "word": "oxygen",
+      "emoji": "💨🫁",
+      "meaning": "n. 氧，氧气",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a gas needed by people and animals to breathe",
+      "wordForms": "oxygenate (v.), oxygenation (n.)"
+    },
+    {
+      "number": 281,
+      "word": "formulation",
+      "emoji": "📝🧪",
+      "meaning": "n. 配方，公式化，阐述",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of creating or expressing a plan or formula",
+      "wordForms": "formulate (v.), formula (n.)"
+    },
+    {
+      "number": 282,
+      "word": "dialect",
+      "emoji": "🗣️🌍",
+      "meaning": "n. 方言，土话，语支",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a form of a language used in a region or group",
+      "wordForms": "dialectal (adj.), dialectic (n./adj.)"
+    },
+    {
+      "number": 283,
+      "word": "colony",
+      "emoji": "🏝️🐜",
+      "meaning": "n. 殖民地，侨民，群体",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place or group controlled by another country or organism",
+      "wordForms": "colonial (adj.), colonize (v.), colonist (n.)"
+    },
+    {
+      "number": 284,
+      "word": "immune",
+      "emoji": "🛡️💉",
+      "meaning": "adj. 免疫的，免除的，不受影响的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "protected from a disease or effect",
+      "wordForms": "immunity (n.), immunize (v.), immunization (n.)"
+    },
+    {
+      "number": 285,
+      "word": "loop",
+      "emoji": "🔄➰",
+      "meaning": "n. 环，回路，循环；v. 使成环，循环",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a shape or process that goes around and returns",
+      "wordForms": "loopy (adj.)"
+    },
+    {
+      "number": 286,
+      "word": "algebra",
+      "emoji": "➕✖️",
+      "meaning": "n. 代数，代数学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a branch of mathematics using symbols",
+      "wordForms": "algebraic (adj.), algebraically (adv.)"
+    },
+    {
+      "number": 287,
+      "word": "derivative",
+      "emoji": "📊🔄",
+      "meaning": "n. 导数，派生物；adj. 派生的，衍生的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something developed from another thing",
+      "wordForms": "derive (v.), derivation (n.)"
+    },
+    {
+      "number": 288,
+      "word": "appendix",
+      "emoji": "📎📚",
+      "meaning": "n. 附录，阑尾",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an extra section at the end of a book, or a small organ",
+      "wordForms": "append (v.), appendage (n.)"
+    },
+    {
+      "number": 289,
+      "word": "overview",
+      "emoji": "👁️📊",
+      "meaning": "n. 概述，综述，概览",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a general summary",
+      "wordForms": "-"
+    },
+    {
+      "number": 290,
+      "word": "diffusion",
+      "emoji": "💨🌫️",
+      "meaning": "n. 扩散，传播，弥散",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the spreading of something through an area",
+      "wordForms": "diffuse (v./adj.), diffusive (adj.)"
+    },
+    {
+      "number": 291,
+      "word": "specimen",
+      "emoji": "🔬📦",
+      "meaning": "n. 样本，标本，样品",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sample used for study",
+      "wordForms": "-"
+    },
+    {
+      "number": 292,
+      "word": "assert",
+      "emoji": "💪✅",
+      "meaning": "v. 断言，主张，维护",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to state strongly or confidently",
+      "wordForms": "assertion (n.), assertive (adj.), assertively (adv.)"
+    },
+    {
+      "number": 293,
+      "word": "widespread",
+      "emoji": "🌍📈",
+      "meaning": "adj. 广泛的，普遍的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "found or happening in many places",
+      "wordForms": "widely (adv.), wide (adj.)"
+    },
+    {
+      "number": 294,
+      "word": "competence",
+      "emoji": "💪🎯",
+      "meaning": "n. 能力，胜任，权限",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to do something well",
+      "wordForms": "competent (adj.), competently (adv.), incompetent (adj.)"
+    },
+    {
+      "number": 295,
+      "word": "residual",
+      "emoji": "📉🔚",
+      "meaning": "adj. 剩余的，残留的；n. 残差，剩余物",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "remaining after most has gone",
+      "wordForms": "residue (n.), residually (adv.)"
+    },
+    {
+      "number": 296,
+      "word": "fusion",
+      "emoji": "🔥⚛️",
+      "meaning": "n. 融合，熔化，核聚变",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the joining of things into one",
+      "wordForms": "fuse (v./n.), fused (adj.)"
+    },
+    {
+      "number": 297,
+      "word": "conservation",
+      "emoji": "🌳♻️",
+      "meaning": "n. 保护，保存，守恒",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "protection and careful use of resources",
+      "wordForms": "conserve (v.), conservative (adj./n.)"
+    },
+    {
+      "number": 298,
+      "word": "constrain",
+      "emoji": "⛓️🚫",
+      "meaning": "v. 约束，限制，强迫",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to limit or restrict",
+      "wordForms": "constraint (n.), constrained (adj.)"
+    },
+    {
+      "number": 299,
+      "word": "virtue",
+      "emoji": "⭐✨",
+      "meaning": "n. 美德，优点，贞操",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a good moral quality or advantage",
+      "wordForms": "virtuous (adj.), virtuously (adv.)"
+    },
+    {
+      "number": 300,
+      "word": "differentiate",
+      "emoji": "🔍↔️",
+      "meaning": "v. 区分，使不同，求导",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to tell the difference between things",
+      "wordForms": "differentiation (n.), differential (adj./n.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "201-210",
+      "label": "第一组",
+      "rangeStart": 201,
+      "rangeEnd": 210,
+      "wordList": [
+        "complement",
+        "leaf",
+        "utility",
+        "organ",
+        "embedded",
+        "aggregate",
+        "equality",
+        "verbal",
+        "corpus",
+        "acute"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The wine's robust tannins __________ the rich flavors of the aged cheese perfectly.",
+          "questionKey": "201-210:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The ancient manuscript's final __________ had deteriorated beyond recognition due to centuries of exposure.",
+          "questionKey": "201-210:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The government decided to privatize several public __________ companies, including water and electricity providers.",
+          "questionKey": "201-210:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The Supreme Court functions as the highest judicial __________ in the country's legal system.",
+          "questionKey": "201-210:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The journalist's investigation revealed that corruption had become deeply __________ in the institutional framework of the organization.",
+          "questionKey": "201-210:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The economist calculated the __________ demand across all market segments to forecast national consumption.",
+          "questionKey": "201-210:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The constitutional amendment enshrined the principle of gender __________ in employment and education.",
+          "questionKey": "201-210:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The contract stipulated that all disputes must be resolved through __________ negotiation before proceeding to arbitration.",
+          "questionKey": "201-210:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Linguists compiled an extensive __________ of medieval texts to analyze the evolution of grammatical structures.",
+          "questionKey": "201-210:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The patient presented with __________ renal failure and was immediately admitted to intensive care.",
+          "questionKey": "201-210:10"
+        }
+      ]
+    },
+    {
+      "id": "211-220",
+      "label": "第二组",
+      "rangeStart": 211,
+      "rangeEnd": 220,
+      "wordList": [
+        "gradient",
+        "entity",
+        "infinite",
+        "methodology",
+        "fiber",
+        "paradigm",
+        "diverse",
+        "psychology",
+        "tumor",
+        "diagnostic"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The mountain's steep __________ made the ascent particularly challenging for inexperienced climbers.",
+          "questionKey": "211-220:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The corporation established a separate legal __________ to manage its overseas investments.",
+          "questionKey": "211-220:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The universe's __________ expanse has captivated philosophers and scientists throughout human history.",
+          "questionKey": "211-220:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The research team developed a rigorous __________ for collecting and analyzing qualitative data from participants.",
+          "questionKey": "211-220:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Dietary __________ has been shown to reduce the risk of cardiovascular disease significantly.",
+          "questionKey": "211-220:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Kuhn's work revolutionized our understanding of how scientific __________ shifts occur during periods of crisis.",
+          "questionKey": "211-220:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The committee sought to recruit candidates from __________ backgrounds to ensure multiple perspectives.",
+          "questionKey": "211-220:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Advances in cognitive __________ have transformed our understanding of decision-making processes.",
+          "questionKey": "211-220:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The biopsy revealed that the __________ was malignant and required immediate surgical intervention.",
+          "questionKey": "211-220:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The physician ordered comprehensive __________ tests to identify the underlying cause of the symptoms.",
+          "questionKey": "211-220:10"
+        }
+      ]
+    },
+    {
+      "id": "221-230",
+      "label": "第三组",
+      "rangeStart": 221,
+      "rangeEnd": 230,
+      "wordList": [
+        "variability",
+        "notation",
+        "probe",
+        "likelihood",
+        "mathematical",
+        "migration",
+        "outer",
+        "continuity",
+        "magnitude",
+        "comparable"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Climate scientists study the __________ of precipitation patterns to predict future weather trends.",
+          "questionKey": "221-230:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Musical __________ has evolved considerably since the medieval period, with modern systems offering greater precision.",
+          "questionKey": "221-230:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The space agency launched a sophisticated __________ to investigate the composition of Jupiter's atmosphere.",
+          "questionKey": "221-230:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Statistical analysis indicated a high __________ of correlation between the two variables.",
+          "questionKey": "221-230:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The theorem requires a rigorous __________ proof to establish its validity across all cases.",
+          "questionKey": "221-230:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The seasonal __________ of monarch butterflies spans thousands of miles across North America.",
+          "questionKey": "221-230:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The spacecraft successfully reached the __________ planets of the solar system after a decade-long journey.",
+          "questionKey": "221-230:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The film's narrative __________ was disrupted by frequent flashbacks and temporal shifts.",
+          "questionKey": "221-230:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The earthquake's __________ exceeded 7.0 on the Richter scale, causing widespread devastation.",
+          "questionKey": "221-230:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The economic impact of the recession was __________ to that of the Great Depression.",
+          "questionKey": "221-230:10"
+        }
+      ]
+    },
+    {
+      "id": "231-240",
+      "label": "第四组",
+      "rangeStart": 231,
+      "rangeEnd": 240,
+      "wordList": [
+        "inference",
+        "non",
+        "emission",
+        "disturbance",
+        "hierarchy",
+        "inclusion",
+        "consciousness",
+        "simultaneously",
+        "array",
+        "rotation"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The detective's __________ was based on circumstantial evidence rather than direct observation.",
+          "questionKey": "231-240:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The organization adopted a __________ discriminatory hiring policy to ensure equal opportunities.",
+          "questionKey": "231-240:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The factory's carbon __________ levels exceeded regulatory limits, prompting environmental sanctions.",
+          "questionKey": "231-240:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The electromagnetic __________ interfered with the satellite's communication systems.",
+          "questionKey": "231-240:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The corporate __________ placed decision-making authority in the hands of senior executives.",
+          "questionKey": "231-240:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The policy of social __________ aimed to integrate marginalized communities into mainstream society.",
+          "questionKey": "231-240:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Philosophers have long debated whether animals possess __________ comparable to human awareness.",
+          "questionKey": "231-240:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The orchestra and choir performed __________, creating a harmonious blend of instrumental and vocal music.",
+          "questionKey": "231-240:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The telescope's sensor __________ captured unprecedented images of distant galaxies.",
+          "questionKey": "231-240:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The Earth completes one full __________ on its axis approximately every 24 hours.",
+          "questionKey": "231-240:10"
+        }
+      ]
+    },
+    {
+      "id": "241-250",
+      "label": "第五组",
+      "rangeStart": 241,
+      "rangeEnd": 250,
+      "wordList": [
+        "validity",
+        "inhibit",
+        "atom",
+        "consonant",
+        "periodic",
+        "modification",
+        "autonomy",
+        "partition",
+        "archaeology",
+        "initiate"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The study's __________ was questioned due to methodological flaws in the experimental design.",
+          "questionKey": "241-250:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Certain medications can __________ enzyme activity, thereby slowing metabolic processes.",
+          "questionKey": "241-250:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The scientist demonstrated that each __________ consists of a nucleus surrounded by electrons.",
+          "questionKey": "241-250:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The phonetic system distinguishes between vowel and __________ sounds based on airflow obstruction.",
+          "questionKey": "241-250:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The chemist observed __________ fluctuations in the reaction rate corresponding to temperature changes.",
+          "questionKey": "241-250:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The software update included several __________ to improve user interface functionality.",
+          "questionKey": "241-250:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The region gained full political __________ following decades of colonial rule.",
+          "questionKey": "241-250:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The Berlin Wall served as a physical __________ dividing the city into eastern and western sectors.",
+          "questionKey": "241-250:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Underwater __________ has uncovered remarkable artifacts from ancient shipwrecks.",
+          "questionKey": "241-250:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The committee voted to __________ proceedings against the official accused of misconduct.",
+          "questionKey": "241-250:10"
+        }
+      ]
+    },
+    {
+      "id": "251-260",
+      "label": "第六组",
+      "rangeStart": 251,
+      "rangeEnd": 260,
+      "wordList": [
+        "conditional",
+        "scenario",
+        "discrete",
+        "classroom",
+        "effectiveness",
+        "morphological",
+        "Contrary",
+        "biology",
+        "lateral",
+        "injection"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The agreement was __________ upon the successful completion of due diligence procedures.",
+          "questionKey": "251-260:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The strategic planning team developed multiple __________ analyses to anticipate potential market disruptions.",
+          "questionKey": "251-260:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The mathematician worked with __________ variables rather than continuous functions.",
+          "questionKey": "251-260:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The innovative __________ design incorporated flexible seating arrangements to facilitate collaborative learning.",
+          "questionKey": "251-260:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The program's __________ was evaluated through rigorous pre- and post-intervention assessments.",
+          "questionKey": "251-260:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The paleontologist examined __________ features of the fossil to determine its taxonomic classification.",
+          "questionKey": "251-260:6"
+        },
+        {
+          "number": 7,
+          "prompt": "__________ to popular belief, bats are not blind and possess excellent vision.",
+          "questionKey": "251-260:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Marine __________ encompasses the study of organisms inhabiting oceanic ecosystems.",
+          "questionKey": "251-260:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The architect incorporated __________ support beams to distribute the building's structural load.",
+          "questionKey": "251-260:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The physician administered an intramuscular __________ of antibiotics to combat the infection.",
+          "questionKey": "251-260:10"
+        }
+      ]
+    },
+    {
+      "id": "261-270",
+      "label": "第七组",
+      "rangeStart": 261,
+      "rangeEnd": 270,
+      "wordList": [
+        "usage",
+        "calculus",
+        "ethical",
+        "logical",
+        "insect",
+        "characterization",
+        "neutral",
+        "longitudinal",
+        "marginal",
+        "client"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The dictionary provides detailed information about proper __________ and idiomatic expressions.",
+          "questionKey": "261-270:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Advanced __________ provides the mathematical foundation for understanding rates of change and accumulation.",
+          "questionKey": "261-270:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The medical board investigated potential __________ violations in the experimental treatment protocol.",
+          "questionKey": "261-270:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The philosopher constructed a __________ argument demonstrating the inherent contradictions in the theory.",
+          "questionKey": "261-270:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Entomologists estimate that __________ species constitute approximately 80% of all known animal life.",
+          "questionKey": "261-270:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The novelist's __________ of the protagonist evolved considerably throughout successive drafts.",
+          "questionKey": "261-270:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Switzerland maintained its __________ stance throughout both World Wars.",
+          "questionKey": "261-270:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ study tracked participants' health outcomes over a thirty-year period.",
+          "questionKey": "261-270:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The economist noted that __________ improvements in productivity had diminishing returns.",
+          "questionKey": "261-270:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The attorney-__________ privilege protects confidential communications from disclosure.",
+          "questionKey": "261-270:10"
+        }
+      ]
+    },
+    {
+      "id": "271-280",
+      "label": "第八组",
+      "rangeStart": 271,
+      "rangeEnd": 280,
+      "wordList": [
+        "approximate",
+        "implicit",
+        "singular",
+        "oxygen",
+        "converge",
+        "fetal",
+        "span",
+        "comprehension",
+        "superior",
+        "composer"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The census provided __________ figures for the population, with exact numbers pending final verification.",
+          "questionKey": "271-280:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The contract contained an __________ clause requiring confidentiality beyond the stated terms.",
+          "questionKey": "271-280:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The diplomat's __________ achievement was negotiating peace between the warring factions.",
+          "questionKey": "271-280:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The respiratory system facilitates the exchange of __________ and carbon dioxide in the lungs.",
+          "questionKey": "271-280:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Multiple lines of evidence __________ to support the hypothesis of climate change.",
+          "questionKey": "271-280:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Ultrasound technology enables physicians to monitor __________ development throughout pregnancy.",
+          "questionKey": "271-280:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The bridge's main __________ extends 1,200 meters across the river.",
+          "questionKey": "271-280:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Reading __________ involves not merely decoding words but understanding complex semantic relationships.",
+          "questionKey": "271-280:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The new technology demonstrated __________ performance compared to existing alternatives.",
+          "questionKey": "271-280:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Beethoven is widely regarded as one of history's most influential __________ of classical music.",
+          "questionKey": "271-280:10"
+        }
+      ]
+    },
+    {
+      "id": "281-290",
+      "label": "第九组",
+      "rangeStart": 281,
+      "rangeEnd": 290,
+      "wordList": [
+        "formulation",
+        "dialect",
+        "colony",
+        "loop",
+        "overview",
+        "diffusion",
+        "derivative",
+        "appendix",
+        "immune",
+        "algebra"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The pharmaceutical company developed a new __________ of the medication with fewer side effects.",
+          "questionKey": "281-290:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Regional __________ variations reflect historical migration patterns and geographical isolation.",
+          "questionKey": "281-290:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Britain established its first permanent __________ in North America at Jamestown in 1607.",
+          "questionKey": "281-290:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The programmer identified an infinite __________ in the code that caused the system to crash.",
+          "questionKey": "281-290:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The executive summary provided a comprehensive __________ of the strategic plan's key objectives.",
+          "questionKey": "281-290:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Cultural __________ occurs when ideas and practices spread from one society to another.",
+          "questionKey": "281-290:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of a function represents its instantaneous rate of change at any given point.",
+          "questionKey": "281-290:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The research paper's __________ contained supplementary data tables and statistical analyses.",
+          "questionKey": "281-290:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Vaccination programs have made populations __________ to previously devastating diseases.",
+          "questionKey": "281-290:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Linear __________ provides methods for solving systems of equations with multiple variables.",
+          "questionKey": "281-290:10"
+        }
+      ]
+    },
+    {
+      "id": "291-300",
+      "label": "第十组",
+      "rangeStart": 291,
+      "rangeEnd": 300,
+      "wordList": [
+        "assert",
+        "widespread",
+        "constrain",
+        "specimen",
+        "fusion",
+        "competence",
+        "conservation",
+        "Residual",
+        "differentiate",
+        "virtue"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The witness was asked to __________ under oath that the testimony was truthful and accurate.",
+          "questionKey": "291-300:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The pandemic caused __________ disruption to global supply chains and economic activity.",
+          "questionKey": "291-300:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Budgetary limitations __________ the organization's ability to expand its programs.",
+          "questionKey": "291-300:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The museum's collection includes a rare __________ of an extinct species preserved in amber.",
+          "questionKey": "291-300:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Nuclear __________ reactions power the sun by combining hydrogen atoms into helium.",
+          "questionKey": "291-300:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Professional certification programs assess practitioners' __________ in specialized skills.",
+          "questionKey": "291-300:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Wildlife __________ efforts have successfully prevented several species from extinction.",
+          "questionKey": "291-300:7"
+        },
+        {
+          "number": 8,
+          "prompt": "__________ radiation from the treatment remained detectable in the patient's tissue samples.",
+          "questionKey": "291-300:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The ability to __________ between correlation and causation is crucial for scientific reasoning.",
+          "questionKey": "291-300:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Patience is considered a __________ essential for effective teaching and mentorship.",
+          "questionKey": "291-300:10"
+        }
+      ]
+    }
+  ]
+};

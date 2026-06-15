@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NGSL-R"] = {
+  "id": "NGSL-R",
+  "sectionId": "vocabulary",
+  "title": "NGSL-R",
+  "href": "vocabulary.html?set=NGSL-R",
+  "sortOrder": 1018,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 2701,
+      "word": "reckon",
+      "emoji": "🧮 🤔",
+      "meaning": "v. 认为；估计；计算",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think, calculate, or estimate",
+      "wordForms": "n. reckoning"
+    },
+    {
+      "number": 2702,
+      "word": "silly",
+      "emoji": "🤪 😜",
+      "meaning": "adj. 愚蠢的；可笑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not sensible or serious",
+      "wordForms": "n. silliness"
+    },
+    {
+      "number": 2703,
+      "word": "transportation",
+      "emoji": "🚌 🚂",
+      "meaning": "n. 运输；交通运输；流放",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the movement of people or goods from place to place",
+      "wordForms": "-"
+    },
+    {
+      "number": 2704,
+      "word": "harbor",
+      "emoji": "🚢 ⚓",
+      "meaning": "n. 港口；避难所<br>v. 庇护；心怀(想法)",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a sheltered place for ships, or to keep a feeling secretly",
+      "wordForms": "v. harbor"
+    },
+    {
+      "number": 2705,
+      "word": "comedy",
+      "emoji": "😂 🎭",
+      "meaning": "n. 喜剧；滑稽；幽默事件",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a funny play, film, or situation",
+      "wordForms": "-"
+    },
+    {
+      "number": 2706,
+      "word": "chase",
+      "emoji": "🏃 🐕",
+      "meaning": "v. 追赶；追求<br>n. 追逐；追赶",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to run after someone or something",
+      "wordForms": "n. chaser"
+    },
+    {
+      "number": 2707,
+      "word": "storage",
+      "emoji": "📦 💾",
+      "meaning": "n. 贮藏；仓库；存储",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act or place of keeping things for later",
+      "wordForms": "-"
+    },
+    {
+      "number": 2708,
+      "word": "universe",
+      "emoji": "🌌 🪐",
+      "meaning": "n. 宇宙；万物；世界",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "all space, matter, and everything that exists",
+      "wordForms": "-"
+    },
+    {
+      "number": 2709,
+      "word": "horrible",
+      "emoji": "😱 🙀",
+      "meaning": "adj. 可怕的；极讨厌的；糟糕的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very bad, frightening, or unpleasant",
+      "wordForms": "n. horribleness"
+    },
+    {
+      "number": 2710,
+      "word": "sheep",
+      "emoji": "🐑 🐏",
+      "meaning": "n. 绵羊；胆小鬼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an animal kept for wool, meat, or milk",
+      "wordForms": "-"
+    },
+    {
+      "number": 2711,
+      "word": "lover",
+      "emoji": "❤️ 💑",
+      "meaning": "n. 爱人；情人；爱好者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who loves someone or something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2712,
+      "word": "rat",
+      "emoji": "🐀 🐭",
+      "meaning": "n. 老鼠；卑鄙的人<br>v. 背叛；告发",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small rodent, or a person who betrays others",
+      "wordForms": "-"
+    },
+    {
+      "number": 2713,
+      "word": "portrait",
+      "emoji": "🖼️ 👨‍🎨",
+      "meaning": "n. 肖像；描写；画像",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a picture or description of a person",
+      "wordForms": "-"
+    },
+    {
+      "number": 2714,
+      "word": "innocent",
+      "emoji": "😇 👶",
+      "meaning": "adj. 无辜的；天真的；单纯的<br>n. 天真的人；无辜的人",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "not guilty, or without experience of bad things",
+      "wordForms": "n. innocence"
+    },
+    {
+      "number": 2715,
+      "word": "substitute",
+      "emoji": "🔄 🥤",
+      "meaning": "n. 代替品；代替者<br>v. 代替；替换",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a person or thing used in place of another",
+      "wordForms": "n. substitution"
+    },
+    {
+      "number": 2716,
+      "word": "supplement",
+      "emoji": "➕ 💊",
+      "meaning": "n. 补充物；增刊；附录<br>v. 补充；增补",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "something added to make another thing complete",
+      "wordForms": "n. supplementation"
+    },
+    {
+      "number": 2717,
+      "word": "adjustment",
+      "emoji": "🔧 ⚙️",
+      "meaning": "n. 调整；适应；调节",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small change made to improve or fit something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2718,
+      "word": "reasonably",
+      "emoji": "🤝 📊",
+      "meaning": "adv. 合理地；适度地；公平地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a fair, sensible, or moderate way",
+      "wordForms": "-"
+    },
+    {
+      "number": 2719,
+      "word": "filter",
+      "emoji": "🧹 🚰",
+      "meaning": "n. 过滤器；滤光器<br>v. 过滤；渗透",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a device or process that removes unwanted parts",
+      "wordForms": "n. filtration"
+    },
+    {
+      "number": 2720,
+      "word": "flexible",
+      "emoji": "🤸 🧘",
+      "meaning": "adj. 灵活的；柔韧的；适应性强的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to bend, change, or adapt easily",
+      "wordForms": "n. flexibility"
+    },
+    {
+      "number": 2721,
+      "word": "abstract",
+      "emoji": "🎨 💭",
+      "meaning": "adj. 抽象的；理论的<br>n. 摘要；抽象概念<br>v. 提取；摘录要点",
+      "partOfSpeech": "adj. / n. / v.",
+      "simpleDefinition": "related to ideas rather than concrete things",
+      "wordForms": "n. abstraction"
+    },
+    {
+      "number": 2722,
+      "word": "tent",
+      "emoji": "⛺ 🏕️",
+      "meaning": "n. 帐篷；帐幕<br>v. 住帐篷；用帐篷遮盖",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a portable shelter made of cloth",
+      "wordForms": "-"
+    },
+    {
+      "number": 2723,
+      "word": "precise",
+      "emoji": "🎯 ⚖️",
+      "meaning": "adj. 精确的；准确的；严谨的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "exact and accurate",
+      "wordForms": "n. precision"
+    },
+    {
+      "number": 2724,
+      "word": "distant",
+      "emoji": "🔭 🌄",
+      "meaning": "adj. 遥远的；疏远的；冷淡的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "far away in space, time, or relationship",
+      "wordForms": "n. distance"
+    },
+    {
+      "number": 2725,
+      "word": "stranger",
+      "emoji": "👤 🧳",
+      "meaning": "n. 陌生人；外地人；局外人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person you do not know",
+      "wordForms": "-"
+    },
+    {
+      "number": 2726,
+      "word": "shade",
+      "emoji": "🌳 👓",
+      "meaning": "n. 阴凉处；阴影；色度<br>v. 遮蔽；使阴暗",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "darkness made by blocking light, or a color tone",
+      "wordForms": "-"
+    },
+    {
+      "number": 2727,
+      "word": "grain",
+      "emoji": "🌾 🍚",
+      "meaning": "n. 谷物；颗粒；纹理<br>v. 使成纹理",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small seed of a crop, or a tiny piece",
+      "wordForms": "-"
+    },
+    {
+      "number": 2728,
+      "word": "situate",
+      "emoji": "📍 🗺️",
+      "meaning": "v. 使坐落于；放置",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to place or locate something somewhere",
+      "wordForms": "adj. situated"
+    },
+    {
+      "number": 2729,
+      "word": "summarize",
+      "emoji": "📝 📊",
+      "meaning": "v. 总结；概括",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give the main points briefly",
+      "wordForms": "n. summary"
+    },
+    {
+      "number": 2730,
+      "word": "leap",
+      "emoji": "🦘 🏃",
+      "meaning": "v. 跳跃；猛扑<br>n. 跳跃；飞跃",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to jump suddenly or make a big change",
+      "wordForms": "n. leaper"
+    },
+    {
+      "number": 2731,
+      "word": "snap",
+      "emoji": "📸 💥",
+      "meaning": "v. 折断；猛咬；厉声说话<br>n. 猛咬；快照；爆裂声<br>adj. 突然的",
+      "partOfSpeech": "v. / n. / adj.",
+      "simpleDefinition": "to break suddenly, bite quickly, or take a quick photo",
+      "wordForms": "n. snapper"
+    },
+    {
+      "number": 2732,
+      "word": "probability",
+      "emoji": "🎲 📊",
+      "meaning": "n. 可能性；概率；或然率",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "how likely something is to happen",
+      "wordForms": "-"
+    },
+    {
+      "number": 2733,
+      "word": "leather",
+      "emoji": "👜 👞",
+      "meaning": "n. 皮革；皮革制品<br>adj. 皮革制的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "material made from animal skin",
+      "wordForms": "-"
+    },
+    {
+      "number": 2734,
+      "word": "uncertainty",
+      "emoji": "❓ 🤷",
+      "meaning": "n. 不确定性；犹豫；不可靠",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a state of not being sure",
+      "wordForms": "-"
+    },
+    {
+      "number": 2735,
+      "word": "swear",
+      "emoji": "🤬 🧾",
+      "meaning": "v. 发誓；咒骂；宣誓",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to promise strongly or use rude language",
+      "wordForms": "n. swearer"
+    },
+    {
+      "number": 2736,
+      "word": "refugee",
+      "emoji": "🏃 🌍",
+      "meaning": "n. 难民；避难者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person forced to leave home for safety",
+      "wordForms": "-"
+    },
+    {
+      "number": 2737,
+      "word": "shore",
+      "emoji": "🏖️ 🌊",
+      "meaning": "n. 海岸；岸边<br>v. 支撑；支持",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the land along the edge of water",
+      "wordForms": "-"
+    },
+    {
+      "number": 2738,
+      "word": "monthly",
+      "emoji": "📅 🌙",
+      "meaning": "adj. 每月的；按月的<br>adv. 每月一次<br>n. 月刊",
+      "partOfSpeech": "adj. / adv. / n.",
+      "simpleDefinition": "happening once every month",
+      "wordForms": "-"
+    },
+    {
+      "number": 2739,
+      "word": "comprise",
+      "emoji": "🧩 🔄",
+      "meaning": "v. 包含；由...组成；构成",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to include or be made up of parts",
+      "wordForms": "-"
+    },
+    {
+      "number": 2740,
+      "word": "stir",
+      "emoji": "🥄 🌀",
+      "meaning": "v. 搅拌；激起；移动<br>n. 搅动；骚动",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to mix or move something gently",
+      "wordForms": "n. stirrer"
+    },
+    {
+      "number": 2741,
+      "word": "excitement",
+      "emoji": "🎢 🎉",
+      "meaning": "n. 兴奋；刺激；激动",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a feeling of strong interest or happiness",
+      "wordForms": "-"
+    },
+    {
+      "number": 2742,
+      "word": "sigh",
+      "emoji": "😮‍💨 😔",
+      "meaning": "v. 叹息；叹气<br>n. 叹息；叹气",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to breathe out because of tiredness, sadness, or relief",
+      "wordForms": "n. sigher"
+    },
+    {
+      "number": 2743,
+      "word": "pregnancy",
+      "emoji": "🤰 👶",
+      "meaning": "n. 怀孕；妊娠",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of having a baby developing in the body",
+      "wordForms": "-"
+    },
+    {
+      "number": 2744,
+      "word": "experimental",
+      "emoji": "🧪 🔬",
+      "meaning": "adj. 实验性的；试验的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to testing or trying something new",
+      "wordForms": "n. experiment"
+    },
+    {
+      "number": 2745,
+      "word": "institutional",
+      "emoji": "🏛️ 🏢",
+      "meaning": "adj. 制度的；机构的；学院的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a large organization or system",
+      "wordForms": "n. institution"
+    },
+    {
+      "number": 2746,
+      "word": "slice",
+      "emoji": "🍕 🔪",
+      "meaning": "n. 薄片；部分；切片<br>v. 切片；划分",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a thin flat piece cut from something",
+      "wordForms": "n. slicer"
+    },
+    {
+      "number": 2747,
+      "word": "wander",
+      "emoji": "🚶 🧭",
+      "meaning": "v. 漫步；闲逛；离题<br>n. 漫游；徘徊",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to walk around without a fixed plan",
+      "wordForms": "n. wanderer"
+    },
+    {
+      "number": 2748,
+      "word": "empire",
+      "emoji": "👑 🏛️",
+      "meaning": "n. 帝国；大企业；统治权",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of lands ruled by one power",
+      "wordForms": "-"
+    },
+    {
+      "number": 2749,
+      "word": "subsequently",
+      "emoji": "⏩ 📅",
+      "meaning": "adv. 随后；后来",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "after that",
+      "wordForms": "-"
+    },
+    {
+      "number": 2750,
+      "word": "gentle",
+      "emoji": "🕊️ 🤲",
+      "meaning": "adj. 温和的；轻柔的；文雅的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "kind, soft, or not forceful",
+      "wordForms": "n. gentleness"
+    },
+    {
+      "number": 2751,
+      "word": "attendance",
+      "emoji": "📋 👥",
+      "meaning": "n. 出席；出席人数；到场",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "being present at a place or event",
+      "wordForms": "-"
+    },
+    {
+      "number": 2752,
+      "word": "ownership",
+      "emoji": "🔑 📜",
+      "meaning": "n. 所有权；物主身份",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of legally having something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2753,
+      "word": "qualification",
+      "emoji": "🎓 📝",
+      "meaning": "n. 资格；条件；限定",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a skill, exam result, or condition needed for something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2754,
+      "word": "suspend",
+      "emoji": "⏸️ 🪂",
+      "meaning": "v. 悬挂；暂停；中止",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to stop something for a time or hang it up",
+      "wordForms": "n. suspension"
+    },
+    {
+      "number": 2755,
+      "word": "functional",
+      "emoji": "⚙️ 🛠️",
+      "meaning": "adj. 功能的；实用的；运行的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "working well or designed for practical use",
+      "wordForms": "n. functionality"
+    },
+    {
+      "number": 2756,
+      "word": "voluntary",
+      "emoji": "🤝 ❤️",
+      "meaning": "adj. 自愿的；志愿的；自发的<br>n. 志愿者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "done by choice, not by force",
+      "wordForms": "n. voluntariness"
+    },
+    {
+      "number": 2757,
+      "word": "pale",
+      "emoji": "👻 🌫️",
+      "meaning": "adj. 苍白的；暗淡的；浅色的<br>v. 变苍白；失色<br>n. 栅栏",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "light in color, or lacking strong color",
+      "wordForms": "n. paleness"
+    },
+    {
+      "number": 2758,
+      "word": "stain",
+      "emoji": "🧪 👕",
+      "meaning": "v. 沾污；染色；玷污<br>n. 污点；染料；耻辱",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a mark that is hard to remove",
+      "wordForms": "n. stainer"
+    },
+    {
+      "number": 2759,
+      "word": "athlete",
+      "emoji": "🏃‍♂️ 🏅",
+      "meaning": "n. 运动员；运动健将",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person trained in sports",
+      "wordForms": "-"
+    },
+    {
+      "number": 2760,
+      "word": "organic",
+      "emoji": "🌱 🥕",
+      "meaning": "adj. 有机的；器官的；组织的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to living things or grown without artificial chemicals",
+      "wordForms": "n. organics"
+    },
+    {
+      "number": 2761,
+      "word": "tongue",
+      "emoji": "👅 🗣️",
+      "meaning": "n. 舌头；语言；口语<br>v. 舔；用舌触",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the soft part in the mouth used for taste and speech",
+      "wordForms": "-"
+    },
+    {
+      "number": 2762,
+      "word": "server",
+      "emoji": "💻 🍽️",
+      "meaning": "n. 服务器；服务生；发球员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a computer that provides data, or a person who serves",
+      "wordForms": "-"
+    },
+    {
+      "number": 2763,
+      "word": "structural",
+      "emoji": "🏗️ 🔧",
+      "meaning": "adj. 结构的；构造的；建筑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the way something is built or organized",
+      "wordForms": "n. structure"
+    },
+    {
+      "number": 2764,
+      "word": "website",
+      "emoji": "🌐 💻",
+      "meaning": "n. 网站；网址",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a set of web pages on the internet",
+      "wordForms": "-"
+    },
+    {
+      "number": 2765,
+      "word": "fool",
+      "emoji": "🤡 🃏",
+      "meaning": "n. 傻子；愚人<br>v. 愚弄；欺骗",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a silly person, or to trick someone",
+      "wordForms": "n. foolishness"
+    },
+    {
+      "number": 2766,
+      "word": "alongside",
+      "emoji": "👫 🚢",
+      "meaning": "prep. 在...旁边；与...一起<br>adv. 在旁边",
+      "partOfSpeech": "prep. / adv.",
+      "simpleDefinition": "next to, or together with",
+      "wordForms": "-"
+    },
+    {
+      "number": 2767,
+      "word": "unite",
+      "emoji": "🤝 🔗",
+      "meaning": "v. 联合；团结；统一",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to join together for a shared purpose",
+      "wordForms": "n. unity"
+    },
+    {
+      "number": 2768,
+      "word": "gently",
+      "emoji": "🕊️ 🤫",
+      "meaning": "adv. 温和地；轻轻地；缓慢地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a soft, kind, or careful way",
+      "wordForms": "-"
+    },
+    {
+      "number": 2769,
+      "word": "compute",
+      "emoji": "🧮 💻",
+      "meaning": "v. 计算；估算",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to calculate",
+      "wordForms": "n. computation"
+    },
+    {
+      "number": 2770,
+      "word": "wipe",
+      "emoji": "🧻 🧹",
+      "meaning": "v. 擦；抹去；消除<br>n. 擦拭；湿巾",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to clean or remove by rubbing",
+      "wordForms": "n. wiper"
+    },
+    {
+      "number": 2771,
+      "word": "weird",
+      "emoji": "👽 🌀",
+      "meaning": "adj. 怪异的；不可思议的；超自然的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "strange or unusual",
+      "wordForms": "n. weirdness"
+    },
+    {
+      "number": 2772,
+      "word": "gaze",
+      "emoji": "👁️ 🔭",
+      "meaning": "v. 凝视；注视<br>n. 凝视；注视",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to look steadily for a long time",
+      "wordForms": "n. gazer"
+    },
+    {
+      "number": 2773,
+      "word": "fade",
+      "emoji": "🌅 📉",
+      "meaning": "v. 褪色；逐渐消失；凋谢<br>n. 淡出；褪色",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to become weaker, lighter, or less clear",
+      "wordForms": "n. fader"
+    },
+    {
+      "number": 2774,
+      "word": "cough",
+      "emoji": "🤧 😷",
+      "meaning": "v. 咳嗽；咳出<br>n. 咳嗽",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to force air from the throat with a sharp sound",
+      "wordForms": "n. cougher"
+    },
+    {
+      "number": 2775,
+      "word": "hypothesis",
+      "emoji": "💡 🧪",
+      "meaning": "n. 假设；假说；前提",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an idea tested to see if it is true",
+      "wordForms": "-"
+    },
+    {
+      "number": 2776,
+      "word": "royal",
+      "emoji": "👑 🏰",
+      "meaning": "adj. 皇家的；王室的；高贵的<br>n. 王室成员",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to a king, queen, or their family",
+      "wordForms": "n. royalty"
+    },
+    {
+      "number": 2777,
+      "word": "theoretical",
+      "emoji": "📚 💭",
+      "meaning": "adj. 理论的；假设的；推测的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to ideas or theory rather than practice",
+      "wordForms": "n. theory"
+    },
+    {
+      "number": 2778,
+      "word": "curtain",
+      "emoji": "🪟 🎭",
+      "meaning": "n. 窗帘；幕布；结束<br>v. 遮蔽；装上窗帘",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a hanging piece of cloth used to cover a window or stage",
+      "wordForms": "-"
+    },
+    {
+      "number": 2779,
+      "word": "mayor",
+      "emoji": "🏛️ 👨‍💼",
+      "meaning": "n. 市长；镇长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the elected leader of a city or town",
+      "wordForms": "-"
+    },
+    {
+      "number": 2780,
+      "word": "darkness",
+      "emoji": "🌑 🌃",
+      "meaning": "n. 黑暗；暗处；阴暗",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the absence of light",
+      "wordForms": "-"
+    },
+    {
+      "number": 2781,
+      "word": "aunt",
+      "emoji": "👩 👪",
+      "meaning": "n. 姑母；姨母；伯母；舅母",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the sister of a parent, or an uncle's wife",
+      "wordForms": "-"
+    },
+    {
+      "number": 2782,
+      "word": "tournament",
+      "emoji": "🏆 🎮",
+      "meaning": "n. 锦标赛；比赛；竞赛",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sports or game competition with many players",
+      "wordForms": "-"
+    },
+    {
+      "number": 2783,
+      "word": "registration",
+      "emoji": "📝 🆔",
+      "meaning": "n. 登记；注册；挂号",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of officially signing up or recording something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2784,
+      "word": "fragment",
+      "emoji": "🧩 💔",
+      "meaning": "n. 碎片；片段<br>v. 分裂；破碎",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small broken piece or part",
+      "wordForms": "n. fragmentation"
+    },
+    {
+      "number": 2785,
+      "word": "listener",
+      "emoji": "👂 🎧",
+      "meaning": "n. 听众；收听者；倾听者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who listens",
+      "wordForms": "-"
+    },
+    {
+      "number": 2786,
+      "word": "immigration",
+      "emoji": "🛂 🌎",
+      "meaning": "n. 移民；移居；移民局",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of coming to live in another country",
+      "wordForms": "-"
+    },
+    {
+      "number": 2787,
+      "word": "tender",
+      "emoji": "💕 🥩",
+      "meaning": "adj. 温柔的；嫩的；敏感的<br>v. 提出；投标<br>n. 投标；照管人",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "gentle, soft, or painful when touched",
+      "wordForms": "n. tenderness"
+    },
+    {
+      "number": 2788,
+      "word": "density",
+      "emoji": "🧱 📊",
+      "meaning": "n. 密度；浓度；稠密",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "how much matter, people, or things are in a space",
+      "wordForms": "-"
+    },
+    {
+      "number": 2789,
+      "word": "ugly",
+      "emoji": "🤢 👹",
+      "meaning": "adj. 丑陋的；难看的；令人不快的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "unpleasant to look at",
+      "wordForms": "n. ugliness"
+    },
+    {
+      "number": 2790,
+      "word": "module",
+      "emoji": "🧩 🛰️",
+      "meaning": "n. 模块；组件；单元",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one separate unit or part of a larger system",
+      "wordForms": "-"
+    },
+    {
+      "number": 2791,
+      "word": "faithfully",
+      "emoji": "✝️ 🤝",
+      "meaning": "adv. 忠实地；如实地；诚心诚意地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a loyal, accurate, or reliable way",
+      "wordForms": "-"
+    },
+    {
+      "number": 2792,
+      "word": "autumn",
+      "emoji": "🍂 🍁",
+      "meaning": "n. 秋天；秋季",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the season between summer and winter",
+      "wordForms": "-"
+    },
+    {
+      "number": 2793,
+      "word": "cheek",
+      "emoji": "😊 👄",
+      "meaning": "n. 脸颊；面颊；厚颜",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the side of the face below the eye",
+      "wordForms": "-"
+    },
+    {
+      "number": 2794,
+      "word": "attachment",
+      "emoji": "📎 ❤️",
+      "meaning": "n. 附件；依恋；附属物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a file added to a message, or a strong feeling of connection",
+      "wordForms": "-"
+    },
+    {
+      "number": 2795,
+      "word": "holder",
+      "emoji": "🏆 📱",
+      "meaning": "n. 持有人；支架；容器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person or thing that holds something",
+      "wordForms": "-"
+    },
+    {
+      "number": 2796,
+      "word": "solar",
+      "emoji": "☀️ 🌞",
+      "meaning": "adj. 太阳的；日光的；利用太阳能的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the sun",
+      "wordForms": "-"
+    },
+    {
+      "number": 2797,
+      "word": "grin",
+      "emoji": "😁 😬",
+      "meaning": "v. 咧嘴笑；露齿而笑<br>n. 咧嘴笑",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to smile widely",
+      "wordForms": "n. grinner"
+    },
+    {
+      "number": 2798,
+      "word": "rose",
+      "emoji": "🌹 🌷",
+      "meaning": "n. 玫瑰；玫瑰色<br>adj. 玫瑰色的<br>v. rise的过去式",
+      "partOfSpeech": "n. / adj. / v.",
+      "simpleDefinition": "a flower, a pink-red color, or the past tense of rise",
+      "wordForms": "-"
+    },
+    {
+      "number": 2799,
+      "word": "noun",
+      "emoji": "📝 🔤",
+      "meaning": "n. 名词",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a word that names a person, place, thing, or idea",
+      "wordForms": "-"
+    },
+    {
+      "number": 2800,
+      "word": "fortunate",
+      "emoji": "🍀 🌟",
+      "meaning": "adj. 幸运的；侥幸的；吉利的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "lucky",
+      "wordForms": "n. fortune"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "2701-2710",
+      "label": "第一组",
+      "rangeStart": 2701,
+      "rangeEnd": 2710,
+      "wordList": [
+        "horrible",
+        "harbor",
+        "storage",
+        "comedy",
+        "reckon",
+        "transportation",
+        "sheep",
+        "universe",
+        "chase",
+        "silly"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After the devastating earthquake, survivors described the scene as absolutely __________, with buildings reduced to rubble and people trapped beneath the debris.",
+          "questionKey": "2701-2710:1"
+        },
+        {
+          "number": 2,
+          "prompt": "During the maritime festival, dozens of sailing vessels sought refuge in the __________ as storm clouds gathered on the horizon.",
+          "questionKey": "2701-2710:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The warehouse provides climate-controlled __________ facilities for valuable artwork and historical artifacts.",
+          "questionKey": "2701-2710:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The playwright's latest work is a dark __________ that satirizes contemporary political corruption through absurd humor.",
+          "questionKey": "2701-2710:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Financial analysts __________ that the company's quarterly profits will exceed expectations due to strong overseas sales.",
+          "questionKey": "2701-2710:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The city's public __________ system has been upgraded with new electric buses and expanded metro lines to reduce traffic congestion.",
+          "questionKey": "2701-2710:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The shepherd guided his flock of __________ down from the mountain pastures as winter approached.",
+          "questionKey": "2701-2710:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The scientist's groundbreaking theory challenged conventional understanding of how the __________ began and continues to expand.",
+          "questionKey": "2701-2710:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The documentary crew had to __________ the wild cheetah across the savanna for three days before capturing the perfect footage.",
+          "questionKey": "2701-2710:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Making such a __________ mistake in the final presentation cost him the promotion he had been working toward for years.",
+          "questionKey": "2701-2710:10"
+        }
+      ]
+    },
+    {
+      "id": "2711-2720",
+      "label": "第二组",
+      "rangeStart": 2711,
+      "rangeEnd": 2720,
+      "wordList": [
+        "adjustment",
+        "flexible",
+        "reasonably",
+        "filter",
+        "rat",
+        "portrait",
+        "lover",
+        "innocent",
+        "supplement",
+        "substitute"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After moving to a higher altitude, athletes typically need several weeks for physiological __________ before competing at their peak performance.",
+          "questionKey": "2711-2720:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company offers __________ working hours, allowing employees to choose their start and finish times within certain parameters.",
+          "questionKey": "2711-2720:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The antique dealer can __________ expect to sell the rare manuscript for at least £50,000 at auction.",
+          "questionKey": "2711-2720:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The water purification system uses a multi-stage __________ to remove contaminants and improve taste quality.",
+          "questionKey": "2711-2720:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Laboratory workers discovered a __________ had contaminated the experimental samples, forcing them to restart the entire study.",
+          "questionKey": "2711-2720:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The gallery's centerpiece is a Renaissance __________ depicting a wealthy merchant and his family in elaborate period clothing.",
+          "questionKey": "2711-2720:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The art __________ spent hours at the museum, carefully studying the brushwork techniques of the old masters.",
+          "questionKey": "2711-2720:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The defendant maintained he was __________ throughout the trial, despite overwhelming circumstantial evidence presented by the prosecution.",
+          "questionKey": "2711-2720:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Many health-conscious individuals take vitamin D as a dietary __________ during winter months when sunlight exposure is limited.",
+          "questionKey": "2711-2720:9"
+        },
+        {
+          "number": 10,
+          "prompt": "When the lead actor fell ill, the understudy had to __________ for him in the opening night performance.",
+          "questionKey": "2711-2720:10"
+        }
+      ]
+    },
+    {
+      "id": "2721-2730",
+      "label": "第三组",
+      "rangeStart": 2721,
+      "rangeEnd": 2730,
+      "wordList": [
+        "precise",
+        "tent",
+        "abstract",
+        "leap",
+        "distant",
+        "shade",
+        "situated",
+        "grain",
+        "summarize",
+        "stranger"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The jeweler needed __________ measurements to ensure the custom engagement ring would fit perfectly.",
+          "questionKey": "2721-2730:1"
+        },
+        {
+          "number": 2,
+          "prompt": "During the camping expedition, they pitched their __________ near a stream to have easy access to fresh water.",
+          "questionKey": "2721-2730:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The research paper required a 250-word __________ outlining the methodology, findings, and conclusions of the study.",
+          "questionKey": "2721-2730:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The athlete's performance represented a significant __________ forward in breaking the long-standing world record.",
+          "questionKey": "2721-2730:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The research station was built in a __________ valley, several hours from the nearest town.",
+          "questionKey": "2721-2730:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The hikers rested in the __________ of an ancient oak tree to escape the intense midday sun.",
+          "questionKey": "2721-2730:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The mountain resort is __________ at an elevation of 2,000 meters, offering spectacular views of the surrounding valleys.",
+          "questionKey": "2721-2730:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The farmer's cooperative exports various types of __________ including wheat, barley, and oats to international markets.",
+          "questionKey": "2721-2730:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The professor asked students to __________ the main arguments of the 50-page philosophical treatise in three paragraphs.",
+          "questionKey": "2721-2730:9"
+        },
+        {
+          "number": 10,
+          "prompt": "After years of estrangement, she felt like a __________ at her own family reunion, unable to connect with relatives she barely remembered.",
+          "questionKey": "2721-2730:10"
+        }
+      ]
+    },
+    {
+      "id": "2731-2740",
+      "label": "第四组",
+      "rangeStart": 2731,
+      "rangeEnd": 2740,
+      "wordList": [
+        "probability",
+        "leather",
+        "monthly",
+        "snap",
+        "swear",
+        "uncertainty",
+        "shore",
+        "refugee",
+        "stir",
+        "comprises"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "According to meteorologists, the __________ of a major hurricane hitting the coast this season has increased significantly.",
+          "questionKey": "2731-2740:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The craftsman uses only premium Italian __________ to create his handmade luxury shoes and bags.",
+          "questionKey": "2731-2740:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The editorial team publishes a __________ magazine featuring investigative journalism and cultural commentary.",
+          "questionKey": "2731-2740:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The frozen branch will __________ easily under the weight of ice if temperatures don't rise soon.",
+          "questionKey": "2731-2740:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The committee members __________ an oath of confidentiality before reviewing the classified documents.",
+          "questionKey": "2731-2740:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The economic __________ caused by Brexit negotiations has made businesses reluctant to invest in long-term projects.",
+          "questionKey": "2731-2740:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Erosion along the __________ has accelerated due to rising sea levels and increasingly severe storm surges.",
+          "questionKey": "2731-2740:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The United Nations agency provides humanitarian assistance to __________ camps along the border region.",
+          "questionKey": "2731-2740:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The controversial announcement caused quite a __________ among shareholders, leading to heated debates at the meeting.",
+          "questionKey": "2731-2740:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The European Union currently __________ 27 member states following the United Kingdom's departure.",
+          "questionKey": "2731-2740:10"
+        }
+      ]
+    },
+    {
+      "id": "2741-2750",
+      "label": "第五组",
+      "rangeStart": 2741,
+      "rangeEnd": 2750,
+      "wordList": [
+        "empire",
+        "experimental",
+        "institutional",
+        "subsequently",
+        "sigh",
+        "excitement",
+        "slices",
+        "pregnancy",
+        "gentle",
+        "wander"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The Roman __________ at its height controlled territories spanning three continents and influenced Western civilization for centuries.",
+          "questionKey": "2741-2750:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The pharmaceutical company conducted __________ trials with a small group of volunteers before seeking regulatory approval.",
+          "questionKey": "2741-2750:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The reform aimed to address __________ racism embedded in the criminal justice system over decades.",
+          "questionKey": "2741-2750:3"
+        },
+        {
+          "number": 4,
+          "prompt": "After the merger collapsed, the CEO resigned and __________ faced charges of securities fraud.",
+          "questionKey": "2741-2750:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She let out a weary __________ after reading yet another rejection letter from a publisher.",
+          "questionKey": "2741-2750:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The crowd's __________ was palpable as the countdown to the New Year began in Times Square.",
+          "questionKey": "2741-2750:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The chef used a mandoline to cut each tomato into paper-thin __________ for the gourmet salad.",
+          "questionKey": "2741-2750:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The doctor confirmed her __________ and advised her to begin taking prenatal vitamins immediately.",
+          "questionKey": "2741-2750:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The nurse's __________ touch helped calm the anxious child before the vaccination.",
+          "questionKey": "2741-2750:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Tourists love to __________ through the narrow cobblestone streets of the medieval old town, discovering hidden cafes and boutiques.",
+          "questionKey": "2741-2750:10"
+        }
+      ]
+    },
+    {
+      "id": "2751-2760",
+      "label": "第六组",
+      "rangeStart": 2751,
+      "rangeEnd": 2760,
+      "wordList": [
+        "ownership",
+        "attendance",
+        "stain",
+        "athlete",
+        "suspend",
+        "functional",
+        "pale",
+        "organic",
+        "qualification",
+        "voluntary"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The dispute over land __________ has been tied up in litigation for more than a decade.",
+          "questionKey": "2751-2760:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Mandatory __________ policies were implemented to reduce truancy rates in underperforming schools.",
+          "questionKey": "2751-2760:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The wine left a permanent __________ on the white carpet that no amount of cleaning could remove.",
+          "questionKey": "2751-2760:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The Olympic __________ trained six hours daily for four years to prepare for the competition.",
+          "questionKey": "2751-2760:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The university decided to __________ the student for one semester following the academic misconduct investigation.",
+          "questionKey": "2751-2760:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Despite the damage, the building remained structurally sound and __________, allowing operations to continue.",
+          "questionKey": "2751-2760:6"
+        },
+        {
+          "number": 7,
+          "prompt": "After weeks of illness, she looked __________ and exhausted, prompting her colleagues to insist she see a doctor.",
+          "questionKey": "2751-2760:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The supermarket has expanded its __________ produce section in response to growing consumer demand for pesticide-free food.",
+          "questionKey": "2751-2760:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Applicants must possess a teaching __________ and at least three years of classroom experience to be considered for the position.",
+          "questionKey": "2751-2760:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The charity relies entirely on __________ contributions from the community, with no government funding.",
+          "questionKey": "2751-2760:10"
+        }
+      ]
+    },
+    {
+      "id": "2761-2770",
+      "label": "第七组",
+      "rangeStart": 2761,
+      "rangeEnd": 2770,
+      "wordList": [
+        "structural",
+        "server",
+        "alongside",
+        "fool",
+        "compute",
+        "wipe",
+        "tongue",
+        "gently",
+        "unite",
+        "website"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Engineers identified __________ weaknesses in the bridge that required immediate reinforcement to prevent collapse.",
+          "questionKey": "2761-2770:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company's __________ crashed during the Black Friday sale due to overwhelming traffic volume.",
+          "questionKey": "2761-2770:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new bicycle lane runs __________ the main road, separated by a protective barrier for cyclist safety.",
+          "questionKey": "2761-2770:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The scam artist managed to __________ investors out of millions before authorities uncovered the fraudulent scheme.",
+          "questionKey": "2761-2770:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Scientists use sophisticated algorithms to __________ the trajectory of asteroids that might pose a threat to Earth.",
+          "questionKey": "2761-2770:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Please __________ your feet on the mat before entering to avoid tracking mud through the house.",
+          "questionKey": "2761-2770:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The child burned her __________ on the hot soup and refused to eat anything warm for days afterward.",
+          "questionKey": "2761-2770:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The nurse __________ cleaned the wound with antiseptic solution before applying fresh bandages.",
+          "questionKey": "2761-2770:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The peace treaty helped __________ the warring factions after decades of bitter conflict.",
+          "questionKey": "2761-2770:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The organization launched a new __________ featuring interactive tools and resources for members.",
+          "questionKey": "2761-2770:10"
+        }
+      ]
+    },
+    {
+      "id": "2771-2780",
+      "label": "第八组",
+      "rangeStart": 2771,
+      "rangeEnd": 2780,
+      "wordList": [
+        "fade",
+        "mayor",
+        "hypothesis",
+        "curtain",
+        "cough",
+        "royal",
+        "gaze",
+        "darkness",
+        "theoretical",
+        "weird"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Photographs from the 1970s have begun to __________ with age, losing their original vibrant colors.",
+          "questionKey": "2771-2780:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The __________ announced new initiatives to combat homelessness and improve affordable housing in the city.",
+          "questionKey": "2771-2780:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The scientist's __________ was eventually confirmed through years of rigorous experimentation and peer review.",
+          "questionKey": "2771-2780:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The theater __________ rose to reveal an elaborate set depicting a Victorian-era drawing room.",
+          "questionKey": "2771-2780:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The persistent __________ was a symptom of the respiratory infection that kept him bedridden for weeks.",
+          "questionKey": "2771-2780:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ family attended the state ceremony in full regalia, maintaining centuries-old traditions.",
+          "questionKey": "2771-2780:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The astronomer would __________ through the telescope for hours, mapping distant galaxies and nebulae.",
+          "questionKey": "2771-2780:7"
+        },
+        {
+          "number": 8,
+          "prompt": "When the power outage occurred, the entire neighborhood was plunged into complete __________ for several hours.",
+          "questionKey": "2771-2780:8"
+        },
+        {
+          "number": 9,
+          "prompt": "While __________ physics provides elegant mathematical models, experimental verification remains challenging.",
+          "questionKey": "2771-2780:9"
+        },
+        {
+          "number": 10,
+          "prompt": "His __________ sense of humor, involving obscure references and surreal imagery, appealed to only a select audience.",
+          "questionKey": "2771-2780:10"
+        }
+      ]
+    },
+    {
+      "id": "2781-2790",
+      "label": "第九组",
+      "rangeStart": 2781,
+      "rangeEnd": 2790,
+      "wordList": [
+        "tournament",
+        "listeners",
+        "density",
+        "immigration",
+        "module",
+        "ugly",
+        "tender",
+        "fragments",
+        "aunt",
+        "registration"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The chess __________ attracted grandmasters from over forty countries competing for the championship title.",
+          "questionKey": "2781-2790:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The radio host cultivated a loyal following of __________ who tuned in daily for her insightful commentary.",
+          "questionKey": "2781-2790:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ of population in urban centers has created challenges for infrastructure and public services.",
+          "questionKey": "2781-2790:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Strict __________ policies have been implemented to control the flow of migrants across the border.",
+          "questionKey": "2781-2790:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The spacecraft's lunar __________ successfully detached and began its descent to the moon's surface.",
+          "questionKey": "2781-2790:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ confrontation between rival supporters marred what should have been a celebratory sporting event.",
+          "questionKey": "2781-2790:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The meat was so __________ it practically melted in your mouth, having been slow-cooked for eight hours.",
+          "questionKey": "2781-2790:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The archaeologist carefully excavated pottery __________ that dated back to the Bronze Age.",
+          "questionKey": "2781-2790:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My __________ traveled extensively through Asia during her retirement and sent postcards from every destination.",
+          "questionKey": "2781-2790:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Course __________ for the spring semester closes next Friday, after which late fees will apply.",
+          "questionKey": "2781-2790:10"
+        }
+      ]
+    },
+    {
+      "id": "2791-2800",
+      "label": "第十组",
+      "rangeStart": 2791,
+      "rangeEnd": 2800,
+      "wordList": [
+        "holder",
+        "autumn",
+        "fortunate",
+        "noun",
+        "cheek",
+        "attachment",
+        "faithfully",
+        "solar",
+        "grin",
+        "rose"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The passport __________ must present valid identification when crossing international borders.",
+          "questionKey": "2791-2800:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The leaves turn brilliant shades of red and gold during __________ in New England, attracting tourists worldwide.",
+          "questionKey": "2791-2800:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We were __________ to escape the building before the fire spread to our floor.",
+          "questionKey": "2791-2800:3"
+        },
+        {
+          "number": 4,
+          "prompt": "In English grammar, a __________ is a word that represents a person, place, thing, or idea.",
+          "questionKey": "2791-2800:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The child's __________ was flushed with embarrassment after being praised in front of the entire class.",
+          "questionKey": "2791-2800:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The email included an __________ containing the detailed financial projections for the next fiscal quarter.",
+          "questionKey": "2791-2800:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The butler __________ served the aristocratic family for forty years, never once betraying their trust.",
+          "questionKey": "2791-2800:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Environmentalists advocate for __________ panels as a sustainable alternative to fossil fuel-based energy production.",
+          "questionKey": "2791-2800:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The winner couldn't suppress a triumphant __________ as she accepted the gold medal.",
+          "questionKey": "2791-2800:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The stock price __________ sharply following the announcement of the merger with a major competitor.",
+          "questionKey": "2791-2800:10"
+        }
+      ]
+    }
+  ]
+};

@@ -139,17 +139,24 @@ function extractIeltsListening(source, privateSource) {
   };
 }
 
-function extractVocabulary(source) {
+function extractVocabulary(source, privateSource) {
   const answers = {};
   const explanations = {};
   const publicData = JSON.parse(JSON.stringify(source));
+  const privateAnswers = privateSource && privateSource.answers ? privateSource.answers : null;
+  const privateExplanations = privateSource && privateSource.explanations ? privateSource.explanations : null;
 
   (publicData.quizGroups || []).forEach((group) => {
     (group.questions || []).forEach((question) => {
       const key = `${group.id}:${question.number}`;
       question.questionKey = key;
-      answers[key] = question.answer;
-      explanations[key] = question.explanation || "";
+      if (privateAnswers && Object.prototype.hasOwnProperty.call(privateAnswers, key)) {
+        answers[key] = privateAnswers[key];
+        explanations[key] = privateExplanations && privateExplanations[key] ? privateExplanations[key] : "";
+      } else {
+        answers[key] = question.answer;
+        explanations[key] = question.explanation || "";
+      }
       delete question.answer;
       delete question.explanation;
     });
@@ -159,10 +166,10 @@ function extractVocabulary(source) {
     publicData,
     gradingKey: {
       set_id: source.id,
-      grading_version: "1",
+      grading_version: privateSource && privateSource.grading_version ? privateSource.grading_version : "1",
       answers,
       explanations,
-      scoring_rules: {
+      scoring_rules: privateSource && privateSource.scoring_rules ? privateSource.scoring_rules : {
         type: "vocabulary_test",
         minimum_countable_groups: 5,
       },
@@ -238,7 +245,7 @@ function main() {
 
   listJson(path.join(projectRoot, "content", "vocabulary")).forEach((filePath) => {
     const source = readJson(filePath);
-    const extracted = extractVocabulary(source);
+    const extracted = extractVocabulary(source, privateSourceFor("vocabulary", source.id));
     sets.push(buildSet(source, { type: "vocabulary", course: source.sourceName || "Vocabulary" }));
     gradingKeys.push(extracted.gradingKey);
     writeJson(path.join(publicRoot, "content", "vocabulary", path.basename(filePath)), extracted.publicData);

@@ -646,6 +646,90 @@ window.__HOME_CATALOG__ = {
       "tags": [],
       "note": "100 Words · 10 Quiz Groups",
       "visible": true
+    },
+    {
+      "id": "NGSL-Q",
+      "sectionId": "vocabulary",
+      "title": "NGSL-Q",
+      "href": "vocabulary.html?set=NGSL-Q",
+      "displayValue": "Words 2601-2700",
+      "sortValue": 1017,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NGSL-R",
+      "sectionId": "vocabulary",
+      "title": "NGSL-R",
+      "href": "vocabulary.html?set=NGSL-R",
+      "displayValue": "Words 2701-2800",
+      "sortValue": 1018,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NAWL-S",
+      "sectionId": "vocabulary",
+      "title": "NAWL-S",
+      "href": "vocabulary.html?set=NAWL-S",
+      "displayValue": "Words 1-100",
+      "sortValue": 2019,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NAWL-T",
+      "sectionId": "vocabulary",
+      "title": "NAWL-T",
+      "href": "vocabulary.html?set=NAWL-T",
+      "displayValue": "Words 101-200",
+      "sortValue": 2020,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NAWL-U",
+      "sectionId": "vocabulary",
+      "title": "NAWL-U",
+      "href": "vocabulary.html?set=NAWL-U",
+      "displayValue": "Words 201-300",
+      "sortValue": 2021,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NAWL-V",
+      "sectionId": "vocabulary",
+      "title": "NAWL-V",
+      "href": "vocabulary.html?set=NAWL-V",
+      "displayValue": "Words 301-400",
+      "sortValue": 2022,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
+    },
+    {
+      "id": "NAWL-W",
+      "sectionId": "vocabulary",
+      "title": "NAWL-W",
+      "href": "vocabulary.html?set=NAWL-W",
+      "displayValue": "Words 401-500",
+      "sortValue": 2023,
+      "topic": "",
+      "tags": [],
+      "note": "",
+      "visible": true
     }
   ]
 };
