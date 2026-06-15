@@ -1,0 +1,1618 @@
+{
+  "id": "NAWL-Z1",
+  "sectionId": "vocabulary",
+  "title": "NAWL-Z1",
+  "href": "vocabulary.html?set=NAWL-Z1",
+  "sortOrder": 2027,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NAWL",
+  "cefrLevel": "C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 801,
+      "word": "painful",
+      "emoji": "😣💔",
+      "meaning": "adj. 痛苦的；疼痛的；困难的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "causing pain or difficulty",
+      "wordForms": "pain (n./v.)"
+    },
+    {
+      "number": 802,
+      "word": "industrialization",
+      "emoji": "🏭📈",
+      "meaning": "n. 工业化",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the process of developing industry",
+      "wordForms": "industrialize (v.), industrial (adj.)"
+    },
+    {
+      "number": 803,
+      "word": "lab",
+      "emoji": "🔬🧪",
+      "meaning": "n. 实验室 (laboratory的缩写)",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a room or place for scientific work",
+      "wordForms": "laboratory (n.)"
+    },
+    {
+      "number": 804,
+      "word": "seminar",
+      "emoji": "👥📚",
+      "meaning": "n. 研讨会；研讨班",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small class or meeting for discussion",
+      "wordForms": "-"
+    },
+    {
+      "number": 805,
+      "word": "minus",
+      "emoji": "➖🔢",
+      "meaning": "prep. 减去；n. 负号；减号；adj. 负的",
+      "partOfSpeech": "adj. / prep. / n.",
+      "simpleDefinition": "less by a certain amount",
+      "wordForms": "-"
+    },
+    {
+      "number": 806,
+      "word": "conduction",
+      "emoji": "⚡🔥",
+      "meaning": "n. 传导；传热",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the movement of heat, electricity, or sound through something",
+      "wordForms": "conduct (v./n.), conductive (adj.), conductor (n.)"
+    },
+    {
+      "number": 807,
+      "word": "audio",
+      "emoji": "🔊🎵",
+      "meaning": "n. 音频；adj. 音频的；声音的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "sound or related to sound",
+      "wordForms": "auditory (adj.), audible (adj.)"
+    },
+    {
+      "number": 808,
+      "word": "subtract",
+      "emoji": "➖🧮",
+      "meaning": "v. 减去；扣除",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take one number away from another",
+      "wordForms": "subtraction (n.)"
+    },
+    {
+      "number": 809,
+      "word": "facet",
+      "emoji": "💎🔷",
+      "meaning": "n. 面；方面；（宝石的）刻面",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one side or aspect of something",
+      "wordForms": "faceted (adj.)"
+    },
+    {
+      "number": 810,
+      "word": "splice",
+      "emoji": "🔗✂️",
+      "meaning": "v. 拼接；捻接；n. 拼接处",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to join two ends or pieces together",
+      "wordForms": "-"
+    },
+    {
+      "number": 811,
+      "word": "incumbent",
+      "emoji": "👔📋",
+      "meaning": "adj. 现任的；义不容辞的；n. 在职者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "currently holding an official position",
+      "wordForms": "incumbency (n.)"
+    },
+    {
+      "number": 812,
+      "word": "biodiversity",
+      "emoji": "🌿🦋",
+      "meaning": "n. 生物多样性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the variety of living things in an area",
+      "wordForms": "biodiverse (adj.)"
+    },
+    {
+      "number": 813,
+      "word": "chunk",
+      "emoji": "🧱📦",
+      "meaning": "n. 大块；相当大的量；v. 分块",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a large piece or amount",
+      "wordForms": "chunky (adj.)"
+    },
+    {
+      "number": 814,
+      "word": "credibility",
+      "emoji": "✅🤝",
+      "meaning": "n. 可信性；可靠性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being believable",
+      "wordForms": "credible (adj.), credit (n./v.)"
+    },
+    {
+      "number": 815,
+      "word": "tutor",
+      "emoji": "👨‍🏫📖",
+      "meaning": "n. 家庭教师；导师；v. 辅导；当家教",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a person who teaches one student or a small group",
+      "wordForms": "tutorial (n./adj.)"
+    },
+    {
+      "number": 816,
+      "word": "super",
+      "emoji": "⭐🚀",
+      "meaning": "adj. 超级的；极好的；adv. 非常；n. 特级品",
+      "partOfSpeech": "adj. / adv. / v. / n.",
+      "simpleDefinition": "excellent, very good, or very",
+      "wordForms": "superb (adj.)"
+    },
+    {
+      "number": 817,
+      "word": "fin",
+      "emoji": "🐟🦈",
+      "meaning": "n. 鳍；鱼翅；散热片",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a thin body part used by fish to swim",
+      "wordForms": "finned (adj.)"
+    },
+    {
+      "number": 818,
+      "word": "aluminum",
+      "emoji": "⚙️🥫",
+      "meaning": "n. 铝 (美式拼写，英式为aluminium)",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a light silvery metal",
+      "wordForms": "-"
+    },
+    {
+      "number": 819,
+      "word": "gram",
+      "emoji": "⚖️📏",
+      "meaning": "n. 克（重量单位）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small unit of weight",
+      "wordForms": "-"
+    },
+    {
+      "number": 820,
+      "word": "liable",
+      "emoji": "⚖️💼",
+      "meaning": "adj. 有责任的；有义务的；易于...的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "legally responsible or likely to do something",
+      "wordForms": "liability (n.)"
+    },
+    {
+      "number": 821,
+      "word": "marble",
+      "emoji": "🗿⚪",
+      "meaning": "n. 大理石；弹珠；v. 使有大理石花纹",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a hard stone or small glass ball",
+      "wordForms": "marbled (adj.)"
+    },
+    {
+      "number": 822,
+      "word": "pesticide",
+      "emoji": "🐛☠️",
+      "meaning": "n. 杀虫剂；农药",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a chemical used to kill pests",
+      "wordForms": "-"
+    },
+    {
+      "number": 823,
+      "word": "technically",
+      "emoji": "🔧💻",
+      "meaning": "adv. 技术上；严格按照法律地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to technique or exact rules",
+      "wordForms": "technical (adj.), technique (n.)"
+    },
+    {
+      "number": 824,
+      "word": "criteria",
+      "emoji": "✅📋",
+      "meaning": "n. 标准；准则 (criterion的复数)",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "standards used to judge something",
+      "wordForms": "criterion (n.)"
+    },
+    {
+      "number": 825,
+      "word": "fringe",
+      "emoji": "🎀🔲",
+      "meaning": "n. 边缘；流苏；adj. 边缘的；v. 加穗边",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "the edge or outer part of something",
+      "wordForms": "-"
+    },
+    {
+      "number": 826,
+      "word": "messenger",
+      "emoji": "📨🏃",
+      "meaning": "n. 信使；使者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who carries a message",
+      "wordForms": "message (n./v.)"
+    },
+    {
+      "number": 827,
+      "word": "biologist",
+      "emoji": "🔬🧬",
+      "meaning": "n. 生物学家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a scientist who studies living things",
+      "wordForms": "biology (n.), biological (adj.)"
+    },
+    {
+      "number": 828,
+      "word": "connotation",
+      "emoji": "💭📖",
+      "meaning": "n. 内涵；含义；言外之意",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an extra meaning or feeling suggested by a word",
+      "wordForms": "connote (v.), connotative (adj.)"
+    },
+    {
+      "number": 829,
+      "word": "delta",
+      "emoji": "🔺🌊",
+      "meaning": "n. 三角洲；希腊字母Δ",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a river mouth area or a Greek letter",
+      "wordForms": "-"
+    },
+    {
+      "number": 830,
+      "word": "tremendous",
+      "emoji": "🎯💪",
+      "meaning": "adj. 巨大的；极好的；非常的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very large, strong, or good",
+      "wordForms": "tremendously (adv.)"
+    },
+    {
+      "number": 831,
+      "word": "snake",
+      "emoji": "🐍🌿",
+      "meaning": "n. 蛇；v. 蜿蜒前行",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a long legless reptile",
+      "wordForms": "snaky (adj.)"
+    },
+    {
+      "number": 832,
+      "word": "flesh",
+      "emoji": "🥩👤",
+      "meaning": "n. 肉；肉体；果肉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the soft part of a body",
+      "wordForms": "fleshy (adj.)"
+    },
+    {
+      "number": 833,
+      "word": "ghost",
+      "emoji": "👻🌙",
+      "meaning": "n. 鬼；幽灵；v. 作祟",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "the spirit of a dead person",
+      "wordForms": "ghostly (adj.)"
+    },
+    {
+      "number": 834,
+      "word": "marrow",
+      "emoji": "🦴🥄",
+      "meaning": "n. 骨髓；精华",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "soft material inside bones",
+      "wordForms": "-"
+    },
+    {
+      "number": 835,
+      "word": "surgeon",
+      "emoji": "👨‍⚕️🔪",
+      "meaning": "n. 外科医生",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a doctor who performs operations",
+      "wordForms": "surgery (n.), surgical (adj.)"
+    },
+    {
+      "number": 836,
+      "word": "instinct",
+      "emoji": "🧠💡",
+      "meaning": "n. 本能；直觉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a natural way of behaving or feeling",
+      "wordForms": "instinctive (adj.), instinctively (adv.)"
+    },
+    {
+      "number": 837,
+      "word": "industrialize",
+      "emoji": "🏭⚙️",
+      "meaning": "v. 使工业化",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to develop industry in a place",
+      "wordForms": "industrialization (n.), industrial (adj.)"
+    },
+    {
+      "number": 838,
+      "word": "denominator",
+      "emoji": "➗🔢",
+      "meaning": "n. 分母；共同特征",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the bottom number in a fraction",
+      "wordForms": "denominate (v.)"
+    },
+    {
+      "number": 839,
+      "word": "stripe",
+      "emoji": "〰️🦓",
+      "meaning": "n. 条纹；v. 加条纹于",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a long narrow band or line",
+      "wordForms": "striped (adj.), stripy (adj.)"
+    },
+    {
+      "number": 840,
+      "word": "junior",
+      "emoji": "👶📚",
+      "meaning": "adj. 年少的；下级的；n. 年少者；晚辈",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "lower in age, rank, or position",
+      "wordForms": "-"
+    },
+    {
+      "number": 841,
+      "word": "solvent",
+      "emoji": "💧🧪",
+      "meaning": "n. 溶剂；adj. 有偿付能力的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a liquid that dissolves another substance",
+      "wordForms": "solve (v.), soluble (adj.)"
+    },
+    {
+      "number": 842,
+      "word": "kilometer",
+      "emoji": "📏🚗",
+      "meaning": "n. 千米；公里",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a unit of distance equal to 1,000 meters",
+      "wordForms": "-"
+    },
+    {
+      "number": 843,
+      "word": "slab",
+      "emoji": "🧱📐",
+      "meaning": "n. 厚板；平板；v. 把...切成厚片",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a thick flat piece of hard material",
+      "wordForms": "-"
+    },
+    {
+      "number": 844,
+      "word": "click",
+      "emoji": "🖱️👆",
+      "meaning": "v. 点击；发出咔嗒声；n. 咔嗒声；点击",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to press a button or make a short sharp sound",
+      "wordForms": "-"
+    },
+    {
+      "number": 845,
+      "word": "hedge",
+      "emoji": "🌳🛡️",
+      "meaning": "n. 树篱；防护物；v. 用树篱围住；规避",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a row of bushes or a way to avoid risk",
+      "wordForms": "-"
+    },
+    {
+      "number": 846,
+      "word": "spray",
+      "emoji": "💦🌊",
+      "meaning": "v. 喷洒；n. 喷雾；浪花",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to send liquid out in small drops",
+      "wordForms": "sprayer (n.)"
+    },
+    {
+      "number": 847,
+      "word": "cinema",
+      "emoji": "🎬🍿",
+      "meaning": "n. 电影院；电影艺术",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a movie theater or the art of film",
+      "wordForms": "cinematic (adj.)"
+    },
+    {
+      "number": 848,
+      "word": "plug",
+      "emoji": "🔌⚡",
+      "meaning": "n. 插头；塞子；v. 堵塞；插入",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a device or object used to fill or connect",
+      "wordForms": "-"
+    },
+    {
+      "number": 849,
+      "word": "naked",
+      "emoji": "👤🔓",
+      "meaning": "adj. 裸体的；无遮蔽的；明显的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not wearing clothes or not covered",
+      "wordForms": "nakedness (n.)"
+    },
+    {
+      "number": 850,
+      "word": "indifference",
+      "emoji": "😐🤷",
+      "meaning": "n. 冷漠；不关心",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "lack of interest or concern",
+      "wordForms": "indifferent (adj.), indifferently (adv.)"
+    },
+    {
+      "number": 851,
+      "word": "erase",
+      "emoji": "🧹❌",
+      "meaning": "v. 擦除；抹去",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to remove writing, marks, or data",
+      "wordForms": "eraser (n.), erasure (n.)"
+    },
+    {
+      "number": 852,
+      "word": "powder",
+      "emoji": "⚪💨",
+      "meaning": "n. 粉末；火药；v. 使成粉末；搽粉",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "dry material made of tiny particles",
+      "wordForms": "powdery (adj.)"
+    },
+    {
+      "number": 853,
+      "word": "micro",
+      "emoji": "🔬🤏",
+      "meaning": "adj. 微小的；n. 微型计算机；前缀\"微\"",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "very small or on a small scale",
+      "wordForms": "microscopic (adj.)"
+    },
+    {
+      "number": 854,
+      "word": "clip",
+      "emoji": "📎✂️",
+      "meaning": "v. 夹住；修剪；n. 夹子；片段",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to fasten, cut, or hold with a small object",
+      "wordForms": "clipper (n.)"
+    },
+    {
+      "number": 855,
+      "word": "solute",
+      "emoji": "🧂💧",
+      "meaning": "n. 溶质",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a substance dissolved in a liquid",
+      "wordForms": "soluble (adj.), solution (n.)"
+    },
+    {
+      "number": 856,
+      "word": "dissection",
+      "emoji": "🔪🐸",
+      "meaning": "n. 解剖；剖析",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "cutting apart or detailed analysis",
+      "wordForms": "dissect (v.)"
+    },
+    {
+      "number": 857,
+      "word": "censor",
+      "emoji": "🚫📝",
+      "meaning": "v. 审查；检查；n. 审查员",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to examine and remove unacceptable material",
+      "wordForms": "censorship (n.)"
+    },
+    {
+      "number": 858,
+      "word": "portrayal",
+      "emoji": "🎨👤",
+      "meaning": "n. 描绘；描写；扮演",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a description or representation of someone or something",
+      "wordForms": "portray (v.)"
+    },
+    {
+      "number": 859,
+      "word": "statistics",
+      "emoji": "📊📈",
+      "meaning": "n. 统计学；统计数据",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "numbers and methods used to study data",
+      "wordForms": "statistical (adj.), statistically (adv.), statistician (n.)"
+    },
+    {
+      "number": 860,
+      "word": "thumb",
+      "emoji": "👍🖐️",
+      "meaning": "n. 拇指；v. 用拇指翻阅",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "the short thick finger on the side of the hand",
+      "wordForms": "-"
+    },
+    {
+      "number": 861,
+      "word": "acidic",
+      "emoji": "🍋⚗️",
+      "meaning": "adj. 酸的；酸性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "containing acid or having acid qualities",
+      "wordForms": "acid (n./adj.), acidity (n.)"
+    },
+    {
+      "number": 862,
+      "word": "uplift",
+      "emoji": "⬆️💪",
+      "meaning": "v. 提升；振奋；n. 提高；振奋",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to raise or make someone feel better",
+      "wordForms": "uplifting (adj.)"
+    },
+    {
+      "number": 863,
+      "word": "flip",
+      "emoji": "🔄🥞",
+      "meaning": "v. 翻转；轻抛；n. 翻转；轻抛",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to turn over quickly",
+      "wordForms": "-"
+    },
+    {
+      "number": 864,
+      "word": "congruent",
+      "emoji": "✅📐",
+      "meaning": "adj. 全等的；一致的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having the same shape and size or fitting well",
+      "wordForms": "congruence (n.)"
+    },
+    {
+      "number": 865,
+      "word": "parcel",
+      "emoji": "📦🎁",
+      "meaning": "n. 包裹；地块；v. 打包；分配",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a package or piece of land",
+      "wordForms": "-"
+    },
+    {
+      "number": 866,
+      "word": "lecturer",
+      "emoji": "👨‍🏫🎤",
+      "meaning": "n. 讲师；演讲者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who teaches or gives lectures",
+      "wordForms": "lecture (n./v.)"
+    },
+    {
+      "number": 867,
+      "word": "skip",
+      "emoji": "⏭️🦘",
+      "meaning": "v. 跳过；跳跃；n. 跳跃",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to jump over or not do something",
+      "wordForms": "-"
+    },
+    {
+      "number": 868,
+      "word": "poster",
+      "emoji": "🖼️📢",
+      "meaning": "n. 海报；招贴画",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large printed notice or picture",
+      "wordForms": "-"
+    },
+    {
+      "number": 869,
+      "word": "sword",
+      "emoji": "⚔️🗡️",
+      "meaning": "n. 剑；刀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a weapon with a long metal blade",
+      "wordForms": "-"
+    },
+    {
+      "number": 870,
+      "word": "photographic",
+      "emoji": "📷🖼️",
+      "meaning": "adj. 摄影的；逼真的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to photographs or photography",
+      "wordForms": "photograph (n./v.), photography (n.), photographer (n.)"
+    },
+    {
+      "number": 871,
+      "word": "auction",
+      "emoji": "🔨💰",
+      "meaning": "n. 拍卖；v. 拍卖",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a public sale where people bid",
+      "wordForms": "auctioneer (n.)"
+    },
+    {
+      "number": 872,
+      "word": "barrel",
+      "emoji": "🛢️🍺",
+      "meaning": "n. 桶；枪管；v. 快速移动",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a large round container",
+      "wordForms": "-"
+    },
+    {
+      "number": 873,
+      "word": "mentor",
+      "emoji": "👴📚",
+      "meaning": "n. 导师；指导者；v. 指导",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "an experienced person who guides another",
+      "wordForms": "mentorship (n.)"
+    },
+    {
+      "number": 874,
+      "word": "nicely",
+      "emoji": "👍😊",
+      "meaning": "adv. 很好地；精细地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a pleasant or good way",
+      "wordForms": "nice (adj.)"
+    },
+    {
+      "number": 875,
+      "word": "lump",
+      "emoji": "🧱💊",
+      "meaning": "n. 块；肿块；v. 使成块；归并",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a solid piece or swelling",
+      "wordForms": "lumpy (adj.)"
+    },
+    {
+      "number": 876,
+      "word": "quiz",
+      "emoji": "❓📝",
+      "meaning": "n. 小测验；v. 测验；询问",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a short test",
+      "wordForms": "-"
+    },
+    {
+      "number": 877,
+      "word": "watershed",
+      "emoji": "🌊🏔️",
+      "meaning": "n. 分水岭；流域；转折点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a turning point or area draining into water",
+      "wordForms": "-"
+    },
+    {
+      "number": 878,
+      "word": "liter",
+      "emoji": "🥤📏",
+      "meaning": "n. 升（容量单位，美式拼写，英式为litre）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a unit for measuring liquid volume",
+      "wordForms": "-"
+    },
+    {
+      "number": 879,
+      "word": "oxidize",
+      "emoji": "🔥⚗️",
+      "meaning": "v. 氧化；使生锈",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to combine with oxygen",
+      "wordForms": "oxidation (n.), oxide (n.)"
+    },
+    {
+      "number": 880,
+      "word": "mercury",
+      "emoji": "🌡️☿️",
+      "meaning": "n. 水银；汞；水星",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a silver liquid metal or a planet",
+      "wordForms": "mercurial (adj.)"
+    },
+    {
+      "number": 881,
+      "word": "noisy",
+      "emoji": "🔊😣",
+      "meaning": "adj. 嘈杂的；喧闹的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "making a lot of noise",
+      "wordForms": "noise (n.), noisily (adv.)"
+    },
+    {
+      "number": 882,
+      "word": "headquarters",
+      "emoji": "🏢🗺️",
+      "meaning": "n. 总部；司令部",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the main office or control center",
+      "wordForms": "-"
+    },
+    {
+      "number": 883,
+      "word": "phenomenal",
+      "emoji": "⭐🎯",
+      "meaning": "adj. 非凡的；现象的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very great, impressive, or related to a phenomenon",
+      "wordForms": "phenomenon (n.), phenomenally (adv.)"
+    },
+    {
+      "number": 884,
+      "word": "multinational",
+      "emoji": "🌍🏢",
+      "meaning": "adj. 跨国的；多国的；n. 跨国公司",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "involving or operating in several countries",
+      "wordForms": "-"
+    },
+    {
+      "number": 885,
+      "word": "comma",
+      "emoji": "，📝",
+      "meaning": "n. 逗号",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a punctuation mark used to separate parts of a sentence",
+      "wordForms": "-"
+    },
+    {
+      "number": 886,
+      "word": "bizarre",
+      "emoji": "🤪👽",
+      "meaning": "adj. 奇异的；古怪的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very strange or unusual",
+      "wordForms": "-"
+    },
+    {
+      "number": 887,
+      "word": "specialty",
+      "emoji": "🎯⭐",
+      "meaning": "n. 专业；特产；特色菜",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a special skill, subject, or product",
+      "wordForms": "special (adj.), specialize (v.)"
+    },
+    {
+      "number": 888,
+      "word": "socialize",
+      "emoji": "👥🎉",
+      "meaning": "v. 社交；使社会化",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to spend time with people or learn social behavior",
+      "wordForms": "social (adj.), socialization (n.), society (n.)"
+    },
+    {
+      "number": 889,
+      "word": "novice",
+      "emoji": "🆕👶",
+      "meaning": "n. 新手；初学者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person new to something",
+      "wordForms": "-"
+    },
+    {
+      "number": 890,
+      "word": "enormously",
+      "emoji": "📏💪",
+      "meaning": "adv. 巨大地；非常",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "very greatly or extremely",
+      "wordForms": "enormous (adj.)"
+    },
+    {
+      "number": 891,
+      "word": "rope",
+      "emoji": "🪢⛓️",
+      "meaning": "n. 绳索；v. 用绳捆",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a thick strong cord",
+      "wordForms": "-"
+    },
+    {
+      "number": 892,
+      "word": "campus",
+      "emoji": "🏫🌳",
+      "meaning": "n. 校园；大学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the grounds and buildings of a school or university",
+      "wordForms": "-"
+    },
+    {
+      "number": 893,
+      "word": "clever",
+      "emoji": "🧠💡",
+      "meaning": "adj. 聪明的；灵巧的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "quick to understand or skillful",
+      "wordForms": "cleverness (n.), cleverly (adv.)"
+    },
+    {
+      "number": 894,
+      "word": "mole",
+      "emoji": "🐹🔬",
+      "meaning": "n. 鼹鼠；痣；摩尔（化学单位）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small burrowing animal, skin mark, or chemistry unit",
+      "wordForms": "molecular (adj.), molecule (n.)"
+    },
+    {
+      "number": 895,
+      "word": "sometime",
+      "emoji": "📅🕐",
+      "meaning": "adv. 某时；改天；adj. 从前的",
+      "partOfSpeech": "adj. / adv. / v.",
+      "simpleDefinition": "at an unknown or future time",
+      "wordForms": "-"
+    },
+    {
+      "number": 896,
+      "word": "bucket",
+      "emoji": "🪣💧",
+      "meaning": "n. 桶；一桶的量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a container with a handle",
+      "wordForms": "bucketful (n.)"
+    },
+    {
+      "number": 897,
+      "word": "swap",
+      "emoji": "🔄🤝",
+      "meaning": "v. 交换；n. 交换",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to exchange one thing for another",
+      "wordForms": "-"
+    },
+    {
+      "number": 898,
+      "word": "recipe",
+      "emoji": "👨‍🍳📖",
+      "meaning": "n. 食谱；配方；秘诀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "instructions for making food or doing something",
+      "wordForms": "-"
+    },
+    {
+      "number": 899,
+      "word": "airplane",
+      "emoji": "✈️🛫",
+      "meaning": "n. 飞机",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a vehicle that flies through the air",
+      "wordForms": "-"
+    },
+    {
+      "number": 900,
+      "word": "deflection",
+      "emoji": "↩️📐",
+      "meaning": "n. 偏斜；偏转",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a change from a straight path or direction",
+      "wordForms": "deflect (v.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "801-810",
+      "label": "第一组",
+      "rangeStart": 801,
+      "rangeEnd": 810,
+      "wordList": [
+        "audio",
+        "minus",
+        "facet",
+        "subtract",
+        "seminar",
+        "industrialization",
+        "painful",
+        "lab",
+        "splice",
+        "conduction"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The recording studio invested heavily in professional __________ equipment to ensure pristine sound quality for their clients.",
+          "questionKey": "801-810:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The temperature dropped to five degrees __________ zero, forcing authorities to issue severe weather warnings across the region.",
+          "questionKey": "801-810:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The sociologist examined every __________ of urban poverty, from housing inequality to limited access to quality education.",
+          "questionKey": "801-810:3"
+        },
+        {
+          "number": 4,
+          "prompt": "When you __________ the total expenses from the quarterly revenue, the company's profit margin appears disappointingly slim this year.",
+          "questionKey": "801-810:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The graduate students attended a week-long __________ on postcolonial literature, engaging in intensive discussions with renowned scholars.",
+          "questionKey": "801-810:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The rapid __________ of China transformed the nation from an agrarian society into a global manufacturing powerhouse within decades.",
+          "questionKey": "801-810:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The documentary's __________ portrayal of war veterans left many audience members in tears throughout the screening.",
+          "questionKey": "801-810:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Advanced research in molecular biology requires state-of-the-art equipment that can only be found in a specialized __________.",
+          "questionKey": "801-810:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Film editors must carefully __________ together different takes to create a seamless narrative flow in the final production.",
+          "questionKey": "801-810:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Heat __________ through copper wires is significantly more efficient than through materials with lower thermal conductivity coefficients.",
+          "questionKey": "801-810:10"
+        }
+      ]
+    },
+    {
+      "id": "811-820",
+      "label": "第二组",
+      "rangeStart": 811,
+      "rangeEnd": 820,
+      "wordList": [
+        "tutor",
+        "biodiversity",
+        "incumbent",
+        "credibility",
+        "liable",
+        "gram",
+        "aluminum",
+        "chunk",
+        "fin",
+        "super"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The wealthy family hired a private __________ to help their son prepare for the challenging university entrance examinations.",
+          "questionKey": "811-820:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Tropical rainforests harbor extraordinary __________, containing thousands of species that scientists have yet to discover and classify properly.",
+          "questionKey": "811-820:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The __________ president faced mounting criticism for failing to address the economic crisis that had plagued the nation.",
+          "questionKey": "811-820:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The journalist's __________ was severely damaged when investigators discovered she had fabricated sources for several high-profile articles.",
+          "questionKey": "811-820:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Companies that fail to implement adequate safety measures are __________ for any injuries sustained by employees in workplace accidents.",
+          "questionKey": "811-820:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The pharmaceutical company measured the active ingredient precisely, ensuring each tablet contained exactly five hundred milligrams, or half a __________.",
+          "questionKey": "811-820:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Modern aircraft manufacturers increasingly use __________ alloys in construction because they offer strength while significantly reducing overall weight.",
+          "questionKey": "811-820:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The construction workers removed a massive __________ of concrete from the demolished building using heavy machinery and cranes.",
+          "questionKey": "811-820:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Marine biologists discovered that the shark's dorsal __________ plays a crucial role in maintaining balance during high-speed pursuits.",
+          "questionKey": "811-820:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The marketing team believed their new product would be a __________ hit, projecting unprecedented sales figures for launch.",
+          "questionKey": "811-820:10"
+        }
+      ]
+    },
+    {
+      "id": "821-830",
+      "label": "第三组",
+      "rangeStart": 821,
+      "rangeEnd": 830,
+      "wordList": [
+        "criteria",
+        "pesticide",
+        "connotation",
+        "biologist",
+        "messenger",
+        "fringe",
+        "technically",
+        "marble",
+        "tremendous",
+        "delta"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The university established rigorous __________ for tenure evaluation, including publication records, teaching excellence, and significant research contributions to the field.",
+          "questionKey": "821-830:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Organic farmers refuse to use synthetic __________ on their crops, relying instead on natural methods to control pests.",
+          "questionKey": "821-830:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The word \"ambitious\" carries a positive __________ in Western cultures but may suggest selfishness in more collectivist societies worldwide.",
+          "questionKey": "821-830:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The marine __________ spent years studying coral reef ecosystems, documenting the devastating effects of ocean acidification on biodiversity.",
+          "questionKey": "821-830:4"
+        },
+        {
+          "number": 5,
+          "prompt": "In ancient times, the __________ would travel for days on horseback to deliver important communications between distant kingdoms.",
+          "questionKey": "821-830:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The radical political party remained on the __________ of mainstream politics, attracting only a small percentage of voters.",
+          "questionKey": "821-830:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Although the proposal was __________ compliant with regulations, it clearly violated the spirit of environmental protection laws in practice.",
+          "questionKey": "821-830:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The Renaissance sculptors preferred Carrara __________ for their masterpieces because of its pure white color and fine texture.",
+          "questionKey": "821-830:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The pharmaceutical breakthrough represented a __________ achievement in cancer treatment, offering hope to millions of patients facing terminal diagnoses.",
+          "questionKey": "821-830:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The Nile River __________ in Egypt is one of the most fertile agricultural regions, supporting millions of people for millennia.",
+          "questionKey": "821-830:10"
+        }
+      ]
+    },
+    {
+      "id": "831-840",
+      "label": "第四组",
+      "rangeStart": 831,
+      "rangeEnd": 840,
+      "wordList": [
+        "surgeon",
+        "denominator",
+        "ghost",
+        "junior",
+        "marrow",
+        "industrialize",
+        "stripe",
+        "instinct",
+        "snake",
+        "flesh"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The cardiovascular __________ performed a complex eight-hour operation to repair the patient's damaged heart valves using minimally invasive techniques.",
+          "questionKey": "831-840:1"
+        },
+        {
+          "number": 2,
+          "prompt": "To add fractions successfully, students must first find a common __________ before they can proceed with the calculation.",
+          "questionKey": "831-840:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Local legends claim that the __________ of a murdered nobleman still haunts the abandoned castle on stormy nights.",
+          "questionKey": "831-840:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ associate was assigned to shadow senior partners, learning the intricacies of corporate law through observation and practice.",
+          "questionKey": "831-840:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Bone __________ transplants have become increasingly successful in treating patients with leukemia and other blood disorders in recent years.",
+          "questionKey": "831-840:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Developing nations often struggle to __________ their economies without adequate infrastructure, skilled workforce, or sufficient capital investment from abroad.",
+          "questionKey": "831-840:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The zebra's distinctive black and white __________ pattern serves as camouflage, confusing predators when the herd moves together.",
+          "questionKey": "831-840:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Maternal __________ drove the lioness to defend her cubs ferociously against the approaching hyenas despite being outnumbered significantly.",
+          "questionKey": "831-840:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The river began to __________ through the valley, creating dramatic meanders that carved deep channels into the landscape.",
+          "questionKey": "831-840:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The forensic pathologist examined the decomposed __________ carefully, searching for any evidence that might reveal the cause of death.",
+          "questionKey": "831-840:10"
+        }
+      ]
+    },
+    {
+      "id": "841-850",
+      "label": "第五组",
+      "rangeStart": 841,
+      "rangeEnd": 850,
+      "wordList": [
+        "solvent",
+        "plug",
+        "kilometer",
+        "spray",
+        "indifference",
+        "naked",
+        "click",
+        "hedge",
+        "cinema",
+        "slab"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The chemical laboratory stored various organic __________ compounds in specially designed cabinets to prevent dangerous fumes from escaping.",
+          "questionKey": "841-850:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The electrician needed to __________ the damaged power cord into a different outlet to restore electricity to the room.",
+          "questionKey": "841-850:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The marathon runners had already covered thirty __________ when they reached the halfway point of the grueling race.",
+          "questionKey": "841-850:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The gardener used a hose to __________ insecticide on the rose bushes, protecting them from the aphid infestation that threatened blooms.",
+          "questionKey": "841-850:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The politician's blatant __________ to the suffering of homeless citizens sparked outrage among advocacy groups and humanitarian organizations nationwide.",
+          "questionKey": "841-850:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The emperor appeared before his subjects completely __________, exposing the truth that his supposedly magnificent robes were merely an illusion.",
+          "questionKey": "841-850:6"
+        },
+        {
+          "number": 7,
+          "prompt": "When you __________ on the hyperlink embedded in the email, it will redirect you to the secure payment portal.",
+          "questionKey": "841-850:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Investors often __________ their bets by diversifying portfolios across multiple asset classes to minimize potential losses during market volatility.",
+          "questionKey": "841-850:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The independent __________ showcased avant-garde films from emerging directors that mainstream theaters would never consider screening for audiences.",
+          "questionKey": "841-850:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The butcher placed a thick __________ of prime beef on the counter, preparing to cut it into steaks.",
+          "questionKey": "841-850:10"
+        }
+      ]
+    },
+    {
+      "id": "851-860",
+      "label": "第六组",
+      "rangeStart": 851,
+      "rangeEnd": 860,
+      "wordList": [
+        "micro",
+        "solute",
+        "statistics",
+        "portrayal",
+        "thumb",
+        "clip",
+        "erase",
+        "powder",
+        "dissection",
+        "censor"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Recent advances in __________ surgery allow surgeons to perform delicate operations on individual cells using specialized robotic instruments precisely.",
+          "questionKey": "851-860:1"
+        },
+        {
+          "number": 2,
+          "prompt": "When sugar acts as a __________ in water, the molecules disperse evenly throughout the solution, creating a homogeneous mixture.",
+          "questionKey": "851-860:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Recent __________ indicate that income inequality has reached unprecedented levels, with the wealthiest one percent controlling disproportionate resources globally.",
+          "questionKey": "851-860:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The actor's nuanced __________ of the troubled genius earned him widespread critical acclaim and numerous prestigious awards that season.",
+          "questionKey": "851-860:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The hitchhiker stood by the roadside, desperately trying to __________ a ride from passing motorists during the torrential downpour.",
+          "questionKey": "851-860:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The teacher asked students to __________ their research papers together and submit them in chronological order by publication date.",
+          "questionKey": "851-860:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The authoritarian government attempted to __________ all evidence of the massacre from historical records and public memory entirely.",
+          "questionKey": "851-860:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The pharmaceutical company developed a new medication in __________ form that dissolves rapidly when mixed with water or juice.",
+          "questionKey": "851-860:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The biology students conducted a careful __________ of the frog specimen, identifying various organs and documenting their observations meticulously.",
+          "questionKey": "851-860:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The repressive regime employed thousands of officials to __________ newspapers, films, and books, suppressing any criticism of government policies.",
+          "questionKey": "851-860:10"
+        }
+      ]
+    },
+    {
+      "id": "861-870",
+      "label": "第七组",
+      "rangeStart": 861,
+      "rangeEnd": 870,
+      "wordList": [
+        "parcel",
+        "flip",
+        "lecturer",
+        "congruent",
+        "sword",
+        "photographic",
+        "acidic",
+        "uplift",
+        "skip",
+        "poster"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The postal service delivered a mysterious __________ to her doorstep, wrapped in brown paper and covered with exotic stamps.",
+          "questionKey": "861-870:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The gymnast executed a perfect backward __________ on the balance beam, landing gracefully without losing her balance or composure.",
+          "questionKey": "861-870:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The distinguished __________ captivated students with fascinating anecdotes from her decades of archaeological fieldwork in remote regions of Central Asia.",
+          "questionKey": "861-870:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The two triangles are __________ in every respect, having identical side lengths and corresponding angles that match precisely.",
+          "questionKey": "861-870:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Medieval knights trained from childhood to master the __________, learning complex techniques of combat that required years of dedicated practice.",
+          "questionKey": "861-870:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The artist possessed a __________ memory, able to recall visual details with extraordinary precision and reproduce them accurately years later.",
+          "questionKey": "861-870:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Acid rain, which is highly __________, can damage buildings, kill aquatic life, and devastate entire forest ecosystems over time.",
+          "questionKey": "861-870:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The inspirational speaker's message served to __________ the spirits of the discouraged community members facing economic hardship and uncertainty.",
+          "questionKey": "861-870:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The impatient reader tends to __________ lengthy descriptive passages in novels, preferring instead to focus on dialogue and action.",
+          "questionKey": "861-870:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The activist designed a provocative __________ that challenged viewers to reconsider their assumptions about climate change and environmental responsibility.",
+          "questionKey": "861-870:10"
+        }
+      ]
+    },
+    {
+      "id": "871-880",
+      "label": "第八组",
+      "rangeStart": 871,
+      "rangeEnd": 880,
+      "wordList": [
+        "lump",
+        "auction",
+        "liter",
+        "oxidize",
+        "quiz",
+        "mercury",
+        "mentor",
+        "barrel",
+        "nicely",
+        "watershed"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The doctor discovered a suspicious __________ during the routine examination and immediately ordered additional tests to determine its nature.",
+          "questionKey": "871-880:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The rare painting was sold at __________ for an astronomical sum, far exceeding the estimates provided by experts.",
+          "questionKey": "871-880:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The recipe requires exactly one __________ of milk, which should be heated gradually to the appropriate temperature before adding flour.",
+          "questionKey": "871-880:3"
+        },
+        {
+          "number": 4,
+          "prompt": "When iron is exposed to moisture and oxygen for extended periods, it will inevitably __________ and develop a reddish-brown rust.",
+          "questionKey": "871-880:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The professor administered a surprise __________ at the beginning of class to assess whether students had completed the assigned readings.",
+          "questionKey": "871-880:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The old thermometer contained __________, a toxic heavy metal that poses serious health risks if the glass breaks and releases vapors.",
+          "questionKey": "871-880:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The experienced professor agreed to __________ the promising graduate student, providing guidance on research methodology and career development strategies.",
+          "questionKey": "871-880:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The protesters formed a human chain, blocking the __________ of toxic waste from being transported through their residential neighborhood.",
+          "questionKey": "871-880:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The diplomatic negotiations proceeded __________, with both parties making reasonable concessions and working toward a mutually beneficial agreement successfully.",
+          "questionKey": "871-880:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The landmark Supreme Court decision proved to be a __________ moment in civil rights history, fundamentally transforming legal protections nationwide.",
+          "questionKey": "871-880:10"
+        }
+      ]
+    },
+    {
+      "id": "881-890",
+      "label": "第九组",
+      "rangeStart": 881,
+      "rangeEnd": 890,
+      "wordList": [
+        "multinational",
+        "comma",
+        "socialize",
+        "phenomenal",
+        "enormously",
+        "noisy",
+        "headquarters",
+        "specialty",
+        "bizarre",
+        "novice"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ technology company operates manufacturing facilities across four continents, employing hundreds of thousands of workers in diverse markets.",
+          "questionKey": "881-890:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Many students struggle with proper __________ placement in complex sentences, frequently making punctuation errors that obscure their intended meaning.",
+          "questionKey": "881-890:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Introverted individuals often find it exhausting to __________ at large gatherings, preferring intimate conversations with close friends instead.",
+          "questionKey": "881-890:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The young violinist demonstrated __________ talent, mastering complex concertos that even seasoned professionals found challenging to perform flawlessly.",
+          "questionKey": "881-890:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The new treatment protocol has improved patient survival rates __________, representing the most significant medical breakthrough in decades of research.",
+          "questionKey": "881-890:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ construction site disturbed residents throughout the night, prompting numerous complaints to the city's noise control department.",
+          "questionKey": "881-890:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The corporation relocated its global __________ to Singapore, taking advantage of favorable tax policies and strategic location for business operations.",
+          "questionKey": "881-890:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The restaurant's __________ is authentic Sichuan cuisine, featuring dishes prepared with traditional techniques and imported spices from China's southwest region.",
+          "questionKey": "881-890:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The artist's __________ sculptures challenged conventional aesthetics, featuring surreal combinations of organic and mechanical elements that disturbed viewers profoundly.",
+          "questionKey": "881-890:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The __________ mountaineer made several critical mistakes during the ascent, endangering the entire expedition team's safety unnecessarily through poor judgment.",
+          "questionKey": "881-890:10"
+        }
+      ]
+    },
+    {
+      "id": "891-900",
+      "label": "第十组",
+      "rangeStart": 891,
+      "rangeEnd": 900,
+      "wordList": [
+        "deflection",
+        "campus",
+        "sometime",
+        "recipe",
+        "airplane",
+        "clever",
+        "bucket",
+        "mole",
+        "rope",
+        "swap"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The engineer calculated the beam's __________ under various load conditions to ensure the bridge structure would remain stable during earthquakes.",
+          "questionKey": "891-900:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The university __________ spans over two hundred acres, featuring state-of-the-art research facilities, libraries, and recreational spaces for students.",
+          "questionKey": "891-900:2"
+        },
+        {
+          "number": 3,
+          "prompt": "We should meet __________ next week to discuss the project details and finalize our collaborative research proposal for submission.",
+          "questionKey": "891-900:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The chef's secret __________ for chocolate soufflé had been passed down through three generations of her family's culinary tradition.",
+          "questionKey": "891-900:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The commercial __________ encountered severe turbulence over the Atlantic Ocean, causing passengers to experience moments of genuine terror and anxiety.",
+          "questionKey": "891-900:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The detective devised a __________ strategy to trap the criminal, using psychological manipulation to force a confession during interrogation.",
+          "questionKey": "891-900:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The firefighters formed a human chain, passing __________ of water to extinguish the blaze when mechanical pumps failed completely.",
+          "questionKey": "891-900:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The dermatologist examined the suspicious __________ on the patient's back, concerned that it might be an early sign of melanoma.",
+          "questionKey": "891-900:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The rescue team used heavy-duty __________ to secure themselves while descending the treacherous cliff face during the dangerous operation.",
+          "questionKey": "891-900:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The two countries agreed to __________ political prisoners as a goodwill gesture, hoping to improve diplomatic relations and reduce tensions.",
+          "questionKey": "891-900:10"
+        }
+      ]
+    }
+  ]
+}
