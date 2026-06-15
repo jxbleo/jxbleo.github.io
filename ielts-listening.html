@@ -634,6 +634,16 @@
         </div>
     </div>
 </div>
+<div class="audio-start-modal" id="leave-page-modal" role="dialog" aria-modal="true" aria-labelledby="leave-page-title">
+    <div class="audio-start-box">
+        <h2 id="leave-page-title">Leave This Page?</h2>
+        <p>Are you sure you want to return to the homepage? You will leave this listening practice page.</p>
+        <div class="audio-start-actions">
+            <button class="audio-start-cancel" id="leave-page-cancel" type="button">Stay Here</button>
+            <button class="audio-start-confirm" id="leave-page-confirm" type="button">Go Home</button>
+        </div>
+    </div>
+</div>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260614-1"></script>
@@ -892,6 +902,20 @@
             audioStartPromptShown = false;
             updateAudioUi();
         }
+    }
+
+    function showLeavePageDialog() {
+        var modal = document.getElementById('leave-page-modal');
+        if (modal) modal.classList.add('show');
+    }
+
+    function hideLeavePageDialog() {
+        var modal = document.getElementById('leave-page-modal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    function goToDashboard() {
+        window.location.href = 'dashboard.html';
     }
 
     function startExamAudio() {
@@ -1262,7 +1286,7 @@
 
     function bindEvents() {
         document.getElementById('dashboard-btn').addEventListener('click', function() {
-            window.location.href = 'dashboard.html';
+            showLeavePageDialog();
         });
         document.getElementById('top-audio-start').addEventListener('click', function() {
             showAudioStartDialog(true);
@@ -1286,6 +1310,8 @@
         });
         document.getElementById('audio-start-confirm').addEventListener('click', startExamAudio);
         document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
+        document.getElementById('leave-page-cancel').addEventListener('click', hideLeavePageDialog);
+        document.getElementById('leave-page-confirm').addEventListener('click', goToDashboard);
         function handleQuestionInput(event) {
             if (!event.target.matches('[data-question]')) return;
             saveDraft();
