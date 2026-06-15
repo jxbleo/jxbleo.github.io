@@ -71,6 +71,7 @@
         }
         .top-audio {
             display: inline-flex;
+            position: relative;
             align-items: center;
             justify-content: center;
             gap: 9px;
@@ -80,7 +81,12 @@
             display: none !important;
         }
         .top-audio audio {
-            display: none;
+            display: block;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
         }
         .top-audio-start,
         .top-audio-resume,
@@ -599,7 +605,7 @@
     <header class="exam-topbar">
         <div class="candidate" id="set-code">C7-T1-S1</div>
         <div class="top-audio" id="top-audio">
-            <audio id="listening-audio" preload="metadata"></audio>
+            <audio id="listening-audio" preload="metadata" controls></audio>
             <button class="top-audio-start" id="top-audio-start" type="button" hidden>Start Audio</button>
             <button class="top-audio-resume" id="top-audio-resume" type="button" hidden>Resume Audio</button>
             <div class="timer" id="timer-display" aria-live="polite" hidden><strong id="time-left">--</strong><span id="time-left-label">minutes left</span></div>
@@ -670,6 +676,8 @@
     var reviewedQuestions = {};
     var audioMode = 'loading';
     var audioStarted = false;
+    var audioStartInFlight = false;
+    var audioStartAttemptId = 0;
     var audioStartPromptShown = false;
 
     function escapeHtml(value) {
@@ -822,10 +830,7 @@
             if (audioMode === 'exam' && !audio.ended) {
                 var resume = audio.play();
                 if (resume && resume.catch) {
-                    resume.catch(function() {
-                        audioMode = 'resume';
-                        updateAudioUi();
-                    });
+                    resume.catch(handleAudioPlayFailure);
                 }
                 return;
             }
@@ -928,35 +933,78 @@
         window.location.href = 'dashboard.html';
     }
 
-    function startExamAudio() {
+    function handleAudioPlayFailure(error) {
+        window.__ieltsAudioPlayError = {
+            name: error && error.name || '',
+            message: error && error.message || String(error || '')
+        };
+        audioStarted = false;
+        audioStartInFlight = false;
+        audioMode = 'resume';
+        updateAudioUi();
+    }
+
+    function startExamAudio(event) {
+        if (event && typeof event.preventDefault === 'function') event.preventDefault();
         var audio = audioEl();
         if (!audio || !lesson || !lesson.audioSrc) return;
+        if (audioStartInFlight && !audio.paused) return;
+        var attemptId = ++audioStartAttemptId;
+        audioStartInFlight = true;
+        startedAt = new Date().toISOString();
+        try { audio.currentTime = 0; } catch (error) {}
+        var promise = null;
+        try {
+            promise = audio.play();
+        } catch (error) {
+            handleAudioPlayFailure(error);
+            return;
+        }
         hideAudioStartDialog();
         audioMode = 'exam';
-        audioStarted = true;
-        startedAt = new Date().toISOString();
         updateAudioUi();
-        audio.currentTime = 0;
-        var promise = audio.play();
-        if (promise && promise.catch) {
-            promise.catch(function() {
-                audioMode = 'resume';
+        setTimeout(function() {
+            if (attemptId === audioStartAttemptId && audioMode === 'exam' && audio.paused && !audioStarted) {
+                handleAudioPlayFailure(new Error('Audio playback did not start. Tap Resume Audio to try again.'));
+            }
+        }, 1500);
+        if (promise && promise.then) {
+            promise.then(function() {
+                if (attemptId !== audioStartAttemptId) return;
+                audioStarted = true;
+                audioStartInFlight = false;
+                audioMode = 'exam';
                 updateAudioUi();
+            }).catch(function(error) {
+                if (attemptId !== audioStartAttemptId) return;
+                handleAudioPlayFailure(error);
             });
+            return;
         }
+        audioStarted = true;
+        audioStartInFlight = false;
     }
 
     function resumeExamAudio() {
         var audio = audioEl();
         if (!audio || audioMode !== 'resume') return;
+        var promise = null;
+        try {
+            promise = audio.play();
+        } catch (error) {
+            handleAudioPlayFailure(error);
+            return;
+        }
         audioMode = 'exam';
         updateAudioUi();
-        var promise = audio.play();
-        if (promise && promise.catch) {
-            promise.catch(function() {
-                audioMode = 'resume';
+        if (promise && promise.then) {
+            promise.then(function() {
+                audioStarted = true;
+                audioMode = 'exam';
                 updateAudioUi();
-            });
+            }).catch(handleAudioPlayFailure);
+        } else {
+            audioStarted = true;
         }
     }
 
@@ -976,6 +1024,8 @@
         }
         audioMode = lesson && lesson.audioSrc ? 'ready' : 'missing';
         audioStarted = false;
+        audioStartInFlight = false;
+        audioStartAttemptId += 1;
         audioStartPromptShown = false;
         startedAt = new Date().toISOString();
         updateAudioUi();
@@ -1318,7 +1368,9 @@
             audio.currentTime = Number(event.target.value || 0) / 1000 * audio.duration;
             syncAudioUi();
         });
-        document.getElementById('audio-start-confirm').addEventListener('click', startExamAudio);
+        var audioStartConfirm = document.getElementById('audio-start-confirm');
+        audioStartConfirm.addEventListener('touchend', startExamAudio, { passive: false });
+        audioStartConfirm.addEventListener('click', startExamAudio);
         document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
         document.getElementById('leave-page-cancel').addEventListener('click', hideLeavePageDialog);
         document.getElementById('leave-page-confirm').addEventListener('click', goToDashboard);
