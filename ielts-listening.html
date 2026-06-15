@@ -608,7 +608,7 @@
             <div class="top-audio-status" id="top-audio-status" hidden>Audio pending</div>
         </div>
         <div class="top-actions">
-            <button type="button" id="dashboard-btn">Homepage</button>
+            <button type="button" id="dashboard-btn">Dashboard</button>
         </div>
     </header>
     <section class="workspace" id="workspace">
@@ -825,9 +825,6 @@
         if (audioTimerInterval) clearInterval(audioTimerInterval);
         audioTimerInterval = setInterval(syncAudioUi, 1000);
         syncAudioUi();
-        if (lesson.audioSrc && !teacherMode) {
-            setTimeout(showAudioStartDialog, 350);
-        }
     }
 
     function audioEl() {
@@ -929,7 +926,6 @@
         audioStartPromptShown = false;
         startedAt = new Date().toISOString();
         updateAudioUi();
-        showAudioStartDialog();
     }
 
     function draftKey() {
