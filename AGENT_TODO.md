@@ -51,6 +51,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-15
 
+- Investigated IELTS Listening `Start Audio` not playing. Verified
+  `C7-T3-S4.mp3` serves locally as `audio/mpeg`; fixed the start/resume state
+  machine so one tap cannot double-trigger `touchend`/`click` and invalidate
+  the first `audio.play()` attempt. Verified inline script syntax and local
+  page/audio 200 responses.
 - Ran a dev end-to-end QA pass with dedicated teacher/student test accounts:
   teacher assigned `BBC-250717`, student opened it from dashboard, submitted a
   correct countable attempt, and the student dashboard moved it from TO DO to
