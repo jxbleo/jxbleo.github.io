@@ -721,9 +721,7 @@
     <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
     <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
     <div class="exam-actions">
-        <button type="button" id="exam-dashboard-btn">Dashboard</button>
-        <button type="button">Settings</button>
-        <button type="button">Help</button>
+        <button type="button" id="exam-dashboard-btn">Homepage</button>
     </div>
 </header>
 <div class="identity-status" id="identity-status">Login</div>
@@ -2317,6 +2315,30 @@
         return id;
     }
 
+    function englishName(value) {
+        var textValue = String(value && (value.name || value.student_id) || value || '').trim();
+        if (!textValue) return 'Student';
+        var englishParts = textValue.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return englishParts && englishParts.length
+            ? englishParts[englishParts.length - 1]
+            : textValue;
+    }
+
+    function updateExamHeaderLabel() {
+        var el = document.getElementById('exam-set-id');
+        if (!el) return;
+        var profile = window.MrCatPractice && window.MrCatPractice.profile;
+        var id = userId || getStoredIdentity();
+        var name = teacherMode
+            ? 'Teacher'
+            : id === 'VISITOR' || (window.MrCatPractice && window.MrCatPractice.isVisitor && window.MrCatPractice.isVisitor())
+                ? 'Visitor'
+                : profile
+                    ? englishName(profile)
+                    : englishName(getStudentLabel(id || 'Student'));
+        el.textContent = name + ' · ' + setId;
+    }
+
     function getStoredIdentity() {
         return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
     }
@@ -2341,6 +2363,7 @@
         var label = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
         el.textContent = label;
         updateDashboardCapsuleLabel(label);
+        updateExamHeaderLabel();
     }
 
     function loginAsUser(id) {
@@ -2372,7 +2395,7 @@
             showError('No set specified. Please add <code>?set=SETID</code> to the URL, e.g. <code>?set=C7-T3-P1</code>.');
             return;
         }
-        document.getElementById('exam-set-id').textContent = setId;
+        updateExamHeaderLabel();
         startReadingTimer();
 
         if (!userId) userId = getStoredIdentity();
