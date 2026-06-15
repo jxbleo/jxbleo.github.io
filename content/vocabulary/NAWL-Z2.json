@@ -1,0 +1,1023 @@
+{
+  "id": "NAWL-Z2",
+  "sectionId": "vocabulary",
+  "title": "NAWL-Z2",
+  "href": "vocabulary.html?set=NAWL-Z2",
+  "sortOrder": 2028,
+  "topic": "",
+  "tags": [],
+  "note": "63 Words · 6 Quiz Groups",
+  "visible": true,
+  "sourceName": "NAWL",
+  "cefrLevel": "C1",
+  "wordCount": 63,
+  "words": [
+    {
+      "number": 901,
+      "word": "deceive",
+      "emoji": "🎭😈",
+      "meaning": "v. 欺骗，蒙骗",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone believe something false",
+      "wordForms": "deception (n.), deceptive (adj.), deceitful (adj.)"
+    },
+    {
+      "number": 902,
+      "word": "syllabus",
+      "emoji": "📚📋",
+      "meaning": "n. 教学大纲，课程大纲",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a list of topics for a course",
+      "wordForms": "-"
+    },
+    {
+      "number": 903,
+      "word": "neat",
+      "emoji": "✨🧹",
+      "meaning": "adj. 整洁的，整齐的；利落的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "clean, tidy, or skillfully done",
+      "wordForms": "neatly (adv.), neatness (n.)"
+    },
+    {
+      "number": 904,
+      "word": "factorial",
+      "emoji": "🔢❗",
+      "meaning": "n. 阶乘；adj. 因子的，阶乘的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the product of a number and all smaller positive numbers",
+      "wordForms": "-"
+    },
+    {
+      "number": 905,
+      "word": "lever",
+      "emoji": "🔧⚙️",
+      "meaning": "n. 杠杆，操纵杆；v. 用杠杆撬动",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a bar used to lift or move something",
+      "wordForms": "leverage (n./v.)"
+    },
+    {
+      "number": 906,
+      "word": "descriptor",
+      "emoji": "🏷️📝",
+      "meaning": "n. 描述符，描述词",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a word or phrase that describes something",
+      "wordForms": "describe (v.), description (n.), descriptive (adj.)"
+    },
+    {
+      "number": 907,
+      "word": "semester",
+      "emoji": "📅🎓",
+      "meaning": "n. 学期（尤指半学年）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one of the parts of a school year",
+      "wordForms": "-"
+    },
+    {
+      "number": 908,
+      "word": "underneath",
+      "emoji": "⬇️👇",
+      "meaning": "prep./adv. 在...下面，在底下",
+      "partOfSpeech": "adv. / prep. / v.",
+      "simpleDefinition": "below or under something",
+      "wordForms": "-"
+    },
+    {
+      "number": 909,
+      "word": "reactor",
+      "emoji": "⚛️🏭",
+      "meaning": "n. 反应堆；反应器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a machine or structure where reactions happen",
+      "wordForms": "react (v.), reaction (n.), reactive (adj.)"
+    },
+    {
+      "number": 910,
+      "word": "herbicide",
+      "emoji": "🌿☠️",
+      "meaning": "n. 除草剂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a chemical used to kill unwanted plants",
+      "wordForms": "-"
+    },
+    {
+      "number": 911,
+      "word": "bonus",
+      "emoji": "💰🎁",
+      "meaning": "n. 奖金，红利；额外津贴",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "extra money or an extra benefit",
+      "wordForms": "-"
+    },
+    {
+      "number": 912,
+      "word": "cheat",
+      "emoji": "🎲❌",
+      "meaning": "v. 欺骗，作弊；n. 骗子，作弊者",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to act dishonestly to gain an advantage",
+      "wordForms": "cheater (n.)"
+    },
+    {
+      "number": 913,
+      "word": "missile",
+      "emoji": "🚀💣",
+      "meaning": "n. 导弹；投射物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a weapon sent through the air",
+      "wordForms": "-"
+    },
+    {
+      "number": 914,
+      "word": "rub",
+      "emoji": "👋✋",
+      "meaning": "v. 摩擦，揉搓；n. 摩擦，困难",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move something back and forth against a surface",
+      "wordForms": "-"
+    },
+    {
+      "number": 915,
+      "word": "radar",
+      "emoji": "📡🔍",
+      "meaning": "n. 雷达",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system that uses radio waves to find objects",
+      "wordForms": "-"
+    },
+    {
+      "number": 916,
+      "word": "memorize",
+      "emoji": "🧠📖",
+      "meaning": "v. 记住，背诵",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to learn something so you can remember it exactly",
+      "wordForms": "memory (n.), memorable (adj.), memorization (n.)"
+    },
+    {
+      "number": 917,
+      "word": "scripture",
+      "emoji": "📜✝️",
+      "meaning": "n. 经文，圣经",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "sacred religious writing",
+      "wordForms": "-"
+    },
+    {
+      "number": 918,
+      "word": "whoever",
+      "emoji": "🤷❓",
+      "meaning": "pron. 无论谁，任何人",
+      "partOfSpeech": "pron. / n.",
+      "simpleDefinition": "any person who",
+      "wordForms": "-"
+    },
+    {
+      "number": 919,
+      "word": "whichever",
+      "emoji": "🤔❓",
+      "meaning": "pron./adj. 无论哪个，任何一个",
+      "partOfSpeech": "adj. / pron. / n.",
+      "simpleDefinition": "any one that or no matter which",
+      "wordForms": "-"
+    },
+    {
+      "number": 920,
+      "word": "bullet",
+      "emoji": "🔫💥",
+      "meaning": "n. 子弹；项目符号",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small metal object fired from a gun",
+      "wordForms": "-"
+    },
+    {
+      "number": 921,
+      "word": "punch",
+      "emoji": "👊💥",
+      "meaning": "v. 用拳猛击；打孔；n. 猛击，冲床",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to hit with a fist or make a hole",
+      "wordForms": "-"
+    },
+    {
+      "number": 922,
+      "word": "postgraduate",
+      "emoji": "🎓📚",
+      "meaning": "n. 研究生；adj. 研究生的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a student studying after a first degree",
+      "wordForms": "-"
+    },
+    {
+      "number": 923,
+      "word": "artwork",
+      "emoji": "🎨🖼️",
+      "meaning": "n. 艺术品，美术作品",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a piece of visual art",
+      "wordForms": "-"
+    },
+    {
+      "number": 924,
+      "word": "pardon",
+      "emoji": "🙏😇",
+      "meaning": "n. 原谅，赦免；v. 原谅，宽恕",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "forgiveness for a mistake or crime",
+      "wordForms": "-"
+    },
+    {
+      "number": 925,
+      "word": "millimeter",
+      "emoji": "📏🔬",
+      "meaning": "n. 毫米",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a unit of length equal to one thousandth of a meter",
+      "wordForms": "-"
+    },
+    {
+      "number": 926,
+      "word": "incredible",
+      "emoji": "😲🤩",
+      "meaning": "adj. 难以置信的，惊人的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very surprising or hard to believe",
+      "wordForms": "incredibly (adv.), incredibility (n.)"
+    },
+    {
+      "number": 927,
+      "word": "halfway",
+      "emoji": "🏃⏸️",
+      "meaning": "adv./adj. 半途地，中途的",
+      "partOfSpeech": "adj. / adv. / v.",
+      "simpleDefinition": "in the middle of a distance, time, or process",
+      "wordForms": "-"
+    },
+    {
+      "number": 928,
+      "word": "deadline",
+      "emoji": "⏰📅",
+      "meaning": "n. 截止日期，最后期限",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the latest time something must be finished",
+      "wordForms": "-"
+    },
+    {
+      "number": 929,
+      "word": "bang",
+      "emoji": "💥🔊",
+      "meaning": "n. 巨响，猛击；v. 猛撞，发出砰声",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a sudden loud noise or hard hit",
+      "wordForms": "-"
+    },
+    {
+      "number": 930,
+      "word": "semi",
+      "emoji": "🚛🔄",
+      "meaning": "n. 半挂车；前缀：半，部分",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "half, partly, or a short form of semitrailer",
+      "wordForms": "-"
+    },
+    {
+      "number": 931,
+      "word": "slash",
+      "emoji": "⚔️✂️",
+      "meaning": "v. 砍，大幅削减；n. 斜线，砍击",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to cut strongly or reduce greatly",
+      "wordForms": "-"
+    },
+    {
+      "number": 932,
+      "word": "ridiculous",
+      "emoji": "🤡😂",
+      "meaning": "adj. 荒谬的，可笑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very silly or unreasonable",
+      "wordForms": "ridiculously (adv.), ridiculousness (n.)"
+    },
+    {
+      "number": 933,
+      "word": "multi",
+      "emoji": "🔢🌈",
+      "meaning": "prefix 多，多个",
+      "partOfSpeech": "prefix",
+      "simpleDefinition": "many or more than one",
+      "wordForms": "-"
+    },
+    {
+      "number": 934,
+      "word": "homework",
+      "emoji": "📝✏️",
+      "meaning": "n. 家庭作业",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "schoolwork done outside class",
+      "wordForms": "-"
+    },
+    {
+      "number": 935,
+      "word": "volition",
+      "emoji": "💭🎯",
+      "meaning": "n. 意志，自愿选择",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the power to choose or decide",
+      "wordForms": "volitional (adj.)"
+    },
+    {
+      "number": 936,
+      "word": "tricky",
+      "emoji": "🎭🤹",
+      "meaning": "adj. 狡猾的，棘手的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "difficult to deal with or requiring care",
+      "wordForms": "trick (n./v.), trickiness (n.)"
+    },
+    {
+      "number": 937,
+      "word": "cheer",
+      "emoji": "🎉📣",
+      "meaning": "v. 欢呼，喝彩；n. 欢呼声，喝彩",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to shout with happiness or encouragement",
+      "wordForms": "cheerful (adj.), cheerfully (adv.)"
+    },
+    {
+      "number": 938,
+      "word": "shuttle",
+      "emoji": "🚐🔄",
+      "meaning": "n. 穿梭巴士，航天飞机；v. 穿梭往返",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a vehicle that travels regularly between places",
+      "wordForms": "-"
+    },
+    {
+      "number": 939,
+      "word": "aerosol",
+      "emoji": "💨🥫",
+      "meaning": "n. 气溶胶，喷雾剂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a container or mist made of tiny spray particles",
+      "wordForms": "-"
+    },
+    {
+      "number": 940,
+      "word": "athletic",
+      "emoji": "🏃⚽",
+      "meaning": "adj. 运动的，体育的；健壮的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to sports or physically strong",
+      "wordForms": "athlete (n.), athletics (n.), athletically (adv.)"
+    },
+    {
+      "number": 941,
+      "word": "chess",
+      "emoji": "♟️👑",
+      "meaning": "n. 国际象棋",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a board game for two players",
+      "wordForms": "-"
+    },
+    {
+      "number": 942,
+      "word": "terribly",
+      "emoji": "😰💀",
+      "meaning": "adv. 非常，极度地；糟糕地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "very much or very badly",
+      "wordForms": "terrible (adj.)"
+    },
+    {
+      "number": 943,
+      "word": "unintelligible",
+      "emoji": "🤔❓",
+      "meaning": "adj. 难以理解的，晦涩的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "impossible or very hard to understand",
+      "wordForms": "intelligible (adj.), unintelligibly (adv.)"
+    },
+    {
+      "number": 944,
+      "word": "circa",
+      "emoji": "📅⏳",
+      "meaning": "prep. 大约，约在（用于日期）",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "approximately, especially for dates",
+      "wordForms": "-"
+    },
+    {
+      "number": 945,
+      "word": "scroll",
+      "emoji": "📜⬆️",
+      "meaning": "n. 卷轴，卷形物；v. 滚动（屏幕）",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move text on a screen or a rolled document",
+      "wordForms": "-"
+    },
+    {
+      "number": 946,
+      "word": "sponsorship",
+      "emoji": "💰🤝",
+      "meaning": "n. 赞助，资助",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "financial support for an event or person",
+      "wordForms": "sponsor (n./v.)"
+    },
+    {
+      "number": 947,
+      "word": "connector",
+      "emoji": "🔌🔗",
+      "meaning": "n. 连接器，连接物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a thing that joins two things",
+      "wordForms": "connect (v.), connection (n.)"
+    },
+    {
+      "number": 948,
+      "word": "nasty",
+      "emoji": "🤢😠",
+      "meaning": "adj. 令人不快的，恶劣的；下流的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very unpleasant, unkind, or dirty",
+      "wordForms": "nastily (adv.), nastiness (n.)"
+    },
+    {
+      "number": 949,
+      "word": "incredibly",
+      "emoji": "😲✨",
+      "meaning": "adv. 难以置信地，非常地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "extremely or hard to believe",
+      "wordForms": "incredible (adj.)"
+    },
+    {
+      "number": 950,
+      "word": "neo",
+      "emoji": "🆕🔄",
+      "meaning": "prefix 新的，现代的",
+      "partOfSpeech": "prefix",
+      "simpleDefinition": "new or modern",
+      "wordForms": "-"
+    },
+    {
+      "number": 951,
+      "word": "entrant",
+      "emoji": "🚪👤",
+      "meaning": "n. 新成员，参赛者；进入者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person or thing that enters a competition or market",
+      "wordForms": "enter (v.), entrance (n.), entry (n.)"
+    },
+    {
+      "number": 952,
+      "word": "hawk",
+      "emoji": "🦅👀",
+      "meaning": "n. 鹰，隼；鹰派人物；v. 兜售",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a bird of prey or a person who favors forceful action",
+      "wordForms": "hawkish (adj.)"
+    },
+    {
+      "number": 953,
+      "word": "handout",
+      "emoji": "📄🤲",
+      "meaning": "n. 讲义，传单；施舍物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a paper given to people or money given freely",
+      "wordForms": "-"
+    },
+    {
+      "number": 954,
+      "word": "tech",
+      "emoji": "💻⚙️",
+      "meaning": "n. 技术，科技（technology的缩写）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "technology or related technical work",
+      "wordForms": "technical (adj.), technology (n.)"
+    },
+    {
+      "number": 955,
+      "word": "rack",
+      "emoji": "🗄️📚",
+      "meaning": "n. 架子，搁物架；v. 使痛苦",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a frame or shelf for holding things",
+      "wordForms": "-"
+    },
+    {
+      "number": 956,
+      "word": "applause",
+      "emoji": "👏🎭",
+      "meaning": "n. 鼓掌，喝彩",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "clapping to show approval",
+      "wordForms": "applaud (v.)"
+    },
+    {
+      "number": 957,
+      "word": "demonstrator",
+      "emoji": "🪧📢",
+      "meaning": "n. 示威者；演示者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who protests or shows how something works",
+      "wordForms": "demonstrate (v.), demonstration (n.)"
+    },
+    {
+      "number": 958,
+      "word": "calculator",
+      "emoji": "🔢📱",
+      "meaning": "n. 计算器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a device used for doing calculations",
+      "wordForms": "calculate (v.), calculation (n.)"
+    },
+    {
+      "number": 959,
+      "word": "mall",
+      "emoji": "🛍️🏬",
+      "meaning": "n. 购物中心，商场",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large shopping center",
+      "wordForms": "-"
+    },
+    {
+      "number": 960,
+      "word": "sneeze",
+      "emoji": "🤧💨",
+      "meaning": "v./n. 打喷嚏",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to suddenly force air out through the nose and mouth",
+      "wordForms": "-"
+    },
+    {
+      "number": 961,
+      "word": "sniff",
+      "emoji": "👃💨",
+      "meaning": "v. 嗅，闻；抽鼻子；n. 嗅，吸气",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to breathe in through the nose to smell something",
+      "wordForms": "-"
+    },
+    {
+      "number": 962,
+      "word": "stadium",
+      "emoji": "🏟️⚽",
+      "meaning": "n. 体育场，运动场",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large sports ground with seats",
+      "wordForms": "-"
+    },
+    {
+      "number": 963,
+      "word": "descendent",
+      "emoji": "👶🌳",
+      "meaning": "n. 后代，子孙；adj. 下降的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a person, animal, or thing descended from an ancestor",
+      "wordForms": "descend (v.), descent (n.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "901-910",
+      "label": "第一组",
+      "rangeStart": 901,
+      "rangeEnd": 910,
+      "wordList": [
+        "herbicide",
+        "descriptor",
+        "semester",
+        "syllabus",
+        "factorial",
+        "neat",
+        "deceive",
+        "reactor",
+        "lever",
+        "underneath"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Agricultural scientists are developing environmentally sustainable alternatives to conventional __________ products that harm beneficial insects and soil microorganisms.",
+          "questionKey": "901-910:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Database administrators use a unique __________ to identify and categorize each record within the complex relational database management system.",
+          "questionKey": "901-910:2"
+        },
+        {
+          "number": 3,
+          "prompt": "International students must complete at least one full __________ of coursework before becoming eligible to apply for competitive research assistantship positions.",
+          "questionKey": "901-910:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The professor distributed the course __________ on the first day, outlining all assignments and examination dates for the entire academic term.",
+          "questionKey": "901-910:4"
+        },
+        {
+          "number": 5,
+          "prompt": "In combinatorial mathematics, the __________ of a positive integer n is the product of all positive integers less than or equal to n.",
+          "questionKey": "901-910:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Her __________ handwriting and meticulously organized notes made it considerably easier for other researchers to comprehend her groundbreaking experimental findings.",
+          "questionKey": "901-910:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The con artist managed to __________ hundreds of investors by presenting fabricated financial statements and promising unrealistic returns on their capital.",
+          "questionKey": "901-910:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The nuclear __________ underwent emergency shutdown procedures when sensors detected abnormal temperature fluctuations in the cooling system's primary circuit.",
+          "questionKey": "901-910:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The mechanic used a long metal __________ to pry open the jammed engine compartment door that had been stuck for several weeks.",
+          "questionKey": "901-910:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Hidden __________ the floorboards of the old Victorian mansion, archaeologists discovered a collection of letters dating back to the nineteenth century.",
+          "questionKey": "901-910:10"
+        }
+      ]
+    },
+    {
+      "id": "911-920",
+      "label": "第二组",
+      "rangeStart": 911,
+      "rangeEnd": 920,
+      "wordList": [
+        "cheat",
+        "radar",
+        "bonus",
+        "bullet",
+        "whoever",
+        "whichever",
+        "missile",
+        "rub",
+        "memorize",
+        "scripture"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Academic institutions have implemented stringent policies and surveillance technologies to detect students who attempt to __________ during examinations or plagiarize assignments.",
+          "questionKey": "911-920:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Aviation authorities rely on sophisticated __________ systems to monitor aircraft positions and prevent potential collisions in congested airspace around major airports.",
+          "questionKey": "911-920:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The company's performance-based compensation structure includes an annual __________ that can amount to thirty percent of an employee's base salary.",
+          "questionKey": "911-920:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The forensic ballistics expert examined the __________ fragments recovered from the crime scene to determine the caliber and possible origin of the weapon.",
+          "questionKey": "911-920:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The scholarship committee stated that __________ demonstrates the most outstanding academic achievement and community service will receive the prestigious award.",
+          "questionKey": "911-920:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Participants may select __________ workshop session appeals most to their professional development interests and aligns with their career advancement objectives.",
+          "questionKey": "911-920:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The defense ministry announced successful testing of an intercontinental ballistic __________ capable of reaching targets thousands of kilometers away with unprecedented accuracy.",
+          "questionKey": "911-920:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The physiotherapist instructed the patient to gently __________ the injured muscle tissue using circular motions to improve blood circulation and accelerate healing.",
+          "questionKey": "911-920:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Actors performing in classical theatre productions must __________ extensive passages of dialogue, sometimes comprising thousands of words in archaic language.",
+          "questionKey": "911-920:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Theological scholars spent decades analyzing ancient __________ manuscripts to better understand the historical context and linguistic nuances of religious texts.",
+          "questionKey": "911-920:10"
+        }
+      ]
+    },
+    {
+      "id": "921-930",
+      "label": "第三组",
+      "rangeStart": 921,
+      "rangeEnd": 930,
+      "wordList": [
+        "halfway",
+        "postgraduate",
+        "bang",
+        "incredible",
+        "deadline",
+        "pardon",
+        "semi",
+        "artwork",
+        "punch",
+        "millimeter"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The expedition team reached the __________ point of their journey to the summit before deteriorating weather conditions forced them to establish camp.",
+          "questionKey": "921-930:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The university offers numerous __________ programs in specialized fields such as molecular biology, artificial intelligence, and comparative literature for advanced students.",
+          "questionKey": "921-930:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The manufacturing plant suffered significant damage when a gas leak caused a massive __________ that shattered windows in buildings several blocks away.",
+          "questionKey": "921-930:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The acrobat's performance featured __________ feats of balance and strength that left the audience gasping in astonishment and admiration.",
+          "questionKey": "921-930:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The journalist missed the submission __________ for the investigative report despite working through the night to verify sources and fact-check information.",
+          "questionKey": "921-930:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The governor granted a controversial __________ to the convicted criminal, citing newly discovered evidence that cast doubt on the original verdict.",
+          "questionKey": "921-930:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The logistics company operates a fleet of __________ trucks that transport goods across the continent on regular scheduled routes between distribution centers.",
+          "questionKey": "921-930:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Museum curators carefully examined the Renaissance __________ using ultraviolet light and chemical analysis to authenticate its provenance and detect any restoration work.",
+          "questionKey": "921-930:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The boxer delivered a devastating __________ to his opponent's midsection that ended the championship match in the seventh round with a technical knockout.",
+          "questionKey": "921-930:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The engineering specifications required that all measurements be accurate to within one __________ to ensure proper assembly of the precision machinery.",
+          "questionKey": "921-930:10"
+        }
+      ]
+    },
+    {
+      "id": "931-940",
+      "label": "第四组",
+      "rangeStart": 931,
+      "rangeEnd": 940,
+      "wordList": [
+        "volition",
+        "ridiculous",
+        "shuttle",
+        "tricky",
+        "athletic",
+        "cheer",
+        "multi",
+        "aerosol",
+        "slash",
+        "homework"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The philosopher argued that genuine moral responsibility requires actions to be performed of one's own __________ rather than under coercion or manipulation.",
+          "questionKey": "931-940:1"
+        },
+        {
+          "number": 2,
+          "prompt": "His __________ assertion that the earth is flat contradicts centuries of scientific evidence and demonstrates a fundamental misunderstanding of basic astronomy.",
+          "questionKey": "931-940:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The airport operates a complimentary __________ service that transports passengers between the terminal building and remote parking facilities every fifteen minutes.",
+          "questionKey": "931-940:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The negotiation proved __________ because both parties had conflicting interests and were unwilling to compromise on several critical contractual provisions.",
+          "questionKey": "931-940:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The university's __________ department offers comprehensive training programs in various sports including swimming, gymnastics, track and field, and team games.",
+          "questionKey": "931-940:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Spectators began to __________ enthusiastically when the underdog team scored an unexpected goal in the final minutes of the championship tournament.",
+          "questionKey": "931-940:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The corporation's __________ national expansion strategy involves establishing subsidiaries in fifteen countries across four continents within the next fiscal year.",
+          "questionKey": "931-940:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Environmental regulations now prohibit the use of certain __________ propellants that contribute to ozone layer depletion and atmospheric pollution problems.",
+          "questionKey": "931-940:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The government announced plans to __________ the education budget by twenty percent, prompting widespread protests from teachers and parents across the nation.",
+          "questionKey": "931-940:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Students complained that the excessive amount of __________ assigned over the holiday break prevented them from spending quality time with their families.",
+          "questionKey": "931-940:10"
+        }
+      ]
+    },
+    {
+      "id": "941-950",
+      "label": "第五组",
+      "rangeStart": 941,
+      "rangeEnd": 950,
+      "wordList": [
+        "connector",
+        "terribly",
+        "nasty",
+        "sponsorship",
+        "scroll",
+        "chess",
+        "unintelligible",
+        "incredibly",
+        "circa",
+        "neo"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The electronics technician identified a faulty __________ as the source of the intermittent power supply problem affecting the computer network's server equipment.",
+          "questionKey": "941-950:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The patient felt __________ anxious about the upcoming surgical procedure despite the surgeon's reassurances regarding the operation's high success rate.",
+          "questionKey": "941-950:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The restaurant received numerous complaints about the __________ behavior of a particular waiter who was subsequently dismissed for unprofessional conduct toward customers.",
+          "questionKey": "941-950:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The telecommunications company secured a lucrative __________ deal with the professional sports franchise worth millions of dollars over a five-year contract period.",
+          "questionKey": "941-950:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Ancient manuscripts require careful preservation because the parchment __________ documents are extremely fragile and susceptible to deterioration from humidity and light.",
+          "questionKey": "941-950:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The grandmaster's brilliant __________ strategy involved sacrificing a knight to create a devastating attack that his opponent failed to anticipate adequately.",
+          "questionKey": "941-950:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The speaker's heavy accent and use of technical jargon rendered his presentation virtually __________ to audience members unfamiliar with the specialized terminology.",
+          "questionKey": "941-950:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The research findings were __________ significant, potentially revolutionizing our understanding of cellular mechanisms and opening new avenues for therapeutic interventions.",
+          "questionKey": "941-950:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The archaeological excavation uncovered pottery fragments dating to __________ 3000 BCE, providing valuable insights into early Bronze Age civilization and trade.",
+          "questionKey": "941-950:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The architectural movement known as __________ classical design incorporates traditional elements while employing modern materials and construction techniques.",
+          "questionKey": "941-950:10"
+        }
+      ]
+    },
+    {
+      "id": "951-963",
+      "label": "第六组",
+      "rangeStart": 951,
+      "rangeEnd": 963,
+      "wordList": [
+        "entrant",
+        "hawk",
+        "handout",
+        "demonstrator",
+        "descendent",
+        "sniff",
+        "rack",
+        "calculator",
+        "mall",
+        "tech",
+        "applause",
+        "stadium",
+        "sneeze"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The newest __________ to the competitive smartphone market announced an innovative device featuring advanced artificial intelligence capabilities and extended battery life.",
+          "questionKey": "951-963:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Ornithologists observed the __________ circling high above the canyon, searching for prey with its remarkably acute vision and powerful hunting instincts.",
+          "questionKey": "951-963:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The professor prepared a comprehensive __________ containing detailed diagrams and supplementary explanations to help students understand the complex theoretical concepts.",
+          "questionKey": "951-963:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Political activists organized as a __________ group marched through the city center demanding immediate government action on climate change and environmental protection.",
+          "questionKey": "951-963:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Genealogical research revealed that she was a direct __________ of a prominent historical figure who played a crucial role in the nation's independence.",
+          "questionKey": "951-963:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The sommelier encouraged guests to __________ the wine's complex bouquet before tasting to fully appreciate its aromatic characteristics and subtle nuances.",
+          "questionKey": "951-963:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The wine cellar featured an impressive __________ system that could store thousands of bottles at precisely controlled temperature and humidity levels.",
+          "questionKey": "951-963:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Students are prohibited from using a __________ during the mathematics examination as the test is designed to assess mental arithmetic skills.",
+          "questionKey": "951-963:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The massive shopping __________ complex features over two hundred retail stores, multiple restaurants, and entertainment facilities spread across three expansive floors.",
+          "questionKey": "951-963:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The innovative startup company attracted significant investment from venture capital firms specializing in emerging __________ sectors and disruptive digital technologies.",
+          "questionKey": "951-963:10"
+        },
+        {
+          "number": 11,
+          "prompt": "The orchestra received thunderous __________ from the audience following their magnificent performance of the symphony's challenging final movement at the concert.",
+          "questionKey": "951-963:11"
+        },
+        {
+          "number": 12,
+          "prompt": "The newly constructed __________ can accommodate seventy thousand spectators and features state-of-the-art facilities for hosting international sporting competitions and concerts.",
+          "questionKey": "951-963:12"
+        },
+        {
+          "number": 13,
+          "prompt": "The allergic reaction caused her to __________ repeatedly throughout the presentation, forcing her to excuse herself temporarily from the important board meeting.",
+          "questionKey": "951-963:13"
+        }
+      ]
+    }
+  ]
+}

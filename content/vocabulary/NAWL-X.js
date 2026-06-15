@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NAWL-X"] = {
+  "id": "NAWL-X",
+  "sectionId": "vocabulary",
+  "title": "NAWL-X",
+  "href": "vocabulary.html?set=NAWL-X",
+  "sortOrder": 2024,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NAWL",
+  "cefrLevel": "C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 501,
+      "word": "deficiency",
+      "emoji": "📉❌",
+      "meaning": "n. 缺乏，不足；缺陷",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a lack, shortage, or weakness",
+      "wordForms": "deficient (adj.)"
+    },
+    {
+      "number": 502,
+      "word": "legitimate",
+      "emoji": "✅⚖️",
+      "meaning": "adj. 合法的，正当的；v. 使合法",
+      "partOfSpeech": "adj. / v.",
+      "simpleDefinition": "allowed by law or accepted as reasonable",
+      "wordForms": "legitimacy (n.), legitimize (v.)"
+    },
+    {
+      "number": 503,
+      "word": "sophisticate",
+      "emoji": "🎩✨",
+      "meaning": "v. 使复杂化；使老练；n. 老练的人",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to make something more complex or refined",
+      "wordForms": "sophisticated (adj.), sophistication (n.)"
+    },
+    {
+      "number": 504,
+      "word": "accelerate",
+      "emoji": "🚀⚡",
+      "meaning": "v. 加速，促进",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something happen faster",
+      "wordForms": "acceleration (n.), accelerator (n.)"
+    },
+    {
+      "number": 505,
+      "word": "exponential",
+      "emoji": "📈💥",
+      "meaning": "adj. 指数的，急剧增长的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "growing or increasing very quickly",
+      "wordForms": "exponentially (adv.), exponent (n.)"
+    },
+    {
+      "number": 506,
+      "word": "formally",
+      "emoji": "👔📜",
+      "meaning": "adv. 正式地，形式上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in an official or proper way",
+      "wordForms": "formal (adj.), formality (n.)"
+    },
+    {
+      "number": 507,
+      "word": "socially",
+      "emoji": "👥🤝",
+      "meaning": "adv. 在社会上，社交上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to society or people together",
+      "wordForms": "social (adj.), society (n.)"
+    },
+    {
+      "number": 508,
+      "word": "accurately",
+      "emoji": "🎯✓",
+      "meaning": "adv. 准确地，精确地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a correct and exact way",
+      "wordForms": "accurate (adj.), accuracy (n.)"
+    },
+    {
+      "number": 509,
+      "word": "influential",
+      "emoji": "💪🌟",
+      "meaning": "adj. 有影响力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to affect people or events",
+      "wordForms": "influence (n./v.)"
+    },
+    {
+      "number": 510,
+      "word": "progression",
+      "emoji": "➡️📊",
+      "meaning": "n. 前进，进展；连续",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a process of moving forward or developing",
+      "wordForms": "progress (n./v.), progressive (adj.)"
+    },
+    {
+      "number": 511,
+      "word": "essence",
+      "emoji": "💎🔑",
+      "meaning": "n. 本质，精髓；香精",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the most important nature or quality of something",
+      "wordForms": "essential (adj.), essentially (adv.)"
+    },
+    {
+      "number": 512,
+      "word": "cylinder",
+      "emoji": "🥫⚙️",
+      "meaning": "n. 圆柱体，汽缸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a solid object with circular ends and straight sides",
+      "wordForms": "cylindrical (adj.)"
+    },
+    {
+      "number": 513,
+      "word": "scholarship",
+      "emoji": "📚🎓",
+      "meaning": "n. 奖学金；学问，学识",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money for study, or serious academic learning",
+      "wordForms": "scholar (n.), scholarly (adj.)"
+    },
+    {
+      "number": 514,
+      "word": "sodium",
+      "emoji": "🧂⚗️",
+      "meaning": "n. 钠",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a soft chemical element found in salt",
+      "wordForms": "-"
+    },
+    {
+      "number": 515,
+      "word": "predominantly",
+      "emoji": "👑📊",
+      "meaning": "adv. 主要地，占主导地位地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "mainly or mostly",
+      "wordForms": "predominant (adj.), predominate (v.)"
+    },
+    {
+      "number": 516,
+      "word": "oscillation",
+      "emoji": "〰️↔️",
+      "meaning": "n. 振荡，摆动；犹豫",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "repeated movement from side to side or up and down",
+      "wordForms": "oscillate (v.), oscillator (n.)"
+    },
+    {
+      "number": 517,
+      "word": "impulse",
+      "emoji": "⚡💭",
+      "meaning": "n. 冲动，推动力；脉冲",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sudden wish to act, or a push of energy",
+      "wordForms": "impulsive (adj.), impulsively (adv.)"
+    },
+    {
+      "number": 518,
+      "word": "theorist",
+      "emoji": "🧠💡",
+      "meaning": "n. 理论家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who develops or studies theories",
+      "wordForms": "theory (n.), theoretical (adj.), theorize (v.)"
+    },
+    {
+      "number": 519,
+      "word": "manipulate",
+      "emoji": "🎮🤲",
+      "meaning": "v. 操纵，控制；操作",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to control or handle something skillfully or unfairly",
+      "wordForms": "manipulation (n.), manipulative (adj.), manipulator (n.)"
+    },
+    {
+      "number": 520,
+      "word": "alliance",
+      "emoji": "🤝🛡️",
+      "meaning": "n. 联盟，联合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group or agreement for working together",
+      "wordForms": "ally (n./v.), allied (adj.)"
+    },
+    {
+      "number": 521,
+      "word": "crystal",
+      "emoji": "💎❄️",
+      "meaning": "n. 水晶，晶体；adj. 清澈的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a clear solid with a regular shape",
+      "wordForms": "crystalline (adj.), crystallize (v.)"
+    },
+    {
+      "number": 522,
+      "word": "importantly",
+      "emoji": "⭐❗",
+      "meaning": "adv. 重要地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that matters",
+      "wordForms": "important (adj.), importance (n.)"
+    },
+    {
+      "number": 523,
+      "word": "stack",
+      "emoji": "📚🥞",
+      "meaning": "n. 堆，叠；v. 堆积",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a pile of things, or to put things in a pile",
+      "wordForms": "-"
+    },
+    {
+      "number": 524,
+      "word": "drift",
+      "emoji": "🌊💨",
+      "meaning": "v. 漂流，漂移；n. 漂移，趋势",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move slowly without clear control or direction",
+      "wordForms": "-"
+    },
+    {
+      "number": 525,
+      "word": "nest",
+      "emoji": "🪺🏠",
+      "meaning": "n. 巢，窝；v. 筑巢",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a place where birds or animals live and keep young",
+      "wordForms": "-"
+    },
+    {
+      "number": 526,
+      "word": "fossil",
+      "emoji": "🦴🦕",
+      "meaning": "n. 化石；adj. 化石的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the remains or mark of an ancient living thing",
+      "wordForms": "fossilize (v.)"
+    },
+    {
+      "number": 527,
+      "word": "resistant",
+      "emoji": "🛡️💪",
+      "meaning": "adj. 抵抗的，有抵抗力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to fight against something",
+      "wordForms": "resist (v.), resistance (n.)"
+    },
+    {
+      "number": 528,
+      "word": "dimensional",
+      "emoji": "📐📏",
+      "meaning": "adj. 维度的，空间的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to size, direction, or measured space",
+      "wordForms": "dimension (n.)"
+    },
+    {
+      "number": 529,
+      "word": "punishment",
+      "emoji": "⚖️👮",
+      "meaning": "n. 惩罚，处罚",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a penalty for doing something wrong",
+      "wordForms": "punish (v.), punitive (adj.)"
+    },
+    {
+      "number": 530,
+      "word": "rhetoric",
+      "emoji": "🗣️🎭",
+      "meaning": "n. 修辞，修辞学；华丽的辞藻",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "speech or writing used to persuade people",
+      "wordForms": "rhetorical (adj.), rhetorically (adv.)"
+    },
+    {
+      "number": 531,
+      "word": "artifact",
+      "emoji": "🏺🔨",
+      "meaning": "n. 人工制品，文物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an object made by people, especially long ago",
+      "wordForms": "-"
+    },
+    {
+      "number": 532,
+      "word": "carrier",
+      "emoji": "📦🚚",
+      "meaning": "n. 运送者，载体；航空母舰",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person, thing, or company that carries something",
+      "wordForms": "carry (v.)"
+    },
+    {
+      "number": 533,
+      "word": "surgical",
+      "emoji": "🔪⚕️",
+      "meaning": "adj. 外科的，手术的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to medical operations",
+      "wordForms": "surgery (n.), surgeon (n.)"
+    },
+    {
+      "number": 534,
+      "word": "coordination",
+      "emoji": "🤝⚙️",
+      "meaning": "n. 协调，配合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability or act of making parts work together",
+      "wordForms": "coordinate (v./adj.), coordinator (n.)"
+    },
+    {
+      "number": 535,
+      "word": "turbulent",
+      "emoji": "🌪️🌊",
+      "meaning": "adj. 动荡的，骚乱的；湍流的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "violent, confused, or full of sudden change",
+      "wordForms": "turbulence (n.)"
+    },
+    {
+      "number": 536,
+      "word": "quantum",
+      "emoji": "⚛️🔬",
+      "meaning": "n. 量子；定量；adj. 量子的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the smallest unit of energy or a very small amount",
+      "wordForms": "-"
+    },
+    {
+      "number": 537,
+      "word": "sediment",
+      "emoji": "🪨🌊",
+      "meaning": "n. 沉积物，沉淀物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "material that settles at the bottom of liquid",
+      "wordForms": "sedimentary (adj.), sedimentation (n.)"
+    },
+    {
+      "number": 538,
+      "word": "ray",
+      "emoji": "☀️📡",
+      "meaning": "n. 光线，射线；鳐鱼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a narrow line of light or energy",
+      "wordForms": "-"
+    },
+    {
+      "number": 539,
+      "word": "conserve",
+      "emoji": "🌱💚",
+      "meaning": "v. 保存，保护；n. 果酱",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to protect or use carefully",
+      "wordForms": "conservation (n.), conservative (adj./n.)"
+    },
+    {
+      "number": 540,
+      "word": "primer",
+      "emoji": "📖🎨",
+      "meaning": "n. 入门书，初级读物；底漆",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a basic book or first layer of paint",
+      "wordForms": "primary (adj.), prime (adj./v.)"
+    },
+    {
+      "number": 541,
+      "word": "grasp",
+      "emoji": "🤲💡",
+      "meaning": "v. 抓住，理解；n. 抓，理解力",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to hold firmly or understand",
+      "wordForms": "-"
+    },
+    {
+      "number": 542,
+      "word": "bulk",
+      "emoji": "📦💪",
+      "meaning": "n. 大部分，体积；adj. 大批的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the main or largest part of something",
+      "wordForms": "bulky (adj.)"
+    },
+    {
+      "number": 543,
+      "word": "terminology",
+      "emoji": "📚🔤",
+      "meaning": "n. 术语，专门用语",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "special words used in a subject",
+      "wordForms": "term (n.), terminal (adj./n.)"
+    },
+    {
+      "number": 544,
+      "word": "vegetation",
+      "emoji": "🌿🌳",
+      "meaning": "n. 植被，植物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "plants growing in an area",
+      "wordForms": "vegetate (v.), vegetative (adj.)"
+    },
+    {
+      "number": 545,
+      "word": "triangle",
+      "emoji": "🔺📐",
+      "meaning": "n. 三角形",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a shape with three sides",
+      "wordForms": "triangular (adj.)"
+    },
+    {
+      "number": 546,
+      "word": "traditionally",
+      "emoji": "🏛️👴",
+      "meaning": "adv. 传统上，习惯上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way based on long-established customs",
+      "wordForms": "traditional (adj.), tradition (n.)"
+    },
+    {
+      "number": 547,
+      "word": "execute",
+      "emoji": "⚡✅",
+      "meaning": "v. 执行，实施；处决",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to carry out a plan or order",
+      "wordForms": "execution (n.), executive (adj./n.), executor (n.)"
+    },
+    {
+      "number": 548,
+      "word": "intensive",
+      "emoji": "💪🔥",
+      "meaning": "adj. 密集的，加强的；精耕细作的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very strong, concentrated, or using great effort",
+      "wordForms": "intensify (v.), intensity (n.), intense (adj.)"
+    },
+    {
+      "number": 549,
+      "word": "reconstruct",
+      "emoji": "🔨🏗️",
+      "meaning": "v. 重建，重构",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to build or form again",
+      "wordForms": "reconstruction (n.), reconstructive (adj.)"
+    },
+    {
+      "number": 550,
+      "word": "broadly",
+      "emoji": "📏🌍",
+      "meaning": "adv. 广泛地，大体上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a general or wide way",
+      "wordForms": "broad (adj.), broaden (v.)"
+    },
+    {
+      "number": 551,
+      "word": "metabolism",
+      "emoji": "🔥🧬",
+      "meaning": "n. 新陈代谢",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the chemical processes that keep a body alive",
+      "wordForms": "metabolic (adj.), metabolize (v.)"
+    },
+    {
+      "number": 552,
+      "word": "revolutionary",
+      "emoji": "🔥⚡",
+      "meaning": "adj. 革命的，创新的；n. 革命者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "involving a major new change or revolution",
+      "wordForms": "revolution (n.), revolutionize (v.)"
+    },
+    {
+      "number": 553,
+      "word": "merge",
+      "emoji": "🔀🤝",
+      "meaning": "v. 合并，融合",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to join together into one",
+      "wordForms": "merger (n.)"
+    },
+    {
+      "number": 554,
+      "word": "dilemma",
+      "emoji": "🤔⚖️",
+      "meaning": "n. 困境，进退两难",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a difficult choice between options",
+      "wordForms": "-"
+    },
+    {
+      "number": 555,
+      "word": "motif",
+      "emoji": "🎨🎵",
+      "meaning": "n. 主题，图案；动机",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a repeated idea, pattern, or design",
+      "wordForms": "-"
+    },
+    {
+      "number": 556,
+      "word": "motive",
+      "emoji": "🎯💭",
+      "meaning": "n. 动机，目的；adj. 发动的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a reason for doing something",
+      "wordForms": "motivate (v.), motivation (n.)"
+    },
+    {
+      "number": 557,
+      "word": "subtle",
+      "emoji": "🌫️🎭",
+      "meaning": "adj. 微妙的，细微的；巧妙的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not obvious; delicate or hard to notice",
+      "wordForms": "subtly (adv.), subtlety (n.)"
+    },
+    {
+      "number": 558,
+      "word": "clinic",
+      "emoji": "🏥⚕️",
+      "meaning": "n. 诊所，门诊部",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where people receive medical treatment",
+      "wordForms": "clinical (adj.), clinically (adv.)"
+    },
+    {
+      "number": 559,
+      "word": "allocate",
+      "emoji": "📊💰",
+      "meaning": "v. 分配，拨出",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give something for a particular purpose",
+      "wordForms": "allocation (n.)"
+    },
+    {
+      "number": 560,
+      "word": "hydrogen",
+      "emoji": "💧⚛️",
+      "meaning": "n. 氢",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a light chemical element that can form water",
+      "wordForms": "-"
+    },
+    {
+      "number": 561,
+      "word": "dissertation",
+      "emoji": "📝🎓",
+      "meaning": "n. 学位论文，专题论文",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long research paper for a degree",
+      "wordForms": "-"
+    },
+    {
+      "number": 562,
+      "word": "susceptible",
+      "emoji": "🤒💔",
+      "meaning": "adj. 易受影响的，易感的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "likely to be affected by something",
+      "wordForms": "susceptibility (n.)"
+    },
+    {
+      "number": 563,
+      "word": "architect",
+      "emoji": "🏛️📐",
+      "meaning": "n. 建筑师，设计师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who designs buildings or systems",
+      "wordForms": "architecture (n.), architectural (adj.)"
+    },
+    {
+      "number": 564,
+      "word": "coronary",
+      "emoji": "❤️🩺",
+      "meaning": "adj. 冠状动脉的；n. 冠状动脉",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to the heart's blood vessels",
+      "wordForms": "-"
+    },
+    {
+      "number": 565,
+      "word": "breakdown",
+      "emoji": "💔⚙️",
+      "meaning": "n. 崩溃，故障；分解",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a failure, collapse, or analysis into parts",
+      "wordForms": "break (v.)"
+    },
+    {
+      "number": 566,
+      "word": "inject",
+      "emoji": "💉➡️",
+      "meaning": "v. 注射，注入",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put liquid or an idea into something",
+      "wordForms": "injection (n.)"
+    },
+    {
+      "number": 567,
+      "word": "economist",
+      "emoji": "💰📊",
+      "meaning": "n. 经济学家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who studies economies",
+      "wordForms": "economy (n.), economic (adj.), economical (adj.)"
+    },
+    {
+      "number": 568,
+      "word": "momentum",
+      "emoji": "🚀⚡",
+      "meaning": "n. 动量，势头；动力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the force that keeps movement or progress going",
+      "wordForms": "-"
+    },
+    {
+      "number": 569,
+      "word": "polar",
+      "emoji": "❄️🧭",
+      "meaning": "adj. 极地的，两极的；截然相反的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the poles or complete opposites",
+      "wordForms": "polarity (n.), polarize (v.)"
+    },
+    {
+      "number": 570,
+      "word": "backward",
+      "emoji": "⬅️🔙",
+      "meaning": "adj. 向后的，落后的；adv. 向后地",
+      "partOfSpeech": "adj. / adv. / v.",
+      "simpleDefinition": "toward the back or less developed",
+      "wordForms": "-"
+    },
+    {
+      "number": 571,
+      "word": "multiply",
+      "emoji": "✖️📈",
+      "meaning": "v. 乘，使相乘；繁殖，增加",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to increase greatly or find a product in math",
+      "wordForms": "multiplication (n.), multiple (adj./n.)"
+    },
+    {
+      "number": 572,
+      "word": "morality",
+      "emoji": "⚖️💭",
+      "meaning": "n. 道德，道德性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "ideas about right and wrong behavior",
+      "wordForms": "moral (adj./n.), morally (adv.)"
+    },
+    {
+      "number": 573,
+      "word": "communicative",
+      "emoji": "🗣️💬",
+      "meaning": "adj. 爱说话的，善于交际的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "willing or able to share information",
+      "wordForms": "communicate (v.), communication (n.)"
+    },
+    {
+      "number": 574,
+      "word": "physically",
+      "emoji": "💪🏃",
+      "meaning": "adv. 身体上，物质上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to the body or material things",
+      "wordForms": "physical (adj.)"
+    },
+    {
+      "number": 575,
+      "word": "rainfall",
+      "emoji": "🌧️💧",
+      "meaning": "n. 降雨，降雨量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the amount of rain that falls",
+      "wordForms": "rain (n./v.)"
+    },
+    {
+      "number": 576,
+      "word": "politically",
+      "emoji": "🏛️🗳️",
+      "meaning": "adv. 政治上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to government or power",
+      "wordForms": "political (adj.), politics (n.)"
+    },
+    {
+      "number": 577,
+      "word": "invasion",
+      "emoji": "⚔️🚀",
+      "meaning": "n. 入侵，侵略；侵犯",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an act of entering by force",
+      "wordForms": "invade (v.), invasive (adj.), invader (n.)"
+    },
+    {
+      "number": 578,
+      "word": "inevitably",
+      "emoji": "⏰✓",
+      "meaning": "adv. 不可避免地，必然地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that cannot be avoided",
+      "wordForms": "inevitable (adj.), inevitability (n.)"
+    },
+    {
+      "number": 579,
+      "word": "capitalism",
+      "emoji": "💰🏭",
+      "meaning": "n. 资本主义",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an economic system based on private ownership",
+      "wordForms": "capital (n./adj.), capitalist (n./adj.), capitalize (v.)"
+    },
+    {
+      "number": 580,
+      "word": "expertise",
+      "emoji": "🎯🧠",
+      "meaning": "n. 专门知识，专长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "special skill or knowledge",
+      "wordForms": "expert (n./adj.)"
+    },
+    {
+      "number": 581,
+      "word": "inferior",
+      "emoji": "👎📉",
+      "meaning": "adj. 较差的，次等的；n. 下级",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "lower in quality, rank, or importance",
+      "wordForms": "inferiority (n.)"
+    },
+    {
+      "number": 582,
+      "word": "actively",
+      "emoji": "🏃💪",
+      "meaning": "adv. 积极地，活跃地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that involves action or effort",
+      "wordForms": "active (adj.), activity (n.), activate (v.)"
+    },
+    {
+      "number": 583,
+      "word": "quotation",
+      "emoji": "💬📝",
+      "meaning": "n. 引文，引语；报价",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "words repeated from another source",
+      "wordForms": "quote (v./n.)"
+    },
+    {
+      "number": 584,
+      "word": "composite",
+      "emoji": "🧩🔗",
+      "meaning": "adj. 合成的，复合的；n. 复合物",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "made from several different parts",
+      "wordForms": "compose (v.), composition (n.)"
+    },
+    {
+      "number": 585,
+      "word": "historically",
+      "emoji": "📜⏳",
+      "meaning": "adv. 历史上，从历史角度",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in relation to history",
+      "wordForms": "historical (adj.), history (n.), historic (adj.)"
+    },
+    {
+      "number": 586,
+      "word": "textbook",
+      "emoji": "📚📖",
+      "meaning": "n. 教科书，课本；adj. 典型的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a book used for study",
+      "wordForms": "text (n.)"
+    },
+    {
+      "number": 587,
+      "word": "bundle",
+      "emoji": "📦🎁",
+      "meaning": "n. 捆，束；v. 捆扎",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a group of things tied or gathered together",
+      "wordForms": "-"
+    },
+    {
+      "number": 588,
+      "word": "elementary",
+      "emoji": "🔤👶",
+      "meaning": "adj. 基本的，初级的；元素的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "basic or at an early level",
+      "wordForms": "element (n.), elemental (adj.)"
+    },
+    {
+      "number": 589,
+      "word": "capitalist",
+      "emoji": "💰👔",
+      "meaning": "n. 资本家；adj. 资本主义的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to capitalism or a person who supports it",
+      "wordForms": "capital (n./adj.), capitalism (n.), capitalize (v.)"
+    },
+    {
+      "number": 590,
+      "word": "flexibility",
+      "emoji": "🤸🔄",
+      "meaning": "n. 灵活性，弹性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to bend, change, or adapt",
+      "wordForms": "flexible (adj.), flex (v.)"
+    },
+    {
+      "number": 591,
+      "word": "cord",
+      "emoji": "🪢🔌",
+      "meaning": "n. 绳索，电线",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long thin rope or wire",
+      "wordForms": "-"
+    },
+    {
+      "number": 592,
+      "word": "realistic",
+      "emoji": "👁️✅",
+      "meaning": "adj. 现实的，实际的；逼真的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "practical or showing things as they are",
+      "wordForms": "realism (n.), realist (n.), reality (n.)"
+    },
+    {
+      "number": 593,
+      "word": "initiation",
+      "emoji": "🎬🔑",
+      "meaning": "n. 开始，发起；入会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of starting something",
+      "wordForms": "initiate (v.), initiative (n./adj.), initiator (n.)"
+    },
+    {
+      "number": 594,
+      "word": "horizon",
+      "emoji": "🌅👁️",
+      "meaning": "n. 地平线；眼界，范围",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the line where the sky seems to meet land or sea",
+      "wordForms": "horizontal (adj.)"
+    },
+    {
+      "number": 595,
+      "word": "consultation",
+      "emoji": "🗣️💼",
+      "meaning": "n. 咨询，商议",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a discussion to get advice or make a decision",
+      "wordForms": "consult (v.), consultant (n.), consultative (adj.)"
+    },
+    {
+      "number": 596,
+      "word": "ruler",
+      "emoji": "📏👑",
+      "meaning": "n. 统治者；尺子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a tool for measuring or a person who governs",
+      "wordForms": "rule (v./n.)"
+    },
+    {
+      "number": 597,
+      "word": "freely",
+      "emoji": "🕊️💨",
+      "meaning": "adv. 自由地，免费地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "without being controlled or limited",
+      "wordForms": "free (adj./v.), freedom (n.)"
+    },
+    {
+      "number": 598,
+      "word": "rotate",
+      "emoji": "🔄🌀",
+      "meaning": "v. 旋转，轮流",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to turn around a center point",
+      "wordForms": "rotation (n.), rotary (adj.)"
+    },
+    {
+      "number": 599,
+      "word": "commodity",
+      "emoji": "📦💰",
+      "meaning": "n. 商品，货物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a product or raw material that can be bought and sold",
+      "wordForms": "-"
+    },
+    {
+      "number": 600,
+      "word": "elevation",
+      "emoji": "⛰️📈",
+      "meaning": "n. 高度，海拔；提升",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "height above a level or an act of raising",
+      "wordForms": "elevate (v.), elevated (adj.), elevator (n.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "501-510",
+      "label": "第一组",
+      "rangeStart": 501,
+      "rangeEnd": 510,
+      "wordList": [
+        "progression",
+        "exponential",
+        "sophisticate",
+        "influential",
+        "accurately",
+        "legitimate",
+        "deficiency",
+        "accelerate",
+        "formally",
+        "socially"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The patient's disease showed a rapid __________ from early symptoms to advanced stages, necessitating immediate and aggressive treatment protocols.",
+          "questionKey": "501-510:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The pandemic's spread followed an __________ curve, with infection rates doubling every few days in densely populated urban areas.",
+          "questionKey": "501-510:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Modern technology continues to __________ our understanding of the universe, making previously incomprehensible concepts accessible to educated laypeople.",
+          "questionKey": "501-510:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Her research on climate change proved to be highly __________ in shaping international environmental policies and governmental regulations worldwide.",
+          "questionKey": "501-510:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The scientist was able to __________ predict the trajectory of the asteroid using advanced computational models and historical data.",
+          "questionKey": "501-510:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The court ruled that the contract was __________ and binding, despite the defendant's numerous attempts to challenge its validity.",
+          "questionKey": "501-510:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The nutritional __________ in her diet led to severe health complications that required immediate medical intervention and long-term treatment.",
+          "questionKey": "501-510:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The company's decision to __________ its production timeline was driven by unprecedented market demand and competitive pressure from rivals.",
+          "questionKey": "501-510:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The ambassador was __________ introduced to the heads of state during the elaborate ceremonial reception at the presidential palace.",
+          "questionKey": "501-510:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Children who are __________ isolated during their formative years often struggle with communication skills and interpersonal relationships in adulthood.",
+          "questionKey": "501-510:10"
+        }
+      ]
+    },
+    {
+      "id": "511-520",
+      "label": "第二组",
+      "rangeStart": 511,
+      "rangeEnd": 520,
+      "wordList": [
+        "predominantly",
+        "sodium",
+        "impulse",
+        "essence",
+        "theorist",
+        "alliance",
+        "oscillation",
+        "manipulate",
+        "scholarship",
+        "cylinder"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The audience at the classical music concert was __________ composed of elderly patrons who had been season ticket holders for decades.",
+          "questionKey": "511-520:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The chemical analysis revealed dangerously high levels of __________ in the processed foods, far exceeding the recommended daily intake for adults.",
+          "questionKey": "511-520:2"
+        },
+        {
+          "number": 3,
+          "prompt": "His decision to quit his lucrative corporate job and pursue art was based purely on __________ rather than careful consideration.",
+          "questionKey": "511-520:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ of her philosophical argument was that human consciousness transcends mere biological processes and encompasses metaphysical dimensions.",
+          "questionKey": "511-520:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The renowned political __________ published a groundbreaking book that challenged conventional wisdom about democratic governance and institutional reform.",
+          "questionKey": "511-520:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The two nations formed a strategic military __________ to counter the growing regional threats and ensure mutual defense capabilities.",
+          "questionKey": "511-520:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of the pendulum gradually decreased due to air resistance, eventually coming to a complete stop after several minutes.",
+          "questionKey": "511-520:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The authoritarian regime attempted to __________ public opinion through state-controlled media and systematic censorship of dissenting voices.",
+          "questionKey": "511-520:8"
+        },
+        {
+          "number": 9,
+          "prompt": "She was awarded a prestigious __________ that covered all her tuition fees and provided a generous living allowance throughout her doctoral studies.",
+          "questionKey": "511-520:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The engine's __________ had suffered significant damage during the collision, rendering the vehicle completely inoperable and requiring extensive repairs.",
+          "questionKey": "511-520:10"
+        }
+      ]
+    },
+    {
+      "id": "521-530",
+      "label": "第三组",
+      "rangeStart": 521,
+      "rangeEnd": 530,
+      "wordList": [
+        "importantly",
+        "drift",
+        "nest",
+        "resistant",
+        "fossil",
+        "punishment",
+        "rhetoric",
+        "dimensional",
+        "stack",
+        "crystal"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "More __________, the research findings suggested that early intervention could significantly reduce the long-term cognitive decline in elderly patients.",
+          "questionKey": "521-530:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The abandoned boat continued to __________ aimlessly across the vast ocean for weeks until it was finally discovered by passing vessels.",
+          "questionKey": "521-530:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The ornithologist discovered a rare bird's __________ hidden among the dense foliage of the rainforest canopy, containing three delicate eggs.",
+          "questionKey": "521-530:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The new bacterial strain proved to be highly __________ to conventional antibiotics, prompting researchers to develop alternative treatment methods.",
+          "questionKey": "521-530:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Paleontologists unearthed remarkably well-preserved __________ remains that provided crucial insights into the evolutionary history of prehistoric marine life.",
+          "questionKey": "521-530:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The judge imposed a severe __________ on the convicted criminal, including a lengthy prison sentence and substantial financial penalties.",
+          "questionKey": "521-530:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The politician's speech was filled with empty __________ and grandiose promises that failed to address the substantive concerns of constituents.",
+          "questionKey": "521-530:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The architect designed a stunning three-__________ sculpture that challenged viewers' perceptions of space and geometric relationships in contemporary art.",
+          "questionKey": "521-530:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The librarian carefully organized the __________ of ancient manuscripts, ensuring each document was properly catalogued and preserved for future generations.",
+          "questionKey": "521-530:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The mineral specimen displayed perfect __________ structures that refracted light into spectacular rainbow patterns when examined under laboratory conditions.",
+          "questionKey": "521-530:10"
+        }
+      ]
+    },
+    {
+      "id": "531-540",
+      "label": "第四组",
+      "rangeStart": 531,
+      "rangeEnd": 540,
+      "wordList": [
+        "surgical",
+        "carrier",
+        "primer",
+        "quantum",
+        "conserve",
+        "ray",
+        "artifact",
+        "sediment",
+        "turbulent",
+        "coordination"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The patient underwent a complex __________ procedure that lasted over twelve hours and required the expertise of multiple specialized medical professionals.",
+          "questionKey": "531-540:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The mosquito serves as a __________ for numerous deadly diseases, including malaria, dengue fever, and various encephalitis viruses affecting millions.",
+          "questionKey": "531-540:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The comprehensive __________ provided students with fundamental concepts necessary for understanding advanced theoretical physics and mathematical modeling techniques.",
+          "questionKey": "531-540:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Physicists are still grappling with the implications of __________ mechanics, which fundamentally challenges our classical understanding of reality and causation.",
+          "questionKey": "531-540:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Environmental organizations are working tirelessly to __________ endangered species and protect fragile ecosystems from human exploitation and habitat destruction.",
+          "questionKey": "531-540:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A single __________ of sunlight pierced through the dense storm clouds, illuminating the landscape with an ethereal golden glow.",
+          "questionKey": "531-540:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The archaeological team discovered a valuable ancient __________ that provided unprecedented insights into the daily life of Bronze Age civilizations.",
+          "questionKey": "531-540:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Geologists analyzed layers of __________ deposits at the river delta to reconstruct the region's climatic history over the past millennia.",
+          "questionKey": "531-540:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The company navigated through __________ economic conditions, facing unprecedented challenges from market volatility and rapidly changing consumer preferences.",
+          "questionKey": "531-540:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Effective __________ between different government departments is essential for implementing comprehensive public health policies and emergency response protocols during crises.",
+          "questionKey": "531-540:10"
+        }
+      ]
+    },
+    {
+      "id": "541-550",
+      "label": "第五组",
+      "rangeStart": 541,
+      "rangeEnd": 550,
+      "wordList": [
+        "bulk",
+        "intensive",
+        "triangle",
+        "traditionally",
+        "broadly",
+        "terminology",
+        "reconstruct",
+        "execute",
+        "grasp",
+        "vegetation"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ of the company's revenue comes from international markets, particularly from emerging economies in Asia and Latin America.",
+          "questionKey": "541-550:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The athlete underwent __________ training for six months, practicing eight hours daily to prepare for the upcoming Olympic competition.",
+          "questionKey": "541-550:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The geometric proof required students to demonstrate the relationship between angles within an equilateral __________ using rigorous mathematical reasoning.",
+          "questionKey": "541-550:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Japanese tea ceremonies have __________ been performed according to strict protocols that have remained virtually unchanged for centuries.",
+          "questionKey": "541-550:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The new legislation was __________ supported by members of parliament from across the political spectrum, despite some minor disagreements over implementation.",
+          "questionKey": "541-550:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Medical students must master extensive specialized __________ before they can effectively communicate with colleagues and understand professional literature in their field.",
+          "questionKey": "541-550:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Forensic scientists attempted to __________ the sequence of events leading to the crime using physical evidence and witness testimonies gathered at the scene.",
+          "questionKey": "541-550:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The military commander ordered his troops to __________ the strategic operation with precision, emphasizing the critical importance of timing and coordination.",
+          "questionKey": "541-550:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The student struggled to __________ the complex philosophical concepts presented in the dense academic text despite repeated readings and consultations.",
+          "questionKey": "541-550:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The lush tropical __________ of the Amazon rainforest supports an incredibly diverse ecosystem containing thousands of unique plant and animal species.",
+          "questionKey": "541-550:10"
+        }
+      ]
+    },
+    {
+      "id": "551-560",
+      "label": "第六组",
+      "rangeStart": 551,
+      "rangeEnd": 560,
+      "wordList": [
+        "merge",
+        "motive",
+        "revolutionary",
+        "motif",
+        "subtle",
+        "hydrogen",
+        "metabolism",
+        "dilemma",
+        "allocate",
+        "clinic"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The two competing corporations decided to __________ their operations, creating a powerful conglomerate that dominated the entire technology sector.",
+          "questionKey": "551-560:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Investigators were unable to determine the killer's __________ for committing such a brutal crime, as there was no apparent connection.",
+          "questionKey": "551-560:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The invention of the printing press was a __________ development that transformed human civilization by making knowledge accessible to the masses.",
+          "questionKey": "551-560:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The recurring __________ of death and rebirth appears throughout the novel, symbolizing the protagonist's psychological transformation and spiritual awakening.",
+          "questionKey": "551-560:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ changes in the patient's behavior were initially overlooked by family members but eventually indicated serious underlying neurological problems.",
+          "questionKey": "551-560:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Scientists are exploring __________ fuel cells as a clean alternative energy source that could revolutionize transportation and reduce greenhouse gas emissions.",
+          "questionKey": "551-560:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Regular exercise and balanced nutrition can significantly boost your __________, helping your body burn calories more efficiently and maintain optimal weight.",
+          "questionKey": "551-560:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The government faced a moral __________ between protecting individual privacy rights and implementing surveillance measures necessary for national security purposes.",
+          "questionKey": "551-560:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The committee must carefully __________ the limited budget resources among competing priorities, ensuring maximum impact and equitable distribution across departments.",
+          "questionKey": "551-560:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The rural __________ provided essential healthcare services to underserved communities that lacked access to major hospitals and specialized medical facilities.",
+          "questionKey": "551-560:10"
+        }
+      ]
+    },
+    {
+      "id": "561-570",
+      "label": "第七组",
+      "rangeStart": 561,
+      "rangeEnd": 570,
+      "wordList": [
+        "susceptible",
+        "architect",
+        "inject",
+        "dissertation",
+        "backward",
+        "coronary",
+        "breakdown",
+        "economist",
+        "polar",
+        "momentum"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Young children are particularly __________ to infectious diseases because their immune systems have not yet developed full protective capabilities against pathogens.",
+          "questionKey": "561-570:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The visionary __________ designed an innovative sustainable building that seamlessly integrated renewable energy systems with aesthetically pleasing modernist architectural elements.",
+          "questionKey": "561-570:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Medical professionals must carefully __________ the vaccine into the patient's upper arm muscle, following strict sterile procedures to prevent contamination.",
+          "questionKey": "561-570:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Her doctoral __________ examined the socioeconomic factors contributing to educational inequality in urban communities across three different continents.",
+          "questionKey": "561-570:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Some critics argue that the country's educational system is __________ and fails to prepare students for the challenges of the modern economy.",
+          "questionKey": "561-570:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The patient suffered a massive __________ artery blockage that required immediate emergency intervention to prevent permanent heart damage or death.",
+          "questionKey": "561-570:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The complete __________ of diplomatic negotiations between the two nations led to escalating tensions and fears of potential military conflict.",
+          "questionKey": "561-570:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The Nobel Prize-winning __________ developed groundbreaking theories about market behavior that fundamentally changed how governments approach fiscal policy and regulation.",
+          "questionKey": "561-570:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The research station in the __________ region provided scientists with unique opportunities to study climate change effects in extreme environmental conditions.",
+          "questionKey": "561-570:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The reform movement gained significant __________ after several high-profile supporters publicly endorsed its goals and mobilized grassroots organizing efforts nationwide.",
+          "questionKey": "561-570:10"
+        }
+      ]
+    },
+    {
+      "id": "571-580",
+      "label": "第八组",
+      "rangeStart": 571,
+      "rangeEnd": 580,
+      "wordList": [
+        "communicative",
+        "multiply",
+        "rainfall",
+        "capitalism",
+        "morality",
+        "physically",
+        "expertise",
+        "politically",
+        "invasion",
+        "inevitably"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The therapist noted that the child was highly __________, demonstrating advanced verbal skills and an unusual ability to express complex emotions.",
+          "questionKey": "571-580:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Bacteria can __________ at an alarming rate under optimal conditions, with a single cell potentially producing millions of offspring within hours.",
+          "questionKey": "571-580:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The region experienced unprecedented __________ levels this season, causing widespread flooding that displaced thousands of families and destroyed agricultural lands.",
+          "questionKey": "571-580:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Critics of __________ argue that the system inherently concentrates wealth among elites while exploiting labor and exacerbating social inequality.",
+          "questionKey": "571-580:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The philosopher's treatise on __________ explored fundamental questions about the nature of right and wrong in contemporary multicultural societies.",
+          "questionKey": "571-580:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The demanding job required employees to be __________ fit and capable of working long hours in challenging outdoor conditions regardless of weather.",
+          "questionKey": "571-580:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The consulting firm's specialized __________ in cybersecurity made it the preferred choice for corporations seeking to protect sensitive data from hackers.",
+          "questionKey": "571-580:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The controversial decision was __________ motivated, designed to appeal to the ruling party's base rather than address genuine policy concerns.",
+          "questionKey": "571-580:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The military __________ resulted in catastrophic humanitarian consequences, with civilian casualties mounting daily and infrastructure systematically destroyed throughout the occupied territories.",
+          "questionKey": "571-580:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Such reckless financial practices would __________ lead to economic collapse, as numerous historical examples from previous market crashes clearly demonstrate.",
+          "questionKey": "571-580:10"
+        }
+      ]
+    },
+    {
+      "id": "581-590",
+      "label": "第九组",
+      "rangeStart": 581,
+      "rangeEnd": 590,
+      "wordList": [
+        "flexibility",
+        "actively",
+        "historically",
+        "composite",
+        "capitalist",
+        "quotation",
+        "textbook",
+        "inferior",
+        "bundle",
+        "elementary"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The company's policy emphasized workplace __________, allowing employees to adjust their schedules and work remotely to accommodate personal responsibilities and preferences.",
+          "questionKey": "581-590:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Community members __________ participated in the neighborhood revitalization project, volunteering countless hours to clean streets and renovate abandoned buildings.",
+          "questionKey": "581-590:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This region has __________ been a crossroads of civilizations, where diverse cultures intersected and exchanged ideas, technologies, and artistic traditions.",
+          "questionKey": "581-590:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The aerospace engineers developed a revolutionary __________ material that combined the strength of titanium with the lightweight properties of carbon fiber.",
+          "questionKey": "581-590:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The wealthy __________ invested heavily in emerging technologies, seeking to maximize returns while diversifying his extensive international business portfolio.",
+          "questionKey": "581-590:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The famous __________ from Shakespeare's Hamlet has been analyzed and interpreted by literary scholars for centuries, revealing multiple layers of meaning.",
+          "questionKey": "581-590:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The scandal was a __________ example of corporate corruption, featuring all the classic elements typically studied in business ethics courses worldwide.",
+          "questionKey": "581-590:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The counterfeit products were clearly __________ in quality, using cheap materials that deteriorated rapidly compared to authentic merchandise from reputable manufacturers.",
+          "questionKey": "581-590:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The delivery service left a __________ of packages at the doorstep, containing various items ordered from multiple online retailers over the week.",
+          "questionKey": "581-590:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The course covered __________ principles of organic chemistry, providing students with foundational knowledge necessary for advanced study in biochemistry and pharmacology.",
+          "questionKey": "581-590:10"
+        }
+      ]
+    },
+    {
+      "id": "591-600",
+      "label": "第十组",
+      "rangeStart": 591,
+      "rangeEnd": 600,
+      "wordList": [
+        "consultation",
+        "horizon",
+        "elevation",
+        "cord",
+        "rotate",
+        "commodity",
+        "initiation",
+        "realistic",
+        "ruler",
+        "freely"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The lawyer scheduled a __________ with her client to discuss legal strategy and review evidence before the upcoming trial proceedings commenced.",
+          "questionKey": "591-600:1"
+        },
+        {
+          "number": 2,
+          "prompt": "As the ship sailed toward the __________, passengers gathered on deck to witness the spectacular sunset painting the sky in brilliant shades.",
+          "questionKey": "591-600:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The mountain's __________ exceeded four thousand meters above sea level, making it one of the highest peaks in the entire range.",
+          "questionKey": "591-600:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The electrical __________ had become frayed and exposed, creating a serious fire hazard that required immediate replacement by a qualified electrician.",
+          "questionKey": "591-600:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The Earth continues to __________ on its axis while simultaneously orbiting the sun, creating the regular cycles of day and night.",
+          "questionKey": "591-600:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Coffee has become a globally traded __________, with futures markets and international prices significantly impacting economies of producing nations in developing regions.",
+          "questionKey": "591-600:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of the new public health program required extensive planning, stakeholder engagement, and coordination among multiple government agencies and organizations.",
+          "questionKey": "591-600:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The artist's paintings were remarkably __________, capturing minute details and subtle lighting effects that made subjects appear almost photographic in quality.",
+          "questionKey": "591-600:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The ancient __________ exercised absolute authority over his subjects, making decisions that affected millions of lives without accountability or democratic oversight.",
+          "questionKey": "591-600:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Citizens should be able to express their opinions __________ without fear of government retaliation, censorship, or persecution for dissenting viewpoints.",
+          "questionKey": "591-600:10"
+        }
+      ]
+    }
+  ]
+};
