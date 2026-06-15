@@ -831,6 +831,14 @@
         return document.getElementById('listening-audio');
     }
 
+    function audioRemainingSeconds() {
+        var audio = audioEl();
+        if (audio && Number.isFinite(audio.duration) && audio.duration > 0) {
+            return Math.max(0, audio.duration - (audio.currentTime || 0));
+        }
+        return null;
+    }
+
     function updateAudioUi() {
         var start = document.getElementById('top-audio-start');
         var resume = document.getElementById('top-audio-resume');
@@ -840,7 +848,7 @@
         if (!start || !resume || !timer || !review || !status) return;
         start.hidden = audioMode !== 'ready';
         resume.hidden = audioMode !== 'resume';
-        timer.hidden = audioMode !== 'exam';
+        timer.hidden = audioMode !== 'confirming' && audioMode !== 'exam';
         review.classList.toggle('show', audioMode === 'review');
         status.hidden = audioMode !== 'missing';
         if (audioMode === 'missing') status.textContent = 'Audio pending';
@@ -855,8 +863,8 @@
         if (!audio) return;
         var duration = audio.duration || 0;
         var current = audio.currentTime || 0;
-        if (audioMode === 'exam') {
-            updateTimer(duration ? duration - current : null);
+        if (audioMode === 'confirming' || audioMode === 'exam') {
+            updateTimer(duration ? duration - current : audioRemainingSeconds());
         }
         if (reviewPlay) reviewPlay.textContent = audio.paused ? '▶' : 'Ⅱ';
         if (progress) progress.value = duration ? Math.round(current / duration * 1000) : 0;
@@ -864,8 +872,10 @@
     }
 
     function showAudioStartDialog(force) {
-        if (teacherMode || !lesson || !lesson.audioSrc || audioMode !== 'ready' || (!force && audioStartPromptShown)) return;
+        if (teacherMode || !lesson || !lesson.audioSrc || (audioMode !== 'ready' && audioMode !== 'confirming') || (!force && audioStartPromptShown)) return;
         audioStartPromptShown = true;
+        audioMode = 'confirming';
+        updateAudioUi();
         var modal = document.getElementById('audio-start-modal');
         if (modal) modal.classList.add('show');
     }
@@ -873,6 +883,15 @@
     function hideAudioStartDialog() {
         var modal = document.getElementById('audio-start-modal');
         if (modal) modal.classList.remove('show');
+    }
+
+    function cancelAudioStartDialog() {
+        hideAudioStartDialog();
+        if (audioMode === 'confirming') {
+            audioMode = lesson && lesson.audioSrc ? 'ready' : 'missing';
+            audioStartPromptShown = false;
+            updateAudioUi();
+        }
     }
 
     function startExamAudio() {
@@ -1266,7 +1285,7 @@
             syncAudioUi();
         });
         document.getElementById('audio-start-confirm').addEventListener('click', startExamAudio);
-        document.getElementById('audio-start-cancel').addEventListener('click', hideAudioStartDialog);
+        document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
         function handleQuestionInput(event) {
             if (!event.target.matches('[data-question]')) return;
             saveDraft();
