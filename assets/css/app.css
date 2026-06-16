@@ -2325,6 +2325,7 @@ button { cursor: pointer; }
 }
 .notice-dot.success { background: var(--success); }
 .notice-dot.danger { background: var(--danger); }
+.notice-dot[hidden] { display: none; }
 .dispute-list { display: grid; gap: 12px; }
 .review-merge-toggle {
     min-height: 36px;
