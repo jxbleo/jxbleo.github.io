@@ -1153,6 +1153,7 @@
         var historyAttemptId = params.get('history') || prefillAttemptId;
         var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
         if (isNaN(historyBestPercentage)) historyBestPercentage = null;
+        var focusQuestionId = params.get('focus') || '';
         var assignmentStatus = params.get('status') || '';
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
@@ -2345,6 +2346,9 @@
                 var selected = groupIds.map(function(id) { return groupMap[id]; }).filter(Boolean);
                 var started = startTestWithGroups(selected, result.attempt.answers);
                 if (started && results[1] && results[1].review) markHistoryReview(results[1].review);
+                if (started && focusQuestionId) {
+                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                }
                 return started;
             }).catch(function() { return false; });
         }
@@ -2434,6 +2438,15 @@
             var questions = document.querySelectorAll('.test-question');
             if (!questions.length) return;
             submitVocabularyTest(questions);
+        }
+
+        function jumpToQuestion(questionId) {
+            if (!questionId) return;
+            var card = document.querySelector('[data-question-key="' + CSS.escape(questionId) + '"]');
+            if (!card) return;
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            var input = card.querySelector('input, button, select, textarea');
+            if (input) window.setTimeout(function() { input.focus(); }, 250);
         }
 
         function submitVocabularyTest(questions) {
@@ -2563,7 +2576,13 @@
                 document.getElementById('submit-test-btn').textContent = 'Teacher Preview';
             } else {
                 renderHistoryToolbar();
-                if (!restoreTestDraft()) fetchPrefillAttempt();
+                if (!restoreTestDraft()) {
+                    fetchPrefillAttempt().then(function(started) {
+                        if (!started && focusQuestionId) jumpToQuestion(focusQuestionId);
+                    });
+                } else if (focusQuestionId) {
+                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                }
             }
         }
 

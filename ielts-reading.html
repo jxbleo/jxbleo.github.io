@@ -816,6 +816,7 @@
     var historyAttemptId = params.get('history') || prefillAttemptId;
     var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
     if (isNaN(historyBestPercentage)) historyBestPercentage = null;
+    var focusQuestionId = params.get('focus') || '';
     var assignmentStatus = params.get('status') || '';
     var answerRevealAvailable = false;
     var answerRevealConfirmed = false;
@@ -2512,6 +2513,9 @@
                         renderHistoryToolbar();
                     }
                     setupControls();
+                    if (focusQuestionId) {
+                        window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                    }
 
                     logEvent(userId, setId, 'page_enter', Date.now(), { title: lessonData.title });
                 } catch (renderErr) {
