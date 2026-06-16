@@ -1,0 +1,91 @@
+{
+  "id": "C7-T1-S4",
+  "title": "Seminar on Rock Art",
+  "source": "Cambridge IELTS 7, Test 1, Section 4",
+  "testLabel": "Test 1",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "label": "Questions 31-35",
+          "instruction": "Complete the notes below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Seminar on Rock Art</h2><ul class=\"ielts-notes\"><li>Preparation for fieldwork trip to Namibia in {{Q31}}</li><li>Earliest explanation of engravings of animal footprints: they were used to help {{Q32}} learn about tracking.</li><li>But: Why are the tracks usually {{Q33}}? Why are some engravings realistic and others unrealistic? Why are the unrealistic animals sometimes half {{Q34}}?</li><li>More recent explanation: wise men may have been trying to control wild animals with {{Q35}}</li></ul>"
+        },
+        {
+          "label": "Questions 36-40",
+          "instruction": "Complete the sentences below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<ul class=\"ielts-notes\"><li>If you look at a site from a {{Q36}}, you reduce visitor pressure.</li><li>To camp on a site may be disrespectful to people from that {{Q37}}.</li><li>Undiscovered material may be damaged by {{Q38}}.</li><li>You should avoid {{Q39}} or tracing rock art as it is so fragile.</li><li>In general, your aim is to leave the site {{Q40}}.</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}

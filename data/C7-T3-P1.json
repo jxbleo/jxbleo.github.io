@@ -37,7 +37,69 @@
     {
       "type": "summary",
       "label": "Questions 7–13 — Summary Completion",
-      "instruction": "Choose one word only from the passage for each answer.",
+      "instruction": "Complete the summary using the list of words, A-O. Write the correct letter.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "aphids"
+        },
+        {
+          "value": "B",
+          "text": "agricultural"
+        },
+        {
+          "value": "C",
+          "text": "cellulose"
+        },
+        {
+          "value": "D",
+          "text": "exchanging"
+        },
+        {
+          "value": "E",
+          "text": "energy"
+        },
+        {
+          "value": "F",
+          "text": "fertilizers"
+        },
+        {
+          "value": "G",
+          "text": "food"
+        },
+        {
+          "value": "H",
+          "text": "fungi"
+        },
+        {
+          "value": "I",
+          "text": "growing"
+        },
+        {
+          "value": "J",
+          "text": "interbreeding"
+        },
+        {
+          "value": "K",
+          "text": "natural"
+        },
+        {
+          "value": "L",
+          "text": "other species"
+        },
+        {
+          "value": "M",
+          "text": "secretions"
+        },
+        {
+          "value": "N",
+          "text": "sustainable"
+        },
+        {
+          "value": "O",
+          "text": "environment"
+        }
+      ],
       "items": [
         {
           "id": "Q7",

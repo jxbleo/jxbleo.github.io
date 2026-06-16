@@ -428,6 +428,162 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "C7-T1-S2",
+      "sectionId": "ielts-listening",
+      "title": "C7-T1-S2 · PS Camping",
+      "href": "ielts-listening.html?set=C7-T1-S2",
+      "displayValue": "C7-T1-S2",
+      "sortValue": 70102,
+      "topic": "Travel / Camping",
+      "tags": [
+        "Travel",
+        "Camping",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C7-T1-S3",
+      "sectionId": "ielts-listening",
+      "title": "C7-T1-S3 · Differences Between Individuals in the Workplace",
+      "href": "ielts-listening.html?set=C7-T1-S3",
+      "displayValue": "C7-T1-S3",
+      "sortValue": 70103,
+      "topic": "Work / Management",
+      "tags": [
+        "Workplace",
+        "Management",
+        "Diversity"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C7-T1-S4",
+      "sectionId": "ielts-listening",
+      "title": "C7-T1-S4 · Seminar on Rock Art",
+      "href": "ielts-listening.html?set=C7-T1-S4",
+      "displayValue": "C7-T1-S4",
+      "sortValue": 70104,
+      "topic": "Archaeology / Fieldwork",
+      "tags": [
+        "Archaeology",
+        "Rock Art",
+        "Lecture"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-S1",
+      "sectionId": "ielts-listening",
+      "title": "C7-T2-S1 · Car Insurance",
+      "href": "ielts-listening.html?set=C7-T2-S1",
+      "displayValue": "C7-T2-S1",
+      "sortValue": 70201,
+      "topic": "Insurance / Forms",
+      "tags": [
+        "Insurance",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-S2",
+      "sectionId": "ielts-listening",
+      "title": "C7-T2-S2 · Green Banks Boat Trip",
+      "href": "ielts-listening.html?set=C7-T2-S2",
+      "displayValue": "C7-T2-S2",
+      "sortValue": 70202,
+      "topic": "Tourism / Map",
+      "tags": [
+        "Tourism",
+        "Map Labelling"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-S3",
+      "sectionId": "ielts-listening",
+      "title": "C7-T2-S3 · The Antarctic Centre",
+      "href": "ielts-listening.html?set=C7-T2-S3",
+      "displayValue": "C7-T2-S3",
+      "sortValue": 70203,
+      "topic": "Science / Antarctica",
+      "tags": [
+        "Antarctica",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C7-T2-S4",
+      "sectionId": "ielts-listening",
+      "title": "C7-T2-S4 · Left and Right Handedness in Sport",
+      "href": "ielts-listening.html?set=C7-T2-S4",
+      "displayValue": "C7-T2-S4",
+      "sortValue": 70204,
+      "topic": "Sport / Laterality",
+      "tags": [
+        "Sport",
+        "Science",
+        "Lecture"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-S1",
+      "sectionId": "ielts-listening",
+      "title": "C7-T3-S1 · Student Job Enquiry",
+      "href": "ielts-listening.html?set=C7-T3-S1",
+      "displayValue": "C7-T3-S1",
+      "sortValue": 70301,
+      "topic": "Work / Student Jobs",
+      "tags": [
+        "Student Jobs",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-S2",
+      "sectionId": "ielts-listening",
+      "title": "C7-T3-S2 · Sponsored Walking Holiday",
+      "href": "ielts-listening.html?set=C7-T3-S2",
+      "displayValue": "C7-T3-S2",
+      "sortValue": 70302,
+      "topic": "Travel / Charity",
+      "tags": [
+        "Travel",
+        "Charity",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C7-T3-S3",
+      "sectionId": "ielts-listening",
+      "title": "C7-T3-S3 · Ocean Research",
+      "href": "ielts-listening.html?set=C7-T3-S3",
+      "displayValue": "C7-T3-S3",
+      "sortValue": 70303,
+      "topic": "Science / Ocean",
+      "tags": [
+        "Science",
+        "Ocean",
+        "Diagram"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
       "id": "C7-T3-S4",
       "sectionId": "ielts-listening",
       "title": "C7-T3-S4 · Hotels and the Tourist Industry",
@@ -441,6 +597,67 @@ window.__HOME_CATALOG__ = {
         "Hotels",
         "Multiple Choice",
         "Note Completion"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-S1",
+      "sectionId": "ielts-listening",
+      "title": "C7-T4-S1 · Homestay Application",
+      "href": "ielts-listening.html?set=C7-T4-S1",
+      "displayValue": "C7-T4-S1",
+      "sortValue": 70401,
+      "topic": "Accommodation / Homestay",
+      "tags": [
+        "Homestay",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-S2",
+      "sectionId": "ielts-listening",
+      "title": "C7-T4-S2 · Bicentennial Park Tour",
+      "href": "ielts-listening.html?set=C7-T4-S2",
+      "displayValue": "C7-T4-S2",
+      "sortValue": 70402,
+      "topic": "Tourism / Park",
+      "tags": [
+        "Tourism",
+        "Map Labelling"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-S3",
+      "sectionId": "ielts-listening",
+      "title": "C7-T4-S3 · Geography Presentation",
+      "href": "ielts-listening.html?set=C7-T4-S3",
+      "displayValue": "C7-T4-S3",
+      "sortValue": 70403,
+      "topic": "Study / Presentation",
+      "tags": [
+        "Study",
+        "Presentation"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-S4",
+      "sectionId": "ielts-listening",
+      "title": "C7-T4-S4 · Monosodium Glutamate",
+      "href": "ielts-listening.html?set=C7-T4-S4",
+      "displayValue": "C7-T4-S4",
+      "sortValue": 70404,
+      "topic": "Science / Food",
+      "tags": [
+        "Food Science",
+        "Lecture",
+        "MSG"
       ],
       "note": "Listening Section 4",
       "visible": true
@@ -583,6 +800,54 @@ window.__HOME_CATALOG__ = {
         "Environment",
         "Forests",
         "Europe"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-P1",
+      "sectionId": "ielts-reading",
+      "title": "C7-T4-P1 · Pulling Strings to Build Pyramids",
+      "href": "ielts-reading.html?set=C7-T4-P1",
+      "displayValue": "C7-T4-P1",
+      "sortValue": 70401,
+      "topic": "History / Engineering",
+      "tags": [
+        "History",
+        "Engineering",
+        "Pyramids"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-P2",
+      "sectionId": "ielts-reading",
+      "title": "C7-T4-P2 · Endless Harvest",
+      "href": "ielts-reading.html?set=C7-T4-P2",
+      "displayValue": "C7-T4-P2",
+      "sortValue": 70402,
+      "topic": "Environment / Fisheries",
+      "tags": [
+        "Environment",
+        "Fisheries",
+        "Sustainability"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C7-T4-P3",
+      "sectionId": "ielts-reading",
+      "title": "C7-T4-P3 · Effects of Noise",
+      "href": "ielts-reading.html?set=C7-T4-P3",
+      "displayValue": "C7-T4-P3",
+      "sortValue": 70403,
+      "topic": "Psychology / Noise",
+      "tags": [
+        "Psychology",
+        "Research",
+        "Noise"
       ],
       "note": "Passage Practice",
       "visible": true

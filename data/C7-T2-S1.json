@@ -1,0 +1,86 @@
+{
+  "id": "C7-T2-S1",
+  "title": "Car Insurance",
+  "source": "Cambridge IELTS 7, Test 2, Section 1",
+  "testLabel": "Test 2",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "label": "Questions 1-10",
+          "instruction": "Complete the form below. Write <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>Car Insurance</h2><table class=\"booking-form\"><tbody><tr><th>Address:</th><td>{{Q1}}, Greendale</td><th>Contact number:</th><td>730453</td></tr><tr><th>Occupation:</th><td>{{Q2}}</td><th>Size of car engine:</th><td>1200cc</td></tr><tr><th>Manufacturer:</th><td>Hewton</td><th>Model:</th><td>{{Q3}}</td></tr><tr><th>Year:</th><td>1997</td><th>Previous insurance company:</th><td>{{Q4}}</td></tr><tr><th>Claim details:</th><td>Car was {{Q5}} in 1999</td><th>Other driver:</th><td>Simon {{Q6}}</td></tr><tr><th>Relationship:</th><td>{{Q7}}</td><th>Uses of car:</th><td>social; {{Q8}}</td></tr><tr><th>Recommended company:</th><td>{{Q9}}</td><th>Annual cost:</th><td>$ {{Q10}}</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "number": 1,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q2",
+      "number": 2,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q3",
+      "number": 3,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q4",
+      "number": 4,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q5",
+      "number": 5,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q6",
+      "number": 6,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q7",
+      "number": 7,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q8",
+      "number": 8,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q9",
+      "number": 9,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q10",
+      "number": 10,
+      "part": 1,
+      "type": "completion"
+    }
+  ]
+}

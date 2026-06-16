@@ -1,0 +1,96 @@
+{
+  "id": "C7-T2-S2",
+  "title": "Green Banks Boat Trip",
+  "source": "Cambridge IELTS 7, Test 2, Section 2",
+  "testLabel": "Test 2",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "label": "Questions 11-12",
+          "instruction": "Label the map below. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<h2>Green Banks Boat Trip</h2><ul class=\"ielts-notes\"><li>Stop A: Green Banks</li><li>Stop B: {{Q11}}</li><li>Stop C: Main Booking Office</li><li>Stop D: {{Q12}}</li></ul>"
+        },
+        {
+          "label": "Questions 13-18",
+          "instruction": "Complete the table below. Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<table class=\"booking-form\"><tbody><tr><th>Main Booking Office</th><td>First boat: 8 a.m.<br>Last boat: {{Q13}} p.m.</td></tr><tr><th>Stop A: Palace</th><td>has lovely {{Q14}}</td></tr><tr><th>Stop B: {{Q15}}</th><td>has good {{Q16}} of city centre</td></tr><tr><th>Stop C: Museum</th><td>bookshop specialising in the {{Q17}} of the local area</td></tr><tr><th>Stop D: Entertainment Complex</th><td>{{Q18}} cinema; bowling alley; video games arcade</td></tr></tbody></table>"
+        },
+        {
+          "label": "Questions 19-20",
+          "instruction": "Write <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<ul class=\"ielts-notes\"><li>How often do the Top Bus Company tours run? {{Q19}}</li><li>Where can you catch a Number One Sightseeing Tour from? {{Q20}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "completion"
+    }
+  ]
+}

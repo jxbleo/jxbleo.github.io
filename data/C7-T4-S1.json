@@ -1,0 +1,91 @@
+{
+  "id": "C7-T4-S1",
+  "title": "Homestay Application",
+  "source": "Cambridge IELTS 7, Test 4, Section 1",
+  "testLabel": "Test 4",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "label": "Questions 1-6",
+          "instruction": "Complete the form below. Write <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>Homestay Application</h2><table class=\"booking-form\"><tbody><tr><th>Surname</th><td>Yuichini</td><th>First name</th><td>{{Q1}}</td></tr><tr><th>Sex</th><td>female</td><th>Nationality</th><td>Japanese</td></tr><tr><th>Passport number</th><td>{{Q2}}</td><th>Age</th><td>28 years</td></tr><tr><th>Present address</th><td>Room 21C, Willow College</td><th>Length of homestay</th><td>approx. {{Q3}}</td></tr><tr><th>Course enrolled in</th><td>{{Q4}}</td><th>Family preferences</th><td>no {{Q5}}; no objection to {{Q6}}</td></tr></tbody></table>"
+        },
+        {
+          "label": "Questions 7-10",
+          "instruction": "Answer the questions below. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<ul class=\"ielts-notes\"><li>What does the student particularly like to eat? {{Q7}}</li><li>What sport does the student play? {{Q8}}</li><li>What mode of transport does the student prefer? {{Q9}}</li><li>When will the student find out her homestay address? {{Q10}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "number": 1,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q2",
+      "number": 2,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q3",
+      "number": 3,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q4",
+      "number": 4,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q5",
+      "number": 5,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q6",
+      "number": 6,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q7",
+      "number": 7,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q8",
+      "number": 8,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q9",
+      "number": 9,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q10",
+      "number": 10,
+      "part": 1,
+      "type": "completion"
+    }
+  ]
+}

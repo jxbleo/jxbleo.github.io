@@ -1,0 +1,201 @@
+{
+  "id": "C7-T3-S2",
+  "title": "Sponsored Walking Holiday",
+  "source": "Cambridge IELTS 7, Test 3, Section 2",
+  "testLabel": "Test 3",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 11-16",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q11",
+              "text": "On the holiday, you will be walking for",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "6 days."
+                },
+                {
+                  "value": "B",
+                  "text": "8 days."
+                },
+                {
+                  "value": "C",
+                  "text": "10 days."
+                }
+              ]
+            },
+            {
+              "id": "Q12",
+              "text": "What proportion of the sponsorship money goes to charity?",
+          "options": [
+            {
+              "value": "A",
+              "text": "about one third"
+            },
+            {
+              "value": "B",
+              "text": "one half"
+            },
+            {
+              "value": "C",
+              "text": "about two thirds"
+            }
+          ]
+            },
+            {
+              "id": "Q13",
+              "text": "Each walker's sponsorship money goes to one",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "student."
+                },
+                {
+                  "value": "B",
+                  "text": "teacher."
+                },
+                {
+                  "value": "C",
+                  "text": "school."
+                }
+              ]
+            },
+            {
+              "id": "Q14",
+              "text": "When you start the trek you must be",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "interested in getting fit."
+                },
+                {
+                  "value": "B",
+                  "text": "already quite fit."
+                },
+                {
+                  "value": "C",
+                  "text": "already very fit."
+                }
+              ]
+            },
+            {
+              "id": "Q15",
+              "text": "As you walk you will carry",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "all of your belongings."
+                },
+                {
+                  "value": "B",
+                  "text": "some of your belongings."
+                },
+                {
+                  "value": "C",
+                  "text": "none of your belongings."
+                }
+              ]
+            },
+            {
+              "id": "Q16",
+              "text": "The Semira Region has a long tradition of",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "making carpets."
+                },
+                {
+                  "value": "B",
+                  "text": "weaving blankets."
+                },
+                {
+                  "value": "C",
+                  "text": "carving wood."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 17-20",
+          "instruction": "Complete the form below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Itinerary</h2><ul class=\"ielts-notes\"><li>Day 1: arrive in Kishba</li><li>Day 2: rest day</li><li>Day 3: spend all day in a {{Q17}}</li><li>Day 4: visit a school</li><li>Day 5: rest day</li><li>Day 6: see a {{Q18}} with old carvings</li><li>Day 7: rest day</li><li>Day 8: swim in a {{Q19}}</li><li>Day 9: visit a {{Q20}}</li><li>Day 10: depart from Kishba</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "completion"
+    }
+  ]
+}

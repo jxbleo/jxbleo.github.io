@@ -1,0 +1,147 @@
+{
+  "id": "C7-T4-S4",
+  "title": "Monosodium Glutamate",
+  "source": "Cambridge IELTS 7, Test 4, Section 4",
+  "testLabel": "Test 4",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 31-33",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q31",
+              "text": "The speaker says the main topic of the lecture is",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "the history of monosodium glutamate."
+                },
+                {
+                  "value": "B",
+                  "text": "the way monosodium glutamate works."
+                },
+                {
+                  "value": "C",
+                  "text": "where monosodium glutamate is used."
+                }
+              ]
+            },
+            {
+              "id": "Q32",
+              "text": "In 1908, scientists in Japan",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "made monosodium glutamate."
+                },
+                {
+                  "value": "B",
+                  "text": "began using kombu."
+                },
+                {
+                  "value": "C",
+                  "text": "identified glutamate."
+                }
+              ]
+            },
+            {
+              "id": "Q33",
+              "text": "What change occurred in the manufacture of glutamate in 1956?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "It began to be manufactured on a large scale."
+                },
+                {
+                  "value": "B",
+                  "text": "The Japanese began extracting it from natural sources."
+                },
+                {
+                  "value": "C",
+                  "text": "It became much more expensive to produce."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 34-40",
+          "instruction": "Complete the notes below. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<h2>Monosodium Glutamate (MSG)</h2><ul class=\"ielts-notes\"><li>MSG contains glutamate (78.2%), sodium (12.2%) and {{Q34}} (9.6%).</li><li>Glutamate is found in foods that contain protein such as {{Q35}} and {{Q36}}.</li><li>In 1908 Kikunae Ikeda discovered a {{Q37}}.</li><li>Our ability to detect glutamate makes sense because it is so {{Q38}} naturally.</li><li>Sweetness tells us that a food contains carbohydrates; {{Q39}} tells us that a food contains toxins; sourness tells us that a food is spoiled; saltiness tells us that a food contains {{Q40}}.</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}
