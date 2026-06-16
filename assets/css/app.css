@@ -1623,21 +1623,35 @@ button { cursor: pointer; }
     text-align: center;
 }
 .student-info-edit {
+    position: relative;
     width: 100%;
-    padding: 0;
+    min-height: 54px;
+    padding: 0 64px 0 0;
     border: 0;
     color: inherit;
     background: transparent;
     text-align: left;
     cursor: pointer;
 }
-.student-info-edit strong::after {
-    content: " Edit";
-    margin-left: 6px;
+.student-info-edit::after {
+    content: attr(data-info-action);
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    padding: 5px 8px;
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    border-radius: 999px;
     color: var(--accent-dark);
+    background: rgba(255,255,255,0.78);
     font-size: 0.65rem;
     font-weight: 900;
     text-transform: uppercase;
+}
+.student-info-edit:hover::after,
+.student-info-edit:focus-visible::after {
+    border-color: rgba(124, 58, 237, 0.34);
+    background: white;
 }
 .student-info-editor {
     display: grid;
@@ -1695,6 +1709,39 @@ button { cursor: pointer; }
     color: var(--ink);
     font-size: 0.95rem;
     overflow-wrap: anywhere;
+}
+.student-meta {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 7px;
+}
+.student-meta > span {
+    display: inline-flex;
+    align-items: center;
+}
+.student-meta > span + span::before {
+    content: "·";
+    margin-right: 7px;
+    color: var(--muted);
+}
+.system-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    vertical-align: middle;
+}
+.system-tag img {
+    width: 34px;
+    height: 20px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+.student-info-edit .system-tag img {
+    width: 46px;
+    height: 28px;
 }
 .student-account-actions {
     display: flex;
@@ -2180,7 +2227,11 @@ button { cursor: pointer; }
     .revise-tabs .summary-label { font-size: 0.68rem; }
     .summary-card { padding: 14px 10px; }
     .summary-value { font-size: 1.45rem; }
-    .task-card { grid-template-columns: 1fr; }
+    .task-card { grid-template-columns: minmax(0, 1fr) auto; }
+    .task-card > div:first-child {
+        grid-column: 1;
+        min-width: 0;
+    }
     .finished-task-card {
         grid-template-columns: minmax(0, 1fr) 60px;
         gap: 0;
@@ -2194,11 +2245,18 @@ button { cursor: pointer; }
     .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
     .task-card .task-go-button {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: center;
         width: 46px;
         min-width: 46px;
         min-height: 46px;
         padding: 0;
         border-radius: 999px;
+    }
+    .task-card > .reply-button {
+        grid-column: 1 / -1;
     }
     .profile-grid { grid-template-columns: 1fr; }
     .my-words-tools { grid-template-columns: 1fr; }

@@ -55,6 +55,19 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-16
 
+- Fixed mobile student assignment capsules so the `Go` button stays in a right
+  column instead of dropping to a third line; verified with headless Chrome at
+  390px viewport that `Go` shares the title row and sits on the right.
+- Blocked personal My Words saves from answer, explanation, feedback, result,
+  teacher-reply, and review-answer UI regions; also guarded selections that
+  drag across blocked answer content.
+- Verified `personal-vocab.js` syntax and bumped the script cache query on
+  Dashboard, BBC, IELTS Reading, IELTS Listening, and Vocabulary pages.
+- Removed the green generated app icon and web manifest references, kept the
+  owner's original DSE/IELTS logo images as static assets, and made teacher
+  student Class/System tags visibly editable with DSE/IELTS logo badges.
+- Verified `teacher.js` syntax, original logo byte-for-byte copies, and local
+  static responses for teacher assets and removed icon paths.
 - Fixed IELTS Listening teacher preview audio startup: `teacher=1` no longer
   blocks the shared `Start Audio` confirmation flow.
 - Added the public app version to teacher Library practice links and bumped the
