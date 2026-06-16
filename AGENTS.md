@@ -20,10 +20,14 @@ countable attempt.
 Use this order when learning the project:
 
 1. `AGENTS.md`: binding implementation rules and invariants.
-2. `CLOUDBASE_ARCHITECTURE.md`: full data model and product decisions.
-3. `CLOUDBASE_DEPLOYMENT.md`: current console and deployment procedure.
-4. `CONTENT_WORKFLOW.md`: how teaching material becomes website content.
-5. Existing code and data: the final source of truth for current behavior.
+2. `PRODUCT_REQUIREMENTS.md`: human-readable product and backend architecture
+   requirements.
+3. `TECHNICAL_CHANGELOG.md`: repeated technical issues, change records, and
+   fast diagnosis notes.
+4. `CLOUDBASE_ARCHITECTURE.md`: full data model and product decisions.
+5. `CLOUDBASE_DEPLOYMENT.md`: current console and deployment procedure.
+6. `CONTENT_WORKFLOW.md`: how teaching material becomes website content.
+7. Existing code and data: the final source of truth for current behavior.
 
 If documentation conflicts with working code, investigate before changing
 either. Preserve confirmed product rules, then update stale documentation in
@@ -257,8 +261,9 @@ percentage, and mastery percentage.
 For the same student and `set_id`:
 
 - no previous assignment: `available`, selectable
-- existing `not_done` or `failed`: `in_progress`, not selectable
-- previous `done`: `completed`, visibly marked but selectable for reassignment
+- existing `not_done`, `failed`, or `to_do`: `in_progress`, not selectable
+- previous `done`, `passed`, or `mastered`: `completed`, visibly marked but
+  selectable for reassignment
 
 The server revalidates this. A duplicate open assignment is skipped even if
 the browser sends it. Reassignment after completion creates a new assignment
@@ -297,9 +302,11 @@ The default passing percentage is `50`. A set-specific
 percentage >= passing_percentage
 ```
 
-Countable submissions become `done` when passed and `failed` below the
-threshold. Once an assignment is `done`, a later failed attempt must not move
-that same assignment back to `failed`; still store the later attempt.
+Countable submissions update the linked assignment with `to_do`, `passed`, or
+`mastered`. Assignment status is monotonic: once an assignment is `passed`, a
+later lower-scoring attempt must not move it back to `to_do`; once it is
+`mastered`, normal code must not downgrade it. Still store every later attempt
+and update latest/best summaries separately.
 
 Every countable attempt is immutable history and includes score, pass state,
 answers, per-question results, attempt number, grading version, timing, and
@@ -656,8 +663,8 @@ For backend/data work verify at least:
 - teacher authorization is server-side
 - browser-provided identity does not grant access
 - direct database `add(document)` is used
-- failed attempts are stored and mark assignments `failed`
-- passing retries are stored and move assignments to `done`
+- failed attempts are stored and keep or mark assignments `to_do`
+- passing retries are stored and move assignments to `passed` or `mastered`
 - independent practice uses `assignment_id: null`
 - vocabulary 1-4 groups are not recorded
 - vocabulary 5+ groups are recorded with group details

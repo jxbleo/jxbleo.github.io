@@ -70,36 +70,144 @@ function recordData(record) {
     : record;
 }
 
-async function protectStar(student, attempt, source, now) {
+function normalizedAssignmentStatus(status) {
+  if (status === "mastered") return "mastered";
+  if (status === "passed" || status === "done") return "passed";
+  return "to_do";
+}
+
+function statusRank(status) {
+  const normalized = normalizedAssignmentStatus(status);
+  if (normalized === "mastered") return 2;
+  if (normalized === "passed") return 1;
+  return 0;
+}
+
+function monotonicAssignmentStatus(currentStatus, attemptStatus) {
+  return statusRank(currentStatus) > statusRank(attemptStatus)
+    ? normalizedAssignmentStatus(currentStatus)
+    : normalizedAssignmentStatus(attemptStatus);
+}
+
+function isSelfStudyAchievement(item) {
+  return Boolean(
+    item && !item.assignment_id && (item.source === "self_study" || item.source === "explore")
+  );
+}
+
+async function protectAssignmentStar(student, assignment, attempt, now) {
+  const assignmentId = assignment.assignment_id || assignment._id;
+  if (!student || !assignmentId) return null;
+  const percentage = effectivePercentage(attempt);
   const existing = await getOne("student_set_achievements", {
     student_uid: student.auth_uid,
-    set_id: attempt.set_id,
+    assignment_id: assignmentId,
   });
-  const percentage = effectivePercentage(attempt);
   if (existing) {
-    const update = { updated_at: now };
+    const update = {
+      source: "assignment_claim",
+      status: "star",
+      protected: true,
+      updated_at: now,
+    };
     if (percentage > Number(existing.best_percentage || 0)) {
       update.best_percentage = percentage;
       update.best_attempt_id = attempt.attempt_id;
     }
     await db.collection("student_set_achievements").doc(existing._id).update(update);
-    return;
+    return { ...existing, ...update };
   }
-  await db.collection("student_set_achievements").add({
-    achievement_id: [student.auth_uid, attempt.set_id].join("::"),
+
+  const sameSetResult = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+    set_id: assignment.set_id,
+  }).limit(100).get();
+  const selfStudyStar = (sameSetResult.data || []).find(isSelfStudyAchievement);
+  if (selfStudyStar) {
+    const update = {
+      achievement_id: [student.auth_uid, assignmentId].join("::"),
+      assignment_id: assignmentId,
+      source: "assignment_claim",
+      status: "star",
+      protected: true,
+      converted_from_self_study: true,
+      converted_at: now,
+      claimed_at: selfStudyStar.claimed_at || now,
+      first_earned_at: selfStudyStar.first_earned_at || now,
+      first_qualifying_attempt_id: selfStudyStar.first_qualifying_attempt_id || attempt.attempt_id,
+      best_attempt_id: attempt.attempt_id || selfStudyStar.best_attempt_id || null,
+      best_percentage: Math.max(percentage, Number(selfStudyStar.best_percentage || 0)),
+      updated_at: now,
+    };
+    await db.collection("student_set_achievements").doc(selfStudyStar._id).update(update);
+    return { ...selfStudyStar, ...update };
+  }
+
+  const record = {
+    achievement_id: [student.auth_uid, assignmentId].join("::"),
     student_uid: student.auth_uid,
     student_id_snapshot: student.student_id,
-    set_id: attempt.set_id,
+    set_id: assignment.set_id,
+    assignment_id: assignmentId,
     status: "star",
     protected: true,
-    source,
+    source: "assignment_claim",
+    claimed_at: now,
     first_earned_at: now,
     first_qualifying_attempt_id: attempt.attempt_id,
     best_attempt_id: attempt.attempt_id,
     best_percentage: percentage,
     created_at: now,
     updated_at: now,
-  });
+  };
+  await db.collection("student_set_achievements").add(record);
+  return record;
+}
+
+async function protectSelfStudyStar(student, attempt, now) {
+  if (!student || !attempt || !attempt.set_id) return null;
+  const result = await db.collection("student_set_achievements").where({
+    student_uid: student.auth_uid,
+    set_id: attempt.set_id,
+  }).limit(100).get();
+  const achievements = result.data || [];
+  if (achievements.find((item) => item.assignment_id)) return null;
+  const existing = achievements.find(isSelfStudyAchievement);
+  const percentage = effectivePercentage(attempt);
+  if (existing) {
+    const update = {
+      source: "self_study",
+      status: "star",
+      protected: true,
+      updated_at: now,
+    };
+    if (percentage > Number(existing.best_percentage || 0)) {
+      update.best_percentage = percentage;
+      update.best_attempt_id = attempt.attempt_id;
+    }
+    await db.collection("student_set_achievements").doc(existing._id).update(update);
+    return { ...existing, ...update };
+  }
+
+  const record = {
+    achievement_id: [student.auth_uid, attempt.set_id, "self"].join("::"),
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    set_id: attempt.set_id,
+    assignment_id: null,
+    status: "star",
+    protected: true,
+    source: "self_study",
+    claimed_at: now,
+    first_earned_at: now,
+    first_qualifying_attempt_id: attempt.attempt_id,
+    best_attempt_id: attempt.attempt_id,
+    best_percentage: percentage,
+    created_at: now,
+    updated_at: now,
+  };
+  await db.collection("student_set_achievements").add(record);
+  return record;
 }
 
 function safeDate(value) {
@@ -350,7 +458,7 @@ async function listSets() {
 
 function getAssignmentState(assignments) {
   const open = assignments.find((assignment) =>
-    ["not_done", "failed", "to_do", "passed"].includes(assignment.status)
+    ["not_done", "failed", "to_do"].includes(assignment.status)
   );
   if (open) {
     return {
@@ -360,7 +468,7 @@ function getAssignmentState(assignments) {
     };
   }
   const completed = assignments.filter((assignment) =>
-    assignment.status === "done" || assignment.status === "mastered"
+    ["done", "passed", "mastered"].includes(assignment.status)
   );
   if (completed.length) {
     return {
@@ -509,15 +617,6 @@ async function createAssignments(event) {
         continue;
       }
       const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
-      if (assignmentState.availability === "completed") {
-        skipped.push({
-          student_uid: studentUid,
-          student_id: student.student_id,
-          set_id: setId,
-          reason: "already_completed",
-        });
-        continue;
-      }
       if (assignmentState.availability === "in_progress") {
         skipped.push({
           student_uid: studentUid,
@@ -958,9 +1057,8 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
       const effectiveMasteryPercentage = Number(assignment.mastery_percentage != null
         ? assignment.mastery_percentage
         : (!set || set.mastery_percentage == null ? 90 : set.mastery_percentage));
-      const adjustedStatus = assignment.status === "mastered"
-        ? "mastered"
-        : (percentage >= effectiveMasteryPercentage ? "mastered" : (passed ? "passed" : "to_do"));
+      const attemptStatus = percentage >= effectiveMasteryPercentage ? "mastered" : (passed ? "passed" : "to_do");
+      const adjustedStatus = monotonicAssignmentStatus(assignment.status, attemptStatus);
       const currentBest = Number(assignment.best_percentage || 0);
       const improvesBest = percentage >= currentBest;
       const assignmentUpdate = {
@@ -983,7 +1081,25 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
         if (adjustedStatus === "mastered" && !assignment.mastered_at) assignmentUpdate.mastered_at = now;
       }
       await db.collection("assignments").doc(assignment._id).update(assignmentUpdate);
+      if (attemptStatus === "mastered") {
+        const student = await getOne("students", {
+          auth_uid: attempt.student_uid,
+          role: "student",
+        });
+        await protectAssignmentStar(
+          student,
+          { ...assignment, ...assignmentUpdate },
+          adjustedAttempt,
+          now
+        );
+      }
     }
+  } else if (mastered) {
+    const student = await getOne("students", {
+      auth_uid: attempt.student_uid,
+      role: "student",
+    });
+    await protectSelfStudyStar(student, adjustedAttempt, now);
   }
 
   return adjustedAttempt;

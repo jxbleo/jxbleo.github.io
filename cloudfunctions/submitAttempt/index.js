@@ -20,8 +20,10 @@ async function getAuthenticatedStudent() {
     auth_uid: String(uid),
     active: true,
   }).limit(1).get();
-  if (!result.data || !result.data[0]) throw new Error("STUDENT_NOT_LINKED");
-  return result.data[0];
+  const student = result.data && result.data[0];
+  if (!student) throw new Error("STUDENT_NOT_LINKED");
+  if ((student.role || "student") !== "student") throw new Error("STUDENT_REQUIRED");
+  return student;
 }
 
 async function getOne(collection, query) {
@@ -64,10 +66,28 @@ function displayPercentage(rawPercentage, assignment, masteryPercentage) {
 }
 
 function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage, assignment) {
-  if (assignment && assignment.status === "mastered") return "mastered";
   if (!assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage) return "mastered";
   if (displayPercentage(rawPercentage, assignment, masteryPercentage) >= passingPercentage) return "passed";
   return "to_do";
+}
+
+function normalizedAssignmentStatus(status) {
+  if (status === "mastered") return "mastered";
+  if (status === "passed" || status === "done") return "passed";
+  return "to_do";
+}
+
+function statusRank(status) {
+  const normalized = normalizedAssignmentStatus(status);
+  if (normalized === "mastered") return 2;
+  if (normalized === "passed") return 1;
+  return 0;
+}
+
+function monotonicAssignmentStatus(currentStatus, attemptStatus) {
+  return statusRank(currentStatus) > statusRank(attemptStatus)
+    ? normalizedAssignmentStatus(currentStatus)
+    : normalizedAssignmentStatus(attemptStatus);
 }
 
 function gradeAnswers(submittedAnswers, gradingKey, mode) {
@@ -290,9 +310,12 @@ exports.main = async (event) => {
     const passingPercentage = passingPercentageForAssignment(assignment, set);
     const masteryPercentage = masteryPercentageForAssignment(assignment, set);
     const displayedPercentage = displayPercentage(grading.percentage, assignment, masteryPercentage);
-    const status = statusForPercentage(grading.percentage, passingPercentage, masteryPercentage, assignment);
-    const passed = status === "passed" || status === "mastered";
-    const mastered = status === "mastered";
+    const attemptStatus = statusForPercentage(grading.percentage, passingPercentage, masteryPercentage, assignment);
+    const assignmentStatus = assignment
+      ? monotonicAssignmentStatus(assignment.status, attemptStatus)
+      : attemptStatus;
+    const passed = attemptStatus === "passed" || attemptStatus === "mastered";
+    const mastered = attemptStatus === "mastered";
     const isUnrecordedPractice = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && Number(event.selected_group_count || 0) < 5);
     const feedbackPolicy = set.feedback_policy || "always";
@@ -312,6 +335,7 @@ exports.main = async (event) => {
         passed,
         mastered,
         status: "self_test",
+        attempt_status: attemptStatus,
         question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
           question_id: item.question_id,
           submitted_answer: item.submitted_answer,
@@ -387,7 +411,7 @@ exports.main = async (event) => {
       const best = Math.max(Number(assignment.best_percentage || 0), displayedPercentage);
       const rawBest = Math.max(Number(assignment.raw_best_percentage || 0), grading.percentage);
       const update = {
-        status,
+        status: assignmentStatus,
         latest_attempt_id: attemptId,
         attempt_count: Number(assignment.attempt_count || 0) + 1,
         latest_percentage: displayedPercentage,
@@ -400,7 +424,7 @@ exports.main = async (event) => {
         updated_at: submittedAt,
       };
       if (passed && !assignment.completed_at) update.completed_at = submittedAt;
-      if (mastered && !assignment.mastered_at) update.mastered_at = submittedAt;
+      if (assignmentStatus === "mastered" && mastered && !assignment.mastered_at) update.mastered_at = submittedAt;
       await db.collection("assignments").doc(assignment._id).update(update);
       const verifyResult = await db.collection("assignments").doc(assignment._id).get();
       const verified = verifyResult.data && verifyResult.data[0];
@@ -426,7 +450,9 @@ exports.main = async (event) => {
       mastery_percentage: masteryPercentage,
       passed,
       mastered,
-      status,
+      status: assignmentStatus,
+      assignment_status: assignmentStatus,
+      attempt_status: attemptStatus,
       mastery_eligible: mastered,
       mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
       question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
