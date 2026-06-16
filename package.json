@@ -1,0 +1,13 @@
+{
+  "name": "mrcat-academy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static English learning app with CloudBase backend.",
+  "scripts": {
+    "verify": "node scripts/verify-release.js",
+    "verify:release": "node scripts/verify-release.js",
+    "package:functions": "node scripts/package-cloudfunctions.js",
+    "package:functions:all": "node scripts/package-cloudfunctions.js --all",
+    "release:plan": "node scripts/generate-deploy-plan.js"
+  }
+}

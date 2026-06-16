@@ -20,18 +20,44 @@ countable attempt.
 Use this order when learning the project:
 
 1. `AGENTS.md`: binding implementation rules and invariants.
-2. `PRODUCT_REQUIREMENTS.md`: human-readable product and backend architecture
-   requirements.
-3. `TECHNICAL_CHANGELOG.md`: repeated technical issues, change records, and
-   fast diagnosis notes.
-4. `CLOUDBASE_ARCHITECTURE.md`: full data model and product decisions.
-5. `CLOUDBASE_DEPLOYMENT.md`: current console and deployment procedure.
-6. `CONTENT_WORKFLOW.md`: how teaching material becomes website content.
-7. Existing code and data: the final source of truth for current behavior.
+2. `README.md`: current project entry point, commands, and document map.
+3. `docs/01_PRODUCT_REQUIREMENTS.md`: human-readable product requirements.
+4. `docs/02_ARCHITECTURE.md`: current architecture and data flow.
+5. `docs/04_DATA_MODEL.md`: CloudBase collections, fields, statuses, and ownership.
+6. `docs/11_AGENT_TROUBLESHOOTING.md`: repeated technical issues and diagnosis notes.
+7. `docs/09_CONTENT_WORKFLOW.md`: how teaching material becomes website content.
+8. `docs/10_DEPLOYMENT.md`: current deployment and import procedure.
+9. Existing code and data: the final source of truth for current behavior.
 
 If documentation conflicts with working code, investigate before changing
 either. Preserve confirmed product rules, then update stale documentation in
 the same change.
+
+### Documentation Update Rules
+
+- Product behavior or business rules: update `docs/01_PRODUCT_REQUIREMENTS.md`.
+- Architecture, backend boundaries, or directory structure: update `docs/02_ARCHITECTURE.md`.
+- Page layout or interaction behavior: update `docs/03_UI_UX_SPEC.md`.
+- Collections, fields, statuses, ownership, or data flow: update `docs/04_DATA_MODEL.md`.
+- Product-level or architecture-level changes: update `docs/05_CHANGELOG.md`.
+- Important technical choices or new dependencies: update `docs/06_DECISIONS.md`.
+- Changed manual/automated test expectations: update `docs/07_TESTING_CHECKLIST.md`.
+- Known bugs, future work, or technical debt: update `docs/08_BACKLOG.md`.
+- Content import/source workflow changes: update `docs/09_CONTENT_WORKFLOW.md`.
+- Deployment, CloudBase import, or environment procedure changes: update `docs/10_DEPLOYMENT.md`.
+- Repeated technical failures or diagnosis lessons: update `docs/11_AGENT_TROUBLESHOOTING.md`.
+
+Every meaningful change should end with a short note covering files changed,
+behavior changed, docs updated, tests run, and remaining risks or owner actions.
+
+Do not modify unrelated files, clean the working tree, or introduce new
+dependencies unless the task truly requires it. Any new library, framework,
+service, or architecture choice must be recorded in `docs/06_DECISIONS.md`.
+
+Deployment automation is owner-gated. Agents may run release verification,
+function packaging, and deploy-plan generation. Agents must not run CloudBase
+deploy commands, request Tencent Cloud secrets, or change CloudBase production
+resources unless the owner explicitly authorizes that exact action.
 
 ## 3. Ownership and Safety
 
@@ -229,7 +255,9 @@ All collections use `ADMINONLY`:
 - `grading_key_history`: immutable teacher grading-rule revisions
 - `student_vocabulary_items`: student-owned saved words and phrases
 
-Read exact schemas in `CLOUDBASE_ARCHITECTURE.md` before adding fields.
+Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
+fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
+the numbered docs are the current handoff entry point.
 Preserve these stable identifiers:
 
 - `student_id`: unique Login ID
@@ -598,7 +626,7 @@ Never hand-edit a ZIP.
 - `INITIAL_STUDENT_PASSWORD` environment variable
 
 Deploy only to the development environment unless the owner explicitly
-approves production. Follow `CLOUDBASE_DEPLOYMENT.md`.
+approves production. Follow `docs/10_DEPLOYMENT.md`.
 
 ## 12. Frontend and Visitor Rules
 
