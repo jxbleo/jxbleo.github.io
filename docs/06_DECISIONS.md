@@ -1,0 +1,209 @@
+# 06 Decisions
+
+> Architecture Decision Records for important product and technical choices.
+> Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
+
+## 2026-06-16: Use Static Frontend With CloudBase Backend
+
+Decision:
+
+Use static HTML/CSS/vanilla JavaScript for the frontend and Tencent CloudBase for authentication, cloud functions, and database.
+
+Reason:
+
+The project is a small-to-medium teaching application maintained by a teacher with AI/developer assistance. A static frontend keeps deployment simple, while CloudBase provides enough backend capability for login, private grading, assignments, and attempts.
+
+Trade-offs:
+
+- Good: simple hosting, no frontend build system, easy to inspect pages.
+- Good: CloudBase provides managed auth and database.
+- Cost: backend deployment is manual and separate from static publishing.
+- Cost: vanilla JS pages can become large without discipline.
+
+Review condition:
+
+Revisit if the frontend becomes hard to maintain, if multi-teacher commercial features require a richer backend, or if CloudBase limitations block required workflows.
+
+## 2026-06-16: Keep Database Collections ADMINONLY
+
+Decision:
+
+All CloudBase collections remain `ADMINONLY`; browsers access data only through cloud functions.
+
+Reason:
+
+The system stores student data, assignments, attempts, private answers, accepted variants, and teacher corrections. Direct browser access would make permissions fragile.
+
+Trade-offs:
+
+- Good: simple security model.
+- Good: grading keys stay private.
+- Cost: more cloud function code is needed.
+
+Review condition:
+
+Only revisit if CloudBase supports a proven safer row-level permission design and there is a clear need.
+
+## 2026-06-16: Store Correct Answers in Private `grading_keys`
+
+Decision:
+
+Correct answers, accepted variants, explanations, evidence, and scoring rules belong in CloudBase `grading_keys`, not public runtime JSON.
+
+Reason:
+
+Students should not be able to casually inspect public files to get answer keys. Teachers also need server-authoritative grading and Argue corrections.
+
+Trade-offs:
+
+- Good: supports trusted server-side grading.
+- Good: supports answer rule history.
+- Cost: content import has two layers: public data and private grading import.
+- Cost: legacy public answers need gradual cleanup.
+
+Review condition:
+
+Do not reverse this. Only improve tooling around import/reconcile.
+
+## 2026-06-16: Use Owner-Gated CloudBase Release Automation
+
+Decision:
+
+Use local helper scripts for release verification, cloud-function packaging, and
+deploy-plan generation, but keep actual CloudBase deployment, data import,
+environment variables, and cloud credentials under owner control.
+
+Reason:
+
+The project is maintained with AI/Codex assistance, but CloudBase account
+authority, billing, production resources, and secrets must remain with the
+owner. Semi-automation removes repetitive packaging and checklist work without
+giving agents cloud authority.
+
+Trade-offs:
+
+- Good: faster releases with a repeatable local process.
+- Good: agents can prepare artifacts without seeing secrets.
+- Good: the owner has a clear review point before upload/import.
+- Cost: deployment still requires a manual owner action.
+- Cost: generated plans depend on reviewing the current dirty working tree.
+
+Review condition:
+
+Revisit only if the owner wants CI/CD. Any future CI/CD should be manually
+triggered and require owner approval before CloudBase secrets are available.
+
+## 2026-06-16: Attempts Are Immutable
+
+Decision:
+
+Every countable submission creates a new attempt record. Retries do not overwrite earlier attempts.
+
+Reason:
+
+The teacher needs full learning history, retry tracking, and reliable dispute handling.
+
+Trade-offs:
+
+- Good: auditability and progress history.
+- Good: disputes can target exact historical answers.
+- Cost: dashboards must aggregate attempts carefully.
+
+Review condition:
+
+Do not remove immutable attempts. Add archival/reporting tools if volume grows.
+
+## 2026-06-16: Assignment Status Is Monotonic
+
+Decision:
+
+Assignment status can move `to_do -> passed -> mastered`, but normal code cannot downgrade it.
+
+Reason:
+
+A later low-scoring retry should not erase a student's already completed assignment. Latest attempt and best attempt are separate concepts.
+
+Trade-offs:
+
+- Good: completion is stable and teacher-friendly.
+- Cost: UI must distinguish latest score from best/completion status.
+
+Review condition:
+
+Only revisit if the teacher explicitly wants assignment completion to reset under a new assignment instance.
+
+## 2026-06-16: Completed Work Can Be Reassigned
+
+Decision:
+
+Completed, passed, mastered, or STAR history does not block assigning the same set again. Only an open assignment blocks duplication.
+
+Reason:
+
+Teachers may want repeated practice at different times. Historical completion should be preserved, not used as a permanent block.
+
+Trade-offs:
+
+- Good: preserves old attempts while allowing spaced repetition.
+- Cost: dashboards and reports must treat assignment instances separately.
+
+Review condition:
+
+Revisit if teacher workflows require explicit "do not repeat" curriculum rules.
+
+## 2026-06-16: Student Dashboard Shows Two Buckets
+
+Decision:
+
+Student dashboard displays `TO DO` and `FINISHED`; backend keeps detailed `passed` and `mastered`.
+
+Reason:
+
+The owner confirmed the simpler student view is preferred. STAR/mastery can still be shown inside finished cards.
+
+Trade-offs:
+
+- Good: less confusing for students.
+- Cost: teacher/reporting views must expose more detail when needed.
+
+Review condition:
+
+Only split again if the owner explicitly asks for separate Passed/Mastered student tabs.
+
+## 2026-06-16: Documentation System Uses Numbered Docs
+
+Decision:
+
+Use root `README.md` and `AGENTS.md`, with detailed canonical docs under `docs/01...`.
+
+Reason:
+
+The project is maintained by humans and AI Agents. Numbered docs create a stable reading order and reduce repeated rediscovery.
+
+Trade-offs:
+
+- Good: easier handoff.
+- Cost: documentation must be kept current.
+
+Review condition:
+
+Revisit if docs become too fragmented or are no longer being updated.
+
+## 2026-06-16: Do Not Introduce a Frontend Framework Yet
+
+Decision:
+
+Do not rewrite the app in React/Vue/Next or add a build tool at this stage.
+
+Reason:
+
+The current code is static and deployable. The biggest risks are backend rules, data flow, and documentation, not component technology.
+
+Trade-offs:
+
+- Good: no build/dependency burden.
+- Cost: large HTML files need discipline and documentation.
+
+Review condition:
+
+Revisit if UI complexity grows enough that static pages slow development or cause frequent regressions.

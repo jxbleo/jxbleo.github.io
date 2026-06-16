@@ -1,5 +1,8 @@
 # Content Workflow
 
+> Current numbered docs entry: `docs/09_CONTENT_WORKFLOW.md`.
+> This root-level file is kept as a legacy detailed reference.
+
 ## 这份文档是给谁看的
 
 这份文档主要给两类人看：

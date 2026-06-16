@@ -1,5 +1,8 @@
 # CloudBase Development Deployment
 
+> Current numbered docs entry: `docs/10_DEPLOYMENT.md`.
+> This root-level file is kept as a legacy detailed reference.
+
 This guide applies only to the development environment:
 
 ```text

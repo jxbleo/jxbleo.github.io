@@ -1,0 +1,161 @@
+# 07 Testing Checklist
+
+> Manual and lightweight automated checks for this project.
+> Update it when flows, data model, deployment, or testing tools change.
+
+## 1. Current Test Reality
+
+There is no full automated test suite yet.
+
+Current verification uses:
+
+- JavaScript syntax checks
+- JSON parse checks
+- local static server browser checks
+- CloudBase development environment tests
+- manual teacher/student flows
+
+## 2. Quick Local Checks
+
+Run after JavaScript changes:
+
+```bash
+find cloudfunctions -name index.js -exec node --check {} \;
+node --check assets/js/teacher.js
+node --check assets/js/dashboard.js
+```
+
+Run after catalog/content changes:
+
+```bash
+node scripts/build-home-catalog.js
+node scripts/prepare-cloudbase-data.js
+```
+
+Then parse changed JSON files or run a small JSON parse check.
+
+## 3. Local Browser Smoke
+
+Use a local HTTP server rather than `file://`:
+
+```bash
+python3 -m http.server 8000
+```
+
+Open:
+
+- `http://127.0.0.1:8000/index.html`
+- `http://127.0.0.1:8000/dashboard.html`
+- `http://127.0.0.1:8000/teacher.html`
+- at least one BBC page
+- at least one IELTS Reading page
+- at least one IELTS Listening page
+- at least one Vocabulary page
+
+Stop the server after testing.
+
+## 4. Student Flow Checklist
+
+Use a dedicated development student account, never a real student account.
+
+Check:
+
+- login succeeds
+- profile loads
+- forced password change appears when expected
+- Assignments shows `TO DO` and `FINISHED`
+- student opens assigned work
+- student submits wrong/low score
+- attempt is stored
+- assignment remains or becomes `to_do`
+- student retries and passes
+- assignment appears in `FINISHED`
+- low-score retry after passing does not downgrade assignment
+- reveal answers works only after passing
+- reveal locks mastery only when not already mastered
+- mastered work creates backend STAR
+- history review does not leak answers unless reveal is recorded
+
+## 5. Teacher Flow Checklist
+
+Use a dedicated development teacher account.
+
+Check:
+
+- teacher page loads only for teacher profile
+- list students works
+- create student checks duplicate Login ID
+- reset password enables auth user and sets `must_change_password`
+- disable/enable updates auth and profile
+- Assign shows available students
+- in-progress assignment cannot be duplicated
+- completed/mastered/STAR work can be reassigned
+- reassignment creates a new `assignment_id`
+- Library opens practice pages in `teacher=1`
+- Show Answers uses teacher route and does not lock student mastery
+- Progress reflects recent attempts
+- Argue list loads and groups disputes
+- resolving `keep` does not alter grading key
+- resolving `add`/`replace` updates grading key and history
+- approved dispute regrades only the disputed attempt
+- approved dispute can create or repair STAR
+
+## 6. Visitor Flow Checklist
+
+Check:
+
+- visitor can browse homepage/library
+- visitor can open practice pages
+- visitor cannot type/select answers
+- visitor cannot submit
+- visitor cannot save My Words
+- visitor sees login prompt on interaction
+
+## 7. Vocabulary Checklist
+
+Check:
+
+- Word List/Learn/Dictate/Test modes render
+- JSON and JS fallback both work
+- 1-4 selected Test groups do not create CloudBase attempt
+- 5+ selected Test groups create attempt
+- group metadata is stored
+- My Words cannot save from answer/result regions
+
+## 8. Content Import Checklist
+
+For each new set:
+
+- metadata exists in `content/<section>/<set_id>.json`
+- runtime data exists in `data/<set_id>.json` or correct content folder
+- audio/image assets exist if referenced
+- `node scripts/build-home-catalog.js` run if catalog changes
+- `node scripts/prepare-cloudbase-data.js` run if sets/grading change
+- public preview strips answers
+- CloudBase `sets` imported
+- CloudBase `grading_keys` imported
+- direct lesson URL loads
+- authenticated Explore/Library shows the item
+- submission grades successfully
+
+## 9. Deployment Checklist
+
+Before saying a deploy is complete:
+
+- static files are pushed/published
+- changed cloud functions have rebuilt ZIPs
+- CloudBase development functions are uploaded
+- required collections exist and are `ADMINONLY`
+- cache query strings are bumped for changed shared JS
+- at least one development account flow is tested
+
+## 10. Known Testing Gaps
+
+- No automated CloudBase integration tests.
+- No pure unit tests for assignment status, STAR, and Argue rules yet.
+- No automated browser smoke for teacher/student login yet.
+- No automated grading-key reconcile check yet.
+
+High priority improvement:
+
+- Add a lightweight pure JS rule test suite for backend status/STAR/Argue logic.
