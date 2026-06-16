@@ -786,6 +786,26 @@ async function listAttempts() {
   };
 }
 
+async function getActivityState(teacher) {
+  return {
+    success: true,
+    attempts_seen_at: teacher.teacher_activity_attempts_seen_at || null,
+  };
+}
+
+async function markAttemptsRead(teacher) {
+  const now = new Date();
+  if (!teacher._id) throw new Error("TEACHER_PROFILE_ID_MISSING");
+  await db.collection("students").doc(teacher._id).update({
+    teacher_activity_attempts_seen_at: now,
+    updated_at: now,
+  });
+  return {
+    success: true,
+    attempts_seen_at: now,
+  };
+}
+
 async function submitTeacherDispute(event, teacher) {
   const setId = text(event.set_id);
   const questionId = text(event.question_id);
@@ -1058,6 +1078,8 @@ exports.main = async (event) => {
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();
     if (action === "listAttempts") return await listAttempts();
+    if (action === "getActivityState") return await getActivityState(teacher);
+    if (action === "markAttemptsRead") return await markAttemptsRead(teacher);
     if (action === "listDisputes") return await listDisputes();
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);

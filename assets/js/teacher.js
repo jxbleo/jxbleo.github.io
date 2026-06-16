@@ -19,6 +19,11 @@
         assignProgressMode: 'student',
         studentProgressView: 'to_do',
         studentInfoEdit: '',
+        updatesOpen: false,
+        updatesView: 'attempts',
+        attemptActivityFilter: 'unread',
+        reviewActivityFilter: 'pending',
+        attemptsSeenAt: null,
         disputeFilter: 'pending',
         disputeMerge: false,
         libraryFilter: 'vocabulary',
@@ -73,6 +78,8 @@
     var studentForm = document.getElementById('student-form');
     var candidateList = document.getElementById('assign-candidates');
     var libraryList = document.getElementById('teacher-library-list');
+    var updatesPanel = document.getElementById('teacher-updates-panel');
+    var updatesBody = document.getElementById('teacher-updates-body');
 
     var questionTextCache = {};
 
@@ -196,11 +203,68 @@
         }).length;
     }
 
+    function attemptsSeenDate() {
+        if (state.attemptsSeenAt) {
+            var stored = new Date(state.attemptsSeenAt);
+            if (!isNaN(stored.getTime())) return stored;
+        }
+        var fallback = new Date();
+        fallback.setHours(fallback.getHours() - 24);
+        return fallback;
+    }
+
+    function sortedAttempts() {
+        return (state.attempts || []).slice().sort(function(a, b) {
+            return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
+        });
+    }
+
+    function isAttemptUnread(attempt) {
+        var submitted = new Date(attempt.submitted_at || 0);
+        return !isNaN(submitted.getTime()) && submitted > attemptsSeenDate();
+    }
+
+    function activityAttemptCounts() {
+        return sortedAttempts().reduce(function(counts, attempt) {
+            counts.total += 1;
+            if (isAttemptUnread(attempt)) counts.unread += 1;
+            else counts.read += 1;
+            return counts;
+        }, { total: 0, unread: 0, read: 0 });
+    }
+
+    function reviewActivityCounts() {
+        return (state.disputes || []).reduce(function(counts, item) {
+            var pending = item.status !== 'approved' && item.status !== 'rejected';
+            if (pending) counts.pending += 1;
+            else counts.finished += 1;
+            return counts;
+        }, { pending: 0, finished: 0 });
+    }
+
+    function updateActivityBadges() {
+        var attemptCounts = activityAttemptCounts();
+        var reviewCounts = reviewActivityCounts();
+        var total = attemptCounts.unread + reviewCounts.pending;
+        var count = document.getElementById('teacher-updates-count');
+        var button = document.getElementById('teacher-updates-button');
+        var attemptsCount = document.getElementById('updates-attempts-count');
+        var reviewCount = document.getElementById('updates-review-count');
+        if (count) {
+            count.textContent = total;
+            count.hidden = !total;
+        }
+        if (button) button.classList.toggle('has-updates', total > 0);
+        if (attemptsCount) attemptsCount.textContent = attemptCounts.unread;
+        if (reviewCount) reviewCount.textContent = reviewCounts.pending;
+    }
+
     function updateTopBadges() {
         var button = document.querySelector('.tab-button[data-view="argue"]');
         if (!button) return;
         var count = pendingReviewCount();
         button.innerHTML = 'Review' + (count ? '<span class="notice-dot danger">' + escapeHtml(count) + '</span>' : '');
+        updateActivityBadges();
     }
 
     function updateAssignView() {
@@ -307,6 +371,12 @@
     function loadProgressData() {
         return teacherCall('listProgress').catch(function() {
             return { progress: [] };
+        });
+    }
+
+    function loadActivityState() {
+        return teacherCall('getActivityState').catch(function() {
+            return { attempts_seen_at: null };
         });
     }
 
@@ -1188,7 +1258,7 @@
                         '</form>' : '') +
                     '</div>' +
                     '<div class="student-info-item">' +
-                        '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + renderSystemTag(student.curriculum_track, 'Not set') + '</strong></button>' +
+                        '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
                         (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
                             '<select name="curriculum_track">' + systemOptions.map(function(option) {
                                 return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
@@ -1257,6 +1327,166 @@
                 var setId = button.dataset.assignmentSet;
                 state.expandedAssignmentSets[setId] = state.expandedAssignmentSets[setId] !== true;
                 renderStudentDetail();
+            });
+        });
+    }
+
+    function studentForUid(uid) {
+        return state.students.find(function(student) { return student.auth_uid === uid; }) || {};
+    }
+
+    function attemptStatusLabel(attempt) {
+        if (attempt.mastered) return 'Mastered';
+        if (attempt.passed) return 'Passed';
+        return 'Try again';
+    }
+
+    function renderActivityAttemptRow(attempt) {
+        var student = studentForUid(attempt.student_uid);
+        var name = student.name || attempt.student_id || 'Student';
+        return '<button class="activity-row attempt-activity-row" type="button" data-open-attempt-student="' +
+            escapeHtml(attempt.student_uid || '') + '" data-open-attempt-assignment="' + escapeHtml(attempt.assignment_id || '') +
+            '" data-open-attempt-set="' + escapeHtml(attempt.set_id || '') + '" data-open-attempt-finished="' +
+            escapeHtml(attempt.passed || attempt.mastered ? '1' : '') + '">' +
+            '<span><strong>' + escapeHtml(name) + '</strong><small>' +
+                escapeHtml(attempt.set_id || '') + ' · ' + escapeHtml(setTitleFor(attempt.set_id)) +
+            '</small></span>' +
+            '<span class="activity-score"><strong>' + escapeHtml(formatPercent(attempt.percentage)) + '</strong><small>' +
+                escapeHtml(attemptStatusLabel(attempt)) + ' · #' + escapeHtml(attempt.attempt_number || 1) +
+            '</small></span>' +
+            '<span class="activity-date">' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
+        '</button>';
+    }
+
+    function renderAttemptActivity() {
+        var counts = activityAttemptCounts();
+        var visible = sortedAttempts().filter(function(attempt) {
+            return state.attemptActivityFilter === 'unread' ? isAttemptUnread(attempt) : !isAttemptUnread(attempt);
+        });
+        return '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Attempt read state">' +
+            '<button class="sub-tab' + (state.attemptActivityFilter === 'unread' ? ' active' : '') +
+                '" type="button" data-attempt-activity-filter="unread">UNREAD ' + escapeHtml(counts.unread) + '</button>' +
+            '<button class="sub-tab' + (state.attemptActivityFilter === 'read' ? ' active' : '') +
+                '" type="button" data-attempt-activity-filter="read">READ ' + escapeHtml(counts.read) + '</button>' +
+        '</div>' +
+        (state.attemptActivityFilter === 'unread' && counts.unread
+            ? '<div class="activity-actions"><button class="outline-button" type="button" id="mark-attempts-read">Mark attempts read</button></div>'
+            : '') +
+        '<div class="activity-list">' +
+            (visible.length ? visible.map(renderActivityAttemptRow).join('') :
+                '<div class="empty-card"><strong>No ' + escapeHtml(state.attemptActivityFilter) + ' attempts</strong>' +
+                (state.attemptActivityFilter === 'unread' ? 'New submissions will appear here.' : 'Read attempts will appear here after you mark them read.') +
+                '</div>') +
+        '</div>';
+    }
+
+    function renderActivityReviewRow(item) {
+        var pending = item.status !== 'approved' && item.status !== 'rejected';
+        var requester = item.requester_role === 'teacher'
+            ? 'Teacher preview'
+            : englishName(item.student_name || item.student_id || 'Student');
+        var displayDate = pending
+            ? (item.created_at || item.updated_at || item.resolved_at)
+            : (item.resolved_at || item.updated_at || item.created_at);
+        return '<button class="activity-row review-activity-row" type="button" data-open-dispute="' +
+            escapeHtml(item.dispute_id) + '" data-open-dispute-filter="' + escapeHtml(pending ? 'pending' : item.status) + '">' +
+            '<span><strong>' + escapeHtml(requester) + '</strong><small>' +
+                escapeHtml(item.set_id || '') + ' · Question ' + escapeHtml(item.question_id || '') +
+            '</small></span>' +
+            '<span class="activity-score"><strong>' + escapeHtml(pending ? 'Pending' : item.status) + '</strong><small>' +
+                escapeHtml(item.decision || 'Review') + '</small></span>' +
+            '<span class="activity-date">' + escapeHtml(formatDateTime(displayDate)) + '</span>' +
+        '</button>';
+    }
+
+    function renderReviewActivity() {
+        var counts = reviewActivityCounts();
+        var visible = (state.disputes || []).filter(function(item) {
+            var pending = item.status !== 'approved' && item.status !== 'rejected';
+            return state.reviewActivityFilter === 'pending' ? pending : !pending;
+        }).sort(function(a, b) {
+            var aDate = a.status === 'pending' ? (a.created_at || a.updated_at) : (a.resolved_at || a.updated_at || a.created_at);
+            var bDate = b.status === 'pending' ? (b.created_at || b.updated_at) : (b.resolved_at || b.updated_at || b.created_at);
+            return new Date(bDate || 0) - new Date(aDate || 0);
+        });
+        return '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Review state">' +
+            '<button class="sub-tab' + (state.reviewActivityFilter === 'pending' ? ' active' : '') +
+                '" type="button" data-review-activity-filter="pending">PENDING ' + escapeHtml(counts.pending) + '</button>' +
+            '<button class="sub-tab' + (state.reviewActivityFilter === 'finished' ? ' active' : '') +
+                '" type="button" data-review-activity-filter="finished">FINISHED ' + escapeHtml(counts.finished) + '</button>' +
+        '</div>' +
+        '<div class="activity-list">' +
+            (visible.length ? visible.map(renderActivityReviewRow).join('') :
+                '<div class="empty-card"><strong>No ' + escapeHtml(state.reviewActivityFilter) + ' review</strong>' +
+                (state.reviewActivityFilter === 'pending' ? 'Student Argue requests will appear here.' : 'Approved and rejected requests will appear here.') +
+                '</div>') +
+        '</div>';
+    }
+
+    function renderUpdatesPanel() {
+        updateActivityBadges();
+        if (!updatesPanel || !updatesBody) return;
+        updatesPanel.hidden = !state.updatesOpen;
+        var button = document.getElementById('teacher-updates-button');
+        if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
+        if (!state.updatesOpen) return;
+        document.querySelectorAll('[data-updates-view]').forEach(function(tab) {
+            tab.classList.toggle('active', tab.dataset.updatesView === state.updatesView);
+        });
+        updatesBody.innerHTML = state.updatesView === 'attempts' ? renderAttemptActivity() : renderReviewActivity();
+        updatesBody.querySelectorAll('[data-attempt-activity-filter]').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                state.attemptActivityFilter = tab.dataset.attemptActivityFilter;
+                renderUpdatesPanel();
+            });
+        });
+        updatesBody.querySelectorAll('[data-review-activity-filter]').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                state.reviewActivityFilter = tab.dataset.reviewActivityFilter;
+                renderUpdatesPanel();
+            });
+        });
+        var markRead = document.getElementById('mark-attempts-read');
+        if (markRead) {
+            markRead.addEventListener('click', function() {
+                markRead.disabled = true;
+                teacherCall('markAttemptsRead').then(function(result) {
+                    state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
+                    showMessage('Attempts marked as read.', 'success');
+                    renderUpdatesPanel();
+                }).catch(function(error) {
+                    showMessage(error.message, 'error');
+                    renderUpdatesPanel();
+                });
+            });
+        }
+        updatesBody.querySelectorAll('[data-open-attempt-student]').forEach(function(row) {
+            row.addEventListener('click', function() {
+                var student = state.students.find(function(item) { return item.auth_uid === row.dataset.openAttemptStudent; });
+                if (student) {
+                    state.selectedStudentProfileId = student.profile_id;
+                    state.studentProgressView = row.dataset.openAttemptFinished ? 'finished' : 'to_do';
+                    state.expandedAssignmentSets = {};
+                    var expandKey = row.dataset.openAttemptAssignment || row.dataset.openAttemptSet;
+                    if (expandKey) state.expandedAssignmentSets[expandKey] = true;
+                    state.updatesOpen = false;
+                    activateView('check');
+                    setStudentPickerOpen(false);
+                    renderStudentList();
+                    renderStudentDetail();
+                    renderUpdatesPanel();
+                }
+            });
+        });
+        updatesBody.querySelectorAll('[data-open-dispute]').forEach(function(row) {
+            row.addEventListener('click', function() {
+                state.disputeFilter = row.dataset.openDisputeFilter || 'pending';
+                state.expandedDisputes[row.dataset.openDispute] = true;
+                state.disputeMerge = false;
+                state.updatesOpen = false;
+                activateView('argue');
+                renderDisputes();
+                renderUpdatesPanel();
             });
         });
     }
@@ -1536,9 +1766,11 @@
                 }).then(function() {
                     renderDisputes();
                     renderStudentDetail();
+                    renderUpdatesPanel();
                 }).catch(function(error) {
                     showMessage(error.message, 'error');
                     renderDisputes();
+                    renderUpdatesPanel();
                 });
             });
         });
@@ -1580,7 +1812,8 @@
             teacherCall('listAssignments'),
             teacherCall('listDisputes'),
             teacherCall('listAttempts'),
-            loadProgressData()
+            loadProgressData(),
+            loadActivityState()
         ]).then(function(results) {
             state.students = results[0].students || [];
             state.sets = results[1].sets || [];
@@ -1588,6 +1821,7 @@
             state.disputes = results[3].disputes || [];
             state.attempts = results[4].attempts || [];
             state.progressItems = results[5].progress || [];
+            state.attemptsSeenAt = results[6].attempts_seen_at || null;
             fillClassFilters();
             fillSetSectionFilters();
             renderSetOptions();
@@ -1595,9 +1829,11 @@
             renderStudentList();
             renderStudentDetail();
             updateAssignView();
+            renderUpdatesPanel();
             return loadQuestionTextForDisputes();
         }).then(function() {
             renderDisputes();
+            renderUpdatesPanel();
         });
     }
 
@@ -1605,6 +1841,20 @@
         button.addEventListener('click', function() {
             activateView(button.dataset.view);
             if (button.dataset.view === 'assign') updateAssignView();
+        });
+    });
+    document.getElementById('teacher-updates-button').addEventListener('click', function() {
+        state.updatesOpen = state.updatesOpen !== true;
+        renderUpdatesPanel();
+    });
+    document.getElementById('teacher-updates-close').addEventListener('click', function() {
+        state.updatesOpen = false;
+        renderUpdatesPanel();
+    });
+    document.querySelectorAll('[data-updates-view]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            state.updatesView = button.dataset.updatesView;
+            renderUpdatesPanel();
         });
     });
     document.querySelectorAll('[data-assign-view]').forEach(function(button) {
