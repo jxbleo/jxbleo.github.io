@@ -608,16 +608,16 @@
     function candidateStatus(candidate) {
         if (candidate.availability === 'starred') {
             return {
-                label: candidate.star_source === 'explore' ? 'STAR · completed in Explore' : 'STAR · completed',
+                label: candidate.star_source === 'explore' ? 'STAR · can reassign' : 'STAR · can reassign',
                 css: 'starred',
-                disabled: true
+                disabled: false
             };
         }
         if (candidate.availability === 'in_progress') {
             return { label: 'In Progress', css: 'progress', disabled: true };
         }
         if (candidate.availability === 'completed') {
-            return { label: 'STAR · completed', css: 'starred', disabled: true };
+            return { label: 'Completed · can reassign', css: 'starred', disabled: false };
         }
         return { label: 'Available', css: 'available', disabled: false };
     }

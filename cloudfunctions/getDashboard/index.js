@@ -15,6 +15,7 @@ async function getAuthenticatedStudent() {
   if (!result.data || !result.data[0]) throw new Error("STUDENT_NOT_LINKED");
   const student = result.data[0];
   if (String(student.auth_uid || "") !== authUid) throw new Error("STUDENT_NOT_LINKED");
+  if ((student.role || "student") !== "student") throw new Error("STUDENT_REQUIRED");
   return student;
 }
 

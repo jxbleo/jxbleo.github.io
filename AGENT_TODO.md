@@ -42,11 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
       assignment `BBC-250717` at 100%, the student dashboard showed it under
       FINISHED, but teacher Progress still showed the older `5 TO DO / 4
       Finished` summary and did not list that assignment after reload.
-- [ ] Reconcile reassignment rules for completed/STAR work. Teacher Assign
-      correctly detected the completed `BBC-250717` result, but both frontend
-      candidate UI and the deployed `teacherAdmin.createAssignments` behavior
-      block reassignment as already completed; project rules say completed/STAR
-      records must not block future assignment.
 - [ ] Decide whether the student dashboard should show two unlabeled star
       counters. The current header displays separate assignment and self-study
       counts, but they appear only as adjacent `★` numbers.
@@ -55,6 +50,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-16
 
+- Fixed source-level P0 backend architecture issues: `submitAttempt` now keeps
+  assignment status monotonic while recording lower-scoring retries, student
+  dashboard/submit functions reject teacher profiles, teacher assignment can
+  reassign completed/STAR work, and Argue regrading can create or repair STAR
+  records when mastery is reached.
+- Updated `teacher.js` candidate cards so completed/STAR students are selectable
+  for reassignment. CloudBase deployment still required for
+  `submitAttempt`, `getDashboard`, and `teacherAdmin`; static publish required
+  for the teacher UI change.
 - Generated light-background square DSE/IELTS app icon assets from the owner's
   original logo images, wired the student dashboard to switch the home-screen
   icon/manifest by `curriculum_track`, and kept student/teacher personal
