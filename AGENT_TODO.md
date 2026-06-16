@@ -55,6 +55,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-16
 
+- Generated light-background square DSE/IELTS app icon assets from the owner's
+  original logo images, wired the student dashboard to switch the home-screen
+  icon/manifest by `curriculum_track`, and kept student/teacher personal
+  profile System fields text-only.
+- Verified icon dimensions/background pixels, manifest JSON, and
+  `dashboard.js`/`teacher.js` syntax. CloudBase: no deployment required; static
+  publish is required for devices to fetch the new icons.
 - Fixed mobile student assignment capsules so the `Go` button stays in a right
   column instead of dropping to a third line; verified with headless Chrome at
   390px viewport that `Go` shares the title row and sits on the right.
