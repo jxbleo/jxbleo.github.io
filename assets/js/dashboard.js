@@ -655,7 +655,6 @@
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
                 '<button class="dialog-close-button" type="button" aria-label="Close teacher replies">×</button>' +
                 '<div class="teacher-replies-dialog-head">' +
-                    '<span class="teacher-replies-tag">Teacher Replies</span>' +
                     '<h2 id="teacher-replies-title">' + replies.length + ' repl' + (replies.length === 1 ? 'y is' : 'ies are') + ' ready.</h2>' +
                 '</div>' +
                 '<div class="teacher-replies-list">' + replies.map(function(reply) {
