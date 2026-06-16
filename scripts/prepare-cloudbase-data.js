@@ -89,19 +89,28 @@ function extractBbc(source) {
   };
 }
 
-function extractIelts(source) {
+function extractIelts(source, privateSource) {
   const answers = {};
   const explanations = {};
 
+  if (privateSource && privateSource.answers) {
+    Object.assign(answers, privateSource.answers);
+    Object.assign(explanations, privateSource.explanations || {});
+  }
+
   (source.questions || []).forEach((questionSet) => {
     if (questionSet.example && questionSet.example.id && questionSet.example.answer != null) {
-      answers[questionSet.example.id] = questionSet.example.answer;
-      explanations[questionSet.example.id] = questionSet.example.evidence || "";
+      if (answers[questionSet.example.id] == null) {
+        answers[questionSet.example.id] = questionSet.example.answer;
+        explanations[questionSet.example.id] = questionSet.example.evidence || "";
+      }
     }
     (questionSet.items || []).forEach((item) => {
       if (!item.id || item.answer == null) return;
-      answers[item.id] = item.answer;
-      explanations[item.id] = item.evidence || item.explanation || "";
+      if (answers[item.id] == null) {
+        answers[item.id] = item.answer;
+        explanations[item.id] = item.evidence || item.explanation || "";
+      }
     });
   });
 
@@ -109,10 +118,10 @@ function extractIelts(source) {
     publicData: withoutPrivateFields(source),
     gradingKey: {
       set_id: source.id,
-      grading_version: "1",
+      grading_version: privateSource && privateSource.grading_version ? privateSource.grading_version : "1",
       answers,
       explanations,
-      scoring_rules: { type: "ielts_normalized" },
+      scoring_rules: privateSource && privateSource.scoring_rules ? privateSource.scoring_rules : { type: "ielts_normalized" },
     },
   };
 }
@@ -214,7 +223,7 @@ function main() {
     .forEach((filePath) => {
       const source = readJson(filePath);
       const meta = readJson(path.join(projectRoot, "content", "ielts-reading", `${source.id}.json`));
-      const extracted = extractIelts(source);
+      const extracted = extractIelts(source, privateSourceFor("ielts-reading", source.id));
       sets.push(buildSet(meta, { type: "reading", course: "IELTS Reading" }));
       gradingKeys.push(extracted.gradingKey);
       writeJson(path.join(publicRoot, "data", path.basename(filePath)), extracted.publicData);

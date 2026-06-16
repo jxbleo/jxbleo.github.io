@@ -1,0 +1,86 @@
+{
+  "id": "C7-T3-S1",
+  "title": "Student Job Enquiry",
+  "source": "Cambridge IELTS 7, Test 3, Section 1",
+  "testLabel": "Test 3",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "label": "Questions 1-10",
+          "instruction": "Complete the notes, table and form below.",
+          "html": "<h2>Student Job Enquiry</h2><ul class=\"ielts-notes\"><li>Student is studying {{Q1}}</li><li>Student is in the {{Q2}} year of the course</li></ul><table class=\"booking-form\"><tbody><tr><th>Job</th><th>Problem</th></tr><tr><td>Receptionist in the {{Q3}}</td><td>evening lectures</td></tr><tr><td>{{Q4}} in the Child Care Centre</td><td>too early</td></tr><tr><td>Clerical Assistant in the {{Q5}}</td><td>evening lectures</td></tr></tbody></table><h2>Student Details</h2><table class=\"booking-form\"><tbody><tr><th>Name</th><td>Anita Newman</td><th>Address</th><td>{{Q6}}</td></tr><tr><th>Room No.</th><td>{{Q7}}</td><th>Other skills</th><td>Speaks some Japanese</td></tr><tr><th>Position available</th><td>{{Q8}} at the English Language Centre</td><th>Duties</th><td>Respond to enquiries and {{Q9}}</td></tr><tr><th>Time of interview</th><td colspan=\"3\">Friday at {{Q10}} a.m.</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "number": 1,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q2",
+      "number": 2,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q3",
+      "number": 3,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q4",
+      "number": 4,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q5",
+      "number": 5,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q6",
+      "number": 6,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q7",
+      "number": 7,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q8",
+      "number": 8,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q9",
+      "number": 9,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q10",
+      "number": 10,
+      "part": 1,
+      "type": "completion"
+    }
+  ]
+}

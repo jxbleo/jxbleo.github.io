@@ -1,0 +1,170 @@
+{
+  "id": "C7-T4-S3",
+  "title": "Geography Presentation",
+  "source": "Cambridge IELTS 7, Test 4, Section 3",
+  "testLabel": "Test 4",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "label": "Questions 21-22",
+          "instruction": "Complete the sentences below.",
+          "html": "<ul class=\"ielts-notes\"><li>The presentation will last 15 minutes.</li><li>There will be {{Q21}} minutes for questions.</li><li>The presentation will not be {{Q22}}.</li></ul>"
+        },
+        {
+          "type": "mcq",
+          "label": "Questions 23-26",
+          "instruction": "What do the students decide about each topic? A definitely include; B might include; C will not include.",
+          "items": [
+            {
+              "id": "Q23",
+              "text": "Geographical Location",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "They will definitely include this topic."
+                },
+                {
+                  "value": "B",
+                  "text": "They might include this topic."
+                },
+                {
+                  "value": "C",
+                  "text": "They will not include this topic."
+                }
+              ]
+            },
+            {
+              "id": "Q24",
+              "text": "Economy",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "They will definitely include this topic."
+                },
+                {
+                  "value": "B",
+                  "text": "They might include this topic."
+                },
+                {
+                  "value": "C",
+                  "text": "They will not include this topic."
+                }
+              ]
+            },
+            {
+              "id": "Q25",
+              "text": "Overview of Education System",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "They will definitely include this topic."
+                },
+                {
+                  "value": "B",
+                  "text": "They might include this topic."
+                },
+                {
+                  "value": "C",
+                  "text": "They will not include this topic."
+                }
+              ]
+            },
+            {
+              "id": "Q26",
+              "text": "Role of English Language",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "They will definitely include this topic."
+                },
+                {
+                  "value": "B",
+                  "text": "They might include this topic."
+                },
+                {
+                  "value": "C",
+                  "text": "They will not include this topic."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 27-30",
+          "instruction": "Complete the table below. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<table class=\"booking-form\"><tbody><tr><th>Visual</th><th>Where from?</th></tr><tr><td>Overhead projector</td><td>the {{Q27}}</td></tr><tr><td>Map of West Africa</td><td>the {{Q28}}</td></tr><tr><td>Map of the islands</td><td>a tourist brochure</td></tr><tr><td>Literacy figures</td><td>the {{Q29}}</td></tr><tr><td>{{Q30}} on school places</td><td>as above</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

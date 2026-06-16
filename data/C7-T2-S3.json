@@ -1,0 +1,201 @@
+{
+  "id": "C7-T2-S3",
+  "title": "The Antarctic Centre",
+  "source": "Cambridge IELTS 7, Test 2, Section 3",
+  "testLabel": "Test 2",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 21-26",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q21",
+              "text": "The Antarctic Centre was established in Christchurch because",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "New Zealand is a member of the Antarctic Treaty."
+                },
+                {
+                  "value": "B",
+                  "text": "Christchurch is geographically well positioned."
+                },
+                {
+                  "value": "C",
+                  "text": "the climate of Christchurch is suitable."
+                }
+              ]
+            },
+            {
+              "id": "Q22",
+              "text": "One role of the Antarctic Centre is to",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "provide expeditions with suitable equipment."
+                },
+                {
+                  "value": "B",
+                  "text": "provide researchers with financial assistance."
+                },
+                {
+                  "value": "C",
+                  "text": "ensure that research is internationally relevant."
+                }
+              ]
+            },
+            {
+              "id": "Q23",
+              "text": "The purpose of the Visitors' Centre is to",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "provide accommodation."
+                },
+                {
+                  "value": "B",
+                  "text": "run training sessions."
+                },
+                {
+                  "value": "C",
+                  "text": "show people what Antarctica is like."
+                }
+              ]
+            },
+            {
+              "id": "Q24",
+              "text": "Dr Merrywhether says that Antarctica is",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "unlike any other country."
+                },
+                {
+                  "value": "B",
+                  "text": "extremely beautiful."
+                },
+                {
+                  "value": "C",
+                  "text": "too cold for tourists."
+                }
+              ]
+            },
+            {
+              "id": "Q25",
+              "text": "According to Dr Merrywhether, Antarctica is very cold because",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "of the shape of the continent."
+                },
+                {
+                  "value": "B",
+                  "text": "it is surrounded by a frozen sea."
+                },
+                {
+                  "value": "C",
+                  "text": "it is an extremely dry continent."
+                }
+              ]
+            },
+            {
+              "id": "Q26",
+              "text": "Dr Merrywhether thinks Antarctica was part of another continent because",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "he has done his own research in the area."
+                },
+                {
+                  "value": "B",
+                  "text": "there is geological evidence of this."
+                },
+                {
+                  "value": "C",
+                  "text": "it is very close to South America."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 27-30",
+          "instruction": "Complete the table and choose TWO letters for Questions 29 and 30.",
+          "html": "<h2>Antarctic Treaty</h2><table class=\"booking-form\"><tbody><tr><th>Date</th><th>Event</th></tr><tr><td>1870</td><td>Polar Research meeting</td></tr><tr><td>{{Q27}}</td><td>1st International Polar Year</td></tr><tr><td>1957</td><td>Antarctic Treaty was proposed</td></tr><tr><td>1959</td><td>Antarctic Treaty was {{Q28}}</td></tr></tbody></table><p><strong>Achievements mentioned:</strong> A no military use; B animals protected; C historic sites preserved; D no nuclear testing; E fishing rights protected.</p><p>{{Q29}} {{Q30}}</p>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

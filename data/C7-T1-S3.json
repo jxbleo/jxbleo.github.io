@@ -1,0 +1,170 @@
+{
+  "id": "C7-T1-S3",
+  "title": "Differences Between Individuals in the Workplace",
+  "source": "Cambridge IELTS 7, Test 1, Section 3",
+  "testLabel": "Test 1",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "label": "Questions 21-23",
+          "instruction": "Complete the notes below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Differences between individuals in the workplace</h2><h3>Individuals bring different:</h3><ul class=\"ielts-notes\"><li>ideas</li><li>{{Q21}}</li><li>learning experiences</li></ul><h3>Work behaviour differences are due to:</h3><ul class=\"ielts-notes\"><li>personality</li><li>{{Q22}}</li></ul><h3>Effects of diversity on companies:</h3><ul class=\"ielts-notes\"><li>Advantage: diversity develops {{Q23}}</li><li>Disadvantage: diversity can cause conflict</li></ul>"
+        },
+        {
+          "type": "mcq",
+          "label": "Questions 24-27",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q24",
+              "text": "Janice thinks that employers should encourage workers who are",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "potential leaders."
+                },
+                {
+                  "value": "B",
+                  "text": "open to new ideas."
+                },
+                {
+                  "value": "C",
+                  "text": "good at teamwork."
+                }
+              ]
+            },
+            {
+              "id": "Q25",
+              "text": "Janice suggests that managers may find it difficult to",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "form successful groups."
+                },
+                {
+                  "value": "B",
+                  "text": "balance conflicting needs."
+                },
+                {
+                  "value": "C",
+                  "text": "deal with uncooperative workers."
+                }
+              ]
+            },
+            {
+              "id": "Q26",
+              "text": "Janice believes employers should look for job applicants who",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "can think independently."
+                },
+                {
+                  "value": "B",
+                  "text": "will obey the system."
+                },
+                {
+                  "value": "C",
+                  "text": "can solve problems."
+                }
+              ]
+            },
+            {
+              "id": "Q27",
+              "text": "Janice believes managers should",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "demonstrate good behaviour."
+                },
+                {
+                  "value": "B",
+                  "text": "encourage co-operation early on."
+                },
+                {
+                  "value": "C",
+                  "text": "increase financial incentives."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 28-30",
+          "instruction": "Complete the sentences below. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<ul class=\"ielts-notes\"><li>All managers need to understand their employees and recognise their company's {{Q28}}.</li><li>When managing change, increasing the company's {{Q29}} may be more important than employee satisfaction.</li><li>During periods of change, managers may have to cope with increased amounts of {{Q30}}.</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

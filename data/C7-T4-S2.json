@@ -1,0 +1,165 @@
+{
+  "id": "C7-T4-S2",
+  "title": "Bicentennial Park Tour",
+  "source": "Cambridge IELTS 7, Test 4, Section 2",
+  "testLabel": "Test 4",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 11-14",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q11",
+              "text": "What kind of tour is Sally leading?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "a bus tour"
+                },
+                {
+                  "value": "B",
+                  "text": "a train tour"
+                },
+                {
+                  "value": "C",
+                  "text": "a walking tour"
+                }
+              ]
+            },
+            {
+              "id": "Q12",
+              "text": "The original buildings on the site were",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "houses."
+                },
+                {
+                  "value": "B",
+                  "text": "industrial buildings."
+                },
+                {
+                  "value": "C",
+                  "text": "shops."
+                }
+              ]
+            },
+            {
+              "id": "Q13",
+              "text": "The local residents wanted to use the site for",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "leisure."
+                },
+                {
+                  "value": "B",
+                  "text": "apartment blocks."
+                },
+                {
+                  "value": "C",
+                  "text": "a sports centre."
+                }
+              ]
+            },
+            {
+              "id": "Q14",
+              "text": "The Tower is at the centre of the",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "nature reserve."
+                },
+                {
+                  "value": "B",
+                  "text": "formal gardens."
+                },
+                {
+                  "value": "C",
+                  "text": "Bicentennial Park."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 15-20",
+          "instruction": "Label the plan and complete the table below.",
+          "html": "<h2>Bicentennial Park Plan</h2><ul class=\"ielts-notes\"><li>Location 15: {{Q15}}</li><li>Location 16: {{Q16}}</li><li>Location 17: {{Q17}}</li></ul><table class=\"booking-form\"><tbody><tr><th>Area</th><th>Facility</th><th>Activity</th></tr><tr><td>The Mangroves</td><td>boardwalk</td><td>{{Q18}}</td></tr><tr><td>Frog Pond</td><td>outdoor classroom</td><td>{{Q19}}</td></tr><tr><td>The Waterbird Refuge</td><td>{{Q20}}</td><td>bird watching</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "completion"
+    }
+  ]
+}

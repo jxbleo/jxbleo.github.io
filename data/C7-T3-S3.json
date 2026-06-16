@@ -1,0 +1,183 @@
+{
+  "id": "C7-T3-S3",
+  "title": "Ocean Research",
+  "source": "Cambridge IELTS 7, Test 3, Section 3",
+  "testLabel": "Test 3",
+  "audioSrc": "",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "label": "Questions 21-25",
+          "instruction": "Complete the notes and diagram below.",
+          "html": "<h2>Ocean Research: The Robotic Float Project</h2><ul class=\"ielts-notes\"><li>Float is shaped like a {{Q21}}</li><li>Scientists from {{Q22}} have worked on the project so far</li><li>Float dropped into ocean and {{Q23}} by satellite</li><li>Average distance travelled: {{Q24}}</li><li>Float records changes in salinity and {{Q25}}</li></ul>"
+        },
+        {
+          "type": "mcq",
+          "label": "Questions 26-30",
+          "instruction": "In what time period can data from the float projects help with the following things? A At present; B In the near future; C In the long-term future.",
+          "items": [
+            {
+              "id": "Q26",
+              "text": "understanding of El Nino",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "At present"
+                },
+                {
+                  "value": "B",
+                  "text": "In the near future"
+                },
+                {
+                  "value": "C",
+                  "text": "In the long-term future"
+                }
+              ]
+            },
+            {
+              "id": "Q27",
+              "text": "understanding of climate change",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "At present"
+                },
+                {
+                  "value": "B",
+                  "text": "In the near future"
+                },
+                {
+                  "value": "C",
+                  "text": "In the long-term future"
+                }
+              ]
+            },
+            {
+              "id": "Q28",
+              "text": "naval rescues",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "At present"
+                },
+                {
+                  "value": "B",
+                  "text": "In the near future"
+                },
+                {
+                  "value": "C",
+                  "text": "In the long-term future"
+                }
+              ]
+            },
+            {
+              "id": "Q29",
+              "text": "sustainable fishing practices",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "At present"
+                },
+                {
+                  "value": "B",
+                  "text": "In the near future"
+                },
+                {
+                  "value": "C",
+                  "text": "In the long-term future"
+                }
+              ]
+            },
+            {
+              "id": "Q30",
+              "text": "crop selection",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "At present"
+                },
+                {
+                  "value": "B",
+                  "text": "In the near future"
+                },
+                {
+                  "value": "C",
+                  "text": "In the long-term future"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "mcq"
+    }
+  ]
+}

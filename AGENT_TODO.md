@@ -50,6 +50,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-16
 
+- Added owner-gated CloudBase release helpers: `verify-release`,
+  `package-cloudfunctions`, and `generate-deploy-plan`. Verified the release
+  checker passes with only a dirty-worktree warning, dry-run packaging lists all
+  current cloud functions, and deploy-plan generation writes the ignored local
+  `.cloudbase-private/deploy-plan.md`. CloudBase: no deployment performed.
 - Fixed source-level P0 backend architecture issues: `submitAttempt` now keeps
   assignment status monotonic while recording lower-scoring retries, student
   dashboard/submit functions reject teacher profiles, teacher assignment can
@@ -93,6 +98,19 @@ cp .qa-secrets.example .qa-secrets.local
 - CloudBase: no deployment or import performed. Static publish is required for
   the audio fix; CloudBase `sets` and `grading_keys` import is required if NAWL
   items are missing from authenticated Library/Explore or grading.
+- Imported Cambridge IELTS 7 Academic Reading/Listening from the supplied PDF:
+  added missing Test 4 Reading passages, added 14 missing Listening section
+  pages, corrected `C7-T3-P1` Questions 7-13 to use the original A-O option
+  format, rebuilt the static catalog, and regenerated private CloudBase import
+  files.
+- Verified all 28 C7 runtime JSON files parse, each C7 grading key is non-empty,
+  public C7 data contains no answer/explanation fields, the home catalog lists
+  all 28 C7 items, and local browser smoke tests load `C7-T4-P1`,
+  `C7-T4-S4`, and corrected `C7-T3-P1` with no console errors.
+- CloudBase: import updated `.cloudbase-private/import/sets-cloudbase.json` and
+  `.cloudbase-private/import/grading-keys-cloudbase.json` after publishing the
+  static site. New Listening pages show `Audio pending` until matching mp3 files
+  are added under `assets/audio/ielts-listening/` and referenced in data JSON.
 
 ### 2026-06-15
 
