@@ -20,9 +20,7 @@
         studentProgressView: 'to_do',
         studentInfoEdit: '',
         updatesOpen: false,
-        updatesView: 'attempts',
-        attemptActivityFilter: 'unread',
-        reviewActivityFilter: 'pending',
+        updatesFilter: 'unread',
         attemptsSeenAt: null,
         disputeFilter: 'pending',
         disputeMerge: false,
@@ -248,15 +246,11 @@
         var total = attemptCounts.unread + reviewCounts.pending;
         var count = document.getElementById('teacher-updates-count');
         var button = document.getElementById('teacher-updates-button');
-        var attemptsCount = document.getElementById('updates-attempts-count');
-        var reviewCount = document.getElementById('updates-review-count');
         if (count) {
             count.textContent = total ? String(total) : '';
             count.hidden = total <= 0;
         }
         if (button) button.classList.toggle('has-updates', total > 0);
-        if (attemptsCount) attemptsCount.textContent = attemptCounts.unread;
-        if (reviewCount) reviewCount.textContent = reviewCounts.pending;
     }
 
     function updateTopBadges() {
@@ -1336,51 +1330,35 @@
     }
 
     function attemptStatusLabel(attempt) {
-        if (attempt.mastered) return 'Mastered';
-        if (attempt.passed) return 'Passed';
-        return 'Try again';
+        if (attempt.mastered) return 'mastered';
+        if (attempt.passed) return 'finished';
+        return 'tried';
     }
 
-    function renderActivityAttemptRow(attempt) {
+    function activityDateValue(item) {
+        return item.date || item.submitted_at || item.created_at || item.updated_at || item.resolved_at || null;
+    }
+
+    function attemptActivityItem(attempt) {
         var student = studentForUid(attempt.student_uid);
         var name = student.name || attempt.student_id || 'Student';
-        return '<button class="activity-row attempt-activity-row" type="button" data-open-attempt-student="' +
-            escapeHtml(attempt.student_uid || '') + '" data-open-attempt-assignment="' + escapeHtml(attempt.assignment_id || '') +
-            '" data-open-attempt-set="' + escapeHtml(attempt.set_id || '') + '" data-open-attempt-finished="' +
-            escapeHtml(attempt.passed || attempt.mastered ? '1' : '') + '">' +
-            '<span><strong>' + escapeHtml(name) + '</strong><small>' +
-                escapeHtml(attempt.set_id || '') + ' · ' + escapeHtml(setTitleFor(attempt.set_id)) +
-            '</small></span>' +
-            '<span class="activity-score"><strong>' + escapeHtml(formatPercent(attempt.percentage)) + '</strong><small>' +
-                escapeHtml(attemptStatusLabel(attempt)) + ' · #' + escapeHtml(attempt.attempt_number || 1) +
-            '</small></span>' +
-            '<span class="activity-date">' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
-        '</button>';
+        var action = attemptStatusLabel(attempt);
+        return {
+            type: 'attempt',
+            date: attempt.submitted_at || null,
+            unread: isAttemptUnread(attempt),
+            attempt: attempt,
+            label: name + ' ' + action + ' ' + (setTitleFor(attempt.set_id) || attempt.set_id),
+            meta: formatPercent(attempt.percentage) + ' · #' + (attempt.attempt_number || 1),
+            time: formatDateTime(attempt.submitted_at),
+            student_uid: attempt.student_uid || '',
+            assignment_id: attempt.assignment_id || '',
+            set_id: attempt.set_id || '',
+            finished: attempt.passed || attempt.mastered
+        };
     }
 
-    function renderAttemptActivity() {
-        var counts = activityAttemptCounts();
-        var visible = sortedAttempts().filter(function(attempt) {
-            return state.attemptActivityFilter === 'unread' ? isAttemptUnread(attempt) : !isAttemptUnread(attempt);
-        });
-        return '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Attempt read state">' +
-            '<button class="sub-tab' + (state.attemptActivityFilter === 'unread' ? ' active' : '') +
-                '" type="button" data-attempt-activity-filter="unread">UNREAD ' + escapeHtml(counts.unread) + '</button>' +
-            '<button class="sub-tab' + (state.attemptActivityFilter === 'read' ? ' active' : '') +
-                '" type="button" data-attempt-activity-filter="read">READ ' + escapeHtml(counts.read) + '</button>' +
-        '</div>' +
-        (state.attemptActivityFilter === 'unread' && counts.unread
-            ? '<div class="activity-actions"><button class="outline-button" type="button" id="mark-attempts-read">Mark attempts read</button></div>'
-            : '') +
-        '<div class="activity-list">' +
-            (visible.length ? visible.map(renderActivityAttemptRow).join('') :
-                '<div class="empty-card"><strong>No ' + escapeHtml(state.attemptActivityFilter) + ' attempts</strong>' +
-                (state.attemptActivityFilter === 'unread' ? 'New submissions will appear here.' : 'Read attempts will appear here after you mark them read.') +
-                '</div>') +
-        '</div>';
-    }
-
-    function renderActivityReviewRow(item) {
+    function disputeActivityItem(item) {
         var pending = item.status !== 'approved' && item.status !== 'rejected';
         var requester = item.requester_role === 'teacher'
             ? 'Teacher preview'
@@ -1388,39 +1366,93 @@
         var displayDate = pending
             ? (item.created_at || item.updated_at || item.resolved_at)
             : (item.resolved_at || item.updated_at || item.created_at);
-        return '<button class="activity-row review-activity-row" type="button" data-open-dispute="' +
-            escapeHtml(item.dispute_id) + '" data-open-dispute-filter="' + escapeHtml(pending ? 'pending' : item.status) + '">' +
-            '<span><strong>' + escapeHtml(requester) + '</strong><small>' +
-                escapeHtml(item.set_id || '') + ' · Question ' + escapeHtml(item.question_id || '') +
-            '</small></span>' +
-            '<span class="activity-score"><strong>' + escapeHtml(pending ? 'Pending' : item.status) + '</strong><small>' +
-                escapeHtml(item.decision || 'Review') + '</small></span>' +
-            '<span class="activity-date">' + escapeHtml(formatDateTime(displayDate)) + '</span>' +
+        return {
+            type: 'review',
+            date: displayDate || null,
+            unread: pending,
+            dispute: item,
+            label: requester + ' requested review',
+            meta: 'Q' + (item.question_id || '') + ' · ' + (item.set_id || ''),
+            time: formatDateTime(displayDate),
+            dispute_id: item.dispute_id,
+            dispute_filter: pending ? 'pending' : item.status
+        };
+    }
+
+    function activityItems() {
+        return sortedAttempts().map(attemptActivityItem)
+            .concat((state.disputes || []).map(disputeActivityItem))
+            .filter(function(item) {
+                if (state.updatesFilter === 'attempts') return item.type === 'attempt';
+                if (state.updatesFilter === 'review') return item.type === 'review';
+                if (state.updatesFilter === 'unread') return item.unread;
+                return true;
+            })
+            .sort(function(a, b) {
+                return new Date(activityDateValue(b) || 0) - new Date(activityDateValue(a) || 0);
+            })
+            .slice(0, state.updatesFilter === 'all' ? 24 : 16);
+    }
+
+    function activityFilterTabs() {
+        var attemptCounts = activityAttemptCounts();
+        var reviewCounts = reviewActivityCounts();
+        var unread = attemptCounts.unread + reviewCounts.pending;
+        var tabs = [
+            { id: 'unread', label: 'Unread', count: unread },
+            { id: 'all', label: 'All', count: attemptCounts.total + state.disputes.length },
+            { id: 'attempts', label: 'Attempts', count: attemptCounts.total },
+            { id: 'review', label: 'Review', count: state.disputes.length }
+        ];
+        return '<div class="updates-feed-tools">' +
+            '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Activity filter">' +
+                tabs.map(function(tab) {
+                    return '<button class="sub-tab' + (state.updatesFilter === tab.id ? ' active' : '') +
+                        '" type="button" data-updates-filter="' + escapeHtml(tab.id) + '">' +
+                        escapeHtml(tab.label) + (tab.count ? ' ' + escapeHtml(tab.count) : '') +
+                    '</button>';
+                }).join('') +
+            '</div>' +
+            (attemptCounts.unread && state.updatesFilter !== 'review'
+                ? '<button class="activity-mark-read" type="button" id="mark-attempts-read">Mark attempts read</button>'
+                : '') +
+        '</div>';
+    }
+
+    function renderActivityFeedRow(item) {
+        if (item.type === 'attempt') {
+            var attempt = item.attempt;
+            return '<button class="activity-row compact-activity-row' + (item.unread ? ' unread' : '') +
+                '" type="button" data-open-attempt-student="' + escapeHtml(item.student_uid) +
+                '" data-open-attempt-assignment="' + escapeHtml(item.assignment_id) +
+                '" data-open-attempt-set="' + escapeHtml(item.set_id) +
+                '" data-open-attempt-finished="' + escapeHtml(item.finished ? '1' : '') + '">' +
+                '<span class="activity-unread-dot"></span>' +
+                '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong><small>' +
+                    escapeHtml(item.meta) + '</small></span>' +
+                '<span class="activity-date">' + escapeHtml(item.time) + '</span>' +
+            '</button>';
+        }
+        return '<button class="activity-row compact-activity-row review-activity-row' + (item.unread ? ' unread' : '') +
+            '" type="button" data-open-dispute="' + escapeHtml(item.dispute_id) +
+            '" data-open-dispute-filter="' + escapeHtml(item.dispute_filter) + '">' +
+            '<span class="activity-unread-dot"></span>' +
+            '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong><small>' +
+                escapeHtml(item.meta) + '</small></span>' +
+            '<span class="activity-date">' + escapeHtml(item.time) + '</span>' +
         '</button>';
     }
 
-    function renderReviewActivity() {
-        var counts = reviewActivityCounts();
-        var visible = (state.disputes || []).filter(function(item) {
-            var pending = item.status !== 'approved' && item.status !== 'rejected';
-            return state.reviewActivityFilter === 'pending' ? pending : !pending;
-        }).sort(function(a, b) {
-            var aDate = a.status === 'pending' ? (a.created_at || a.updated_at) : (a.resolved_at || a.updated_at || a.created_at);
-            var bDate = b.status === 'pending' ? (b.created_at || b.updated_at) : (b.resolved_at || b.updated_at || b.created_at);
-            return new Date(bDate || 0) - new Date(aDate || 0);
-        });
-        return '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Review state">' +
-            '<button class="sub-tab' + (state.reviewActivityFilter === 'pending' ? ' active' : '') +
-                '" type="button" data-review-activity-filter="pending">PENDING ' + escapeHtml(counts.pending) + '</button>' +
-            '<button class="sub-tab' + (state.reviewActivityFilter === 'finished' ? ' active' : '') +
-                '" type="button" data-review-activity-filter="finished">FINISHED ' + escapeHtml(counts.finished) + '</button>' +
-        '</div>' +
-        '<div class="activity-list">' +
-            (visible.length ? visible.map(renderActivityReviewRow).join('') :
-                '<div class="empty-card"><strong>No ' + escapeHtml(state.reviewActivityFilter) + ' review</strong>' +
-                (state.reviewActivityFilter === 'pending' ? 'Student Argue requests will appear here.' : 'Approved and rejected requests will appear here.') +
-                '</div>') +
-        '</div>';
+    function renderActivityFeed() {
+        var items = activityItems();
+        var emptyCopy = state.updatesFilter === 'unread'
+            ? 'No unread student activity right now.'
+            : 'Recent student activity will appear here.';
+        return activityFilterTabs() +
+            '<div class="activity-list compact-activity-list">' +
+                (items.length ? items.map(renderActivityFeedRow).join('') :
+                    '<div class="empty-card compact-empty"><strong>No updates</strong>' + escapeHtml(emptyCopy) + '</div>') +
+            '</div>';
     }
 
     function renderUpdatesPanel() {
@@ -1430,19 +1462,10 @@
         var button = document.getElementById('teacher-updates-button');
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
         if (!state.updatesOpen) return;
-        document.querySelectorAll('[data-updates-view]').forEach(function(tab) {
-            tab.classList.toggle('active', tab.dataset.updatesView === state.updatesView);
-        });
-        updatesBody.innerHTML = state.updatesView === 'attempts' ? renderAttemptActivity() : renderReviewActivity();
-        updatesBody.querySelectorAll('[data-attempt-activity-filter]').forEach(function(tab) {
+        updatesBody.innerHTML = renderActivityFeed();
+        updatesBody.querySelectorAll('[data-updates-filter]').forEach(function(tab) {
             tab.addEventListener('click', function() {
-                state.attemptActivityFilter = tab.dataset.attemptActivityFilter;
-                renderUpdatesPanel();
-            });
-        });
-        updatesBody.querySelectorAll('[data-review-activity-filter]').forEach(function(tab) {
-            tab.addEventListener('click', function() {
-                state.reviewActivityFilter = tab.dataset.reviewActivityFilter;
+                state.updatesFilter = tab.dataset.updatesFilter;
                 renderUpdatesPanel();
             });
         });
@@ -1452,6 +1475,7 @@
                 markRead.disabled = true;
                 teacherCall('markAttemptsRead').then(function(result) {
                     state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
+                    if (!reviewActivityCounts().pending) state.updatesFilter = 'all';
                     showMessage('Attempts marked as read.', 'success');
                     renderUpdatesPanel();
                 }).catch(function(error) {
@@ -1845,17 +1869,16 @@
     });
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
+        if (state.updatesOpen && state.updatesFilter === 'unread') {
+            var counts = activityAttemptCounts();
+            var reviewCounts = reviewActivityCounts();
+            if (counts.unread + reviewCounts.pending <= 0) state.updatesFilter = 'all';
+        }
         renderUpdatesPanel();
     });
     document.getElementById('teacher-updates-close').addEventListener('click', function() {
         state.updatesOpen = false;
         renderUpdatesPanel();
-    });
-    document.querySelectorAll('[data-updates-view]').forEach(function(button) {
-        button.addEventListener('click', function() {
-            state.updatesView = button.dataset.updatesView;
-            renderUpdatesPanel();
-        });
     });
     document.querySelectorAll('[data-assign-view]').forEach(function(button) {
         button.addEventListener('click', function() {
