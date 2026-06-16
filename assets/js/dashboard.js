@@ -74,6 +74,39 @@
             .replace(/'/g, '&#39;');
     }
 
+    function appIconConfig(system) {
+        var normalized = String(system || '').trim().toUpperCase();
+        if (normalized === 'IELTS') {
+            return {
+                apple: 'assets/icons/ielts-apple-touch-icon.png',
+                manifest: 'site-ielts.webmanifest'
+            };
+        }
+        return {
+            apple: 'assets/icons/dse-apple-touch-icon.png',
+            manifest: 'site-dse.webmanifest'
+        };
+    }
+
+    function ensureHeadLink(selector, rel) {
+        var link = document.querySelector(selector);
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = rel;
+            document.head.appendChild(link);
+        }
+        return link;
+    }
+
+    function updateAppIconForSystem(system) {
+        var config = appIconConfig(system);
+        var apple = ensureHeadLink('link[rel="apple-touch-icon"]', 'apple-touch-icon');
+        apple.setAttribute('sizes', '180x180');
+        apple.setAttribute('href', config.apple);
+        var manifest = ensureHeadLink('link[rel="manifest"]', 'manifest');
+        manifest.setAttribute('href', config.manifest);
+    }
+
     function formatDate(value) {
         if (!value) return 'Due next class';
         var date = value instanceof Date ? value : new Date(value);
@@ -1055,6 +1088,7 @@
             }
 
             var preferredName = englishName(session.profile);
+            updateAppIconForSystem(session.profile && session.profile.curriculum_track);
             identityChip.textContent = preferredName;
             greeting.textContent = greetingFor(preferredName);
             heroCopy.textContent = randomItem(motivationalQuotes);
