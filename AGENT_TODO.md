@@ -48,6 +48,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-17
+
+- Added Cambridge book sub-tabs to the student and teacher Library views for
+  IELTS Reading and IELTS Listening. Verified locally in visitor mode that
+  IELTS Reading shows `C7` and `C8`, defaults to `C7`, and lists 12 C7 Reading
+  passages; IELTS Listening shows `C7` and `C8`, defaults to `C7`, lists 16 C7
+  Listening sections, and switches to C8 correctly.
+- Verified `assets/js/dashboard.js` and `assets/js/teacher.js` with
+  `node --check`. CloudBase: no deployment or import performed; publish the
+  static site for the Library UI change.
+
 ### 2026-06-16
 
 - Imported Cambridge IELTS 8 Academic Reading/Listening Test 1 and Test 2:
@@ -67,6 +78,11 @@ cp .qa-secrets.example .qa-secrets.local
   `.cloudbase-private/import/sets-cloudbase.json` and
   `.cloudbase-private/import/grading-keys-cloudbase.json` so authenticated
   Library/Explore and server grading can see the C8 sets.
+- Added owner-run CloudBase CLI content import helper:
+  `npm run cloudbase:import:content` dry-runs by default and
+  `-- --apply` writes insert-missing records to `sets` and `grading_keys`.
+  Verified help output, dry-run counts, release verification, and whitespace
+  checks. CloudBase: no apply/import command was run by the agent.
 - Added owner-gated CloudBase release helpers: `verify-release`,
   `package-cloudfunctions`, and `generate-deploy-plan`. Verified the release
   checker passes with only a dirty-worktree warning, dry-run packaging lists all
