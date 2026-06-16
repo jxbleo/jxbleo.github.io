@@ -50,6 +50,23 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-16
 
+- Imported Cambridge IELTS 8 Academic Reading/Listening Test 1 and Test 2:
+  added 6 Reading passage sets, 8 Listening section sets, matching C8 listening
+  mp3 assets, static catalog entries, and local private grading source/import
+  data. Verified C8 public runtime JSON parses, all 14 C8 sets have complete
+  private grading coverage, public C8 data contains no answer/explanation
+  fields, catalog entries are present, and the copied audio files exist.
+- Imported Cambridge IELTS 8 Academic Reading/Listening Test 3 and Test 4:
+  added 6 Reading passage sets, 8 Listening section sets, matching C8 listening
+  mp3 assets, and two public question-image assets for the Test 4 map/diagram
+  tasks. Verified all C8 Test 1-4 catalog/import records are present, T3/T4
+  public runtime JSON has complete private grading coverage, public data
+  contains no answer/explanation fields, copied audio files exist, and release
+  verification passes with only the expected dirty-worktree warning.
+- CloudBase: after publishing the static site, import the regenerated
+  `.cloudbase-private/import/sets-cloudbase.json` and
+  `.cloudbase-private/import/grading-keys-cloudbase.json` so authenticated
+  Library/Explore and server grading can see the C8 sets.
 - Added owner-gated CloudBase release helpers: `verify-release`,
   `package-cloudfunctions`, and `generate-deploy-plan`. Verified the release
   checker passes with only a dirty-worktree warning, dry-run packaging lists all

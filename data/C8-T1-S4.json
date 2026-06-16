@@ -1,0 +1,86 @@
+{
+  "id": "C8-T1-S4",
+  "title": "Geography",
+  "source": "Cambridge IELTS 8, Test 1, Section 4",
+  "testLabel": "Test 1",
+  "audioSrc": "assets/audio/ielts-listening/C8-T1-S4.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "label": "Questions 31-40",
+          "instruction": "Complete the notes. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Geography</h2><ul class=\"ielts-notes\"><li>Studying geography helps us to understand:<ul><li>the effects of different processes on the {{Q31}} of the Earth</li><li>the dynamic between {{Q32}} and population</li></ul></li><li>Two main branches of study:<ul><li>physical features</li><li>human lifestyles and their {{Q33}}</li></ul></li><li>Specific study areas include biophysical, topographic, political, social, economic, historical and {{Q34}} geography, and also cartography.</li><li>Key point: geography helps us understand our surroundings and the associated {{Q35}}.</li><li>What geographers do:<ul><li>find data, e.g. conduct censuses and collect information in the form of {{Q36}} using computer and satellite technology</li><li>analyse data - identify {{Q37}}, e.g. cause and effect</li><li>publish findings as maps, but a two-dimensional map will always have some {{Q38}}</li><li>aerial photos can show vegetation problems, {{Q39}} density, ocean floor etc.</li><li>Landsat pictures are used for monitoring {{Q40}} conditions.</li></ul></li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}

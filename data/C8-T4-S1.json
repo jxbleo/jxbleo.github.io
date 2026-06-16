@@ -1,0 +1,86 @@
+{
+  "id": "C8-T4-S1",
+  "title": "West Bay Hotel Job Details",
+  "source": "Cambridge IELTS 8, Test 4, Section 1",
+  "testLabel": "Test 4",
+  "audioSrc": "assets/audio/ielts-listening/C8-T4-S1.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "label": "Questions 1-10",
+          "instruction": "Complete the notes. Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>West Bay Hotel - details of job</h2><ul class=\"ielts-notes\"><li>Newspaper advert for temporary staff</li><li>Vacancies for {{Q1}}</li><li>Two shifts</li><li>Can choose your {{Q2}} (must be the same each week)</li><li>Pay: &pound;5.50 per hour, including a {{Q3}}</li><li>A {{Q4}} is provided in the hotel</li><li>Total weekly pay: &pound;231</li><li>Dress: a white shirt and {{Q5}} trousers (not supplied); a {{Q6}} (supplied)</li><li>Starting date: {{Q7}}</li><li>Call Jane {{Q8}} (Service Manager) before {{Q9}} tomorrow (Tel: 832009)</li><li>She'll require a {{Q10}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "number": 1,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q2",
+      "number": 2,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q3",
+      "number": 3,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q4",
+      "number": 4,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q5",
+      "number": 5,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q6",
+      "number": 6,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q7",
+      "number": 7,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q8",
+      "number": 8,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q9",
+      "number": 9,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q10",
+      "number": 10,
+      "part": 1,
+      "type": "completion"
+    }
+  ]
+}

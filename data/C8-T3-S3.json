@@ -1,0 +1,201 @@
+{
+  "id": "C8-T3-S3",
+  "title": "Latin American Studies",
+  "source": "Cambridge IELTS 8, Test 3, Section 3",
+  "testLabel": "Test 3",
+  "audioSrc": "assets/audio/ielts-listening/C8-T3-S3.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 21-26",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q21",
+              "text": "Paul decided to get work experience in South America because he wanted",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "to teach English there"
+                },
+                {
+                  "value": "B",
+                  "text": "to improve his Spanish"
+                },
+                {
+                  "value": "C",
+                  "text": "to learn about Latin American life"
+                }
+              ]
+            },
+            {
+              "id": "Q22",
+              "text": "What project work did Paul originally intend to get involved in?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "construction"
+                },
+                {
+                  "value": "B",
+                  "text": "agriculture"
+                },
+                {
+                  "value": "C",
+                  "text": "tourism"
+                }
+              ]
+            },
+            {
+              "id": "Q23",
+              "text": "Why did Paul change from one project to another?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "His first job was not well organised"
+                },
+                {
+                  "value": "B",
+                  "text": "He found doing the routine work very boring"
+                },
+                {
+                  "value": "C",
+                  "text": "The work was too physically demanding"
+                }
+              ]
+            },
+            {
+              "id": "Q24",
+              "text": "In the village community, he learnt how important it was to",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "respect family life"
+                },
+                {
+                  "value": "B",
+                  "text": "develop trust"
+                },
+                {
+                  "value": "C",
+                  "text": "use money wisely"
+                }
+              ]
+            },
+            {
+              "id": "Q25",
+              "text": "What does Paul say about his project manager?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "He let Paul do most of the work"
+                },
+                {
+                  "value": "B",
+                  "text": "His plans were too ambitious"
+                },
+                {
+                  "value": "C",
+                  "text": "He was very supportive of Paul"
+                }
+              ]
+            },
+            {
+              "id": "Q26",
+              "text": "Paul was surprised to be given",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "a computer to use"
+                },
+                {
+                  "value": "B",
+                  "text": "so little money to live on"
+                },
+                {
+                  "value": "C",
+                  "text": "an extension to his contract"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 27-30",
+          "instruction": "What does Paul decide about each module? Write A, B or C.",
+          "html": "<p>A He will do this; B He might do this; C He won't do this.</p><ul class=\"ielts-notes\"><li>Gender Studies in Latin America: {{Q27}}</li><li>Second Language Acquisition: {{Q28}}</li><li>Indigenous Women's Lives: {{Q29}}</li><li>Portuguese Language Studies: {{Q30}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

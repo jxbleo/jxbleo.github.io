@@ -1,0 +1,91 @@
+{
+  "id": "C8-T4-S4",
+  "title": "Australian Aboriginal Rock Paintings",
+  "source": "Cambridge IELTS 8, Test 4, Section 4",
+  "testLabel": "Test 4",
+  "audioSrc": "assets/audio/ielts-listening/C8-T4-S4.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "label": "Questions 31-36",
+          "instruction": "Which painting styles have the following features? Write A, B or C.",
+          "html": "<p>A Dynamic; B Yam; C Modern.</p><ul class=\"ielts-notes\"><li>figures revealing bones: {{Q31}}</li><li>rounded figures: {{Q32}}</li><li>figures with parts missing: {{Q33}}</li><li>figures smaller than life size: {{Q34}}</li><li>sea creatures: {{Q35}}</li><li>plants: {{Q36}}</li></ul>"
+        },
+        {
+          "label": "Questions 37-40",
+          "instruction": "Complete the notes. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<h2>Rainbow Serpent Project</h2><p>Aim of project: to identify the {{Q37}} used as the basis for the Rainbow Serpent.</p><h3>Yam Period</h3><ul class=\"ielts-notes\"><li>environmental changes led to higher {{Q38}}</li><li>traditional activities were affected, especially {{Q39}}</li></ul><h3>Rainbow Serpent image</h3><ul class=\"ielts-notes\"><li>similar to a sea horse</li><li>unusual because it appeared in inland areas</li><li>symbolises {{Q40}} in Aboriginal culture</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}

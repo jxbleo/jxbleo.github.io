@@ -1,0 +1,91 @@
+{
+  "id": "C8-T3-S2",
+  "title": "The National Arts Centre",
+  "source": "Cambridge IELTS 8, Test 3, Section 2",
+  "testLabel": "Test 3",
+  "audioSrc": "assets/audio/ielts-listening/C8-T3-S2.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "label": "Questions 11-16",
+          "instruction": "Complete the notes. Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>The National Arts Centre</h2><ul class=\"ielts-notes\"><li>Well known for: {{Q11}}</li><li>Complex consists of: concert rooms, theatres, cinemas, art galleries, public library, restaurants and a {{Q12}}</li><li>Historical background: 1940 area destroyed by bombs; 1960s-1970s Centre was {{Q13}} and built; in {{Q14}} opened to public</li><li>Managed by: the {{Q15}}</li><li>Open: {{Q16}} days per year</li></ul>"
+        },
+        {
+          "label": "Questions 17-20",
+          "instruction": "Complete the table. Write <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<table class=\"booking-form\"><thead><tr><th>Day</th><th>Time</th><th>Event</th><th>Venue</th><th>Price</th></tr></thead><tbody><tr><td>Monday and Tuesday</td><td>7.30 p.m.</td><td>The Magic Flute (opera by Mozart)</td><td>{{Q17}}</td><td>from &pound;8.00</td></tr><tr><td>Wednesday</td><td>8.00 p.m.</td><td>{{Q18}} (Canadian film)</td><td>Cinema 2</td><td>&pound;{{Q19}}</td></tr><tr><td>Saturday and Sunday</td><td>11 a.m. to 10 p.m.</td><td>{{Q20}} (art exhibition)</td><td>Gallery 1</td><td>free</td></tr></tbody></table>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "completion"
+    }
+  ]
+}

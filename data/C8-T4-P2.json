@@ -1,0 +1,191 @@
+{
+  "id": "C8-T4-P2",
+  "title": "Biological Control of Pests",
+  "source": "Cambridge IELTS 8, Test 4, Passage 2",
+  "passage": "<p>The continuous and reckless use of synthetic chemicals for the control of pests which pose a threat to agricultural crops and human health is proving to be counter-productive. Apart from engendering widespread ecological disorders, pesticides have contributed to the emergence of a new breed of chemical-resistant, highly lethal superbugs.</p><p>According to a recent study by the Food and Agriculture Organisation (FAO), more than 300 species of agricultural pests have developed resistance to a wide range of potent chemicals. Not to be left behind are the disease-spreading pests, about 100 species of which have become immune to a variety of insecticides now in use.</p><p>One glaring disadvantage of pesticides' application is that, while destroying harmful pests, they also wipe out many useful non-targeted organisms, which keep the growth of the pest population in check. This results in what agroecologists call the 'treadmill syndrome'. Because of their tremendous breeding potential and genetic diversity, many pests are known to withstand synthetic chemicals and bear offspring with a built-in resistance to pesticides.</p><p>The havoc that the 'treadmill syndrome' can bring about is well illustrated by what happened to cotton farmers in Central America. In the early 1940s, basking in the glory of chemical-based intensive agriculture, the farmers avidly took to pesticides as a sure measure to boost crop yield. The insecticide was applied eight times a year in the mid-1940s, rising to 28 in a season in the mid-1950s, following the sudden proliferation of three new varieties of chemical-resistant pests.</p><p>By the mid-1960s, the situation took an alarming turn with the outbreak of four more new pests, necessitating pesticide spraying to such an extent that 50% of the financial outlay on cotton production was accounted for by pesticides. In the early 1970s, the spraying frequently reached 70 times a season as the farmers were pushed to the wall by the invasion of genetically stronger insect species.</p><p>Most of the pesticides in the market today remain inadequately tested for properties that cause cancer and mutations as well as for other adverse effects on health, says a study by United States environmental agencies. The United States National Resource Defense Council has found that DDT was the most popular of a long list of dangerous chemicals in use.</p><p>In the face of the escalating perils from indiscriminate applications of pesticides, a more effective and ecologically sound strategy of biological control, involving the selective use of natural enemies of the pest population, is fast gaining popularity - though, as yet, it is a new field with limited potential. The advantage of biological control in contrast to other methods is that it provides a relatively low-cost, perpetual control system with a minimum of detrimental side-effects. When handled by experts, bio-control is safe, non-polluting and self-dispersing.</p><p>The Commonwealth Institute of Biological Control (CIBC) in Bangalore, with its global network of research laboratories and field stations, is one of the most active, non-commercial research agencies engaged in pest control by setting natural predators against parasites. CIBC also serves as a clearing-house for the export and import of biological agents for pest control world-wide.</p><p>CIBC successfully used a seed-feeding weevil, native to Mexico, to control the obnoxious parthenium weed, known to exert devious influence on agriculture and human health in both India and Australia. Similarly the Hyderabad-based Regional Research Laboratory (RRL), supported by CIBC, is now trying out an Argentinian weevil for the eradication of water hyacinth, another dangerous weed, which has become a nuisance in many parts of the world. According to Mrs Kaiser Jamil of RRL, 'The Argentinian weevil does not attack any other plant and a pair of adult bugs could destroy the weed in 4-5 days.' CIBC is also perfecting the technique for breeding parasites that prey on 'disapene scale' insects - notorious defoliants of fruit trees in the US and India.</p><p>How effectively biological control can be pressed into service is proved by the following examples. In the late 1960s, when Sri Lanka's flourishing coconut groves were plagued by leaf-mining hispides, a larval parasite imported from Singapore brought the pest under control. A natural predator indigenous to India, Neodumetia sangawani, was found useful in controlling the Rhodes grass-scale insect that was devouring forage grass in many parts of the US. By using Neochetina bruci, a beetle native to Brazil, scientists at Kerala Agricultural University freed a 12-kilometre-long canal from the clutches of the weed Salvinia molesta, popularly called 'African Payal' in Kerala. About 30,000 hectares of rice fields in Kerala are infested by this weed.</p>",
+  "questions": [
+    {
+      "type": "mcq",
+      "label": "Questions 14-17 - Multiple Choice",
+      "instruction": "Choose the correct letter, A, B, C or D.",
+      "items": [
+        {
+          "id": "Q14",
+          "text": "The use of pesticides has contributed to",
+          "options": [
+            {
+              "value": "A",
+              "text": "a change in the way ecologies are classified by agroecologists"
+            },
+            {
+              "value": "B",
+              "text": "an imbalance in many ecologies around the world"
+            },
+            {
+              "value": "C",
+              "text": "the prevention of ecological disasters in some parts of the world"
+            },
+            {
+              "value": "D",
+              "text": "an increase in the range of ecologies which can be usefully farmed"
+            }
+          ]
+        },
+        {
+          "id": "Q15",
+          "text": "The Food and Agriculture Organisation has counted more than 300 agricultural pests which",
+          "options": [
+            {
+              "value": "A",
+              "text": "are no longer responding to most pesticides in use"
+            },
+            {
+              "value": "B",
+              "text": "can be easily controlled through the use of pesticides"
+            },
+            {
+              "value": "C",
+              "text": "continue to spread disease in a wide range of crops"
+            },
+            {
+              "value": "D",
+              "text": "may be used as part of bio-control's replacement of pesticides"
+            }
+          ]
+        },
+        {
+          "id": "Q16",
+          "text": "Cotton farmers in Central America began to use pesticides",
+          "options": [
+            {
+              "value": "A",
+              "text": "because of an intensive government advertising campaign"
+            },
+            {
+              "value": "B",
+              "text": "in response to the appearance of new varieties of pest"
+            },
+            {
+              "value": "C",
+              "text": "as a result of changes in the seasons and the climate"
+            },
+            {
+              "value": "D",
+              "text": "to ensure more cotton was harvested from each crop"
+            }
+          ]
+        },
+        {
+          "id": "Q17",
+          "text": "By the mid-1960s, cotton farmers in Central America found that pesticides",
+          "options": [
+            {
+              "value": "A",
+              "text": "were wiping out 50% of the pests plaguing the crops"
+            },
+            {
+              "value": "B",
+              "text": "were destroying 50% of the crops they were meant to protect"
+            },
+            {
+              "value": "C",
+              "text": "were causing a 50% increase in the number of new pests reported"
+            },
+            {
+              "value": "D",
+              "text": "were costing 50% of the total amount they spent on their crops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ynng",
+      "label": "Questions 18-21 - YES / NO / NOT GIVEN",
+      "instruction": "Do the following statements agree with the claims of the writer in Reading Passage 2?",
+      "items": [
+        {
+          "id": "Q18",
+          "text": "Disease-spreading pests respond more quickly to pesticides than agricultural pests do."
+        },
+        {
+          "id": "Q19",
+          "text": "A number of pests are now born with an innate immunity to some pesticides."
+        },
+        {
+          "id": "Q20",
+          "text": "Biological control entails using synthetic chemicals to try and change the genetic make-up of the pests' offspring."
+        },
+        {
+          "id": "Q21",
+          "text": "Bio-control is free from danger under certain circumstances."
+        }
+      ]
+    },
+    {
+      "type": "summary",
+      "label": "Questions 22-26 - Sentence Endings",
+      "instruction": "Complete each sentence with the correct ending, A-I.",
+      "choices": [
+        {
+          "value": "A",
+          "text": "forage grass"
+        },
+        {
+          "value": "B",
+          "text": "rice fields"
+        },
+        {
+          "value": "C",
+          "text": "coconut trees"
+        },
+        {
+          "value": "D",
+          "text": "fruit trees"
+        },
+        {
+          "value": "E",
+          "text": "water hyacinth"
+        },
+        {
+          "value": "F",
+          "text": "parthenium weed"
+        },
+        {
+          "value": "G",
+          "text": "Brazilian beetles"
+        },
+        {
+          "value": "H",
+          "text": "grass-scale insects"
+        },
+        {
+          "value": "I",
+          "text": "larval parasites"
+        }
+      ],
+      "items": [
+        {
+          "id": "Q22",
+          "text": "Disapene scale insects feed on ______."
+        },
+        {
+          "id": "Q23",
+          "text": "Neodumetia sangawani ate ______."
+        },
+        {
+          "id": "Q24",
+          "text": "Leaf-mining hispides blighted ______."
+        },
+        {
+          "id": "Q25",
+          "text": "An Argentinian weevil may be successful in wiping out ______."
+        },
+        {
+          "id": "Q26",
+          "text": "Salvinia molesta plagues ______."
+        }
+      ]
+    }
+  ]
+}

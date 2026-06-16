@@ -1,0 +1,165 @@
+{
+  "id": "C8-T3-S4",
+  "title": "Trying to Repeat Success",
+  "source": "Cambridge IELTS 8, Test 3, Section 4",
+  "testLabel": "Test 3",
+  "audioSrc": "assets/audio/ielts-listening/C8-T3-S4.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 31-34",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q31",
+              "text": "Compared to introducing new business processes, attempts to copy existing processes are",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "more attractive"
+                },
+                {
+                  "value": "B",
+                  "text": "more frequent"
+                },
+                {
+                  "value": "C",
+                  "text": "more straightforward"
+                }
+              ]
+            },
+            {
+              "id": "Q32",
+              "text": "Most research into the repetition of success in business has",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "been done outside the United States"
+                },
+                {
+                  "value": "B",
+                  "text": "produced consistent findings"
+                },
+                {
+                  "value": "C",
+                  "text": "related to only a few contexts"
+                }
+              ]
+            },
+            {
+              "id": "Q33",
+              "text": "What does the speaker say about consulting experts?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "Too few managers ever do it"
+                },
+                {
+                  "value": "B",
+                  "text": "It can be useful in certain circumstances"
+                },
+                {
+                  "value": "C",
+                  "text": "Experts are sometimes unwilling to give advice"
+                }
+              ]
+            },
+            {
+              "id": "Q34",
+              "text": "An expert's knowledge about a business system may be incomplete because",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "some details are difficult for workers to explain"
+                },
+                {
+                  "value": "B",
+                  "text": "workers choose not to mention certain details"
+                },
+                {
+                  "value": "C",
+                  "text": "details are sometimes altered by workers"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 35-40",
+          "instruction": "Complete the notes. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Setting up systems based on an existing process</h2><h3>Two mistakes</h3><p>Manager tries to improve on the original process and create an ideal {{Q35}} from the best parts of several processes.</p><h3>Cause of problems</h3><ul class=\"ielts-notes\"><li>information was inaccurate</li><li>comparison between the business settings was invalid</li><li>disadvantages were overlooked, e.g. effect of changes on {{Q36}}</li></ul><h3>Solution</h3><ul class=\"ielts-notes\"><li>change {{Q37}}</li><li>impose rigorous {{Q38}}</li><li>copy original very closely: physical features of the {{Q39}} and the {{Q40}} of original employees</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}

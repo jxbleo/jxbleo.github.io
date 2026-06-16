@@ -1,0 +1,129 @@
+{
+  "id": "C8-T1-S1",
+  "title": "Summer Music Festival Booking",
+  "source": "Cambridge IELTS 8, Test 1, Section 1",
+  "testLabel": "Test 1",
+  "audioSrc": "assets/audio/ielts-listening/C8-T1-S1.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-1",
+      "number": 1,
+      "title": "Part 1",
+      "intro": "Listen and answer questions 1-10.",
+      "questionRange": "1-10",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 1-2",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q1",
+              "text": "In the lobby of the library George saw",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "a group playing music"
+                },
+                {
+                  "value": "B",
+                  "text": "a display of instruments"
+                },
+                {
+                  "value": "C",
+                  "text": "a video about the festival"
+                }
+              ]
+            },
+            {
+              "id": "Q2",
+              "text": "George wants to sit at the back so they can",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "see well"
+                },
+                {
+                  "value": "B",
+                  "text": "hear clearly"
+                },
+                {
+                  "value": "C",
+                  "text": "pay less"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 3-10",
+          "instruction": "Complete the form. Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>Summer Music Festival Booking Form</h2><table class=\"booking-form\"><tbody><tr><th>Name</th><td>George O'Neill</td></tr><tr><th>Address</th><td>{{Q3}}, Westsea</td></tr><tr><th>Postcode</th><td>{{Q4}}</td></tr><tr><th>Telephone</th><td>{{Q5}}</td></tr></tbody></table><table class=\"booking-form\"><tbody><tr><th>Date</th><th>Event</th><th>Price per ticket</th><th>No. of tickets</th></tr><tr><td>5 June</td><td>Instrumental group - Guitarrini</td><td>&pound;7.50</td><td>2</td></tr><tr><td>17 June</td><td>Singer, includes {{Q6}} in the garden</td><td>&pound;6</td><td>2</td></tr><tr><td>22 June</td><td>{{Q7}} (Anna Ventura)</td><td>&pound;7.00</td><td>1</td></tr><tr><td>23 June</td><td>Spanish Dance &amp; Guitar Concert</td><td>&pound;{{Q8}}</td><td>{{Q9}}</td></tr></tbody></table><p>Children, students and senior citizens have {{Q10}} discount on all tickets.</p>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "number": 1,
+      "part": 1,
+      "type": "mcq"
+    },
+    {
+      "id": "Q2",
+      "number": 2,
+      "part": 1,
+      "type": "mcq"
+    },
+    {
+      "id": "Q3",
+      "number": 3,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q4",
+      "number": 4,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q5",
+      "number": 5,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q6",
+      "number": 6,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q7",
+      "number": 7,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q8",
+      "number": 8,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q9",
+      "number": 9,
+      "part": 1,
+      "type": "completion"
+    },
+    {
+      "id": "Q10",
+      "number": 10,
+      "part": 1,
+      "type": "completion"
+    }
+  ]
+}

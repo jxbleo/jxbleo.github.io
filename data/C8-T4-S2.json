@@ -1,0 +1,147 @@
+{
+  "id": "C8-T4-S2",
+  "title": "Improvements to Red Hill Suburb",
+  "source": "Cambridge IELTS 8, Test 4, Section 2",
+  "testLabel": "Test 4",
+  "audioSrc": "assets/audio/ielts-listening/C8-T4-S2.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 11-13",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q11",
+              "text": "Community groups are mainly concerned about",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "pedestrian safety"
+                },
+                {
+                  "value": "B",
+                  "text": "traffic jams"
+                },
+                {
+                  "value": "C",
+                  "text": "increased pollution"
+                }
+              ]
+            },
+            {
+              "id": "Q12",
+              "text": "It has been decided that the overhead power lines will be",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "extended"
+                },
+                {
+                  "value": "B",
+                  "text": "buried"
+                },
+                {
+                  "value": "C",
+                  "text": "repaired"
+                }
+              ]
+            },
+            {
+              "id": "Q13",
+              "text": "The expenses related to the power lines will be paid for by",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "the council"
+                },
+                {
+                  "value": "B",
+                  "text": "the power company"
+                },
+                {
+                  "value": "C",
+                  "text": "local businesses"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 14-20",
+          "instruction": "Label the map. Write the correct letter, A-H, next to questions 14-20.",
+          "html": "<figure><img src=\"assets/images/ielts-listening/C8-T4-S2-red-hill-map.png\" alt=\"Red Hill Improvement Plan map\" style=\"max-width:100%;height:auto;border:1px solid #d8dde8;border-radius:6px;background:#fff;\"></figure><ul class=\"ielts-notes\"><li>trees: {{Q14}}</li><li>wider footpaths: {{Q15}}</li><li>coloured road surface: {{Q16}}</li><li>new sign: {{Q17}}</li><li>traffic lights: {{Q18}}</li><li>artwork: {{Q19}}</li><li>children's playground: {{Q20}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "completion"
+    }
+  ]
+}
