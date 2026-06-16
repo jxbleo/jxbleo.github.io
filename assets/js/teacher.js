@@ -251,8 +251,8 @@
         var attemptsCount = document.getElementById('updates-attempts-count');
         var reviewCount = document.getElementById('updates-review-count');
         if (count) {
-            count.textContent = total;
-            count.hidden = !total;
+            count.textContent = total ? String(total) : '';
+            count.hidden = total <= 0;
         }
         if (button) button.classList.toggle('has-updates', total > 0);
         if (attemptsCount) attemptsCount.textContent = attemptCounts.unread;
