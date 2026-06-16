@@ -1,0 +1,139 @@
+{
+  "id": "C8-T4-S3",
+  "title": "Course Funding and Exam Preparation",
+  "source": "Cambridge IELTS 8, Test 4, Section 3",
+  "testLabel": "Test 4",
+  "audioSrc": "assets/audio/ielts-listening/C8-T4-S3.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "label": "Questions 21-22",
+          "instruction": "Choose <strong>TWO</strong> letters, A-E. In which TWO ways is Dan financing his course?",
+          "html": "<p>A He is receiving money from the government; B His family are willing to help him; C The college is giving him a small grant; D His local council is supporting him for a limited period; E A former employer is providing partial funding.</p><p>{{Q21}} {{Q22}}</p>"
+        },
+        {
+          "label": "Questions 23-24",
+          "instruction": "Choose <strong>TWO</strong> letters, A-E. Which TWO reasons does Jeannie give for deciding to leave some college clubs?",
+          "html": "<p>A She is not sufficiently challenged; B The activity interferes with her studies; C She does not have enough time; D The activity is too demanding physically; E She does not think she is any good at the activity.</p><p>{{Q23}} {{Q24}}</p>"
+        },
+        {
+          "type": "mcq",
+          "label": "Questions 25-26",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q25",
+              "text": "What does Dan say about the seminars on the course?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "The other students do not give him a chance to speak"
+                },
+                {
+                  "value": "B",
+                  "text": "The seminars make him feel inferior to the other students"
+                },
+                {
+                  "value": "C",
+                  "text": "The preparation for seminars takes too much time"
+                }
+              ]
+            },
+            {
+              "id": "Q26",
+              "text": "What does Jeannie say about the tutorials on the course?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "They are an inefficient way of providing guidance"
+                },
+                {
+                  "value": "B",
+                  "text": "They are more challenging than she had expected"
+                },
+                {
+                  "value": "C",
+                  "text": "They are helping her to develop her study skills"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 27-30",
+          "instruction": "Complete the flow-chart. Choose <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.",
+          "html": "<h2>Advice on exam preparation</h2><ol class=\"ielts-notes\"><li>Make sure you know the exam requirements.</li><li>Find some past papers.</li><li>Work out your {{Q27}} for revision and write them on a card.</li><li>Make a {{Q28}} and keep it in view.</li><li>Divide revision into {{Q29}} for each day.</li><li>Write one {{Q30}} about each topic.</li><li>Practise writing some exam answers.</li></ol>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

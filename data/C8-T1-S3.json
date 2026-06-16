@@ -1,0 +1,170 @@
+{
+  "id": "C8-T1-S3",
+  "title": "Field Trip Proposal",
+  "source": "Cambridge IELTS 8, Test 1, Section 3",
+  "testLabel": "Test 1",
+  "audioSrc": "assets/audio/ielts-listening/C8-T1-S3.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 21-24",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q21",
+              "text": "The tutor thinks that Sandra's proposal",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "should be re-ordered in some parts"
+                },
+                {
+                  "value": "B",
+                  "text": "needs a contents page"
+                },
+                {
+                  "value": "C",
+                  "text": "ought to include more information"
+                }
+              ]
+            },
+            {
+              "id": "Q22",
+              "text": "The proposal would be easier to follow if Sandra",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "inserted subheadings"
+                },
+                {
+                  "value": "B",
+                  "text": "used more paragraphs"
+                },
+                {
+                  "value": "C",
+                  "text": "shortened her sentences"
+                }
+              ]
+            },
+            {
+              "id": "Q23",
+              "text": "What was the problem with the formatting on Sandra's proposal?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "Separate points were not clearly identified"
+                },
+                {
+                  "value": "B",
+                  "text": "The headings were not always clear"
+                },
+                {
+                  "value": "C",
+                  "text": "Page numbering was not used in an appropriate way"
+                }
+              ]
+            },
+            {
+              "id": "Q24",
+              "text": "Sandra became interested in visiting the Navajo National Park through",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "articles she read"
+                },
+                {
+                  "value": "B",
+                  "text": "movies she saw as a child"
+                },
+                {
+                  "value": "C",
+                  "text": "photographs she found on the internet"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 25-27",
+          "instruction": "Choose <strong>THREE</strong> letters, A-G. Which THREE topics does Sandra agree to include in the proposal?",
+          "html": "<p>A climate change; B field trip activities; C geographical features; D impact of tourism; E myths and legends; F plant and animal life; G social history.</p><p>{{Q25}} {{Q26}} {{Q27}}</p>"
+        },
+        {
+          "label": "Questions 28-30",
+          "instruction": "Complete the sentences. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.",
+          "html": "<ul class=\"ielts-notes\"><li>The tribal park covers {{Q28}} hectares.</li><li>Sandra suggests that they share the {{Q29}} for transport.</li><li>She says they could also explore the local {{Q30}}.</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

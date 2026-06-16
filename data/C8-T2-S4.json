@@ -1,0 +1,201 @@
+{
+  "id": "C8-T2-S4",
+  "title": "Research on Questions About Doctors",
+  "source": "Cambridge IELTS 8, Test 2, Section 4",
+  "testLabel": "Test 2",
+  "audioSrc": "assets/audio/ielts-listening/C8-T2-S4.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-4",
+      "number": 4,
+      "title": "Part 4",
+      "intro": "Listen and answer questions 31-40.",
+      "questionRange": "31-40",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 31-36",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q31",
+              "text": "In order to set up her research programme, Shona got",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "advice from personal friends in other countries"
+                },
+                {
+                  "value": "B",
+                  "text": "help from students in other countries"
+                },
+                {
+                  "value": "C",
+                  "text": "information from her tutor's contacts in other countries"
+                }
+              ]
+            },
+            {
+              "id": "Q32",
+              "text": "What types of people were included in the research?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "young people in their first job"
+                },
+                {
+                  "value": "B",
+                  "text": "men who were working"
+                },
+                {
+                  "value": "C",
+                  "text": "women who were unemployed"
+                }
+              ]
+            },
+            {
+              "id": "Q33",
+              "text": "Shona says that in her questionnaire her aim was",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "to get a wide range of data"
+                },
+                {
+                  "value": "B",
+                  "text": "to limit people's responses"
+                },
+                {
+                  "value": "C",
+                  "text": "to guide people through interviews"
+                }
+              ]
+            },
+            {
+              "id": "Q34",
+              "text": "What do Shona's initial results show about medical services in Britain?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "Current concerns are misrepresented by the press"
+                },
+                {
+                  "value": "B",
+                  "text": "Financial issues are critical to the government"
+                },
+                {
+                  "value": "C",
+                  "text": "Reforms within hospitals have been unsuccessful"
+                }
+              ]
+            },
+            {
+              "id": "Q35",
+              "text": "Shona needs to do further research in order to",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "present the government with her findings"
+                },
+                {
+                  "value": "B",
+                  "text": "decide the level of extra funding needed"
+                },
+                {
+                  "value": "C",
+                  "text": "identify the preferences of the public"
+                }
+              ]
+            },
+            {
+              "id": "Q36",
+              "text": "Shona has learnt from the research project that",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "it is important to plan projects carefully"
+                },
+                {
+                  "value": "B",
+                  "text": "people do not like answering questions"
+                },
+                {
+                  "value": "C",
+                  "text": "colleagues do not always agree"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 37-40",
+          "instruction": "Choose FOUR answers from A-F. Which statement applies to each person?",
+          "html": "<p>A gave false data; B decided to stop participating; C refused to tell Shona about their job; D kept changing their mind about participating; E became very angry with Shona; F was worried about confidentiality.</p><ul class=\"ielts-notes\"><li>a person interviewed in the street: {{Q37}}</li><li>an undergraduate at the university: {{Q38}}</li><li>a colleague in her department: {{Q39}}</li><li>a tutor in a foreign university: {{Q40}}</li></ul>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q31",
+      "number": 31,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q32",
+      "number": 32,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q33",
+      "number": 33,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q34",
+      "number": 34,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q35",
+      "number": 35,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q36",
+      "number": 36,
+      "part": 4,
+      "type": "mcq"
+    },
+    {
+      "id": "Q37",
+      "number": 37,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q38",
+      "number": 38,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q39",
+      "number": 39,
+      "part": 4,
+      "type": "completion"
+    },
+    {
+      "id": "Q40",
+      "number": 40,
+      "part": 4,
+      "type": "completion"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "id": "C8-T2-S3",
+  "title": "Honey Bees in Australia",
+  "source": "Cambridge IELTS 8, Test 2, Section 3",
+  "testLabel": "Test 2",
+  "audioSrc": "assets/audio/ielts-listening/C8-T2-S3.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-3",
+      "number": 3,
+      "title": "Part 3",
+      "intro": "Listen and answer questions 21-30.",
+      "questionRange": "21-30",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Questions 21-24",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q21",
+              "text": "Where in Australia have Asian honey bees been found in the past?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "Queensland"
+                },
+                {
+                  "value": "B",
+                  "text": "New South Wales"
+                },
+                {
+                  "value": "C",
+                  "text": "several states"
+                }
+              ]
+            },
+            {
+              "id": "Q22",
+              "text": "A problem with Asian honey bees is that they",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "attack native bees"
+                },
+                {
+                  "value": "B",
+                  "text": "carry parasites"
+                },
+                {
+                  "value": "C",
+                  "text": "damage crops"
+                }
+              ]
+            },
+            {
+              "id": "Q23",
+              "text": "What point is made about Australian bees?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "Their honey varies in quality"
+                },
+                {
+                  "value": "B",
+                  "text": "Their size stops them from pollinating some flowers"
+                },
+                {
+                  "value": "C",
+                  "text": "They are sold to customers abroad"
+                }
+              ]
+            },
+            {
+              "id": "Q24",
+              "text": "Grant Freeman says that if Asian honey bees got into Australia,",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "the country's economy would be affected"
+                },
+                {
+                  "value": "B",
+                  "text": "they could be used in the study of allergies"
+                },
+                {
+                  "value": "C",
+                  "text": "certain areas of agriculture would benefit"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 25-30",
+          "instruction": "Complete the summary. Write <strong>ONE WORD ONLY</strong> for each answer.",
+          "html": "<h2>Looking for Asian honey bees</h2><p>Birds called Rainbow Bee Eaters eat only {{Q25}}, and cough up small bits of skeleton and other products in a pellet. Researchers go to the locations the bee eaters like to use for {{Q26}}. They collect the pellets and take them to a {{Q27}} for analysis. Here {{Q28}} is used to soften them, and the researchers look for the {{Q29}} of Asian bees in the pellets. The benefit of this research is that the result is more {{Q30}} than searching for live Asian bees.</p>"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q21",
+      "number": 21,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q22",
+      "number": 22,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q23",
+      "number": 23,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q24",
+      "number": 24,
+      "part": 3,
+      "type": "mcq"
+    },
+    {
+      "id": "Q25",
+      "number": 25,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q26",
+      "number": 26,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q27",
+      "number": 27,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q28",
+      "number": 28,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q29",
+      "number": 29,
+      "part": 3,
+      "type": "completion"
+    },
+    {
+      "id": "Q30",
+      "number": 30,
+      "part": 3,
+      "type": "completion"
+    }
+  ]
+}

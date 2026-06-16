@@ -663,6 +663,262 @@
       "visible": true
     },
     {
+      "id": "C8-T1-S1",
+      "sectionId": "ielts-listening",
+      "title": "C8-T1-S1 · Summer Music Festival Booking",
+      "href": "ielts-listening.html?set=C8-T1-S1",
+      "displayValue": "C8-T1-S1",
+      "sortValue": 80101,
+      "topic": "Music / Booking",
+      "tags": [
+        "Music",
+        "Booking",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-S2",
+      "sectionId": "ielts-listening",
+      "title": "C8-T1-S2 · The Dinosaur Museum",
+      "href": "ielts-listening.html?set=C8-T1-S2",
+      "displayValue": "C8-T1-S2",
+      "sortValue": 80102,
+      "topic": "Education / Museum",
+      "tags": [
+        "Museum",
+        "School Trip",
+        "Dinosaur"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-S3",
+      "sectionId": "ielts-listening",
+      "title": "C8-T1-S3 · Field Trip Proposal",
+      "href": "ielts-listening.html?set=C8-T1-S3",
+      "displayValue": "C8-T1-S3",
+      "sortValue": 80103,
+      "topic": "Education / Geography",
+      "tags": [
+        "Field Trip",
+        "Proposal",
+        "Geography"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-S4",
+      "sectionId": "ielts-listening",
+      "title": "C8-T1-S4 · Geography",
+      "href": "ielts-listening.html?set=C8-T1-S4",
+      "displayValue": "C8-T1-S4",
+      "sortValue": 80104,
+      "topic": "Academic / Geography",
+      "tags": [
+        "Geography",
+        "Lecture",
+        "Notes"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-S1",
+      "sectionId": "ielts-listening",
+      "title": "C8-T2-S1 · Total Insurance Incident Report",
+      "href": "ielts-listening.html?set=C8-T2-S1",
+      "displayValue": "C8-T2-S1",
+      "sortValue": 80201,
+      "topic": "Insurance / Moving",
+      "tags": [
+        "Insurance",
+        "Incident Report",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-S2",
+      "sectionId": "ielts-listening",
+      "title": "C8-T2-S2 · Agricultural Park",
+      "href": "ielts-listening.html?set=C8-T2-S2",
+      "displayValue": "C8-T2-S2",
+      "sortValue": 80202,
+      "topic": "Agriculture / Park",
+      "tags": [
+        "Agriculture",
+        "Park",
+        "Map Labelling"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-S3",
+      "sectionId": "ielts-listening",
+      "title": "C8-T2-S3 · Honey Bees in Australia",
+      "href": "ielts-listening.html?set=C8-T2-S3",
+      "displayValue": "C8-T2-S3",
+      "sortValue": 80203,
+      "topic": "Science / Environment",
+      "tags": [
+        "Bees",
+        "Australia",
+        "Research"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-S4",
+      "sectionId": "ielts-listening",
+      "title": "C8-T2-S4 · Research on Questions About Doctors",
+      "href": "ielts-listening.html?set=C8-T2-S4",
+      "displayValue": "C8-T2-S4",
+      "sortValue": 80204,
+      "topic": "Research / Healthcare",
+      "tags": [
+        "Healthcare",
+        "Research",
+        "Questionnaire"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-S1",
+      "sectionId": "ielts-listening",
+      "title": "C8-T3-S1 · Rented Properties",
+      "href": "ielts-listening.html?set=C8-T3-S1",
+      "displayValue": "C8-T3-S1",
+      "sortValue": 80301,
+      "topic": "Housing / Rental Enquiry",
+      "tags": [
+        "Housing",
+        "Rental",
+        "Form Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-S2",
+      "sectionId": "ielts-listening",
+      "title": "C8-T3-S2 · The National Arts Centre",
+      "href": "ielts-listening.html?set=C8-T3-S2",
+      "displayValue": "C8-T3-S2",
+      "sortValue": 80302,
+      "topic": "Arts / Venue Information",
+      "tags": [
+        "Arts",
+        "Events",
+        "Table Completion"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-S3",
+      "sectionId": "ielts-listening",
+      "title": "C8-T3-S3 · Latin American Studies",
+      "href": "ielts-listening.html?set=C8-T3-S3",
+      "displayValue": "C8-T3-S3",
+      "sortValue": 80303,
+      "topic": "Study / Work Experience",
+      "tags": [
+        "Study",
+        "Work Experience",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-S4",
+      "sectionId": "ielts-listening",
+      "title": "C8-T3-S4 · Trying to Repeat Success",
+      "href": "ielts-listening.html?set=C8-T3-S4",
+      "displayValue": "C8-T3-S4",
+      "sortValue": 80304,
+      "topic": "Business / Process Replication",
+      "tags": [
+        "Business",
+        "Research",
+        "Note Completion"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-S1",
+      "sectionId": "ielts-listening",
+      "title": "C8-T4-S1 · West Bay Hotel Job Details",
+      "href": "ielts-listening.html?set=C8-T4-S1",
+      "displayValue": "C8-T4-S1",
+      "sortValue": 80401,
+      "topic": "Jobs / Hotel Work",
+      "tags": [
+        "Jobs",
+        "Hotel",
+        "Note Completion"
+      ],
+      "note": "Listening Section 1",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-S2",
+      "sectionId": "ielts-listening",
+      "title": "C8-T4-S2 · Improvements to Red Hill Suburb",
+      "href": "ielts-listening.html?set=C8-T4-S2",
+      "displayValue": "C8-T4-S2",
+      "sortValue": 80402,
+      "topic": "Urban Planning / Map Labelling",
+      "tags": [
+        "Urban Planning",
+        "Map Labelling",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 2",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-S3",
+      "sectionId": "ielts-listening",
+      "title": "C8-T4-S3 · Course Funding and Exam Preparation",
+      "href": "ielts-listening.html?set=C8-T4-S3",
+      "displayValue": "C8-T4-S3",
+      "sortValue": 80403,
+      "topic": "Study / Exam Preparation",
+      "tags": [
+        "Study",
+        "Exam Preparation",
+        "Multiple Choice"
+      ],
+      "note": "Listening Section 3",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-S4",
+      "sectionId": "ielts-listening",
+      "title": "C8-T4-S4 · Australian Aboriginal Rock Paintings",
+      "href": "ielts-listening.html?set=C8-T4-S4",
+      "displayValue": "C8-T4-S4",
+      "sortValue": 80404,
+      "topic": "Art / Anthropology",
+      "tags": [
+        "Art",
+        "Anthropology",
+        "Classification"
+      ],
+      "note": "Listening Section 4",
+      "visible": true
+    },
+    {
       "id": "C7-T1-P1",
       "sectionId": "ielts-reading",
       "title": "C7-T1-P1 · Let's Go Bats",
@@ -848,6 +1104,198 @@
         "Psychology",
         "Research",
         "Noise"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-P1",
+      "sectionId": "ielts-reading",
+      "title": "C8-T1-P1 · Our Conception of Time",
+      "href": "ielts-reading.html?set=C8-T1-P1",
+      "displayValue": "C8-T1-P1",
+      "sortValue": 80101,
+      "topic": "History / Technology",
+      "tags": [
+        "Time",
+        "History",
+        "Clocks"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-P2",
+      "sectionId": "ielts-reading",
+      "title": "C8-T1-P2 · Air Traffic Control in the USA",
+      "href": "ielts-reading.html?set=C8-T1-P2",
+      "displayValue": "C8-T1-P2",
+      "sortValue": 80102,
+      "topic": "Transport / Aviation",
+      "tags": [
+        "Aviation",
+        "Airspace",
+        "Safety"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T1-P3",
+      "sectionId": "ielts-reading",
+      "title": "C8-T1-P3 · Telepathy",
+      "href": "ielts-reading.html?set=C8-T1-P3",
+      "displayValue": "C8-T1-P3",
+      "sortValue": 80103,
+      "topic": "Science / Psychology",
+      "tags": [
+        "Telepathy",
+        "Research",
+        "Psychology"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-P1",
+      "sectionId": "ielts-reading",
+      "title": "C8-T2-P1 · Sheet Glass Manufacture",
+      "href": "ielts-reading.html?set=C8-T2-P1",
+      "displayValue": "C8-T2-P1",
+      "sortValue": 80201,
+      "topic": "Technology / Manufacturing",
+      "tags": [
+        "Glass",
+        "Manufacturing",
+        "Industry"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-P2",
+      "sectionId": "ielts-reading",
+      "title": "C8-T2-P2 · The Little Ice Age",
+      "href": "ielts-reading.html?set=C8-T2-P2",
+      "displayValue": "C8-T2-P2",
+      "sortValue": 80202,
+      "topic": "History / Climate",
+      "tags": [
+        "Climate",
+        "History",
+        "Environment"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T2-P3",
+      "sectionId": "ielts-reading",
+      "title": "C8-T2-P3 · The Meaning and Power of Smell",
+      "href": "ielts-reading.html?set=C8-T2-P3",
+      "displayValue": "C8-T2-P3",
+      "sortValue": 80203,
+      "topic": "Science / Culture",
+      "tags": [
+        "Smell",
+        "Psychology",
+        "Culture"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-P1",
+      "sectionId": "ielts-reading",
+      "title": "C8-T3-P1 · Striking Back at Lightning With Lasers",
+      "href": "ielts-reading.html?set=C8-T3-P1",
+      "displayValue": "C8-T3-P1",
+      "sortValue": 80301,
+      "topic": "Science / Weather Technology",
+      "tags": [
+        "Science",
+        "Weather",
+        "Lasers"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-P2",
+      "sectionId": "ielts-reading",
+      "title": "C8-T3-P2 · The Nature of Genius",
+      "href": "ielts-reading.html?set=C8-T3-P2",
+      "displayValue": "C8-T3-P2",
+      "sortValue": 80302,
+      "topic": "Psychology / Talent",
+      "tags": [
+        "Psychology",
+        "Talent",
+        "Genius"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T3-P3",
+      "sectionId": "ielts-reading",
+      "title": "C8-T3-P3 · Biological Ageing",
+      "href": "ielts-reading.html?set=C8-T3-P3",
+      "displayValue": "C8-T3-P3",
+      "sortValue": 80303,
+      "topic": "Biology / Ageing",
+      "tags": [
+        "Biology",
+        "Ageing",
+        "Energy"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-P1",
+      "sectionId": "ielts-reading",
+      "title": "C8-T4-P1 · Land of the Rising Sum",
+      "href": "ielts-reading.html?set=C8-T4-P1",
+      "displayValue": "C8-T4-P1",
+      "sortValue": 80401,
+      "topic": "Education / Mathematics",
+      "tags": [
+        "Education",
+        "Mathematics",
+        "Japan"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-P2",
+      "sectionId": "ielts-reading",
+      "title": "C8-T4-P2 · Biological Control of Pests",
+      "href": "ielts-reading.html?set=C8-T4-P2",
+      "displayValue": "C8-T4-P2",
+      "sortValue": 80402,
+      "topic": "Agriculture / Ecology",
+      "tags": [
+        "Agriculture",
+        "Ecology",
+        "Pest Control"
+      ],
+      "note": "Passage Practice",
+      "visible": true
+    },
+    {
+      "id": "C8-T4-P3",
+      "sectionId": "ielts-reading",
+      "title": "C8-T4-P3 · Collecting Ant Specimens",
+      "href": "ielts-reading.html?set=C8-T4-P3",
+      "displayValue": "C8-T4-P3",
+      "sortValue": 80403,
+      "topic": "Biology / Fieldwork",
+      "tags": [
+        "Biology",
+        "Fieldwork",
+        "Ants"
       ],
       "note": "Passage Practice",
       "visible": true

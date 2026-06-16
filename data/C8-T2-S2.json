@@ -1,0 +1,226 @@
+{
+  "id": "C8-T2-S2",
+  "title": "Agricultural Park",
+  "source": "Cambridge IELTS 8, Test 2, Section 2",
+  "testLabel": "Test 2",
+  "audioSrc": "assets/audio/ielts-listening/C8-T2-S2.mp3?v=20260616-1",
+  "durationMinutes": 10,
+  "parts": [
+    {
+      "id": "part-2",
+      "number": 2,
+      "title": "Part 2",
+      "intro": "Listen and answer questions 11-20.",
+      "questionRange": "11-20",
+      "sections": [
+        {
+          "type": "mcq",
+          "label": "Question 11",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q11",
+              "text": "According to the speaker, the main purposes of the park are",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "education and entertainment"
+                },
+                {
+                  "value": "B",
+                  "text": "research and education"
+                },
+                {
+                  "value": "C",
+                  "text": "research and entertainment"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Questions 12-14",
+          "instruction": "Label the plan. Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.",
+          "html": "<h2>Agricultural Park Plan</h2><ul class=\"ielts-notes\"><li>You are here near the Experimental Crops Area.</li><li>Area 12: {{Q12}}</li><li>The 13 Area: {{Q13}}</li><li>Area 14, near the marsh: {{Q14}}</li></ul>"
+        },
+        {
+          "type": "mcq",
+          "label": "Questions 15-20",
+          "instruction": "Choose the correct letter, <strong>A</strong>, <strong>B</strong> or <strong>C</strong>.",
+          "items": [
+            {
+              "id": "Q15",
+              "text": "When are the experimental areas closed to the public?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "all the year round"
+                },
+                {
+                  "value": "B",
+                  "text": "almost all the year"
+                },
+                {
+                  "value": "C",
+                  "text": "a short time every year"
+                }
+              ]
+            },
+            {
+              "id": "Q16",
+              "text": "How can you move around the park?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "by tram, walking or bicycle"
+                },
+                {
+                  "value": "B",
+                  "text": "by solar car or bicycle"
+                },
+                {
+                  "value": "C",
+                  "text": "by bicycle, walking or bus"
+                }
+              ]
+            },
+            {
+              "id": "Q17",
+              "text": "The rare breed animals kept in the park include",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "hens and horses"
+                },
+                {
+                  "value": "B",
+                  "text": "goats and cows"
+                },
+                {
+                  "value": "C",
+                  "text": "goats and hens"
+                }
+              ]
+            },
+            {
+              "id": "Q18",
+              "text": "What is the main purpose of having the Rare Breeds Section?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "to save unusual animals"
+                },
+                {
+                  "value": "B",
+                  "text": "to keep a variety of breeds"
+                },
+                {
+                  "value": "C",
+                  "text": "to educate the public"
+                }
+              ]
+            },
+            {
+              "id": "Q19",
+              "text": "What can you see in the park at the present time?",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "the arrival of wild birds"
+                },
+                {
+                  "value": "B",
+                  "text": "fruit tree blossom"
+                },
+                {
+                  "value": "C",
+                  "text": "a demonstration of fishing"
+                }
+              ]
+            },
+            {
+              "id": "Q20",
+              "text": "The shop contains books about",
+              "options": [
+                {
+                  "value": "A",
+                  "text": "animals"
+                },
+                {
+                  "value": "B",
+                  "text": "local traditions"
+                },
+                {
+                  "value": "C",
+                  "text": "the history of the park"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q11",
+      "number": 11,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q12",
+      "number": 12,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q13",
+      "number": 13,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q14",
+      "number": 14,
+      "part": 2,
+      "type": "completion"
+    },
+    {
+      "id": "Q15",
+      "number": 15,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q16",
+      "number": 16,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q17",
+      "number": 17,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q18",
+      "number": 18,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q19",
+      "number": 19,
+      "part": 2,
+      "type": "mcq"
+    },
+    {
+      "id": "Q20",
+      "number": 20,
+      "part": 2,
+      "type": "mcq"
+    }
+  ]
+}
