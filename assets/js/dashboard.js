@@ -214,6 +214,11 @@
         return (replies || []).map(function(reply) { return reply.dispute_id; }).filter(Boolean);
     }
 
+    function appendQueryParam(href, key, value) {
+        if (!href || href === '#' || value == null || value === '') return href || '#';
+        return href + (href.indexOf('?') === -1 ? '?' : '&') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
+    }
+
     function practiceHref(item, assignmentId) {
         var href = item.link || item.href || '#';
         var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
@@ -224,6 +229,58 @@
         if (item.best_percentage != null) params.push('history_score=' + encodeURIComponent(item.best_percentage));
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
         return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+    }
+
+    function defaultPracticeLink(setId) {
+        var id = String(setId || '');
+        if (/^BBC-/i.test(id)) return 'bbc.html?set=' + encodeURIComponent(id);
+        if (/^C\d+-T\d+-S\d+/i.test(id)) return 'ielts-listening.html?set=' + encodeURIComponent(id);
+        if (/^C\d+-T\d+-P\d+/i.test(id)) return 'ielts-reading.html?set=' + encodeURIComponent(id);
+        if (id) return 'vocabulary.html?set=' + encodeURIComponent(id);
+        return '#';
+    }
+
+    function assignmentForReply(reply) {
+        var assignments = state.assignments || [];
+        return assignments.find(function(item) {
+            return (reply.assignment_id && String(item.assignment_id || '') === String(reply.assignment_id)) ||
+                (reply.set_id && String((item.set && (item.set.set_id || item.set.id)) || item.set_id || item.id || '') === String(reply.set_id));
+        }) || null;
+    }
+
+    function hrefForTeacherReply(reply) {
+        var assignment = assignmentForReply(reply);
+        var set = assignment && assignment.set || {
+            set_id: reply.set_id,
+            id: reply.set_id,
+            title: reply.set_title,
+            link: reply.link || reply.href || defaultPracticeLink(reply.set_id)
+        };
+        if (set && !set.link && !set.href) set = Object.assign({}, set, { link: defaultPracticeLink(set.set_id || set.id || reply.set_id) });
+        var href = practiceHref(Object.assign({}, set, {
+            status: assignment && assignment.status,
+            history_attempt_id: reply.attempt_id || assignment && assignment.history_attempt_id,
+            best_percentage: assignment && assignment.best_percentage
+        }), reply.assignment_id || assignment && assignment.assignment_id);
+        return appendQueryParam(href, 'focus', reply.question_id);
+    }
+
+    function replyQuestionLabel(questionId) {
+        var text = String(questionId || 'Question').trim();
+        var match = text.match(/(\d+)\s*$/);
+        if (match) return 'Q' + String(Number(match[1]));
+        if (/^q/i.test(text)) return text.toUpperCase();
+        return text;
+    }
+
+    function replyStatusLabel(reply) {
+        return reply.status === 'approved' ? 'Approved' : reply.status === 'rejected' ? 'Rejected' : 'Pending';
+    }
+
+    function answerText(value, fallback) {
+        if (Array.isArray(value)) return value.join(' / ');
+        if (value == null || value === '') return fallback || '';
+        return String(value);
     }
 
     function renderAssignmentFilters(assignments) {
@@ -582,7 +639,7 @@
         if (!replies.length) return '';
         return '<section class="teacher-replies-card">' +
             '<div>' +
-                '<span class="badge neutral">Teacher Replies</span>' +
+                '<span class="teacher-replies-tag">Teacher Replies</span>' +
                 '<h3>Your teacher replied to ' + replies.length + ' question' + (replies.length === 1 ? '' : 's') + '.</h3>' +
             '</div>' +
             '<button class="primary-button" id="open-teacher-replies" type="button">View replies</button>' +
@@ -597,18 +654,37 @@
         overlay.innerHTML =
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
                 '<button class="dialog-close-button" type="button" aria-label="Close teacher replies">×</button>' +
-                '<p class="eyebrow accent">Teacher Replies</p>' +
-                '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+                '<div class="teacher-replies-dialog-head">' +
+                    '<span class="teacher-replies-tag">Teacher Replies</span>' +
+                    '<h2 id="teacher-replies-title">' + replies.length + ' repl' + (replies.length === 1 ? 'y is' : 'ies are') + ' ready.</h2>' +
+                '</div>' +
                 '<div class="teacher-replies-list">' + replies.map(function(reply) {
-                    return '<article class="teacher-reply-item ' + escapeHtml(replyStatusClass(reply)) + '">' +
-                        '<strong>' + escapeHtml(reply.set_title || reply.set_id || 'Practice') + ' · ' + escapeHtml(reply.question_id || 'Question') + '</strong>' +
-                        '<span>' + escapeHtml(reply.decision_label || reply.status || 'Reviewed') + '</span>' +
-                        (reply.teacher_note ? '<p>Teacher note: ' + escapeHtml(reply.teacher_note) + '</p>' : '') +
-                        (reply.submitted_answer ? '<small>Your answer: ' + escapeHtml(reply.submitted_answer) + '</small>' : '') +
+                    var statusClass = replyStatusClass(reply);
+                    var statusLabel = replyStatusLabel(reply);
+                    var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
+                    var title = reply.set_title || reply.set_id || 'Practice';
+                    var before = answerText(reply.answer_snapshot, 'Not shown');
+                    var yours = answerText(reply.submitted_answer, 'Not shown');
+                    var href = hrefForTeacherReply(reply);
+                    return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
+                        '<div class="teacher-reply-head">' +
+                            '<div class="teacher-reply-question">' +
+                                '<strong>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</strong>' +
+                                '<small>' + escapeHtml(title) + '</small>' +
+                            '</div>' +
+                            '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
+                        '</div>' +
+                        '<div class="teacher-reply-flow">' +
+                            '<div class="teacher-reply-answer"><b>Before</b><span>' + escapeHtml(before) + '</span></div>' +
+                            '<div class="teacher-reply-arrow" aria-hidden="true">&rarr;</div>' +
+                            '<div class="teacher-reply-answer yours"><b>Yours</b><span>' + escapeHtml(yours) + '</span></div>' +
+                        '</div>' +
+                        (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
+                        '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question</a></div>' +
                     '</article>';
                 }).join('') + '</div>' +
                 '<div class="dialog-actions">' +
-                    '<button class="primary-button" id="teacher-replies-done" type="button">Done</button>' +
+                    '<button class="primary-button" id="teacher-replies-done" type="button">Close</button>' +
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
@@ -616,11 +692,12 @@
         function close(markSeen) {
             document.removeEventListener('keydown', onKeydown);
             overlay.remove();
-            if (!markSeen) return;
+            if (!markSeen) return Promise.resolve();
             var ids = replyIds(replies);
             clearTeacherReplies(ids);
             renderAssignments();
-            window.MrCatCloud.callFunction('getDashboard', {
+            if (!ids.length || !window.MrCatCloud) return Promise.resolve();
+            return window.MrCatCloud.callFunction('getDashboard', {
                 action: 'markTeacherRepliesSeen',
                 dispute_ids: ids
             }).catch(function() {});
@@ -635,6 +712,16 @@
         });
         overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
         overlay.querySelector('#teacher-replies-done').addEventListener('click', function() { close(true); });
+        overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                var href = link.getAttribute('href');
+                if (!href || href === '#') return;
+                event.preventDefault();
+                Promise.resolve(close(true)).then(function() {
+                    window.location.href = href;
+                });
+            });
+        });
         document.addEventListener('keydown', onKeydown);
     }
 

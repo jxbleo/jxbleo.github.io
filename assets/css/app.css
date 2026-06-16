@@ -795,9 +795,10 @@ button { cursor: pointer; }
 
 .teacher-replies-card {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
     align-items: center;
+    justify-items: center;
     text-align: center;
     margin-bottom: 14px;
     padding: 17px;
@@ -828,6 +829,14 @@ button { cursor: pointer; }
     padding: 0 16px;
     border-radius: 12px;
     font-weight: 850;
+}
+.teacher-replies-dialog .dialog-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+.teacher-replies-dialog .dialog-actions button {
+    min-width: 120px;
 }
 .teacher-replies-overlay {
     position: fixed;
@@ -1012,14 +1021,23 @@ button { cursor: pointer; }
 .teacher-message.success { color: var(--success); }
 .teacher-message.error { color: var(--danger); }
 .teacher-updates-panel {
+    position: fixed;
+    inset: clamp(14px, 4vh, 34px) clamp(12px, 4vw, 44px);
+    z-index: 220;
     display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
     gap: 12px;
-    margin: 0 0 14px;
-    padding: 18px;
-    border: 1px solid rgba(124,58,237,0.14);
-    border-radius: 18px;
-    background: rgba(255,255,255,0.90);
-    box-shadow: 0 16px 38px rgba(83, 45, 145, 0.10);
+    width: min(1040px, calc(100vw - clamp(24px, 8vw, 88px)));
+    height: calc(100vh - clamp(28px, 8vh, 68px));
+    margin: 0 auto;
+    padding: clamp(16px, 2.3vw, 26px);
+    overflow: hidden;
+    border: 1px solid rgba(124,58,237,0.18);
+    border-radius: 24px;
+    background: rgba(255,255,255,0.78);
+    box-shadow: 0 28px 90px rgba(47, 28, 99, 0.28);
+    backdrop-filter: blur(18px) saturate(1.08);
+    -webkit-backdrop-filter: blur(18px) saturate(1.08);
 }
 .teacher-updates-panel[hidden] { display: none; }
 .updates-panel-head {
@@ -1039,7 +1057,14 @@ button { cursor: pointer; }
     padding: 12px 16px;
     text-align: center;
 }
-.teacher-updates-body { display: grid; gap: 10px; }
+.teacher-updates-body {
+    min-height: 0;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    overflow: auto;
+    padding-right: 4px;
+}
 .activity-sub-tabs { margin: 0; }
 .activity-actions {
     display: flex;
@@ -2445,7 +2470,14 @@ button { cursor: pointer; }
     .login-card { padding: 32px 24px; }
     .app-header { padding-top: 20px; }
     .teacher-header-actions { flex-wrap: wrap; }
-    .teacher-updates-panel { padding: 14px; border-radius: 16px; }
+    .teacher-updates-panel {
+        inset: 10px;
+        width: auto;
+        height: calc(100vh - 20px);
+        padding: 14px;
+        border-radius: 18px;
+    }
+    .updates-panel-head { align-items: center; }
     .activity-row {
         grid-template-columns: 1fr;
         gap: 7px;
@@ -2497,8 +2529,18 @@ button { cursor: pointer; }
     .my-word-action { width: 100%; }
     .password-dialog { padding: 22px 18px; }
     .teacher-replies-card { grid-template-columns: 1fr; }
-    .teacher-replies-card .primary-button { width: 100%; }
+    .teacher-replies-card .primary-button { width: auto; }
     .teacher-replies-dialog { padding: 22px 18px; }
+    .teacher-reply-head {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .teacher-reply-flow { grid-template-columns: 1fr; }
+    .teacher-reply-arrow {
+        justify-self: center;
+        transform: rotate(90deg);
+    }
     .dialog-actions { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
     .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }

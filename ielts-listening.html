@@ -666,6 +666,7 @@
     var params = new URLSearchParams(window.location.search);
     var setId = params.get('set') || 'C7-T1-S1';
     var assignmentId = params.get('assignment') || '';
+    var focusQuestionId = params.get('focus') || '';
     var teacherMode = params.get('teacher') === '1';
     var startedAt = new Date().toISOString();
     var lesson = null;
@@ -1429,6 +1430,9 @@
             .then(function(data) {
                 lesson = data;
                 renderContent();
+                if (focusQuestionId) {
+                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                }
             })
             .catch(function(error) {
                 document.getElementById('content').innerHTML = '<p class="error">' + escapeHtml(error.message || 'Unable to load this listening practice.') + '</p>';

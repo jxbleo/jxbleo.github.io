@@ -1635,6 +1635,7 @@
     var prefillAttemptId = '';
     var historyAttemptId = '';
     var historyBestPercentage = null;
+    var focusQuestionId = '';
     var assignmentStatus = '';
     var answerRevealAvailable = false;
     var teacherMode = false;
@@ -2032,6 +2033,12 @@
             applyBlankAttemptLocks();
             applyMcLocks();
             renderHistoryToolbar();
+            if (focusQuestionId) {
+                var historyPromise = historyAttemptId ? showHistoryAnswers() : Promise.resolve();
+                historyPromise.then(function() {
+                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 120);
+                });
+            }
         }
     }
 
@@ -2115,6 +2122,7 @@
         historyAttemptId = params.history || prefillAttemptId;
         historyBestPercentage = params.history_score === undefined ? null : Number(params.history_score);
         if (isNaN(historyBestPercentage)) historyBestPercentage = null;
+        focusQuestionId = params.focus || '';
         assignmentStatus = params.status || '';
         teacherMode = params.teacher === '1';
         studentId = params.user || getStoredIdentity();
@@ -2533,9 +2541,9 @@
     }
 
     function showHistoryAnswers() {
-        if (!historyAttemptId || !window.MrCatCloud) return;
+        if (!historyAttemptId || !window.MrCatCloud) return Promise.resolve();
         var ready = answerRevealSavePromise || Promise.resolve();
-        ready.then(function() {
+        return ready.then(function() {
             var prefill = window.MrCatCloud.callFunction('getDashboard', {
                 action: 'getAttemptForRetry',
                 attempt_id: historyAttemptId
@@ -2557,6 +2565,16 @@
                 if (results[1] && results[1].review) markHistoryReview(results[1].review);
             }
         }).catch(function() {});
+    }
+
+    function jumpToQuestion(questionId) {
+        if (!questionId) return;
+        var target = document.querySelector('[name="' + CSS.escape(questionId) + '"]') ||
+            document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
+        if (!target) return;
+        var anchor = target.closest('li') || target.closest('[data-id]') || target.closest('tr') || target;
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (target.focus) window.setTimeout(function() { target.focus(); }, 250);
     }
 
     function updateHistoryFromResponse(response) {
