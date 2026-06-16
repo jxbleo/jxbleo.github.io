@@ -161,6 +161,30 @@
             .replace(/'/g, '&#39;');
     }
 
+    function systemLogoPath(value) {
+        var system = String(value || '').trim().toUpperCase();
+        if (system === 'DSE') return 'assets/logos/dse-logo.png';
+        if (system === 'IELTS') return 'assets/logos/ielts-logo.png';
+        return '';
+    }
+
+    function renderSystemTag(value, emptyLabel) {
+        var label = String(value || '').trim();
+        if (!label) return escapeHtml(emptyLabel || 'Not set');
+        var logo = systemLogoPath(label);
+        return '<span class="system-tag' + (logo ? ' has-logo' : '') + '">' +
+            (logo ? '<img src="' + escapeHtml(logo) + '" alt="" loading="lazy">' : '') +
+            '<span>' + escapeHtml(label) + '</span></span>';
+    }
+
+    function studentMetaHtml(student) {
+        return '<span class="student-meta">' +
+            '<span>' + escapeHtml(student.student_id || 'No Login ID') + '</span>' +
+            '<span>' + escapeHtml(student.class_group || 'No class') + '</span>' +
+            (student.curriculum_track ? renderSystemTag(student.curriculum_track, '') : '') +
+        '</span>';
+    }
+
     function showMessage(text, type) {
         message.textContent = text || '';
         message.className = 'teacher-message' + (type ? ' ' + type : '');
@@ -578,8 +602,7 @@
                     (state.selectedAssignStudentUids[student.auth_uid] && !status.disabled ? ' checked' : '') +
                     (status.disabled ? ' disabled' : '') + '>' +
                 '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                    '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
-                    (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small></span>' +
+                    '<small>' + studentMetaHtml(student) + '</small></span>' +
                 '<span class="candidate-status">' + escapeHtml(status.label) +
                     ((student.availability === 'completed' || student.availability === 'starred') && student.best_percentage != null
                         ? '<small>Best ' + escapeHtml(student.best_percentage) + '%</small>' : '') +
@@ -745,8 +768,7 @@
                 (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
                 '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
                 '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                (searchMode ? '<small>' + escapeHtml(student.student_id) + ' · ' + escapeHtml(student.class_group || 'No class') +
-                (student.curriculum_track ? ' · ' + escapeHtml(student.curriculum_track) : '') + '</small>' : '') + '</span>' +
+                (searchMode ? '<small>' + studentMetaHtml(student) + '</small>' : '') + '</span>' +
                 (searchMode ? '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' : '') +
             '</button>';
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>' +
@@ -1147,7 +1169,7 @@
         var progressHtml = renderAssignmentProgress(assignments);
         var classEditing = state.studentInfoEdit === 'class';
         var systemEditing = state.studentInfoEdit === 'system';
-        var systemOptions = ['', 'DSE', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
+        var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card">' +
@@ -1159,14 +1181,14 @@
                 '<div class="student-info-grid">' +
                     '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
                     '<div class="student-info-item">' +
-                        '<button class="student-info-edit" type="button" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></button>' +
+                        '<button class="student-info-edit" type="button" data-info-action="' + (student.class_group ? 'Edit' : 'Assign') + '" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></button>' +
                         (classEditing ? '<form class="student-info-editor" data-student-info-editor="class">' +
                             '<input type="text" name="class_group" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class">' +
                             '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
                         '</form>' : '') +
                     '</div>' +
                     '<div class="student-info-item">' +
-                        '<button class="student-info-edit" type="button" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
+                        '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + renderSystemTag(student.curriculum_track, 'Not set') + '</strong></button>' +
                         (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
                             '<select name="curriculum_track">' + systemOptions.map(function(option) {
                                 return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
