@@ -852,10 +852,10 @@
             { id: '', label: 'All' },
             { id: 'ielts-reading', label: 'IELTS Reading' },
             { id: 'ielts-listening', label: 'IELTS Listening' },
-            { id: 'dse-english-paper-1', label: 'DSE Reading' },
-            { id: 'dse-english-paper-2', label: 'DSE Writing' },
-            { id: 'dse-integrated', label: 'DSE Integrated Skills' },
-            { id: 'dse-english-paper-4', label: 'DSE Speaking' }
+            { id: 'dse-english-paper-1', label: 'DSE Paper 1 Reading' },
+            { id: 'dse-english-paper-2', label: 'DSE Paper 2 Writing' },
+            { id: 'dse-integrated', label: 'DSE Paper 3 Integrated' },
+            { id: 'dse-english-paper-4', label: 'DSE Paper 4 Speaking' }
         ],
         lessons: [
             { id: '', label: 'All' },
