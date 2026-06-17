@@ -8,7 +8,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260617-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260617-4">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -39,12 +39,6 @@
         </section>
 
         <section class="dashboard-view" id="view-resources" hidden>
-            <div class="section-heading">
-                <div>
-                    <h2>Library</h2>
-                    <p>Browse all available practice sets.</p>
-                </div>
-            </div>
             <div class="resource-tools">
                 <input class="resource-search" id="resource-search" type="search" placeholder="Search title, course or type...">
             </div>
@@ -53,7 +47,11 @@
                 <button class="library-tab-btn" data-tab="exam">Exam Practice</button>
                 <button class="library-tab-btn" data-tab="lessons">Lessons</button>
             </div>
-            <div id="student-library-sections"></div>
+            <div class="sub-tab-bar" id="student-sub-tab-bar"></div>
+            <div class="library-year-bar" id="student-year-bar"></div>
+            <div id="student-library-content">
+                <p class="section-description">Loading...</p>
+            </div>
         </section>
 
         <section class="dashboard-view" id="view-profile" hidden>
@@ -72,6 +70,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/personal-vocab.js?v=20260616-1"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/dashboard.js?v=20260617-1"></script>
+    <script src="assets/js/dashboard.js?v=20260617-2"></script>
 </body>
 </html>
