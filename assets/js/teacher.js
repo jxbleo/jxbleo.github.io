@@ -31,6 +31,7 @@
         expandedAssignmentSets: {},
         expandedAssignProgress: {},
         expandedAssignProgressGroups: {},
+        matrixClassFilter: '',
         expandedDisputeMerges: {}
     };
     var motivationalQuotes = [
@@ -503,12 +504,12 @@
         ],
         exam: [
             { id: '', label: 'All' },
-            { id: 'ielts-reading', label: 'IELTS Reading' },
-            { id: 'ielts-listening', label: 'IELTS Listening' },
-            { id: 'dse-english-paper-1', label: 'DSE Paper 1 Reading' },
-            { id: 'dse-english-paper-2', label: 'DSE Paper 2 Writing' },
-            { id: 'dse-integrated', label: 'DSE Paper 3 Integrated' },
-            { id: 'dse-english-paper-4', label: 'DSE Paper 4 Speaking' }
+            { id: 'ielts-reading', label: 'IELTS Reading', bookFilter: true },
+            { id: 'ielts-listening', label: 'IELTS Listening', bookFilter: true },
+            { id: 'dse-english-paper-1', label: 'DSE Reading' },
+            { id: 'dse-english-paper-2', label: 'DSE Writing' },
+            { id: 'dse-integrated', label: 'DSE Integrated' },
+            { id: 'dse-english-paper-4', label: 'DSE Speaking' }
         ],
         lessons: [
             { id: '', label: 'All' },
@@ -526,19 +527,48 @@
             .catch(function() {});
     }
 
-    function teacherBuildCard(item, hidden, itemYear) {
-        var meta = item.section || item.course || item.type || item.sectionId || item.section_id || 'Practice';
+    function teacherLibraryItemBook(item) {
+        var raw = String(item.set_id || item.id || item.displayValue || '');
+        var match = raw.match(/^C(\d+)/i);
+        return match ? 'C' + match[1] : '';
+    }
+
+    function teacherLibraryBadge(item, section, itemYear) {
+        var sectionId = section && section.id || item.sectionId || item.section_id || '';
+        if (/^ielts-/i.test(sectionId)) return teacherLibraryItemBook(item);
+        if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
+        return '';
+    }
+
+    function teacherLibrarySectionLabel(sectionId, fallback) {
+        var labels = {
+            'dse-english-paper-1': 'DSE Reading',
+            'dse-english-paper-2': 'DSE Writing',
+            'dse-english-paper-3': 'DSE Integrated',
+            'dse-integrated': 'DSE Integrated',
+            'dse-english-paper-4': 'DSE Speaking'
+        };
+        return labels[sectionId] || fallback || 'Practice';
+    }
+
+    function teacherBuildCard(item, section, hidden, itemYear) {
+        var sectionId = section && section.id || item.sectionId || item.section_id || '';
+        var meta = teacherLibrarySectionLabel(sectionId, section && section.title || item.section || item.course || item.type || sectionId);
         var setId = item.set_id || item.id || item.displayValue || '';
-        return '<article class="resource-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
+        var badge = teacherLibraryBadge(item, section, itemYear);
+        return '<article class="resource-card library-task-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
-            '<div>' +
+            '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
                     '<p class="eyebrow accent">' + escapeHtml(meta) + '</p>' +
                     '<span>' + escapeHtml(setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(item.title || setId) + '</h3>' +
             '</div>' +
-            '<a class="card-button" href="' + escapeHtml(teacherPracticeHref(item)) + '">Open</a>' +
+            '<div class="library-task-actions">' +
+                (badge ? '<span class="library-card-badge">' + escapeHtml(badge) + '</span>' : '') +
+                '<a class="card-button task-go-button" href="' + escapeHtml(teacherPracticeHref(item)) + '" aria-label="Open ' + escapeHtml(item.title || setId) + '">Go</a>' +
+            '</div>' +
         '</article>';
     }
 
@@ -551,7 +581,9 @@
 
     function teacherSortItems(items, section) {
         var sorted = items.slice();
-        if (section.sortType === 'date_asc') {
+        if (section.sortType === 'date_desc') {
+            sorted.sort(function(a, b) { return String(b.sortValue || '').localeCompare(String(a.sortValue || '')); });
+        } else if (section.sortType === 'date_asc') {
             sorted.sort(function(a, b) { return String(a.sortValue || '').localeCompare(String(b.sortValue || '')); });
         } else if (section.sortType === 'number_asc') {
             sorted.sort(function(a, b) { return Number(a.sortValue || 0) - Number(b.sortValue || 0); });
@@ -684,7 +716,7 @@
                     var item = sortedItems[k];
                     var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
                     var hidden = activeYear && itemYear !== activeYear;
-                    cardsHtml += teacherBuildCard(item, hidden, itemYear);
+                    cardsHtml += teacherBuildCard(item, section, hidden, itemYear);
                 }
             } else if (!targetSectionId && !section.yearFilter) {
                 cardsHtml += teacherBuildPlaceholder(section);
@@ -1444,11 +1476,37 @@
         return String(item.set_id || 'unknown');
     }
 
+    function matrixStudentClass(item) {
+        if (item.class_group) return String(item.class_group);
+        var uid = item.student_uid || item.auth_uid || '';
+        var student = state.students.find(function(profile) {
+            return profile.auth_uid === uid || profile.student_id === item.student_id;
+        });
+        return student && student.class_group ? String(student.class_group) : '';
+    }
+
+    function matrixClassOptions(items) {
+        var classes = {};
+        items.forEach(function(item) {
+            var className = matrixStudentClass(item);
+            if (className) classes[className] = true;
+        });
+        return Object.keys(classes).sort(function(a, b) { return a.localeCompare(b); });
+    }
+
     function renderAssignmentMatrix(items) {
         if (!items.length) return '';
+        var classOptions = matrixClassOptions(items);
+        if (state.matrixClassFilter && classOptions.indexOf(state.matrixClassFilter) === -1) {
+            state.matrixClassFilter = '';
+        }
+        var matrixItems = state.matrixClassFilter
+            ? items.filter(function(item) { return matrixStudentClass(item) === state.matrixClassFilter; })
+            : items;
+        if (!matrixItems.length) return '';
         var setMap = {};
         var studentMap = {};
-        items.forEach(function(item) {
+        matrixItems.forEach(function(item) {
             var setKey = matrixSetKey(item);
             if (!setMap[setKey]) {
                 setMap[setKey] = {
@@ -1465,6 +1523,7 @@
                     key: studentKey,
                     name: item.student_name || item.student_id || 'Student',
                     studentId: item.student_id || '',
+                    classGroup: matrixStudentClass(item),
                     items: {}
                 };
             }
@@ -1485,7 +1544,7 @@
         '</div>';
         var rows = students.map(function(student) {
             return '<div class="progress-matrix-row">' +
-                '<span><strong>' + escapeHtml(student.name) + '</strong><small>' + escapeHtml(student.studentId) + '</small></span>' +
+                '<span><strong>' + escapeHtml(student.name) + '</strong><small>' + escapeHtml([student.studentId, student.classGroup].filter(Boolean).join(' · ')) + '</small></span>' +
                 sets.map(function(set) {
                     var item = student.items[set.id];
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
@@ -1497,8 +1556,16 @@
                 }).join('') +
             '</div>';
         }).join('');
+        var classSelect = classOptions.length
+            ? '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
+                '<option value="">All classes</option>' +
+                classOptions.map(function(className) {
+                    return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
+                }).join('') +
+            '</select></label>'
+            : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div>' +
+            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + '<span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
         '</section>';
     }
@@ -1529,6 +1596,13 @@
                 renderAssignmentOverview();
             });
         });
+        var matrixClassFilter = document.getElementById('matrix-class-filter');
+        if (matrixClassFilter) {
+            matrixClassFilter.addEventListener('change', function() {
+                state.matrixClassFilter = matrixClassFilter.value;
+                renderAssignmentOverview();
+            });
+        }
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgressGroup;
