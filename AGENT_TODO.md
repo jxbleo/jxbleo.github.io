@@ -50,6 +50,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Aligned student Assignment task capsules with the Library task card structure,
+  including the same eyebrow/set-id/title/action layout while preserving status,
+  score, teacher reply, and star actions. Verified `dashboard.js` syntax,
+  `git diff --check`, and local v8 asset requests.
 - Updated Library card eyebrows to show `ielts-reading` / `ielts-listening`
   explicitly and simplified the student account panel: removed the separate
   achievement card and account heading, moved stars into the profile rows,

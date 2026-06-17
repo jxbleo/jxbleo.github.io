@@ -30,6 +30,8 @@
   the Library sub-tab layer.
 - Clarified IELTS Library card labels and simplified the student account panel
   into quiet profile rows with stars and finished count.
+- Aligned student Assignment task capsules with the compact Library task card
+  structure.
 
 ### Documentation
 
