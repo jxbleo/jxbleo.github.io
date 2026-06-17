@@ -57,6 +57,7 @@ Frontend rule:
 
 Student cards should show:
 
+- the same compact task capsule structure used by Library task cards
 - title
 - score or progress
 - due/assigned status where useful

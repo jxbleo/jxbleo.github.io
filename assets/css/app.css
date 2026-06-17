@@ -601,130 +601,6 @@ button { cursor: pointer; }
 .assignment-pill.milestone.passed { color: #1f6f87; background: #e3f4fb; }
 .assignment-pill.milestone.mastered { color: var(--success); background: var(--success-soft); }
 .assignment-pill.source.self-study { color: #1f6f87; background: #e3f4fb; }
-.finished-task-card {
-    --state-color: #c98f18;
-    --state-light: #f4c64c;
-    grid-template-columns: minmax(0, 1fr) 72px auto auto;
-    gap: 0;
-    align-items: stretch;
-    padding: 10px 0 10px 14px;
-    border-radius: 15px;
-    cursor: pointer;
-}
-.finished-task-card.passed {
-    --state-color: #c98f18;
-    --state-light: #f4c64c;
-}
-.finished-task-card.mastered {
-    --state-color: #237a52;
-    --state-light: #58b784;
-}
-.finished-task-card:hover {
-    transform: translateY(-1px);
-    border-color: rgba(19, 118, 109, 0.34);
-    background: rgba(255,255,255,0.96);
-}
-.finished-task-card:focus-visible {
-    outline: 3px solid rgba(19, 118, 109, 0.22);
-    outline-offset: 3px;
-}
-.finished-task-card.has-teacher-replies {
-    border-color: rgba(124, 58, 237, 0.24);
-}
-.finished-task-main {
-    min-width: 0;
-    padding-right: 12px;
-    align-self: center;
-}
-.finished-title {
-    margin: 0 0 5px !important;
-    overflow: hidden;
-    font-size: 0.96rem;
-    line-height: 1.22;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.finished-progress-wrap {
-    position: relative;
-    padding-top: 10px;
-}
-.finished-progress {
-    position: relative;
-    display: block;
-    height: 6px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: #edf4f1;
-}
-.finished-progress-fill {
-    position: relative;
-    display: block;
-    width: var(--score);
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--state-light), var(--state-color));
-}
-.finished-marker {
-    position: absolute;
-    top: 0;
-    display: grid;
-    place-items: center;
-    color: var(--state-color);
-    line-height: 1;
-    transform: translateX(-50%);
-}
-.finished-marker.pass { left: var(--pass); }
-.finished-marker.mastery { left: var(--mastery); }
-.finished-pennant {
-    position: relative;
-    width: 13px;
-    height: 12px;
-    transform: translateY(-1px);
-}
-.finished-pennant::before {
-    content: "";
-    position: absolute;
-    left: 1px;
-    top: 1px;
-    width: 2px;
-    height: 13px;
-    border-radius: 999px;
-    background: currentColor;
-    opacity: 0.62;
-}
-.finished-pennant::after {
-    content: "";
-    position: absolute;
-    left: 3px;
-    top: 1px;
-    width: 0;
-    height: 0;
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    border-left: 9px solid currentColor;
-}
-.finished-star {
-    color: var(--state-color);
-    font-size: 0.76rem;
-    text-shadow: 0 0 9px rgba(88, 183, 132, 0.35);
-    transform: translateY(-1px);
-}
-.finished-score-rail {
-    display: grid;
-    place-items: center;
-    align-self: stretch;
-    min-height: 44px;
-    background: rgba(246, 250, 248, 0.78);
-    border-left: 1px solid var(--line);
-}
-.finished-score {
-    color: var(--state-color);
-    font-size: 1rem;
-    line-height: 1;
-    font-weight: 950;
-    letter-spacing: 0;
-    white-space: nowrap;
-}
 .card-button {
     display: inline-flex;
     align-items: center;
@@ -877,6 +753,13 @@ button { cursor: pointer; }
     border-color: rgba(19, 118, 109, 0.28);
     background: rgba(255,255,255,0.96);
     box-shadow: 0 14px 34px rgba(25, 68, 61, 0.08);
+}
+.assignment-task-card.has-teacher-replies {
+    border-color: rgba(124, 58, 237, 0.26);
+    background: linear-gradient(135deg, rgba(248, 245, 255, 0.94), rgba(255,255,255,0.92));
+}
+.assignment-task-card.finished-assignment-card {
+    background: rgba(255,255,255,0.9);
 }
 .teacher-page .library-task-card:hover {
     border-color: rgba(124, 58, 237, 0.3);
@@ -3102,21 +2985,6 @@ button { cursor: pointer; }
     .account-quiet-actions {
         justify-content: flex-start;
     }
-    .task-card { grid-template-columns: minmax(0, 1fr) auto; }
-    .task-card > div:first-child {
-        grid-column: 1;
-        min-width: 0;
-    }
-    .finished-task-card {
-        grid-template-columns: minmax(0, 1fr) 60px;
-        gap: 0;
-    }
-    .finished-task-card .card-button {
-        grid-column: 1 / -1;
-        width: calc(100% - 14px);
-        margin-right: 14px;
-    }
-    .finished-title { white-space: normal; }
     .finished-drawer-toggle { max-width: 100%; }
     .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }

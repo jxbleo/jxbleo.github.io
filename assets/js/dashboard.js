@@ -411,32 +411,6 @@
             .sort(newestFirst);
     }
 
-    function finishedTaskCard(item, set, status, href, replyCount, replyKey, collected) {
-        var score = scoreValue(item);
-        var pass = percentValue(item.passing_percentage, 50);
-        var mastery = percentValue(item.mastery_percentage, 90);
-        var stateClass = status === 'mastered' ? 'mastered' : 'passed';
-        var replyButton = replyCount
-            ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
-                'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
-            : '';
-        return '<article class="task-card finished-task-card ' + escapeHtml(stateClass) + (replyCount ? ' has-teacher-replies' : '') + '" role="link" tabindex="0" data-open-href="' + escapeHtml(href) + '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '" style="--score: ' + score + '%; --pass: ' + pass + '%; --mastery: ' + mastery + '%;">' +
-            '<div class="finished-task-main">' +
-                '<h3 class="assignment-title finished-title">' + escapeHtml(compactAssignmentTitle(set.title || set.set_id || set.id || 'Practice')) + '</h3>' +
-                '<div class="finished-progress-wrap" aria-hidden="true">' +
-                    '<span class="finished-marker pass"><span class="finished-pennant"></span></span>' +
-                    '<span class="finished-marker mastery"><span class="finished-star">★</span></span>' +
-                    '<span class="finished-progress"><span class="finished-progress-fill"></span></span>' +
-                '</div>' +
-            '</div>' +
-            '<div class="finished-score-rail"><span class="finished-score">' + score + '%</span></div>' +
-            (status === 'mastered' && !collected
-                ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
-                : '') +
-            replyButton +
-        '</article>';
-    }
-
     function passwordValidationMessage(password) {
         if (password.length < 6) return 'Password must be at least 6 characters.';
         if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
@@ -567,22 +541,35 @@
             ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
                 'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
             : '';
-        if (finished) return finishedTaskCard(item, set, status, href, replyCount, replyKey, collected);
-        return '<article class="task-card' + (replyCount ? ' has-teacher-replies' : '') + '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '">' +
-            '<div>' +
-                '<h3 class="assignment-title">' + escapeHtml(set.title || set.set_id || set.id || 'Practice') + '</h3>' +
-                '<div class="assignment-pills">' +
+        var sectionId = set.sectionId || set.section_id || '';
+        var eyebrow = sectionId
+            ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment')
+            : (set.course || set.type || 'Assignment');
+        var setId = set.set_id || set.id || set.title || '';
+        return '<article class="resource-card library-task-card assignment-task-card' +
+            (finished ? ' finished-assignment-card ' + escapeHtml(status) : '') +
+            (replyCount ? ' has-teacher-replies' : '') +
+            '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '">' +
+            '<div class="library-task-copy">' +
+                '<div class="resource-card-head">' +
+                    '<p class="eyebrow accent">' + escapeHtml(eyebrow) + '</p>' +
+                    '<span>' + escapeHtml(setId) + '</span>' +
+                '</div>' +
+                '<h3>' + escapeHtml(set.title || setId || 'Practice') + '</h3>' +
+                '<div class="library-task-foot"><div class="assignment-pills">' +
                     sourcePill +
-                    '<span class="assignment-pill set-id">' + escapeHtml(set.set_id || set.id || set.title) + '</span>' +
+                    '<span class="assignment-pill set-id">' + escapeHtml(setId || set.title) + '</span>' +
                     milestonePill +
                     (status === 'to_do' ? '' : '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>') +
-                '</div>' +
+                '</div></div>' +
             '</div>' +
-            (status === 'mastered' && !collected
-                ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
-                : '') +
-            replyButton +
-            '<a class="card-button' + actionClass + '" href="' + escapeHtml(href) + '">' + action + '</a>' +
+            '<div class="library-task-actions">' +
+                (status === 'mastered' && !collected
+                    ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
+                    : '') +
+                replyButton +
+                '<a class="card-button' + actionClass + '" href="' + escapeHtml(href) + '">' + action + '</a>' +
+            '</div>' +
         '</article>';
     }
 
