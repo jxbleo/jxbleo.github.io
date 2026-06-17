@@ -177,6 +177,60 @@ button { cursor: pointer; }
     border-color: rgba(124, 58, 237, 0.2);
     color: var(--accent-dark);
 }
+.account-chip-button,
+.icon-pill-button {
+    position: relative;
+    border: 1px solid rgba(19, 118, 109, 0.15);
+}
+.account-chip-button {
+    box-shadow: 0 8px 22px rgba(25, 68, 61, 0.08);
+}
+.account-chip-button[aria-expanded="true"] {
+    border-color: rgba(19, 118, 109, 0.34);
+    background: #fff;
+}
+.icon-pill-button {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 999px;
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.76);
+    font-weight: 950;
+    box-shadow: 0 8px 22px rgba(25, 68, 61, 0.08);
+}
+.icon-pill-button.has-updates {
+    border-color: rgba(225, 29, 72, 0.28);
+    background: #fff;
+}
+.icon-pill-button .notice-dot {
+    top: -7px;
+    right: -6px;
+}
+.student-message-button span[aria-hidden="true"],
+.teacher-updates-button span[aria-hidden="true"] {
+    display: inline-grid;
+    place-items: center;
+    width: 17px;
+    height: 17px;
+    border: 2px solid currentColor;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 0;
+}
+.student-message-button span[aria-hidden="true"]::after,
+.teacher-updates-button span[aria-hidden="true"]::after {
+    content: "";
+    width: 5px;
+    height: 2px;
+    margin-top: 16px;
+    border-radius: 999px;
+    background: currentColor;
+}
 .teacher-header-actions {
     display: flex;
     align-items: center;
@@ -185,8 +239,11 @@ button { cursor: pointer; }
 }
 .teacher-updates-button {
     position: relative;
-    min-height: 38px;
-    padding: 0 14px;
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
     border: 1px solid rgba(124, 58, 237, 0.22);
     border-radius: 999px;
     color: var(--accent-dark);
@@ -207,6 +264,31 @@ button { cursor: pointer; }
 .teacher-page .primary-button { background: linear-gradient(135deg, #6d28d9, #8b5cf6 58%, #60a5fa); }
 .teacher-page .primary-button:hover { background: linear-gradient(135deg, #5b21b6, #7c3aed 58%, #3b82f6); }
 .identity-cluster { display: flex; align-items: center; gap: 8px; }
+.account-panel {
+    position: absolute;
+    right: max(14px, calc((100vw - 1080px) / 2));
+    top: 76px;
+    z-index: 120;
+    width: min(430px, calc(100vw - 28px));
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.82);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+}
+.account-panel[hidden] { display: none; }
+.account-panel-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.account-panel-head .eyebrow { margin: 0; }
+.account-panel-head h2 { margin: 2px 0 0; font-size: 1.15rem; }
+.account-panel .profile-grid { grid-template-columns: 1fr; }
+.teacher-page .account-panel { border-color: rgba(124, 58, 237, 0.18); }
 .star-counter {
     padding: 9px 13px;
     border: 1px solid rgba(216, 149, 40, 0.24);
@@ -276,7 +358,7 @@ button { cursor: pointer; }
     box-shadow: 0 12px 34px rgba(25, 68, 61, 0.1);
     backdrop-filter: blur(18px);
 }
-.teacher-page .dashboard-tabs { grid-template-columns: repeat(4, 1fr); }
+.teacher-page .dashboard-tabs { grid-template-columns: repeat(3, 1fr); }
 .teacher-create-capsule {
     width: 46px;
     min-width: 46px;
@@ -330,6 +412,139 @@ button { cursor: pointer; }
 .assignment-filter.active .summary-label { color: rgba(255,255,255,0.78); }
 .assignment-filter .filter-reply-count { position: absolute; top: -8px; right: -7px; }
 .assignment-list-tools { display: flex; justify-content: flex-end; margin: -10px 0 14px; }
+.finished-drawer {
+    margin-top: 16px;
+    border: 1px solid rgba(19, 118, 109, 0.13);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.66);
+    box-shadow: 0 10px 28px rgba(25, 68, 61, 0.045);
+    overflow: hidden;
+}
+.finished-drawer-toggle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 70px;
+    padding: 16px 18px;
+    border: 0;
+    color: var(--ink);
+    background: transparent;
+    text-align: left;
+}
+.finished-drawer-toggle strong,
+.finished-drawer-toggle small {
+    display: block;
+}
+.finished-drawer-toggle small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+.finished-drawer-count {
+    display: grid;
+    place-items: center;
+    min-width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    color: #fff;
+    background: linear-gradient(135deg, #13766d, #2a9b88);
+    font-size: 1.35rem;
+    font-weight: 950;
+}
+.finished-drawer-body {
+    display: grid;
+    gap: 12px;
+    padding: 0 14px 14px;
+}
+.finished-achievement {
+    display: grid;
+    grid-template-columns: minmax(160px, 0.9fr) minmax(0, 1.1fr);
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(19, 118, 109, 0.12);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(223,244,237,0.72), rgba(255,255,255,0.92));
+}
+.achievement-number-block {
+    display: grid;
+    align-content: center;
+    min-height: 138px;
+}
+.achievement-kicker {
+    color: var(--accent-dark);
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.achievement-number-block strong {
+    display: block;
+    margin: 2px 0;
+    color: var(--accent-dark);
+    font-size: clamp(3.2rem, 10vw, 5rem);
+    line-height: 0.95;
+    font-weight: 950;
+    letter-spacing: 0;
+}
+.achievement-number-block span:last-child {
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+.achievement-support-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+.achievement-support-grid div {
+    display: grid;
+    align-content: center;
+    min-height: 70px;
+    padding: 10px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.78);
+}
+.achievement-support-grid strong {
+    color: var(--ink);
+    font-size: 1.35rem;
+    line-height: 1;
+    font-weight: 950;
+}
+.achievement-support-grid span {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.achievement-progress-line {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+}
+.achievement-marker {
+    flex: 1;
+    min-width: 18px;
+    height: 10px;
+    border-radius: 999px;
+    background: #cfe8df;
+}
+.achievement-marker.passed { background: #8bc7d8; }
+.achievement-marker.mastered { background: #58b784; }
+.achievement-empty-line {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+.finished-list {
+    padding-top: 2px;
+}
 
 .task-list, .resource-list { display: grid; gap: 12px; }
 .task-card, .resource-card, .profile-card, .empty-card {
@@ -1248,6 +1463,12 @@ button { cursor: pointer; }
     text-overflow: ellipsis;
 }
 .assign-view-panel[hidden] { display: none; }
+.task-view-panel[hidden] { display: none; }
+.task-switch-tabs {
+    width: min(460px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
 .assignment-overview { display: grid; gap: 12px; }
 .assignment-overview-metrics {
     display: grid;
@@ -1279,6 +1500,79 @@ button { cursor: pointer; }
     display: flex;
     justify-content: flex-end;
 }
+.teacher-view-board {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.progress-matrix-card {
+    padding: 15px;
+    border: 1px solid rgba(124,58,237,0.16);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.88);
+    box-shadow: 0 10px 28px rgba(83, 45, 145, 0.055);
+}
+.progress-matrix-title {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.progress-matrix-title .eyebrow { margin: 0; }
+.progress-matrix-title h2 {
+    margin: 2px 0 0;
+    font-size: 1.15rem;
+}
+.progress-matrix-title > span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 850;
+    white-space: nowrap;
+}
+.progress-matrix-scroll {
+    overflow-x: auto;
+    border: 1px solid rgba(124,58,237,0.12);
+    border-radius: 14px;
+}
+.progress-matrix-row {
+    display: grid;
+    grid-template-columns: minmax(154px, 1.1fr) repeat(6, minmax(86px, .7fr));
+    min-width: 690px;
+}
+.progress-matrix-row > span {
+    min-height: 44px;
+    padding: 9px 10px;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    border-left: 1px solid rgba(124,58,237,0.10);
+    background: rgba(255,255,255,0.66);
+    font-size: 0.75rem;
+    font-weight: 850;
+}
+.progress-matrix-row > span:first-child { border-left: 0; }
+.progress-matrix-head > span {
+    border-top: 0;
+    color: var(--muted);
+    background: rgba(124,58,237,0.07);
+    text-transform: uppercase;
+}
+.progress-matrix-row strong,
+.progress-matrix-row small { display: block; }
+.progress-matrix-row small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 0.66rem;
+}
+.progress-matrix-cell {
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+.progress-matrix-cell.to_do { color: #7a5528; background: #fff8ea; }
+.progress-matrix-cell.passed { color: #1f6f87; background: #e3f4fb; }
+.progress-matrix-cell.mastered { color: var(--success); background: var(--success-soft); }
+.progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
+.progress-matrix-cell.empty { color: #a8b5b1; background: rgba(255,255,255,0.42); }
 .assignment-progress-mode-tabs {
     display: inline-grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2491,6 +2785,13 @@ button { cursor: pointer; }
     .brand-panel h1 { font-size: 3rem; }
     .login-card { padding: 32px 24px; }
     .app-header { padding-top: 20px; }
+    .identity-cluster { flex-wrap: wrap; justify-content: flex-end; }
+    .account-panel {
+        left: 14px;
+        right: 14px;
+        top: 72px;
+        width: auto;
+    }
     .teacher-header-actions { flex-wrap: wrap; }
     .teacher-updates-panel {
         padding: 12px;
@@ -2528,6 +2829,10 @@ button { cursor: pointer; }
         margin-right: 14px;
     }
     .finished-title { white-space: normal; }
+    .finished-achievement { grid-template-columns: 1fr; }
+    .achievement-number-block { min-height: 112px; text-align: center; }
+    .achievement-support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .achievement-support-grid div { min-height: 62px; padding: 8px; text-align: center; }
     .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
     .task-card .task-go-button {
@@ -2599,6 +2904,8 @@ button { cursor: pointer; }
     .student-info-head .eyebrow { justify-self: center; }
     .student-info-editor { grid-template-columns: 1fr; }
     .assignment-overview-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .progress-matrix-card { padding: 12px; }
+    .progress-matrix-title { align-items: start; flex-direction: column; }
     .assignment-overview-toolbar { justify-content: stretch; }
     .assignment-progress-mode-tabs { width: 100%; }
     .assignment-progress-group-head { grid-template-columns: 1fr; }
@@ -2713,8 +3020,29 @@ button { cursor: pointer; }
 .library-year-bar .year-tabs {
     margin-bottom: 0;
 }
-.menu-card.year-hidden {
+.menu-card.year-hidden,
+.teacher-library-card.year-hidden {
     display: none !important;
+}
+#teacher-library-content .teacher-library-list {
+    grid-template-columns: 1fr;
+}
+#teacher-library-content .teacher-library-card {
+    min-height: 86px;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+#teacher-library-content .teacher-library-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(124, 58, 237, 0.3);
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 14px 34px rgba(83, 45, 145, 0.09);
+}
+#teacher-library-content .teacher-library-card .card-button {
+    width: auto;
+    white-space: nowrap;
+}
+#teacher-library-content .teacher-library-placeholder {
+    text-align: left;
 }
 #student-library-sections .section {
     margin-bottom: 14px;

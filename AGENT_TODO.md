@@ -48,8 +48,30 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-18
+
+- Refactored the student dashboard navigation to `Assignments`, `My Words`,
+  and `Library`; moved account actions and teacher replies to the top-right
+  chip/message controls; added a collapsed `Finished & Wins` drawer focused on
+  completed-count achievement. Refactored the teacher desk to `Tasks`, `View`,
+  and `Library`; moved Review under Tasks, changed Updates into a notification
+  bell, and added a progress matrix to View.
+- Verified `assets/js/dashboard.js` and `assets/js/teacher.js` with
+  `node --check`, ran `git diff --check`, and browser-smoked the teacher page
+  locally with an existing teacher session: `Tasks`, `Tasks > Review`, `View`
+  matrix, notification bell, and teacher account panel loaded without console
+  errors. Student browser smoke with a real student session is still needed.
+  CloudBase: no deployment or data import required; publish the static site for
+  the UI/cache-bump change.
+
 ### 2026-06-17
 
+- Restored Teacher Library practice items to compact task capsules while
+  keeping the 3-tab, sub-tab, search, and year filtering behavior. Verified
+  `teacher.js` syntax and browser-smoked a dedicated teacher session locally:
+  Library rendered `teacher-library-card` capsules with `Open` actions and no
+  residual `menu-card` items. Static publish is required for the UI/cache-bump
+  change.
 - Added Cambridge book sub-tabs to the student and teacher Library views for
   IELTS Reading and IELTS Listening. Verified locally in visitor mode that
   IELTS Reading shows `C7` and `C8`, defaults to `C7`, and lists 12 C7 Reading

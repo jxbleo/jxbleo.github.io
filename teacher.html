@@ -5,20 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260617-4">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260618-2">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
             <div class="teacher-header-actions">
-                <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-expanded="false">
-                    <span>Updates</span>
+                <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false">
+                    <span aria-hidden="true">!</span>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
                 </button>
-                <span class="student-chip" id="teacher-chip">Loading...</span>
+                <button class="student-chip account-chip-button" id="teacher-chip" type="button" aria-expanded="false">Loading...</button>
             </div>
         </header>
+
+        <section class="account-panel teacher-account-panel" id="teacher-account-panel" hidden>
+            <div class="account-panel-head">
+                <div>
+                    <p class="eyebrow accent">PERSONAL CENTER</p>
+                    <h2>Teacher Account</h2>
+                </div>
+                <button class="create-student-close" id="teacher-account-close" type="button" aria-label="Close account panel">x</button>
+            </div>
+            <div id="teacher-account-content">
+                <div class="profile-card"><p class="muted">Loading account...</p></div>
+            </div>
+        </section>
 
         <section class="hero-card teacher-hero">
             <h1 id="teacher-greeting">Hello.</h1>
@@ -26,9 +39,8 @@
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="argue">Review</button>
-            <button class="tab-button" type="button" data-view="assign">Assign</button>
-            <button class="tab-button" type="button" data-view="check">Progress</button>
+            <button class="tab-button active" type="button" data-view="tasks">Tasks</button>
+            <button class="tab-button" type="button" data-view="view">View</button>
             <button class="tab-button" type="button" data-view="library">Library</button>
         </nav>
 
@@ -37,8 +49,8 @@
         <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
             <div class="updates-panel-head">
                 <div>
-                    <p class="eyebrow accent">UPDATES</p>
-                    <h2>Recent activity</h2>
+                    <p class="eyebrow accent">NOTIFICATIONS</p>
+                    <h2>Activity center</h2>
                 </div>
                 <button class="create-student-close" id="teacher-updates-close" type="button" aria-label="Close updates">x</button>
             </div>
@@ -47,23 +59,17 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-argue">
-            <div class="dispute-list" id="dispute-list">
-                <div class="empty-card loading-card">Loading review requests...</div>
-            </div>
-        </section>
-
-        <section class="dashboard-view" id="view-assign" hidden>
-            <div class="summary-grid assignment-filters assign-tabs" role="tablist" aria-label="Assign sections">
-                <button class="summary-card assignment-filter assign-view-filter active" type="button" data-assign-view="new">
-                    <span class="summary-label">ASSIGN NEW</span>
+        <section class="dashboard-view" id="view-tasks">
+            <div class="summary-grid assignment-filters assign-tabs task-switch-tabs" role="tablist" aria-label="Task sections">
+                <button class="summary-card assignment-filter task-view-filter active" type="button" data-task-view="assign">
+                    <span class="summary-label">ASSIGN</span>
                 </button>
-                <button class="summary-card assignment-filter assign-view-filter" type="button" data-assign-view="progress">
-                    <span class="summary-label">IN PROGRESS</span>
+                <button class="summary-card assignment-filter task-view-filter" type="button" data-task-view="review">
+                    <span class="summary-label">REVIEW</span>
                 </button>
             </div>
 
-            <section class="assign-flow assign-view-panel" id="assign-new-panel">
+            <section class="assign-flow task-view-panel" id="task-assign-panel">
                 <article class="profile-card assign-step-card" id="assign-sets-card">
                     <button class="assign-step-summary" id="toggle-assign-sets" type="button" aria-expanded="false">
                         <span><strong>Practice Sets</strong><small id="assign-set-count">None selected</small></span>
@@ -140,9 +146,9 @@
                 </div>
             </section>
 
-            <section class="assign-view-panel" id="assign-progress-panel" hidden>
-                <div class="assignment-overview" id="assignment-overview">
-                    <div class="empty-card loading-card">Loading assignment progress...</div>
+            <section class="task-view-panel" id="task-review-panel" hidden>
+                <div class="dispute-list" id="dispute-list">
+                    <div class="empty-card loading-card">Loading review requests...</div>
                 </div>
             </section>
         </section>
@@ -163,7 +169,13 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-check" hidden>
+        <section class="dashboard-view" id="view-view" hidden>
+            <section class="teacher-view-board" id="teacher-view-board">
+                <div class="assignment-overview" id="assignment-overview">
+                    <div class="empty-card loading-card">Loading assignment progress...</div>
+                </div>
+            </section>
+
             <section class="profile-card student-select-card">
                 <p class="eyebrow accent">STUDENT</p>
                 <div class="student-search-actions">
@@ -221,15 +233,12 @@
             </section>
         </section>
 
-        <div class="teacher-footer">
-            <button class="danger-button teacher-logout" id="teacher-logout" type="button">Log Out</button>
-        </div>
     </main>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260617-3"></script>
+    <script src="assets/js/teacher.js?v=20260618-2"></script>
 </body>
 </html>
