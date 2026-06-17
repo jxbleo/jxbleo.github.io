@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260617-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260617-3">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -157,11 +157,12 @@
             <div class="assign-toolbar">
                 <input class="resource-search" id="library-search" type="search" placeholder="Search practice sets...">
             </div>
-            <div class="library-tabs" id="teacher-library-tabs" aria-label="Library categories"></div>
-            <div class="library-book-tabs" id="teacher-library-book-tabs" aria-label="Cambridge book filters"></div>
-            <div class="resource-list" id="teacher-library-list">
-                <div class="empty-card loading-card">Loading library...</div>
+            <div class="library-tab-bar" id="teacher-library-tab-bar">
+                <button class="library-tab-btn active" data-tab="general">General Practice</button>
+                <button class="library-tab-btn" data-tab="exam">Exam Practice</button>
+                <button class="library-tab-btn" data-tab="lessons">Lessons</button>
             </div>
+            <div id="teacher-library-sections"></div>
         </section>
 
         <section class="dashboard-view" id="view-check" hidden>
