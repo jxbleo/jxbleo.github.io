@@ -51,8 +51,8 @@
     ];
 
     var identityChip = document.getElementById('identity-chip');
-    var starCounter = document.getElementById('star-counter');
-    var selfStudyStarCounter = document.getElementById('self-study-star-counter');
+    var starCounter = null;
+    var selfStudyStarCounter = null;
     var greeting = document.getElementById('greeting');
     var heroCopy = document.getElementById('hero-copy');
     var assignmentContent = document.getElementById('assignment-content');
@@ -309,6 +309,8 @@
     }
 
     function updateStarCounter(animate) {
+        if (!starCounter) starCounter = document.getElementById('star-counter');
+        if (!selfStudyStarCounter) selfStudyStarCounter = document.getElementById('self-study-star-counter');
         if (selfStudyStarCounter) {
             selfStudyStarCounter.textContent = '★ ' + state.selfStudyStarCount;
             selfStudyStarCounter.classList.toggle('pop', animate === true);
@@ -741,17 +743,17 @@
         var mastered = finished.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).length;
         var passed = Math.max(finished.length - mastered, 0);
         var completionPercent = total ? Math.round((finished.length / total) * 100) : 0;
-        var recent = finished.slice(0, 8);
+        var recent = finished.slice(0, 6);
         var markers = recent.length ? recent.map(function(item, index) {
             var status = normalizedStatus(item.status);
             var label = compactAssignmentTitle((item.set && (item.set.title || item.set.set_id)) || item.set_title || item.set_id || 'Practice');
             return '<span class="achievement-marker ' + escapeHtml(status) + '" title="' + escapeHtml(label) + '" style="--delay:' + index + '"></span>';
-        }).join('') : '<span class="achievement-empty-line">Finish one task to start your progress line.</span>';
+        }).join('') : '<span class="achievement-empty-line">First finish starts the glow.</span>';
         return '<section class="finished-achievement">' +
             '<div class="achievement-number-block">' +
-                '<span class="achievement-kicker">Completed</span>' +
+                '<span class="achievement-kicker">Total Completed</span>' +
                 '<strong>' + escapeHtml(finished.length) + '</strong>' +
-                '<span>' + escapeHtml(total ? completionPercent + '% of assigned work' : 'Your count starts here') + '</span>' +
+                '<span>' + escapeHtml(total ? completionPercent + '% complete' : 'Your count starts here') + '</span>' +
             '</div>' +
             '<div class="achievement-support-grid">' +
                 '<div><strong>' + escapeHtml(mastered) + '</strong><span>Mastered</span></div>' +
@@ -902,12 +904,12 @@
         ],
         exam: [
             { id: '', label: 'All' },
-            { id: 'ielts-reading', label: 'IELTS Reading' },
-            { id: 'ielts-listening', label: 'IELTS Listening' },
-            { id: 'dse-english-paper-1', label: 'DSE Paper 1 Reading' },
-            { id: 'dse-english-paper-2', label: 'DSE Paper 2 Writing' },
-            { id: 'dse-integrated', label: 'DSE Paper 3 Integrated' },
-            { id: 'dse-english-paper-4', label: 'DSE Paper 4 Speaking' }
+            { id: 'ielts-reading', label: 'IELTS Reading', bookFilter: true },
+            { id: 'ielts-listening', label: 'IELTS Listening', bookFilter: true },
+            { id: 'dse-english-paper-1', label: 'DSE Reading' },
+            { id: 'dse-english-paper-2', label: 'DSE Writing' },
+            { id: 'dse-integrated', label: 'DSE Integrated' },
+            { id: 'dse-english-paper-4', label: 'DSE Speaking' }
         ],
         lessons: [
             { id: '', label: 'All' },
@@ -928,6 +930,42 @@
         return html;
     }
 
+    function librarySectionLabel(sectionId, fallback) {
+        var labels = {
+            'dse-english-paper-1': 'DSE Reading',
+            'dse-english-paper-2': 'DSE Writing',
+            'dse-english-paper-3': 'DSE Integrated',
+            'dse-integrated': 'DSE Integrated',
+            'dse-english-paper-4': 'DSE Speaking'
+        };
+        return labels[sectionId] || fallback || 'Practice';
+    }
+
+    function libraryItemBook(item) {
+        var raw = String(item.set_id || item.id || item.displayValue || '');
+        var match = raw.match(/^C(\d+)/i);
+        return match ? 'C' + match[1] : '';
+    }
+
+    function libraryCardBadge(item, section, itemYear) {
+        var sectionId = section && section.id || item.sectionId || item.section_id || '';
+        if (/^ielts-/i.test(sectionId)) return libraryItemBook(item);
+        if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
+        return '';
+    }
+
+    function libraryCardMeta(item, section, itemYear) {
+        var badge = libraryCardBadge(item, section, itemYear);
+        var sectionId = section && section.id || item.sectionId || item.section_id || '';
+        var sectionLabel = librarySectionLabel(sectionId, section && section.title || item.sectionTitle || item.course || item.type);
+        var setId = item.set_id || item.id || item.displayValue || '';
+        return {
+            badge: badge,
+            sectionLabel: sectionLabel,
+            setId: setId
+        };
+    }
+
     function libraryShouldShowNote(item) {
         return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
     }
@@ -946,34 +984,34 @@
         return sorted;
     }
 
-    function libraryBuildCard(item, extraClass, itemYear) {
+    function libraryBuildCard(item, section, extraClass, itemYear) {
         var href = practiceHref(item, null);
-        return '<li class="menu-card' + (extraClass ? ' ' + extraClass : '') + '"' +
+        var meta = libraryCardMeta(item, section, itemYear);
+        return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
-            '<a class="practice-link" href="' + escapeHtml(href) + '">' +
-                '<div class="card-content">' +
-                    '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
-                    '<div class="meta-row">' +
-                        '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
-                        '<div class="tags">' + libraryBuildTags(item.tags, item.topic) + '</div>' +
-                    '</div>' +
+            '<div class="library-task-copy">' +
+                '<div class="resource-card-head">' +
+                    '<p class="eyebrow accent">' + escapeHtml(meta.sectionLabel) + '</p>' +
+                    '<span>' + escapeHtml(meta.setId) + '</span>' +
+                '</div>' +
+                '<h3>' + escapeHtml(item.title || meta.setId) + '</h3>' +
+                '<div class="library-task-foot">' +
+                    '<div class="tags">' + libraryBuildTags(item.tags, item.topic) + '</div>' +
                     (libraryShouldShowNote(item) ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
                 '</div>' +
-                '<div class="arrow-box">→</div>' +
-            '</a>' +
-        '</li>';
+            '</div>' +
+            '<div class="library-task-actions">' +
+                (meta.badge ? '<span class="library-card-badge">' + escapeHtml(meta.badge) + '</span>' : '') +
+                '<a class="card-button task-go-button" href="' + escapeHtml(href) + '" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">Go</a>' +
+            '</div>' +
+        '</article>';
     }
 
     function libraryBuildPlaceholderCard(section) {
-        return '<li class="menu-card placeholder-card">' +
-            '<div class="menu-card-content">' +
-                '<div class="card-content">' +
-                    '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
-                    '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p>' +
-                '</div>' +
-                '<div class="arrow-box" style="background-color:transparent;color:var(--text-muted);">⏳</div>' +
-            '</div>' +
-        '</li>';
+        return '<div class="empty-card library-task-placeholder">' +
+            '<strong>' + escapeHtml(section.emptyMessage || 'Developing') + '</strong>' +
+            escapeHtml(section.emptyNote || '') +
+        '</div>';
     }
 
     function libraryGetTabSections(tabId) {
@@ -1099,7 +1137,7 @@
                     var item = sortedItems[k];
                     var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
                     var hidden = activeYear && itemYear !== activeYear;
-                    cardsHtml += libraryBuildCard(item, hidden ? 'year-hidden' : '', itemYear);
+                    cardsHtml += libraryBuildCard(item, section, hidden ? 'year-hidden' : '', itemYear);
                 }
             } else if (!targetSectionId && !section.yearFilter) {
                 cardsHtml += libraryBuildPlaceholderCard(section);
@@ -1119,7 +1157,7 @@
             cardsHtml = '<p class="section-description">No content yet.</p>';
         }
 
-        root.innerHTML = '<ul class="menu-list">' + cardsHtml + '</ul>';
+        root.innerHTML = '<div class="resource-list library-task-list student-library-list">' + cardsHtml + '</div>';
     }
 
     function librarySwitchTab(tabId) {
@@ -1173,18 +1211,25 @@
                 (state.vocabSearch ? 'No saved words match this search.' : 'Select a word or short phrase anywhere in the site to save it here.') +
             '</div>';
         }
-        return words.map(function(word) {
+        return '<div class="my-words-table" role="table" aria-label="Saved words">' +
+            '<div class="my-words-table-row my-words-table-head" role="row">' +
+                '<span role="columnheader">Word</span><span role="columnheader">Source / Context</span><span role="columnheader">Saved</span><span role="columnheader">Action</span>' +
+            '</div>' +
+            words.map(function(word) {
             var source = wordSourceLabel(word);
             var date = wordTimeLabel(word);
-            return '<article class="my-word-item">' +
+            return '<article class="my-word-item my-words-table-row" role="row">' +
                 '<div class="my-word-main">' +
                     '<strong>' + escapeHtml(word.text || '') + '</strong>' +
-                    '<span>' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</span>' +
+                '</div>' +
+                '<div class="my-word-source">' +
+                    '<span>' + escapeHtml(source) + '</span>' +
                     (word.context ? '<p>' + escapeHtml(word.context) + '</p>' : '') +
                 '</div>' +
+                '<span class="my-word-date">' + escapeHtml(date || '') + '</span>' +
                 '<button class="outline-button my-word-action" type="button" data-archive-word="' + escapeHtml(word.vocab_id || '') + '">Archive</button>' +
             '</article>';
-        }).join('');
+        }).join('') + '</div>';
     }
 
     function bindMyWordActions() {
@@ -1310,6 +1355,15 @@
         var voluntary = (profile.stats && profile.stats.voluntary_attempts) || 0;
         profileContent.innerHTML =
             '<div class="profile-grid">' +
+                '<section class="profile-card account-stars-card">' +
+                    '<div class="account-stars-head">' +
+                        '<div><p class="eyebrow accent">ACHIEVEMENT</p><h2>Stars</h2></div>' +
+                    '</div>' +
+                    '<div class="account-stars-grid">' +
+                        '<span class="star-counter assignment-star-counter" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
+                        '<span class="star-counter self-study-star-counter" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
+                    '</div>' +
+                '</section>' +
                 '<section class="profile-card">' +
                     '<h2>' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
@@ -1326,6 +1380,9 @@
                     '</div>' +
                 '</section>' +
             '</div>';
+        starCounter = document.getElementById('star-counter');
+        selfStudyStarCounter = document.getElementById('self-study-star-counter');
+        updateStarCounter(false);
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
             openChangePasswordDialog();
@@ -1471,7 +1528,7 @@
                 }
                 var cardsRoot = document.getElementById('student-library-content');
                 if (cardsRoot) {
-                    var cards = cardsRoot.querySelectorAll('.menu-card');
+                    var cards = cardsRoot.querySelectorAll('.library-task-card');
                     for (var ci = 0; ci < cards.length; ci++) {
                         if (!year) {
                             cards[ci].classList.remove('year-hidden');

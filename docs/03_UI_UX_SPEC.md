@@ -50,6 +50,7 @@ Frontend rule:
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
 - The finished drawer should emphasize completion quantity first, with score and STAR as supporting signals.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
+- Student STAR counters live inside the top-right account panel, not in the always-visible header.
 
 Student cards should show:
 
@@ -63,6 +64,7 @@ My Words:
 
 - has its own main navigation entry.
 - shows saved student-owned words and phrases from `studentVocabulary`.
+- uses a vocabulary-list/table layout with word, source/context, saved date, and archive action.
 - visitors see a login prompt instead of personal data.
 
 Student account menu:
@@ -113,7 +115,7 @@ View is the teacher's progress and student-inspection surface.
 
 It should include:
 
-- an assignment matrix/table for scanning completion by student and task
+- an assignment matrix/table for scanning completion by student and task, with a class filter and responsive horizontal scrolling on small screens
 - a grouped `By student` / `By task` progress view
 - student selection and student detail panels
 - student account management actions such as class/system edit, password reset, enable/disable, and account creation
@@ -122,9 +124,12 @@ It should include:
 
 Teacher opens existing practice pages in `teacher=1` mode.
 
-Teacher Library task items should render as compact task capsules/cards with
-the set metadata, title, stable set ID, and an `Open` action. Keep this capsule
-shape when changing Library grouping, tabs, or filters.
+Student and teacher Library task items should render as the same compact task
+capsules/cards with set metadata, title, stable set ID, and a small `Go` action.
+IELTS cards show the Cambridge book badge such as `C7`; BBC cards show a year
+badge. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
+and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when
+changing Library grouping, tabs, or filters.
 
 Teacher Show Answers:
 
@@ -174,9 +179,19 @@ Shared rules:
 - A sticky lesson header at the top of the workspace shows the lesson title and source, above the questions.
 - The header stays visible while scrolling through questions.
 
+### BBC Practice
+
+- A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
+- History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
+- History may show Explain and Argue controls only when backend review data marks feedback as available.
+- Clear removes visible answers, feedback, Explain, Argue, and local blank locks; persistent MC wrong-answer reminders may remain as yellow boxes.
+
 ### Vocabulary Test
 
 - The test countdown timer is fixed at the top-center of the screen with red text on a light-red background to create a sense of urgency.
+- A not-passed Vocabulary Test result offers `Choose Again`, which clears the
+  current test view and returns the student to the group-count selector for a
+  fresh start.
 
 ## 6. Status Labels
 
