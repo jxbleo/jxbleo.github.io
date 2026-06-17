@@ -925,8 +925,9 @@ cloudfunctions/
 6. 运行 catalog 生成
 7. 运行 CloudBase 数据准备脚本
 8. 校验 JSON、题号、答案数量、链接
-9. 导入 CloudBase `sets`
-10. 导入 CloudBase `grading_keys`
+9. 运行 `npm run cloudbase:import:content` dry-run
+10. 运行 `npm run cloudbase:import:content -- --apply` 导入缺失的
+    CloudBase `sets` 和 `grading_keys`
 11. 发布静态站点
 
 ### 13.2 修改答案或解析

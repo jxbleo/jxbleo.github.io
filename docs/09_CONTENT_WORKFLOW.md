@@ -99,7 +99,19 @@ It writes ignored output under `.cloudbase-private/`, including:
 - `public/` preview data with answers stripped where supported
 
 The `*-cloudbase.json` files are JSON Lines: one complete JSON document per
-line. Use those files for CloudBase console import.
+line. The preferred import path is the owner-run CLI helper:
+
+```bash
+npm run cloudbase:import:content
+npm run cloudbase:import:content -- --apply
+```
+
+The first command is a dry run. The second writes missing `sets` and
+`grading_keys` records to the development CloudBase environment. Existing
+records are not overwritten unless `--overwrite-existing` is passed after an
+explicit owner review.
+
+CloudBase console import of the JSON Lines files remains a fallback.
 
 Never commit `.cloudbase-private/`.
 

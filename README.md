@@ -76,8 +76,10 @@ Static site deployment and CloudBase deployment are separate:
 - Static files: commit and push HTML/CSS/JS/data/audio changes.
 - Cloud functions: edit `cloudfunctions/<name>/`, rebuild the matching ZIP in
   `deploy-packages/`, then upload it in the CloudBase console.
-- CloudBase data: run `node scripts/prepare-cloudbase-data.js` and import the
-  JSON Lines files under `.cloudbase-private/import/`.
+- CloudBase data: run `node scripts/prepare-cloudbase-data.js`, then dry-run
+  and apply the owner-only CLI import with
+  `npm run cloudbase:import:content` and
+  `npm run cloudbase:import:content -- --apply`.
 - Owner-gated helper: run `npm run release:plan` to create
   `.cloudbase-private/deploy-plan.md` for review.
 

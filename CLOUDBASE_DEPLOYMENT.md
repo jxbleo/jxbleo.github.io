@@ -70,7 +70,7 @@ This creates ignored local files under:
 Important:
 
 - Files ending in `-cloudbase.json` use the JSON Lines format required by the
-  CloudBase console.
+  CloudBase CLI import helper and CloudBase console fallback.
 - JSON Lines means one complete JSON document per line. Do not wrap the records
   in a top-level array for console import.
 - `import/sets-cloudbase.json` is safe catalog metadata.
@@ -82,11 +82,23 @@ Important:
 - `public/` contains preview data with grading fields removed.
 - Never commit `.cloudbase-private/`.
 
-If importing only a few new records, create a smaller JSON Lines file by
-filtering the relevant `-cloudbase.json` file. Do not import an array-form JSON
-backup into the console. The console import modal may describe the format as
-`JSON` rather than `JSON Lines`; for these project files, still upload the
-one-document-per-line `-cloudbase.json` file.
+Preferred owner-run CLI import:
+
+```bash
+npm run cloudbase:import:content
+npm run cloudbase:import:content -- --apply
+```
+
+The first command is a dry run. The second inserts missing `sets` and
+`grading_keys` records into the development CloudBase environment. It does not
+overwrite existing records by default, so teacher-approved Argue grading
+changes are protected.
+
+If importing only a few new records through the console fallback, create a
+smaller JSON Lines file by filtering the relevant `-cloudbase.json` file. Do
+not import an array-form JSON backup into the console. The console import modal
+may describe the format as `JSON` rather than `JSON Lines`; for these project
+files, still upload the one-document-per-line `-cloudbase.json` file.
 
 For `grading_keys`, use JSON import rather than CSV because each record contains
 nested `answers` and `explanations` objects, and some answers may be arrays of
@@ -111,8 +123,9 @@ missing or stale. If submission fails with `GRADING_KEY_NOT_FOUND`,
 
 1. Deploy `getCurrentStudent`.
 2. Test `test001` login and profile lookup.
-3. Import `sets-cloudbase.json` into `sets`.
-4. Import `grading-keys-cloudbase.json` into `grading_keys`.
+3. Run `npm run cloudbase:import:content` and review the dry-run output.
+4. Run `npm run cloudbase:import:content -- --apply` to import `sets` and
+   `grading_keys`.
 5. Import `system-config-cloudbase.json` into `system_config`.
 6. Deploy `getResources`.
 7. Deploy `getDashboard`.

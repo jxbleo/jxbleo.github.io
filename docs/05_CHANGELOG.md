@@ -11,6 +11,7 @@
 - Added product requirements, architecture, UI/UX, data model, decisions, testing checklist, backlog, deployment/content/troubleshooting entries.
 - Added `docs/09_CONTENT_WORKFLOW.md` and `docs/10_DEPLOYMENT.md` as numbered documentation entry points.
 - Added owner-gated release helper scripts for verification, function packaging, and deploy-plan generation.
+- Added owner-run CloudBase CLI content import helper with dry-run and insert-missing apply mode.
 
 ### Changed
 

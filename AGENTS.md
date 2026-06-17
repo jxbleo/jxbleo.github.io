@@ -459,8 +459,18 @@ It creates ignored output under `.cloudbase-private/`:
 - `import/system-config-cloudbase.json`: JSON Lines for `system_config`
 - `public/`: answer-stripped runtime previews
 
-CloudBase console import accepts the `-cloudbase.json` JSON Lines files. Never
-commit `.cloudbase-private/`.
+Preferred owner-run CloudBase data import is CLI:
+
+```bash
+npm run cloudbase:import:content
+npm run cloudbase:import:content -- --apply
+```
+
+The first command is a dry run. The second writes missing `sets` and
+`grading_keys` records to the development CloudBase environment. It does not
+overwrite existing records by default, protecting teacher-approved grading
+changes made through Argue. CloudBase console import of the `-cloudbase.json`
+JSON Lines files is now only a fallback. Never commit `.cloudbase-private/`.
 
 ## 10. Turning Owner Material Into Website Content
 
@@ -483,6 +493,10 @@ Default workflow:
 7. Keep grading data private in the deployed output.
 8. Run the relevant importer and `node scripts/build-home-catalog.js`.
 9. Run `node scripts/prepare-cloudbase-data.js` when sets or grading change.
+   If CloudBase data must be imported, give the owner terminal commands,
+   normally `npm run cloudbase:import:content` and
+   `npm run cloudbase:import:content -- --apply`, instead of asking them to
+   use the CloudBase console.
 10. Validate IDs, counts, links, grading-key coverage, and interaction.
 11. Tell the owner exactly which CloudBase import/deployment is required.
 
@@ -878,11 +892,15 @@ by the teacher, converted into website data, and pushed to GitHub Pages:
 - Evidence references should be transcript line numbers only (`L23-L25`). The
   earlier `PXX-LXX` format was unnecessary for Markdown transcripts and made
   review harder.
-- CloudBase console imports require the `-cloudbase.json` JSON Lines files:
-  one JSON document per line. Array-form backup files such as
-  `grading_keys.json` or an ad hoc JSON array can appear to upload but may not
-  create usable records. For partial imports, generate a partial JSON Lines
-  file from the `-cloudbase.json` source.
+- CloudBase content imports should now be done with the owner-run CLI helper:
+  `npm run cloudbase:import:content` for dry-run, then
+  `npm run cloudbase:import:content -- --apply`. The helper uses the generated
+  JSON Lines files and inserts missing `sets` / `grading_keys` records without
+  overwriting existing records by default.
+- CloudBase console imports remain a fallback and require the
+  `-cloudbase.json` JSON Lines files: one JSON document per line. Array-form
+  backup files such as `grading_keys.json` or an ad hoc JSON array can appear
+  to upload but may not create usable records.
 - The CloudBase import modal may say it supports JSON and CSV. For
   `grading_keys`, use JSON because `answers` and `explanations` are nested
   objects/arrays; CSV cannot preserve them.
@@ -1070,9 +1088,10 @@ agents should read this before changing `vocabulary.html`,
   it from other questions until it is cleared. This is intentional.
 - Test mode should not reveal original question numbers or `Words X-Y` ranges,
   because students can use those to find answers in Learn mode.
-- In Test mode, the timer appears at the top-left after the test starts, away
-  from the top-right identity/status area. Time-up feedback includes a short
-  Web Audio beep, not an external audio asset.
+- In Test mode, the timer appears fixed at the top-center after the test
+  starts, using red text on a light-red background to give students a sense
+  of urgency. Time-up feedback includes a short Web Audio beep, not an
+  external audio asset.
 - Dictate mode should not show Chinese definitions. Its setup row uses a simple
   `Start` button aligned to the right on desktop, and should not include the
   old explanatory sentence beginning with "Choose a range".
@@ -1161,6 +1180,9 @@ await db.collection("students").add(student);
 - CloudBase import for nested data such as `grading_keys` must use JSON Lines:
   one JSON object per line. Use the generated `*-cloudbase.json` files, not
   array-form backups.
+- Prefer the CLI helper for content imports:
+  `npm run cloudbase:import:content` then
+  `npm run cloudbase:import:content -- --apply`.
 - CSV is not suitable for `grading_keys` because `answers` and `explanations`
   are nested objects/arrays.
 - A submission error `GRADING_KEY_NOT_FOUND` usually means the static lesson is
