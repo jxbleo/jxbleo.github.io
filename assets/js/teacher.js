@@ -15,10 +15,11 @@
         selectedStudentProfileId: '',
         studentPickerMode: 'choose',
         assignPanels: { sets: false, students: false, options: false },
-        assignView: 'new',
+        taskView: 'assign',
         assignProgressMode: 'student',
         studentProgressView: 'to_do',
         studentInfoEdit: '',
+        accountPanelOpen: false,
         updatesOpen: false,
         updatesFilter: 'unread',
         attemptsSeenAt: null,
@@ -72,6 +73,8 @@
     var libraryList = document.getElementById('teacher-library-list');
     var updatesPanel = document.getElementById('teacher-updates-panel');
     var updatesBody = document.getElementById('teacher-updates-body');
+    var teacherAccountPanel = document.getElementById('teacher-account-panel');
+    var teacherAccountContent = document.getElementById('teacher-account-content');
 
     var questionTextCache = {};
 
@@ -248,22 +251,55 @@
     }
 
     function updateTopBadges() {
-        var button = document.querySelector('.tab-button[data-view="argue"]');
-        if (!button) return;
         var count = pendingReviewCount();
-        button.innerHTML = 'Review' + (count ? '<span class="notice-dot danger">' + escapeHtml(count) + '</span>' : '');
+        var tasksButton = document.querySelector('.tab-button[data-view="tasks"]');
+        if (tasksButton) {
+            tasksButton.innerHTML = 'Tasks' + (count ? '<span class="notice-dot danger">' + escapeHtml(count) + '</span>' : '');
+        }
+        var reviewButton = document.querySelector('[data-task-view="review"] .summary-label');
+        if (reviewButton) {
+            reviewButton.innerHTML = 'REVIEW' + (count ? ' ' + escapeHtml(count) : '');
+        }
         updateActivityBadges();
     }
 
     function updateAssignView() {
-        document.querySelectorAll('[data-assign-view]').forEach(function(button) {
-            button.classList.toggle('active', button.dataset.assignView === state.assignView);
+        document.querySelectorAll('[data-task-view]').forEach(function(button) {
+            button.classList.toggle('active', button.dataset.taskView === state.taskView);
         });
-        var newPanel = document.getElementById('assign-new-panel');
-        var progressPanel = document.getElementById('assign-progress-panel');
-        if (newPanel) newPanel.hidden = state.assignView !== 'new';
-        if (progressPanel) progressPanel.hidden = state.assignView !== 'progress';
-        if (state.assignView === 'progress') renderAssignmentOverview();
+        var assignPanel = document.getElementById('task-assign-panel');
+        var reviewPanel = document.getElementById('task-review-panel');
+        if (assignPanel) assignPanel.hidden = state.taskView !== 'assign';
+        if (reviewPanel) reviewPanel.hidden = state.taskView !== 'review';
+        if (state.taskView === 'review') renderDisputes();
+        updateTopBadges();
+    }
+
+    function renderTeacherAccount() {
+        if (!teacherAccountContent) return;
+        var profile = state.profile || {};
+        teacherAccountContent.innerHTML =
+            '<div class="profile-grid">' +
+                '<section class="profile-card">' +
+                    '<h2>' + escapeHtml(profile.name || profile.student_id || 'Teacher') + '</h2>' +
+                    '<div class="profile-row"><span>Login ID</span><strong>' + escapeHtml(profile.student_id || 'Not set') + '</strong></div>' +
+                    '<div class="profile-row"><span>Role</span><strong>Teacher</strong></div>' +
+                    '<div class="profile-row"><span>Status</span><strong>' + escapeHtml(profile.active === false ? 'Inactive' : 'Active') + '</strong></div>' +
+                    '<div class="profile-actions">' +
+                        '<button class="danger-button teacher-logout" id="teacher-logout" type="button">Log Out</button>' +
+                    '</div>' +
+                '</section>' +
+            '</div>';
+        var logout = document.getElementById('teacher-logout');
+        if (logout) logout.addEventListener('click', window.MrCatAuth.logout);
+    }
+
+    function setTeacherAccountPanel(open) {
+        state.accountPanelOpen = open === true;
+        if (teacherAccountPanel) teacherAccountPanel.hidden = !state.accountPanelOpen;
+        var chip = document.getElementById('teacher-chip');
+        if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
+        if (state.accountPanelOpen) renderTeacherAccount();
     }
 
     function formatDate(value, fallback, mode) {
@@ -491,25 +527,26 @@
     }
 
     function teacherBuildCard(item, hidden, itemYear) {
-        return '<li class="menu-card' + (hidden ? ' year-hidden' : '') + '"' +
+        var meta = item.section || item.course || item.type || item.sectionId || item.section_id || 'Practice';
+        var setId = item.set_id || item.id || item.displayValue || '';
+        return '<article class="resource-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
-            '<a class="practice-link" href="' + escapeHtml(teacherPracticeHref(item)) + '">' +
-                '<div class="card-content">' +
-                    '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
-                    '<div class="meta-row">' +
-                        '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
-                    '</div>' +
+            '<div>' +
+                '<div class="resource-card-head">' +
+                    '<p class="eyebrow accent">' + escapeHtml(meta) + '</p>' +
+                    '<span>' + escapeHtml(setId) + '</span>' +
                 '</div>' +
-                '<div class="arrow-box">→</div>' +
-            '</a>' +
-        '</li>';
+                '<h3>' + escapeHtml(item.title || setId) + '</h3>' +
+            '</div>' +
+            '<a class="card-button" href="' + escapeHtml(teacherPracticeHref(item)) + '">Open</a>' +
+        '</article>';
     }
 
     function teacherBuildPlaceholder(section) {
-        return '<li class="menu-card placeholder-card"><div class="card-content">' +
-            '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
-            '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p></div>' +
-            '<div class="arrow-box" style="background:transparent;color:var(--muted, #78908a);">⏳</div></li>';
+        return '<div class="empty-card teacher-library-placeholder">' +
+            '<strong>' + escapeHtml(section.emptyMessage || 'Developing') + '</strong>' +
+            escapeHtml(section.emptyNote || '') +
+        '</div>';
     }
 
     function teacherSortItems(items, section) {
@@ -667,7 +704,7 @@
             cardsHtml = '<p class="section-description">No content yet.</p>';
         }
 
-        root.innerHTML = '<ul class="menu-list">' + cardsHtml + '</ul>';
+        root.innerHTML = '<div class="resource-list teacher-library-list">' + cardsHtml + '</div>';
     }
 
     function fillClassFilters() {
@@ -1399,6 +1436,73 @@
         '</div>';
     }
 
+    function matrixStudentKey(item) {
+        return String(item.student_uid || item.auth_uid || item.student_id || 'unknown');
+    }
+
+    function matrixSetKey(item) {
+        return String(item.set_id || 'unknown');
+    }
+
+    function renderAssignmentMatrix(items) {
+        if (!items.length) return '';
+        var setMap = {};
+        var studentMap = {};
+        items.forEach(function(item) {
+            var setKey = matrixSetKey(item);
+            if (!setMap[setKey]) {
+                setMap[setKey] = {
+                    id: setKey,
+                    title: item.set_title || setTitleFor(item.set_id),
+                    date: new Date(assignmentSortDate(item) || 0).getTime()
+                };
+            } else {
+                setMap[setKey].date = Math.max(setMap[setKey].date, new Date(assignmentSortDate(item) || 0).getTime());
+            }
+            var studentKey = matrixStudentKey(item);
+            if (!studentMap[studentKey]) {
+                studentMap[studentKey] = {
+                    key: studentKey,
+                    name: item.student_name || item.student_id || 'Student',
+                    studentId: item.student_id || '',
+                    items: {}
+                };
+            }
+            studentMap[studentKey].items[setKey] = item;
+        });
+        var sets = Object.keys(setMap).map(function(key) { return setMap[key]; })
+            .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); })
+            .slice(0, 6);
+        var students = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
+            .sort(function(a, b) { return a.name.localeCompare(b.name); })
+            .slice(0, 12);
+        if (!sets.length || !students.length) return '';
+        var header = '<div class="progress-matrix-row progress-matrix-head">' +
+            '<span>Student</span>' +
+            sets.map(function(set) {
+                return '<span title="' + escapeHtml(set.title || set.id) + '">' + escapeHtml(set.id) + '</span>';
+            }).join('') +
+        '</div>';
+        var rows = students.map(function(student) {
+            return '<div class="progress-matrix-row">' +
+                '<span><strong>' + escapeHtml(student.name) + '</strong><small>' + escapeHtml(student.studentId) + '</small></span>' +
+                sets.map(function(set) {
+                    var item = student.items[set.id];
+                    if (!item) return '<span class="progress-matrix-cell empty">-</span>';
+                    var status = normalizedAssignmentStatus(item.status);
+                    var alert = assignmentAlert(item);
+                    var label = status === 'mastered' ? 'Star' : status === 'passed' ? 'Done' : alert.label === 'Overdue' || alert.label === 'Stuck' ? 'Watch' : 'Open';
+                    return '<span class="progress-matrix-cell ' + escapeHtml(status) + ' ' + escapeHtml(alert.css) + '" title="' +
+                        escapeHtml(formatPercent(item.best_percentage) + ' best') + '">' + escapeHtml(label) + '</span>';
+                }).join('') +
+            '</div>';
+        }).join('');
+        return '<section class="progress-matrix-card">' +
+            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div>' +
+            '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
+        '</section>';
+    }
+
     function renderAssignmentOverview() {
         var container = document.getElementById('assignment-overview');
         if (!container) return;
@@ -1415,7 +1519,7 @@
             '<div class="assignment-overview-metric"><span>Needs attention</span><strong>' + escapeHtml(metrics.alerts) + '</strong></div>' +
         '</div>';
         var groups = assignmentProgressGroups(items, state.assignProgressMode || 'student');
-        container.innerHTML = metricHtml + renderAssignmentProgressModeTabs() +
+        container.innerHTML = metricHtml + renderAssignmentMatrix(items) + renderAssignmentProgressModeTabs() +
             '<div class="assignment-progress-groups">' +
                 groups.map(renderAssignmentProgressGroup).join('') +
             '</div>';
@@ -1720,10 +1824,11 @@
                     var expandKey = row.dataset.openAttemptAssignment || row.dataset.openAttemptSet;
                     if (expandKey) state.expandedAssignmentSets[expandKey] = true;
                     state.updatesOpen = false;
-                    activateView('check');
+                    activateView('view');
                     setStudentPickerOpen(false);
                     renderStudentList();
                     renderStudentDetail();
+                    renderAssignmentOverview();
                     renderUpdatesPanel();
                 }
             });
@@ -1734,7 +1839,9 @@
                 state.expandedDisputes[row.dataset.openDispute] = true;
                 state.disputeMerge = false;
                 state.updatesOpen = false;
-                activateView('argue');
+                state.taskView = 'review';
+                activateView('tasks');
+                updateAssignView();
                 renderDisputes();
                 renderUpdatesPanel();
             });
@@ -2053,6 +2160,9 @@
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
+        setTeacherAccountPanel(false);
+        if (viewName === 'tasks') updateAssignView();
+        if (viewName === 'view') renderAssignmentOverview();
     }
 
     function loadPublicCatalog() {
@@ -2122,6 +2232,7 @@
         renderLibrary();
         renderStudentList();
         renderStudentDetail();
+        renderAssignmentOverview();
         updateAssignView();
         renderUpdatesPanel();
         loadQuestionTextForDisputes().then(function() {
@@ -2133,9 +2244,27 @@
     document.querySelectorAll('.tab-button').forEach(function(button) {
         button.addEventListener('click', function() {
             activateView(button.dataset.view);
-            if (button.dataset.view === 'assign') updateAssignView();
         });
     });
+    document.querySelectorAll('[data-task-view]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            state.taskView = button.dataset.taskView;
+            updateAssignView();
+        });
+    });
+    var teacherChip = document.getElementById('teacher-chip');
+    if (teacherChip) {
+        teacherChip.addEventListener('click', function(event) {
+            event.stopPropagation();
+            setTeacherAccountPanel(!state.accountPanelOpen);
+        });
+    }
+    var teacherAccountClose = document.getElementById('teacher-account-close');
+    if (teacherAccountClose) {
+        teacherAccountClose.addEventListener('click', function() {
+            setTeacherAccountPanel(false);
+        });
+    }
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
         if (state.updatesOpen && state.updatesFilter === 'unread') {
@@ -2148,12 +2277,6 @@
     document.getElementById('teacher-updates-close').addEventListener('click', function() {
         state.updatesOpen = false;
         renderUpdatesPanel();
-    });
-    document.querySelectorAll('[data-assign-view]').forEach(function(button) {
-        button.addEventListener('click', function() {
-            state.assignView = button.dataset.assignView;
-            updateAssignView();
-        });
     });
     document.getElementById('toggle-assign-sets').addEventListener('click', function() {
         setAssignPanel('sets', state.assignPanels.sets !== true);
@@ -2245,6 +2368,7 @@
             state.progressItems = results[1].progress || [];
             renderSetOptions();
             renderStudentDetail();
+            renderAssignmentOverview();
             updateAssignView();
         }).catch(function(error) {
             showMessage(error.message, 'error');
@@ -2270,6 +2394,9 @@
     document.getElementById('confirm-student-search').addEventListener('click', confirmStudentSearch);
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
+        if (state.accountPanelOpen && teacherAccountPanel && !teacherAccountPanel.contains(event.target) && !event.target.closest('#teacher-chip')) {
+            setTeacherAccountPanel(false);
+        }
         var card = document.querySelector('.student-select-card');
         if (card && !card.contains(event.target)) setStudentPickerOpen(false);
 
@@ -2293,7 +2420,7 @@
                 }
                 var cardsRoot = document.getElementById('teacher-library-content');
                 if (cardsRoot) {
-                    var cards = cardsRoot.querySelectorAll('.menu-card');
+                    var cards = cardsRoot.querySelectorAll('.teacher-library-card');
                     for (var ci = 0; ci < cards.length; ci++) {
                         if (!year) {
                             cards[ci].classList.remove('year-hidden');
@@ -2345,8 +2472,6 @@
             button.disabled = false;
         });
     });
-    document.getElementById('teacher-logout').addEventListener('click', window.MrCatAuth.logout);
-
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
             window.location.replace('index.html');

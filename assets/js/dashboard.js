@@ -13,7 +13,9 @@
         selfStudyStarCount: 0,
         teacherReplies: [],
         vocabItems: [],
-        vocabSearch: ''
+        vocabSearch: '',
+        finishedExpanded: false,
+        accountPanelOpen: false
     };
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
@@ -56,7 +58,11 @@
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
+    var myWordsContent = document.getElementById('my-words-content');
     var resourceSearch = document.getElementById('resource-search');
+    var accountPanel = document.getElementById('student-account-panel');
+    var messageButton = document.getElementById('student-message-button');
+    var messageCount = document.getElementById('student-message-count');
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -593,16 +599,25 @@
     function updateDashboardTabNotices() {
         var todoCount = todoAssignments().length;
         var replyCount = teacherReplyTotal();
-        var count = todoCount || replyCount;
         var button = document.querySelector('.tab-button[data-view="assignments"]');
-        if (!button) return;
-        var existing = button.querySelector('.notice-dot');
-        if (existing) existing.remove();
-        if (!count) return;
-        var dot = document.createElement('span');
-        dot.className = 'notice-dot' + (todoCount ? ' todo' : '');
-        dot.textContent = count > 9 ? '9+' : String(count);
-        button.appendChild(dot);
+        if (button) {
+            var existing = button.querySelector('.notice-dot');
+            if (existing) existing.remove();
+            if (todoCount) {
+                var dot = document.createElement('span');
+                dot.className = 'notice-dot todo';
+                dot.textContent = todoCount > 9 ? '9+' : String(todoCount);
+                button.appendChild(dot);
+            }
+        }
+        if (messageCount) {
+            messageCount.textContent = replyCount ? (replyCount > 9 ? '9+' : String(replyCount)) : '';
+            messageCount.hidden = replyCount <= 0;
+        }
+        if (messageButton) {
+            messageButton.classList.toggle('has-updates', replyCount > 0);
+            messageButton.setAttribute('aria-expanded', 'false');
+        }
     }
 
     function clearTeacherReplies(seenIds) {
@@ -688,6 +703,7 @@
             var ids = replyIds(replies);
             clearTeacherReplies(ids);
             renderAssignments();
+            updateDashboardTabNotices();
             if (!ids.length || !window.MrCatCloud) return Promise.resolve();
             return window.MrCatCloud.callFunction('getDashboard', {
                 action: 'markTeacherRepliesSeen',
@@ -717,10 +733,58 @@
         document.addEventListener('keydown', onKeydown);
     }
 
+    function finishedDate(item) {
+        return new Date(item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || 0).getTime();
+    }
+
+    function finishedAchievementHtml(finished, todo, total) {
+        var mastered = finished.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).length;
+        var passed = Math.max(finished.length - mastered, 0);
+        var completionPercent = total ? Math.round((finished.length / total) * 100) : 0;
+        var recent = finished.slice(0, 8);
+        var markers = recent.length ? recent.map(function(item, index) {
+            var status = normalizedStatus(item.status);
+            var label = compactAssignmentTitle((item.set && (item.set.title || item.set.set_id)) || item.set_title || item.set_id || 'Practice');
+            return '<span class="achievement-marker ' + escapeHtml(status) + '" title="' + escapeHtml(label) + '" style="--delay:' + index + '"></span>';
+        }).join('') : '<span class="achievement-empty-line">Finish one task to start your progress line.</span>';
+        return '<section class="finished-achievement">' +
+            '<div class="achievement-number-block">' +
+                '<span class="achievement-kicker">Completed</span>' +
+                '<strong>' + escapeHtml(finished.length) + '</strong>' +
+                '<span>' + escapeHtml(total ? completionPercent + '% of assigned work' : 'Your count starts here') + '</span>' +
+            '</div>' +
+            '<div class="achievement-support-grid">' +
+                '<div><strong>' + escapeHtml(mastered) + '</strong><span>Mastered</span></div>' +
+                '<div><strong>' + escapeHtml(passed) + '</strong><span>Passed</span></div>' +
+                '<div><strong>' + escapeHtml(todo.length) + '</strong><span>Waiting</span></div>' +
+            '</div>' +
+            '<div class="achievement-progress-line" aria-label="Recent completed assignments">' + markers + '</div>' +
+        '</section>';
+    }
+
+    function renderFinishedPanel(finished, todo, assignments) {
+        var expanded = state.finishedExpanded === true;
+        var finishedList = finished.length
+            ? '<div class="task-list finished-list">' + finished.map(taskCard).join('') + '</div>'
+            : '<div class="empty-card">Finished work will collect here after you pass an assignment.</div>';
+        return '<section class="finished-drawer' + (expanded ? ' expanded' : '') + '">' +
+            '<button class="finished-drawer-toggle" id="finished-drawer-toggle" type="button" aria-expanded="' + expanded + '">' +
+                '<span><strong>Finished & Wins</strong><small>' + escapeHtml(finished.length) + ' completed · tap to ' + (expanded ? 'hide' : 'open') + '</small></span>' +
+                '<span class="finished-drawer-count">' + escapeHtml(finished.length) + '</span>' +
+            '</button>' +
+            (expanded ? '<div class="finished-drawer-body">' +
+                finishedAchievementHtml(finished, todo, assignments.length) +
+                finishedList +
+            '</div>' : '') +
+        '</section>';
+    }
+
     function renderAssignments() {
         if (state.session.mode === 'visitor') {
             assignmentContent.innerHTML =
-                '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>';
+                '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>' +
+                renderFinishedPanel([], [], []);
+            updateDashboardTabNotices();
             return;
         }
 
@@ -732,36 +796,24 @@
             return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
                 new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
         });
-        var visible = [];
-        if (state.assignmentFilter === 'todo') visible = todo;
-        else if (state.assignmentFilter === 'finished') visible = finished;
-        else visible = todo;
+        finished = finished.sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
 
-        var html = renderTeacherRepliesPrompt() + renderAssignmentFilters(assignments);
-        if (visible.length) html += '<div class="task-list">' + visible.map(taskCard).join('') + '</div>';
+        var html = '';
+        if (todo.length) html += '<div class="task-list">' + todo.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
-        } else if (!visible.length) {
-            var emptyLabel = state.assignmentFilter === 'finished'
-                ? 'No finished work yet.'
-                : state.assignmentFilter === 'todo'
-                    ? 'No new work is waiting.'
-                    : 'Nothing is waiting right now.';
-            html += '<div class="empty-card">' + emptyLabel + '</div>';
+        } else if (!todo.length) {
+            html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open your finished wins below or explore the Library.</div>';
         }
+        html += renderFinishedPanel(finished, todo, assignments);
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
 
-        document.querySelectorAll('[data-assignment-filter]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var nextFilter = button.dataset.assignmentFilter;
-                state.assignmentFilter = state.assignmentFilter === nextFilter ? 'all' : nextFilter;
-                renderAssignments();
-            });
+        var drawerToggle = document.getElementById('finished-drawer-toggle');
+        if (drawerToggle) drawerToggle.addEventListener('click', function() {
+            state.finishedExpanded = state.finishedExpanded !== true;
+            renderAssignments();
         });
-
-        var repliesButton = document.getElementById('open-teacher-replies');
-        if (repliesButton) repliesButton.addEventListener('click', openTeacherRepliesDialog);
 
         document.querySelectorAll('[data-teacher-replies-key]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -1227,7 +1279,23 @@
         '</section>';
     }
 
+    function renderMyWordsView() {
+        if (!myWordsContent) return;
+        if (state.session.mode === 'visitor') {
+            myWordsContent.innerHTML =
+                '<div class="profile-card"><h2>My Words</h2><p class="muted">Log in as a student to save words and phrases.</p>' +
+                '<div class="profile-actions"><button class="primary-button" id="words-login">Log In</button></div></div>';
+            document.getElementById('words-login').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+            return;
+        }
+        myWordsContent.innerHTML = renderMyWordsCard();
+        bindMyWordsCard();
+    }
+
     function renderProfile() {
+        if (!profileContent) return;
         if (state.session.mode === 'visitor') {
             profileContent.innerHTML =
                 '<div class="profile-card"><h2>Visitor Mode</h2><p class="muted">You can browse resources, but answers and submissions are locked.</p>' +
@@ -1257,13 +1325,18 @@
                         '<button class="danger-button" id="logout-button" type="button">Log Out</button>' +
                     '</div>' +
                 '</section>' +
-                renderMyWordsCard() +
             '</div>';
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
             openChangePasswordDialog();
         });
-        bindMyWordsCard();
+    }
+
+    function setAccountPanel(open) {
+        state.accountPanelOpen = open === true;
+        if (accountPanel) accountPanel.hidden = !state.accountPanelOpen;
+        if (identityChip) identityChip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
+        if (state.accountPanelOpen) renderProfile();
     }
 
     function loadPublicCatalog() {
@@ -1340,18 +1413,40 @@
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
+        if (viewName === 'words') renderMyWordsView();
     }
 
     document.querySelectorAll('.tab-button').forEach(function(button) {
         button.addEventListener('click', function() {
             activateView(button.dataset.view);
+            setAccountPanel(false);
         });
     });
+    if (identityChip) {
+        identityChip.addEventListener('click', function(event) {
+            event.stopPropagation();
+            setAccountPanel(!state.accountPanelOpen);
+        });
+    }
+    var accountClose = document.getElementById('student-account-close');
+    if (accountClose) {
+        accountClose.addEventListener('click', function() {
+            setAccountPanel(false);
+        });
+    }
+    if (messageButton) {
+        messageButton.addEventListener('click', function() {
+            openTeacherRepliesDialog(state.teacherReplies || []);
+        });
+    }
     resourceSearch.addEventListener('input', function() {
         libraryLoadTabContent(libraryActiveTab);
     });
 
     document.addEventListener('click', function(e) {
+        if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) && !e.target.closest('#identity-chip')) {
+            setAccountPanel(false);
+        }
         var tabBtn = e.target.closest('.library-tab-btn');
         if (tabBtn) {
             librarySwitchTab(tabBtn.getAttribute('data-tab'));
@@ -1398,8 +1493,8 @@
             return item.vocab_id !== word.vocab_id;
         });
         state.vocabItems.unshift(word);
-        var profileView = document.getElementById('view-profile');
-        if (profileView && !profileView.hidden) renderProfile();
+        var wordsView = document.getElementById('view-words');
+        if (wordsView && !wordsView.hidden) renderMyWordsView();
     });
 
     window.MrCatAuth.getSession()

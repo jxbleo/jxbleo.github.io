@@ -3,6 +3,20 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-18
+
+### Changed
+
+- Refactored the student dashboard around `Assignments`, `My Words`, and `Library`.
+- Moved student account actions and teacher replies into the top-right account/message controls.
+- Replaced student assignment status tabs with a default TO DO list and a collapsed `Finished & Wins` achievement drawer focused on completed-count momentum.
+- Refactored the teacher desk around `Tasks`, `View`, and `Library`.
+- Moved teacher `Review` under `Tasks`, changed `Updates` into a notification bell, and added a progress matrix to `View`.
+
+### Documentation
+
+- Updated the UI/UX spec for the new student and teacher navigation model.
+
 ## 2026-06-16
 
 ### Added

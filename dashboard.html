@@ -8,7 +8,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260617-4">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260618-2">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -17,9 +17,24 @@
             <div class="identity-cluster">
                 <span class="star-counter self-study-star-counter" id="self-study-star-counter">★ 0</span>
                 <span class="star-counter assignment-star-counter" id="star-counter">★ 0</span>
-                <span class="student-chip" id="identity-chip">Loading...</span>
+                <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Messages" aria-expanded="false">
+                    <span aria-hidden="true">!</span>
+                    <span class="notice-dot danger" id="student-message-count" hidden>0</span>
+                </button>
+                <button class="student-chip account-chip-button" id="identity-chip" type="button" aria-expanded="false">Loading...</button>
             </div>
         </header>
+
+        <section class="account-panel" id="student-account-panel" hidden>
+            <div class="account-panel-head">
+                <div>
+                    <p class="eyebrow accent">PERSONAL CENTER</p>
+                    <h2>Account</h2>
+                </div>
+                <button class="create-student-close" id="student-account-close" type="button" aria-label="Close account panel">x</button>
+            </div>
+            <div id="profile-content"></div>
+        </section>
 
         <section class="hero-card">
             <h1 id="greeting">Hello.</h1>
@@ -28,7 +43,7 @@
 
         <nav class="dashboard-tabs" aria-label="Dashboard sections">
             <button class="tab-button active" type="button" data-view="assignments">Assignments</button>
-            <button class="tab-button" type="button" data-view="profile">Progress</button>
+            <button class="tab-button" type="button" data-view="words">My Words</button>
             <button class="tab-button" type="button" data-view="resources">Library</button>
         </nav>
 
@@ -54,14 +69,14 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-profile" hidden>
+        <section class="dashboard-view" id="view-words" hidden>
             <div class="section-heading">
                 <div>
-                    <h2>Progress</h2>
-                    <p>Your account and learning summary.</p>
+                    <h2>My Words</h2>
+                    <p>Your saved words and phrases.</p>
                 </div>
             </div>
-            <div id="profile-content"></div>
+            <div id="my-words-content"></div>
         </section>
     </main>
 
@@ -70,6 +85,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/personal-vocab.js?v=20260616-1"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/dashboard.js?v=20260617-2"></script>
+    <script src="assets/js/dashboard.js?v=20260618-2"></script>
 </body>
 </html>

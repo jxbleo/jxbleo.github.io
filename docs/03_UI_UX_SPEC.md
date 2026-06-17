@@ -16,7 +16,7 @@
 | Page | Purpose |
 | --- | --- |
 | `index.html` | Login and visitor entry |
-| `dashboard.html` | Student assignments, Explore, Profile, My Words |
+| `dashboard.html` | Student assignments, My Words, Library, account menu |
 | `teacher.html` | Teacher admin desk |
 | `library.html` | Learning library / content entry |
 | `bbc.html` | BBC listening practice runtime |
@@ -30,13 +30,13 @@
 Navigation:
 
 - `Assignments`
-- `Explore`
-- `Profile`
+- `My Words`
+- `Library`
 
 Assignments display:
 
-- `TO DO`
-- `FINISHED`
+- open `TO DO` assignments directly
+- a bottom `Finished & Wins` drawer for completed work
 
 Backend statuses:
 
@@ -46,8 +46,10 @@ Backend statuses:
 
 Frontend rule:
 
-- `passed` and `mastered` both appear under `FINISHED`.
-- Do not split the student dashboard back into `PASSED` and `MASTERED` unless the owner explicitly changes the product rule.
+- `passed` and `mastered` both appear inside the collapsed `Finished & Wins` drawer.
+- Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
+- The finished drawer should emphasize completion quantity first, with score and STAR as supporting signals.
+- Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 
 Student cards should show:
 
@@ -57,14 +59,34 @@ Student cards should show:
 - `Go`, `Improve Accuracy`, or `Beat Your Best`
 - STAR state if mastered
 
+My Words:
+
+- has its own main navigation entry.
+- shows saved student-owned words and phrases from `studentVocabulary`.
+- visitors see a login prompt instead of personal data.
+
+Student account menu:
+
+- opens from the top-right identity chip.
+- shows profile/account information, password change, and logout.
+- teacher replies remain a message-center dialog opened from the top-right message indicator.
+
 ## 4. Teacher Interface
 
-Teacher page has four main capsules:
+Teacher page has three main capsules:
+
+- `Tasks`
+- `View`
+- `Library`
+
+### Tasks
+
+Tasks contains:
 
 - `Assign`
-- `Library`
-- `Students`
-- `Argue`
+- `Review`
+
+Review is the teacher-facing surface for student Argue requests.
 
 ### Assign
 
@@ -85,9 +107,24 @@ Candidate states:
 - `Completed · can reassign`: selectable
 - `STAR · can reassign`: selectable
 
+### View
+
+View is the teacher's progress and student-inspection surface.
+
+It should include:
+
+- an assignment matrix/table for scanning completion by student and task
+- a grouped `By student` / `By task` progress view
+- student selection and student detail panels
+- student account management actions such as class/system edit, password reset, enable/disable, and account creation
+
 ### Library
 
 Teacher opens existing practice pages in `teacher=1` mode.
+
+Teacher Library task items should render as compact task capsules/cards with
+the set metadata, title, stable set ID, and an `Open` action. Keep this capsule
+shape when changing Library grouping, tabs, or filters.
 
 Teacher Show Answers:
 
@@ -95,7 +132,7 @@ Teacher Show Answers:
 - does not call student reveal logic
 - does not lock mastery
 
-### Students
+### Student Detail
 
 Student detail should show:
 
@@ -107,9 +144,9 @@ Student detail should show:
 - enable/disable
 - class/system editing
 
-### Argue
+### Review
 
-Argue should be grouped into task capsules so the teacher can handle one student attempt or assignment at a time.
+Review should be grouped into task capsules so the teacher can handle one student attempt or assignment at a time.
 
 Pending items sort first.
 
@@ -168,6 +205,7 @@ Important mobile rules:
 - Candidate popups should not cover question text.
 - Text must not overflow buttons/cards.
 - Teacher views should remain scannable on laptop screens during class.
+- Teacher progress matrices may scroll horizontally on small screens instead of compressing text.
 
 ## 8. Known UI Risks
 
