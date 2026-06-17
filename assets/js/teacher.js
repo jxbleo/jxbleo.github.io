@@ -528,21 +528,16 @@
             .catch(function() {});
     }
 
-    function teacherLibraryItemBook(item) {
-        var raw = String(item.set_id || item.id || item.displayValue || '');
-        var match = raw.match(/^C(\d+)/i);
-        return match ? 'C' + match[1] : '';
-    }
-
     function teacherLibraryBadge(item, section, itemYear) {
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        if (/^ielts-/i.test(sectionId)) return teacherLibraryItemBook(item);
         if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
         return '';
     }
 
     function teacherLibrarySectionLabel(sectionId, fallback) {
         var labels = {
+            'ielts-reading': 'ielts-reading',
+            'ielts-listening': 'ielts-listening',
             'dse-english-paper-1': 'DSE Reading',
             'dse-english-paper-2': 'DSE Writing',
             'dse-english-paper-3': 'DSE Integrated',

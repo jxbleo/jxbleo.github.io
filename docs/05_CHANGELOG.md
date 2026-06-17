@@ -24,6 +24,12 @@
   and scoped due/pass/mastery editing for existing assignments.
 - Standardized student and teacher Library ordering so BBC follows release
   date and IELTS follows Cambridge book, Test, then Section/Passage.
+- Replaced the student Assignments achievement drawer summary with a smaller
+  `Finished` completion button focused on total completed count.
+- Moved the yellow IELTS book/tag visual treatment out of task cards and onto
+  the Library sub-tab layer.
+- Clarified IELTS Library card labels and simplified the student account panel
+  into quiet profile rows with stars and finished count.
 
 ### Documentation
 

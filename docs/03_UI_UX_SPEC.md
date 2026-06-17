@@ -36,7 +36,7 @@ Navigation:
 Assignments display:
 
 - open `TO DO` assignments directly
-- a bottom `Finished & Wins` drawer for completed work
+- a small bottom `Finished` completion button for completed work
 
 Backend statuses:
 
@@ -46,11 +46,14 @@ Backend statuses:
 
 Frontend rule:
 
-- `passed` and `mastered` both appear inside the collapsed `Finished & Wins` drawer.
+- `passed` and `mastered` both appear inside the collapsed `Finished` completion button.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The finished drawer should emphasize completion quantity first, with score and STAR as supporting signals.
+- The finished control should emphasize completion quantity first; detailed score and STAR signals belong inside the expanded finished task list.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
+- The student account panel should be quiet: no separate achievement card, no
+  large account action buttons, and stars/finished count should sit alongside
+  Student ID, Class, and System as profile rows.
 
 Student cards should show:
 
@@ -129,10 +132,14 @@ Teacher opens existing practice pages in `teacher=1` mode.
 
 Student and teacher Library task items should render as the same compact task
 capsules/cards with set metadata, title, stable set ID, and a small `Go` action.
-IELTS cards show the Cambridge book badge such as `C7`; BBC cards show a year
-badge. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
-and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when
-changing Library grouping, tabs, or filters.
+BBC cards show a year badge; IELTS task cards should not show the Cambridge
+book badge inside each task capsule. IELTS book/filter labels belong in the
+yellow capsule tab layer above the task list. DSE labels should read
+`DSE Reading`, `DSE Writing`, `DSE Integrated`, and `DSE Speaking` without
+visible Paper numbers. Keep this capsule shape when changing Library grouping,
+tabs, or filters.
+IELTS Library task capsules should label their course surface as lowercase
+slugs, `ielts-reading` or `ielts-listening`, in the card eyebrow.
 
 Within a concrete Library column, cards should keep a stable learning order:
 BBC by release date from earliest to latest; IELTS by Cambridge book, then
