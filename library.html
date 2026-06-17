@@ -852,6 +852,39 @@
             margin-top: 16px;
         }
 
+        .tab-bar {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            padding: 4px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.56);
+            border: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(15, 118, 110, 0.06);
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.18);
+        }
+
         @media screen and (max-width: 768px) {
             .header { width: calc(100% - 20px); margin-top: 10px; padding: 44px 22px 28px; border-radius: 24px; }
             .header h1 { font-size: 2.35em; }
@@ -886,6 +919,11 @@
     </div>
 
     <div class="container">
+        <div class="tab-bar" id="tab-bar">
+            <button class="tab-btn active" data-tab="general">General Practice</button>
+            <button class="tab-btn" data-tab="exam">Exam Practice</button>
+            <button class="tab-btn" data-tab="lessons">Lessons</button>
+        </div>
         <div id="sections-root"></div>
     </div>
 
@@ -1025,52 +1063,22 @@
         '</div>';
     }
 
-    var pathGroups = [
-        {
-            id: 'general',
-            title: 'General',
-            description: 'Build general English skills with vocabulary, grammar, writing, and listening practice.',
-            defaultOpen: true
+    var tabConfig = {
+        general: {
+            groupIds: ['basics'],
+            emptyMessage: 'No general practice content yet.'
         },
-        {
-            id: 'ielts',
-            title: 'IELTS',
-            description: 'Practise IELTS reading, listening, writing, and speaking by skill and task type.'
+        exam: {
+            groupIds: ['ielts', 'dse'],
+            emptyMessage: 'No exam practice content yet.'
         },
-        {
-            id: 'dse',
-            title: 'DSE',
-            description: 'Prepare for DSE English Paper 1, 2, 3, and 4 with targeted practice.'
-        },
-        {
-            id: 'mse',
-            title: 'MSE',
-            description: 'Cambridge English practice for KET, PET, and FCE.'
-        },
-        {
-            id: 'zhongkao',
-            title: 'Zhongkao',
-            description: 'Targeted practice for mainland China senior high school entrance English.'
-        },
-        {
-            id: 'gaokao',
-            title: 'Gaokao',
-            description: 'Targeted practice for mainland China college entrance English.'
+        lessons: {
+            groupIds: ['lessons'],
+            emptyMessage: 'No lessons available yet.'
         }
-    ];
+    };
 
-    function buildPathGroup(group, sectionsHtml, isCompact) {
-        var isOpen = group.defaultOpen === true;
-        return '<section class="path-card ' + escapeHtml(group.id) + (isCompact ? ' compact' : '') + ' ' + (isOpen ? 'expanded' : 'collapsed') + '" data-path-id="' + escapeHtml(group.id) + '">' +
-            '<div class="path-header">' +
-                '<div class="path-heading">' +
-                    '<h2 class="path-title">' + escapeHtml(group.title) + '</h2>' +
-                '</div>' +
-                '<span class="path-toggle">' + (isOpen ? 'Hide' : 'Open') + '</span>' +
-            '</div>' +
-            '<div class="path-body">' + sectionsHtml + '</div>' +
-        '</section>';
-    }
+    var activeTab = 'general';
 
     function applyUserToPracticeLinks(user) {
         var links = document.querySelectorAll('a.practice-link');
@@ -1136,10 +1144,17 @@
         if (user) applyUserToPracticeLinks(user);
     }
 
-    function renderHomeSections() {
+    function renderHomeSections(tabId) {
+        tabId = tabId || activeTab;
         var root = document.getElementById('sections-root');
         if (!homeCatalog || !homeCatalog.sections) {
             root.innerHTML = '<p class="section-description">Unable to load the home catalog.</p>';
+            return;
+        }
+
+        var config = tabConfig[tabId];
+        if (!config) {
+            root.innerHTML = '<p class="section-description">Unknown tab.</p>';
             return;
         }
 
@@ -1154,33 +1169,34 @@
             itemsBySection[item.sectionId].push(item);
         }
 
-        var sectionsByGroup = {};
+        var html = '';
         for (var j = 0; j < homeCatalog.sections.length; j++) {
             var section = homeCatalog.sections[j];
             var groupId = section.groupId || 'general';
-            if (!sectionsByGroup[groupId]) sectionsByGroup[groupId] = '';
-            sectionsByGroup[groupId] += buildSection(section, itemsBySection[section.id] || []);
+            if (config.groupIds.indexOf(groupId) === -1) continue;
+            html += buildSection(section, itemsBySection[section.id] || []);
         }
 
-        var html = '<div class="path-grid"><div class="primary-paths">';
-        for (var k = 0; k < pathGroups.length; k++) {
-            var group = pathGroups[k];
-            if (k < 3) {
-                html += buildPathGroup(group, sectionsByGroup[group.id] || '', false);
-            }
+        if (!html) {
+            html = '<p class="section-description">' + escapeHtml(config.emptyMessage) + '</p>';
         }
-        html += '</div><div class="more-paths-label">More Paths</div><div class="secondary-paths">';
-        for (var m = 3; m < pathGroups.length; m++) {
-            var compactGroup = pathGroups[m];
-            html += buildPathGroup(compactGroup, sectionsByGroup[compactGroup.id] || '', true);
-        }
-        html += '</div></div>';
+
         root.innerHTML = html;
 
         var user = getCurrentUser();
         if (user) applyUserToPracticeLinks(user);
         var globalInput = document.getElementById('global-search-input');
         if (globalInput && globalInput.value.trim()) runGlobalSearch();
+    }
+
+    function switchTab(tabId) {
+        if (tabId === activeTab) return;
+        activeTab = tabId;
+        var tabs = document.querySelectorAll('.tab-btn');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);
+        }
+        renderHomeSections(tabId);
     }
 
     function loadHomeCatalog() {
@@ -1250,16 +1266,6 @@
         var isHidden = input.style.display === 'none' || input.style.display === '';
         input.style.display = isHidden ? 'block' : 'none';
         if (isHidden) input.focus();
-    }
-
-    function togglePathGroup(headerEl) {
-        var card = headerEl.closest('.path-card');
-        if (!card) return;
-        var isOpen = card.classList.contains('expanded');
-        card.classList.toggle('expanded', !isOpen);
-        card.classList.toggle('collapsed', isOpen);
-        var toggle = card.querySelector('.path-toggle');
-        if (toggle) toggle.textContent = isOpen ? 'Open' : 'Hide';
     }
 
     var students = [
@@ -1397,9 +1403,9 @@
     }
 
     document.addEventListener('click', function(e) {
-        var pathHeader = e.target.closest('.path-header');
-        if (pathHeader) {
-            togglePathGroup(pathHeader);
+        var tabBtn = e.target.closest('.tab-btn');
+        if (tabBtn) {
+            switchTab(tabBtn.getAttribute('data-tab'));
             return;
         }
 
