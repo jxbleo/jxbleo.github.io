@@ -123,6 +123,46 @@ window.__HOME_CATALOG__ = {
       "titleMode": "title",
       "emptyMessage": "Developing",
       "emptyNote": "Future DSE speaking content will appear here."
+    },
+    {
+      "id": "dse-integrated",
+      "groupId": "dse",
+      "title": "Integrated Skills",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Future DSE integrated skills content will appear here."
+    },
+    {
+      "id": "lesson-grammar",
+      "groupId": "lessons",
+      "title": "Grammar",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "Grammar lessons will appear here."
+    },
+    {
+      "id": "lesson-dse",
+      "groupId": "lessons",
+      "title": "DSE",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "DSE lessons will appear here."
+    },
+    {
+      "id": "lesson-ielts",
+      "groupId": "lessons",
+      "title": "IELTS",
+      "searchEnabled": false,
+      "sortType": "number_asc",
+      "titleMode": "title",
+      "emptyMessage": "Developing",
+      "emptyNote": "IELTS lessons will appear here."
     }
   ],
   "items": [
