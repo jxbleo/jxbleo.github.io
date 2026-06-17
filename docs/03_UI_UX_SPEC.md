@@ -134,6 +134,10 @@ badge. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
 and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when
 changing Library grouping, tabs, or filters.
 
+Within a concrete Library column, cards should keep a stable learning order:
+BBC by release date from earliest to latest; IELTS by Cambridge book, then
+Test, then Section/Passage; other columns by configured numeric order or title.
+
 Teacher Show Answers:
 
 - calls `teacherAdmin.getAnswerKeyForSet`

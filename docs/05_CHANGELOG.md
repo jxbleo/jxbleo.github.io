@@ -22,6 +22,8 @@
 - Expanded teacher `View` with `By student`, `By class`, and `By task` progress
   groupings, low-to-high task score bars, clickable single-assignment details,
   and scoped due/pass/mastery editing for existing assignments.
+- Standardized student and teacher Library ordering so BBC follows release
+  date and IELTS follows Cambridge book, Test, then Section/Passage.
 
 ### Documentation
 

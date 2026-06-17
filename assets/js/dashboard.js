@@ -970,16 +970,68 @@
         return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
     }
 
+    function libraryItemIdentity(item) {
+        return String(item && (item.set_id || item.id || item.displayValue || item.href || item.title) || '');
+    }
+
+    function libraryDateSortValue(item) {
+        var raw = String((item && (item.sortValue || item.publishedOn || item.displayValue)) || '');
+        var dateMatch = raw.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) return Number(dateMatch[1] + dateMatch[2] + dateMatch[3]);
+        var idMatch = libraryItemIdentity(item).match(/BBC-(\d{2})(\d{2})(\d{2})/i);
+        if (idMatch) {
+            var year = Number(idMatch[1]);
+            return Number((year < 70 ? '20' : '19') + idMatch[1] + idMatch[2] + idMatch[3]);
+        }
+        return 0;
+    }
+
+    function libraryIeltsSortValue(item) {
+        var match = libraryItemIdentity(item).match(/C(\d+)-T(\d+)-[PS](\d+)/i);
+        if (!match) return null;
+        return Number(match[1]) * 10000 + Number(match[2]) * 100 + Number(match[3]);
+    }
+
+    function libraryNumberSortValue(item, section) {
+        var direct = item && (item.sortValue != null ? item.sortValue : item.sortOrder);
+        var number = Number(direct);
+        if (isFinite(number) && number !== 0) return number;
+        if (section && /^ielts-/i.test(section.id || '')) {
+            var ielts = libraryIeltsSortValue(item);
+            if (ielts != null) return ielts;
+        }
+        return Number.MAX_SAFE_INTEGER;
+    }
+
+    function libraryTitleSortValue(item) {
+        return String(item && (item.title || item.displayValue || item.id || item.set_id) || '').toLowerCase();
+    }
+
+    function libraryCompareFallback(left, right) {
+        return libraryTitleSortValue(left).localeCompare(libraryTitleSortValue(right)) ||
+            libraryItemIdentity(left).localeCompare(libraryItemIdentity(right));
+    }
+
     function librarySortItems(items, section) {
         var sorted = items.slice();
         if (section.sortType === 'date_desc') {
-            sorted.sort(function(a, b) { return String(b.sortValue || '').localeCompare(String(a.sortValue || '')); });
+            sorted.sort(function(a, b) {
+                return libraryDateSortValue(b) - libraryDateSortValue(a) || libraryCompareFallback(a, b);
+            });
         } else if (section.sortType === 'date_asc') {
-            sorted.sort(function(a, b) { return String(a.sortValue || '').localeCompare(String(b.sortValue || '')); });
+            sorted.sort(function(a, b) {
+                return libraryDateSortValue(a) - libraryDateSortValue(b) || libraryCompareFallback(a, b);
+            });
         } else if (section.sortType === 'number_asc') {
-            sorted.sort(function(a, b) { return Number(a.sortValue || 0) - Number(b.sortValue || 0); });
+            sorted.sort(function(a, b) {
+                return libraryNumberSortValue(a, section) - libraryNumberSortValue(b, section) || libraryCompareFallback(a, b);
+            });
         } else if (section.sortType === 'number_desc') {
-            sorted.sort(function(a, b) { return Number(b.sortValue || 0) - Number(a.sortValue || 0); });
+            sorted.sort(function(a, b) {
+                return libraryNumberSortValue(b, section) - libraryNumberSortValue(a, section) || libraryCompareFallback(a, b);
+            });
+        } else {
+            sorted.sort(libraryCompareFallback);
         }
         return sorted;
     }

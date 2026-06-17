@@ -47,14 +47,14 @@ function buildTitle(item, section) {
 }
 
 function buildDisplayValue(item, section) {
-  if (section.sortType === "date_desc") {
+  if (section.sortType === "date_desc" || section.sortType === "date_asc") {
     return item.publishedOn || item.displayValue || item.id;
   }
   return item.displayValue || item.id;
 }
 
 function buildSortValue(item, section) {
-  if (section.sortType === "date_desc") {
+  if (section.sortType === "date_desc" || section.sortType === "date_asc") {
     return item.publishedOn || item.sortValue || "";
   }
   if (section.sortType === "number_asc" || section.sortType === "number_desc") {
