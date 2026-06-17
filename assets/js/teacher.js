@@ -1899,10 +1899,34 @@
         });
     }
 
+    function loadPublicCatalog() {
+        return fetch('data/home-catalog.json?_=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Catalog unavailable');
+                return response.json();
+            })
+            .then(function(catalog) {
+                return (catalog.items || []).filter(function(item) {
+                    return item.visible !== false;
+                }).map(function(item) {
+                    return {
+                        set_id: item.id,
+                        title: item.title || item.id,
+                        course: item.sectionId || '',
+                        type: '',
+                        section: item.sectionId || '',
+                        link: item.href || '#',
+                        passing_percentage: 50,
+                        mastery_percentage: 90,
+                    };
+                });
+            });
+    }
+
     function loadData() {
         return Promise.all([
             teacherCall('listStudents'),
-            teacherCall('listSets'),
+            teacherCall('listSets').catch(function() { return { sets: [] }; }),
             teacherCall('listAssignments'),
             teacherCall('listDisputes'),
             teacherCall('listAttempts'),
@@ -1916,16 +1940,26 @@
             state.attempts = results[4].attempts || [];
             state.progressItems = results[5].progress || [];
             state.attemptsSeenAt = results[6].attempts_seen_at || null;
-            fillClassFilters();
-            fillSetSectionFilters();
-            renderSetOptions();
-            renderLibrary();
-            renderStudentList();
-            renderStudentDetail();
-            updateAssignView();
-            renderUpdatesPanel();
-            return loadQuestionTextForDisputes();
-        }).then(function() {
+            if (!state.sets.length) {
+                return loadPublicCatalog().then(function(items) {
+                    state.sets = items;
+                    afterDataLoaded();
+                });
+            }
+            afterDataLoaded();
+        });
+    }
+
+    function afterDataLoaded() {
+        fillClassFilters();
+        fillSetSectionFilters();
+        renderSetOptions();
+        renderLibrary();
+        renderStudentList();
+        renderStudentDetail();
+        updateAssignView();
+        renderUpdatesPanel();
+        loadQuestionTextForDisputes().then(function() {
             renderDisputes();
             renderUpdatesPanel();
         });
