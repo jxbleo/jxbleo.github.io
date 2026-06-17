@@ -74,6 +74,10 @@ Check:
 - reveal answers works only after passing
 - reveal locks mastery only when not already mastered
 - mastered work creates backend STAR
+- Vocabulary countable tests use `80%` passing and `100%` mastery by default
+  unless the set or assignment explicitly overrides thresholds
+- a not-passed Vocabulary Test result can return to group selection and start
+  a fresh test without keeping the previous questions or local draft
 - history review does not leak answers unless reveal is recorded
 
 ## 5. Teacher Flow Checklist
@@ -94,6 +98,9 @@ Check:
 - Library opens practice pages in `teacher=1`
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts
+- View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
+- `By task` bars sort student completion from low to high and open single-assignment detail
+- editing due/pass/mastery in View updates the intended student/class/task assignment scope only
 - Argue list loads and groups disputes
 - resolving `keep` does not alter grading key
 - resolving `add`/`replace` updates grading key and history

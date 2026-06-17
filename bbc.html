@@ -432,6 +432,13 @@
             border-left: 4px solid var(--accent);
         }
 
+        .mc-question.mc-locked-reminder {
+            border-color: #efc45f;
+            border-left: 4px solid #d99a21;
+            background: #fffaf0;
+            box-shadow: inset 0 0 0 1px rgba(239, 196, 95, 0.45);
+        }
+
         .mc-title {
             font-weight: 600;
             font-size: 1.1em;
@@ -479,6 +486,12 @@
             border-left-color: var(--accent) !important;
             background: #f0fff4 !important;
             border-color: #b8e6c8 !important;
+        }
+
+        .mc-options li.mc-locked-answer {
+            border-left-color: #d99a21 !important;
+            background: #fff8df !important;
+            border-color: #efc45f !important;
         }
 
         .mc-options label {
@@ -2227,31 +2240,37 @@
         try { localStorage.setItem(mcLockStorageKey(), JSON.stringify(mcLockedAnswers)); } catch (e) {}
     }
 
-    function setMcQuestionDisabled(questionId, disabled) {
-        document.querySelectorAll('[name="' + CSS.escape(questionId) + '"]').forEach(function(input) {
-            input.disabled = disabled === true;
-            var li = input.closest('li');
-            if (li) li.classList.toggle('disabled', disabled === true);
-        });
-    }
-
     function applyMcLocks() {
+        document.querySelectorAll('.mc-question.mc-locked-reminder').forEach(function(el) {
+            el.classList.remove('mc-locked-reminder');
+        });
+        document.querySelectorAll('.mc-options li.mc-locked-answer').forEach(function(el) {
+            el.classList.remove('mc-locked-answer');
+        });
         Object.keys(mcLockedAnswers || {}).forEach(function(questionId) {
             var value = mcLockedAnswers[questionId];
-            document.querySelectorAll('[name="' + CSS.escape(questionId) + '"]').forEach(function(input) {
-                input.checked = input.value === value;
-            });
-            setMcQuestionDisabled(questionId, true);
+            var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
+            if (!mcDiv) return;
+            mcDiv.classList.add('mc-locked-reminder');
+            var lockedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(value)) + '"]');
+            var lockedLi = lockedRadio && lockedRadio.closest('li');
+            if (lockedLi) lockedLi.classList.add('mc-locked-answer');
         });
     }
 
-    function rememberMcLocks(answers) {
+    function rememberMcLocks(results) {
         var changed = false;
-        Object.keys(answers || {}).forEach(function(questionId) {
+        if (!Array.isArray(results)) {
+            applyMcLocks();
+            return;
+        }
+        (results || []).forEach(function(result) {
+            if (!result || result.type !== 'mc' || result.isCorrect) return;
+            var questionId = result.id;
             if (!isMcQuestionId(questionId)) return;
             if (mcLockedAnswers[questionId]) return;
-            if (answers[questionId] == null || String(answers[questionId]) === '') return;
-            mcLockedAnswers[questionId] = answers[questionId];
+            if (result.userAnswer == null || String(result.userAnswer) === '') return;
+            mcLockedAnswers[questionId] = result.userAnswer;
             changed = true;
         });
         if (changed) saveMcLockState();
@@ -2382,28 +2401,48 @@
         try { localStorage.setItem(answerStorageKey(), JSON.stringify(collectAnswers())); } catch (e) {}
     }
 
+    function resetBlankAttemptState() {
+        blankAttemptState = {};
+        try { localStorage.removeItem(blankAttemptStorageKey()); } catch (e) {}
+        document.querySelectorAll('.blank-input.attempt-locked').forEach(function(input) {
+            input.classList.remove('attempt-locked');
+            input.removeAttribute('title');
+        });
+    }
+
+    function enableAnswerEditing() {
+        var form = document.getElementById('quiz-form');
+        if (!form) return;
+        form.querySelectorAll('input, select').forEach(function(el) {
+            el.disabled = false;
+        });
+        form.querySelectorAll('.mc-options li.disabled').forEach(function(li) {
+            li.classList.remove('disabled');
+        });
+        var submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Answers';
+        }
+    }
+
     function clearAllAnswers() {
         submitted = false;
         answerRevealAvailable = false;
+        currentArgueAttemptId = null;
+        resetBlankAttemptState();
         updateHistoryToolbar();
         var form = document.getElementById('quiz-form');
         form.querySelectorAll('input[type="text"]').forEach(function(input) {
-            var entry = blankAttemptState[input.name];
-            if (entry && entry.locked) return;
             input.value = '';
             input.dispatchEvent(new Event('input', { bubbles: true }));
         });
         form.querySelectorAll('input[type="radio"]').forEach(function(input) {
-            if (mcLockedAnswers[input.name]) {
-                input.checked = input.value === mcLockedAnswers[input.name];
-                return;
-            }
             input.checked = false;
-            input.disabled = false;
-            var li = input.closest('li');
-            if (li) li.classList.remove('disabled');
         });
-        form.querySelectorAll('select').forEach(function(select) { select.value = ''; });
+        form.querySelectorAll('select').forEach(function(select) {
+            select.value = '';
+        });
         form.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
         });
@@ -2411,13 +2450,8 @@
             el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
         });
         form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note').forEach(function(el) { el.remove(); });
-        applyBlankAttemptLocks();
+        enableAnswerEditing();
         applyMcLocks();
-        var submitBtn = document.getElementById('submit-btn');
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Answers';
-        }
         saveDraftAnswers();
     }
 
@@ -2462,7 +2496,7 @@
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
                 applyBlankAttemptLocks();
-                rememberMcLocks(result.attempt.answers);
+                applyMcLocks();
                 saveDraftAnswers();
             }
         }).catch(function() {});
@@ -2501,19 +2535,43 @@
         actions.parentNode.appendChild(detail);
     }
 
+    function historyReviewActionsAllowed(review, item) {
+        return Boolean((review && review.feedback_available) || (item && item.feedback_available));
+    }
+
+    function historyReviewTarget(item) {
+        var qid = item.question_id;
+        var mcDiv = document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
+        if (mcDiv && mcDiv.classList.contains('mc-question')) {
+            if (item.submitted_answer != null && String(item.submitted_answer) !== '') {
+                var selectedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(item.submitted_answer)) + '"]');
+                var selectedLi = selectedRadio && selectedRadio.closest('li');
+                if (selectedLi) selectedLi.classList.add(item.correct ? 'correct' : 'wrong');
+            }
+            return { target: mcDiv, container: mcDiv };
+        }
+        var field = document.querySelector('[name="' + CSS.escape(qid) + '"]') ||
+            document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
+        if (!field) return null;
+        var row = field.closest('tr');
+        return {
+            target: field,
+            container: field.closest('li') || field.closest('[data-id]') || (row && row.querySelector('td:last-child')) || field.parentNode
+        };
+    }
+
     function markHistoryReview(review) {
         var answers = review && review.answers || [];
         var disputes = review && review.disputes || [];
         answers.forEach(function(item) {
             var qid = item.question_id;
             var dispute = disputeForQuestion(disputes, qid);
-            var target = document.querySelector('[name="' + CSS.escape(qid) + '"]') ||
-                document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
-            if (!target) return;
+            var targetInfo = historyReviewTarget(item);
+            if (!targetInfo) return;
+            var target = targetInfo.target;
+            var container = targetInfo.container;
             target.classList.add(item.correct ? 'correct' : 'wrong');
             if (dispute) target.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
-            var row = target.closest('tr');
-            var container = target.closest('li') || target.closest('[data-id]') || (row && row.querySelector('td:last-child')) || target.parentNode;
             if (!container || container.querySelector('[data-history-dispute="' + CSS.escape(qid) + '"]')) return;
             var note = document.createElement('div');
             note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong') + (dispute ? ' ' + (dispute.status || 'pending') : '');
@@ -2524,8 +2582,10 @@
             var actions = document.createElement('div');
             actions.className = 'history-review-actions';
             note.appendChild(actions);
-            appendHistoryExplainButton(actions, item);
-            if (!item.correct) {
+            if (historyReviewActionsAllowed(review, item)) {
+                appendHistoryExplainButton(actions, item);
+            }
+            if (!item.correct && historyReviewActionsAllowed(review, item)) {
                 var argueButton = document.createElement('button');
                 argueButton.type = 'button';
                 argueButton.className = 'argue-btn';
@@ -2556,12 +2616,12 @@
         }).then(function(results) {
             var result = results[0];
             if (result && result.success && result.attempt && result.attempt.answers) {
-                currentArgueAttemptId = historyAttemptId;
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
-                applyBlankAttemptLocks();
-                rememberMcLocks(result.attempt.answers);
+                enableAnswerEditing();
+                applyMcLocks();
                 saveDraftAnswers();
+                currentArgueAttemptId = historyAttemptId;
                 if (results[1] && results[1].review) markHistoryReview(results[1].review);
             }
         }).catch(function() {});
@@ -3069,13 +3129,34 @@
         return answerRevealConfirmed;
     }
 
+    function applyFeedbackMarkers(results) {
+        (results || []).forEach(function(r) {
+            if (r.type === 'blank') {
+                var input = document.querySelector('[name="' + CSS.escape(r.id) + '"]');
+                if (input) input.classList.add(r.isCorrect ? 'correct' : 'wrong');
+            } else if (r.type === 'mc') {
+                var mcDiv = document.querySelector('[data-id="' + CSS.escape(r.id) + '"]');
+                if (!mcDiv) return;
+                mcDiv.classList.add(r.isCorrect ? 'correct' : 'wrong');
+                if (r.userAnswer) {
+                    var selectedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(r.userAnswer)) + '"]');
+                    var selectedLi = selectedRadio && selectedRadio.closest('li');
+                    if (selectedLi) selectedLi.classList.add(r.isCorrect ? 'correct' : 'wrong');
+                }
+            } else if (r.type === 'match') {
+                var select = document.querySelector('[name="' + CSS.escape(r.id) + '"]');
+                if (select) select.classList.add(r.isCorrect ? 'correct' : 'wrong');
+            }
+        });
+    }
+
     function applyFeedback(results) {
+        applyFeedbackMarkers(results);
         for (var i = 0; i < results.length; i++) {
             var r = results[i];
             if (r.type === 'blank') {
                 var input = document.querySelector('[name="' + r.id + '"]');
                 if (!input) continue;
-                input.classList.add(r.isCorrect ? 'correct' : 'wrong');
                 var li = input.closest('li');
                 if (li) {
                     var exp = document.createElement('div');
@@ -3099,25 +3180,26 @@
                         };
                     }(exp));
                     bar.appendChild(toggleBtn);
-                    var argueBtn = document.createElement('button');
-                    argueBtn.className = 'argue-btn';
-                    argueBtn.textContent = 'Argue';
-                    argueBtn.addEventListener('click', function(qId, barEl) {
-                        return function() { openArgueInline(qId, barEl.parentNode); };
-                    }(r.id, bar));
-                    bar.appendChild(argueBtn);
+                    if (!r.isCorrect) {
+                        var argueBtn = document.createElement('button');
+                        argueBtn.className = 'argue-btn';
+                        argueBtn.textContent = 'Argue';
+                        argueBtn.addEventListener('click', function(qId, barEl) {
+                            return function() { openArgueInline(qId, barEl.parentNode); };
+                        }(r.id, bar));
+                        bar.appendChild(argueBtn);
+                    }
                     li.parentNode.insertBefore(bar, exp.nextSibling);
                 }
             } else if (r.type === 'mc') {
                 var mcDiv = document.querySelector('[data-id="' + r.id + '"]');
                 if (!mcDiv) continue;
-                mcDiv.classList.add(r.isCorrect ? 'correct' : 'wrong');
-                var correctRadio = mcDiv.querySelector('input[value="' + r.correctAnswer + '"]');
+                var correctRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(r.correctAnswer)) + '"]');
                 if (correctRadio) {
                     correctRadio.closest('li').classList.add('correct');
                 }
                 if (!r.isCorrect && r.userAnswer) {
-                    var wrongRadio = mcDiv.querySelector('input[value="' + r.userAnswer + '"]');
+                    var wrongRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(r.userAnswer)) + '"]');
                     if (wrongRadio) {
                         wrongRadio.closest('li').classList.add('wrong');
                     }
@@ -3140,18 +3222,19 @@
                     };
                 }(exp));
                 bar.appendChild(toggleBtn);
-                var argueBtn = document.createElement('button');
-                argueBtn.className = 'argue-btn';
-                argueBtn.textContent = 'Argue';
-                argueBtn.addEventListener('click', function(qId, barEl) {
-                    return function() { openArgueInline(qId, barEl.parentNode); };
-                }(r.id, bar));
-                bar.appendChild(argueBtn);
+                if (!r.isCorrect) {
+                    var argueBtn = document.createElement('button');
+                    argueBtn.className = 'argue-btn';
+                    argueBtn.textContent = 'Argue';
+                    argueBtn.addEventListener('click', function(qId, barEl) {
+                        return function() { openArgueInline(qId, barEl.parentNode); };
+                    }(r.id, bar));
+                    bar.appendChild(argueBtn);
+                }
                 mcDiv.appendChild(bar);
             } else if (r.type === 'match') {
                 var select = document.querySelector('[name="' + r.id + '"]');
                 if (!select) continue;
-                select.classList.add(r.isCorrect ? 'correct' : 'wrong');
                 var tr = select.closest('tr');
                 if (tr) {
                     var exp = document.createElement('div');
@@ -3172,13 +3255,15 @@
                         };
                     }(exp));
                     bar.appendChild(toggleBtn);
-                    var argueBtn = document.createElement('button');
-                    argueBtn.className = 'argue-btn';
-                    argueBtn.textContent = 'Argue';
-                    argueBtn.addEventListener('click', function(qId, barEl) {
-                        return function() { openArgueInline(qId, barEl.parentNode); };
-                    }(r.id, bar));
-                    bar.appendChild(argueBtn);
+                    if (!r.isCorrect) {
+                        var argueBtn = document.createElement('button');
+                        argueBtn.className = 'argue-btn';
+                        argueBtn.textContent = 'Argue';
+                        argueBtn.addEventListener('click', function(qId, barEl) {
+                            return function() { openArgueInline(qId, barEl.parentNode); };
+                        }(r.id, bar));
+                        bar.appendChild(argueBtn);
+                    }
                     td.appendChild(bar);
                 }
             }
@@ -3362,7 +3447,6 @@
             assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
             answerRevealAvailable = response.passed && !response.feedback_locked;
             updateHistoryToolbar();
-            rememberMcLocks(response.bbc_mc_locked_answers || userAnswers);
 
             var feedback = (response.question_results || []).map(function(item) {
                 var source = null;
@@ -3387,10 +3471,14 @@
             });
 
             disableAllInputs();
-            applyMcLocks();
-            if (!response.feedback_locked) {
-                recordBlankAttemptResults(feedback);
+            recordBlankAttemptResults(feedback);
+            rememberMcLocks(feedback);
+            if (response.feedback_locked) {
+                applyFeedbackMarkers(feedback);
+                applyMcLocks();
+            } else {
                 applyFeedback(feedback);
+                applyMcLocks();
             }
             showResultOverlay(response);
             logEvent('submit', {

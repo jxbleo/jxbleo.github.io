@@ -187,17 +187,20 @@ function extractVocabulary(source, privateSource) {
 }
 
 function buildSet(meta, overrides = {}) {
+  const type = overrides.type || meta.sectionId;
+  const course = overrides.course || meta.sectionId;
+  const isVocabulary = type === "vocabulary" || meta.sectionId === "vocabulary";
   return {
     set_id: meta.id,
     section_id: meta.sectionId,
     title: meta.title,
-    type: overrides.type || meta.sectionId,
-    course: overrides.course || meta.sectionId,
+    type,
+    course,
     link: meta.href,
     difficulty: overrides.difficulty || "",
     estimated_minutes: overrides.estimatedMinutes || null,
-    passing_percentage: 50,
-    mastery_percentage: 90,
+    passing_percentage: overrides.passingPercentage || (isVocabulary ? 80 : 50),
+    mastery_percentage: overrides.masteryPercentage || (isVocabulary ? 100 : 90),
     feedback_policy: "always",
     visible: meta.visible !== false,
   };
@@ -269,6 +272,8 @@ function main() {
     value: {
       default_passing_percentage: 50,
       default_mastery_percentage: 90,
+      vocabulary_default_passing_percentage: 80,
+      vocabulary_default_mastery_percentage: 100,
       default_feedback_policy: "always",
       vocabulary_minimum_countable_groups: 5,
     },
