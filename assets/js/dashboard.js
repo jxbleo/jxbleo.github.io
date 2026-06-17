@@ -7,6 +7,7 @@
         resources: [],
         assignmentFilter: 'todo',
         resourceFilter: 'vocabulary',
+        resourceBookFilters: {},
         starCount: 0,
         assignmentStarCount: 0,
         selfStudyStarCount: 0,
@@ -857,6 +858,40 @@
         return 'other';
     }
 
+    function isCambridgeCategory(category) {
+        return category === 'ielts-reading' || category === 'ielts-listening';
+    }
+
+    function cambridgeBookId(item) {
+        var id = String(item.set_id || item.id || '').trim().toUpperCase();
+        var match = id.match(/^C(\d+)(?:-|$)/);
+        return match ? 'C' + match[1] : '';
+    }
+
+    function cambridgeBookSortValue(book) {
+        var match = String(book || '').match(/^C(\d+)$/i);
+        return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
+    }
+
+    function cambridgeBooks(items) {
+        var seen = {};
+        return (items || []).map(cambridgeBookId).filter(function(book) {
+            if (!book || seen[book]) return false;
+            seen[book] = true;
+            return true;
+        }).sort(function(left, right) {
+            return cambridgeBookSortValue(left) - cambridgeBookSortValue(right) || left.localeCompare(right);
+        });
+    }
+
+    function currentResourceBook(books) {
+        var current = state.resourceBookFilters[state.resourceFilter] || '';
+        if (books.indexOf(current) !== -1) return current;
+        current = books[0] || '';
+        if (current) state.resourceBookFilters[state.resourceFilter] = current;
+        return current;
+    }
+
     function renderResourceTabs() {
         var container = document.getElementById('student-library-tabs');
         if (!container) return;
@@ -873,11 +908,43 @@
         });
     }
 
+    function renderResourceBookTabs(categoryItems) {
+        var container = document.getElementById('student-library-book-tabs');
+        if (!container) return '';
+        if (!isCambridgeCategory(state.resourceFilter)) {
+            container.innerHTML = '';
+            return '';
+        }
+        var books = cambridgeBooks(categoryItems);
+        if (!books.length) {
+            container.innerHTML = '';
+            return '';
+        }
+        var current = currentResourceBook(books);
+        container.innerHTML = books.map(function(book) {
+            return '<button class="library-book-tab' + (book === current ? ' active' : '') +
+                '" type="button" data-resource-book-filter="' + escapeHtml(book) + '">' +
+                escapeHtml(book) + '</button>';
+        }).join('');
+        container.querySelectorAll('[data-resource-book-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.resourceBookFilters[state.resourceFilter] = button.dataset.resourceBookFilter;
+                renderResources(resourceSearch.value);
+            });
+        });
+        return current;
+    }
+
     function renderResources(query) {
         var normalized = String(query || '').trim().toLowerCase();
         renderResourceTabs();
-        var items = state.resources.filter(function(item) {
-            if (!normalized) return resourceCategory(item) === state.resourceFilter;
+        var categoryItems = state.resources.filter(function(item) {
+            return resourceCategory(item) === state.resourceFilter;
+        });
+        var currentBook = renderResourceBookTabs(categoryItems);
+        var items = categoryItems.filter(function(item) {
+            if (currentBook && cambridgeBookId(item) !== currentBook) return false;
+            if (!normalized) return true;
             return [
                 item.title, item.set_id, item.id, item.course, item.type, item.sectionTitle, item.topic
             ].join(' ').toLowerCase().indexOf(normalized) !== -1;

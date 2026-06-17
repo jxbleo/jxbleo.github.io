@@ -25,6 +25,7 @@
         disputeFilter: 'pending',
         disputeMerge: false,
         libraryFilter: 'vocabulary',
+        libraryBookFilters: {},
         expandedDisputes: {},
         expandedAssignmentSets: {},
         expandedAssignProgress: {},
@@ -419,6 +420,40 @@
         return 'other';
     }
 
+    function isCambridgeCategory(category) {
+        return category === 'ielts-reading' || category === 'ielts-listening';
+    }
+
+    function cambridgeBookId(set) {
+        var id = String(set.set_id || set.id || '').trim().toUpperCase();
+        var match = id.match(/^C(\d+)(?:-|$)/);
+        return match ? 'C' + match[1] : '';
+    }
+
+    function cambridgeBookSortValue(book) {
+        var match = String(book || '').match(/^C(\d+)$/i);
+        return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
+    }
+
+    function cambridgeBooks(sets) {
+        var seen = {};
+        return (sets || []).map(cambridgeBookId).filter(function(book) {
+            if (!book || seen[book]) return false;
+            seen[book] = true;
+            return true;
+        }).sort(function(left, right) {
+            return cambridgeBookSortValue(left) - cambridgeBookSortValue(right) || left.localeCompare(right);
+        });
+    }
+
+    function currentLibraryBook(books) {
+        var current = state.libraryBookFilters[state.libraryFilter] || '';
+        if (books.indexOf(current) !== -1) return current;
+        current = books[0] || '';
+        if (current) state.libraryBookFilters[state.libraryFilter] = current;
+        return current;
+    }
+
     function renderLibraryTabs() {
         var container = document.getElementById('teacher-library-tabs');
         if (!container) return;
@@ -433,6 +468,33 @@
                 renderLibrary();
             });
         });
+    }
+
+    function renderLibraryBookTabs(categorySets) {
+        var container = document.getElementById('teacher-library-book-tabs');
+        if (!container) return '';
+        if (!isCambridgeCategory(state.libraryFilter)) {
+            container.innerHTML = '';
+            return '';
+        }
+        var books = cambridgeBooks(categorySets);
+        if (!books.length) {
+            container.innerHTML = '';
+            return '';
+        }
+        var current = currentLibraryBook(books);
+        container.innerHTML = books.map(function(book) {
+            return '<button class="library-book-tab' + (book === current ? ' active' : '') +
+                '" type="button" data-library-book-filter="' + escapeHtml(book) + '">' +
+                escapeHtml(book) + '</button>';
+        }).join('');
+        container.querySelectorAll('[data-library-book-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.libraryBookFilters[state.libraryFilter] = button.dataset.libraryBookFilter;
+                renderLibrary();
+            });
+        });
+        return current;
     }
 
     function fillClassFilters() {
@@ -465,12 +527,17 @@
         var section = sectionEl ? sectionEl.value : '';
         var searchEl = document.getElementById(prefix + '-set-search') || document.getElementById(prefix + '-search');
         var query = searchEl ? searchEl.value.trim().toLowerCase() : '';
+        var libraryCategorySets = prefix === 'library' ? state.sets.filter(function(set) {
+            return setCategory(set) === state.libraryFilter;
+        }) : [];
+        var libraryBook = prefix === 'library' ? currentLibraryBook(cambridgeBooks(libraryCategorySets)) : '';
         return state.sets.filter(function(set) {
             var setSection = String(set.section || set.course || set.type || 'Other');
             var matchesSection = !section || setSection === section;
-            var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter || query;
+            var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter;
+            var matchesBook = prefix !== 'library' || !libraryBook || cambridgeBookId(set) === libraryBook;
             var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
-            return matchesSection && matchesLibrary && (!query || haystack.indexOf(query) !== -1);
+            return matchesSection && matchesLibrary && matchesBook && (!query || haystack.indexOf(query) !== -1);
         });
     }
 
@@ -590,6 +657,9 @@
     function renderLibrary() {
         if (!libraryList) return;
         renderLibraryTabs();
+        renderLibraryBookTabs(state.sets.filter(function(set) {
+            return setCategory(set) === state.libraryFilter;
+        }));
         var sets = filteredSets('library');
         libraryList.innerHTML = sets.length ? sets.map(function(set) {
             return '<article class="resource-card teacher-library-card">' +
