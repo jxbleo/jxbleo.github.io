@@ -447,13 +447,40 @@
         return current;
     }
 
-    var teacherLibraryTabConfig = {
-        general: { groupIds: ['basics'], emptyMessage: 'No general practice content yet.' },
-        exam: { groupIds: ['ielts', 'dse'], emptyMessage: 'No exam practice content yet.' },
-        lessons: { groupIds: ['lessons'], emptyMessage: 'No lessons available yet.' }
-    };
     var teacherLibraryActiveTab = 'general';
+    var teacherLibraryActiveSubTab = '';
     var teacherLibraryCatalog = null;
+
+    var TEACHER_LIBRARY_GROUP_IDS = {
+        general: ['basics'],
+        exam: ['ielts', 'dse'],
+        lessons: ['lessons']
+    };
+
+    var TEACHER_LIBRARY_SUB_TABS = {
+        general: [
+            { id: '', label: 'All' },
+            { id: 'bbc-six-minute-english', label: 'BBC', yearFilter: true },
+            { id: 'vocabulary', label: 'Vocabulary' },
+            { id: 'grammar', label: 'Grammar' },
+            { id: 'general-writing', label: 'Writing' }
+        ],
+        exam: [
+            { id: '', label: 'All' },
+            { id: 'ielts-reading', label: 'IELTS Reading' },
+            { id: 'ielts-listening', label: 'IELTS Listening' },
+            { id: 'dse-english-paper-1', label: 'DSE Reading' },
+            { id: 'dse-english-paper-2', label: 'DSE Writing' },
+            { id: 'dse-integrated', label: 'DSE Integrated Skills' },
+            { id: 'dse-english-paper-4', label: 'DSE Speaking' }
+        ],
+        lessons: [
+            { id: '', label: 'All' },
+            { id: 'lesson-grammar', label: 'Grammar' },
+            { id: 'lesson-dse', label: 'DSE' },
+            { id: 'lesson-ielts', label: 'IELTS' }
+        ]
+    };
 
     function teacherLibraryLoadSections() {
         if (teacherLibraryCatalog) return Promise.resolve();
@@ -463,76 +490,59 @@
             .catch(function() {});
     }
 
-    function teacherLibraryBuildSection(section, items) {
-        var cardsHtml = '';
-        var yearTabsHtml = '';
-        var activeYear = '';
-        if (items.length) {
-            var sorted = items.slice();
-            if (section.sortType === 'date_asc') {
-                sorted.sort(function(a, b) { return String(a.sortValue || '').localeCompare(String(b.sortValue || '')); });
-            } else if (section.sortType === 'number_asc') {
-                sorted.sort(function(a, b) { return Number(a.sortValue || 0) - Number(b.sortValue || 0); });
-            }
-            if (section.yearFilter) {
-                var years = {};
-                for (var yi = 0; yi < sorted.length; yi++) {
-                    var y = String(sorted[yi].sortValue || '').substring(0, 4);
-                    if (y && y.length === 4) years[y] = true;
-                }
-                var yearList = Object.keys(years).sort();
-                if (yearList.length > 1) {
-                    activeYear = yearList[0];
-                    yearTabsHtml = '<div class="year-tabs" data-section="' + escapeHtml(section.id) + '">' +
-                        '<button class="year-tab" data-year="">All</button>';
-                    for (var yj = 0; yj < yearList.length; yj++) {
-                        yearTabsHtml += '<button class="year-tab' + (yearList[yj] === activeYear ? ' active' : '') + '" data-year="' + yearList[yj] + '">' + yearList[yj] + '</button>';
-                    }
-                    yearTabsHtml += '</div>';
-                }
-            }
-            for (var i = 0; i < sorted.length; i++) {
-                var item = sorted[i];
-                var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
-                var hidden = activeYear && itemYear !== activeYear;
-                cardsHtml += '<li class="menu-card' + (hidden ? ' year-hidden' : '') + '"' +
-                    (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
-                    '<a class="practice-link" href="' + escapeHtml(teacherPracticeHref(item)) + '">' +
-                        '<div class="card-content">' +
-                            '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
-                            '<div class="meta-row">' +
-                                '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="arrow-box">→</div>' +
-                    '</a>' +
-                '</li>';
-            }
-        } else {
-            cardsHtml = '<li class="menu-card placeholder-card"><div class="card-content">' +
-                '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
-                '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p></div>' +
-                '<div class="arrow-box" style="background:transparent;color:var(--muted, #78908a);">⏳</div></li>';
+    function teacherBuildCard(item, hidden, itemYear) {
+        return '<li class="menu-card' + (hidden ? ' year-hidden' : '') + '"' +
+            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
+            '<a class="practice-link" href="' + escapeHtml(teacherPracticeHref(item)) + '">' +
+                '<div class="card-content">' +
+                    '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
+                    '<div class="meta-row">' +
+                        '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arrow-box">→</div>' +
+            '</a>' +
+        '</li>';
+    }
+
+    function teacherBuildPlaceholder(section) {
+        return '<li class="menu-card placeholder-card"><div class="card-content">' +
+            '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
+            '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p></div>' +
+            '<div class="arrow-box" style="background:transparent;color:var(--muted, #78908a);">⏳</div></li>';
+    }
+
+    function teacherSortItems(items, section) {
+        var sorted = items.slice();
+        if (section.sortType === 'date_asc') {
+            sorted.sort(function(a, b) { return String(a.sortValue || '').localeCompare(String(b.sortValue || '')); });
+        } else if (section.sortType === 'number_asc') {
+            sorted.sort(function(a, b) { return Number(a.sortValue || 0) - Number(b.sortValue || 0); });
         }
-        return '<div class="section' + (activeYear ? ' year-filter-active' : '') + '" data-section-id="' + escapeHtml(section.id) + '">' +
-            '<div class="section-title">' +
-                escapeHtml(section.title) +
-                '<span class="toggle-btn">Show</span>' +
-            '</div>' +
-            '<div class="section-body" style="display:none;">' +
-                yearTabsHtml +
-                '<ul class="menu-list">' + cardsHtml + '</ul>' +
-            '</div>' +
-        '</div>';
+        return sorted;
+    }
+
+    function teacherGetTabSections(tabId) {
+        var groupIds = TEACHER_LIBRARY_GROUP_IDS[tabId] || [];
+        var result = [];
+        for (var i = 0; i < (teacherLibraryCatalog.sections || []).length; i++) {
+            var section = teacherLibraryCatalog.sections[i];
+            if (groupIds.indexOf(section.groupId || 'general') !== -1) {
+                result.push(section);
+            }
+        }
+        return result;
     }
 
     function renderTeacherLibrary(tabId) {
         tabId = tabId || teacherLibraryActiveTab;
-        var root = document.getElementById('teacher-library-sections');
+        var root = document.getElementById('teacher-library-content');
+        var subTabBar = document.getElementById('teacher-sub-tab-bar');
+        var yearBar = document.getElementById('teacher-year-bar');
         if (!root) return;
 
-        var config = teacherLibraryTabConfig[tabId];
-        if (!config) { root.innerHTML = ''; return; }
+        var subTabs = TEACHER_LIBRARY_SUB_TABS[tabId];
+        if (!subTabs) { root.innerHTML = ''; return; }
 
         var searchText = String(document.getElementById('library-search').value || '').trim().toLowerCase();
 
@@ -541,6 +551,25 @@
             teacherLibraryLoadSections().then(function() { renderTeacherLibrary(tabId); });
             return;
         }
+
+        var subTabHtml = '';
+        for (var si = 0; si < subTabs.length; si++) {
+            var isActive = (!teacherLibraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === teacherLibraryActiveSubTab;
+            subTabHtml += '<button class="sub-tab-btn' + (isActive ? ' active' : '') + '" data-subtab="' + escapeHtml(subTabs[si].id) + '">' + escapeHtml(subTabs[si].label) + '</button>';
+        }
+        subTabBar.innerHTML = subTabHtml;
+        subTabBar.style.display = 'flex';
+
+        var activeSubTabConfig = subTabs[0];
+        for (var si = 0; si < subTabs.length; si++) {
+            if ((!teacherLibraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === teacherLibraryActiveSubTab) {
+                activeSubTabConfig = subTabs[si];
+                break;
+            }
+        }
+
+        var tabSections = teacherGetTabSections(tabId);
+        var targetSectionId = activeSubTabConfig.id;
 
         var itemsBySection = {};
         var allItems = (state.sets || []).filter(function(item) { return item.visible !== false; });
@@ -561,20 +590,84 @@
             itemsBySection[sid].push(item);
         }
 
-        var html = '';
-        for (var j = 0; j < teacherLibraryCatalog.sections.length; j++) {
-            var section = teacherLibraryCatalog.sections[j];
-            var groupId = section.groupId || 'general';
-            if (config.groupIds.indexOf(groupId) === -1) continue;
+        var showYearFilter = false;
+        var activeYear = '';
+        var yearSectionId = '';
+        if (activeSubTabConfig.yearFilter) {
+            yearSectionId = targetSectionId;
+            var yearSection = null;
+            for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
+                if (teacherLibraryCatalog.sections[i].id === targetSectionId) {
+                    yearSection = teacherLibraryCatalog.sections[i];
+                    break;
+                }
+            }
+            if (yearSection) {
+                var yearItems = teacherSortItems(itemsBySection[targetSectionId] || [], yearSection);
+                var years = {};
+                for (var yi = 0; yi < yearItems.length; yi++) {
+                    var y = String(yearItems[yi].sortValue || '').substring(0, 4);
+                    if (y && y.length === 4) years[y] = true;
+                }
+                var yearList = Object.keys(years).sort();
+                if (yearList.length > 1) {
+                    showYearFilter = true;
+                    activeYear = yearList[0];
+                    var yearHtml = '';
+                    yearHtml += '<button class="year-tab" data-year="">All</button>';
+                    for (var yj = 0; yj < yearList.length; yj++) {
+                        yearHtml += '<button class="year-tab' + (yearList[yj] === activeYear ? ' active' : '') + '" data-year="' + yearList[yj] + '">' + yearList[yj] + '</button>';
+                    }
+                    yearBar.innerHTML = '<div class="year-tabs">' + yearHtml + '</div>';
+                }
+            }
+        }
+        if (!showYearFilter) {
+            yearBar.innerHTML = '';
+        }
+
+        var cardsHtml = '';
+        for (var i = 0; i < tabSections.length; i++) {
+            var section = tabSections[i];
+            if (targetSectionId && section.id !== targetSectionId) continue;
 
             var sectionItems = (itemsBySection[section.id] || []).filter(function(item) {
                 if (!searchText) return true;
                 return [item.title, item.set_id, item.id, item.topic, item.displayValue].join(' ').toLowerCase().indexOf(searchText) !== -1;
             });
-            html += teacherLibraryBuildSection(section, sectionItems);
+
+            if (section.id === yearSectionId && !sectionItems.length) {
+                cardsHtml += teacherBuildPlaceholder(section);
+                continue;
+            }
+            var sortedItems = teacherSortItems(sectionItems, section);
+
+            if (sortedItems.length) {
+                for (var k = 0; k < sortedItems.length; k++) {
+                    var item = sortedItems[k];
+                    var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
+                    var hidden = activeYear && itemYear !== activeYear;
+                    cardsHtml += teacherBuildCard(item, hidden, itemYear);
+                }
+            } else if (!targetSectionId && !section.yearFilter) {
+                cardsHtml += teacherBuildPlaceholder(section);
+            }
         }
 
-        root.innerHTML = html || '<p class="section-description">' + escapeHtml(config.emptyMessage) + '</p>';
+        if (targetSectionId && !cardsHtml) {
+            for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
+                if (teacherLibraryCatalog.sections[i].id === targetSectionId) {
+                    cardsHtml = teacherBuildPlaceholder(teacherLibraryCatalog.sections[i]);
+                    break;
+                }
+            }
+        }
+
+        if (!cardsHtml) {
+            cardsHtml = '<p class="section-description">No content yet.</p>';
+        }
+
+        root.innerHTML = '<ul class="menu-list">' + cardsHtml + '</ul>';
     }
 
     function fillClassFilters() {
@@ -2104,6 +2197,7 @@
         var tabId = btn.getAttribute('data-tab');
         if (tabId === teacherLibraryActiveTab) return;
         teacherLibraryActiveTab = tabId;
+        teacherLibraryActiveSubTab = '';
         var bar = document.getElementById('teacher-library-tab-bar');
         if (bar) {
             var tabs = bar.querySelectorAll('.library-tab-btn');
@@ -2179,31 +2273,27 @@
         var card = document.querySelector('.student-select-card');
         if (card && !card.contains(event.target)) setStudentPickerOpen(false);
 
-        var teacherSections = document.getElementById('teacher-library-sections');
-        if (teacherSections) {
-            var sectionTitle = event.target.closest('.section-title');
-            if (sectionTitle && teacherSections.contains(sectionTitle)) {
-                var section = sectionTitle.closest('.section');
-                var body = section.querySelector('.section-body');
-                var btn = sectionTitle.querySelector('.toggle-btn');
-                var isOpen = body.style.display !== 'none';
-                body.style.display = isOpen ? 'none' : 'block';
-                section.classList.toggle('is-open', !isOpen);
-                if (btn) btn.textContent = isOpen ? 'Show' : 'Hide';
-                return;
-            }
+        var subTabBtn = event.target.closest('#teacher-sub-tab-bar .sub-tab-btn');
+        if (subTabBtn) {
+            var subTab = subTabBtn.getAttribute('data-subtab');
+            if (subTab === teacherLibraryActiveSubTab) return;
+            teacherLibraryActiveSubTab = subTab;
+            renderTeacherLibrary(teacherLibraryActiveTab);
+            return;
+        }
 
-            var yearTab = event.target.closest('.year-tab');
-            if (yearTab && teacherSections.contains(yearTab)) {
-                var year = yearTab.getAttribute('data-year');
-                var tabsContainer = yearTab.closest('.year-tabs');
-                var sectionEl = tabsContainer ? tabsContainer.closest('.section') : null;
-                if (sectionEl) {
-                    var tabs = tabsContainer.querySelectorAll('.year-tab');
-                    for (var ti = 0; ti < tabs.length; ti++) {
-                        tabs[ti].classList.toggle('active', tabs[ti] === yearTab);
-                    }
-                    var cards = sectionEl.querySelectorAll('.menu-card');
+        var yearTab = event.target.closest('#teacher-year-bar .year-tab');
+        if (yearTab) {
+            var year = yearTab.getAttribute('data-year');
+            var tabsContainer = yearTab.closest('.year-tabs');
+            if (tabsContainer) {
+                var tabs = tabsContainer.querySelectorAll('.year-tab');
+                for (var ti = 0; ti < tabs.length; ti++) {
+                    tabs[ti].classList.toggle('active', tabs[ti] === yearTab);
+                }
+                var cardsRoot = document.getElementById('teacher-library-content');
+                if (cardsRoot) {
+                    var cards = cardsRoot.querySelectorAll('.menu-card');
                     for (var ci = 0; ci < cards.length; ci++) {
                         if (!year) {
                             cards[ci].classList.remove('year-hidden');
@@ -2212,8 +2302,8 @@
                         }
                     }
                 }
-                return;
             }
+            return;
         }
     });
     document.getElementById('toggle-create-student').addEventListener('click', function() {

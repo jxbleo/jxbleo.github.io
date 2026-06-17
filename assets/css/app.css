@@ -2676,6 +2676,43 @@ button { cursor: pointer; }
     background: var(--accent, #0f766e);
     color: #fff;
 }
+.sub-tab-bar {
+    display: none;
+    gap: 4px;
+    margin-bottom: 12px;
+    padding: 3px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.6);
+    flex-wrap: wrap;
+}
+.sub-tab-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary, #58716c);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.sub-tab-btn:hover {
+    color: var(--text-primary, #16312f);
+    background: rgba(15, 118, 110, 0.06);
+}
+.sub-tab-btn.active {
+    background: #fff;
+    color: var(--accent, #0f766e);
+    box-shadow: 0 2px 8px rgba(15, 118, 110, 0.1);
+}
+.library-year-bar {
+    margin-bottom: 12px;
+}
+.library-year-bar .year-tabs {
+    margin-bottom: 0;
+}
 .menu-card.year-hidden {
     display: none !important;
 }

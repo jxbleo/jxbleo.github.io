@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260617-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260617-4">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -148,12 +148,6 @@
         </section>
 
         <section class="dashboard-view" id="view-library" hidden>
-            <div class="student-page-toolbar">
-                <div>
-                    <h2>Library</h2>
-                    <p>Open any practice set as a teacher and reveal answers without affecting students.</p>
-                </div>
-            </div>
             <div class="assign-toolbar">
                 <input class="resource-search" id="library-search" type="search" placeholder="Search practice sets...">
             </div>
@@ -162,7 +156,11 @@
                 <button class="library-tab-btn" data-tab="exam">Exam Practice</button>
                 <button class="library-tab-btn" data-tab="lessons">Lessons</button>
             </div>
-            <div id="teacher-library-sections"></div>
+            <div class="sub-tab-bar" id="teacher-sub-tab-bar"></div>
+            <div class="library-year-bar" id="teacher-year-bar"></div>
+            <div id="teacher-library-content">
+                <p class="section-description">Loading...</p>
+            </div>
         </section>
 
         <section class="dashboard-view" id="view-check" hidden>
@@ -232,6 +230,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260617-2"></script>
+    <script src="assets/js/teacher.js?v=20260617-3"></script>
 </body>
 </html>
