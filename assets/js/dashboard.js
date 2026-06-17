@@ -317,7 +317,7 @@
             if (animate) window.setTimeout(function() { selfStudyStarCounter.classList.remove('pop'); }, 700);
         }
         if (starCounter) {
-            starCounter.textContent = '★ ' + state.assignmentStarCount;
+            starCounter.textContent = '★ ' + (state.assignmentStarCount + state.selfStudyStarCount);
             starCounter.classList.toggle('pop', animate === true);
             if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
         }
@@ -739,43 +739,25 @@
         return new Date(item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || 0).getTime();
     }
 
-    function finishedAchievementHtml(finished, todo, total) {
-        var mastered = finished.filter(function(item) { return normalizedStatus(item.status) === 'mastered'; }).length;
-        var passed = Math.max(finished.length - mastered, 0);
-        var completionPercent = total ? Math.round((finished.length / total) * 100) : 0;
-        var recent = finished.slice(0, 6);
-        var markers = recent.length ? recent.map(function(item, index) {
-            var status = normalizedStatus(item.status);
-            var label = compactAssignmentTitle((item.set && (item.set.title || item.set.set_id)) || item.set_title || item.set_id || 'Practice');
-            return '<span class="achievement-marker ' + escapeHtml(status) + '" title="' + escapeHtml(label) + '" style="--delay:' + index + '"></span>';
-        }).join('') : '<span class="achievement-empty-line">First finish starts the glow.</span>';
-        return '<section class="finished-achievement">' +
-            '<div class="achievement-number-block">' +
-                '<span class="achievement-kicker">Total Completed</span>' +
-                '<strong>' + escapeHtml(finished.length) + '</strong>' +
-                '<span>' + escapeHtml(total ? completionPercent + '% complete' : 'Your count starts here') + '</span>' +
-            '</div>' +
-            '<div class="achievement-support-grid">' +
-                '<div><strong>' + escapeHtml(mastered) + '</strong><span>Mastered</span></div>' +
-                '<div><strong>' + escapeHtml(passed) + '</strong><span>Passed</span></div>' +
-                '<div><strong>' + escapeHtml(todo.length) + '</strong><span>Waiting</span></div>' +
-            '</div>' +
-            '<div class="achievement-progress-line" aria-label="Recent completed assignments">' + markers + '</div>' +
-        '</section>';
+    function finishedIconSvg() {
+        return '<svg class="finished-mini-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+            '<circle cx="12" cy="12" r="9"></circle>' +
+            '<path d="M8 12.5l2.4 2.4L16.5 8.8"></path>' +
+        '</svg>';
     }
 
-    function renderFinishedPanel(finished, todo, assignments) {
+    function renderFinishedPanel(finished) {
         var expanded = state.finishedExpanded === true;
         var finishedList = finished.length
             ? '<div class="task-list finished-list">' + finished.map(taskCard).join('') + '</div>'
             : '<div class="empty-card">Finished work will collect here after you pass an assignment.</div>';
         return '<section class="finished-drawer' + (expanded ? ' expanded' : '') + '">' +
             '<button class="finished-drawer-toggle" id="finished-drawer-toggle" type="button" aria-expanded="' + expanded + '">' +
-                '<span><strong>Finished & Wins</strong><small>' + escapeHtml(finished.length) + ' completed · tap to ' + (expanded ? 'hide' : 'open') + '</small></span>' +
-                '<span class="finished-drawer-count">' + escapeHtml(finished.length) + '</span>' +
+                finishedIconSvg() +
+                '<span class="finished-mini-copy"><span class="finished-mini-label">Finished</span><strong>' + escapeHtml(finished.length) + '</strong></span>' +
+                '<span class="finished-mini-chevron" aria-hidden="true">' + (expanded ? 'Hide' : 'Open') + '</span>' +
             '</button>' +
             (expanded ? '<div class="finished-drawer-body">' +
-                finishedAchievementHtml(finished, todo, assignments.length) +
                 finishedList +
             '</div>' : '') +
         '</section>';
@@ -785,7 +767,7 @@
         if (state.session.mode === 'visitor') {
             assignmentContent.innerHTML =
                 '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>' +
-                renderFinishedPanel([], [], []);
+                renderFinishedPanel([]);
             updateDashboardTabNotices();
             return;
         }
@@ -807,7 +789,7 @@
         } else if (!todo.length) {
             html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open your finished wins below or explore the Library.</div>';
         }
-        html += renderFinishedPanel(finished, todo, assignments);
+        html += renderFinishedPanel(finished);
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
 
@@ -932,6 +914,8 @@
 
     function librarySectionLabel(sectionId, fallback) {
         var labels = {
+            'ielts-reading': 'ielts-reading',
+            'ielts-listening': 'ielts-listening',
             'dse-english-paper-1': 'DSE Reading',
             'dse-english-paper-2': 'DSE Writing',
             'dse-english-paper-3': 'DSE Integrated',
@@ -941,15 +925,8 @@
         return labels[sectionId] || fallback || 'Practice';
     }
 
-    function libraryItemBook(item) {
-        var raw = String(item.set_id || item.id || item.displayValue || '');
-        var match = raw.match(/^C(\d+)/i);
-        return match ? 'C' + match[1] : '';
-    }
-
     function libraryCardBadge(item, section, itemYear) {
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        if (/^ielts-/i.test(sectionId)) return libraryItemBook(item);
         if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
         return '';
     }
@@ -1404,31 +1381,25 @@
         }
 
         var profile = state.session.profile || {};
-        var voluntary = (profile.stats && profile.stats.voluntary_attempts) || 0;
+        var finishedCount = (state.assignments || []).filter(function(item) {
+            return isFinishedStatus(item.status);
+        }).length;
+        var totalStars = state.assignmentStarCount + state.selfStudyStarCount;
         profileContent.innerHTML =
             '<div class="profile-grid">' +
-                '<section class="profile-card account-stars-card">' +
-                    '<div class="account-stars-head">' +
-                        '<div><p class="eyebrow accent">ACHIEVEMENT</p><h2>Stars</h2></div>' +
-                    '</div>' +
-                    '<div class="account-stars-grid">' +
-                        '<span class="star-counter assignment-star-counter" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
-                        '<span class="star-counter self-study-star-counter" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
-                    '</div>' +
-                '</section>' +
-                '<section class="profile-card">' +
-                    '<h2>' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
+                '<section class="profile-card account-summary-card">' +
+                    '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
+                    '<div class="profile-row"><span>Stars</span><strong class="star-counter account-row-star" id="star-counter">★ ' + escapeHtml(totalStars) + '</strong></div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
-                    '<div class="profile-row"><span>Independent practice</span><strong>' + voluntary + '</strong></div>' +
-                '</section>' +
-                '<section class="profile-card">' +
-                    '<h2>Account</h2>' +
-                    (profile.must_change_password ? '<p class="badge failed">Password change required</p>' : '<p class="muted">Your account is active.</p>') +
-                    '<div class="profile-actions">' +
-                        '<button class="outline-button" id="change-password" type="button">Change Password</button>' +
-                        '<button class="danger-button" id="logout-button" type="button">Log Out</button>' +
+                    '<div class="profile-row"><span>Finished</span><strong>' + escapeHtml(finishedCount) + '</strong></div>' +
+                    '<div class="account-quiet-footer">' +
+                        (profile.must_change_password ? '<span class="badge failed">Password change required</span>' : '<span class="account-status-dot">Active</span>') +
+                        '<div class="account-quiet-actions">' +
+                            '<button class="text-button" id="change-password" type="button">Change password</button>' +
+                            '<button class="text-button danger-text-button" id="logout-button" type="button">Log out</button>' +
+                        '</div>' +
                     '</div>' +
                 '</section>' +
             '</div>';

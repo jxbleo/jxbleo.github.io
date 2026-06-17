@@ -50,6 +50,20 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Updated Library card eyebrows to show `ielts-reading` / `ielts-listening`
+  explicitly and simplified the student account panel: removed the separate
+  achievement card and account heading, moved stars into the profile rows,
+  changed independent practice to `Finished`, and made password/logout actions
+  low-noise text buttons. Verified dashboard/teacher syntax, `git diff --check`,
+  and local v7 asset requests.
+- Removed the yellow `C7` IELTS badge from student and teacher Library task
+  cards, kept BBC year badges, and restyled the Library sub-tab layer as yellow
+  capsule buttons. Verified `dashboard.js`/`teacher.js` syntax, `git diff --check`,
+  and local v6 asset requests.
+- Replaced the student Assignments achievement drawer summary with a compact
+  `Finished` completion button showing a completion SVG and total finished
+  count; expanded state now goes straight to the finished task list. Verified
+  `dashboard.js` syntax, `git diff --check`, and local dashboard smoke.
 - Standardized student and teacher Library sorting: BBC cards now follow
   release date from earliest to latest, and IELTS cards follow Cambridge book,
   Test, then Section/Passage order. Regenerated `home-catalog` and bumped
