@@ -12,6 +12,16 @@
 - Replaced student assignment status tabs with a default TO DO list and a collapsed `Finished & Wins` achievement drawer focused on completed-count momentum.
 - Refactored the teacher desk around `Tasks`, `View`, and `Library`.
 - Moved teacher `Review` under `Tasks`, changed `Updates` into a notification bell, and added a progress matrix to `View`.
+- Changed Vocabulary default thresholds to `80%` passing and `100%` mastery,
+  while other current content keeps the `50%` / `90%` defaults.
+- Added a failed Vocabulary Test result action that lets students return to
+  group selection and start a fresh test.
+- Unified student and teacher Library capsules, simplified DSE labels, moved
+  student STAR counters into the account panel, and added class filtering to the
+  teacher assignment matrix.
+- Expanded teacher `View` with `By student`, `By class`, and `By task` progress
+  groupings, low-to-high task score bars, clickable single-assignment details,
+  and scoped due/pass/mastery editing for existing assignments.
 
 ### Documentation
 

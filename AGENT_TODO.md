@@ -50,6 +50,38 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Expanded teacher View progress around `By student`, `By class`, and `By task`;
+  removed Open/Watch status labels, added low-to-high task score bars and
+  clickable single-assignment details, and added scoped due/pass/mastery editing
+  for existing assignments. Verified `teacher.js` and `teacherAdmin` syntax,
+  ran release verification, rebuilt `deploy-packages/teacherAdmin.zip`, and
+  smoke-tested local `teacher.html`; CloudBase still needs the rebuilt
+  `teacherAdmin` function package deployed.
+- Unified student and teacher Library task capsules; added IELTS book badges,
+  BBC year badges, and DSE labels without Paper numbers. Moved student STAR
+  counters into the account panel, changed My Words to a vocabulary-list layout,
+  simplified the Assignments achievement drawer around a gold completed count,
+  and added class filtering plus mobile-friendly scrolling to the teacher View
+  matrix. Verified `dashboard.js` and `teacher.js` with `node --check`; browser
+  smoke is still needed.
+- Fixed BBC practice feedback states so not-passed submissions still mark wrong
+  questions without revealing answers; History refills editable answers while
+  showing Explain/Argue only when backend feedback is available; Clear removes
+  visible feedback/actions and MC locks now persist only as yellow reminders.
+  Verified inline script parsing with Node and ran `git diff --check`; browser
+  smoke with an authenticated student session is still needed.
+- Changed Vocabulary default thresholds to 80% passing and 100% mastery across
+  CloudBase set generation and backend fallback logic. Verified cloud function
+  syntax, regenerated local private import output, checked all 23 generated
+  vocabulary sets are 80/100 while non-vocabulary sets remain 50/90, rebuilt the
+  affected function ZIPs, and ran release verification. CloudBase: deploy
+  `getDashboard`, `submitAttempt`, and `teacherAdmin`; update existing
+  Vocabulary `sets` records if they already contain old 50/90 values.
+- Added a failed Vocabulary Test `Choose Again` action that clears the current
+  questions, local draft, timer, and summary, then returns the student to group
+  selection for a fresh start. Verified the `vocabulary.html` inline script
+  parses with Node, exercised the failed-result restart path with a DOM stub,
+  and ran `git diff --check`; browser smoke is still needed.
 - Refactored the student dashboard navigation to `Assignments`, `My Words`,
   and `Library`; moved account actions and teacher replies to the top-right
   chip/message controls; added a collapsed `Finished & Wins` drawer focused on

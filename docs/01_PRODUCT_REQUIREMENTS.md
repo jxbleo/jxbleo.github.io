@@ -256,8 +256,8 @@ flowchart TD
 - `title`：标题
 - `type` / `course`：类型或课程
 - `link`：打开哪个练习页面
-- `passing_percentage`：通过线，默认 50
-- `mastery_percentage`：掌握线，默认 90
+- `passing_percentage`：通过线，默认 50；Vocabulary 默认 80
+- `mastery_percentage`：掌握线，默认 90；Vocabulary 默认 100
 - `feedback_policy`：反馈策略
 - `visible`：是否显示
 
@@ -510,6 +510,7 @@ flowchart TD
 - list sets
 - assignment candidates
 - create assignments
+- update existing assignment due dates and passing/mastery standards
 - teacher preview answer key
 - list assignments / attempts / progress
 - list / submit / resolve disputes
@@ -725,8 +726,13 @@ flowchart TD
 - 谁还没做？
 - 谁卡住了？
 - 谁已经完成？
+- 某个班级、某个学生、某个任务当前完成数量和分数分布如何？
 - 哪个题有争议？
 - 哪个答案规则需要改？
+
+老师可以在 View 中按学生、班级或任务范围批量修改已布置 assignment 的
+due date、passing percentage 和 mastery percentage。修改后的标准用于之后
+提交和老师端显示，不自动降低已完成状态或受保护 STAR。
 
 ### 10.3 访客模式
 

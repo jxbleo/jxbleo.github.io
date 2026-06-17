@@ -94,6 +94,8 @@ Core fields:
 | `due_at` | Date/null | due time |
 | `passing_percentage` | number | assignment passing threshold |
 | `mastery_percentage` | number | assignment mastery threshold |
+| `standards_updated_at` | Date/null | last teacher standards edit time |
+| `standards_updated_by_teacher_uid` | string/null | teacher who last edited due/threshold standards |
 | `latest_attempt_id` | string/null | latest submission |
 | `attempt_count` | number | countable attempts |
 | `latest_percentage` | number/null | latest display percentage |
@@ -112,6 +114,11 @@ to_do -> passed -> mastered
 ```
 
 Status is monotonic. Later lower-scoring attempts update latest fields but do not downgrade assignment completion.
+
+Teachers may edit an existing assignment's `due_at`, `passing_percentage`, and
+`mastery_percentage` from the View surface. Those edits affect future
+submissions and display standards, but do not automatically regrade historical
+attempts or downgrade completed assignments and protected STAR records.
 
 Reassignment rule:
 

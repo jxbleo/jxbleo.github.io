@@ -95,6 +95,33 @@ function isSelfStudyAchievement(item) {
   );
 }
 
+function isVocabularySet(set) {
+  if (!set) return false;
+  return [
+    set.section_id,
+    set.section,
+    set.type,
+    set.course,
+    set.category,
+  ].some((value) => String(value || "").toLowerCase() === "vocabulary");
+}
+
+function defaultPassingPercentageForSet(set) {
+  return isVocabularySet(set) ? 80 : 50;
+}
+
+function defaultMasteryPercentageForSet(set) {
+  return isVocabularySet(set) ? 100 : 90;
+}
+
+function passingPercentageForSet(set) {
+  return Number(!set || set.passing_percentage == null ? defaultPassingPercentageForSet(set) : set.passing_percentage);
+}
+
+function masteryPercentageForSet(set) {
+  return Number(!set || set.mastery_percentage == null ? defaultMasteryPercentageForSet(set) : set.mastery_percentage);
+}
+
 async function protectAssignmentStar(student, assignment, attempt, now) {
   const assignmentId = assignment.assignment_id || assignment._id;
   if (!student || !assignmentId) return null;
@@ -221,6 +248,10 @@ function safePercentage(value, fallback) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < 0 || number > 100) throw new Error("INVALID_PERCENTAGE");
   return number;
+}
+
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object || {}, key);
 }
 
 function practiceLinkForSet(set) {
@@ -450,8 +481,8 @@ async function listSets() {
       type: set.type || "",
       section: set.section || set.section_id || set.category || set.course || set.type || "",
       link: practiceLinkForSet(set),
-      passing_percentage: set.passing_percentage == null ? 50 : set.passing_percentage,
-      mastery_percentage: set.mastery_percentage == null ? 90 : set.mastery_percentage,
+      passing_percentage: passingPercentageForSet(set),
+      mastery_percentage: masteryPercentageForSet(set),
     })).sort((a, b) => a.title.localeCompare(b.title)),
   };
 }
@@ -603,8 +634,8 @@ async function createAssignments(event) {
       skipped.push({ set_id: setId, reason: "set_not_found" });
       continue;
     }
-    const passingPercentage = safePercentage(event.passing_percentage, set.passing_percentage == null ? 50 : set.passing_percentage);
-    const masteryPercentage = safePercentage(event.mastery_percentage, set.mastery_percentage == null ? 90 : set.mastery_percentage);
+    const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
+    const masteryPercentage = safePercentage(event.mastery_percentage, masteryPercentageForSet(set));
     if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
     for (const studentUid of studentUids) {
@@ -638,6 +669,59 @@ async function createAssignments(event) {
     }
   }
   return { success: true, created, skipped };
+}
+
+async function updateAssignments(event, teacher) {
+  const assignmentIds = Array.isArray(event.assignment_ids)
+    ? [...new Set(event.assignment_ids.map(text).filter(Boolean))]
+    : [text(event.assignment_id)].filter(Boolean);
+  if (!assignmentIds.length) throw new Error("ASSIGNMENT_REQUIRED");
+  if (assignmentIds.length > 500) throw new Error("TOO_MANY_ASSIGNMENTS");
+
+  const canUpdateDue = hasOwn(event, "due_at");
+  const canUpdatePassing = hasOwn(event, "passing_percentage");
+  const canUpdateMastery = hasOwn(event, "mastery_percentage");
+  if (!canUpdateDue && !canUpdatePassing && !canUpdateMastery) {
+    throw new Error("NO_ASSIGNMENT_UPDATES");
+  }
+
+  const now = new Date();
+  const result = await db.collection("assignments").limit(1000).get();
+  const assignments = (result.data || []).map(recordData)
+    .filter((assignment) => assignmentIds.includes(String(assignment.assignment_id || assignment._id)));
+  const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
+  const missing = assignmentIds.filter((id) => !foundIds.has(id));
+  const updated = [];
+
+  for (const assignment of assignments) {
+    const currentPassing = Number(assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
+    const currentMastery = Number(assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
+    const passing = canUpdatePassing
+      ? safePercentage(event.passing_percentage, currentPassing)
+      : currentPassing;
+    const mastery = canUpdateMastery
+      ? safePercentage(event.mastery_percentage, currentMastery)
+      : currentMastery;
+    if (passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
+
+    const update = {
+      updated_at: now,
+      standards_updated_at: now,
+      standards_updated_by_teacher_uid: teacher.auth_uid,
+    };
+    if (canUpdateDue) update.due_at = safeDate(event.due_at);
+    if (canUpdatePassing) update.passing_percentage = passing;
+    if (canUpdateMastery) update.mastery_percentage = mastery;
+
+    await db.collection("assignments").doc(assignment._id).update(update);
+    updated.push({
+      assignment_id: assignment.assignment_id || assignment._id,
+      student_uid: assignment.student_uid,
+      set_id: assignment.set_id,
+    });
+  }
+
+  return { success: true, updated, missing };
 }
 
 async function getAnswerKeyForSet(event) {
@@ -678,6 +762,7 @@ async function listAssignments() {
         student_uid: assignment.student_uid,
         student_id: student.student_id || assignment.student_uid,
         student_name: student.name || "",
+        class_group: student.class_group || "",
         set_id: assignment.set_id,
         set_title: set.title || assignment.set_id,
         status: assignment.status || "to_do",
@@ -687,6 +772,8 @@ async function listAssignments() {
         best_percentage: assignment.best_percentage == null ? null : assignment.best_percentage,
         assigned_at: assignment.assigned_at || null,
         due_at: assignment.due_at || null,
+        passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
+        mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
         completed_at: assignment.completed_at || null,
         updated_at: assignment.updated_at || null,
       };
@@ -756,6 +843,7 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     student_uid: assignment.student_uid,
     student_id: student.student_id || assignment.student_uid,
     student_name: student.name || "",
+    class_group: student.class_group || "",
     set_id: assignment.set_id,
     set_title: set.title || assignment.set_id,
     status: assignment.status || "to_do",
@@ -765,6 +853,8 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     best_percentage: assignment.best_percentage == null ? bestAttemptPercentage(orderedAttempts) : assignment.best_percentage,
     assigned_at: assignment.assigned_at || null,
     due_at: assignment.due_at || null,
+    passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
+    mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
     completed_at: assignment.completed_at || null,
     updated_at: assignment.updated_at || null,
     latest_submitted_at: latestDateValue(orderedAttempts, "submitted_at"),
@@ -1056,7 +1146,7 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
       const set = await getOne("sets", { set_id: attempt.set_id });
       const effectiveMasteryPercentage = Number(assignment.mastery_percentage != null
         ? assignment.mastery_percentage
-        : (!set || set.mastery_percentage == null ? 90 : set.mastery_percentage));
+        : masteryPercentageForSet(set));
       const attemptStatus = percentage >= effectiveMasteryPercentage ? "mastered" : (passed ? "passed" : "to_do");
       const adjustedStatus = monotonicAssignmentStatus(assignment.status, attemptStatus);
       const currentBest = Number(assignment.best_percentage || 0);
@@ -1190,6 +1280,7 @@ exports.main = async (event) => {
     if (action === "listSets") return await listSets();
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
     if (action === "createAssignments") return await createAssignments(event);
+    if (action === "updateAssignments") return await updateAssignments(event, teacher);
     if (action === "getAnswerKeyForSet") return await getAnswerKeyForSet(event);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();

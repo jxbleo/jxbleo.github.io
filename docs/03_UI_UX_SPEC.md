@@ -116,7 +116,10 @@ View is the teacher's progress and student-inspection surface.
 It should include:
 
 - an assignment matrix/table for scanning completion by student and task, with a class filter and responsive horizontal scrolling on small screens
-- a grouped `By student` / `By task` progress view
+- a grouped `By student` / `By class` / `By task` progress view
+- `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
+- `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail
+- group tools allow teachers to edit due date, passing percentage, and mastery percentage for the assignments in that student, class, or task scope
 - student selection and student detail panels
 - student account management actions such as class/system edit, password reset, enable/disable, and account creation
 

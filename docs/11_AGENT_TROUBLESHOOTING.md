@@ -372,7 +372,7 @@
 已做：
 
 - assignment status 改为 `to_do`、`passed`、`mastered`。
-- 默认 passing 50%，mastery 90%。
+- 默认 passing 50%，mastery 90%；Vocabulary 默认 passing 80%，mastery 100%。
 - assignment 和 set 均可覆盖阈值。
 - reveal answers 可设置 `answer_revealed` / `mastery_locked`。
 - STAR 改为后端记录。

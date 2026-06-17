@@ -323,8 +323,10 @@ The server derives the student from authentication, loads the visible `set`
 and private `grading_keys`, grades normalized answers, calculates a percentage,
 records every countable attempt, and updates the linked assignment.
 
-The default passing percentage is `50`. A set-specific
-`passing_percentage` overrides it. Passing means:
+The default passing percentage is `50`, except Vocabulary sets default to `80`.
+The default mastery percentage is `90`, except Vocabulary sets default to
+`100`. Set-specific `passing_percentage` and `mastery_percentage` values
+override these defaults. Passing means:
 
 ```text
 percentage >= passing_percentage
@@ -795,6 +797,7 @@ tested.
 
 - Assignment statuses are now `to_do`, `passed`, and `mastered`.
 - Default passing threshold is `50%`; default mastery threshold is `90%`.
+  Vocabulary sets now default to `80%` passing and `100%` mastery.
 - Sets may later override these with `passing_percentage` and `mastery_percentage`.
 - Assignments may override both thresholds with `passing_percentage` and
   `mastery_percentage`; `submitAttempt` reads assignment values first, then set
@@ -823,7 +826,8 @@ tested.
 - `bbc.html`, `ielts-reading.html`, `vocabulary.html`: answer reveal
   confirmation, backend reveal locking, retry choices, draft preservation, and
   historical-answer prefill where practical.
-- `scripts/prepare-cloudbase-data.js`: adds default `mastery_percentage: 90`.
+- `scripts/prepare-cloudbase-data.js`: adds default `mastery_percentage: 90`
+  for most content and `100` for Vocabulary.
 
 ### Deployment required
 
@@ -847,7 +851,8 @@ Then deploy/push the static site so `dashboard.html`, `assets/js/dashboard.js`,
   student reveal logic and does not lock mastery.
 - Teachers can assign by a single set, or by filtered column/keyword batch.
   Each assignment can store `passing_percentage` and `mastery_percentage`;
-  blank values fall back to set/default `50/90`.
+  blank values fall back to the set thresholds, then to default `50/90` for
+  most content or `80/100` for Vocabulary.
 - Student assignment stars are backend records in `student_set_achievements`
   keyed by `assignment_id`; mastered assignments create or repair this record
   automatically, and `claimStar` is only a safe fallback.
@@ -1000,7 +1005,7 @@ Keep them in mind before changing the same surfaces again.
 ### Assignment thresholds and stars
 
 - Effective thresholds resolve in this order: assignment override, set value,
-  default `50/90`.
+  default `50/90` for most content or `80/100` for Vocabulary.
 - When adding assignment creation paths, include `passing_percentage` and
   `mastery_percentage` on the assignment record.
 - Assignment STARs are backend-backed now. Count `student_set_achievements`;

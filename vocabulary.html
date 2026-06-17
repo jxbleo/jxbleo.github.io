@@ -1645,16 +1645,25 @@
             var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
             var copy = response.mastered ? 'Mastered! This task moved to your Mastered list.' :
                 response.passed ? 'You passed. Keep trying if you want to master it.' :
-                'Keep going. Fix a few answers and try again.';
+                'Choose the groups again, then start a fresh test.';
+            var actions = response.passed
+                ? '<button class="btn btn-primary" type="button" data-result-action="close">OK</button>'
+                : '<button class="btn btn-primary" type="button" data-result-action="restart-test">Choose Again</button>' +
+                    '<button class="btn" type="button" data-result-action="close">Review Answers</button>';
             var overlay = document.createElement('div');
             overlay.className = 'result-overlay';
             overlay.innerHTML =
                 '<div class="result-card"><div class="result-emoji">' + emoji + '</div><h2>' + status + '</h2>' +
                 '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
-                '<button class="btn btn-primary" type="button" data-result-action="close">OK</button></div></div>';
+                actions + '</div></div>';
             document.body.appendChild(overlay);
             overlay.addEventListener('click', function(event) {
                 var action = event.target && event.target.getAttribute('data-result-action');
+                if (action === 'restart-test') {
+                    overlay.remove();
+                    resetTestSelection();
+                    return;
+                }
                 if (action === 'close' || event.target === overlay) overlay.remove();
             });
         }
@@ -2432,6 +2441,44 @@
             startTimer(count * 120);
             saveTestDraft();
             root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function resetTestSelection() {
+            clearInterval(testTimerId);
+            testTimerId = null;
+            testRemainingSeconds = 0;
+            activeTestGroups = [];
+            activeTestGroupCount = 0;
+            testStartedAt = null;
+            answerRevealAvailable = false;
+            updateHistoryToolbar();
+            clearTestDraft();
+
+            var root = document.getElementById('test-groups');
+            var summary = document.getElementById('test-summary');
+            var setup = document.getElementById('test-setup');
+            var timer = document.getElementById('test-timer');
+            var submitButton = document.getElementById('submit-test-btn');
+            if (root) root.innerHTML = '';
+            if (summary) {
+                summary.innerHTML = '';
+                summary.classList.remove('show');
+            }
+            if (setup) {
+                setup.classList.remove('locked');
+                setup.style.display = '';
+            }
+            if (timer) {
+                timer.textContent = '';
+                timer.classList.remove('sticky');
+            }
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Test';
+                submitButton.style.display = 'none';
+            }
+            updateTestCountNote();
+            if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function submitTest() {

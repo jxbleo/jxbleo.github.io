@@ -38,12 +38,31 @@ function effectiveQuestionResults(attempt) {
   return attempt.adjusted_question_results || attempt.question_results || [];
 }
 
+function isVocabularySet(set) {
+  if (!set) return false;
+  return [
+    set.section_id,
+    set.section,
+    set.type,
+    set.course,
+    set.category,
+  ].some((value) => String(value || "").toLowerCase() === "vocabulary");
+}
+
+function defaultPassingPercentageForSet(set) {
+  return isVocabularySet(set) ? 80 : 50;
+}
+
+function defaultMasteryPercentageForSet(set) {
+  return isVocabularySet(set) ? 100 : 90;
+}
+
 function masteryPercentageForSet(set) {
-  return Number(!set || set.mastery_percentage == null ? 90 : set.mastery_percentage);
+  return Number(!set || set.mastery_percentage == null ? defaultMasteryPercentageForSet(set) : set.mastery_percentage);
 }
 
 function passingPercentageForSet(set) {
-  return Number(!set || set.passing_percentage == null ? 50 : set.passing_percentage);
+  return Number(!set || set.passing_percentage == null ? defaultPassingPercentageForSet(set) : set.passing_percentage);
 }
 
 function masteryPercentageForAssignment(assignment, set) {
