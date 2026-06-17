@@ -618,6 +618,28 @@ button { cursor: pointer; }
     border-color: var(--accent);
     background: var(--accent);
 }
+.library-book-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: -4px 0 14px;
+}
+.library-book-tab {
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid rgba(72, 86, 78, 0.18);
+    border-radius: 999px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.68);
+    font-size: 0.76rem;
+    font-weight: 900;
+    white-space: nowrap;
+}
+.library-book-tab.active {
+    color: #1f5c42;
+    border-color: rgba(31, 92, 66, 0.42);
+    background: rgba(229, 244, 235, 0.95);
+}
 .resource-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; }
 .resource-card-head {
     display: flex;
