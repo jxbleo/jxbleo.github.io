@@ -93,6 +93,33 @@ Review condition:
 Revisit only if the owner wants CI/CD. Any future CI/CD should be manually
 triggered and require owner approval before CloudBase secrets are available.
 
+## 2026-06-16: Use Insert-Missing CLI Import for Content Data
+
+Decision:
+
+Use `scripts/cloudbase-import-content.js` as the owner-run CLI path for
+CloudBase content imports. The script dry-runs by default and writes only when
+`--apply` is passed. Its default apply mode uses insert-missing semantics for
+`sets` and `grading_keys`.
+
+Reason:
+
+Most content releases add new `set_id` records. Re-importing local
+`grading_keys` with blind overwrite could erase teacher-approved Argue changes
+made directly in CloudBase. Insert-missing import removes the console upload
+step while preserving CloudBase as the authority for revised grading rules.
+
+Trade-offs:
+
+- Good: content imports can be done from the terminal.
+- Good: repeat imports are safer because existing grading keys are not changed.
+- Cost: intentional corrections to existing grading keys need explicit
+  `--overwrite-existing` after owner review.
+
+Review condition:
+
+Revisit after a proper grading-key reconcile workflow exists.
+
 ## 2026-06-16: Attempts Are Immutable
 
 Decision:

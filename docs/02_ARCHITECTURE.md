@@ -210,7 +210,11 @@ CloudBase functions:
 CloudBase data:
 
 - Run `node scripts/prepare-cloudbase-data.js`.
-- Import JSON Lines files into the correct collections.
+- Dry-run and apply the owner-run CLI import:
+  `npm run cloudbase:import:content` and
+  `npm run cloudbase:import:content -- --apply`.
+- The CLI import inserts missing `sets` and `grading_keys` records by default.
+  JSON Lines console import remains a fallback.
 
 See [10_DEPLOYMENT.md](10_DEPLOYMENT.md).
 

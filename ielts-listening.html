@@ -170,6 +170,27 @@
             min-height: 100%;
             padding: 18px 22px 84px;
         }
+        .lesson-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin: -18px -22px 18px;
+            padding: 14px 22px;
+            background: #fff;
+            border-bottom: 1px solid #d8e0eb;
+            box-shadow: 0 6px 14px rgba(15,23,42,.08);
+        }
+        .lesson-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .lesson-source {
+            margin-top: 3px;
+            font-size: 13px;
+            color: #475569;
+        }
         .question-section {
             margin: 0 0 26px;
             padding: 0 0 8px;
@@ -577,6 +598,7 @@
             }
             .workspace { margin: 8px 8px 0; min-height: 0; }
             .workspace-inner { padding: 14px 14px 110px; }
+            .lesson-header { margin: -14px -14px 14px; padding: 12px 14px; }
             .booking-form, .booking-form tbody, .booking-form tr, .booking-form th, .booking-form td {
                 display: block;
                 width: 100%;
@@ -783,7 +805,10 @@
         document.getElementById('set-code').textContent = examIdentityLabel();
         document.title = lesson.id + ' IELTS Listening';
 
-        var html = '';
+        var html = '<div class="lesson-header">' +
+            '<h1 class="lesson-title">' + escapeHtml(lesson.title || lesson.id) + '</h1>' +
+            (lesson.source ? '<div class="lesson-source">' + escapeHtml(lesson.source) + '</div>' : '') +
+            '</div>';
         (part.sections || []).forEach(function(section) {
             html += '<section class="question-section">' +
                 '<div class="section-label">' + escapeHtml(section.label || '') + '</div>' +

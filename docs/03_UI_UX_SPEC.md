@@ -132,6 +132,15 @@ Shared rules:
 - Submission feedback should use page UI, not native `alert()` where avoidable.
 - Try Again clears visible answers and feedback but preserves CloudBase attempts.
 
+### IELTS Listening
+
+- A sticky lesson header at the top of the workspace shows the lesson title and source, above the questions.
+- The header stays visible while scrolling through questions.
+
+### Vocabulary Test
+
+- The test countdown timer is fixed at the top-center of the screen with red text on a light-red background to create a sense of urgency.
+
 ## 6. Status Labels
 
 Preferred product labels:

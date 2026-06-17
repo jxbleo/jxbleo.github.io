@@ -140,6 +140,7 @@ artifacts but do not deploy to CloudBase.
 npm run verify:release
 npm run package:functions:all
 npm run release:plan
+npm run cloudbase:import:content
 ```
 
 What each command does:
@@ -149,9 +150,10 @@ What each command does:
 | `npm run verify:release` | syntax-check cloud functions, parse public JSON, check required docs, warn about dirty files | deploy, read secrets, modify CloudBase |
 | `npm run package:functions:all` | rebuild local ZIPs in `deploy-packages/` | upload ZIPs or change function settings |
 | `npm run release:plan` | write `.cloudbase-private/deploy-plan.md` for owner review | deploy, import data, request credentials |
+| `npm run cloudbase:import:content` | dry-run CloudBase data import plan | write CloudBase unless `-- --apply` is passed |
 
 Agents may run these helper commands. The owner remains responsible for the
-final CloudBase console upload, owner-only CLI command, data import, and any
+final CloudBase function deploy, owner-only CLI apply command, and any
 environment variable changes.
 
 The generated deploy plan is local and ignored by Git. It is a checklist, not
@@ -183,6 +185,44 @@ Important files:
 
 These files are one JSON document per line. Do not wrap them in an array before
 console import.
+
+Preferred CLI import:
+
+```bash
+npm run cloudbase:import:content
+npm run cloudbase:import:content -- --apply
+```
+
+The first command is a dry run. The second writes to the development CloudBase
+environment using `tcb db nosql execute`.
+
+Default write behavior is insert-missing only:
+
+- existing `sets` are not overwritten
+- existing `grading_keys` are not overwritten
+- teacher-approved grading changes made through Argue are protected by default
+
+Only use overwrite mode after an explicit content-owner review:
+
+```bash
+npm run cloudbase:import:content -- --apply --overwrite-existing
+```
+
+The script uses these defaults unless overridden:
+
+```text
+env-id: mrcat-dev-d9gwy2v1icdfdf597
+region: ap-shanghai
+collections: sets, grading_keys
+```
+
+Set `TCB_ENV_ID`, `TCB_REGION`, or pass `--env-id` / `--region` when needed.
+
+Console import remains a fallback. If using the console, import:
+
+- `sets-cloudbase.json` into `sets`
+- `grading-keys-cloudbase.json` into `grading_keys`
+- `system-config-cloudbase.json` into `system_config` only when default config changes
 
 After importing content, verify:
 
