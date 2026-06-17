@@ -15,14 +15,6 @@
         vocabItems: [],
         vocabSearch: ''
     };
-    var LIBRARY_FILTERS = [
-        { id: 'vocabulary', label: 'Vocabulary' },
-        { id: 'grammar', label: 'Grammar' },
-        { id: 'bbc-listening', label: 'BBC Listening' },
-        { id: 'ielts-reading', label: 'IELTS Reading' },
-        { id: 'ielts-listening', label: 'IELTS Listening' }
-    ];
-
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -838,120 +830,185 @@
         '</article>';
     }
 
-    function resourceCategory(item) {
-        var haystack = [
-            item.set_id,
-            item.id,
-            item.title,
-            item.course,
-            item.type,
-            item.sectionTitle,
-            item.section_id,
-            item.sectionId,
-            item.topic
-        ].join(' ').toLowerCase();
-        if (haystack.indexOf('ielts-reading') !== -1 || haystack.indexOf('ielts reading') !== -1) return 'ielts-reading';
-        if (haystack.indexOf('ielts-listening') !== -1 || haystack.indexOf('ielts listening') !== -1) return 'ielts-listening';
-        if (haystack.indexOf('bbc-six-minute-english') !== -1 || haystack.indexOf('bbc listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'bbc-listening';
-        if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
-        if (haystack.indexOf('grammar') !== -1) return 'grammar';
-        return 'other';
-    }
+    var libraryTabConfig = {
+        general: { groupIds: ['basics'], emptyMessage: 'No general practice content yet.' },
+        exam: { groupIds: ['ielts', 'dse'], emptyMessage: 'No exam practice content yet.' },
+        lessons: { groupIds: ['lessons'], emptyMessage: 'No lessons available yet.' }
+    };
+    var libraryActiveTab = 'general';
+    var libraryCatalog = null;
 
-    function isCambridgeCategory(category) {
-        return category === 'ielts-reading' || category === 'ielts-listening';
-    }
-
-    function cambridgeBookId(item) {
-        var id = String(item.set_id || item.id || '').trim().toUpperCase();
-        var match = id.match(/^C(\d+)(?:-|$)/);
-        return match ? 'C' + match[1] : '';
-    }
-
-    function cambridgeBookSortValue(book) {
-        var match = String(book || '').match(/^C(\d+)$/i);
-        return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
-    }
-
-    function cambridgeBooks(items) {
-        var seen = {};
-        return (items || []).map(cambridgeBookId).filter(function(book) {
-            if (!book || seen[book]) return false;
-            seen[book] = true;
-            return true;
-        }).sort(function(left, right) {
-            return cambridgeBookSortValue(left) - cambridgeBookSortValue(right) || left.localeCompare(right);
-        });
-    }
-
-    function currentResourceBook(books) {
-        var current = state.resourceBookFilters[state.resourceFilter] || '';
-        if (books.indexOf(current) !== -1) return current;
-        current = books[0] || '';
-        if (current) state.resourceBookFilters[state.resourceFilter] = current;
-        return current;
-    }
-
-    function renderResourceTabs() {
-        var container = document.getElementById('student-library-tabs');
-        if (!container) return;
-        container.innerHTML = LIBRARY_FILTERS.map(function(filter) {
-            return '<button class="library-tab' + (state.resourceFilter === filter.id ? ' active' : '') +
-                '" type="button" data-resource-filter="' + escapeHtml(filter.id) + '">' +
-                escapeHtml(filter.label) + '</button>';
-        }).join('');
-        container.querySelectorAll('[data-resource-filter]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                state.resourceFilter = button.dataset.resourceFilter;
-                renderResources(resourceSearch.value);
-            });
-        });
-    }
-
-    function renderResourceBookTabs(categoryItems) {
-        var container = document.getElementById('student-library-book-tabs');
-        if (!container) return '';
-        if (!isCambridgeCategory(state.resourceFilter)) {
-            container.innerHTML = '';
-            return '';
+    function libraryBuildTags(tags, topic) {
+        var html = '';
+        if (topic) html += '<span class="tag tag-topic">' + escapeHtml(topic) + '</span>';
+        if (tags && tags.length) {
+            for (var i = 0; i < tags.length; i++) {
+                html += '<span class="tag tag-bbc">' + escapeHtml(tags[i]) + '</span>';
+            }
         }
-        var books = cambridgeBooks(categoryItems);
-        if (!books.length) {
-            container.innerHTML = '';
-            return '';
-        }
-        var current = currentResourceBook(books);
-        container.innerHTML = books.map(function(book) {
-            return '<button class="library-book-tab' + (book === current ? ' active' : '') +
-                '" type="button" data-resource-book-filter="' + escapeHtml(book) + '">' +
-                escapeHtml(book) + '</button>';
-        }).join('');
-        container.querySelectorAll('[data-resource-book-filter]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                state.resourceBookFilters[state.resourceFilter] = button.dataset.resourceBookFilter;
-                renderResources(resourceSearch.value);
-            });
-        });
-        return current;
+        return html;
     }
 
-    function renderResources(query) {
-        var normalized = String(query || '').trim().toLowerCase();
-        renderResourceTabs();
-        var categoryItems = state.resources.filter(function(item) {
-            return resourceCategory(item) === state.resourceFilter;
+    function libraryShouldShowNote(item) {
+        return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
+    }
+
+    function librarySortItems(items, section) {
+        var sorted = items.slice();
+        if (section.sortType === 'date_desc') {
+            sorted.sort(function(a, b) { return String(b.sortValue || '').localeCompare(String(a.sortValue || '')); });
+        } else if (section.sortType === 'date_asc') {
+            sorted.sort(function(a, b) { return String(a.sortValue || '').localeCompare(String(b.sortValue || '')); });
+        } else if (section.sortType === 'number_asc') {
+            sorted.sort(function(a, b) { return Number(a.sortValue || 0) - Number(b.sortValue || 0); });
+        } else if (section.sortType === 'number_desc') {
+            sorted.sort(function(a, b) { return Number(b.sortValue || 0) - Number(a.sortValue || 0); });
+        }
+        return sorted;
+    }
+
+    function libraryBuildCard(item, extraClass, itemYear) {
+        var href = practiceHref(item, null);
+        return '<li class="menu-card' + (extraClass ? ' ' + extraClass : '') + '"' +
+            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
+            '<a class="practice-link" href="' + escapeHtml(href) + '">' +
+                '<div class="card-content">' +
+                    '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
+                    '<div class="meta-row">' +
+                        '<div class="card-date">' + escapeHtml(item.displayValue || item.id) + '</div>' +
+                        '<div class="tags">' + libraryBuildTags(item.tags, item.topic) + '</div>' +
+                    '</div>' +
+                    (libraryShouldShowNote(item) ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
+                '</div>' +
+                '<div class="arrow-box">→</div>' +
+            '</a>' +
+        '</li>';
+    }
+
+    function libraryBuildPlaceholderCard(section) {
+        return '<li class="menu-card placeholder-card">' +
+            '<div class="menu-card-content">' +
+                '<div class="card-content">' +
+                    '<h3 class="card-title">' + escapeHtml(section.emptyMessage || 'Developing') + '</h3>' +
+                    '<p class="card-note">' + escapeHtml(section.emptyNote || '') + '</p>' +
+                '</div>' +
+                '<div class="arrow-box" style="background-color:transparent;color:var(--text-muted);">⏳</div>' +
+            '</div>' +
+        '</li>';
+    }
+
+    function libraryBuildSection(section, items) {
+        var cardsHtml = '';
+        var yearTabsHtml = '';
+        var activeYear = '';
+
+        if (items.length) {
+            var sortedItems = librarySortItems(items, section);
+
+            if (section.yearFilter) {
+                var years = {};
+                for (var yi = 0; yi < sortedItems.length; yi++) {
+                    var y = String(sortedItems[yi].sortValue || '').substring(0, 4);
+                    if (y && y.length === 4) years[y] = true;
+                }
+                var yearList = Object.keys(years).sort();
+                if (yearList.length > 1) {
+                    activeYear = yearList[0];
+                    yearTabsHtml = '<div class="year-tabs" data-section="' + escapeHtml(section.id) + '">' +
+                        '<button class="year-tab" data-year="">All</button>';
+                    for (var yj = 0; yj < yearList.length; yj++) {
+                        yearTabsHtml += '<button class="year-tab' + (yearList[yj] === activeYear ? ' active' : '') + '" data-year="' + yearList[yj] + '">' + yearList[yj] + '</button>';
+                    }
+                    yearTabsHtml += '</div>';
+                }
+            }
+
+            for (var i = 0; i < sortedItems.length; i++) {
+                var item = sortedItems[i];
+                var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
+                var hidden = activeYear && itemYear !== activeYear;
+                cardsHtml += libraryBuildCard(item, hidden ? 'year-hidden' : '', itemYear);
+            }
+        } else {
+            cardsHtml = libraryBuildPlaceholderCard(section);
+        }
+
+        return '<div class="section' + (activeYear ? ' year-filter-active' : '') + '" data-section-id="' + escapeHtml(section.id) + '">' +
+            '<div class="section-title">' +
+                escapeHtml(section.title) +
+                '<span class="toggle-btn">Show</span>' +
+            '</div>' +
+            '<div class="section-body" style="display:none;">' +
+                yearTabsHtml +
+                '<ul class="menu-list">' + cardsHtml + '</ul>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function libraryLoadTabContent(tabId) {
+        tabId = tabId || libraryActiveTab;
+        var root = document.getElementById('student-library-sections');
+        if (!root) return;
+
+        if (!libraryCatalog || !libraryCatalog.sections) {
+            root.innerHTML = '<p class="section-description">Unable to load the library catalog.</p>';
+            return;
+        }
+
+        var config = libraryTabConfig[tabId];
+        if (!config) {
+            root.innerHTML = '<p class="section-description">Unknown tab.</p>';
+            return;
+        }
+
+        var itemsBySection = {};
+        var visibleItems = (state.resources || []).filter(function(item) {
+            return item.visible !== false;
         });
-        var currentBook = renderResourceBookTabs(categoryItems);
-        var items = categoryItems.filter(function(item) {
-            if (currentBook && cambridgeBookId(item) !== currentBook) return false;
-            if (!normalized) return true;
-            return [
-                item.title, item.set_id, item.id, item.course, item.type, item.sectionTitle, item.topic
-            ].join(' ').toLowerCase().indexOf(normalized) !== -1;
-        });
-        resourceList.innerHTML = items.length
-            ? items.map(resourceCard).join('')
-            : '<div class="empty-card"><strong>No matching resources</strong>Try a different title, course or type.</div>';
+        for (var i = 0; i < visibleItems.length; i++) {
+            var item = visibleItems[i];
+            var sid = item.sectionId || item.section_id;
+            if (!sid) continue;
+            if (!itemsBySection[sid]) itemsBySection[sid] = [];
+            itemsBySection[sid].push(item);
+        }
+
+        var html = '';
+        for (var j = 0; j < libraryCatalog.sections.length; j++) {
+            var section = libraryCatalog.sections[j];
+            var groupId = section.groupId || 'general';
+            if (config.groupIds.indexOf(groupId) === -1) continue;
+
+            var searchText = String(resourceSearch.value || '').trim().toLowerCase();
+            var sectionItems = (itemsBySection[section.id] || []).filter(function(item) {
+                if (!searchText) return true;
+                return [
+                    item.title, item.id, item.set_id, item.topic, item.displayValue,
+                    (item.tags || []).join(' ')
+                ].join(' ').toLowerCase().indexOf(searchText) !== -1;
+            });
+
+            html += libraryBuildSection(section, sectionItems);
+        }
+
+        if (!html) {
+            html = '<p class="section-description">' + escapeHtml(config.emptyMessage) + '</p>';
+        }
+
+        root.innerHTML = html;
+    }
+
+    function librarySwitchTab(tabId) {
+        if (tabId === libraryActiveTab) return;
+        libraryActiveTab = tabId;
+        var bar = document.getElementById('student-library-tab-bar');
+        if (bar) {
+            var tabs = bar.querySelectorAll('.library-tab-btn');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);
+            }
+        }
+        libraryLoadTabContent(tabId);
     }
 
     function wordSourceLabel(word) {
@@ -1143,6 +1200,7 @@
                 return response.json();
             })
             .then(function(catalog) {
+                libraryCatalog = catalog;
                 var sections = {};
                 (catalog.sections || []).forEach(function(section) {
                     sections[section.id] = section.title;
@@ -1157,6 +1215,19 @@
                     });
                 });
             });
+    }
+
+    function loadPublicCatalogSections() {
+        if (libraryCatalog) return Promise.resolve();
+        return fetch('data/home-catalog.json?_=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) return;
+                return response.json();
+            })
+            .then(function(catalog) {
+                if (catalog) libraryCatalog = catalog;
+            })
+            .catch(function() {});
     }
 
     function loadStudentData() {
@@ -1185,6 +1256,7 @@
             state.resources = results[1] && results[1].resources || [];
             state.vocabItems = results[2] && results[2].words || [];
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
+            return loadPublicCatalogSections();
         });
     }
 
@@ -1203,7 +1275,47 @@
         });
     });
     resourceSearch.addEventListener('input', function() {
-        renderResources(resourceSearch.value);
+        libraryLoadTabContent(libraryActiveTab);
+    });
+
+    document.addEventListener('click', function(e) {
+        var tabBtn = e.target.closest('.library-tab-btn');
+        if (tabBtn) {
+            librarySwitchTab(tabBtn.getAttribute('data-tab'));
+            return;
+        }
+        var sectionTitle = e.target.closest('#student-library-sections .section-title');
+        if (sectionTitle) {
+            var section = sectionTitle.closest('.section');
+            var body = section.querySelector('.section-body');
+            var btn = sectionTitle.querySelector('.toggle-btn');
+            var isOpen = body.style.display !== 'none';
+            body.style.display = isOpen ? 'none' : 'block';
+            section.classList.toggle('is-open', !isOpen);
+            if (btn) btn.textContent = isOpen ? 'Show' : 'Hide';
+            return;
+        }
+        var yearTab = e.target.closest('.year-tab');
+        if (yearTab) {
+            var year = yearTab.getAttribute('data-year');
+            var tabsContainer = yearTab.closest('.year-tabs');
+            var sectionEl = tabsContainer ? tabsContainer.closest('.section') : null;
+            if (sectionEl) {
+                var tabs = tabsContainer.querySelectorAll('.year-tab');
+                for (var ti = 0; ti < tabs.length; ti++) {
+                    tabs[ti].classList.toggle('active', tabs[ti] === yearTab);
+                }
+                var cards = sectionEl.querySelectorAll('.menu-card');
+                for (var ci = 0; ci < cards.length; ci++) {
+                    if (!year) {
+                        cards[ci].classList.remove('year-hidden');
+                    } else {
+                        cards[ci].classList.toggle('year-hidden', cards[ci].getAttribute('data-year') !== year);
+                    }
+                }
+            }
+            return;
+        }
     });
 
     window.addEventListener('mrcat:vocab-saved', function(event) {
@@ -1250,7 +1362,7 @@
         .then(function() {
             if (!state.session) return;
             renderAssignments();
-            renderResources('');
+            libraryLoadTabContent(libraryActiveTab);
             renderProfile();
         })
         .catch(function(error) {
