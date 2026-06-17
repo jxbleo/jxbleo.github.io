@@ -50,6 +50,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Standardized student and teacher Library sorting: BBC cards now follow
+  release date from earliest to latest, and IELTS cards follow Cambridge book,
+  Test, then Section/Passage order. Regenerated `home-catalog` and bumped
+  dashboard/teacher cache versions; verified syntax, catalog order, and local
+  dashboard/teacher browser smoke.
 - Expanded teacher View progress around `By student`, `By class`, and `By task`;
   removed Open/Watch status labels, added low-to-high task score bars and
   clickable single-assignment details, and added scoped due/pass/mastery editing
