@@ -705,6 +705,37 @@
             color: var(--text-muted);
         }
 
+        .year-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+            padding: 3px;
+            border-radius: 10px;
+            background: rgba(15, 118, 110, 0.06);
+        }
+        .year-tab {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .year-tab:hover {
+            color: var(--text-primary);
+            background: rgba(15, 118, 110, 0.08);
+        }
+        .year-tab.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .menu-card.year-hidden {
+            display: none;
+        }
+
         .champ-section {
             position: relative;
         }
@@ -982,8 +1013,9 @@
         return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
     }
 
-    function buildCard(item, extraClass) {
-        return '<li class="menu-card' + (extraClass ? ' ' + escapeHtml(extraClass) : '') + '">' +
+    function buildCard(item, extraClass, itemYear) {
+        return '<li class="menu-card' + (extraClass ? ' ' + escapeHtml(extraClass) : '') + '"' +
+            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
             '<a class="practice-link" href="' + escapeHtml(item.href) + '">' +
                 '<div class="card-content">' +
                     '<h3 class="card-title">' + escapeHtml(item.title) + '</h3>' +
@@ -1016,6 +1048,10 @@
             sorted.sort(function(a, b) {
                 return String(b.sortValue || '').localeCompare(String(a.sortValue || ''));
             });
+        } else if (section.sortType === 'date_asc') {
+            sorted.sort(function(a, b) {
+                return String(a.sortValue || '').localeCompare(String(b.sortValue || ''));
+            });
         } else if (section.sortType === 'number_asc') {
             sorted.sort(function(a, b) {
                 return Number(a.sortValue || 0) - Number(b.sortValue || 0);
@@ -1041,21 +1077,48 @@
     function buildSection(section, items) {
         var canSearch = section.searchEnabled && items.length > 0;
         var cardsHtml = '';
+        var yearTabsHtml = '';
+        var activeYear = '';
+
         if (items.length) {
             var sortedItems = sortSectionItems(items, section);
+
+            if (section.yearFilter) {
+                var years = {};
+                for (var yi = 0; yi < sortedItems.length; yi++) {
+                    var y = String(sortedItems[yi].sortValue || '').substring(0, 4);
+                    if (y && y.length === 4) years[y] = true;
+                }
+                var yearList = Object.keys(years).sort();
+                if (yearList.length > 1) {
+                    activeYear = yearList[0];
+                    yearTabsHtml = '<div class="year-tabs" data-section="' + escapeHtml(section.id) + '">' +
+                        '<button class="year-tab" data-year="">All</button>';
+                    for (var yj = 0; yj < yearList.length; yj++) {
+                        var cls = yearList[yj] === activeYear ? ' year-tab active' : ' year-tab';
+                        yearTabsHtml += '<button class="' + cls + '" data-year="' + yearList[yj] + '">' + yearList[yj] + '</button>';
+                    }
+                    yearTabsHtml += '</div>';
+                }
+            }
+
             for (var i = 0; i < sortedItems.length; i++) {
-                cardsHtml += buildCard(sortedItems[i]);
+                var item = sortedItems[i];
+                var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
+                var hidden = activeYear && itemYear !== activeYear;
+                cardsHtml += buildCard(item, hidden ? 'year-hidden' : '', itemYear);
             }
         } else {
             cardsHtml = buildPlaceholderCard(section);
         }
 
-        return '<div class="section" data-section-id="' + escapeHtml(section.id) + '">' +
+        return '<div class="section' + (activeYear ? ' year-filter-active' : '') + '" data-section-id="' + escapeHtml(section.id) + '">' +
             '<div class="section-title">' +
                 escapeHtml(getSectionDisplayTitle(section)) +
                 '<span class="toggle-btn">Show</span>' +
             '</div>' +
             '<div class="section-body" style="display: none;">' +
+                yearTabsHtml +
                 (canSearch ? '<span class="search-btn" style="display: none;">Search</span>' : '') +
                 (canSearch ? '<input type="text" class="search-input" placeholder="' + escapeHtml(section.searchPlaceholder || 'Search...') + '" style="display: none;">' : '') +
                 '<ul class="menu-list">' + cardsHtml + '</ul>' +
@@ -1406,6 +1469,28 @@
         var tabBtn = e.target.closest('.tab-btn');
         if (tabBtn) {
             switchTab(tabBtn.getAttribute('data-tab'));
+            return;
+        }
+
+        var yearTab = e.target.closest('.year-tab');
+        if (yearTab) {
+            var year = yearTab.getAttribute('data-year');
+            var tabsContainer = yearTab.closest('.year-tabs');
+            var sectionEl = tabsContainer ? tabsContainer.closest('.section') : null;
+            if (sectionEl) {
+                var tabs = tabsContainer.querySelectorAll('.year-tab');
+                for (var ti = 0; ti < tabs.length; ti++) {
+                    tabs[ti].classList.toggle('active', tabs[ti] === yearTab);
+                }
+                var cards = sectionEl.querySelectorAll('.menu-card');
+                for (var ci = 0; ci < cards.length; ci++) {
+                    if (!year) {
+                        cards[ci].classList.remove('year-hidden');
+                    } else {
+                        cards[ci].classList.toggle('year-hidden', cards[ci].getAttribute('data-year') !== year);
+                    }
+                }
+            }
             return;
         }
 

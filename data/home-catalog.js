@@ -6,8 +6,9 @@ window.__HOME_CATALOG__ = {
       "title": "BBC Listening",
       "searchEnabled": true,
       "searchPlaceholder": "Search title, date or topic...",
-      "sortType": "date_desc",
+      "sortType": "date_asc",
       "titleMode": "title",
+      "yearFilter": true,
       "emptyMessage": "Developing",
       "emptyNote": "New BBC listening lessons will appear here."
     },
