@@ -176,13 +176,13 @@
 
 - 音频播放问题常常不是文件缺失，而是浏览器用户手势、touch/click 双触发或 teacher mode 分支导致状态机错乱。
 
-### 2026-06-16：NAWL-X 到 NAWL-Z2 静态验证
+### 2026-06-16：NAWL 静态验证
 
 已做：
 
-- 验证 NAWL-X 到 NAWL-Z2 的 JSON / JS fallback 可解析。
+- 验证 NAWL units 的 JSON / JS fallback 可解析。
 - 验证静态 home catalog 包含对应内容。
-- 验证本地可渲染 NAWL-Z2。
+- 验证本地可渲染 NAWL 最后一组。
 
 重复问题：
 
@@ -284,6 +284,8 @@
 - `vocabulary.html` 优先 fetch JSON，但 file:// 可能失败。
 - 每个 vocabulary unit 需要 `.json` 和 `.js` fallback。
 - `data/home-catalog.json` 和 `data/home-catalog.js` 要同步。
+- NGSL 和 NAWL 是两套独立词库编号。NAWL 不接在 NGSL 的末尾继续按
+  字母排，而是从 `NAWL-A` 开始，对应 NAWL `1-100`。
 - Test mode 不显示原始组号或 Words 范围，避免学生对照 Learn mode 找答案。
 - 1-4 groups 是 self-test，不记录 attempt；5+ groups 才 countable。
 
