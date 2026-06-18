@@ -50,12 +50,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
-- Added teacher View matrix `Class`, slider-style `Recent`, and `Column`
-  filters and clickable matrix cells that show the selected student's set
-  records, attempt dates, durations, scores, and wrong-question answer
-  summaries. Verified `teacher.js` syntax, `git diff --check`, and v10
-  resource tags. Browser access to local `127.0.0.1:8000` was blocked by the
-  browser security policy during the final v10 check.
+- Added teacher View matrix `Class`, numeric-select `Recent`, and `Column`
+  filters, removed the top View summary cards, and kept clickable matrix cells
+  that show the selected student's set records, attempt dates, durations,
+  scores, and wrong-question answer summaries. Verified `teacher.js` syntax,
+  `git diff --check`, and v11 resource tags.
 - Aligned student Assignment task capsules with the Library task card structure,
   including the same eyebrow/set-id/title/action layout while preserving status,
   score, teacher reply, and star actions. Verified `dashboard.js` syntax,

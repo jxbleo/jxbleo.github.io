@@ -1795,10 +1795,14 @@
 
     function renderMatrixRecentSelect() {
         var value = matrixRecentLimit();
-        return '<label class="matrix-recent-filter"><span>Recent</span>' +
-            '<input id="matrix-recent-limit" type="range" min="1" max="20" step="1" value="' + escapeHtml(value) + '">' +
-            '<strong id="matrix-recent-value">' + escapeHtml(value) + '</strong>' +
-        '</label>';
+        var options = [];
+        for (var i = 1; i <= 20; i += 1) options.push(i);
+        return '<label class="matrix-recent-filter"><span>Recent</span><select id="matrix-recent-limit">' +
+            options.map(function(option) {
+                return '<option value="' + escapeHtml(option) + '"' + (option === value ? ' selected' : '') + '>' +
+                    escapeHtml(option) + '</option>';
+            }).join('') +
+        '</select></label>';
     }
 
     function matrixColumnSource(item) {
@@ -1999,20 +2003,13 @@
         var container = document.getElementById('assignment-overview');
         if (!container) return;
         var items = sortAssignmentOverviewItems(assignedProgressItems());
-        var metrics = assignmentOverviewMetrics(items);
         state.assignmentEditScopes = {};
         if (!items.length) {
             container.innerHTML = '<div class="empty-card"><strong>No assigned work yet</strong>Assignments will appear here after you create them.</div>';
             return;
         }
-        var metricHtml = '<div class="assignment-overview-metrics">' +
-            '<div class="assignment-overview-metric"><span>Total</span><strong>' + escapeHtml(metrics.total) + '</strong></div>' +
-            '<div class="assignment-overview-metric"><span>Finished</span><strong>' + escapeHtml(metrics.finished) + '</strong></div>' +
-            '<div class="assignment-overview-metric"><span>Average best</span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong></div>' +
-            '<div class="assignment-overview-metric"><span>Attempts</span><strong>' + escapeHtml(metrics.attempts) + '</strong></div>' +
-        '</div>';
         var groups = assignmentProgressGroups(items, state.assignProgressMode || 'student');
-        container.innerHTML = metricHtml + renderAssignmentMatrix(items) + renderAssignmentProgressModeTabs() +
+        container.innerHTML = renderAssignmentMatrix(items) + renderAssignmentProgressModeTabs() +
             '<div class="assignment-progress-groups">' +
                 groups.map(renderAssignmentProgressGroup).join('') +
             '</div>';
@@ -2032,10 +2029,6 @@
         }
         var matrixRecentLimitSelect = document.getElementById('matrix-recent-limit');
         if (matrixRecentLimitSelect) {
-            matrixRecentLimitSelect.addEventListener('input', function() {
-                var valueLabel = document.getElementById('matrix-recent-value');
-                if (valueLabel) valueLabel.textContent = matrixRecentLimitSelect.value;
-            });
             matrixRecentLimitSelect.addEventListener('change', function() {
                 state.matrixRecentLimit = matrixRecentLimitSelect.value;
                 state.selectedMatrixCell = '';

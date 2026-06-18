@@ -32,8 +32,9 @@
   into quiet profile rows with stars and finished count.
 - Aligned student Assignment task capsules with the compact Library task card
   structure.
-- Added class, recent-task slider, and column controls to the teacher View
-  matrix and made matrix cells open per-student assignment attempt details.
+- Added class, recent-task count, and column controls to the teacher View
+  matrix, removed the top summary cards from View, and made matrix cells open
+  per-student assignment attempt details.
 
 ### Documentation
 
