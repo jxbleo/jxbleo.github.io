@@ -796,7 +796,7 @@
     }
 
     function fillClassFilters() {
-        var options = '<option value="">All classes</option>' + classes().map(function(classGroup) {
+        var options = '<option value="">All</option>' + classes().map(function(classGroup) {
             return '<option value="' + escapeHtml(classGroup) + '">' + escapeHtml(classGroup) + '</option>';
         }).join('');
         ['assign-class-filter', 'student-class-filter'].forEach(function(id) {
@@ -808,7 +808,7 @@
     }
 
     function fillSetSectionFilters() {
-        var options = '<option value="">All columns</option>' + setSections().map(function(section) {
+        var options = '<option value="">All</option>' + setSections().map(function(section) {
             return '<option value="' + escapeHtml(section) + '">' + escapeHtml(section) + '</option>';
         }).join('');
         ['assign-section-filter'].forEach(function(id) {
@@ -842,17 +842,46 @@
     function renderSetOptions() {
         var sets = filteredSets('assign');
         var select = document.getElementById('assign-set');
-        select.innerHTML = sets.map(function(set) {
-            return '<option value="' + escapeHtml(set.set_id) + '"' +
-                (state.selectedAssignSetIds[set.set_id] ? ' selected' : '') + '>' +
-                escapeHtml(set.title + ' · ' + set.course) + '</option>';
-        }).join('');
+        var list = document.getElementById('assign-set-list');
+        if (select) {
+            select.innerHTML = sets.map(function(set) {
+                return '<option value="' + escapeHtml(set.set_id) + '"' +
+                    (state.selectedAssignSetIds[set.set_id] ? ' selected' : '') + '>' +
+                    escapeHtml(set.title + ' · ' + set.course) + '</option>';
+            }).join('');
+        }
+        if (list) {
+            list.innerHTML = sets.length ? sets.map(function(set) {
+                var selected = state.selectedAssignSetIds[set.set_id] === true;
+                var meta = [set.set_id, set.course || set.type || set.section || ''].filter(Boolean).join(' · ');
+                return '<label class="assign-choice-card' + (selected ? ' selected' : '') + '">' +
+                    '<input class="assign-set-checkbox" type="checkbox" value="' + escapeHtml(set.set_id) + '"' +
+                        (selected ? ' checked' : '') + '>' +
+                    '<span class="assign-choice-mark" aria-hidden="true"></span>' +
+                    '<span class="assign-choice-copy"><strong>' + escapeHtml(set.title || set.set_id) + '</strong>' +
+                        '<small>' + escapeHtml(meta) + '</small></span>' +
+                '</label>';
+            }).join('') : '<div class="empty-card compact-empty"><strong>No matching work</strong>Try another search or column.</div>';
+            list.querySelectorAll('.assign-set-checkbox').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    if (checkbox.checked) {
+                        state.selectedAssignSetIds[checkbox.value] = true;
+                    } else {
+                        delete state.selectedAssignSetIds[checkbox.value];
+                    }
+                    renderSetOptions();
+                    updateSelectedCount();
+                    loadCandidates();
+                });
+            });
+        }
         updateAssignSummary();
         renderLibrary();
     }
 
     function syncSelectedAssignSets() {
         var select = document.getElementById('assign-set');
+        if (!select) return;
         state.selectedAssignSetIds = {};
         Array.prototype.forEach.call(select.selectedOptions || [], function(option) {
             if (option.value) state.selectedAssignSetIds[option.value] = true;
@@ -898,9 +927,12 @@
         var summary = document.getElementById('assign-options-summary');
         if (!summary) return;
         var parts = [];
-        var due = document.getElementById('assign-due').value;
-        var passing = document.getElementById('assign-passing').value;
-        var mastery = document.getElementById('assign-mastery').value;
+        var dueEl = document.getElementById('assign-due');
+        var passingEl = document.getElementById('assign-passing');
+        var masteryEl = document.getElementById('assign-mastery');
+        var due = dueEl ? dueEl.value : '';
+        var passing = passingEl ? passingEl.value : '';
+        var mastery = masteryEl ? masteryEl.value : '';
         if (due) parts.push('Due ' + due);
         if (passing) parts.push('Pass ' + passing + '%');
         if (mastery) parts.push('Mastery ' + mastery + '%');
@@ -918,7 +950,7 @@
             var button = document.getElementById(item.button);
             if (panel) panel.hidden = !open;
             if (button) button.setAttribute('aria-expanded', open ? 'true' : 'false');
-            if (button) button.closest('.profile-card').classList.toggle('expanded', open);
+            if (button && button.closest('.profile-card')) button.closest('.profile-card').classList.toggle('expanded', open);
         });
     }
 
@@ -1006,28 +1038,28 @@
     function renderCandidates() {
         var candidates = filteredCandidates();
         if (!assignmentTargetSetIds().length) {
-            candidateList.innerHTML = '<div class="empty-card"><strong>Choose a practice set or column</strong>Student availability will appear here.</div>';
+            candidateList.innerHTML = '<div class="empty-card compact-empty"><strong>Choose work</strong>Select one or more tasks first.</div>';
             updateSelectedCount();
             return;
         }
         candidateList.innerHTML = candidates.length ? candidates.map(function(student) {
             var status = candidateStatus(student);
-            return '<label class="candidate-card ' + status.css + (status.disabled ? ' disabled' : '') + '">' +
+            var selected = state.selectedAssignStudentUids[student.auth_uid] && !status.disabled;
+            return '<label class="candidate-card assign-choice-card ' + status.css + (selected ? ' selected' : '') + (status.disabled ? ' disabled' : '') + '">' +
                 '<input class="candidate-checkbox" type="checkbox" value="' + escapeHtml(student.auth_uid) + '"' +
-                    (state.selectedAssignStudentUids[student.auth_uid] && !status.disabled ? ' checked' : '') +
+                    (selected ? ' checked' : '') +
                     (status.disabled ? ' disabled' : '') + '>' +
-                '<span class="candidate-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                    '<small>' + studentMetaHtml(student) + '</small></span>' +
-                '<span class="candidate-status">' + escapeHtml(status.label) +
-                    ((student.availability === 'completed' || student.availability === 'starred') && student.best_percentage != null
-                        ? '<small>Best ' + escapeHtml(student.best_percentage) + '%</small>' : '') +
-                '</span>' +
+                '<span class="assign-choice-mark" aria-hidden="true"></span>' +
+                '<span class="candidate-copy assign-choice-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
+                    '<small>' + escapeHtml(student.class_group || 'No class') + '</small></span>' +
             '</label>';
-        }).join('') : '<div class="empty-card"><strong>No matching students</strong>Try another search or class.</div>';
+        }).join('') : '<div class="empty-card compact-empty"><strong>No matching students</strong>Try another search or class.</div>';
 
         candidateList.querySelectorAll('.candidate-checkbox').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 rememberSelectedCandidates();
+                var card = checkbox.closest('.assign-choice-card');
+                if (card) card.classList.toggle('selected', checkbox.checked);
                 updateSelectedCount();
             });
         });
@@ -1042,11 +1074,11 @@
         var count = selectedCandidateUids().length;
         var taskCount = assignmentTargetSetIds().length;
         document.getElementById('selected-count').textContent =
-            taskCount + ' practice' + (taskCount === 1 ? '' : 's') + ' · ' +
+            taskCount + ' work' + ' · ' +
             count + ' student' + (count === 1 ? '' : 's');
         document.getElementById('assign-selected').textContent =
             taskCount && count
-                ? 'Assign ' + taskCount + ' practice' + (taskCount === 1 ? '' : 's') + ' to ' +
+                ? 'Assign ' + taskCount + ' work to ' +
                     count + ' student' + (count === 1 ? '' : 's')
                 : 'Assign';
         document.getElementById('assign-selected').disabled =
@@ -2945,28 +2977,46 @@
         state.updatesOpen = false;
         renderUpdatesPanel();
     });
-    document.getElementById('toggle-assign-sets').addEventListener('click', function() {
-        setAssignPanel('sets', state.assignPanels.sets !== true);
-    });
-    document.getElementById('toggle-assign-students').addEventListener('click', function() {
-        setAssignPanel('students', state.assignPanels.students !== true);
-    });
-    document.getElementById('toggle-assign-options').addEventListener('click', function() {
-        setAssignPanel('options', state.assignPanels.options !== true);
-    });
-    document.getElementById('assign-sets-done').addEventListener('click', function() {
-        setAssignPanel('sets', false);
-    });
-    document.getElementById('assign-students-done').addEventListener('click', function() {
-        rememberSelectedCandidates();
-        updateSelectedCount();
-        setAssignPanel('students', false);
-    });
-    document.getElementById('assign-set').addEventListener('change', function() {
-        syncSelectedAssignSets();
-        updateSelectedCount();
-        loadCandidates();
-    });
+    var toggleAssignSets = document.getElementById('toggle-assign-sets');
+    if (toggleAssignSets) {
+        toggleAssignSets.addEventListener('click', function() {
+            setAssignPanel('sets', state.assignPanels.sets !== true);
+        });
+    }
+    var toggleAssignStudents = document.getElementById('toggle-assign-students');
+    if (toggleAssignStudents) {
+        toggleAssignStudents.addEventListener('click', function() {
+            setAssignPanel('students', state.assignPanels.students !== true);
+        });
+    }
+    var toggleAssignOptions = document.getElementById('toggle-assign-options');
+    if (toggleAssignOptions) {
+        toggleAssignOptions.addEventListener('click', function() {
+            setAssignPanel('options', state.assignPanels.options !== true);
+        });
+    }
+    var assignSetsDone = document.getElementById('assign-sets-done');
+    if (assignSetsDone) {
+        assignSetsDone.addEventListener('click', function() {
+            setAssignPanel('sets', false);
+        });
+    }
+    var assignStudentsDone = document.getElementById('assign-students-done');
+    if (assignStudentsDone) {
+        assignStudentsDone.addEventListener('click', function() {
+            rememberSelectedCandidates();
+            updateSelectedCount();
+            setAssignPanel('students', false);
+        });
+    }
+    var assignSetSelect = document.getElementById('assign-set');
+    if (assignSetSelect) {
+        assignSetSelect.addEventListener('change', function() {
+            syncSelectedAssignSets();
+            updateSelectedCount();
+            loadCandidates();
+        });
+    }
     document.getElementById('assign-section-filter').addEventListener('change', function() {
         renderSetOptions();
     });
@@ -2976,7 +3026,8 @@
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
     ['assign-due', 'assign-passing', 'assign-mastery'].forEach(function(id) {
-        document.getElementById(id).addEventListener('input', updateAssignOptionsSummary);
+        var input = document.getElementById(id);
+        if (input) input.addEventListener('input', updateAssignOptionsSummary);
     });
     document.getElementById('library-search').addEventListener('input', function() {
         renderTeacherLibrary(teacherLibraryActiveTab);
@@ -2997,13 +3048,16 @@
         }
         renderTeacherLibrary(tabId);
     });
-    document.getElementById('select-class').addEventListener('click', function() {
-        candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
-            state.selectedAssignStudentUids[checkbox.value] = true;
-            checkbox.checked = true;
+    var selectClassButton = document.getElementById('select-class');
+    if (selectClassButton) {
+        selectClassButton.addEventListener('click', function() {
+            candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
+                state.selectedAssignStudentUids[checkbox.value] = true;
+                checkbox.checked = true;
+            });
+            updateSelectedCount();
         });
-        updateSelectedCount();
-    });
+    }
     document.getElementById('assign-selected').addEventListener('click', function() {
         var button = this;
         var studentUids = selectedCandidateUids();
@@ -3028,7 +3082,8 @@
             document.getElementById('assign-section-filter').value = '';
             document.getElementById('assign-search').value = '';
             document.getElementById('assign-class-filter').value = '';
-            document.getElementById('assign-set').selectedIndex = -1;
+            var assignSet = document.getElementById('assign-set');
+            if (assignSet) assignSet.selectedIndex = -1;
             return Promise.all([teacherCall('listAssignments'), loadProgressData(), loadCandidates()]);
         }).then(function(results) {
             state.assignments = results[0].assignments || [];

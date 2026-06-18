@@ -60,6 +60,10 @@ cp .qa-secrets.example .qa-secrets.local
   assigned-task stars and blue for self-study/library stars. Verified dashboard
   syntax and cache-version references; browser smoke remains useful before
   publish.
+- Simplified teacher Assign into a minimal two-panel multi-select flow: Work
+  uses search plus Column, Students uses search plus Class, and assignment
+  creation still uses the existing defaults and backend validation. Verified
+  teacher syntax and release checks; static publish remains required.
 
 ### 2026-06-18
 
