@@ -58,6 +58,11 @@ cp .qa-secrets.example .qa-secrets.local
   multiple-choice, submit, History/Clear, Explain, and Argue flows while adding
   themed Worksheet and current-lesson My Words entry points. Verified JSON
   parsing and static references; browser smoke remains useful before publish.
+- Fixed My Words touch handling by suppressing native selection/callout behavior
+  around the custom save button, preserving the captured selection before
+  clearing mobile browser selection, and bumping the shared script cache version.
+  Verified JavaScript syntax and static references; physical iOS/Android device
+  smoke remains useful before publish.
 - Reviewed and corrected NGSL/NAWL DOCX vocabulary sources for D/E/F/I/J in
   `/private/tmp/ngsl-corrected`. Verified corrected DOCX structure, answer
   coverage, prompt leak checks, and rendered all five files to PNG contact
