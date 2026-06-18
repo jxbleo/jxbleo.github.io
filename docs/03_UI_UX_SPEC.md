@@ -64,7 +64,7 @@ Student cards should show:
 
 - the same compact task capsule structure used by Library task cards
 - title
-- `Go`, `Improve Accuracy`, or `Beat Your Best`
+- `Go` for open work, or a `PASSED` / `MASTERED` stamp-style entry for finished work
 - STAR state if mastered
 - the whole card opens the original task when clicked, except for explicit
   buttons such as Teacher replies or Get Star

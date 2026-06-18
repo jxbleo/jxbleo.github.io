@@ -481,8 +481,8 @@
         var set = item.set || item;
         var status = normalizedStatus(item.status);
         var finished = isFinishedStatus(status);
-        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'Beat Your Best' : 'Improve Accuracy');
-        var actionClass = status === 'to_do' ? ' task-go-button' : '';
+        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'MASTERED' : 'PASSED');
+        var actionClass = status === 'to_do' ? ' task-go-button' : ' assignment-result-stamp ' + status;
         var replyCount = teacherReplyCount(item);
         var replyKey = replyKeyForItem(item);
         var href = practiceHref(Object.assign({}, set, {

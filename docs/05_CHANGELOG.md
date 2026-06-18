@@ -14,6 +14,8 @@
   clicked, while preserving explicit button actions.
 - Split the student account panel STAR row into yellow assigned-task stars and
   blue self-study/library stars.
+- Changed finished Assignment card actions from `Improve Accuracy` / `Beat Your
+  Best` text buttons into clickable `PASSED` / `MASTERED` stamps.
 - Simplified teacher `Assign` into two minimal multi-select panels: `Work` with
   search and `Column`, and `Students` with search and `Class`.
 
