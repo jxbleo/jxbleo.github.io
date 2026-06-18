@@ -120,6 +120,8 @@ View is the teacher's progress and student-inspection surface.
 It should include:
 
 - an assignment matrix/table for scanning completion by student and task, with a class filter and responsive horizontal scrolling on small screens
+- matrix filters for class and attempt/assignment date range
+- clickable matrix cells that open the student's records for that set, including attempt dates, time spent, scores, and wrong question summaries
 - a grouped `By student` / `By class` / `By task` progress view
 - `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
 - `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail

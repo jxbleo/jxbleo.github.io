@@ -32,6 +32,9 @@
         expandedAssignProgress: {},
         expandedAssignProgressGroups: {},
         matrixClassFilter: '',
+        matrixDateFrom: '',
+        matrixDateTo: '',
+        selectedMatrixCell: '',
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
     };
@@ -1329,6 +1332,25 @@
         return minutes + 'm ' + remainder + 's';
     }
 
+    function renderAttemptWrongAnswers(attempt) {
+        var wrong = (attempt.question_results || []).filter(function(item) {
+            return item.correct !== true;
+        });
+        if (!wrong.length) {
+            return '<div class="attempt-wrong-list ok">No wrong questions recorded.</div>';
+        }
+        return '<div class="attempt-wrong-list">' +
+            '<strong>Wrong questions</strong>' +
+            wrong.map(function(item) {
+                var questionId = item.question_id || '?';
+                var answer = item.submitted_answer == null || item.submitted_answer === ''
+                    ? 'blank'
+                    : item.submitted_answer;
+                return '<span><b>Q' + escapeHtml(questionId) + '</b> ' + escapeHtml(answer) + '</span>';
+            }).join('') +
+        '</div>';
+    }
+
     function renderAttemptTrend(attempts, assignment) {
         if (!attempts.length) {
             return '<div class="attempt-history-empty">No attempt records yet.</div>';
@@ -1368,6 +1390,7 @@
                         '<small>' + escapeHtml(correct) + '/' + escapeHtml(total) +
                         ' · ' + escapeHtml(wrong) + ' wrong</small>' +
                     '</div>' +
+                    renderAttemptWrongAnswers(attempt) +
                 '</section>';
             }).join('') +
         '</div>';
@@ -1755,16 +1778,98 @@
         return Object.keys(classes).sort(function(a, b) { return a.localeCompare(b); });
     }
 
+    function renderMatrixClassSelect(classOptions) {
+        if (!classOptions.length) return '';
+        return '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
+            '<option value="">All classes</option>' +
+            classOptions.map(function(className) {
+                return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
+            }).join('') +
+        '</select></label>';
+    }
+
+    function renderMatrixDateTools() {
+        return '<label class="matrix-date-filter"><span>From</span><input id="matrix-date-from" type="date" value="' + escapeHtml(state.matrixDateFrom || '') + '"></label>' +
+            '<label class="matrix-date-filter"><span>To</span><input id="matrix-date-to" type="date" value="' + escapeHtml(state.matrixDateTo || '') + '"></label>';
+    }
+
+    function matrixRangeBoundary(value, endOfDay) {
+        if (!value) return null;
+        var date = new Date(value + (endOfDay ? 'T23:59:59+08:00' : 'T00:00:00+08:00'));
+        return isNaN(date.getTime()) ? null : date.getTime();
+    }
+
+    function matrixDateInRange(value) {
+        var from = matrixRangeBoundary(state.matrixDateFrom, false);
+        var to = matrixRangeBoundary(state.matrixDateTo, true);
+        if (!from && !to) return true;
+        if (!value) return false;
+        var time = new Date(value).getTime();
+        if (isNaN(time)) return false;
+        if (from && time < from) return false;
+        if (to && time > to) return false;
+        return true;
+    }
+
+    function matrixAttemptsForItem(item) {
+        var attempts = progressAttemptsForAssignment(item);
+        if (!state.matrixDateFrom && !state.matrixDateTo) return attempts;
+        return attempts.filter(function(attempt) {
+            return matrixDateInRange(attempt.submitted_at);
+        });
+    }
+
+    function matrixItemInDateRange(item) {
+        if (!state.matrixDateFrom && !state.matrixDateTo) return true;
+        if (matrixAttemptsForItem(item).length) return true;
+        return matrixDateInRange(assignmentSortDate(item));
+    }
+
+    function matrixCellKey(item) {
+        return [
+            item.assignment_id || item.progress_id || '',
+            item.student_uid || '',
+            item.set_id || ''
+        ].join('::');
+    }
+
+    function renderMatrixCellDetail(item) {
+        if (!item) return '';
+        var attempts = matrixAttemptsForItem(item);
+        var rangeText = state.matrixDateFrom || state.matrixDateTo
+            ? 'Filtered range' +
+                (state.matrixDateFrom ? ' from ' + state.matrixDateFrom : '') +
+                (state.matrixDateTo ? ' to ' + state.matrixDateTo : '')
+            : 'All recorded attempts';
+        return '<div class="progress-matrix-detail">' +
+            '<div class="progress-matrix-detail-head">' +
+                '<div><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong>' +
+                '<small>' + escapeHtml(item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set') +
+                ' · ' + escapeHtml(rangeText) + '</small></div>' +
+                '<span>' + escapeHtml(formatPercent(item.best_percentage)) + ' best</span>' +
+            '</div>' +
+            renderAssignmentDetails(item, attempts) +
+        '</div>';
+    }
+
     function renderAssignmentMatrix(items) {
         if (!items.length) return '';
         var classOptions = matrixClassOptions(items);
         if (state.matrixClassFilter && classOptions.indexOf(state.matrixClassFilter) === -1) {
             state.matrixClassFilter = '';
         }
+        var classSelect = renderMatrixClassSelect(classOptions);
+        var dateTools = renderMatrixDateTools();
         var matrixItems = state.matrixClassFilter
             ? items.filter(function(item) { return matrixStudentClass(item) === state.matrixClassFilter; })
             : items;
-        if (!matrixItems.length) return '';
+        matrixItems = matrixItems.filter(matrixItemInDateRange);
+        if (!matrixItems.length) {
+            return '<section class="progress-matrix-card">' +
+                '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + dateTools + '<span>No matching records</span></div></div>' +
+                '<div class="empty-card"><strong>No records in this range</strong>Adjust the class or date filters to see assignment progress.</div>' +
+            '</section>';
+        }
         var setMap = {};
         var studentMap = {};
         matrixItems.forEach(function(item) {
@@ -1797,6 +1902,7 @@
             .sort(function(a, b) { return a.name.localeCompare(b.name); })
             .slice(0, 12);
         if (!sets.length || !students.length) return '';
+        var selectedItem = null;
         var header = '<div class="progress-matrix-row progress-matrix-head">' +
             '<span>Student</span>' +
             sets.map(function(set) {
@@ -1814,22 +1920,21 @@
                     var label = status === 'mastered' ? '★ ' + formatPercent(item.best_percentage) :
                         status === 'passed' ? formatPercent(item.best_percentage) :
                             score == null ? '—' : formatPercent(score);
-                    return '<span class="progress-matrix-cell ' + escapeHtml(status) + '" title="' +
-                        escapeHtml(formatPercent(item.best_percentage) + ' best') + '">' + escapeHtml(label) + '</span>';
+                    var cellKey = matrixCellKey(item);
+                    if (cellKey === state.selectedMatrixCell) selectedItem = item;
+                    return '<button class="progress-matrix-cell ' + escapeHtml(status) +
+                        (cellKey === state.selectedMatrixCell ? ' selected' : '') +
+                        '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" title="' +
+                        escapeHtml(formatPercent(item.best_percentage) + ' best · click for answers') + '">' +
+                        escapeHtml(label) + '</button>';
                 }).join('') +
             '</div>';
         }).join('');
-        var classSelect = classOptions.length
-            ? '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
-                '<option value="">All classes</option>' +
-                classOptions.map(function(className) {
-                    return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
-                }).join('') +
-            '</select></label>'
-            : '';
+        var detailHtml = selectedItem ? renderMatrixCellDetail(selectedItem) : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + '<span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
+            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + dateTools + '<span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
+            detailHtml +
         '</section>';
     }
 
@@ -1864,9 +1969,33 @@
         if (matrixClassFilter) {
             matrixClassFilter.addEventListener('change', function() {
                 state.matrixClassFilter = matrixClassFilter.value;
+                state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
         }
+        var matrixDateFrom = document.getElementById('matrix-date-from');
+        var matrixDateTo = document.getElementById('matrix-date-to');
+        if (matrixDateFrom) {
+            matrixDateFrom.addEventListener('change', function() {
+                state.matrixDateFrom = matrixDateFrom.value;
+                state.selectedMatrixCell = '';
+                renderAssignmentOverview();
+            });
+        }
+        if (matrixDateTo) {
+            matrixDateTo.addEventListener('change', function() {
+                state.matrixDateTo = matrixDateTo.value;
+                state.selectedMatrixCell = '';
+                renderAssignmentOverview();
+            });
+        }
+        container.querySelectorAll('[data-matrix-cell]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.matrixCell;
+                state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
+                renderAssignmentOverview();
+            });
+        });
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgressGroup;
