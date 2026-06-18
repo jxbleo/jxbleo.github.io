@@ -130,7 +130,8 @@ It should include:
 - an assignment matrix/table for scanning completion by student and task, with class, column, recent-task count, and date-range filters plus responsive horizontal scrolling on small screens
 - matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
 - the matrix student column shows only the student name, without Login ID or class
-- clickable matrix cells open a floating dialog with a close button for the student's records for that set, including attempt dates, time spent, scores, wrong question summaries, and teacher-only correct answers
+- clickable matrix cells open a floating dialog with a close button for the student's records for that set, including attempt dates, time spent, scores, a latest-attempt wrong-answer comparison with student answers and correct answers in separate columns, and teacher-only correct answers
+- the matrix detail dialog shows whether assignment answers have already been viewed and locked (`Answers viewed · locked`) or not (`Answers not viewed`)
 - a grouped `By student` / `By class` / `By task` progress view
 - `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
 - `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail
