@@ -766,6 +766,62 @@ button { cursor: pointer; }
     position: relative;
     z-index: 2;
 }
+.assignment-result-stamp {
+    min-width: 104px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 3px solid currentColor;
+    border-radius: 11px;
+    color: #147964;
+    background:
+        radial-gradient(circle at 18% 24%, rgba(255,255,255,.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 76% 32%, rgba(255,255,255,.34) 0 1px, transparent 2px),
+        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.13) 8px 9px),
+        rgba(236, 249, 241, 0.78);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset, 0 8px 20px rgba(20, 121, 100, 0.1);
+    font-size: 0.78rem;
+    font-weight: 950;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
+    transform: rotate(3deg);
+    mix-blend-mode: multiply;
+}
+.assignment-result-stamp::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1.5px solid currentColor;
+    border-radius: 7px;
+    opacity: .62;
+    pointer-events: none;
+}
+.assignment-result-stamp:hover {
+    color: #0f8a70;
+    background-color: rgba(236, 249, 241, 0.92);
+    transform: rotate(3deg) translateY(-1px) scale(1.02);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset, 0 12px 24px rgba(20, 121, 100, 0.14);
+}
+.assignment-result-stamp.mastered {
+    color: #d89528;
+    background:
+        radial-gradient(circle at 26% 28%, rgba(255,255,255,.46) 0 2px, transparent 3px),
+        radial-gradient(circle at 75% 34%, rgba(255,255,255,.32) 0 1px, transparent 2px),
+        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.16) 8px 9px),
+        rgba(255, 247, 216, 0.84);
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.34) inset,
+        0 0 18px rgba(255, 205, 74, .28),
+        0 8px 20px rgba(216, 149, 40, 0.12);
+}
+.assignment-result-stamp.mastered:hover {
+    color: #c27a13;
+    background-color: rgba(255, 247, 216, 0.96);
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.34) inset,
+        0 0 22px rgba(255, 205, 74, .36),
+        0 12px 24px rgba(216, 149, 40, 0.15);
+}
 .teacher-page .library-task-card:hover {
     border-color: rgba(124, 58, 237, 0.3);
     box-shadow: 0 14px 34px rgba(83, 45, 145, 0.09);
