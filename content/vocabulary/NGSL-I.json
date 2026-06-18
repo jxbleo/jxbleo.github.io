@@ -1,0 +1,1618 @@
+{
+  "id": "NGSL-I",
+  "sectionId": "vocabulary",
+  "title": "NGSL-I",
+  "href": "vocabulary.html?set=NGSL-I",
+  "sortOrder": 1009,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1801,
+      "word": "exhibition",
+      "emoji": "🖼️🎪",
+      "meaning": "n. 展览，展示",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a public display of art, objects, or information",
+      "wordForms": "exhibit (v. 展示)"
+    },
+    {
+      "number": 1802,
+      "word": "producer",
+      "emoji": "🎬👨‍🌾",
+      "meaning": "n. 生产者，制片人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who makes or organizes a film, show, or product",
+      "wordForms": "produce (v. 生产)"
+    },
+    {
+      "number": 1803,
+      "word": "regional",
+      "emoji": "🌏🗺️",
+      "meaning": "adj. 地区的，区域的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a particular area",
+      "wordForms": "region (n. 地区)"
+    },
+    {
+      "number": 1804,
+      "word": "immediate",
+      "emoji": "⏰🔜",
+      "meaning": "adj. 立即的，直接的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening now or without delay",
+      "wordForms": "immediately (adv. 立即)"
+    },
+    {
+      "number": 1805,
+      "word": "incident",
+      "emoji": "🚨📍",
+      "meaning": "n. 事件，事变",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an event, often unusual or unpleasant",
+      "wordForms": "incidental (adj. 偶然的)"
+    },
+    {
+      "number": 1806,
+      "word": "childhood",
+      "emoji": "🧒🧸",
+      "meaning": "n. 童年",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the time when someone is a child",
+      "wordForms": "child (n. 孩子), childish (adj. 孩子的)"
+    },
+    {
+      "number": 1807,
+      "word": "draft",
+      "emoji": "📝💨",
+      "meaning": "n. 草稿，汇票；v. 起草，征召",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "an early version of writing or a plan",
+      "wordForms": "drafted (adj. 起草的)"
+    },
+    {
+      "number": 1808,
+      "word": "slip",
+      "emoji": "🧦💧",
+      "meaning": "v. 滑倒，溜走；n. 纸条，错误",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to slide by accident or make a small mistake",
+      "wordForms": "slippery (adj. 滑的), slipped (adj. 滑倒的)"
+    },
+    {
+      "number": 1809,
+      "word": "accompany",
+      "emoji": "👬🎶",
+      "meaning": "v. 陪伴，伴随",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to go somewhere with someone",
+      "wordForms": "accompaniment (n. 伴奏)"
+    },
+    {
+      "number": 1810,
+      "word": "politician",
+      "emoji": "🏛️👔",
+      "meaning": "n. 政治家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who works in politics",
+      "wordForms": "politics (n. 政治), political (adj. 政治的)"
+    },
+    {
+      "number": 1811,
+      "word": "angry",
+      "emoji": "😡👿",
+      "meaning": "adj. 生气的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "feeling strong displeasure",
+      "wordForms": "anger (n. 怒气), angrily (adv. 生气地)"
+    },
+    {
+      "number": 1812,
+      "word": "knock",
+      "emoji": "🚪🔔",
+      "meaning": "v. 敲，碰撞；n. 敲击声",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to hit a door or surface to make a sound",
+      "wordForms": "knockdown (adj. 击倒的)"
+    },
+    {
+      "number": 1813,
+      "word": "seed",
+      "emoji": "🌱🥜",
+      "meaning": "n. 种子；v. 播种",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the small part of a plant from which a new plant grows",
+      "wordForms": "seedy (adj. 多种子的)"
+    },
+    {
+      "number": 1814,
+      "word": "salary",
+      "emoji": "💰📈",
+      "meaning": "n. 薪水，工资",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money paid regularly for a job",
+      "wordForms": "salaried (adj. 有薪水的)"
+    },
+    {
+      "number": 1815,
+      "word": "illustrate",
+      "emoji": "📖🎨",
+      "meaning": "v. 说明，阐明，插图",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to explain or show something with examples or pictures",
+      "wordForms": "illustration (n. 插图), illustrative (adj. 说明的)"
+    },
+    {
+      "number": 1816,
+      "word": "imply",
+      "emoji": "💬🤔",
+      "meaning": "v. 暗示，意味着",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to suggest something without saying it directly",
+      "wordForms": "implication (n. 含义)"
+    },
+    {
+      "number": 1817,
+      "word": "breakfast",
+      "emoji": "🥐☕",
+      "meaning": "n. 早餐",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the first meal of the day",
+      "wordForms": "break (v. 打破), fast (adj. 快的)"
+    },
+    {
+      "number": 1818,
+      "word": "temporary",
+      "emoji": "⏳🏕️",
+      "meaning": "adj. 临时的，暂时的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "lasting for only a short time",
+      "wordForms": "temporarily (adv. 暂时地)"
+    },
+    {
+      "number": 1819,
+      "word": "liberal",
+      "emoji": "🗽🌈",
+      "meaning": "adj. 自由的，慷慨的；n. 自由主义者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "open to new ideas or supporting social freedom",
+      "wordForms": "liberty (n. 自由), liberally (adv. 慷慨地)"
+    },
+    {
+      "number": 1820,
+      "word": "lake",
+      "emoji": "🏞️🌊",
+      "meaning": "n. 湖",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large area of water surrounded by land",
+      "wordForms": "lakey (adj. 湖的)"
+    },
+    {
+      "number": 1821,
+      "word": "qualify",
+      "emoji": "✅🎓",
+      "meaning": "v. 使合格，限定",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to meet the requirements for something",
+      "wordForms": "qualification (n. 资格), qualified (adj. 合格的)"
+    },
+    {
+      "number": 1822,
+      "word": "competitive",
+      "emoji": "🏅🤼‍♂️",
+      "meaning": "adj. 竞争的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "involving competition or wanting to win",
+      "wordForms": "compete (v. 竞争), competitor (n. 竞争者)"
+    },
+    {
+      "number": 1823,
+      "word": "truly",
+      "emoji": "👍💯",
+      "meaning": "adv. 真实地，确实地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "really or sincerely",
+      "wordForms": "true (adj. 真实的), truth (n. 真理)"
+    },
+    {
+      "number": 1824,
+      "word": "hi",
+      "emoji": "👋😃",
+      "meaning": "int. 嗨",
+      "partOfSpeech": "",
+      "simpleDefinition": "a friendly greeting",
+      "wordForms": "hello (int. 你好)"
+    },
+    {
+      "number": 1825,
+      "word": "yellow",
+      "emoji": "🌻💛",
+      "meaning": "adj. 黄色的；n. 黄色",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the color of lemons or the sun",
+      "wordForms": "yellowness (n. 黄色)"
+    },
+    {
+      "number": 1826,
+      "word": "habit",
+      "emoji": "📆🐦",
+      "meaning": "n. 习惯",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something you do regularly",
+      "wordForms": "habitual (adj. 习惯性的), habitable (adj. 可居住的)"
+    },
+    {
+      "number": 1827,
+      "word": "disk",
+      "emoji": "💿🛞",
+      "meaning": "n. 磁盘，圆盘",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a flat round object used for storing data",
+      "wordForms": "disc (n. 圆盘)"
+    },
+    {
+      "number": 1828,
+      "word": "core",
+      "emoji": "🍎💣",
+      "meaning": "n. 核心，果核",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the most important or central part",
+      "wordForms": "coreless (adj. 无核的)"
+    },
+    {
+      "number": 1829,
+      "word": "emotional",
+      "emoji": "😭😍",
+      "meaning": "adj. 情感的，情绪的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to strong feelings",
+      "wordForms": "emotion (n. 情感), emotionally (adv. 情感上)"
+    },
+    {
+      "number": 1830,
+      "word": "aircraft",
+      "emoji": "✈️🚁",
+      "meaning": "n. 飞机，航空器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a vehicle that flies",
+      "wordForms": "air (n. 空气), craft (n. 工艺)"
+    },
+    {
+      "number": 1831,
+      "word": "self",
+      "emoji": "🙋‍♂️🪞",
+      "meaning": "n. 自我",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person's own identity or character",
+      "wordForms": "selfish (adj. 自私的), selfless (adj. 无私的)"
+    },
+    {
+      "number": 1832,
+      "word": "metal",
+      "emoji": "🪙🔩",
+      "meaning": "n. 金属",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a hard material such as iron, gold, or steel",
+      "wordForms": "metallic (adj. 金属的)"
+    },
+    {
+      "number": 1833,
+      "word": "existence",
+      "emoji": "🌍🙏",
+      "meaning": "n. 存在",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of being real or alive",
+      "wordForms": "exist (v. 存在), existent (adj. 存在的)"
+    },
+    {
+      "number": 1834,
+      "word": "bone",
+      "emoji": "🦴🍖",
+      "meaning": "n. 骨头",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a hard part inside the body",
+      "wordForms": "bony (adj. 多骨的)"
+    },
+    {
+      "number": 1835,
+      "word": "panel",
+      "emoji": "🖥️🪟",
+      "meaning": "n. 面板，专门小组",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of experts or a flat piece of material",
+      "wordForms": "paneled (adj. 镶板的)"
+    },
+    {
+      "number": 1836,
+      "word": "prime",
+      "emoji": "🥇🔝",
+      "meaning": "adj. 首要的，主要的；n. 全盛时期",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "best, main, or most important",
+      "wordForms": "primer (n. 初级读本), primely (adv. 首要地)"
+    },
+    {
+      "number": 1837,
+      "word": "appointment",
+      "emoji": "📅👨‍⚕️",
+      "meaning": "n. 约会，预约，任命",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an arranged meeting or visit",
+      "wordForms": "appoint (v. 任命), appointee (n. 被任命者)"
+    },
+    {
+      "number": 1838,
+      "word": "emphasize",
+      "emoji": "📢🔍",
+      "meaning": "v. 强调",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give special importance to something",
+      "wordForms": "emphasis (n. 强调), emphatic (adj. 强调的)"
+    },
+    {
+      "number": 1839,
+      "word": "maximum",
+      "emoji": "🚀📈",
+      "meaning": "adj. 最大的；n. 最大值",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the greatest possible amount",
+      "wordForms": "maximize (v. 最大化), maximally (adv. 最大地)"
+    },
+    {
+      "number": 1840,
+      "word": "effectively",
+      "emoji": "✔️🎯",
+      "meaning": "adv. 有效地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a way that works well",
+      "wordForms": "effective (adj. 有效的), effect (n. 效果)"
+    },
+    {
+      "number": 1841,
+      "word": "elsewhere",
+      "emoji": "🏝️🚀",
+      "meaning": "adv. 在别处，其他地方",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in or to another place",
+      "wordForms": "else (adv. 其他), where (adv. 哪里)"
+    },
+    {
+      "number": 1842,
+      "word": "bother",
+      "emoji": "🙄😤",
+      "meaning": "v. 打扰，烦扰；n. 麻烦",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to annoy or trouble someone",
+      "wordForms": "bothersome (adj. 烦人的)"
+    },
+    {
+      "number": 1843,
+      "word": "initiative",
+      "emoji": "🏁🧠",
+      "meaning": "n. 主动性，倡议",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability or decision to start something",
+      "wordForms": "initiate (v. 发起), initiator (n. 发起者)"
+    },
+    {
+      "number": 1844,
+      "word": "sharp",
+      "emoji": "🔪📈",
+      "meaning": "adj. 锋利的，急剧的；adv. 准时地",
+      "partOfSpeech": "adj. / adv.",
+      "simpleDefinition": "having a fine edge or strong effect",
+      "wordForms": "sharply (adv. 急剧地), sharpness (n. 锋利)"
+    },
+    {
+      "number": 1845,
+      "word": "diet",
+      "emoji": "🥗🍽️",
+      "meaning": "n. 饮食，节食；v. 节食",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the food someone usually eats",
+      "wordForms": "dietary (adj. 饮食的), dieter (n. 节食者)"
+    },
+    {
+      "number": 1846,
+      "word": "motion",
+      "emoji": "🎬🏃‍♂️",
+      "meaning": "n. 运动，提议；v. 示意",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "movement or a signal made by moving",
+      "wordForms": "motivate (v. 激励), motive (n. 动机)"
+    },
+    {
+      "number": 1847,
+      "word": "gray",
+      "emoji": "🌫️🐘",
+      "meaning": "adj. 灰色的；n. 灰色",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a color between black and white",
+      "wordForms": "graying (adj. 变灰的), grayish (adj. 略灰的)"
+    },
+    {
+      "number": 1848,
+      "word": "plastic",
+      "emoji": "🧴🪀",
+      "meaning": "n. 塑料；adj. 塑料的，柔软的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "a man-made material that can be shaped",
+      "wordForms": "plastically (adv. 柔软地), plasticity (n. 可塑性)"
+    },
+    {
+      "number": 1849,
+      "word": "complicate",
+      "emoji": "🧩🔀",
+      "meaning": "v. 使复杂化",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something more difficult",
+      "wordForms": "complicated (adj. 复杂的), complication (n. 复杂)"
+    },
+    {
+      "number": 1850,
+      "word": "discipline",
+      "emoji": "📚🏫",
+      "meaning": "n. 纪律，学科；v. 训练",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "training, control, or a field of study",
+      "wordForms": "disciplinary (adj. 纪律的), disciplined (adj. 有纪律的)"
+    },
+    {
+      "number": 1851,
+      "word": "disappoint",
+      "emoji": "😞💔",
+      "meaning": "v. 使失望",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone unhappy because hopes are not met",
+      "wordForms": "disappointed (adj. 失望的), disappointment (n. 失望)"
+    },
+    {
+      "number": 1852,
+      "word": "boss",
+      "emoji": "👔💼",
+      "meaning": "n. 老板，上司",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person in charge of workers",
+      "wordForms": "bossy (adj. 专横的)"
+    },
+    {
+      "number": 1853,
+      "word": "assumption",
+      "emoji": "🤔🧐",
+      "meaning": "n. 假设，承担",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something accepted as true without proof",
+      "wordForms": "assume (v. 假设), assumptive (adj. 假设的)"
+    },
+    {
+      "number": 1854,
+      "word": "freeze",
+      "emoji": "❄️🥶",
+      "meaning": "v. 冻结；n. 冻结",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to become ice or very cold",
+      "wordForms": "freezing (adj. 冷冻的), freezer (n. 冰箱)"
+    },
+    {
+      "number": 1855,
+      "word": "extreme",
+      "emoji": "⛰️❗",
+      "meaning": "adj. 极端的；n. 极端",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "very great or severe",
+      "wordForms": "extremely (adv. 极端地), extremity (n. 极端)"
+    },
+    {
+      "number": 1856,
+      "word": "passage",
+      "emoji": "📖🚪",
+      "meaning": "n. 通道，段落，经过",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a narrow way, piece of writing, or journey",
+      "wordForms": "pass (v. 通过), passenger (n. 乘客)"
+    },
+    {
+      "number": 1857,
+      "word": "reputation",
+      "emoji": "🏅🌟",
+      "meaning": "n. 名誉，声望",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the opinion people have about someone or something",
+      "wordForms": "reputable (adj. 声誉好的)"
+    },
+    {
+      "number": 1858,
+      "word": "forth",
+      "emoji": "🏃‍♂️➡️",
+      "meaning": "adv. 向前，向外",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "forward or outward",
+      "wordForms": "forthwith (adv. 立即)"
+    },
+    {
+      "number": 1859,
+      "word": "negotiation",
+      "emoji": "🤝🗣️",
+      "meaning": "n. 谈判，协商",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "discussion to reach an agreement",
+      "wordForms": "negotiate (v. 谈判), negotiator (n. 谈判者)"
+    },
+    {
+      "number": 1860,
+      "word": "mechanism",
+      "emoji": "⚙️🔧",
+      "meaning": "n. 机制，机械装置",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system or part that makes something work",
+      "wordForms": "mechanical (adj. 机械的)"
+    },
+    {
+      "number": 1861,
+      "word": "coat",
+      "emoji": "🧥🥼",
+      "meaning": "n. 外套；v. 涂层",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a warm outer piece of clothing",
+      "wordForms": "coated (adj. 涂层的), coating (n. 涂层)"
+    },
+    {
+      "number": 1862,
+      "word": "democracy",
+      "emoji": "🗳️🏛️",
+      "meaning": "n. 民主，民主制度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system in which people vote to choose leaders",
+      "wordForms": "democratic (adj. 民主的), democrat (n. 民主党人)"
+    },
+    {
+      "number": 1863,
+      "word": "pocket",
+      "emoji": "👖👜",
+      "meaning": "n. 口袋；v. 装入口袋",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small cloth bag in clothing",
+      "wordForms": "pocketed (adj. 有口袋的), pocketable (adj. 可装入口袋的)"
+    },
+    {
+      "number": 1864,
+      "word": "lucky",
+      "emoji": "🍀🌠",
+      "meaning": "adj. 幸运的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having good things happen by chance",
+      "wordForms": "luck (n. 运气), luckily (adv. 幸运地)"
+    },
+    {
+      "number": 1865,
+      "word": "crash",
+      "emoji": "🚗💥",
+      "meaning": "v. 撞击，坠毁；n. 坠毁",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "an accident or a loud violent hit",
+      "wordForms": "crashed (adj. 坠毁的), crashing (adj. 撞击的)"
+    },
+    {
+      "number": 1866,
+      "word": "observation",
+      "emoji": "👀🔭",
+      "meaning": "n. 观察，评论",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of watching or noticing carefully",
+      "wordForms": "observe (v. 观察), observant (adj. 观察力强的)"
+    },
+    {
+      "number": 1867,
+      "word": "meat",
+      "emoji": "🍖🥩",
+      "meaning": "n. 肉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "animal flesh eaten as food",
+      "wordForms": "meaty (adj. 多肉的)"
+    },
+    {
+      "number": 1868,
+      "word": "concentration",
+      "emoji": "🎯🧠",
+      "meaning": "n. 集中，浓度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "careful attention or the amount of a substance",
+      "wordForms": "concentrate (v. 集中), concentrated (adj. 集中的)"
+    },
+    {
+      "number": 1869,
+      "word": "implication",
+      "emoji": "🕵️‍♂️💡",
+      "meaning": "n. 含义，暗示，牵连",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a possible result or meaning",
+      "wordForms": "imply (v. 暗示), implicate (v. 牵连)"
+    },
+    {
+      "number": 1870,
+      "word": "deserve",
+      "emoji": "🏆👍",
+      "meaning": "v. 应得，值得",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to have earned something good or bad",
+      "wordForms": "deserved (adj. 应得的), deserving (adj. 值得的)"
+    },
+    {
+      "number": 1871,
+      "word": "unusual",
+      "emoji": "🦄👽",
+      "meaning": "adj. 不寻常的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not normal or common",
+      "wordForms": "unusually (adv. 不寻常地)"
+    },
+    {
+      "number": 1872,
+      "word": "defend",
+      "emoji": "🛡️⚔️",
+      "meaning": "v. 防御，辩护",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to protect someone or something",
+      "wordForms": "defensive (adj. 防御的), defender (n. 防守者)"
+    },
+    {
+      "number": 1873,
+      "word": "classic",
+      "emoji": "📚🏛️",
+      "meaning": "adj. 经典的；n. 经典作品",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "excellent and known for a long time",
+      "wordForms": "classical (adj. 古典的), classically (adv. 经典地)"
+    },
+    {
+      "number": 1874,
+      "word": "king",
+      "emoji": "👑🦁",
+      "meaning": "n. 国王",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a male ruler",
+      "wordForms": "kingdom (n. 王国), kingly (adj. 王的)"
+    },
+    {
+      "number": 1875,
+      "word": "interaction",
+      "emoji": "🤝💬",
+      "meaning": "n. 互动，交互",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "communication or action between people or things",
+      "wordForms": "interact (v. 互动), interactive (adj. 互动的)"
+    },
+    {
+      "number": 1876,
+      "word": "repair",
+      "emoji": "🛠️🔧",
+      "meaning": "v. 修理；n. 修理",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to fix something that is broken",
+      "wordForms": "repaired (adj. 修好的), repairable (adj. 可修理的)"
+    },
+    {
+      "number": 1877,
+      "word": "collapse",
+      "emoji": "🏚️💥",
+      "meaning": "v. 倒塌，崩溃；n. 坍塌",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to fall down suddenly or fail completely",
+      "wordForms": "collapsed (adj. 倒塌的), collapsible (adj. 可折叠的)"
+    },
+    {
+      "number": 1878,
+      "word": "borrow",
+      "emoji": "📚🤲",
+      "meaning": "v. 借",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take and use something that you will return",
+      "wordForms": "borrowed (adj. 借来的), borrowing (n. 借入)"
+    },
+    {
+      "number": 1879,
+      "word": "fundamental",
+      "emoji": "🧱🔑",
+      "meaning": "adj. 基本的，根本的；n. 基本原理",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "basic and very important",
+      "wordForms": "fundamentally (adv. 基本地), fundament (n. 基础)"
+    },
+    {
+      "number": 1880,
+      "word": "dish",
+      "emoji": "🍽️🥣",
+      "meaning": "n. 碟，盘，菜肴",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "food prepared in a particular way or a plate",
+      "wordForms": "dishy (adj. 有吸引力的)"
+    },
+    {
+      "number": 1881,
+      "word": "abroad",
+      "emoji": "✈️🌍",
+      "meaning": "adv. 在国外，海外",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in or to another country",
+      "wordForms": "broad (adj. 广阔的)"
+    },
+    {
+      "number": 1882,
+      "word": "soul",
+      "emoji": "👻❤️",
+      "meaning": "n. 灵魂，精神",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the spiritual or deepest part of a person",
+      "wordForms": "soulful (adj. 充满感情的), soulless (adj. 无灵魂的)"
+    },
+    {
+      "number": 1883,
+      "word": "capable",
+      "emoji": "💪🧠",
+      "meaning": "adj. 有能力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to do something",
+      "wordForms": "capability (n. 能力), capably (adv. 能干地)"
+    },
+    {
+      "number": 1884,
+      "word": "defeat",
+      "emoji": "🏳️💔",
+      "meaning": "v. 击败，战胜；n. 失败",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to win against someone or a failure in a contest",
+      "wordForms": "defeated (adj. 被击败的), defeating (adj. 令人沮丧的)"
+    },
+    {
+      "number": 1885,
+      "word": "presidential",
+      "emoji": "🏛️🇺🇸",
+      "meaning": "adj. 总统的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a president",
+      "wordForms": "president (n. 总统), presidency (n. 总统职位)"
+    },
+    {
+      "number": 1886,
+      "word": "perfectly",
+      "emoji": "🌟👌",
+      "meaning": "adv. 完美地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "completely or without mistakes",
+      "wordForms": "perfect (adj. 完美的), perfection (n. 完美)"
+    },
+    {
+      "number": 1887,
+      "word": "enhance",
+      "emoji": "📈🔬",
+      "meaning": "v. 提高，增强",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to improve or make something better",
+      "wordForms": "enhanced (adj. 增强的), enhancement (n. 增强)"
+    },
+    {
+      "number": 1888,
+      "word": "proud",
+      "emoji": "🦚🏆",
+      "meaning": "adj. 骄傲的，自豪的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "pleased about an achievement or quality",
+      "wordForms": "pride (n. 骄傲), proudly (adv. 自豪地)"
+    },
+    {
+      "number": 1889,
+      "word": "emergency",
+      "emoji": "🚑🚨",
+      "meaning": "n. 紧急情况",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a serious situation that needs immediate action",
+      "wordForms": "emergent (adj. 紧急的), emerge (v. 出现)"
+    },
+    {
+      "number": 1890,
+      "word": "educational",
+      "emoji": "📚🏫",
+      "meaning": "adj. 教育的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to learning or teaching",
+      "wordForms": "educate (v. 教育), education (n. 教育)"
+    },
+    {
+      "number": 1891,
+      "word": "distinguish",
+      "emoji": "👓💡",
+      "meaning": "v. 区分，辨别",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to see or explain the difference between things",
+      "wordForms": "distinguished (adj. 卓越的), distinction (n. 区别)"
+    },
+    {
+      "number": 1892,
+      "word": "substantial",
+      "emoji": "🏢📈",
+      "meaning": "adj. 大量的，坚固的，重要的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "large, important, or real",
+      "wordForms": "substantially (adv. 大量地), substance (n. 物质)"
+    },
+    {
+      "number": 1893,
+      "word": "nearby",
+      "emoji": "📍🏘️",
+      "meaning": "adv. 在附近；adj. 附近的",
+      "partOfSpeech": "adv. / adj.",
+      "simpleDefinition": "close to a place",
+      "wordForms": "nearness (n. 接近), near (adv./prep. 靠近)"
+    },
+    {
+      "number": 1894,
+      "word": "manufacturer",
+      "emoji": "🏭🧑‍🔧",
+      "meaning": "n. 制造商",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a company or person that makes goods",
+      "wordForms": "manufacture (v. 制造), manufacturing (n. 制造业)"
+    },
+    {
+      "number": 1895,
+      "word": "slide",
+      "emoji": "🛷📉",
+      "meaning": "v. 滑动，下滑；n. 幻灯片，滑梯",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move smoothly, or a smooth playground slope",
+      "wordForms": "sliding (adj. 滑动的), slider (n. 滑块)"
+    },
+    {
+      "number": 1896,
+      "word": "valuable",
+      "emoji": "💎📈",
+      "meaning": "adj. 有价值的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "worth money or very useful",
+      "wordForms": "value (n. 价值), valuation (n. 估价)"
+    },
+    {
+      "number": 1897,
+      "word": "personally",
+      "emoji": "🙋‍♀️💬",
+      "meaning": "adv. 亲自，个人地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "by yourself or in your own opinion",
+      "wordForms": "personal (adj. 个人的), person (n. 人)"
+    },
+    {
+      "number": 1898,
+      "word": "breast",
+      "emoji": "🦢👩‍🦰",
+      "meaning": "n. 胸部，乳房",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the front part of the chest",
+      "wordForms": "breasted (adj. 有胸部的), breastplate (n. 胸甲)"
+    },
+    {
+      "number": 1899,
+      "word": "cope",
+      "emoji": "🧘‍♂️💪",
+      "meaning": "v. 应对，处理",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to deal successfully with a difficult situation",
+      "wordForms": "coping (adj. 应对的), coped (adj. 已处理的)"
+    },
+    {
+      "number": 1900,
+      "word": "approximately",
+      "emoji": "≈📏",
+      "meaning": "adv. 大约，近似",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "about or nearly",
+      "wordForms": "approximate (adj. 近似的), approximation (n. 近似)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1801-1810",
+      "label": "第一组",
+      "rangeStart": 1801,
+      "rangeEnd": 1810,
+      "wordList": [
+        "exhibition",
+        "producer",
+        "regional",
+        "immediate",
+        "incident",
+        "childhood",
+        "draft",
+        "slip",
+        "accompany",
+        "politician"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "This company mainly serves __________ markets rather than national ones.",
+          "questionKey": "1801-1810:1"
+        },
+        {
+          "number": 2,
+          "prompt": "I will __________ you to the conference so we can discuss the project together.",
+          "questionKey": "1801-1810:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Please review the first __________ of the report before the final submission.",
+          "questionKey": "1801-1810:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The doctor said the patient needs __________ attention to prevent complications.",
+          "questionKey": "1801-1810:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The police quickly responded to the __________ reported last night near the city center.",
+          "questionKey": "1801-1810:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The museum is hosting an __________ showcasing ancient artifacts from across the world.",
+          "questionKey": "1801-1810:6"
+        },
+        {
+          "number": 7,
+          "prompt": "She was hired as the __________ of the new documentary about wildlife conservation.",
+          "questionKey": "1801-1810:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ gave a speech about the country's new economic policy.",
+          "questionKey": "1801-1810:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Many of her stories are inspired by memories from her __________.",
+          "questionKey": "1801-1810:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Be careful not to __________ on the wet floor in the hallway.",
+          "questionKey": "1801-1810:10"
+        }
+      ]
+    },
+    {
+      "id": "1811-1820",
+      "label": "第二组",
+      "rangeStart": 1811,
+      "rangeEnd": 1820,
+      "wordList": [
+        "angry",
+        "knock",
+        "seed",
+        "salary",
+        "illustrate",
+        "imply",
+        "breakfast",
+        "temporary",
+        "liberal",
+        "lake"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Farmers usually plant each __________ carefully to ensure a good harvest.",
+          "questionKey": "1811-1820:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The teacher used pictures to __________ the meaning of the new vocabulary.",
+          "questionKey": "1811-1820:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The office hired a __________ employee while the manager was on leave.",
+          "questionKey": "1811-1820:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Her reluctance to answer seemed to __________ that she was hiding something.",
+          "questionKey": "1811-1820:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I like to eat a healthy __________ every morning to start the day right.",
+          "questionKey": "1811-1820:5"
+        },
+        {
+          "number": 6,
+          "prompt": "We spent the afternoon fishing by the peaceful __________ outside town.",
+          "questionKey": "1811-1820:6"
+        },
+        {
+          "number": 7,
+          "prompt": "There was a loud __________ on the door that startled everyone in the room.",
+          "questionKey": "1811-1820:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He was very __________ when he found out about the delayed payment.",
+          "questionKey": "1811-1820:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My __________ was increased after I completed the training program successfully.",
+          "questionKey": "1811-1820:9"
+        },
+        {
+          "number": 10,
+          "prompt": "He holds very __________ views about social equality and justice.",
+          "questionKey": "1811-1820:10"
+        }
+      ]
+    },
+    {
+      "id": "1821-1830",
+      "label": "第三组",
+      "rangeStart": 1821,
+      "rangeEnd": 1830,
+      "wordList": [
+        "qualify",
+        "competitive",
+        "truly",
+        "hi",
+        "yellow",
+        "habit",
+        "disk",
+        "core",
+        "emotional",
+        "aircraft"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The market is extremely __________, so companies must constantly innovate.",
+          "questionKey": "1821-1830:1"
+        },
+        {
+          "number": 2,
+          "prompt": "When you enter the room, you should say __________ to greet everyone.",
+          "questionKey": "1821-1830:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The bright __________ flowers added a cheerful atmosphere to the garden.",
+          "questionKey": "1821-1830:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Trust is the __________ of any successful relationship.",
+          "questionKey": "1821-1830:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She managed to __________ for the finals in the nationwide competition.",
+          "questionKey": "1821-1830:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Brushing your teeth twice a day is a very important dental __________.",
+          "questionKey": "1821-1830:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I __________ enjoyed the concert; the band was amazing live.",
+          "questionKey": "1821-1830:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Modern __________ can fly nonstop for over 12 hours.",
+          "questionKey": "1821-1830:8"
+        },
+        {
+          "number": 9,
+          "prompt": "An old __________ was found in the attic, containing family photos.",
+          "questionKey": "1821-1830:9"
+        },
+        {
+          "number": 10,
+          "prompt": "He became very __________ after watching the sad movie.",
+          "questionKey": "1821-1830:10"
+        }
+      ]
+    },
+    {
+      "id": "1831-1840",
+      "label": "第四组",
+      "rangeStart": 1831,
+      "rangeEnd": 1840,
+      "wordList": [
+        "self",
+        "metal",
+        "existence",
+        "bone",
+        "panel",
+        "prime",
+        "appointment",
+        "emphasize",
+        "maximum",
+        "effectively"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Stainless steel is a type of __________ often used to make kitchen utensils.",
+          "questionKey": "1831-1840:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The X-ray showed a fracture in the patient's __________.",
+          "questionKey": "1831-1840:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new software helps employees work more __________ and save time.",
+          "questionKey": "1831-1840:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The report aims to __________ the importance of safety protocols.",
+          "questionKey": "1831-1840:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The machine was operating at its __________ capacity all day.",
+          "questionKey": "1831-1840:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A __________ of experts discussed the environmental policy changes.",
+          "questionKey": "1831-1840:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Developing your __________ awareness is key to personal growth.",
+          "questionKey": "1831-1840:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He is in his __________ as an athlete, competing at the highest level.",
+          "questionKey": "1831-1840:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The philosopher questioned the __________ of life beyond what we can see.",
+          "questionKey": "1831-1840:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Don’t forget your doctor's __________ tomorrow morning at 9 am.",
+          "questionKey": "1831-1840:10"
+        }
+      ]
+    },
+    {
+      "id": "1841-1850",
+      "label": "第五组",
+      "rangeStart": 1841,
+      "rangeEnd": 1850,
+      "wordList": [
+        "elsewhere",
+        "bother",
+        "initiative",
+        "sharp",
+        "diet",
+        "motion",
+        "gray",
+        "plastic",
+        "complicate",
+        "discipline"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Taking the __________ to start recycling programs is appreciated by many communities.",
+          "questionKey": "1841-1850:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Be very careful with the knife; it has a __________ edge.",
+          "questionKey": "1841-1850:2"
+        },
+        {
+          "number": 3,
+          "prompt": "If you can’t find the answer here, look for it __________.",
+          "questionKey": "1841-1850:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Many household items today are made of __________ instead of glass or metal.",
+          "questionKey": "1841-1850:4"
+        },
+        {
+          "number": 5,
+          "prompt": "She follows a balanced __________ to maintain good health.",
+          "questionKey": "1841-1850:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Please don’t __________ me while I’m trying to finish this project.",
+          "questionKey": "1841-1850:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The teacher made a hand __________ to signal the end of the class.",
+          "questionKey": "1841-1850:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Athletes must show great __________ to maintain strict training routines.",
+          "questionKey": "1841-1850:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The sky was __________ and cloudy all day after the storm.",
+          "questionKey": "1841-1850:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Adding too many features might __________ the software and confuse users.",
+          "questionKey": "1841-1850:10"
+        }
+      ]
+    },
+    {
+      "id": "1851-1860",
+      "label": "第六组",
+      "rangeStart": 1851,
+      "rangeEnd": 1860,
+      "wordList": [
+        "disappoint",
+        "boss",
+        "assumption",
+        "freeze",
+        "extreme",
+        "passage",
+        "reputation",
+        "forth",
+        "negotiation",
+        "mechanism"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Water begins to __________ at 0°C under normal pressure.",
+          "questionKey": "1851-1860:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Climbing Mount Everest is considered an __________ challenge for many.",
+          "questionKey": "1851-1860:2"
+        },
+        {
+          "number": 3,
+          "prompt": "It would __________ me if the team missed the deadline again.",
+          "questionKey": "1851-1860:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ approved my vacation request immediately.",
+          "questionKey": "1851-1860:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The children ran back and __________ across the playground.",
+          "questionKey": "1851-1860:5"
+        },
+        {
+          "number": 6,
+          "prompt": "There is a narrow __________ between the two buildings used as an emergency exit.",
+          "questionKey": "1851-1860:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The company has built a strong __________ for high-quality products.",
+          "questionKey": "1851-1860:7"
+        },
+        {
+          "number": 8,
+          "prompt": "She made the __________ that everyone knew about the meeting, but some didn’t.",
+          "questionKey": "1851-1860:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The control panel contains a __________ that adjusts the engine speed automatically.",
+          "questionKey": "1851-1860:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Successful __________ requires both sides to find common ground.",
+          "questionKey": "1851-1860:10"
+        }
+      ]
+    },
+    {
+      "id": "1861-1870",
+      "label": "第七组",
+      "rangeStart": 1861,
+      "rangeEnd": 1870,
+      "wordList": [
+        "coat",
+        "democracy",
+        "pocket",
+        "lucky",
+        "crash",
+        "observation",
+        "meat",
+        "concentration",
+        "implication",
+        "deserve"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "In a __________, citizens can vote and have a say in government decisions.",
+          "questionKey": "1861-1870:1"
+        },
+        {
+          "number": 2,
+          "prompt": "It was __________ that you found your lost keys so quickly!",
+          "questionKey": "1861-1870:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The driver survived the car __________ thanks to the airbags.",
+          "questionKey": "1861-1870:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Meditation helps improve mental __________ and reduce stress.",
+          "questionKey": "1861-1870:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Careful __________ of the data revealed some interesting patterns.",
+          "questionKey": "1861-1870:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Vegetarians avoid __________ but still need enough protein in their diet.",
+          "questionKey": "1861-1870:6"
+        },
+        {
+          "number": 7,
+          "prompt": "After years of hard work, they truly __________ the promotion.",
+          "questionKey": "1861-1870:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He found some money in his __________ after cleaning his jacket.",
+          "questionKey": "1861-1870:8"
+        },
+        {
+          "number": 9,
+          "prompt": "You should wear a warm __________ before going outside in winter.",
+          "questionKey": "1861-1870:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The lawyer explained the __________ of the contract clause clearly.",
+          "questionKey": "1861-1870:10"
+        }
+      ]
+    },
+    {
+      "id": "1871-1880",
+      "label": "第八组",
+      "rangeStart": 1871,
+      "rangeEnd": 1880,
+      "wordList": [
+        "unusual",
+        "defend",
+        "classic",
+        "king",
+        "interaction",
+        "repair",
+        "collapse",
+        "borrow",
+        "fundamental",
+        "dish"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "That novel is considered a __________ of modern literature.",
+          "questionKey": "1871-1880:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The __________ ruled the kingdom wisely for many years.",
+          "questionKey": "1871-1880:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This pasta __________ is very popular in Italian restaurants.",
+          "questionKey": "1871-1880:3"
+        },
+        {
+          "number": 4,
+          "prompt": "May I __________ your car for the weekend? I will return it with a full tank.",
+          "questionKey": "1871-1880:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Positive __________ between employees is essential for a good workplace.",
+          "questionKey": "1871-1880:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The mechanic will __________ the broken engine part tomorrow.",
+          "questionKey": "1871-1880:6"
+        },
+        {
+          "number": 7,
+          "prompt": "It’s very __________ to see snow in this tropical region.",
+          "questionKey": "1871-1880:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The lawyer will __________ the client in court next month.",
+          "questionKey": "1871-1880:8"
+        },
+        {
+          "number": 9,
+          "prompt": "After the earthquake, several old buildings began to __________.",
+          "questionKey": "1871-1880:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Understanding grammar is a __________ part of learning a new language.",
+          "questionKey": "1871-1880:10"
+        }
+      ]
+    },
+    {
+      "id": "1881-1890",
+      "label": "第九组",
+      "rangeStart": 1881,
+      "rangeEnd": 1890,
+      "wordList": [
+        "abroad",
+        "soul",
+        "capable",
+        "defeat",
+        "presidential",
+        "perfectly",
+        "enhance",
+        "proud",
+        "emergency",
+        "educational"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The team faced a tough __________ but did not give up.",
+          "questionKey": "1881-1890:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The senator is running for the __________ election next year.",
+          "questionKey": "1881-1890:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Her parents feel very __________ of her academic achievements.",
+          "questionKey": "1881-1890:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Many believe that music touches the __________ and brings people closer.",
+          "questionKey": "1881-1890:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Museums often provide __________ programs for schoolchildren.",
+          "questionKey": "1881-1890:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The plan went __________ according to schedule without any issues.",
+          "questionKey": "1881-1890:6"
+        },
+        {
+          "number": 7,
+          "prompt": "He is __________ of handling difficult situations calmly.",
+          "questionKey": "1881-1890:7"
+        },
+        {
+          "number": 8,
+          "prompt": "She decided to study __________ to improve her language skills.",
+          "questionKey": "1881-1890:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Upgrading your skills can __________ your job prospects significantly.",
+          "questionKey": "1881-1890:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Call 911 immediately in an __________ at home.",
+          "questionKey": "1881-1890:10"
+        }
+      ]
+    },
+    {
+      "id": "1891-1900",
+      "label": "第十组",
+      "rangeStart": 1891,
+      "rangeEnd": 1900,
+      "wordList": [
+        "distinguish",
+        "substantial",
+        "nearby",
+        "manufacturer",
+        "slide",
+        "valuable",
+        "personally",
+        "breast",
+        "cope",
+        "approximately"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "There is a supermarket __________ where we can buy groceries.",
+          "questionKey": "1891-1900:1"
+        },
+        {
+          "number": 2,
+          "prompt": "She felt pain in her __________ after the accident.",
+          "questionKey": "1891-1900:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This car is made by a well-known German __________.",
+          "questionKey": "1891-1900:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The children enjoyed the playground __________ during recess.",
+          "questionKey": "1891-1900:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The flight takes __________ two hours from here to the city center.",
+          "questionKey": "1891-1900:5"
+        },
+        {
+          "number": 6,
+          "prompt": "That antique vase is very __________ and should be handled with care.",
+          "questionKey": "1891-1900:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The company made a __________ profit last year despite market challenges.",
+          "questionKey": "1891-1900:7"
+        },
+        {
+          "number": 8,
+          "prompt": "I would like to __________ thank you for your help.",
+          "questionKey": "1891-1900:8"
+        },
+        {
+          "number": 9,
+          "prompt": "It’s sometimes hard to __________ between genuine and fake products.",
+          "questionKey": "1891-1900:9"
+        },
+        {
+          "number": 10,
+          "prompt": "It’s important to learn to __________ with stress in healthy ways.",
+          "questionKey": "1891-1900:10"
+        }
+      ]
+    }
+  ]
+}
