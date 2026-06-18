@@ -53,6 +53,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Added the front-end-only BBC `blue-studio` render theme and applied it to
+  `BBC-250619` and `BBC-250626`. The shared `bbc.html` keeps existing blank,
+  multiple-choice, submit, History/Clear, Explain, and Argue flows while adding
+  themed Worksheet and current-lesson My Words entry points. Verified JSON
+  parsing and static references; browser smoke remains useful before publish.
 - Reviewed and corrected NGSL/NAWL DOCX vocabulary sources for D/E/F/I/J in
   `/private/tmp/ngsl-corrected`. Verified corrected DOCX structure, answer
   coverage, prompt leak checks, and rendered all five files to PNG contact

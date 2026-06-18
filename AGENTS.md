@@ -537,6 +537,11 @@ canonical `data/BBC-*.json`; `submitAttempt` accepts array answers and checks
 them with normalized exact matching. This is the correct way to support variants
 such as British/American spelling.
 
+BBC lessons may opt into alternate front-end presentation with `renderTheme`
+in `data/BBC-*.json` and matching content metadata. Treat this as display-only:
+do not change question IDs, grading keys, attempts, History/Clear, Explain, or
+Argue behavior when assigning a theme.
+
 ### IELTS Reading PDF import gotchas
 
 IELTS Reading content may arrive only as PDFs. The current static reading page
