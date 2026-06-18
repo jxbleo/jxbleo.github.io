@@ -41,10 +41,13 @@
 - Adjusted My Words touch handling so mobile and tablet selection can show the
   site save button without leaving the browser's native selection callout over
   the interaction.
+- Renumbered NAWL vocabulary units as an independent sequence from `NAWL-A` to
+  `NAWL-J`, instead of continuing the NGSL letter sequence.
 
 ### Documentation
 
 - Updated the UI/UX spec for the new student and teacher navigation model.
+- Documented the independent NAWL vocabulary ID rule for future imports.
 
 ## 2026-06-16
 

@@ -1,10 +1,10 @@
 window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
-window.__VOCABULARY_UNITS__["NAWL-Y"] = {
-  "id": "NAWL-Y",
+window.__VOCABULARY_UNITS__["NAWL-G"] = {
+  "id": "NAWL-G",
   "sectionId": "vocabulary",
-  "title": "NAWL-Y",
-  "href": "vocabulary.html?set=NAWL-Y",
-  "sortOrder": 2025,
+  "title": "NAWL-G",
+  "href": "vocabulary.html?set=NAWL-G",
+  "sortOrder": 2007,
   "topic": "",
   "tags": [],
   "note": "100 Words · 10 Quiz Groups",

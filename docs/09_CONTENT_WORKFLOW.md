@@ -214,6 +214,9 @@ Rules to preserve:
   `50` / `90` thresholds unless a set or assignment overrides them.
 - Countable vocabulary attempts must retain selected group count, selected
   group IDs, overall score, and per-group results.
+- NGSL and NAWL are independent source sequences. Do not continue NAWL letter
+  IDs after the final NGSL unit; NAWL starts again at `NAWL-A`, with natural
+  word ranges such as `1-100`, `101-200`, and so on.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

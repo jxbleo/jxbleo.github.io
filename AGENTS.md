@@ -1065,6 +1065,9 @@ agents should read this before changing `vocabulary.html`,
   `partOfSpeech`, and `simpleDefinition`.
 - `simpleDefinition` must be a short English definition. Do not map word forms
   or inflection notes into this field.
+- NGSL and NAWL use separate unit-letter sequences. Do not continue NAWL after
+  the final NGSL letter; NAWL starts at `NAWL-A` for words `1-100`, then
+  `NAWL-B` for `101-200`, and so on.
 - The NGSL-B and NGSL-C source Markdown files use a different table shape from
   NGSL-A, and their final column is word-form information, not a definition.
   If definitions are uncertain, stop and ask instead of inventing or copying

@@ -34,7 +34,7 @@ cp .qa-secrets.example .qa-secrets.local
       preview once dedicated development test accounts are available.
 - [ ] Consider passing durable `question_text` from each practice runtime's
       Argue submission path.
-- [ ] If NAWL-X through NAWL-Z2 still do not appear in student Explore or
+- [ ] If NAWL-A through NAWL-J still do not appear in student Explore or
       teacher Library after the static site is published, import the matching
       CloudBase `sets` records for visibility and `grading_keys` records for
       grading in the development environment.
@@ -53,6 +53,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Renumbered NAWL vocabulary units from the old NGSL-continuation sequence
+  (`NAWL-S` through `NAWL-Z2`) to independent `NAWL-A` through `NAWL-J`,
+  regenerated the static catalog, and documented the rule for future imports.
+  Verified JSON/JS fallbacks, CloudBase prep output, release verification, and
+  local browser loading for `NAWL-A` and `NAWL-J`. Owner still needs to import
+  the regenerated CloudBase content data before authenticated Library/Explore
+  and grading use the new set IDs.
 - Added the front-end-only BBC `blue-studio` render theme and applied it to
   `BBC-250619` and `BBC-250626`. The shared `bbc.html` keeps existing blank,
   multiple-choice, submit, History/Clear, Explain, and Argue flows while adding
@@ -232,8 +239,8 @@ cp .qa-secrets.example .qa-secrets.local
 - Verified locally that IELTS Listening teacher preview opens `C7-T1-S1`, sees
   the audio source, and shows the start-audio dialog after clicking `Start
   Audio`.
-- Verified NAWL-X through NAWL-Z2 JSON/JS fallback files parse, are listed in
-  the static home catalog, and `NAWL-Z2` renders locally with 63 words and 6
+- Verified NAWL units JSON/JS fallback files parse, are listed in
+  the static home catalog, and the final NAWL unit renders locally with 63 words and 6
   test groups.
 - CloudBase: no deployment or import performed. Static publish is required for
   the audio fix; CloudBase `sets` and `grading_keys` import is required if NAWL

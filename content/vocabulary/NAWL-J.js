@@ -1,9 +1,10 @@
-{
-  "id": "NAWL-Z2",
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NAWL-J"] = {
+  "id": "NAWL-J",
   "sectionId": "vocabulary",
-  "title": "NAWL-Z2",
-  "href": "vocabulary.html?set=NAWL-Z2",
-  "sortOrder": 2028,
+  "title": "NAWL-J",
+  "href": "vocabulary.html?set=NAWL-J",
+  "sortOrder": 2010,
   "topic": "",
   "tags": [],
   "note": "63 Words · 6 Quiz Groups",
@@ -1020,4 +1021,4 @@
       ]
     }
   ]
-}
+};
