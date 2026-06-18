@@ -32,8 +32,8 @@
         expandedAssignProgress: {},
         expandedAssignProgressGroups: {},
         matrixClassFilter: '',
-        matrixDateFrom: '',
-        matrixDateTo: '',
+        matrixRecentLimit: '6',
+        matrixColumnFilter: '',
         selectedMatrixCell: '',
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
@@ -1788,41 +1788,89 @@
         '</select></label>';
     }
 
-    function renderMatrixDateTools() {
-        return '<label class="matrix-date-filter"><span>From</span><input id="matrix-date-from" type="date" value="' + escapeHtml(state.matrixDateFrom || '') + '"></label>' +
-            '<label class="matrix-date-filter"><span>To</span><input id="matrix-date-to" type="date" value="' + escapeHtml(state.matrixDateTo || '') + '"></label>';
+    function matrixRecentLimit() {
+        var value = Number(state.matrixRecentLimit || 6);
+        return isFinite(value) && value > 0 ? Math.min(Math.floor(value), 20) : 6;
     }
 
-    function matrixRangeBoundary(value, endOfDay) {
-        if (!value) return null;
-        var date = new Date(value + (endOfDay ? 'T23:59:59+08:00' : 'T00:00:00+08:00'));
-        return isNaN(date.getTime()) ? null : date.getTime();
+    function renderMatrixRecentSelect() {
+        var value = matrixRecentLimit();
+        return '<label class="matrix-recent-filter"><span>Recent</span>' +
+            '<input id="matrix-recent-limit" type="range" min="1" max="20" step="1" value="' + escapeHtml(value) + '">' +
+            '<strong id="matrix-recent-value">' + escapeHtml(value) + '</strong>' +
+        '</label>';
     }
 
-    function matrixDateInRange(value) {
-        var from = matrixRangeBoundary(state.matrixDateFrom, false);
-        var to = matrixRangeBoundary(state.matrixDateTo, true);
-        if (!from && !to) return true;
-        if (!value) return false;
-        var time = new Date(value).getTime();
-        if (isNaN(time)) return false;
-        if (from && time < from) return false;
-        if (to && time > to) return false;
-        return true;
+    function matrixColumnSource(item) {
+        var set = state.sets.find(function(candidate) {
+            return candidate.set_id === item.set_id || candidate.id === item.set_id;
+        }) || {};
+        return {
+            set_id: item.set_id || set.set_id || set.id,
+            title: item.set_title || set.title,
+            course: item.course || set.course,
+            type: item.type || set.type,
+            section: item.section || set.section,
+            section_id: item.section_id || set.section_id,
+            sectionId: item.sectionId || set.sectionId,
+            category: item.category || set.category
+        };
+    }
+
+    function matrixColumnKey(item) {
+        var source = matrixColumnSource(item);
+        var category = setCategory(source);
+        if (category !== 'other') return category;
+        var raw = String(source.section || source.section_id || source.course || source.type || source.category || '').trim();
+        if (raw) return raw.toLowerCase().replace(/\s+/g, '-');
+        return 'other';
+    }
+
+    function matrixColumnLabel(key, item) {
+        var labels = {
+            'ielts-reading': 'IELTS Reading',
+            'ielts-listening': 'IELTS Listening',
+            'bbc-listening': 'BBC',
+            vocabulary: 'Vocabulary',
+            grammar: 'Grammar',
+            other: 'Other'
+        };
+        if (labels[key]) return labels[key];
+        if (item) {
+            var source = matrixColumnSource(item);
+            var raw = String(source.section || source.section_id || source.course || source.type || source.category || '').trim();
+            if (raw) return raw;
+        }
+        return key.split('-').map(function(part) {
+            return part ? part.charAt(0).toUpperCase() + part.slice(1) : part;
+        }).join(' ');
+    }
+
+    function matrixColumnOptions(items) {
+        var columns = {};
+        items.forEach(function(item) {
+            var key = matrixColumnKey(item);
+            if (!columns[key]) {
+                columns[key] = matrixColumnLabel(key, item);
+            }
+        });
+        return Object.keys(columns)
+            .map(function(key) { return { key: key, label: columns[key] }; })
+            .sort(function(a, b) { return a.label.localeCompare(b.label); });
+    }
+
+    function renderMatrixColumnSelect(columnOptions) {
+        return '<label class="matrix-column-filter"><span>Column</span><select id="matrix-column-filter">' +
+            '<option value="">All</option>' +
+            columnOptions.map(function(column) {
+                return '<option value="' + escapeHtml(column.key) + '"' + (column.key === state.matrixColumnFilter ? ' selected' : '') + '>' +
+                    escapeHtml(column.label) + '</option>';
+            }).join('') +
+        '</select></label>';
     }
 
     function matrixAttemptsForItem(item) {
-        var attempts = progressAttemptsForAssignment(item);
-        if (!state.matrixDateFrom && !state.matrixDateTo) return attempts;
-        return attempts.filter(function(attempt) {
-            return matrixDateInRange(attempt.submitted_at);
-        });
-    }
-
-    function matrixItemInDateRange(item) {
-        if (!state.matrixDateFrom && !state.matrixDateTo) return true;
-        if (matrixAttemptsForItem(item).length) return true;
-        return matrixDateInRange(assignmentSortDate(item));
+        return progressAttemptsForAssignment(item);
     }
 
     function matrixCellKey(item) {
@@ -1836,11 +1884,7 @@
     function renderMatrixCellDetail(item) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
-        var rangeText = state.matrixDateFrom || state.matrixDateTo
-            ? 'Filtered range' +
-                (state.matrixDateFrom ? ' from ' + state.matrixDateFrom : '') +
-                (state.matrixDateTo ? ' to ' + state.matrixDateTo : '')
-            : 'All recorded attempts';
+        var rangeText = 'All recorded attempts';
         return '<div class="progress-matrix-detail">' +
             '<div class="progress-matrix-detail-head">' +
                 '<div><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong>' +
@@ -1858,16 +1902,25 @@
         if (state.matrixClassFilter && classOptions.indexOf(state.matrixClassFilter) === -1) {
             state.matrixClassFilter = '';
         }
+        var columnOptions = matrixColumnOptions(items);
+        if (state.matrixColumnFilter && !columnOptions.some(function(column) { return column.key === state.matrixColumnFilter; })) {
+            state.matrixColumnFilter = '';
+        }
         var classSelect = renderMatrixClassSelect(classOptions);
-        var dateTools = renderMatrixDateTools();
+        var recentSelect = renderMatrixRecentSelect();
+        var columnSelect = renderMatrixColumnSelect(columnOptions);
         var matrixItems = state.matrixClassFilter
             ? items.filter(function(item) { return matrixStudentClass(item) === state.matrixClassFilter; })
             : items;
-        matrixItems = matrixItems.filter(matrixItemInDateRange);
+        if (state.matrixColumnFilter) {
+            matrixItems = matrixItems.filter(function(item) {
+                return matrixColumnKey(item) === state.matrixColumnFilter;
+            });
+        }
         if (!matrixItems.length) {
             return '<section class="progress-matrix-card">' +
-                '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + dateTools + '<span>No matching records</span></div></div>' +
-                '<div class="empty-card"><strong>No records in this range</strong>Adjust the class or date filters to see assignment progress.</div>' +
+                '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + recentSelect + columnSelect + '<span>No matching records</span></div></div>' +
+                '<div class="empty-card"><strong>No matching records</strong>Adjust the class or column filters to see assignment progress.</div>' +
             '</section>';
         }
         var setMap = {};
@@ -1893,24 +1946,28 @@
                     items: {}
                 };
             }
-            studentMap[studentKey].items[setKey] = item;
+            var current = studentMap[studentKey].items[setKey];
+            if (!current || new Date(assignmentSortDate(item) || 0) > new Date(assignmentSortDate(current) || 0)) {
+                studentMap[studentKey].items[setKey] = item;
+            }
         });
         var sets = Object.keys(setMap).map(function(key) { return setMap[key]; })
             .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); })
-            .slice(0, 6);
+            .slice(0, matrixRecentLimit());
         var students = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
             .sort(function(a, b) { return a.name.localeCompare(b.name); })
             .slice(0, 12);
         if (!sets.length || !students.length) return '';
         var selectedItem = null;
-        var header = '<div class="progress-matrix-row progress-matrix-head">' +
+        var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 78) + 'px;--matrix-min-mobile:' + (126 + sets.length * 68) + 'px;';
+        var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
             '<span>Student</span>' +
             sets.map(function(set) {
                 return '<span title="' + escapeHtml(set.title || set.id) + '">' + escapeHtml(set.id) + '</span>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {
-            return '<div class="progress-matrix-row">' +
+            return '<div class="progress-matrix-row" style="' + escapeHtml(matrixStyle) + '">' +
                 '<span><strong>' + escapeHtml(student.name) + '</strong><small>' + escapeHtml([student.studentId, student.classGroup].filter(Boolean).join(' · ')) + '</small></span>' +
                 sets.map(function(set) {
                     var item = student.items[set.id];
@@ -1932,7 +1989,7 @@
         }).join('');
         var detailHtml = selectedItem ? renderMatrixCellDetail(selectedItem) : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + dateTools + '<span>Recent ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
+            '<div class="progress-matrix-title"><div><p class="eyebrow accent">VIEW</p><h2>Assignment Matrix</h2></div><div class="progress-matrix-tools">' + classSelect + recentSelect + columnSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
             detailHtml +
         '</section>';
@@ -1973,18 +2030,22 @@
                 renderAssignmentOverview();
             });
         }
-        var matrixDateFrom = document.getElementById('matrix-date-from');
-        var matrixDateTo = document.getElementById('matrix-date-to');
-        if (matrixDateFrom) {
-            matrixDateFrom.addEventListener('change', function() {
-                state.matrixDateFrom = matrixDateFrom.value;
+        var matrixRecentLimitSelect = document.getElementById('matrix-recent-limit');
+        if (matrixRecentLimitSelect) {
+            matrixRecentLimitSelect.addEventListener('input', function() {
+                var valueLabel = document.getElementById('matrix-recent-value');
+                if (valueLabel) valueLabel.textContent = matrixRecentLimitSelect.value;
+            });
+            matrixRecentLimitSelect.addEventListener('change', function() {
+                state.matrixRecentLimit = matrixRecentLimitSelect.value;
                 state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
         }
-        if (matrixDateTo) {
-            matrixDateTo.addEventListener('change', function() {
-                state.matrixDateTo = matrixDateTo.value;
+        var matrixColumnFilter = document.getElementById('matrix-column-filter');
+        if (matrixColumnFilter) {
+            matrixColumnFilter.addEventListener('change', function() {
+                state.matrixColumnFilter = matrixColumnFilter.value;
                 state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
