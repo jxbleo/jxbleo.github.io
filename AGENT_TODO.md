@@ -42,9 +42,6 @@ cp .qa-secrets.example .qa-secrets.local
       assignment `BBC-250717` at 100%, the student dashboard showed it under
       FINISHED, but teacher Progress still showed the older `5 TO DO / 4
       Finished` summary and did not list that assignment after reload.
-- [ ] Decide whether the student dashboard should show two unlabeled star
-      counters. The current header displays separate assignment and self-study
-      counts, but they appear only as adjacent `★` numbers.
 - [ ] Before importing `NGSL-D`, confirm or replace the duplicate unit words
       found in the source material: `quiet`, `relatively`, and `attract` each
       appears twice in the 1301-1400 unit.
@@ -55,9 +52,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 - Simplified student Assignment task capsules by removing the extra lower-left
   status/set pills and matching the Library task-card density. Reworked the
-  gold Finished drawer control into a sticky `Show Finished` / `Hide Finished`
-  button with only a check icon and label. Verified dashboard syntax and static
-  references; browser smoke remains useful before publish.
+  Finished drawer control into a sticky BBC-result-inspired stamp with
+  `Show Finished` / `Hide Finished`, and made assignment card bodies open the
+  original task while preserving explicit buttons. Verified dashboard syntax and
+  static references; browser smoke remains useful before publish.
+- Split the student account STAR row into two adjacent counters: yellow for
+  assigned-task stars and blue for self-study/library stars. Verified dashboard
+  syntax and cache-version references; browser smoke remains useful before
+  publish.
 
 ### 2026-06-18
 
