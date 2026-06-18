@@ -110,6 +110,12 @@ cp .qa-secrets.example .qa-secrets.local
   summaries include teacher-only correct answers from `teacherAdmin`. Verified
   `teacher.js` and `teacherAdmin` syntax; static publish and `teacherAdmin`
   CloudBase redeploy are still required.
+- Updated teacher View matrix responsiveness and controls: the matrix scrolls
+  horizontally inside the available screen width with a sticky student-name
+  column, filters render as `Class`, `Column`, `Recent`, `Date`, date filtering
+  supports this week/month/custom calendar ranges, and clicked cells open a
+  closeable floating detail dialog. Verified `teacher.js` syntax and release
+  checks; static publish is still required.
 - Aligned student Assignment task capsules with the Library task card structure,
   including the same eyebrow/set-id/title/action layout while preserving status,
   score, teacher reply, and star actions. Verified `dashboard.js` syntax,

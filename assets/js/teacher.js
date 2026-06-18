@@ -34,7 +34,9 @@
         matrixClassFilter: '',
         matrixRecentLimit: '7',
         matrixColumnFilter: '',
-        matrixDateMode: 'activity',
+        matrixDateFilter: 'month',
+        matrixDateFrom: '',
+        matrixDateTo: '',
         selectedMatrixCell: '',
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
@@ -1233,11 +1235,59 @@
     }
 
     function matrixDateValue(item) {
-        var mode = state.matrixDateMode || 'activity';
-        if (mode === 'assigned') return item.assigned_at || null;
-        if (mode === 'due') return item.due_at || null;
-        if (mode === 'completed') return item.completed_at || item.latest_submitted_at || null;
         return assignmentSortDate(item);
+    }
+
+    function startOfLocalDay(date) {
+        var copy = new Date(date);
+        copy.setHours(0, 0, 0, 0);
+        return copy;
+    }
+
+    function endOfLocalDay(date) {
+        var copy = new Date(date);
+        copy.setHours(23, 59, 59, 999);
+        return copy;
+    }
+
+    function parseDateInput(value, endOfDay) {
+        if (!value) return null;
+        var date = new Date(value + 'T00:00:00');
+        if (isNaN(date.getTime())) return null;
+        return endOfDay ? endOfLocalDay(date) : startOfLocalDay(date);
+    }
+
+    function matrixDateRange() {
+        var mode = state.matrixDateFilter || 'month';
+        var now = new Date();
+        if (mode === 'week') {
+            var weekStart = startOfLocalDay(now);
+            weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+            var weekEnd = endOfLocalDay(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            return { start: weekStart, end: weekEnd };
+        }
+        if (mode === 'custom') {
+            return {
+                start: parseDateInput(state.matrixDateFrom, false),
+                end: parseDateInput(state.matrixDateTo, true)
+            };
+        }
+        var monthStart = startOfLocalDay(new Date(now.getFullYear(), now.getMonth(), 1));
+        var monthEnd = endOfLocalDay(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+        return { start: monthStart, end: monthEnd };
+    }
+
+    function matrixItemMatchesDate(item) {
+        var range = matrixDateRange();
+        if (!range.start && !range.end) return true;
+        var rawDate = matrixDateValue(item);
+        if (!rawDate) return false;
+        var date = new Date(rawDate);
+        if (isNaN(date.getTime())) return false;
+        if (range.start && date < range.start) return false;
+        if (range.end && date > range.end) return false;
+        return true;
     }
 
     function visibleProgressAssignments(assignments) {
@@ -1809,7 +1859,7 @@
     function renderMatrixClassSelect(classOptions) {
         if (!classOptions.length) return '';
         return '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
-            '<option value="">All classes</option>' +
+            '<option value="">All</option>' +
             classOptions.map(function(className) {
                 return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
             }).join('') +
@@ -1834,19 +1884,23 @@
     }
 
     function renderMatrixDateSelect() {
-        var value = state.matrixDateMode || 'activity';
+        var value = state.matrixDateFilter || 'month';
         var options = [
-            { value: 'activity', label: 'Activity' },
-            { value: 'assigned', label: 'Assigned' },
-            { value: 'due', label: 'Due' },
-            { value: 'completed', label: 'Completed' }
+            { value: 'week', label: 'This week' },
+            { value: 'month', label: 'This month' },
+            { value: 'custom', label: 'Custom' }
         ];
-        return '<label class="matrix-date-filter"><span>Date</span><select id="matrix-date-mode">' +
+        var html = '<label class="matrix-date-filter"><span>Date</span><select id="matrix-date-filter">' +
             options.map(function(option) {
                 return '<option value="' + escapeHtml(option.value) + '"' + (option.value === value ? ' selected' : '') + '>' +
                     escapeHtml(option.label) + '</option>';
             }).join('') +
         '</select></label>';
+        if (value === 'custom') {
+            html += '<label class="matrix-date-bound"><span>From</span><input id="matrix-date-from" type="date" value="' + escapeHtml(state.matrixDateFrom || '') + '"></label>' +
+                '<label class="matrix-date-bound"><span>To</span><input id="matrix-date-to" type="date" value="' + escapeHtml(state.matrixDateTo || '') + '"></label>';
+        }
+        return html;
     }
 
     function matrixColumnSource(item) {
@@ -1944,6 +1998,16 @@
         '</div>';
     }
 
+    function renderMatrixCellModal(item) {
+        if (!item) return '';
+        return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
+            '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Assignment details">' +
+                '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
+                renderMatrixCellDetail(item) +
+            '</section>' +
+        '</div>';
+    }
+
     function renderAssignmentMatrix(items) {
         if (!items.length) return '';
         var classOptions = matrixClassOptions(items);
@@ -1966,10 +2030,11 @@
                 return matrixColumnKey(item) === state.matrixColumnFilter;
             });
         }
+        matrixItems = matrixItems.filter(matrixItemMatchesDate);
         if (!matrixItems.length) {
             return '<section class="progress-matrix-card">' +
-                '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + recentSelect + dateSelect + columnSelect + '<span>No matching records</span></div></div>' +
-                '<div class="empty-card"><strong>No matching records</strong>Adjust the class or column filters to see assignment progress.</div>' +
+                '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>No matching records</span></div></div>' +
+                '<div class="empty-card"><strong>No matching records</strong>Adjust the filters to see assignment progress.</div>' +
             '</section>';
         }
         var setMap = {};
@@ -2034,9 +2099,9 @@
                 }).join('') +
             '</div>';
         }).join('');
-        var detailHtml = selectedItem ? renderMatrixCellDetail(selectedItem) : '';
+        var detailHtml = selectedItem ? renderMatrixCellModal(selectedItem) : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + recentSelect + dateSelect + columnSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
+            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
             detailHtml +
         '</section>';
@@ -2078,10 +2143,26 @@
                 renderAssignmentOverview();
             });
         }
-        var matrixDateModeSelect = document.getElementById('matrix-date-mode');
-        if (matrixDateModeSelect) {
-            matrixDateModeSelect.addEventListener('change', function() {
-                state.matrixDateMode = matrixDateModeSelect.value;
+        var matrixDateFilter = document.getElementById('matrix-date-filter');
+        if (matrixDateFilter) {
+            matrixDateFilter.addEventListener('change', function() {
+                state.matrixDateFilter = matrixDateFilter.value;
+                state.selectedMatrixCell = '';
+                renderAssignmentOverview();
+            });
+        }
+        var matrixDateFrom = document.getElementById('matrix-date-from');
+        if (matrixDateFrom) {
+            matrixDateFrom.addEventListener('change', function() {
+                state.matrixDateFrom = matrixDateFrom.value;
+                state.selectedMatrixCell = '';
+                renderAssignmentOverview();
+            });
+        }
+        var matrixDateTo = document.getElementById('matrix-date-to');
+        if (matrixDateTo) {
+            matrixDateTo.addEventListener('change', function() {
+                state.matrixDateTo = matrixDateTo.value;
                 state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
@@ -2098,6 +2179,13 @@
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixCell;
                 state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
+                renderAssignmentOverview();
+            });
+        });
+        container.querySelectorAll('[data-matrix-close]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                if (button.dataset.matrixClose === 'backdrop' && event.target !== button) return;
+                state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
         });

@@ -50,6 +50,9 @@
 - Refined the teacher View matrix: `Recent` now defaults to 7, the toolbar has
   a `Date` basis selector, the student list shows names only, and clicked cells
   show teacher-only correct answers for wrong questions.
+- Updated the teacher View matrix controls to `Class`, `Column`, `Recent`,
+  `Date`, changed `Date` to week/month/custom range filtering, and moved matrix
+  cell details into a floating dialog with a close button.
 - Added front-end-only BBC `renderTheme` support and applied the `blue-studio`
   theme to `BBC-250619` and `BBC-250626` without changing grading IDs or
   attempt behavior.
