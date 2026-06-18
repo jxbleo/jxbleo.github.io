@@ -481,8 +481,6 @@
         var set = item.set || item;
         var status = normalizedStatus(item.status);
         var finished = isFinishedStatus(status);
-        var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'MASTERED' : 'PASSED');
-        var actionClass = status === 'to_do' ? ' task-go-button' : ' assignment-result-stamp ' + status;
         var replyCount = teacherReplyCount(item);
         var replyKey = replyKeyForItem(item);
         var href = practiceHref(Object.assign({}, set, {
@@ -517,13 +515,20 @@
                     ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
                     : '') +
                 replyButton +
-                '<a class="card-button' + actionClass + '" href="' + escapeHtml(href) + '">' + action + '</a>' +
+                (finished ? '<span class="assignment-result-stamp ' + escapeHtml(status) + '">' + escapeHtml(status === 'mastered' ? 'MASTERED' : 'PASSED') + '</span>' : '') +
             '</div>' +
         '</article>';
     }
 
     function assignmentTime(item) {
         return new Date(item.assigned_at || item.updated_at || 0).getTime();
+    }
+
+    function openHrefCard(card, event) {
+        if (!card) return;
+        if (event && event.target && event.target.closest('button, a')) return;
+        var href = card.dataset.openHref;
+        if (href) window.location.href = href;
     }
 
     function newestFirst(left, right) {
@@ -745,20 +750,6 @@
             });
         });
 
-        document.querySelectorAll('[data-open-href]').forEach(function(card) {
-            function openCard(event) {
-                if (event && event.target && event.target.closest('button, a')) return;
-                var href = card.dataset.openHref;
-                if (href) window.location.href = href;
-            }
-            card.addEventListener('click', openCard);
-            card.addEventListener('keydown', function(event) {
-                if (event.key !== 'Enter' && event.key !== ' ') return;
-                event.preventDefault();
-                openCard(event);
-            });
-        });
-
         document.querySelectorAll('[data-get-star]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var assignmentId = button.dataset.getStar;
@@ -953,7 +944,8 @@
         var href = practiceHref(item, null);
         var meta = libraryCardMeta(item, section, itemYear);
         return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
-            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
+            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
+            ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
                     '<p class="eyebrow accent">' + escapeHtml(meta.sectionLabel) + '</p>' +
@@ -967,7 +959,6 @@
             '</div>' +
             '<div class="library-task-actions">' +
                 (meta.badge ? '<span class="library-card-badge">' + escapeHtml(meta.badge) + '</span>' : '') +
-                '<a class="card-button task-go-button" href="' + escapeHtml(href) + '" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">Go</a>' +
             '</div>' +
         '</article>';
     }
@@ -1465,6 +1456,11 @@
         if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) && !e.target.closest('#identity-chip')) {
             setAccountPanel(false);
         }
+        var openCard = e.target.closest('[data-open-href]');
+        if (openCard) {
+            openHrefCard(openCard, e);
+            return;
+        }
         var tabBtn = e.target.closest('.library-tab-btn');
         if (tabBtn) {
             librarySwitchTab(tabBtn.getAttribute('data-tab'));
@@ -1501,6 +1497,15 @@
             }
             return;
         }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var openCard = e.target.closest('[data-open-href]');
+        if (!openCard) return;
+        if (e.target.closest('button, a')) return;
+        e.preventDefault();
+        openHrefCard(openCard, e);
     });
 
     window.addEventListener('mrcat:vocab-saved', function(event) {

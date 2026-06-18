@@ -50,6 +50,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Aligned teacher Assign Work-list sorting with the matching Library column
+  rules, so filtered columns use natural date/numeric ordering instead of raw
+  backend title order. Verified JavaScript syntax and release checks; static
+  publish required.
+- Removed visible `Go` entry buttons from student Assignment, student Library,
+  and teacher Library capsules. The whole capsule now opens the practice item,
+  while explicit secondary controls such as Teacher replies and Get Star keep
+  their own click behavior. Verified JavaScript syntax and release checks;
+  static publish required.
 - Simplified student Assignment task capsules by removing the extra lower-left
   status/set pills and matching the Library task-card density. Reworked the
   Finished drawer control into a sticky BBC-result-inspired stamp with
