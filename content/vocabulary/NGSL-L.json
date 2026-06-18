@@ -1,0 +1,1518 @@
+{
+  "id": "NGSL-L",
+  "sectionId": "vocabulary",
+  "title": "NGSL-L",
+  "href": "vocabulary.html?set=NGSL-L",
+  "sortOrder": 1012,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 2101,
+      "word": "formula",
+      "emoji": "📐🧪",
+      "meaning": "n. 公式；配方",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2102,
+      "word": "alter",
+      "emoji": "🔄✂️",
+      "meaning": "v. 改变；更改",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "altered (adj.)"
+    },
+    {
+      "number": 2103,
+      "word": "perceive",
+      "emoji": "👀🧠",
+      "meaning": "v. 察觉；感知",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "perception (n.), perceptive (adj.)"
+    },
+    {
+      "number": 2104,
+      "word": "routine",
+      "emoji": "🔁📅",
+      "meaning": "n. 日常；惯例 adj. 常规的",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "routinely (adv.)"
+    },
+    {
+      "number": 2105,
+      "word": "sink",
+      "emoji": "🚰⬇️",
+      "meaning": "v. 下沉；陷入 n. 水槽",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "sunk (adj.), sinking (adj.)"
+    },
+    {
+      "number": 2106,
+      "word": "stare",
+      "emoji": "👀😳",
+      "meaning": "v. 凝视；盯着看 n. 凝视",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "staring (adj.)"
+    },
+    {
+      "number": 2107,
+      "word": "anymore",
+      "emoji": "🚫⏰",
+      "meaning": "adv. 再也（不）；现在",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2108,
+      "word": "hero",
+      "emoji": "🦸‍♂️🏅",
+      "meaning": "n. 英雄；勇士",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "heroic (adj.), heroine (n., 女英雄)"
+    },
+    {
+      "number": 2109,
+      "word": "supporter",
+      "emoji": "🤝🧑‍🤝‍🧑",
+      "meaning": "n. 支持者；拥护者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "support (v./n.), supportive (adj.)"
+    },
+    {
+      "number": 2110,
+      "word": "convert",
+      "emoji": "🔄🔌",
+      "meaning": "v. 转换；改造 n. 改变信仰者",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "conversion (n.), convertible (adj.)"
+    },
+    {
+      "number": 2111,
+      "word": "steady",
+      "emoji": "🏗️⚖️",
+      "meaning": "adj. 稳定的 v. 使稳定",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "steadily (adv.), steadiness (n.)"
+    },
+    {
+      "number": 2112,
+      "word": "meter",
+      "emoji": "📏⏲️",
+      "meaning": "n. 米；仪表",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "metric (adj.)"
+    },
+    {
+      "number": 2113,
+      "word": "truck",
+      "emoji": "🚚🛣️",
+      "meaning": "n. 卡车",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2114,
+      "word": "nose",
+      "emoji": "👃🐽",
+      "meaning": "n. 鼻子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "nosy (adj.), nasal (adj.)"
+    },
+    {
+      "number": 2115,
+      "word": "beside",
+      "emoji": "🚶‍♂️➡️",
+      "meaning": "prep. 在...旁边",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2116,
+      "word": "sail",
+      "emoji": "⛵🌊",
+      "meaning": "v. 航行 n. 帆",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "sailing (n.), sailor (n.)"
+    },
+    {
+      "number": 2117,
+      "word": "disaster",
+      "emoji": "🌪️🔥",
+      "meaning": "n. 灾难；不幸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "disastrous (adj.)"
+    },
+    {
+      "number": 2118,
+      "word": "pace",
+      "emoji": "🚶‍♂️⏱️",
+      "meaning": "n. 步伐；速度 v. 踱步",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "pacing (adj.)"
+    },
+    {
+      "number": 2119,
+      "word": "heavily",
+      "emoji": "🌧️⚖️",
+      "meaning": "adv. 沉重地；大量地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "heavy (adj.), heaviness (n.)"
+    },
+    {
+      "number": 2120,
+      "word": "devote",
+      "emoji": "🕰️🙏",
+      "meaning": "v. 奉献；致力于",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "devoted (adj.), devotion (n.)"
+    },
+    {
+      "number": 2121,
+      "word": "terrorist",
+      "emoji": "💣😱",
+      "meaning": "n. 恐怖分子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "terrorism (n.), terror (n.)"
+    },
+    {
+      "number": 2122,
+      "word": "justify",
+      "emoji": "⚖️📋",
+      "meaning": "v. 证明...合理；辩解",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "justification (n.), justifiable (adj.)"
+    },
+    {
+      "number": 2123,
+      "word": "vital",
+      "emoji": "❤️⚡",
+      "meaning": "adj. 至关重要的；生命的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "vitality (n.), vitally (adv.)"
+    },
+    {
+      "number": 2124,
+      "word": "fascinate",
+      "emoji": "😮✨",
+      "meaning": "v. 使着迷",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "fascinating (adj.), fascination (n.)"
+    },
+    {
+      "number": 2125,
+      "word": "external",
+      "emoji": "🌏🚪",
+      "meaning": "adj. 外部的；外面的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "externally (adv.), exterior (n./adj.)"
+    },
+    {
+      "number": 2126,
+      "word": "spare",
+      "emoji": "🕰️🛋️",
+      "meaning": "v. 节省；抽出 adj. 多余的 n. 备用品",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "sparing (adj.), sparingly (adv.)"
+    },
+    {
+      "number": 2127,
+      "word": "whenever",
+      "emoji": "⏰❓",
+      "meaning": "conj. 每当；无论何时",
+      "partOfSpeech": "conj.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2128,
+      "word": "depression",
+      "emoji": "😔🌧️",
+      "meaning": "n. 抑郁；萧条",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "depressive (adj.), depress (v.)"
+    },
+    {
+      "number": 2129,
+      "word": "guilty",
+      "emoji": "😓👨‍⚖️",
+      "meaning": "adj. 有罪的；内疚的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "guilt (n.), guiltily (adv.)"
+    },
+    {
+      "number": 2130,
+      "word": "underlie",
+      "emoji": "🔽📚",
+      "meaning": "v. 构成...基础；位于...之下",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "underlying (adj.)"
+    },
+    {
+      "number": 2131,
+      "word": "mom",
+      "emoji": "👩‍👧‍👦❤️",
+      "meaning": "n. 妈妈",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "mommy (n.), maternal (adj.)"
+    },
+    {
+      "number": 2132,
+      "word": "distinction",
+      "emoji": "🏆⚡",
+      "meaning": "n. 区别；荣誉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "distinct (adj.), distinctive (adj.)"
+    },
+    {
+      "number": 2133,
+      "word": "satisfaction",
+      "emoji": "😊👍",
+      "meaning": "n. 满意；满足",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "satisfy (v.), satisfactory (adj.)"
+    },
+    {
+      "number": 2134,
+      "word": "incorporate",
+      "emoji": "🏢📦",
+      "meaning": "v. 合并；吸收",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "incorporation (n.), incorporated (adj.)"
+    },
+    {
+      "number": 2135,
+      "word": "pour",
+      "emoji": "☕🌧️",
+      "meaning": "v. 倒；倾泻",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "pouring (adj.)"
+    },
+    {
+      "number": 2136,
+      "word": "sweep",
+      "emoji": "🧹🌪️",
+      "meaning": "v. 打扫；席卷 n. 打扫",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "sweeping (adj.)"
+    },
+    {
+      "number": 2137,
+      "word": "obligation",
+      "emoji": "📜🤝",
+      "meaning": "n. 义务；责任",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "obligate (v.), obligatory (adj.)"
+    },
+    {
+      "number": 2138,
+      "word": "sir",
+      "emoji": "🧑‍🎩🙇",
+      "meaning": "n. 先生（尊称）",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2139,
+      "word": "evaluate",
+      "emoji": "📝🔍",
+      "meaning": "v. 评估；评价",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "evaluation (n.), evaluative (adj.)"
+    },
+    {
+      "number": 2140,
+      "word": "anger",
+      "emoji": "😡🔥",
+      "meaning": "n. 愤怒 v. 使生气",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "angry (adj.), angrily (adv.)"
+    },
+    {
+      "number": 2141,
+      "word": "pub",
+      "emoji": "🍺🏠",
+      "meaning": "n. 酒吧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "publican (n., 酒吧老板)"
+    },
+    {
+      "number": 2142,
+      "word": "perception",
+      "emoji": "👁️🧠",
+      "meaning": "n. 感知；看法",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "perceive (v.), perceptive (adj.)"
+    },
+    {
+      "number": 2143,
+      "word": "naturally",
+      "emoji": "🍃👌",
+      "meaning": "adv. 自然地；当然",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "natural (adj.), nature (n.)"
+    },
+    {
+      "number": 2144,
+      "word": "currency",
+      "emoji": "💵🌍",
+      "meaning": "n. 货币；流通",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "current (adj./n.)"
+    },
+    {
+      "number": 2145,
+      "word": "database",
+      "emoji": "🖥️📚",
+      "meaning": "n. 数据库",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2146,
+      "word": "initially",
+      "emoji": "🏁⏳",
+      "meaning": "adv. 最初；起初",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "initial (adj./n.)"
+    },
+    {
+      "number": 2147,
+      "word": "territory",
+      "emoji": "🌍🗺️",
+      "meaning": "n. 领土；领域",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "territorial (adj.), territoriality (n.)"
+    },
+    {
+      "number": 2148,
+      "word": "stream",
+      "emoji": "🏞️💧",
+      "meaning": "n. 溪流；流 v. 流动",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "streaming (adj./n.)"
+    },
+    {
+      "number": 2149,
+      "word": "rarely",
+      "emoji": "🦄🌈",
+      "meaning": "adv. 很少；罕见地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "rare (adj.), rarity (n.)"
+    },
+    {
+      "number": 2150,
+      "word": "height",
+      "emoji": "📏🏔️",
+      "meaning": "n. 高度；顶点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "high (adj.), heightened (adj.)"
+    },
+    {
+      "number": 2151,
+      "word": "apparent",
+      "emoji": "👁️🔦",
+      "meaning": "adj. 显然的；表面的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "apparently (adv.), appearance (n.)"
+    },
+    {
+      "number": 2152,
+      "word": "western",
+      "emoji": "🌅🤠",
+      "meaning": "adj. 西方的 n. 西部片",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "west (n.), westerly (adj./adv.)"
+    },
+    {
+      "number": 2153,
+      "word": "expansion",
+      "emoji": "📈🔄",
+      "meaning": "n. 扩张；膨胀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "expand (v.), expansive (adj.)"
+    },
+    {
+      "number": 2154,
+      "word": "constantly",
+      "emoji": "⏰🔄",
+      "meaning": "adv. 持续地；不断地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "constant (adj./n.), constancy (n.)"
+    },
+    {
+      "number": 2155,
+      "word": "muscle",
+      "emoji": "💪🦵",
+      "meaning": "n. 肌肉；力量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "muscular (adj.)"
+    },
+    {
+      "number": 2156,
+      "word": "scare",
+      "emoji": "😱👻",
+      "meaning": "v. 惊吓；使害怕 n. 惊吓",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "scary (adj.)"
+    },
+    {
+      "number": 2157,
+      "word": "badly",
+      "emoji": "😞🤕",
+      "meaning": "adv. 糟糕地；严重地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "bad (adj.)"
+    },
+    {
+      "number": 2158,
+      "word": "everyday",
+      "emoji": "📆🔁",
+      "meaning": "adj. 每天的；日常的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2159,
+      "word": "boundary",
+      "emoji": "🏁🚧",
+      "meaning": "n. 边界；界限",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "bound (v./n.), bounded (adj.)"
+    },
+    {
+      "number": 2160,
+      "word": "ratio",
+      "emoji": "⚖️📊",
+      "meaning": "n. 比率；比例",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2161,
+      "word": "essay",
+      "emoji": "📝📚",
+      "meaning": "n. 文章；随笔",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2162,
+      "word": "scream",
+      "emoji": "😱🔊",
+      "meaning": "v. 尖叫 n. 尖叫声",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "screaming (adj.)"
+    },
+    {
+      "number": 2163,
+      "word": "withdraw",
+      "emoji": "🏧⬅️",
+      "meaning": "v. 撤回；退出",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "withdrawal (n.), withdrawn (adj.)"
+    },
+    {
+      "number": 2164,
+      "word": "pollution",
+      "emoji": "🏭🌫️",
+      "meaning": "n. 污染",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "pollute (v.), polluted (adj.)"
+    },
+    {
+      "number": 2165,
+      "word": "disorder",
+      "emoji": "😵🌀",
+      "meaning": "n. 混乱；疾病",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "disordered (adj.), order (n./v.)"
+    },
+    {
+      "number": 2166,
+      "word": "furniture",
+      "emoji": "🛋️🪑",
+      "meaning": "n. 家具",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "furnished (adj.), furnishing (n.)"
+    },
+    {
+      "number": 2167,
+      "word": "symbol",
+      "emoji": "🔣🛑",
+      "meaning": "n. 象征；符号",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "symbolic (adj.), symbolism (n.)"
+    },
+    {
+      "number": 2168,
+      "word": "apartment",
+      "emoji": "🏢🚪",
+      "meaning": "n. 公寓",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2169,
+      "word": "demonstration",
+      "emoji": "🪧📢",
+      "meaning": "n. 示范；游行",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "demonstrate (v.), demonstrative (adj.)"
+    },
+    {
+      "number": 2170,
+      "word": "analyst",
+      "emoji": "📊🕵️‍♂️",
+      "meaning": "n. 分析师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "analysis (n.), analytical (adj.)"
+    },
+    {
+      "number": 2171,
+      "word": "platform",
+      "emoji": "🚉🖥️",
+      "meaning": "n. 平台；站台",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2172,
+      "word": "steel",
+      "emoji": "🏗️🔩",
+      "meaning": "n. 钢；钢铁",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "steely (adj.)"
+    },
+    {
+      "number": 2173,
+      "word": "cake",
+      "emoji": "🎂🍰",
+      "meaning": "n. 蛋糕",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2174,
+      "word": "transform",
+      "emoji": "🔄🦋",
+      "meaning": "v. 转变；改变",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "transformation (n.), transformative (adj.)"
+    },
+    {
+      "number": 2175,
+      "word": "wound",
+      "emoji": "🤕🩹",
+      "meaning": "n. 伤口 v. 使受伤",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "wounded (adj.), wounding (adj.)"
+    },
+    {
+      "number": 2176,
+      "word": "restriction",
+      "emoji": "🚫⛔",
+      "meaning": "n. 限制；约束",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "restrict (v.), restrictive (adj.)"
+    },
+    {
+      "number": 2177,
+      "word": "foundation",
+      "emoji": "🏛️🧱",
+      "meaning": "n. 基础；基金会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "found (v.), foundational (adj.)"
+    },
+    {
+      "number": 2178,
+      "word": "designer",
+      "emoji": "👗🎨",
+      "meaning": "n. 设计师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "design (v./n.), designed (adj.)"
+    },
+    {
+      "number": 2179,
+      "word": "strain",
+      "emoji": "😣🧬",
+      "meaning": "n. 压力；拉力 v. 拉紧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "strained (adj.), straining (adj.)"
+    },
+    {
+      "number": 2180,
+      "word": "innovation",
+      "emoji": "💡🔬",
+      "meaning": "n. 创新；革新",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "innovate (v.), innovative (adj.)"
+    },
+    {
+      "number": 2181,
+      "word": "album",
+      "emoji": "💿📀",
+      "meaning": "n. 专辑；相册",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "—"
+    },
+    {
+      "number": 2182,
+      "word": "singer",
+      "emoji": "🎤👩‍🎤",
+      "meaning": "n. 歌手",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "sing (v.), singing (n.)"
+    },
+    {
+      "number": 2183,
+      "word": "trail",
+      "emoji": "🥾🌲",
+      "meaning": "n. 小径；痕迹 v. 跟踪",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "trailing (adj.), trailed (adj.)"
+    },
+    {
+      "number": 2184,
+      "word": "trap",
+      "emoji": "🪤🐭",
+      "meaning": "n. 陷阱 v. 诱捕",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "trapped (adj.), trapping (n.)"
+    },
+    {
+      "number": 2185,
+      "word": "loose",
+      "emoji": "🪢🔓",
+      "meaning": "adj. 松的；宽松的 v. 释放",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "loosely (adv.), loosen (v.)"
+    },
+    {
+      "number": 2186,
+      "word": "extension",
+      "emoji": "➕📏",
+      "meaning": "n. 延伸；扩展",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "extend (v.), extensive (adj.)"
+    },
+    {
+      "number": 2187,
+      "word": "wealth",
+      "emoji": "💰🏦",
+      "meaning": "n. 财富；丰富",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "wealthy (adj.)"
+    },
+    {
+      "number": 2188,
+      "word": "gradually",
+      "emoji": "🐢📈",
+      "meaning": "adv. 逐渐地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "",
+      "wordForms": "gradual (adj.), graduation (n.)"
+    },
+    {
+      "number": 2189,
+      "word": "tank",
+      "emoji": "🛢️🚙",
+      "meaning": "n. 坦克；储罐",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "tanked (adj.), tanker (n.)"
+    },
+    {
+      "number": 2190,
+      "word": "evil",
+      "emoji": "👹☠️",
+      "meaning": "adj. 邪恶的 n. 邪恶",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "evilly (adv.), evilness (n.)"
+    },
+    {
+      "number": 2191,
+      "word": "remarkable",
+      "emoji": "🌟👏",
+      "meaning": "adj. 显著的；值得注意的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "remarkably (adv.), remark (v./n.)"
+    },
+    {
+      "number": 2192,
+      "word": "tune",
+      "emoji": "🎵🔧",
+      "meaning": "n. 曲调；协调 v. 调整",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "tuneful (adj.), tuning (n.)"
+    },
+    {
+      "number": 2193,
+      "word": "grass",
+      "emoji": "🌱🏞️",
+      "meaning": "n. 草",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "grassy (adj.)"
+    },
+    {
+      "number": 2194,
+      "word": "invitation",
+      "emoji": "✉️🎉",
+      "meaning": "n. 邀请；请柬",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "invite (v.), inviting (adj.)"
+    },
+    {
+      "number": 2195,
+      "word": "transition",
+      "emoji": "🔄🚦",
+      "meaning": "n. 过渡；转变",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "",
+      "wordForms": "transitional (adj.), transit (v./n.)"
+    },
+    {
+      "number": 2196,
+      "word": "frighten",
+      "emoji": "😨👻",
+      "meaning": "v. 使害怕",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "frightened (adj.), frightening (adj.)"
+    },
+    {
+      "number": 2197,
+      "word": "bid",
+      "emoji": "🗣️💸",
+      "meaning": "v. 出价；投标 n. 出价",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "bidding (n.), bidder (n.)"
+    },
+    {
+      "number": 2198,
+      "word": "breed",
+      "emoji": "🐶🐱",
+      "meaning": "v. 繁殖；培养 n. 品种",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "",
+      "wordForms": "breeding (n.), breeder (n.)"
+    },
+    {
+      "number": 2199,
+      "word": "extraordinary",
+      "emoji": "🌠😲",
+      "meaning": "adj. 非凡的；特别的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "extraordinarily (adv.)"
+    },
+    {
+      "number": 2200,
+      "word": "brilliant",
+      "emoji": "💡🌟",
+      "meaning": "adj. 灿烂的；才华横溢的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "",
+      "wordForms": "brilliance (n.), brilliantly (adv.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "2101-2110",
+      "label": "第一组",
+      "rangeStart": 2101,
+      "rangeEnd": 2110,
+      "wordList": [
+        "perceive",
+        "routine",
+        "hero",
+        "alter",
+        "sink",
+        "supporter",
+        "stare",
+        "anymore",
+        "formula",
+        "convert"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The government decided to __________ the old law to make it more suitable for modern society."
+        },
+        {
+          "number": 2,
+          "prompt": "It's rude to __________ at people, even if they look unusual or different."
+        },
+        {
+          "number": 3,
+          "prompt": "As a loyal __________ of the team, she attended every single match this season."
+        },
+        {
+          "number": 4,
+          "prompt": "I don't live in that neighborhood __________ because I moved to a new city."
+        },
+        {
+          "number": 5,
+          "prompt": "Dogs can __________ sounds that humans cannot hear at all."
+        },
+        {
+          "number": 6,
+          "prompt": "My morning __________ includes drinking coffee and reading the newspaper before work."
+        },
+        {
+          "number": 7,
+          "prompt": "We need to __________ these old machines so they can use the new software."
+        },
+        {
+          "number": 8,
+          "prompt": "The heavy stone began to __________ slowly to the bottom of the lake."
+        },
+        {
+          "number": 9,
+          "prompt": "Scientists discovered a new __________ that helps calculate the speed of light more accurately."
+        },
+        {
+          "number": 10,
+          "prompt": "The firefighter became a __________ after rescuing five children from the burning building."
+        }
+      ]
+    },
+    {
+      "id": "2111-2120",
+      "label": "第二组",
+      "rangeStart": 2111,
+      "rangeEnd": 2120,
+      "wordList": [
+        "beside",
+        "sail",
+        "pace",
+        "truck",
+        "meter",
+        "nose",
+        "steady",
+        "disaster",
+        "heavily",
+        "devote"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The dog touched my hand gently with its wet __________ to get my attention."
+        },
+        {
+          "number": 2,
+          "prompt": "The runner kept a steady __________ throughout the entire marathon race."
+        },
+        {
+          "number": 3,
+          "prompt": "She decided to __________ her life to helping homeless people in the city."
+        },
+        {
+          "number": 4,
+          "prompt": "Please sit down __________ me so we can talk more easily."
+        },
+        {
+          "number": 5,
+          "prompt": "We plan to __________ across the Mediterranean Sea during our summer vacation."
+        },
+        {
+          "number": 6,
+          "prompt": "Keep your progress __________ and don't try to do everything at once."
+        },
+        {
+          "number": 7,
+          "prompt": "The earthquake was a terrible __________ that destroyed hundreds of homes."
+        },
+        {
+          "number": 8,
+          "prompt": "The rope is exactly one __________ long, which is perfect for our needs."
+        },
+        {
+          "number": 9,
+          "prompt": "A large __________ blocked the narrow road and caused a traffic jam."
+        },
+        {
+          "number": 10,
+          "prompt": "It rained __________ all night, and the streets were completely flooded by morning."
+        }
+      ]
+    },
+    {
+      "id": "2121-2130",
+      "label": "第三组",
+      "rangeStart": 2121,
+      "rangeEnd": 2130,
+      "wordList": [
+        "vital",
+        "depression",
+        "underlie",
+        "external",
+        "fascinate",
+        "spare",
+        "terrorist",
+        "guilty",
+        "whenever",
+        "justify"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The magic show never fails to __________ children of all ages."
+        },
+        {
+          "number": 2,
+          "prompt": "Several important principles __________ our company's approach to customer service."
+        },
+        {
+          "number": 3,
+          "prompt": "After losing his job, he suffered from severe __________ for several months."
+        },
+        {
+          "number": 4,
+          "prompt": "A __________ attack at the airport caused panic among all the passengers."
+        },
+        {
+          "number": 5,
+          "prompt": "The building has __________ walls made of glass and steel."
+        },
+        {
+          "number": 6,
+          "prompt": "Can you __________ some time tomorrow to help me move furniture?"
+        },
+        {
+          "number": 7,
+          "prompt": "Clean water is __________ for human survival in any environment."
+        },
+        {
+          "number": 8,
+          "prompt": "The lawyer tried to __________ his client's actions by explaining the difficult circumstances."
+        },
+        {
+          "number": 9,
+          "prompt": "Call me __________ you need help with your homework assignments."
+        },
+        {
+          "number": 10,
+          "prompt": "The jury found him __________ of stealing money from the company."
+        }
+      ]
+    },
+    {
+      "id": "2131-2140",
+      "label": "第四组",
+      "rangeStart": 2131,
+      "rangeEnd": 2140,
+      "wordList": [
+        "distinction",
+        "satisfaction",
+        "sweep",
+        "mom",
+        "obligation",
+        "incorporate",
+        "pour",
+        "evaluate",
+        "sir",
+        "anger"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The customer expressed complete __________ with the quality of our service."
+        },
+        {
+          "number": 2,
+          "prompt": "The company decided to __________ new technology into their manufacturing process."
+        },
+        {
+          "number": 3,
+          "prompt": "\"Excuse me, __________, could you tell me where the nearest post office is?\""
+        },
+        {
+          "number": 4,
+          "prompt": "Parents have an __________ to provide food and shelter for their children."
+        },
+        {
+          "number": 5,
+          "prompt": "Please __________ the tea carefully so it doesn't spill on the table."
+        },
+        {
+          "number": 6,
+          "prompt": "My __________ always makes the best chocolate cake for my birthday."
+        },
+        {
+          "number": 7,
+          "prompt": "There is a clear __________ between knowing the rules and following them properly."
+        },
+        {
+          "number": 8,
+          "prompt": "We need to __________ the floor before the guests arrive this evening."
+        },
+        {
+          "number": 9,
+          "prompt": "He couldn't control his __________ when he discovered someone had stolen his car."
+        },
+        {
+          "number": 10,
+          "prompt": "Teachers must __________ students' work fairly and provide helpful feedback."
+        }
+      ]
+    },
+    {
+      "id": "2141-2150",
+      "label": "第五组",
+      "rangeStart": 2141,
+      "rangeEnd": 2150,
+      "wordList": [
+        "naturally",
+        "initially",
+        "perception",
+        "stream",
+        "territory",
+        "pub",
+        "rarely",
+        "height",
+        "database",
+        "currency"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She speaks three languages __________ because she grew up in a multilingual family."
+        },
+        {
+          "number": 2,
+          "prompt": "The euro is the official __________ used in most European Union countries."
+        },
+        {
+          "number": 3,
+          "prompt": "Children love playing in the small __________ behind our house during summer."
+        },
+        {
+          "number": 4,
+          "prompt": "Wild animals will defend their __________ against intruders very aggressively."
+        },
+        {
+          "number": 5,
+          "prompt": "Our company stores all customer information in a secure __________."
+        },
+        {
+          "number": 6,
+          "prompt": "After work, many people meet their friends at the local __________ for drinks."
+        },
+        {
+          "number": 7,
+          "prompt": "Your __________ of the situation may be different from mine."
+        },
+        {
+          "number": 8,
+          "prompt": "I was __________ worried about the exam, but I felt more confident later."
+        },
+        {
+          "number": 9,
+          "prompt": "The mountain reaches a __________ of over 3,000 meters above sea level."
+        },
+        {
+          "number": 10,
+          "prompt": "She __________ goes to the cinema because she prefers watching movies at home."
+        }
+      ]
+    },
+    {
+      "id": "2151-2160",
+      "label": "第六组",
+      "rangeStart": 2151,
+      "rangeEnd": 2160,
+      "wordList": [
+        "expansion",
+        "western",
+        "apparent",
+        "muscle",
+        "constantly",
+        "scare",
+        "everyday",
+        "badly",
+        "boundary",
+        "ratio"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "My phone rings __________, and I never have a moment of peace."
+        },
+        {
+          "number": 2,
+          "prompt": "Many __________ movies feature cowboys and take place in the American frontier."
+        },
+        {
+          "number": 3,
+          "prompt": "He was __________ injured in the accident and had to stay in hospital."
+        },
+        {
+          "number": 4,
+          "prompt": "The loud noise will __________ the birds away from the garden."
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ of men to women in the class is three to one."
+        },
+        {
+          "number": 6,
+          "prompt": "It became __________ that something was wrong when she didn't answer her phone."
+        },
+        {
+          "number": 7,
+          "prompt": "The company's rapid __________ led to opening offices in fifteen new countries."
+        },
+        {
+          "number": 8,
+          "prompt": "Regular exercise helps build strong __________ and improves overall health."
+        },
+        {
+          "number": 9,
+          "prompt": "These are my __________ shoes that I wear to work every single day."
+        },
+        {
+          "number": 10,
+          "prompt": "The river marks the __________ between the two countries."
+        }
+      ]
+    },
+    {
+      "id": "2161-2170",
+      "label": "第七组",
+      "rangeStart": 2161,
+      "rangeEnd": 2170,
+      "wordList": [
+        "pollution",
+        "withdraw",
+        "scream",
+        "disorder",
+        "essay",
+        "furniture",
+        "symbol",
+        "demonstration",
+        "apartment",
+        "analyst"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "People began to __________ when they saw smoke coming from the building."
+        },
+        {
+          "number": 2,
+          "prompt": "The patient was diagnosed with an eating __________ and needed professional help."
+        },
+        {
+          "number": 3,
+          "prompt": "I need to __________ some money from my bank account to pay rent."
+        },
+        {
+          "number": 4,
+          "prompt": "Students must write a 500-word __________ about climate change for homework."
+        },
+        {
+          "number": 5,
+          "prompt": "We bought new __________ for our living room, including a sofa and coffee table."
+        },
+        {
+          "number": 6,
+          "prompt": "The financial __________ predicted that stock prices would rise next quarter."
+        },
+        {
+          "number": 7,
+          "prompt": "Air __________ in big cities is becoming a serious health problem."
+        },
+        {
+          "number": 8,
+          "prompt": "The dove is a universal __________ of peace recognized around the world."
+        },
+        {
+          "number": 9,
+          "prompt": "We rent a small __________ on the third floor of this building."
+        },
+        {
+          "number": 10,
+          "prompt": "Thousands of people joined the __________ to protest against the new law."
+        }
+      ]
+    },
+    {
+      "id": "2171-2180",
+      "label": "第八组",
+      "rangeStart": 2171,
+      "rangeEnd": 2180,
+      "wordList": [
+        "steel",
+        "strain",
+        "cake",
+        "wound",
+        "designer",
+        "platform",
+        "transform",
+        "restriction",
+        "foundation",
+        "innovation"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Buildings are often constructed using __________ frames because of their strength."
+        },
+        {
+          "number": 2,
+          "prompt": "Education can __________ people's lives and create new opportunities for success."
+        },
+        {
+          "number": 3,
+          "prompt": "The soldier received a serious __________ during the battle and needed surgery."
+        },
+        {
+          "number": 4,
+          "prompt": "The famous fashion __________ created a stunning collection for Paris Fashion Week."
+        },
+        {
+          "number": 5,
+          "prompt": "The organization built a strong __________ for future growth and development."
+        },
+        {
+          "number": 6,
+          "prompt": "The train will arrive at __________ number five in ten minutes."
+        },
+        {
+          "number": 7,
+          "prompt": "A travel __________ is in place because of the current health situation."
+        },
+        {
+          "number": 8,
+          "prompt": "My grandmother baked a delicious chocolate __________ for the party."
+        },
+        {
+          "number": 9,
+          "prompt": "Technological __________ drives economic progress in modern societies."
+        },
+        {
+          "number": 10,
+          "prompt": "The constant pressure at work caused significant __________ on his mental health."
+        }
+      ]
+    },
+    {
+      "id": "2181-2190",
+      "label": "第九组",
+      "rangeStart": 2181,
+      "rangeEnd": 2190,
+      "wordList": [
+        "singer",
+        "trail",
+        "trap",
+        "album",
+        "extension",
+        "loose",
+        "wealth",
+        "gradually",
+        "tank",
+        "evil"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The famous __________ performed at the concert in front of 50,000 fans."
+        },
+        {
+          "number": 2,
+          "prompt": "In fairy tales, the __________ villain is usually defeated by the hero."
+        },
+        {
+          "number": 3,
+          "prompt": "The hunter set a __________ to catch wild animals near the river."
+        },
+        {
+          "number": 4,
+          "prompt": "His family accumulated great __________ through successful business investments over generations."
+        },
+        {
+          "number": 5,
+          "prompt": "The screw is __________ and needs to be tightened with a screwdriver."
+        },
+        {
+          "number": 6,
+          "prompt": "The band released their new __________ last month, and it's already very popular."
+        },
+        {
+          "number": 7,
+          "prompt": "We requested a deadline __________ because we needed more time to finish."
+        },
+        {
+          "number": 8,
+          "prompt": "The pain in my knee disappeared __________ over several weeks of treatment."
+        },
+        {
+          "number": 9,
+          "prompt": "Hikers should stay on the marked __________ to avoid getting lost in the forest."
+        },
+        {
+          "number": 10,
+          "prompt": "The military __________ ran out of fuel during the long desert operation."
+        }
+      ]
+    },
+    {
+      "id": "2191-2200",
+      "label": "第十组",
+      "rangeStart": 2191,
+      "rangeEnd": 2200,
+      "wordList": [
+        "tune",
+        "grass",
+        "invitation",
+        "transition",
+        "frighten",
+        "bid",
+        "breed",
+        "extraordinary",
+        "brilliant",
+        "remarkable"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I can't remember the words, but I recognize the __________ of that song."
+        },
+        {
+          "number": 2,
+          "prompt": "We received a formal __________ to attend the ambassador's dinner party next week."
+        },
+        {
+          "number": 3,
+          "prompt": "Farmers __________ cattle for meat and dairy products on their ranches."
+        },
+        {
+          "number": 4,
+          "prompt": "Children love to play on the green __________ in the park."
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ from high school to university can be challenging for many students."
+        },
+        {
+          "number": 6,
+          "prompt": "Her __________ achievement in science earned her the Nobel Prize last year."
+        },
+        {
+          "number": 7,
+          "prompt": "Sudden loud noises can __________ small children and make them cry."
+        },
+        {
+          "number": 8,
+          "prompt": "The scientist made a __________ discovery that could change modern medicine forever."
+        },
+        {
+          "number": 9,
+          "prompt": "The company made a __________ of 2 million dollars to acquire their competitor."
+        },
+        {
+          "number": 10,
+          "prompt": "The young musician gave an __________ performance that surprised all the critics."
+        }
+      ]
+    }
+  ]
+}
