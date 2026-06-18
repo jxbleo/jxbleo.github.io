@@ -1461,6 +1461,51 @@
         '</div>';
     }
 
+    function renderLatestAnswerComparison(attempt) {
+        if (!attempt) {
+            return '<div class="latest-answer-panel empty">No latest attempt recorded yet.</div>';
+        }
+        var wrong = (attempt.question_results || []).filter(function(item) {
+            return item.correct !== true;
+        });
+        var heading = '<div class="latest-answer-head"><div><strong>Latest wrong answers</strong>' +
+            '<small>Attempt #' + escapeHtml(attempt.attempt_number || '1') +
+            ' · ' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</small></div>' +
+            '<span>' + escapeHtml(formatPercent(attempt.percentage)) + '</span></div>';
+        if (!wrong.length) {
+            return '<section class="latest-answer-panel all-correct">' + heading +
+                '<p>Latest attempt has no wrong answers.</p></section>';
+        }
+        return '<section class="latest-answer-panel">' + heading +
+            '<div class="latest-answer-grid latest-answer-grid-head">' +
+                '<span>Question</span><span>Student answer</span><span>Correct answer</span>' +
+            '</div>' +
+            wrong.map(function(item) {
+                var questionId = item.question_id || '?';
+                var answer = item.submitted_answer == null || item.submitted_answer === ''
+                    ? 'blank'
+                    : item.submitted_answer;
+                var correctAnswer = formatAnswerText(item.correct_answer, 'not available');
+                return '<div class="latest-answer-grid">' +
+                    '<span><strong>Q' + escapeHtml(questionId) + '</strong></span>' +
+                    '<span class="student-answer">' + escapeHtml(answer) + '</span>' +
+                    '<span class="correct-answer">' + escapeHtml(correctAnswer) + '</span>' +
+                '</div>';
+            }).join('') +
+        '</section>';
+    }
+
+    function answerRevealBadge(assignment) {
+        if (!assignment || assignment.source === 'self_study') {
+            return '<span class="answer-reveal-badge neutral">Self-study</span>';
+        }
+        if (assignment.answer_revealed === true || assignment.mastery_locked === true) {
+            var revealedAt = assignment.answer_revealed_at ? ' · ' + formatDate(assignment.answer_revealed_at, '', 'compact') : '';
+            return '<span class="answer-reveal-badge locked">Answers viewed · locked' + escapeHtml(revealedAt) + '</span>';
+        }
+        return '<span class="answer-reveal-badge fresh">Answers not viewed</span>';
+    }
+
     function renderAttemptTrend(attempts, assignment) {
         if (!attempts.length) {
             return '<div class="attempt-history-empty">No attempt records yet.</div>';
@@ -1514,7 +1559,9 @@
                 '<div class="attempt-detail-head"><div><strong>Attempt History</strong>' +
                 '<small>' + escapeHtml(sourceLabel) + (assignment.assigned_at ? ' · Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) : '') +
                 (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
-                '<span>' + escapeHtml(formatPercent(assignment.best_percentage)) + ' best</span></div>' +
+                '<div class="attempt-detail-actions">' + answerRevealBadge(assignment) +
+                '<span>' + escapeHtml(formatPercent(assignment.best_percentage)) + ' best</span></div></div>' +
+                renderLatestAnswerComparison(latestAttempt) +
                 renderAttemptTrend(attempts, assignment) +
                 (latestAttempt ? '<p class="wrong-summary">Latest: ' + escapeHtml(formatPercent(latestAttempt.percentage)) +
                     ' · ' + escapeHtml(attemptCorrectCount(latestAttempt)) + '/' + escapeHtml(attemptQuestionCount(latestAttempt)) +

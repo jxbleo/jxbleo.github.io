@@ -67,6 +67,10 @@ cp .qa-secrets.example .qa-secrets.local
   uses search plus Column, Students uses search plus Class, and assignment
   creation still uses the existing defaults and backend validation. Verified
   teacher syntax and release checks; static publish remains required.
+- Expanded teacher matrix detail dialogs with latest-attempt wrong-answer
+  comparisons and answer-view lock status from `teacherAdmin`. Verified teacher
+  and function syntax, release checks, and rebuilt the local function package;
+  static publish and `teacherAdmin` redeploy remain required.
 
 ### 2026-06-18
 

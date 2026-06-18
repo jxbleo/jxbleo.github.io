@@ -18,6 +18,8 @@
   Best` text buttons into clickable `PASSED` / `MASTERED` stamps.
 - Simplified teacher `Assign` into two minimal multi-select panels: `Work` with
   search and `Column`, and `Students` with search and `Class`.
+- Expanded teacher matrix detail dialogs with answer-view lock status and a
+  latest-attempt wrong-answer comparison table.
 
 ## 2026-06-18
 
