@@ -14,6 +14,8 @@
   clicked, while preserving explicit button actions.
 - Split the student account panel STAR row into yellow assigned-task stars and
   blue self-study/library stars.
+- Simplified teacher `Assign` into two minimal multi-select panels: `Work` with
+  search and `Column`, and `Students` with search and `Class`.
 
 ## 2026-06-18
 

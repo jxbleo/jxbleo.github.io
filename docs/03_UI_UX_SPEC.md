@@ -103,13 +103,16 @@ Review is the teacher-facing surface for student Argue requests.
 
 Teacher can:
 
-- select one set
-- filter sets by section/keyword
-- assign a filtered group of sets
-- filter students by search/class
-- assign to selected students
-- set due date
-- set passing/mastery thresholds
+- select one or more work items from a quiet `Work` panel
+- filter work with one search field and one `Column` select
+- select one or more students from a quiet `Students` panel
+- filter students with one search field and one `Class` select
+- assign the selected work to the selected students
+
+The Assign surface should stay visually minimal: no visible multi-step
+accordions, no legend, no bulk-select button, and no visible due/pass/mastery
+fields in the default flow. Assignment creation continues to use the existing
+server-side validation and default thresholds.
 
 Candidate states:
 
