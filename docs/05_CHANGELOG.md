@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-19
+
+### Changed
+
+- Simplified student Assignment task capsules to match Library card density and
+  replaced the finished drawer control with a sticky `Show Finished` / `Hide
+  Finished` button without counts.
+
 ## 2026-06-18
 
 ### Changed

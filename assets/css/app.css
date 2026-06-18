@@ -482,15 +482,19 @@ button { cursor: pointer; }
     justify-items: center;
     gap: 12px;
     margin-top: 16px;
+    align-items: start;
 }
 .finished-drawer-toggle {
+    position: sticky;
+    top: 12px;
+    z-index: 20;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     min-width: 0;
     min-height: 42px;
-    padding: 6px 9px 6px 7px;
+    padding: 6px 13px 6px 7px;
     border: 1px solid rgba(199, 132, 12, 0.2);
     border-radius: 999px;
     color: #6d4408;
@@ -517,32 +521,8 @@ button { cursor: pointer; }
     stroke-linecap: round;
     stroke-linejoin: round;
 }
-.finished-mini-copy {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
-}
 .finished-mini-label {
-    font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-}
-.finished-mini-copy strong {
-    color: #5c3904;
-    font-size: 1.35rem;
-    line-height: 1;
-    font-weight: 950;
-    text-shadow: 0 0 12px rgba(255, 229, 128, 0.72);
-}
-.finished-mini-chevron {
-    display: inline-flex;
-    align-items: center;
-    min-height: 24px;
-    padding: 0 8px;
-    border-radius: 999px;
-    color: rgba(88, 52, 2, 0.74);
-    background: rgba(255,255,255,0.46);
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     font-weight: 900;
     text-transform: uppercase;
 }
@@ -580,27 +560,6 @@ button { cursor: pointer; }
 .badge.failed { color: var(--danger); background: var(--danger-soft); }
 .badge.done { color: var(--success); background: var(--success-soft); }
 .badge.neutral { color: var(--accent-dark); background: var(--accent-soft); }
-.assignment-pills { display: flex; flex-wrap: wrap; gap: 7px; }
-.assignment-pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: 30px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: #f6faf8;
-    color: var(--muted);
-    font-size: 0.68rem;
-    font-weight: 850;
-}
-.assignment-pill.set-id { color: var(--ink); background: white; border: 1px solid var(--line); }
-.assignment-pill.due { color: #7a5528; background: #fff1da; }
-.assignment-pill.status.to_do { color: #7a5528; background: #fff1da; }
-.assignment-pill.status.passed { color: #1f6f87; background: #e3f4fb; }
-.assignment-pill.status.mastered { color: var(--success); background: var(--success-soft); }
-.assignment-pill.status.finished { color: #334155; background: #eef2f7; }
-.assignment-pill.milestone.passed { color: #1f6f87; background: #e3f4fb; }
-.assignment-pill.milestone.mastered { color: var(--success); background: var(--success-soft); }
-.assignment-pill.source.self-study { color: #1f6f87; background: #e3f4fb; }
 .card-button {
     display: inline-flex;
     align-items: center;

@@ -51,6 +51,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-19
+
+- Simplified student Assignment task capsules by removing the extra lower-left
+  status/set pills and matching the Library task-card density. Reworked the
+  gold Finished drawer control into a sticky `Show Finished` / `Hide Finished`
+  button with only a check icon and label. Verified dashboard syntax and static
+  references; browser smoke remains useful before publish.
+
 ### 2026-06-18
 
 - Imported `NGSL-L` into project vocabulary content, leaving `NGSL-K` out for
