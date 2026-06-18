@@ -43,6 +43,9 @@
 - Added class, recent-task count, and column controls to the teacher View
   matrix, removed the top summary cards from View, and made matrix cells open
   per-student assignment attempt details.
+- Refined the teacher View matrix: `Recent` now defaults to 7, the toolbar has
+  a `Date` basis selector, the student list shows names only, and clicked cells
+  show teacher-only correct answers for wrong questions.
 - Added front-end-only BBC `renderTheme` support and applied the `blue-studio`
   theme to `BBC-250619` and `BBC-250626` without changing grading IDs or
   attempt behavior.

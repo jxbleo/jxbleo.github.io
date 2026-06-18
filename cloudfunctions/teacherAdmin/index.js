@@ -781,13 +781,24 @@ async function listAssignments() {
   };
 }
 
-function attemptView(record) {
+function attemptView(record, gradingKey) {
   const attempt = recordData(record);
-  const questionResults = effectiveQuestionResults(attempt).map((item) => ({
-    question_id: item.question_id,
-    submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
-    correct: item.correct === true,
-  }));
+  const gradingAnswers = gradingKey && gradingKey.answers && typeof gradingKey.answers === "object"
+    ? gradingKey.answers
+    : {};
+  const questionResults = effectiveQuestionResults(attempt).map((item) => {
+    const questionId = item.question_id || item.id || "";
+    let correctAnswer = item.correct_answer;
+    if (questionId && Object.prototype.hasOwnProperty.call(gradingAnswers, questionId)) {
+      correctAnswer = gradingAnswers[questionId];
+    }
+    return {
+      question_id: questionId,
+      submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
+      correct: item.correct === true,
+      correct_answer: correctAnswer == null ? null : correctAnswer,
+    };
+  });
   return {
     attempt_id: attempt.attempt_id || attempt._id,
     student_uid: attempt.student_uid,
@@ -894,14 +905,22 @@ function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
 }
 
 async function listProgress() {
-  const [assignmentResult, attemptResult, studentResult, setResult] = await Promise.all([
+  const [assignmentResult, attemptResult, studentResult, setResult, gradingKeyResult] = await Promise.all([
     db.collection("assignments").limit(1000).get(),
     db.collection("attempts").limit(1000).get(),
     db.collection("students").limit(500).get(),
     db.collection("sets").limit(500).get(),
+    db.collection("grading_keys").limit(500).get(),
   ]);
   const assignments = (assignmentResult.data || []).map(recordData);
-  const attempts = (attemptResult.data || []).map(attemptView);
+  const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
+    const gradingKey = recordData(record);
+    return [gradingKey.set_id, gradingKey];
+  }));
+  const attempts = (attemptResult.data || []).map((record) => {
+    const attempt = recordData(record);
+    return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
+  });
   const studentMap = new Map((studentResult.data || []).map((record) => {
     const student = recordData(record);
     return [student.auth_uid, student];
@@ -967,11 +986,21 @@ async function listProgress() {
 }
 
 async function listAttempts() {
-  const result = await db.collection("attempts").limit(500).get();
+  const [result, gradingKeyResult] = await Promise.all([
+    db.collection("attempts").limit(500).get(),
+    db.collection("grading_keys").limit(500).get(),
+  ]);
+  const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
+    const gradingKey = recordData(record);
+    return [gradingKey.set_id, gradingKey];
+  }));
   const attempts = result.data || [];
   return {
     success: true,
-    attempts: attempts.map(attemptView).sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
+    attempts: attempts.map((record) => {
+      const attempt = recordData(record);
+      return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
+    }).sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
   };
 }
 

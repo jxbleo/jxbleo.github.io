@@ -103,6 +103,11 @@ cp .qa-secrets.example .qa-secrets.local
   that show the selected student's set records, attempt dates, durations,
   scores, and wrong-question answer summaries. Verified `teacher.js` syntax,
   `git diff --check`, and v11 resource tags.
+- Refined the teacher View matrix so `Recent` defaults to 7, the toolbar has a
+  `Date` basis selector, matrix student rows show names only, and wrong-question
+  summaries include teacher-only correct answers from `teacherAdmin`. Verified
+  `teacher.js` and `teacherAdmin` syntax; static publish and `teacherAdmin`
+  CloudBase redeploy are still required.
 - Aligned student Assignment task capsules with the Library task card structure,
   including the same eyebrow/set-id/title/action layout while preserving status,
   score, teacher reply, and star actions. Verified `dashboard.js` syntax,
