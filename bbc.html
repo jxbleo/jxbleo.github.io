@@ -134,6 +134,43 @@
             font-size: 0.94rem;
         }
 
+        .hero-tools {
+            position: relative;
+            z-index: 1;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .hero-tool-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 13px;
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(255,255,255,0.14);
+            font-size: 0.86rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .hero-tool-btn svg {
+            width: 17px;
+            height: 17px;
+            stroke-width: 2.4;
+        }
+
+        .hero-tool-btn:hover {
+            transform: translateY(-1px);
+        }
+
         #bbc-audio {
             display: none;
         }
@@ -1184,6 +1221,267 @@
             font-weight: 800;
         }
 
+        body.bbc-theme-blue-studio {
+            --primary: #162f63;
+            --accent: #3458f6;
+            --accent-bright: #16a3b8;
+            --bg: #eef5ff;
+            --card-bg: #ffffff;
+            --text-main: #20352f;
+            --text-light: #64756f;
+            --border-color: rgba(43, 76, 128, 0.14);
+            --correct-bg: #e9f9f3;
+            --wrong-bg: #fff1ef;
+            --ink: #1c302b;
+            --muted: #64756f;
+            --line: rgba(43, 76, 128, 0.14);
+            --border: rgba(43, 76, 128, 0.14);
+            --bg-page: #eef5ff;
+            --text-primary: #20352f;
+            --text-secondary: #64756f;
+            --text-muted: #64756f;
+            --accent-dark: #1d4ed8;
+            background:
+                radial-gradient(circle at 88% 8%, rgba(109,63,215,0.18), transparent 20rem),
+                radial-gradient(circle at 10% 92%, rgba(22,163,184,0.14), transparent 18rem),
+                #eef5ff;
+        }
+
+        body.bbc-theme-blue-studio .lesson-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 18px;
+            min-height: 245px;
+            color: var(--text-main);
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.96), rgba(246,250,255,0.90)),
+                radial-gradient(circle at 88% 30%, rgba(52,88,246,0.17), transparent 14rem);
+            border: 1px solid rgba(52,88,246,0.13);
+            border-radius: 24px;
+            box-shadow: 0 24px 70px rgba(30, 73, 156, 0.13);
+        }
+
+        body.bbc-theme-blue-studio .lesson-hero::before {
+            right: 38px;
+            top: 34px;
+            width: 140px;
+            height: 140px;
+            border: 1px solid rgba(52,88,246,0.16);
+            border-radius: 34px;
+            background: transparent;
+            transform: rotate(9deg);
+        }
+
+        body.bbc-theme-blue-studio .lesson-hero::after {
+            display: none;
+        }
+
+        body.bbc-theme-blue-studio #title-area {
+            position: relative;
+            z-index: 1;
+        }
+
+        body.bbc-theme-blue-studio .hero-kicker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            color: var(--accent);
+            background: transparent;
+            font-size: 0.78rem;
+            font-weight: 950;
+            letter-spacing: 0;
+        }
+
+        body.bbc-theme-blue-studio .hero-kicker-date {
+            color: #8a969f;
+            font-size: 0.72rem;
+            font-weight: 820;
+            text-transform: none;
+        }
+
+        body.bbc-theme-blue-studio h1 {
+            max-width: 770px;
+            margin: 8px 0 0;
+            color: #1c302b;
+            text-align: left;
+            font-size: clamp(2.25rem, 6vw, 4.8rem);
+            line-height: 0.96;
+            letter-spacing: 0;
+        }
+
+        body.bbc-theme-blue-studio .hero-subtitle,
+        body.bbc-theme-blue-studio .hero-meta {
+            display: none;
+        }
+
+        body.bbc-theme-blue-studio .hero-tools {
+            display: flex;
+            justify-content: flex-end;
+            align-self: start;
+            margin-top: 0;
+        }
+
+        body.bbc-theme-blue-studio .hero-tool-btn {
+            color: var(--accent);
+            border-color: rgba(52,88,246,0.22);
+            background: rgba(255,255,255,0.84);
+            box-shadow: 0 10px 24px rgba(52,88,246,0.08);
+        }
+
+        body.bbc-theme-blue-studio .sticky-player {
+            border-color: var(--border-color);
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 16px 40px rgba(30,73,156,0.08);
+        }
+
+        body.bbc-theme-blue-studio .sticky-player .play-btn,
+        body.bbc-theme-blue-studio .sticky-player .back-btn {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #6d3fd7);
+            box-shadow: 0 12px 28px rgba(52,88,246,0.18);
+        }
+
+        body.bbc-theme-blue-studio .progress-track {
+            background: #dbeafe;
+        }
+
+        body.bbc-theme-blue-studio .progress-fill {
+            background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+        }
+
+        body.bbc-theme-blue-studio .time-row,
+        body.bbc-theme-blue-studio .sticky-identity {
+            color: var(--text-light);
+        }
+
+        body.bbc-theme-blue-studio .content-card {
+            border-color: var(--border-color);
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 24px 70px rgba(30, 73, 156, 0.13);
+        }
+
+        body.bbc-theme-blue-studio ul.fill-blanks li {
+            border-color: rgba(52,88,246,0.12);
+            background: rgba(255,255,255,0.80);
+            box-shadow: 0 8px 18px rgba(30,73,156,0.04);
+        }
+
+        body.bbc-theme-blue-studio .blank-section-title {
+            color: var(--accent);
+            background: rgba(52,88,246,0.08);
+            border-color: rgba(52,88,246,0.14);
+            border-left-color: var(--accent);
+        }
+
+        body.bbc-theme-blue-studio .mc-question {
+            border-radius: 12px;
+            background: #f9fbff;
+        }
+
+        body.bbc-theme-blue-studio .mc-options li {
+            border-radius: 10px;
+        }
+
+        body.bbc-theme-blue-studio .mc-options li:hover:not(.disabled) {
+            background: #f0f6ff;
+        }
+
+        body.bbc-theme-blue-studio .mc-options li:has(input[type="radio"]:checked) {
+            background: #edf4ff;
+            border-color: rgba(52,88,246,0.46);
+        }
+
+        body.bbc-theme-blue-studio .submit-btn {
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent), #6d3fd7);
+            box-shadow: 0 16px 30px rgba(52,88,246,0.18);
+        }
+
+        body.bbc-theme-blue-studio .history-toolbar button {
+            border-color: rgba(52,88,246,.18);
+            color: var(--primary);
+            box-shadow: 0 10px 28px rgba(52,88,246,.12);
+        }
+
+        .lesson-words-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1001;
+            width: min(360px, 92vw);
+            height: 100vh;
+            padding: 22px;
+            border-left: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.96);
+            box-shadow: -20px 0 60px rgba(30,73,156,0.16);
+            transform: translateX(105%);
+            transition: transform 180ms ease;
+        }
+
+        .lesson-words-panel.open {
+            transform: translateX(0);
+        }
+
+        .lesson-words-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .lesson-words-head h2 {
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+
+        .lesson-words-close {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 900;
+        }
+
+        .lesson-word-item {
+            padding: 13px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: #f8fbff;
+            margin-bottom: 10px;
+        }
+
+        .lesson-word-item strong {
+            display: block;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .lesson-word-item span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            line-height: 1.42;
+            font-weight: 680;
+        }
+
+        .lesson-words-empty {
+            padding: 14px;
+            border: 1px dashed var(--border-color);
+            border-radius: 14px;
+            color: var(--text-muted);
+            background: #f8fbff;
+            font-weight: 700;
+        }
+
         @keyframes resultPop {
             from { opacity: 0; transform: translateY(18px) scale(0.94); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1530,6 +1828,16 @@
             .matching-section { padding: 15px 12px; }
             .matching-table th, .matching-table td { padding: 8px 10px; }
             .modal-box { padding: 24px 20px; }
+            body.bbc-theme-blue-studio .lesson-hero {
+                grid-template-columns: 1fr;
+                padding: 22px 20px;
+            }
+            body.bbc-theme-blue-studio .hero-tools {
+                justify-content: flex-start;
+            }
+            body.bbc-theme-blue-studio h1 {
+                font-size: clamp(2rem, 12vw, 3.2rem);
+            }
         }
     </style>
 </head>
@@ -1559,6 +1867,7 @@
     <div id="content" class="content-container">
         <section class="lesson-hero">
             <div id="title-area"></div>
+            <div class="hero-tools" id="hero-tools" aria-label="Lesson tools"></div>
             <div class="hero-meta" id="hero-meta"></div>
         </section>
 
@@ -1622,6 +1931,14 @@
                 </div>
             </div>
         </div>
+
+        <aside class="lesson-words-panel" id="lesson-words-panel" aria-label="My Words for this lesson">
+            <div class="lesson-words-head">
+                <h2>My Words</h2>
+                <button class="lesson-words-close" id="lesson-words-close" type="button" aria-label="Close My Words">×</button>
+            </div>
+            <div id="lesson-words-content" class="lesson-words-empty">Open this after saving words from the lesson.</div>
+        </aside>
     </div>
 </div>
 
@@ -1661,6 +1978,7 @@
     var blankAttemptState = {};
     var mcLockedAnswers = {};
     var answerRevealSavePromise = null;
+    var lessonWordsListenersReady = false;
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -2017,13 +2335,133 @@
         return '20' + match[1] + '-' + match[2] + '-' + match[3];
     }
 
+    function lessonRenderTheme(data) {
+        return String(data && (data.renderTheme || data.theme) || '').trim();
+    }
+
+    function applyRenderTheme(theme) {
+        var classes = document.body.className.split(/\s+/).filter(function(name) {
+            return name && name.indexOf('bbc-theme-') !== 0;
+        });
+        if (theme) classes.push('bbc-theme-' + theme.replace(/[^a-z0-9-]/gi, '-').toLowerCase());
+        document.body.className = classes.join(' ');
+    }
+
+    function renderHeroTitle(data, theme) {
+        var titleEl = document.getElementById('title-area');
+        var date = formatEpisodeDate(setId || data.id);
+        if (theme === 'blue-studio') {
+            titleEl.innerHTML =
+                '<div class="hero-kicker"><span>BBC 6 Minute English</span>' +
+                (date ? '<span class="hero-kicker-date">' + escapeHtml(date) + '</span>' : '') +
+                '</div>' +
+                '<h1 data-lesson-title>' + escapeHtml(data.title) + '</h1>';
+            document.getElementById('hero-meta').innerHTML = '';
+            return;
+        }
+        titleEl.innerHTML = '<h1 data-lesson-title>' + escapeHtml(data.title) + '</h1>' +
+            '<div class="hero-subtitle">BBC Six Minute English, ' + escapeHtml(date) + '</div>';
+        document.getElementById('hero-meta').innerHTML = '';
+    }
+
+    function renderHeroTools(theme) {
+        var tools = document.getElementById('hero-tools');
+        if (!tools) return;
+        if (theme !== 'blue-studio') {
+            tools.innerHTML = '';
+            return;
+        }
+        tools.innerHTML =
+            '<button class="hero-tool-btn" type="button" id="lesson-worksheet-btn">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
+                    '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>' +
+                '</svg>Worksheet</button>' +
+            '<button class="hero-tool-btn" type="button" id="lesson-my-words-btn">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
+                    '<path d="M4 19.5V6a2 2 0 0 1 2-2h12v16H6a2 2 0 0 1-2-2Z"></path><path d="M8 8h6"></path><path d="M8 12h7"></path>' +
+                '</svg>My Words</button>';
+        document.getElementById('lesson-worksheet-btn').addEventListener('click', function() {
+            window.print();
+        });
+        document.getElementById('lesson-my-words-btn').addEventListener('click', openLessonWordsPanel);
+    }
+
+    function renderLessonWords(words, message) {
+        var content = document.getElementById('lesson-words-content');
+        if (!content) return;
+        if (message) {
+            content.className = 'lesson-words-empty';
+            content.textContent = message;
+            return;
+        }
+        if (!words || !words.length) {
+            content.className = 'lesson-words-empty';
+            content.textContent = 'No saved words from this lesson yet. Select a word or short phrase in the exercise and add it to My Words.';
+            return;
+        }
+        content.className = '';
+        content.innerHTML = words.map(function(word) {
+            return '<article class="lesson-word-item">' +
+                '<strong>' + escapeHtml(word.text || '') + '</strong>' +
+                '<span>' + escapeHtml(word.context || word.source_title || 'Saved from this lesson') + '</span>' +
+            '</article>';
+        }).join('');
+    }
+
+    function loadLessonWords() {
+        if (studentId === 'VISITOR') {
+            renderLessonWords([], 'Log in as a student to see saved words for this lesson.');
+            return;
+        }
+        if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+            renderLessonWords([], 'My Words is not available on this page yet.');
+            return;
+        }
+        renderLessonWords([], 'Loading words from this lesson...');
+        window.MrCatCloud.callFunction('studentVocabulary', {
+            action: 'list',
+            limit: 200
+        }).then(function(result) {
+            if (!result || !result.success) throw new Error(result && result.message || 'Unable to load My Words.');
+            var words = (result.words || []).filter(function(word) {
+                return String(word.source_set_id || '') === String(setId || '');
+            });
+            renderLessonWords(words);
+        }).catch(function(error) {
+            renderLessonWords([], error.message || 'Unable to load My Words.');
+        });
+    }
+
+    function openLessonWordsPanel() {
+        var panel = document.getElementById('lesson-words-panel');
+        if (!panel) return;
+        panel.classList.add('open');
+        loadLessonWords();
+    }
+
+    function setupLessonWordsPanel() {
+        if (lessonWordsListenersReady) return;
+        lessonWordsListenersReady = true;
+        var close = document.getElementById('lesson-words-close');
+        if (close) {
+            close.addEventListener('click', function() {
+                document.getElementById('lesson-words-panel').classList.remove('open');
+            });
+        }
+        window.addEventListener('mrcat:vocab-saved', function(event) {
+            var panel = document.getElementById('lesson-words-panel');
+            if (!panel || !panel.classList.contains('open')) return;
+            loadLessonWords();
+        });
+    }
+
     function renderLesson(data) {
         lessonData = data;
-
-        var titleEl = document.getElementById('title-area');
-        titleEl.innerHTML = '<h1>' + data.title + '</h1>' +
-            '<div class="hero-subtitle">BBC Six Minute English, ' + formatEpisodeDate(setId || data.id) + '</div>';
-        document.getElementById('hero-meta').innerHTML = '';
+        var theme = lessonRenderTheme(data);
+        applyRenderTheme(theme);
+        setupLessonWordsPanel();
+        renderHeroTitle(data, theme);
+        renderHeroTools(theme);
 
         var audioSrc = document.getElementById('audio-source');
         audioSrc.src = data.audioSrc;

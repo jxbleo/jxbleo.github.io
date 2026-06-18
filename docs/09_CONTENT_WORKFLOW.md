@@ -136,6 +136,9 @@ BBC public runtime rules:
 - Use shared `bbc.html` for permanent BBC lessons.
 - Preserve existing standalone classroom BBC HTML only when the owner asks to
   match those pages.
+- Optional `renderTheme` metadata may change only the front-end presentation in
+  shared `bbc.html`; it must not change question IDs, grading keys, attempts,
+  History/Clear, Explain, or Argue behavior.
 - Fill-in-the-blank placeholders in `data/BBC-*.json` must be exactly `_____`.
 - If a blank accepts multiple answers, store `answer` as an array in canonical
   source data so the importer can create accepted variants.

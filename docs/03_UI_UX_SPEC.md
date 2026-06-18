@@ -198,6 +198,9 @@ Shared rules:
 
 ### BBC Practice
 
+- BBC lessons may opt into a front-end-only render theme through
+  `renderTheme` in their runtime JSON. The theme must not change grading IDs,
+  submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
