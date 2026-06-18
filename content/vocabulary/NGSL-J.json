@@ -1,0 +1,1618 @@
+{
+  "id": "NGSL-J",
+  "sectionId": "vocabulary",
+  "title": "NGSL-J",
+  "href": "vocabulary.html?set=NGSL-J",
+  "sortOrder": 1010,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1901,
+      "word": "accommodation",
+      "emoji": "🏨🏠",
+      "meaning": "n. 住宿，膳宿，适应",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place to stay or an adjustment for a need",
+      "wordForms": "accommodate (v.)"
+    },
+    {
+      "number": 1902,
+      "word": "highlight",
+      "emoji": "✨📍",
+      "meaning": "n. 高光，亮点；v. 强调，突出",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "to show or mark something as important",
+      "wordForms": "highlighted (adj.)"
+    },
+    {
+      "number": 1903,
+      "word": "reporter",
+      "emoji": "📰🎤",
+      "meaning": "n. 记者，通讯员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who gathers and reports news",
+      "wordForms": "report (v./n.), reportage (n.)"
+    },
+    {
+      "number": 1904,
+      "word": "climate",
+      "emoji": "🌦️🌡️",
+      "meaning": "n. 气候，风气，环境",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the usual weather or general situation",
+      "wordForms": "climatic (adj.), climatology (n.)"
+    },
+    {
+      "number": 1905,
+      "word": "shirt",
+      "emoji": "👕👔",
+      "meaning": "n. 衬衫，上衣",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a piece of clothing worn on the upper body",
+      "wordForms": "shirtless (adj.)"
+    },
+    {
+      "number": 1906,
+      "word": "exception",
+      "emoji": "❗🚫",
+      "meaning": "n. 例外，除外",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something not included in a rule",
+      "wordForms": "exceptional (adj.), exceptionally (adv.)"
+    },
+    {
+      "number": 1907,
+      "word": "corporation",
+      "emoji": "🏢💼",
+      "meaning": "n. 公司，法人团体",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large company",
+      "wordForms": "corporate (adj.), corporately (adv.)"
+    },
+    {
+      "number": 1908,
+      "word": "chip",
+      "emoji": "🍟💻",
+      "meaning": "n. 薯条，芯片；v. 削，切碎",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small piece of something or electronic part",
+      "wordForms": "chipped (adj.), chipset (n.)"
+    },
+    {
+      "number": 1909,
+      "word": "winner",
+      "emoji": "🏆🎉",
+      "meaning": "n. 获胜者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who wins",
+      "wordForms": "win (v./n.), winning (adj.)"
+    },
+    {
+      "number": 1910,
+      "word": "encounter",
+      "emoji": "🤝🚶",
+      "meaning": "v. 遇到，遭遇；n. 相遇，遭遇",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to meet or experience something unexpectedly",
+      "wordForms": "encountered (adj.), encountering (adj.)"
+    },
+    {
+      "number": 1911,
+      "word": "brown",
+      "emoji": "🟤🍫",
+      "meaning": "n. 棕色；adj. 棕色的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "the color of wood or chocolate",
+      "wordForms": "brownish (adj.)"
+    },
+    {
+      "number": 1912,
+      "word": "breathe",
+      "emoji": "🌬️😮‍💨",
+      "meaning": "v. 呼吸",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take air into and out of the lungs",
+      "wordForms": "breath (n.), breathable (adj.)"
+    },
+    {
+      "number": 1913,
+      "word": "excuse",
+      "emoji": "🙏😅",
+      "meaning": "n. 借口，理由；v. 原谅，辩解",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a reason given to explain a mistake or problem",
+      "wordForms": "excusable (adj.), excusably (adv.)"
+    },
+    {
+      "number": 1914,
+      "word": "partly",
+      "emoji": "🌓🔜",
+      "meaning": "adv. 部分地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "not completely; to some degree",
+      "wordForms": "partial (adj.), partially (adv.)"
+    },
+    {
+      "number": 1915,
+      "word": "tennis",
+      "emoji": "🎾🏟️",
+      "meaning": "n. 网球",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sport played with rackets and a ball",
+      "wordForms": "tennis player (n.)"
+    },
+    {
+      "number": 1916,
+      "word": "urban",
+      "emoji": "🏙️🚇",
+      "meaning": "adj. 城市的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a city",
+      "wordForms": "urbanize (v.), urbanization (n.)"
+    },
+    {
+      "number": 1917,
+      "word": "confuse",
+      "emoji": "😕🤔",
+      "meaning": "v. 使困惑",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone uncertain or unable to understand",
+      "wordForms": "confused (adj.), confusing (adj.), confusion (n.)"
+    },
+    {
+      "number": 1918,
+      "word": "southern",
+      "emoji": "🧭⬇️",
+      "meaning": "adj. 南方的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "in or from the south",
+      "wordForms": "south (n./adj.), southerly (adj./adv.)"
+    },
+    {
+      "number": 1919,
+      "word": "output",
+      "emoji": "📤🔊",
+      "meaning": "n. 输出，产量；v. 输出",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the amount produced by a person, machine, or system",
+      "wordForms": "outputted (adj.), outputting (adj.)"
+    },
+    {
+      "number": 1920,
+      "word": "beauty",
+      "emoji": "🌹😍",
+      "meaning": "n. 美丽，美人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being beautiful",
+      "wordForms": "beautiful (adj.), beautifully (adv.)"
+    },
+    {
+      "number": 1921,
+      "word": "massive",
+      "emoji": "🗿🏋️",
+      "meaning": "adj. 巨大的，大量的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very large and heavy",
+      "wordForms": "massiveness (n.), massively (adv.)"
+    },
+    {
+      "number": 1922,
+      "word": "install",
+      "emoji": "⚙️🔧",
+      "meaning": "v. 安装，设置",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put equipment or software in place for use",
+      "wordForms": "installation (n.), installer (n.)"
+    },
+    {
+      "number": 1923,
+      "word": "calculate",
+      "emoji": "🧮📊",
+      "meaning": "v. 计算，估算",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to work out a number or answer",
+      "wordForms": "calculation (n.), calculator (n.), calculable (adj.)"
+    },
+    {
+      "number": 1924,
+      "word": "mouse",
+      "emoji": "🐭🖱️",
+      "meaning": "n. 老鼠，鼠标",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small animal or computer pointing device",
+      "wordForms": "mousy (adj.)"
+    },
+    {
+      "number": 1925,
+      "word": "mathematics",
+      "emoji": "➗📐",
+      "meaning": "n. 数学",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the study of numbers, shapes, and patterns",
+      "wordForms": "mathematical (adj.), mathematically (adv.)"
+    },
+    {
+      "number": 1926,
+      "word": "upper",
+      "emoji": "⬆️👆",
+      "meaning": "adj. 上面的，高级的；n. 上部",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "higher or above another part",
+      "wordForms": "uppers (n.), uppermost (adj.)"
+    },
+    {
+      "number": 1927,
+      "word": "creation",
+      "emoji": "🌏🎨",
+      "meaning": "n. 创造，创作物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something made or the act of making",
+      "wordForms": "create (v.), creative (adj.), creator (n.)"
+    },
+    {
+      "number": 1928,
+      "word": "occupy",
+      "emoji": "🏠👮",
+      "meaning": "v. 占据，占领",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to fill, use, or take control of a place",
+      "wordForms": "occupation (n.), occupant (n.), occupied (adj.)"
+    },
+    {
+      "number": 1929,
+      "word": "outline",
+      "emoji": "📝📐",
+      "meaning": "n. 轮廓，概要；v. 概述，画出轮廓",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a general description or edge shape",
+      "wordForms": "outlined (adj.), outlining (adj.)"
+    },
+    {
+      "number": 1930,
+      "word": "sufficient",
+      "emoji": "✅📦",
+      "meaning": "adj. 足够的，充分的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "enough for a purpose",
+      "wordForms": "sufficiently (adv.), sufficiency (n.)"
+    },
+    {
+      "number": 1931,
+      "word": "update",
+      "emoji": "🔄🆕",
+      "meaning": "v. 更新；n. 更新内容",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to make something more modern or current",
+      "wordForms": "updated (adj.), updating (adj.)"
+    },
+    {
+      "number": 1932,
+      "word": "luck",
+      "emoji": "🍀🎲",
+      "meaning": "n. 运气，幸运",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "good or bad things that happen by chance",
+      "wordForms": "lucky (adj.), luckily (adv.)"
+    },
+    {
+      "number": 1933,
+      "word": "preserve",
+      "emoji": "🥫🛡️",
+      "meaning": "v. 保护，保存；n. 果酱，防护物",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to keep something safe or in its original state",
+      "wordForms": "preservative (adj./n.), preservation (n.)"
+    },
+    {
+      "number": 1934,
+      "word": "split",
+      "emoji": "🔪💔",
+      "meaning": "v. 分裂，分开；n. 裂缝，分裂",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to divide into parts",
+      "wordForms": "splitting (adj.), split-up (n.)"
+    },
+    {
+      "number": 1935,
+      "word": "swing",
+      "emoji": "🏏⛓️",
+      "meaning": "v. 摆动，摇摆；n. 秋千，摆动",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move back and forth or change suddenly",
+      "wordForms": "swinging (adj.), swinger (n.)"
+    },
+    {
+      "number": 1936,
+      "word": "illness",
+      "emoji": "🤒🏥",
+      "meaning": "n. 疾病",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a disease or period of being sick",
+      "wordForms": "ill (adj.), ill-health (n.)"
+    },
+    {
+      "number": 1937,
+      "word": "journalist",
+      "emoji": "📰🖊️",
+      "meaning": "n. 新闻工作者，记者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who writes or reports news",
+      "wordForms": "journalism (n.), journalistic (adj.)"
+    },
+    {
+      "number": 1938,
+      "word": "sudden",
+      "emoji": "⚡💥",
+      "meaning": "adj. 突然的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening quickly and unexpectedly",
+      "wordForms": "suddenly (adv.), suddenness (n.)"
+    },
+    {
+      "number": 1939,
+      "word": "advertisement",
+      "emoji": "📢🗞️",
+      "meaning": "n. 广告",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a notice or video that promotes something",
+      "wordForms": "advertise (v.), advertising (n.), advertiser (n.)"
+    },
+    {
+      "number": 1940,
+      "word": "consistent",
+      "emoji": "🧩🔗",
+      "meaning": "adj. 一致的，连贯的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "staying the same in quality or behavior",
+      "wordForms": "consistency (n.), consistently (adv.)"
+    },
+    {
+      "number": 1941,
+      "word": "originally",
+      "emoji": "🏁🔜",
+      "meaning": "adv. 起初，原本",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at first or in the beginning",
+      "wordForms": "original (adj.), origin (n.)"
+    },
+    {
+      "number": 1942,
+      "word": "aside",
+      "emoji": "👉➡️",
+      "meaning": "adv. 在旁边，除去",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "to one side or away from the main point",
+      "wordForms": "aside from (prep.)"
+    },
+    {
+      "number": 1943,
+      "word": "comfort",
+      "emoji": "🛋️🤗",
+      "meaning": "n. 舒适，安慰；v. 安慰",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a feeling of ease or relief",
+      "wordForms": "comfortable (adj.), comfortably (adv.), comforting (adj.)"
+    },
+    {
+      "number": 1944,
+      "word": "secondly",
+      "emoji": "2️⃣➡️",
+      "meaning": "adv. 第二，其次",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "used to introduce a second point",
+      "wordForms": "second (adj./n.), secondary (adj.)"
+    },
+    {
+      "number": 1945,
+      "word": "severe",
+      "emoji": "🚑⚠️",
+      "meaning": "adj. 严重的，严厉的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very serious or harsh",
+      "wordForms": "severity (n.), severely (adv.)"
+    },
+    {
+      "number": 1946,
+      "word": "gene",
+      "emoji": "🧬🌱",
+      "meaning": "n. 基因",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a unit of heredity passed from parents",
+      "wordForms": "genetic (adj.), genetically (adv.), genetics (n.)"
+    },
+    {
+      "number": 1947,
+      "word": "prospect",
+      "emoji": "🔍🎯",
+      "meaning": "n. 前景，可能性；v. 勘探",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a possibility or chance for the future",
+      "wordForms": "prospective (adj.), prospector (n.)"
+    },
+    {
+      "number": 1948,
+      "word": "snow",
+      "emoji": "❄️⛄",
+      "meaning": "n. 雪；v. 下雪",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "soft white ice crystals that fall from clouds",
+      "wordForms": "snowy (adj.), snowstorm (n.)"
+    },
+    {
+      "number": 1949,
+      "word": "plot",
+      "emoji": "🗺️📖",
+      "meaning": "n. 情节，阴谋，地块；v. 密谋，绘图",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the events of a story or a secret plan",
+      "wordForms": "plotting (adj.), plotter (n.)"
+    },
+    {
+      "number": 1950,
+      "word": "neck",
+      "emoji": "🦒👔",
+      "meaning": "n. 脖子，颈部",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the body part between the head and shoulders",
+      "wordForms": "necktie (n.), neckline (n.)"
+    },
+    {
+      "number": 1951,
+      "word": "criterion",
+      "emoji": "📏✅",
+      "meaning": "n. 标准，准则",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a standard used to judge something",
+      "wordForms": "criteria (n., 复数)"
+    },
+    {
+      "number": 1952,
+      "word": "primarily",
+      "emoji": "🔝📌",
+      "meaning": "adv. 主要地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "mainly or chiefly",
+      "wordForms": "primary (adj.), prime (adj./n.)"
+    },
+    {
+      "number": 1953,
+      "word": "integrate",
+      "emoji": "🔗🤝",
+      "meaning": "v. 整合，结合",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to combine parts into a whole",
+      "wordForms": "integration (n.), integrative (adj.), integrated (adj.)"
+    },
+    {
+      "number": 1954,
+      "word": "criticism",
+      "emoji": "🗣️📝",
+      "meaning": "n. 批评，评论",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "comments that judge or point out problems",
+      "wordForms": "criticize (v.), critical (adj.), critic (n.)"
+    },
+    {
+      "number": 1955,
+      "word": "convention",
+      "emoji": "🏛️🤝",
+      "meaning": "n. 会议，惯例",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large meeting or accepted way of doing things",
+      "wordForms": "conventional (adj.), conventionally (adv.)"
+    },
+    {
+      "number": 1956,
+      "word": "bet",
+      "emoji": "🎲💸",
+      "meaning": "v. 打赌；n. 赌注",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to risk money or confidence on a result",
+      "wordForms": "betting (adj.), bettor (n.)"
+    },
+    {
+      "number": 1957,
+      "word": "retain",
+      "emoji": "🛑📥",
+      "meaning": "v. 保持，保留",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to keep something",
+      "wordForms": "retention (n.), retentive (adj.)"
+    },
+    {
+      "number": 1958,
+      "word": "sequence",
+      "emoji": "🔢📈",
+      "meaning": "n. 顺序，序列",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "things arranged in a particular order",
+      "wordForms": "sequential (adj.), sequentially (adv.)"
+    },
+    {
+      "number": 1959,
+      "word": "plain",
+      "emoji": "🌄👕",
+      "meaning": "adj. 平的，朴素的；n. 平原",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "simple, clear, or without decoration",
+      "wordForms": "plainly (adv.), plainness (n.)"
+    },
+    {
+      "number": 1960,
+      "word": "volunteer",
+      "emoji": "🦸‍♂️🙏",
+      "meaning": "n. 志愿者；v. 自愿",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "to offer to do something without being forced or paid",
+      "wordForms": "voluntary (adj.), voluntarily (adv.)"
+    },
+    {
+      "number": 1961,
+      "word": "rural",
+      "emoji": "🌾🚜",
+      "meaning": "adj. 农村的，乡下的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the countryside",
+      "wordForms": "rurality (n.)"
+    },
+    {
+      "number": 1962,
+      "word": "calm",
+      "emoji": "😌🌊",
+      "meaning": "adj. 冷静的，平静的；v. 使平静；n. 平静",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "peaceful and not worried",
+      "wordForms": "calmly (adv.), calmness (n.)"
+    },
+    {
+      "number": 1963,
+      "word": "abandon",
+      "emoji": "🏃🚪",
+      "meaning": "v. 放弃，遗弃",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to leave something or someone behind",
+      "wordForms": "abandonment (n.), abandoned (adj.)"
+    },
+    {
+      "number": 1964,
+      "word": "examination",
+      "emoji": "📝🔬",
+      "meaning": "n. 检查，考试",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a careful check or a test",
+      "wordForms": "examine (v.), examiner (n.)"
+    },
+    {
+      "number": 1965,
+      "word": "silence",
+      "emoji": "🤫🔕",
+      "meaning": "n. 沉默，安静；v. 使安静",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the absence of sound",
+      "wordForms": "silent (adj.), silently (adv.)"
+    },
+    {
+      "number": 1966,
+      "word": "rapidly",
+      "emoji": "🏃💨",
+      "meaning": "adv. 快速地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "very quickly",
+      "wordForms": "rapid (adj.), rapidity (n.)"
+    },
+    {
+      "number": 1967,
+      "word": "efficient",
+      "emoji": "⚡🛠️",
+      "meaning": "adj. 高效的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "working well without waste",
+      "wordForms": "efficiency (n.), efficiently (adv.)"
+    },
+    {
+      "number": 1968,
+      "word": "revolution",
+      "emoji": "🔄✊",
+      "meaning": "n. 革命，旋转",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a major change or overthrow of a system",
+      "wordForms": "revolutionary (adj./n.), revolutionize (v.)"
+    },
+    {
+      "number": 1969,
+      "word": "delight",
+      "emoji": "😄🎉",
+      "meaning": "n. 高兴，愉快；v. 使高兴",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "great pleasure",
+      "wordForms": "delightful (adj.), delighted (adj.), delightfully (adv.)"
+    },
+    {
+      "number": 1970,
+      "word": "spell",
+      "emoji": "✍️🔤",
+      "meaning": "v. 拼写，招致；n. 咒语，一段时间",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to say or write the letters of a word",
+      "wordForms": "spelling (n.), speller (n.)"
+    },
+    {
+      "number": 1971,
+      "word": "premise",
+      "emoji": "📋🏛️",
+      "meaning": "n. 前提，房屋场地",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an idea that an argument is based on",
+      "wordForms": "premises (n., 复数), premised (adj.)"
+    },
+    {
+      "number": 1972,
+      "word": "lean",
+      "emoji": "🏋️‍♂️📉",
+      "meaning": "v. 倾斜，依靠；adj. 瘦的，精简的",
+      "partOfSpeech": "v. / adj.",
+      "simpleDefinition": "to bend or move toward something",
+      "wordForms": "leanness (n.), leaning (n./adj.)"
+    },
+    {
+      "number": 1973,
+      "word": "dramatic",
+      "emoji": "🎭📈",
+      "meaning": "adj. 戏剧性的，激动人心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "sudden, exciting, or connected with drama",
+      "wordForms": "drama (n.), dramatically (adv.)"
+    },
+    {
+      "number": 1974,
+      "word": "differ",
+      "emoji": "🤷‍♂️🔀",
+      "meaning": "v. 不同，相异",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be unlike or not the same",
+      "wordForms": "different (adj.), difference (n.), differently (adv.)"
+    },
+    {
+      "number": 1975,
+      "word": "grateful",
+      "emoji": "🙏😊",
+      "meaning": "adj. 感激的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "thankful",
+      "wordForms": "gratefully (adv.), gratitude (n.)"
+    },
+    {
+      "number": 1976,
+      "word": "protein",
+      "emoji": "🍗🧬",
+      "meaning": "n. 蛋白质",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a nutrient needed for growth and repair",
+      "wordForms": "proteic (adj.)"
+    },
+    {
+      "number": 1977,
+      "word": "bike",
+      "emoji": "🚲🛣️",
+      "meaning": "n. 自行车；v. 骑自行车",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a bicycle or to ride a bicycle",
+      "wordForms": "biker (n.), biking (n.)"
+    },
+    {
+      "number": 1978,
+      "word": "distribute",
+      "emoji": "📦➗",
+      "meaning": "v. 分发，分配",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give out or spread among people",
+      "wordForms": "distribution (n.), distributive (adj.), distributor (n.)"
+    },
+    {
+      "number": 1979,
+      "word": "intellectual",
+      "emoji": "🤓📚",
+      "meaning": "adj. 智力的，知识的；n. 知识分子",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to thinking and learning",
+      "wordForms": "intellect (n.), intellectually (adv.)"
+    },
+    {
+      "number": 1980,
+      "word": "derive",
+      "emoji": "↔️📖",
+      "meaning": "v. 获得，起源于",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to come from a source",
+      "wordForms": "derivation (n.), derivative (adj./n.)"
+    },
+    {
+      "number": 1981,
+      "word": "crucial",
+      "emoji": "🗝️🔑",
+      "meaning": "adj. 至关重要的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "extremely important",
+      "wordForms": "crucially (adv.)"
+    },
+    {
+      "number": 1982,
+      "word": "unemployment",
+      "emoji": "🚫💼",
+      "meaning": "n. 失业",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the state of not having a job",
+      "wordForms": "unemployed (adj.), employ (v.), employment (n.)"
+    },
+    {
+      "number": 1983,
+      "word": "wheel",
+      "emoji": "🛞🚗",
+      "meaning": "n. 轮子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a round object that turns to move something",
+      "wordForms": "wheeled (adj.), wheeling (n.)"
+    },
+    {
+      "number": 1984,
+      "word": "crop",
+      "emoji": "🌾🥦",
+      "meaning": "n. 庄稼，收成；v. 收割，裁剪",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "plants grown for food or business",
+      "wordForms": "cropping (n.), cropper (n.)"
+    },
+    {
+      "number": 1985,
+      "word": "minority",
+      "emoji": "👥🔢",
+      "meaning": "n. 少数，少数民族",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a smaller part of a group",
+      "wordForms": "minor (adj./n.), minoritize (v.)"
+    },
+    {
+      "number": 1986,
+      "word": "origin",
+      "emoji": "🌱🏁",
+      "meaning": "n. 起源，出处",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the beginning or source of something",
+      "wordForms": "original (adj./n.), originate (v.), originality (n.)"
+    },
+    {
+      "number": 1987,
+      "word": "interpretation",
+      "emoji": "🗣️🔍",
+      "meaning": "n. 解释，翻译",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an explanation of the meaning of something",
+      "wordForms": "interpret (v.), interpretative (adj.)"
+    },
+    {
+      "number": 1988,
+      "word": "gentleman",
+      "emoji": "🧑‍💼🎩",
+      "meaning": "n. 绅士，先生",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a polite or well-mannered man",
+      "wordForms": "gentle (adj.), gentility (n.)"
+    },
+    {
+      "number": 1989,
+      "word": "drama",
+      "emoji": "🎬🎭",
+      "meaning": "n. 戏剧，剧本",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an exciting situation or a play",
+      "wordForms": "dramatic (adj.), dramatize (v.)"
+    },
+    {
+      "number": 1990,
+      "word": "landscape",
+      "emoji": "🌄🌳",
+      "meaning": "n. 风景，地形",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the visible features of an area of land",
+      "wordForms": "landscaping (n.), landscaper (n.)"
+    },
+    {
+      "number": 1991,
+      "word": "educate",
+      "emoji": "🎓🏫",
+      "meaning": "v. 教育",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to teach or give knowledge",
+      "wordForms": "education (n.), educational (adj.), educator (n.)"
+    },
+    {
+      "number": 1992,
+      "word": "toy",
+      "emoji": "🧸🚗",
+      "meaning": "n. 玩具",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an object children play with",
+      "wordForms": "toyed (adj.), toyful (adj.)"
+    },
+    {
+      "number": 1993,
+      "word": "fault",
+      "emoji": "⚡🕳️",
+      "meaning": "n. 错误，缺点，断层；v. 挑剔",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a mistake, weakness, or crack in the earth",
+      "wordForms": "faulty (adj.), faultless (adj.)"
+    },
+    {
+      "number": 1994,
+      "word": "exhibit",
+      "emoji": "🖼️👩‍🔬",
+      "meaning": "v. 展览，显示；n. 展品",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to show something publicly",
+      "wordForms": "exhibition (n.), exhibitor (n.), exhibited (adj.)"
+    },
+    {
+      "number": 1995,
+      "word": "minor",
+      "emoji": "👶🔻",
+      "meaning": "adj. 较小的，未成年的；n. 未成年人，小调",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "small or less important",
+      "wordForms": "minority (n.), minorly (adv.)"
+    },
+    {
+      "number": 1996,
+      "word": "hunt",
+      "emoji": "🦌🏹",
+      "meaning": "v. 狩猎，搜寻；n. 狩猎",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to chase animals or search for something",
+      "wordForms": "hunter (n.), hunting (n.)"
+    },
+    {
+      "number": 1997,
+      "word": "storm",
+      "emoji": "🌩️🌪️",
+      "meaning": "n. 风暴；v. 猛攻",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "violent weather with wind, rain, or snow",
+      "wordForms": "stormy (adj.), storminess (n.)"
+    },
+    {
+      "number": 1998,
+      "word": "thick",
+      "emoji": "🍔📚",
+      "meaning": "adj. 厚的，浓的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "wide from one side to the other or dense",
+      "wordForms": "thickness (n.), thickly (adv.)"
+    },
+    {
+      "number": 1999,
+      "word": "achievement",
+      "emoji": "🏅🎓",
+      "meaning": "n. 成就，完成",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something successful done through effort",
+      "wordForms": "achieve (v.), achievable (adj.)"
+    },
+    {
+      "number": 2000,
+      "word": "negotiate",
+      "emoji": "🤝📑",
+      "meaning": "v. 谈判，协商",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to discuss in order to reach an agreement",
+      "wordForms": "negotiation (n.), negotiable (adj.), negotiator (n.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1901-1910",
+      "label": "第一组",
+      "rangeStart": 1901,
+      "rangeEnd": 1910,
+      "wordList": [
+        "accommodation",
+        "highlight",
+        "reporter",
+        "climate",
+        "shirt",
+        "exception",
+        "corporation",
+        "chip",
+        "winner",
+        "encounter"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Without __________, the rule applies to all employees regardless of their position in the company.",
+          "questionKey": "1901-1910:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The political __________ has become increasingly polarized over the past decade.",
+          "questionKey": "1901-1910:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The documentary will __________ the most pressing environmental issues facing our generation.",
+          "questionKey": "1901-1910:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The multinational __________ announced record profits despite the economic downturn.",
+          "questionKey": "1901-1910:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The investigative __________ spent months uncovering evidence of corporate fraud.",
+          "questionKey": "1901-1910:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Finding affordable __________ in London during peak tourist season can be extremely challenging.",
+          "questionKey": "1901-1910:6"
+        },
+        {
+          "number": 7,
+          "prompt": "During her travels through Southeast Asia, she would frequently __________ local artisans selling their crafts.",
+          "questionKey": "1901-1910:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He wore a crisp white __________ to the job interview to make a professional impression.",
+          "questionKey": "1901-1910:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The semiconductor __________ shortage has significantly impacted global automobile production.",
+          "questionKey": "1901-1910:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The Olympic __________ was greeted with a hero's welcome upon returning to her hometown.",
+          "questionKey": "1901-1910:10"
+        }
+      ]
+    },
+    {
+      "id": "1911-1920",
+      "label": "第二组",
+      "rangeStart": 1911,
+      "rangeEnd": 1920,
+      "wordList": [
+        "brown",
+        "breathe",
+        "excuse",
+        "partly",
+        "tennis",
+        "urban",
+        "confuse",
+        "southern",
+        "output",
+        "beauty"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She practices __________ three times a week at the local sports club.",
+          "questionKey": "1911-1920:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The leaves turn golden __________ in autumn, creating a spectacular display.",
+          "questionKey": "1911-1920:2"
+        },
+        {
+          "number": 3,
+          "prompt": "After running the marathon, he could barely __________ and needed immediate medical attention.",
+          "questionKey": "1911-1920:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The natural __________ of the Norwegian fjords attracts millions of tourists annually.",
+          "questionKey": "1911-1920:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The rapid __________ development has led to significant environmental concerns in the region.",
+          "questionKey": "1911-1920:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The instructions were so poorly written that they only served to __________ customers further.",
+          "questionKey": "1911-1920:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The factory's __________ has increased by 40% since implementing the new automation system.",
+          "questionKey": "1911-1920:7"
+        },
+        {
+          "number": 8,
+          "prompt": "His constant tardiness and weak __________ for missing deadlines frustrated his colleagues.",
+          "questionKey": "1911-1920:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The __________ states experienced unprecedented flooding last spring.",
+          "questionKey": "1911-1920:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The success of the project was __________ due to the dedication of the volunteer team.",
+          "questionKey": "1911-1920:10"
+        }
+      ]
+    },
+    {
+      "id": "1921-1930",
+      "label": "第三组",
+      "rangeStart": 1921,
+      "rangeEnd": 1930,
+      "wordList": [
+        "massive",
+        "install",
+        "calculate",
+        "mouse",
+        "mathematics",
+        "upper",
+        "creation",
+        "occupy",
+        "outline",
+        "sufficient"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The company plans to __________ new security software across all departments next month.",
+          "questionKey": "1921-1930:1"
+        },
+        {
+          "number": 2,
+          "prompt": "We need __________ evidence before we can proceed with the prosecution.",
+          "questionKey": "1921-1930:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The architect presented a detailed __________ of the proposed building design to the committee.",
+          "questionKey": "1921-1930:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Advanced __________ skills are essential for careers in data science and engineering.",
+          "questionKey": "1921-1930:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The laboratory __________ escaped from its cage during the night shift.",
+          "questionKey": "1921-1930:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Scientists use complex algorithms to __________ the trajectory of satellites orbiting Earth.",
+          "questionKey": "1921-1930:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ earthquake caused widespread destruction across three provinces.",
+          "questionKey": "1921-1930:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The protesters continued to __________ the government building for the third consecutive day.",
+          "questionKey": "1921-1930:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The artist's latest __________ has been praised for its innovative use of recycled materials.",
+          "questionKey": "1921-1930:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The __________ floors of the building offer panoramic views of the city skyline.",
+          "questionKey": "1921-1930:10"
+        }
+      ]
+    },
+    {
+      "id": "1931-1940",
+      "label": "第四组",
+      "rangeStart": 1931,
+      "rangeEnd": 1940,
+      "wordList": [
+        "update",
+        "luck",
+        "preserve",
+        "split",
+        "swing",
+        "illness",
+        "journalist",
+        "sudden",
+        "advertisement",
+        "consistent"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "His __________ departure from the meeting raised suspicions among board members.",
+          "questionKey": "1931-1940:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The political party began to __________ over disagreements regarding economic policy.",
+          "questionKey": "1931-1940:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The software requires users to __________ to the latest version for security purposes.",
+          "questionKey": "1931-1940:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Public opinion can __________ dramatically depending on media coverage of events.",
+          "questionKey": "1931-1940:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Through sheer __________ and determination, she managed to secure funding for her startup.",
+          "questionKey": "1931-1940:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The committee voted to __________ the historic building from demolition.",
+          "questionKey": "1931-1940:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The company's online __________ went viral, reaching millions of users.",
+          "questionKey": "1931-1940:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Her performance has been remarkably __________ throughout the entire season.",
+          "questionKey": "1931-1940:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The investigative __________ won a Pulitzer Prize for her exposé on government corruption.",
+          "questionKey": "1931-1940:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Mental __________ remains heavily stigmatized in many conservative societies.",
+          "questionKey": "1931-1940:10"
+        }
+      ]
+    },
+    {
+      "id": "1941-1950",
+      "label": "第五组",
+      "rangeStart": 1941,
+      "rangeEnd": 1950,
+      "wordList": [
+        "originally",
+        "aside",
+        "comfort",
+        "secondly",
+        "severe",
+        "gene",
+        "prospect",
+        "snow",
+        "plot",
+        "neck"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The novel's intricate __________ kept readers guessing until the final chapter.",
+          "questionKey": "1941-1950:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Whiplash injuries to the __________ are common in rear-end vehicle collisions.",
+          "questionKey": "1941-1950:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The ergonomic chair provides excellent lumbar support and __________ during long working hours.",
+          "questionKey": "1941-1950:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The building was __________ designed as a warehouse before being converted into apartments.",
+          "questionKey": "1941-1950:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Setting money __________ for retirement should be a priority for young professionals.",
+          "questionKey": "1941-1950:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Heavy __________ disrupted transportation networks across the entire region.",
+          "questionKey": "1941-1950:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of finding employment in this field has improved significantly this year.",
+          "questionKey": "1941-1950:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Firstly, we need to address the budget concerns; __________, we must consider the timeline.",
+          "questionKey": "1941-1950:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The medication can cause __________ side effects if not taken as prescribed.",
+          "questionKey": "1941-1950:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Researchers have identified a specific __________ linked to increased longevity.",
+          "questionKey": "1941-1950:10"
+        }
+      ]
+    },
+    {
+      "id": "1951-1960",
+      "label": "第六组",
+      "rangeStart": 1951,
+      "rangeEnd": 1960,
+      "wordList": [
+        "criterion",
+        "primarily",
+        "integrate",
+        "criticism",
+        "convention",
+        "bet",
+        "retain",
+        "sequence",
+        "plain",
+        "volunteer"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Schools are working to better __________ technology into traditional classroom teaching methods.",
+          "questionKey": "1951-1960:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The film received harsh __________ from reviewers for its weak screenplay and poor acting.",
+          "questionKey": "1951-1960:2"
+        },
+        {
+          "number": 3,
+          "prompt": "She decided to __________ at the local homeless shelter every weekend.",
+          "questionKey": "1951-1960:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The instructions were written in __________ language to ensure everyone could understand them.",
+          "questionKey": "1951-1960:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The company's strategy focuses __________ on expanding into emerging markets.",
+          "questionKey": "1951-1960:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The annual medical __________ attracts thousands of healthcare professionals from around the world.",
+          "questionKey": "1951-1960:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I wouldn't __________ against her succeeding—she's incredibly determined and talented.",
+          "questionKey": "1951-1960:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The main __________ for selection is relevant professional experience in the field.",
+          "questionKey": "1951-1960:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The DNA __________ provided crucial evidence in solving the criminal case.",
+          "questionKey": "1951-1960:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Companies struggle to __________ experienced employees in today's competitive job market.",
+          "questionKey": "1951-1960:10"
+        }
+      ]
+    },
+    {
+      "id": "1961-1970",
+      "label": "第七组",
+      "rangeStart": 1961,
+      "rangeEnd": 1970,
+      "wordList": [
+        "rural",
+        "calm",
+        "abandon",
+        "examination",
+        "silence",
+        "rapidly",
+        "efficient",
+        "revolution",
+        "delight",
+        "spell"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The medical __________ revealed several abnormalities that required further investigation.",
+          "questionKey": "1961-1970:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The industrial __________ transformed society from agrarian to urban-based economies.",
+          "questionKey": "1961-1970:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Access to quality healthcare remains a significant challenge in __________ communities.",
+          "questionKey": "1961-1970:3"
+        },
+        {
+          "number": 4,
+          "prompt": "To her __________, the surprise party was attended by friends from across the country.",
+          "questionKey": "1961-1970:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Could you __________ your name for me? I want to make sure I have it correct.",
+          "questionKey": "1961-1970:5"
+        },
+        {
+          "number": 6,
+          "prompt": "An uncomfortable __________ fell over the room after his controversial statement.",
+          "questionKey": "1961-1970:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The family was forced to __________ their home due to the approaching wildfire.",
+          "questionKey": "1961-1970:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The technology sector is evolving __________, making continuous learning essential.",
+          "questionKey": "1961-1970:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The meditation techniques helped her remain __________ during stressful situations at work.",
+          "questionKey": "1961-1970:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The new manufacturing process is far more __________ than the previous method.",
+          "questionKey": "1961-1970:10"
+        }
+      ]
+    },
+    {
+      "id": "1971-1980",
+      "label": "第八组",
+      "rangeStart": 1971,
+      "rangeEnd": 1980,
+      "wordList": [
+        "premise",
+        "lean",
+        "dramatic",
+        "differ",
+        "grateful",
+        "protein",
+        "bike",
+        "distribute",
+        "intellectual",
+        "derive"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The documentary showed the __________ transformation of the city over three decades.",
+          "questionKey": "1971-1980:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The university prides itself on fostering __________ curiosity and critical thinking skills.",
+          "questionKey": "1971-1980:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Cultural attitudes toward work-life balance __________ significantly between countries.",
+          "questionKey": "1971-1980:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I'm deeply __________ for all the support you've provided during this difficult period.",
+          "questionKey": "1971-1980:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The charity organization will __________ food packages to families affected by the disaster.",
+          "questionKey": "1971-1980:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Many English words __________ from Latin and Greek roots.",
+          "questionKey": "1971-1980:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Athletes require adequate __________ intake to support muscle recovery and growth.",
+          "questionKey": "1971-1980:7"
+        },
+        {
+          "number": 8,
+          "prompt": "In times of economic uncertainty, companies tend to __________ toward conservative investment strategies.",
+          "questionKey": "1971-1980:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The entire argument is based on the false __________ that correlation implies causation.",
+          "questionKey": "1971-1980:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Many urban professionals now __________ to work to avoid traffic congestion and reduce emissions.",
+          "questionKey": "1971-1980:10"
+        }
+      ]
+    },
+    {
+      "id": "1981-1990",
+      "label": "第九组",
+      "rangeStart": 1981,
+      "rangeEnd": 1990,
+      "wordList": [
+        "crucial",
+        "unemployment",
+        "wheel",
+        "crop",
+        "minority",
+        "origin",
+        "interpretation",
+        "gentleman",
+        "drama",
+        "landscape"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The poem is open to more than one __________ depending on the reader's perspective.",
+          "questionKey": "1981-1990:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The invention of the __________ revolutionized transportation and commerce in ancient civilizations.",
+          "questionKey": "1981-1990:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Climate change is threatening __________ yields worldwide, raising food security concerns.",
+          "questionKey": "1981-1990:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Protecting __________ rights is fundamental to maintaining a democratic society.",
+          "questionKey": "1981-1990:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The Scottish __________ features rugged mountains, pristine lochs, and rolling highlands.",
+          "questionKey": "1981-1990:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Historians continue to debate the __________ of this ancient manuscript.",
+          "questionKey": "1981-1990:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Securing adequate funding is __________ to the success of this research project.",
+          "questionKey": "1981-1990:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Rising __________ rates have become a major concern for policymakers across Europe.",
+          "questionKey": "1981-1990:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The elderly __________ held the door open for everyone entering the building.",
+          "questionKey": "1981-1990:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The political __________ unfolding in parliament has captivated the nation's attention.",
+          "questionKey": "1981-1990:10"
+        }
+      ]
+    },
+    {
+      "id": "1991-2000",
+      "label": "第十组",
+      "rangeStart": 1991,
+      "rangeEnd": 2000,
+      "wordList": [
+        "educate",
+        "toy",
+        "fault",
+        "exhibit",
+        "minor",
+        "hunt",
+        "storm",
+        "thick",
+        "achievement",
+        "negotiate"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ fog made driving conditions extremely hazardous on the motorway.",
+          "questionKey": "1991-2000:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The tropical __________ caused widespread power outages and property damage.",
+          "questionKey": "1991-2000:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The earthquake occurred along a geological __________ line that had been dormant for decades.",
+          "questionKey": "1991-2000:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The museum will __________ rare artifacts from ancient Egypt for the next six months.",
+          "questionKey": "1991-2000:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The accident resulted in only __________ injuries, fortunately no one was seriously hurt.",
+          "questionKey": "1991-2000:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Public campaigns aim to __________ citizens about the dangers of misinformation online.",
+          "questionKey": "1991-2000:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Vintage __________ collections can be worth substantial amounts at auction.",
+          "questionKey": "1991-2000:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Conservation groups oppose the annual __________ for endangered species.",
+          "questionKey": "1991-2000:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Union representatives will __________ with management over wage increases and working conditions.",
+          "questionKey": "1991-2000:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Graduating summa cum laude was her greatest academic __________ to date.",
+          "questionKey": "1991-2000:10"
+        }
+      ]
+    }
+  ]
+}

@@ -215,6 +215,33 @@ Rules to preserve:
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.
 
+### NGSL/NAWL DOCX intake checks
+
+Some NGSL/NAWL vocabulary source files are produced by the same document
+workflow, so repeated issues can appear across units. Before converting one of
+these `.docx` files into project data, extract the word table, quiz groups, and
+answer explanations and verify:
+
+- the word table has the expected contiguous number range, usually 100 rows;
+- no vocabulary word is duplicated inside the same unit unless the owner
+  deliberately confirms the source list contains duplicates;
+- each quiz unit has 10 groups, each group has 10 questions, and each question
+  has one matching answer/explanation;
+- the answer for each quiz item is present in the displayed group options, or
+  the prompt is rewritten so the base word fits naturally;
+- prompts do not leak the answer elsewhere in the sentence;
+- prompts use the required grammar form, such as plural, past tense, or
+  third-person singular, instead of forcing an ungrammatical base word;
+- answer explanations do not teach incorrect patterns, for example confusing a
+  direct-object verb with a different prepositional pattern;
+- word-form columns are not copied into `simpleDefinition`; suspicious derived
+  forms should be cleaned or omitted.
+
+If an answer needs an inflected form in the final student-facing prompt, either
+make the Word Bank option use that exact answer form or rewrite the prompt so
+the base vocabulary word is correct. Keep the `words[]` list anchored to the
+base vocabulary item, and keep answers/explanations in private grading data.
+
 ## 11. Temporary Classroom Material
 
 Temporary classroom HTML may remain standalone when speed and classroom use are

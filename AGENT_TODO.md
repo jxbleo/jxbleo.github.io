@@ -45,11 +45,26 @@ cp .qa-secrets.example .qa-secrets.local
 - [ ] Decide whether the student dashboard should show two unlabeled star
       counters. The current header displays separate assignment and self-study
       counts, but they appear only as adjacent `★` numbers.
+- [ ] Before importing `NGSL-D`, confirm or replace the duplicate unit words
+      found in the source material: `quiet`, `relatively`, and `attract` each
+      appears twice in the 1301-1400 unit.
 
 ## Done
 
 ### 2026-06-18
 
+- Reviewed and corrected NGSL/NAWL DOCX vocabulary sources for D/E/F/I/J in
+  `/private/tmp/ngsl-corrected`. Verified corrected DOCX structure, answer
+  coverage, prompt leak checks, and rendered all five files to PNG contact
+  sheets. E/F/I/J are import-ready from the source-QA perspective; D still needs
+  owner confirmation for duplicate source words before import.
+- Imported corrected `NGSL-E`, `NGSL-F`, `NGSL-I`, and `NGSL-J` into project
+  vocabulary content with public JSON/JS fallback files, regenerated
+  `data/home-catalog.*`, and prepared ignored CloudBase import data. Verified
+  public files have no answer fields, private grading source has 100 answers
+  per set, HTTP loading succeeds, and `npm run verify:release` passes. Owner
+  still needs to run the CloudBase content import before authenticated
+  Library/Explore and grading use the new sets.
 - Added teacher View matrix `Class`, numeric-select `Recent`, and `Column`
   filters, removed the top View summary cards, and kept clickable matrix cells
   that show the selected student's set records, attempt dates, durations,

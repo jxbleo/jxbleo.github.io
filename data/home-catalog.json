@@ -1498,6 +1498,30 @@
       "visible": true
     },
     {
+      "id": "NGSL-E",
+      "sectionId": "vocabulary",
+      "title": "NGSL-E",
+      "href": "vocabulary.html?set=NGSL-E",
+      "displayValue": "NGSL-E",
+      "sortValue": 1005,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "NGSL-F",
+      "sectionId": "vocabulary",
+      "title": "NGSL-F",
+      "href": "vocabulary.html?set=NGSL-F",
+      "displayValue": "NGSL-F",
+      "sortValue": 1006,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "NGSL-G",
       "sectionId": "vocabulary",
       "title": "NGSL-G",
@@ -1516,6 +1540,30 @@
       "href": "vocabulary.html?set=NGSL-H",
       "displayValue": "NGSL-H",
       "sortValue": 1008,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "NGSL-I",
+      "sectionId": "vocabulary",
+      "title": "NGSL-I",
+      "href": "vocabulary.html?set=NGSL-I",
+      "displayValue": "NGSL-I",
+      "sortValue": 1009,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "NGSL-J",
+      "sectionId": "vocabulary",
+      "title": "NGSL-J",
+      "href": "vocabulary.html?set=NGSL-J",
+      "displayValue": "NGSL-J",
+      "sortValue": 1010,
       "topic": "",
       "tags": [],
       "note": "100 Words · 10 Quiz Groups",

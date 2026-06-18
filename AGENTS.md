@@ -1069,6 +1069,32 @@ agents should read this before changing `vocabulary.html`,
   `Apparently`, or `flowers`. The separate Words list should still show the
   base vocabulary word.
 
+### NGSL/NAWL DOCX source QA
+
+Some NGSL/NAWL `.docx` vocabulary sources are produced by the same workflow,
+so the same source-data issues can repeat across units. Before importing one:
+
+- extract the word table, quiz groups, and answer explanations mechanically;
+- verify the expected 100-word contiguous number range, 10 groups, 100
+  questions, and 100 answers;
+- reject or pause on duplicate words inside a unit unless the owner confirms
+  the list is intentionally duplicated;
+- check every quiz item has exactly one blank and that the answer is either in
+  the displayed group options or the prompt has been rewritten so the base word
+  fits naturally;
+- scan for answer leakage where the target word appears elsewhere in the
+  prompt;
+- fix prompts that require plural, past-tense, third-person singular, or other
+  inflected forms before generating project data;
+- keep answer explanations aligned with the corrected prompt and do not teach
+  incorrect collocations or grammar patterns;
+- do not map Word Forms into `simpleDefinition`; clean suspicious derived forms
+  or omit them.
+
+If the `.docx` has no separate `答案解析` heading, the answer section may begin
+when the group headings restart from `第一组` after the 10 quiz groups. Treat the
+11th group heading as the likely answer-section boundary.
+
 ### Vocabulary UI rules
 
 - The four mode labels should stay short and parallel; `Word List` was renamed
