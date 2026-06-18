@@ -48,7 +48,10 @@ Frontend rule:
 
 - `passed` and `mastered` both appear inside the collapsed `Finished` completion button.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The finished control should emphasize completion quantity first; detailed score and STAR signals belong inside the expanded finished task list.
+- The finished control is a compact sticky gold button that reads `Show Finished`
+  when collapsed and `Hide Finished` when expanded. Keep the visible control to
+  a check icon plus that label; do not put counts or extra action text inside
+  the button.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
 - The student account panel should be quiet: no separate achievement card, no
@@ -59,8 +62,6 @@ Student cards should show:
 
 - the same compact task capsule structure used by Library task cards
 - title
-- score or progress
-- due/assigned status where useful
 - `Go`, `Improve Accuracy`, or `Beat Your Best`
 - STAR state if mastered
 

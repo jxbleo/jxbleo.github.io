@@ -177,12 +177,6 @@
         return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
     }
 
-    function statusLabel(status) {
-        if (status === 'mastered') return 'MASTERED';
-        if (status === 'passed') return 'PASSED';
-        return 'TO-DO';
-    }
-
     function normalizedStatus(status) {
         if (status === 'done') return 'mastered';
         if (status === 'failed' || status === 'not_done') return 'to_do';
@@ -372,39 +366,6 @@
         window.setTimeout(function() { flyer.remove(); }, 950);
     }
 
-    function scorePill(item, status) {
-        if (status === 'to_do') {
-            if (item.best_correct_count != null && item.best_question_count != null) {
-                return 'Only ' + item.best_correct_count + '/' + item.best_question_count;
-            }
-            return 'No attempts';
-        }
-        var value = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
-        if (value == null) return 'FINISHED';
-        return 'Accuracy ' + value + '%';
-    }
-
-    function percentValue(value, fallback) {
-        var number = Number(value);
-        if (!isFinite(number)) number = Number(fallback || 0);
-        return Math.max(0, Math.min(100, number));
-    }
-
-    function scoreValue(item) {
-        var value = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
-        return percentValue(value, 0);
-    }
-
-    function compactAssignmentTitle(title) {
-        return String(title || 'Practice')
-            .replace(/^\s*BBC\s+6\s+Minute\s+English\s*[:|-]\s*/i, '')
-            .replace(/^\s*BBC\s+Six\s+Minute\s+English\s*[:|-]\s*/i, '')
-            .replace(/^\s*IELTS\s+Reading\s*[:|-]\s*/i, '')
-            .replace(/^\s*IELTS\s+Listening\s*[:|-]\s*/i, '')
-            .replace(/^\s*Vocabulary\s*[:|-]\s*/i, '')
-            .trim() || String(title || 'Practice');
-    }
-
     function todoAssignments() {
         return (state.assignments || [])
             .filter(function(item) { return normalizedStatus(item.status) === 'to_do'; })
@@ -522,7 +483,6 @@
         var finished = isFinishedStatus(status);
         var action = status === 'to_do' ? 'Go' : (status === 'mastered' ? 'Beat Your Best' : 'Improve Accuracy');
         var actionClass = status === 'to_do' ? ' task-go-button' : '';
-        var badgeClass = finished ? 'finished' : status;
         var replyCount = teacherReplyCount(item);
         var replyKey = replyKeyForItem(item);
         var href = practiceHref(Object.assign({}, set, {
@@ -531,12 +491,6 @@
             best_percentage: item.best_percentage
         }), item.assignment_id);
         var collected = isStarCollected(item);
-        var sourcePill = item.source === 'self_study'
-            ? '<span class="assignment-pill source self-study">SELF STUDY</span>'
-            : '';
-        var milestonePill = finished
-            ? '<span class="assignment-pill milestone ' + escapeHtml(status) + '">' + escapeHtml(statusLabel(status)) + '</span>'
-            : '';
         var replyButton = replyCount
             ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
                 'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
@@ -556,12 +510,6 @@
                     '<span>' + escapeHtml(setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(set.title || setId || 'Practice') + '</h3>' +
-                '<div class="library-task-foot"><div class="assignment-pills">' +
-                    sourcePill +
-                    '<span class="assignment-pill set-id">' + escapeHtml(setId || set.title) + '</span>' +
-                    milestonePill +
-                    (status === 'to_do' ? '' : '<span class="assignment-pill status ' + escapeHtml(badgeClass) + '">' + escapeHtml(scorePill(item, status)) + '</span>') +
-                '</div></div>' +
             '</div>' +
             '<div class="library-task-actions">' +
                 (status === 'mastered' && !collected
@@ -741,8 +689,7 @@
         return '<section class="finished-drawer' + (expanded ? ' expanded' : '') + '">' +
             '<button class="finished-drawer-toggle" id="finished-drawer-toggle" type="button" aria-expanded="' + expanded + '">' +
                 finishedIconSvg() +
-                '<span class="finished-mini-copy"><span class="finished-mini-label">Finished</span><strong>' + escapeHtml(finished.length) + '</strong></span>' +
-                '<span class="finished-mini-chevron" aria-hidden="true">' + (expanded ? 'Hide' : 'Open') + '</span>' +
+                '<span class="finished-mini-label">' + (expanded ? 'Hide Finished' : 'Show Finished') + '</span>' +
             '</button>' +
             (expanded ? '<div class="finished-drawer-body">' +
                 finishedList +
