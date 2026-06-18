@@ -124,10 +124,10 @@ View is the teacher's progress and student-inspection surface.
 
 It should include:
 
-- an assignment matrix/table for scanning completion by student and task, with class, recent-task count, date-basis, and column filters plus responsive horizontal scrolling on small screens
-- matrix filters use `Class`, `Recent`, `Date`, and `Column`; `Recent` defaults to `7` and is a numeric select from 1 through 20 that controls how many newest task columns are shown, `Date` controls the date basis used for recent ordering, and `Column` defaults to `All`
+- an assignment matrix/table for scanning completion by student and task, with class, column, recent-task count, and date-range filters plus responsive horizontal scrolling on small screens
+- matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
 - the matrix student column shows only the student name, without Login ID or class
-- clickable matrix cells open the student's records for that set, including attempt dates, time spent, scores, wrong question summaries, and teacher-only correct answers
+- clickable matrix cells open a floating dialog with a close button for the student's records for that set, including attempt dates, time spent, scores, wrong question summaries, and teacher-only correct answers
 - a grouped `By student` / `By class` / `By task` progress view
 - `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
 - `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail
