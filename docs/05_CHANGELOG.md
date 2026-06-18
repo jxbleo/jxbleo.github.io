@@ -32,6 +32,8 @@
   into quiet profile rows with stars and finished count.
 - Aligned student Assignment task capsules with the compact Library task card
   structure.
+- Added class and date-range controls to the teacher View matrix and made
+  matrix cells open per-student assignment attempt details.
 
 ### Documentation
 

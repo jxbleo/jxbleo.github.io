@@ -1510,7 +1510,8 @@ button { cursor: pointer; }
     font-weight: 850;
     white-space: nowrap;
 }
-.matrix-class-filter {
+.matrix-class-filter,
+.matrix-date-filter {
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -1518,7 +1519,8 @@ button { cursor: pointer; }
     font-size: 0.72rem;
     font-weight: 850;
 }
-.matrix-class-filter select {
+.matrix-class-filter select,
+.matrix-date-filter input {
     min-height: 34px;
     max-width: 180px;
     border: 1px solid rgba(124,58,237,0.16);
@@ -1565,13 +1567,61 @@ button { cursor: pointer; }
 .progress-matrix-cell {
     display: grid;
     place-items: center;
+    min-height: 44px;
+    padding: 9px 10px;
+    border: 0;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    border-left: 1px solid rgba(124,58,237,0.10);
     text-align: center;
+    font-size: 0.75rem;
+    font-weight: 850;
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease, outline-color 140ms ease;
+}
+.progress-matrix-cell:hover {
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 0 2px rgba(124, 58, 237, 0.14);
+}
+.progress-matrix-cell.selected {
+    outline: 3px solid rgba(124, 58, 237, 0.22);
+    outline-offset: -3px;
 }
 .progress-matrix-cell.to_do { color: #7a5528; background: #fff8ea; }
 .progress-matrix-cell.passed { color: #1f6f87; background: #e3f4fb; }
 .progress-matrix-cell.mastered { color: var(--success); background: var(--success-soft); }
 .progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
 .progress-matrix-cell.empty { color: #a8b5b1; background: rgba(255,255,255,0.42); }
+.progress-matrix-detail {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid rgba(124,58,237,0.12);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.72);
+}
+.progress-matrix-detail-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+}
+.progress-matrix-detail-head strong,
+.progress-matrix-detail-head small {
+    display: block;
+}
+.progress-matrix-detail-head small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+.progress-matrix-detail-head > span {
+    color: #6d28d9;
+    font-size: 0.82rem;
+    font-weight: 900;
+    white-space: nowrap;
+}
 .assignment-progress-mode-tabs {
     display: inline-grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2719,6 +2769,35 @@ button { cursor: pointer; }
     font-weight: 750;
 }
 .attempt-history-score { text-align: right; }
+.attempt-wrong-list {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(124,58,237,0.09);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+.attempt-wrong-list strong {
+    width: 100%;
+    color: var(--ink);
+    font-size: 0.74rem;
+}
+.attempt-wrong-list span {
+    display: inline-flex;
+    gap: 5px;
+    max-width: 100%;
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: #8a341f;
+    background: #fff1e8;
+}
+.attempt-wrong-list.ok {
+    color: var(--success);
+}
 .attempt-all-correct {
     margin: 9px 0 0;
     color: var(--success);
@@ -3068,7 +3147,9 @@ button { cursor: pointer; }
         width: 100%;
     }
     .matrix-class-filter,
-    .matrix-class-filter select {
+    .matrix-date-filter,
+    .matrix-class-filter select,
+    .matrix-date-filter input {
         width: 100%;
         max-width: none;
     }
@@ -3076,7 +3157,8 @@ button { cursor: pointer; }
         grid-template-columns: minmax(126px, 1fr) repeat(6, minmax(68px, .65fr));
         min-width: 560px;
     }
-    .progress-matrix-row > span {
+    .progress-matrix-row > span,
+    .progress-matrix-cell {
         min-height: 40px;
         padding: 8px 7px;
         font-size: 0.68rem;
