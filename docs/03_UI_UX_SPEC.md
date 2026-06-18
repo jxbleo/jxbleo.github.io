@@ -248,6 +248,9 @@ Important mobile rules:
 - Teacher preview and student mode can accidentally share UI paths; keep reveal logic separate.
 - Vocabulary fallback JS is needed for local/file loading.
 - My Words selection should avoid answer/explanation/result regions.
+- On touch devices, My Words should preserve the captured word or phrase while
+  dismissing the browser's native selection callout so the site save button is
+  the primary action.
 
 ## 9. Future UI Improvements
 

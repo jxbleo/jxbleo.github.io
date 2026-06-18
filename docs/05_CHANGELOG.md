@@ -38,6 +38,9 @@
 - Added front-end-only BBC `renderTheme` support and applied the `blue-studio`
   theme to `BBC-250619` and `BBC-250626` without changing grading IDs or
   attempt behavior.
+- Adjusted My Words touch handling so mobile and tablet selection can show the
+  site save button without leaving the browser's native selection callout over
+  the interaction.
 
 ### Documentation
 

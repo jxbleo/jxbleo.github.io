@@ -6,6 +6,8 @@
     var selectedText = '';
     var selectedContext = '';
     var hideTimer = null;
+    var suppressSelectionHideUntil = 0;
+    var lastTouchSaveAt = 0;
     var BLOCKED_SELECTOR = [
         'input',
         'textarea',
@@ -141,16 +143,33 @@
         return set ? name + '?set=' + encodeURIComponent(set) : name;
     }
 
+    function isTouchLikeDevice() {
+        return (window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches)
+            || navigator.maxTouchPoints > 0;
+    }
+
     function ensureStyles() {
         if (document.getElementById('mrcat-vocab-style')) return;
         var style = document.createElement('style');
         style.id = 'mrcat-vocab-style';
         style.textContent =
-            '.mrcat-vocab-popover{position:fixed;z-index:10020;display:none;min-height:38px;padding:0 13px;border:1px solid rgba(19,118,109,.2);border-radius:999px;color:#fff;background:#13766d;box-shadow:0 14px 38px rgba(10,52,47,.22);font:850 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap}' +
+            '.mrcat-vocab-popover{position:fixed;z-index:10020;display:none;min-height:38px;padding:0 13px;border:1px solid rgba(19,118,109,.2);border-radius:999px;color:#fff;background:#13766d;box-shadow:0 14px 38px rgba(10,52,47,.22);font:850 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}' +
+            '.mrcat-vocab-popover *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}' +
             '.mrcat-vocab-popover.show{display:inline-flex;align-items:center;justify-content:center}.mrcat-vocab-popover:disabled{opacity:.72;cursor:wait}' +
             '.mrcat-vocab-toast{position:fixed;z-index:10021;left:50%;bottom:24px;max-width:min(420px,calc(100% - 32px));padding:12px 15px;border:1px solid rgba(19,118,109,.16);border-radius:14px;color:#18332f;background:rgba(255,255,255,.97);box-shadow:0 18px 52px rgba(10,52,47,.18);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:0;transform:translate(-50%,12px);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}' +
             '.mrcat-vocab-toast.show{opacity:1;transform:translate(-50%,0)}';
         document.head.appendChild(style);
+    }
+
+    function holdCapturedSelection() {
+        if (!isTouchLikeDevice()) return;
+        suppressSelectionHideUntil = Date.now() + 500;
+        window.setTimeout(function() {
+            var selection = window.getSelection && window.getSelection();
+            if (!selection || selection.isCollapsed) return;
+            suppressSelectionHideUntil = Date.now() + 500;
+            selection.removeAllRanges();
+        }, 40);
     }
 
     function ensureButton() {
@@ -162,8 +181,22 @@
         button.textContent = 'Add to My Words';
         button.addEventListener('pointerdown', function(event) {
             event.preventDefault();
+            event.stopPropagation();
         });
-        button.addEventListener('click', saveSelection);
+        button.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }, { passive: false });
+        button.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            lastTouchSaveAt = Date.now();
+            saveSelection();
+        }, { passive: false });
+        button.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+        button.addEventListener('click', handleButtonClick);
         document.body.appendChild(button);
         return button;
     }
@@ -189,10 +222,17 @@
         if (button) button.classList.remove('show');
     }
 
+    function handleButtonClick(event) {
+        if (event) event.preventDefault();
+        if (Date.now() - lastTouchSaveAt < 700) return;
+        saveSelection();
+    }
+
     function showButtonForSelection() {
         if (isTeacherMode()) return;
         var range = selectedRange();
         if (!range) {
+            if (Date.now() < suppressSelectionHideUntil) return;
             hideButton();
             return;
         }
@@ -217,6 +257,7 @@
         popover.style.top = top + 'px';
         popover.style.transform = 'translateX(-50%)';
         popover.classList.add('show');
+        holdCapturedSelection();
     }
 
     function saveSelection() {
@@ -272,7 +313,7 @@
         if (event.key === 'Shift' || event.key.indexOf('Arrow') !== -1) scheduleSelectionCheck();
     });
     document.addEventListener('pointerdown', function(event) {
-        if (button && event.target !== button) hideButton();
+        if (button && !button.contains(event.target)) hideButton();
     }, true);
     window.addEventListener('scroll', hideButton, true);
     window.addEventListener('resize', hideButton);
