@@ -311,7 +311,7 @@
             if (animate) window.setTimeout(function() { selfStudyStarCounter.classList.remove('pop'); }, 700);
         }
         if (starCounter) {
-            starCounter.textContent = '★ ' + (state.assignmentStarCount + state.selfStudyStarCount);
+            starCounter.textContent = '★ ' + state.assignmentStarCount;
             starCounter.classList.toggle('pop', animate === true);
             if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
         }
@@ -503,7 +503,8 @@
         return '<article class="resource-card library-task-card assignment-task-card' +
             (finished ? ' finished-assignment-card ' + escapeHtml(status) : '') +
             (replyCount ? ' has-teacher-replies' : '') +
-            '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '">' +
+            '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '"' +
+            ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(set.title || setId || 'assignment') + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
                     '<p class="eyebrow accent">' + escapeHtml(eyebrow) + '</p>' +
@@ -683,13 +684,14 @@
 
     function renderFinishedPanel(finished) {
         var expanded = state.finishedExpanded === true;
+        var label = expanded ? 'Hide Finished' : 'Show Finished';
         var finishedList = finished.length
             ? '<div class="task-list finished-list">' + finished.map(taskCard).join('') + '</div>'
             : '<div class="empty-card">Finished work will collect here after you pass an assignment.</div>';
         return '<section class="finished-drawer' + (expanded ? ' expanded' : '') + '">' +
             '<button class="finished-drawer-toggle" id="finished-drawer-toggle" type="button" aria-expanded="' + expanded + '">' +
                 finishedIconSvg() +
-                '<span class="finished-mini-label">' + (expanded ? 'Hide Finished' : 'Show Finished') + '</span>' +
+                '<span class="finished-mini-label">' + label + '</span>' +
             '</button>' +
             (expanded ? '<div class="finished-drawer-body">' +
                 finishedList +
@@ -1318,12 +1320,14 @@
         var finishedCount = (state.assignments || []).filter(function(item) {
             return isFinishedStatus(item.status);
         }).length;
-        var totalStars = state.assignmentStarCount + state.selfStudyStarCount;
         profileContent.innerHTML =
             '<div class="profile-grid">' +
                 '<section class="profile-card account-summary-card">' +
                     '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
-                    '<div class="profile-row"><span>Stars</span><strong class="star-counter account-row-star" id="star-counter">★ ' + escapeHtml(totalStars) + '</strong></div>' +
+                    '<div class="profile-row"><span>Stars</span><strong class="account-star-pair">' +
+                        '<span class="star-counter assignment-star-counter account-row-star" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
+                        '<span class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
+                    '</strong></div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +

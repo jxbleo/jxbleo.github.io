@@ -8,8 +8,12 @@
 ### Changed
 
 - Simplified student Assignment task capsules to match Library card density and
-  replaced the finished drawer control with a sticky `Show Finished` / `Hide
-  Finished` button without counts.
+  replaced the finished drawer control with a sticky stamp-style `Show
+  Finished` / `Hide Finished` entry without counts.
+- Made student Assignment cards open the original task when the card body is
+  clicked, while preserving explicit button actions.
+- Split the student account panel STAR row into yellow assigned-task stars and
+  blue self-study/library stars.
 
 ## 2026-06-18
 

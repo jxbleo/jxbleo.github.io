@@ -330,6 +330,13 @@ button { cursor: pointer; }
     min-width: 58px;
     padding: 7px 11px;
 }
+.account-star-pair {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    flex-wrap: wrap;
+}
 .account-quiet-footer {
     display: flex;
     align-items: center;
@@ -493,26 +500,49 @@ button { cursor: pointer; }
     justify-content: center;
     gap: 8px;
     min-width: 0;
-    min-height: 42px;
-    padding: 6px 13px 6px 7px;
-    border: 1px solid rgba(199, 132, 12, 0.2);
-    border-radius: 999px;
-    color: #6d4408;
-    background: linear-gradient(135deg, #fff7cf, #f7c84e 58%, #fff3b0);
-    box-shadow: 0 0 18px rgba(247, 200, 78, 0.38), 0 8px 18px rgba(122, 80, 8, 0.1);
+    min-height: 48px;
+    padding: 7px 16px 7px 11px;
+    border: 3px solid currentColor;
+    border-radius: 12px;
+    color: #b97a0c;
+    background:
+        radial-gradient(circle at 22% 28%, rgba(255,255,255,.45) 0 2px, transparent 3px),
+        radial-gradient(circle at 78% 34%, rgba(255,255,255,.34) 0 1px, transparent 2px),
+        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.22) 8px 9px),
+        linear-gradient(135deg, rgba(255,251,221,.9), rgba(255,230,141,.64));
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.42) inset,
+        0 0 18px rgba(255, 205, 74, .38),
+        0 12px 22px rgba(122, 80, 8, 0.11);
     cursor: pointer;
-    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+    transform: rotate(-3deg);
+    mix-blend-mode: multiply;
+    transition: transform 150ms ease, box-shadow 150ms ease, color 150ms ease;
+}
+.finished-drawer-toggle::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1.5px solid currentColor;
+    border-radius: 8px;
+    opacity: .62;
+    pointer-events: none;
 }
 .finished-drawer-toggle:hover {
-    transform: translateY(-1px);
-    border-color: rgba(199, 132, 12, 0.34);
-    box-shadow: 0 0 24px rgba(247, 200, 78, 0.5), 0 10px 22px rgba(122, 80, 8, 0.14);
+    color: #cf8d14;
+    transform: rotate(-3deg) translateY(-1px) scale(1.02);
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,.42) inset,
+        0 0 24px rgba(255, 205, 74, .5),
+        0 14px 26px rgba(122, 80, 8, 0.14);
 }
 .finished-mini-icon {
-    width: 26px;
-    height: 26px;
-    color: #7f550d;
-    fill: rgba(255,255,255,0.64);
+    position: relative;
+    z-index: 1;
+    width: 25px;
+    height: 25px;
+    color: currentColor;
+    fill: rgba(255,255,255,0.4);
     stroke: currentColor;
     stroke-width: 2.3;
 }
@@ -522,9 +552,13 @@ button { cursor: pointer; }
     stroke-linejoin: round;
 }
 .finished-mini-label {
+    position: relative;
+    z-index: 1;
     font-size: 0.76rem;
-    font-weight: 900;
+    font-weight: 950;
+    letter-spacing: .05em;
     text-transform: uppercase;
+    text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
 }
 .finished-drawer-body {
     display: grid;
@@ -719,6 +753,18 @@ button { cursor: pointer; }
 }
 .assignment-task-card.finished-assignment-card {
     background: rgba(255,255,255,0.9);
+}
+.assignment-task-card[data-open-href] {
+    cursor: pointer;
+}
+.assignment-task-card[data-open-href]:focus-visible {
+    outline: 3px solid rgba(19, 118, 109, 0.24);
+    outline-offset: 3px;
+}
+.assignment-task-card .library-task-actions,
+.assignment-task-card .card-button {
+    position: relative;
+    z-index: 2;
 }
 .teacher-page .library-task-card:hover {
     border-color: rgba(124, 58, 237, 0.3);
