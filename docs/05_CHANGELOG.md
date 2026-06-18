@@ -16,8 +16,13 @@
   blue self-study/library stars.
 - Changed finished Assignment card actions from `Improve Accuracy` / `Beat Your
   Best` text buttons into clickable `PASSED` / `MASTERED` stamps.
+- Removed `Go` buttons from student/teacher Assignment and Library capsules so
+  the whole capsule opens the practice item while explicit secondary buttons
+  keep their own actions.
 - Simplified teacher `Assign` into two minimal multi-select panels: `Work` with
   search and `Column`, and `Students` with search and `Class`.
+- Aligned teacher Assign Work-list ordering with the matching Library column's
+  natural date or numeric sort.
 - Expanded teacher matrix detail dialogs with answer-view lock status and a
   latest-attempt wrong-answer comparison table.
 

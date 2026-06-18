@@ -754,10 +754,10 @@ button { cursor: pointer; }
 .assignment-task-card.finished-assignment-card {
     background: rgba(255,255,255,0.9);
 }
-.assignment-task-card[data-open-href] {
+.library-task-card[data-open-href] {
     cursor: pointer;
 }
-.assignment-task-card[data-open-href]:focus-visible {
+.library-task-card[data-open-href]:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }

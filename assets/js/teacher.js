@@ -558,8 +558,10 @@
         var meta = teacherLibrarySectionLabel(sectionId, section && section.title || item.section || item.course || item.type || sectionId);
         var setId = item.set_id || item.id || item.displayValue || '';
         var badge = teacherLibraryBadge(item, section, itemYear);
+        var href = teacherPracticeHref(item);
         return '<article class="resource-card library-task-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
-            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') + '>' +
+            (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
+            ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || setId) + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
                     '<p class="eyebrow accent">' + escapeHtml(meta) + '</p>' +
@@ -569,7 +571,6 @@
             '</div>' +
             '<div class="library-task-actions">' +
                 (badge ? '<span class="library-card-badge">' + escapeHtml(badge) + '</span>' : '') +
-                '<a class="card-button task-go-button" href="' + escapeHtml(teacherPracticeHref(item)) + '" aria-label="Open ' + escapeHtml(item.title || setId) + '">Go</a>' +
             '</div>' +
         '</article>';
     }
@@ -579,6 +580,13 @@
             '<strong>' + escapeHtml(section.emptyMessage || 'Developing') + '</strong>' +
             escapeHtml(section.emptyNote || '') +
         '</div>';
+    }
+
+    function openHrefCard(card, event) {
+        if (!card) return;
+        if (event && event.target && event.target.closest('button, a')) return;
+        var href = card.dataset.openHref;
+        if (href) window.location.href = href;
     }
 
     function teacherLibraryItemIdentity(item) {
@@ -618,32 +626,39 @@
         return String(item && (item.title || item.displayValue || item.id || item.set_id) || '').toLowerCase();
     }
 
+    function naturalTextCompare(left, right) {
+        return String(left || '').localeCompare(String(right || ''), undefined, {
+            numeric: true,
+            sensitivity: 'base'
+        });
+    }
+
     function teacherLibraryCompareFallback(left, right) {
-        return teacherLibraryTitleSortValue(left).localeCompare(teacherLibraryTitleSortValue(right)) ||
-            teacherLibraryItemIdentity(left).localeCompare(teacherLibraryItemIdentity(right));
+        return naturalTextCompare(teacherLibraryTitleSortValue(left), teacherLibraryTitleSortValue(right)) ||
+            naturalTextCompare(teacherLibraryItemIdentity(left), teacherLibraryItemIdentity(right));
+    }
+
+    function teacherCompareItemsForSection(left, right, section) {
+        if (section.sortType === 'date_desc') {
+            return teacherLibraryDateSortValue(right) - teacherLibraryDateSortValue(left) || teacherLibraryCompareFallback(left, right);
+        }
+        if (section.sortType === 'date_asc') {
+            return teacherLibraryDateSortValue(left) - teacherLibraryDateSortValue(right) || teacherLibraryCompareFallback(left, right);
+        }
+        if (section.sortType === 'number_asc') {
+            return teacherLibraryNumberSortValue(left, section) - teacherLibraryNumberSortValue(right, section) || teacherLibraryCompareFallback(left, right);
+        }
+        if (section.sortType === 'number_desc') {
+            return teacherLibraryNumberSortValue(right, section) - teacherLibraryNumberSortValue(left, section) || teacherLibraryCompareFallback(left, right);
+        }
+        return teacherLibraryCompareFallback(left, right);
     }
 
     function teacherSortItems(items, section) {
         var sorted = items.slice();
-        if (section.sortType === 'date_desc') {
-            sorted.sort(function(a, b) {
-                return teacherLibraryDateSortValue(b) - teacherLibraryDateSortValue(a) || teacherLibraryCompareFallback(a, b);
-            });
-        } else if (section.sortType === 'date_asc') {
-            sorted.sort(function(a, b) {
-                return teacherLibraryDateSortValue(a) - teacherLibraryDateSortValue(b) || teacherLibraryCompareFallback(a, b);
-            });
-        } else if (section.sortType === 'number_asc') {
-            sorted.sort(function(a, b) {
-                return teacherLibraryNumberSortValue(a, section) - teacherLibraryNumberSortValue(b, section) || teacherLibraryCompareFallback(a, b);
-            });
-        } else if (section.sortType === 'number_desc') {
-            sorted.sort(function(a, b) {
-                return teacherLibraryNumberSortValue(b, section) - teacherLibraryNumberSortValue(a, section) || teacherLibraryCompareFallback(a, b);
-            });
-        } else {
-            sorted.sort(teacherLibraryCompareFallback);
-        }
+        sorted.sort(function(left, right) {
+            return teacherCompareItemsForSection(left, right, section || {});
+        });
         return sorted;
     }
 
@@ -657,6 +672,82 @@
             }
         }
         return result;
+    }
+
+    function teacherLibrarySectionById(sectionId) {
+        sectionId = String(sectionId || '').trim();
+        if (!sectionId || !teacherLibraryCatalog || !teacherLibraryCatalog.sections) return null;
+        for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
+            if (teacherLibraryCatalog.sections[i].id === sectionId) return teacherLibraryCatalog.sections[i];
+        }
+        return null;
+    }
+
+    function normalizedSectionText(value) {
+        return String(value || '').trim().toLowerCase().replace(/[\s_]+/g, '-');
+    }
+
+    function teacherLibrarySectionForSet(set) {
+        var explicit = set && (set.sectionId || set.section_id);
+        var section = teacherLibrarySectionById(explicit);
+        if (section) return section;
+
+        var categorySectionIds = {
+            'bbc-listening': 'bbc-six-minute-english',
+            vocabulary: 'vocabulary',
+            grammar: 'grammar',
+            'ielts-reading': 'ielts-reading',
+            'ielts-listening': 'ielts-listening'
+        };
+        section = teacherLibrarySectionById(categorySectionIds[setCategory(set)]);
+        if (section) return section;
+
+        if (!teacherLibraryCatalog || !teacherLibraryCatalog.sections) return null;
+        var rawValues = [
+            set && set.section,
+            set && set.course,
+            set && set.type,
+            set && set.category
+        ].map(normalizedSectionText).filter(Boolean);
+        for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
+            var candidate = teacherLibraryCatalog.sections[i];
+            var labels = [
+                candidate.id,
+                candidate.title,
+                teacherLibrarySectionLabel(candidate.id, candidate.title)
+            ].map(normalizedSectionText);
+            for (var ri = 0; ri < rawValues.length; ri++) {
+                if (labels.indexOf(rawValues[ri]) !== -1) return candidate;
+            }
+        }
+        return null;
+    }
+
+    function teacherLibrarySectionOrder(section) {
+        if (!section || !teacherLibraryCatalog || !teacherLibraryCatalog.sections) return Number.MAX_SAFE_INTEGER;
+        for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
+            if (teacherLibraryCatalog.sections[i].id === section.id) return i;
+        }
+        return Number.MAX_SAFE_INTEGER;
+    }
+
+    function sortAssignSets(sets, selectedSection) {
+        var section = null;
+        if (selectedSection) {
+            section = teacherLibrarySectionById(selectedSection);
+            if (!section) {
+                section = teacherLibrarySectionForSet({ section: selectedSection, course: selectedSection, type: selectedSection });
+            }
+            if (!section && sets.length) section = teacherLibrarySectionForSet(sets[0]);
+            return teacherSortItems(sets, section || {});
+        }
+        return sets.slice().sort(function(left, right) {
+            var leftSection = teacherLibrarySectionForSet(left);
+            var rightSection = teacherLibrarySectionForSet(right);
+            var sectionDiff = teacherLibrarySectionOrder(leftSection) - teacherLibrarySectionOrder(rightSection);
+            if (sectionDiff) return sectionDiff;
+            return teacherCompareItemsForSection(left, right, leftSection || {});
+        });
     }
 
     function renderTeacherLibrary(tabId) {
@@ -829,7 +920,7 @@
             return setCategory(set) === state.libraryFilter;
         }) : [];
         var libraryBook = prefix === 'library' ? currentLibraryBook(cambridgeBooks(libraryCategorySets)) : '';
-        return state.sets.filter(function(set) {
+        var sets = state.sets.filter(function(set) {
             var setSection = String(set.section || set.course || set.type || 'Other');
             var matchesSection = !section || setSection === section;
             var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter;
@@ -837,6 +928,7 @@
             var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
             return matchesSection && matchesLibrary && matchesBook && (!query || haystack.indexOf(query) !== -1);
         });
+        return prefix === 'assign' ? sortAssignSets(sets, section) : sets;
     }
 
     function renderSetOptions() {
@@ -3166,6 +3258,11 @@
         if (state.accountPanelOpen && teacherAccountPanel && !teacherAccountPanel.contains(event.target) && !event.target.closest('#teacher-chip')) {
             setTeacherAccountPanel(false);
         }
+        var openCard = event.target.closest('[data-open-href]');
+        if (openCard) {
+            openHrefCard(openCard, event);
+            return;
+        }
         var card = document.querySelector('.student-select-card');
         if (card && !card.contains(event.target)) setStudentPickerOpen(false);
 
@@ -3201,6 +3298,14 @@
             }
             return;
         }
+    });
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        var openCard = event.target.closest('[data-open-href]');
+        if (!openCard) return;
+        if (event.target.closest('button, a')) return;
+        event.preventDefault();
+        openHrefCard(openCard, event);
     });
     document.getElementById('toggle-create-student').addEventListener('click', function() {
         setStudentPickerOpen(false);

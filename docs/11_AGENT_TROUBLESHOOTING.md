@@ -158,7 +158,7 @@
 - DSE / IELTS app icon assets。
 - dashboard 根据 `curriculum_track` 切换 manifest / home-screen icon。
 - teacher profile class/system 标签可编辑。
-- 移动端 assignment capsule 的 `Go` 按钮固定在右侧列。
+- Assignment/Library capsule 不再显示 `Go` 按钮；整张胶囊负责打开练习，内部独立按钮只保留 Teacher replies / Get Star 等例外动作。
 - My Words 禁止从答案、解析、反馈、结果、teacher reply、review answer 等区域保存。
 
 重复问题：
