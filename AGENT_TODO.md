@@ -53,6 +53,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-18
 
+- Imported `NGSL-L` into project vocabulary content, leaving `NGSL-K` out for
+  owner rework. Corrected two L word-form mismatches (`meter` and
+  `restriction`), regenerated the static catalog, prepared ignored CloudBase
+  import data, and verified public files omit answer/explanation fields, private
+  grading source has 100 answers, each group's Word Bank order differs from
+  answer order, release verification passes, and local browser loading works.
+  Owner still needs to run CloudBase content import for authenticated
+  Library/Explore and grading.
 - Renumbered NAWL vocabulary units from the old NGSL-continuation sequence
   (`NAWL-S` through `NAWL-Z2`) to independent `NAWL-A` through `NAWL-J`,
   regenerated the static catalog, and documented the rule for future imports.
