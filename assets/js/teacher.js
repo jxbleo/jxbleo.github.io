@@ -2303,22 +2303,34 @@
         });
     }
 
+    function matrixAttemptStatus(attempt, assignment) {
+        if (attempt && attempt.mastered === true) return 'mastered';
+        if (attempt && attempt.passed === true) return 'passed';
+        var percent = numericPercent(attempt && attempt.percentage);
+        if (percent == null) return 'not-passed';
+        var mastery = Number(assignment && assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
+        var passing = Number(assignment && assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
+        if (isFinite(mastery) && percent >= mastery) return 'mastered';
+        if (isFinite(passing) && percent >= passing) return 'passed';
+        return 'not-passed';
+    }
+
     function renderMatrixScoreLock(item) {
         var locked = item && (item.answer_revealed === true || item.mastery_locked === true);
-        var icon = locked ? '&#128274;' : '&#128275;';
         var label = locked ? 'Answers viewed; score locked' : 'Answers not viewed; score not locked';
         return '<span class="matrix-score-lock ' + (locked ? 'locked' : 'unlocked') +
             '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '">' +
-            '<span aria-hidden="true">' + icon + '</span><strong>' + escapeHtml(formatPercent(item && item.best_percentage)) + '</strong></span>';
+            (locked ? '<span aria-hidden="true">&#128274;</span>' : '') +
+            '<strong>' + escapeHtml(formatPercent(item && item.best_percentage)) + '</strong></span>';
     }
 
-    function renderMatrixAttemptChart(entries) {
+    function renderMatrixAttemptChart(entries, assignment) {
         if (!entries.length) return '<div class="matrix-attempt-empty">No attempt records yet.</div>';
         return '<div class="matrix-attempt-bars" aria-label="Attempt score history">' +
             entries.map(function(entry) {
                 var attempt = entry.attempt;
                 var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
-                var scoreClass = percent >= 80 ? ' high' : (percent >= 50 ? ' mid' : ' low');
+                var scoreClass = ' ' + matrixAttemptStatus(attempt, assignment);
                 var duration = attemptDurationLabel(attempt);
                 return '<button class="matrix-attempt-bar" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) + '">' +
                     '<span class="matrix-attempt-track"><span class="matrix-attempt-fill' + scoreClass +
@@ -2384,7 +2396,7 @@
                     renderMatrixScoreLock(item) +
                 '</div>' +
             '</div>' +
-            renderMatrixAttemptChart(entries) +
+            renderMatrixAttemptChart(entries, item) +
             renderMatrixAttemptDetails(entries) +
         '</div>';
     }

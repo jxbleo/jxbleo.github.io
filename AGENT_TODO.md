@@ -50,6 +50,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Refined teacher View matrix detail dialogs: centered the external Close
+  button, capped attempt bar width so a single attempt does not stretch full
+  width, and mapped bar colors to amber not-passed, green passed, and gold
+  mastered. Verified JavaScript syntax and release checks; static publish
+  required.
+- Simplified the matrix score-lock pill so unlocked scores show no icon and
+  locked scores show a lock next to the best score. Verified JavaScript syntax
+  and release checks; static publish required.
 - Redesigned teacher View matrix detail dialogs with a title-only header,
   student and lock/best-score pills, clickable attempt score bars, external
   Close button, and newest-first attempt cards that list only wrong answers.

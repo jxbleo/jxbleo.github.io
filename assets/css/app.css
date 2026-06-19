@@ -2086,7 +2086,7 @@ button { cursor: pointer; }
     background: transparent;
 }
 .progress-matrix-modal-close {
-    justify-self: end;
+    justify-self: center;
     min-height: 40px;
     padding: 0 18px;
     border: 1px solid rgba(255,255,255,0.76);
@@ -2149,7 +2149,8 @@ button { cursor: pointer; }
 }
 .matrix-score-lock.unlocked {
     border-color: rgba(111,129,124,0.18);
-    color: var(--muted);
+    color: var(--ink);
+    background: rgba(255,255,255,0.58);
 }
 .matrix-score-lock strong {
     color: inherit;
@@ -2157,7 +2158,8 @@ button { cursor: pointer; }
 }
 .matrix-attempt-bars {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(86px, 112px));
+    justify-content: center;
     gap: 10px;
     min-height: 172px;
     margin-bottom: 16px;
@@ -2207,9 +2209,12 @@ button { cursor: pointer; }
     font-size: 0.72rem;
     font-weight: 950;
 }
-.matrix-attempt-fill.low { background: linear-gradient(180deg, #f87171, #b91c1c); }
-.matrix-attempt-fill.mid { background: linear-gradient(180deg, #fbbf24, #d97706); }
-.matrix-attempt-fill.high { background: linear-gradient(180deg, #34d399, #15803d); }
+.matrix-attempt-fill.not-passed { background: linear-gradient(180deg, #fbbf24, #d97706); }
+.matrix-attempt-fill.passed { background: linear-gradient(180deg, #34d399, #15803d); }
+.matrix-attempt-fill.mastered {
+    color: #4f3410;
+    background: linear-gradient(180deg, #fde68a, #f59e0b 58%, #d97706);
+}
 .matrix-attempt-caption small {
     display: block;
     margin-top: 2px;

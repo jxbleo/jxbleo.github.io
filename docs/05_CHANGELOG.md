@@ -27,6 +27,11 @@
   latest-attempt wrong-answer comparison table.
 - Redesigned teacher matrix detail dialogs around a title/pill header,
   clickable attempt score bars, and newest-first wrong-answer attempt cards.
+- Refined teacher matrix detail bars: centered the outside Close button,
+  prevented single attempts from stretching full width, and mapped bar colors
+  to not-passed, passed, and mastered states.
+- Simplified teacher matrix score-lock pills so the lock icon appears only
+  after answers have been viewed and locked.
 - Added task names under task IDs in the teacher View matrix header.
 - Moved the create-student shortcut into the teacher Personal Center, centered
   the panel title, and removed the account status row.
