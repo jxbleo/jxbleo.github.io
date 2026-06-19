@@ -94,8 +94,9 @@ Teacher page has three main capsules:
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
-status row. The create-student `+` action lives in the panel's top-right action
-cluster and opens the student account creation form.
+status row. The only create-student entry is the `+` button beside the
+notification control in the top-right header; it opens a standalone modal, not
+an inline View panel.
 
 ### Tasks
 

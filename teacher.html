@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260619-13">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260619-14">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -16,6 +16,7 @@
                     <span aria-hidden="true">!</span>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
                 </button>
+                <button class="teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                 <button class="student-chip account-chip-button" id="teacher-chip" type="button" aria-expanded="false">Loading...</button>
             </div>
         </header>
@@ -26,7 +27,6 @@
                     <p class="eyebrow accent">PERSONAL CENTER</p>
                 </div>
                 <div class="account-panel-actions">
-                    <button class="teacher-create-capsule account-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <button class="create-student-close" id="teacher-account-close" type="button" aria-label="Close account panel">x</button>
                 </div>
             </div>
@@ -58,6 +58,36 @@
             </div>
             <div class="teacher-updates-body" id="teacher-updates-body">
                 <div class="empty-card loading-card">Loading updates...</div>
+            </div>
+        </section>
+
+        <section class="create-student-modal" id="create-student-panel" hidden>
+            <div class="create-student-dialog" role="dialog" aria-modal="true" aria-labelledby="create-student-title">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <h2 id="create-student-title">Create student account</h2>
+                        <p>The login account and student profile are created together.</p>
+                    </div>
+                    <button class="create-student-close" id="close-create-student" type="button" aria-label="Close create student panel">x</button>
+                </div>
+                <form class="teacher-form horizontal-form" id="student-form">
+                    <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
+                    <label>Student name<input id="student-name" type="text" required></label>
+                    <label>Class<input id="student-class" type="text"></label>
+                    <label>System
+                        <select id="student-curriculum">
+                            <option value="">Not set</option>
+                            <option value="DSE">DSE</option>
+                            <option value="IELTS">IELTS</option>
+                            <option value="A-Level">A-Level</option>
+                            <option value="AP">AP</option>
+                            <option value="IB">IB</option>
+                            <option value="Zhongkao">Zhongkao</option>
+                            <option value="Gaokao">Gaokao</option>
+                        </select>
+                    </label>
+                    <button class="primary-button" type="submit">Create Student</button>
+                </form>
             </div>
         </section>
 
@@ -169,34 +199,6 @@
                 </div>
             </section>
 
-            <section class="profile-card create-student-panel" id="create-student-panel" hidden>
-                <div class="section-heading compact-heading">
-                    <div>
-                        <h2>Create student account</h2>
-                        <p>The login account and student profile are created together.</p>
-                    </div>
-                    <button class="create-student-close" id="close-create-student" type="button" aria-label="Close create student panel">x</button>
-                </div>
-                <form class="teacher-form horizontal-form" id="student-form">
-                    <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
-                    <label>Student name<input id="student-name" type="text" required></label>
-                    <label>Class<input id="student-class" type="text"></label>
-                    <label>System
-                        <select id="student-curriculum">
-                            <option value="">Not set</option>
-                            <option value="DSE">DSE</option>
-                            <option value="IELTS">IELTS</option>
-                            <option value="A-Level">A-Level</option>
-                            <option value="AP">AP</option>
-                            <option value="IB">IB</option>
-                            <option value="Zhongkao">Zhongkao</option>
-                            <option value="Gaokao">Gaokao</option>
-                        </select>
-                    </label>
-                    <button class="primary-button" type="submit">Create Student</button>
-                </form>
-            </section>
-
             <section class="student-detail" id="student-detail">
                 <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
             </section>
@@ -208,6 +210,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260619-13"></script>
+    <script src="assets/js/teacher.js?v=20260619-14"></script>
 </body>
 </html>
