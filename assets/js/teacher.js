@@ -911,7 +911,7 @@
         var targetSectionId = activeSubTabConfig.id;
 
         var itemsBySection = {};
-        var allItems = (state.sets || []).filter(function(item) { return item.visible !== false; });
+        var allItems = teacherLibraryDisplayItems().filter(function(item) { return item.visible !== false; });
         for (var i = 0; i < allItems.length; i++) {
             var item = allItems[i];
             var sid = item.sectionId || item.section_id || '';
@@ -3302,6 +3302,51 @@
             });
     }
 
+    function publicCatalogSetItems() {
+        if (!teacherLibraryCatalog || !teacherLibraryCatalog.items) return [];
+        return teacherLibraryCatalog.items.filter(function(item) {
+            return item.visible !== false;
+        }).map(function(item) {
+            return {
+                set_id: item.id,
+                id: item.id,
+                title: item.title || item.id,
+                course: item.sectionId || '',
+                type: '',
+                section: item.sectionId || '',
+                sectionId: item.sectionId || '',
+                link: item.href || '#',
+                href: item.href || '#',
+                displayValue: item.displayValue || '',
+                sortValue: item.sortValue || '',
+                topic: item.topic || '',
+                tags: item.tags || [],
+                note: item.note || '',
+                visible: item.visible !== false,
+                passing_percentage: 50,
+                mastery_percentage: 90,
+                publicCatalogOnly: true,
+            };
+        });
+    }
+
+    function teacherLibraryDisplayItems() {
+        var byId = {};
+        var items = [];
+        (state.sets || []).forEach(function(item) {
+            var id = item.set_id || item.id || item.displayValue || item.href || item.title;
+            if (id) byId[id] = true;
+            items.push(item);
+        });
+        publicCatalogSetItems().forEach(function(item) {
+            var id = item.set_id || item.id;
+            if (!id || byId[id]) return;
+            byId[id] = true;
+            items.push(item);
+        });
+        return items;
+    }
+
     function loadData() {
         return Promise.all([
             teacherCall('listStudents'),
@@ -3320,8 +3365,8 @@
             state.progressItems = results[5].progress || [];
             state.attemptsSeenAt = results[6].attempts_seen_at || null;
             if (!state.sets.length) {
-                return loadPublicCatalog().then(function(items) {
-                    state.sets = items;
+                return loadPublicCatalog().then(function() {
+                    state.sets = publicCatalogSetItems();
                     afterDataLoaded();
                 });
             }
