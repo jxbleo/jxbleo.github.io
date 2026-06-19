@@ -518,7 +518,7 @@
     var TEACHER_LIBRARY_SUB_TABS = {
         general: [
             { id: '', label: 'All' },
-            { id: 'bbc-six-minute-english', label: 'BBC', yearFilter: true },
+            { id: 'bbc-six-minute-english', label: 'BBC' },
             { id: 'vocabulary', label: 'Vocabulary' },
             { id: 'grammar', label: 'Grammar' },
             { id: 'general-writing', label: 'Writing' }
@@ -549,8 +549,6 @@
     }
 
     function teacherLibraryBadge(item, section, itemYear) {
-        var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
         return '';
     }
 
