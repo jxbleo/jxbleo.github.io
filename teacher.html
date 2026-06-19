@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260619-17">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260619-18">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -20,7 +20,10 @@
                     <span class="notice-dot danger" id="teacher-review-count" hidden>0</span>
                 </button>
                 <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false">
-                    <span aria-hidden="true">!</span>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                        <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+                    </svg>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
                 </button>
                 <button class="teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
@@ -56,15 +59,17 @@
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
         <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
-            <div class="updates-panel-head">
-                <div>
-                    <p class="eyebrow accent">NOTIFICATIONS</p>
-                    <h2>Activity center</h2>
+            <div class="teacher-updates-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-updates-title">
+                <div class="updates-panel-head">
+                    <div>
+                        <p class="eyebrow accent">NOTIFICATIONS</p>
+                        <h2 id="teacher-updates-title">Student attempts</h2>
+                    </div>
+                    <button class="create-student-close" id="teacher-updates-close" type="button" aria-label="Close updates">x</button>
                 </div>
-                <button class="create-student-close" id="teacher-updates-close" type="button" aria-label="Close updates">x</button>
-            </div>
-            <div class="teacher-updates-body" id="teacher-updates-body">
-                <div class="empty-card loading-card">Loading updates...</div>
+                <div class="teacher-updates-body" id="teacher-updates-body">
+                    <div class="empty-card loading-card">Loading updates...</div>
+                </div>
             </div>
         </section>
 
@@ -217,6 +222,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260619-17"></script>
+    <script src="assets/js/teacher.js?v=20260619-18"></script>
 </body>
 </html>

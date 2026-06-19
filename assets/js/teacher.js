@@ -22,8 +22,8 @@
         accountPanelOpen: false,
         updatesOpen: false,
         reviewOpen: false,
-        updatesFilter: 'unread',
         attemptsSeenAt: null,
+        targetMatrixAttemptId: '',
         disputeFilter: 'pending',
         disputeMerge: false,
         libraryFilter: 'vocabulary',
@@ -237,26 +237,15 @@
         }, { total: 0, unread: 0, read: 0 });
     }
 
-    function reviewActivityCounts() {
-        return (state.disputes || []).reduce(function(counts, item) {
-            var pending = item.status !== 'approved' && item.status !== 'rejected';
-            if (pending) counts.pending += 1;
-            else counts.finished += 1;
-            return counts;
-        }, { pending: 0, finished: 0 });
-    }
-
     function updateActivityBadges() {
         var attemptCounts = activityAttemptCounts();
-        var reviewCounts = reviewActivityCounts();
-        var total = attemptCounts.unread + reviewCounts.pending;
         var count = document.getElementById('teacher-updates-count');
         var button = document.getElementById('teacher-updates-button');
         if (count) {
-            count.textContent = total ? String(total) : '';
-            count.hidden = total <= 0;
+            count.textContent = attemptCounts.unread ? String(attemptCounts.unread) : '';
+            count.hidden = attemptCounts.unread <= 0;
         }
-        if (button) button.classList.toggle('has-updates', total > 0);
+        if (button) button.classList.toggle('has-updates', attemptCounts.unread > 0);
     }
 
     function updateTopBadges() {
@@ -2363,7 +2352,9 @@
                 var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
                 var scoreClass = ' ' + matrixAttemptStatus(attempt, assignment);
                 var duration = attemptDurationLabel(attempt);
-                return '<button class="matrix-attempt-bar" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) + '">' +
+                var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
+                return '<button class="matrix-attempt-bar' + (highlighted ? ' highlight' : '') +
+                    '" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) + '">' +
                     '<span class="matrix-attempt-track"><span class="matrix-attempt-fill' + scoreClass +
                     '" style="height:' + escapeHtml(Math.max(percent, 6)) + '%">' + escapeHtml(formatPercent(percent)) + '</span></span>' +
                     '<span class="matrix-attempt-caption"><small>' + escapeHtml(formatAttemptChartDate(attempt.submitted_at)) + '</small>' +
@@ -2400,7 +2391,9 @@
                 var attempt = entry.attempt;
                 var duration = attemptDurationLabel(attempt);
                 var percent = numericPercent(attempt.percentage);
-                return '<article class="matrix-attempt-card" data-matrix-attempt-index="' + escapeHtml(entry.index) + '">' +
+                var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
+                return '<article class="matrix-attempt-card' + (highlighted ? ' highlight' : '') +
+                    '" data-matrix-attempt-index="' + escapeHtml(entry.index) + '">' +
                     '<div class="matrix-attempt-head"><div><h3>Attempt #' + escapeHtml(entry.number) + '</h3>' +
                     '<div class="matrix-attempt-meta">' +
                     '<span>' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
@@ -2499,12 +2492,27 @@
                 studentMap[studentKey].items[setKey] = item;
             }
         });
-        var sets = Object.keys(setMap).map(function(key) { return setMap[key]; })
-            .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); })
-            .slice(0, matrixRecentLimit());
-        var students = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
-            .sort(function(a, b) { return a.name.localeCompare(b.name); })
-            .slice(0, 12);
+        var selectedProgressItem = state.selectedMatrixCell ? matrixItems.find(function(item) {
+            return matrixCellKey(item) === state.selectedMatrixCell;
+        }) : null;
+        var allSets = Object.keys(setMap).map(function(key) { return setMap[key]; })
+            .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); });
+        var sets = allSets.slice(0, matrixRecentLimit());
+        if (selectedProgressItem && !sets.some(function(set) { return set.id === matrixSetKey(selectedProgressItem); })) {
+            var selectedSet = allSets.find(function(set) { return set.id === matrixSetKey(selectedProgressItem); });
+            if (selectedSet) {
+                sets = [selectedSet].concat(sets.filter(function(set) { return set.id !== selectedSet.id; })).slice(0, matrixRecentLimit());
+            }
+        }
+        var allStudents = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
+            .sort(function(a, b) { return a.name.localeCompare(b.name); });
+        var students = allStudents.slice(0, 12);
+        if (selectedProgressItem && !students.some(function(student) { return student.key === matrixStudentKey(selectedProgressItem); })) {
+            var selectedStudent = allStudents.find(function(student) { return student.key === matrixStudentKey(selectedProgressItem); });
+            if (selectedStudent) {
+                students = [selectedStudent].concat(students.filter(function(student) { return student.key !== selectedStudent.key; })).slice(0, 12);
+            }
+        }
         if (!sets.length || !students.length) return '';
         var selectedItem = null;
         var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 112) + 'px;--matrix-min-mobile:' + (126 + sets.length * 96) + 'px;';
@@ -2619,6 +2627,7 @@
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixCell;
                 state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
+                state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
             });
         });
@@ -2626,11 +2635,13 @@
             button.addEventListener('click', function(event) {
                 if (button.dataset.matrixClose === 'backdrop' && event.target !== button) return;
                 state.selectedMatrixCell = '';
+                state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
             });
         });
         container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
+                state.targetMatrixAttemptId = '';
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
                 if (target) {
@@ -2642,6 +2653,12 @@
                 }
             });
         });
+        if (state.targetMatrixAttemptId) {
+            window.setTimeout(function() {
+                var target = container.querySelector('.matrix-attempt-card.highlight');
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 80);
+        }
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgressGroup;
@@ -2801,6 +2818,7 @@
             label: name + ' ' + action + ' ' + (setTitleFor(attempt.set_id) || attempt.set_id),
             meta: formatPercent(attempt.percentage) + ' · #' + (attempt.attempt_number || 1),
             time: formatDateTime(attempt.submitted_at),
+            attempt_id: attempt.attempt_id || '',
             student_uid: attempt.student_uid || '',
             assignment_id: attempt.assignment_id || '',
             set_id: attempt.set_id || '',
@@ -2808,84 +2826,22 @@
         };
     }
 
-    function disputeActivityItem(item) {
-        var pending = item.status !== 'approved' && item.status !== 'rejected';
-        var requester = item.requester_role === 'teacher'
-            ? 'Teacher preview'
-            : englishName(item.student_name || item.student_id || 'Student');
-        var displayDate = pending
-            ? (item.created_at || item.updated_at || item.resolved_at)
-            : (item.resolved_at || item.updated_at || item.created_at);
-        return {
-            type: 'review',
-            date: displayDate || null,
-            unread: pending,
-            dispute: item,
-            label: requester + ' requested review',
-            meta: 'Q' + (item.question_id || '') + ' · ' + (item.set_id || ''),
-            time: formatDateTime(displayDate),
-            dispute_id: item.dispute_id,
-            dispute_filter: pending ? 'pending' : item.status
-        };
-    }
-
     function activityItems() {
-        return sortedAttempts().map(attemptActivityItem)
-            .concat((state.disputes || []).map(disputeActivityItem))
-            .filter(function(item) {
-                if (state.updatesFilter === 'attempts') return item.type === 'attempt';
-                if (state.updatesFilter === 'review') return item.type === 'review';
-                if (state.updatesFilter === 'unread') return item.unread;
-                return true;
-            })
+        var attempts = sortedAttempts().map(attemptActivityItem);
+        var unread = attempts.filter(function(item) { return item.unread; });
+        return (unread.length ? unread : attempts)
             .sort(function(a, b) {
                 return new Date(activityDateValue(b) || 0) - new Date(activityDateValue(a) || 0);
             })
-            .slice(0, state.updatesFilter === 'all' ? 24 : 16);
-    }
-
-    function activityFilterTabs() {
-        var attemptCounts = activityAttemptCounts();
-        var reviewCounts = reviewActivityCounts();
-        var unread = attemptCounts.unread + reviewCounts.pending;
-        var tabs = [
-            { id: 'unread', label: 'Unread', count: unread },
-            { id: 'all', label: 'All', count: attemptCounts.total + state.disputes.length },
-            { id: 'attempts', label: 'Attempts', count: attemptCounts.total },
-            { id: 'review', label: 'Review', count: state.disputes.length }
-        ];
-        return '<div class="updates-feed-tools">' +
-            '<div class="sub-tabs activity-sub-tabs" role="tablist" aria-label="Activity filter">' +
-                tabs.map(function(tab) {
-                    return '<button class="sub-tab' + (state.updatesFilter === tab.id ? ' active' : '') +
-                        '" type="button" data-updates-filter="' + escapeHtml(tab.id) + '">' +
-                        escapeHtml(tab.label) + (tab.count ? ' ' + escapeHtml(tab.count) : '') +
-                    '</button>';
-                }).join('') +
-            '</div>' +
-            (attemptCounts.unread && state.updatesFilter !== 'review'
-                ? '<button class="activity-mark-read" type="button" id="mark-attempts-read">Mark attempts read</button>'
-                : '') +
-        '</div>';
+            .slice(0, unread.length ? 16 : 24);
     }
 
     function renderActivityFeedRow(item) {
-        if (item.type === 'attempt') {
-            var attempt = item.attempt;
-            return '<button class="activity-row compact-activity-row' + (item.unread ? ' unread' : '') +
-                '" type="button" data-open-attempt-student="' + escapeHtml(item.student_uid) +
-                '" data-open-attempt-assignment="' + escapeHtml(item.assignment_id) +
-                '" data-open-attempt-set="' + escapeHtml(item.set_id) +
-                '" data-open-attempt-finished="' + escapeHtml(item.finished ? '1' : '') + '">' +
-                '<span class="activity-unread-dot"></span>' +
-                '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong><small>' +
-                    escapeHtml(item.meta) + '</small></span>' +
-                '<span class="activity-date">' + escapeHtml(item.time) + '</span>' +
-            '</button>';
-        }
-        return '<button class="activity-row compact-activity-row review-activity-row' + (item.unread ? ' unread' : '') +
-            '" type="button" data-open-dispute="' + escapeHtml(item.dispute_id) +
-            '" data-open-dispute-filter="' + escapeHtml(item.dispute_filter) + '">' +
+        return '<button class="activity-row compact-activity-row' + (item.unread ? ' unread' : '') +
+            '" type="button" data-open-attempt-id="' + escapeHtml(item.attempt_id) +
+            '" data-open-attempt-student="' + escapeHtml(item.student_uid) +
+            '" data-open-attempt-assignment="' + escapeHtml(item.assignment_id) +
+            '" data-open-attempt-set="' + escapeHtml(item.set_id) + '">' +
             '<span class="activity-unread-dot"></span>' +
             '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong><small>' +
                 escapeHtml(item.meta) + '</small></span>' +
@@ -2895,14 +2851,74 @@
 
     function renderActivityFeed() {
         var items = activityItems();
-        var emptyCopy = state.updatesFilter === 'unread'
-            ? 'No unread student activity right now.'
-            : 'Recent student activity will appear here.';
-        return activityFilterTabs() +
-            '<div class="activity-list compact-activity-list">' +
-                (items.length ? items.map(renderActivityFeedRow).join('') :
-                    '<div class="empty-card compact-empty"><strong>No updates</strong>' + escapeHtml(emptyCopy) + '</div>') +
+        return '<div class="activity-list compact-activity-list">' +
+            (items.length ? items.map(renderActivityFeedRow).join('') :
+                '<div class="empty-card compact-empty"><strong>No attempts</strong>Student attempt activity will appear here.</div>') +
             '</div>';
+    }
+
+    function findProgressItemForAttempt(attempt) {
+        if (!attempt) return null;
+        var source = (state.progressItems.length ? state.progressItems : state.assignments).filter(function(item) {
+            return !item.source || item.source === 'assigned';
+        });
+        var exact = source.find(function(item) {
+            return attempt.assignment_id && item.assignment_id === attempt.assignment_id;
+        });
+        if (exact) return exact;
+        return source.find(function(item) {
+            return item.student_uid === attempt.student_uid && item.set_id === attempt.set_id;
+        }) || null;
+    }
+
+    function markAttemptsReadSilently() {
+        teacherCall('markAttemptsRead').then(function(result) {
+            state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
+            updateActivityBadges();
+        }).catch(function() {});
+    }
+
+    function openAttemptFromNotification(row) {
+        var attemptId = row.dataset.openAttemptId || '';
+        var attempt = (state.attempts || []).find(function(item) {
+            return attemptId && item.attempt_id === attemptId;
+        }) || {
+            attempt_id: attemptId,
+            student_uid: row.dataset.openAttemptStudent || '',
+            assignment_id: row.dataset.openAttemptAssignment || '',
+            set_id: row.dataset.openAttemptSet || ''
+        };
+        var student = state.students.find(function(item) { return item.auth_uid === attempt.student_uid; });
+        var progressItem = findProgressItemForAttempt(attempt);
+        if (student) state.selectedStudentProfileId = student.profile_id;
+        state.updatesOpen = false;
+        state.targetMatrixAttemptId = attempt.attempt_id || '';
+        if (progressItem) {
+            var attemptDate = formatDateInputValue(attempt.submitted_at || matrixDateValue(progressItem));
+            state.selectedMatrixCell = matrixCellKey(progressItem);
+            state.matrixClassFilter = '';
+            state.matrixColumnFilter = matrixColumnKey(progressItem);
+            if (attemptDate) {
+                state.matrixDateFilter = 'custom';
+                state.matrixDateFrom = attemptDate;
+                state.matrixDateTo = attemptDate;
+            }
+            activateView('view');
+            setStudentPickerOpen(false);
+            renderStudentList();
+            renderStudentDetail();
+            renderAssignmentOverview();
+        } else {
+            state.selectedMatrixCell = '';
+            activateView('view');
+            setStudentPickerOpen(false);
+            renderStudentList();
+            renderStudentDetail();
+            renderAssignmentOverview();
+            showMessage('Opened the student. This attempt is not linked to an assigned matrix item.', 'error');
+        }
+        renderUpdatesPanel();
+        markAttemptsReadSilently();
     }
 
     function renderUpdatesPanel() {
@@ -2913,54 +2929,9 @@
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
         if (!state.updatesOpen) return;
         updatesBody.innerHTML = renderActivityFeed();
-        updatesBody.querySelectorAll('[data-updates-filter]').forEach(function(tab) {
-            tab.addEventListener('click', function() {
-                state.updatesFilter = tab.dataset.updatesFilter;
-                renderUpdatesPanel();
-            });
-        });
-        var markRead = document.getElementById('mark-attempts-read');
-        if (markRead) {
-            markRead.addEventListener('click', function() {
-                markRead.disabled = true;
-                teacherCall('markAttemptsRead').then(function(result) {
-                    state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
-                    if (!reviewActivityCounts().pending) state.updatesFilter = 'all';
-                    showMessage('Attempts marked as read.', 'success');
-                    renderUpdatesPanel();
-                }).catch(function(error) {
-                    showMessage(error.message, 'error');
-                    renderUpdatesPanel();
-                });
-            });
-        }
-        updatesBody.querySelectorAll('[data-open-attempt-student]').forEach(function(row) {
+        updatesBody.querySelectorAll('[data-open-attempt-id]').forEach(function(row) {
             row.addEventListener('click', function() {
-                var student = state.students.find(function(item) { return item.auth_uid === row.dataset.openAttemptStudent; });
-                if (student) {
-                    state.selectedStudentProfileId = student.profile_id;
-                    state.studentProgressView = row.dataset.openAttemptFinished ? 'finished' : 'to_do';
-                    state.expandedAssignmentSets = {};
-                    var expandKey = row.dataset.openAttemptAssignment || row.dataset.openAttemptSet;
-                    if (expandKey) state.expandedAssignmentSets[expandKey] = true;
-                    state.updatesOpen = false;
-                    activateView('view');
-                    setStudentPickerOpen(false);
-                    renderStudentList();
-                    renderStudentDetail();
-                    renderAssignmentOverview();
-                    renderUpdatesPanel();
-                }
-            });
-        });
-        updatesBody.querySelectorAll('[data-open-dispute]').forEach(function(row) {
-            row.addEventListener('click', function() {
-                state.disputeFilter = row.dataset.openDisputeFilter || 'pending';
-                state.expandedDisputes[row.dataset.openDispute] = true;
-                state.disputeMerge = false;
-                state.updatesOpen = false;
-                setReviewPanel(true);
-                renderUpdatesPanel();
+                openAttemptFromNotification(row);
             });
         });
     }
@@ -3450,17 +3421,20 @@
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
         if (state.updatesOpen) setReviewPanel(false);
-        if (state.updatesOpen && state.updatesFilter === 'unread') {
-            var counts = activityAttemptCounts();
-            var reviewCounts = reviewActivityCounts();
-            if (counts.unread + reviewCounts.pending <= 0) state.updatesFilter = 'all';
-        }
         renderUpdatesPanel();
     });
     document.getElementById('teacher-updates-close').addEventListener('click', function() {
         state.updatesOpen = false;
         renderUpdatesPanel();
     });
+    if (updatesPanel) {
+        updatesPanel.addEventListener('click', function(event) {
+            if (event.target === updatesPanel) {
+                state.updatesOpen = false;
+                renderUpdatesPanel();
+            }
+        });
+    }
     var toggleAssignSets = document.getElementById('toggle-assign-sets');
     if (toggleAssignSets) {
         toggleAssignSets.addEventListener('click', function() {

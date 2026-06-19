@@ -23,6 +23,11 @@
   search and `Column`, and `Students` with search and `Class`.
 - Moved teacher Review out of Tasks into a top-right icon button that opens an
   independent modal with Pending, Approved, and Rejected tabs.
+- Changed the teacher notification bell into a standalone attempts-only modal;
+  clicking an attempt opens the matching View matrix detail and highlights that
+  specific attempt.
+- Reversed the top-right create-student `+` styling to the same light button
+  with purple icon treatment as the Review and notification buttons.
 - Aligned teacher Assign Work-list ordering with the matching Library column's
   natural date or numeric sort.
 - Expanded teacher matrix detail dialogs with answer-view lock status and a
@@ -34,6 +39,9 @@
   to not-passed, passed, and mastered states.
 - Simplified teacher matrix score-lock pills so the lock icon appears only
   after answers have been viewed and locked.
+- Redesigned the student login page around a bright floating-paper welcome
+  ritual with lightweight listening, vocabulary, writing, and speaking motion
+  elements.
 - Added task names under task IDs in the teacher View matrix header.
 - Moved the create-student shortcut into the teacher Personal Center, centered
   the panel title, and removed the account status row.

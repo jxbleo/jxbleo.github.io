@@ -209,8 +209,7 @@ button { cursor: pointer; }
     top: -7px;
     right: -6px;
 }
-.student-message-button span[aria-hidden="true"],
-.teacher-updates-button span[aria-hidden="true"] {
+.student-message-button span[aria-hidden="true"] {
     display: inline-grid;
     place-items: center;
     width: 17px;
@@ -222,8 +221,7 @@ button { cursor: pointer; }
     border-bottom-right-radius: 5px;
     font-size: 0;
 }
-.student-message-button span[aria-hidden="true"]::after,
-.teacher-updates-button span[aria-hidden="true"]::after {
+.student-message-button span[aria-hidden="true"]::after {
     content: "";
     width: 5px;
     height: 2px;
@@ -253,6 +251,7 @@ button { cursor: pointer; }
     font-weight: 900;
     box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
 }
+.teacher-updates-button svg,
 .teacher-review-button svg {
     width: 19px;
     height: 19px;
@@ -471,21 +470,24 @@ button { cursor: pointer; }
     padding: 0;
     border: 1px solid rgba(139, 92, 246, 0.36);
     border-radius: 12px;
-    color: white;
-    background: linear-gradient(135deg, #5b21b6, #7c3aed 58%, #60a5fa);
-    box-shadow: 0 12px 30px rgba(109, 40, 217, 0.22);
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.78);
+    box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
     font-size: 1.25rem;
     line-height: 1;
     font-weight: 900;
 }
-.teacher-create-capsule:hover { background: linear-gradient(135deg, #4c1d95, #6d28d9 58%, #3b82f6); }
+.teacher-create-capsule:hover {
+    border-color: rgba(124, 58, 237, 0.38);
+    background: rgba(247, 243, 255, 0.96);
+}
 .header-create-student {
     width: 38px;
     min-width: 38px;
     height: 38px;
     border-radius: 999px;
     font-size: 1.05rem;
-    box-shadow: 0 10px 24px rgba(83, 45, 145, 0.12);
+    box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
 }
 .tab-button {
     position: relative;
@@ -1517,20 +1519,39 @@ button { cursor: pointer; }
 .teacher-message.error { color: var(--danger); }
 .teacher-updates-panel {
     display: grid;
-    gap: 10px;
-    margin: 0 0 14px;
-    padding: 14px;
-    border: 1px solid rgba(124,58,237,0.18);
-    border-radius: 16px;
-    background: rgba(255,255,255,0.84);
-    box-shadow: 0 12px 32px rgba(83, 45, 145, 0.10);
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    align-items: start;
+    justify-items: center;
+    padding: min(7vh, 56px) 16px 28px;
+    background: rgba(24, 18, 43, 0.28);
+    backdrop-filter: blur(10px);
 }
 .teacher-updates-panel[hidden] { display: none; }
+.teacher-updates-dialog {
+    width: min(760px, 100%);
+    max-height: min(760px, calc(100vh - 64px));
+    overflow: auto;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.82);
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: var(--shadow);
+}
 .updates-panel-head {
+    position: sticky;
+    top: -18px;
+    z-index: 2;
     display: flex;
     align-items: start;
     justify-content: space-between;
     gap: 14px;
+    margin: -18px -18px 14px;
+    padding: 18px;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
 }
 .updates-panel-head h2 {
     margin: 2px 0 0;
@@ -2239,6 +2260,10 @@ button { cursor: pointer; }
 .matrix-attempt-bar:hover .matrix-attempt-track,
 .matrix-attempt-bar:focus-visible .matrix-attempt-track {
     outline: 3px solid rgba(124,58,237,0.18);
+    outline-offset: 3px;
+}
+.matrix-attempt-bar.highlight .matrix-attempt-track {
+    outline: 3px solid rgba(124,58,237,0.32);
     outline-offset: 3px;
 }
 .matrix-attempt-track {

@@ -25,6 +25,15 @@
 | `vocabulary.html` | Vocabulary learning, dictation, test |
 | `attempt-review.html` | Attempt review surface |
 
+### Login
+
+The student login page should feel like a lightweight welcome ritual rather
+than a feature billboard. The current direction uses a bright green floating
+paper scene with listening, vocabulary, writing, and speaking symbols drifting
+across the welcome panel. Keep the visible text minimal: `Mr. Cat Academy`, one
+central quote, the Student ID/password fields, `Sign in`, `Continue as
+Visitor`, and a short visitor-mode note.
+
 ## 3. Student Dashboard
 
 Navigation:
@@ -98,6 +107,13 @@ status row. The only create-student entry is the `+` button beside the
 notification control in the top-right header; it opens a standalone modal, not
 an inline View panel. Review requests open from a separate top-right icon
 button with a pending-count badge and display in a standalone modal.
+The notification bell opens a standalone student-attempt modal only; Review
+requests must not be duplicated in the bell because they have their own
+top-right Review entry.
+
+Teacher notification rows are direct links. Clicking a student attempt opens
+`View`, selects the matching matrix cell, and highlights that specific attempt
+inside the matrix detail dialog.
 
 ### Tasks
 
