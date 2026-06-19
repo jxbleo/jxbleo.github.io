@@ -35,6 +35,8 @@
 - Added task names under task IDs in the teacher View matrix header.
 - Moved the create-student shortcut into the teacher Personal Center, centered
   the panel title, and removed the account status row.
+- Moved create-student to a single top-right header `+` beside notifications
+  and changed account creation into a standalone modal.
 - Replaced the task-entry browser confirmation with a shared custom dialog for
   student Assignment/Library and teacher Library capsules, including status and
   best-score reminders.

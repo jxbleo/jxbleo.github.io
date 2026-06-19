@@ -50,6 +50,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Moved teacher student-account creation to a single top-right header `+`
+  beside notifications, removed the Personal Center/View inline creation
+  entry, and made the form a standalone modal. Verified JavaScript syntax and
+  release checks; static publish required.
 - Refined teacher View matrix detail dialogs: centered the external Close
   button, capped attempt bar width so a single attempt does not stretch full
   width, and mapped bar colors to amber not-passed, green passed, and gold

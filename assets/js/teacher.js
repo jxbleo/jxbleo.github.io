@@ -309,6 +309,21 @@
         if (state.accountPanelOpen) renderTeacherAccount();
     }
 
+    function setCreateStudentModal(open) {
+        var panel = document.getElementById('create-student-panel');
+        if (!panel) return;
+        panel.hidden = open !== true;
+        if (open) {
+            setTeacherAccountPanel(false);
+            state.updatesOpen = false;
+            renderUpdatesPanel();
+            window.setTimeout(function() {
+                var input = document.getElementById('student-id');
+                if (input) input.focus();
+            }, 0);
+        }
+    }
+
     function formatDate(value, fallback, mode) {
         if (!value) return fallback || '—';
         var date = new Date(value);
@@ -3506,6 +3521,11 @@
     document.getElementById('confirm-student-search').addEventListener('click', confirmStudentSearch);
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
+        var createPanel = document.getElementById('create-student-panel');
+        if (createPanel && !createPanel.hidden && event.target === createPanel) {
+            setCreateStudentModal(false);
+            return;
+        }
         if (state.accountPanelOpen && teacherAccountPanel && !teacherAccountPanel.contains(event.target) && !event.target.closest('#teacher-chip')) {
             setTeacherAccountPanel(false);
         }
@@ -3551,6 +3571,13 @@
         }
     });
     document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            var createPanel = document.getElementById('create-student-panel');
+            if (createPanel && !createPanel.hidden) {
+                setCreateStudentModal(false);
+                return;
+            }
+        }
         if (event.key !== 'Enter' && event.key !== ' ') return;
         var openCard = event.target.closest('[data-open-href]');
         if (!openCard) return;
@@ -3561,11 +3588,10 @@
     document.getElementById('toggle-create-student').addEventListener('click', function() {
         setStudentPickerOpen(false);
         setTeacherAccountPanel(false);
-        activateView('view');
-        document.getElementById('create-student-panel').hidden = false;
+        setCreateStudentModal(true);
     });
     document.getElementById('close-create-student').addEventListener('click', function() {
-        document.getElementById('create-student-panel').hidden = true;
+        setCreateStudentModal(false);
     });
     studentForm.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -3580,6 +3606,7 @@
             curriculum_track: document.getElementById('student-curriculum').value
         }).then(function(result) {
             studentForm.reset();
+            setCreateStudentModal(false);
             state.selectedStudentProfileId = result.student.profile_id;
             showMessage(
                 'Student created and activated. Login ID: ' + result.student.student_id +
