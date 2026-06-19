@@ -50,9 +50,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
-- Added a confirmation prompt before student Assignment cards, student Library
-  cards, and teacher Library cards navigate into practice pages. Verified
-  JavaScript syntax and diff checks; static publish required.
+- Replaced task-entry browser confirmations with the shared custom entry dialog
+  for student Assignment cards, student Library cards, and teacher Library
+  cards. It shows task title, `Enter`, external `Close`, and status/best-score
+  reminders. Verified JavaScript syntax and diff checks; static publish
+  required.
 - Moved the teacher create-student `+` shortcut into the top-right Personal
   Center action cluster, centered the panel title, and removed the Teacher
   Account heading/status row. Verified JavaScript syntax and release checks;

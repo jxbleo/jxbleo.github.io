@@ -498,10 +498,13 @@
             ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment')
             : (set.course || set.type || 'Assignment');
         var setId = set.set_id || set.id || set.title || '';
+        var entryStatus = finished ? status : 'not-passed';
         return '<article class="resource-card library-task-card assignment-task-card' +
             (finished ? ' finished-assignment-card ' + escapeHtml(status) : '') +
             (replyCount ? ' has-teacher-replies' : '') +
             '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '"' +
+            ' data-entry-kind="' + escapeHtml(eyebrow) + '" data-entry-title="' + escapeHtml(set.title || setId || 'Practice') + '"' +
+            ' data-entry-status="' + escapeHtml(entryStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(set.title || setId || 'assignment') + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
@@ -526,21 +529,116 @@
 
     function practiceEntryTitle(element) {
         if (!element) return 'this practice';
+        if (element.dataset && element.dataset.entryTitle) return element.dataset.entryTitle;
         var titleNode = element.querySelector && element.querySelector('h3');
         var title = titleNode && titleNode.textContent || element.getAttribute && element.getAttribute('aria-label') || '';
         return String(title || 'this practice').replace(/^Open\s+/i, '').trim() || 'this practice';
     }
 
-    function confirmPracticeEntry(element) {
-        var title = practiceEntryTitle(element);
-        return window.confirm('Enter this practice now?\n\n' + title + '\n\nCancel if this was a mis-tap.');
+    function practiceEntryKind(element) {
+        if (!element) return 'Practice';
+        if (element.dataset && element.dataset.entryKind) return element.dataset.entryKind;
+        var kindNode = element.querySelector && element.querySelector('.eyebrow');
+        return String(kindNode && kindNode.textContent || 'Practice').trim() || 'Practice';
+    }
+
+    function practiceEntryStatus(element) {
+        var status = element && element.dataset && element.dataset.entryStatus || 'not-passed';
+        status = normalizedStatus(status);
+        if (status === 'mastered') return 'mastered';
+        if (status === 'passed') return 'passed';
+        return 'not-passed';
+    }
+
+    function formatEntryPercent(value) {
+        if (value == null || value === '') return '—';
+        var number = Number(value);
+        if (!isFinite(number)) return '—';
+        return (Math.round(number * 10) / 10).toString().replace(/\.0$/, '') + '%';
+    }
+
+    function practiceEntryStatusText(status, best) {
+        var labels = {
+            'not-passed': 'Not passed yet',
+            passed: 'Passed',
+            mastered: 'Mastered'
+        };
+        return (labels[status] || labels['not-passed']) + ' · Best ' + formatEntryPercent(best);
+    }
+
+    function ensurePracticeEntryDialog() {
+        var existing = document.getElementById('practice-entry-overlay');
+        if (existing) return existing;
+        var overlay = document.createElement('div');
+        overlay.className = 'practice-entry-overlay';
+        overlay.id = 'practice-entry-overlay';
+        overlay.hidden = true;
+        overlay.innerHTML =
+            '<div class="practice-entry-shell">' +
+                '<section class="practice-entry-card" role="dialog" aria-modal="true" aria-label="Practice entry confirmation">' +
+                    '<div class="practice-entry-stamp">Ready?</div>' +
+                    '<div class="practice-entry-task">' +
+                        '<small id="practice-entry-kind">Practice</small>' +
+                        '<strong id="practice-entry-title">Practice</strong>' +
+                    '</div>' +
+                    '<div class="practice-entry-actions">' +
+                        '<button class="practice-entry-enter" id="practice-entry-enter" type="button">' +
+                            '<span>Enter</span>' +
+                            '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                                '<path d="M5 12h12"></path>' +
+                                '<path d="M13 7l5 5-5 5"></path>' +
+                            '</svg>' +
+                        '</button>' +
+                    '</div>' +
+                    '<div class="practice-entry-ribbon not-passed" id="practice-entry-ribbon">' +
+                        '<span id="practice-entry-status">Not passed yet · Best —</span>' +
+                    '</div>' +
+                '</section>' +
+                '<button class="practice-entry-close" id="practice-entry-close" type="button">Close</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) closePracticeEntryDialog();
+        });
+        overlay.querySelector('#practice-entry-close').addEventListener('click', closePracticeEntryDialog);
+        overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
+            var href = overlay.dataset.href;
+            if (href) window.location.href = href;
+        });
+        return overlay;
+    }
+
+    function closePracticeEntryDialog() {
+        var overlay = document.getElementById('practice-entry-overlay');
+        if (!overlay) return;
+        overlay.hidden = true;
+        delete overlay.dataset.href;
+        document.removeEventListener('keydown', handlePracticeEntryKeydown);
+    }
+
+    function handlePracticeEntryKeydown(event) {
+        if (event.key === 'Escape') closePracticeEntryDialog();
+    }
+
+    function showPracticeEntryDialog(element, href) {
+        var overlay = ensurePracticeEntryDialog();
+        var status = practiceEntryStatus(element);
+        var best = element && element.dataset && element.dataset.entryBest;
+        overlay.dataset.href = href || '';
+        overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
+        overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
+        overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
+        overlay.querySelector('#practice-entry-status').textContent = practiceEntryStatusText(status, best);
+        overlay.hidden = false;
+        overlay.querySelector('#practice-entry-enter').focus();
+        document.addEventListener('keydown', handlePracticeEntryKeydown);
     }
 
     function openHrefCard(card, event) {
         if (!card) return;
         if (event && event.target && event.target.closest('button, a')) return;
         var href = card.dataset.openHref;
-        if (href && confirmPracticeEntry(card)) window.location.href = href;
+        if (href) showPracticeEntryDialog(card, href);
     }
 
     function newestFirst(left, right) {
@@ -955,8 +1053,11 @@
     function libraryBuildCard(item, section, extraClass, itemYear) {
         var href = practiceHref(item, null);
         var meta = libraryCardMeta(item, section, itemYear);
+        var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
         return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
+            ' data-entry-kind="' + escapeHtml(meta.sectionLabel) + '" data-entry-title="' + escapeHtml(item.title || meta.setId || 'Practice') + '"' +
+            ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
