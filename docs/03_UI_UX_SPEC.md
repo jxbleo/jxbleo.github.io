@@ -175,12 +175,14 @@ Teacher Library uses CloudBase `sets` as the authoritative assignable source,
 but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
 being checked.
-BBC cards show a year badge; IELTS task cards should not show the Cambridge
-book badge inside each task capsule. IELTS book/filter labels belong in the
-yellow capsule tab layer above the task list. DSE labels should read
-`DSE Reading`, `DSE Writing`, `DSE Integrated`, and `DSE Speaking` without
-visible Paper numbers. Keep this capsule shape when changing Library grouping,
-tabs, or filters.
+BBC task cards should not show a year badge inside each task capsule. Teacher
+Library currently does not expose a BBC year sub-filter; keep BBC as a simple
+column unless the owner explicitly asks to restore 2025/2026 sub-tabs. IELTS
+task cards should not show the Cambridge book badge inside each task capsule.
+IELTS book/filter labels belong in the yellow capsule tab layer above the task
+list. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
+and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when
+changing Library grouping, tabs, or filters.
 IELTS Library task capsules should label their course surface as lowercase
 slugs, `ielts-reading` or `ielts-listening`, in the card eyebrow.
 

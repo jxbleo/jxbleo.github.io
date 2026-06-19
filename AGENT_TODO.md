@@ -50,6 +50,16 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Corrected the Teacher Library BBC year-badge misunderstanding: BBC task
+  capsules should not show gold year badges, and the teacher BBC column should
+  not expose year sub-tabs unless the owner explicitly asks to restore them.
+  This supersedes older notes that mentioned keeping BBC year badges.
+- Lesson learned for missing Teacher Library content: do not assume
+  `teacherAdmin.zip` redeploy is the fix. First check static publish/cache
+  (`teacher.html` script version and `home-catalog`), then CloudBase `sets` and
+  `grading_keys` import state, then teacher Library filters/fallback behavior,
+  and only consider cloud function redeploy when the function logic itself
+  changed or returns stale data.
 - Fixed teacher Library display fallback so it merges visible static
   `home-catalog` items missing from CloudBase `sets`, allowing newly published
   lessons to be previewed while CloudBase import state is checked. Verified
@@ -193,8 +203,9 @@ cp .qa-secrets.example .qa-secrets.local
   low-noise text buttons. Verified dashboard/teacher syntax, `git diff --check`,
   and local v7 asset requests.
 - Removed the yellow `C7` IELTS badge from student and teacher Library task
-  cards, kept BBC year badges, and restyled the Library sub-tab layer as yellow
-  capsule buttons. Verified `dashboard.js`/`teacher.js` syntax, `git diff --check`,
+  cards, kept BBC year badges at that time, and restyled the Library sub-tab
+  layer as yellow capsule buttons. BBC year badges were later removed per owner
+  preference. Verified `dashboard.js`/`teacher.js` syntax, `git diff --check`,
   and local v6 asset requests.
 - Replaced the student Assignments achievement drawer summary with a compact
   `Finished` completion button showing a completion SVG and total finished
@@ -213,8 +224,9 @@ cp .qa-secrets.example .qa-secrets.local
   smoke-tested local `teacher.html`; CloudBase still needs the rebuilt
   `teacherAdmin` function package deployed.
 - Unified student and teacher Library task capsules; added IELTS book badges,
-  BBC year badges, and DSE labels without Paper numbers. Moved student STAR
-  counters into the account panel, changed My Words to a vocabulary-list layout,
+  BBC year badges at that time, and DSE labels without Paper numbers. BBC year
+  badges were later removed per owner preference. Moved student STAR counters
+  into the account panel, changed My Words to a vocabulary-list layout,
   simplified the Assignments achievement drawer around a gold completed count,
   and added class filtering plus mobile-friendly scrolling to the teacher View
   matrix. Verified `dashboard.js` and `teacher.js` with `node --check`; browser
