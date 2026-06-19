@@ -50,6 +50,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Updated the student login page to the floating-paper welcome design with a
+  minimal central quote, light green motion elements, `Sign in`, and concise
+  view-only visitor copy. Verified login JavaScript syntax and diff whitespace;
+  browser visual smoke is still useful before static publish.
 - Corrected the Teacher Library BBC year-badge misunderstanding: BBC task
   capsules should not show gold year badges, and the teacher BBC column should
   not expose year sub-tabs unless the owner explicitly asks to restore them.
@@ -73,6 +77,13 @@ cp .qa-secrets.example .qa-secrets.local
   updated teacher assets, then redirected to `index.html` because localhost had
   no active teacher login state; visual smoke still needs an authenticated
   teacher session after static publish.
+- Changed the teacher notification bell to a standalone attempts-only modal,
+  removed Review items and filter buttons from that feed, and made each attempt
+  row open View with the matching matrix cell and attempt highlighted. Reversed
+  the header `+` button to the same light/purple style as the other header
+  icons. Verified `teacher.js` syntax, stale Review-in-bell searches, and diff
+  whitespace, then ran release verification; authenticated visual smoke is
+  still needed.
 - Reviewed three incoming BBC listening practice drafts from the desktop BBC
   folder against their transcripts and audio assets, created a revised
   teacher-review copy outside the repo at `/private/tmp`, lengthened
