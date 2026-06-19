@@ -65,6 +65,14 @@ cp .qa-secrets.example .qa-secrets.local
   lessons to be previewed while CloudBase import state is checked. Verified
   teacher JavaScript syntax, release checks, and diff whitespace; static publish
   required.
+- Moved teacher Review out of Tasks into a top-right icon button and standalone
+  modal with Pending, Approved, and Rejected tabs. Removed the old Tasks Review
+  entry and kept notification Review rows opening the modal. Verified
+  `teacher.js` syntax, searched for stale Tasks Review entry points, ran
+  `git diff --check`, and ran release verification. Local browser loaded the
+  updated teacher assets, then redirected to `index.html` because localhost had
+  no active teacher login state; visual smoke still needs an authenticated
+  teacher session after static publish.
 - Reviewed three incoming BBC listening practice drafts from the desktop BBC
   folder against their transcripts and audio assets, created a revised
   teacher-review copy outside the repo at `/private/tmp`, lengthened

@@ -21,6 +21,7 @@
         studentInfoEdit: '',
         accountPanelOpen: false,
         updatesOpen: false,
+        reviewOpen: false,
         updatesFilter: 'unread',
         attemptsSeenAt: null,
         disputeFilter: 'pending',
@@ -260,14 +261,13 @@
 
     function updateTopBadges() {
         var count = pendingReviewCount();
-        var tasksButton = document.querySelector('.tab-button[data-view="tasks"]');
-        if (tasksButton) {
-            tasksButton.innerHTML = 'Tasks' + (count ? '<span class="notice-dot danger">' + escapeHtml(count) + '</span>' : '');
+        var reviewButton = document.getElementById('teacher-review-button');
+        var reviewCount = document.getElementById('teacher-review-count');
+        if (reviewCount) {
+            reviewCount.textContent = count ? String(count) : '';
+            reviewCount.hidden = count <= 0;
         }
-        var reviewButton = document.querySelector('[data-task-view="review"] .summary-label');
-        if (reviewButton) {
-            reviewButton.innerHTML = 'REVIEW' + (count ? ' ' + escapeHtml(count) : '');
-        }
+        if (reviewButton) reviewButton.classList.toggle('has-updates', count > 0);
         updateActivityBadges();
     }
 
@@ -276,10 +276,7 @@
             button.classList.toggle('active', button.dataset.taskView === state.taskView);
         });
         var assignPanel = document.getElementById('task-assign-panel');
-        var reviewPanel = document.getElementById('task-review-panel');
-        if (assignPanel) assignPanel.hidden = state.taskView !== 'assign';
-        if (reviewPanel) reviewPanel.hidden = state.taskView !== 'review';
-        if (state.taskView === 'review') renderDisputes();
+        if (assignPanel) assignPanel.hidden = false;
         updateTopBadges();
     }
 
@@ -306,7 +303,27 @@
         if (teacherAccountPanel) teacherAccountPanel.hidden = !state.accountPanelOpen;
         var chip = document.getElementById('teacher-chip');
         if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
-        if (state.accountPanelOpen) renderTeacherAccount();
+        if (state.accountPanelOpen) {
+            state.updatesOpen = false;
+            renderUpdatesPanel();
+            setReviewPanel(false);
+            renderTeacherAccount();
+        }
+    }
+
+    function setReviewPanel(open) {
+        state.reviewOpen = open === true;
+        var panel = document.getElementById('teacher-review-panel');
+        var button = document.getElementById('teacher-review-button');
+        if (panel) panel.hidden = !state.reviewOpen;
+        if (button) button.setAttribute('aria-expanded', state.reviewOpen ? 'true' : 'false');
+        if (state.reviewOpen) {
+            setTeacherAccountPanel(false);
+            state.updatesOpen = false;
+            renderUpdatesPanel();
+            loadQuestionTextForDisputes().then(renderDisputes);
+        }
+        updateTopBadges();
     }
 
     function setCreateStudentModal(open) {
@@ -316,6 +333,7 @@
         if (open) {
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
+            setReviewPanel(false);
             renderUpdatesPanel();
             window.setTimeout(function() {
                 var input = document.getElementById('student-id');
@@ -2941,10 +2959,7 @@
                 state.expandedDisputes[row.dataset.openDispute] = true;
                 state.disputeMerge = false;
                 state.updatesOpen = false;
-                state.taskView = 'review';
-                activateView('tasks');
-                updateAssignView();
-                renderDisputes();
+                setReviewPanel(true);
                 renderUpdatesPanel();
             });
         });
@@ -3108,6 +3123,7 @@
     function renderDisputes() {
         var list = document.getElementById('dispute-list');
         updateTopBadges();
+        if (!list) return;
         var counts = disputeCounts();
         var disputes = filteredDisputes();
         if (state.disputeFilter === 'pending') state.disputeMerge = false;
@@ -3412,8 +3428,28 @@
             setTeacherAccountPanel(false);
         });
     }
+    var teacherReviewButton = document.getElementById('teacher-review-button');
+    if (teacherReviewButton) {
+        teacherReviewButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            setReviewPanel(!state.reviewOpen);
+        });
+    }
+    var teacherReviewClose = document.getElementById('teacher-review-close');
+    if (teacherReviewClose) {
+        teacherReviewClose.addEventListener('click', function() {
+            setReviewPanel(false);
+        });
+    }
+    var teacherReviewPanel = document.getElementById('teacher-review-panel');
+    if (teacherReviewPanel) {
+        teacherReviewPanel.addEventListener('click', function(event) {
+            if (event.target === teacherReviewPanel) setReviewPanel(false);
+        });
+    }
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
+        if (state.updatesOpen) setReviewPanel(false);
         if (state.updatesOpen && state.updatesFilter === 'unread') {
             var counts = activityAttemptCounts();
             var reviewCounts = reviewActivityCounts();

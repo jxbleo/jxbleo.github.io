@@ -96,16 +96,14 @@ The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The only create-student entry is the `+` button beside the
 notification control in the top-right header; it opens a standalone modal, not
-an inline View panel.
+an inline View panel. Review requests open from a separate top-right icon
+button with a pending-count badge and display in a standalone modal.
 
 ### Tasks
 
 Tasks contains:
 
 - `Assign`
-- `Review`
-
-Review is the teacher-facing surface for student Argue requests.
 
 ### Assign
 
@@ -210,7 +208,12 @@ Student detail should show:
 
 ### Review
 
-Review should be grouped into task capsules so the teacher can handle one student attempt or assignment at a time.
+Review is the teacher-facing surface for student Argue requests. It opens as a
+standalone modal from the top-right Review icon, not as a Tasks sub-tab.
+
+Review should show `Pending`, `Approved`, and `Rejected` status tabs and group
+requests into task capsules so the teacher can handle one student attempt or
+assignment at a time.
 
 Pending items sort first.
 
