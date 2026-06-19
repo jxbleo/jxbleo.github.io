@@ -767,8 +767,13 @@ button { cursor: pointer; }
     z-index: 2;
 }
 .assignment-result-stamp {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     min-width: 104px;
-    min-height: 44px;
+    height: 46px;
     padding: 0 14px;
     border: 3px solid currentColor;
     border-radius: 11px;
@@ -781,11 +786,13 @@ button { cursor: pointer; }
     box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset, 0 8px 20px rgba(20, 121, 100, 0.1);
     font-size: 0.78rem;
     font-weight: 950;
+    line-height: 1;
     letter-spacing: .05em;
     text-transform: uppercase;
     text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
     transform: rotate(3deg);
     mix-blend-mode: multiply;
+    white-space: nowrap;
 }
 .assignment-result-stamp::after {
     content: "";
