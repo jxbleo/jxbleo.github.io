@@ -50,6 +50,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Fixed teacher Library display fallback so it merges visible static
+  `home-catalog` items missing from CloudBase `sets`, allowing newly published
+  lessons to be previewed while CloudBase import state is checked. Verified
+  teacher JavaScript syntax, release checks, and diff whitespace; static publish
+  required.
 - Reviewed three incoming BBC listening practice drafts from the desktop BBC
   folder against their transcripts and audio assets, created a revised
   teacher-review copy outside the repo at `/private/tmp`, lengthened

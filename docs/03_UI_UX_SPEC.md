@@ -171,6 +171,10 @@ Student and teacher Library task items should render as the same compact task
 capsules/cards with set metadata, title, and stable set ID. The whole capsule
 opens the practice item after the shared practice-entry confirmation dialog;
 do not add a separate `Go` action.
+Teacher Library uses CloudBase `sets` as the authoritative assignable source,
+but should merge in visible static `home-catalog` items that are missing from
+CloudBase so new public lessons can still be previewed while content import is
+being checked.
 BBC cards show a year badge; IELTS task cards should not show the Cambridge
 book badge inside each task capsule. IELTS book/filter labels belong in the
 yellow capsule tab layer above the task list. DSE labels should read
