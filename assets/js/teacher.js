@@ -292,7 +292,6 @@
                     '<h2>' + escapeHtml(profile.name || profile.student_id || 'Teacher') + '</h2>' +
                     '<div class="profile-row"><span>Login ID</span><strong>' + escapeHtml(profile.student_id || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>Role</span><strong>Teacher</strong></div>' +
-                    '<div class="profile-row"><span>Status</span><strong>' + escapeHtml(profile.active === false ? 'Inactive' : 'Active') + '</strong></div>' +
                     '<div class="profile-actions">' +
                         '<button class="danger-button teacher-logout" id="teacher-logout" type="button">Log Out</button>' +
                     '</div>' +
@@ -582,11 +581,23 @@
         '</div>';
     }
 
+    function practiceEntryTitle(element) {
+        if (!element) return 'this practice';
+        var titleNode = element.querySelector && element.querySelector('h3');
+        var title = titleNode && titleNode.textContent || element.getAttribute && element.getAttribute('aria-label') || '';
+        return String(title || 'this practice').replace(/^Open\s+/i, '').trim() || 'this practice';
+    }
+
+    function confirmPracticeEntry(element) {
+        var title = practiceEntryTitle(element);
+        return window.confirm('Enter this practice now?\n\n' + title + '\n\nCancel if this was a mis-tap.');
+    }
+
     function openHrefCard(card, event) {
         if (!card) return;
         if (event && event.target && event.target.closest('button, a')) return;
         var href = card.dataset.openHref;
-        if (href) window.location.href = href;
+        if (href && confirmPracticeEntry(card)) window.location.href = href;
     }
 
     function teacherLibraryItemIdentity(item) {
@@ -2242,11 +2253,15 @@
             .slice(0, 12);
         if (!sets.length || !students.length) return '';
         var selectedItem = null;
-        var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 78) + 'px;--matrix-min-mobile:' + (126 + sets.length * 68) + 'px;';
+        var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 112) + 'px;--matrix-min-mobile:' + (126 + sets.length * 96) + 'px;';
         var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
             '<span>Student</span>' +
             sets.map(function(set) {
-                return '<span title="' + escapeHtml(set.title || set.id) + '">' + escapeHtml(set.id) + '</span>';
+                var title = set.title || set.id || 'Task';
+                return '<span class="progress-matrix-task-head" title="' + escapeHtml(title) + '">' +
+                    '<strong>' + escapeHtml(set.id) + '</strong>' +
+                    '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
+                '</span>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {
@@ -3309,6 +3324,8 @@
     });
     document.getElementById('toggle-create-student').addEventListener('click', function() {
         setStudentPickerOpen(false);
+        setTeacherAccountPanel(false);
+        activateView('view');
         document.getElementById('create-student-panel').hidden = false;
     });
     document.getElementById('close-create-student').addEventListener('click', function() {

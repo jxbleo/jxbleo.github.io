@@ -25,6 +25,11 @@
   natural date or numeric sort.
 - Expanded teacher matrix detail dialogs with answer-view lock status and a
   latest-attempt wrong-answer comparison table.
+- Added task names under task IDs in the teacher View matrix header.
+- Moved the create-student shortcut into the teacher Personal Center, centered
+  the panel title, and removed the account status row.
+- Added a confirmation prompt before student Assignment/Library and teacher
+  Library task capsules navigate into a practice page.
 
 ## 2026-06-18
 

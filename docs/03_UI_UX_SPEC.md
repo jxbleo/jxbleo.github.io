@@ -68,6 +68,8 @@ Student cards should show:
 - STAR state if mastered
 - the whole card opens the original task when clicked, except for explicit
   buttons such as Teacher replies or Get Star
+- opening a task card first shows a confirmation prompt so accidental taps do
+  not immediately leave the dashboard
 
 My Words:
 
@@ -89,6 +91,11 @@ Teacher page has three main capsules:
 - `Tasks`
 - `View`
 - `Library`
+
+The top-right teacher chip opens a Personal Center panel. Its title is centered
+as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
+status row. The create-student `+` action lives in the panel's top-right action
+cluster and opens the student account creation form.
 
 ### Tasks
 
@@ -130,6 +137,8 @@ View is the teacher's progress and student-inspection surface.
 It should include:
 
 - an assignment matrix/table for scanning completion by student and task, with class, column, recent-task count, and date-range filters plus responsive horizontal scrolling on small screens
+- matrix task headers show the stable task ID with the task name directly
+  underneath
 - matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
 - the matrix student column shows only the student name, without Login ID or class
 - clickable matrix cells open a floating dialog with a close button for the student's records for that set, including attempt dates, time spent, scores, a latest-attempt wrong-answer comparison with student answers and correct answers in separate columns, and teacher-only correct answers
@@ -147,7 +156,8 @@ Teacher opens existing practice pages in `teacher=1` mode.
 
 Student and teacher Library task items should render as the same compact task
 capsules/cards with set metadata, title, and stable set ID. The whole capsule
-opens the practice item; do not add a separate `Go` action.
+opens the practice item after a confirmation prompt; do not add a separate
+`Go` action.
 BBC cards show a year badge; IELTS task cards should not show the Cambridge
 book badge inside each task capsule. IELTS book/filter labels belong in the
 yellow capsule tab layer above the task list. DSE labels should read

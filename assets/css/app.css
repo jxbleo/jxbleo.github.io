@@ -279,14 +279,40 @@ button { cursor: pointer; }
 }
 .account-panel[hidden] { display: none; }
 .account-panel-head {
+    position: relative;
     display: flex;
-    align-items: start;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
     gap: 12px;
+    min-height: 38px;
     margin-bottom: 12px;
+}
+.account-panel-title {
+    width: 100%;
+    padding: 0 86px;
+    text-align: center;
 }
 .account-panel-head .eyebrow { margin: 0; }
 .account-panel-head h2 { margin: 2px 0 0; font-size: 1.15rem; }
+.account-panel-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.account-panel-actions .create-student-close,
+.account-panel-actions .teacher-create-capsule {
+    position: static;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+}
+.account-panel-actions .teacher-create-capsule {
+    border-radius: 999px;
+    font-size: 1.05rem;
+}
 .account-panel .profile-grid { grid-template-columns: 1fr; }
 .teacher-page .account-panel { border-color: rgba(124, 58, 237, 0.18); }
 .star-counter {
@@ -1767,6 +1793,19 @@ button { cursor: pointer; }
     text-transform: uppercase;
 }
 .progress-matrix-head > span:first-child { z-index: 3; }
+.progress-matrix-task-head strong {
+    color: var(--ink);
+    font-size: 0.72rem;
+    line-height: 1.1;
+}
+.progress-matrix-task-name {
+    display: -webkit-box !important;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-transform: none;
+    line-height: 1.2;
+}
 .progress-matrix-row strong,
 .progress-matrix-row small { display: block; }
 .progress-matrix-row small {
@@ -2488,7 +2527,7 @@ button { cursor: pointer; }
 .student-select-card > .eyebrow { margin: 0 0 12px; }
 .student-search-actions {
     display: grid;
-    grid-template-columns: auto minmax(150px, 1fr) auto auto;
+    grid-template-columns: auto minmax(150px, 1fr) auto;
     gap: 8px;
     align-items: center;
     width: min(760px, 100%);
@@ -3488,7 +3527,7 @@ button { cursor: pointer; }
     .assign-done-button { width: 100%; }
     .student-page-toolbar { align-items: stretch; flex-direction: column; }
     .compact-primary { width: 100%; }
-    .student-search-actions { grid-template-columns: 1fr auto auto; }
+    .student-search-actions { grid-template-columns: 1fr auto; }
     .student-mode-buttons {
         grid-column: 1 / -1;
         width: 100%;
@@ -3524,7 +3563,7 @@ button { cursor: pointer; }
         max-width: none;
     }
     .progress-matrix-row {
-        grid-template-columns: minmax(126px, 1fr) repeat(var(--matrix-cols, 6), minmax(68px, .65fr));
+        grid-template-columns: minmax(126px, 1fr) repeat(var(--matrix-cols, 6), minmax(96px, .65fr));
         min-width: var(--matrix-min-mobile, 560px);
     }
     .progress-matrix-row > span,

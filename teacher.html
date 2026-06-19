@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260619-6">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260619-8">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -22,11 +22,13 @@
 
         <section class="account-panel teacher-account-panel" id="teacher-account-panel" hidden>
             <div class="account-panel-head">
-                <div>
+                <div class="account-panel-title">
                     <p class="eyebrow accent">PERSONAL CENTER</p>
-                    <h2>Teacher Account</h2>
                 </div>
-                <button class="create-student-close" id="teacher-account-close" type="button" aria-label="Close account panel">x</button>
+                <div class="account-panel-actions">
+                    <button class="teacher-create-capsule account-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
+                    <button class="create-student-close" id="teacher-account-close" type="button" aria-label="Close account panel">x</button>
+                </div>
             </div>
             <div id="teacher-account-content">
                 <div class="profile-card"><p class="muted">Loading account...</p></div>
@@ -153,7 +155,6 @@
                     </div>
                     <span class="selected-student-pill" id="selected-student-label">No student selected</span>
                     <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">Confirm</button>
-                    <button class="teacher-create-capsule" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
                     <select class="filter-select full-width" id="student-class-filter" hidden>
                         <option value="">All classes</option>
                     </select>
@@ -207,6 +208,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260619-6"></script>
+    <script src="assets/js/teacher.js?v=20260619-9"></script>
 </body>
 </html>
