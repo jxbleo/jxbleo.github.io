@@ -50,6 +50,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Added a confirmation prompt before student Assignment cards, student Library
+  cards, and teacher Library cards navigate into practice pages. Verified
+  JavaScript syntax and diff checks; static publish required.
+- Moved the teacher create-student `+` shortcut into the top-right Personal
+  Center action cluster, centered the panel title, and removed the Teacher
+  Account heading/status row. Verified JavaScript syntax and release checks;
+  static publish required.
+- Added task names under task IDs in the teacher View matrix header and widened
+  task columns slightly so the extra line remains readable with horizontal
+  scrolling. Verified JavaScript syntax and release checks; static publish
+  required.
 - Aligned teacher Assign Work-list sorting with the matching Library column
   rules, so filtered columns use natural date/numeric ordering instead of raw
   backend title order. Verified JavaScript syntax and release checks; static

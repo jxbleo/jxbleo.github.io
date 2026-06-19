@@ -524,11 +524,23 @@
         return new Date(item.assigned_at || item.updated_at || 0).getTime();
     }
 
+    function practiceEntryTitle(element) {
+        if (!element) return 'this practice';
+        var titleNode = element.querySelector && element.querySelector('h3');
+        var title = titleNode && titleNode.textContent || element.getAttribute && element.getAttribute('aria-label') || '';
+        return String(title || 'this practice').replace(/^Open\s+/i, '').trim() || 'this practice';
+    }
+
+    function confirmPracticeEntry(element) {
+        var title = practiceEntryTitle(element);
+        return window.confirm('Enter this practice now?\n\n' + title + '\n\nCancel if this was a mis-tap.');
+    }
+
     function openHrefCard(card, event) {
         if (!card) return;
         if (event && event.target && event.target.closest('button, a')) return;
         var href = card.dataset.openHref;
-        if (href) window.location.href = href;
+        if (href && confirmPracticeEntry(card)) window.location.href = href;
     }
 
     function newestFirst(left, right) {
