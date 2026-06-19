@@ -50,6 +50,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Redesigned teacher View matrix detail dialogs with a title-only header,
+  student and lock/best-score pills, clickable attempt score bars, external
+  Close button, and newest-first attempt cards that list only wrong answers.
+  Verified JavaScript syntax and release checks; static publish required.
 - Shortened the practice-entry dialog not-passed ribbon to `Not yet` without a
   best-score field; passed and mastered states keep best-score reminders.
   Verified JavaScript syntax and diff checks; static publish required.

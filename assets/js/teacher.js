@@ -2262,28 +2262,142 @@
         ].join('::');
     }
 
+    function formatAttemptChartDate(value) {
+        if (!value) return '—';
+        var date = new Date(value);
+        if (isNaN(date.getTime())) return '—';
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Shanghai',
+            month: 'short',
+            day: 'numeric'
+        }).format(date);
+    }
+
+    function formatAttemptClock(value) {
+        if (!value) return '—';
+        var date = new Date(value);
+        if (isNaN(date.getTime())) return '—';
+        return date.toLocaleTimeString('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    }
+
+    function attemptDurationLabel(attempt) {
+        return formatDuration(attempt && attempt.duration_seconds);
+    }
+
+    function attemptDisplayNumber(attempt, index) {
+        return attempt && attempt.attempt_number ? attempt.attempt_number : index + 1;
+    }
+
+    function matrixAttemptEntries(attempts) {
+        return (attempts || []).map(function(attempt, index) {
+            return {
+                attempt: attempt,
+                number: attemptDisplayNumber(attempt, index),
+                index: index
+            };
+        });
+    }
+
+    function renderMatrixScoreLock(item) {
+        var locked = item && (item.answer_revealed === true || item.mastery_locked === true);
+        var icon = locked ? '&#128274;' : '&#128275;';
+        var label = locked ? 'Answers viewed; score locked' : 'Answers not viewed; score not locked';
+        return '<span class="matrix-score-lock ' + (locked ? 'locked' : 'unlocked') +
+            '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '">' +
+            '<span aria-hidden="true">' + icon + '</span><strong>' + escapeHtml(formatPercent(item && item.best_percentage)) + '</strong></span>';
+    }
+
+    function renderMatrixAttemptChart(entries) {
+        if (!entries.length) return '<div class="matrix-attempt-empty">No attempt records yet.</div>';
+        return '<div class="matrix-attempt-bars" aria-label="Attempt score history">' +
+            entries.map(function(entry) {
+                var attempt = entry.attempt;
+                var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
+                var scoreClass = percent >= 80 ? ' high' : (percent >= 50 ? ' mid' : ' low');
+                var duration = attemptDurationLabel(attempt);
+                return '<button class="matrix-attempt-bar" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) + '">' +
+                    '<span class="matrix-attempt-track"><span class="matrix-attempt-fill' + scoreClass +
+                    '" style="height:' + escapeHtml(Math.max(percent, 6)) + '%">' + escapeHtml(formatPercent(percent)) + '</span></span>' +
+                    '<span class="matrix-attempt-caption"><small>' + escapeHtml(formatAttemptChartDate(attempt.submitted_at)) + '</small>' +
+                    '<small class="bar-time">' + escapeHtml(formatAttemptClock(attempt.submitted_at)) + '</small>' +
+                    (duration ? '<small class="bar-spent">' + escapeHtml(duration) + '</small>' : '') +
+                    '</span></button>';
+            }).join('') +
+        '</div>';
+    }
+
+    function renderMatrixAttemptWrongRows(attempt) {
+        var wrong = (attempt.question_results || []).filter(function(result) {
+            return result.correct !== true;
+        });
+        if (!wrong.length) {
+            return '<div class="matrix-wrong-empty">No wrong answers in this attempt.</div>';
+        }
+        return '<div class="matrix-answer-table">' +
+            wrong.map(function(result) {
+                var answer = result.submitted_answer == null || result.submitted_answer === ''
+                    ? 'blank'
+                    : result.submitted_answer;
+                return '<div class="q-cell">Q' + escapeHtml(result.question_id || '?') + '</div>' +
+                    '<div class="student-answer">' + escapeHtml(formatAnswerText(answer, 'blank')) + '</div>' +
+                    '<div class="correct-answer">' + escapeHtml(formatAnswerText(result.correct_answer, 'not available')) + '</div>';
+            }).join('') +
+        '</div>';
+    }
+
+    function renderMatrixAttemptDetails(entries) {
+        if (!entries.length) return '';
+        return '<div class="matrix-attempt-list">' +
+            entries.slice().reverse().map(function(entry) {
+                var attempt = entry.attempt;
+                var duration = attemptDurationLabel(attempt);
+                var percent = numericPercent(attempt.percentage);
+                return '<article class="matrix-attempt-card" data-matrix-attempt-index="' + escapeHtml(entry.index) + '">' +
+                    '<div class="matrix-attempt-head"><div><h3>Attempt #' + escapeHtml(entry.number) + '</h3>' +
+                    '<div class="matrix-attempt-meta">' +
+                    '<span>' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
+                    (duration ? '<span class="time">' + escapeHtml(duration) + '</span>' : '') +
+                    '</div></div>' +
+                    '<span class="matrix-score-pill ' + (percent != null && percent < 50 ? 'fail' : '') + '">' +
+                    escapeHtml(formatPercent(attempt.percentage)) + '</span></div>' +
+                    renderMatrixAttemptWrongRows(attempt) +
+                '</article>';
+            }).join('') +
+        '</div>';
+    }
+
     function renderMatrixCellDetail(item) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
-        var rangeText = 'All recorded attempts';
+        var entries = matrixAttemptEntries(attempts);
+        var title = item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set';
         return '<div class="progress-matrix-detail">' +
-            '<div class="progress-matrix-detail-head">' +
-                '<div><strong>' + escapeHtml(item.student_name || item.student_id || 'Student') + '</strong>' +
-                '<small>' + escapeHtml(item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set') +
-                ' · ' + escapeHtml(rangeText) + '</small></div>' +
-                '<span>' + escapeHtml(formatPercent(item.best_percentage)) + ' best</span>' +
+            '<div class="matrix-detail-summary">' +
+                '<h2>' + escapeHtml(title) + '</h2>' +
+                '<div class="matrix-detail-pills">' +
+                    '<span class="matrix-detail-pill">' + escapeHtml(item.student_name || item.student_id || 'Student') + '</span>' +
+                    renderMatrixScoreLock(item) +
+                '</div>' +
             '</div>' +
-            renderAssignmentDetails(item, attempts) +
+            renderMatrixAttemptChart(entries) +
+            renderMatrixAttemptDetails(entries) +
         '</div>';
     }
 
     function renderMatrixCellModal(item) {
         if (!item) return '';
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
-            '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Assignment details">' +
+            '<div class="progress-matrix-modal-shell">' +
+                '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Assignment details">' +
+                    renderMatrixCellDetail(item) +
+                '</section>' +
                 '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
-                renderMatrixCellDetail(item) +
-            '</section>' +
+            '</div>' +
         '</div>';
     }
 
@@ -2470,6 +2584,19 @@
                 if (button.dataset.matrixClose === 'backdrop' && event.target !== button) return;
                 state.selectedMatrixCell = '';
                 renderAssignmentOverview();
+            });
+        });
+        container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var modal = button.closest('.progress-matrix-modal-shell');
+                var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
+                if (target) {
+                    modal.querySelectorAll('.matrix-attempt-card.highlight').forEach(function(card) {
+                        card.classList.remove('highlight');
+                    });
+                    target.classList.add('highlight');
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         });
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
