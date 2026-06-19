@@ -25,6 +25,8 @@
   natural date or numeric sort.
 - Expanded teacher matrix detail dialogs with answer-view lock status and a
   latest-attempt wrong-answer comparison table.
+- Redesigned teacher matrix detail dialogs around a title/pill header,
+  clickable attempt score bars, and newest-first wrong-answer attempt cards.
 - Added task names under task IDs in the teacher View matrix header.
 - Moved the create-student shortcut into the teacher Personal Center, centered
   the panel title, and removed the account status row.
