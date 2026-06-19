@@ -50,6 +50,9 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Shortened the practice-entry dialog not-passed ribbon to `Not yet` without a
+  best-score field; passed and mastered states keep best-score reminders.
+  Verified JavaScript syntax and diff checks; static publish required.
 - Replaced task-entry browser confirmations with the shared custom entry dialog
   for student Assignment cards, student Library cards, and teacher Library
   cards. It shows task title, `Enter`, external `Close`, and status/best-score

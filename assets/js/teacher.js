@@ -614,12 +614,12 @@
     }
 
     function practiceEntryStatusText(status, best) {
+        if (status === 'not-passed') return 'Not yet';
         var labels = {
-            'not-passed': 'Not passed yet',
             passed: 'Passed',
             mastered: 'Mastered'
         };
-        return (labels[status] || labels['not-passed']) + ' · Best ' + formatEntryPercent(best);
+        return (labels[status] || 'Not yet') + ' · Best ' + formatEntryPercent(best);
     }
 
     function ensurePracticeEntryDialog() {
@@ -647,7 +647,7 @@
                         '</button>' +
                     '</div>' +
                     '<div class="practice-entry-ribbon not-passed" id="practice-entry-ribbon">' +
-                        '<span id="practice-entry-status">Not passed yet · Best —</span>' +
+                        '<span id="practice-entry-status">Not yet</span>' +
                     '</div>' +
                 '</section>' +
                 '<button class="practice-entry-close" id="practice-entry-close" type="button">Close</button>' +
