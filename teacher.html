@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260619-14">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260619-17">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
             <div class="teacher-header-actions">
+                <button class="teacher-review-button" id="teacher-review-button" type="button" aria-label="Review requests" aria-expanded="false">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M5 4.8A2.8 2.8 0 0 1 7.8 2h8.4A2.8 2.8 0 0 1 19 4.8v9.4a2.8 2.8 0 0 1-2.8 2.8H11l-4.5 3.7A.9.9 0 0 1 5 20v-3.1A2.8 2.8 0 0 1 2 14.2V4.8Z"></path>
+                        <path d="m8 9.9 2.1 2.1L15.8 6.7"></path>
+                    </svg>
+                    <span class="notice-dot danger" id="teacher-review-count" hidden>0</span>
+                </button>
                 <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false">
                     <span aria-hidden="true">!</span>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
@@ -61,6 +68,21 @@
             </div>
         </section>
 
+        <section class="teacher-review-modal" id="teacher-review-panel" hidden>
+            <div class="teacher-review-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-review-title">
+                <div class="teacher-review-head">
+                    <div>
+                        <p class="eyebrow accent">REVIEW</p>
+                        <h2 id="teacher-review-title">Argue requests</h2>
+                    </div>
+                    <button class="create-student-close" id="teacher-review-close" type="button" aria-label="Close review">x</button>
+                </div>
+                <div class="dispute-list" id="dispute-list">
+                    <div class="empty-card loading-card">Loading review requests...</div>
+                </div>
+            </div>
+        </section>
+
         <section class="create-student-modal" id="create-student-panel" hidden>
             <div class="create-student-dialog" role="dialog" aria-modal="true" aria-labelledby="create-student-title">
                 <div class="section-heading compact-heading">
@@ -92,15 +114,6 @@
         </section>
 
         <section class="dashboard-view" id="view-tasks">
-            <div class="summary-grid assignment-filters assign-tabs task-switch-tabs" role="tablist" aria-label="Task sections">
-                <button class="summary-card assignment-filter task-view-filter active" type="button" data-task-view="assign">
-                    <span class="summary-label">ASSIGN</span>
-                </button>
-                <button class="summary-card assignment-filter task-view-filter" type="button" data-task-view="review">
-                    <span class="summary-label">REVIEW</span>
-                </button>
-            </div>
-
             <section class="assign-flow simple-assign-flow task-view-panel" id="task-assign-panel">
                 <div class="assign-minimal-grid">
                     <article class="profile-card assign-picker-card" id="assign-sets-card">
@@ -143,12 +156,6 @@
                 <div class="assign-submit-bar">
                     <span id="selected-count">0 work · 0 students</span>
                     <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign</button>
-                </div>
-            </section>
-
-            <section class="task-view-panel" id="task-review-panel" hidden>
-                <div class="dispute-list" id="dispute-list">
-                    <div class="empty-card loading-card">Loading review requests...</div>
                 </div>
             </section>
         </section>
@@ -210,6 +217,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260619-16"></script>
+    <script src="assets/js/teacher.js?v=20260619-17"></script>
 </body>
 </html>

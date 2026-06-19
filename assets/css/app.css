@@ -237,7 +237,8 @@ button { cursor: pointer; }
     justify-content: flex-end;
     gap: 8px;
 }
-.teacher-updates-button {
+.teacher-updates-button,
+.teacher-review-button {
     position: relative;
     display: inline-grid;
     place-items: center;
@@ -252,11 +253,22 @@ button { cursor: pointer; }
     font-weight: 900;
     box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
 }
-.teacher-updates-button.has-updates {
+.teacher-review-button svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.teacher-updates-button.has-updates,
+.teacher-review-button.has-updates {
     border-color: rgba(124, 58, 237, 0.38);
     background: rgba(247, 243, 255, 0.96);
 }
-.teacher-updates-button .notice-dot {
+.teacher-updates-button .notice-dot,
+.teacher-review-button .notice-dot {
     top: -9px;
     right: -5px;
 }
@@ -1530,6 +1542,47 @@ button { cursor: pointer; }
     align-content: start;
     gap: 8px;
 }
+.teacher-review-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: grid;
+    align-items: start;
+    justify-items: center;
+    padding: min(7vh, 56px) 16px 28px;
+    background: rgba(24, 18, 43, 0.28);
+    backdrop-filter: blur(10px);
+}
+.teacher-review-modal[hidden] { display: none; }
+.teacher-review-dialog {
+    width: min(940px, 100%);
+    max-height: min(820px, calc(100vh - 64px));
+    overflow: auto;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.82);
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: var(--shadow);
+}
+.teacher-review-head {
+    position: sticky;
+    top: -18px;
+    z-index: 2;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 14px;
+    margin: -18px -18px 14px;
+    padding: 18px;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
+}
+.teacher-review-head h2 {
+    margin: 2px 0 0;
+    font-size: 1.18rem;
+}
+.teacher-review-head .eyebrow { margin: 0; }
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
     display: flex;

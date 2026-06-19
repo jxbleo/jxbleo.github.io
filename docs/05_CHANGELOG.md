@@ -21,6 +21,8 @@
   keep their own actions.
 - Simplified teacher `Assign` into two minimal multi-select panels: `Work` with
   search and `Column`, and `Students` with search and `Class`.
+- Moved teacher Review out of Tasks into a top-right icon button that opens an
+  independent modal with Pending, Approved, and Rejected tabs.
 - Aligned teacher Assign Work-list ordering with the matching Library column's
   natural date or numeric sort.
 - Expanded teacher matrix detail dialogs with answer-view lock status and a
