@@ -68,8 +68,8 @@ Student cards should show:
 - STAR state if mastered
 - the whole card opens the original task when clicked, except for explicit
   buttons such as Teacher replies or Get Star
-- opening a task card first shows a confirmation prompt so accidental taps do
-  not immediately leave the dashboard
+- opening a task card first shows the shared practice-entry confirmation dialog
+  so accidental taps do not immediately leave the dashboard
 
 My Words:
 
@@ -156,8 +156,8 @@ Teacher opens existing practice pages in `teacher=1` mode.
 
 Student and teacher Library task items should render as the same compact task
 capsules/cards with set metadata, title, and stable set ID. The whole capsule
-opens the practice item after a confirmation prompt; do not add a separate
-`Go` action.
+opens the practice item after the shared practice-entry confirmation dialog;
+do not add a separate `Go` action.
 BBC cards show a year badge; IELTS task cards should not show the Cambridge
 book badge inside each task capsule. IELTS book/filter labels belong in the
 yellow capsule tab layer above the task list. DSE labels should read
