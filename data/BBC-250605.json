@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250605",
+  "title": "How Important Is Politeness?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250605-how-important-is-politeness.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The boy’s greeting seemed to violate _____.",
+      "section": "An informal street encounter"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "He used _____ because he recognised the person but could not recall his name.",
+      "section": "An informal street encounter"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The tag “innit” is a shortened form of _____.",
+      "section": "An informal street encounter"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The key issue was how the listener _____.",
+      "section": "Interpreting possible rudeness"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The greeting did not follow a more _____.",
+      "section": "Interpreting possible rudeness"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The listener treated the comment as _____.",
+      "section": "Interpreting possible rudeness"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "He did not understand it as _____.",
+      "section": "Interpreting possible rudeness"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Politeness is linked to the _____.",
+      "section": "Why politeness is taught"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Children learn it partly so they can be _____.",
+      "section": "Why politeness is taught"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "When a child failed to greet an adult, the parent began to _____.",
+      "section": "Why politeness is taught"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What main issue is raised by the boy’s informal greeting?",
+      "options": [
+        "Whether famous people should accept slang in public conversations.",
+        "Whether politeness depends on interpretation as well as wording.",
+        "Whether children should be banned from using informal language.",
+        "Whether greetings are polite only when they include a person’s name."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why did the boy use the word “thingy”?",
+      "options": [
+        "He wanted to insult the person by refusing to say his name.",
+        "He was quoting a phrase commonly used by young children.",
+        "He was unsure whether the person was actually famous.",
+        "He recognised the person but could not remember his name."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How did the person addressed interpret the boy’s greeting?",
+      "options": [
+        "He saw it as friendly rather than threatening or insulting.",
+        "He considered it aggressive because of the missing name.",
+        "He thought it was formally correct but emotionally cold.",
+        "He felt it proved young people no longer learn manners."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why can the boy’s words be judged differently by different listeners?",
+      "options": [
+        "The phrase “innit” has no meaning outside formal English.",
+        "A formal greeting would have made the words less clear.",
+        "Politeness depends partly on how the listener perceives them.",
+        "Adults and children follow exactly the same social rules."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What contrast is made between the boy’s language and its effect?",
+      "options": [
+        "It was highly informal, yet it was not experienced as offensive.",
+        "It was grammatically polished, yet it sounded socially distant.",
+        "It used a person’s full name, yet it still created confusion.",
+        "It was intended as an insult, yet it produced no reaction."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What opinion about teaching politeness is presented?",
+      "options": [
+        "Children should learn politeness only after they become adults.",
+        "Politeness is mainly useful for avoiding punishment at school.",
+        "Social rules matter less than a child’s private intentions.",
+        "Politeness helps children gain acceptance within society."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "In the expert’s explanation, what does the “crucial thing” refer to?",
+      "options": [
+        "The exact slang word chosen by the boy.",
+        "The way the listener understood the remark.",
+        "The social status of the person in the street.",
+        "The choice between formal and informal grammar."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred from the nursery-school incident?",
+      "options": [
+        "The cook was angry because the child spoke too informally.",
+        "The parent believed greetings were unnecessary at that age.",
+        "The child’s silence felt like a failure to meet social expectations.",
+        "The other children were embarrassed by the parent’s reaction."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why is the nursery-school story included?",
+      "options": [
+        "To show how social pressure around children’s manners is felt in practice.",
+        "To prove that very young children are naturally offensive to adults.",
+        "To argue that polite behaviour matters only inside schools.",
+        "To explain why adults should ignore children’s bad behaviour."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall implication does the discussion suggest?",
+      "options": [
+        "Politeness is fixed, so intention and context should be ignored.",
+        "Informal speech is normally more polite than formal language.",
+        "Teaching politeness is pointless because offence is subjective.",
+        "Politeness is subjective but still has real social value."
+      ]
+    }
+  ],
+  "matching": []
+}

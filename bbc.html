@@ -2221,7 +2221,7 @@
         var currentSection = '';
         for (var i = 0; i < blanks.length; i++) {
             var b = blanks[i];
-            var num = i + 1;
+            var num = b.number || (i + 1);
             if (b.section && b.section !== currentSection) {
                 currentSection = b.section;
                 html += '<div class="blank-section-title">' + currentSection + '</div>';
@@ -2254,7 +2254,7 @@
         var html = '';
         for (var i = 0; i < mcItems.length; i++) {
             var m = mcItems[i];
-            var qNum = i + 1;
+            var qNum = m.number || (i + 1);
             html += '<div class="mc-question" data-id="' + m.id + '">';
             html += '<div class="mc-title">' + qNum + '. ' + m.question + '</div>';
             html += '<ul class="mc-options">';

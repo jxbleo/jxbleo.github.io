@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250529",
+  "title": "What’s Your Favourite Kind Of Noodle?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250529-whats-your-favourite-kind-of-noodle.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Noodles may have first appeared _____.",
+      "section": "Early movement of noodles"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "They were carried along an ancient trade route by _____.",
+      "section": "Early movement of noodles"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Local versions were shaped by _____ and new ingredients.",
+      "section": "Early movement of noodles"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In the 1920s and 30s, noodles in the US were seen as _____.",
+      "section": "A commercial story in America"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A food-industry organisation wanted to promote the making of _____.",
+      "section": "A commercial story in America"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The story about a famous traveller was designed to _____.",
+      "section": "A commercial story in America"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The result was growth in _____.",
+      "section": "A commercial story in America"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Ramen was influenced by _____ who had moved to Japan.",
+      "section": "Ramen as an adapted dish"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Japanese chefs changed the imported dishes, including by adding _____.",
+      "section": "Ramen as an adapted dish"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Compared with many traditional foods, ramen still _____.",
+      "section": "Ramen as an adapted dish"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main point made about noodles in the opening topic discussion?",
+      "options": [
+        "They became popular because modern packets made them convenient.",
+        "Their history is mainly a story of one country exporting one recipe.",
+        "They spread across places and were repeatedly adapted by local cooks.",
+        "Their appeal depends more on ingredients than on cultural exchange."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why was the Marco Polo story promoted in the United States?",
+      "options": [
+        "It helped market dried pasta by giving it an attractive origin story.",
+        "It corrected a historical error about European noodle-making.",
+        "It explained why Asian noodles had disappeared from America.",
+        "It proved that dried pasta was invented in thirteenth-century Italy."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What is the attitude toward the claim that pasta came from Marco Polo’s trip?",
+      "options": [
+        "It is treated as a confirmed discovery with broad evidence.",
+        "It is presented as a harmless legend with no commercial purpose.",
+        "It is accepted only for explaining Italian cooking traditions.",
+        "It is rejected as a story created to promote pasta sales."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to the explanation, what happened after the promotional story was used?",
+      "options": [
+        "People became less interested in imported Asian noodles.",
+        "Pasta sales increased because the story served its purpose.",
+        "Pasta makers stopped focusing on dried pasta production.",
+        "American consumers demanded only fresh wheat noodles."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How did Chinese noodle dishes become more Japanese?",
+      "options": [
+        "Chefs kept their basic appeal but adjusted them for local tastes.",
+        "Chefs replaced noodles with sushi-style ingredients.",
+        "Chefs removed foreign influences to preserve tradition.",
+        "Chefs copied Chinese recipes without changing them."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the ramen enthusiast seem to value most about ramen?",
+      "options": [
+        "Its close connection with one unchanged recipe.",
+        "Its status as the oldest Japanese noodle dish.",
+        "Its ability to keep developing beyond fixed norms.",
+        "Its simple preparation using packet noodles only."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "In the chef’s comment, what does “these dishes” most probably refer to?",
+      "options": [
+        "Modern versions of dried pasta in America.",
+        "Toppings added to instant noodle packets.",
+        "Traditional foods such as sushi and hotpot.",
+        "Chinese noodle dishes that inspired ramen."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred about the Japanese chefs who adapted the dishes?",
+      "options": [
+        "They viewed Chinese noodles as unsuitable for Japan.",
+        "They admired them but wanted a more local version.",
+        "They were trying to reproduce Italian pasta culture.",
+        "They wanted ramen to stop changing over time."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are toppings and slices of meat mentioned?",
+      "options": [
+        "To show practical examples of changes that shaped ramen.",
+        "To argue that ramen became less Japanese over time.",
+        "To compare ramen with dried pasta manufacturing.",
+        "To explain why noodles no longer link to the past."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the broader implication of the noodle examples?",
+      "options": [
+        "Food history becomes reliable only when linked to famous travellers.",
+        "Successful noodle dishes usually reject earlier cultural influences.",
+        "Noodle traditions often survive by changing as they move between cultures.",
+        "Modern convenience has ended the need for traditional flavours."
+      ]
+    }
+  ],
+  "matching": []
+}

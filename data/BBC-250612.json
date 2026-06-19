@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250612",
+  "title": "Can Climate Change Affect Our Mental Health?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250612-can-climate-change-affect-our-mental-health.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Climate change can affect people’s _____.",
+      "section": "Mental health impacts"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Disasters such as floods and wildfires can destroy _____.",
+      "section": "Mental health impacts"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "People in affected areas may experience _____.",
+      "section": "Mental health impacts"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Trauma involves very bad and _____ emotional effects.",
+      "section": "Mental health impacts"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The expert describes climate trauma as _____ rather than merely private.",
+      "section": "A community-based view of trauma"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Because of this, recovery requires _____.",
+      "section": "A community-based view of trauma"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Individuals with stronger _____ from family are generally more resilient.",
+      "section": "A community-based view of trauma"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Resilience is also linked to _____ with the community.",
+      "section": "A community-based view of trauma"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A survivor volunteered with a _____.",
+      "section": "Rebuilding after wildfire"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "One positive result was work on a _____.",
+      "section": "Rebuilding after wildfire"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main point made about climate trauma?",
+      "options": [
+        "It is mostly a medical condition treated by individuals alone.",
+        "It happens only when people directly lose their homes.",
+        "It is less serious than other effects of climate change.",
+        "It affects communities and therefore needs collective recovery."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which factor is linked with greater resilience after climate-related disasters?",
+      "options": [
+        "Avoiding discussion of the disaster within the family.",
+        "Feeling supported by family and connected to the community.",
+        "Moving away from the affected area as quickly as possible.",
+        "Depending mainly on expert treatment rather than neighbours."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does the interviewer respond to the expert’s community-based explanation?",
+      "options": [
+        "She finds the idea especially noteworthy and interesting.",
+        "She doubts whether community healing can happen after disasters.",
+        "She treats the explanation as obvious and unimportant.",
+        "She shifts the focus away from mental health entirely."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why can strong community ties help people after disasters?",
+      "options": [
+        "They prevent natural disasters from damaging homes.",
+        "They remove the need for families to offer support.",
+        "They make people more able to recover from difficulty.",
+        "They guarantee that trauma will disappear immediately."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What contrast is drawn between climate trauma and individual trauma?",
+      "options": [
+        "Climate trauma is short-term, while individual trauma lasts longer.",
+        "Climate trauma affects whole communities, not only separate people.",
+        "Climate trauma is caused by emotions, while individual trauma is physical.",
+        "Climate trauma is solved by experts, while individual trauma is solved locally."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What view of rebuilding is suggested in the discussion?",
+      "options": [
+        "Repairing social connections is part of the healing process.",
+        "Rebuilding should focus on buildings rather than relationships.",
+        "Communities recover best when people work separately.",
+        "Emotional recovery is unrelated to community structure."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "In the phrase about how “it rebuilds and reknits together”, what does “it” refer to?",
+      "options": [
+        "A psychiatric condition.",
+        "A single survivor’s home.",
+        "A support organisation.",
+        "The affected community."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What can be inferred from the wildfire survivor’s volunteer work?",
+      "options": [
+        "He wanted to leave the damaged town permanently.",
+        "He thought the fire had made community work unnecessary.",
+        "He turned personal loss into efforts to strengthen the area.",
+        "He believed only children needed support after the fire."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are the children mentioned in the survivor’s description?",
+      "options": [
+        "To show that children were unaffected by the wildfire.",
+        "To illustrate that resilience spread across the community.",
+        "To explain why the community plaza was built for schools.",
+        "To compare young people’s trauma with adults’ trauma."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall implication does the discussion leave?",
+      "options": [
+        "Climate change affects property more than mental wellbeing.",
+        "Community recovery is useful only after the physical rebuilding ends.",
+        "Collective support can help people cope with climate-related trauma.",
+        "Natural disasters create stronger communities without extra effort."
+      ]
+    }
+  ],
+  "matching": []
+}

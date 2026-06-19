@@ -50,6 +50,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-19
 
+- Reviewed three incoming BBC listening practice drafts from the desktop BBC
+  folder against their transcripts and audio assets, created a revised
+  teacher-review copy outside the repo at `/private/tmp`, lengthened
+  student-facing evidence quotes, synced the revised review draft back to the
+  owner's `testing.md`, imported `BBC-250529`, `BBC-250605`, and `BBC-250612`
+  with blue-studio rendering and private local grading sources, regenerated the
+  static catalog and CloudBase import output, and verified question counts,
+  public answer stripping, grading-key coverage, release checks, and local
+  browser loading. Owner still needs static publish and CloudBase content import.
 - Moved teacher student-account creation to a single top-right header `+`
   beside notifications, removed the Personal Center/View inline creation
   entry, and made the form a standalone modal. Verified JavaScript syntax and

@@ -136,12 +136,17 @@ BBC public runtime rules:
 - Use shared `bbc.html` for permanent BBC lessons.
 - Preserve existing standalone classroom BBC HTML only when the owner asks to
   match those pages.
+- New BBC runtime data should keep answers, accepted variants, explanations,
+  and evidence out of committed `data/BBC-*.json`. Put that material in ignored
+  local source files under
+  `.cloudbase-private/source/bbc-six-minute-english/<set_id>.json`; the
+  CloudBase prep script reads that source when creating `grading_keys`.
 - Optional `renderTheme` metadata may change only the front-end presentation in
   shared `bbc.html`; it must not change question IDs, grading keys, attempts,
   History/Clear, Explain, or Argue behavior.
 - Fill-in-the-blank placeholders in `data/BBC-*.json` must be exactly `_____`.
-- If a blank accepts multiple answers, store `answer` as an array in canonical
-  source data so the importer can create accepted variants.
+- If a blank accepts multiple answers, store that answer as an array in the
+  ignored private source so the importer can create accepted variants.
 - After generating data, scan for `_{6,}` to catch bad placeholder lengths.
 
 Required artifacts for a full BBC addition:
