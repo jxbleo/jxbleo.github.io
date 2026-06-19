@@ -145,6 +145,13 @@ It should include:
   the detail card underneath it. The dialog shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
   attempt cards.
+- matrix detail close buttons are centered below the dialog card. Attempt score
+  bars use fixed-width columns rather than stretching a single attempt across
+  the whole dialog; not-passed bars are amber, passed bars are green, and
+  mastered bars are gold.
+- the matrix score pill shows only the best score until answers have been
+  viewed; once answers have been viewed and locked, it adds a lock icon beside
+  the best score.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.
