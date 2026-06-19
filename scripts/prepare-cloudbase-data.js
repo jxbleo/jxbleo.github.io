@@ -57,23 +57,40 @@ function withoutPrivateFields(value) {
   return output;
 }
 
-function extractBbc(source) {
+function extractBbc(source, privateSource) {
   const answers = {};
   const explanations = {};
+  const privateAnswers = privateSource && privateSource.answers ? privateSource.answers : null;
+  const privateExplanations = privateSource && privateSource.explanations ? privateSource.explanations : null;
 
   (source.blanks || []).forEach((item) => {
-    answers[item.id] = item.answer;
-    explanations[item.id] = item.evidence || "";
+    if (privateAnswers && Object.prototype.hasOwnProperty.call(privateAnswers, item.id)) {
+      answers[item.id] = privateAnswers[item.id];
+      explanations[item.id] = privateExplanations && privateExplanations[item.id] ? privateExplanations[item.id] : "";
+    } else {
+      answers[item.id] = item.answer;
+      explanations[item.id] = item.evidence || "";
+    }
   });
   (source.multipleChoice || []).forEach((item) => {
-    answers[item.id] = item.answer;
-    explanations[item.id] = item.evidence || "";
+    if (privateAnswers && Object.prototype.hasOwnProperty.call(privateAnswers, item.id)) {
+      answers[item.id] = privateAnswers[item.id];
+      explanations[item.id] = privateExplanations && privateExplanations[item.id] ? privateExplanations[item.id] : "";
+    } else {
+      answers[item.id] = item.answer;
+      explanations[item.id] = item.evidence || "";
+    }
   });
   (source.matching || []).forEach((group) => {
     (group.pairs || []).forEach((pair, index) => {
       const key = `${group.id}-${index}`;
-      answers[key] = (group.answer || [])[index] || "";
-      explanations[key] = pair.right || "";
+      if (privateAnswers && Object.prototype.hasOwnProperty.call(privateAnswers, key)) {
+        answers[key] = privateAnswers[key];
+        explanations[key] = privateExplanations && privateExplanations[key] ? privateExplanations[key] : "";
+      } else {
+        answers[key] = (group.answer || [])[index] || "";
+        explanations[key] = pair.right || "";
+      }
     });
   });
 
@@ -81,10 +98,10 @@ function extractBbc(source) {
     publicData: withoutPrivateFields(source),
     gradingKey: {
       set_id: source.id,
-      grading_version: "1",
+      grading_version: privateSource && privateSource.grading_version ? privateSource.grading_version : "1",
       answers,
       explanations,
-      scoring_rules: { type: "exact_normalized" },
+      scoring_rules: privateSource && privateSource.scoring_rules ? privateSource.scoring_rules : { type: "exact_normalized" },
     },
   };
 }
@@ -215,7 +232,7 @@ function main() {
     .forEach((filePath) => {
       const source = readJson(filePath);
       const meta = readJson(path.join(projectRoot, "content", "bbc-six-minute-english", `${source.id}.json`));
-      const extracted = extractBbc(source);
+      const extracted = extractBbc(source, privateSourceFor("bbc-six-minute-english", source.id));
       sets.push(buildSet(meta, { type: "listening", course: "BBC Listening" }));
       gradingKeys.push(extracted.gradingKey);
       writeJson(path.join(publicRoot, "data", path.basename(filePath)), extracted.publicData);
