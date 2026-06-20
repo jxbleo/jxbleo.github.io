@@ -1083,20 +1083,29 @@
         var sets = filteredSets('assign');
         var select = document.getElementById('assign-set');
         var list = document.getElementById('assign-set-list');
+        sets.forEach(function(set) {
+            if (set.publicCatalogOnly) delete state.selectedAssignSetIds[set.set_id];
+        });
         if (select) {
             select.innerHTML = sets.map(function(set) {
                 return '<option value="' + escapeHtml(set.set_id) + '"' +
+                    (set.publicCatalogOnly ? ' disabled' : '') +
                     (state.selectedAssignSetIds[set.set_id] ? ' selected' : '') + '>' +
-                    escapeHtml(set.title + ' · ' + set.course) + '</option>';
+                    escapeHtml(set.title + ' · ' + (set.publicCatalogOnly ? 'Import to CloudBase first' : set.course)) + '</option>';
             }).join('');
         }
         if (list) {
             list.innerHTML = sets.length ? sets.map(function(set) {
-                var selected = state.selectedAssignSetIds[set.set_id] === true;
-                var meta = [set.set_id, set.course || set.type || set.section || ''].filter(Boolean).join(' · ');
-                return '<label class="assign-choice-card' + (selected ? ' selected' : '') + '">' +
+                var disabled = set.publicCatalogOnly === true;
+                var selected = state.selectedAssignSetIds[set.set_id] === true && !disabled;
+                var meta = disabled
+                    ? [set.set_id, 'Import to CloudBase before assigning'].join(' · ')
+                    : [set.set_id, set.course || set.type || set.section || ''].filter(Boolean).join(' · ');
+                return '<label class="assign-choice-card' + (selected ? ' selected' : '') +
+                    (disabled ? ' disabled catalog-only' : '') + '">' +
                     '<input class="assign-set-checkbox" type="checkbox" value="' + escapeHtml(set.set_id) + '"' +
-                        (selected ? ' checked' : '') + '>' +
+                        (selected ? ' checked' : '') +
+                        (disabled ? ' disabled' : '') + '>' +
                     '<span class="assign-choice-mark" aria-hidden="true"></span>' +
                     '<span class="assign-choice-copy"><strong>' + escapeHtml(set.title || set.set_id) + '</strong>' +
                         '<small>' + escapeHtml(meta) + '</small></span>' +
@@ -1116,6 +1125,7 @@
             });
         }
         updateAssignSummary();
+        updateSelectedCount();
         renderLibrary();
     }
 
@@ -3353,6 +3363,27 @@
         });
     }
 
+    function mergeCloudAndPublicSets(cloudSets) {
+        var byId = {};
+        var merged = [];
+        (cloudSets || []).forEach(function(item) {
+            var id = item.set_id || item.id;
+            if (!id || byId[id]) return;
+            byId[id] = true;
+            merged.push(Object.assign({}, item, {
+                publicCatalogOnly: false,
+                cloudReady: true
+            }));
+        });
+        publicCatalogSetItems().forEach(function(item) {
+            var id = item.set_id || item.id;
+            if (!id || byId[id]) return;
+            byId[id] = true;
+            merged.push(item);
+        });
+        return merged;
+    }
+
     function teacherLibraryDisplayItems() {
         var byId = {};
         var items = [];
@@ -3387,13 +3418,12 @@
             state.attempts = results[4].attempts || [];
             state.progressItems = results[5].progress || [];
             state.attemptsSeenAt = results[6].attempts_seen_at || null;
-            if (!state.sets.length) {
-                return loadPublicCatalog().then(function() {
-                    state.sets = publicCatalogSetItems();
-                    afterDataLoaded();
-                });
-            }
-            return teacherLibraryLoadSections().then(afterDataLoaded);
+            return loadPublicCatalog().catch(function() {
+                teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
+            }).then(function() {
+                state.sets = mergeCloudAndPublicSets(results[1].sets || []);
+                afterDataLoaded();
+            });
         });
     }
 

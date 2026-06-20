@@ -144,6 +144,11 @@ filters, candidate lists, and filtered-class selection live in the standalone
 picker dialogs. There are no visible multi-step accordions, no legend, and no
 visible due/pass/mastery fields in the default flow. Assignment creation
 continues to use the existing server-side validation and default thresholds.
+If a visible static catalog item has been published but its CloudBase `sets`
+record is missing, the Assign picker should still show it as a disabled,
+catalog-only row with an import-required note instead of hiding it completely.
+It becomes selectable only after the matching CloudBase `sets` and
+`grading_keys` records are imported.
 
 Candidate states:
 

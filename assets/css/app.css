@@ -2036,6 +2036,13 @@ button { cursor: pointer; }
     cursor: not-allowed;
     opacity: .52;
 }
+.assign-choice-card.catalog-only {
+    border-style: dashed;
+    opacity: .72;
+}
+.assign-choice-card.catalog-only .assign-choice-copy small {
+    color: #8a622d;
+}
 .assign-choice-card input {
     position: absolute;
     opacity: 0;
