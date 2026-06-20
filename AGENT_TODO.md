@@ -90,6 +90,13 @@ cp .qa-secrets.example .qa-secrets.local
   visible sets, so these BBC lessons could still be treated as catalog-only.
   Raised teacherAdmin content read limits to 1000 and rebuilt
   `deploy-packages/teacherAdmin.zip`; owner must deploy that function package.
+- Resolution confirmed: after the owner deployed the rebuilt `teacherAdmin`
+  package, the three BBC lessons became assignable. Future imports should check
+  three layers separately: static catalog visibility, CloudBase `sets` /
+  `grading_keys` presence, and the deployed `teacherAdmin` content read limit.
+  If Assign shows `Import to CloudBase` while CloudBase records exist, suspect a
+  stale teacherAdmin deployment or content-read pagination/limit issue before
+  re-importing data again.
 
 ### 2026-06-19
 
