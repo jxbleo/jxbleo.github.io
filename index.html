@@ -5,26 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260610-5">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260619-11">
 </head>
 <body class="auth-page">
     <main class="auth-shell">
-        <section class="brand-panel">
-            <p class="eyebrow">MR. CAT ACADEMY</p>
-            <h1>Your next task,<br>made clear.</h1>
-            <p class="brand-copy">Sign in to see assignments, practise independently, and keep every attempt in one place.</p>
-            <div class="brand-pills" aria-label="Platform benefits">
-                <span>Assignments</span>
-                <span>Resources</span>
-                <span>Progress</span>
+        <section class="brand-panel floating-paper-panel" aria-label="Welcome to Mr. Cat Academy">
+            <div class="paper-scene" aria-hidden="true">
+                <span class="paper-sheet one"></span>
+                <span class="paper-sheet two"></span>
+                <span class="paper-sheet three"></span>
+                <span class="paper-pencil"></span>
+                <span class="study-symbol headphones">
+                    <svg viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0"></path><path d="M4 13v4a2 2 0 0 0 2 2h1v-6H6a2 2 0 0 0-2 2"></path><path d="M20 13v4a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2"></path></svg>
+                </span>
+                <span class="study-symbol words">
+                    <svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path></svg>
+                </span>
+                <span class="study-symbol pen">
+                    <svg viewBox="0 0 24 24"><path d="M4 20l4-1 10-10-3-3L5 16z"></path><path d="M13 7l3 3"></path></svg>
+                </span>
+                <span class="study-symbol speak">
+                    <svg viewBox="0 0 24 24"><path d="M5 12h3l4-4v8l-4-4H5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path><path d="M18.5 6.5a8 8 0 0 1 0 11"></path></svg>
+                </span>
+            </div>
+            <p class="paper-brand">Mr. Cat Academy</p>
+            <div class="brand-quote">
+                <p>A fresh page is waiting for today's work.</p>
             </div>
         </section>
 
         <section class="login-card" aria-labelledby="login-title">
             <div>
                 <p class="eyebrow accent">STUDENT ENTRY</p>
-                <h2 id="login-title">Welcome back</h2>
-                <p class="muted">Use the Student ID and password provided by your teacher.</p>
+                <h2 id="login-title" class="sr-only">Student sign in</h2>
             </div>
 
             <form id="login-form" novalidate>
@@ -35,12 +48,12 @@
                 <input id="password" name="password" type="password" autocomplete="current-password" required>
 
                 <p class="form-message" id="login-message" role="alert"></p>
-                <button class="primary-button" id="login-button" type="submit">Continue</button>
+                <button class="primary-button" id="login-button" type="submit">Sign in</button>
             </form>
 
             <div class="divider"><span>or</span></div>
             <button class="secondary-button" id="visitor-button" type="button">Continue as Visitor</button>
-            <p class="fine-print">Visitors can browse resources but cannot answer or submit exercises.</p>
+            <p class="fine-print">Visitor mode is view-only.</p>
         </section>
     </main>
 
@@ -48,6 +61,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260610-5"></script>
     <script src="assets/js/auth.js?v=20260610-5"></script>
-    <script src="assets/js/login.js?v=20260610-5"></script>
+    <script src="assets/js/login.js?v=20260619-1"></script>
 </body>
 </html>
