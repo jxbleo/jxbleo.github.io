@@ -96,6 +96,8 @@ Check:
 - Assign shows available students
 - Assign keeps the main tab surface to selected work/student chips and opens
   standalone picker dialogs for work and student search/filter selection
+- Assign shows visible static catalog items missing from CloudBase `sets` as
+  disabled import-required rows instead of hiding them
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`

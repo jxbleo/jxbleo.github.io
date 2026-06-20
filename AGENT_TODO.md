@@ -58,6 +58,19 @@ cp .qa-secrets.example .qa-secrets.local
   `teacher.html`. Local static server started but could not be reached from a
   separate command session in this environment, so browser smoke remains useful
   before static publish.
+- Investigated why `BBC-250529`, `BBC-250605`, and `BBC-250612` did not appear
+  in teacher Assign. Static `data/home-catalog.*`, public data, audio, and local
+  `.cloudbase-private/import/sets-cloudbase.json` / `grading-keys-cloudbase.json`
+  include the three lessons, but CloudBase import is still required for real
+  assignment. Updated teacher Assign to merge catalog-only missing items as
+  disabled import-required rows and bumped `teacher.html` asset versions.
+- Follow-up on whether the three BBC lessons had already been deployed: repo QA
+  notes from the import commit explicitly said the owner still needed static
+  publish and CloudBase content import. A direct read-only `tcb` query for the
+  three `set_id`s could not confirm live CloudBase state because this local CLI
+  session has no valid CloudBase identity. The observed old Assign behavior is
+  still consistent with CloudBase `sets` missing those records or stale static
+  cache, not with a confirmed function-package deployment issue.
 
 ### 2026-06-19
 

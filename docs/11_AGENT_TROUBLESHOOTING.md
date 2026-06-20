@@ -22,7 +22,7 @@
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |
 | 练习页面能打开，但提交失败 `GRADING_KEY_NOT_FOUND` | `grading_keys` 没导入对应 `set_id` | CloudBase `grading_keys` 搜索 exact `set_id` |
 | 首页或直接 URL 有内容，但学生 Explore / Library 看不到 | `sets` 没导入或 stale | CloudBase `sets` 搜索 exact `set_id`；`getResources` 返回 |
-| 教师 Library 看不到刚新增的静态内容 | 静态站点未发布/缓存旧 `teacher.js`、CloudBase `sets` 未导入、或 Library 筛选/fallback 没合并静态 catalog | 先查 `data/home-catalog.json` 和 `teacher.html` cache version，再查 CloudBase `sets` / `grading_keys`，最后再考虑 `teacherAdmin`；不要默认先部署 `teacherAdmin.zip` |
+| 教师 Library / Assign 看不到刚新增的静态内容 | 静态站点未发布/缓存旧 `teacher.js`、CloudBase `sets` 未导入、或 Library/Assign 筛选/fallback 没合并静态 catalog | 先查 `data/home-catalog.json` 和 `teacher.html` cache version，再查 CloudBase `sets` / `grading_keys`，最后再考虑 `teacherAdmin`；不要默认先部署 `teacherAdmin.zip`。Assign 里 catalog-only 项应显示为 import-required disabled row |
 | CloudBase 导入显示成功但系统读不到 | 上传了数组 JSON，而不是 JSON Lines | 使用 `.cloudbase-private/import/*-cloudbase.json` |
 | 学生账号在 Authentication 里有，但登录后 profile incomplete | Auth user 和 `students.auth_uid` 没正确链接，或写成嵌套 `data` | `students` 文档是否顶层字段；`auth_uid` 是否匹配 |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |

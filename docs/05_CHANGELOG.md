@@ -14,6 +14,9 @@
 - Simplified teacher `Assign` so the main surface shows only selected work
   and student chips, while search, filters, and candidate selection live in
   standalone picker dialogs.
+- Updated teacher `Assign` to merge visible static catalog items missing from
+  CloudBase `sets` as disabled import-required rows, so newly published BBC
+  lessons are visible while CloudBase import state is checked.
 
 ## 2026-06-19
 

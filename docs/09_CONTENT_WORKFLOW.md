@@ -83,6 +83,11 @@ item, check both:
 - `content/<section>/<set_id>.json`
 - CloudBase `sets` import state
 
+Teacher Library and Assign both read the static catalog for visibility, but
+Assign can only create real assignments for items that also exist in CloudBase
+`sets` with matching private `grading_keys`. A catalog-only item should appear
+as import-required, not selectable, until CloudBase content import is applied.
+
 ## 6. CloudBase Import Flow
 
 When sets or grading data changed, run:
