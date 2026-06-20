@@ -89,9 +89,13 @@ Check:
 - teacher page loads only for teacher profile
 - list students works
 - create student checks duplicate Login ID
+- create student uses the vertical modal form and shows the checkmark success
+  dialog with the Login ID after creation
 - reset password enables auth user and sets `must_change_password`
 - disable/enable updates auth and profile
 - Assign shows available students
+- Assign keeps the main tab surface to selected work/student chips and opens
+  standalone picker dialogs for work and student search/filter selection
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`

@@ -3,6 +3,18 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-20
+
+### Changed
+
+- Changed the teacher create-student modal to a vertical field layout and added
+  a checkmark confirmation dialog after successful account creation.
+- Renamed the teacher `Tasks` tab to `Assign` and changed the top-right Review
+  entry to a question-mark icon button.
+- Simplified teacher `Assign` so the main surface shows only selected work
+  and student chips, while search, filters, and candidate selection live in
+  standalone picker dialogs.
+
 ## 2026-06-19
 
 ### Changed

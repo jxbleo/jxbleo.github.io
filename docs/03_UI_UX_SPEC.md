@@ -97,7 +97,7 @@ Student account menu:
 
 Teacher page has three main capsules:
 
-- `Tasks`
+- `Assign`
 - `View`
 - `Library`
 
@@ -105,8 +105,11 @@ The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The only create-student entry is the `+` button beside the
 notification control in the top-right header; it opens a standalone modal, not
-an inline View panel. Review requests open from a separate top-right icon
-button with a pending-count badge and display in a standalone modal.
+an inline View panel. The create-student modal uses a vertical field stack and,
+after success, shows a standalone checkmark confirmation dialog with the new
+Login ID and initial password. Review requests open from a separate top-right
+question-mark icon button with a pending-count badge and display in a
+standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
 top-right Review entry.
@@ -115,9 +118,9 @@ Teacher notification rows are direct links. Clicking a student attempt opens
 `View`, selects the matching matrix cell, and highlights that specific attempt
 inside the matrix detail dialog.
 
-### Tasks
+### Assign Tab
 
-Tasks contains:
+Assign contains:
 
 - `Assign`
 
@@ -125,18 +128,22 @@ Tasks contains:
 
 Teacher can:
 
-- select one or more work items from a quiet `Work` panel
-- filter work with one search field and one `Column` select
+- open a standalone `Choose work` dialog from the quiet `Work` summary card
+- filter work inside that dialog with one search field and one `Column` select
 - sort filtered Work items with the same natural order used by the matching
   Library column, such as BBC date order or IELTS numeric book/test order
-- select one or more students from a quiet `Students` panel
-- filter students with one search field and one `Class` select
+- open a standalone `Choose students` dialog from the quiet `Students` summary
+  card
+- filter students inside that dialog with one search field and one `Class`
+  select
 - assign the selected work to the selected students
 
-The Assign surface should stay visually minimal: no visible multi-step
-accordions, no legend, no bulk-select button, and no visible due/pass/mastery
-fields in the default flow. Assignment creation continues to use the existing
-server-side validation and default thresholds.
+The Assign surface should stay visually minimal: the default Assign tab shows
+only selected work and selected student chips plus the Assign action. Search,
+filters, candidate lists, and filtered-class selection live in the standalone
+picker dialogs. There are no visible multi-step accordions, no legend, and no
+visible due/pass/mastery fields in the default flow. Assignment creation
+continues to use the existing server-side validation and default thresholds.
 
 Candidate states:
 
