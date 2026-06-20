@@ -410,6 +410,10 @@ button { cursor: pointer; }
 }
 .account-panel-head .eyebrow { margin: 0; }
 .account-panel-head h2 { margin: 2px 0 0; font-size: 1.15rem; }
+#student-account-close {
+    top: -3px;
+    right: -3px;
+}
 .account-panel-actions {
     position: absolute;
     top: 0;
@@ -1304,6 +1308,7 @@ body:not(.teacher-page) .tab-button.active {
 .profile-card h2 { margin-top: 0; }
 .profile-row { display: flex; justify-content: space-between; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .profile-row:last-child { border: 0; }
+.profile-row.account-final-row { border-bottom: 0; }
 .profile-row span { color: var(--muted); }
 .profile-actions { display: grid; gap: 10px; margin-top: 18px; }
 .profile-actions button { min-height: 44px; border-radius: 12px; font-weight: 850; }
