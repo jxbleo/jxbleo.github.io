@@ -608,6 +608,11 @@ button { cursor: pointer; }
 .tab-button.active { color: white; background: var(--accent); }
 
 .dashboard-view[hidden] { display: none; }
+#assignment-content {
+    display: flex;
+    min-height: clamp(360px, calc(100vh - 390px), 720px);
+    flex-direction: column;
+}
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin: 28px 0 13px; }
 .section-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.035em; }
 .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem; }
@@ -636,7 +641,9 @@ button { cursor: pointer; }
     display: grid;
     justify-items: center;
     gap: 12px;
-    margin-top: 16px;
+    margin-top: auto;
+    padding-top: clamp(30px, 8vh, 84px);
+    padding-bottom: 22px;
     align-items: start;
 }
 .finished-drawer-toggle {
@@ -648,51 +655,28 @@ button { cursor: pointer; }
     justify-content: center;
     gap: 8px;
     min-width: 0;
-    min-height: 48px;
-    padding: 7px 16px 7px 11px;
-    border: 3px solid currentColor;
-    border-radius: 12px;
-    color: #b97a0c;
-    background:
-        radial-gradient(circle at 22% 28%, rgba(255,255,255,.45) 0 2px, transparent 3px),
-        radial-gradient(circle at 78% 34%, rgba(255,255,255,.34) 0 1px, transparent 2px),
-        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.22) 8px 9px),
-        linear-gradient(135deg, rgba(255,251,221,.9), rgba(255,230,141,.64));
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,.42) inset,
-        0 0 18px rgba(255, 205, 74, .38),
-        0 12px 22px rgba(122, 80, 8, 0.11);
+    min-height: 42px;
+    padding: 8px 16px 8px 13px;
+    border: 1px solid rgba(216, 149, 40, 0.28);
+    border-radius: 999px;
+    color: #8a5d12;
+    background: #fff7d8;
+    box-shadow: 0 8px 20px rgba(216, 149, 40, 0.12);
     cursor: pointer;
-    transform: rotate(-3deg);
-    mix-blend-mode: multiply;
-    transition: transform 150ms ease, box-shadow 150ms ease, color 150ms ease;
-}
-.finished-drawer-toggle::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border: 1.5px solid currentColor;
-    border-radius: 8px;
-    opacity: .62;
-    pointer-events: none;
+    transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 .finished-drawer-toggle:hover {
-    color: #cf8d14;
-    transform: rotate(-3deg) translateY(-1px) scale(1.02);
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,.42) inset,
-        0 0 24px rgba(255, 205, 74, .5),
-        0 14px 26px rgba(122, 80, 8, 0.14);
+    background: #fff1bd;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(216, 149, 40, 0.16);
 }
 .finished-mini-icon {
-    position: relative;
-    z-index: 1;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     color: currentColor;
-    fill: rgba(255,255,255,0.4);
+    fill: rgba(255, 255, 255, 0.56);
     stroke: currentColor;
-    stroke-width: 2.3;
+    stroke-width: 2.2;
 }
 .finished-mini-icon path {
     fill: none;
@@ -700,13 +684,9 @@ button { cursor: pointer; }
     stroke-linejoin: round;
 }
 .finished-mini-label {
-    position: relative;
-    z-index: 1;
     font-size: 0.76rem;
     font-weight: 950;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
+    letter-spacing: 0;
 }
 .finished-drawer-body {
     display: grid;
