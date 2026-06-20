@@ -98,6 +98,8 @@ Check:
   standalone picker dialogs for work and student search/filter selection
 - Assign shows visible static catalog items missing from CloudBase `sets` as
   disabled import-required rows instead of hiding them
+- Assign still resolves imported CloudBase `sets` when the live `sets`
+  collection has more than 200 visible records
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`
