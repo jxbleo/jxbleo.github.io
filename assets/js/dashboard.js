@@ -1427,11 +1427,13 @@
         profileContent.innerHTML =
             '<div class="profile-grid">' +
                 '<section class="profile-card account-summary-card">' +
-                    '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
-                    '<div class="profile-row"><span>Stars</span><strong class="account-star-pair">' +
-                        '<span class="star-counter assignment-star-counter account-row-star" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
-                        '<span class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
-                    '</strong></div>' +
+                    '<div class="account-name-row">' +
+                        '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
+                        '<strong class="account-star-pair">' +
+                            '<span class="star-counter assignment-star-counter account-row-star" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
+                            '<span class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
+                        '</strong>' +
+                    '</div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
