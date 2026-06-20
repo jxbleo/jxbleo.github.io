@@ -530,26 +530,59 @@ button { cursor: pointer; }
     position: relative;
     overflow: hidden;
     padding: clamp(26px, 5vw, 48px);
+    border: 1px solid rgba(255, 255, 255, 0.82);
     border-radius: 30px;
-    color: white;
-    background: linear-gradient(135deg, #153f3b, #13766d 62%, #2a9b88);
+    color: var(--ink);
+    background:
+        linear-gradient(135deg, rgba(251,255,248,0.94), rgba(232,249,241,0.92)),
+        #f4fbf7;
     box-shadow: var(--shadow);
+    isolation: isolate;
 }
 .teacher-page .hero-card {
+    color: white;
+    border: 0;
     background: linear-gradient(135deg, #312e81, #7c3aed 58%, #60a5fa);
 }
+.hero-card::before {
+    content: "";
+    position: absolute;
+    inset: -44% -22%;
+    z-index: 0;
+    background:
+        conic-gradient(from 120deg,
+            rgba(255, 211, 103, 0.02),
+            rgba(124, 211, 255, 0.42),
+            rgba(184, 156, 255, 0.34),
+            rgba(255, 154, 188, 0.32),
+            rgba(255, 224, 130, 0.36),
+            rgba(104, 211, 168, 0.38),
+            rgba(255, 211, 103, 0.02));
+    filter: blur(28px);
+    opacity: 0.9;
+    animation: heroAuroraTurn 16s linear infinite;
+}
+.teacher-page .hero-card::before { display: none; }
 .hero-card::after {
     content: "";
     position: absolute;
+    z-index: 0;
     width: 260px;
     height: 260px;
     right: -70px;
     top: -100px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 223, 178, 0.5), transparent 68%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.62), transparent 68%);
 }
+.teacher-page .hero-card::after { background: radial-gradient(circle, rgba(255, 223, 178, 0.5), transparent 68%); }
 .hero-card h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(2.2rem, 6vw, 4rem); letter-spacing: -0.055em; }
-.hero-card p { position: relative; z-index: 1; max-width: 600px; margin: 13px 0 0; color: rgba(255,255,255,0.78); }
+.hero-card p { position: relative; z-index: 1; max-width: 600px; margin: 13px 0 0; color: rgba(24, 53, 47, 0.68); }
+.teacher-page .hero-card p { color: rgba(255,255,255,0.78); }
+
+@keyframes heroAuroraTurn {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
 
 .dashboard-tabs {
     position: sticky;
@@ -606,6 +639,34 @@ button { cursor: pointer; }
 .tab-button .notice-dot { top: -9px; right: -5px; }
 .tab-button .notice-dot.todo { background: #c98f18; }
 .tab-button.active { color: white; background: var(--accent); }
+body:not(.teacher-page) .dashboard-tabs {
+    border: 1px solid rgba(255,255,255,0.76);
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.38)),
+        rgba(255,255,255,0.42);
+    box-shadow:
+        0 16px 42px rgba(25, 68, 61, 0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    backdrop-filter: blur(22px) saturate(1.25);
+}
+body:not(.teacher-page) .tab-button {
+    color: rgba(24, 53, 47, 0.64);
+    font-weight: 880;
+    overflow: hidden;
+}
+body:not(.teacher-page) .tab-button:hover {
+    color: #0d5d56;
+    background: rgba(255,255,255,0.38);
+}
+body:not(.teacher-page) .tab-button.active {
+    color: #0d5d56;
+    background:
+        radial-gradient(circle at 24% 12%, rgba(255,255,255,0.92), transparent 38%),
+        linear-gradient(135deg, rgba(255, 244, 176, 0.72), rgba(184, 238, 220, 0.76) 48%, rgba(187, 222, 255, 0.72));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 10px 22px rgba(19, 118, 109, 0.14);
+}
 
 .dashboard-view[hidden] { display: none; }
 #assignment-content {
@@ -4486,6 +4547,39 @@ button { cursor: pointer; }
 .library-tab-btn.active {
     background: var(--accent, #0f766e);
     color: #fff;
+}
+#student-library-tab-bar.library-tab-bar {
+    gap: 6px;
+    margin-bottom: 16px;
+    padding: 6px;
+    border: 1px solid rgba(255,255,255,0.76);
+    border-radius: 999px;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.38)),
+        rgba(255,255,255,0.42);
+    box-shadow:
+        0 16px 42px rgba(25, 68, 61, 0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    backdrop-filter: blur(22px) saturate(1.25);
+}
+#student-library-tab-bar .library-tab-btn {
+    min-height: 42px;
+    border-radius: 999px;
+    color: rgba(24, 53, 47, 0.64);
+    font-weight: 880;
+}
+#student-library-tab-bar .library-tab-btn:hover {
+    color: #0d5d56;
+    background: rgba(255,255,255,0.38);
+}
+#student-library-tab-bar .library-tab-btn.active {
+    color: #0d5d56;
+    background:
+        radial-gradient(circle at 24% 12%, rgba(255,255,255,0.92), transparent 38%),
+        linear-gradient(135deg, rgba(255, 244, 176, 0.72), rgba(184, 238, 220, 0.76) 48%, rgba(187, 222, 255, 0.72));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 10px 22px rgba(19, 118, 109, 0.14);
 }
 .year-tabs {
     display: flex;

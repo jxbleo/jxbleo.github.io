@@ -10,6 +10,10 @@
 - Changed the student Assignments `Show Finished` / `Hide Finished` control
   from a stamp treatment to a lower-positioned gold capsule matching the
   Library badge style.
+- Changed the student dashboard top billboard to a pale aurora-rainbow
+  animated background while keeping its existing content and layout.
+- Changed the student main navigation and student Library category tabs to a
+  soft translucent glass style with subtle rainbow active states.
 - Changed the teacher create-student modal to a vertical field layout and added
   a checkmark confirmation dialog after successful account creation.
 - Renamed the teacher `Tasks` tab to `Assign` and changed the top-right Review
