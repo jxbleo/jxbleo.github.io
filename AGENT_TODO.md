@@ -52,6 +52,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-21
+
+- Moved the student Assignments navigation count badge outside the glass tab so
+  the red number is no longer clipped, and strengthened the `Show Finished`
+  capsule with a brighter golden glow. Verified static CSS checks and diff
+  whitespace; logged-in visual smoke remains useful before static publish.
+- Simplified the student account panel footer to two small quiet capsules for
+  `Change password` and `Log out`, and removed the visible `Password change
+  required` field from the account panel. Verified dashboard JavaScript syntax,
+  cache-version checks, and diff whitespace.
+
 ### 2026-06-20
 
 - Updated the student dashboard top billboard to use the approved Option A
