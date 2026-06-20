@@ -62,6 +62,10 @@ cp .qa-secrets.example .qa-secrets.local
   `Change password` and `Log out`, and removed the visible `Password change
   required` field from the account panel. Verified dashboard JavaScript syntax,
   cache-version checks, and diff whitespace.
+- Nudged the student Personal Center close button slightly upward/right and
+  removed the extra divider under the `Finished` profile row so the footer has
+  a single clean line. Verified dashboard JavaScript syntax and diff
+  whitespace.
 
 ### 2026-06-20
 

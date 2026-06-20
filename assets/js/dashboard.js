@@ -1435,7 +1435,7 @@
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
-                    '<div class="profile-row"><span>Finished</span><strong>' + escapeHtml(finishedCount) + '</strong></div>' +
+                    '<div class="profile-row account-final-row"><span>Finished</span><strong>' + escapeHtml(finishedCount) + '</strong></div>' +
                     '<div class="account-quiet-footer">' +
                         '<div class="account-quiet-actions">' +
                             '<button class="text-button" id="change-password" type="button">Change password</button>' +
