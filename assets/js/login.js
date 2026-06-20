@@ -10,7 +10,7 @@
 
     function setBusy(busy) {
         loginButton.disabled = busy;
-        loginButton.textContent = busy ? 'Signing in...' : 'Continue';
+        loginButton.textContent = busy ? 'Signing in...' : 'Sign in';
     }
 
     function showMessage(text) {
