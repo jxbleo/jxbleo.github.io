@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Changed the student Assignments `Show Finished` / `Hide Finished` control
+  from a stamp treatment to a lower-positioned gold capsule matching the
+  Library badge style.
 - Changed the teacher create-student modal to a vertical field layout and added
   a checkmark confirmation dialog after successful account creation.
 - Renamed the teacher `Tasks` tab to `Assign` and changed the top-right Review

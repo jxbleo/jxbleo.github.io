@@ -57,10 +57,11 @@ Frontend rule:
 
 - `passed` and `mastered` both appear inside the collapsed `Finished` completion button.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The finished control is a compact sticky stamp-style button inspired by the
-  BBC result stamp. It reads `Show Finished` when collapsed and `Hide Finished`
-  when expanded. Keep the visible control to a check icon plus that label; do
-  not put counts or extra action text inside the stamp.
+- The finished control is a compact sticky gold capsule, visually aligned with
+  the Library gold badge style. It sits low on the Assignments page when space
+  allows, reads `Show Finished` when collapsed and `Hide Finished` when
+  expanded, and keeps the visible control to a check icon plus that label. Do
+  not put counts or extra action text inside the capsule.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars

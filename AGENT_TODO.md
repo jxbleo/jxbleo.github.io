@@ -54,6 +54,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-20
 
+- Changed the student Assignments finished drawer entry from a sticky stamp to
+  a lower-positioned gold capsule matching the Library badge style, with
+  `Show Finished` / `Hide Finished` text and no count. Verified JavaScript
+  syntax and diff whitespace; logged-in visual smoke remains useful before
+  static publish.
 - Fixed backend assignment binding for Library submissions: `submitAttempt`
   now auto-resolves the student's open assignment for the same `set_id` when a
   practice page submits without `assignment_id`. This should make those
