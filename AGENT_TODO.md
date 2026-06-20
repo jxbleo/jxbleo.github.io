@@ -71,6 +71,14 @@ cp .qa-secrets.example .qa-secrets.local
   session has no valid CloudBase identity. The observed old Assign behavior is
   still consistent with CloudBase `sets` missing those records or stale static
   cache, not with a confirmed function-package deployment issue.
+- Root cause summary: static publication, CloudBase function packages, and
+  CloudBase content data are separate release layers. The three BBC lessons were
+  added to static files and local import output, but teacher Assign used
+  CloudBase `sets` as its assignable source and did not merge catalog-only
+  missing records. When CloudBase `sets` / `grading_keys` were not confirmed in
+  the live environment, the lessons were invisible instead of shown with an
+  import-required state. The fix is to merge static catalog fallback rows into
+  Assign and keep them disabled until CloudBase content import is complete.
 
 ### 2026-06-19
 
