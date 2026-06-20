@@ -320,6 +320,7 @@
         if (!panel) return;
         panel.hidden = open !== true;
         if (open) {
+            setCreateStudentSuccessModal(false);
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
             setReviewPanel(false);
@@ -327,6 +328,25 @@
             window.setTimeout(function() {
                 var input = document.getElementById('student-id');
                 if (input) input.focus();
+            }, 0);
+        }
+    }
+
+    function setCreateStudentSuccessModal(open, result) {
+        var panel = document.getElementById('create-student-success-panel');
+        if (!panel) return;
+        if (result && result.student) {
+            var copy = document.getElementById('create-student-success-copy');
+            if (copy) {
+                var passwordCopy = result.initial_password ? ' · Initial password: ' + result.initial_password : '';
+                copy.textContent = 'Login ID: ' + result.student.student_id + passwordCopy;
+            }
+        }
+        panel.hidden = open !== true;
+        if (open) {
+            window.setTimeout(function() {
+                var closeButton = document.getElementById('create-student-success-close');
+                if (closeButton) closeButton.focus();
             }, 0);
         }
     }
@@ -1175,8 +1195,18 @@
     }
 
     function setAssignPanel(key, open) {
-        state.assignPanels[key] = open;
+        Object.keys(state.assignPanels).forEach(function(panelKey) {
+            state.assignPanels[panelKey] = panelKey === key ? open : false;
+        });
         updateAssignPanelState();
+        if (open) {
+            window.setTimeout(function() {
+                var focusId = key === 'sets' ? 'assign-set-search' :
+                    key === 'students' ? 'assign-search' : '';
+                var focusTarget = focusId ? document.getElementById(focusId) : null;
+                if (focusTarget) focusTarget.focus();
+            }, 0);
+        }
     }
 
     function updateAssignSummary() {
@@ -1184,10 +1214,18 @@
         var students = selectedCandidateRecords();
         var setCount = document.getElementById('assign-set-count');
         var studentCount = document.getElementById('assign-student-count');
+        var setDialogCount = document.getElementById('assign-sets-dialog-count');
+        var studentDialogCount = document.getElementById('assign-students-dialog-count');
         if (setCount) setCount.textContent = sets.length
             ? sets.length + ' selected'
             : 'None selected';
         if (studentCount) studentCount.textContent = students.length
+            ? students.length + ' selected'
+            : 'None selected';
+        if (setDialogCount) setDialogCount.textContent = sets.length
+            ? sets.length + ' selected'
+            : 'None selected';
+        if (studentDialogCount) studentDialogCount.textContent = students.length
             ? students.length + ' selected'
             : 'None selected';
         renderAssignChips('assign-set-chips', sets, function(set) { return set.set_id || set.title; });
@@ -3459,12 +3497,42 @@
             setAssignPanel('sets', false);
         });
     }
+    var assignSetsClose = document.getElementById('assign-sets-close');
+    if (assignSetsClose) {
+        assignSetsClose.addEventListener('click', function() {
+            setAssignPanel('sets', false);
+        });
+    }
     var assignStudentsDone = document.getElementById('assign-students-done');
     if (assignStudentsDone) {
         assignStudentsDone.addEventListener('click', function() {
             rememberSelectedCandidates();
             updateSelectedCount();
             setAssignPanel('students', false);
+        });
+    }
+    var assignStudentsClose = document.getElementById('assign-students-close');
+    if (assignStudentsClose) {
+        assignStudentsClose.addEventListener('click', function() {
+            rememberSelectedCandidates();
+            updateSelectedCount();
+            setAssignPanel('students', false);
+        });
+    }
+    var assignSetsPanel = document.getElementById('assign-sets-panel');
+    if (assignSetsPanel) {
+        assignSetsPanel.addEventListener('click', function(event) {
+            if (event.target === assignSetsPanel) setAssignPanel('sets', false);
+        });
+    }
+    var assignStudentsPanel = document.getElementById('assign-students-panel');
+    if (assignStudentsPanel) {
+        assignStudentsPanel.addEventListener('click', function(event) {
+            if (event.target === assignStudentsPanel) {
+                rememberSelectedCandidates();
+                updateSelectedCount();
+                setAssignPanel('students', false);
+            }
         });
     }
     var assignSetSelect = document.getElementById('assign-set');
@@ -3579,6 +3647,11 @@
             setCreateStudentModal(false);
             return;
         }
+        var createSuccessPanel = document.getElementById('create-student-success-panel');
+        if (createSuccessPanel && !createSuccessPanel.hidden && event.target === createSuccessPanel) {
+            setCreateStudentSuccessModal(false);
+            return;
+        }
         if (state.accountPanelOpen && teacherAccountPanel && !teacherAccountPanel.contains(event.target) && !event.target.closest('#teacher-chip')) {
             setTeacherAccountPanel(false);
         }
@@ -3630,6 +3703,21 @@
                 setCreateStudentModal(false);
                 return;
             }
+            var createSuccessPanel = document.getElementById('create-student-success-panel');
+            if (createSuccessPanel && !createSuccessPanel.hidden) {
+                setCreateStudentSuccessModal(false);
+                return;
+            }
+            if (state.assignPanels.sets) {
+                setAssignPanel('sets', false);
+                return;
+            }
+            if (state.assignPanels.students) {
+                rememberSelectedCandidates();
+                updateSelectedCount();
+                setAssignPanel('students', false);
+                return;
+            }
         }
         if (event.key !== 'Enter' && event.key !== ' ') return;
         var openCard = event.target.closest('[data-open-href]');
@@ -3646,6 +3734,12 @@
     document.getElementById('close-create-student').addEventListener('click', function() {
         setCreateStudentModal(false);
     });
+    var createSuccessClose = document.getElementById('create-student-success-close');
+    if (createSuccessClose) {
+        createSuccessClose.addEventListener('click', function() {
+            setCreateStudentSuccessModal(false);
+        });
+    }
     studentForm.addEventListener('submit', function(event) {
         event.preventDefault();
         var button = studentForm.querySelector('button[type="submit"]');
@@ -3661,11 +3755,8 @@
             studentForm.reset();
             setCreateStudentModal(false);
             state.selectedStudentProfileId = result.student.profile_id;
-            showMessage(
-                'Student created and activated. Login ID: ' + result.student.student_id +
-                ' · Initial password: ' + result.initial_password,
-                'success'
-            );
+            showMessage('Student created and activated.', 'success');
+            setCreateStudentSuccessModal(true, result);
             state.students.push(result.student);
             fillClassFilters();
             renderStudentList();

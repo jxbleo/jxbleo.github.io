@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260619-18">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260620-2">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -13,10 +13,7 @@
             <p class="app-brand">Mr. Cat Academy</p>
             <div class="teacher-header-actions">
                 <button class="teacher-review-button" id="teacher-review-button" type="button" aria-label="Review requests" aria-expanded="false">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                        <path d="M5 4.8A2.8 2.8 0 0 1 7.8 2h8.4A2.8 2.8 0 0 1 19 4.8v9.4a2.8 2.8 0 0 1-2.8 2.8H11l-4.5 3.7A.9.9 0 0 1 5 20v-3.1A2.8 2.8 0 0 1 2 14.2V4.8Z"></path>
-                        <path d="m8 9.9 2.1 2.1L15.8 6.7"></path>
-                    </svg>
+                    <span class="review-question-mark" aria-hidden="true">?</span>
                     <span class="notice-dot danger" id="teacher-review-count" hidden>0</span>
                 </button>
                 <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false">
@@ -51,7 +48,7 @@
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="tasks">Tasks</button>
+            <button class="tab-button active" type="button" data-view="tasks">Assign</button>
             <button class="tab-button" type="button" data-view="view">View</button>
             <button class="tab-button" type="button" data-view="library">Library</button>
         </nav>
@@ -97,7 +94,7 @@
                     </div>
                     <button class="create-student-close" id="close-create-student" type="button" aria-label="Close create student panel">x</button>
                 </div>
-                <form class="teacher-form horizontal-form" id="student-form">
+                <form class="teacher-form create-student-form" id="student-form">
                     <label>Login ID<input id="student-id" type="text" autocapitalize="none" required></label>
                     <label>Student name<input id="student-name" type="text" required></label>
                     <label>Class<input id="student-class" type="text"></label>
@@ -118,41 +115,43 @@
             </div>
         </section>
 
+        <section class="create-student-success-modal" id="create-student-success-panel" hidden>
+            <div class="create-student-success-card" role="dialog" aria-modal="true" aria-labelledby="create-student-success-title">
+                <span class="success-checkmark" aria-hidden="true">
+                    <svg viewBox="0 0 44 44" focusable="false">
+                        <circle class="success-checkmark-ring" cx="22" cy="22" r="19"></circle>
+                        <path class="success-checkmark-tick" d="M13 22.6 19.3 29 31.6 16"></path>
+                    </svg>
+                </span>
+                <h2 id="create-student-success-title">Student created</h2>
+                <p id="create-student-success-copy">The student account is ready.</p>
+                <button class="primary-button" id="create-student-success-close" type="button">Done</button>
+            </div>
+        </section>
+
         <section class="dashboard-view" id="view-tasks">
             <section class="assign-flow simple-assign-flow task-view-panel" id="task-assign-panel">
                 <div class="assign-minimal-grid">
-                    <article class="profile-card assign-picker-card" id="assign-sets-card">
+                    <article class="profile-card assign-picker-card assign-summary-card" id="assign-sets-card">
                         <div class="assign-picker-head">
                             <div>
                                 <h2>Work</h2>
                                 <p id="assign-set-count">None selected</p>
                             </div>
+                            <button class="outline-button assign-open-picker" id="toggle-assign-sets" type="button" aria-expanded="false">Choose</button>
                         </div>
-                        <div class="assign-minimal-controls">
-                            <input id="assign-set-search" type="search" placeholder="Search work">
-                            <select id="assign-section-filter" aria-label="Column">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="assign-choice-list" id="assign-set-list"></div>
+                        <div class="assign-chip-list" id="assign-set-chips"></div>
                     </article>
 
-                    <article class="profile-card assign-picker-card" id="assign-students-card">
+                    <article class="profile-card assign-picker-card assign-summary-card" id="assign-students-card">
                         <div class="assign-picker-head">
                             <div>
                                 <h2>Students</h2>
                                 <p id="assign-student-count">None selected</p>
                             </div>
+                            <button class="outline-button assign-open-picker" id="toggle-assign-students" type="button" aria-expanded="false">Choose</button>
                         </div>
-                        <div class="assign-minimal-controls">
-                            <input id="assign-search" type="search" placeholder="Search students">
-                            <select id="assign-class-filter" aria-label="Class">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="candidate-grid assign-choice-list" id="assign-candidates">
-                            <div class="empty-card"><strong>Choose work</strong>Student availability will appear here.</div>
-                        </div>
+                        <div class="assign-chip-list" id="assign-student-chips"></div>
                     </article>
                 </div>
                 <input id="assign-due" type="hidden">
@@ -163,6 +162,57 @@
                     <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign</button>
                 </div>
             </section>
+        </section>
+
+        <section class="assign-picker-modal" id="assign-sets-panel" hidden>
+            <div class="assign-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="assign-work-title">
+                <div class="assign-picker-dialog-head">
+                    <div>
+                        <p class="eyebrow accent">ASSIGN</p>
+                        <h2 id="assign-work-title">Choose work</h2>
+                    </div>
+                    <button class="create-student-close" id="assign-sets-close" type="button" aria-label="Close work picker">x</button>
+                </div>
+                <div class="assign-minimal-controls">
+                    <input id="assign-set-search" type="search" placeholder="Search work">
+                    <select id="assign-section-filter" aria-label="Column">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="assign-choice-list assign-modal-list" id="assign-set-list"></div>
+                <div class="assign-picker-dialog-actions">
+                    <span id="assign-sets-dialog-count">None selected</span>
+                    <button class="primary-button assign-done-button" id="assign-sets-done" type="button">Done</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="assign-picker-modal" id="assign-students-panel" hidden>
+            <div class="assign-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="assign-students-title">
+                <div class="assign-picker-dialog-head">
+                    <div>
+                        <p class="eyebrow accent">ASSIGN</p>
+                        <h2 id="assign-students-title">Choose students</h2>
+                    </div>
+                    <button class="create-student-close" id="assign-students-close" type="button" aria-label="Close student picker">x</button>
+                </div>
+                <div class="assign-minimal-controls">
+                    <input id="assign-search" type="search" placeholder="Search students">
+                    <select id="assign-class-filter" aria-label="Class">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="assign-picker-tools">
+                    <button class="outline-button" id="select-class" type="button">Select filtered</button>
+                </div>
+                <div class="candidate-grid assign-choice-list assign-modal-list" id="assign-candidates">
+                    <div class="empty-card"><strong>Choose work</strong>Student availability will appear here.</div>
+                </div>
+                <div class="assign-picker-dialog-actions">
+                    <span id="assign-students-dialog-count">None selected</span>
+                    <button class="primary-button assign-done-button" id="assign-students-done" type="button">Done</button>
+                </div>
+            </div>
         </section>
 
         <section class="dashboard-view" id="view-library" hidden>
@@ -222,6 +272,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260619-18"></script>
+    <script src="assets/js/teacher.js?v=20260620-1"></script>
 </body>
 </html>

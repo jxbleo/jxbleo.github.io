@@ -48,6 +48,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-20
+
+- Updated the teacher create-student flow to use a vertical modal form and a
+  checkmark success dialog with the new Login ID, renamed the teacher Tasks tab
+  to Assign, changed the Review entry to a question-mark icon, and simplified
+  Assign so work/student search and filters live in standalone picker dialogs.
+- Verified `assets/js/teacher.js` syntax, diff whitespace, and duplicate IDs in
+  `teacher.html`. Local static server started but could not be reached from a
+  separate command session in this environment, so browser smoke remains useful
+  before static publish.
+
 ### 2026-06-19
 
 - Updated the student login page to the floating-paper welcome design with a
