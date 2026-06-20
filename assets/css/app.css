@@ -368,8 +368,8 @@ button { cursor: pointer; }
 }
 .teacher-updates-button.has-updates,
 .teacher-review-button.has-updates {
-    border-color: rgba(124, 58, 237, 0.38);
-    background: rgba(247, 243, 255, 0.96);
+    border-color: rgba(225, 29, 72, 0.28);
+    background: var(--danger-soft);
 }
 .teacher-updates-button .notice-dot,
 .teacher-review-button .notice-dot {
@@ -637,7 +637,7 @@ button { cursor: pointer; }
     font-weight: 850;
 }
 .tab-button .notice-dot { top: -9px; right: -5px; }
-.tab-button .notice-dot.todo { background: #c98f18; }
+.tab-button .notice-dot.todo { background: var(--danger); }
 .tab-button.active { color: white; background: var(--accent); }
 body:not(.teacher-page) .dashboard-tabs {
     border: 1px solid rgba(255,255,255,0.76);
@@ -1786,7 +1786,7 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255,255,255,0.74);
     text-align: left;
 }
-.activity-row.unread { background: rgba(247,243,255,0.94); }
+.activity-row.unread { background: var(--danger-soft); }
 .activity-row:hover {
     border-color: rgba(124,58,237,0.28);
     background: rgba(247,243,255,0.90);
@@ -1797,7 +1797,7 @@ body:not(.teacher-page) .tab-button.active {
     border-radius: 999px;
     background: transparent;
 }
-.activity-row.unread .activity-unread-dot { background: var(--accent); }
+.activity-row.unread .activity-unread-dot { background: var(--danger); }
 .activity-row strong,
 .activity-row small { display: block; }
 .activity-row small {
@@ -4111,7 +4111,7 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.68rem;
     line-height: 1;
 }
-.notice-dot.success { background: var(--success); }
+.notice-dot.success { background: var(--danger); }
 .notice-dot.danger { background: var(--danger); }
 .notice-dot[hidden] { display: none; }
 .dispute-list { display: grid; gap: 12px; }
