@@ -66,6 +66,11 @@ cp .qa-secrets.example .qa-secrets.local
   removed the extra divider under the `Finished` profile row so the footer has
   a single clean line. Verified dashboard JavaScript syntax and diff
   whitespace.
+- Applied the selected golden-ribbon `Show Finished` interaction: collapsed
+  state stays bottom-docked, expanded state becomes page content with a sticky
+  top capsule and ribbon reveal. Moved account-panel stars onto the name row
+  and normalized profile row/divider spacing. Verified dashboard JavaScript
+  syntax, static cache-version checks, and diff whitespace.
 
 ### 2026-06-20
 

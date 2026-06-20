@@ -64,11 +64,13 @@ Frontend rule:
 - `passed` and `mastered` both appear inside the collapsed `Finished` completion button.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
 - The finished control is a compact sticky gold capsule, visually aligned with
-  the Library gold badge style but with a brighter golden glow. It sits low on
-  the Assignments page when space allows, reads `Show Finished` when collapsed
-  and `Hide Finished` when expanded, and keeps the visible control to a check
-  icon plus that label. Do not put counts or extra action text inside the
-  capsule.
+  the Library gold badge style but with a brighter golden glow. When collapsed,
+  it stays docked at the bottom of the Assignments view. After it is opened, it
+  becomes part of the page content, reveals the finished list with a subtle
+  golden ribbon effect, and the capsule can still stick to the top while
+  scrolling. It reads `Show Finished` when collapsed and `Hide Finished` when
+  expanded, and keeps the visible control to a check icon plus that label. Do
+  not put counts or extra action text inside the capsule.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment-tab notices, teacher notification counts, and
@@ -79,10 +81,11 @@ Frontend rule:
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.
 - The student account panel should be quiet: no separate achievement card, no
-  large account action buttons, and stars/finished count should sit alongside
-  Student ID, Class, and System as profile rows. `Change password` and
-  `Log out` are small quiet capsules at the bottom; do not show a `Password
-  change required` field in the account panel.
+  large account action buttons. Stars sit on the same row as the student's
+  display name, not in a separate `Stars` field. Student ID, Class, System, and
+  Finished should keep consistent row height and divider spacing. `Change
+  password` and `Log out` are small quiet capsules at the bottom; do not show a
+  `Password change required` field in the account panel.
 
 Student cards should show:
 

@@ -11,6 +11,10 @@
   tab and added a stronger golden glow to the `Show Finished` capsule.
 - Simplified the student account panel footer into two small action capsules
   and removed the `Password change required` account-panel field.
+- Changed `Show Finished` to stay bottom-docked while collapsed and reveal
+  finished work with the selected golden ribbon effect when opened.
+- Moved student account-panel stars onto the name row and normalized profile row
+  height/divider spacing.
 
 ## 2026-06-20
 
