@@ -112,6 +112,32 @@
 
 ## 3. 按日期整理的技术变更记录
 
+### 2026-06-20：BBC Assign 显示 Import to CloudBase
+
+已确认：
+
+- `BBC-250529`、`BBC-250605`、`BBC-250612` 已经存在于 CloudBase
+  `sets` 和 `grading_keys`。
+- 控制台重复导入后，开发环境已有 395 条 visible `sets` 和 411 条
+  `grading_keys`。
+- 旧版 `teacherAdmin.listSets` 只读取前 200 条 visible `sets`，导致这三篇
+  虽然已导入，但没有返回给教师 Assign。
+- 前端因此只能从静态 catalog 兜底看到它们，并显示
+  `Import to CloudBase`。
+
+修复：
+
+- `teacherAdmin` 的教师端内容读取上限提高到 1000。
+- 已重建并部署 `deploy-packages/teacherAdmin.zip` 后，三篇 BBC 可正常布置。
+
+以后遇到同类问题先查：
+
+- Library 能看见但 Assign 显示 import-required 时，不要马上重复导入。
+- 先查 CloudBase 是否已有顶层 `set_id` 和 `visible: true`。
+- 如果记录存在，再查线上 `teacherAdmin` 是否是最新版，以及
+  `listSets` / `grading_keys` 读取 limit 是否足够。
+- 大量重复导入会让集合记录数快速超过旧读取上限，后续应规划安全去重。
+
 ### 2026-06-16：后端 P0 架构修复
 
 已做：
