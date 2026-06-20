@@ -114,6 +114,12 @@ to_do -> passed -> mastered
 ```
 
 Status is monotonic. Later lower-scoring attempts update latest fields but do not downgrade assignment completion.
+Assignment summary fields such as `attempt_count`, `latest_attempt_id`,
+`latest_percentage`, `best_attempt_id`, and `best_percentage` are derived from
+immutable attempts. `submitAttempt` should recompute those summary fields from
+the linked assignment attempts after recording a countable assignment attempt.
+Teacher progress views may use linked attempts as a fallback if stored summary
+fields are missing or stale.
 
 Teachers may edit an existing assignment's `due_at`, `passing_percentage`, and
 `mastery_percentage` from the View surface. Those edits affect future

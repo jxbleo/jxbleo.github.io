@@ -5,7 +5,7 @@ const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const envId = process.env.TENCENTCLOUD_TCB_ENVID || "mrcat-dev-d9gwy2v1icdfdf597";
 const manager = CloudBaseManager.init({ envId });
-const ADMIN_CONTENT_READ_LIMIT = 1000;
+const READ_PAGE_LIMIT = 500;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -35,6 +35,23 @@ async function getAuthenticatedTeacher() {
 async function getOne(collection, query) {
   const result = await db.collection(collection).where(query).limit(1).get();
   return result.data && result.data[0];
+}
+
+async function getAll(collection, options = {}) {
+  const pageSize = Number(options.pageSize || READ_PAGE_LIMIT);
+  let offset = 0;
+  const output = [];
+  while (true) {
+    let query = db.collection(collection);
+    if (options.where) query = query.where(options.where);
+    if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+    const result = await query.skip(offset).limit(pageSize).get();
+    const rows = result.data || [];
+    output.push(...rows);
+    if (rows.length < pageSize) break;
+    offset += pageSize;
+  }
+  return output;
 }
 
 function normalized(value) {
@@ -75,6 +92,30 @@ function normalizedAssignmentStatus(status) {
   if (status === "mastered") return "mastered";
   if (status === "passed" || status === "done") return "passed";
   return "to_do";
+}
+
+function assignmentMasteryLocked(assignment) {
+  return Boolean(assignment && assignment.mastery_locked === true && assignment.status !== "mastered");
+}
+
+function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage, assignment) {
+  const percentage = Number(rawPercentage);
+  if (!Number.isFinite(percentage)) return "to_do";
+  if (!assignmentMasteryLocked(assignment) && percentage >= masteryPercentage) return "mastered";
+  if (percentage >= passingPercentage) return "passed";
+  return "to_do";
+}
+
+function passingPercentageForAssignment(assignment, set) {
+  return Number(assignment && assignment.passing_percentage != null
+    ? assignment.passing_percentage
+    : passingPercentageForSet(set));
+}
+
+function masteryPercentageForAssignment(assignment, set) {
+  return Number(assignment && assignment.mastery_percentage != null
+    ? assignment.mastery_percentage
+    : masteryPercentageForSet(set));
 }
 
 function statusRank(status) {
@@ -296,10 +337,10 @@ function studentView(student) {
 }
 
 async function listStudents() {
-  const result = await db.collection("students").limit(200).get();
+  const students = await getAll("students");
   return {
     success: true,
-    students: (result.data || [])
+    students: students
       .map(studentView)
       .sort((a, b) => String(a.student_id || "").localeCompare(String(b.student_id || ""))),
   };
@@ -472,10 +513,10 @@ async function resetStudentPassword(event) {
 }
 
 async function listSets() {
-  const result = await db.collection("sets").where({ visible: true }).limit(ADMIN_CONTENT_READ_LIMIT).get();
+  const sets = await getAll("sets", { where: { visible: true } });
   return {
     success: true,
-    sets: uniqueBySetId(result.data || []).map((set) => ({
+    sets: uniqueBySetId(sets).map((set) => ({
       set_id: set.set_id,
       title: set.title || set.set_id,
       course: set.course || set.type || "",
@@ -514,13 +555,12 @@ function getAssignmentState(assignments) {
 }
 
 async function getAssignmentsByStudent(setId) {
-  const result = await db.collection("assignments").limit(500).get();
+  const assignments = await getAll("assignments", { where: { set_id: setId } });
   const map = new Map();
-  (result.data || []).forEach((record) => {
+  assignments.forEach((record) => {
     const assignment = record.data && typeof record.data === "object"
       ? { ...record.data, _id: record._id }
       : record;
-    if (assignment.set_id !== setId) return;
     const items = map.get(assignment.student_uid) || [];
     items.push(assignment);
     map.set(assignment.student_uid, items);
@@ -533,10 +573,10 @@ async function getAssignmentCandidates(event) {
   if (!setId) throw new Error("SET_REQUIRED");
   if (!await getOne("sets", { set_id: setId, visible: true })) throw new Error("SET_NOT_FOUND");
 
-  const studentResult = await db.collection("students").where({
+  const studentRows = await getAll("students", { where: {
     active: true,
-  }).limit(200).get();
-  const students = (studentResult.data || []).filter((student) => student.role !== "teacher");
+  } });
+  const students = studentRows.filter((student) => student.role !== "teacher");
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
   const candidates = [];
   for (const student of students) {
@@ -687,9 +727,11 @@ async function updateAssignments(event, teacher) {
   }
 
   const now = new Date();
-  const result = await db.collection("assignments").limit(1000).get();
-  const assignments = (result.data || []).map(recordData)
-    .filter((assignment) => assignmentIds.includes(String(assignment.assignment_id || assignment._id)));
+  const assignments = [];
+  for (const assignmentId of assignmentIds) {
+    const assignment = await getOne("assignments", { assignment_id: assignmentId });
+    if (assignment) assignments.push(recordData(assignment));
+  }
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
   const missing = assignmentIds.filter((id) => !foundIds.has(id));
   const updated = [];
@@ -740,17 +782,17 @@ async function getAnswerKeyForSet(event) {
 }
 
 async function listAssignments() {
-  const [assignmentResult, studentResult, setResult] = await Promise.all([
-    db.collection("assignments").limit(500).get(),
-    db.collection("students").limit(200).get(),
-    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+  const [assignmentRows, studentRows, setRows] = await Promise.all([
+    getAll("assignments"),
+    getAll("students"),
+    getAll("sets"),
   ]);
-  const rawAssignments = assignmentResult.data || [];
-  const studentMap = new Map((studentResult.data || []).map((record) => {
+  const rawAssignments = assignmentRows;
+  const studentMap = new Map(studentRows.map((record) => {
     const student = record.data && typeof record.data === "object" ? record.data : record;
     return [student.auth_uid, student];
   }));
-  const setMap = new Map((setResult.data || []).map((set) => [set.set_id, set]));
+  const setMap = new Map(setRows.map((set) => [set.set_id, set]));
 
   return {
     success: true,
@@ -849,8 +891,35 @@ function bestAttemptPercentage(attempts) {
   }, null);
 }
 
+function latestAttempt(attempts) {
+  return sortAttemptsAscending(attempts).slice(-1)[0] || null;
+}
+
+function progressStatusFromAssignment(assignment, set, bestPercentage) {
+  const passing = passingPercentageForAssignment(assignment, set);
+  const mastery = masteryPercentageForAssignment(assignment, set);
+  const attemptStatus = bestPercentage == null
+    ? "to_do"
+    : statusForPercentage(bestPercentage, passing, mastery, assignment);
+  return monotonicAssignmentStatus(assignment.status, attemptStatus);
+}
+
 function buildProgressItemFromAssignment(assignment, student, set, attempts) {
   const orderedAttempts = sortAttemptsAscending(attempts);
+  const newestAttempt = latestAttempt(orderedAttempts);
+  const attemptBestPercentage = bestAttemptPercentage(orderedAttempts);
+  const savedBestPercentage = assignment.best_percentage == null ? null : Number(assignment.best_percentage);
+  const bestPercentage = savedBestPercentage == null
+    ? attemptBestPercentage
+    : attemptBestPercentage == null
+      ? savedBestPercentage
+      : Math.max(savedBestPercentage, attemptBestPercentage);
+  const status = progressStatusFromAssignment(assignment, set, bestPercentage);
+  const finishedAttempts = orderedAttempts.filter((attempt) =>
+    attempt.mastered === true || attempt.passed === true || normalizedAssignmentStatus(status) !== "to_do"
+  );
+  const completedAt = assignment.completed_at
+    || (normalizedAssignmentStatus(status) !== "to_do" ? latestDateValue(finishedAttempts, "submitted_at") : null);
   return {
     progress_id: `assigned::${assignment.assignment_id || assignment._id}`,
     source: "assigned",
@@ -861,19 +930,21 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     class_group: student.class_group || "",
     set_id: assignment.set_id,
     set_title: set.title || assignment.set_id,
-    status: assignment.status || "to_do",
+    status,
     attempt_count: Math.max(Number(assignment.attempt_count || 0), orderedAttempts.length),
-    latest_attempt_id: assignment.latest_attempt_id || null,
-    latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
-    best_percentage: assignment.best_percentage == null ? bestAttemptPercentage(orderedAttempts) : assignment.best_percentage,
+    latest_attempt_id: assignment.latest_attempt_id || (newestAttempt && newestAttempt.attempt_id) || null,
+    latest_percentage: assignment.latest_percentage == null
+      ? (newestAttempt ? newestAttempt.percentage : null)
+      : assignment.latest_percentage,
+    best_percentage: bestPercentage,
     assigned_at: assignment.assigned_at || null,
     due_at: assignment.due_at || null,
-    passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
-    mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
+    passing_percentage: passingPercentageForAssignment(assignment, set),
+    mastery_percentage: masteryPercentageForAssignment(assignment, set),
     answer_revealed: assignment.answer_revealed === true,
     answer_revealed_at: assignment.answer_revealed_at || null,
     mastery_locked: assignment.mastery_locked === true,
-    completed_at: assignment.completed_at || null,
+    completed_at: completedAt || null,
     updated_at: assignment.updated_at || null,
     latest_submitted_at: latestDateValue(orderedAttempts, "submitted_at"),
     attempts: orderedAttempts,
@@ -912,27 +983,27 @@ function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
 }
 
 async function listProgress() {
-  const [assignmentResult, attemptResult, studentResult, setResult, gradingKeyResult] = await Promise.all([
-    db.collection("assignments").limit(1000).get(),
-    db.collection("attempts").limit(1000).get(),
-    db.collection("students").limit(500).get(),
-    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
-    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+  const [assignmentRows, attemptRows, studentRows, setRows, gradingKeyRows] = await Promise.all([
+    getAll("assignments"),
+    getAll("attempts"),
+    getAll("students"),
+    getAll("sets"),
+    getAll("grading_keys"),
   ]);
-  const assignments = (assignmentResult.data || []).map(recordData);
-  const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
+  const assignments = assignmentRows.map(recordData);
+  const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
     const gradingKey = recordData(record);
     return [gradingKey.set_id, gradingKey];
   }));
-  const attempts = (attemptResult.data || []).map((record) => {
+  const attempts = attemptRows.map((record) => {
     const attempt = recordData(record);
     return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
   });
-  const studentMap = new Map((studentResult.data || []).map((record) => {
+  const studentMap = new Map(studentRows.map((record) => {
     const student = recordData(record);
     return [student.auth_uid, student];
   }));
-  const setMap = new Map((setResult.data || []).map((record) => {
+  const setMap = new Map(setRows.map((record) => {
     const set = recordData(record);
     return [set.set_id, set];
   }));
@@ -993,15 +1064,15 @@ async function listProgress() {
 }
 
 async function listAttempts() {
-  const [result, gradingKeyResult] = await Promise.all([
-    db.collection("attempts").limit(500).get(),
-    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+  const [attemptRows, gradingKeyRows] = await Promise.all([
+    getAll("attempts"),
+    getAll("grading_keys"),
   ]);
-  const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
+  const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
     const gradingKey = recordData(record);
     return [gradingKey.set_id, gradingKey];
   }));
-  const attempts = result.data || [];
+  const attempts = attemptRows;
   return {
     success: true,
     attempts: attempts.map((record) => {
@@ -1079,18 +1150,18 @@ async function submitTeacherDispute(event, teacher) {
 }
 
 async function listDisputes() {
-  const [disputeResult, studentResult, setResult, gradingKeysResult] = await Promise.all([
-    db.collection("answer_disputes").limit(500).get(),
-    db.collection("students").limit(200).get(),
-    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
-    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+  const [disputeRows, studentRows, setRows, gradingKeyRows] = await Promise.all([
+    getAll("answer_disputes"),
+    getAll("students"),
+    getAll("sets"),
+    getAll("grading_keys"),
   ]);
-  const studentMap = new Map((studentResult.data || []).map((item) => [item.auth_uid, item]));
-  const setMap = new Map((setResult.data || []).map((item) => [item.set_id, item]));
-  const gradingKeysMap = new Map((gradingKeysResult.data || []).map((item) => [item.set_id, item]));
+  const studentMap = new Map(studentRows.map((item) => [item.auth_uid, item]));
+  const setMap = new Map(setRows.map((item) => [item.set_id, item]));
+  const gradingKeysMap = new Map(gradingKeyRows.map((item) => [item.set_id, item]));
   return {
     success: true,
-    disputes: (disputeResult.data || []).map((dispute) => {
+    disputes: disputeRows.map((dispute) => {
       const student = studentMap.get(dispute.student_uid) || {};
       const set = setMap.get(dispute.set_id) || {};
       const gradingKey = gradingKeysMap.get(dispute.set_id) || {};

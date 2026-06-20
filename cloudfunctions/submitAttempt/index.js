@@ -2,6 +2,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
+const READ_PAGE_LIMIT = 500;
 
 function normalize(value) {
   return String(value == null ? "" : value).trim().toLowerCase().replace(/\s+/g, " ");
@@ -29,6 +30,23 @@ async function getAuthenticatedStudent() {
 async function getOne(collection, query) {
   const result = await db.collection(collection).where(query).limit(1).get();
   return result.data && result.data[0];
+}
+
+async function getAll(collection, options = {}) {
+  const pageSize = Number(options.pageSize || READ_PAGE_LIMIT);
+  let offset = 0;
+  const output = [];
+  while (true) {
+    let query = db.collection(collection);
+    if (options.where) query = query.where(options.where);
+    if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+    const result = await query.skip(offset).limit(pageSize).get();
+    const rows = result.data || [];
+    output.push(...rows);
+    if (rows.length < pageSize) break;
+    offset += pageSize;
+  }
+  return output;
 }
 
 function effectivePercentage(attempt) {
@@ -197,6 +215,84 @@ function bbcMultipleChoiceAnswers(answers, questionIds) {
     locked[questionId] = answers && answers[questionId] != null ? answers[questionId] : "";
   });
   return locked;
+}
+
+function attemptDisplayPercentage(attempt) {
+  return Number(attempt.display_percentage == null ? attempt.percentage || 0 : attempt.display_percentage);
+}
+
+function attemptRawPercentage(attempt) {
+  return Number(attempt.raw_percentage == null ? attemptDisplayPercentage(attempt) : attempt.raw_percentage);
+}
+
+function attemptDateValue(attempt) {
+  return dateValue(attempt && attempt.submitted_at);
+}
+
+function attemptStatus(attempt, passingPercentage, masteryPercentage, assignment) {
+  if (attempt.mastered === true) return "mastered";
+  if (attempt.passed === true) return "passed";
+  return statusForPercentage(attemptRawPercentage(attempt), passingPercentage, masteryPercentage, assignment);
+}
+
+function bestAttemptRecord(attempts) {
+  return attempts.slice().sort((left, right) => {
+    const byScore = attemptDisplayPercentage(right) - attemptDisplayPercentage(left);
+    if (byScore) return byScore;
+    return attemptDateValue(right) - attemptDateValue(left);
+  })[0] || null;
+}
+
+function latestAttemptRecord(attempts) {
+  return attempts.slice().sort((left, right) => attemptDateValue(right) - attemptDateValue(left))[0] || null;
+}
+
+function earliestStatusDate(attempts, passingPercentage, masteryPercentage, assignment, status) {
+  const matching = attempts
+    .filter((attempt) => statusRank(attemptStatus(attempt, passingPercentage, masteryPercentage, assignment)) >= statusRank(status))
+    .sort((left, right) => attemptDateValue(left) - attemptDateValue(right));
+  return matching[0] && matching[0].submitted_at || null;
+}
+
+function assignmentSummaryFromAttempts(assignment, set, attempts, fallbackAttempt) {
+  const records = attempts.map(normalizeRecord);
+  if (fallbackAttempt && !records.some((item) => item.attempt_id === fallbackAttempt.attempt_id)) {
+    records.push(fallbackAttempt);
+  }
+  const passingPercentage = passingPercentageForAssignment(assignment, set);
+  const masteryPercentage = masteryPercentageForAssignment(assignment, set);
+  const latest = latestAttemptRecord(records);
+  const best = bestAttemptRecord(records);
+  const bestStatus = records.reduce((status, attempt) =>
+    monotonicAssignmentStatus(status, attemptStatus(attempt, passingPercentage, masteryPercentage, assignment)), "to_do");
+  const assignmentStatus = monotonicAssignmentStatus(assignment.status, bestStatus);
+  const bestPercentage = best ? attemptDisplayPercentage(best) : Number(assignment.best_percentage || 0);
+  const rawBestPercentage = records.reduce((value, attempt) =>
+    Math.max(value, attemptRawPercentage(attempt)), Number(assignment.raw_best_percentage || 0));
+  const update = {
+    status: assignmentStatus,
+    latest_attempt_id: latest && latest.attempt_id || assignment.latest_attempt_id || null,
+    attempt_count: Math.max(Number(assignment.attempt_count || 0), records.length),
+    latest_percentage: latest ? attemptDisplayPercentage(latest) : assignment.latest_percentage || null,
+    latest_raw_percentage: latest ? attemptRawPercentage(latest) : assignment.latest_raw_percentage || null,
+    best_percentage: Math.max(Number(assignment.best_percentage || 0), bestPercentage),
+    raw_best_percentage: rawBestPercentage,
+    best_attempt_id: best && best.attempt_id || assignment.best_attempt_id || assignment.latest_attempt_id || null,
+    best_correct_count: best ? best.correct_count : assignment.best_correct_count || null,
+    best_question_count: best ? best.question_count : assignment.best_question_count || null,
+    updated_at: fallbackAttempt && fallbackAttempt.submitted_at || new Date(),
+  };
+  if (statusRank(assignmentStatus) >= statusRank("passed") && !assignment.completed_at) {
+    update.completed_at = earliestStatusDate(records, passingPercentage, masteryPercentage, assignment, "passed")
+      || fallbackAttempt && fallbackAttempt.submitted_at
+      || new Date();
+  }
+  if (assignmentStatus === "mastered" && !assignment.mastered_at) {
+    update.mastered_at = earliestStatusDate(records, passingPercentage, masteryPercentage, assignment, "mastered")
+      || fallbackAttempt && fallbackAttempt.submitted_at
+      || new Date();
+  }
+  return { update, latest, best, status: assignmentStatus };
 }
 
 function isSelfStudyAchievement(item) {
@@ -452,31 +548,24 @@ exports.main = async (event) => {
 
     await db.collection("attempts").add(attempt);
 
+    let finalAssignmentStatus = assignmentStatus;
     if (assignment) {
-      const best = Math.max(Number(assignment.best_percentage || 0), displayedPercentage);
-      const rawBest = Math.max(Number(assignment.raw_best_percentage || 0), grading.percentage);
-      const update = {
-        status: assignmentStatus,
-        latest_attempt_id: attemptId,
-        attempt_count: Number(assignment.attempt_count || 0) + 1,
-        latest_percentage: displayedPercentage,
-        latest_raw_percentage: grading.percentage,
-        best_percentage: best,
-        raw_best_percentage: rawBest,
-        best_attempt_id: best === displayedPercentage ? attemptId : assignment.best_attempt_id || assignment.latest_attempt_id || null,
-        best_correct_count: best === displayedPercentage ? grading.correctCount : assignment.best_correct_count || null,
-        best_question_count: best === displayedPercentage ? grading.questionCount : assignment.best_question_count || null,
-        updated_at: submittedAt,
-      };
-      if (passed && !assignment.completed_at) update.completed_at = submittedAt;
-      if (assignmentStatus === "mastered" && mastered && !assignment.mastered_at) update.mastered_at = submittedAt;
-      await db.collection("assignments").doc(assignment._id).update(update);
+      const assignmentAttempts = await getAll("attempts", {
+        where: {
+          student_uid: student.auth_uid,
+          set_id: setId,
+          assignment_id: assignmentId,
+        },
+      });
+      const summary = assignmentSummaryFromAttempts(assignment, set, assignmentAttempts, attempt);
+      finalAssignmentStatus = summary.status;
+      await db.collection("assignments").doc(assignment._id).update(summary.update);
       const verifyResult = await db.collection("assignments").doc(assignment._id).get();
       const verified = verifyResult.data && verifyResult.data[0];
-      if (!verified || verified.latest_attempt_id !== attemptId) {
+      if (!verified) {
         throw new Error("ASSIGNMENT_UPDATE_FAILED");
       }
-      if (mastered) await protectAssignmentStar(student, verified, attempt, submittedAt);
+      if (summary.status === "mastered") await protectAssignmentStar(student, verified, summary.best || attempt, submittedAt);
     } else if (mastered) {
       await protectSelfStudyStar(student, attempt, submittedAt);
     }
@@ -495,8 +584,8 @@ exports.main = async (event) => {
       mastery_percentage: masteryPercentage,
       passed,
       mastered,
-      status: assignmentStatus,
-      assignment_status: assignmentStatus,
+      status: finalAssignmentStatus,
+      assignment_status: finalAssignmentStatus,
       attempt_status: attemptStatus,
       mastery_eligible: mastered,
       mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",

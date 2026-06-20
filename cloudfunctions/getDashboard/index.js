@@ -2,6 +2,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
+const READ_PAGE_LIMIT = 500;
 
 async function getAuthenticatedStudent() {
   const userInfo = await app.auth().getUserInfo();
@@ -22,6 +23,23 @@ async function getAuthenticatedStudent() {
 async function getOne(collection, query) {
   const result = await db.collection(collection).where(query).limit(1).get();
   return result.data && result.data[0];
+}
+
+async function getAll(collection, options = {}) {
+  const pageSize = Number(options.pageSize || READ_PAGE_LIMIT);
+  let offset = 0;
+  const output = [];
+  while (true) {
+    let query = db.collection(collection);
+    if (options.where) query = query.where(options.where);
+    if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+    const result = await query.skip(offset).limit(pageSize).get();
+    const rows = result.data || [];
+    output.push(...rows);
+    if (rows.length < pageSize) break;
+    offset += pageSize;
+  }
+  return output;
 }
 
 function effectivePercentage(attempt) {
@@ -290,10 +308,10 @@ async function listDisputesForAttempt(student, event) {
 }
 
 async function listTeacherReplies(student) {
-  const result = await db.collection("answer_disputes").where({
+  const rows = await getAll("answer_disputes", { where: {
     student_uid: student.auth_uid,
-  }).limit(200).get();
-  const resolved = resolvedTeacherReplyItems(result.data || [], student);
+  } });
+  const resolved = resolvedTeacherReplyItems(rows, student);
   const setIds = [...new Set(resolved.map((item) => item.set_id).filter(Boolean))];
   const setMap = new Map();
   await Promise.all(setIds.map(async (setId) => {
@@ -308,13 +326,13 @@ async function markTeacherRepliesSeen(student, event) {
     ? event.dispute_ids.map((item) => String(item || "")).filter(Boolean)
     : [];
   if (!ids.length) return { success: true, seen_count: 0 };
-  const result = await db.collection("answer_disputes").where({
+  const rows = await getAll("answer_disputes", { where: {
     student_uid: student.auth_uid,
-  }).limit(200).get();
+  } });
   const idSet = new Set(ids);
   const now = new Date();
   let seenCount = 0;
-  for (const item of result.data || []) {
+  for (const item of rows) {
     const disputeId = item.dispute_id || item._id;
     if (!disputeBelongsToStudent(item, student) || !idSet.has(disputeId) || item.status === "pending") continue;
     await db.collection("answer_disputes").doc(item._id).update({
@@ -358,10 +376,10 @@ async function revealAnswers(student, event) {
 }
 
 async function starCount(student) {
-  const result = await db.collection("student_set_achievements").where({
+  const rows = await getAll("student_set_achievements", { where: {
     student_uid: student.auth_uid,
-  }).limit(500).get();
-  return (result.data || []).length;
+  } });
+  return rows.length;
 }
 
 function isSelfStudyAchievement(item) {
@@ -548,10 +566,10 @@ async function claimStar(student, event) {
     Number(assignment.best_percentage || assignment.latest_percentage || 0),
     assignment.mastered_at || now
   );
-  const starResult = await db.collection("student_set_achievements").where({
+  const achievements = await getAll("student_set_achievements", { where: {
     student_uid: student.auth_uid,
-  }).limit(500).get();
-  return { success: true, ...splitStarCounts(starResult.data || []) };
+  } });
+  return { success: true, ...splitStarCounts(achievements) };
 }
 
 async function getAttemptForRetry(student, event) {
@@ -584,26 +602,21 @@ exports.main = async (event = {}) => {
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
     if (action === "claimStar") return await claimStar(student, event);
 
-    const assignmentResult = await db.collection("assignments")
-      .where({ student_uid: student.auth_uid })
-      .orderBy("assigned_at", "desc")
-      .limit(100)
-      .get();
-    const assignments = assignmentResult.data || [];
-    const attemptResult = await db.collection("attempts")
-      .where({ student_uid: student.auth_uid })
-      .limit(500)
-      .get();
-    const attempts = attemptResult.data || [];
+    const assignments = await getAll("assignments", {
+      where: { student_uid: student.auth_uid },
+      orderBy: { field: "assigned_at", direction: "desc" },
+    });
+    const attempts = await getAll("attempts", {
+      where: { student_uid: student.auth_uid },
+    });
     const setMap = new Map();
-    const disputeResult = await db.collection("answer_disputes").where({
+    const disputeRows = await getAll("answer_disputes", { where: {
       student_uid: student.auth_uid,
-    }).limit(500).get();
-    const teacherReplyItems = resolvedTeacherReplyItems(disputeResult.data || [], student);
-    const starResult = await db.collection("student_set_achievements").where({
+    } });
+    const teacherReplyItems = resolvedTeacherReplyItems(disputeRows, student);
+    const achievements = await getAll("student_set_achievements", { where: {
       student_uid: student.auth_uid,
-    }).limit(500).get();
-    const achievements = starResult.data || [];
+    } });
     const starBuckets = normalizedStarBuckets(achievements);
     const claimedAssignmentIds = new Set(starBuckets.assignmentStars
       .map((item) => item.assignment_id)

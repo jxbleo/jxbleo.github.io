@@ -168,6 +168,8 @@ It should include:
 - matrix task headers show the stable task ID with the task name directly
   underneath
 - matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
+- the matrix renders every student matching the current filters; do not hide
+  later students behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or class
 - clickable matrix cells open a floating dialog with the close button outside
   the detail card underneath it. The dialog shows the practice title, a student

@@ -64,6 +64,21 @@ cp .qa-secrets.example .qa-secrets.local
   practice page submits without `assignment_id`. This should make those
   attempts move the assignment to FINISHED and appear in teacher View matrix
   after `submitAttempt` is deployed.
+- Hardened backend progress reads and assignment summaries: `teacherAdmin`,
+  `getDashboard`, and `getResources` now page through CloudBase reads instead
+  of trusting fixed first-page limits; `submitAttempt` recomputes assignment
+  summary fields from linked attempts after recording an assignment attempt; and
+  teacher View progress can derive finished status from linked attempts when
+  stored assignment summary fields are stale. Owner must deploy updated
+  `submitAttempt`, `teacherAdmin`, `getDashboard`, and `getResources` packages.
+- Confirmed with dedicated QA teacher/student accounts that a newly assigned
+  `BBC-250529` task opened from the student Library without an `assignment`
+  URL parameter records a passed attempt, moves from student Assignments to
+  Finished, and appears in teacher View groupings. Found and fixed a frontend
+  matrix display cap that hid students beyond the first 12 sorted rows; after
+  the fix, the View matrix directly showed the student row with a `50%`
+  passed cell. Verified `teacher.js`, cloud function syntax, diff whitespace,
+  and `npm run verify:release`.
 - Updated the teacher create-student flow to use a vertical modal form and a
   checkmark success dialog with the new Login ID, renamed the teacher Tasks tab
   to Assign, changed the Review entry to a question-mark icon, and simplified
