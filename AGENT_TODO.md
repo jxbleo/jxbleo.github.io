@@ -54,6 +54,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-20
 
+- Updated the student dashboard top billboard to use the approved Option A
+  pale aurora-rainbow animated background without changing its greeting text,
+  copy, chips, or layout. Verified syntax and diff whitespace; logged-in
+  visual smoke remains useful before static publish.
+- Applied the approved Option A soft liquid-glass treatment to the student main
+  navigation capsule and the student Library category capsule, scoped away from
+  teacher tabs. Verified syntax and diff whitespace; logged-in visual smoke
+  remains useful before static publish.
 - Changed the student Assignments finished drawer entry from a sticky stamp to
   a lower-positioned gold capsule matching the Library badge style, with
   `Show Finished` / `Hide Finished` text and no count. Verified JavaScript

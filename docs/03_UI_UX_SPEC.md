@@ -46,6 +46,12 @@ Assignments display:
 
 - open `TO DO` assignments directly
 - a small bottom `Finished` completion button for completed work
+- the top billboard keeps the existing greeting/copy structure, but uses a
+  pale green aurora-rainbow animated background instead of the older dark green
+  panel
+- the main `Assignments` / `My Words` / `Library` capsule and the student
+  Library `General Practice` / `Exam Practice` / `Lessons` capsule use a soft
+  translucent glass treatment with subtle rainbow active states
 
 Backend statuses:
 
