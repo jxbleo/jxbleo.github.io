@@ -29,6 +29,16 @@
 - Updated `submitAttempt` so Library/Explore submissions automatically attach
   to the student's open assignment for the same `set_id` when the browser does
   not pass an `assignment_id`.
+- Replaced fixed first-page backend reads in `teacherAdmin`, `getDashboard`,
+  and `getResources` with paginated reads for assignment, attempt, set, student,
+  dispute, and STAR data.
+- Changed assignment submission to recompute assignment summary fields from
+  linked attempts after recording an attempt, reducing stale summary and
+  duplicate-click race issues.
+- Updated teacher progress display to derive finished status from linked
+  attempts when assignment summary fields are stale.
+- Updated the teacher View matrix to render every student matching the current
+  filters instead of only the first 12 sorted rows.
 
 ## 2026-06-19
 

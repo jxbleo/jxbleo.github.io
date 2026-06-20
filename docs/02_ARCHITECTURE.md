@@ -150,8 +150,13 @@ Rules:
 5. Function loads private `grading_keys`.
 6. Function grades on the server.
 7. Function writes an immutable `attempts` record.
-8. Function updates assignment latest/best summary when the attempt is assignment-bound.
+8. Function recomputes assignment latest/best/status summary from assignment-bound attempts.
 9. Function creates or repairs STAR if mastered.
+
+Teacher progress and student dashboard reads use paginated CloudBase reads for
+owned or relevant records instead of assuming the first page contains every
+assignment, attempt, set, student, dispute, or STAR. Teacher progress also uses
+linked attempts as a display fallback when an assignment summary is stale.
 
 ### Teacher Assignment
 

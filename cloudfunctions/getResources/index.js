@@ -2,6 +2,24 @@ const cloudbase = require("@cloudbase/node-sdk");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
+const READ_PAGE_LIMIT = 500;
+
+async function getAll(collection, options = {}) {
+  const pageSize = Number(options.pageSize || READ_PAGE_LIMIT);
+  let offset = 0;
+  const output = [];
+  while (true) {
+    let query = db.collection(collection);
+    if (options.where) query = query.where(options.where);
+    if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+    const result = await query.skip(offset).limit(pageSize).get();
+    const rows = result.data || [];
+    output.push(...rows);
+    if (rows.length < pageSize) break;
+    offset += pageSize;
+  }
+  return output;
+}
 
 function resourceView(item) {
   return {
@@ -30,15 +48,14 @@ function uniqueResources(items) {
 
 exports.main = async () => {
   try {
-    const result = await db.collection("sets")
-      .where({ visible: true })
-      .orderBy("title", "asc")
-      .limit(500)
-      .get();
+    const resources = await getAll("sets", {
+      where: { visible: true },
+      orderBy: { field: "title", direction: "asc" },
+    });
 
     return {
       success: true,
-      resources: uniqueResources(result.data || []),
+      resources: uniqueResources(resources),
     };
   } catch (error) {
     return { success: false, code: "RESOURCE_ERROR", message: "Unable to load resources.", resources: [] };

@@ -2554,13 +2554,7 @@
         }
         var allStudents = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
             .sort(function(a, b) { return a.name.localeCompare(b.name); });
-        var students = allStudents.slice(0, 12);
-        if (selectedProgressItem && !students.some(function(student) { return student.key === matrixStudentKey(selectedProgressItem); })) {
-            var selectedStudent = allStudents.find(function(student) { return student.key === matrixStudentKey(selectedProgressItem); });
-            if (selectedStudent) {
-                students = [selectedStudent].concat(students.filter(function(student) { return student.key !== selectedStudent.key; })).slice(0, 12);
-            }
-        }
+        var students = allStudents;
         if (!sets.length || !students.length) return '';
         var selectedItem = null;
         var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 112) + 'px;--matrix-min-mobile:' + (126 + sets.length * 96) + 'px;';
@@ -2597,7 +2591,7 @@
         }).join('');
         var detailHtml = selectedItem ? renderMatrixCellModal(selectedItem) : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks</span></div></div>' +
+            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks · ' + escapeHtml(students.length) + ' students</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
             detailHtml +
         '</section>';

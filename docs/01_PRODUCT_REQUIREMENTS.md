@@ -328,6 +328,7 @@ flowchart TD
 - attempt 是事实记录，不能覆盖
 - Try Again 会创建新 attempt
 - 失败 attempt 也必须保存
+- assignment 的 latest / best / count / status summary 是从不可变 attempts 派生的汇总，不能替代 attempts 本身
 - 自主 Explore / Library attempt 只有在同一学生同一 `set_id` 没有开放作业时才使用 `assignment_id: null`
 - 如果学生从 Library 打开已布置但未完成的同一 `set_id`，`submitAttempt` 必须在后端自动绑定该开放作业
 - 历史 review 默认不应泄露正确答案和解析，除非对应作业已经 reveal answers
@@ -486,7 +487,7 @@ flowchart TD
 5. 如果前端未传 assignment，但该学生同一 `set_id` 有开放作业，后端自动绑定该 assignment
 6. 服务器评分
 7. 创建 attempt
-8. 更新 assignment summary
+8. 从 linked attempts 重算 assignment summary
 9. 如果 mastered，创建或修复 STAR
 10. 返回允许学生看到的反馈
 

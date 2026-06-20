@@ -107,6 +107,12 @@ Check:
 - Library opens practice pages in `teacher=1`
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts
+- Progress still reflects assignment attempts after attempts/assignments exceed
+  one CloudBase read page
+- View matrix shows completed status from linked attempts even if assignment
+  summary fields are stale
+- View matrix includes every student matching the current filters, including
+  students beyond the first dozen sorted rows
 - View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open single-assignment detail
 - editing due/pass/mastery in View updates the intended student/class/task assignment scope only
