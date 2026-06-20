@@ -45,6 +45,10 @@ cp .qa-secrets.example .qa-secrets.local
 - [ ] Before importing `NGSL-D`, confirm or replace the duplicate unit words
       found in the source material: `quiet`, `relatively`, and `attract` each
       appears twice in the 1301-1400 unit.
+- [ ] Plan a safe CloudBase content de-duplication pass. Read-only checks on
+      2026-06-20 showed 395 visible `sets` and 411 `grading_keys`, more than
+      the 106 generated records, likely from repeated console imports. Do not
+      delete duplicates without backup and owner approval.
 
 ## Done
 
@@ -79,6 +83,13 @@ cp .qa-secrets.example .qa-secrets.local
   the live environment, the lessons were invisible instead of shown with an
   import-required state. The fix is to merge static catalog fallback rows into
   Assign and keep them disabled until CloudBase content import is complete.
+- Final diagnosis after owner import: read-only CloudBase queries confirmed the
+  three BBC `sets` and `grading_keys` are present, but duplicate/imported
+  content pushed the live environment to 395 visible `sets` and 411
+  `grading_keys`. Deployed `teacherAdmin.listSets` only read the first 200
+  visible sets, so these BBC lessons could still be treated as catalog-only.
+  Raised teacherAdmin content read limits to 1000 and rebuilt
+  `deploy-packages/teacherAdmin.zip`; owner must deploy that function package.
 
 ### 2026-06-19
 

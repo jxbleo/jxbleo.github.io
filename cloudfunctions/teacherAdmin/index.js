@@ -5,6 +5,7 @@ const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const envId = process.env.TENCENTCLOUD_TCB_ENVID || "mrcat-dev-d9gwy2v1icdfdf597";
 const manager = CloudBaseManager.init({ envId });
+const ADMIN_CONTENT_READ_LIMIT = 1000;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -471,7 +472,7 @@ async function resetStudentPassword(event) {
 }
 
 async function listSets() {
-  const result = await db.collection("sets").where({ visible: true }).limit(200).get();
+  const result = await db.collection("sets").where({ visible: true }).limit(ADMIN_CONTENT_READ_LIMIT).get();
   return {
     success: true,
     sets: uniqueBySetId(result.data || []).map((set) => ({
@@ -742,7 +743,7 @@ async function listAssignments() {
   const [assignmentResult, studentResult, setResult] = await Promise.all([
     db.collection("assignments").limit(500).get(),
     db.collection("students").limit(200).get(),
-    db.collection("sets").limit(200).get(),
+    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
   ]);
   const rawAssignments = assignmentResult.data || [];
   const studentMap = new Map((studentResult.data || []).map((record) => {
@@ -915,8 +916,8 @@ async function listProgress() {
     db.collection("assignments").limit(1000).get(),
     db.collection("attempts").limit(1000).get(),
     db.collection("students").limit(500).get(),
-    db.collection("sets").limit(500).get(),
-    db.collection("grading_keys").limit(500).get(),
+    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
   ]);
   const assignments = (assignmentResult.data || []).map(recordData);
   const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
@@ -994,7 +995,7 @@ async function listProgress() {
 async function listAttempts() {
   const [result, gradingKeyResult] = await Promise.all([
     db.collection("attempts").limit(500).get(),
-    db.collection("grading_keys").limit(500).get(),
+    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
   ]);
   const gradingKeyMap = new Map((gradingKeyResult.data || []).map((record) => {
     const gradingKey = recordData(record);
@@ -1081,8 +1082,8 @@ async function listDisputes() {
   const [disputeResult, studentResult, setResult, gradingKeysResult] = await Promise.all([
     db.collection("answer_disputes").limit(500).get(),
     db.collection("students").limit(200).get(),
-    db.collection("sets").limit(200).get(),
-    db.collection("grading_keys").limit(200).get(),
+    db.collection("sets").limit(ADMIN_CONTENT_READ_LIMIT).get(),
+    db.collection("grading_keys").limit(ADMIN_CONTENT_READ_LIMIT).get(),
   ]);
   const studentMap = new Map((studentResult.data || []).map((item) => [item.auth_uid, item]));
   const setMap = new Map((setResult.data || []).map((item) => [item.set_id, item]));

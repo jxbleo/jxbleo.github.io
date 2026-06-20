@@ -17,6 +17,9 @@
 - Updated teacher `Assign` to merge visible static catalog items missing from
   CloudBase `sets` as disabled import-required rows, so newly published BBC
   lessons are visible while CloudBase import state is checked.
+- Increased teacherAdmin content read limits for `sets` and `grading_keys` so
+  teacher Assign/View surfaces still resolve content after repeated CloudBase
+  imports push collection counts beyond 200 records.
 
 ## 2026-06-19
 
