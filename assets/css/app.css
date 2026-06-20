@@ -477,7 +477,7 @@ button { cursor: pointer; }
 .account-quiet-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
     margin-top: 14px;
     padding-top: 12px;
@@ -502,7 +502,32 @@ button { cursor: pointer; }
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 7px;
+}
+.account-quiet-actions .text-button {
+    min-height: 30px;
+    padding: 6px 12px;
+    border: 1px solid rgba(24, 53, 47, 0.1);
+    border-radius: 999px;
+    color: #58716c;
+    background: rgba(255,255,255,0.66);
+    box-shadow: 0 8px 18px rgba(25, 68, 61, 0.06);
+    font-size: 0.74rem;
+    text-decoration: none;
+}
+.account-quiet-actions .text-button:hover {
+    color: var(--accent-dark);
+    border-color: rgba(19, 118, 109, 0.22);
+    background: rgba(255,255,255,0.9);
+}
+.account-quiet-actions .danger-text-button {
+    color: #9a4b42;
+    border-color: rgba(181, 71, 71, 0.12);
+}
+.account-quiet-actions .danger-text-button:hover {
+    color: var(--danger);
+    border-color: rgba(181, 71, 71, 0.22);
+    background: rgba(255, 240, 237, 0.82);
 }
 .text-button {
     min-height: 0;
@@ -652,7 +677,15 @@ body:not(.teacher-page) .dashboard-tabs {
 body:not(.teacher-page) .tab-button {
     color: rgba(24, 53, 47, 0.64);
     font-weight: 880;
-    overflow: hidden;
+    overflow: visible;
+}
+body:not(.teacher-page) .tab-button .notice-dot {
+    top: -13px;
+    right: -8px;
+    z-index: 4;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.9),
+        0 8px 18px rgba(181, 71, 71, 0.24);
 }
 body:not(.teacher-page) .tab-button:hover {
     color: #0d5d56;
@@ -718,18 +751,28 @@ body:not(.teacher-page) .tab-button.active {
     min-width: 0;
     min-height: 42px;
     padding: 8px 16px 8px 13px;
-    border: 1px solid rgba(216, 149, 40, 0.28);
+    border: 1px solid rgba(216, 149, 40, 0.34);
     border-radius: 999px;
-    color: #8a5d12;
-    background: #fff7d8;
-    box-shadow: 0 8px 20px rgba(216, 149, 40, 0.12);
+    color: #80510a;
+    background:
+        radial-gradient(circle at 22% 18%, rgba(255,255,255,0.95), transparent 34%),
+        linear-gradient(135deg, #fff9d7, #ffe27a 52%, #ffc93d);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.76) inset,
+        0 0 22px rgba(255, 207, 73, 0.42),
+        0 12px 28px rgba(216, 149, 40, 0.18);
     cursor: pointer;
     transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 .finished-drawer-toggle:hover {
-    background: #fff1bd;
+    background:
+        radial-gradient(circle at 22% 18%, rgba(255,255,255,0.98), transparent 34%),
+        linear-gradient(135deg, #fffbe0, #ffe889 52%, #ffc340);
     transform: translateY(-1px);
-    box-shadow: 0 10px 24px rgba(216, 149, 40, 0.16);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.82) inset,
+        0 0 30px rgba(255, 207, 73, 0.56),
+        0 16px 34px rgba(216, 149, 40, 0.22);
 }
 .finished-mini-icon {
     width: 20px;
@@ -4290,11 +4333,11 @@ body:not(.teacher-page) .tab-button.active {
     .summary-card { padding: 14px 10px; }
     .summary-value { font-size: 1.45rem; }
     .account-quiet-footer {
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
     }
     .account-quiet-actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
     }
     .finished-drawer-toggle { max-width: 100%; }
     .resource-card { grid-template-columns: 1fr; }

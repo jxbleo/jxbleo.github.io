@@ -1437,7 +1437,6 @@
                     '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
                     '<div class="profile-row"><span>Finished</span><strong>' + escapeHtml(finishedCount) + '</strong></div>' +
                     '<div class="account-quiet-footer">' +
-                        (profile.must_change_password ? '<span class="badge failed">Password change required</span>' : '<span class="account-status-dot">Active</span>') +
                         '<div class="account-quiet-actions">' +
                             '<button class="text-button" id="change-password" type="button">Change password</button>' +
                             '<button class="text-button danger-text-button" id="logout-button" type="button">Log out</button>' +

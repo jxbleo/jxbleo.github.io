@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-21
+
+### Changed
+
+- Adjusted the student Assignments navigation count to float outside the glass
+  tab and added a stronger golden glow to the `Show Finished` capsule.
+- Simplified the student account panel footer into two small action capsules
+  and removed the `Password change required` account-panel field.
+
 ## 2026-06-20
 
 ### Changed
