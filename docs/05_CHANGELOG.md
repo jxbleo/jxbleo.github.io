@@ -21,6 +21,12 @@
   teacher Assign/View surfaces still resolve content after repeated CloudBase
   imports push collection counts beyond 200 records.
 
+### Fixed
+
+- Updated `submitAttempt` so Library/Explore submissions automatically attach
+  to the student's open assignment for the same `set_id` when the browser does
+  not pass an `assignment_id`.
+
 ## 2026-06-19
 
 ### Changed

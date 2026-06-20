@@ -144,12 +144,14 @@ Rules:
 ### Assignment Submit
 
 1. Practice page submits answers to `submitAttempt`.
-2. Function verifies student, set, assignment ownership if present.
-3. Function loads private `grading_keys`.
-4. Function grades on the server.
-5. Function writes an immutable `attempts` record.
-6. Function updates assignment latest/best summary.
-7. Function creates or repairs STAR if mastered.
+2. Function verifies student and set visibility.
+3. If an `assignment_id` is present, the function verifies ownership.
+4. If no `assignment_id` is present, the function auto-binds the student's open assignment for the same `set_id`, when one exists.
+5. Function loads private `grading_keys`.
+6. Function grades on the server.
+7. Function writes an immutable `attempts` record.
+8. Function updates assignment latest/best summary when the attempt is assignment-bound.
+9. Function creates or repairs STAR if mastered.
 
 ### Teacher Assignment
 

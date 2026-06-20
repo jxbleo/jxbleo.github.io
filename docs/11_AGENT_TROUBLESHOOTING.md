@@ -27,6 +27,7 @@
 | 学生账号在 Authentication 里有，但登录后 profile incomplete | Auth user 和 `students.auth_uid` 没正确链接，或写成嵌套 `data` | `students` 文档是否顶层字段；`auth_uid` 是否匹配 |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id |
+| 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
 | 已通过作业后来低分后状态异常 | assignment 状态没有单调保护 | `submitAttempt.statusForPercentage` 和 assignment update |
 | Argue 批准后分数提高但 STAR 没出现 | 改判流程没有调用当前 STAR 保护逻辑 | `teacherAdmin.improveDisputedAttempt` |

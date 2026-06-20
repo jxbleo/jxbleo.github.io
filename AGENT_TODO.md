@@ -54,6 +54,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-20
 
+- Fixed backend assignment binding for Library submissions: `submitAttempt`
+  now auto-resolves the student's open assignment for the same `set_id` when a
+  practice page submits without `assignment_id`. This should make those
+  attempts move the assignment to FINISHED and appear in teacher View matrix
+  after `submitAttempt` is deployed.
 - Updated the teacher create-student flow to use a vertical modal form and a
   checkmark success dialog with the new Login ID, renamed the teacher Tasks tab
   to Assign, changed the Review entry to a question-mark icon, and simplified

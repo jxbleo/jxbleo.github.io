@@ -109,6 +109,29 @@ function monotonicAssignmentStatus(currentStatus, attemptStatus) {
     : normalizedAssignmentStatus(attemptStatus);
 }
 
+function isOpenAssignment(assignment) {
+  return ["not_done", "failed", "to_do"].includes(assignment && (assignment.status || "to_do"));
+}
+
+function dateValue(value) {
+  const date = value ? new Date(value) : null;
+  return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
+}
+
+async function findOpenAssignmentForSet(studentUid, setId) {
+  const result = await db.collection("assignments").where({
+    student_uid: studentUid,
+    set_id: setId,
+  }).limit(100).get();
+  const openAssignments = (result.data || [])
+    .map(normalizeRecord)
+    .filter(isOpenAssignment)
+    .sort((left, right) =>
+      dateValue(right.assigned_at || right.created_at) - dateValue(left.assigned_at || left.created_at)
+    );
+  return openAssignments[0] || null;
+}
+
 function gradeAnswers(submittedAnswers, gradingKey, mode) {
   const answers = gradingKey.answers || {};
   const explanations = gradingKey.explanations || {};
@@ -293,7 +316,7 @@ exports.main = async (event) => {
   try {
     const student = await getAuthenticatedStudent();
     const setId = String(event.set_id || "");
-    const assignmentId = event.assignment_id ? String(event.assignment_id) : null;
+    let assignmentId = event.assignment_id ? String(event.assignment_id) : null;
     const mode = String(event.mode || "default");
     let answers = event.answers && typeof event.answers === "object" ? event.answers : {};
 
@@ -311,6 +334,9 @@ exports.main = async (event) => {
         set_id: setId,
       });
       if (!assignment) throw new Error("ASSIGNMENT_NOT_FOUND");
+    } else {
+      assignment = await findOpenAssignmentForSet(student.auth_uid, setId);
+      if (assignment) assignmentId = String(assignment.assignment_id || assignment._id);
     }
 
     const bbcMcQuestionIds = mode === "bbc" ? bbcMultipleChoiceQuestionIds(gradingKey) : [];
