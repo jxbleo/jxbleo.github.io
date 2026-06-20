@@ -156,7 +156,8 @@ Rules:
 - Attempts are append-only.
 - Try Again creates a new attempt.
 - Failed attempts are still stored.
-- Self-study attempts use `assignment_id: null`.
+- Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.
+- If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
 
 ## 7. `grading_keys`
 

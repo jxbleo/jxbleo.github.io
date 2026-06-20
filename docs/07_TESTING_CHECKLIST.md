@@ -65,6 +65,7 @@ Check:
 - forced password change appears when expected
 - Assignments shows `TO DO` and `FINISHED`
 - student opens assigned work
+- student opens the same assigned set from Library, submits, and the backend records it against the open assignment
 - student submits wrong/low score
 - attempt is stored
 - assignment remains or becomes `to_do`

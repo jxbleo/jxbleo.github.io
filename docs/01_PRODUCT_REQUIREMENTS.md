@@ -308,7 +308,7 @@ flowchart TD
 - `student_uid`
 - `student_id_snapshot`
 - `set_id`
-- `assignment_id`，自主练习时为 `null`
+- `assignment_id`，没有匹配开放作业的自主练习时为 `null`
 - `mode`
 - `answers`
 - `question_results`
@@ -328,7 +328,8 @@ flowchart TD
 - attempt 是事实记录，不能覆盖
 - Try Again 会创建新 attempt
 - 失败 attempt 也必须保存
-- 自主 Explore attempt 使用 `assignment_id: null`
+- 自主 Explore / Library attempt 只有在同一学生同一 `set_id` 没有开放作业时才使用 `assignment_id: null`
+- 如果学生从 Library 打开已布置但未完成的同一 `set_id`，`submitAttempt` 必须在后端自动绑定该开放作业
 - 历史 review 默认不应泄露正确答案和解析，除非对应作业已经 reveal answers
 
 ### 7.5 grading_keys
@@ -481,12 +482,13 @@ flowchart TD
 1. 验证学生身份
 2. 验证 set 可见
 3. 加载私有 grading key
-4. 如果是 assignment，验证 assignment 属于该学生
-5. 服务器评分
-6. 创建 attempt
-7. 更新 assignment summary
-8. 如果 mastered，创建或修复 STAR
-9. 返回允许学生看到的反馈
+4. 如果前端传入 assignment，验证 assignment 属于该学生
+5. 如果前端未传 assignment，但该学生同一 `set_id` 有开放作业，后端自动绑定该 assignment
+6. 服务器评分
+7. 创建 attempt
+8. 更新 assignment summary
+9. 如果 mastered，创建或修复 STAR
+10. 返回允许学生看到的反馈
 
 要求：
 
@@ -618,7 +620,8 @@ sequenceDiagram
   participant ST as student_set_achievements
 
   S->>P: 填写答案并提交
-  P->>CF: set_id, assignment_id, answers
+  P->>CF: set_id, optional assignment_id, answers
+  CF->>AS: 如果 assignment_id 缺失，查找同学生同 set 的开放作业
   CF->>GK: 读取私有答案
   CF->>CF: 服务器评分
   CF->>A: 新增 attempt
