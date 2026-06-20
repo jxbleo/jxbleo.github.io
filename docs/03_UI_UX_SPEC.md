@@ -69,6 +69,9 @@ Frontend rule:
   expanded, and keeps the visible control to a check icon plus that label. Do
   not put counts or extra action text inside the capsule.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
+- Message and unread-count reminders use red dots/badges consistently, including
+  student replies, assignment-tab notices, teacher notification counts, and
+  unread activity rows.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.

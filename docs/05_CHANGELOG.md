@@ -14,6 +14,8 @@
   animated background while keeping its existing content and layout.
 - Changed the student main navigation and student Library category tabs to a
   soft translucent glass style with subtle rainbow active states.
+- Standardized message and unread reminder dots/badges to red across student
+  and teacher surfaces.
 - Changed the teacher create-student modal to a vertical field layout and added
   a checkmark confirmation dialog after successful account creation.
 - Renamed the teacher `Tasks` tab to `Assign` and changed the top-right Review

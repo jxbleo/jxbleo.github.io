@@ -58,6 +58,9 @@ cp .qa-secrets.example .qa-secrets.local
   pale aurora-rainbow animated background without changing its greeting text,
   copy, chips, or layout. Verified syntax and diff whitespace; logged-in
   visual smoke remains useful before static publish.
+- Standardized message and unread reminder indicators to red across student and
+  teacher surfaces, including tab notices, top-right counts, and teacher unread
+  activity dots. Verified static CSS checks and diff whitespace.
 - Applied the approved Option A soft liquid-glass treatment to the student main
   navigation capsule and the student Library category capsule, scoped away from
   teacher tabs. Verified syntax and diff whitespace; logged-in visual smoke
