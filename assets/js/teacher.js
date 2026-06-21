@@ -1531,7 +1531,7 @@
     }
 
     function assignmentSortDate(assignment) {
-        return assignment.completed_at || assignment.latest_submitted_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
+        return assignment.latest_submitted_at || assignment.completed_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
     }
 
     function matrixDateValue(item) {
@@ -1578,16 +1578,22 @@
         return { start: monthStart, end: monthEnd };
     }
 
-    function matrixItemMatchesDate(item) {
-        var range = matrixDateRange();
-        if (!range.start && !range.end) return true;
-        var rawDate = matrixDateValue(item);
-        if (!rawDate) return false;
-        var date = new Date(rawDate);
+    function dateMatchesMatrixRange(value, range) {
+        if (!value) return false;
+        var date = new Date(value);
         if (isNaN(date.getTime())) return false;
         if (range.start && date < range.start) return false;
         if (range.end && date > range.end) return false;
         return true;
+    }
+
+    function matrixItemMatchesDate(item) {
+        var range = matrixDateRange();
+        if (!range.start && !range.end) return true;
+        if (dateMatchesMatrixRange(matrixDateValue(item), range)) return true;
+        return progressAttemptsForAssignment(item).some(function(attempt) {
+            return dateMatchesMatrixRange(attempt.submitted_at, range);
+        });
     }
 
     function visibleProgressAssignments(assignments) {

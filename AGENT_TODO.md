@@ -58,6 +58,10 @@ cp .qa-secrets.example .qa-secrets.local
   history rendering to clear stale `wrong`, blank-lock, and MC-lock classes
   before applying the server-returned `correct`/`wrong` state. Verified release
   checks and diff whitespace; owner still needs to publish the static site.
+- Fixed teacher bell notification routing for second/third attempts by making
+  View matrix date filtering include each linked attempt's submitted date, not
+  only the assignment summary date. Verified release checks and diff
+  whitespace; owner still needs to publish the static site.
 
 ### 2026-06-21
 

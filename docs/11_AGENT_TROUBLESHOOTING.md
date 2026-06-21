@@ -27,6 +27,7 @@
 | 学生账号在 Authentication 里有，但登录后 profile incomplete | Auth user 和 `students.auth_uid` 没正确链接，或写成嵌套 `data` | `students` 文档是否顶层字段；`auth_uid` 是否匹配 |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
+| 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |
 | BBC History 分数已按 Argue 修正但题目仍显示黄色/错误 | 历史渲染时旧的 `wrong`、blank lock、MC lock class 覆盖了服务器返回的 adjusted correct 状态 | 发布最新版静态 `bbc.html`；查 `markHistoryReview` 是否先清理相反状态再加 `correct/wrong` |
