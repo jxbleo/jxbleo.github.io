@@ -15,6 +15,8 @@
   finished work with the selected golden ribbon effect when opened.
 - Moved student account-panel stars onto the name row and normalized profile row
   height/divider spacing.
+- Changed practice-page return controls from `Home` to confirmed `Back`
+  behavior that returns one browser-history page with a dashboard fallback.
 - Added a front-end Vocabulary Test lock flow: start warning dialog, locked Test
   view while timed work is active, early-submit confirmation, time-up automatic
   submit, and post-result wrong-question marking.

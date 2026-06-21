@@ -726,7 +726,7 @@
     <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
     <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
     <div class="exam-actions">
-        <button type="button" id="exam-dashboard-btn">Home</button>
+        <button type="button" id="exam-dashboard-btn">Back</button>
     </div>
 </header>
 <div class="identity-status" id="identity-status">Login</div>
@@ -801,7 +801,7 @@
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260616-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-<script src="assets/js/practice-session.js?v=20260615-1"></script>
+<script src="assets/js/practice-session.js?v=20260621-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260618-1"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
@@ -2367,9 +2367,9 @@
             }
             return;
         }
-        link.textContent = label || 'Home';
-        link.setAttribute('aria-label', 'Home');
-        link.title = 'Home';
+        link.textContent = 'Back';
+        link.setAttribute('aria-label', 'Back');
+        link.title = 'Back';
     }
 
     function updateIdentityStatus() {
@@ -2536,7 +2536,13 @@
         var dashboardBtn = document.getElementById('exam-dashboard-btn');
         if (dashboardBtn) {
             dashboardBtn.onclick = function() {
-                window.location.href = 'dashboard.html';
+                if (window.MrCatPractice && window.MrCatPractice.confirmBack) {
+                    window.MrCatPractice.confirmBack();
+                } else if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
             };
         }
         var reviewCheckbox = document.getElementById('exam-review-checkbox');

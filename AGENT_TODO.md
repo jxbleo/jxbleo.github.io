@@ -71,6 +71,10 @@ cp .qa-secrets.example .qa-secrets.local
   top capsule and ribbon reveal. Moved account-panel stars onto the name row
   and normalized profile row/divider spacing. Verified dashboard JavaScript
   syntax, static cache-version checks, and diff whitespace.
+- Changed practice return controls from `Home` to `Back` with a shared
+  leave-page confirmation and one-page browser-history return falling back to
+  `dashboard.html`. Updated BBC, Vocabulary, IELTS Reading, and IELTS Listening
+  practice-session cache versions and verified static checks.
 - Fixed BBC History when a student opens a previously attempted set from
   Library without assignment/history URL context. Added a student-owned
   `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate

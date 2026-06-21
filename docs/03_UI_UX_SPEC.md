@@ -97,6 +97,9 @@ Student cards should show:
   buttons such as Teacher replies or Get Star
 - opening a task card first shows the shared practice-entry confirmation dialog
   so accidental taps do not immediately leave the dashboard
+- practice pages use `Back`, not `Home`, for return controls. Tapping Back
+  first shows a leave-page confirmation, then returns one browser-history page;
+  if no history is available, it falls back to `dashboard.html`.
 
 My Words:
 
