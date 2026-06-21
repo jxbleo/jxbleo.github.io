@@ -71,6 +71,11 @@ cp .qa-secrets.example .qa-secrets.local
   top capsule and ribbon reveal. Moved account-panel stars onto the name row
   and normalized profile row/divider spacing. Verified dashboard JavaScript
   syntax, static cache-version checks, and diff whitespace.
+- Fixed BBC History when a student opens a previously attempted set from
+  Library without assignment/history URL context. Added a student-owned
+  `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate
+  `historyAttemptId` from it, and returned resolved `assignment_id` from
+  `submitAttempt` for Library-bound assignment submissions.
 
 ### 2026-06-20
 

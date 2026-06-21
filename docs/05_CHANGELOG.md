@@ -16,6 +16,15 @@
 - Moved student account-panel stars onto the name row and normalized profile row
   height/divider spacing.
 
+### Fixed
+
+- Fixed BBC History from the student Library entry by letting `bbc.html` resolve
+  the current student's best attempt for the set when the URL does not include
+  `history` or `assignment` context.
+- Returned the resolved `assignment_id` from `submitAttempt` so a Library-opened
+  assignment submission can keep follow-up answer reveal actions linked to the
+  assignment.
+
 ## 2026-06-20
 
 ### Changed

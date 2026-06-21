@@ -66,6 +66,8 @@ Check:
 - Assignments shows `TO DO` and `FINISHED`
 - student opens assigned work
 - student opens the same assigned set from Library, submits, and the backend records it against the open assignment
+- BBC History works when the student opens a previously attempted set from
+  Library without `history` or `assignment` URL parameters
 - student submits wrong/low score
 - attempt is stored
 - assignment remains or becomes `to_do`

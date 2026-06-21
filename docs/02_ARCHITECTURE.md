@@ -87,7 +87,7 @@ Active or relevant functions:
 
 - `getCurrentStudent`: authenticated profile lookup
 - `getResources`: visible set catalog for authenticated surfaces
-- `getDashboard`: student assignments, history, replies, reveal, STAR fallback
+- `getDashboard`: student assignments, history, latest attempt lookup, replies, reveal, STAR fallback
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only admin, assignment, progress, disputes, answer-key access
 - `studentVocabulary`: personal My Words list
