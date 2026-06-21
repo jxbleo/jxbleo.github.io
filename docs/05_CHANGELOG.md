@@ -15,6 +15,12 @@
   finished work with the selected golden ribbon effect when opened.
 - Moved student account-panel stars onto the name row and normalized profile row
   height/divider spacing.
+- Added a front-end Vocabulary Test lock flow: start warning dialog, locked Test
+  view while timed work is active, early-submit confirmation, time-up automatic
+  submit, and post-result wrong-question marking.
+- Changed Vocabulary Test post-submit review so the result modal has only one
+  Close action, wrong questions reveal inline explanations, and Redo is a
+  separate confirmed action from the reviewed test page.
 
 ### Fixed
 

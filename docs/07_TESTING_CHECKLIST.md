@@ -141,6 +141,16 @@ Check:
 
 - Word List/Learn/Dictate/Test modes render
 - JSON and JS fallback both work
+- Test start shows the timed-test warning before questions appear
+- running Test mode disables other Vocabulary mode tabs and warns on
+  browser-level leave/back attempts
+- manual Test submit asks for early-submit confirmation, while time-up submits
+  automatically
+- the result modal has only one `Close` action
+- after the result modal closes, wrong Test questions remain marked red and
+  show inline answer explanations
+- submitted Test review shows `Redo`; Redo confirms before clearing and
+  returns to the group-count selector
 - 1-4 selected Test groups do not create CloudBase attempt
 - 5+ selected Test groups create attempt
 - group metadata is stored

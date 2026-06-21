@@ -107,6 +107,11 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.08);
         }
 
+        body.test-locked .switch-btn:not([data-view-target="test-view"]) {
+            opacity: .46;
+            cursor: not-allowed;
+        }
+
         .view { display: none; }
         .view.active { display: block; }
 
@@ -934,6 +939,31 @@
         .result-copy { color: var(--muted); line-height: 1.45; }
         .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 18px; }
 
+        .test-confirm-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1250;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(15,23,42,.38);
+            backdrop-filter: blur(5px);
+        }
+
+        .test-confirm-card {
+            width: min(420px,100%);
+            padding: 24px;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 24px 70px rgba(0,0,0,.24);
+            animation: resultPop 320ms ease-out both;
+        }
+
+        .test-confirm-card h2 { margin: 0 0 8px; }
+        .test-confirm-card p { margin: 0; color: var(--muted); line-height: 1.48; }
+        .test-confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+        body.test-locked .history-toolbar { display: none; }
+
         .history-toolbar {
             position: fixed;
             z-index: 999;
@@ -1135,6 +1165,7 @@
                     <div id="test-groups" class="group-grid"></div>
                     <div class="group-actions">
                         <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit Test</button>
+                        <button class="btn" id="redo-test-btn" type="button" style="display:none;">Redo</button>
                     </div>
                 </div>
             </section>
@@ -1168,6 +1199,9 @@
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var testStartedAt = null;
+        var testLocked = false;
+        var testSubmitting = false;
+        var testHistoryArmed = false;
         var students = [
             { id: 'EI6688', label: '甘昕雨Eilene' },
             { id: 'EV3389', label: '刘榆雯Eva' },
@@ -1225,6 +1259,101 @@
 
         function clearTestDraft() {
             try { localStorage.removeItem(testDraftKey()); } catch (e) {}
+        }
+
+        function setTestLocked(locked) {
+            testLocked = locked === true;
+            document.body.classList.toggle('test-locked', testLocked);
+            document.querySelectorAll('.switch-btn').forEach(function(button) {
+                var isTest = button.getAttribute('data-view-target') === 'test-view';
+                button.disabled = testLocked && !isTest;
+            });
+            if (testLocked && !testHistoryArmed && window.history && window.history.pushState) {
+                try {
+                    window.history.pushState({ vocabTestLocked: true }, '', window.location.href);
+                    testHistoryArmed = true;
+                } catch (e) {}
+            }
+            if (!testLocked) testHistoryArmed = false;
+        }
+
+        function showTestDialog(options) {
+            return new Promise(function(resolve) {
+                var overlay = document.createElement('div');
+                overlay.className = 'test-confirm-overlay';
+                overlay.setAttribute('role', 'dialog');
+                overlay.setAttribute('aria-modal', 'true');
+                overlay.innerHTML =
+                    '<div class="test-confirm-card">' +
+                        '<h2>' + escapeHtml(options.title || 'Continue?') + '</h2>' +
+                        '<p>' + escapeHtml(options.copy || '') + '</p>' +
+                        '<div class="test-confirm-actions">' +
+                            (options.secondary ? '<button class="btn" type="button" data-test-dialog="cancel">' + escapeHtml(options.secondary) + '</button>' : '') +
+                            '<button class="btn btn-primary" type="button" data-test-dialog="confirm">' + escapeHtml(options.primary || 'OK') + '</button>' +
+                        '</div>' +
+                    '</div>';
+                document.body.appendChild(overlay);
+                function close(value) {
+                    overlay.remove();
+                    resolve(value);
+                }
+                overlay.querySelector('[data-test-dialog="confirm"]').addEventListener('click', function() {
+                    close(true);
+                });
+                var cancel = overlay.querySelector('[data-test-dialog="cancel"]');
+                if (cancel) cancel.addEventListener('click', function() { close(false); });
+                overlay.addEventListener('click', function(event) {
+                    if (event.target === overlay) close(false);
+                });
+                window.setTimeout(function() {
+                    var primary = overlay.querySelector('[data-test-dialog="confirm"]');
+                    if (primary) primary.focus();
+                }, 0);
+            });
+        }
+
+        function showTestLockNotice() {
+            showTestDialog({
+                title: 'Test in progress',
+                copy: 'The timer is running. Submit this test before leaving the Test screen.',
+                primary: 'Keep Working'
+            });
+        }
+
+        function requestStartTest() {
+            if (testLocked) return;
+            showTestDialog({
+                title: 'Start timed test?',
+                copy: 'Once you start, the timer cannot be paused or stopped. Stay on this screen until you submit, or the test will submit automatically when time is up.',
+                primary: 'Start Test',
+                secondary: 'Cancel'
+            }).then(function(confirmed) {
+                if (confirmed) startTest();
+            });
+        }
+
+        function requestSubmitTest() {
+            if (testSubmitting) return;
+            showTestDialog({
+                title: 'Submit early?',
+                copy: 'This will end the current timed test and submit your answers now.',
+                primary: 'Submit Now',
+                secondary: 'Keep Working'
+            }).then(function(confirmed) {
+                if (confirmed) submitTest({ manual: true });
+            });
+        }
+
+        function requestRedoTest() {
+            if (testLocked || testSubmitting) return;
+            showTestDialog({
+                title: 'Redo this test?',
+                copy: 'This will clear the current review. After clearing, the answers on this screen will not be recorded unless you start and submit a new timed test.',
+                primary: 'Clear and Redo',
+                secondary: 'Cancel'
+            }).then(function(confirmed) {
+                if (confirmed) resetTestSelection();
+            });
         }
 
         function recordAnswerReveal() {
@@ -1645,11 +1774,8 @@
             var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
             var copy = response.mastered ? 'Mastered! This task moved to your Mastered list.' :
                 response.passed ? 'You passed. Keep trying if you want to master it.' :
-                'Choose the groups again, then start a fresh test.';
-            var actions = response.passed
-                ? '<button class="btn btn-primary" type="button" data-result-action="close">OK</button>'
-                : '<button class="btn btn-primary" type="button" data-result-action="restart-test">Choose Again</button>' +
-                    '<button class="btn" type="button" data-result-action="close">Review Answers</button>';
+                'Close this result to review your mistakes and explanations.';
+            var actions = '<button class="btn btn-primary" type="button" data-result-action="close">Close</button>';
             var overlay = document.createElement('div');
             overlay.className = 'result-overlay';
             overlay.innerHTML =
@@ -1659,11 +1785,6 @@
             document.body.appendChild(overlay);
             overlay.addEventListener('click', function(event) {
                 var action = event.target && event.target.getAttribute('data-result-action');
-                if (action === 'restart-test') {
-                    overlay.remove();
-                    resetTestSelection();
-                    return;
-                }
                 if (action === 'close' || event.target === overlay) overlay.remove();
             });
         }
@@ -1686,6 +1807,10 @@
         }
 
         function switchView(viewId) {
+            if (testLocked && viewId !== 'test-view') {
+                showTestLockNotice();
+                return;
+            }
             document.querySelectorAll('.switch-btn').forEach(function(btn) {
                 btn.classList.toggle('active', btn.getAttribute('data-view-target') === viewId);
             });
@@ -2221,7 +2346,7 @@
                 if (testRemainingSeconds <= 0) {
                     clearInterval(testTimerId);
                     playTimeUpSound();
-                    submitTest();
+                    submitTest({ auto: true });
                 }
             }, 1000);
         }
@@ -2279,6 +2404,9 @@
                 }
             });
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
+            switchView('test-view');
+            setTestLocked(true);
             startTimer(remaining);
             return true;
         }
@@ -2323,6 +2451,9 @@
             submitButton.disabled = false;
             submitButton.textContent = 'Submit Test';
             submitButton.style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
+            switchView('test-view');
+            setTestLocked(true);
             startTimer(selected.length * 120);
             saveTestDraft();
             return true;
@@ -2438,6 +2569,8 @@
             }).join('');
             setupAdaptiveInputs(root);
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
+            setTestLocked(true);
             startTimer(count * 120);
             saveTestDraft();
             root.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2450,6 +2583,8 @@
             activeTestGroups = [];
             activeTestGroupCount = 0;
             testStartedAt = null;
+            testSubmitting = false;
+            setTestLocked(false);
             answerRevealAvailable = false;
             updateHistoryToolbar();
             clearTestDraft();
@@ -2459,6 +2594,7 @@
             var setup = document.getElementById('test-setup');
             var timer = document.getElementById('test-timer');
             var submitButton = document.getElementById('submit-test-btn');
+            var redoButton = document.getElementById('redo-test-btn');
             if (root) root.innerHTML = '';
             if (summary) {
                 summary.innerHTML = '';
@@ -2477,15 +2613,19 @@
                 submitButton.textContent = 'Submit Test';
                 submitButton.style.display = 'none';
             }
+            if (redoButton) redoButton.style.display = 'none';
             updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function submitTest() {
+        function submitTest(options) {
+            options = options || {};
+            if (testSubmitting) return;
+            options.remaining_seconds = Math.max(0, testRemainingSeconds);
             clearInterval(testTimerId);
             var questions = document.querySelectorAll('.test-question');
             if (!questions.length) return;
-            submitVocabularyTest(questions);
+            submitVocabularyTest(questions, options);
         }
 
         function jumpToQuestion(questionId) {
@@ -2497,7 +2637,9 @@
             if (input) window.setTimeout(function() { input.focus(); }, 250);
         }
 
-        function submitVocabularyTest(questions) {
+        function submitVocabularyTest(questions, options) {
+            options = options || {};
+            testSubmitting = true;
             var answers = {};
             questions.forEach(function(card) {
                 var key = card.getAttribute('data-question-key');
@@ -2543,12 +2685,12 @@
                     if (input) input.disabled = true;
                     if (trigger) trigger.disabled = true;
                     if (!result) return;
-                    card.classList.add(result.correct ? 'correct' : (input && input.value.trim() ? 'wrong' : 'pending'));
+                    card.classList.add(result.correct ? 'correct' : 'wrong');
                     if (!result.correct && !response.feedback_locked) {
                         reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
                             (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
                         if (response.recorded) appendStudentArgueButton(reveal, card, key);
-                        reveal.classList.remove('show');
+                        reveal.classList.add('show');
                         reveal.setAttribute('data-answer-reveal', '1');
                     }
                 });
@@ -2565,10 +2707,15 @@
                 timer.textContent = 'Finished';
                 timer.classList.remove('sticky');
                 submitButton.style.display = 'none';
+                document.getElementById('redo-test-btn').style.display = 'inline-flex';
+                setTestLocked(false);
+                testSubmitting = false;
                 clearTestDraft();
             }).catch(function(error) {
+                testSubmitting = false;
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit Test';
+                if (testLocked && options.remaining_seconds > 0) startTimer(options.remaining_seconds);
                 alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
             });
         }
@@ -2599,13 +2746,27 @@
 
             document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
-            document.getElementById('start-test-btn').addEventListener('click', startTest);
-            document.getElementById('submit-test-btn').addEventListener('click', submitTest);
+            document.getElementById('start-test-btn').addEventListener('click', requestStartTest);
+            document.getElementById('submit-test-btn').addEventListener('click', requestSubmitTest);
+            document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
             document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.addEventListener('click', handleChoiceClick);
             document.getElementById('test-groups').addEventListener('change', saveTestDraft);
             document.getElementById('test-groups').addEventListener('input', saveTestDraft);
-            window.addEventListener('beforeunload', saveTestDraft);
+            window.addEventListener('beforeunload', function(event) {
+                saveTestDraft();
+                if (!testLocked) return;
+                event.preventDefault();
+                event.returnValue = '';
+                return '';
+            });
+            window.addEventListener('popstate', function() {
+                if (!testLocked) return;
+                try {
+                    window.history.pushState({ vocabTestLocked: true }, '', window.location.href);
+                } catch (e) {}
+                showTestLockNotice();
+            });
         }
 
         function renderUnit(data) {
