@@ -639,7 +639,7 @@
             <div class="top-audio-status" id="top-audio-status" hidden>Audio pending</div>
         </div>
         <div class="top-actions">
-            <button type="button" id="dashboard-btn">Home</button>
+            <button type="button" id="dashboard-btn">Back</button>
         </div>
     </header>
     <section class="workspace" id="workspace">
@@ -668,10 +668,10 @@
 <div class="audio-start-modal" id="leave-page-modal" role="dialog" aria-modal="true" aria-labelledby="leave-page-title">
     <div class="audio-start-box">
         <h2 id="leave-page-title">Leave This Page?</h2>
-        <p>Are you sure you want to return to the homepage? You will leave this listening practice page.</p>
+        <p>Are you sure you want to go back? You will leave this listening practice page.</p>
         <div class="audio-start-actions">
             <button class="audio-start-cancel" id="leave-page-cancel" type="button">Stay Here</button>
-            <button class="audio-start-confirm" id="leave-page-confirm" type="button">Go Home</button>
+            <button class="audio-start-confirm" id="leave-page-confirm" type="button">Back</button>
         </div>
     </div>
 </div>
@@ -679,7 +679,7 @@
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <script src="assets/js/config.public.js?v=20260616-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
-<script src="assets/js/practice-session.js?v=20260615-1"></script>
+<script src="assets/js/practice-session.js?v=20260621-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260618-1"></script>
 <script>
 (function() {
@@ -956,8 +956,14 @@
         if (modal) modal.classList.remove('show');
     }
 
-    function goToDashboard() {
-        window.location.href = 'dashboard.html';
+    function goBackFromListening() {
+        if (window.MrCatPractice && window.MrCatPractice.goBack) {
+            window.MrCatPractice.goBack();
+        } else if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = 'dashboard.html';
+        }
     }
 
     function handleAudioPlayFailure(error) {
@@ -1407,7 +1413,7 @@
         audioStartConfirm.addEventListener(window.PointerEvent ? 'pointerup' : 'click', startExamAudio);
         document.getElementById('audio-start-cancel').addEventListener('click', cancelAudioStartDialog);
         document.getElementById('leave-page-cancel').addEventListener('click', hideLeavePageDialog);
-        document.getElementById('leave-page-confirm').addEventListener('click', goToDashboard);
+        document.getElementById('leave-page-confirm').addEventListener('click', goBackFromListening);
         function handleQuestionInput(event) {
             if (!event.target.matches('[data-question]')) return;
             saveDraft();
