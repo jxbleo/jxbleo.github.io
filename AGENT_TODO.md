@@ -86,6 +86,9 @@ cp .qa-secrets.example .qa-secrets.local
   the visible names, and added a visible Close button to the BBC Argue
   sent/thanks dialog for both student and teacher-preview paths. Verified
   teacher JavaScript syntax, targeted static references, and diff whitespace.
+- Applied the selected teacher View matrix status treatment: orange hollow
+  circle for `Not yet`, green check for `Passed`, and glowing gold star for
+  `Mastered`. Updated teacher asset cache versions and verified static checks.
 - Fixed BBC History when a student opens a previously attempted set from
   Library without assignment/history URL context. Added a student-owned
   `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate

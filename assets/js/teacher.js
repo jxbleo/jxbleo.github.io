@@ -2583,16 +2583,17 @@
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
                     var status = normalizedAssignmentStatus(item.status);
                     var score = numericPercent(item.best_percentage);
-                    var label = status === 'mastered' ? '★ ' + formatPercent(item.best_percentage) :
-                        status === 'passed' ? formatPercent(item.best_percentage) :
-                            score == null ? '—' : formatPercent(score);
+                    var statusIcon = status === 'mastered' ? '★' : status === 'passed' ? '✓' : '○';
+                    var label = score == null ? '—' : formatPercent(score);
                     var cellKey = matrixCellKey(item);
                     if (cellKey === state.selectedMatrixCell) selectedItem = item;
                     return '<button class="progress-matrix-cell ' + escapeHtml(status) +
                         (cellKey === state.selectedMatrixCell ? ' selected' : '') +
                         '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" title="' +
                         escapeHtml(formatPercent(item.best_percentage) + ' best · click for answers') + '">' +
-                        escapeHtml(label) + '</button>';
+                        '<span class="progress-matrix-status-icon" aria-hidden="true">' + escapeHtml(statusIcon) + '</span>' +
+                        '<span class="progress-matrix-status-score">' + escapeHtml(label) + '</span>' +
+                        '</button>';
                 }).join('') +
             '</div>';
         }).join('');
