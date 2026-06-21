@@ -3004,12 +3004,12 @@
         var qid = item.question_id;
         var mcDiv = document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
         if (mcDiv && mcDiv.classList.contains('mc-question')) {
+            var selectedLi = null;
             if (item.submitted_answer != null && String(item.submitted_answer) !== '') {
                 var selectedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(item.submitted_answer)) + '"]');
-                var selectedLi = selectedRadio && selectedRadio.closest('li');
-                if (selectedLi) selectedLi.classList.add(item.correct ? 'correct' : 'wrong');
+                selectedLi = selectedRadio && selectedRadio.closest('li');
             }
-            return { target: mcDiv, container: mcDiv };
+            return { target: mcDiv, optionTarget: selectedLi, container: mcDiv };
         }
         var field = document.querySelector('[name="' + CSS.escape(qid) + '"]') ||
             document.querySelector('[data-id="' + CSS.escape(qid) + '"]');
@@ -3019,6 +3019,15 @@
             target: field,
             container: field.closest('li') || field.closest('[data-id]') || (row && row.querySelector('td:last-child')) || field.parentNode
         };
+    }
+
+    function applyHistoryResultClass(el, isCorrect) {
+        if (!el) return;
+        el.classList.remove('correct', 'wrong', 'attempt-locked', 'mc-locked-reminder', 'mc-locked-answer');
+        el.classList.add(isCorrect ? 'correct' : 'wrong');
+        if (el.classList.contains('blank-input')) {
+            el.removeAttribute('title');
+        }
     }
 
     function markHistoryReview(review) {
@@ -3031,7 +3040,8 @@
             if (!targetInfo) return;
             var target = targetInfo.target;
             var container = targetInfo.container;
-            target.classList.add(item.correct ? 'correct' : 'wrong');
+            applyHistoryResultClass(target, item.correct);
+            applyHistoryResultClass(targetInfo.optionTarget, item.correct);
             if (dispute) target.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
             if (!container || container.querySelector('[data-history-dispute="' + CSS.escape(qid) + '"]')) return;
             var note = document.createElement('div');

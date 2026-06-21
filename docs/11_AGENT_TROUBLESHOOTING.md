@@ -29,6 +29,7 @@
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |
+| BBC History 分数已按 Argue 修正但题目仍显示黄色/错误 | 历史渲染时旧的 `wrong`、blank lock、MC lock class 覆盖了服务器返回的 adjusted correct 状态 | 发布最新版静态 `bbc.html`；查 `markHistoryReview` 是否先清理相反状态再加 `correct/wrong` |
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
 | 已通过作业后来低分后状态异常 | assignment 状态没有单调保护 | `submitAttempt.statusForPercentage` 和 assignment update |
 | 学生重复点击提交后 attempts 有多条但 assignment summary 不准 | 旧版 `submitAttempt` 用旧 assignment 快照递增更新 | 部署最新版 `submitAttempt`，它会从 linked attempts 重算 summary |
