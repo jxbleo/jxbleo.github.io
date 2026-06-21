@@ -2312,7 +2312,6 @@ body:not(.teacher-page) .tab-button.active {
     white-space: nowrap;
 }
 .matrix-class-filter,
-.matrix-recent-filter,
 .matrix-column-filter,
 .matrix-date-filter,
 .matrix-date-bound {
@@ -2324,7 +2323,6 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 850;
 }
 .matrix-class-filter select,
-.matrix-recent-filter select,
 .matrix-column-filter select,
 .matrix-date-filter select,
 .matrix-date-bound input {
@@ -2443,12 +2441,13 @@ body:not(.teacher-page) .tab-button.active {
     outline-offset: -3px;
 }
 .progress-matrix-cell.to_do {
-    color: #91451d;
-    background: #fff0d8;
+    color: #6f817c;
+    background: rgba(255,255,255,0.78);
 }
 .progress-matrix-cell.to_do .progress-matrix-status-icon {
-    color: #9b4b1e;
-    background: #ffd4a6;
+    color: #8fa09b;
+    background: rgba(255,255,255,0.94);
+    box-shadow: inset 0 0 0 2px rgba(143,160,155,0.22);
 }
 .progress-matrix-cell.passed {
     color: #0d6f58;
@@ -2459,14 +2458,14 @@ body:not(.teacher-page) .tab-button.active {
     background: #1aa67d;
 }
 .progress-matrix-cell.mastered {
-    color: #7a5200;
-    background: linear-gradient(135deg, #fff8ce, #ffd45b);
+    color: #0d6f58;
+    background: linear-gradient(135deg, #e8fff3, #b9efd8);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
 }
 .progress-matrix-cell.mastered .progress-matrix-status-icon {
-    color: #8a5a00;
-    background: radial-gradient(circle at 35% 25%, #ffffff 0 10%, #fff3a0 28%, #ffc72f 72%);
-    box-shadow: 0 0 18px rgba(255, 198, 47, 0.86), 0 0 0 4px rgba(255, 215, 75, 0.18);
+    color: #fff;
+    background: radial-gradient(circle at 35% 25%, #d9fff0 0 12%, #31c58e 42%, #108563 82%);
+    box-shadow: 0 0 16px rgba(30, 176, 125, 0.46), 0 0 0 4px rgba(30, 176, 125, 0.14);
     text-shadow: 0 1px 0 rgba(255,255,255,0.78);
 }
 .progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
@@ -4572,12 +4571,10 @@ body:not(.teacher-page) .tab-button.active {
         width: 100%;
     }
     .matrix-class-filter,
-    .matrix-recent-filter,
     .matrix-column-filter,
     .matrix-date-filter,
     .matrix-date-bound,
     .matrix-class-filter select,
-    .matrix-recent-filter select,
     .matrix-column-filter select,
     .matrix-date-filter select,
     .matrix-date-bound input {

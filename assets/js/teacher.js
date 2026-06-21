@@ -33,7 +33,6 @@
         expandedAssignProgress: {},
         expandedAssignProgressGroups: {},
         matrixClassFilter: '',
-        matrixRecentLimit: '7',
         matrixColumnFilter: '',
         matrixDateFilter: 'month',
         matrixDateFrom: '',
@@ -2219,23 +2218,6 @@
         '</select></label>';
     }
 
-    function matrixRecentLimit() {
-        var value = Number(state.matrixRecentLimit || 7);
-        return isFinite(value) && value > 0 ? Math.min(Math.floor(value), 20) : 7;
-    }
-
-    function renderMatrixRecentSelect() {
-        var value = matrixRecentLimit();
-        var options = [];
-        for (var i = 1; i <= 20; i += 1) options.push(i);
-        return '<label class="matrix-recent-filter"><span>Recent</span><select id="matrix-recent-limit">' +
-            options.map(function(option) {
-                return '<option value="' + escapeHtml(option) + '"' + (option === value ? ' selected' : '') + '>' +
-                    escapeHtml(option) + '</option>';
-            }).join('') +
-        '</select></label>';
-    }
-
     function renderMatrixDateSelect() {
         var value = state.matrixDateFilter || 'month';
         var options = [
@@ -2502,7 +2484,6 @@
             state.matrixColumnFilter = '';
         }
         var classSelect = renderMatrixClassSelect(classOptions);
-        var recentSelect = renderMatrixRecentSelect();
         var dateSelect = renderMatrixDateSelect();
         var columnSelect = renderMatrixColumnSelect(columnOptions);
         var matrixItems = state.matrixClassFilter
@@ -2516,7 +2497,7 @@
         matrixItems = matrixItems.filter(matrixItemMatchesDate);
         if (!matrixItems.length) {
             return '<section class="progress-matrix-card">' +
-                '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>No matching records</span></div></div>' +
+                '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '<span>No matching records</span></div></div>' +
                 '<div class="empty-card"><strong>No matching records</strong>Adjust the filters to see assignment progress.</div>' +
             '</section>';
         }
@@ -2546,18 +2527,9 @@
                 studentMap[studentKey].items[setKey] = item;
             }
         });
-        var selectedProgressItem = state.selectedMatrixCell ? matrixItems.find(function(item) {
-            return matrixCellKey(item) === state.selectedMatrixCell;
-        }) : null;
         var allSets = Object.keys(setMap).map(function(key) { return setMap[key]; })
             .sort(function(a, b) { return b.date - a.date || a.title.localeCompare(b.title); });
-        var sets = allSets.slice(0, matrixRecentLimit());
-        if (selectedProgressItem && !sets.some(function(set) { return set.id === matrixSetKey(selectedProgressItem); })) {
-            var selectedSet = allSets.find(function(set) { return set.id === matrixSetKey(selectedProgressItem); });
-            if (selectedSet) {
-                sets = [selectedSet].concat(sets.filter(function(set) { return set.id !== selectedSet.id; })).slice(0, matrixRecentLimit());
-            }
-        }
+        var sets = allSets;
         var allStudents = Object.keys(studentMap).map(function(key) { return studentMap[key]; })
             .sort(function(a, b) { return a.name.localeCompare(b.name); });
         var students = allStudents;
@@ -2605,7 +2577,7 @@
         }).join('');
         var detailHtml = selectedItem ? renderMatrixCellModal(selectedItem) : '';
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + recentSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks · ' + escapeHtml(students.length) + ' students</span></div></div>' +
+            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks · ' + escapeHtml(students.length) + ' students</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
             detailHtml +
         '</section>';
@@ -2635,14 +2607,6 @@
         if (matrixClassFilter) {
             matrixClassFilter.addEventListener('change', function() {
                 state.matrixClassFilter = matrixClassFilter.value;
-                state.selectedMatrixCell = '';
-                renderAssignmentOverview();
-            });
-        }
-        var matrixRecentLimitSelect = document.getElementById('matrix-recent-limit');
-        if (matrixRecentLimitSelect) {
-            matrixRecentLimitSelect.addEventListener('change', function() {
-                state.matrixRecentLimit = matrixRecentLimitSelect.value;
                 state.selectedMatrixCell = '';
                 renderAssignmentOverview();
             });
