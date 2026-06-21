@@ -76,6 +76,16 @@ cp .qa-secrets.example .qa-secrets.local
   `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate
   `historyAttemptId` from it, and returned resolved `assignment_id` from
   `submitAttempt` for Library-bound assignment submissions.
+- Added front-end-only Vocabulary Test locking: start warning dialog, disabled
+  non-Test mode tabs during the timer, browser leave/back warning, manual
+  submit confirmation, time-up auto-submit, and red wrong-question marking
+  after the result modal. Backend timing validation was intentionally not added
+  because students may take unlimited fresh Vocabulary Tests.
+- Refined Vocabulary Test review: the result modal now has only one Close
+  action, wrong answers reveal inline explanations, and Redo is a separate
+  confirmed clear action from the reviewed test page. `submitAttempt` now
+  returns Vocabulary Test feedback after submission so recorded failed tests
+  can show the same explanations.
 
 ### 2026-06-20
 

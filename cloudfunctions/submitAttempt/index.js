@@ -460,7 +460,9 @@ exports.main = async (event) => {
     const isUnrecordedPractice = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && Number(event.selected_group_count || 0) < 5);
     const feedbackPolicy = set.feedback_policy || "always";
-    const mayShowFeedback = isUnrecordedPractice
+    const mayShowFeedback = mode === "vocabulary_test"
+      ? true
+      : isUnrecordedPractice
       ? feedbackPolicy === "always" || passed
       : passed;
     if (isUnrecordedPractice) {

@@ -501,6 +501,8 @@ flowchart TD
 - 状态不能因为后续低分而向下回退
 - Vocabulary 1-4 组选 Test Mode 不记录 attempt
 - Vocabulary 5 组及以上才记录
+- Vocabulary Test 提交后应立即返回错题复盘所需的正确答案和解析；
+  这不改变 attempt 记录规则，只改变学生提交后的反馈可见性
 
 ### 8.5 teacherAdmin
 

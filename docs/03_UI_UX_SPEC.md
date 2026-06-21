@@ -302,9 +302,20 @@ Shared rules:
 ### Vocabulary Test
 
 - The test countdown timer is fixed at the top-center of the screen with red text on a light-red background to create a sense of urgency.
-- A not-passed Vocabulary Test result offers `Choose Again`, which clears the
-  current test view and returns the student to the group-count selector for a
-  fresh start.
+- Starting a Vocabulary Test opens a confirmation dialog warning that the timer
+  cannot be paused or stopped.
+- While a Vocabulary Test is running, the page is front-end locked to the Test
+  view: other mode tabs are disabled, browser unload/back attempts show a
+  warning, and the student must submit or wait for automatic time-up submission.
+- Manual Submit opens an early-submit confirmation; time-up submission does not
+  ask again.
+- The Vocabulary Test result modal has one action only: `Close`.
+- After the result modal closes, incorrect Vocabulary Test questions remain
+  marked red and their answer explanations are shown inline for review.
+- The submitted Test view shows a `Redo` button. Redo opens a confirmation
+  dialog warning that the current review will be cleared and the cleared
+  answers will not be recorded. Confirming Redo returns the student to the
+  group-count selector for a fresh timed test.
 
 ## 6. Status Labels
 
