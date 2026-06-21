@@ -2403,8 +2403,10 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.66rem;
 }
 .progress-matrix-cell {
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
     min-height: 44px;
     padding: 9px 10px;
     border: 0;
@@ -2416,6 +2418,22 @@ body:not(.teacher-page) .tab-button.active {
     cursor: pointer;
     transition: transform 140ms ease, box-shadow 140ms ease, outline-color 140ms ease;
 }
+.progress-matrix-status-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    font-size: 0.88rem;
+    font-weight: 950;
+    line-height: 1;
+}
+.progress-matrix-status-score {
+    min-width: 2.8em;
+    font-weight: 930;
+    line-height: 1;
+}
 .progress-matrix-cell:hover {
     transform: translateY(-1px);
     box-shadow: inset 0 0 0 2px rgba(124, 58, 237, 0.14);
@@ -2424,9 +2442,33 @@ body:not(.teacher-page) .tab-button.active {
     outline: 3px solid rgba(124, 58, 237, 0.22);
     outline-offset: -3px;
 }
-.progress-matrix-cell.to_do { color: #7a5528; background: #fff8ea; }
-.progress-matrix-cell.passed { color: #1f6f87; background: #e3f4fb; }
-.progress-matrix-cell.mastered { color: var(--success); background: var(--success-soft); }
+.progress-matrix-cell.to_do {
+    color: #91451d;
+    background: #fff0d8;
+}
+.progress-matrix-cell.to_do .progress-matrix-status-icon {
+    color: #9b4b1e;
+    background: #ffd4a6;
+}
+.progress-matrix-cell.passed {
+    color: #0d6f58;
+    background: #def8ec;
+}
+.progress-matrix-cell.passed .progress-matrix-status-icon {
+    color: #fff;
+    background: #1aa67d;
+}
+.progress-matrix-cell.mastered {
+    color: #7a5200;
+    background: linear-gradient(135deg, #fff8ce, #ffd45b);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
+}
+.progress-matrix-cell.mastered .progress-matrix-status-icon {
+    color: #8a5a00;
+    background: radial-gradient(circle at 35% 25%, #ffffff 0 10%, #fff3a0 28%, #ffc72f 72%);
+    box-shadow: 0 0 18px rgba(255, 198, 47, 0.86), 0 0 0 4px rgba(255, 215, 75, 0.18);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.78);
+}
 .progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
 .progress-matrix-cell.empty { color: #a8b5b1; background: rgba(255,255,255,0.42); }
 .progress-matrix-detail {

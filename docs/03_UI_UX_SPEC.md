@@ -202,6 +202,9 @@ It should include:
 - the matrix score pill shows only the best score until answers have been
   viewed; once answers have been viewed and locked, it adds a lock icon beside
   the best score.
+- matrix cells use icon-plus-score status treatment: `Not yet` uses a warm
+  orange hollow circle, `Passed` uses a green check, and `Mastered` uses a
+  glowing gold star.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.

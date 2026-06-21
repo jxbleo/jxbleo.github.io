@@ -26,6 +26,9 @@
   behavior that returns one browser-history page with a dashboard fallback.
 - Tightened the teacher View matrix student-name column so it sizes to the
   visible names instead of reserving a wide fixed column.
+- Changed teacher View matrix status cells to the selected icon-plus-color
+  treatment: orange `Not yet`, green check `Passed`, and glowing gold-star
+  `Mastered`.
 - Added a front-end Vocabulary Test lock flow: start warning dialog, locked Test
   view while timed work is active, early-submit confirmation, time-up automatic
   submit, and post-result wrong-question marking.
