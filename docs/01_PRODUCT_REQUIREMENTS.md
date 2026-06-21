@@ -331,6 +331,9 @@ flowchart TD
 - assignment 的 latest / best / count / status summary 是从不可变 attempts 派生的汇总，不能替代 attempts 本身
 - 自主 Explore / Library attempt 只有在同一学生同一 `set_id` 没有开放作业时才使用 `assignment_id: null`
 - 如果学生从 Library 打开已布置但未完成的同一 `set_id`，`submitAttempt` 必须在后端自动绑定该开放作业
+- 学生从 BBC Library 入口打开同一 `set_id` 时，即使 URL 没有
+  `history` 或 `assignment` 参数，History 也应能通过后端找到该学生自己的
+  最佳历史 attempt
 - 历史 review 默认不应泄露正确答案和解析，除非对应作业已经 reveal answers
 
 ### 7.5 grading_keys

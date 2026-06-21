@@ -1965,6 +1965,8 @@
     var prefillAttemptId = '';
     var historyAttemptId = '';
     var historyBestPercentage = null;
+    var historyLookupPromise = null;
+    var historyLookupPending = false;
     var focusQuestionId = '';
     var assignmentStatus = '';
     var answerRevealAvailable = false;
@@ -2484,8 +2486,13 @@
             applyBlankAttemptLocks();
             applyMcLocks();
             renderHistoryToolbar();
+            loadHistoryContextFromDashboard();
             if (focusQuestionId) {
-                var historyPromise = historyAttemptId ? showHistoryAnswers() : Promise.resolve();
+                var historyPromise = historyAttemptId
+                    ? showHistoryAnswers()
+                    : loadHistoryContextFromDashboard().then(function() {
+                        return historyAttemptId ? showHistoryAnswers() : null;
+                    });
                 historyPromise.then(function() {
                     window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 120);
                 });
@@ -3065,6 +3072,71 @@
         }).catch(function() {});
     }
 
+    function setHistoryContextFromAttempt(attempt) {
+        if (!attempt || !attempt.attempt_id) return false;
+        if (!historyAttemptId) historyAttemptId = attempt.attempt_id;
+        if (!assignmentId && attempt.assignment_id) assignmentId = attempt.assignment_id;
+        if (attempt.percentage != null) {
+            var percentage = Number(attempt.percentage);
+            if (!isNaN(percentage)) historyBestPercentage = percentage;
+        }
+        return true;
+    }
+
+    function setHistoryContextFromDashboardItem(item) {
+        if (!item) return false;
+        var set = item.set || {};
+        var itemSetId = item.set_id || set.set_id || set.id || '';
+        if (String(itemSetId) !== String(setId)) return false;
+        var attemptId = item.history_attempt_id || item.review_attempt_id || item.prefill_attempt_id || item.best_attempt_id || item.latest_attempt_id || '';
+        if (!attemptId) return false;
+        return setHistoryContextFromAttempt({
+            attempt_id: attemptId,
+            assignment_id: item.assignment_id || null,
+            percentage: item.best_percentage == null ? item.latest_percentage : item.best_percentage
+        });
+    }
+
+    function setHistoryContextFromDashboard(result) {
+        if (!result || !result.success) return false;
+        if (setHistoryContextFromAttempt(result.attempt)) return true;
+        var matches = (result.assignments || []).filter(function(item) {
+            var set = item && item.set || {};
+            var itemSetId = item && (item.set_id || set.set_id || set.id) || '';
+            return String(itemSetId) === String(setId);
+        }).sort(function(left, right) {
+            var leftAssigned = left.assignment_id ? 1 : 0;
+            var rightAssigned = right.assignment_id ? 1 : 0;
+            if (leftAssigned !== rightAssigned) return rightAssigned - leftAssigned;
+            return Number(right.best_percentage || right.latest_percentage || 0) -
+                Number(left.best_percentage || left.latest_percentage || 0);
+        });
+        return matches.some(setHistoryContextFromDashboardItem);
+    }
+
+    function loadHistoryContextFromDashboard() {
+        if (historyAttemptId || teacherMode || studentId === 'VISITOR' || !setId || !window.MrCatCloud) {
+            return Promise.resolve(null);
+        }
+        if (historyLookupPromise) return historyLookupPromise;
+        historyLookupPending = true;
+        updateHistoryToolbar();
+        historyLookupPromise = window.MrCatCloud.callFunction('getDashboard', {
+            action: 'getLatestAttemptForSet',
+            set_id: setId
+        }).then(function(result) {
+            setHistoryContextFromDashboard(result);
+            return result;
+        }).catch(function() {
+            return null;
+        }).then(function(result) {
+            historyLookupPending = false;
+            updateHistoryToolbar();
+            return result;
+        });
+        return historyLookupPromise;
+    }
+
     function jumpToQuestion(questionId) {
         if (!questionId) return;
         var target = document.querySelector('[name="' + CSS.escape(questionId) + '"]') ||
@@ -3296,12 +3368,14 @@
                 revealAllAnswers();
                 return;
             }
-            if (!historyAttemptId) {
-                alert('No history is available for this task yet.');
-                return;
-            }
-            if (!confirm('Replace all current answers with your best historical attempt?')) return;
-            showHistoryAnswers();
+            loadHistoryContextFromDashboard().then(function() {
+                if (!historyAttemptId) {
+                    alert('No history is available for this task yet.');
+                    return;
+                }
+                if (!confirm('Replace all current answers with your best historical attempt?')) return;
+                showHistoryAnswers();
+            });
         });
         document.getElementById('clear-all-btn').addEventListener('click', function() {
             if (!confirm('Clear all answers on this page?')) return;
@@ -3313,6 +3387,7 @@
     function updateHistoryToolbar() {
         var btn = document.getElementById('show-history-btn');
         if (!btn) return;
+        btn.disabled = historyLookupPending && !answerRevealAvailable;
         btn.textContent = answerRevealAvailable ? 'Answers' : 'History';
     }
 
@@ -3881,6 +3956,7 @@
             submitted = true;
             btn.textContent = 'Submitted';
             currentArgueAttemptId = response.attempt_id;
+            if (!assignmentId && response.assignment_id) assignmentId = response.assignment_id;
             updateHistoryFromResponse(response);
             assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
             answerRevealAvailable = response.passed && !response.feedback_locked;

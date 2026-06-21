@@ -574,6 +574,7 @@ exports.main = async (event) => {
       success: true,
       recorded: true,
       attempt_id: attemptId,
+      assignment_id: assignmentId || null,
       attempt_number: attemptNumber,
       correct_count: grading.correctCount,
       question_count: grading.questionCount,

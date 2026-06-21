@@ -590,6 +590,34 @@ async function getAttemptForRetry(student, event) {
   };
 }
 
+async function getLatestAttemptForSet(student, event) {
+  const setId = String(event.set_id || "");
+  if (!setId) throw new Error("SET_REQUIRED");
+  const attempts = await getAll("attempts", {
+    where: {
+      student_uid: student.auth_uid,
+      set_id: setId,
+    },
+  });
+  const best = attempts.sort((left, right) => {
+    const byScore = effectivePercentage(right) - effectivePercentage(left);
+    if (byScore) return byScore;
+    return dateValue(right.submitted_at) - dateValue(left.submitted_at);
+  })[0] || null;
+  return {
+    success: true,
+    attempt: best ? {
+      attempt_id: best.attempt_id,
+      set_id: best.set_id,
+      assignment_id: best.assignment_id || null,
+      percentage: effectivePercentage(best),
+      passed: effectivePassed(best),
+      mastered: best.mastered === true,
+      submitted_at: best.submitted_at || null,
+    } : null,
+  };
+}
+
 exports.main = async (event = {}) => {
   try {
     const student = await getAuthenticatedStudent();
@@ -600,6 +628,7 @@ exports.main = async (event = {}) => {
     if (action === "markTeacherRepliesSeen") return await markTeacherRepliesSeen(student, event);
     if (action === "revealAnswers") return await revealAnswers(student, event);
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
+    if (action === "getLatestAttemptForSet") return await getLatestAttemptForSet(student, event);
     if (action === "claimStar") return await claimStar(student, event);
 
     const assignments = await getAll("assignments", {
