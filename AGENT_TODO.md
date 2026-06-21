@@ -54,6 +54,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-22
 
+- Simplified the teacher View matrix filters to `Class`, `Column`, and `Date`,
+  removed the `Recent` numeric limit, and kept `Date` defaulted to `This
+  month`. Verified teacher JavaScript syntax, static references, and diff
+  whitespace.
+- Adjusted teacher View matrix status cells so `Not yet` is neutral white,
+  while `Passed` and `Mastered` both use green styling with check/star icons.
+  Verified teacher JavaScript syntax, static references, and diff whitespace.
 - Fixed BBC History coloring after Argue/backfill score adjustments by forcing
   history rendering to clear stale `wrong`, blank-lock, and MC-lock classes
   before applying the server-returned `correct`/`wrong` state. Verified release

@@ -186,10 +186,10 @@ View is the teacher's progress and student-inspection surface.
 
 It should include:
 
-- an assignment matrix/table for scanning completion by student and task, with class, column, recent-task count, and date-range filters plus responsive horizontal scrolling on small screens
+- an assignment matrix/table for scanning completion by student and task, with class, column, and date filters plus responsive horizontal scrolling on small screens
 - matrix task headers show the stable task ID with the task name directly
   underneath
-- matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
+- matrix filters appear in `Class`, `Column`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, and `Date` defaults to `This month` with `This week` and custom from/to calendar options
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column
@@ -204,9 +204,9 @@ It should include:
 - the matrix score pill shows only the best score until answers have been
   viewed; once answers have been viewed and locked, it adds a lock icon beside
   the best score.
-- matrix cells use icon-plus-score status treatment: `Not yet` uses a warm
-  orange hollow circle, `Passed` uses a green check, and `Mastered` uses a
-  glowing gold star.
+- matrix cells use icon-plus-score status treatment: `Not yet` stays white
+  with a neutral hollow circle, while both passed states are green: `Passed`
+  uses a check and `Mastered` uses a star.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.
