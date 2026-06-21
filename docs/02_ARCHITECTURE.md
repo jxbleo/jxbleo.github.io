@@ -172,8 +172,10 @@ linked attempts as a display fallback when an assignment summary is stale.
 2. Teacher resolves with `keep`, `add`, or `replace`.
 3. `add`/`replace` updates private `grading_keys`.
 4. A `grading_key_history` record is written.
-5. Only the disputed attempt is regraded upward.
-6. STAR is created or improved if the regraded attempt reaches mastery.
+5. `teacherAdmin` scans historical attempts for the same set/question and
+   regrades matching submitted answers upward.
+6. Assignment summaries are improved but never downgraded.
+7. STAR is created or improved if a regraded attempt reaches mastery.
 
 ## 9. Content Pipeline
 

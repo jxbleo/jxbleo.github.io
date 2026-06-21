@@ -36,6 +36,9 @@
   assignment.
 - Added a Close action to the BBC Argue sent/thanks dialog for both student
   submissions and teacher-preview Argue submissions.
+- Changed teacher Argue `add`/`replace` resolution to automatically scan
+  historical attempts for the same set/question/submitted answer and apply
+  upward-only score, assignment, and STAR repairs.
 
 ## 2026-06-20
 

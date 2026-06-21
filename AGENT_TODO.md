@@ -84,6 +84,11 @@ cp .qa-secrets.example .qa-secrets.local
   `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate
   `historyAttemptId` from it, and returned resolved `assignment_id` from
   `submitAttempt` for Library-bound assignment submissions.
+- Added automatic upward-only historical Argue regrading for teacher
+  `add`/`replace` decisions. Matching same-set, same-question, same-answer old
+  attempts can now improve assignment summaries and STAR records. Verified
+  backend syntax and release checks; owner still needs to deploy
+  `teacherAdmin.zip`.
 - Added front-end-only Vocabulary Test locking: start warning dialog, disabled
   non-Test mode tabs during the timer, browser leave/back warning, manual
   submit confirmation, time-up auto-submit, and red wrong-question marking

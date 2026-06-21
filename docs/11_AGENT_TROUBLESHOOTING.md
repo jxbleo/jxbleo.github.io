@@ -32,7 +32,7 @@
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
 | 已通过作业后来低分后状态异常 | assignment 状态没有单调保护 | `submitAttempt.statusForPercentage` 和 assignment update |
 | 学生重复点击提交后 attempts 有多条但 assignment summary 不准 | 旧版 `submitAttempt` 用旧 assignment 快照递增更新 | 部署最新版 `submitAttempt`，它会从 linked attempts 重算 summary |
-| Argue 批准后分数提高但 STAR 没出现 | 改判流程没有调用当前 STAR 保护逻辑 | `teacherAdmin.improveDisputedAttempt` |
+| Argue 批准后历史匹配答案没有补分或 STAR 没出现 | 批量向上重算没有扫描到同 set/question/submitted answer，或改判流程没有调用 STAR 保护逻辑 | `teacherAdmin.applyAcceptedAnswerToHistoricalAttempts`、`teacherAdmin.improveAttemptForAcceptedAnswer` |
 | 老师改过答案后再次导入被覆盖 | 本地 `prepare-cloudbase-data.js` 重新生成 `grading_version: "1"` | 需要 grading key reconcile 流程 |
 | BBC 填空输入框后面多出下划线 | 数据里用了 6 个或更多 `_` | 扫描 `data/BBC-*.json` 的 `_{6,}` |
 | Vocabulary 本地直接打开加载失败 | `fetch` 被 file:// 限制，缺 JS fallback 或本地 server | `content/vocabulary/*.js` fallback；用本地 HTTP server |
@@ -157,7 +157,7 @@
 - assignment status 单调：`to_do -> passed -> mastered`。
 - latest attempt 可以低于 passing，但 completed assignment 不能回到 `to_do`。
 - completed / STAR 历史不阻止新 assignment。
-- teacher-originated dispute 没有 `attempt_id` 时仍不能触发 regrade。
+- teacher-originated dispute 没有 `attempt_id` 时，`add`/`replace` 仍会触发匹配历史 attempt 的向上重算。
 
 部署/数据：
 
@@ -403,8 +403,9 @@
 
 - 历史 review 默认不能返回 correct answer / explanation。
 - 老师批准 `add` / `replace` 要更新 private `grading_keys` 并写 `grading_key_history`。
-- 只向上重评 disputed attempt。
-- 不自动重评其他学生历史 attempt。
+- 老师批准 `add` / `replace` 后要扫描同 set 历史 attempts。
+- 只向上重评同 question_id 且 submitted answer 匹配新 accepted answer 的历史 attempt。
+- 不降低任何历史 attempt、assignment 状态或 STAR。
 
 重复问题：
 
@@ -422,7 +423,7 @@
 待注意：
 
 - 新 dispute 要尽量从 practice runtime 传 durable `question_text`。
-- teacher-originated dispute 可以没有 attempt，不得触发学生 regrade。
+- teacher-originated dispute 可以没有 attempt，但 `add`/`replace` 仍应触发匹配历史 attempt 的向上重算。
 
 ### 2026-06-12：Assignment Mastery Model
 
@@ -529,7 +530,7 @@ STAR 不阻止未来重新布置同一个 set。
 4. 学生 profile 异常：先查 Auth user 和 `students.auth_uid`。
 5. 完成/STAR 后不能重布置：这是已知规则冲突，查 `teacherAdmin` 和 `teacher.js`。
 6. 低分重试影响已完成状态：查 assignment 状态单调逻辑。
-7. Argue 批准后没有 STAR：查改判后 STAR 修复。
+7. Argue 批准后没有补历史分或 STAR：查批量向上重算和改判后 STAR 修复。
 8. 新词汇打不开：查 JSON/JS fallback 和 local server。
 9. BBC 输入框下划线异常：查 `_____` 数量。
 10. 修改没生效：查 cache version、GitHub Pages 缓存、CloudBase 函数版本。
