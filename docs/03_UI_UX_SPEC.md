@@ -190,7 +190,7 @@ It should include:
 - matrix filters appear in `Class`, `Column`, `Recent`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, `Recent` defaults to `7` and is a numeric select from 1 through 20, and `Date` offers `This week`, `This month`, or a custom from/to calendar range
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
-- the matrix student column shows only the student name, without Login ID or class
+- the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column
 - clickable matrix cells open a floating dialog with the close button outside
   the detail card underneath it. The dialog shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
@@ -301,6 +301,8 @@ Shared rules:
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
 - Clear removes visible answers, feedback, Explain, Argue, and local blank locks; persistent MC wrong-answer reminders may remain as yellow boxes.
+- The BBC Argue sent/thanks dialog must include a visible Close button in both
+  student mode and teacher preview mode.
 
 ### Vocabulary Test
 

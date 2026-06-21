@@ -2557,9 +2557,16 @@
         var students = allStudents;
         if (!sets.length || !students.length) return '';
         var selectedItem = null;
-        var matrixStyle = '--matrix-cols:' + sets.length + ';--matrix-min:' + (150 + sets.length * 112) + 'px;--matrix-min-mobile:' + (126 + sets.length * 96) + 'px;';
+        var maxStudentNameLength = students.reduce(function(max, student) {
+            return Math.max(max, String(student.name || 'Student').length);
+        }, 7);
+        var studentColCh = Math.max(7, Math.min(18, maxStudentNameLength + 2));
+        var matrixStyle = '--matrix-cols:' + sets.length +
+            ';--matrix-student-col:' + studentColCh + 'ch' +
+            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * 112) + 'px)' +
+            ';--matrix-min-mobile:calc(var(--matrix-student-col) + ' + (sets.length * 96) + 'px)';
         var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span>Student</span>' +
+            '<span class="progress-matrix-student-cell">Student</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 return '<span class="progress-matrix-task-head" title="' + escapeHtml(title) + '">' +
@@ -2570,7 +2577,7 @@
         '</div>';
         var rows = students.map(function(student) {
             return '<div class="progress-matrix-row" style="' + escapeHtml(matrixStyle) + '">' +
-                '<span><strong>' + escapeHtml(student.name) + '</strong></span>' +
+                '<span class="progress-matrix-student-cell"><strong>' + escapeHtml(student.name) + '</strong></span>' +
                 sets.map(function(set) {
                     var item = student.items[set.id];
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';

@@ -2351,7 +2351,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-row {
     display: grid;
-    grid-template-columns: minmax(150px, 1.1fr) repeat(var(--matrix-cols, 6), minmax(78px, .7fr));
+    grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(78px, .7fr));
     width: max(100%, var(--matrix-min, 630px));
     min-width: var(--matrix-min, 630px);
 }
@@ -2378,6 +2378,10 @@ body:not(.teacher-page) .tab-button.active {
     text-transform: uppercase;
 }
 .progress-matrix-head > span:first-child { z-index: 3; }
+.progress-matrix-student-cell {
+    width: var(--matrix-student-col, 10ch);
+    white-space: nowrap;
+}
 .progress-matrix-task-head strong {
     color: var(--ink);
     font-size: 0.72rem;
@@ -4539,7 +4543,7 @@ body:not(.teacher-page) .tab-button.active {
         max-width: none;
     }
     .progress-matrix-row {
-        grid-template-columns: minmax(126px, 1fr) repeat(var(--matrix-cols, 6), minmax(96px, .65fr));
+        grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(96px, .65fr));
         min-width: var(--matrix-min-mobile, 560px);
     }
     .progress-matrix-row > span,

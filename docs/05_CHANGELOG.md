@@ -17,6 +17,8 @@
   height/divider spacing.
 - Changed practice-page return controls from `Home` to confirmed `Back`
   behavior that returns one browser-history page with a dashboard fallback.
+- Tightened the teacher View matrix student-name column so it sizes to the
+  visible names instead of reserving a wide fixed column.
 - Added a front-end Vocabulary Test lock flow: start warning dialog, locked Test
   view while timed work is active, early-submit confirmation, time-up automatic
   submit, and post-result wrong-question marking.
@@ -32,6 +34,8 @@
 - Returned the resolved `assignment_id` from `submitAttempt` so a Library-opened
   assignment submission can keep follow-up answer reveal actions linked to the
   assignment.
+- Added a Close action to the BBC Argue sent/thanks dialog for both student
+  submissions and teacher-preview Argue submissions.
 
 ## 2026-06-20
 
