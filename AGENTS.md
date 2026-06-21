@@ -411,6 +411,13 @@ teacher preview disputes with `attempt_id: null`. Never downgrade historical
 attempts, assignment status, or protected STAR records. If an adjusted attempt
 reaches mastery, create or improve its protected STAR.
 
+The one-time `teacherAdmin.backfillAcceptedAnswerRegrades` action exists for
+old grading-rule changes that happened before automatic Argue regrading. It
+requires an authenticated active teacher session, supports dry-run by default,
+and should be run in bounded batches with `limit` and `cursor`. It compares
+historical wrong answers against current CloudBase `grading_keys` and applies
+the same upward-only attempt, assignment, and STAR repair rules.
+
 Teacher-approved CloudBase grading corrections are authoritative. Future
 content imports must not blindly overwrite revised `grading_keys`; reconcile
 their `grading_version` and `grading_key_history` first.

@@ -177,6 +177,11 @@ linked attempts as a display fallback when an assignment summary is stale.
 6. Assignment summaries are improved but never downgraded.
 7. STAR is created or improved if a regraded attempt reaches mastery.
 
+For older approved grading changes, `teacherAdmin.backfillAcceptedAnswerRegrades`
+can be run by an authenticated teacher in bounded batches. It compares
+historical wrong answers against current `grading_keys`, then applies the same
+upward-only attempt, assignment, and STAR repair logic.
+
 ## 9. Content Pipeline
 
 Public source layers:

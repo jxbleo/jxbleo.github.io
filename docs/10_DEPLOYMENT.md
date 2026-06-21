@@ -131,6 +131,38 @@ INITIAL_STUDENT_PASSWORD=<configured in CloudBase only>
 Never write this value into Git, frontend code, docs, screenshots, or command
 logs.
 
+### TeacherAdmin Historical Regrade Backfill
+
+Deploying `teacherAdmin.zip` does not automatically mutate historical data.
+After deployment, an authenticated teacher may run the bounded backfill from
+`teacher.html` in the browser console. The action compares historical wrong
+answers against current CloudBase `grading_keys` and only improves matching
+attempts; it never lowers scores or revokes STAR records.
+
+Dry run one batch:
+
+```js
+await window.MrCatCloud.callFunction("teacherAdmin", {
+  action: "backfillAcceptedAnswerRegrades",
+  limit: 100,
+  cursor: 0
+});
+```
+
+Apply one batch:
+
+```js
+await window.MrCatCloud.callFunction("teacherAdmin", {
+  action: "backfillAcceptedAnswerRegrades",
+  apply: true,
+  limit: 100,
+  cursor: 0
+});
+```
+
+If the result includes a non-null `next_cursor`, repeat with that value until
+`done` is `true`. Add `set_id: "BBC-YYMMDD"` to limit the repair to one set.
+
 ## 6. Owner-Gated Release Automation
 
 The project uses semi-automated deployment helpers. They prepare release

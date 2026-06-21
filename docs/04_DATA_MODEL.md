@@ -170,6 +170,8 @@ Rules:
 - If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
 - Argue `add`/`replace` may add upward-only adjusted fields to old attempts;
   original submitted answers and raw attempt history remain preserved.
+- The manual `backfillAcceptedAnswerRegrades` action may add the same adjusted
+  fields with `bulk_regrade_source: "grading_key_backfill"`.
 
 ## 7. `grading_keys`
 
@@ -249,6 +251,8 @@ Rules:
   regrading for historical attempts with the same set/question/submitted answer.
 - Historical regrading may improve attempts, assignment summaries, and STAR
   records, but must not lower scores or revoke protected records.
+- Previous grading changes can be repaired with the paginated teacher-only
+  `backfillAcceptedAnswerRegrades` action.
 
 ## 10. `student_vocabulary_items`
 

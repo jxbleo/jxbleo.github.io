@@ -39,6 +39,9 @@
 - Changed teacher Argue `add`/`replace` resolution to automatically scan
   historical attempts for the same set/question/submitted answer and apply
   upward-only score, assignment, and STAR repairs.
+- Added a teacher-only paginated `backfillAcceptedAnswerRegrades` action for
+  repairing historical attempts against current grading keys after older Argue
+  approvals.
 
 ## 2026-06-20
 

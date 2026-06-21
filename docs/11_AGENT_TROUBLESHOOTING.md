@@ -158,12 +158,14 @@
 - latest attempt 可以低于 passing，但 completed assignment 不能回到 `to_do`。
 - completed / STAR 历史不阻止新 assignment。
 - teacher-originated dispute 没有 `attempt_id` 时，`add`/`replace` 仍会触发匹配历史 attempt 的向上重算。
+- 旧的已批准 grading key 变更不会在部署时自动重跑；如需修复历史分数，用教师登录态分页执行
+  `teacherAdmin.backfillAcceptedAnswerRegrades`。
 
 部署/数据：
 
 - 需要部署 `deploy-packages/submitAttempt.zip`、`deploy-packages/getDashboard.zip`、`deploy-packages/teacherAdmin.zip`。
 - 需要发布静态站点，让 `assets/js/teacher.js` 生效。
-- 不需要 CloudBase 数据迁移。
+- 历史 Argue 成绩修复是 owner-gated 数据 backfill，不是部署自动迁移。
 
 ### 2026-06-16：人类可读产品需求文档
 
@@ -406,6 +408,8 @@
 - 老师批准 `add` / `replace` 后要扫描同 set 历史 attempts。
 - 只向上重评同 question_id 且 submitted answer 匹配新 accepted answer 的历史 attempt。
 - 不降低任何历史 attempt、assignment 状态或 STAR。
+- 对早于自动重算功能的旧记录，使用 `backfillAcceptedAnswerRegrades`
+  分批按当前 `grading_keys` 补算。
 
 重复问题：
 
