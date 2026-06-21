@@ -75,6 +75,10 @@ cp .qa-secrets.example .qa-secrets.local
   leave-page confirmation and one-page browser-history return falling back to
   `dashboard.html`. Updated BBC, Vocabulary, IELTS Reading, and IELTS Listening
   practice-session cache versions and verified static checks.
+- Tightened the teacher View matrix's left student-name column so it sizes to
+  the visible names, and added a visible Close button to the BBC Argue
+  sent/thanks dialog for both student and teacher-preview paths. Verified
+  teacher JavaScript syntax, targeted static references, and diff whitespace.
 - Fixed BBC History when a student opens a previously attempted set from
   Library without assignment/history URL context. Added a student-owned
   `getDashboard.getLatestAttemptForSet` lookup, taught `bbc.html` to hydrate
