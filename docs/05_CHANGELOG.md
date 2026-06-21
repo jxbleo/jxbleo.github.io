@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-22
+
+### Fixed
+
+- Fixed BBC History result coloring so server-adjusted correct answers from
+  Argue/backfill clear stale wrong and local lock classes before rendering.
+
 ## 2026-06-21
 
 ### Changed

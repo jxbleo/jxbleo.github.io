@@ -52,6 +52,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-22
+
+- Fixed BBC History coloring after Argue/backfill score adjustments by forcing
+  history rendering to clear stale `wrong`, blank-lock, and MC-lock classes
+  before applying the server-returned `correct`/`wrong` state. Verified release
+  checks and diff whitespace; owner still needs to publish the static site.
+
 ### 2026-06-21
 
 - Moved the student Assignments navigation count badge outside the glass tab so
