@@ -9,6 +9,9 @@
 
 - Fixed BBC History result coloring so server-adjusted correct answers from
   Argue/backfill clear stale wrong and local lock classes before rendering.
+- Fixed teacher bell attempt notifications so retry attempts can open the View
+  matrix detail even when the assignment completion date differs from the
+  clicked attempt date.
 
 ## 2026-06-21
 

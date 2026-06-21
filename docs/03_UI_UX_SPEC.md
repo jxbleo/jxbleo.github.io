@@ -137,7 +137,9 @@ top-right Review entry.
 
 Teacher notification rows are direct links. Clicking a student attempt opens
 `View`, selects the matching matrix cell, and highlights that specific attempt
-inside the matrix detail dialog.
+inside the matrix detail dialog. Matrix date filtering for this route must
+include the clicked attempt's submitted date, even when the assignment summary
+date or first completion date is different.
 
 ### Assign Tab
 
