@@ -390,8 +390,8 @@ student may include an optional reason. Enforce one record per
 Teachers can also submit Argue requests from `teacher=1` practice preview after
 showing answers. Teacher-originated disputes use `requester_role: "teacher"`
 and may have `attempt_id: null`; they are for correcting grading rules, not for
-student score recovery. Resolving a teacher-originated dispute must not call
-attempt regrading logic unless an `attempt_id` is actually present.
+the original practice attempt. Resolving a teacher-originated `add` or
+`replace` still applies the grading-rule change to matching historical attempts.
 
 Teacher decisions are:
 
@@ -403,10 +403,13 @@ Teacher decisions are:
 `grading_version`, and append `grading_key_history`. Do not put corrected
 answers back into public JSON.
 
-Only the disputed attempt is regraded, and only upward. Never automatically
-regrade other students' historical attempts. Future attempts use the new
-grading rule. If the adjusted attempt passes, create or improve its protected
-STAR.
+After `add` or `replace`, `teacherAdmin` automatically scans historical
+attempts for the same `set_id` and same `question_id`; any attempt whose stored
+submitted answer exactly matches the newly accepted answer is regraded upward.
+This applies to student-originated and teacher-originated disputes, including
+teacher preview disputes with `attempt_id: null`. Never downgrade historical
+attempts, assignment status, or protected STAR records. If an adjusted attempt
+reaches mastery, create or improve its protected STAR.
 
 Teacher-approved CloudBase grading corrections are authoritative. Future
 content imports must not blindly overwrite revised `grading_keys`; reconcile
@@ -1250,8 +1253,9 @@ await db.collection("students").add(student);
 - Teacher Argue decisions that add or replace answers must update private
   CloudBase `grading_keys` and append `grading_key_history`; do not write
   corrected answers back into public runtime JSON.
-- Do not automatically regrade all old attempts after an Argue approval unless
-  the owner explicitly asks for a separate manual correction workflow.
+- Teacher Argue decisions that add or replace answers also trigger automatic
+  historical upward regrading for matching same-set, same-question, same-answer
+  attempts. This full recalculation must not lower any score or revoke STAR.
 
 ### STAR and assignment semantics can evolve
 

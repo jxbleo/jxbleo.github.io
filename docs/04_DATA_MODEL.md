@@ -154,6 +154,10 @@ Core fields:
 | `passed` | boolean | this attempt passed |
 | `mastered` | boolean | this attempt mastered |
 | `grading_version` | string | grading key version |
+| `adjusted_question_results` | array | upward-only regraded per-question result |
+| `adjusted_percentage` | number | upward-only regraded score |
+| `adjusted_by_grading_history_id` | string/null | grading rule change that caused the adjustment |
+| `bulk_regrade_source` | string/null | student/teacher Argue source for historical adjustment |
 | `submitted_at` | Date | submit time |
 | `practice_context` | string | `assignment` or `resource` |
 
@@ -164,6 +168,8 @@ Rules:
 - Failed attempts are still stored.
 - Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.
 - If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
+- Argue `add`/`replace` may add upward-only adjusted fields to old attempts;
+  original submitted answers and raw attempt history remain preserved.
 
 ## 7. `grading_keys`
 
@@ -231,13 +237,18 @@ Core fields:
 | `status` | string | `pending`, `approved`, `rejected` |
 | `decision` | string/null | `keep`, `add`, `replace` |
 | `teacher_note` | string | teacher reply |
+| `auto_regrade_scanned_attempt_count` | number | attempts scanned after `add`/`replace` |
+| `auto_regrade_adjusted_attempt_count` | number | attempts improved after `add`/`replace` |
 
 Rules:
 
 - One student dispute per `attempt_id + question_id`.
 - Only wrong recorded questions can be disputed by students.
 - Teacher-originated disputes may have no `attempt_id`.
-- No-attempt disputes update future grading only.
+- `add` and `replace` update future grading and also trigger automatic upward
+  regrading for historical attempts with the same set/question/submitted answer.
+- Historical regrading may improve attempts, assignment summaries, and STAR
+  records, but must not lower scores or revoke protected records.
 
 ## 10. `student_vocabulary_items`
 

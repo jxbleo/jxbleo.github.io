@@ -407,7 +407,8 @@ flowchart TD
 - 同一个 `attempt_id + question_id` 只能争议一次
 - 老师预览也可以发起 teacher-originated dispute
 - teacher-originated dispute 可以没有 `attempt_id`
-- 没有 `attempt_id` 的 dispute 只能改未来评分规则，不能触发学生 attempt regrade
+- `add` / `replace` 会改未来评分规则，也会自动向上重算同一 set、同一题、同一提交答案的历史 attempt
+- 自动重算不能降分、不能撤销 assignment 完成状态或 STAR
 
 ### 7.8 grading_key_history
 
@@ -417,6 +418,7 @@ flowchart TD
 
 - `add` 或 `replace` 答案时必须写入
 - 记录修改前、修改后、老师 UID、dispute ID、版本变化
+- 记录自动重算的范围、扫描 attempt 数和实际调整 attempt 数
 - 不能公开
 - 不能随意删除
 
@@ -689,15 +691,16 @@ flowchart TD
   E -->|replace| H["替换未来正确答案"]
   G --> I["更新 grading_keys + 写 history"]
   H --> I
-  I --> J{"是否有关联 attempt?"}
-  J -->|有| K["只向上重算该 attempt"]
-  J -->|无| L["只影响未来评分"]
-  K --> M["如达到 passing/mastery，更新 assignment / STAR"]
+  I --> J["扫描同 set 历史 attempts"]
+  J --> K["匹配同题 + 同提交答案"]
+  K --> L["只向上重算匹配 attempt"]
+  L --> M["如达到 passing/mastery，更新 assignment / STAR"]
 ```
 
 要求：
 
-- 不自动重评其他学生历史 attempt
+- 自动重算覆盖学生 Argue 和老师预览 Argue
+- 只重算同 set、同 question_id、同 submitted answer 的历史 attempt
 - 不降低任何历史 attempt
 - 老师批准后的 grading key 是未来评分权威
 - 学生端 Dashboard reply 是临时提醒，原题 Argue 状态才是永久查看入口
@@ -794,7 +797,7 @@ due date、passing percentage 和 mastery percentage。修改后的标准用于�
 当前源码目标：
 
 - 改判向上后，如果达到 mastery，必须创建或修复 STAR
-- teacher-originated dispute 无 attempt 时不能触发 regrade
+- teacher-originated dispute 即使没有 `attempt_id`，`add`/`replace` 后也要扫描并向上重算匹配历史 attempt
 
 ### P1：学生函数统一 role guard（部分源码已修复，待 shared 化）
 

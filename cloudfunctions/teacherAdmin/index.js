@@ -1184,6 +1184,8 @@ async function listDisputes() {
         status: dispute.status || "pending",
         decision: dispute.decision || null,
         teacher_note: dispute.teacher_note || "",
+        auto_regrade_scanned_attempt_count: Number(dispute.auto_regrade_scanned_attempt_count || 0),
+        auto_regrade_adjusted_attempt_count: Number(dispute.auto_regrade_adjusted_attempt_count || 0),
         created_at: dispute.created_at || null,
         updated_at: dispute.updated_at || null,
         resolved_at: dispute.resolved_at || null,
@@ -1204,14 +1206,25 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     student_uid: dispute.student_uid,
   });
   if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  return await improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, {
+    source: "dispute",
+    gradingHistoryId: dispute.grading_history_id || null,
+  });
+}
+
+async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, options = {}) {
   const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
   const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
-  if (!target) throw new Error("QUESTION_RESULT_NOT_FOUND");
+  if (!target) return null;
   if (target.correct === true) return attempt;
+  if (normalized(target.submitted_answer) !== normalized(dispute.submitted_answer)) return null;
 
   target.correct = true;
+  target.correct_answer = dispute.submitted_answer;
   target.dispute_adjusted = true;
   target.dispute_id = dispute.dispute_id || dispute._id;
+  target.bulk_regrade_source = options.source || "grading_rule_change";
+  target.grading_history_id = options.gradingHistoryId || null;
   const correctCount = currentResults.filter((item) => item.correct === true).length;
   const questionCount = Number(attempt.question_count || currentResults.length);
   const recalculated = questionCount
@@ -1239,6 +1252,8 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
     adjusted_by_dispute_id: dispute.dispute_id || dispute._id,
     adjusted_by_teacher_uid: teacher.auth_uid,
     adjusted_grading_version: gradingVersion,
+    adjusted_by_grading_history_id: options.gradingHistoryId || null,
+    bulk_regrade_source: options.source || "grading_rule_change",
     adjusted_at: now,
   };
   await db.collection("attempts").doc(attempt._id).update(update);
@@ -1302,6 +1317,31 @@ async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
   return adjustedAttempt;
 }
 
+async function applyAcceptedAnswerToHistoricalAttempts(dispute, teacher, now, gradingVersion, gradingHistoryId) {
+  const attempts = await getAll("attempts", {
+    where: { set_id: dispute.set_id },
+  });
+  let adjusted = 0;
+  for (const attempt of attempts) {
+    const result = await improveAttemptForAcceptedAnswer(
+      attempt,
+      dispute,
+      teacher,
+      now,
+      gradingVersion,
+      {
+        source: dispute.requester_role === "teacher" ? "teacher_rule_change" : "student_argue_rule_change",
+        gradingHistoryId,
+      }
+    );
+    if (result && result !== attempt) adjusted += 1;
+  }
+  return {
+    scanned_attempt_count: attempts.length,
+    adjusted_attempt_count: adjusted,
+  };
+}
+
 async function resolveDispute(event, teacher) {
   const disputeId = text(event.dispute_id);
   const decision = text(event.decision);
@@ -1342,6 +1382,7 @@ async function resolveDispute(event, teacher) {
       grading_version_after: newVersion,
       changed_by_teacher_uid: teacher.auth_uid,
       changed_at: now,
+      auto_regrade_scope: "matching_historical_attempts",
       applied: false,
     };
     const historyAdd = await db.collection("grading_key_history").add(historyRecord);
@@ -1356,10 +1397,24 @@ async function resolveDispute(event, teacher) {
         applied_at: now,
       });
     }
-    if (dispute.attempt_id) {
-      await improveDisputedAttempt(dispute, teacher, now, newVersion);
+    const regradeResult = await applyAcceptedAnswerToHistoricalAttempts(
+      dispute,
+      teacher,
+      now,
+      newVersion,
+      historyRecord.history_id
+    );
+    if (historyAdd && historyAdd.id) {
+      await db.collection("grading_key_history").doc(historyAdd.id).update({
+        auto_regrade_applied: true,
+        auto_regrade_applied_at: now,
+        auto_regrade_scanned_attempt_count: regradeResult.scanned_attempt_count,
+        auto_regrade_adjusted_attempt_count: regradeResult.adjusted_attempt_count,
+      });
     }
     dispute.grading_version_after = newVersion;
+    dispute.auto_regrade_scanned_attempt_count = regradeResult.scanned_attempt_count;
+    dispute.auto_regrade_adjusted_attempt_count = regradeResult.adjusted_attempt_count;
   }
 
   await db.collection("answer_disputes").doc(dispute._id).update({
@@ -1368,6 +1423,8 @@ async function resolveDispute(event, teacher) {
     teacher_note: teacherNote,
     resolved_by_teacher_uid: teacher.auth_uid,
     grading_version_after: dispute.grading_version_after || null,
+    auto_regrade_scanned_attempt_count: dispute.auto_regrade_scanned_attempt_count || 0,
+    auto_regrade_adjusted_attempt_count: dispute.auto_regrade_adjusted_attempt_count || 0,
     student_seen: false,
     student_seen_at: null,
     resolved_at: now,
