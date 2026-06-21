@@ -702,6 +702,7 @@ flowchart TD
 - 自动重算覆盖学生 Argue 和老师预览 Argue
 - 只重算同 set、同 question_id、同 submitted answer 的历史 attempt
 - 不降低任何历史 attempt
+- 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
 - 学生端 Dashboard reply 是临时提醒，原题 Argue 状态才是永久查看入口
 

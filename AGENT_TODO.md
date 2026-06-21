@@ -89,6 +89,10 @@ cp .qa-secrets.example .qa-secrets.local
   attempts can now improve assignment summaries and STAR records. Verified
   backend syntax and release checks; owner still needs to deploy
   `teacherAdmin.zip`.
+- Added the teacher-only paginated `backfillAcceptedAnswerRegrades` action for
+  older approved grading-key changes. It can dry-run or apply current-key
+  upward repairs in batches and still requires owner-triggered deployment plus
+  authenticated teacher execution.
 - Added front-end-only Vocabulary Test locking: start warning dialog, disabled
   non-Test mode tabs during the timer, browser leave/back warning, manual
   submit confirmation, time-up auto-submit, and red wrong-question marking

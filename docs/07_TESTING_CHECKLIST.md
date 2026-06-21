@@ -124,6 +124,7 @@ Check:
 - approved `add`/`replace` scans historical attempts and only improves matching same-set/same-question/same-answer records
 - approved dispute can create or repair STAR
 - teacher-originated `add`/`replace` with no `attempt_id` still triggers matching historical upward regrade
+- `backfillAcceptedAnswerRegrades` dry run reports matching attempts without writes, and apply mode improves only matching historical answers
 
 ## 6. Visitor Flow Checklist
 

@@ -54,6 +54,16 @@ async function getAll(collection, options = {}) {
   return output;
 }
 
+async function getPage(collection, options = {}) {
+  const pageSize = Math.min(Math.max(Number(options.limit || READ_PAGE_LIMIT), 1), READ_PAGE_LIMIT);
+  const offset = Math.max(Number(options.offset || 0), 0);
+  let query = db.collection(collection);
+  if (options.where) query = query.where(options.where);
+  if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
+  const result = await query.skip(offset).limit(pageSize).get();
+  return result.data || [];
+}
+
 function normalized(value) {
   return text(value).toLowerCase().replace(/\s+/g, " ");
 }
@@ -61,6 +71,12 @@ function normalized(value) {
 function answerList(value) {
   return (Array.isArray(value) ? value : [value])
     .filter((item) => item != null && text(item));
+}
+
+function matchingAcceptedAnswer(submitted, expected) {
+  const submittedValue = normalized(submitted);
+  if (!submittedValue) return null;
+  return answerList(expected).find((answer) => normalized(answer) === submittedValue) || null;
 }
 
 function nextGradingVersion(value) {
@@ -1200,31 +1216,7 @@ async function listDisputes() {
   };
 }
 
-async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
-  const attempt = await getOne("attempts", {
-    attempt_id: dispute.attempt_id,
-    student_uid: dispute.student_uid,
-  });
-  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
-  return await improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, {
-    source: "dispute",
-    gradingHistoryId: dispute.grading_history_id || null,
-  });
-}
-
-async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, options = {}) {
-  const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
-  const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
-  if (!target) return null;
-  if (target.correct === true) return attempt;
-  if (normalized(target.submitted_answer) !== normalized(dispute.submitted_answer)) return null;
-
-  target.correct = true;
-  target.correct_answer = dispute.submitted_answer;
-  target.dispute_adjusted = true;
-  target.dispute_id = dispute.dispute_id || dispute._id;
-  target.bulk_regrade_source = options.source || "grading_rule_change";
-  target.grading_history_id = options.gradingHistoryId || null;
+function buildAttemptAdjustmentUpdate(attempt, currentResults, teacher, now, gradingVersion, options = {}) {
   const correctCount = currentResults.filter((item) => item.correct === true).length;
   const questionCount = Number(attempt.question_count || currentResults.length);
   const recalculated = questionCount
@@ -1249,16 +1241,17 @@ async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, g
     adjusted_percentage: percentage,
     adjusted_passed: passed,
     adjusted_mastered: mastered,
-    adjusted_by_dispute_id: dispute.dispute_id || dispute._id,
     adjusted_by_teacher_uid: teacher.auth_uid,
     adjusted_grading_version: gradingVersion,
-    adjusted_by_grading_history_id: options.gradingHistoryId || null,
+    adjusted_by_grading_history_id: options.gradingHistoryId || attempt.adjusted_by_grading_history_id || null,
     bulk_regrade_source: options.source || "grading_rule_change",
     adjusted_at: now,
   };
-  await db.collection("attempts").doc(attempt._id).update(update);
-  const adjustedAttempt = { ...attempt, ...update };
+  if (options.disputeId) update.adjusted_by_dispute_id = options.disputeId;
+  return { update, correctCount, questionCount, percentage, passed, mastered };
+}
 
+async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCount, questionCount, percentage, passed, mastered, now) {
   if (attempt.assignment_id) {
     const assignment = await getOne("assignments", {
       assignment_id: attempt.assignment_id,
@@ -1313,6 +1306,51 @@ async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, g
     });
     await protectSelfStudyStar(student, adjustedAttempt, now);
   }
+}
+
+async function improveDisputedAttempt(dispute, teacher, now, gradingVersion) {
+  const attempt = await getOne("attempts", {
+    attempt_id: dispute.attempt_id,
+    student_uid: dispute.student_uid,
+  });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  return await improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, {
+    source: "dispute",
+    gradingHistoryId: dispute.grading_history_id || null,
+  });
+}
+
+async function improveAttemptForAcceptedAnswer(attempt, dispute, teacher, now, gradingVersion, options = {}) {
+  const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
+  const target = currentResults.find((item) => String(item.question_id) === dispute.question_id);
+  if (!target) return null;
+  if (target.correct === true) return attempt;
+  if (normalized(target.submitted_answer) !== normalized(dispute.submitted_answer)) return null;
+
+  target.correct = true;
+  target.correct_answer = dispute.submitted_answer;
+  target.dispute_adjusted = true;
+  target.dispute_id = dispute.dispute_id || dispute._id;
+  target.bulk_regrade_source = options.source || "grading_rule_change";
+  target.grading_history_id = options.gradingHistoryId || null;
+  const adjustment = buildAttemptAdjustmentUpdate(attempt, currentResults, teacher, now, gradingVersion, {
+    disputeId: dispute.dispute_id || dispute._id,
+    gradingHistoryId: options.gradingHistoryId || null,
+    source: options.source || "grading_rule_change",
+  });
+  const { update, correctCount, questionCount, percentage, passed, mastered } = adjustment;
+  await db.collection("attempts").doc(attempt._id).update(update);
+  const adjustedAttempt = { ...attempt, ...update };
+  await applyAdjustedAttemptEffects(
+    attempt,
+    adjustedAttempt,
+    correctCount,
+    questionCount,
+    percentage,
+    passed,
+    mastered,
+    now
+  );
 
   return adjustedAttempt;
 }
@@ -1339,6 +1377,133 @@ async function applyAcceptedAnswerToHistoricalAttempts(dispute, teacher, now, gr
   return {
     scanned_attempt_count: attempts.length,
     adjusted_attempt_count: adjusted,
+  };
+}
+
+async function improveAttemptForCurrentGradingKey(attempt, gradingKey, teacher, now, options = {}) {
+  const answers = gradingKey && gradingKey.answers && typeof gradingKey.answers === "object"
+    ? gradingKey.answers
+    : null;
+  if (!answers) return { matched: false, adjusted: false, adjusted_question_count: 0 };
+
+  const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
+  let adjustedQuestionCount = 0;
+  for (const item of currentResults) {
+    const questionId = String(item.question_id || item.id || "");
+    if (!questionId || item.correct === true) continue;
+    if (!Object.prototype.hasOwnProperty.call(answers, questionId)) continue;
+    const acceptedAnswer = matchingAcceptedAnswer(item.submitted_answer, answers[questionId]);
+    if (acceptedAnswer == null) continue;
+    item.correct = true;
+    item.correct_answer = acceptedAnswer;
+    item.backfill_adjusted = true;
+    item.bulk_regrade_source = "grading_key_backfill";
+    item.grading_version = gradingKey.grading_version || null;
+    adjustedQuestionCount += 1;
+  }
+
+  if (!adjustedQuestionCount) {
+    return { matched: false, adjusted: false, adjusted_question_count: 0 };
+  }
+
+  const adjustment = buildAttemptAdjustmentUpdate(
+    attempt,
+    currentResults,
+    teacher,
+    now,
+    gradingKey.grading_version || attempt.grading_version || null,
+    { source: "grading_key_backfill" }
+  );
+  const { update, correctCount, questionCount, percentage, passed, mastered } = adjustment;
+  if (options.dryRun) {
+    return {
+      matched: true,
+      adjusted: false,
+      adjusted_question_count: adjustedQuestionCount,
+      adjusted_percentage: percentage,
+    };
+  }
+
+  await db.collection("attempts").doc(attempt._id).update(update);
+  const adjustedAttempt = { ...attempt, ...update };
+  await applyAdjustedAttemptEffects(
+    attempt,
+    adjustedAttempt,
+    correctCount,
+    questionCount,
+    percentage,
+    passed,
+    mastered,
+    now
+  );
+  return {
+    matched: true,
+    adjusted: true,
+    adjusted_question_count: adjustedQuestionCount,
+    adjusted_percentage: percentage,
+  };
+}
+
+async function backfillAcceptedAnswerRegrades(event, teacher) {
+  const apply = event.apply === true || ["1", "true", "yes"].includes(text(event.apply).toLowerCase());
+  const cursor = Math.max(Number.parseInt(text(event.cursor) || "0", 10) || 0, 0);
+  const requestedLimit = Number.parseInt(text(event.limit) || "100", 10) || 100;
+  const limit = Math.min(Math.max(requestedLimit, 1), 200);
+  const setId = text(event.set_id);
+  const now = new Date();
+  const [attempts, gradingKeys] = await Promise.all([
+    getPage("attempts", {
+      where: setId ? { set_id: setId } : null,
+      orderBy: { field: "submitted_at", direction: "asc" },
+      offset: cursor,
+      limit,
+    }),
+    getAll("grading_keys"),
+  ]);
+  const gradingKeyMap = new Map(gradingKeys.map((item) => [item.set_id, item]));
+  let scannedQuestionCount = 0;
+  let missingGradingKeyAttemptCount = 0;
+  let matchingAttemptCount = 0;
+  let matchingQuestionCount = 0;
+  const sampleAdjustedAttemptIds = [];
+
+  for (const attempt of attempts) {
+    scannedQuestionCount += effectiveQuestionResults(attempt).length;
+    const gradingKey = gradingKeyMap.get(attempt.set_id);
+    if (!gradingKey) {
+      missingGradingKeyAttemptCount += 1;
+      continue;
+    }
+    const result = await improveAttemptForCurrentGradingKey(attempt, gradingKey, teacher, now, {
+      dryRun: !apply,
+    });
+    if (!result.matched) continue;
+    matchingAttemptCount += 1;
+    matchingQuestionCount += result.adjusted_question_count;
+    if (sampleAdjustedAttemptIds.length < 20) {
+      sampleAdjustedAttemptIds.push(attempt.attempt_id || attempt._id);
+    }
+  }
+
+  const nextCursor = attempts.length === limit ? cursor + attempts.length : null;
+  return {
+    success: true,
+    action: "backfillAcceptedAnswerRegrades",
+    dry_run: !apply,
+    apply,
+    set_id: setId || null,
+    cursor,
+    limit,
+    next_cursor: nextCursor,
+    done: nextCursor == null,
+    scanned_attempt_count: attempts.length,
+    scanned_question_count: scannedQuestionCount,
+    missing_grading_key_attempt_count: missingGradingKeyAttemptCount,
+    matching_attempt_count: matchingAttemptCount,
+    matching_question_count: matchingQuestionCount,
+    adjusted_attempt_count: apply ? matchingAttemptCount : 0,
+    adjusted_question_count: apply ? matchingQuestionCount : 0,
+    sample_adjusted_attempt_ids: sampleAdjustedAttemptIds,
   };
 }
 
@@ -1454,6 +1619,7 @@ exports.main = async (event) => {
     if (action === "listDisputes") return await listDisputes();
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);
+    if (action === "backfillAcceptedAnswerRegrades") return await backfillAcceptedAnswerRegrades(event, teacher);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     console.error("teacherAdmin failed", error);
