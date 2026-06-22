@@ -105,9 +105,14 @@ function recordData(record) {
 }
 
 function normalizedAssignmentStatus(status) {
+  if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
   if (status === "passed" || status === "done") return "passed";
   return "to_do";
+}
+
+function isOpenAssignmentStatus(status) {
+  return ["not_done", "failed", "to_do"].includes(status || "to_do");
 }
 
 function assignmentMasteryLocked(assignment) {
@@ -142,6 +147,7 @@ function statusRank(status) {
 }
 
 function monotonicAssignmentStatus(currentStatus, attemptStatus) {
+  if (normalizedAssignmentStatus(currentStatus) === "cancelled") return "cancelled";
   return statusRank(currentStatus) > statusRank(attemptStatus)
     ? normalizedAssignmentStatus(currentStatus)
     : normalizedAssignmentStatus(attemptStatus);
@@ -547,7 +553,7 @@ async function listSets() {
 
 function getAssignmentState(assignments) {
   const open = assignments.find((assignment) =>
-    ["not_done", "failed", "to_do"].includes(assignment.status)
+    isOpenAssignmentStatus(assignment.status)
   );
   if (open) {
     return {
@@ -751,8 +757,16 @@ async function updateAssignments(event, teacher) {
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
   const missing = assignmentIds.filter((id) => !foundIds.has(id));
   const updated = [];
+  const skipped = [];
 
   for (const assignment of assignments) {
+    if (normalizedAssignmentStatus(assignment.status) === "cancelled") {
+      skipped.push({
+        assignment_id: assignment.assignment_id || assignment._id,
+        reason: "cancelled",
+      });
+      continue;
+    }
     const currentPassing = Number(assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
     const currentMastery = Number(assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
     const passing = canUpdatePassing
@@ -780,7 +794,56 @@ async function updateAssignments(event, teacher) {
     });
   }
 
-  return { success: true, updated, missing };
+  return { success: true, updated, missing, skipped };
+}
+
+async function cancelAssignments(event, teacher) {
+  const assignmentIds = Array.isArray(event.assignment_ids)
+    ? [...new Set(event.assignment_ids.map(text).filter(Boolean))]
+    : [text(event.assignment_id)].filter(Boolean);
+  if (!assignmentIds.length) throw new Error("ASSIGNMENT_REQUIRED");
+  if (assignmentIds.length > 500) throw new Error("TOO_MANY_ASSIGNMENTS");
+
+  const now = new Date();
+  const reason = text(event.reason).slice(0, 500);
+  const assignments = [];
+  for (const assignmentId of assignmentIds) {
+    const assignment = await getOne("assignments", { assignment_id: assignmentId });
+    if (assignment) assignments.push(recordData(assignment));
+  }
+  const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
+  const missing = assignmentIds.filter((id) => !foundIds.has(id));
+  const cancelled = [];
+  const skipped = [];
+
+  for (const assignment of assignments) {
+    const assignmentId = assignment.assignment_id || assignment._id;
+    const status = normalizedAssignmentStatus(assignment.status);
+    if (status === "cancelled") {
+      skipped.push({ assignment_id: assignmentId, reason: "already_cancelled" });
+      continue;
+    }
+    if (!isOpenAssignmentStatus(assignment.status)) {
+      skipped.push({ assignment_id: assignmentId, reason: "completed" });
+      continue;
+    }
+    const update = {
+      status: "cancelled",
+      previous_status: assignment.status || "to_do",
+      cancelled_at: assignment.cancelled_at || now,
+      cancelled_by_teacher_uid: teacher.auth_uid,
+      updated_at: now,
+    };
+    if (reason) update.cancel_reason = reason;
+    await db.collection("assignments").doc(assignment._id).update(update);
+    cancelled.push({
+      assignment_id: assignmentId,
+      student_uid: assignment.student_uid,
+      set_id: assignment.set_id,
+    });
+  }
+
+  return { success: true, cancelled, skipped, missing };
 }
 
 async function getAnswerKeyForSet(event) {
@@ -837,6 +900,10 @@ async function listAssignments() {
         answer_revealed_at: assignment.answer_revealed_at || null,
         mastery_locked: assignment.mastery_locked === true,
         completed_at: assignment.completed_at || null,
+        cancelled_at: assignment.cancelled_at || null,
+        cancelled_by_teacher_uid: assignment.cancelled_by_teacher_uid || null,
+        cancel_reason: assignment.cancel_reason || "",
+        previous_status: assignment.previous_status || null,
         updated_at: assignment.updated_at || null,
       };
     }).sort((a, b) => new Date(b.assigned_at || 0) - new Date(a.assigned_at || 0)),
@@ -961,6 +1028,10 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     answer_revealed_at: assignment.answer_revealed_at || null,
     mastery_locked: assignment.mastery_locked === true,
     completed_at: completedAt || null,
+    cancelled_at: assignment.cancelled_at || null,
+    cancelled_by_teacher_uid: assignment.cancelled_by_teacher_uid || null,
+    cancel_reason: assignment.cancel_reason || "",
+    previous_status: assignment.previous_status || null,
     updated_at: assignment.updated_at || null,
     latest_submitted_at: latestDateValue(orderedAttempts, "submitted_at"),
     attempts: orderedAttempts,
@@ -1258,6 +1329,7 @@ async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCoun
       student_uid: attempt.student_uid,
     });
     if (assignment) {
+      if (normalizedAssignmentStatus(assignment.status) === "cancelled") return;
       const set = await getOne("sets", { set_id: attempt.set_id });
       const effectiveMasteryPercentage = Number(assignment.mastery_percentage != null
         ? assignment.mastery_percentage
@@ -1610,6 +1682,7 @@ exports.main = async (event) => {
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
     if (action === "createAssignments") return await createAssignments(event);
     if (action === "updateAssignments") return await updateAssignments(event, teacher);
+    if (action === "cancelAssignments") return await cancelAssignments(event, teacher);
     if (action === "getAnswerKeyForSet") return await getAnswerKeyForSet(event);
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();

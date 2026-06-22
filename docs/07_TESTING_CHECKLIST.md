@@ -68,6 +68,10 @@ Check:
 - student opens the same assigned set from Library, submits, and the backend records it against the open assignment
 - BBC History works when the student opens a previously attempted set from
   Library without `history` or `assignment` URL parameters
+- cancelled assigned work no longer appears in student To Do or Finished
+- an old cancelled `assignment_id` URL cannot record a new assignment attempt
+- prior attempts for a cancelled assignment remain visible through set-level
+  History when the student opens the same set from Library
 - student submits wrong/low score
 - attempt is stored
 - assignment remains or becomes `to_do`
@@ -117,8 +121,11 @@ Check:
   students beyond the first dozen sorted rows
 - View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open single-assignment detail
-- editing due/pass/mastery in View updates the intended student/class/task assignment scope only
+- editing due/pass/mastery in View updates only the selected assignment records
 - Argue list loads and groups disputes
+- cancelling open selected assignments in View hides them from student To Do,
+  preserves old attempts, skips completed/mastered assignments, and allows the
+  same set to be reassigned later
 - resolving `keep` does not alter grading key
 - resolving `add`/`replace` updates grading key and history
 - approved `add`/`replace` scans historical attempts and only improves matching same-set/same-question/same-answer records

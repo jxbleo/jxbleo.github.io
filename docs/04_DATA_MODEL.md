@@ -89,7 +89,7 @@ Core fields:
 | `assignment_id` | string | unique assignment instance |
 | `student_uid` | string | owner `students.auth_uid` |
 | `set_id` | string | assigned set |
-| `status` | string | `to_do`, `passed`, `mastered` |
+| `status` | string | `to_do`, `passed`, `mastered`, `cancelled` |
 | `assigned_at` | Date | assignment time |
 | `due_at` | Date/null | due time |
 | `passing_percentage` | number | assignment passing threshold |
@@ -106,6 +106,10 @@ Core fields:
 | `mastery_locked` | boolean | mastery blocked after reveal |
 | `completed_at` | Date/null | first passed time |
 | `mastered_at` | Date/null | first mastered time |
+| `cancelled_at` | Date/null | teacher cancellation time |
+| `cancelled_by_teacher_uid` | string/null | teacher who cancelled the assignment |
+| `cancel_reason` | string | optional cancellation note |
+| `previous_status` | string/null | status before cancellation |
 
 Status rule:
 
@@ -126,10 +130,18 @@ Teachers may edit an existing assignment's `due_at`, `passing_percentage`, and
 submissions and display standards, but do not automatically regrade historical
 attempts or downgrade completed assignments and protected STAR records.
 
+Teachers may cancel selected open assignments by `assignment_id`. Cancellation
+is a soft state change to `status: "cancelled"`, never a delete. Cancelled
+assignments are hidden from the student dashboard and rejected by
+`submitAttempt`, but old attempts remain immutable history and can still be
+found through set-level History. Completed `passed` / `mastered` assignments
+and protected STAR records are skipped by normal cancellation.
+
 Reassignment rule:
 
 - Open assignment (`to_do`, legacy `not_done`, legacy `failed`) blocks duplicate assignment.
 - Completed history (`passed`, `mastered`, legacy `done`) does not block future reassignment.
+- Cancelled history (`cancelled`) does not block future reassignment.
 - Reassignment creates a new `assignment_id`.
 
 ## 6. `attempts`

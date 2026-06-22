@@ -292,10 +292,24 @@ For the same student and `set_id`:
 - existing `not_done`, `failed`, or `to_do`: `in_progress`, not selectable
 - previous `done`, `passed`, or `mastered`: `completed`, visibly marked but
   selectable for reassignment
+- previous `cancelled`: available for reassignment and not treated as open
 
 The server revalidates this. A duplicate open assignment is skipped even if
 the browser sends it. Reassignment after completion creates a new assignment
 and preserves the old one.
+
+Teachers can edit selected assignment records after assignment by explicit
+`assignment_id` selections. This is assignment-level editing, not a separate
+class-standard layer. Editing may change `due_at`, `passing_percentage`, and
+`mastery_percentage`.
+
+Teachers can soft-cancel selected open assignments. Cancellation sets
+`status: "cancelled"` plus audit fields such as `cancelled_at` and
+`cancelled_by_teacher_uid`; never hard-delete assignment records. Cancelled
+assignments are hidden from the student dashboard, rejected by `submitAttempt`
+when an old assignment URL is used, and do not block future reassignment.
+Completed `passed` / `mastered` assignments and protected STAR records must not
+be revoked by normal cancellation.
 
 `failed` remains the same open assignment. `Try Again` creates another attempt,
 not another assignment.
@@ -335,8 +349,10 @@ percentage >= passing_percentage
 Countable submissions update the linked assignment with `to_do`, `passed`, or
 `mastered`. Assignment status is monotonic: once an assignment is `passed`, a
 later lower-scoring attempt must not move it back to `to_do`; once it is
-`mastered`, normal code must not downgrade it. Still store every later attempt
-and update latest/best summaries separately.
+`mastered`, normal code must not downgrade it. `cancelled` is a terminal soft
+withdrawal state for open assignments and should not be revived by normal
+submission or regrade flows. Still store every later valid attempt and update
+latest/best summaries separately.
 
 Every countable attempt is immutable history and includes score, pass state,
 answers, per-question results, attempt number, grading version, timing, and

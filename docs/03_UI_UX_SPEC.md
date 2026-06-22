@@ -214,7 +214,14 @@ It should include:
 - a grouped `By student` / `By class` / `By task` progress view
 - `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
 - `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail
-- group tools allow teachers to edit due date, passing percentage, and mastery percentage for the assignments in that student, class, or task scope
+- matrix detail and group tools allow teachers to manage the selected
+  assignment records directly. A single matrix cell edits one student's one
+  assignment; grouped tools edit the assignment records currently represented
+  by that student, class, or task group.
+- assignment management can edit due date, passing percentage, and mastery
+  percentage, or soft-cancel open selected assignments. Cancellation is shown
+  as a quiet grey state in teacher progress views; it removes the task from the
+  student's To Do without deleting attempts or completed history.
 - student selection and student detail panels
 - student account management actions such as class/system edit, password reset, enable/disable, and account creation
 

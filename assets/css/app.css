@@ -2467,6 +2467,14 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: none;
     text-shadow: none;
 }
+.progress-matrix-cell.cancelled {
+    color: #66736f;
+    background: #eef3f1;
+}
+.progress-matrix-cell.cancelled .progress-matrix-status-icon {
+    color: #66736f;
+    background: #dce5e1;
+}
 .progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
 .progress-matrix-cell.empty { color: #a8b5b1; background: rgba(255,255,255,0.42); }
 .progress-matrix-detail {
@@ -2602,6 +2610,10 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-score-lock strong {
     color: inherit;
     font-variant-numeric: tabular-nums;
+}
+.matrix-detail-pill.cancelled {
+    color: #66736f;
+    background: #eef3f1;
 }
 .matrix-attempt-bars {
     display: grid;
@@ -2909,6 +2921,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .group-mini-cell.passed { background: #e3f4fb; }
 .group-mini-cell.mastered { background: var(--success-soft); }
+.group-mini-cell.cancelled { background: #eef3f1; }
 .assignment-progress-groups {
     display: grid;
     gap: 10px;
@@ -3043,6 +3056,35 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-edit-form .dialog-actions {
     grid-column: 1 / -1;
 }
+.assignment-danger-zone {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 13px;
+    border: 1px solid rgba(220,38,38,0.16);
+    border-radius: 14px;
+    background: rgba(254,242,242,0.82);
+}
+.assignment-danger-zone strong {
+    display: block;
+    color: var(--danger);
+    font-size: 0.84rem;
+    font-weight: 950;
+}
+.assignment-danger-zone p {
+    margin: 4px 0 0;
+    color: #8a4b4b;
+    font-size: 0.76rem;
+    font-weight: 750;
+    line-height: 1.4;
+}
+.danger-button {
+    border-color: rgba(220,38,38,0.24);
+    color: var(--danger);
+    background: #fff;
+}
 .assignment-table {
     display: grid;
     overflow: hidden;
@@ -3104,6 +3146,7 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-status-pill.to_do { color: #7a5528; background: #fff1da; }
 .assignment-status-pill.passed,
 .assignment-status-pill.mastered { color: var(--success); background: var(--success-soft); }
+.assignment-status-pill.cancelled { color: #66736f; background: #eef3f1; }
 .assignment-alert-pill.ok { color: var(--success); background: var(--success-soft); }
 .assignment-alert-pill.watch { color: #7a5528; background: #fff1da; }
 .assignment-alert-pill.danger { color: var(--danger); background: var(--danger-soft); }
@@ -4624,6 +4667,7 @@ body:not(.teacher-page) .tab-button.active {
     .assignment-edit-button { width: 100%; }
     .assignment-edit-dialog { padding: 22px 18px; }
     .assignment-edit-form { grid-template-columns: 1fr; }
+    .assignment-danger-zone { grid-template-columns: 1fr; }
     .attempt-detail-head,
     .latest-answer-head {
         flex-direction: column;
