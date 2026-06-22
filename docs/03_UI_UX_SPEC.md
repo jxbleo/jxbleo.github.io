@@ -205,8 +205,9 @@ It should include:
   viewed; once answers have been viewed and locked, it adds a lock icon beside
   the best score.
 - matrix cells use icon-plus-score status treatment: `Not yet` stays white
-  with a neutral hollow circle, while both passed states are green: `Passed`
-  uses a check and `Mastered` uses a star.
+  with a neutral hollow circle, while `Passed` and `Mastered` share the same
+  green cell background; `Passed` uses a green check circle and `Mastered` uses
+  a solid green circle with a white star.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.

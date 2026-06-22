@@ -2459,14 +2459,13 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-cell.mastered {
     color: #0d6f58;
-    background: linear-gradient(135deg, #e8fff3, #b9efd8);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
+    background: #def8ec;
 }
 .progress-matrix-cell.mastered .progress-matrix-status-icon {
     color: #fff;
-    background: radial-gradient(circle at 35% 25%, #d9fff0 0 12%, #31c58e 42%, #108563 82%);
-    box-shadow: 0 0 16px rgba(30, 176, 125, 0.46), 0 0 0 4px rgba(30, 176, 125, 0.14);
-    text-shadow: 0 1px 0 rgba(255,255,255,0.78);
+    background: #1aa67d;
+    box-shadow: none;
+    text-shadow: none;
 }
 .progress-matrix-cell.danger { color: var(--danger); background: var(--danger-soft); }
 .progress-matrix-cell.empty { color: #a8b5b1; background: rgba(255,255,255,0.42); }
