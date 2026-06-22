@@ -32,6 +32,7 @@ Default mode is a dry run. Add --apply to write to CloudBase.
 Options:
   --apply                    Execute CloudBase writes
   --only <list>              Comma-separated collections: sets,grading_keys,system_config
+  --ids <list>               Comma-separated keys to import, matched against each collection key field
   --overwrite-existing       Update existing records instead of insert-missing only
   --env-id <envId>           CloudBase environment ID
   --region <region>          CloudBase region
@@ -43,6 +44,7 @@ Examples:
   npm run cloudbase:import:content
   npm run cloudbase:import:content -- --apply
   npm run cloudbase:import:content -- --apply --only sets,grading_keys
+  npm run cloudbase:import:content -- --apply --only grading_keys --ids NGSL-C --overwrite-existing
 `);
 }
 
@@ -50,6 +52,7 @@ function parseArgs(argv) {
   const options = {
     apply: false,
     only: ["sets", "grading_keys"],
+    ids: null,
     overwriteExisting: false,
     envId: process.env.TCB_ENV_ID || DEFAULT_ENV_ID,
     region: process.env.TCB_REGION || DEFAULT_REGION,
@@ -69,6 +72,8 @@ function parseArgs(argv) {
       options.overwriteExisting = true;
     } else if (arg === "--only") {
       options.only = requireValue(argv, ++index, arg).split(",").map((item) => item.trim()).filter(Boolean);
+    } else if (arg === "--ids") {
+      options.ids = requireValue(argv, ++index, arg).split(",").map((item) => item.trim()).filter(Boolean);
     } else if (arg === "--env-id" || arg === "-e") {
       options.envId = requireValue(argv, ++index, arg);
     } else if (arg === "--region" || arg === "-r") {
@@ -89,6 +94,9 @@ function parseArgs(argv) {
   options.only.forEach((name) => {
     if (!COLLECTIONS[name]) throw new Error(`Unknown collection in --only: ${name}`);
   });
+  if (options.ids && options.ids.length === 0) {
+    throw new Error("--ids requires at least one key");
+  }
 
   return options;
 }
@@ -191,10 +199,12 @@ function main() {
   const options = parseArgs(process.argv.slice(2));
   const mode = options.apply ? "APPLY" : "DRY RUN";
   const writeMode = options.overwriteExisting ? "overwrite existing records" : "insert missing records only";
+  const idFilter = options.ids ? new Set(options.ids) : null;
 
   console.log(`CloudBase content import: ${mode}`);
   console.log(`Environment: ${options.envId} (${options.region})`);
   console.log(`Write mode: ${writeMode}`);
+  if (idFilter) console.log(`ID filter: ${options.ids.join(", ")}`);
   console.log("");
 
   for (const collectionName of options.only) {
@@ -204,7 +214,14 @@ function main() {
       throw new Error(`Missing import file: ${config.file}`);
     }
 
-    const records = readJsonLines(filePath);
+    const allRecords = readJsonLines(filePath);
+    const records = idFilter
+      ? allRecords.filter((record) => idFilter.has(record[config.keyField]))
+      : allRecords;
+    if (idFilter && records.length === 0) {
+      console.log(`${collectionName}: 0 matching records from ${config.file}`);
+      continue;
+    }
     assertUnique(records, config.keyField, collectionName);
     const batches = chunk(records, options.chunkSize);
 

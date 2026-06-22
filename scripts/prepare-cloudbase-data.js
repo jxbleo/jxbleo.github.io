@@ -171,22 +171,41 @@ function extractVocabulary(source, privateSource) {
   const publicData = JSON.parse(JSON.stringify(source));
   const privateAnswers = privateSource && privateSource.answers ? privateSource.answers : null;
   const privateExplanations = privateSource && privateSource.explanations ? privateSource.explanations : null;
+  const missingAnswers = [];
+
+  function hasAnswerValue(value) {
+    if (Array.isArray(value)) return value.length > 0 && value.some(hasAnswerValue);
+    return value != null && String(value).trim() !== "";
+  }
 
   (publicData.quizGroups || []).forEach((group) => {
-    (group.questions || []).forEach((question) => {
+    const wordList = Array.isArray(group.wordList) ? group.wordList : [];
+    (group.questions || []).forEach((question, index) => {
       const key = `${group.id}:${question.number}`;
       question.questionKey = key;
+      let answer;
+      let explanation = "";
       if (privateAnswers && Object.prototype.hasOwnProperty.call(privateAnswers, key)) {
-        answers[key] = privateAnswers[key];
-        explanations[key] = privateExplanations && privateExplanations[key] ? privateExplanations[key] : "";
+        answer = privateAnswers[key];
+        explanation = privateExplanations && privateExplanations[key] ? privateExplanations[key] : "";
       } else {
-        answers[key] = question.answer;
-        explanations[key] = question.explanation || "";
+        answer = hasAnswerValue(question.answer) ? question.answer : wordList[index];
+        explanation = question.explanation || "";
+      }
+      if (!hasAnswerValue(answer)) {
+        missingAnswers.push(key);
+      } else {
+        answers[key] = answer;
+        explanations[key] = explanation;
       }
       delete question.answer;
       delete question.explanation;
     });
   });
+
+  if (missingAnswers.length) {
+    throw new Error(`Vocabulary ${source.id} is missing answers for: ${missingAnswers.slice(0, 10).join(", ")}${missingAnswers.length > 10 ? "..." : ""}`);
+  }
 
   return {
     publicData,
