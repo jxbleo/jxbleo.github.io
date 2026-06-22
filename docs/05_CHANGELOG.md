@@ -10,7 +10,8 @@
 - Simplified the teacher View matrix toolbar to only `Class`, `Column`, and
   `Date`, with `Date` defaulting to `This month`.
 - Adjusted teacher View matrix status colors so `Not yet` is neutral white,
-  while `Passed` and `Mastered` are both green with check/star icons.
+  while `Passed` and `Mastered` share the same green cell background;
+  `Mastered` uses a solid green circle with a white star.
 
 ### Fixed
 

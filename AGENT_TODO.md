@@ -70,8 +70,10 @@ cp .qa-secrets.example .qa-secrets.local
   month`. Verified teacher JavaScript syntax, static references, and diff
   whitespace.
 - Adjusted teacher View matrix status cells so `Not yet` is neutral white,
-  while `Passed` and `Mastered` both use green styling with check/star icons.
-  Verified teacher JavaScript syntax, static references, and diff whitespace.
+  while `Passed` and `Mastered` share the same green cell background and
+  `Mastered` uses the selected solid green circle with a white star. Verified
+  release checks and diff whitespace; owner still needs to publish the static
+  site.
 - Fixed BBC History coloring after Argue/backfill score adjustments by forcing
   history rendering to clear stale `wrong`, blank-lock, and MC-lock classes
   before applying the server-returned `correct`/`wrong` state. Verified release
