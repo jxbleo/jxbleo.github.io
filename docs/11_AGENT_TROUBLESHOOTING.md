@@ -37,6 +37,7 @@
 | Argue 批准后历史匹配答案没有补分或 STAR 没出现 | 批量向上重算没有扫描到同 set/question/submitted answer，或改判流程没有调用 STAR 保护逻辑 | `teacherAdmin.applyAcceptedAnswerToHistoricalAttempts`、`teacherAdmin.improveAttemptForAcceptedAnswer` |
 | 老师改过答案后再次导入被覆盖 | 本地 `prepare-cloudbase-data.js` 重新生成 `grading_version: "1"` | 需要 grading key reconcile 流程 |
 | BBC 填空输入框后面多出下划线 | 数据里用了 6 个或更多 `_` | 扫描 `data/BBC-*.json` 的 `_{6,}` |
+| Vocabulary Learn 模式 Check Answers 弹 `NO_GRADED_QUESTIONS` | `grading_keys.answers` 为空，或页面提交的 `questionKey` 和私有答案 key 不匹配 | 查 CloudBase / `.cloudbase-private/import/grading-keys-cloudbase.json` 中对应 `set_id` 的 `answers`；重新运行 `node scripts/prepare-cloudbase-data.js`，必要时用 `cloudbase:import:content -- --only grading_keys --ids <set_id> --overwrite-existing` 修复已存在的空 grading key |
 | Vocabulary 本地直接打开加载失败 | `fetch` 被 file:// 限制，缺 JS fallback 或本地 server | `content/vocabulary/*.js` fallback；用本地 HTTP server |
 | Git push 超时或失败 | 网络或 GitHub HTTPS 问题，不一定本地提交失败 | `git log`、`git status`、`rev-parse HEAD origin/main` |
 | 多个 Codex 窗口互相影响 | 同一工作树存在 unrelated dirty files | 每次先 `git status --short`；只 stage 当前任务文件 |

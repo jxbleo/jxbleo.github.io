@@ -54,6 +54,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-22
 
+- Fixed Vocabulary Learn `NO_GRADED_QUESTIONS` for NGSL/NAWL units whose
+  generated `grading_keys.answers` were empty by deriving missing private
+  answers from quiz `wordList` order during CloudBase data preparation. Added
+  an `--ids` filter to the CloudBase import helper so the owner can overwrite
+  only reviewed affected grading keys. Verified regenerated private import data
+  has no empty Vocabulary answer maps, dry-ran targeted import, ran release
+  verification, and checked diff whitespace. After the owner applied the
+  targeted CloudBase `grading_keys` overwrite, verified with development
+  student and teacher accounts that NGSL-C Learn `Check Answer`, sampled
+  affected NGSL/NAWL Learn sets, and teacher Library preview `Show Answers`
+  return answers without the `NO_GRADED_QUESTIONS` dialog.
 - Simplified the teacher View matrix filters to `Class`, `Column`, and `Date`,
   removed the `Recent` numeric limit, and kept `Date` defaulted to `This
   month`. Verified teacher JavaScript syntax, static references, and diff

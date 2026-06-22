@@ -240,6 +240,18 @@ Only use overwrite mode after an explicit content-owner review:
 npm run cloudbase:import:content -- --apply --overwrite-existing
 ```
 
+To repair a reviewed subset without touching unrelated existing grading keys,
+filter by key with `--ids`:
+
+```bash
+npm run cloudbase:import:content -- --only grading_keys --ids NGSL-C
+npm run cloudbase:import:content -- --apply --only grading_keys --ids NGSL-C --overwrite-existing
+```
+
+For multiple records, pass a comma-separated list such as
+`--ids NGSL-A,NGSL-B,NGSL-C`. The filter matches each collection's key field
+(`set_id` for `sets` and `grading_keys`, `config_key` for `system_config`).
+
 The script uses these defaults unless overridden:
 
 ```text
