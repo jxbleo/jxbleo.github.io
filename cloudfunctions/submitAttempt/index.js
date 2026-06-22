@@ -109,6 +109,7 @@ function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage
 }
 
 function normalizedAssignmentStatus(status) {
+  if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
   if (status === "passed" || status === "done") return "passed";
   return "to_do";
@@ -122,6 +123,7 @@ function statusRank(status) {
 }
 
 function monotonicAssignmentStatus(currentStatus, attemptStatus) {
+  if (normalizedAssignmentStatus(currentStatus) === "cancelled") return "cancelled";
   return statusRank(currentStatus) > statusRank(attemptStatus)
     ? normalizedAssignmentStatus(currentStatus)
     : normalizedAssignmentStatus(attemptStatus);
@@ -129,6 +131,10 @@ function monotonicAssignmentStatus(currentStatus, attemptStatus) {
 
 function isOpenAssignment(assignment) {
   return ["not_done", "failed", "to_do"].includes(assignment && (assignment.status || "to_do"));
+}
+
+function isCancelledAssignment(assignment) {
+  return normalizedAssignmentStatus(assignment && assignment.status) === "cancelled";
 }
 
 function dateValue(value) {
@@ -430,6 +436,7 @@ exports.main = async (event) => {
         set_id: setId,
       });
       if (!assignment) throw new Error("ASSIGNMENT_NOT_FOUND");
+      if (isCancelledAssignment(assignment)) throw new Error("ASSIGNMENT_CANCELLED");
     } else {
       assignment = await findOpenAssignmentForSet(student.auth_uid, setId);
       if (assignment) assignmentId = String(assignment.assignment_id || assignment._id);

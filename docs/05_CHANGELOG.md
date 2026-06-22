@@ -3,6 +3,17 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-23
+
+### Added
+
+- Added assignment-level teacher management for selected assignment records,
+  including due date, passing percentage, mastery percentage, and soft
+  cancellation of open assignments.
+- Added backend `cancelled` assignment state with audit fields. Cancelled work
+  is hidden from the student dashboard, rejected by old assignment submit links,
+  preserves historical attempts, and does not block reassignment.
+
 ## 2026-06-22
 
 ### Changed

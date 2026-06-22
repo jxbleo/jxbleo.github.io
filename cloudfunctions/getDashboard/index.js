@@ -96,11 +96,18 @@ function passingPercentageForAssignment(assignment, set) {
 }
 
 function normalizedStatus(status, percentage, passingPercentage, masteryPercentage) {
+  if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
   if (percentage >= masteryPercentage) return "mastered";
   if (percentage >= passingPercentage) return "passed";
   if (status === "passed" || status === "done") return "passed";
   return "to_do";
+}
+
+function isCancelledAssignment(assignment) {
+  return Boolean(
+    assignment && (assignment.status === "cancelled" || assignment.status === "canceled")
+  );
 }
 
 function displayPercentage(value) {
@@ -353,6 +360,7 @@ async function revealAnswers(student, event) {
     student_uid: student.auth_uid,
   });
   if (!assignment) throw new Error("ASSIGNMENT_NOT_FOUND");
+  if (isCancelledAssignment(assignment)) throw new Error("ASSIGNMENT_CANCELLED");
   const set = await getOne("sets", { set_id: assignment.set_id });
   const masteryPercentage = masteryPercentageForAssignment(assignment, set);
   const now = new Date();
@@ -724,6 +732,7 @@ exports.main = async (event = {}) => {
 
     const assignmentViews = [];
     for (const assignment of assignments) {
+      if (isCancelledAssignment(assignment)) continue;
       const set = setMap.get(assignment.set_id);
       const passingPercentage = passingPercentageForAssignment(assignment, set);
       const masteryPercentage = masteryPercentageForAssignment(assignment, set);

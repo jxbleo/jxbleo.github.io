@@ -276,7 +276,7 @@ flowchart TD
 - `assignment_id`：唯一作业实例 ID
 - `student_uid`：学生 auth UID
 - `set_id`：练习 ID
-- `status`：`to_do`、`passed`、`mastered`
+- `status`：`to_do`、`passed`、`mastered`、`cancelled`
 - `passing_percentage`
 - `mastery_percentage`
 - `attempt_count`
@@ -297,6 +297,9 @@ flowchart TD
 - 旧作业和旧提交不能被覆盖
 - 已完成或已 STAR 的历史记录不应阻止未来重新布置
 - 只应阻止同一学生同一 set 同时存在未完成开放作业
+- 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
+- 已撤销作业从学生 Dashboard 的 To Do / Finished 中隐藏，并且旧 assignment URL 不能继续提交到这条作业
+- 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
 
 ### 7.4 attempts
 

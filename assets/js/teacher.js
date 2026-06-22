@@ -1497,7 +1497,7 @@
     }
 
     function assignmentStatusCounts(assignments) {
-        var counts = { to_do: 0, passed: 0, mastered: 0 };
+        var counts = { to_do: 0, passed: 0, mastered: 0, cancelled: 0 };
         assignments.forEach(function(item) {
             var status = normalizedAssignmentStatus(item.status);
             counts[status] = (counts[status] || 0) + 1;
@@ -1997,18 +1997,23 @@
 
     function editableAssignments(items) {
         return (items || []).filter(function(item) {
-            return item.source !== 'self_study' && item.assignment_id;
+            return item.source !== 'self_study' && item.assignment_id && normalizedAssignmentStatus(item.status) !== 'cancelled';
         });
+    }
+
+    function isOpenAssignmentItem(item) {
+        var status = String(item && item.status || 'to_do');
+        return ['to_do', 'not_done', 'failed'].indexOf(status) !== -1;
     }
 
     function renderAssignmentGroupTools(group) {
         var editable = editableAssignments(group.items);
         if (!editable.length) return '';
         var scopeLabel = group.mode === 'class'
-            ? 'Edit class standards'
+            ? 'Edit assignments in class'
             : group.mode === 'task'
-                ? 'Edit task standards'
-                : 'Edit student standards';
+                ? 'Edit selected task'
+                : 'Edit student assignments';
         return '<div class="assignment-group-tools">' +
             '<span>' + escapeHtml(editable.length) + ' assigned item' + (editable.length === 1 ? '' : 's') + '</span>' +
             '<button class="outline-button assignment-edit-button" type="button" data-edit-assignment-scope="' + escapeHtml(group.key) + '">' +
@@ -2066,18 +2071,20 @@
             showMessage('No editable assigned items in this group.', 'error');
             return;
         }
+        var cancelableItems = items.filter(isOpenAssignmentItem);
         var commonDue = commonFieldValue(items, 'due_at');
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
+        var scopeSubtitle = group.subtitle ? group.subtitle + ' · ' : '';
         var overlay = document.createElement('div');
         overlay.className = 'assignment-edit-overlay';
         overlay.innerHTML =
             '<section class="assignment-edit-dialog" role="dialog" aria-modal="true">' +
                 '<button class="dialog-close-button" type="button" aria-label="Close">x</button>' +
                 '<div class="assignment-edit-head">' +
-                    '<p class="eyebrow accent">EDIT ASSIGNMENT STANDARDS</p>' +
+                    '<p class="eyebrow accent">MANAGE ASSIGNMENTS</p>' +
                     '<h2>' + escapeHtml(group.title || 'Assignments') + '</h2>' +
-                    '<p>' + escapeHtml(items.length) + ' assignment' + (items.length === 1 ? '' : 's') + ' will be updated.</p>' +
+                    '<p>' + escapeHtml(scopeSubtitle) + escapeHtml(items.length) + ' selected assignment' + (items.length === 1 ? '' : 's') + '.</p>' +
                 '</div>' +
                 '<form class="assignment-edit-form">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_due"' + (commonDue ? ' checked' : '') + '><span>Due date</span></label>' +
@@ -2086,17 +2093,35 @@
                     '<input type="number" name="passing_percentage" min="0" max="100" step="0.01" placeholder="' + (commonPassing === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonPassing) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
                     '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
-                    '<p class="assignment-edit-note">Completed work and protected STAR records are not downgraded. New submissions use the updated standards.</p>' +
+                    '<p class="assignment-edit-note">This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards.</p>' +
                     '<div class="dialog-actions">' +
                         '<button class="outline-button" type="button" data-cancel-edit>Cancel</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
                     '</div>' +
                 '</form>' +
+                '<div class="assignment-danger-zone">' +
+                    '<div><strong>Cancel open assignments</strong>' +
+                    '<p>Removes open selected assignments from student To Do lists. Attempts, completed work, and STAR records stay saved.</p></div>' +
+                    '<button class="outline-button danger-button" type="button" data-cancel-assignments' + (cancelableItems.length ? '' : ' disabled') + '>' +
+                        'Cancel ' + escapeHtml(cancelableItems.length) + ' open' +
+                    '</button>' +
+                '</div>' +
             '</section>';
         document.body.appendChild(overlay);
 
         function close() {
             overlay.remove();
+        }
+
+        function refreshAssignmentViews() {
+            return Promise.all([teacherCall('listAssignments'), loadProgressData(), loadCandidates()]).then(function(results) {
+                state.assignments = results[0].assignments || [];
+                state.progressItems = results[1].progress || [];
+                renderSetOptions();
+                renderStudentDetail();
+                renderAssignmentOverview();
+                updateAssignView();
+            });
         }
 
         overlay.querySelector('.dialog-close-button').addEventListener('click', close);
@@ -2129,22 +2154,43 @@
             submit.disabled = true;
             submit.textContent = 'Saving...';
             teacherCall('updateAssignments', payload).then(function(result) {
-                showMessage((result.updated || []).length + ' assignment(s) updated.', 'success');
+                var skipped = (result.skipped || []).length;
+                showMessage((result.updated || []).length + ' assignment(s) updated' + (skipped ? '; ' + skipped + ' skipped.' : '.'), 'success');
                 close();
-                return Promise.all([teacherCall('listAssignments'), loadProgressData(), loadCandidates()]);
-            }).then(function(results) {
-                state.assignments = results[0].assignments || [];
-                state.progressItems = results[1].progress || [];
-                renderSetOptions();
-                renderStudentDetail();
-                renderAssignmentOverview();
-                updateAssignView();
+                return refreshAssignmentViews();
             }).catch(function(error) {
                 showMessage(error.message, 'error');
                 submit.disabled = false;
                 submit.textContent = 'Save changes';
             });
         });
+        var cancelAssignmentsButton = overlay.querySelector('[data-cancel-assignments]');
+        if (cancelAssignmentsButton) {
+            cancelAssignmentsButton.addEventListener('click', function() {
+                if (!cancelableItems.length) {
+                    showMessage('No open assignment can be cancelled in this selection.', 'error');
+                    return;
+                }
+                var ok = window.confirm('Cancel ' + cancelableItems.length + ' open assignment' + (cancelableItems.length === 1 ? '' : 's') + '? Existing attempts and completed work will stay saved.');
+                if (!ok) return;
+                cancelAssignmentsButton.disabled = true;
+                cancelAssignmentsButton.textContent = 'Cancelling...';
+                teacherCall('cancelAssignments', {
+                    assignment_ids: cancelableItems.map(function(item) { return item.assignment_id; })
+                }).then(function(result) {
+                    var cancelled = (result.cancelled || []).length;
+                    var skipped = (result.skipped || []).length;
+                    state.selectedMatrixCell = '';
+                    showMessage(cancelled + ' assignment(s) cancelled' + (skipped ? '; ' + skipped + ' skipped.' : '.'), 'success');
+                    close();
+                    return refreshAssignmentViews();
+                }).catch(function(error) {
+                    showMessage(error.message, 'error');
+                    cancelAssignmentsButton.disabled = false;
+                    cancelAssignmentsButton.textContent = 'Cancel ' + cancelableItems.length + ' open';
+                });
+            });
+        }
     }
 
     function renderAssignmentProgressGroup(group) {
@@ -2443,17 +2489,41 @@
         '</div>';
     }
 
+    function matrixAssignmentEditScopeKey(item) {
+        return 'matrix-assignment::' + matrixCellKey(item);
+    }
+
+    function registerMatrixAssignmentEditScope(item, title) {
+        var key = matrixAssignmentEditScopeKey(item);
+        state.assignmentEditScopes[key] = {
+            key: key,
+            mode: 'single',
+            title: item.student_name || item.student_id || 'Student',
+            subtitle: title || item.set_id || '',
+            items: [item]
+        };
+        return key;
+    }
+
     function renderMatrixCellDetail(item) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
         var entries = matrixAttemptEntries(attempts);
         var title = item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set';
+        var status = normalizedAssignmentStatus(item.status);
+        var editButton = '';
+        if (item.source !== 'self_study' && item.assignment_id && status !== 'cancelled') {
+            editButton = '<button class="outline-button assignment-edit-button" type="button" data-edit-assignment-scope="' +
+                escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '">Edit this assignment</button>';
+        }
         return '<div class="progress-matrix-detail">' +
             '<div class="matrix-detail-summary">' +
                 '<h2>' + escapeHtml(title) + '</h2>' +
                 '<div class="matrix-detail-pills">' +
                     '<span class="matrix-detail-pill">' + escapeHtml(item.student_name || item.student_id || 'Student') + '</span>' +
+                    '<span class="matrix-detail-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
                     renderMatrixScoreLock(item) +
+                    editButton +
                 '</div>' +
             '</div>' +
             renderMatrixAttemptChart(entries, item) +
@@ -2561,8 +2631,8 @@
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
                     var status = normalizedAssignmentStatus(item.status);
                     var score = numericPercent(item.best_percentage);
-                    var statusIcon = status === 'mastered' ? '★' : status === 'passed' ? '✓' : '○';
-                    var label = score == null ? '—' : formatPercent(score);
+                    var statusIcon = status === 'mastered' ? '★' : status === 'passed' ? '✓' : status === 'cancelled' ? '×' : '○';
+                    var label = status === 'cancelled' ? 'Cancelled' : score == null ? '—' : formatPercent(score);
                     var cellKey = matrixCellKey(item);
                     if (cellKey === state.selectedMatrixCell) selectedItem = item;
                     return '<button class="progress-matrix-cell ' + escapeHtml(status) +
@@ -2963,6 +3033,7 @@
     }
 
     function normalizedAssignmentStatus(status) {
+        if (status === 'cancelled' || status === 'canceled') return 'cancelled';
         if (status === 'done') return 'mastered';
         if (status === 'failed' || status === 'not_done') return 'to_do';
         return status || 'to_do';
@@ -2970,6 +3041,7 @@
 
     function assignmentStatusLabel(status) {
         status = normalizedAssignmentStatus(status);
+        if (status === 'cancelled') return 'Cancelled';
         if (status === 'mastered') return 'Mastered';
         if (status === 'passed') return 'Passed';
         return 'To Do';

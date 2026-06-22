@@ -165,6 +165,12 @@ linked attempts as a display fallback when an assignment summary is stale.
 3. Function checks set and student eligibility.
 4. Open duplicate assignments are skipped.
 5. Completed/passed/mastered history can be reassigned with a new `assignment_id`.
+6. Existing assignments can be edited by explicit `assignment_id` selections
+   for due date, passing percentage, and mastery percentage.
+7. Open assignments can be soft-cancelled through `teacherAdmin`; cancellation
+   sets `status: "cancelled"` with audit fields, hides the item from the
+   student dashboard, and prevents old assignment links from recording new
+   submissions against that assignment.
 
 ### Argue
 
