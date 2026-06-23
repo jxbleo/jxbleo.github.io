@@ -28,6 +28,8 @@
   and kept the grouped progress mode tabs visually quiet.
 - Widened the teacher page shell on desktop so the default View matrix adapts
   to available horizontal space.
+- Fixed the teacher View matrix layout so wide task sets scroll horizontally
+  inside the matrix card instead of widening the whole page.
 
 ## 2026-06-22
 

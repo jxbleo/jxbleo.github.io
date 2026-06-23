@@ -715,6 +715,9 @@ body:not(.teacher-page) .tab-button.active {
         0 10px 22px rgba(19, 118, 109, 0.14);
 }
 
+.dashboard-view {
+    min-width: 0;
+}
 .dashboard-view[hidden] { display: none; }
 #assignment-content {
     display: flex;
@@ -2262,7 +2265,11 @@ body:not(.teacher-page) .tab-button.active {
     margin-left: auto;
     margin-right: auto;
 }
-.assignment-overview { display: grid; gap: 12px; }
+.assignment-overview {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+}
 .assignment-overview.matrix-reveal-ready > .progress-matrix-card,
 .assignment-overview.matrix-reveal-ready > .assignment-overview-toolbar,
 .assignment-overview.matrix-reveal-ready > .assignment-progress-groups {
@@ -2360,8 +2367,11 @@ body:not(.teacher-page) .tab-button.active {
     display: grid;
     gap: 12px;
     margin-bottom: 14px;
+    min-width: 0;
 }
 .progress-matrix-card {
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
     overflow: hidden;
     padding: 15px;
@@ -2429,6 +2439,8 @@ body:not(.teacher-page) .tab-button.active {
     width: 142px;
 }
 .progress-matrix-scroll {
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -3231,9 +3243,6 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-page .student-select-card {
     position: relative;
     overflow: hidden;
-}
-.teacher-page .progress-matrix-card {
-    overflow: visible;
 }
 .teacher-page .progress-matrix-card::before,
 .teacher-page .assignment-progress-group::before,
