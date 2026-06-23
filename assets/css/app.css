@@ -2444,7 +2444,7 @@ body:not(.teacher-page) .tab-button.active {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     scrollbar-gutter: stable;
     border: 1px solid rgba(124,58,237,0.12);
     border-radius: 14px;

@@ -32,6 +32,9 @@
   right-side `✦` marker, with the blue render theme using a blue marker.
 - Fixed the teacher View matrix layout so wide task sets scroll horizontally
   inside the matrix card instead of widening the whole page.
+- Updated teacher View matrix interactions so touch devices can still scroll
+  the page vertically, notification attempt details open independently of the
+  matrix, and unclassed students can be filtered as individual Class options.
 
 ## 2026-06-22
 
