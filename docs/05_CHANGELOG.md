@@ -26,6 +26,8 @@
   matrix so student capsules and stats stay visually quiet.
 - Restored the teacher matrix cell detail as an independent page-level modal
   and kept the grouped progress mode tabs visually quiet.
+- Widened the teacher page shell on desktop so the default View matrix adapts
+  to available horizontal space.
 
 ## 2026-06-22
 

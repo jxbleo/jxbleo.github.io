@@ -206,6 +206,9 @@ View is the teacher's progress and student-inspection surface.
 
 It should include:
 
+- a wide teacher workspace shell that can expand on desktop screens so the
+  matrix uses available horizontal space instead of staying capped at the
+  narrower student dashboard width
 - an assignment matrix/table for scanning completion by student and task, with class, column, and date filters plus responsive horizontal scrolling on small screens
 - matrix task headers show the stable task ID with the task name directly
   underneath
