@@ -52,6 +52,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-23
+
+- Fixed the shared practice Back confirmation so it hides before calling
+  browser history navigation. This prevents Vocabulary Test Mode's popstate
+  lock from leaving the Back dialog visible when the page correctly stays on
+  the test. Updated shared practice-session cache versions and verified static
+  checks.
+
 ### 2026-06-22
 
 - Fixed Vocabulary Learn `NO_GRADED_QUESTIONS` for NGSL/NAWL units whose
