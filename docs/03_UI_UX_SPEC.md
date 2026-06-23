@@ -219,9 +219,9 @@ It should include:
   assignment; grouped tools edit the assignment records currently represented
   by that student, class, or task group.
 - assignment management can edit due date, passing percentage, and mastery
-  percentage, or soft-cancel open selected assignments. Cancellation is shown
-  as a quiet grey state in teacher progress views; it removes the task from the
-  student's To Do without deleting attempts or completed history.
+  percentage, or soft-cancel open selected assignments. Cancelled assignments
+  are hidden from teacher View progress and from the student's To Do without
+  deleting attempts or completed history.
 - student selection and student detail panels
 - student account management actions such as class/system edit, password reset, enable/disable, and account creation
 

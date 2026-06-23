@@ -866,7 +866,9 @@ async function listAssignments() {
     getAll("students"),
     getAll("sets"),
   ]);
-  const rawAssignments = assignmentRows;
+  const rawAssignments = assignmentRows.filter((assignment) =>
+    normalizedAssignmentStatus(assignment.status) !== "cancelled"
+  );
   const studentMap = new Map(studentRows.map((record) => {
     const student = record.data && typeof record.data === "object" ? record.data : record;
     return [student.auth_uid, student];
@@ -1077,7 +1079,9 @@ async function listProgress() {
     getAll("sets"),
     getAll("grading_keys"),
   ]);
-  const assignments = assignmentRows.map(recordData);
+  const assignments = assignmentRows.map(recordData).filter((assignment) =>
+    normalizedAssignmentStatus(assignment.status) !== "cancelled"
+  );
   const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
     const gradingKey = recordData(record);
     return [gradingKey.set_id, gradingKey];

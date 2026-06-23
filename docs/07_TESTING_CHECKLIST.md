@@ -124,9 +124,9 @@ Check:
 - editing due/pass/mastery in View updates only the selected assignment records
 - Argue list loads and groups disputes
 - Argue list does not show student disputes linked to cancelled assignments
-- cancelling open selected assignments in View hides them from student To Do,
-  preserves old attempts, skips completed/mastered assignments, and allows the
-  same set to be reassigned later
+- cancelling open selected assignments in View hides them from teacher View
+  progress and student To Do, preserves old attempts, skips completed/mastered
+  assignments, and allows the same set to be reassigned later
 - resolving `keep` does not alter grading key
 - resolving `add`/`replace` updates grading key and history
 - approved `add`/`replace` scans historical attempts and only improves matching same-set/same-question/same-answer records

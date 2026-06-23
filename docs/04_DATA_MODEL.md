@@ -132,10 +132,10 @@ attempts or downgrade completed assignments and protected STAR records.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled
-assignments are hidden from the student dashboard and rejected by
-`submitAttempt`, but old attempts remain immutable history and can still be
-found through set-level History. Completed `passed` / `mastered` assignments
-and protected STAR records are skipped by normal cancellation.
+assignments are hidden from the student dashboard and teacher View progress,
+and rejected by `submitAttempt`, but old attempts remain immutable history and
+can still be found through set-level History. Completed `passed` / `mastered`
+assignments and protected STAR records are skipped by normal cancellation.
 
 Reassignment rule:
 
