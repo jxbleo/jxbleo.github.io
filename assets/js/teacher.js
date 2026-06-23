@@ -38,6 +38,7 @@
         matrixDateFrom: '',
         matrixDateTo: '',
         selectedMatrixCell: '',
+        matrixInitialRevealPending: true,
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
     };
@@ -2657,6 +2658,9 @@
         if (!container) return;
         var items = sortAssignmentOverviewItems(assignedProgressItems());
         state.assignmentEditScopes = {};
+        var shouldRevealMatrix = state.matrixInitialRevealPending && items.length;
+        if (state.matrixInitialRevealPending) state.matrixInitialRevealPending = false;
+        container.classList.remove('matrix-reveal-ready');
         if (!items.length) {
             container.innerHTML = '<div class="empty-card"><strong>No assigned work yet</strong>Assignments will appear here after you create them.</div>';
             return;
@@ -2666,6 +2670,12 @@
             '<div class="assignment-progress-groups">' +
                 groups.map(renderAssignmentProgressGroup).join('') +
             '</div>';
+        if (shouldRevealMatrix) {
+            container.classList.add('matrix-reveal-ready');
+            window.setTimeout(function() {
+                container.classList.remove('matrix-reveal-ready');
+            }, 720);
+        }
         container.querySelectorAll('[data-assign-progress-mode]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.assignProgressMode = button.dataset.assignProgressMode;

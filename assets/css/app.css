@@ -2262,6 +2262,17 @@ body:not(.teacher-page) .tab-button.active {
     margin-right: auto;
 }
 .assignment-overview { display: grid; gap: 12px; }
+.assignment-overview.matrix-reveal-ready > .progress-matrix-card,
+.assignment-overview.matrix-reveal-ready > .assignment-overview-toolbar,
+.assignment-overview.matrix-reveal-ready > .assignment-progress-groups {
+    animation: matrixRevealFadeLift 0.64s ease-out both;
+}
+.assignment-overview.matrix-reveal-ready > .assignment-overview-toolbar {
+    animation-delay: 0.05s;
+}
+.assignment-overview.matrix-reveal-ready > .assignment-progress-groups {
+    animation-delay: 0.1s;
+}
 .assignment-overview-toolbar {
     display: flex;
     justify-content: flex-end;
@@ -2331,6 +2342,18 @@ body:not(.teacher-page) .tab-button.active {
     0% { background-position: -120px 0, 0 -80px; opacity: 0.62; }
     50% { background-position: 80px 0, 0 34px; opacity: 0.9; }
     100% { background-position: 260px 0, 0 180px; opacity: 0.62; }
+}
+@keyframes matrixRevealFadeLift {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
 }
 .teacher-view-board {
     display: grid;
