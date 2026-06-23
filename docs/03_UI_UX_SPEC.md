@@ -153,8 +153,8 @@ top borders, and selected control borders. These rainbow
 elements should move slowly and continuously. Completion states remain
 functionally colored: passed/mastered stay green, low scores stay red, and
 empty/not-yet cells stay neutral. The grouped progress area below the matrix
-should not use rainbow fills on repeated student capsules, mini cells, score
-bars, or stats because repeated color blocks make the view noisy.
+should not use rainbow fills on repeated student capsules, mode tabs, mini
+cells, score bars, or stats because repeated color blocks make the view noisy.
 
 The three top-right teacher icon buttons show compact spinner loading states
 while the teacher desk is initializing. Header capsules should not use a
@@ -216,7 +216,8 @@ It should include:
 - clickable matrix cells open a floating dialog with the close button outside
   the detail card underneath it. The dialog shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
-  attempt cards.
+  attempt cards. It must remain an independent page-level overlay and must not
+  be clipped by the matrix card or rendered inline beneath the matrix.
 - matrix detail close buttons are centered below the dialog card. Attempt score
   bars use fixed-width columns rather than stretching a single attempt across
   the whole dialog; not-passed bars are pale red, passed bars are green, and

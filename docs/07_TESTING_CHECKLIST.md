@@ -121,7 +121,8 @@ Check:
   headers, and group-card top borders without overriding passed/mastered
   green states or low-score red states
 - Grouped progress items below the matrix keep quiet neutral/green status
-  styling instead of repeated rainbow-filled student capsules or stat pills
+  styling instead of repeated rainbow-filled mode tabs, student capsules, or
+  stat pills
 - Top-right teacher icon buttons show compact spinner states while loading and
   header capsules do not show separate rainbow underline accents
 - Progress still reflects assignment attempts after attempts/assignments exceed
@@ -130,6 +131,8 @@ Check:
   summary fields are stale
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
+- Clicking a matrix cell opens the independent page-level detail modal instead
+  of rendering the detail inline under the matrix
 - View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open single-assignment detail
 - editing due/pass/mastery in View updates only the selected assignment records
