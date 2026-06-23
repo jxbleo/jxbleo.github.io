@@ -28,6 +28,8 @@
   and kept the grouped progress mode tabs visually quiet.
 - Widened the teacher page shell on desktop so the default View matrix adapts
   to available horizontal space.
+- Added lightweight BBC MC option click feedback: a soft bell sound and a
+  right-side `✦` marker, with the blue render theme using a blue marker.
 - Fixed the teacher View matrix layout so wide task sets scroll horizontally
   inside the matrix card instead of widening the whole page.
 

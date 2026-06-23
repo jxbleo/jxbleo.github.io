@@ -341,6 +341,9 @@ Shared rules:
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
 - Clear removes visible answers, feedback, Explain, Argue, and local blank locks; persistent MC wrong-answer reminders may remain as yellow boxes.
+- BBC MC option selection may add only lightweight sound and a right-side
+  `✦` selection symbol. Do not add extra selected-state text; the blue render
+  theme should show the symbol in blue.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
 

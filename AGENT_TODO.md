@@ -54,6 +54,9 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-23
 
+- Added BBC MC option click feedback with only a soft bell sound and right-side
+  `✦` marker. Confirmed the default and blue BBC render themes share the
+  behavior, with the blue theme marker following the blue accent color.
 - Fixed the shared practice Back confirmation so it hides before calling
   browser history navigation. This prevents Vocabulary Test Mode's popstate
   lock from leaving the Back dialog visible when the page correctly stays on
