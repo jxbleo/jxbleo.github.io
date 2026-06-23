@@ -127,9 +127,11 @@ Teacher page has three main capsules:
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
-status row. The top-right student entry opens a standalone Student lookup
-modal. That modal contains the student search/selection surface, selected
-student info and progress, and an internal `+` action for creating a student.
+status row. The top-right circular student ID icon opens a standalone Student
+lookup modal. That modal contains the student search/selection surface,
+selected student info and progress, and an internal `+` action for creating a
+student. The Choose/Search student list expands inside the modal and remains
+scrollable there.
 The create-student modal uses a vertical field stack and, after success, shows
 a standalone checkmark confirmation dialog with the new Login ID and initial
 password. Review requests open from a separate top-right question-mark icon

@@ -14,6 +14,9 @@
 - Changed teacher View `By student` groups into a full-width student history
   list where each task shows its best percentage and opens the same matrix
   detail modal used by matrix cells.
+- Changed the teacher header student entry to a circular student ID icon and
+  fixed the lookup modal's Choose/Search student list so it expands and scrolls
+  inside the modal.
 
 ## 2026-06-23
 
