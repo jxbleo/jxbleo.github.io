@@ -14,6 +14,8 @@
   is hidden from the student dashboard and teacher View progress, rejected by
   old assignment submit links, preserves historical attempts, and does not
   block reassignment.
+- Made the teacher page open to `View` by default and added a textless animated
+  matrix loading state with visible grid lines and a centered spinner.
 
 ## 2026-06-22
 

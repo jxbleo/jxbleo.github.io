@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260623-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260623-4">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -48,8 +48,8 @@
         </section>
 
         <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button active" type="button" data-view="tasks">Assign</button>
-            <button class="tab-button" type="button" data-view="view">View</button>
+            <button class="tab-button" type="button" data-view="tasks">Assign</button>
+            <button class="tab-button active" type="button" data-view="view">View</button>
             <button class="tab-button" type="button" data-view="library">Library</button>
         </nav>
 
@@ -129,7 +129,7 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-tasks">
+        <section class="dashboard-view" id="view-tasks" hidden>
             <section class="assign-flow simple-assign-flow task-view-panel" id="task-assign-panel">
                 <div class="assign-minimal-grid">
                     <article class="profile-card assign-picker-card assign-summary-card" id="assign-sets-card">
@@ -231,10 +231,12 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-view" hidden>
+        <section class="dashboard-view" id="view-view">
             <section class="teacher-view-board" id="teacher-view-board">
                 <div class="assignment-overview" id="assignment-overview">
-                    <div class="empty-card loading-card">Loading assignment progress...</div>
+                    <div class="matrix-loading-card" role="status" aria-label="Loading assignment progress">
+                        <span class="matrix-loading-spinner" aria-hidden="true"></span>
+                    </div>
                 </div>
             </section>
 
@@ -272,6 +274,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260623-3"></script>
+    <script src="assets/js/teacher.js?v=20260623-4"></script>
 </body>
 </html>

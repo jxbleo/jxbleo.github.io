@@ -113,6 +113,8 @@ Check:
 - Library opens practice pages in `teacher=1`
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts
+- Teacher page opens to View by default, and the initial matrix loading state
+  shows only the animated grid/spinner without visible loading copy
 - Progress still reflects assignment attempts after attempts/assignments exceed
   one CloudBase read page
 - View matrix shows completed status from linked attempts even if assignment
