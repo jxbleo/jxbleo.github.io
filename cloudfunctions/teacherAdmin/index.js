@@ -1237,18 +1237,24 @@ async function submitTeacherDispute(event, teacher) {
 }
 
 async function listDisputes() {
-  const [disputeRows, studentRows, setRows, gradingKeyRows] = await Promise.all([
+  const [disputeRows, studentRows, setRows, gradingKeyRows, assignmentRows] = await Promise.all([
     getAll("answer_disputes"),
     getAll("students"),
     getAll("sets"),
     getAll("grading_keys"),
+    getAll("assignments"),
   ]);
   const studentMap = new Map(studentRows.map((item) => [item.auth_uid, item]));
   const setMap = new Map(setRows.map((item) => [item.set_id, item]));
   const gradingKeysMap = new Map(gradingKeyRows.map((item) => [item.set_id, item]));
+  const assignmentMap = new Map(assignmentRows.map((item) => [item.assignment_id || item._id, item]));
   return {
     success: true,
-    disputes: disputeRows.map((dispute) => {
+    disputes: disputeRows.filter((dispute) => {
+      if (!dispute.assignment_id) return true;
+      const assignment = assignmentMap.get(dispute.assignment_id);
+      return !assignment || normalizedAssignmentStatus(assignment.status) !== "cancelled";
+    }).map((dispute) => {
       const student = studentMap.get(dispute.student_uid) || {};
       const set = setMap.get(dispute.set_id) || {};
       const gradingKey = gradingKeysMap.get(dispute.set_id) || {};

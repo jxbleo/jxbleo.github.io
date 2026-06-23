@@ -410,6 +410,7 @@ flowchart TD
 - 同一个 `attempt_id + question_id` 只能争议一次
 - 老师预览也可以发起 teacher-originated dispute
 - teacher-originated dispute 可以没有 `attempt_id`
+- 如果学生举证绑定的 assignment 后来被老师撤销为 `cancelled`，教师端 Argue / Review 列表不再显示这条学生举证
 - `add` / `replace` 会改未来评分规则，也会自动向上重算同一 set、同一题、同一提交答案的历史 attempt
 - 自动重算不能降分、不能撤销 assignment 完成状态或 STAR
 
