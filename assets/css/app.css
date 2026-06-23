@@ -659,11 +659,12 @@ button { cursor: pointer; }
     background: rgba(247, 243, 255, 0.96);
 }
 .header-create-student {
-    width: 38px;
-    min-width: 38px;
+    width: auto;
+    min-width: 78px;
     height: 38px;
+    padding: 0 14px;
     border-radius: 999px;
-    font-size: 1.05rem;
+    font-size: 0.78rem;
     box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
 }
 .tab-button {
@@ -1849,6 +1850,61 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 1.18rem;
 }
 .teacher-review-head .eyebrow { margin: 0; }
+.student-lookup-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: grid;
+    align-items: start;
+    justify-items: center;
+    padding: min(7vh, 56px) 16px 28px;
+    background: rgba(24, 18, 43, 0.28);
+    backdrop-filter: blur(10px);
+}
+.student-lookup-modal[hidden] { display: none; }
+.student-lookup-dialog {
+    width: min(1120px, 100%);
+    max-height: min(840px, calc(100vh - 64px));
+    overflow: auto;
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.82);
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: var(--shadow);
+}
+.student-lookup-head {
+    position: sticky;
+    top: -18px;
+    z-index: 32;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 14px;
+    margin: -18px -18px 0;
+    padding: 18px;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
+}
+.student-lookup-head h2 {
+    margin: 2px 0 0;
+    font-size: 1.18rem;
+}
+.student-lookup-head .eyebrow { margin: 0; }
+.student-lookup-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 44px;
+}
+.student-lookup-create {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+}
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
     display: flex;
@@ -3809,7 +3865,7 @@ body:not(.teacher-page) .tab-button.active {
 .create-student-modal {
     position: fixed;
     inset: 0;
-    z-index: 130;
+    z-index: 170;
     display: grid;
     place-items: center;
     padding: 20px;
@@ -3871,7 +3927,7 @@ body:not(.teacher-page) .tab-button.active {
 .create-student-success-modal {
     position: fixed;
     inset: 0;
-    z-index: 136;
+    z-index: 176;
     display: grid;
     place-items: center;
     padding: 20px;

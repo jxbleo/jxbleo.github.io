@@ -115,6 +115,9 @@ Check:
 - Progress reflects recent attempts
 - Teacher page opens to View by default, and the initial matrix loading state
   shows only the animated grid/spinner without visible loading copy
+- top-right Students entry opens the standalone student lookup modal, the
+  modal's internal `+` opens create-student, and View no longer shows student
+  info/progress below the matrix
 - Teacher View expands to the desktop workspace width and does not stay capped
   at the narrower student dashboard shell width
 - First successful matrix render transitions in with a soft fade/lift instead
