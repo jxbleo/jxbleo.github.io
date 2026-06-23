@@ -120,6 +120,8 @@ Check:
 - Teacher rainbow theme animates slowly on hero, active controls, matrix
   headers, and grouped progress accents without overriding passed/mastered
   green states or low-score red states
+- Top-right teacher icon buttons show compact spinner states while loading and
+  header capsules do not show separate rainbow underline accents
 - Progress still reflects assignment attempts after attempts/assignments exceed
   one CloudBase read page
 - View matrix shows completed status from linked attempts even if assignment

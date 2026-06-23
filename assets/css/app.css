@@ -3179,24 +3179,33 @@ body:not(.teacher-page) .tab-button.active {
     color: rgba(23,32,27,0.72);
     box-shadow: 0 10px 24px rgba(31, 45, 38, 0.08);
 }
-.teacher-page .teacher-updates-button::after,
-.teacher-page .teacher-review-button::after,
-.teacher-page .teacher-create-capsule::after,
-.teacher-page .student-chip::after {
-    content: "";
-    position: absolute;
-    inset: auto 7px 5px;
-    height: 3px;
-    border-radius: 999px;
-    background: var(--teacher-rainbow);
-    background-size: 300% 100%;
-    opacity: 0.78;
-    animation: teacherRainbowFlow 8s linear infinite;
-}
 .teacher-page .teacher-updates-button.has-updates,
 .teacher-page .teacher-review-button.has-updates {
     border-color: rgba(239, 71, 111, 0.24);
     background: rgba(255,255,255,0.82);
+}
+.teacher-page .teacher-updates-button.is-loading,
+.teacher-page .teacher-review-button.is-loading,
+.teacher-page .teacher-create-capsule.is-loading {
+    color: transparent;
+    pointer-events: none;
+}
+.teacher-page .teacher-updates-button.is-loading > *,
+.teacher-page .teacher-review-button.is-loading > * {
+    position: absolute;
+    opacity: 0;
+}
+.teacher-page .teacher-updates-button.is-loading::before,
+.teacher-page .teacher-review-button.is-loading::before,
+.teacher-page .teacher-create-capsule.is-loading::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255,255,255,0.72);
+    border-top-color: #ef476f;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgba(255,255,255,0.48);
+    animation: teacherHeaderLoadingSpin 0.8s linear infinite;
 }
 
 .teacher-page .profile-card,
@@ -3365,6 +3374,9 @@ body:not(.teacher-page) .tab-button.active {
 @keyframes teacherRainbowAuroraTurn {
     from { transform: rotate(0deg) scale(1); }
     to { transform: rotate(360deg) scale(1); }
+}
+@keyframes teacherHeaderLoadingSpin {
+    to { transform: rotate(360deg); }
 }
 .assignment-edit-overlay {
     position: fixed;

@@ -20,6 +20,8 @@
   render so loaded data does not appear abruptly.
 - Restyled the teacher interface with the selected warm animated rainbow theme
   while keeping progress status colors readable.
+- Added compact spinner loading states for the teacher header icon buttons and
+  removed separate rainbow underline accents from header capsules.
 
 ## 2026-06-22
 

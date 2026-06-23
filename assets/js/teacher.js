@@ -351,6 +351,19 @@
         }
     }
 
+    function setHeaderIconLoading(isLoading) {
+        ['teacher-review-button', 'teacher-updates-button', 'toggle-create-student'].forEach(function(id) {
+            var button = document.getElementById(id);
+            if (!button) return;
+            button.classList.toggle('is-loading', isLoading === true);
+            if (isLoading === true) {
+                button.setAttribute('aria-busy', 'true');
+            } else {
+                button.removeAttribute('aria-busy');
+            }
+        });
+    }
+
     function formatDate(value, fallback, mode) {
         if (!value) return fallback || '—';
         var date = new Date(value);
@@ -3493,6 +3506,11 @@
         loadQuestionTextForDisputes().then(function() {
             renderDisputes();
             renderUpdatesPanel();
+        }).catch(function() {
+            renderDisputes();
+            renderUpdatesPanel();
+        }).then(function() {
+            setHeaderIconLoading(false);
         });
     }
 
@@ -3869,6 +3887,7 @@
         document.getElementById('teacher-hero-copy').textContent = randomItem(motivationalQuotes);
         return loadData();
     }).catch(function(error) {
+        setHeaderIconLoading(false);
         showMessage(error.message || 'Unable to load the teacher desk.', 'error');
     });
 })();
