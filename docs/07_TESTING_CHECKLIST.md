@@ -118,8 +118,10 @@ Check:
 - First successful matrix render transitions in with a soft fade/lift instead
   of abruptly replacing the loading state
 - Teacher rainbow theme animates slowly on hero, active controls, matrix
-  headers, and grouped progress accents without overriding passed/mastered
+  headers, and group-card top borders without overriding passed/mastered
   green states or low-score red states
+- Grouped progress items below the matrix keep quiet neutral/green status
+  styling instead of repeated rainbow-filled student capsules or stat pills
 - Top-right teacher icon buttons show compact spinner states while loading and
   header capsules do not show separate rainbow underline accents
 - Progress still reflects assignment attempts after attempts/assignments exceed
