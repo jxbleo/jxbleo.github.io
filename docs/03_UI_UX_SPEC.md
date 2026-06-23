@@ -209,7 +209,9 @@ It should include:
 - a wide teacher workspace shell that can expand on desktop screens so the
   matrix uses available horizontal space instead of staying capped at the
   narrower student dashboard width
-- an assignment matrix/table for scanning completion by student and task, with class, column, and date filters plus responsive horizontal scrolling on small screens
+- an assignment matrix/table for scanning completion by student and task, with class, column, and date filters. The matrix card should fill the available
+  View width, and wide task sets must scroll horizontally inside the matrix
+  area instead of widening the whole page.
 - matrix task headers show the stable task ID with the task name directly
   underneath
 - matrix filters appear in `Class`, `Column`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, and `Date` defaults to `This month` with `This week` and custom from/to calendar options

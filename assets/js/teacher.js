@@ -2662,8 +2662,8 @@
         return '<section class="progress-matrix-card">' +
             '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '<span>Showing ' + escapeHtml(sets.length) + ' tasks · ' + escapeHtml(students.length) + ' students</span></div></div>' +
             '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
-            detailHtml +
-        '</section>';
+        '</section>' +
+        detailHtml;
     }
 
     function renderAssignmentOverview() {
