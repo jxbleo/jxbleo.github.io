@@ -3191,14 +3191,17 @@ body:not(.teacher-page) .tab-button.active {
     color: rgba(23,32,27,0.72);
     box-shadow: 0 10px 24px rgba(31, 45, 38, 0.08);
 }
+.teacher-page .teacher-updates-button,
+.teacher-page .teacher-review-button {
+    overflow: visible;
+}
 .teacher-page .teacher-updates-button.has-updates,
 .teacher-page .teacher-review-button.has-updates {
     border-color: rgba(239, 71, 111, 0.24);
     background: rgba(255,255,255,0.82);
 }
 .teacher-page .teacher-updates-button.is-loading,
-.teacher-page .teacher-review-button.is-loading,
-.teacher-page .teacher-create-capsule.is-loading {
+.teacher-page .teacher-review-button.is-loading {
     color: transparent;
     pointer-events: none;
 }
@@ -3208,8 +3211,7 @@ body:not(.teacher-page) .tab-button.active {
     opacity: 0;
 }
 .teacher-page .teacher-updates-button.is-loading::before,
-.teacher-page .teacher-review-button.is-loading::before,
-.teacher-page .teacher-create-capsule.is-loading::before {
+.teacher-page .teacher-review-button.is-loading::before {
     content: "";
     width: 18px;
     height: 18px;
