@@ -259,6 +259,8 @@ Rules:
 - One student dispute per `attempt_id + question_id`.
 - Only wrong recorded questions can be disputed by students.
 - Teacher-originated disputes may have no `attempt_id`.
+- Teacher dispute lists hide student disputes linked to assignments whose
+  current status is `cancelled`.
 - `add` and `replace` update future grading and also trigger automatic upward
   regrading for historical attempts with the same set/question/submitted answer.
 - Historical regrading may improve attempts, assignment summaries, and STAR

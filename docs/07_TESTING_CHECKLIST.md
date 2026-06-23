@@ -123,6 +123,7 @@ Check:
 - `By task` bars sort student completion from low to high and open single-assignment detail
 - editing due/pass/mastery in View updates only the selected assignment records
 - Argue list loads and groups disputes
+- Argue list does not show student disputes linked to cancelled assignments
 - cancelling open selected assignments in View hides them from student To Do,
   preserves old attempts, skips completed/mastered assignments, and allows the
   same set to be reassigned later
