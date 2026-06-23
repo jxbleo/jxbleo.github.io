@@ -247,7 +247,11 @@ It should include:
   answer in red, and correct answer in green. They do not repeat table header
   labels.
 - a grouped `By student` / `By class` / `By task` progress view
-- `By student` and `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
+- `By student` groups expand into a full-width student history layout: a quiet
+  left student identity rail and a right-side assigned-task history list with
+  each task's best percentage fixed on the far right. Clicking a task opens
+  the same independent matrix detail modal used by top matrix cells.
+- `By class` groups show compact matrix-style score cells; clicking a cell expands the single assignment detail
 - `By task` groups show each student's completion as a low-to-high bar chart; clicking a bar expands that student's assignment detail
 - matrix detail and group tools allow teachers to manage the selected
   assignment records directly. A single matrix cell edits one student's one

@@ -3171,6 +3171,119 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-progress-group-body {
     border-top: 1px solid rgba(124,58,237,0.10);
 }
+.student-history-group.expanded {
+    border-color: rgba(31,45,38,0.14);
+    box-shadow: 0 18px 42px rgba(31,45,38,0.10);
+}
+.student-history-group .assignment-progress-group-head {
+    grid-template-columns: minmax(0, 1fr);
+}
+.student-history-shell {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    min-height: 220px;
+}
+.student-history-sidebar {
+    padding: 16px;
+    border-right: 1px solid rgba(31,45,38,0.10);
+    background: rgba(255,255,255,0.62);
+}
+.student-history-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.student-history-identity strong {
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 950;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.student-history-avatar {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, #13766d, #2fbf91);
+    font-weight: 1000;
+}
+.student-history-list {
+    display: grid;
+    align-content: start;
+}
+.student-history-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 62px;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid rgba(31,45,38,0.10);
+    color: var(--ink);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background 150ms ease, box-shadow 150ms ease;
+}
+.student-history-row:last-child {
+    border-bottom: 0;
+}
+.student-history-row:hover {
+    background: rgba(222,248,236,0.46);
+    box-shadow: inset 4px 0 0 rgba(19,118,109,0.55);
+}
+.student-history-task {
+    min-width: 0;
+}
+.student-history-task strong,
+.student-history-task small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.student-history-task strong {
+    font-size: 0.9rem;
+    font-weight: 920;
+}
+.student-history-task small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.student-history-score {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: #0d6f58;
+    background: #def8ec;
+    font-size: 0.82rem;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+.student-history-score.mastered {
+    color: #fff;
+    background: linear-gradient(135deg, #159b72, #31c58e);
+    box-shadow: 0 0 14px rgba(30,176,125,0.24);
+}
+.student-history-score.low {
+    color: #64736f;
+    border: 1px solid rgba(100,115,111,0.18);
+    background: rgba(255,255,255,0.9);
+}
 
 .teacher-page {
     --accent: #ef476f;
@@ -5162,6 +5275,21 @@ body:not(.teacher-page) .tab-button.active {
     .assignment-progress-group-head { grid-template-columns: 1fr; }
     .assignment-progress-group-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .assignment-progress-group-stats span { min-width: 0; }
+    .student-history-shell {
+        grid-template-columns: 1fr;
+    }
+    .student-history-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid rgba(31,45,38,0.10);
+    }
+    .student-history-row {
+        grid-template-columns: minmax(0, 1fr) max-content;
+        gap: 10px;
+        padding: 13px 12px;
+    }
+    .student-history-score {
+        justify-self: end;
+    }
     .assignment-table-head { display: none; }
     .assignment-table-row {
         grid-template-columns: 1fr;

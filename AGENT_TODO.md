@@ -52,6 +52,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-06-24
+
+- Implemented the selected teacher View `By student` expanded layout: a
+  full-width student history list with task best percentage fixed on the far
+  right. Each task opens the same independent matrix detail modal used by top
+  matrix cells. Verified teacher JavaScript syntax, diff whitespace, cache
+  references, and related UI/test documentation.
+
 ### 2026-06-23
 
 - Fixed student and teacher practice-entry dialogs so `Enter` closes the dialog
