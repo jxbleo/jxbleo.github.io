@@ -250,6 +250,7 @@ button { cursor: pointer; }
 
 .app-page { padding-bottom: 70px; }
 .app-shell { width: min(1080px, calc(100% - 28px)); margin: 0 auto; }
+.teacher-page .app-shell { width: min(1840px, calc(100% - 28px)); }
 
 .app-header {
     display: flex;
