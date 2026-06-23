@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260623-6">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260623-7">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
             <div class="teacher-header-actions">
-                <button class="teacher-review-button" id="teacher-review-button" type="button" aria-label="Review requests" aria-expanded="false">
+                <button class="teacher-review-button is-loading" id="teacher-review-button" type="button" aria-label="Review requests" aria-expanded="false" aria-busy="true">
                     <span class="review-question-mark" aria-hidden="true">?</span>
                     <span class="notice-dot danger" id="teacher-review-count" hidden>0</span>
                 </button>
-                <button class="teacher-updates-button" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false">
+                <button class="teacher-updates-button is-loading" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false" aria-busy="true">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
                         <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
                     </svg>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
                 </button>
-                <button class="teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
+                <button class="teacher-create-capsule header-create-student is-loading" id="toggle-create-student" type="button" aria-label="Create student account" aria-busy="true">+</button>
                 <button class="student-chip account-chip-button" id="teacher-chip" type="button" aria-expanded="false">Loading...</button>
             </div>
         </header>
@@ -274,6 +274,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260623-5"></script>
+    <script src="assets/js/teacher.js?v=20260623-6"></script>
 </body>
 </html>
