@@ -36,6 +36,11 @@
   the page vertically, notification attempt details open independently of the
   matrix, and unclassed students can be filtered as individual Class options.
 
+### Fixed
+
+- Fixed student and teacher practice-entry dialogs so they close before
+  navigation and do not reappear when browser Back returns from a practice page.
+
 ## 2026-06-22
 
 ### Changed

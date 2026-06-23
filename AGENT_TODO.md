@@ -54,6 +54,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-06-23
 
+- Fixed student and teacher practice-entry dialogs so `Enter` closes the dialog
+  before opening the practice page, and `pageshow` clears restored dialogs when
+  browser Back returns from practice. Verified dashboard and teacher JavaScript
+  syntax plus static cache references.
 - Added BBC MC option click feedback with only a soft bell sound and right-side
   `✦` marker. Confirmed the default and blue BBC render themes share the
   behavior, with the blue theme marker following the blue accent color.

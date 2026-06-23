@@ -716,7 +716,10 @@
         overlay.querySelector('#practice-entry-close').addEventListener('click', closePracticeEntryDialog);
         overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
             var href = overlay.dataset.href;
-            if (href) window.location.href = href;
+            if (href) {
+                closePracticeEntryDialog();
+                window.location.href = href;
+            }
         });
         return overlay;
     }
@@ -728,6 +731,10 @@
         delete overlay.dataset.href;
         document.removeEventListener('keydown', handlePracticeEntryKeydown);
     }
+
+    window.addEventListener('pageshow', function() {
+        closePracticeEntryDialog();
+    });
 
     function handlePracticeEntryKeydown(event) {
         if (event.key === 'Escape') closePracticeEntryDialog();

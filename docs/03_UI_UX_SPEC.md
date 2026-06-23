@@ -97,6 +97,9 @@ Student cards should show:
   buttons such as Teacher replies or Get Star
 - opening a task card first shows the shared practice-entry confirmation dialog
   so accidental taps do not immediately leave the dashboard
+- the practice-entry confirmation dialog must close before navigation and must
+  not be restored by browser Back/bfcache; returning from a practice page should
+  show the page behind the dialog
 - practice pages use `Back`, not `Home`, for return controls. Tapping Back
   first shows a leave-page confirmation, then returns one browser-history page;
   if no history is available, it falls back to `dashboard.html`.
@@ -259,7 +262,8 @@ Teacher opens existing practice pages in `teacher=1` mode.
 Student and teacher Library task items should render as the same compact task
 capsules/cards with set metadata, title, and stable set ID. The whole capsule
 opens the practice item after the shared practice-entry confirmation dialog;
-do not add a separate `Go` action.
+do not add a separate `Go` action. The dialog must close before navigation and
+must not reappear when browser Back returns to the Library/dashboard surface.
 Teacher Library uses CloudBase `sets` as the authoritative assignable source,
 but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
