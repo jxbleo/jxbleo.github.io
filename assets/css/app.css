@@ -2992,7 +2992,7 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-edit-overlay {
     position: fixed;
     inset: 0;
-    z-index: 80;
+    z-index: 110;
     display: grid;
     place-items: center;
     padding: 20px;
