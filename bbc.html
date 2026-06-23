@@ -507,6 +507,20 @@
             border-left-color: var(--accent);
             background: #e8f8f5;
             border-color: var(--accent);
+            position: relative;
+            padding-right: 34px;
+        }
+
+        .mc-options li:has(input[type="radio"]:checked)::after {
+            content: "✦";
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 900;
+            animation: mcChoiceSpark 520ms ease both;
         }
 
         .mc-options li.wrong {
@@ -558,6 +572,12 @@
             font-weight: bold;
             margin-right: 8px;
             color: var(--accent);
+        }
+
+        @keyframes mcChoiceSpark {
+            0% { opacity: 0; transform: translateY(-50%) scale(0.35) rotate(-18deg); }
+            55% { opacity: 1; transform: translateY(-50%) scale(1.3) rotate(10deg); }
+            100% { opacity: 0.95; transform: translateY(-50%) scale(1) rotate(0); }
         }
 
         .matching-section {
@@ -1409,6 +1429,10 @@
         body.bbc-theme-blue-studio .mc-options li:has(input[type="radio"]:checked) {
             background: #edf4ff;
             border-color: rgba(52,88,246,0.46);
+        }
+
+        body.bbc-theme-blue-studio .mc-options li:has(input[type="radio"]:checked)::after {
+            color: var(--accent);
         }
 
         body.bbc-theme-blue-studio .submit-btn {
@@ -3522,6 +3546,14 @@
         } catch (e) {}
     }
 
+    function playMcChoiceSound() {
+        try {
+            unlockResultAudio();
+            playResultTone(720, 0, 0.06, { volume: 0.035 });
+            playResultTone(980, 0.04, 0.10, { volume: 0.026 });
+        } catch (e) {}
+    }
+
     function animateResultScore(card, target, state) {
         var scoreNumber = card.querySelector('.result-score-number');
         var scoreBox = card.querySelector('.result-score');
@@ -4045,6 +4077,7 @@
             var target = e.target;
             if (target.type === 'radio' || target.tagName === 'SELECT') {
                 logEvent('answer_change', { name: target.name, value: target.value, type: target.type || 'select' });
+                if (target.type === 'radio' && target.closest('.mc-options')) playMcChoiceSound();
                 saveDraftAnswers();
             }
         });
