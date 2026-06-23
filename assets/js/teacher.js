@@ -23,6 +23,7 @@
         updatesOpen: false,
         reviewOpen: false,
         attemptsSeenAt: null,
+        notificationAttemptId: '',
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
         disputeMerge: false,
@@ -294,6 +295,7 @@
         if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
         if (state.accountPanelOpen) {
             state.updatesOpen = false;
+            state.notificationAttemptId = '';
             renderUpdatesPanel();
             setReviewPanel(false);
             renderTeacherAccount();
@@ -309,6 +311,7 @@
         if (state.reviewOpen) {
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
+            state.notificationAttemptId = '';
             renderUpdatesPanel();
             loadQuestionTextForDisputes().then(renderDisputes);
         }
@@ -323,6 +326,7 @@
             setCreateStudentSuccessModal(false);
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
+            state.notificationAttemptId = '';
             setReviewPanel(false);
             renderUpdatesPanel();
             window.setTimeout(function() {
@@ -2259,23 +2263,70 @@
         return student && student.class_group ? String(student.class_group) : '';
     }
 
+    function matrixStudentName(item) {
+        var uid = item.student_uid || item.auth_uid || '';
+        var student = state.students.find(function(profile) {
+            return profile.auth_uid === uid || profile.student_id === item.student_id;
+        });
+        return item.student_name || (student && student.name) || item.student_id || 'Student';
+    }
+
+    function matrixIndividualFilterValue(item) {
+        return 'individual:' + matrixStudentKey(item);
+    }
+
     function matrixClassOptions(items) {
         var classes = {};
+        var individuals = {};
         items.forEach(function(item) {
             var className = matrixStudentClass(item);
-            if (className) classes[className] = true;
+            if (className) {
+                classes[className] = true;
+                return;
+            }
+            var key = matrixStudentKey(item);
+            if (!individuals[key]) {
+                individuals[key] = {
+                    value: matrixIndividualFilterValue(item),
+                    label: matrixStudentName(item)
+                };
+            }
         });
-        return Object.keys(classes).sort(function(a, b) { return a.localeCompare(b); });
+        return {
+            classes: Object.keys(classes).sort(function(a, b) { return a.localeCompare(b); }),
+            individuals: Object.keys(individuals).map(function(key) { return individuals[key]; })
+                .sort(function(a, b) { return a.label.localeCompare(b.label); })
+        };
     }
 
     function renderMatrixClassSelect(classOptions) {
-        if (!classOptions.length) return '';
+        if (!classOptions.classes.length && !classOptions.individuals.length) return '';
+        var classHtml = classOptions.classes.map(function(className) {
+            return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
+        }).join('');
+        var individualHtml = classOptions.individuals.map(function(student) {
+            return '<option value="' + escapeHtml(student.value) + '"' + (student.value === state.matrixClassFilter ? ' selected' : '') + '>Individual - ' + escapeHtml(student.label) + '</option>';
+        }).join('');
         return '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
             '<option value="">All</option>' +
-            classOptions.map(function(className) {
-                return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
-            }).join('') +
+            classHtml +
+            individualHtml +
         '</select></label>';
+    }
+
+    function matrixClassFilterExists(classOptions, value) {
+        if (!value) return true;
+        if (classOptions.classes.indexOf(value) !== -1) return true;
+        return classOptions.individuals.some(function(student) { return student.value === value; });
+    }
+
+    function matrixItemMatchesClassFilter(item) {
+        var filter = state.matrixClassFilter || '';
+        if (!filter) return true;
+        if (filter.indexOf('individual:') === 0) {
+            return !matrixStudentClass(item) && matrixIndividualFilterValue(item) === filter;
+        }
+        return matrixStudentClass(item) === filter;
     }
 
     function renderMatrixDateSelect() {
@@ -2556,10 +2607,43 @@
         '</div>';
     }
 
+    function closeMatrixCellModal(container) {
+        state.selectedMatrixCell = '';
+        state.targetMatrixAttemptId = '';
+        if (!container) return;
+        container.querySelectorAll('.progress-matrix-modal-backdrop').forEach(function(modal) {
+            modal.remove();
+        });
+        container.querySelectorAll('.progress-matrix-cell.selected').forEach(function(cell) {
+            cell.classList.remove('selected');
+        });
+    }
+
+    function matrixScrollSnapshot(container) {
+        var scroll = container && container.querySelector('.progress-matrix-scroll');
+        return {
+            left: scroll ? scroll.scrollLeft : 0,
+            top: scroll ? scroll.scrollTop : 0,
+            windowX: window.pageXOffset || document.documentElement.scrollLeft || 0,
+            windowY: window.pageYOffset || document.documentElement.scrollTop || 0
+        };
+    }
+
+    function restoreMatrixScroll(snapshot) {
+        if (!snapshot) return;
+        var container = document.getElementById('assignment-overview');
+        var scroll = container && container.querySelector('.progress-matrix-scroll');
+        if (scroll) {
+            scroll.scrollLeft = snapshot.left || 0;
+            scroll.scrollTop = snapshot.top || 0;
+        }
+        window.scrollTo(snapshot.windowX || 0, snapshot.windowY || 0);
+    }
+
     function renderAssignmentMatrix(items) {
         if (!items.length) return '';
         var classOptions = matrixClassOptions(items);
-        if (state.matrixClassFilter && classOptions.indexOf(state.matrixClassFilter) === -1) {
+        if (!matrixClassFilterExists(classOptions, state.matrixClassFilter)) {
             state.matrixClassFilter = '';
         }
         var columnOptions = matrixColumnOptions(items);
@@ -2569,9 +2653,7 @@
         var classSelect = renderMatrixClassSelect(classOptions);
         var dateSelect = renderMatrixDateSelect();
         var columnSelect = renderMatrixColumnSelect(columnOptions);
-        var matrixItems = state.matrixClassFilter
-            ? items.filter(function(item) { return matrixStudentClass(item) === state.matrixClassFilter; })
-            : items;
+        var matrixItems = items.filter(matrixItemMatchesClassFilter);
         if (state.matrixColumnFilter) {
             matrixItems = matrixItems.filter(function(item) {
                 return matrixColumnKey(item) === state.matrixColumnFilter;
@@ -2738,17 +2820,17 @@
         container.querySelectorAll('[data-matrix-cell]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixCell;
+                var scrollSnapshot = matrixScrollSnapshot(container);
                 state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
                 state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
+                restoreMatrixScroll(scrollSnapshot);
             });
         });
         container.querySelectorAll('[data-matrix-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 if (button.dataset.matrixClose === 'backdrop' && event.target !== button) return;
-                state.selectedMatrixCell = '';
-                state.targetMatrixAttemptId = '';
-                renderAssignmentOverview();
+                closeMatrixCellModal(container);
             });
         });
         container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
@@ -2969,20 +3051,6 @@
             '</div>';
     }
 
-    function findProgressItemForAttempt(attempt) {
-        if (!attempt) return null;
-        var source = (state.progressItems.length ? state.progressItems : state.assignments).filter(function(item) {
-            return !item.source || item.source === 'assigned';
-        });
-        var exact = source.find(function(item) {
-            return attempt.assignment_id && item.assignment_id === attempt.assignment_id;
-        });
-        if (exact) return exact;
-        return source.find(function(item) {
-            return item.student_uid === attempt.student_uid && item.set_id === attempt.set_id;
-        }) || null;
-    }
-
     function markAttemptsReadSilently() {
         teacherCall('markAttemptsRead').then(function(result) {
             state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
@@ -2990,45 +3058,40 @@
         }).catch(function() {});
     }
 
+    function renderNotificationAttemptModal() {
+        if (!state.notificationAttemptId) return '';
+        var attempt = (state.attempts || []).find(function(item) {
+            return item.attempt_id === state.notificationAttemptId;
+        });
+        if (!attempt) return '';
+        var student = studentForUid(attempt.student_uid);
+        var entries = matrixAttemptEntries([attempt]);
+        var title = setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt';
+        var sourceLabel = attempt.assignment_id ? 'Assigned work' : 'Self study';
+        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal" data-notification-attempt-close="backdrop">' +
+            '<div class="progress-matrix-modal-shell">' +
+                '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Attempt details">' +
+                    '<div class="progress-matrix-detail">' +
+                        '<div class="matrix-detail-summary">' +
+                            '<h2>' + escapeHtml(title) + '</h2>' +
+                            '<div class="matrix-detail-pills">' +
+                                '<span class="matrix-detail-pill">' + escapeHtml(student.name || attempt.student_id || 'Student') + '</span>' +
+                                '<span class="matrix-detail-pill">' + escapeHtml(sourceLabel) + '</span>' +
+                                '<span class="matrix-score-lock unlocked"><strong>' + escapeHtml(formatPercent(attempt.percentage)) + '</strong></span>' +
+                            '</div>' +
+                        '</div>' +
+                        renderMatrixAttemptChart(entries, attempt) +
+                        renderMatrixAttemptDetails(entries) +
+                    '</div>' +
+                '</section>' +
+                '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
+            '</div>' +
+        '</div>';
+    }
+
     function openAttemptFromNotification(row) {
         var attemptId = row.dataset.openAttemptId || '';
-        var attempt = (state.attempts || []).find(function(item) {
-            return attemptId && item.attempt_id === attemptId;
-        }) || {
-            attempt_id: attemptId,
-            student_uid: row.dataset.openAttemptStudent || '',
-            assignment_id: row.dataset.openAttemptAssignment || '',
-            set_id: row.dataset.openAttemptSet || ''
-        };
-        var student = state.students.find(function(item) { return item.auth_uid === attempt.student_uid; });
-        var progressItem = findProgressItemForAttempt(attempt);
-        if (student) state.selectedStudentProfileId = student.profile_id;
-        state.updatesOpen = false;
-        state.targetMatrixAttemptId = attempt.attempt_id || '';
-        if (progressItem) {
-            var attemptDate = formatDateInputValue(attempt.submitted_at || matrixDateValue(progressItem));
-            state.selectedMatrixCell = matrixCellKey(progressItem);
-            state.matrixClassFilter = '';
-            state.matrixColumnFilter = matrixColumnKey(progressItem);
-            if (attemptDate) {
-                state.matrixDateFilter = 'custom';
-                state.matrixDateFrom = attemptDate;
-                state.matrixDateTo = attemptDate;
-            }
-            activateView('view');
-            setStudentPickerOpen(false);
-            renderStudentList();
-            renderStudentDetail();
-            renderAssignmentOverview();
-        } else {
-            state.selectedMatrixCell = '';
-            activateView('view');
-            setStudentPickerOpen(false);
-            renderStudentList();
-            renderStudentDetail();
-            renderAssignmentOverview();
-            showMessage('Opened the student. This attempt is not linked to an assigned matrix item.', 'error');
-        }
+        state.notificationAttemptId = attemptId;
         renderUpdatesPanel();
         markAttemptsReadSilently();
     }
@@ -3040,10 +3103,24 @@
         var button = document.getElementById('teacher-updates-button');
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
         if (!state.updatesOpen) return;
-        updatesBody.innerHTML = renderActivityFeed();
+        updatesBody.innerHTML = renderActivityFeed() + renderNotificationAttemptModal();
         updatesBody.querySelectorAll('[data-open-attempt-id]').forEach(function(row) {
             row.addEventListener('click', function() {
                 openAttemptFromNotification(row);
+            });
+        });
+        updatesBody.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
+                state.notificationAttemptId = '';
+                renderUpdatesPanel();
+            });
+        });
+        updatesBody.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var modal = button.closest('.progress-matrix-modal-shell');
+                var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     }
@@ -3559,17 +3636,20 @@
     }
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
+        if (!state.updatesOpen) state.notificationAttemptId = '';
         if (state.updatesOpen) setReviewPanel(false);
         renderUpdatesPanel();
     });
     document.getElementById('teacher-updates-close').addEventListener('click', function() {
         state.updatesOpen = false;
+        state.notificationAttemptId = '';
         renderUpdatesPanel();
     });
     if (updatesPanel) {
         updatesPanel.addEventListener('click', function(event) {
             if (event.target === updatesPanel) {
                 state.updatesOpen = false;
+                state.notificationAttemptId = '';
                 renderUpdatesPanel();
             }
         });

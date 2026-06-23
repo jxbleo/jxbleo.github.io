@@ -135,11 +135,10 @@ The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
 top-right Review entry.
 
-Teacher notification rows are direct links. Clicking a student attempt opens
-`View`, selects the matching matrix cell, and highlights that specific attempt
-inside the matrix detail dialog. Matrix date filtering for this route must
-include the clicked attempt's submitted date, even when the assignment summary
-date or first completion date is different.
+Teacher notification rows open standalone attempt detail dialogs inside the
+notification surface. They must not switch to `View`, select matrix cells,
+change matrix filters, or redraw the matrix, whether the attempt came from an
+assigned task or self study.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
@@ -212,10 +211,11 @@ It should include:
   narrower student dashboard width
 - an assignment matrix/table for scanning completion by student and task, with class, column, and date filters. The matrix card should fill the available
   View width, and wide task sets must scroll horizontally inside the matrix
-  area instead of widening the whole page.
+  area instead of widening the whole page. On touch devices, horizontal matrix
+  scrolling must not block normal vertical page scrolling.
 - matrix task headers show the stable task ID with the task name directly
   underneath
-- matrix filters appear in `Class`, `Column`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, and `Date` defaults to `This month` with `This week` and custom from/to calendar options
+- matrix filters appear in `Class`, `Column`, `Date` order; `Class` defaults to `All`, `Column` defaults to `All`, and `Date` defaults to `This month` with `This week` and custom from/to calendar options. Unclassed students appear in the `Class` menu as `Individual - Student Name` options so a teacher can isolate one student's matrix rows.
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column
