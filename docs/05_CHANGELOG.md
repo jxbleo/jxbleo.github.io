@@ -24,6 +24,8 @@
   removed separate rainbow underline accents from header capsules.
 - Reduced repeated rainbow fills in grouped progress items below the teacher
   matrix so student capsules and stats stay visually quiet.
+- Restored the teacher matrix cell detail as an independent page-level modal
+  and kept the grouped progress mode tabs visually quiet.
 
 ## 2026-06-22
 

@@ -3154,7 +3154,6 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-page .tab-button.active,
 .teacher-page .primary-button,
-.teacher-page .assignment-progress-mode-tab.active,
 .teacher-page .assignment-edit-button {
     color: #fff;
     background: var(--teacher-rainbow);
@@ -3216,7 +3215,6 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-page .create-student-dialog,
 .teacher-page .create-student-success-card,
 .teacher-page .assign-picker-dialog,
-.teacher-page .progress-matrix-card,
 .teacher-page .assignment-progress-group,
 .teacher-page .assignment-progress-mode-tabs,
 .teacher-page .student-select-card {
@@ -3232,6 +3230,9 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-page .student-select-card {
     position: relative;
     overflow: hidden;
+}
+.teacher-page .progress-matrix-card {
+    overflow: visible;
 }
 .teacher-page .progress-matrix-card::before,
 .teacher-page .assignment-progress-group::before,
@@ -3278,7 +3279,6 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-page .matrix-column-filter select,
 .teacher-page .matrix-date-filter select,
 .teacher-page .matrix-date-bound input,
-.teacher-page .assignment-progress-mode-tabs,
 .teacher-page .assignment-group-tools,
 .teacher-page .task-score-chart {
     border-color: transparent;
@@ -3287,6 +3287,17 @@ body:not(.teacher-page) .tab-button.active {
         var(--teacher-rainbow) border-box;
     background-size: auto, 300% 100%;
     animation: teacherRainbowFlow 10s linear infinite;
+}
+.teacher-page .assignment-progress-mode-tabs {
+    border-color: rgba(31,45,38,0.10);
+    background: rgba(255,255,255,0.76);
+    animation: none;
+}
+.teacher-page .assignment-progress-mode-tab.active {
+    color: #24372f;
+    background: rgba(31,45,38,0.10);
+    box-shadow: none;
+    animation: none;
 }
 .teacher-page .progress-matrix-scroll {
     border-color: rgba(239, 71, 111, 0.14);
