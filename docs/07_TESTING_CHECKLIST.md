@@ -115,7 +115,8 @@ Check:
 - Progress reflects recent attempts
 - Teacher page opens to View by default, and the initial matrix loading state
   shows only the animated grid/spinner without visible loading copy
-- top-right Students entry opens the standalone student lookup modal, the
+- top-right circular student ID icon opens the standalone student lookup
+  modal; Choose/Search expands a scrollable student list inside the modal, the
   modal's internal `+` opens create-student, and View no longer shows student
   info/progress below the matrix
 - Teacher View `By student` expands a student into a history list with best
