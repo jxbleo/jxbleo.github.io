@@ -9,6 +9,8 @@
 
 - Added audio-to-submit timing for audio practice attempts and displayed
   teacher attempt timing as `Page ... · Audio ...` when available.
+- Moved teacher student lookup into a top-right standalone modal with an
+  internal create-student `+`, leaving the View page focused on the matrix.
 
 ## 2026-06-23
 

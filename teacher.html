@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260623-12">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260624-4">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -23,7 +23,7 @@
                     </svg>
                     <span class="notice-dot danger" id="teacher-updates-count" hidden>0</span>
                 </button>
-                <button class="teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Create student account">+</button>
+                <button class="teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Find students" aria-expanded="false">Students</button>
                 <button class="student-chip account-chip-button" id="teacher-chip" type="button" aria-expanded="false">Loading...</button>
             </div>
         </header>
@@ -82,6 +82,47 @@
                 <div class="dispute-list" id="dispute-list">
                     <div class="empty-card loading-card">Loading review requests...</div>
                 </div>
+            </div>
+        </section>
+
+        <section class="student-lookup-modal" id="student-lookup-panel" hidden>
+            <div class="student-lookup-dialog" role="dialog" aria-modal="true" aria-labelledby="student-lookup-title">
+                <div class="student-lookup-head">
+                    <div>
+                        <p class="eyebrow accent">STUDENTS</p>
+                        <h2 id="student-lookup-title">Student lookup</h2>
+                    </div>
+                    <div class="student-lookup-actions">
+                        <button class="teacher-create-capsule student-lookup-create" id="student-lookup-create" type="button" aria-label="Create student account">+</button>
+                        <button class="create-student-close" id="student-lookup-close" type="button" aria-label="Close student lookup">x</button>
+                    </div>
+                </div>
+                <section class="profile-card student-select-card">
+                    <p class="eyebrow accent">STUDENT</p>
+                    <div class="student-search-actions">
+                        <div class="student-mode-buttons" aria-label="Student picker mode">
+                            <button class="student-mode-button" id="choose-student" type="button">Choose</button>
+                            <button class="student-mode-button" id="search-student" type="button">Search</button>
+                        </div>
+                        <span class="selected-student-pill" id="selected-student-label">No student selected</span>
+                        <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">Confirm</button>
+                        <select class="filter-select full-width" id="student-class-filter" hidden>
+                            <option value="">All classes</option>
+                        </select>
+                    </div>
+                    <div class="student-picker-shell" id="student-picker-shell">
+                        <div class="student-picker-searchbar" id="student-picker-searchbar" hidden>
+                            <input class="resource-search" id="student-search" type="search" placeholder="Search by name, Login ID, class..." autocomplete="off">
+                        </div>
+                        <div class="student-picker" id="student-list">
+                            <div class="empty-card loading-card">Loading students...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="student-detail" id="student-detail">
+                    <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
+                </section>
             </div>
         </section>
 
@@ -239,33 +280,6 @@
                     </div>
                 </div>
             </section>
-
-            <section class="profile-card student-select-card">
-                <p class="eyebrow accent">STUDENT</p>
-                <div class="student-search-actions">
-                    <div class="student-mode-buttons" aria-label="Student picker mode">
-                        <button class="student-mode-button" id="choose-student" type="button">Choose</button>
-                        <button class="student-mode-button" id="search-student" type="button">Search</button>
-                    </div>
-                    <span class="selected-student-pill" id="selected-student-label">No student selected</span>
-                    <button class="primary-button student-confirm-button" id="confirm-student-search" type="button">Confirm</button>
-                    <select class="filter-select full-width" id="student-class-filter" hidden>
-                        <option value="">All classes</option>
-                    </select>
-                </div>
-                <div class="student-picker-shell" id="student-picker-shell">
-                    <div class="student-picker-searchbar" id="student-picker-searchbar" hidden>
-                        <input class="resource-search" id="student-search" type="search" placeholder="Search by name, Login ID, class..." autocomplete="off">
-                    </div>
-                    <div class="student-picker" id="student-list">
-                        <div class="empty-card loading-card">Loading students...</div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="student-detail" id="student-detail">
-                <div class="empty-card"><strong>Select a student</strong>Account details and learning progress will appear here.</div>
-            </section>
         </section>
 
     </main>
@@ -274,6 +288,6 @@
     <script src="assets/js/config.public.js?v=20260616-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
     <script src="assets/js/auth.js?v=20260611-2"></script>
-    <script src="assets/js/teacher.js?v=20260624-2"></script>
+    <script src="assets/js/teacher.js?v=20260624-4"></script>
 </body>
 </html>

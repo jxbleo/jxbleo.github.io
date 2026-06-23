@@ -127,13 +127,13 @@ Teacher page has three main capsules:
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
-status row. The only create-student entry is the `+` button beside the
-notification control in the top-right header; it opens a standalone modal, not
-an inline View panel. The create-student modal uses a vertical field stack and,
-after success, shows a standalone checkmark confirmation dialog with the new
-Login ID and initial password. Review requests open from a separate top-right
-question-mark icon button with a pending-count badge and display in a
-standalone modal.
+status row. The top-right student entry opens a standalone Student lookup
+modal. That modal contains the student search/selection surface, selected
+student info and progress, and an internal `+` action for creating a student.
+The create-student modal uses a vertical field stack and, after success, shows
+a standalone checkmark confirmation dialog with the new Login ID and initial
+password. Review requests open from a separate top-right question-mark icon
+button with a pending-count badge and display in a standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
 top-right Review entry.
@@ -212,6 +212,8 @@ It should include:
 - a wide teacher workspace shell that can expand on desktop screens so the
   matrix uses available horizontal space instead of staying capped at the
   narrower student dashboard width
+- no separate student info/progress section below the matrix; that student
+  lookup surface lives in the top-right Student lookup modal
 - an assignment matrix/table for scanning completion by student and task, with class, column, and date filters. The matrix card should fill the available
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix

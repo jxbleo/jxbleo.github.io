@@ -22,6 +22,7 @@
         accountPanelOpen: false,
         updatesOpen: false,
         reviewOpen: false,
+        studentLookupOpen: false,
         attemptsSeenAt: null,
         notificationAttemptId: '',
         targetMatrixAttemptId: '',
@@ -294,6 +295,11 @@
         var chip = document.getElementById('teacher-chip');
         if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
         if (state.accountPanelOpen) {
+            state.studentLookupOpen = false;
+            var lookupPanel = document.getElementById('student-lookup-panel');
+            var lookupButton = document.getElementById('toggle-create-student');
+            if (lookupPanel) lookupPanel.hidden = true;
+            if (lookupButton) lookupButton.setAttribute('aria-expanded', 'false');
             state.updatesOpen = false;
             state.notificationAttemptId = '';
             renderUpdatesPanel();
@@ -309,6 +315,11 @@
         if (panel) panel.hidden = !state.reviewOpen;
         if (button) button.setAttribute('aria-expanded', state.reviewOpen ? 'true' : 'false');
         if (state.reviewOpen) {
+            state.studentLookupOpen = false;
+            var lookupPanel = document.getElementById('student-lookup-panel');
+            var lookupButton = document.getElementById('toggle-create-student');
+            if (lookupPanel) lookupPanel.hidden = true;
+            if (lookupButton) lookupButton.setAttribute('aria-expanded', 'false');
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
             state.notificationAttemptId = '';
@@ -318,12 +329,36 @@
         updateTopBadges();
     }
 
+    function setStudentLookupPanel(open) {
+        state.studentLookupOpen = open === true;
+        var panel = document.getElementById('student-lookup-panel');
+        var button = document.getElementById('toggle-create-student');
+        if (panel) panel.hidden = !state.studentLookupOpen;
+        if (button) button.setAttribute('aria-expanded', state.studentLookupOpen ? 'true' : 'false');
+        if (state.studentLookupOpen) {
+            setTeacherAccountPanel(false);
+            state.updatesOpen = false;
+            state.notificationAttemptId = '';
+            renderUpdatesPanel();
+            setReviewPanel(false);
+            renderStudentList();
+            renderStudentDetail();
+        } else {
+            setStudentPickerOpen(false);
+        }
+    }
+
     function setCreateStudentModal(open) {
         var panel = document.getElementById('create-student-panel');
         if (!panel) return;
         panel.hidden = open !== true;
         if (open) {
             setCreateStudentSuccessModal(false);
+            state.studentLookupOpen = false;
+            var lookupPanel = document.getElementById('student-lookup-panel');
+            var lookupButton = document.getElementById('toggle-create-student');
+            if (lookupPanel) lookupPanel.hidden = true;
+            if (lookupButton) lookupButton.setAttribute('aria-expanded', 'false');
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
             state.notificationAttemptId = '';
@@ -3846,6 +3881,11 @@
             setCreateStudentSuccessModal(false);
             return;
         }
+        var studentLookupPanel = document.getElementById('student-lookup-panel');
+        if (studentLookupPanel && !studentLookupPanel.hidden && event.target === studentLookupPanel) {
+            setStudentLookupPanel(false);
+            return;
+        }
         if (state.accountPanelOpen && teacherAccountPanel && !teacherAccountPanel.contains(event.target) && !event.target.closest('#teacher-chip')) {
             setTeacherAccountPanel(false);
         }
@@ -3902,6 +3942,10 @@
                 setCreateStudentSuccessModal(false);
                 return;
             }
+            if (state.studentLookupOpen) {
+                setStudentLookupPanel(false);
+                return;
+            }
             if (state.assignPanels.sets) {
                 setAssignPanel('sets', false);
                 return;
@@ -3921,9 +3965,14 @@
         openHrefCard(openCard, event);
     });
     document.getElementById('toggle-create-student').addEventListener('click', function() {
-        setStudentPickerOpen(false);
-        setTeacherAccountPanel(false);
+        setStudentLookupPanel(state.studentLookupOpen !== true);
+    });
+    document.getElementById('student-lookup-create').addEventListener('click', function() {
+        setStudentLookupPanel(false);
         setCreateStudentModal(true);
+    });
+    document.getElementById('student-lookup-close').addEventListener('click', function() {
+        setStudentLookupPanel(false);
     });
     document.getElementById('close-create-student').addEventListener('click', function() {
         setCreateStudentModal(false);
