@@ -18,6 +18,8 @@
   matrix loading state with visible grid lines and a centered spinner.
 - Added a soft fade/lift transition for the first successful teacher matrix
   render so loaded data does not appear abruptly.
+- Restyled the teacher interface with the selected warm animated rainbow theme
+  while keeping progress status colors readable.
 
 ## 2026-06-22
 

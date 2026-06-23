@@ -143,9 +143,16 @@ date or first completion date is different.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
-subtle green/gold color movement, and a centered spinner. On the first
+subtle rainbow color movement, and a centered spinner. On the first
 successful matrix render, the real matrix content should softly fade and lift
 into place instead of replacing the loading state abruptly.
+
+Teacher visual style uses a warm, animated rainbow theme. Rainbow gradients
+appear on the hero, active tabs, primary actions, header action accents, matrix
+headers, grouped progress accents, and selected control borders. These rainbow
+elements should move slowly and continuously. Completion states remain
+functionally colored: passed/mastered stay green, low scores stay red, and
+empty/not-yet cells stay neutral.
 
 ### Assign Tab
 
