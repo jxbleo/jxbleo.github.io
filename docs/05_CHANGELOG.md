@@ -16,6 +16,8 @@
   block reassignment.
 - Made the teacher page open to `View` by default and added a textless animated
   matrix loading state with visible grid lines and a centered spinner.
+- Added a soft fade/lift transition for the first successful teacher matrix
+  render so loaded data does not appear abruptly.
 
 ## 2026-06-22
 

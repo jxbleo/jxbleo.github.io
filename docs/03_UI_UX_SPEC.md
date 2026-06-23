@@ -143,7 +143,9 @@ date or first completion date is different.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
-subtle green/gold color movement, and a centered spinner.
+subtle green/gold color movement, and a centered spinner. On the first
+successful matrix render, the real matrix content should softly fade and lift
+into place instead of replacing the loading state abruptly.
 
 ### Assign Tab
 
