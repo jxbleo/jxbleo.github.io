@@ -156,8 +156,9 @@ empty/not-yet cells stay neutral. The grouped progress area below the matrix
 should not use rainbow fills on repeated student capsules, mode tabs, mini
 cells, score bars, or stats because repeated color blocks make the view noisy.
 
-The three top-right teacher icon buttons show compact spinner loading states
-while the teacher desk is initializing. Header capsules should not use a
+The top-right Review and Notifications icon buttons show compact spinner loading states
+while the teacher desk is initializing. The create-student and account capsules
+stay in their normal state. Header capsules should not use a
 separate rainbow underline; keep their shape stable and remove the spinner once
 the desk data has loaded or failed.
 

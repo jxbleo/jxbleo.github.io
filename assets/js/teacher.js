@@ -352,7 +352,7 @@
     }
 
     function setHeaderIconLoading(isLoading) {
-        ['teacher-review-button', 'teacher-updates-button', 'toggle-create-student'].forEach(function(id) {
+        ['teacher-review-button', 'teacher-updates-button'].forEach(function(id) {
             var button = document.getElementById(id);
             if (!button) return;
             button.classList.toggle('is-loading', isLoading === true);
