@@ -57,6 +57,9 @@
     }
 
     function goBack() {
+        document.querySelectorAll('.mrcat-back-modal.show').forEach(function(modal) {
+            modal.classList.remove('show');
+        });
         if (window.history.length > 1) {
             window.history.back();
         } else {
