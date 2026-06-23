@@ -22,6 +22,8 @@
   while keeping progress status colors readable.
 - Added compact spinner loading states for the teacher header icon buttons and
   removed separate rainbow underline accents from header capsules.
+- Reduced repeated rainbow fills in grouped progress items below the teacher
+  matrix so student capsules and stats stay visually quiet.
 
 ## 2026-06-22
 

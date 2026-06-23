@@ -148,11 +148,13 @@ successful matrix render, the real matrix content should softly fade and lift
 into place instead of replacing the loading state abruptly.
 
 Teacher visual style uses a warm, animated rainbow theme. Rainbow gradients
-appear on the hero, active tabs, primary actions, matrix headers, grouped
-progress accents, and selected control borders. These rainbow
+appear on the hero, active tabs, primary actions, matrix headers, group-card
+top borders, and selected control borders. These rainbow
 elements should move slowly and continuously. Completion states remain
 functionally colored: passed/mastered stay green, low scores stay red, and
-empty/not-yet cells stay neutral.
+empty/not-yet cells stay neutral. The grouped progress area below the matrix
+should not use rainbow fills on repeated student capsules, mini cells, score
+bars, or stats because repeated color blocks make the view noisy.
 
 The three top-right teacher icon buttons show compact spinner loading states
 while the teacher desk is initializing. Header capsules should not use a
