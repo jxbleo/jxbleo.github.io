@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-24
+
+### Added
+
+- Added audio-to-submit timing for audio practice attempts and displayed
+  teacher attempt timing as `Page ... · Audio ...` when available.
+
 ## 2026-06-23
 
 ### Added

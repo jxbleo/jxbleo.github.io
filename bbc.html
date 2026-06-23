@@ -2021,6 +2021,7 @@
     var mcLockedAnswers = {};
     var answerRevealSavePromise = null;
     var lessonWordsListenersReady = false;
+    var audioStartedAt = null;
 
     var resultEncouragements = [
         'Small steps, sharp ears, real progress.',
@@ -2123,6 +2124,15 @@
         return document.getElementById('bbc-audio');
     }
 
+    function markAudioStartedAt() {
+        if (!audioStartedAt) audioStartedAt = new Date().toISOString();
+    }
+
+    function audioToSubmitSeconds() {
+        if (!audioStartedAt) return null;
+        return Math.max(0, Math.round((Date.now() - new Date(audioStartedAt).getTime()) / 1000));
+    }
+
     function setText(id, value) {
         var el = document.getElementById(id);
         if (el) el.textContent = value;
@@ -2152,9 +2162,14 @@
         if (audio.paused) {
             var playPromise = audio.play();
             if (playPromise && playPromise.catch) {
+                if (playPromise.then) {
+                    playPromise.then(markAudioStartedAt).catch(function() {});
+                }
                 playPromise.catch(function() {
                     updateAudioUi();
                 });
+            } else {
+                markAudioStartedAt();
             }
         } else {
             audio.pause();
@@ -2184,7 +2199,10 @@
             }
             audio.addEventListener('loadedmetadata', updateAudioUi);
             audio.addEventListener('timeupdate', updateAudioUi);
-            audio.addEventListener('play', updateAudioUi);
+            audio.addEventListener('play', function() {
+                markAudioStartedAt();
+                updateAudioUi();
+            });
             audio.addEventListener('pause', updateAudioUi);
             audio.addEventListener('ended', updateAudioUi);
 
@@ -4008,7 +4026,9 @@
             mode: 'bbc',
             answers: userAnswers,
             started_at: attemptStartedAt,
-            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(attemptStartedAt).getTime()) / 1000))
+            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(attemptStartedAt).getTime()) / 1000)),
+            audio_started_at: audioStartedAt,
+            audio_to_submit_seconds: audioToSubmitSeconds()
         }).then(function(response) {
             if (!response || !response.success) {
                 throw new Error(response && response.message || 'Unable to save this attempt.');

@@ -135,6 +135,8 @@ Check:
   students beyond the first dozen sorted rows
 - Clicking a matrix cell opens the independent page-level detail modal instead
   of rendering the detail inline under the matrix
+- Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
+  and keep older/non-audio attempts readable when audio timing is absent
 - View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open single-assignment detail
 - editing due/pass/mastery in View updates only the selected assignment records

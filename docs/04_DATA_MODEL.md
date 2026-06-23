@@ -171,6 +171,9 @@ Core fields:
 | `adjusted_by_grading_history_id` | string/null | grading rule change that caused the adjustment |
 | `bulk_regrade_source` | string/null | student/teacher Argue source for historical adjustment |
 | `submitted_at` | Date | submit time |
+| `duration_seconds` | number/null | existing page/test-start-to-submit duration |
+| `audio_started_at` | Date/null | first successful audio play time for audio-based practice |
+| `audio_to_submit_seconds` | number/null | first-audio-play-to-submit duration for audio-based practice |
 | `practice_context` | string | `assignment` or `resource` |
 
 Rules:

@@ -951,6 +951,8 @@ function attemptView(record, gradingKey) {
     submitted_at: attempt.submitted_at || null,
     practice_context: attempt.practice_context || "",
     duration_seconds: attempt.duration_seconds == null ? null : Number(attempt.duration_seconds),
+    audio_started_at: attempt.audio_started_at || null,
+    audio_to_submit_seconds: attempt.audio_to_submit_seconds == null ? null : Number(attempt.audio_to_submit_seconds),
     question_results: questionResults,
   };
 }
