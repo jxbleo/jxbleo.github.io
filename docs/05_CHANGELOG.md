@@ -11,8 +11,9 @@
   including due date, passing percentage, mastery percentage, and soft
   cancellation of open assignments.
 - Added backend `cancelled` assignment state with audit fields. Cancelled work
-  is hidden from the student dashboard, rejected by old assignment submit links,
-  preserves historical attempts, and does not block reassignment.
+  is hidden from the student dashboard and teacher View progress, rejected by
+  old assignment submit links, preserves historical attempts, and does not
+  block reassignment.
 
 ## 2026-06-22
 

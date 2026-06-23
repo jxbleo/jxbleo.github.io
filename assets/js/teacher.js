@@ -1880,7 +1880,7 @@
     function assignedProgressItems() {
         var source = state.progressItems.length ? state.progressItems : state.assignments;
         return source.filter(function(item) {
-            return !item.source || item.source === 'assigned';
+            return (!item.source || item.source === 'assigned') && normalizedAssignmentStatus(item.status) !== 'cancelled';
         });
     }
 
