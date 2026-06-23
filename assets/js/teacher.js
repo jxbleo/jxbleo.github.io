@@ -2513,15 +2513,14 @@
         var status = normalizedAssignmentStatus(item.status);
         var editButton = '';
         if (item.source !== 'self_study' && item.assignment_id && status !== 'cancelled') {
-            editButton = '<button class="outline-button assignment-edit-button" type="button" data-edit-assignment-scope="' +
-                escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '">Edit this assignment</button>';
+            editButton = '<button class="matrix-edit-pill" type="button" data-edit-assignment-scope="' +
+                escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '">Edit</button>';
         }
         return '<div class="progress-matrix-detail">' +
             '<div class="matrix-detail-summary">' +
                 '<h2>' + escapeHtml(title) + '</h2>' +
                 '<div class="matrix-detail-pills">' +
                     '<span class="matrix-detail-pill">' + escapeHtml(item.student_name || item.student_id || 'Student') + '</span>' +
-                    '<span class="matrix-detail-pill ' + escapeHtml(status) + '">' + escapeHtml(assignmentStatusLabel(status)) + '</span>' +
                     renderMatrixScoreLock(item) +
                     editButton +
                 '</div>' +
