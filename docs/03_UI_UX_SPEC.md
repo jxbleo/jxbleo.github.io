@@ -141,6 +141,10 @@ inside the matrix detail dialog. Matrix date filtering for this route must
 include the clicked attempt's submitted date, even when the assignment summary
 date or first completion date is different.
 
+The teacher page defaults to `View` on entry. While assignment matrix data is
+loading, the matrix area uses a textless loading state with visible grid lines,
+subtle green/gold color movement, and a centered spinner.
+
 ### Assign Tab
 
 Assign contains:
