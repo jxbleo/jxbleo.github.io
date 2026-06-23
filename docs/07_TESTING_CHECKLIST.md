@@ -118,6 +118,9 @@ Check:
 - top-right Students entry opens the standalone student lookup modal, the
   modal's internal `+` opens create-student, and View no longer shows student
   info/progress below the matrix
+- Teacher View `By student` expands a student into a history list with best
+  percentage fixed on the far right, and clicking a task opens the same
+  independent detail modal as the top matrix
 - Teacher View expands to the desktop workspace width and does not stay capped
   at the narrower student dashboard shell width
 - First successful matrix render transitions in with a soft fade/lift instead

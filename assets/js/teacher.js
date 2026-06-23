@@ -40,6 +40,7 @@
         matrixDateFrom: '',
         matrixDateTo: '',
         selectedMatrixCell: '',
+        selectedProgressDetailKey: '',
         matrixInitialRevealPending: true,
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
@@ -2123,6 +2124,44 @@
         '</div>';
     }
 
+    function studentHistoryInitial(title) {
+        var text = String(title || 'Student').trim();
+        return text ? text.charAt(0).toUpperCase() : 'S';
+    }
+
+    function studentHistoryItems(group) {
+        return (group.items || []).slice().sort(function(a, b) {
+            return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0) ||
+                String(a.set_title || a.set_id || '').localeCompare(String(b.set_title || b.set_id || ''));
+        });
+    }
+
+    function renderStudentHistoryList(group) {
+        var items = studentHistoryItems(group);
+        if (!items.length) return '<div class="empty-card"><strong>No history yet</strong>No assigned work has been recorded for this student.</div>';
+        return '<div class="student-history-shell">' +
+            '<aside class="student-history-sidebar">' +
+                '<div class="student-history-identity">' +
+                    '<span class="student-history-avatar">' + escapeHtml(studentHistoryInitial(group.title)) + '</span>' +
+                    '<strong>' + escapeHtml(group.title || 'Student') + '</strong>' +
+                '</div>' +
+            '</aside>' +
+            '<div class="student-history-list">' +
+                items.map(function(item) {
+                    var key = assignmentProgressKey(item);
+                    var score = numericPercent(item.best_percentage);
+                    var status = normalizedAssignmentStatus(item.status);
+                    var scoreClass = status === 'mastered' ? ' mastered' : status === 'to_do' && (score == null || score < Number(item.passing_percentage || 50)) ? ' low' : '';
+                    return '<button class="student-history-row" type="button" data-student-history-progress="' + escapeHtml(key) + '">' +
+                        '<span class="student-history-task"><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id) || item.set_id || 'Task') + '</strong>' +
+                        '<small>' + escapeHtml(item.set_id || '') + '</small></span>' +
+                        '<span class="student-history-score' + scoreClass + '">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
+                    '</button>';
+                }).join('') +
+            '</div>' +
+        '</div>';
+    }
+
     function openAssignmentEditDialog(scopeKey) {
         var group = state.assignmentEditScopes[scopeKey];
         if (!group) return;
@@ -2256,23 +2295,27 @@
     function renderAssignmentProgressGroup(group) {
         var expanded = state.expandedAssignProgressGroups[group.key] === true;
         var metrics = group.metrics || assignmentOverviewMetrics(group.items);
+        var isStudentMode = group.mode === 'student';
         state.assignmentEditScopes[group.key] = group;
-        return '<article class="assignment-progress-group' + (expanded ? ' expanded' : '') + '">' +
+        return '<article class="assignment-progress-group' + (isStudentMode ? ' student-history-group' : '') + (expanded ? ' expanded' : '') + '">' +
             '<button class="assignment-progress-group-head" type="button" data-assign-progress-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
                 '<span class="assignment-progress-group-copy"><strong>' + escapeHtml(group.title || 'Group') + '</strong>' +
-                    '<small>' + escapeHtml(group.subtitle || '') + '</small></span>' +
+                    (isStudentMode ? '' : '<small>' + escapeHtml(group.subtitle || '') + '</small>') + '</span>' +
+                (isStudentMode ? '' :
                 '<span class="assignment-progress-group-stats">' +
                     '<span><strong>' + escapeHtml(metrics.total) + '</strong><small>Total</small></span>' +
                     '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
                     '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
-                '</span>' +
+                '</span>') +
             '</button>' +
             (expanded ? '<div class="assignment-progress-group-body">' +
-                renderAssignmentGroupTools(group) +
-                (group.mode === 'task' ? renderTaskScoreBars(group) : renderGroupMiniMatrix(group)) +
-                '<div class="assignment-table compact">' +
-                    group.items.map(renderAssignmentOverviewRow).join('') +
-                '</div>' +
+                (isStudentMode
+                    ? renderStudentHistoryList(group)
+                    : renderAssignmentGroupTools(group) +
+                        (group.mode === 'task' ? renderTaskScoreBars(group) : renderGroupMiniMatrix(group)) +
+                        '<div class="assignment-table compact">' +
+                            group.items.map(renderAssignmentOverviewRow).join('') +
+                        '</div>') +
             '</div>' : '') +
         '</article>';
     }
@@ -2657,6 +2700,7 @@
 
     function closeMatrixCellModal(container) {
         state.selectedMatrixCell = '';
+        state.selectedProgressDetailKey = '';
         state.targetMatrixAttemptId = '';
         if (!container) return;
         container.querySelectorAll('.progress-matrix-modal-backdrop').forEach(function(modal) {
@@ -2809,10 +2853,14 @@
             return;
         }
         var groups = assignmentProgressGroups(items, state.assignProgressMode || 'student');
+        var selectedProgressDetailItem = state.selectedProgressDetailKey
+            ? items.find(function(item) { return assignmentProgressKey(item) === state.selectedProgressDetailKey; })
+            : null;
         container.innerHTML = renderAssignmentMatrix(items) + renderAssignmentProgressModeTabs() +
             '<div class="assignment-progress-groups">' +
                 groups.map(renderAssignmentProgressGroup).join('') +
-            '</div>';
+            '</div>' +
+            (selectedProgressDetailItem ? renderMatrixCellModal(selectedProgressDetailItem) : '');
         if (shouldRevealMatrix) {
             container.classList.add('matrix-reveal-ready');
             window.setTimeout(function() {
@@ -2870,6 +2918,7 @@
                 var key = button.dataset.matrixCell;
                 var scrollSnapshot = matrixScrollSnapshot(container);
                 state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
+                state.selectedProgressDetailKey = '';
                 state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
                 restoreMatrixScroll(scrollSnapshot);
@@ -2905,6 +2954,7 @@
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgressGroup;
                 state.expandedAssignProgressGroups[key] = state.expandedAssignProgressGroups[key] !== true;
+                state.selectedProgressDetailKey = '';
                 renderAssignmentOverview();
             });
         });
@@ -2919,6 +2969,14 @@
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgress;
                 state.expandedAssignProgress[key] = state.expandedAssignProgress[key] !== true;
+                renderAssignmentOverview();
+            });
+        });
+        container.querySelectorAll('[data-student-history-progress]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.selectedProgressDetailKey = button.dataset.studentHistoryProgress || '';
+                state.selectedMatrixCell = '';
+                state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
             });
         });

@@ -11,6 +11,9 @@
   teacher attempt timing as `Page ... · Audio ...` when available.
 - Moved teacher student lookup into a top-right standalone modal with an
   internal create-student `+`, leaving the View page focused on the matrix.
+- Changed teacher View `By student` groups into a full-width student history
+  list where each task shows its best percentage and opens the same matrix
+  detail modal used by matrix cells.
 
 ## 2026-06-23
 
