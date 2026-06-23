@@ -2460,7 +2460,13 @@
     }
 
     function attemptDurationLabel(attempt) {
-        return formatDuration(attempt && attempt.duration_seconds);
+        if (!attempt) return '';
+        var parts = [];
+        var pageDuration = formatDuration(attempt.duration_seconds);
+        var audioDuration = formatDuration(attempt.audio_to_submit_seconds);
+        if (pageDuration) parts.push('Page ' + pageDuration);
+        if (audioDuration) parts.push('Audio ' + audioDuration);
+        return parts.join(' · ');
     }
 
     function attemptDisplayNumber(attempt, index) {

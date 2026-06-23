@@ -231,6 +231,9 @@ It should include:
   bars use fixed-width columns rather than stretching a single attempt across
   the whole dialog; not-passed bars are pale red, passed bars are green, and
   mastered bars are glowing gold.
+- matrix attempt cards show timing as `Page 12m 30s · Audio 8m 10s` when audio
+  timing exists, while older or non-audio attempts may show only the page/test
+  duration.
 - the matrix score pill shows only the best score until answers have been
   viewed; once answers have been viewed and locked, it adds a lock icon beside
   the best score.

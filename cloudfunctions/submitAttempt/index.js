@@ -547,6 +547,8 @@ exports.main = async (event) => {
       started_at: event.started_at || null,
       submitted_at: submittedAt,
       duration_seconds: event.duration_seconds == null ? null : Number(event.duration_seconds),
+      audio_started_at: event.audio_started_at || null,
+      audio_to_submit_seconds: event.audio_to_submit_seconds == null ? null : Number(event.audio_to_submit_seconds),
       practice_context: assignmentId ? "assignment" : "resource",
       grading_version: gradingKey.grading_version || "1",
       selected_group_count: event.selected_group_count || null,

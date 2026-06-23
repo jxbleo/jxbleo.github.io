@@ -700,6 +700,7 @@
     var reviewedQuestions = {};
     var audioMode = 'loading';
     var audioStarted = false;
+    var audioStartedAt = null;
     var audioStartInFlight = false;
     var audioStartAttemptId = 0;
     var audioStartPromptShown = false;
@@ -978,10 +979,16 @@
     }
 
     function markAudioStarted() {
+        if (!audioStartedAt) audioStartedAt = new Date().toISOString();
         audioStarted = true;
         audioStartInFlight = false;
         audioMode = 'exam';
         updateAudioUi();
+    }
+
+    function audioToSubmitSeconds() {
+        if (!audioStartedAt) return null;
+        return Math.max(0, Math.round((Date.now() - new Date(audioStartedAt).getTime()) / 1000));
     }
 
     function startExamAudio(event) {
@@ -1065,6 +1072,7 @@
         }
         audioMode = lesson && lesson.audioSrc ? 'ready' : 'missing';
         audioStarted = false;
+        audioStartedAt = null;
         audioStartInFlight = false;
         audioStartAttemptId += 1;
         audioStartPromptShown = false;
@@ -1241,7 +1249,9 @@
             mode: 'ielts_listening',
             answers: collectAnswers(),
             started_at: startedAt,
-            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000))
+            duration_seconds: Math.max(0, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000)),
+            audio_started_at: audioStartedAt,
+            audio_to_submit_seconds: audioToSubmitSeconds()
         }).then(function(response) {
             if (!response || !response.success) throw new Error(response && response.message || 'Unable to submit.');
             applyFeedback(response);
