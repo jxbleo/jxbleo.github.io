@@ -2374,8 +2374,13 @@ body:not(.teacher-page) .tab-button.active {
     animation-delay: 0.1s;
 }
 .assignment-overview-toolbar {
+    position: sticky;
+    top: 8px;
+    z-index: 120;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    padding: 4px 0;
+    pointer-events: none;
 }
 .matrix-loading-card {
     position: relative;
@@ -3019,13 +3024,14 @@ body:not(.teacher-page) .tab-button.active {
 }
 .assignment-progress-mode-tabs {
     display: inline-grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 5px;
-    width: min(420px, 100%);
+    width: min(560px, 100%);
     padding: 5px;
     border: 1px solid rgba(124,58,237,0.16);
     border-radius: 999px;
     background: rgba(255,255,255,0.84);
+    pointer-events: auto;
 }
 .assignment-progress-mode-tab {
     min-height: 34px;
@@ -3178,7 +3184,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .assignment-progress-group-stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(54px, auto));
+    grid-template-columns: repeat(2, minmax(54px, auto));
     gap: 8px;
     text-align: center;
 }
@@ -5309,7 +5315,7 @@ body:not(.teacher-page) .tab-button.active {
         display: none;
     }
     .assignment-progress-group-head { grid-template-columns: 1fr; }
-    .assignment-progress-group-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .assignment-progress-group-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .assignment-progress-group-stats span { min-width: 0; }
     .student-history-shell {
         grid-template-columns: 1fr;

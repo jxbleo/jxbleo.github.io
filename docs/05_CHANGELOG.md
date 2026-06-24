@@ -17,6 +17,10 @@
 - Changed the teacher header student entry to a circular student ID icon and
   fixed the lookup modal's Choose/Search student list so it expands and scrolls
   inside the modal.
+- Removed the teacher View `By class` progress mode, made the remaining
+  `By student` / `By task` capsule sticky over the main View tabs, and changed
+  `By task` summaries to show only Total and an Avg that excludes unfinished
+  assignments.
 
 ## 2026-06-23
 
