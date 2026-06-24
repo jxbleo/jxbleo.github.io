@@ -2087,7 +2087,7 @@
                 var score = numericPercent(item.best_percentage);
                 var height = score == null ? 4 : Math.max(score, 4);
                 var key = assignmentProgressKey(item);
-                return '<button class="task-score-bar" type="button" data-assign-progress="' + escapeHtml(key) + '" title="' +
+                return '<button class="task-score-bar" type="button" data-student-history-progress="' + escapeHtml(key) + '" title="' +
                     escapeHtml((item.student_name || item.student_id || 'Student') + ' · ' + formatPercent(item.best_percentage)) + '">' +
                     '<span class="task-score-value">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
                     '<span class="task-score-fill" style="height:' + escapeHtml(height) + '%"></span>' +

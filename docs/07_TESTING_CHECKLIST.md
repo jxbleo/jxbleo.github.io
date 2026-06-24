@@ -148,7 +148,8 @@ Check:
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
-- `By task` bars sort student completion from low to high and open single-assignment detail
+- `By task` bars sort student completion from low to high and open the same
+  independent detail modal as matrix cells
 - editing due/pass/mastery in View updates only the selected assignment records
 - Argue list loads and groups disputes
 - Argue list does not show student disputes linked to cancelled assignments
