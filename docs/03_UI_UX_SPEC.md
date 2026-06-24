@@ -256,8 +256,9 @@ It should include:
   each task's best percentage fixed on the far right. Clicking a task opens
   the same independent matrix detail modal used by top matrix cells.
 - `By task` groups show each student's completion as a low-to-high bar chart;
-  clicking a bar expands that student's assignment detail. The group summary
-  shows only Total and Avg; Avg excludes unfinished assignments.
+  clicking a bar opens the same independent matrix detail modal used by top
+  matrix cells. The group summary shows only Total and Avg; Avg excludes
+  unfinished assignments.
 - matrix detail and group tools allow teachers to manage the selected
   assignment records directly. A single matrix cell edits one student's one
   assignment; grouped tools edit the assignment records currently represented

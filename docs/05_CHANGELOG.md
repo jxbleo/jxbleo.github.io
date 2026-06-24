@@ -21,6 +21,8 @@
   `By student` / `By task` capsule sticky over the main View tabs, and changed
   `By task` summaries to show only Total and an Avg that excludes unfinished
   assignments.
+- Changed teacher View `By task` score bars to open the same independent
+  detail modal as matrix cells instead of expanding inline details.
 
 ## 2026-06-23
 
