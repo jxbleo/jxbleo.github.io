@@ -122,6 +122,9 @@ Check:
 - Teacher View `By student` expands a student into a history list with best
   percentage fixed on the far right, and clicking a task opens the same
   independent detail modal as the top matrix
+- Teacher View progress mode tabs show only `By student` and `By task`; the
+  capsule sticks over the main Assign/View/Library tabs while scrolling, and
+  `By task` summaries show Total plus Avg with unfinished assignments excluded
 - Teacher View expands to the desktop workspace width and does not stay capped
   at the narrower student dashboard shell width
 - First successful matrix render transitions in with a soft fade/lift instead
@@ -144,7 +147,7 @@ Check:
   of rendering the detail inline under the matrix
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
-- View shows `By student`, `By class`, and `By task` groupings without Open/Watch status labels
+- View shows only `By student` and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open single-assignment detail
 - editing due/pass/mastery in View updates only the selected assignment records
 - Argue list loads and groups disputes

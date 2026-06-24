@@ -1705,13 +1705,8 @@
         return values.reduce(function(sum, value) { return sum + value; }, 0) / values.length;
     }
 
-    function assignmentClassGroup(item) {
-        if (item.class_group) return String(item.class_group);
-        var uid = item.student_uid || item.auth_uid || '';
-        var student = state.students.find(function(profile) {
-            return profile.auth_uid === uid || profile.student_id === item.student_id;
-        });
-        return student && student.class_group ? String(student.class_group) : '';
+    function isFinishedAssignmentStatus(status) {
+        return status === 'passed' || status === 'mastered';
     }
 
     function formatDateInputValue(value) {
@@ -1962,15 +1957,17 @@
         return { label: status === 'mastered' ? 'Mastered' : 'Finished', css: 'ok', rank: 5 };
     }
 
-    function assignmentOverviewMetrics(items) {
+    function assignmentOverviewMetrics(items, completedAverageOnly) {
         var counts = items.reduce(function(total, item) {
             var status = normalizedAssignmentStatus(item.status);
             total.total += 1;
             total.attempts += Math.max(Number(item.attempt_count || 0), progressAttemptsForAssignment(item).length);
-            if (status === 'passed' || status === 'mastered') total.finished += 1;
+            if (isFinishedAssignmentStatus(status)) total.finished += 1;
             return total;
         }, { total: 0, finished: 0, attempts: 0, average: null });
-        counts.average = averageBestPercent(items);
+        counts.average = averageBestPercent(completedAverageOnly
+            ? items.filter(function(item) { return isFinishedAssignmentStatus(normalizedAssignmentStatus(item.status)); })
+            : items);
         return counts;
     }
 
@@ -2014,26 +2011,19 @@
         var groupMap = {};
         items.forEach(function(item) {
             var isTaskMode = mode === 'task';
-            var isClassMode = mode === 'class';
             var id = isTaskMode
                 ? String(item.set_id || 'unknown-task')
-                : isClassMode
-                    ? (assignmentClassGroup(item) || 'No class')
-                    : String(item.student_uid || item.auth_uid || item.student_id || 'unknown-student');
-            var key = (isTaskMode ? 'task::' : isClassMode ? 'class::' : 'student::') + id;
+                : String(item.student_uid || item.auth_uid || item.student_id || 'unknown-student');
+            var key = (isTaskMode ? 'task::' : 'student::') + id;
             if (!groupMap[key]) {
                 groupMap[key] = {
                     key: key,
                     mode: mode,
                     title: isTaskMode
                         ? (item.set_title || setTitleFor(item.set_id))
-                        : isClassMode
-                            ? (assignmentClassGroup(item) || 'No class')
                         : (item.student_name || item.student_id || 'Student'),
                     subtitle: isTaskMode
                         ? (item.set_id || '')
-                        : isClassMode
-                            ? 'Class group'
                         : (item.student_id || ''),
                     items: []
                 };
@@ -2043,7 +2033,7 @@
         return Object.keys(groupMap).map(function(key) {
             var group = groupMap[key];
             group.items = sortAssignmentOverviewItems(group.items);
-            group.metrics = assignmentOverviewMetrics(group.items);
+            group.metrics = assignmentOverviewMetrics(group.items, mode === 'task');
             return group;
         }).sort(function(a, b) {
             if (a.mode === 'task' && b.mode === 'task') {
@@ -2294,17 +2284,17 @@
 
     function renderAssignmentProgressGroup(group) {
         var expanded = state.expandedAssignProgressGroups[group.key] === true;
-        var metrics = group.metrics || assignmentOverviewMetrics(group.items);
+        var metrics = group.metrics || assignmentOverviewMetrics(group.items, group.mode === 'task');
         var isStudentMode = group.mode === 'student';
+        var isTaskMode = group.mode === 'task';
         state.assignmentEditScopes[group.key] = group;
-        return '<article class="assignment-progress-group' + (isStudentMode ? ' student-history-group' : '') + (expanded ? ' expanded' : '') + '">' +
+        return '<article class="assignment-progress-group' + (isStudentMode ? ' student-history-group' : '') + (isTaskMode ? ' task-progress-group' : '') + (expanded ? ' expanded' : '') + '">' +
             '<button class="assignment-progress-group-head" type="button" data-assign-progress-group="' + escapeHtml(group.key) + '" aria-expanded="' + expanded + '">' +
                 '<span class="assignment-progress-group-copy"><strong>' + escapeHtml(group.title || 'Group') + '</strong>' +
                     (isStudentMode ? '' : '<small>' + escapeHtml(group.subtitle || '') + '</small>') + '</span>' +
                 (isStudentMode ? '' :
                 '<span class="assignment-progress-group-stats">' +
                     '<span><strong>' + escapeHtml(metrics.total) + '</strong><small>Total</small></span>' +
-                    '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
                     '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
                 '</span>') +
             '</button>' +
@@ -2322,10 +2312,10 @@
 
     function renderAssignmentProgressModeTabs() {
         var mode = state.assignProgressMode || 'student';
+        if (mode === 'class') mode = 'student';
         return '<div class="assignment-overview-toolbar">' +
             '<div class="assignment-progress-mode-tabs" role="tablist" aria-label="Assignment progress view">' +
                 '<button class="assignment-progress-mode-tab' + (mode === 'student' ? ' active' : '') + '" type="button" data-assign-progress-mode="student">By student</button>' +
-                '<button class="assignment-progress-mode-tab' + (mode === 'class' ? ' active' : '') + '" type="button" data-assign-progress-mode="class">By class</button>' +
                 '<button class="assignment-progress-mode-tab' + (mode === 'task' ? ' active' : '') + '" type="button" data-assign-progress-mode="task">By task</button>' +
             '</div>' +
         '</div>';
@@ -2852,7 +2842,9 @@
             container.innerHTML = '<div class="empty-card"><strong>No assigned work yet</strong>Assignments will appear here after you create them.</div>';
             return;
         }
-        var groups = assignmentProgressGroups(items, state.assignProgressMode || 'student');
+        var progressMode = state.assignProgressMode === 'task' ? 'task' : 'student';
+        state.assignProgressMode = progressMode;
+        var groups = assignmentProgressGroups(items, progressMode);
         var selectedProgressDetailItem = state.selectedProgressDetailKey
             ? items.find(function(item) { return assignmentProgressKey(item) === state.selectedProgressDetailKey; })
             : null;
@@ -2869,7 +2861,7 @@
         }
         container.querySelectorAll('[data-assign-progress-mode]').forEach(function(button) {
             button.addEventListener('click', function() {
-                state.assignProgressMode = button.dataset.assignProgressMode;
+                state.assignProgressMode = button.dataset.assignProgressMode === 'task' ? 'task' : 'student';
                 renderAssignmentOverview();
             });
         });
