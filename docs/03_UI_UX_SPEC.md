@@ -245,6 +245,9 @@ It should include:
   with a neutral hollow circle, while `Passed` and `Mastered` share the same
   green cell background; `Passed` uses a green check circle and `Mastered` uses
   a solid green circle with a white star.
+- clicking the left student-name column in the matrix opens an independent
+  student timeline modal summarizing that student's assigned-work history,
+  using the same overall student data represented by `By student`.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.

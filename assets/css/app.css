@@ -2568,6 +2568,28 @@ body:not(.teacher-page) .tab-button.active {
     border-left: 0;
     box-shadow: 6px 0 12px rgba(83, 45, 145, 0.055);
 }
+.progress-matrix-row > .progress-matrix-student-button {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    min-height: 44px;
+    padding: 9px 10px;
+    border: 0;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    border-left: 0;
+    color: var(--ink);
+    background: rgba(255,255,255,0.78);
+    box-shadow: 6px 0 12px rgba(83, 45, 145, 0.055);
+    text-align: left;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 850;
+    cursor: pointer;
+}
+.progress-matrix-student-button:hover,
+.progress-matrix-student-button.selected {
+    background: #def8ec;
+}
 .progress-matrix-head > span {
     border-top: 0;
     color: var(--muted);
@@ -2738,6 +2760,169 @@ body:not(.teacher-page) .tab-button.active {
     padding: 0;
     border: 0;
     background: transparent;
+}
+.matrix-student-modal {
+    display: grid;
+    gap: 14px;
+}
+.matrix-student-overview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(31,45,38,0.09);
+}
+.matrix-student-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+.matrix-student-avatar {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, #13766d, #2fbf91);
+    font-weight: 1000;
+}
+.matrix-student-identity h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    letter-spacing: 0;
+}
+.matrix-student-identity small {
+    display: block;
+    margin-top: 4px;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 830;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.matrix-student-stats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.matrix-student-stats span {
+    min-width: 74px;
+    padding: 8px 10px;
+    border: 1px solid rgba(31,45,38,0.08);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.78);
+    text-align: center;
+}
+.matrix-student-stats strong,
+.matrix-student-stats small {
+    display: block;
+}
+.matrix-student-stats strong {
+    color: var(--ink);
+    font-size: 1.08rem;
+    font-weight: 1000;
+}
+.matrix-student-stats small {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 850;
+}
+.matrix-student-timeline {
+    display: grid;
+    gap: 10px;
+}
+.matrix-student-timeline-row {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr) minmax(110px, 0.7fr) 64px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid rgba(31,45,38,0.09);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.74);
+}
+.matrix-student-date {
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 900;
+}
+.matrix-student-task {
+    min-width: 0;
+}
+.matrix-student-task strong,
+.matrix-student-task small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.matrix-student-task strong {
+    color: var(--ink);
+    font-size: 0.86rem;
+    font-weight: 940;
+}
+.matrix-student-task small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 830;
+}
+.matrix-student-bar {
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(31,45,38,0.08);
+}
+.matrix-student-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #1aa67d, #54c98b);
+}
+.matrix-student-timeline-row.mastered .matrix-student-bar span {
+    background: linear-gradient(90deg, #f5b83d, #ffd76a);
+    box-shadow: 0 0 14px rgba(245,184,61,0.28);
+}
+.matrix-student-timeline-row.open .matrix-student-bar span,
+.matrix-student-timeline-row.cancelled .matrix-student-bar span {
+    background: rgba(143,160,155,0.42);
+}
+.matrix-student-score {
+    justify-self: end;
+    min-width: 58px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    color: #0d6f58;
+    background: #def8ec;
+    text-align: center;
+    font-size: 0.84rem;
+    font-weight: 1000;
+}
+.matrix-student-timeline-row.mastered .matrix-student-score {
+    color: #80510a;
+    background: linear-gradient(135deg, #fff6c7, #ffd76a);
+    box-shadow: 0 0 18px rgba(245,184,61,0.28);
+}
+.matrix-student-timeline-row.open .matrix-student-score,
+.matrix-student-timeline-row.cancelled .matrix-student-score {
+    color: #7b8783;
+    border: 1px solid rgba(31,45,38,0.12);
+    background: rgba(255,255,255,0.9);
+}
+.matrix-student-empty {
+    padding: 16px;
+    border: 1px solid rgba(31,45,38,0.09);
+    border-radius: 14px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.74);
+    font-weight: 850;
 }
 .progress-matrix-modal-close {
     justify-self: center;
@@ -5261,6 +5446,7 @@ body:not(.teacher-page) .tab-button.active {
         min-width: var(--matrix-min-mobile, 560px);
     }
     .progress-matrix-row > span,
+    .progress-matrix-row > .progress-matrix-student-button,
     .progress-matrix-cell {
         min-height: 40px;
         padding: 8px 7px;
@@ -5277,6 +5463,26 @@ body:not(.teacher-page) .tab-button.active {
         max-height: calc(100vh - 82px);
         padding: 16px;
         border-radius: 18px;
+    }
+    .matrix-student-overview {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .matrix-student-stats {
+        justify-content: stretch;
+    }
+    .matrix-student-stats span {
+        flex: 1 1 88px;
+    }
+    .matrix-student-timeline-row {
+        grid-template-columns: 1fr max-content;
+    }
+    .matrix-student-date,
+    .matrix-student-bar {
+        grid-column: 1 / -1;
+    }
+    .matrix-student-score {
+        align-self: start;
     }
     .matrix-detail-summary {
         align-items: stretch;
