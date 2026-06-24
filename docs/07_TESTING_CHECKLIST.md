@@ -143,6 +143,9 @@ Check:
   summary fields are stale
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
+- Clicking the matrix left student-name column opens an independent student
+  timeline modal with that student's Total, Done, Avg, and assigned-task
+  history
 - Clicking a matrix cell opens the independent page-level detail modal instead
   of rendering the detail inline under the matrix
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts

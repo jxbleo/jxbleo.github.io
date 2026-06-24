@@ -23,6 +23,8 @@
   assignments.
 - Changed teacher View `By task` score bars to open the same independent
   detail modal as matrix cells instead of expanding inline details.
+- Added an independent student timeline modal from the matrix student-name
+  column so teachers can inspect a student's overall assigned-work history.
 
 ## 2026-06-23
 
