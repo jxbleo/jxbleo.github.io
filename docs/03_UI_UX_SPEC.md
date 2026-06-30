@@ -330,7 +330,7 @@ Student detail should show:
 ### Review
 
 Review is the teacher-facing surface for student Argue requests. It opens as a
-standalone modal from the top-right Review icon, not as a Tasks sub-tab.
+standalone modal from the top-right `!` Review icon, not as a Tasks sub-tab.
 
 Review should show `Pending`, `Approved`, and `Rejected` status tabs and group
 requests into task capsules so the teacher can handle one student attempt or
@@ -382,8 +382,10 @@ Shared rules:
   theme should show the symbol in blue.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
-- BBC Argue entry points use a compact `?` icon button inside the right side of
-  the relevant question box instead of a text button in the feedback row.
+- BBC Explain and Argue entry points use compact icon buttons inside the right
+  side of the relevant question box instead of text buttons in the feedback
+  row. Explain uses a blue-green `?`; Argue uses an orange `!`. When both are
+  present, `?` sits to the left of `!`.
 
 ### Vocabulary Learn
 
