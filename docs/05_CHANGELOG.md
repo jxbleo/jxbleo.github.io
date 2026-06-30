@@ -20,6 +20,8 @@
 - Updated teacher assignment creation so prior completed Library/Explore work
   initializes the new assignment as already passed or mastered, making it
   visible as completed in teacher progress views.
+- Updated BBC practice so desktop Space toggles audio when no answer/control is
+  focused, and moved BBC Argue into compact question-box `?` icon buttons.
 
 ## 2026-06-24
 

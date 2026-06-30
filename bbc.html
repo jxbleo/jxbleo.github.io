@@ -367,9 +367,10 @@
         }
 
         ul.fill-blanks li {
+            position: relative;
             margin-bottom: 12px;
             line-height: 1.85;
-            padding: 14px 16px;
+            padding: 14px 52px 14px 16px;
             background: rgba(255,255,255,0.76);
             border: 1px solid rgba(15, 118, 110, 0.12);
             border-radius: 16px;
@@ -454,9 +455,10 @@
         }
 
         .mc-question {
+            position: relative;
             margin-bottom: 35px;
             background: #fafbfc;
-            padding: 20px;
+            padding: 20px 56px 20px 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
@@ -744,19 +746,46 @@
         }
 
         .argue-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
             border: 1px solid #e2c8b0;
             border-radius: 999px;
-            padding: 6px 14px;
+            padding: 0;
             background: #fff6ed;
             color: #9a5a2a;
-            font-size: 0.8rem;
-            font-weight: 800;
+            font-size: 1rem;
+            font-weight: 1000;
+            line-height: 1;
             cursor: pointer;
+            box-shadow: 0 8px 18px rgba(122, 67, 26, 0.12);
         }
 
         .argue-btn:hover {
             background: #fde8d0;
             color: #7a431a;
+        }
+
+        .argue-btn.dispute-pending {
+            border-color: #d89528;
+            background: #fff8e5;
+            color: #7a5528;
+        }
+
+        .argue-btn.dispute-approved {
+            border-color: #8cc8a8;
+            background: #ecf9f1;
+            color: #237a52;
+        }
+
+        .argue-btn.dispute-rejected {
+            border-color: #efc9c3;
+            background: #fff0ed;
+            color: #b54747;
         }
 
         .argue-modal {
@@ -1742,6 +1771,11 @@
             margin-top: 8px;
         }
 
+        .question-action-host {
+            position: relative;
+            padding-right: 52px !important;
+        }
+
         .argue-inline textarea {
             width: 100%;
             min-height: 52px;
@@ -1864,7 +1898,7 @@
             body { padding: 10px 5px; }
             .container { padding: 25px 15px; }
             h1 { font-size: 1.5em; }
-            .mc-question { padding: 15px 12px; }
+            .mc-question { padding: 15px 50px 15px 12px; }
             .matching-section { padding: 15px 12px; }
             .matching-table th, .matching-table td { padding: 8px 10px; }
             .modal-box { padding: 24px 20px; }
@@ -2184,6 +2218,25 @@
         updateAudioUi();
     }
 
+    function isDesktopAudioShortcut() {
+        return !window.matchMedia || window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    }
+
+    function shouldIgnoreAudioSpaceShortcut(target) {
+        if (document.querySelector('.modal.show, .argue-modal')) return true;
+        if (!target || target === document.body || target === document.documentElement) return false;
+        if (target.closest('input, textarea, select, button, [contenteditable="true"]')) return true;
+        return false;
+    }
+
+    function handleAudioSpaceShortcut(event) {
+        if (event.code !== 'Space' && event.key !== ' ') return;
+        if (event.repeat || !isDesktopAudioShortcut()) return;
+        if (shouldIgnoreAudioSpaceShortcut(event.target)) return;
+        event.preventDefault();
+        toggleAudioPlayback();
+    }
+
     function setupAudioPlayer() {
         var audio = getAudio();
         if (!audio) return;
@@ -2251,6 +2304,7 @@
                 }
             }, { passive: false });
             document.addEventListener('touchend', onPointerUp);
+            document.addEventListener('keydown', handleAudioSpaceShortcut);
         }
         updateAudioUi();
     }
@@ -2989,7 +3043,8 @@
         form.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
             el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
         });
-        form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note').forEach(function(el) { el.remove(); });
+        form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note,.argue-btn').forEach(function(el) { el.remove(); });
+        form.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host'); });
         enableAnswerEditing();
         applyMcLocks();
         saveDraftAnswers();
@@ -3005,8 +3060,9 @@
         var btn = document.getElementById('submit-btn');
         btn.disabled = false;
         btn.textContent = 'Submit Answers';
-        document.querySelectorAll('.inline-explanation,.feedback-bar').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.inline-explanation,.feedback-bar,.argue-btn').forEach(function(el) { el.remove(); });
         document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host'); });
         document.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
         });
@@ -3138,14 +3194,9 @@
                 appendHistoryExplainButton(actions, item);
             }
             if (!item.correct && historyReviewActionsAllowed(review, item)) {
-                var argueButton = document.createElement('button');
-                argueButton.type = 'button';
-                argueButton.className = 'argue-btn';
-                argueButton.textContent = dispute && dispute.status !== 'pending' ? 'Reviewed' : (dispute ? 'Argue Sent' : 'Argue');
-                argueButton.addEventListener('click', function(q, containerEl) {
-                    return function() { openArgueInline(q, containerEl); };
-                }(qid, container));
-                actions.appendChild(argueButton);
+                addQuestionArgueButton(qid, container, dispute && dispute.status !== 'pending'
+                    ? 'Review teacher response'
+                    : (dispute ? 'View sent Argue request' : 'Argue this answer'));
             }
             if (!note.textContent.trim() && !actions.children.length) return;
             container.appendChild(note);
@@ -3321,13 +3372,42 @@
         return '';
     }
 
+    function addQuestionArgueButton(questionId, containerEl, label) {
+        if (!questionId || !containerEl) return null;
+        var existing = containerEl.querySelector('.argue-btn[data-argue-question="' + CSS.escape(String(questionId)) + '"]');
+        if (existing) {
+            if (label) existing.setAttribute('aria-label', label);
+            if (label) existing.title = label;
+            return existing;
+        }
+        containerEl.classList.add('question-action-host');
+        var argueBtn = document.createElement('button');
+        argueBtn.className = 'argue-btn';
+        argueBtn.type = 'button';
+        argueBtn.textContent = '?';
+        argueBtn.title = label || 'Argue this answer';
+        argueBtn.setAttribute('aria-label', label || 'Argue this answer');
+        argueBtn.setAttribute('data-argue-question', questionId);
+        argueBtn.addEventListener('click', function() {
+            openArgueInline(questionId, containerEl);
+        });
+        containerEl.appendChild(argueBtn);
+        return argueBtn;
+    }
+
     function clearTeacherAnswerDisplay() {
         document.querySelectorAll('[data-teacher-answer="1"]').forEach(function(el) {
+            el.remove();
+        });
+        document.querySelectorAll('.argue-btn[data-teacher-answer="1"]').forEach(function(el) {
             el.remove();
         });
         document.querySelectorAll('[data-teacher-mark="1"]').forEach(function(el) {
             el.classList.remove('correct', 'wrong');
             el.removeAttribute('data-teacher-mark');
+        });
+        document.querySelectorAll('.question-action-host').forEach(function(el) {
+            if (!el.querySelector('.argue-btn')) el.classList.remove('question-action-host');
         });
     }
 
@@ -3365,19 +3445,10 @@
         }
     }
 
-    function teacherArgueBar(questionId) {
-        var bar = document.createElement('div');
-        bar.className = 'feedback-bar teacher-argue-bar';
-        bar.setAttribute('data-teacher-answer', '1');
-        var argueBtn = document.createElement('button');
-        argueBtn.className = 'argue-btn';
-        argueBtn.type = 'button';
-        argueBtn.textContent = 'Argue';
-        argueBtn.addEventListener('click', function() {
-            openArgueInline(questionId, bar.parentNode);
-        });
-        bar.appendChild(argueBtn);
-        return bar;
+    function addTeacherArgueButton(questionId, containerEl) {
+        var argueBtn = addQuestionArgueButton(questionId, containerEl, 'Argue this answer');
+        if (argueBtn) argueBtn.setAttribute('data-teacher-answer', '1');
+        return argueBtn;
     }
 
     function renderTeacherAnswers(answerKey) {
@@ -3387,14 +3458,13 @@
         var submittedAnswers = collectAnswers();
         Object.keys(answers).forEach(function(questionId) {
             var block = teacherAnswerBlock(questionId, answers[questionId], explanations[questionId] || '');
-            var bar = teacherArgueBar(questionId);
             var input = document.querySelector('[name="' + CSS.escape(questionId) + '"]');
             var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
             markTeacherAnswer(questionId, answers[questionId], submittedAnswers[questionId]);
 
             if (mcDiv) {
                 mcDiv.appendChild(block);
-                mcDiv.appendChild(bar);
+                addTeacherArgueButton(questionId, mcDiv);
                 return;
             }
 
@@ -3402,8 +3472,9 @@
                 var tr = input.closest('tr');
                 var td = tr && tr.querySelector('td:last-child');
                 if (td) {
+                    td.classList.add('question-action-host');
                     td.appendChild(block);
-                    td.appendChild(bar);
+                    addTeacherArgueButton(questionId, td);
                 }
                 return;
             }
@@ -3412,7 +3483,7 @@
                 var li = input.closest('li');
                 if (li && li.parentNode) {
                     li.parentNode.insertBefore(block, li.nextSibling);
-                    li.parentNode.insertBefore(bar, block.nextSibling);
+                    addTeacherArgueButton(questionId, li);
                 }
             }
         });
@@ -3810,13 +3881,7 @@
                     }(exp));
                     bar.appendChild(toggleBtn);
                     if (!r.isCorrect) {
-                        var argueBtn = document.createElement('button');
-                        argueBtn.className = 'argue-btn';
-                        argueBtn.textContent = 'Argue';
-                        argueBtn.addEventListener('click', function(qId, barEl) {
-                            return function() { openArgueInline(qId, barEl.parentNode); };
-                        }(r.id, bar));
-                        bar.appendChild(argueBtn);
+                        addQuestionArgueButton(r.id, li, 'Argue this answer');
                     }
                     li.parentNode.insertBefore(bar, exp.nextSibling);
                 }
@@ -3852,13 +3917,7 @@
                 }(exp));
                 bar.appendChild(toggleBtn);
                 if (!r.isCorrect) {
-                    var argueBtn = document.createElement('button');
-                    argueBtn.className = 'argue-btn';
-                    argueBtn.textContent = 'Argue';
-                    argueBtn.addEventListener('click', function(qId, barEl) {
-                        return function() { openArgueInline(qId, barEl.parentNode); };
-                    }(r.id, bar));
-                    bar.appendChild(argueBtn);
+                    addQuestionArgueButton(r.id, mcDiv, 'Argue this answer');
                 }
                 mcDiv.appendChild(bar);
             } else if (r.type === 'match') {
@@ -3885,13 +3944,8 @@
                     }(exp));
                     bar.appendChild(toggleBtn);
                     if (!r.isCorrect) {
-                        var argueBtn = document.createElement('button');
-                        argueBtn.className = 'argue-btn';
-                        argueBtn.textContent = 'Argue';
-                        argueBtn.addEventListener('click', function(qId, barEl) {
-                            return function() { openArgueInline(qId, barEl.parentNode); };
-                        }(r.id, bar));
-                        bar.appendChild(argueBtn);
+                        td.classList.add('question-action-host');
+                        addQuestionArgueButton(r.id, td, 'Argue this answer');
                     }
                     td.appendChild(bar);
                 }
@@ -3960,9 +4014,12 @@
 
     function markArgueBar(containerEl, status) {
         var bar = containerEl.querySelector('.feedback-bar');
-        if (!bar) return;
-        bar.classList.remove('dispute-pending', 'dispute-approved', 'dispute-rejected');
-        bar.classList.add('dispute-' + (status || 'pending'));
+        var button = containerEl.querySelector('.argue-btn');
+        [bar, button].forEach(function(el) {
+            if (!el) return;
+            el.classList.remove('dispute-pending', 'dispute-approved', 'dispute-rejected');
+            el.classList.add('dispute-' + (status || 'pending'));
+        });
     }
 
     function loadArgueStatus(questionId, modal, containerEl) {

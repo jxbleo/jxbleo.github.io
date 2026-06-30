@@ -367,6 +367,8 @@ Shared rules:
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,
   submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
+- On desktop, pressing Space toggles the BBC audio player only when focus is
+  not inside an answer input, choice, button, select, textarea, or modal.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
@@ -380,6 +382,8 @@ Shared rules:
   theme should show the symbol in blue.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
+- BBC Argue entry points use a compact `?` icon button inside the right side of
+  the relevant question box instead of a text button in the feedback row.
 
 ### Vocabulary Learn
 
