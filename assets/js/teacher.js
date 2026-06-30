@@ -3292,9 +3292,11 @@
                         '</div>' +
                         renderMatrixAttemptChart(entries, attempt) +
                         renderMatrixAttemptDetails(entries) +
+                        '<div class="notification-attempt-actions">' +
+                            '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
+                        '</div>' +
                     '</div>' +
                 '</section>' +
-                '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
             '</div>' +
         '</div>';
     }
