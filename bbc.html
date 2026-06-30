@@ -342,14 +342,18 @@
         }
 
         .font-size-btn {
+            display: inline-grid;
+            place-items: center;
             width: 34px;
             height: 34px;
+            padding: 0;
             border: 1px solid rgba(15, 118, 110, 0.16);
             border-radius: 999px;
             background: rgba(255,255,255,0.82);
             color: var(--accent);
             font-size: 1.1rem;
             font-weight: 900;
+            line-height: 1;
             cursor: pointer;
             box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
         }
@@ -729,40 +733,52 @@
             margin-top: 10px;
         }
 
-        .answer-toggle-btn {
-            border: 1px solid rgba(15, 118, 110, 0.2);
+        .answer-toggle-btn,
+        .argue-btn {
+            position: absolute;
+            top: 12px;
+            display: inline-grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
             border-radius: 999px;
-            padding: 6px 14px;
-            background: rgba(255,255,255,0.9);
-            color: var(--accent);
-            font-size: 0.8rem;
-            font-weight: 800;
+            padding: 0;
+            font-size: 1rem;
+            font-weight: 1000;
+            line-height: 1;
             cursor: pointer;
         }
 
+        .answer-toggle-btn {
+            right: 12px;
+            border: 1px solid rgba(15, 118, 110, 0.22);
+            border-radius: 999px;
+            background: #e6f7f4;
+            color: #0f766e;
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.12);
+        }
+
         .answer-toggle-btn:hover {
+            background: #d3f1ec;
+            color: #0b5f59;
+        }
+
+        .answer-toggle-btn.active {
+            border-color: rgba(15, 118, 110, 0.42);
             background: var(--accent);
             color: #fff;
         }
 
         .argue-btn {
-            position: absolute;
-            top: 12px;
             right: 12px;
-            display: inline-grid;
-            place-items: center;
-            width: 32px;
-            height: 32px;
             border: 1px solid #e2c8b0;
-            border-radius: 999px;
-            padding: 0;
             background: #fff6ed;
             color: #9a5a2a;
-            font-size: 1rem;
-            font-weight: 1000;
-            line-height: 1;
-            cursor: pointer;
             box-shadow: 0 8px 18px rgba(122, 67, 26, 0.12);
+        }
+
+        .question-action-host.has-argue-action .answer-toggle-btn {
+            right: 52px;
         }
 
         .argue-btn:hover {
@@ -1774,6 +1790,10 @@
         .question-action-host {
             position: relative;
             padding-right: 52px !important;
+        }
+
+        .question-action-host.has-argue-action {
+            padding-right: 92px !important;
         }
 
         .argue-inline textarea {
@@ -3043,8 +3063,8 @@
         form.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
             el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
         });
-        form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note,.argue-btn').forEach(function(el) { el.remove(); });
-        form.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host'); });
+        form.querySelectorAll('.inline-explanation,.feedback-bar,.history-dispute-note,.argue-btn,.answer-toggle-btn').forEach(function(el) { el.remove(); });
+        form.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host', 'has-argue-action'); });
         enableAnswerEditing();
         applyMcLocks();
         saveDraftAnswers();
@@ -3060,9 +3080,9 @@
         var btn = document.getElementById('submit-btn');
         btn.disabled = false;
         btn.textContent = 'Submit Answers';
-        document.querySelectorAll('.inline-explanation,.feedback-bar,.argue-btn').forEach(function(el) { el.remove(); });
+        document.querySelectorAll('.inline-explanation,.feedback-bar,.argue-btn,.answer-toggle-btn').forEach(function(el) { el.remove(); });
         document.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
-        document.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host'); });
+        document.querySelectorAll('.question-action-host').forEach(function(el) { el.classList.remove('question-action-host', 'has-argue-action'); });
         document.querySelectorAll('.correct,.wrong,.disabled').forEach(function(el) {
             el.classList.remove('correct', 'wrong', 'disabled');
         });
@@ -3113,7 +3133,7 @@
         return 'Argued · Waiting';
     }
 
-    function appendHistoryExplainButton(actions, item) {
+    function appendHistoryExplainButton(containerEl, actions, item) {
         if (!item || !item.feedback_available) return;
         var detail = document.createElement('div');
         detail.className = 'inline-explanation ' + (item.correct ? 'correct' : 'wrong');
@@ -3121,15 +3141,7 @@
             ' <strong>Correct answer:</strong> ' + escapeHtml(item.correct_answer == null ? '' : item.correct_answer) +
             (item.explanation ? '<br><strong>Evidence:</strong> ' + escapeHtml(item.explanation) : '');
 
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'answer-toggle-btn';
-        button.textContent = 'Explain';
-        button.addEventListener('click', function() {
-            detail.classList.toggle('show');
-            button.textContent = detail.classList.contains('show') ? 'Hide' : 'Explain';
-        });
-        actions.appendChild(button);
+        addQuestionExplainButton(item.question_id, containerEl, detail, 'Explain this answer', false);
         actions.parentNode.appendChild(detail);
     }
 
@@ -3191,7 +3203,7 @@
             actions.className = 'history-review-actions';
             note.appendChild(actions);
             if (historyReviewActionsAllowed(review, item)) {
-                appendHistoryExplainButton(actions, item);
+                appendHistoryExplainButton(container, actions, item);
             }
             if (!item.correct && historyReviewActionsAllowed(review, item)) {
                 addQuestionArgueButton(qid, container, dispute && dispute.status !== 'pending'
@@ -3376,15 +3388,16 @@
         if (!questionId || !containerEl) return null;
         var existing = containerEl.querySelector('.argue-btn[data-argue-question="' + CSS.escape(String(questionId)) + '"]');
         if (existing) {
+            containerEl.classList.add('question-action-host', 'has-argue-action');
             if (label) existing.setAttribute('aria-label', label);
             if (label) existing.title = label;
             return existing;
         }
-        containerEl.classList.add('question-action-host');
+        containerEl.classList.add('question-action-host', 'has-argue-action');
         var argueBtn = document.createElement('button');
         argueBtn.className = 'argue-btn';
         argueBtn.type = 'button';
-        argueBtn.textContent = '?';
+        argueBtn.textContent = '!';
         argueBtn.title = label || 'Argue this answer';
         argueBtn.setAttribute('aria-label', label || 'Argue this answer');
         argueBtn.setAttribute('data-argue-question', questionId);
@@ -3393,6 +3406,28 @@
         });
         containerEl.appendChild(argueBtn);
         return argueBtn;
+    }
+
+    function addQuestionExplainButton(questionId, containerEl, detailEl, label, requireRevealConfirm) {
+        if (!questionId || !containerEl || !detailEl) return null;
+        if (requireRevealConfirm == null) requireRevealConfirm = true;
+        var existing = containerEl.querySelector('.answer-toggle-btn[data-explain-question="' + CSS.escape(String(questionId)) + '"]');
+        if (existing) return existing;
+        containerEl.classList.add('question-action-host');
+        var explainBtn = document.createElement('button');
+        explainBtn.className = 'answer-toggle-btn';
+        explainBtn.type = 'button';
+        explainBtn.textContent = '?';
+        explainBtn.title = label || 'Explain this answer';
+        explainBtn.setAttribute('aria-label', label || 'Explain this answer');
+        explainBtn.setAttribute('data-explain-question', questionId);
+        explainBtn.addEventListener('click', function() {
+            if (requireRevealConfirm && !detailEl.classList.contains('show') && !confirmAnswerReveal()) return;
+            detailEl.classList.toggle('show');
+            explainBtn.classList.toggle('active', detailEl.classList.contains('show'));
+        });
+        containerEl.appendChild(explainBtn);
+        return explainBtn;
     }
 
     function clearTeacherAnswerDisplay() {
@@ -3407,7 +3442,7 @@
             el.removeAttribute('data-teacher-mark');
         });
         document.querySelectorAll('.question-action-host').forEach(function(el) {
-            if (!el.querySelector('.argue-btn')) el.classList.remove('question-action-host');
+            if (!el.querySelector('.argue-btn')) el.classList.remove('question-action-host', 'has-argue-action');
         });
     }
 
@@ -3574,7 +3609,7 @@
         if (!confirmAnswerReveal()) return;
         document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
         document.querySelectorAll('.answer-toggle-btn').forEach(function(btn) {
-            if (btn.textContent === 'Show Answer') btn.textContent = 'Hide Answer';
+            btn.classList.add('active');
         });
         answerRevealAvailable = false;
         updateHistoryToolbar();
@@ -3867,23 +3902,10 @@
                         exp.innerHTML += '<br><strong>Three tries used:</strong> This blank is now locked with your last answer.';
                     }
                     li.parentNode.insertBefore(exp, li.nextSibling);
-                    var bar = document.createElement('div');
-                    bar.className = 'feedback-bar';
-                    var toggleBtn = document.createElement('button');
-                    toggleBtn.className = 'answer-toggle-btn';
-                    toggleBtn.textContent = 'Show Answer';
-                    toggleBtn.addEventListener('click', function(expEl) {
-                        return function() {
-                            if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
-                            expEl.classList.toggle('show');
-                            this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
-                        };
-                    }(exp));
-                    bar.appendChild(toggleBtn);
+                    addQuestionExplainButton(r.id, li, exp, 'Explain this answer');
                     if (!r.isCorrect) {
                         addQuestionArgueButton(r.id, li, 'Argue this answer');
                     }
-                    li.parentNode.insertBefore(bar, exp.nextSibling);
                 }
             } else if (r.type === 'mc') {
                 var mcDiv = document.querySelector('[data-id="' + r.id + '"]');
@@ -3903,23 +3925,10 @@
                 var prefix = r.isCorrect ? '&#10004;' : '&#10060;';
                 exp.innerHTML = prefix + ' <strong>Correct answer:</strong> ' + r.correctAnswer + (r.evidence ? '<br><strong>Evidence:</strong> ' + r.evidence : '');
                 mcDiv.appendChild(exp);
-                var bar = document.createElement('div');
-                bar.className = 'feedback-bar';
-                var toggleBtn = document.createElement('button');
-                toggleBtn.className = 'answer-toggle-btn';
-                toggleBtn.textContent = 'Show Answer';
-                toggleBtn.addEventListener('click', function(expEl) {
-                    return function() {
-                        if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
-                        expEl.classList.toggle('show');
-                        this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
-                    };
-                }(exp));
-                bar.appendChild(toggleBtn);
+                addQuestionExplainButton(r.id, mcDiv, exp, 'Explain this answer');
                 if (!r.isCorrect) {
                     addQuestionArgueButton(r.id, mcDiv, 'Argue this answer');
                 }
-                mcDiv.appendChild(bar);
             } else if (r.type === 'match') {
                 var select = document.querySelector('[name="' + r.id + '"]');
                 if (!select) continue;
@@ -3930,24 +3939,11 @@
                     exp.innerHTML = '&#10060; <strong>Correct match:</strong> ' + r.correctAnswer;
                     var td = tr.querySelector('td:last-child');
                     td.appendChild(exp);
-                    var bar = document.createElement('div');
-                    bar.className = 'feedback-bar';
-                    var toggleBtn = document.createElement('button');
-                    toggleBtn.className = 'answer-toggle-btn';
-                    toggleBtn.textContent = 'Show Answer';
-                    toggleBtn.addEventListener('click', function(expEl) {
-                        return function() {
-                            if (!expEl.classList.contains('show') && !confirmAnswerReveal()) return;
-                            expEl.classList.toggle('show');
-                            this.textContent = expEl.classList.contains('show') ? 'Hide Answer' : 'Show Answer';
-                        };
-                    }(exp));
-                    bar.appendChild(toggleBtn);
+                    td.classList.add('question-action-host');
+                    addQuestionExplainButton(r.id, td, exp, 'Explain this answer');
                     if (!r.isCorrect) {
-                        td.classList.add('question-action-host');
                         addQuestionArgueButton(r.id, td, 'Argue this answer');
                     }
-                    td.appendChild(bar);
                 }
             }
         }

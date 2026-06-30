@@ -21,7 +21,8 @@
   initializes the new assignment as already passed or mastered, making it
   visible as completed in teacher progress views.
 - Updated BBC practice so desktop Space toggles audio when no answer/control is
-  focused, and moved BBC Argue into compact question-box `?` icon buttons.
+  focused, moved BBC Explain/Argue into compact question-box `?`/`!` icon
+  buttons, and changed the teacher Review icon to `!`.
 
 ## 2026-06-24
 
