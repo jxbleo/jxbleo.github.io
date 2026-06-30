@@ -365,7 +365,11 @@ Shared rules:
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
-- Clear removes visible answers, feedback, Explain, Argue, and local blank locks; persistent MC wrong-answer reminders may remain as yellow boxes.
+- BBC multiple-choice answers lock after the first submitted attempt. Reopening
+  finished work or loading History should restore the submitted MC choices and
+  keep those radio groups disabled.
+- Clear removes visible answers, feedback, Explain, Argue, and local blank
+  locks, but it must not unlock submitted BBC multiple-choice answers.
 - BBC MC option selection may add only lightweight sound and a right-side
   `✦` selection symbol. Do not add extra selected-state text; the blue render
   theme should show the symbol in blue.

@@ -2750,15 +2750,52 @@
         document.querySelectorAll('.mc-options li.mc-locked-answer').forEach(function(el) {
             el.classList.remove('mc-locked-answer');
         });
+        document.querySelectorAll('.mc-question[data-mc-locked="1"]').forEach(function(mcDiv) {
+            mcDiv.removeAttribute('data-mc-locked');
+            mcDiv.querySelectorAll('input[type="radio"]').forEach(function(input) {
+                input.removeAttribute('title');
+            });
+            mcDiv.querySelectorAll('.mc-options li.disabled').forEach(function(li) {
+                li.classList.remove('disabled');
+            });
+        });
         Object.keys(mcLockedAnswers || {}).forEach(function(questionId) {
             var value = mcLockedAnswers[questionId];
             var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
             if (!mcDiv) return;
+            mcDiv.setAttribute('data-mc-locked', '1');
             mcDiv.classList.add('mc-locked-reminder');
             var lockedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(value)) + '"]');
+            if (lockedRadio) lockedRadio.checked = true;
+            mcDiv.querySelectorAll('input[type="radio"]').forEach(function(input) {
+                input.disabled = true;
+                input.title = 'This multiple-choice answer is locked after submission.';
+            });
+            mcDiv.querySelectorAll('.mc-options li').forEach(function(li) {
+                li.classList.add('disabled');
+            });
             var lockedLi = lockedRadio && lockedRadio.closest('li');
             if (lockedLi) lockedLi.classList.add('mc-locked-answer');
         });
+    }
+
+    function rememberMcLocksFromAnswers(answers) {
+        var changed = false;
+        if (!answers || !lessonData || !Array.isArray(lessonData.multipleChoice)) {
+            applyMcLocks();
+            return;
+        }
+        lessonData.multipleChoice.forEach(function(item) {
+            var questionId = item && item.id;
+            if (!isMcQuestionId(questionId)) return;
+            var value = answers[questionId];
+            if (value == null || String(value) === '') return;
+            if (mcLockedAnswers[questionId] === value) return;
+            mcLockedAnswers[questionId] = value;
+            changed = true;
+        });
+        if (changed) saveMcLockState();
+        applyMcLocks();
     }
 
     function rememberMcLocks(results) {
@@ -2768,11 +2805,11 @@
             return;
         }
         (results || []).forEach(function(result) {
-            if (!result || result.type !== 'mc' || result.isCorrect) return;
+            if (!result || result.type !== 'mc') return;
             var questionId = result.id;
             if (!isMcQuestionId(questionId)) return;
-            if (mcLockedAnswers[questionId]) return;
             if (result.userAnswer == null || String(result.userAnswer) === '') return;
+            if (mcLockedAnswers[questionId] === result.userAnswer) return;
             mcLockedAnswers[questionId] = result.userAnswer;
             changed = true;
         });
@@ -2988,6 +3025,7 @@
         if (saved && Object.keys(saved).length) {
             applyAnswers(saved);
             applyBlankAttemptLocks();
+            if (historyAttemptId || prefillAttemptId) rememberMcLocksFromAnswers(saved);
             applyMcLocks();
             return;
         }
@@ -2999,6 +3037,7 @@
             if (result && result.success && result.attempt && result.attempt.answers) {
                 applyAnswers(result.attempt.answers);
                 applyBlankAttemptLocks();
+                rememberMcLocksFromAnswers(result.attempt.answers);
                 applyMcLocks();
                 saveDraftAnswers();
             }
@@ -3132,6 +3171,7 @@
                 clearAllAnswers();
                 applyAnswers(result.attempt.answers);
                 enableAnswerEditing();
+                rememberMcLocksFromAnswers(result.attempt.answers);
                 applyMcLocks();
                 saveDraftAnswers();
                 currentArgueAttemptId = historyAttemptId;

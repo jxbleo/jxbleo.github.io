@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-06-30
+
+### Fixed
+
+- Fixed BBC finished-assignment review so multiple-choice answers are restored
+  and locked after the first submitted attempt, preventing students from
+  changing MC choices when reopening finished work.
+
 ## 2026-06-24
 
 ### Added
