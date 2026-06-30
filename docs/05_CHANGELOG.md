@@ -10,6 +10,13 @@
 - Fixed BBC finished-assignment review so multiple-choice answers are restored
   and locked after the first submitted attempt, preventing students from
   changing MC choices when reopening finished work.
+- Changed teacher bell attempt details to use the same modal layout as View
+  matrix cells, showing the full attempt history while scrolling to the
+  clicked attempt.
+- Kept teacher matrix-style modal Close actions fixed at the bottom while
+  long attempt histories scroll above them.
+- Changed submitted Vocabulary Test review to use the bottom-right floating
+  `Redo` capsule and removed the old page-bottom Redo button.
 
 ## 2026-06-24
 

@@ -143,8 +143,13 @@ top-right Review entry.
 Teacher notification rows open standalone attempt detail dialogs inside the
 notification surface. They must not switch to `View`, select matrix cells,
 change matrix filters, or redraw the matrix, whether the attempt came from an
-assigned task or self study. The attempt detail dialog must include a visible
-`Close` action at the bottom of its detail card.
+assigned task or self study. The attempt detail dialog must use the same
+detail layout as a `View` matrix cell, showing every attempt for the relevant
+assignment or self-study thread at a glance. When opened from a specific
+notification attempt, the dialog highlights that attempt and automatically
+scrolls to its card. The attempt detail dialog must keep a visible `Close`
+action fixed at the bottom of the modal while the attempt history scrolls above
+it.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
@@ -397,10 +402,11 @@ Shared rules:
 - The Vocabulary Test result modal has one action only: `Close`.
 - After the result modal closes, incorrect Vocabulary Test questions remain
   marked red and their answer explanations are shown inline for review.
-- The submitted Test view shows a `Redo` button. Redo opens a confirmation
-  dialog warning that the current review will be cleared and the cleared
-  answers will not be recorded. Confirming Redo returns the student to the
-  group-count selector for a fresh timed test.
+- The submitted Test view shows a bottom-right floating `Redo` capsule instead
+  of the page-bottom Redo button or floating `Show Answers` capsule. Redo opens
+  a confirmation dialog warning that the current review will be cleared and the
+  cleared answers will not be recorded. Confirming Redo returns the student to
+  the group-count selector for a fresh timed test.
 
 ## 6. Status Labels
 

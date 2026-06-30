@@ -2690,7 +2690,9 @@
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
             '<div class="progress-matrix-modal-shell">' +
                 '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Assignment details">' +
-                    renderMatrixCellDetail(item) +
+                    '<div class="progress-matrix-modal-scroll">' +
+                        renderMatrixCellDetail(item) +
+                    '</div>' +
                     '<div class="matrix-modal-actions">' +
                         '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
                     '</div>' +
@@ -2756,19 +2758,21 @@
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
             '<div class="progress-matrix-modal-shell">' +
                 '<section class="progress-matrix-modal matrix-student-modal" role="dialog" aria-modal="true" aria-label="Student progress timeline">' +
-                    '<div class="matrix-student-overview">' +
-                        '<div class="matrix-student-identity">' +
-                            '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(name)) + '</span>' +
-                            '<span><h2>' + escapeHtml(name) + '</h2>' +
-                            '<small>' + escapeHtml(studentId || studentKey) + ' · ' + escapeHtml(className) + '</small></span>' +
+                    '<div class="progress-matrix-modal-scroll">' +
+                        '<div class="matrix-student-overview">' +
+                            '<div class="matrix-student-identity">' +
+                                '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(name)) + '</span>' +
+                                '<span><h2>' + escapeHtml(name) + '</h2>' +
+                                '<small>' + escapeHtml(studentId || studentKey) + ' · ' + escapeHtml(className) + '</small></span>' +
+                            '</div>' +
+                            '<div class="matrix-student-stats">' +
+                                '<span><strong>' + escapeHtml(metrics.total) + '</strong><small>Total</small></span>' +
+                                '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
+                                '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="matrix-student-stats">' +
-                            '<span><strong>' + escapeHtml(metrics.total) + '</strong><small>Total</small></span>' +
-                            '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
-                            '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
-                        '</div>' +
+                        renderMatrixStudentTimeline(studentItems) +
                     '</div>' +
-                    renderMatrixStudentTimeline(studentItems) +
                     '<div class="matrix-modal-actions">' +
                         '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
                     '</div>' +
@@ -3278,36 +3282,95 @@
             return item.attempt_id === state.notificationAttemptId;
         });
         if (!attempt) return '';
-        var student = studentForUid(attempt.student_uid);
-        var entries = matrixAttemptEntries([attempt]);
-        var title = setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt';
-        var sourceLabel = attempt.assignment_id ? 'Assigned work' : 'Self study';
+        var detailItem = notificationDetailItemForAttempt(attempt);
         return '<div class="progress-matrix-modal-backdrop notification-attempt-modal" data-notification-attempt-close="backdrop">' +
             '<div class="progress-matrix-modal-shell">' +
                 '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Attempt details">' +
-                    '<div class="progress-matrix-detail">' +
-                        '<div class="matrix-detail-summary">' +
-                            '<h2>' + escapeHtml(title) + '</h2>' +
-                            '<div class="matrix-detail-pills">' +
-                                '<span class="matrix-detail-pill">' + escapeHtml(student.name || attempt.student_id || 'Student') + '</span>' +
-                                '<span class="matrix-detail-pill">' + escapeHtml(sourceLabel) + '</span>' +
-                                '<span class="matrix-score-lock unlocked"><strong>' + escapeHtml(formatPercent(attempt.percentage)) + '</strong></span>' +
-                            '</div>' +
-                        '</div>' +
-                        renderMatrixAttemptChart(entries, attempt) +
-                        renderMatrixAttemptDetails(entries) +
-                        '<div class="notification-attempt-actions">' +
-                            '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
-                        '</div>' +
+                    '<div class="progress-matrix-modal-scroll">' +
+                        renderMatrixCellDetail(detailItem) +
+                    '</div>' +
+                    '<div class="notification-attempt-actions">' +
+                        '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
                     '</div>' +
                 '</section>' +
             '</div>' +
         '</div>';
     }
 
+    function notificationDetailItemForAttempt(attempt) {
+        var assignmentId = attempt.assignment_id || '';
+        var candidates = (state.progressItems || []).concat(state.assignments || []);
+        var matched = candidates.find(function(item) {
+            return assignmentId && item.assignment_id && String(item.assignment_id) === String(assignmentId);
+        });
+        if (!matched && !assignmentId) {
+            matched = candidates.find(function(item) {
+                return item.student_uid === attempt.student_uid &&
+                    item.set_id === attempt.set_id &&
+                    (!item.assignment_id || item.source === 'self_study');
+            });
+        }
+        var attempts = notificationAttemptsForAttempt(attempt, matched);
+        if (matched) {
+            var detail = Object.assign({}, matched);
+            detail.attempts = attempts;
+            if (!detail.student_name) {
+                var matchedStudent = studentForUid(attempt.student_uid);
+                detail.student_name = matchedStudent.name || attempt.student_id || 'Student';
+            }
+            if (!detail.set_title) detail.set_title = setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt';
+            return detail;
+        }
+        var student = studentForUid(attempt.student_uid);
+        return {
+            source: assignmentId ? 'assigned' : 'self_study',
+            assignment_id: assignmentId || null,
+            student_uid: attempt.student_uid || '',
+            student_id: attempt.student_id || '',
+            student_name: student.name || attempt.student_id || 'Student',
+            set_id: attempt.set_id || '',
+            set_title: setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt',
+            status: attempt.mastered ? 'mastered' : attempt.passed ? 'passed' : 'to_do',
+            best_percentage: bestAttemptPercentage(attempts),
+            answer_revealed: false,
+            mastery_locked: false,
+            attempts: attempts
+        };
+    }
+
+    function notificationAttemptsForAttempt(attempt, assignment) {
+        var attempts = [];
+        if (assignment) attempts = progressAttemptsForAssignment(assignment);
+        if (!attempts.length) {
+            attempts = (state.attempts || []).filter(function(item) {
+                if (attempt.assignment_id) {
+                    return item.assignment_id && String(item.assignment_id) === String(attempt.assignment_id);
+                }
+                return item.student_uid === attempt.student_uid && item.set_id === attempt.set_id && !item.assignment_id;
+            }).sort(function(a, b) {
+                return new Date(a.submitted_at || 0) - new Date(b.submitted_at || 0);
+            });
+        }
+        if (!attempts.some(function(item) { return item.attempt_id === attempt.attempt_id; })) {
+            attempts = attempts.concat([attempt]).sort(function(a, b) {
+                return new Date(a.submitted_at || 0) - new Date(b.submitted_at || 0);
+            });
+        }
+        return attempts;
+    }
+
+    function bestAttemptPercentage(attempts) {
+        return (attempts || []).reduce(function(best, attempt) {
+            var value = numericPercent(attempt.display_percentage == null ? attempt.percentage : attempt.display_percentage);
+            if (value == null) return best;
+            return best == null ? value : Math.max(best, value);
+        }, null);
+    }
+
     function openAttemptFromNotification(row) {
         var attemptId = row.dataset.openAttemptId || '';
         state.notificationAttemptId = attemptId;
+        state.targetMatrixAttemptId = attemptId;
         renderUpdatesPanel();
         markAttemptsReadSilently();
     }
@@ -3329,6 +3392,7 @@
             button.addEventListener('click', function(event) {
                 if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
                 state.notificationAttemptId = '';
+                state.targetMatrixAttemptId = '';
                 renderUpdatesPanel();
             });
         });
@@ -3339,6 +3403,13 @@
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
+        if (state.notificationAttemptId && state.targetMatrixAttemptId) {
+            window.setTimeout(function() {
+                var modal = updatesBody.querySelector('.notification-attempt-modal .progress-matrix-modal-shell');
+                var target = modal && modal.querySelector('.matrix-attempt-card.highlight');
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 80);
+        }
     }
 
     function answerText(value) {
