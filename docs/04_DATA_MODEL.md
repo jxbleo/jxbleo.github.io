@@ -110,6 +110,9 @@ Core fields:
 | `cancelled_by_teacher_uid` | string/null | teacher who cancelled the assignment |
 | `cancel_reason` | string | optional cancellation note |
 | `previous_status` | string/null | status before cancellation |
+| `converted_from_self_study` | boolean | assignment was initialized from prior Explore/Library completion |
+| `converted_self_study_attempt_id` | string/null | self-study attempt used for initial assignment summary |
+| `converted_self_study_achievement_id` | string/null | self-study STAR converted to assignment STAR, when applicable |
 
 Status rule:
 
@@ -143,6 +146,10 @@ Reassignment rule:
 - Completed history (`passed`, `mastered`, legacy `done`) does not block future reassignment.
 - Cancelled history (`cancelled`) does not block future reassignment.
 - Reassignment creates a new `assignment_id`.
+- If the student already has a completed self-study attempt for the same
+  `set_id`, the new assignment is initialized from that best self-study attempt:
+  `passed` when it meets the assignment passing percentage, `mastered` when it
+  meets mastery. Only mastered conversions create or convert an assignment STAR.
 
 ## 6. `attempts`
 

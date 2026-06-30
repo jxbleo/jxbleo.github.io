@@ -17,6 +17,9 @@
   long attempt histories scroll above them.
 - Changed submitted Vocabulary Test review to use the bottom-right floating
   `Redo` capsule and removed the old page-bottom Redo button.
+- Updated teacher assignment creation so prior completed Library/Explore work
+  initializes the new assignment as already passed or mastered, making it
+  visible as completed in teacher progress views.
 
 ## 2026-06-24
 
