@@ -2745,15 +2745,23 @@ body:not(.teacher-page) .tab-button.active {
     width: min(980px, 100%);
 }
 .progress-matrix-modal {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-height: min(760px, calc(100vh - 112px));
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     padding: 22px;
     border: 1px solid rgba(124,58,237,0.16);
     border-radius: 22px;
     background: rgba(255,255,255,0.98);
     box-shadow: 0 24px 70px rgba(21, 31, 43, 0.24);
+}
+.progress-matrix-modal-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 2px 4px;
 }
 .progress-matrix-modal .progress-matrix-detail {
     margin-top: 0;
@@ -2764,6 +2772,10 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-student-modal {
     display: grid;
     gap: 14px;
+}
+.progress-matrix-modal.matrix-student-modal {
+    display: flex;
+    gap: 0;
 }
 .matrix-student-overview {
     display: flex;
@@ -2943,8 +2955,12 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-modal-actions,
 .notification-attempt-actions {
     display: flex;
+    flex: 0 0 auto;
     justify-content: center;
-    margin-top: 16px;
+    margin: 16px -22px -22px;
+    padding: 14px 22px 18px;
+    border-top: 1px solid rgba(31,45,38,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.98));
 }
 .matrix-modal-actions .progress-matrix-modal-close,
 .notification-attempt-actions .progress-matrix-modal-close {
@@ -5473,6 +5489,11 @@ body:not(.teacher-page) .tab-button.active {
         max-height: calc(100vh - 82px);
         padding: 16px;
         border-radius: 18px;
+    }
+    .matrix-modal-actions,
+    .notification-attempt-actions {
+        margin: 14px -16px -16px;
+        padding: 12px 16px 16px;
     }
     .matrix-student-overview {
         align-items: stretch;

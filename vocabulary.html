@@ -1068,7 +1068,6 @@
                     <div id="test-groups" class="group-grid"></div>
                     <div class="group-actions">
                         <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit Test</button>
-                        <button class="btn" id="redo-test-btn" type="button" style="display:none;">Redo</button>
                     </div>
                 </div>
             </section>
@@ -1092,6 +1091,7 @@
         var assignmentStatus = params.get('status') || '';
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
+        var testRedoAvailable = false;
         var teacherMode = params.get('teacher') === '1';
         var teacherAnswerKey = null;
         var teacherAnswersVisible = false;
@@ -1281,6 +1281,7 @@
 
         function clearAllTestAnswers() {
             answerRevealAvailable = false;
+            testRedoAvailable = false;
             updateHistoryToolbar();
             document.querySelectorAll('.test-question').forEach(function(card) {
                 card.classList.remove('correct', 'wrong', 'pending', 'choice-open', 'history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
@@ -1331,6 +1332,10 @@
             toolbar.innerHTML = '<button type="button" id="show-history-btn">Show Answers</button>';
             document.body.appendChild(toolbar);
             document.getElementById('show-history-btn').addEventListener('click', function() {
+                if (testRedoAvailable) {
+                    requestRedoTest();
+                    return;
+                }
                 if (answerRevealAvailable) {
                     revealAllAnswers();
                 }
@@ -1347,8 +1352,9 @@
             var toolbar = document.getElementById('history-toolbar');
             var btn = document.getElementById('show-history-btn');
             if (!toolbar || !btn) return;
-            toolbar.hidden = !answerRevealAvailable || activeVocabularyViewId() === 'self-study-view';
-            btn.textContent = 'Show Answers';
+            var showRedo = testRedoAvailable && activeVocabularyViewId() === 'test-view';
+            toolbar.hidden = (!answerRevealAvailable && !showRedo) || activeVocabularyViewId() === 'self-study-view';
+            btn.textContent = showRedo ? 'Redo' : 'Show Answers';
         }
 
         function revealAllAnswers() {
@@ -2113,7 +2119,8 @@
                 }
             });
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
-            document.getElementById('redo-test-btn').style.display = 'none';
+            testRedoAvailable = false;
+            updateHistoryToolbar();
             switchView('test-view');
             setTestLocked(true);
             startTimer(remaining);
@@ -2160,7 +2167,8 @@
             submitButton.disabled = false;
             submitButton.textContent = 'Submit Test';
             submitButton.style.display = 'inline-flex';
-            document.getElementById('redo-test-btn').style.display = 'none';
+            testRedoAvailable = false;
+            updateHistoryToolbar();
             switchView('test-view');
             setTestLocked(true);
             startTimer(selected.length * 120);
@@ -2260,7 +2268,8 @@
             }).join('');
             setupAdaptiveInputs(root);
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
-            document.getElementById('redo-test-btn').style.display = 'none';
+            testRedoAvailable = false;
+            updateHistoryToolbar();
             setTestLocked(true);
             startTimer(count * 120);
             saveTestDraft();
@@ -2277,6 +2286,7 @@
             testSubmitting = false;
             setTestLocked(false);
             answerRevealAvailable = false;
+            testRedoAvailable = false;
             updateHistoryToolbar();
             clearTestDraft();
 
@@ -2285,7 +2295,6 @@
             var setup = document.getElementById('test-setup');
             var timer = document.getElementById('test-timer');
             var submitButton = document.getElementById('submit-test-btn');
-            var redoButton = document.getElementById('redo-test-btn');
             if (root) root.innerHTML = '';
             if (summary) {
                 summary.innerHTML = '';
@@ -2304,7 +2313,6 @@
                 submitButton.textContent = 'Submit Test';
                 submitButton.style.display = 'none';
             }
-            if (redoButton) redoButton.style.display = 'none';
             updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -2396,7 +2404,8 @@
                 timer.textContent = 'Finished';
                 timer.classList.remove('sticky');
                 submitButton.style.display = 'none';
-                document.getElementById('redo-test-btn').style.display = 'inline-flex';
+                testRedoAvailable = true;
+                updateHistoryToolbar();
                 setTestLocked(false);
                 testSubmitting = false;
                 clearTestDraft();
@@ -2437,7 +2446,6 @@
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', requestStartTest);
             document.getElementById('submit-test-btn').addEventListener('click', requestSubmitTest);
-            document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
             document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.addEventListener('click', handleChoiceClick);
             document.getElementById('test-groups').addEventListener('change', saveTestDraft);
