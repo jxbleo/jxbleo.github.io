@@ -2732,7 +2732,7 @@ body:not(.teacher-page) .tab-button.active {
 .progress-matrix-modal-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 90;
+    z-index: 180;
     display: grid;
     place-items: center;
     padding: 20px;
@@ -2939,6 +2939,14 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-modal-close:hover {
     background: rgba(24, 51, 47, 0.92);
+}
+.notification-attempt-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
+.notification-attempt-actions .progress-matrix-modal-close {
+    color: #fff;
 }
 .matrix-detail-summary {
     display: flex;
@@ -3810,7 +3818,7 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-edit-overlay {
     position: fixed;
     inset: 0;
-    z-index: 110;
+    z-index: 220;
     display: grid;
     place-items: center;
     padding: 20px;

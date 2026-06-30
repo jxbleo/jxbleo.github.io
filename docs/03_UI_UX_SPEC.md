@@ -143,7 +143,8 @@ top-right Review entry.
 Teacher notification rows open standalone attempt detail dialogs inside the
 notification surface. They must not switch to `View`, select matrix cells,
 change matrix filters, or redraw the matrix, whether the attempt came from an
-assigned task or self study.
+assigned task or self study. The attempt detail dialog must include a visible
+`Close` action at the bottom of its detail card.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
@@ -230,7 +231,9 @@ It should include:
   the detail card underneath it. The dialog shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
   attempt cards. It must remain an independent page-level overlay and must not
-  be clipped by the matrix card or rendered inline beneath the matrix.
+  be clipped by the matrix card or rendered inline beneath the matrix. The
+  overlay must sit above page-level progress controls such as the
+  `By student` / `By task` capsule.
 - matrix detail close buttons are centered below the dialog card. Attempt score
   bars use fixed-width columns rather than stretching a single attempt across
   the whole dialog; not-passed bars are pale red, passed bars are green, and
