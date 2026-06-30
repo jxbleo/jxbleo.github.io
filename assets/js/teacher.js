@@ -2691,8 +2691,10 @@
             '<div class="progress-matrix-modal-shell">' +
                 '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Assignment details">' +
                     renderMatrixCellDetail(item) +
+                    '<div class="matrix-modal-actions">' +
+                        '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
+                    '</div>' +
                 '</section>' +
-                '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
             '</div>' +
         '</div>';
     }
@@ -2767,8 +2769,10 @@
                         '</div>' +
                     '</div>' +
                     renderMatrixStudentTimeline(studentItems) +
+                    '<div class="matrix-modal-actions">' +
+                        '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
+                    '</div>' +
                 '</section>' +
-                '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
             '</div>' +
         '</div>';
     }

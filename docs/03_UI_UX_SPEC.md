@@ -227,14 +227,14 @@ It should include:
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column
-- clickable matrix cells open a floating dialog with the close button outside
-  the detail card underneath it. The dialog shows the practice title, a student
+- clickable matrix cells open a floating dialog with the close button inside
+  the bottom of the detail card. The dialog shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
   attempt cards. It must remain an independent page-level overlay and must not
   be clipped by the matrix card or rendered inline beneath the matrix. The
   overlay must sit above page-level progress controls such as the
   `By student` / `By task` capsule.
-- matrix detail close buttons are centered below the dialog card. Attempt score
+- matrix detail close buttons are centered at the bottom inside the dialog card. Attempt score
   bars use fixed-width columns rather than stretching a single attempt across
   the whole dialog; not-passed bars are pale red, passed bars are green, and
   mastered bars are glowing gold.
@@ -371,6 +371,14 @@ Shared rules:
   theme should show the symbol in blue.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
+
+### Vocabulary Learn
+
+- Vocabulary Learn mode uses each study group's own `Check Answer` button.
+  The floating global `Show Answers` history/reveal button should not appear
+  while the Learn view is active.
+- Vocabulary practice does not expose Argue buttons in Learn, Test, History,
+  or teacher preview surfaces.
 
 ### Vocabulary Test
 

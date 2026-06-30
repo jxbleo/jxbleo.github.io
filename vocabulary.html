@@ -684,103 +684,6 @@
             display: block;
         }
 
-        .teacher-argue-btn {
-            margin-top: 8px;
-            padding: 6px 12px;
-            border: 1px solid #d6bcfa;
-            border-radius: 999px;
-            color: #5b21b6;
-            background: #f5f0ff;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .teacher-argue-btn.sent {
-            color: #237a52;
-            border-color: #8cc8a8;
-            background: #ecf9f1;
-        }
-
-        .teacher-argue-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 3000;
-            display: grid;
-            place-items: center;
-            padding: 20px;
-            background: rgba(25,35,58,.42);
-            backdrop-filter: blur(6px);
-        }
-
-        .teacher-argue-card {
-            position: relative;
-            overflow: hidden;
-            width: min(460px, 100%);
-            min-height: 252px;
-            padding: 22px;
-            border-radius: 20px;
-            background: #fff;
-            box-shadow: 0 24px 80px rgba(23,32,58,.24);
-        }
-
-        .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; }
-        .teacher-argue-card p { margin: 0 0 14px; color: var(--muted); line-height: 1.45; }
-        .teacher-argue-card textarea {
-            width: 100%;
-            min-height: 92px;
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            font-family: inherit;
-            resize: vertical;
-            box-sizing: border-box;
-        }
-        .teacher-argue-content {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            gap: 12px;
-        }
-        .teacher-argue-card.sent { animation: argueSentPop .74s cubic-bezier(.2,.82,.2,1) both; }
-        .teacher-argue-card.sent::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            background: linear-gradient(135deg, rgba(245, 240, 255, .98), rgba(236, 249, 241, .96));
-            animation: argueSentWash .82s cubic-bezier(.2,.82,.2,1) forwards;
-        }
-        .teacher-argue-card.sent .teacher-argue-content {
-            animation: argueContentOut .62s ease forwards;
-        }
-        .teacher-argue-status { margin-top: 12px !important; padding: 10px 12px; border-radius: 12px; color: #237a52 !important; background: #ecf9f1; font-weight: 700; }
-        .teacher-argue-status.pending { color: #7a5528 !important; background: #fff8e5; }
-        .teacher-argue-status.approved { color: #237a52 !important; background: #ecf9f1; }
-        .teacher-argue-status.rejected { color: #b54747 !important; background: #fff0ed; }
-        .teacher-argue-status.sent { color: #5b21b6 !important; background: linear-gradient(135deg, #f5f0ff, #ecf9f1); }
-        .teacher-argue-sent-message { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 28px; text-align: center; opacity: 0; transform: translateY(18px) scale(.92); pointer-events: none; }
-        .teacher-argue-card.sent .teacher-argue-sent-message { animation: argueMessageIn .72s .43s cubic-bezier(.2,.82,.2,1) forwards; }
-        .teacher-argue-heart { display: inline-grid; place-items: center; width: 68px; height: 58px; margin: 0 0 10px; }
-        .teacher-argue-heart svg { width: 56px; height: 56px; overflow: visible; }
-        .teacher-argue-heart-main { fill: #f08b76; transform-origin: center; }
-        .teacher-argue-heart-small { fill: #e2556f; opacity: 0; }
-        .teacher-argue-card.sent .teacher-argue-heart { animation: argueHeartIn .68s .65s cubic-bezier(.17,.89,.32,1.35) both; }
-        .teacher-argue-card.sent .teacher-argue-heart-main { animation: argueHeartPop .9s .82s ease both; }
-        .teacher-argue-card.sent .teacher-argue-heart-small { animation: argueTinyHeart 1s .96s ease both; }
-        .teacher-argue-sent-message strong { display: block; color: #5b21b6; font-size: 1.45rem; line-height: 1.08; }
-        .teacher-argue-sent-message > div > span:not(.teacher-argue-heart) { display: block; margin-top: 10px; color: var(--muted); font-weight: 850; }
-        @keyframes argueContentOut { 0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 55% { opacity: .32; transform: translateY(-8px) scale(.985); filter: blur(1.6px); } 100% { opacity: 0; transform: translateY(-16px) scale(.97); filter: blur(4px); } }
-        @keyframes argueSentWash { 0% { opacity: 0; transform: translateX(-18%); } 52% { opacity: 1; transform: translateX(0); } 100% { opacity: 1; transform: translateX(0); } }
-        @keyframes argueSentPop { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-8px) scale(1.015); } 100% { transform: translateY(0) scale(1); } }
-        @keyframes argueMessageIn { 0% { opacity: 0; transform: translateY(18px) scale(.92); filter: blur(4px); } 58% { opacity: 1; transform: translateY(-3px) scale(1.025); filter: blur(0); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes argueHeartIn { 0% { transform: translateY(8px) scale(.72); opacity: 0; } 65% { transform: translateY(-2px) scale(1.08); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes argueHeartPop { 0% { transform: scale(.68); opacity: 0; } 45% { transform: scale(1.24); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes argueTinyHeart { 0% { transform: translateY(8px) scale(.4); opacity: 0; } 45% { opacity: 1; } 100% { transform: translateY(-18px) scale(1); opacity: 0; } }
-        .teacher-argue-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 14px; }
-        .teacher-argue-actions button { min-height: 38px; padding: 0 15px; border-radius: 11px; font-weight: 800; cursor: pointer; }
-        .teacher-argue-submit { border: 0; color: #fff; background: var(--accent); }
-        .teacher-argue-cancel { border: 1px solid var(--line); color: var(--ink); background: #fff; }
-
         .group-actions {
             display: flex;
             gap: 10px;
@@ -1192,7 +1095,6 @@
         var teacherMode = params.get('teacher') === '1';
         var teacherAnswerKey = null;
         var teacherAnswersVisible = false;
-        var currentArgueAttemptId = historyAttemptId || '';
         var unitData = null;
         var testTimerId = null;
         var testRemainingSeconds = 0;
@@ -1436,11 +1338,16 @@
             updateHistoryToolbar();
         }
 
+        function activeVocabularyViewId() {
+            var activeView = document.querySelector('.view.active');
+            return activeView ? activeView.id : '';
+        }
+
         function updateHistoryToolbar() {
             var toolbar = document.getElementById('history-toolbar');
             var btn = document.getElementById('show-history-btn');
             if (!toolbar || !btn) return;
-            toolbar.hidden = !answerRevealAvailable;
+            toolbar.hidden = !answerRevealAvailable || activeVocabularyViewId() === 'self-study-view';
             btn.textContent = 'Show Answers';
         }
 
@@ -1500,204 +1407,6 @@
             });
         }
 
-        function vocabularyQuestionText(card) {
-            var sentence = card.querySelector('.question-sentence');
-            return sentence ? sentence.textContent.trim() : '';
-        }
-
-        function submitTeacherArgue(button, card, key, modal) {
-            var input = card.querySelector('.answer-input');
-            var reason = modal.querySelector('textarea').value.trim();
-            var submit = modal.querySelector('.teacher-argue-submit');
-            var status = modal.querySelector('.teacher-argue-status');
-            button.disabled = true;
-            button.textContent = 'Sending...';
-            submit.disabled = true;
-            submit.textContent = 'Sending...';
-            teacherCall('submitTeacherDispute', {
-                set_id: setId,
-                question_id: key,
-                submitted_answer: input ? input.value : '',
-                question_text: vocabularyQuestionText(card),
-                reason: reason
-            }).then(function() {
-                button.classList.add('sent');
-                button.disabled = false;
-                button.textContent = 'Argue Sent';
-                modal.querySelector('.teacher-argue-card').classList.add('sent');
-                modal.querySelector('textarea').disabled = true;
-                submit.hidden = true;
-                modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
-            }).catch(function(error) {
-                button.disabled = false;
-                button.textContent = 'Argue';
-                submit.disabled = false;
-                submit.textContent = 'Submit';
-                status.hidden = false;
-                status.style.color = '#b54747';
-                status.style.background = '#fff0ed';
-                status.textContent = error.message || 'Unable to submit Argue.';
-            });
-        }
-
-        function submitStudentArgue(button, card, key, modal) {
-            var reason = modal.querySelector('textarea').value.trim();
-            var submit = modal.querySelector('.teacher-argue-submit');
-            var status = modal.querySelector('.teacher-argue-status');
-            button.disabled = true;
-            button.textContent = 'Sending...';
-            submit.disabled = true;
-            submit.textContent = 'Sending...';
-            window.MrCatCloud.callFunction('getDashboard', {
-                action: 'submitDispute',
-                attempt_id: currentArgueAttemptId || '',
-                question_id: key,
-                question_text: vocabularyQuestionText(card),
-                reason: reason
-            }).then(function(result) {
-                if (!result || !result.success) throw new Error(result && result.message || 'Unable to submit Argue.');
-                button.classList.add('sent');
-                button.disabled = false;
-                button.textContent = 'Argue Sent';
-                modal.querySelector('.teacher-argue-card').classList.add('sent');
-                modal.querySelector('textarea').disabled = true;
-                submit.hidden = true;
-                modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
-            }).catch(function(error) {
-                button.disabled = false;
-                button.textContent = 'Argue';
-                submit.disabled = false;
-                submit.textContent = 'Submit';
-                status.hidden = false;
-                status.style.color = '#b54747';
-                status.style.background = '#fff0ed';
-                status.textContent = error.message === 'DISPUTE_ALREADY_EXISTS' ? 'Already sent' : (error.message || 'Unable to submit Argue.');
-            });
-        }
-
-        function renderStudentArgueStatus(button, modal, dispute) {
-            if (!dispute) return;
-            var status = modal.querySelector('.teacher-argue-status');
-            var statusText = dispute.status === 'approved'
-                ? (dispute.decision === 'replace' ? 'Answer rule updated' : 'Teacher accepted')
-                : dispute.status === 'rejected'
-                    ? 'Original ruling kept'
-                    : 'Sent to teacher. Waiting for review.';
-            button.classList.add('sent');
-            button.textContent = dispute.status === 'pending' ? 'Argue Sent' : 'Reviewed';
-            status.hidden = false;
-            status.className = 'teacher-argue-status ' + (dispute.status || 'pending');
-            status.innerHTML = '<strong>' + escapeHtml(statusText) + '</strong>' +
-                (dispute.teacher_note ? '<br>Teacher note: ' + escapeHtml(dispute.teacher_note) : '');
-            modal.querySelector('textarea').value = dispute.student_reason || '';
-            modal.querySelector('textarea').disabled = true;
-            modal.querySelector('.teacher-argue-submit').hidden = true;
-            modal.querySelector('.teacher-argue-cancel').textContent = 'Close';
-        }
-
-        function loadStudentArgueStatus(button, key, modal) {
-            if (!currentArgueAttemptId || !window.MrCatCloud) return;
-            window.MrCatCloud.callFunction('getDashboard', {
-                action: 'listDisputesForAttempt',
-                attempt_id: currentArgueAttemptId
-            }).then(function(result) {
-                var dispute = (result.disputes || []).find(function(item) {
-                    return String(item.question_id) === String(key);
-                });
-                renderStudentArgueStatus(button, modal, dispute);
-            }).catch(function() {});
-        }
-
-        function openTeacherArgueModal(button, card, key) {
-            var modal = document.createElement('div');
-            modal.className = 'teacher-argue-modal';
-            modal.setAttribute('role', 'dialog');
-            modal.setAttribute('aria-modal', 'true');
-            modal.innerHTML =
-                '<div class="teacher-argue-card">' +
-                    '<div class="teacher-argue-content">' +
-                        '<h2>Tell me why.</h2>' +
-                        '<textarea aria-label="Argue note"></textarea>' +
-                        '<p class="teacher-argue-status" hidden></p>' +
-                        '<div class="teacher-argue-actions">' +
-                            '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
-                            '<button class="teacher-argue-submit" type="button">Submit</button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="teacher-argue-sent-message" aria-live="polite"><div>' +
-                        '<span class="teacher-argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
-                            '<path class="teacher-argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
-                            '<path class="teacher-argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
-                        '</svg></span>' +
-                        '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
-                    '</div></div>' +
-                '</div>';
-            document.body.appendChild(modal);
-            modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
-                submitTeacherArgue(button, card, key, modal);
-            });
-            modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
-            modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
-        }
-
-        function openStudentArgueModal(button, card, key) {
-            var modal = document.createElement('div');
-            modal.className = 'teacher-argue-modal';
-            modal.setAttribute('role', 'dialog');
-            modal.setAttribute('aria-modal', 'true');
-            modal.innerHTML =
-                '<div class="teacher-argue-card">' +
-                    '<div class="teacher-argue-content">' +
-                        '<h2>Tell me why.</h2>' +
-                        '<textarea aria-label="Argue note"></textarea>' +
-                        '<p class="teacher-argue-status" hidden></p>' +
-                        '<div class="teacher-argue-actions">' +
-                            '<button class="teacher-argue-cancel" type="button">Cancel</button>' +
-                            '<button class="teacher-argue-submit" type="button">Submit</button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="teacher-argue-sent-message" aria-live="polite"><div>' +
-                        '<span class="teacher-argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
-                            '<path class="teacher-argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
-                            '<path class="teacher-argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
-                        '</svg></span>' +
-                        '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
-                    '</div></div>' +
-                '</div>';
-            document.body.appendChild(modal);
-            modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
-                submitStudentArgue(button, card, key, modal);
-            });
-            modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
-            modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
-            loadStudentArgueStatus(button, key, modal);
-        }
-
-        function appendTeacherArgueButton(reveal, card, key) {
-            var button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'teacher-argue-btn';
-            button.textContent = 'Argue';
-            button.addEventListener('click', function() {
-                openTeacherArgueModal(button, card, key);
-            });
-            reveal.appendChild(document.createElement('br'));
-            reveal.appendChild(button);
-        }
-
-        function appendStudentArgueButton(reveal, card, key) {
-            if (!currentArgueAttemptId) return;
-            var button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'teacher-argue-btn';
-            button.textContent = 'Argue';
-            button.addEventListener('click', function() {
-                openStudentArgueModal(button, card, key);
-            });
-            reveal.appendChild(document.createElement('br'));
-            reveal.appendChild(button);
-        }
-
         function renderTeacherAnswers(answerKey) {
             clearTeacherAnswerDisplay();
             var answers = answerKey.answers || {};
@@ -1714,7 +1423,6 @@
                 }
                 reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(answerText(answers[key])) +
                     (explanations[key] ? '<br><br>' + escapeHtml(explanations[key]) : '');
-                appendTeacherArgueButton(reveal, card, key);
                 reveal.setAttribute('data-teacher-answer', '1');
                 reveal.classList.add('show');
             });
@@ -1817,6 +1525,7 @@
             document.querySelectorAll('.view').forEach(function(view) {
                 view.classList.toggle('active', view.id === viewId);
             });
+            updateHistoryToolbar();
         }
 
         function attachAdaptiveInput(input) {
@@ -2494,37 +2203,19 @@
             }).catch(function() { return false; });
         }
 
-        function disputeForQuestion(disputes, questionId) {
-            return (disputes || []).find(function(item) {
-                return String(item.question_id) === String(questionId);
-            }) || null;
-        }
-
-        function historyDisputeLabel(dispute) {
-            if (!dispute) return '';
-            if (dispute.status === 'approved') return dispute.decision === 'replace' ? 'Teacher updated rule' : 'Teacher accepted';
-            if (dispute.status === 'rejected') return 'Teacher reviewed';
-            return 'Argued · Waiting';
-        }
-
         function markHistoryReview(review) {
             (review.answers || []).forEach(function(item) {
                 var key = item.question_id;
-                var dispute = disputeForQuestion(review.disputes || [], key);
                 var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
                 if (!card) return;
                 card.classList.remove('correct', 'wrong', 'pending');
                 card.classList.add(item.correct ? 'correct' : 'wrong');
-                if (dispute) card.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
                 if (card.querySelector('[data-history-dispute="' + CSS.escape(key) + '"]')) return;
                 var note = document.createElement('div');
-                note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong') + (dispute ? ' ' + (dispute.status || 'pending') : '');
+                note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong');
                 note.setAttribute('data-history-dispute', key);
-                note.innerHTML = '<strong>' + (item.correct ? 'Correct in history' : 'Incorrect in history') + '</strong>' +
-                    (dispute ? '<span>' + historyDisputeLabel(dispute) + '</span>' : '') +
-                    (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
+                note.innerHTML = '<strong>' + (item.correct ? 'Correct in history' : 'Incorrect in history') + '</strong>';
                 card.appendChild(note);
-                if (!item.correct) appendStudentArgueButton(note, card, key);
             });
         }
 
@@ -2666,7 +2357,6 @@
                 if (!response || !response.success) {
                     throw new Error(response && response.message || 'Unable to submit this test.');
                 }
-                if (response.attempt_id) currentArgueAttemptId = response.attempt_id;
                 updateHistoryFromResponse(response);
                 assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
                 answerRevealAvailable = response.passed && !response.feedback_locked;
@@ -2689,7 +2379,6 @@
                     if (!result.correct && !response.feedback_locked) {
                         reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
                             (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
-                        if (response.recorded) appendStudentArgueButton(reveal, card, key);
                         reveal.classList.add('show');
                         reveal.setAttribute('data-answer-reveal', '1');
                     }
