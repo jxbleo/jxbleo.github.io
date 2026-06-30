@@ -608,8 +608,9 @@ flowchart TD
   D --> E{"是否已有开放作业?"}
   E -->|是: to_do / 未完成| F["跳过，避免重复开放作业"]
   E -->|否| G["创建新 assignment"]
-  G --> H{"是否已有 self-study mastery?"}
-  H -->|是| I["可转为 mastered assignment STAR"]
+  G --> H{"是否已有 self-study completed attempt?"}
+  H -->|passed| I["初始化为 passed assignment"]
+  H -->|mastered| K["初始化为 mastered assignment 并转为 assignment STAR"]
   H -->|否| J["status=to_do"]
 ```
 
@@ -618,6 +619,9 @@ flowchart TD
 - 已完成或已 STAR 不能阻止未来重新布置
 - 只阻止重复开放作业
 - 重新布置后必须是新的 `assignment_id`
+- 如果学生先在 Explore / Library 自主完成同一个 `set_id`，老师之后布置时应直接创建
+  已完成 assignment。达到 passing 的自学 attempt 初始化为 `passed`，达到 mastery 的自学
+  attempt 初始化为 `mastered` 并创建或转换 assignment STAR。
 
 ### 9.3 学生提交作业
 

@@ -153,6 +153,12 @@ function monotonicAssignmentStatus(currentStatus, attemptStatus) {
     : normalizedAssignmentStatus(attemptStatus);
 }
 
+function attemptDateValue(attempt) {
+  const value = attempt && (attempt.submitted_at || attempt.updated_at || attempt.created_at);
+  const date = value ? new Date(value) : null;
+  return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
+}
+
 function isSelfStudyAchievement(item) {
   return Boolean(
     item && !item.assignment_id && (item.source === "self_study" || item.source === "explore")
@@ -312,6 +318,26 @@ function safePercentage(value, fallback) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < 0 || number > 100) throw new Error("INVALID_PERCENTAGE");
   return number;
+}
+
+async function bestCompletedSelfStudyAttempt(studentUid, setId, passingPercentage, masteryPercentage) {
+  const attempts = await getAll("attempts", {
+    where: {
+      student_uid: studentUid,
+      set_id: setId,
+    },
+  });
+  return attempts
+    .map(recordData)
+    .filter((attempt) => !attempt.assignment_id)
+    .filter((attempt) =>
+      statusRank(statusForPercentage(effectivePercentage(attempt), passingPercentage, masteryPercentage, null)) >= statusRank("passed")
+    )
+    .sort((left, right) => {
+      const scoreDiff = effectivePercentage(right) - effectivePercentage(left);
+      if (scoreDiff) return scoreDiff;
+      return attemptDateValue(right) - attemptDateValue(left);
+    })[0] || null;
 }
 
 function hasOwn(object, key) {
@@ -625,12 +651,26 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
         student_uid: student.auth_uid,
       })
     : null;
-  const selfStudyPercentage = Number(
-    selfStudyStar && selfStudyStar.best_percentage != null
-      ? selfStudyStar.best_percentage
-      : (selfStudyAttempt ? effectivePercentage(selfStudyAttempt) : 0)
+  const bestSelfStudyAttempt = await bestCompletedSelfStudyAttempt(
+    student.auth_uid,
+    setId,
+    passingPercentage,
+    masteryPercentage
   );
-  const convertsSelfStudy = Boolean(selfStudyStar && selfStudyPercentage >= masteryPercentage);
+  const selfStudyPercentage = Number(
+    bestSelfStudyAttempt
+      ? effectivePercentage(bestSelfStudyAttempt)
+      : selfStudyStar && selfStudyStar.best_percentage != null
+        ? selfStudyStar.best_percentage
+        : (selfStudyAttempt ? effectivePercentage(selfStudyAttempt) : 0)
+  );
+  const selfStudyStatus = statusForPercentage(selfStudyPercentage, passingPercentage, masteryPercentage, null);
+  const convertsSelfStudy = statusRank(selfStudyStatus) >= statusRank("passed");
+  const convertsToMastery = selfStudyStatus === "mastered";
+  const conversionAttempt = bestSelfStudyAttempt || selfStudyAttempt;
+  const convertedAt = conversionAttempt && conversionAttempt.submitted_at
+    || selfStudyStar && selfStudyStar.first_earned_at
+    || now;
   const assignmentId = [
     student.student_id,
     setId,
@@ -641,38 +681,45 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     assignment_id: assignmentId,
     student_uid: student.auth_uid,
     set_id: setId,
-    status: convertsSelfStudy ? "mastered" : "to_do",
+    status: convertsSelfStudy ? selfStudyStatus : "to_do",
     assigned_at: now,
     due_at: dueAt,
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
-    completed_at: convertsSelfStudy ? (selfStudyStar.first_earned_at || now) : null,
-    latest_attempt_id: convertsSelfStudy ? selfStudyStar.best_attempt_id || null : null,
+    completed_at: convertsSelfStudy ? convertedAt : null,
+    latest_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
     attempt_count: convertsSelfStudy ? 1 : 0,
     latest_percentage: convertsSelfStudy ? selfStudyPercentage : null,
     best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
     raw_best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
-    best_attempt_id: convertsSelfStudy ? selfStudyStar.best_attempt_id || null : null,
-    best_correct_count: convertsSelfStudy && selfStudyAttempt ? selfStudyAttempt.correct_count : null,
-    best_question_count: convertsSelfStudy && selfStudyAttempt ? selfStudyAttempt.question_count : null,
+    best_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
+    best_correct_count: convertsSelfStudy && conversionAttempt ? conversionAttempt.correct_count : null,
+    best_question_count: convertsSelfStudy && conversionAttempt ? conversionAttempt.question_count : null,
     answer_revealed: false,
     mastery_locked: false,
-    mastered_at: convertsSelfStudy ? (selfStudyStar.first_earned_at || now) : null,
+    mastered_at: convertsToMastery ? convertedAt : null,
     converted_from_self_study: convertsSelfStudy,
-    converted_self_study_achievement_id: convertsSelfStudy ? selfStudyStar.achievement_id || selfStudyStar._id : null,
+    converted_self_study_achievement_id: convertsSelfStudy && selfStudyStar ? selfStudyStar.achievement_id || selfStudyStar._id : null,
+    converted_self_study_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
     created_at: now,
     updated_at: now,
   };
 
   await db.collection("assignments").add(assignment);
-  if (convertsSelfStudy) {
+  if (convertsToMastery && conversionAttempt) {
+    await protectAssignmentStar(student, assignment, conversionAttempt, convertedAt);
+  } else if (convertsToMastery && selfStudyStar) {
     await db.collection("student_set_achievements").doc(selfStudyStar._id).update({
       achievement_id: [student.auth_uid, assignmentId].join("::"),
       assignment_id: assignmentId,
       source: "assignment_claim",
+      status: "star",
+      protected: true,
       converted_from_self_study: true,
       converted_at: now,
       claimed_at: selfStudyStar.claimed_at || now,
+      first_earned_at: selfStudyStar.first_earned_at || convertedAt,
+      best_percentage: Math.max(selfStudyPercentage, Number(selfStudyStar.best_percentage || 0)),
       updated_at: now,
     });
   }
