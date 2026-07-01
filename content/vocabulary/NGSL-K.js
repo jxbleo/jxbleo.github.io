@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NGSL-K"] = {
+  "id": "NGSL-K",
+  "sectionId": "vocabulary",
+  "title": "NGSL-K",
+  "href": "vocabulary.html?set=NGSL-K",
+  "sortOrder": 1011,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B1+–B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 2001,
+      "word": "achievement",
+      "emoji": "🏆✨",
+      "meaning": "n. 成就；完成",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something good or difficult that you have successfully done"
+    },
+    {
+      "number": 2002,
+      "word": "negotiate",
+      "emoji": "🤝💬",
+      "meaning": "v. 谈判；协商",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to discuss something in order to reach an agreement"
+    },
+    {
+      "number": 2003,
+      "word": "dominate",
+      "emoji": "👑💪",
+      "meaning": "v. 支配；控制",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to control or be more important than others"
+    },
+    {
+      "number": 2004,
+      "word": "supplier",
+      "emoji": "🚚🏭",
+      "meaning": "n. 供应商",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person or company that provides goods or materials"
+    },
+    {
+      "number": 2005,
+      "word": "prize",
+      "emoji": "🏅🎁",
+      "meaning": "n. 奖品；奖赏  v. 珍视",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "something given to someone who wins or does very well"
+    },
+    {
+      "number": 2006,
+      "word": "typically",
+      "emoji": "🔄🕒",
+      "meaning": "adv. 典型地；通常",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "usually; in the normal way"
+    },
+    {
+      "number": 2007,
+      "word": "peer",
+      "emoji": "👀🧑‍🤝‍🧑",
+      "meaning": "n. 同龄人；同等地位的人 v. 凝视",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a person who is the same age or has the same position as you"
+    },
+    {
+      "number": 2008,
+      "word": "pension",
+      "emoji": "💰👴",
+      "meaning": "n. 养老金；退休金",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money paid regularly to someone after they retire"
+    },
+    {
+      "number": 2009,
+      "word": "wing",
+      "emoji": "🪽🐦",
+      "meaning": "n. 翅膀；翼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one of the parts a bird or plane uses to fly"
+    },
+    {
+      "number": 2010,
+      "word": "acquisition",
+      "emoji": "📚🛒",
+      "meaning": "n. 获得；收购",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of getting or buying something"
+    },
+    {
+      "number": 2011,
+      "word": "laughter",
+      "emoji": "😂😆",
+      "meaning": "n. 笑声",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the sound people make when they laugh"
+    },
+    {
+      "number": 2012,
+      "word": "deeply",
+      "emoji": "🌊💭",
+      "meaning": "adv. 深深地；非常",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "very much, or far below the surface"
+    },
+    {
+      "number": 2013,
+      "word": "recognition",
+      "emoji": "👁️‍🗨️🏅",
+      "meaning": "n. 认出；认可",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "acceptance that someone or something is known, real, or important"
+    },
+    {
+      "number": 2014,
+      "word": "electricity",
+      "emoji": "⚡🔌",
+      "meaning": "n. 电；电流",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "power that is used to make lights, machines, and devices work"
+    },
+    {
+      "number": 2015,
+      "word": "assistance",
+      "emoji": "🤲🆘",
+      "meaning": "n. 帮助；援助",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "help or support"
+    },
+    {
+      "number": 2016,
+      "word": "roof",
+      "emoji": "🏠🔝",
+      "meaning": "n. 屋顶",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the top covering of a building"
+    },
+    {
+      "number": 2017,
+      "word": "retirement",
+      "emoji": "👴🏖️",
+      "meaning": "n. 退休",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the time when someone stops working because of age"
+    },
+    {
+      "number": 2018,
+      "word": "respectively",
+      "emoji": "1️⃣2️⃣",
+      "meaning": "adv. 分别地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the same order as the people or things already mentioned"
+    },
+    {
+      "number": 2019,
+      "word": "variation",
+      "emoji": "🔄🎭",
+      "meaning": "n. 变化；变种",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a difference or change in something"
+    },
+    {
+      "number": 2020,
+      "word": "ultimately",
+      "emoji": "🔚🎯",
+      "meaning": "adv. 最终；根本上",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "finally; in the end"
+    },
+    {
+      "number": 2021,
+      "word": "proof",
+      "emoji": "🔎📄",
+      "meaning": "n. 证据；校样  adj. 防…的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "facts or information that show something is true"
+    },
+    {
+      "number": 2022,
+      "word": "soil",
+      "emoji": "🌱🌍",
+      "meaning": "n. 土壤  v. 弄脏",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the top layer of earth where plants grow"
+    },
+    {
+      "number": 2023,
+      "word": "smart",
+      "emoji": "🤓📱",
+      "meaning": "adj. 聪明的；时髦的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "intelligent, neat, or using modern technology"
+    },
+    {
+      "number": 2024,
+      "word": "layer",
+      "emoji": "🧅📚",
+      "meaning": "n. 层；阶层  v. 分层堆放",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "one level or sheet of material over or under another"
+    },
+    {
+      "number": 2025,
+      "word": "upset",
+      "emoji": "😡😢",
+      "meaning": "adj. 心烦的 v. 打翻, 使苦恼 n. 混乱",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "unhappy, worried, or to make someone feel this way"
+    },
+    {
+      "number": 2026,
+      "word": "tooth",
+      "emoji": "🦷😁",
+      "meaning": "n. 牙齿",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one of the hard white parts in the mouth used for biting"
+    },
+    {
+      "number": 2027,
+      "word": "representation",
+      "emoji": "🖼️👥",
+      "meaning": "n. 表现；代表",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way someone or something is shown or described"
+    },
+    {
+      "number": 2028,
+      "word": "preparation",
+      "emoji": "🛠️📋",
+      "meaning": "n. 准备；制剂",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the work done before something happens"
+    },
+    {
+      "number": 2029,
+      "word": "dispute",
+      "emoji": "⚔️🗣️",
+      "meaning": "n. 争论 v. 争论",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a serious disagreement or argument"
+    },
+    {
+      "number": 2030,
+      "word": "agenda",
+      "emoji": "📅📝",
+      "meaning": "n. 议程；日常事项",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a list of things to discuss or do"
+    },
+    {
+      "number": 2031,
+      "word": "emphasis",
+      "emoji": "💡🔊",
+      "meaning": "n. 强调；重点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "special importance or attention given to something"
+    },
+    {
+      "number": 2032,
+      "word": "edition",
+      "emoji": "📕🔖",
+      "meaning": "n. 版本；版次",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a particular version of a book, newspaper, or other publication"
+    },
+    {
+      "number": 2033,
+      "word": "silver",
+      "emoji": "🥈💍",
+      "meaning": "n. 银；银器 adj. 银色的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "a shiny grey-white metal or color"
+    },
+    {
+      "number": 2034,
+      "word": "entertainment",
+      "emoji": "🎬🎤",
+      "meaning": "n. 娱乐；款待",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "shows, music, games, or activities that people enjoy"
+    },
+    {
+      "number": 2035,
+      "word": "honest",
+      "emoji": "🫶🤥",
+      "meaning": "adj. 诚实的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "telling the truth and not trying to cheat"
+    },
+    {
+      "number": 2036,
+      "word": "undertake",
+      "emoji": "🚀📋",
+      "meaning": "v. 承担；着手做",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to agree or begin to do a task"
+    },
+    {
+      "number": 2037,
+      "word": "retail",
+      "emoji": "🛍️🏪",
+      "meaning": "n. 零售 v. 零售 adj. 零售的",
+      "partOfSpeech": "n. / v. / adj.",
+      "simpleDefinition": "the business of selling goods directly to customers"
+    },
+    {
+      "number": 2038,
+      "word": "wire",
+      "emoji": "🪢🔌",
+      "meaning": "n. 金属丝；电线 v. 给…接电线",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "thin metal used to carry electricity or signals"
+    },
+    {
+      "number": 2039,
+      "word": "unlikely",
+      "emoji": "🚫🤔",
+      "meaning": "adj. 不太可能的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not expected to happen"
+    },
+    {
+      "number": 2040,
+      "word": "gay",
+      "emoji": "🏳️‍🌈😊",
+      "meaning": "adj. 同性恋的；快乐的 n. 同性恋者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "sexually attracted to people of the same sex"
+    },
+    {
+      "number": 2041,
+      "word": "publication",
+      "emoji": "📰📚",
+      "meaning": "n. 出版物；出版",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a printed or online work, or the act of publishing it"
+    },
+    {
+      "number": 2042,
+      "word": "slight",
+      "emoji": "🪶📉",
+      "meaning": "adj. 轻微的 v. 轻视 n. 轻蔑",
+      "partOfSpeech": "adj. / v. / n.",
+      "simpleDefinition": "small in amount or degree"
+    },
+    {
+      "number": 2043,
+      "word": "unknown",
+      "emoji": "❓🕵️‍♂️",
+      "meaning": "adj. 未知的 n. 未知数",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "not known or not identified"
+    },
+    {
+      "number": 2044,
+      "word": "framework",
+      "emoji": "🏗️🧩",
+      "meaning": "n. 框架；体系",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a basic structure or set of ideas used to organize something"
+    },
+    {
+      "number": 2045,
+      "word": "zone",
+      "emoji": "🚧🌐",
+      "meaning": "n. 区域 v. 分区",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "an area with a particular use or feature"
+    },
+    {
+      "number": 2046,
+      "word": "restrict",
+      "emoji": "🚫🔒",
+      "meaning": "v. 限制",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to limit what someone can do or use"
+    },
+    {
+      "number": 2047,
+      "word": "trace",
+      "emoji": "🕵️‍♂️👣",
+      "meaning": "v. 追踪 n. 痕迹",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to find or follow the path of something"
+    },
+    {
+      "number": 2048,
+      "word": "inch",
+      "emoji": "📏🔢",
+      "meaning": "n. 英寸 v. 缓慢移动",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a small unit of length equal to 2.54 centimeters"
+    },
+    {
+      "number": 2049,
+      "word": "equivalent",
+      "emoji": "⚖️🔄",
+      "meaning": "adj. 相等的 n. 等价物",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "equal in value, amount, meaning, or importance"
+    },
+    {
+      "number": 2050,
+      "word": "solid",
+      "emoji": "🧱🧊",
+      "meaning": "adj. 固体的 n. 固体",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "hard and firm, or a substance that is not liquid or gas"
+    },
+    {
+      "number": 2051,
+      "word": "enterprise",
+      "emoji": "🏢🚀",
+      "meaning": "n. 企业；事业心",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a business or a difficult project"
+    },
+    {
+      "number": 2052,
+      "word": "elderly",
+      "emoji": "👵👴",
+      "meaning": "adj. 年长的 n. 老年人",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "old, especially used politely about people"
+    },
+    {
+      "number": 2053,
+      "word": "owe",
+      "emoji": "💸🤝",
+      "meaning": "v. 欠（债等）；归功于",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to need to pay or give something to someone"
+    },
+    {
+      "number": 2054,
+      "word": "governor",
+      "emoji": "🏛️👔",
+      "meaning": "n. 州长；主管人员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the elected leader of a state or region"
+    },
+    {
+      "number": 2055,
+      "word": "uniform",
+      "emoji": "👔👮",
+      "meaning": "n. 制服 adj. 一致的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "special clothes worn by members of a group"
+    },
+    {
+      "number": 2056,
+      "word": "port",
+      "emoji": "⚓🛳️",
+      "meaning": "n. 港口；接口",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where ships load and unload goods"
+    },
+    {
+      "number": 2057,
+      "word": "pitch",
+      "emoji": "⚾🎶",
+      "meaning": "n. 球场；音高 v. 投掷",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a sports field, or the level of a sound"
+    },
+    {
+      "number": 2058,
+      "word": "arrival",
+      "emoji": "🛬🚶",
+      "meaning": "n. 到达",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of reaching a place"
+    },
+    {
+      "number": 2059,
+      "word": "contemporary",
+      "emoji": "🕰️👫",
+      "meaning": "adj. 当代的 n. 同时代的人",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "belonging to the present time"
+    },
+    {
+      "number": 2060,
+      "word": "gate",
+      "emoji": "🚪🛂",
+      "meaning": "n. 大门；登机口",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a door or entrance in a wall, fence, or airport"
+    },
+    {
+      "number": 2061,
+      "word": "ease",
+      "emoji": "😌🛋️",
+      "meaning": "n. 轻松 v. 减轻",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "to make something less difficult or painful"
+    },
+    {
+      "number": 2062,
+      "word": "beer",
+      "emoji": "🍺👨‍🍳",
+      "meaning": "n. 啤酒",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an alcoholic drink made from grain"
+    },
+    {
+      "number": 2063,
+      "word": "specialist",
+      "emoji": "👨‍⚕️📚",
+      "meaning": "n. 专家 adj. 专业的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "a person with expert knowledge in one area"
+    },
+    {
+      "number": 2064,
+      "word": "assure",
+      "emoji": "👍🤝",
+      "meaning": "v. 保证；使确信",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to tell someone confidently that something is true or will happen"
+    },
+    {
+      "number": 2065,
+      "word": "profile",
+      "emoji": "📝👤",
+      "meaning": "n. 侧面；简介 v. 描...的轮廓",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a short description of a person or thing"
+    },
+    {
+      "number": 2066,
+      "word": "mood",
+      "emoji": "😊😒",
+      "meaning": "n. 心情；语气",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way someone feels at a particular time"
+    },
+    {
+      "number": 2067,
+      "word": "episode",
+      "emoji": "📺🧩",
+      "meaning": "n. 一集；事件",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "one part of a series, or a single event"
+    },
+    {
+      "number": 2068,
+      "word": "crack",
+      "emoji": "🪨🕳️",
+      "meaning": "n. 裂缝 v. 破裂",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a narrow break or line on a surface"
+    },
+    {
+      "number": 2069,
+      "word": "numerous",
+      "emoji": "🔢📊",
+      "meaning": "adj. 众多的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "many"
+    },
+    {
+      "number": 2070,
+      "word": "submit",
+      "emoji": "📤📨",
+      "meaning": "v. 提交；屈服",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give or send something for review or decision"
+    },
+    {
+      "number": 2071,
+      "word": "symptom",
+      "emoji": "🤒⚠️",
+      "meaning": "n. 症状；征兆",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sign that someone has an illness or problem"
+    },
+    {
+      "number": 2072,
+      "word": "virtually",
+      "emoji": "🌐💻",
+      "meaning": "adv. 几乎；实际上",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "almost completely or almost everywhere"
+    },
+    {
+      "number": 2073,
+      "word": "era",
+      "emoji": "⏳📅",
+      "meaning": "n. 时代；纪元",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a period of history or time"
+    },
+    {
+      "number": 2074,
+      "word": "coverage",
+      "emoji": "📰🛡️",
+      "meaning": "n. 覆盖；报道",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "news reporting, or the area something reaches"
+    },
+    {
+      "number": 2075,
+      "word": "tension",
+      "emoji": "😬🪢",
+      "meaning": "n. 紧张；拉力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "nervous pressure or a strained relationship"
+    },
+    {
+      "number": 2076,
+      "word": "cable",
+      "emoji": "📺🔌",
+      "meaning": "n. 电缆；有线电视 v. 打电报",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a thick wire used to carry electricity, signals, or data"
+    },
+    {
+      "number": 2077,
+      "word": "sensitive",
+      "emoji": "😢📡",
+      "meaning": "adj. 敏感的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "easily affected or upset by something"
+    },
+    {
+      "number": 2078,
+      "word": "nervous",
+      "emoji": "😰🧠",
+      "meaning": "adj. 紧张的；神经的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "worried or afraid about what may happen"
+    },
+    {
+      "number": 2079,
+      "word": "input",
+      "emoji": "⌨️🔋",
+      "meaning": "n. 输入 v. 输入",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "information, ideas, or data put into a system"
+    },
+    {
+      "number": 2080,
+      "word": "isolate",
+      "emoji": "🚪🛑",
+      "meaning": "v. 使孤立；隔离",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to separate someone or something from others"
+    },
+    {
+      "number": 2081,
+      "word": "prisoner",
+      "emoji": "👤⛓️",
+      "meaning": "n. 囚犯",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person kept in prison"
+    },
+    {
+      "number": 2082,
+      "word": "eliminate",
+      "emoji": "❌🧹",
+      "meaning": "v. 消除；淘汰",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to remove or get rid of something"
+    },
+    {
+      "number": 2083,
+      "word": "tight",
+      "emoji": "🤏🪢",
+      "meaning": "adj. 紧的；严密的 adv. 紧紧地",
+      "partOfSpeech": "adj. / adv.",
+      "simpleDefinition": "firmly fixed, close-fitting, or difficult to move"
+    },
+    {
+      "number": 2084,
+      "word": "wet",
+      "emoji": "💧🌧️",
+      "meaning": "adj. 湿的 v. 弄湿",
+      "partOfSpeech": "adj. / v.",
+      "simpleDefinition": "covered with water or another liquid"
+    },
+    {
+      "number": 2085,
+      "word": "secondary",
+      "emoji": "🥈🏫",
+      "meaning": "adj. 次要的；中等教育的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "less important, or related to education after primary school"
+    },
+    {
+      "number": 2086,
+      "word": "welfare",
+      "emoji": "❤️🫂",
+      "meaning": "n. 福利",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "health, happiness, and general well-being"
+    },
+    {
+      "number": 2087,
+      "word": "recruit",
+      "emoji": "🧑‍💼📋",
+      "meaning": "v. 招聘 n. 新兵",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to find and bring in new people for a job or group"
+    },
+    {
+      "number": 2088,
+      "word": "exclude",
+      "emoji": "🚫🚷",
+      "meaning": "v. 排除",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to leave someone or something out"
+    },
+    {
+      "number": 2089,
+      "word": "string",
+      "emoji": "🧵🎸",
+      "meaning": "n. 线；弦；一串 v. 用线串",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "thin cord or a series of things joined together"
+    },
+    {
+      "number": 2090,
+      "word": "cloud",
+      "emoji": "☁️💻",
+      "meaning": "n. 云 v. 使模糊",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a white or grey mass in the sky, or to make something unclear"
+    },
+    {
+      "number": 2091,
+      "word": "persuade",
+      "emoji": "🗣️👍",
+      "meaning": "v. 说服；劝说",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone agree or decide to do something"
+    },
+    {
+      "number": 2092,
+      "word": "inspire",
+      "emoji": "💡🔥",
+      "meaning": "v. 鼓舞；启发",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone want to do or create something"
+    },
+    {
+      "number": 2093,
+      "word": "grand",
+      "emoji": "🏰🎹",
+      "meaning": "adj. 宏伟的；重大的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "large, impressive, or important"
+    },
+    {
+      "number": 2094,
+      "word": "hence",
+      "emoji": "⏩🔜",
+      "meaning": "adv. 因此；今后",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "therefore; for this reason"
+    },
+    {
+      "number": 2095,
+      "word": "crew",
+      "emoji": "👨‍✈️🚢",
+      "meaning": "n. 全体船员；队员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the people who work together on a ship, plane, or project"
+    },
+    {
+      "number": 2096,
+      "word": "phenomenon",
+      "emoji": "🌈🧬",
+      "meaning": "n. 现象；奇迹",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that exists or happens and can be observed"
+    },
+    {
+      "number": 2097,
+      "word": "pupil",
+      "emoji": "👀🧑‍🎓",
+      "meaning": "n. 小学生；瞳孔",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a student, especially a child at school, or the black center of the eye"
+    },
+    {
+      "number": 2098,
+      "word": "false",
+      "emoji": "❌🚫",
+      "meaning": "adj. 错误的；假的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not true or not real"
+    },
+    {
+      "number": 2099,
+      "word": "assist",
+      "emoji": "🏀🤝",
+      "meaning": "v. 帮助 n. 助攻",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to help someone"
+    },
+    {
+      "number": 2100,
+      "word": "restore",
+      "emoji": "🏚️🔨",
+      "meaning": "v. 恢复；修复",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to bring something back to its earlier condition"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "2001-2010",
+      "label": "第一组",
+      "rangeStart": 2001,
+      "rangeEnd": 2010,
+      "wordList": [
+        "supplier",
+        "pension",
+        "dominate",
+        "achievement",
+        "typically",
+        "negotiate",
+        "wing",
+        "peer",
+        "acquisition",
+        "prize"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Winning the national writing competition was a major __________ for the young student.",
+          "answer": "achievement",
+          "explanation": "语法上，前面有冠词 **a major**，后面需要一个可数名词单数，**achievement** 表示“成就”。语义上，“赢得全国写作比赛”是一项重要成就。常见搭配：**a major achievement**。"
+        },
+        {
+          "number": 2,
+          "prompt": "The two companies will __________ a better price before signing the final contract.",
+          "answer": "negotiate",
+          "explanation": "语法上，will 后接动词原形，所以填 **negotiate**。语义上，两家公司在签最终合同前“协商”更好的价格。常见搭配：**negotiate a price / contract / deal**。"
+        },
+        {
+          "number": 3,
+          "prompt": "Large supermarkets often __________ the food market in small towns.",
+          "answer": "dominate",
+          "explanation": "语法上，often 后接动词原形，主语是复数 **Large supermarkets**，所以用 **dominate**。语义上，大型超市经常“主导/支配”小城镇的食品市场。常见搭配：**dominate the market**。"
+        },
+        {
+          "number": 4,
+          "prompt": "Our school changed its paper __________ because the old one was too expensive.",
+          "answer": "supplier",
+          "explanation": "语法上，paper 后需要名词作宾语补足含义，**supplier** 表示“供应商”。语义上，学校更换的是纸张供应商，因为原来的太贵。常见搭配：**change supplier / a paper supplier**。"
+        },
+        {
+          "number": 5,
+          "prompt": "The first __________ in the art contest is a trip to London.",
+          "answer": "prize",
+          "explanation": "语法上，The first 后需要名词，**prize** 表示“一等奖/奖品”。语义上，艺术比赛的一等奖是伦敦旅行。常见搭配：**first prize**。"
+        },
+        {
+          "number": 6,
+          "prompt": "People in this country __________ have dinner at around seven in the evening.",
+          "answer": "typically",
+          "explanation": "语法上，句中需要副词修饰动词短语 **have dinner**，**typically** 表示“通常/典型地”。语义上，描述某国人通常晚上七点吃饭。"
+        },
+        {
+          "number": 7,
+          "prompt": "A teenager may listen more carefully to a __________ than to an adult.",
+          "answer": "peer",
+          "explanation": "语法上，冠词 **a** 后接可数名词单数，**peer** 表示“同龄人”。语义上，青少年可能更愿意听同龄人的话，而不是成年人。常见搭配：**listen to a peer / peer influence**。"
+        },
+        {
+          "number": 8,
+          "prompt": "My grandfather receives a small __________ after working for the company for thirty years.",
+          "answer": "pension",
+          "explanation": "语法上，a small 后接名词单数，**pension** 表示“养老金”。语义上，祖父工作三十年后领取养老金。常见搭配：**receive a pension**。"
+        },
+        {
+          "number": 9,
+          "prompt": "The bird could not fly because one __________ was badly hurt.",
+          "answer": "wing",
+          "explanation": "语法上，one 后接可数名词单数，**wing** 表示“翅膀”。语义上，鸟因为一只翅膀受伤而不能飞。"
+        },
+        {
+          "number": 10,
+          "prompt": "The company’s latest __________ of a smaller business helped it enter new markets.",
+          "answer": "acquisition",
+          "explanation": "语法上，company’s latest 后接名词，**acquisition** 表示“收购”。语义上，公司收购一家较小企业后进入新市场。常见搭配：**the acquisition of a company/business**。"
+        }
+      ]
+    },
+    {
+      "id": "2011-2020",
+      "label": "第二组",
+      "rangeStart": 2011,
+      "rangeEnd": 2020,
+      "wordList": [
+        "recognition",
+        "roof",
+        "deeply",
+        "ultimately",
+        "laughter",
+        "variation",
+        "electricity",
+        "assistance",
+        "retirement",
+        "respectively"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The children’s __________ filled the classroom after the teacher told a funny story.",
+          "answer": "laughter",
+          "explanation": "语法上，所有格 **children’s** 后接名词，**laughter** 是不可数名词，表示“笑声”。语义上，老师讲了有趣的故事后，教室里充满笑声。"
+        },
+        {
+          "number": 2,
+          "prompt": "I was __________ moved by her speech about helping poor families.",
+          "answer": "deeply",
+          "explanation": "语法上，修饰过去分词 **moved** 需要副词，**deeply** 表示“深深地”。语义上，她关于帮助贫困家庭的演讲让人深受感动。常见搭配：**deeply moved**。"
+        },
+        {
+          "number": 3,
+          "prompt": "The singer finally gained public __________ after years of hard work.",
+          "answer": "recognition",
+          "explanation": "语法上，gain 后接名词，**recognition** 表示“认可”。语义上，歌手经过多年努力终于获得公众认可。常见搭配：**gain public recognition**。"
+        },
+        {
+          "number": 4,
+          "prompt": "The storm cut off the __________, so we had to use candles.",
+          "answer": "electricity",
+          "explanation": "语法上，cut off 后接名词宾语，**electricity** 表示“电力”。语义上，暴风雨导致断电，所以只能用蜡烛。常见搭配：**cut off the electricity**。"
+        },
+        {
+          "number": 5,
+          "prompt": "Please call this number if you need medical __________ during the trip.",
+          "answer": "assistance",
+          "explanation": "语法上，need 后接名词，**assistance** 表示“帮助/援助”。语义上，旅行中如需医疗援助可拨打此号码。常见搭配：**medical assistance**。"
+        },
+        {
+          "number": 6,
+          "prompt": "The ball flew over the __________ and landed in the garden.",
+          "answer": "roof",
+          "explanation": "语法上，the 后接名词，**roof** 表示“屋顶”。语义上，球飞过屋顶，落到花园里。"
+        },
+        {
+          "number": 7,
+          "prompt": "Many people travel more often after __________ because they have more free time.",
+          "answer": "retirement",
+          "explanation": "语法上，after 后接名词或动名词，**retirement** 表示“退休”。语义上，很多人退休后因空闲时间更多而常旅行。常见搭配：**after retirement**。"
+        },
+        {
+          "number": 8,
+          "prompt": "Tom and Anna came first and second, __________, in the school race.",
+          "answer": "respectively",
+          "explanation": "语法上，放在句末作副词，说明前面两个对象按顺序分别对应。语义上，Tom 和 Anna 分别获得第一名和第二名。"
+        },
+        {
+          "number": 9,
+          "prompt": "There is a small __________ in spelling between British and American English.",
+          "answer": "variation",
+          "explanation": "语法上，a small 后接可数名词单数，**variation** 表示“差异/变化”。语义上，英式英语和美式英语之间有小的拼写差异。常见搭配：**a variation in spelling**。"
+        },
+        {
+          "number": 10,
+          "prompt": "We tried several solutions, but __________ we decided to cancel the plan.",
+          "answer": "ultimately",
+          "explanation": "语法上，句首用副词修饰整句，**ultimately** 表示“最终”。语义上，尝试多种方案后最终决定取消计划。"
+        }
+      ]
+    },
+    {
+      "id": "2021-2030",
+      "label": "第三组",
+      "rangeStart": 2021,
+      "rangeEnd": 2030,
+      "wordList": [
+        "tooth",
+        "preparation",
+        "upset",
+        "layer",
+        "dispute",
+        "smart",
+        "representation",
+        "agenda",
+        "proof",
+        "soil"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The police need clear __________ before they can arrest anyone.",
+          "answer": "proof",
+          "explanation": "语法上，need 后接名词，**proof** 表示“证据”。语义上，警方在逮捕任何人之前需要明确证据。常见搭配：**clear proof**。"
+        },
+        {
+          "number": 2,
+          "prompt": "Plants grow better in rich __________ with enough water and sunlight.",
+          "answer": "soil",
+          "explanation": "语法上，in 后接名词，**soil** 表示“土壤”。语义上，植物在肥沃、有足够水和阳光的土壤中长得更好。"
+        },
+        {
+          "number": 3,
+          "prompt": "That was a __________ answer; you solved the problem quickly.",
+          "answer": "smart",
+          "explanation": "语法上，a 后面需要形容词修饰名词 **answer**，**smart** 表示“聪明的”。语义上，快速解决问题说明答案很聪明。"
+        },
+        {
+          "number": 4,
+          "prompt": "Put another __________ of cheese on top before baking the dish.",
+          "answer": "layer",
+          "explanation": "语法上，another 后接可数名词单数，**layer** 表示“一层”。语义上，烘烤前在顶部再放一层奶酪。常见搭配：**a layer of cheese**。"
+        },
+        {
+          "number": 5,
+          "prompt": "She felt __________ when her best friend forgot her birthday.",
+          "answer": "upset",
+          "explanation": "语法上，felt 后接形容词作表语，**upset** 表示“难过/心烦”。语义上，好朋友忘记她的生日，所以她感到难过。"
+        },
+        {
+          "number": 6,
+          "prompt": "The dentist removed one bad __________ because it caused too much pain.",
+          "answer": "tooth",
+          "explanation": "语法上，one 后接可数名词单数，**tooth** 表示“牙齿”。语义上，牙医拔掉了一颗坏牙，因为它造成太多疼痛。"
+        },
+        {
+          "number": 7,
+          "prompt": "The painting is a powerful __________ of life during the war.",
+          "answer": "representation",
+          "explanation": "语法上，a powerful 后接名词，**representation** 表示“表现/呈现”。语义上，这幅画有力地表现了战争时期的生活。常见搭配：**a representation of life**。"
+        },
+        {
+          "number": 8,
+          "prompt": "Good __________ is necessary before any important exam.",
+          "answer": "preparation",
+          "explanation": "语法上，Good 后接名词，**preparation** 表示“准备”。语义上，任何重要考试前都需要良好的准备。常见搭配：**good preparation for an exam**。"
+        },
+        {
+          "number": 9,
+          "prompt": "The two neighbors had a long __________ about the broken fence.",
+          "answer": "dispute",
+          "explanation": "语法上，a long 后接名词，**dispute** 表示“争论/纠纷”。语义上，两个邻居因破损的篱笆发生长期争执。常见搭配：**a dispute about/over something**。"
+        },
+        {
+          "number": 10,
+          "prompt": "The first item on today’s meeting __________ is the school trip.",
+          "answer": "agenda",
+          "explanation": "语法上，meeting 后接名词，**agenda** 表示“议程”。语义上，今天会议议程的第一项是学校旅行。常见搭配：**on the agenda / meeting agenda**。"
+        }
+      ]
+    },
+    {
+      "id": "2031-2040",
+      "label": "第四组",
+      "rangeStart": 2031,
+      "rangeEnd": 2040,
+      "wordList": [
+        "gay",
+        "unlikely",
+        "silver",
+        "wire",
+        "retail",
+        "honest",
+        "undertake",
+        "entertainment",
+        "edition",
+        "emphasis"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The teacher put special __________ on clear pronunciation during the lesson.",
+          "answer": "emphasis",
+          "explanation": "语法上，put special 后接名词，**emphasis** 表示“强调/重点”。语义上，老师特别强调清晰发音。常见搭配：**put emphasis on something**。"
+        },
+        {
+          "number": 2,
+          "prompt": "This is the latest __________ of the dictionary, with many new words.",
+          "answer": "edition",
+          "explanation": "语法上，latest 后接名词，**edition** 表示“版本/版次”。语义上，这是词典的最新版本，加入了许多新词。"
+        },
+        {
+          "number": 3,
+          "prompt": "My grandmother wears a beautiful __________ ring every day.",
+          "answer": "silver",
+          "explanation": "语法上，修饰名词 **ring**，这里 **silver** 作形容词，表示“银色的/银制的”。语义上，祖母每天戴一枚漂亮的银戒指。"
+        },
+        {
+          "number": 4,
+          "prompt": "The hotel provides live __________ for guests every Friday night.",
+          "answer": "entertainment",
+          "explanation": "语法上，live 后接名词，**entertainment** 表示“娱乐表演”。语义上，酒店每周五为客人提供现场娱乐表演。常见搭配：**live entertainment**。"
+        },
+        {
+          "number": 5,
+          "prompt": "Be __________ with me: did you finish the homework yourself?",
+          "answer": "honest",
+          "explanation": "语法上，Be 后接形容词作表语，**honest** 表示“诚实的”。语义上，说话人要求对方诚实回答是否自己完成作业。常见搭配：**be honest with someone**。"
+        },
+        {
+          "number": 6,
+          "prompt": "The company agreed to __________ a difficult project in another city.",
+          "answer": "undertake",
+          "explanation": "语法上，agreed to 后接动词原形，**undertake** 表示“承担/着手做”。语义上，公司同意承担一个外地的困难项目。常见搭配：**undertake a project/task**。"
+        },
+        {
+          "number": 7,
+          "prompt": "She works in __________, selling clothes in a busy shopping mall.",
+          "answer": "retail",
+          "explanation": "语法上，work in 后接行业名词，**retail** 表示“零售业”。语义上，她在繁忙商场卖衣服，属于零售行业。常见搭配：**work in retail**。"
+        },
+        {
+          "number": 8,
+          "prompt": "A thin __________ connects the lamp to the power supply.",
+          "answer": "wire",
+          "explanation": "语法上，A thin 后接可数名词单数，**wire** 表示“电线”。语义上，一根细电线把灯连接到电源。"
+        },
+        {
+          "number": 9,
+          "prompt": "It is __________ that he will arrive on time because his train is delayed.",
+          "answer": "unlikely",
+          "explanation": "语法上，It is 后接形容词，**unlikely** 表示“不太可能的”。语义上，因为火车晚点，他不太可能准时到达。常见句型：**It is unlikely that…**。"
+        },
+        {
+          "number": 10,
+          "prompt": "The story includes a young __________ man who struggles to tell his family the truth.",
+          "answer": "gay",
+          "explanation": "语法上，修饰名词 **man**，**gay** 作形容词，表示“同性恋的”。语义上，故事里有一位年轻男同性恋者，他很难向家人说明真实情况。"
+        }
+      ]
+    },
+    {
+      "id": "2041-2050",
+      "label": "第五组",
+      "rangeStart": 2041,
+      "rangeEnd": 2050,
+      "wordList": [
+        "unknown",
+        "zone",
+        "trace",
+        "publication",
+        "solid",
+        "equivalent",
+        "restrict",
+        "inch",
+        "framework",
+        "slight"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The magazine stopped __________ after losing many readers.",
+          "answer": "publication",
+          "explanation": "语法上，stopped 后可接名词，**publication** 表示“出版/发行”。语义上，杂志因失去许多读者而停止出版。"
+        },
+        {
+          "number": 2,
+          "prompt": "There was a __________ change in his voice, but I still noticed it.",
+          "answer": "slight",
+          "explanation": "语法上，a 后面需要形容词修饰 **change**，**slight** 表示“轻微的”。语义上，他的声音有轻微变化，但我仍然注意到了。常见搭配：**a slight change**。"
+        },
+        {
+          "number": 3,
+          "prompt": "The cause of the illness remains __________ to doctors.",
+          "answer": "unknown",
+          "explanation": "语法上，remains 后接形容词作表语，**unknown** 表示“未知的”。语义上，医生仍不知道病因。常见搭配：**remain unknown**。"
+        },
+        {
+          "number": 4,
+          "prompt": "The new law provides a clear __________ for protecting children online.",
+          "answer": "framework",
+          "explanation": "语法上，a clear 后接名词，**framework** 表示“框架/体系”。语义上，新法律为保护儿童上网提供了明确框架。常见搭配：**a legal framework / a clear framework**。"
+        },
+        {
+          "number": 5,
+          "prompt": "This area is a quiet __________ where cars are not allowed.",
+          "answer": "zone",
+          "explanation": "语法上，a quiet 后接名词，**zone** 表示“区域”。语义上，该地区是一个禁止汽车进入的安静区域。"
+        },
+        {
+          "number": 6,
+          "prompt": "The school may __________ phone use during exams.",
+          "answer": "restrict",
+          "explanation": "语法上，may 后接动词原形，**restrict** 表示“限制”。语义上，学校可能在考试期间限制手机使用。常见搭配：**restrict phone use / restrict access**。"
+        },
+        {
+          "number": 7,
+          "prompt": "Scientists can __________ the path of the virus through careful testing.",
+          "answer": "trace",
+          "explanation": "语法上，can 后接动词原形，**trace** 表示“追踪”。语义上，科学家可通过仔细检测追踪病毒传播路径。常见搭配：**trace the path/source/origin**。"
+        },
+        {
+          "number": 8,
+          "prompt": "The car moved forward one __________ at a time in the heavy traffic.",
+          "answer": "inch",
+          "explanation": "语法上，固定表达 **inch by inch**，表示“一点一点地”。语义上，汽车在拥堵中一点一点向前移动。"
+        },
+        {
+          "number": 9,
+          "prompt": "One pound is not __________ to one kilogram.",
+          "answer": "equivalent",
+          "explanation": "语法上，is not 后接形容词，**equivalent** 表示“等同的/相等的”。语义上，一磅不等于一千克。常见搭配：**be equivalent to**。"
+        },
+        {
+          "number": 10,
+          "prompt": "Water becomes a __________ when it freezes into ice.",
+          "answer": "solid",
+          "explanation": "语法上，a 后接名词，**solid** 可作名词表示“固体”。语义上，水结冰后变成固体。"
+        }
+      ]
+    },
+    {
+      "id": "2051-2060",
+      "label": "第六组",
+      "rangeStart": 2051,
+      "rangeEnd": 2060,
+      "wordList": [
+        "contemporary",
+        "uniform",
+        "elderly",
+        "gate",
+        "owe",
+        "governor",
+        "pitch",
+        "arrival",
+        "enterprise",
+        "port"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Starting a small __________ requires courage, planning, and money.",
+          "answer": "enterprise",
+          "explanation": "语法上，a small 后接名词，**enterprise** 表示“企业/事业”。语义上，创办小企业需要勇气、计划和资金。"
+        },
+        {
+          "number": 2,
+          "prompt": "Many __________ people need support with shopping and transport.",
+          "answer": "elderly",
+          "explanation": "语法上，修饰名词 **people**，**elderly** 表示“年长的”。语义上，许多年长者在购物和交通方面需要支持。常见搭配：**elderly people**。"
+        },
+        {
+          "number": 3,
+          "prompt": "I still __________ my success to the teacher who encouraged me.",
+          "answer": "owe",
+          "explanation": "语法上，still 后接动词原形，**owe** 表示“归功于/欠”。语义上，说话人把自己的成功归功于鼓励他的老师。常见搭配：**owe one’s success to someone**。"
+        },
+        {
+          "number": 4,
+          "prompt": "The state __________ announced a new plan to improve public schools.",
+          "answer": "governor",
+          "explanation": "语法上，The state 后接表示职位的人，**governor** 表示“州长”。语义上，州长宣布改善公立学校的新计划。"
+        },
+        {
+          "number": 5,
+          "prompt": "All students must wear a school __________ on Monday mornings.",
+          "answer": "uniform",
+          "explanation": "语法上，a school 后接名词，**uniform** 表示“制服”。语义上，所有学生周一早上必须穿校服。常见搭配：**wear a school uniform**。"
+        },
+        {
+          "number": 6,
+          "prompt": "The ship stayed in the __________ overnight because of bad weather.",
+          "answer": "port",
+          "explanation": "语法上，in the 后接地点名词，**port** 表示“港口”。语义上，由于坏天气，船在港口停留过夜。"
+        },
+        {
+          "number": 7,
+          "prompt": "The football match was played on a muddy __________ after the rain.",
+          "answer": "pitch",
+          "explanation": "语法上，on a muddy 后接地点名词，**pitch** 表示“球场”。语义上，雨后足球比赛在泥泞球场上进行。常见搭配：**football pitch**。"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ of the plane was delayed by two hours.",
+          "answer": "arrival",
+          "explanation": "语法上，The 后接名词，**arrival** 表示“到达”。语义上，飞机到达延误了两小时。常见搭配：**the arrival of the plane**。"
+        },
+        {
+          "number": 9,
+          "prompt": "The museum shows both traditional and __________ Chinese art.",
+          "answer": "contemporary",
+          "explanation": "语法上，修饰名词 **Chinese art**，**contemporary** 表示“当代的”。语义上，博物馆展示传统和当代中国艺术。"
+        },
+        {
+          "number": 10,
+          "prompt": "Passengers should wait at the correct __________ before boarding.",
+          "answer": "gate",
+          "explanation": "语法上，the correct 后接名词，**gate** 表示“登机口/大门”。语义上，乘客应在正确登机口等待登机。"
+        }
+      ]
+    },
+    {
+      "id": "2061-2070",
+      "label": "第七组",
+      "rangeStart": 2061,
+      "rangeEnd": 2070,
+      "wordList": [
+        "profile",
+        "submit",
+        "assure",
+        "mood",
+        "numerous",
+        "ease",
+        "crack",
+        "specialist",
+        "episode",
+        "beer"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "A short walk can help __________ stress after a long day at work.",
+          "answer": "ease",
+          "explanation": "语法上，can help 后接动词原形，**ease** 表示“减轻”。语义上，短暂散步可以帮助减轻一天工作后的压力。常见搭配：**ease stress / ease pain**。"
+        },
+        {
+          "number": 2,
+          "prompt": "My uncle ordered a glass of __________ with his dinner.",
+          "answer": "beer",
+          "explanation": "语法上，a glass of 后接饮品名词，**beer** 表示“啤酒”。语义上，叔叔晚餐时点了一杯啤酒。"
+        },
+        {
+          "number": 3,
+          "prompt": "You should see a heart __________ if the pain continues.",
+          "answer": "specialist",
+          "explanation": "语法上，a heart 后接表示人的名词，**specialist** 表示“专家”。语义上，如果疼痛持续，应该看心脏专科医生。常见搭配：**see a specialist**。"
+        },
+        {
+          "number": 4,
+          "prompt": "The manager tried to __________ us that the problem was under control.",
+          "answer": "assure",
+          "explanation": "语法上，tried to 后接动词原形，**assure** 表示“向……保证/使确信”。语义上，经理试图让我们相信问题已得到控制。常见搭配：**assure someone that…**。"
+        },
+        {
+          "number": 5,
+          "prompt": "Please write a short __________ of yourself for the school website.",
+          "answer": "profile",
+          "explanation": "语法上，a short 后接名词，**profile** 表示“简介”。语义上，为学校网站写一段个人简介。常见搭配：**a personal profile / a short profile**。"
+        },
+        {
+          "number": 6,
+          "prompt": "Her __________ improved after she heard the good news.",
+          "answer": "mood",
+          "explanation": "语法上，Her 后接名词作主语，**mood** 表示“心情”。语义上，听到好消息后，她的心情变好了。常见搭配：**one’s mood improves**。"
+        },
+        {
+          "number": 7,
+          "prompt": "The final __________ of the TV drama surprised many viewers.",
+          "answer": "episode",
+          "explanation": "语法上，The final 后接名词，**episode** 表示“一集”。语义上，电视剧最后一集让许多观众惊讶。常见搭配：**the final episode**。"
+        },
+        {
+          "number": 8,
+          "prompt": "There is a long __________ in the wall after the earthquake.",
+          "answer": "crack",
+          "explanation": "语法上，a long 后接名词，**crack** 表示“裂缝”。语义上，地震后墙上有一道长裂缝。"
+        },
+        {
+          "number": 9,
+          "prompt": "The writer has won __________ awards in different countries.",
+          "answer": "numerous",
+          "explanation": "语法上，修饰复数名词 **awards**，**numerous** 表示“许多的”。语义上，作家在不同国家获得过许多奖项。常见搭配：**numerous awards / numerous examples**。"
+        },
+        {
+          "number": 10,
+          "prompt": "Students must __________ their essays before Friday afternoon.",
+          "answer": "submit",
+          "explanation": "语法上，must 后接动词原形，**submit** 表示“提交”。语义上，学生必须在周五下午前提交作文。常见搭配：**submit an essay/application/report**。"
+        }
+      ]
+    },
+    {
+      "id": "2071-2080",
+      "label": "第八组",
+      "rangeStart": 2071,
+      "rangeEnd": 2080,
+      "wordList": [
+        "sensitive",
+        "tension",
+        "input",
+        "isolate",
+        "virtually",
+        "era",
+        "symptom",
+        "nervous",
+        "cable",
+        "coverage"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "A high fever can be a serious __________ of infection.",
+          "answer": "symptom",
+          "explanation": "语法上，a serious 后接名词，**symptom** 表示“症状”。语义上，高烧可能是感染的严重症状。常见搭配：**a symptom of infection/disease**。"
+        },
+        {
+          "number": 2,
+          "prompt": "The shop is __________ empty because most customers now buy online.",
+          "answer": "virtually",
+          "explanation": "语法上，修饰形容词 **empty** 需要副词，**virtually** 表示“几乎”。语义上，商店几乎空了，因为多数顾客现在网上购物。"
+        },
+        {
+          "number": 3,
+          "prompt": "We live in an __________ when information travels extremely fast.",
+          "answer": "era",
+          "explanation": "语法上，an 后接名词，**era** 表示“时代”。语义上，我们生活在信息传播极快的时代。常见搭配：**live in an era when…**。"
+        },
+        {
+          "number": 4,
+          "prompt": "The news channel gave full __________ of the election results.",
+          "answer": "coverage",
+          "explanation": "语法上，gave full 后接名词，**coverage** 表示“报道”。语义上，新闻频道对选举结果进行了全面报道。常见搭配：**full coverage of something**。"
+        },
+        {
+          "number": 5,
+          "prompt": "There was strong __________ between the two teams before the final match.",
+          "answer": "tension",
+          "explanation": "语法上，There was 后接名词，**tension** 表示“紧张气氛”。语义上，决赛前两队之间气氛紧张。常见搭配：**tension between A and B**。"
+        },
+        {
+          "number": 6,
+          "prompt": "The computer needs a new __________ to connect to the screen.",
+          "answer": "cable",
+          "explanation": "语法上，a new 后接名词，**cable** 表示“电缆/连接线”。语义上，电脑需要一根新线连接屏幕。"
+        },
+        {
+          "number": 7,
+          "prompt": "Be careful with that topic because he is very __________ about it.",
+          "answer": "sensitive",
+          "explanation": "语法上，is very 后接形容词，**sensitive** 表示“敏感的”。语义上，这个话题要小心，因为他对此很敏感。常见搭配：**be sensitive about something**。"
+        },
+        {
+          "number": 8,
+          "prompt": "I felt __________ before speaking in front of the whole school.",
+          "answer": "nervous",
+          "explanation": "语法上，felt 后接形容词作表语，**nervous** 表示“紧张的”。语义上，在全校面前讲话前感到紧张。常见搭配：**feel nervous before doing something**。"
+        },
+        {
+          "number": 9,
+          "prompt": "Type your password into the __________ box on the website.",
+          "answer": "input",
+          "explanation": "语法上，修饰名词 **box**，**input** 表示“输入”。语义上，在网站的输入框中输入密码。常见搭配：**input box / input field**。"
+        },
+        {
+          "number": 10,
+          "prompt": "Doctors may __________ patients with the disease to protect others.",
+          "answer": "isolate",
+          "explanation": "语法上，may 后接动词原形，**isolate** 表示“隔离”。语义上，医生可能隔离患病者以保护他人。常见搭配：**isolate patients**。"
+        }
+      ]
+    },
+    {
+      "id": "2081-2090",
+      "label": "第九组",
+      "rangeStart": 2081,
+      "rangeEnd": 2090,
+      "wordList": [
+        "recruit",
+        "secondary",
+        "tight",
+        "prisoner",
+        "string",
+        "wet",
+        "welfare",
+        "eliminate",
+        "cloud",
+        "exclude"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The police caught the escaped __________ near the river.",
+          "answer": "prisoner",
+          "explanation": "语法上，the escaped 后接表示人的名词，**prisoner** 表示“囚犯”。语义上，警方在河边抓住了逃跑的囚犯。常见搭配：**an escaped prisoner**。"
+        },
+        {
+          "number": 2,
+          "prompt": "The school wants to __________ three new science teachers this year.",
+          "answer": "recruit",
+          "explanation": "语法上，wants to 后接动词原形，**recruit** 表示“招聘”。语义上，学校今年想招聘三名新的科学老师。常见搭配：**recruit teachers/staff**。"
+        },
+        {
+          "number": 3,
+          "prompt": "These trousers are too __________, so I need a larger size.",
+          "answer": "tight",
+          "explanation": "语法上，are too 后接形容词，**tight** 表示“紧的”。语义上，裤子太紧，所以需要更大尺码。"
+        },
+        {
+          "number": 4,
+          "prompt": "Do not touch the floor because it is still __________ after cleaning.",
+          "answer": "wet",
+          "explanation": "语法上，is still 后接形容词，**wet** 表示“湿的”。语义上，地板刚清洁完，还很湿。"
+        },
+        {
+          "number": 5,
+          "prompt": "English is a main subject in many __________ schools.",
+          "answer": "secondary",
+          "explanation": "语法上，修饰复数名词 **schools**，**secondary** 表示“中等教育的”。语义上，英语是许多中学的主要科目。常见搭配：**secondary school**。"
+        },
+        {
+          "number": 6,
+          "prompt": "The government should protect the __________ of children and older people.",
+          "answer": "welfare",
+          "explanation": "语法上，the welfare of 后接对象，**welfare** 表示“福利/福祉”。语义上，政府应保护儿童和老年人的福祉。常见搭配：**protect the welfare of…**。"
+        },
+        {
+          "number": 7,
+          "prompt": "The team hopes to __________ careless mistakes before the final game.",
+          "answer": "eliminate",
+          "explanation": "语法上，hopes to 后接动词原形，**eliminate** 表示“消除”。语义上，团队希望在决赛前消除粗心错误。常见搭配：**eliminate mistakes/problems**。"
+        },
+        {
+          "number": 8,
+          "prompt": "The club may __________ members who repeatedly break the rules.",
+          "answer": "exclude",
+          "explanation": "语法上，may 后接动词原形，**exclude** 表示“排除/开除在外”。语义上，俱乐部可能把反复违规的成员排除出去。常见搭配：**exclude someone from a group**。"
+        },
+        {
+          "number": 9,
+          "prompt": "She tied the box with a long piece of __________.",
+          "answer": "string",
+          "explanation": "语法上，a long piece of 后接物质名词，**string** 表示“线/细绳”。语义上，她用一根长绳把盒子系起来。常见搭配：**a piece of string**。"
+        },
+        {
+          "number": 10,
+          "prompt": "Smoke began to __________ his view of the road.",
+          "answer": "cloud",
+          "explanation": "语法上，began to 后接动词原形，**cloud** 作动词表示“使模糊”。语义上，烟开始模糊他对道路的视线。常见搭配：**cloud one’s view/judgment**。"
+        }
+      ]
+    },
+    {
+      "id": "2091-2100",
+      "label": "第十组",
+      "rangeStart": 2091,
+      "rangeEnd": 2100,
+      "wordList": [
+        "hence",
+        "phenomenon",
+        "assist",
+        "pupil",
+        "inspire",
+        "restore",
+        "grand",
+        "false",
+        "persuade",
+        "crew"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I tried to __________ my parents to let me join the school trip.",
+          "answer": "persuade",
+          "explanation": "语法上，tried to 后接动词原形，**persuade** 表示“说服”。语义上，说话人试图说服父母允许自己参加学校旅行。常见搭配：**persuade someone to do something**。"
+        },
+        {
+          "number": 2,
+          "prompt": "A good teacher can __________ students to read more and think deeply.",
+          "answer": "inspire",
+          "explanation": "语法上，can 后接动词原形，**inspire** 表示“鼓舞/启发”。语义上，好老师能激励学生多读书、深入思考。常见搭配：**inspire someone to do something**。"
+        },
+        {
+          "number": 3,
+          "prompt": "The hotel has a __________ entrance with tall glass doors.",
+          "answer": "grand",
+          "explanation": "语法上，修饰名词 **entrance**，**grand** 表示“宏伟的”。语义上，酒店有一个带高大玻璃门的宏伟入口。"
+        },
+        {
+          "number": 4,
+          "prompt": "The road was closed; __________, we had to take another route.",
+          "answer": "hence",
+          "explanation": "语法上，连接前后因果关系，**hence** 作副词，表示“因此”。语义上，道路关闭，因此我们不得不走另一条路线。"
+        },
+        {
+          "number": 5,
+          "prompt": "The film crew studied the strange natural __________ for a documentary.",
+          "answer": "phenomenon",
+          "explanation": "语法上，the strange natural 后接名词，**phenomenon** 表示“现象”。语义上，摄制组研究这种奇怪的自然现象来拍纪录片。常见搭配：**natural phenomenon**。"
+        },
+        {
+          "number": 6,
+          "prompt": "Each __________ must bring a pencil and a notebook to class.",
+          "answer": "pupil",
+          "explanation": "语法上，Each 后接可数名词单数，**pupil** 表示“小学生/学生”。语义上，每个学生必须带一支铅笔和一本笔记本。"
+        },
+        {
+          "number": 7,
+          "prompt": "The story was __________, but many people believed it at first.",
+          "answer": "false",
+          "explanation": "语法上，was 后接形容词作表语，**false** 表示“假的/错误的”。语义上，这个故事是假的，但很多人一开始相信了。"
+        },
+        {
+          "number": 8,
+          "prompt": "Can you __________ me with carrying these heavy boxes?",
+          "answer": "assist",
+          "explanation": "语法上，Can 后接动词原形，**assist** 表示“帮助”。语义上，说话人请求对方帮忙搬重箱子。常见搭配：**assist someone with something**。"
+        },
+        {
+          "number": 9,
+          "prompt": "The ship’s __________ worked all night during the storm.",
+          "answer": "crew",
+          "explanation": "语法上，ship’s 后接名词，**crew** 表示“全体船员”。语义上，暴风雨中船员整夜工作。常见搭配：**the ship’s crew**。"
+        },
+        {
+          "number": 10,
+          "prompt": "The city plans to __________ the old theatre and open it again next year.",
+          "answer": "restore",
+          "explanation": "语法上，plans to 后接动词原形，**restore** 表示“修复/恢复”。语义上，城市计划修复旧剧院并重新开放。常见搭配：**restore an old building / restore a theatre**。"
+        }
+      ]
+    }
+  ]
+};
