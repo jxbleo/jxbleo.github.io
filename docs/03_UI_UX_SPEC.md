@@ -249,6 +249,11 @@ It should include:
   bars use fixed-width columns rather than stretching a single attempt across
   the whole dialog; not-passed bars are pale red, passed bars are green, and
   mastered bars are glowing gold.
+- every attempt card in matrix and notification detail dialogs includes a
+  compact paper icon button in the top-right action area. The button opens that
+  attempt's full-work review inside the same dialog without changing attempt
+  history counts, showing all recorded questions, student answers, correctness,
+  correct answers, and a compact attempt-history summary.
 - matrix attempt cards show timing as `Page 12m 30s · Audio 8m 10s` when audio
   timing exists, while older or non-audio attempts may show only the page/test
   duration.

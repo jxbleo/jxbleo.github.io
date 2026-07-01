@@ -3175,6 +3175,38 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.98rem;
     letter-spacing: 0;
 }
+.matrix-attempt-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.matrix-work-button {
+    display: inline-grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid rgba(124,58,237,0.18);
+    border-radius: 999px;
+    color: var(--accent);
+    background: rgba(255,255,255,0.82);
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+.matrix-work-button svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.matrix-work-button:hover,
+.matrix-work-button:focus-visible {
+    transform: translateY(-1px);
+    background: white;
+    box-shadow: 0 8px 18px rgba(83, 45, 145, 0.14);
+}
 .matrix-attempt-meta {
     display: flex;
     align-items: center;
@@ -3241,6 +3273,148 @@ body:not(.teacher-page) .tab-button.active {
     color: var(--success);
     background: var(--success-soft);
     font-weight: 850;
+}
+.matrix-work-review {
+    display: grid;
+    gap: 14px;
+}
+.matrix-work-review-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 15px;
+    border: 1px solid rgba(124,58,237,0.14);
+    border-radius: 16px;
+    background: rgba(124,58,237,0.06);
+}
+.matrix-work-review-head h3 {
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: right;
+}
+.matrix-work-review-head small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-align: right;
+}
+.matrix-review-back {
+    min-height: 34px;
+    border: 1px solid rgba(124,58,237,0.16);
+    border-radius: 999px;
+    padding: 0 12px;
+    color: var(--accent);
+    background: white;
+    font-size: 0.72rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+.matrix-work-history {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(31,45,38,0.08);
+    border-radius: 12px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.72);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.matrix-work-history span {
+    text-align: right;
+}
+.matrix-work-question-list {
+    display: grid;
+    gap: 10px;
+}
+.matrix-work-question {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: white;
+}
+.matrix-work-question.correct {
+    border-color: rgba(22, 163, 74, 0.20);
+}
+.matrix-work-question.wrong {
+    border-color: rgba(220, 38, 38, 0.20);
+}
+.matrix-work-question-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(31,45,38,0.04);
+}
+.matrix-work-question-top strong {
+    font-size: 0.82rem;
+}
+.matrix-work-question-top span {
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 0.66rem;
+    font-weight: 950;
+}
+.matrix-work-question.correct .matrix-work-question-top span {
+    color: var(--success);
+    background: var(--success-soft);
+}
+.matrix-work-question.wrong .matrix-work-question-top span {
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+.matrix-work-question-text {
+    margin: 0;
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 760;
+    line-height: 1.45;
+}
+.matrix-work-question-text.missing {
+    color: var(--muted);
+    font-style: italic;
+}
+.matrix-work-answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--line);
+}
+.matrix-work-answer-grid > div {
+    min-width: 0;
+    padding: 11px 12px;
+}
+.matrix-work-answer-grid > div + div {
+    border-left: 1px solid var(--line);
+}
+.matrix-work-answer-grid small {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted);
+    font-size: 0.64rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.matrix-work-answer-grid strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+.matrix-work-question.correct .matrix-work-answer-grid > div:first-child strong,
+.matrix-work-answer-grid > div:nth-child(2) strong {
+    color: var(--success);
+}
+.matrix-work-question.wrong .matrix-work-answer-grid > div:first-child strong {
+    color: var(--danger);
 }
 .assignment-progress-mode-tabs {
     display: inline-grid;
@@ -5529,6 +5703,28 @@ body:not(.teacher-page) .tab-button.active {
         grid-template-columns: 1fr;
     }
     .matrix-answer-table > div {
+        border-left: 0;
+    }
+    .matrix-attempt-head,
+    .matrix-work-review-head,
+    .matrix-work-history {
+        display: flex;
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .matrix-attempt-actions {
+        justify-content: space-between;
+    }
+    .matrix-work-review-head h3,
+    .matrix-work-review-head small,
+    .matrix-work-history span {
+        text-align: left;
+    }
+    .matrix-work-answer-grid {
+        grid-template-columns: 1fr;
+    }
+    .matrix-work-answer-grid > div + div {
+        border-top: 1px solid var(--line);
         border-left: 0;
     }
     .assignment-overview-toolbar { justify-content: stretch; }

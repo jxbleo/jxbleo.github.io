@@ -39,6 +39,7 @@
         matrixDateFilter: 'all',
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
+        selectedMatrixReviewAttemptId: '',
         selectedProgressDetailKey: '',
         matrixInitialRevealPending: true,
         assignmentEditScopes: {},
@@ -2579,7 +2580,9 @@
                 var duration = attemptDurationLabel(attempt);
                 var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
                 return '<button class="matrix-attempt-bar' + (highlighted ? ' highlight' : '') +
-                    '" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) + '">' +
+                    '" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) +
+                    '" data-matrix-attempt-id="' + escapeHtml(attempt.attempt_id || '') +
+                    '" data-matrix-review-set="' + escapeHtml(attemptSetId(attempt, assignment)) + '">' +
                     '<span class="matrix-attempt-track"><span class="matrix-attempt-fill' + scoreClass +
                     '" style="height:' + escapeHtml(Math.max(percent, 6)) + '%">' + escapeHtml(formatPercent(percent)) + '</span></span>' +
                     '<span class="matrix-attempt-caption"><small>' + escapeHtml(formatAttemptChartDate(attempt.submitted_at)) + '</small>' +
@@ -2609,7 +2612,70 @@
         '</div>';
     }
 
-    function renderMatrixAttemptDetails(entries) {
+    function renderPaperReviewIcon() {
+        return '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">' +
+            '<path d="M7 3.75h7.4L18 7.35v12.9H7z"></path>' +
+            '<path d="M14 3.75v4h4"></path>' +
+            '<path d="M9.6 11.2h4.8"></path>' +
+            '<path d="M9.6 14.2h4.8"></path>' +
+            '<path d="M9.6 17.2h2.9"></path>' +
+        '</svg>';
+    }
+
+    function attemptSetId(attempt, assignment) {
+        return (attempt && attempt.set_id) || (assignment && assignment.set_id) || '';
+    }
+
+    function attemptQuestionText(result, attempt, assignment) {
+        return result.question_text_snapshot ||
+            getQuestionTextFromData(questionTextCache[attemptSetId(attempt, assignment)], result.question_id) ||
+            '';
+    }
+
+    function renderMatrixAttemptReview(entry, entries, assignment) {
+        var attempt = entry && entry.attempt;
+        if (!attempt) return '';
+        var duration = attemptDurationLabel(attempt);
+        var results = attempt.question_results || [];
+        return '<section class="matrix-work-review">' +
+            '<div class="matrix-work-review-head">' +
+                '<button class="matrix-review-back" type="button" data-matrix-review-back>Back to attempts</button>' +
+                '<div><h3>Attempt #' + escapeHtml(entry.number) + ' full work</h3>' +
+                '<small>' + escapeHtml(formatDateTime(attempt.submitted_at)) +
+                (duration ? ' · ' + escapeHtml(duration) : '') +
+                ' · ' + escapeHtml(formatPercent(attempt.percentage)) + '</small></div>' +
+            '</div>' +
+            '<div class="matrix-work-history">' +
+                '<strong>Attempt history</strong>' +
+                '<span>' + escapeHtml(entries.map(function(item) {
+                    return '#' + item.number + ' ' + formatPercent(item.attempt.percentage);
+                }).join(' · ')) + '</span>' +
+            '</div>' +
+            (results.length
+                ? '<div class="matrix-work-question-list">' + results.map(function(result) {
+                    var correct = result.correct === true;
+                    var questionText = attemptQuestionText(result, attempt, assignment);
+                    return '<article class="matrix-work-question ' + (correct ? 'correct' : 'wrong') + '">' +
+                        '<div class="matrix-work-question-top">' +
+                            '<strong>Q' + escapeHtml(result.question_id || '?') + '</strong>' +
+                            '<span>' + (correct ? 'Correct' : 'Wrong') + '</span>' +
+                        '</div>' +
+                        (questionText
+                            ? '<p class="matrix-work-question-text">' + escapeHtml(questionText) + '</p>'
+                            : '<p class="matrix-work-question-text missing">Question text is not available from the current public data.</p>') +
+                        '<div class="matrix-work-answer-grid">' +
+                            '<div><small>Student answer</small><strong>' +
+                                escapeHtml(formatAnswerText(result.submitted_answer, 'blank')) + '</strong></div>' +
+                            '<div><small>Correct answer</small><strong>' +
+                                escapeHtml(formatAnswerText(result.correct_answer, 'not available')) + '</strong></div>' +
+                        '</div>' +
+                    '</article>';
+                }).join('') + '</div>'
+                : '<div class="matrix-wrong-empty">No per-question records are available for this attempt.</div>') +
+        '</section>';
+    }
+
+    function renderMatrixAttemptDetails(entries, assignment) {
         if (!entries.length) return '';
         return '<div class="matrix-attempt-list">' +
             entries.slice().reverse().map(function(entry) {
@@ -2624,8 +2690,16 @@
                     '<span>' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
                     (duration ? '<span class="time">' + escapeHtml(duration) + '</span>' : '') +
                     '</div></div>' +
-                    '<span class="matrix-score-pill ' + (percent != null && percent < 50 ? 'fail' : '') + '">' +
-                    escapeHtml(formatPercent(attempt.percentage)) + '</span></div>' +
+                    '<div class="matrix-attempt-actions">' +
+                        '<button class="matrix-work-button" type="button" data-matrix-review-attempt="' +
+                            escapeHtml(attempt.attempt_id || '') + '" data-matrix-review-set="' +
+                            escapeHtml(attemptSetId(attempt, assignment)) + '" aria-label="View full work for attempt ' +
+                            escapeHtml(entry.number) + '" title="View full work">' +
+                            renderPaperReviewIcon() +
+                        '</button>' +
+                        '<span class="matrix-score-pill ' + (percent != null && percent < 50 ? 'fail' : '') + '">' +
+                        escapeHtml(formatPercent(attempt.percentage)) + '</span>' +
+                    '</div></div>' +
                     renderMatrixAttemptWrongRows(attempt) +
                 '</article>';
             }).join('') +
@@ -2652,6 +2726,11 @@
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
         var entries = matrixAttemptEntries(attempts);
+        var reviewEntry = state.selectedMatrixReviewAttemptId
+            ? entries.find(function(entry) {
+                return entry.attempt && entry.attempt.attempt_id === state.selectedMatrixReviewAttemptId;
+            })
+            : null;
         var title = item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set';
         var status = normalizedAssignmentStatus(item.status);
         var editButton = '';
@@ -2669,7 +2748,7 @@
                 '</div>' +
             '</div>' +
             renderMatrixAttemptChart(entries, item) +
-            renderMatrixAttemptDetails(entries) +
+            (reviewEntry ? renderMatrixAttemptReview(reviewEntry, entries, item) : renderMatrixAttemptDetails(entries, item)) +
         '</div>';
     }
 
@@ -2959,6 +3038,7 @@
                 state.matrixClassFilter = matrixClassFilter.value;
                 state.selectedMatrixCell = '';
                 state.selectedMatrixStudentKey = '';
+                state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
             });
         }
@@ -2968,6 +3048,7 @@
                 state.matrixDateFilter = matrixDateFilter.value;
                 state.selectedMatrixCell = '';
                 state.selectedMatrixStudentKey = '';
+                state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
             });
         }
@@ -2977,6 +3058,7 @@
                 state.matrixColumnFilter = matrixColumnFilter.value;
                 state.selectedMatrixCell = '';
                 state.selectedMatrixStudentKey = '';
+                state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
             });
         }
@@ -2988,6 +3070,7 @@
                 state.selectedMatrixCell = '';
                 state.selectedProgressDetailKey = '';
                 state.targetMatrixAttemptId = '';
+                state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
                 restoreMatrixScroll(scrollSnapshot);
             });
@@ -3000,6 +3083,7 @@
                 state.selectedMatrixStudentKey = '';
                 state.selectedProgressDetailKey = '';
                 state.targetMatrixAttemptId = '';
+                state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
                 restoreMatrixScroll(scrollSnapshot);
             });
@@ -3007,11 +3091,30 @@
         container.querySelectorAll('[data-matrix-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 if (button.dataset.matrixClose === 'backdrop' && event.target !== button) return;
+                state.selectedMatrixReviewAttemptId = '';
                 closeMatrixCellModal(container);
+            });
+        });
+        container.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                state.selectedMatrixReviewAttemptId = button.dataset.matrixReviewAttempt || '';
+                loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderAssignmentOverview);
+            });
+        });
+        container.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.selectedMatrixReviewAttemptId = '';
+                renderAssignmentOverview();
             });
         });
         container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
+                if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
+                    state.selectedMatrixReviewAttemptId = button.dataset.matrixAttemptId;
+                    loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderAssignmentOverview);
+                    return;
+                }
                 state.targetMatrixAttemptId = '';
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
@@ -3341,6 +3444,7 @@
         var attemptId = row.dataset.openAttemptId || '';
         state.notificationAttemptId = attemptId;
         state.targetMatrixAttemptId = attemptId;
+        state.selectedMatrixReviewAttemptId = '';
         renderUpdatesPanel();
         markAttemptsReadSilently();
     }
@@ -3363,11 +3467,30 @@
                 if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
                 state.notificationAttemptId = '';
                 state.targetMatrixAttemptId = '';
+                state.selectedMatrixReviewAttemptId = '';
+                renderUpdatesPanel();
+            });
+        });
+        updatesBody.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                state.selectedMatrixReviewAttemptId = button.dataset.matrixReviewAttempt || '';
+                loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderUpdatesPanel);
+            });
+        });
+        updatesBody.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.selectedMatrixReviewAttemptId = '';
                 renderUpdatesPanel();
             });
         });
         updatesBody.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
+                if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
+                    state.selectedMatrixReviewAttemptId = button.dataset.matrixAttemptId;
+                    loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderUpdatesPanel);
+                    return;
+                }
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
