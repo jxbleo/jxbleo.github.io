@@ -676,7 +676,9 @@ STAR 是后端成就记录。
 - assignment attempt 达到 mastery
 - self-study attempt 达到 mastery
 - dashboard 加载时发现历史 mastered attempt 但缺 STAR，可修复
-- Argue 改判后使某次 attempt 达到 mastery，也应创建或修复 STAR
+- Argue 改判后使某次 attempt 达到 mastery，也应创建或修复 STAR；如果
+  assignment 已经因 reveal answers 进入 `mastery_locked`，则只修分和
+  passed 状态，不绕过锁升级为 mastered / STAR
 
 保护规则：
 
@@ -710,6 +712,8 @@ flowchart TD
 - 自动重算覆盖学生 Argue 和老师预览 Argue
 - 只重算同 set、同 question_id、同 submitted answer 的历史 attempt
 - 不降低任何历史 attempt
+- 重算 assignment 状态时必须沿用普通提交的 passing / mastery /
+  mastery lock 规则
 - 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
 - 学生端 Dashboard reply 是临时提醒，原题 Argue 状态才是永久查看入口
