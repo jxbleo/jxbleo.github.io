@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250508",
+  "title": "Should Animals Be Kept In Zoos?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250508-should-animals-be-kept-in-zoos.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "School visits may help young people understand the value of _____.",
+      "section": "Arguments for zoos"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Zoos may put money into _____ that support animals at risk.",
+      "section": "Arguments for zoos"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "These programmes are mainly used to help _____.",
+      "section": "Arguments for zoos"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Female pandas can reproduce only during a _____ of fertility.",
+      "section": "Arguments for zoos"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Some zoo funding is used to encourage difficult animals to _____.",
+      "section": "Arguments for zoos"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Captive animals may show _____, suggesting poor mental health.",
+      "section": "Arguments against zoos"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A zoo cannot fully copy an animal's _____.",
+      "section": "Arguments against zoos"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Stress-related behaviour may include pacing, bar-biting and even _____.",
+      "section": "Arguments against zoos"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Even big enclosures cannot give animals the _____ they would have in the wild.",
+      "section": "Arguments against zoos"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "For captive animals, even basic surroundings may be experienced as _____.",
+      "section": "Arguments against zoos"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is presented as the main public reason zoos give for existing?",
+      "options": [
+        "They educate young people about nature protection.",
+        "They provide entertainment for school groups.",
+        "They allow children to compare different gorillas.",
+        "They replace classroom science lessons."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does the speaker mention visiting gorillas at Zoo Atlanta?",
+      "options": [
+        "To show that zoos mainly attract local tourists.",
+        "To criticise repeated school trips to the same place.",
+        "To illustrate how zoos can introduce children to conservation.",
+        "To explain why gorillas are easier to protect in cities."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "According to the transcript, why may pandas need help with breeding?",
+      "options": [
+        "They are too aggressive to live with other pandas.",
+        "They reproduce under limited conditions and may be unwilling to mate.",
+        "They cannot survive without human-made food.",
+        "They usually prefer warmer zoo environments."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What role can zoo money play in panda conservation?",
+      "options": [
+        "It helps pandas avoid contact with people.",
+        "It creates new wild habitats for pandas.",
+        "It trains pandas to live alone successfully.",
+        "It supports ways to encourage pandas to reproduce."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What is the activist's first major objection to zoos?",
+      "options": [
+        "They can harm animals both physically and psychologically.",
+        "They charge visitors too much money.",
+        "They focus too much on popular animals.",
+        "They fail to teach children enough science."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Which behaviour is given as evidence that zoo animals may be under mental stress?",
+      "options": [
+        "Sleeping for longer periods than usual.",
+        "Avoiding food offered by keepers.",
+        "Repeated movements such as pacing or head-bobbing.",
+        "Trying to communicate with visitors."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What limitation of zoos is highlighted when they are compared with the wild?",
+      "options": [
+        "Zoos cannot prevent all animals from escaping.",
+        "Zoos cannot truly reproduce animals' natural surroundings.",
+        "Zoos cannot stop visitors from disturbing animals.",
+        "Zoos cannot keep endangered species alive."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the term connected with captive-animal stress refer to here?",
+      "options": [
+        "A disease found only in polar bears.",
+        "A safety rule used in animal enclosures.",
+        "A training method used by zookeepers.",
+        "Repeated harmful behaviours caused by confinement."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why is the polar bear example used?",
+      "options": [
+        "To show that polar bears are less intelligent than other zoo animals.",
+        "To suggest that polar bears are the only animals affected by captivity.",
+        "To make the habitat mismatch in zoos easier to imagine.",
+        "To prove that all large enclosures are equally cruel."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is implied by the comparison between zoochosis and human trauma?",
+      "options": [
+        "Captive animals usually recover quickly if moved to larger spaces.",
+        "Captivity can create deep and continuous stress for animals.",
+        "Zoologists now treat animals with human medical methods.",
+        "Human trauma is easier to understand than animal behaviour."
+      ]
+    }
+  ],
+  "matching": []
+}

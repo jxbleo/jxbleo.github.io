@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250501",
+  "title": "Can Cows Prevent Wildfires?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250501-can-cows-prevent-wildfires.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Wildfires are uncontrolled fires in places such as _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "They are common in _____ such as Spain.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Today’s fires are worse partly because rising temperatures are caused by _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Forests have grown _____ because too few animals feed on the vegetation.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Dense _____ makes forests more likely to catch fire.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "European ecosystems used to include _____ such as bison and wild horses.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Some of those animals disappeared from ecosystems because of _____ and domestication.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Rewilding Spain has brought back herds of _____ to central Spanish forests.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The cows help because of their _____ and their trampling.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Each tauros can eat over _____ of plant material per day.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How are wildfires defined in the programme?",
+      "options": [
+        "Small planned fires used to manage farms",
+        "Unplanned fires in places such as forests or grasslands that spread uncontrollably",
+        "Fires that happen only inside cities",
+        "Natural fires that never involve human activity"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What has made today’s wildfires especially severe?",
+      "options": [
+        "Lower rainfall caused by cows",
+        "The disappearance of television animal heroes",
+        "Too many people planting seagrass",
+        "Rising temperatures linked to climate change"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why have some forests become more fire-prone?",
+      "options": [
+        "There are not enough animals eating the trees, bushes and grass",
+        "People have removed all vegetation from forests",
+        "The forests have become too wet to manage",
+        "The trees have stopped growing completely"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which animals are given as examples of former big grazers in Europe?",
+      "options": [
+        "Dolphins, kangaroos and dogs",
+        "Sharks, turtles and wildebeest",
+        "Bison, tauros and wild horses",
+        "Cows, goats and sheep only"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What is the result of fewer grazing wild animals?",
+      "options": [
+        "Grasslands stop growing and fires disappear",
+        "Forests and grasslands keep growing unchecked, increasing wildfire risk",
+        "Domestic cows become extinct immediately",
+        "Spain becomes cooler and wetter"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What has Pablo reintroduced into central Spanish forests?",
+      "options": [
+        "Modern fire engines driven by farmers",
+        "Herds of wild horses from Australia",
+        "Sea turtles that protect seagrass",
+        "Herds of tauros similar to extinct aurochs"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does trampling help reduce fire risk?",
+      "options": [
+        "It opens up the forest so flammable vegetation is less densely packed",
+        "It turns all vegetation into water",
+        "It makes the cows eat less each day",
+        "It prevents every future wildfire in Spain"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does Beth say tauros eat?",
+      "options": [
+        "Only grass and nothing else",
+        "Only food provided by humans",
+        "Grass, leaves, tree branches and bark",
+        "Mostly insects and small animals"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does the figure “over 30 kilos a day” suggest about tauros?",
+      "options": [
+        "They are too small to affect the forest",
+        "Their eating can remove a large amount of vegetation",
+        "They eat only when fires begin",
+        "They need helmets to work safely"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the programme’s overall point about cows in Spain?",
+      "options": [
+        "They fight fires in the same way as human firefighters",
+        "They make wildfires more destructive by eating trees",
+        "Their grazing and movement can help manage vegetation that fuels fires",
+        "They replace the need for all climate action"
+      ]
+    }
+  ],
+  "matching": []
+}
