@@ -2498,9 +2498,12 @@ body:not(.teacher-page) .tab-button.active {
 .progress-matrix-tools {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 9px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 7px;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .progress-matrix-tools > span {
     color: var(--muted);
@@ -2511,6 +2514,25 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-class-filter,
 .matrix-column-filter,
 .matrix-date-filter,
+.matrix-date-bound input {
+    min-height: 34px;
+    max-width: 156px;
+    border: 1px solid rgba(124,58,237,0.16);
+    border-radius: 10px;
+    padding: 0 10px;
+    color: var(--ink);
+    background: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+.matrix-class-filter,
+.matrix-column-filter,
+.matrix-date-filter {
+    flex: 0 0 auto;
+}
+.matrix-class-filter { max-width: 168px; }
+.matrix-column-filter { max-width: 138px; }
+.matrix-date-filter { max-width: 136px; }
 .matrix-date-bound {
     display: inline-flex;
     align-items: center;
@@ -2518,19 +2540,6 @@ body:not(.teacher-page) .tab-button.active {
     color: var(--muted);
     font-size: 0.72rem;
     font-weight: 850;
-}
-.matrix-class-filter select,
-.matrix-column-filter select,
-.matrix-date-filter select,
-.matrix-date-bound input {
-    min-height: 34px;
-    max-width: 180px;
-    border: 1px solid rgba(124,58,237,0.16);
-    border-radius: 10px;
-    padding: 0 10px;
-    color: var(--ink);
-    background: #fff;
-    font-weight: 800;
 }
 .matrix-date-bound input {
     width: 142px;
@@ -2566,7 +2575,7 @@ body:not(.teacher-page) .tab-button.active {
     left: 0;
     z-index: 2;
     border-left: 0;
-    box-shadow: 6px 0 12px rgba(83, 45, 145, 0.055);
+    box-shadow: inset -1px 0 0 rgba(124,58,237,0.10);
 }
 .progress-matrix-row > .progress-matrix-student-button {
     position: sticky;
@@ -2579,7 +2588,7 @@ body:not(.teacher-page) .tab-button.active {
     border-left: 0;
     color: var(--ink);
     background: rgba(255,255,255,0.78);
-    box-shadow: 6px 0 12px rgba(83, 45, 145, 0.055);
+    box-shadow: inset -1px 0 0 rgba(124,58,237,0.10);
     text-align: left;
     font: inherit;
     font-size: 0.75rem;
@@ -3709,9 +3718,9 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: 0 0 0 10px rgba(255,255,255,0.76);
 }
 
-.teacher-page .matrix-class-filter select,
-.teacher-page .matrix-column-filter select,
-.teacher-page .matrix-date-filter select,
+.teacher-page .matrix-class-filter,
+.teacher-page .matrix-column-filter,
+.teacher-page .matrix-date-filter,
 .teacher-page .matrix-date-bound input,
 .teacher-page .assignment-group-tools,
 .teacher-page .task-score-chart {
@@ -3749,7 +3758,7 @@ body:not(.teacher-page) .tab-button.active {
     animation: teacherRainbowFlow 13s linear infinite;
 }
 .teacher-page .progress-matrix-row > span:first-child {
-    box-shadow: 6px 0 12px rgba(31, 45, 38, 0.055);
+    box-shadow: inset -1px 0 0 rgba(31,45,38,0.08);
 }
 .teacher-page .progress-matrix-cell:hover {
     box-shadow: inset 0 0 0 2px rgba(239, 71, 111, 0.14);
@@ -5453,20 +5462,14 @@ body:not(.teacher-page) .tab-button.active {
     .progress-matrix-card { padding: 12px; }
     .progress-matrix-title { align-items: start; flex-direction: column; }
     .progress-matrix-tools {
-        justify-content: stretch;
+        justify-content: flex-start;
         width: 100%;
     }
-    .matrix-class-filter,
-    .matrix-column-filter,
-    .matrix-date-filter,
+    .matrix-class-filter { max-width: 154px; }
+    .matrix-column-filter { max-width: 126px; }
+    .matrix-date-filter { max-width: 124px; }
     .matrix-date-bound,
-    .matrix-class-filter select,
-    .matrix-column-filter select,
-    .matrix-date-filter select,
-    .matrix-date-bound input {
-        width: 100%;
-        max-width: none;
-    }
+    .matrix-date-bound input { max-width: 140px; }
     .progress-matrix-row {
         grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(96px, .65fr));
         min-width: var(--matrix-min-mobile, 560px);

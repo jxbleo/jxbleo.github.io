@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-01
+
+### Changed
+
+- Updated teacher View matrix filters so `Class`, `Column`, and `Date` default
+  to all records in one compact unlabeled row; date filtering now offers
+  `This week`, `Last week`, and `All time` based on assignment time, and
+  unclassed student options show the student name without an `Individual`
+  prefix.
+
 ## 2026-06-30
 
 ### Fixed
