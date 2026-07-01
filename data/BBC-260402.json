@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260402",
+  "title": "Are Saunas Good For You?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260402-are-saunas-good-for-you.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A standard sauna is heated with steam to about _____.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Supporters claim that _____ can improve health and well-being.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "One sauna user described the experience as very _____.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The same person said it made them feel _____.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Another user said saunas may help muscles when a person is _____.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A stressed user felt completely _____ after finishing the sauna.",
+      "section": "What saunas are and why people use them"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "In Finland, around _____ of the population use saunas.",
+      "section": "Medical evidence and its limits"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Sauna-goers were associated with a 40% reduction in _____.",
+      "section": "Medical evidence and its limits"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The current findings are based on _____, not fully controlled experiments.",
+      "section": "Medical evidence and its limits"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The expert says stronger confirmation would require _____, where conditions are fully controlled.",
+      "section": "Medical evidence and its limits"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What question does the introduction raise about saunas?",
+      "options": [
+        "Whether saunas should replace winter clothing.",
+        "Whether saunas offer real health benefits as well as warmth.",
+        "Whether saunas are cheaper in Britain than in Nordic countries.",
+        "Whether people should build saunas inside their homes."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does James ask whether saunas are “all they’re cracked up to be”?",
+      "options": [
+        "To argue that people should stop using them immediately.",
+        "To show that saunas are already medically proven.",
+        "To compare British saunas with Finnish bathhouses.",
+        "To question whether their reputation is fully deserved."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What benefit does the first sauna user emphasise?",
+      "options": [
+        "It helps them feel calm and comfortable.",
+        "It improves their ability to tolerate cold water.",
+        "It removes the need for regular exercise.",
+        "It helps them sleep for longer afterwards."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "According to the second user, when might a sauna be particularly useful?",
+      "options": [
+        "When someone wants to avoid sweating.",
+        "When someone has no time to rest.",
+        "When someone’s muscles feel tight or tense.",
+        "When someone wants to train in high temperatures."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does the final sauna user describe the effect after being stressed?",
+      "options": [
+        "It makes stress feel more serious than before.",
+        "It gives them a sense of starting afresh.",
+        "It distracts them without changing their mood.",
+        "It makes them dependent on daily sauna use."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is Professor Bailey’s general reaction to the research evidence?",
+      "options": [
+        "He thinks it is too weak to discuss publicly.",
+        "He believes it only applies to professional athletes.",
+        "He is bored by the amount of evidence available.",
+        "He finds it impressive, although further testing is needed."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Which figure is used to show how common sauna use is in Finland?",
+      "options": [
+        "About 90% of the population use saunas.",
+        "About 40% of people use saunas every winter.",
+        "Thousands of people stopped using saunas.",
+        "Five million people took part in controlled trials."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What limitation of the Finnish evidence is highlighted?",
+      "options": [
+        "It ignores natural behaviour completely.",
+        "It was collected from only a few sauna-goers.",
+        "It is observational rather than fully controlled.",
+        "It proves that saunas cause every health improvement."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why does Damian say we should not “turn our noses up” at the current data?",
+      "options": [
+        "Because controlled trials are impossible in any health research.",
+        "Because the evidence is large-scale even if it is not perfect.",
+        "Because Finnish culture should be copied without question.",
+        "Because observational data is always stronger than RCTs."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the balanced conclusion about sauna evidence in the discussion?",
+      "options": [
+        "It is promising and worth considering, but more controlled research would strengthen it.",
+        "It is useless because it has not yet been tested in a laboratory.",
+        "It proves that sauna use is the only reason Finnish people live longer.",
+        "It shows that personal relaxation benefits are unrelated to health outcomes."
+      ]
+    }
+  ],
+  "matching": []
+}

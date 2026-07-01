@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260409",
+  "title": "The Future Of Food",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260409-the-future-of-food.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The UK brings in around _____ of its food from other countries.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The supply chain can be affected by wars, shortages and increasingly by _____.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Having enough reliable, affordable and healthy food for everyone is called _____.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The government report lists risks including _____, droughts and water shortages.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Scientists modelled how _____ might threaten UK security.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The report’s conclusions were described as _____, meaning severe and clear.",
+      "section": "Food supply and security risks"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Food production produces around _____ of all greenhouse gases.",
+      "section": "Farming, emissions and land use"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "In agriculture, the largest share of emissions comes from keeping _____ on farmland.",
+      "section": "Farming, emissions and land use"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "One proposed shift is to eat less meat and dairy and choose more _____.",
+      "section": "Farming, emissions and land use"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "If a cow or sheep is removed, the land could be used for something else, for example a _____ or vegetable crop.",
+      "section": "Farming, emissions and land use"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What concern about the UK food supply is introduced at the beginning?",
+      "options": [
+        "British consumers no longer buy imported food.",
+        "The food system depends on vulnerable international supply chains.",
+        "Fresh food can only be produced in South America and Asia.",
+        "Supermarkets have stopped selling affordable healthy food."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What does “food security” mean in the discussion?",
+      "options": [
+        "Buying only food produced within one country.",
+        "Protecting farms from all political conflicts.",
+        "Knowing the exact origin of every product.",
+        "Having reliable access to affordable and healthy food."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which set of issues does the government report link to Britain’s food supply?",
+      "options": [
+        "Conflicts, droughts, water shortages and biodiversity loss.",
+        "Higher supermarket prices, food waste and restaurant demand.",
+        "Reduced packaging, local calendars and consumer curiosity.",
+        "New farming jobs, cheaper imports and more European trade."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the quoted first line of the report imply?",
+      "options": [
+        "Food supply risks are limited to farming profits.",
+        "Ecosystem damage is mainly a local gardening issue.",
+        "Environmental breakdown can become a national-security threat.",
+        "Biodiversity loss has already stopped all UK food imports."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is food production presented as part of the climate problem?",
+      "options": [
+        "It prevents people from buying vegetables from Europe.",
+        "It accounts for a large share of greenhouse gas emissions.",
+        "It mainly depends on calendars used in home kitchens.",
+        "It removes the need for diesel, fertilisers and livestock."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "According to Emma Pinchbeck, what is the biggest source of agricultural emissions?",
+      "options": [
+        "Transporting imported vegetables across Europe.",
+        "Growing beans and lentils for non-animal protein.",
+        "Using calendars to plan seasonal food choices.",
+        "Keeping livestock such as cows or sheep on land."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What change in land use does Emma suggest should be considered?",
+      "options": [
+        "Replacing some cows or sheep with other productive uses of land.",
+        "Leaving all farmland unused to protect biodiversity.",
+        "Increasing livestock numbers to improve food security.",
+        "Moving every farmer away from food production completely."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does “a piece of the puzzle” refer to here?",
+      "options": [
+        "A small section of the government report.",
+        "A confusing part of supermarket labelling.",
+        "One part of solving food security and climate problems.",
+        "A farming method that only works with dairy products."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are fruit trees and vegetable crops mentioned?",
+      "options": [
+        "To show that imported food is always cheaper.",
+        "To give examples of alternative uses for land after reducing livestock.",
+        "To argue that cows and sheep should be replaced only by trees.",
+        "To explain why farmers should stop producing food entirely."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader message does the discussion give about farmers and landowners?",
+      "options": [
+        "They can help address climate change if land use is redesigned.",
+        "They are solely responsible for the UK’s food-security problems.",
+        "They should be excluded from climate policy decisions.",
+        "They can solve food supply risks without changing production habits."
+      ]
+    }
+  ],
+  "matching": []
+}

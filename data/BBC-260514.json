@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260514",
+  "title": "How Reading Shapes Your Brain",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260514-how-reading-shapes-your-brain.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Many people assume reading develops in the same way as speaking because it feels _____.",
+      "section": "Reading is not simply built in"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One mistaken assumption is that reading must be natural because it is a form of _____.",
+      "section": "Reading is not simply built in"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "At birth, the brain already supports seeing and sound production through the _____.",
+      "section": "Reading is not simply built in"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "However, babies do not already have the brain _____ needed for reading.",
+      "section": "Reading is not simply built in"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Evolution has not given humans a _____.",
+      "section": "Building a reading network"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "To read, the brain borrows areas used for vision, _____, language, attention and emotion.",
+      "section": "Building a reading network"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Reading activates all _____ of the cortex.",
+      "section": "Building a reading network"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Developing this ability can alter brain activity, structure and _____.",
+      "section": "Building a reading network"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Reading Chinese symbols activates different brain areas from reading an _____.",
+      "section": "Different writing systems"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Chinese characters place stronger demands on visual memory and _____.",
+      "section": "Different writing systems"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What point does Maryanne Wolf make about reading?",
+      "options": [
+        "It develops automatically once children can speak.",
+        "It is easier than spoken language for most people.",
+        "It is not an ability that humans are naturally born to do.",
+        "It uses no connection with language."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What do babies already have brain networks for?",
+      "options": [
+        "Seeing and producing sounds.",
+        "Reading printed words fluently.",
+        "Understanding every language they hear.",
+        "Connecting symbols with abstract ideas."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why does the brain need to use existing systems when learning to read?",
+      "options": [
+        "Reading requires only visual memory.",
+        "The cortex cannot change after childhood.",
+        "Spoken language prevents a reading network from forming.",
+        "There has not been enough evolutionary time for a separate reading brain."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which group of brain functions is mentioned as being recruited for reading?",
+      "options": [
+        "Smell, balance, memory and movement.",
+        "Vision, sound processing, language and attention.",
+        "Hunger, emotion, sleep and breathing.",
+        "Pain response, touch, taste and imagination."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does Rebecca Gotlieb characterise reading overall?",
+      "options": [
+        "A narrow skill handled by one small brain area.",
+        "A mainly mechanical process unrelated to identity.",
+        "A habit that changes only vocabulary knowledge.",
+        "A whole-brain process that can reshape who we are."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is one result of learning to read, according to the explanation?",
+      "options": [
+        "It changes brain structure compared with not learning to read.",
+        "It removes the need for attention and language systems.",
+        "It makes all readers use identical brain circuits.",
+        "It prevents later changes in brain connectivity."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What makes Chinese characters different from alphabetic writing in this discussion?",
+      "options": [
+        "They represent only sounds and never ideas.",
+        "They are easier for stroke patients to read.",
+        "They use symbols rather than alphabet letters.",
+        "They do not require visual processing."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the bilingual stroke case suggest?",
+      "options": [
+        "Chinese and English must be stored in exactly the same brain areas.",
+        "Different writing systems can rely on different brain circuits.",
+        "A stroke normally improves alphabet reading.",
+        "People who read Chinese cannot read English after brain injury."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why does Maryanne Wolf mention the “requirements of Chinese”?",
+      "options": [
+        "To argue that Chinese is less detailed than English.",
+        "To claim that alphabet systems use no memory.",
+        "To show that Chinese reading damages the circuit.",
+        "To explain why Chinese reading develops more visual memory and processing."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader conclusion is supported by the final explanation of Chinese symbols?",
+      "options": [
+        "The visual form of a writing system can shape brain development.",
+        "Detailed characters make reading impossible for bilingual people.",
+        "Alphabetic reading always produces stronger visual areas.",
+        "Brain circuits are fixed and unaffected by literacy."
+      ]
+    }
+  ],
+  "matching": []
+}

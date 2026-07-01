@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260507",
+  "title": "Searching For Life On Another Planet",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260507-searching-for-life-on-another-planet.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Scientists are studying an _____, a planet outside our own solar system.",
+      "section": "Searching beyond Earth"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "TRAPPIST-1e is described as a _____, so it has an Earth-like physical nature.",
+      "section": "Searching beyond Earth"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In terms of scale, it is a _____ to Earth.",
+      "section": "Searching beyond Earth"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Its position is promising because it lies in the _____ around its star.",
+      "section": "Searching beyond Earth"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Researchers are examining the planet’s _____.",
+      "section": "Atmosphere and possible signs of life"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "They have rejected the idea that the atmosphere is mainly full of _____.",
+      "section": "Atmosphere and possible signs of life"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "This matters because hydrogen and carbon dioxide are _____.",
+      "section": "Atmosphere and possible signs of life"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "If those gases dominated, they could make the planet _____.",
+      "section": "Atmosphere and possible signs of life"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Early evidence suggests there may be a _____.",
+      "section": "Atmosphere and possible signs of life"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "If there is enough nitrogen, it may help keep the planet at a _____.",
+      "section": "Atmosphere and possible signs of life"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main reason scientists are interested in TRAPPIST-1e at this point?",
+      "options": [
+        "It is known to contain alien organisms.",
+        "It has several Earth-like features in a life-supporting region.",
+        "It is the closest planet to the Earth.",
+        "It has already been proven to have liquid oceans."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "In the discussion, what does “exoplanet” refer to?",
+      "options": [
+        "A planet that has no atmosphere.",
+        "A star system with several rocky planets.",
+        "A planet that is too far away to observe.",
+        "A planet outside the solar system we belong to."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which atmospheric possibility have scientists largely dismissed?",
+      "options": [
+        "The planet is packed with hydrogen or carbon dioxide.",
+        "The planet has no gases around it at all.",
+        "The planet is mostly covered by nitrogen ice.",
+        "The planet’s air is identical to Earth’s."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why would large amounts of hydrogen or carbon dioxide be a concern?",
+      "options": [
+        "They would prevent scientists from using models.",
+        "They would make nitrogen impossible to detect.",
+        "They could make the planet excessively warm.",
+        "They would prove that the planet has no sunlight."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What can be inferred from the mention of a nitrogen-dominated atmosphere?",
+      "options": [
+        "Scientists have confirmed advanced life there.",
+        "It is one possible sign that the planet may be habitable.",
+        "It means the planet must be colder than Earth.",
+        "It rules out the need to study other gases."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "When the programme says the atmosphere has “potential”, what is being emphasised?",
+      "options": [
+        "It is already proven to host living things.",
+        "It has no scientific value unless nitrogen is found.",
+        "It is too unstable to be studied properly.",
+        "It may have the capacity to support life in the future."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How is “data has potential” different from “potential data” in the explanation?",
+      "options": [
+        "The first suggests present usefulness; the second points to possible future usefulness.",
+        "The first refers to old research; the second refers to failed research.",
+        "The first is about gases; the second is about temperatures.",
+        "The first is informal; the second is scientifically incorrect."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why is nitrogen treated as exciting in the discussion?",
+      "options": [
+        "It is the only gas that can exist around planets.",
+        "It guarantees that the planet is exactly like Earth.",
+        "It may indicate life and habitability.",
+        "It makes the planet impossible to heat."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What would scientists likely do if nitrogen were found?",
+      "options": [
+        "Stop studying the planet’s atmosphere.",
+        "Send people to measure the surface directly.",
+        "Ignore the planet’s temperature.",
+        "Examine other gases and model the planet’s warmth."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What would a suitable temperature and enough nitrogen mean for the search for life?",
+      "options": [
+        "It would move scientists one stage nearer to finding life.",
+        "It would immediately end the search successfully.",
+        "It would show that all exoplanets are habitable.",
+        "It would prove that greenhouse gases are always harmful."
+      ]
+    }
+  ],
+  "matching": []
+}

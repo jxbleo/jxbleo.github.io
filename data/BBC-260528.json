@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260528",
+  "title": "Living With Debt",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260528-living-with-debt.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Money borrowed for purchases and later repaid is called _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "When borrowing becomes unmanageable, it may lead to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Some people cannot cover family costs through work alone, so they may need to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The researcher asked residents how they were _____ in everyday life.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "He noticed where money problems appeared in _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "For many residents, debt was not unusual but part of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Having just enough money means being able to pay for _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "For people without work or on low incomes, debt can create _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "One debtor questioned whether repaying money was really a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Lack of money for basic needs or repayment can cause _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the most accurate meaning of debt in this discussion?",
+      "options": [
+        "Money saved for future personal use.",
+        "Money borrowed and expected to be repaid.",
+        "Money earned from regular employment.",
+        "Money spent on unnecessary goods."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What happens when debt becomes difficult to control?",
+      "options": [
+        "It becomes easier for people to discuss openly.",
+        "It reduces the need for support services.",
+        "It mainly affects banks and credit companies.",
+        "It creates emotional pressure for people."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why does the young man say he has sometimes borrowed money?",
+      "options": [
+        "His work income has not always covered family needs.",
+        "He wants to improve his credit record quickly.",
+        "He believes borrowing is easier than working.",
+        "His family advised him to borrow regularly."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What was the researcher mainly trying to understand in Woldham?",
+      "options": [
+        "How local banks calculated interest rates.",
+        "Why residents avoided formal interviews.",
+        "How residents managed ordinary life financially.",
+        "Which residents had the largest debts."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What did the researcher find about debt in the housing estate?",
+      "options": [
+        "It affected only a small number of unusual cases.",
+        "It had become a normal feature of residents' lives.",
+        "It was mostly discussed in official meetings.",
+        "It disappeared once people talked about it."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "In this context, what does 'making ends meet' mean?",
+      "options": [
+        "Saving enough money for future investments.",
+        "Borrowing money to improve living standards.",
+        "Earning more than one's neighbours.",
+        "Having enough for basic living costs."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How does the programme contrast debt for different income groups?",
+      "options": [
+        "Regular income may make debt manageable, while low income can make it distressing.",
+        "Low-income workers usually avoid debt, while high earners often borrow more.",
+        "Unemployed people are less affected because they have fewer bills.",
+        "People with regular income always clear debts quickly."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What inner conflict did the young man experience about his debts?",
+      "options": [
+        "He was certain that debt should never be repaid.",
+        "He wanted his partner to take full responsibility.",
+        "He moved between wanting to repay and questioning the duty to repay.",
+        "He believed small payments solved the problem completely."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What concrete consequence of the couple's worsening financial situation is mentioned?",
+      "options": [
+        "They failed to pay some bills and lost internet access.",
+        "They moved to a different housing estate.",
+        "They were refused all future employment.",
+        "They immediately won financial support."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What wider conclusion does the discussion draw about debt?",
+      "options": [
+        "Debt is mainly a private mistake with no wider relevance.",
+        "Debt is best handled by avoiding all conversations about it.",
+        "Debt affects only people who refuse to budget carefully.",
+        "Debt is a serious social issue, but help may be available."
+      ]
+    }
+  ],
+  "matching": []
+}

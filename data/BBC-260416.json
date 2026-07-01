@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260416",
+  "title": "Love The Foods You Hate",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260416-love-the-foods-you-hate.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Food preferences may partly come from _____, which can affect how people perceive certain ingredients.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One example is _____: some people may experience its smell or taste differently.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "However, dislike is not only biological; there is also a strong _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "One technique for changing reactions to disliked food is called _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "In one example, people are offered _____ to make an unusual food easier to try.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "After trying it, many people realise there is nothing naturally _____ about the food itself.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The eating experience may be compared to a small piece of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "A negative reaction can develop after someone once became ill from eating _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The person may connect the illness with having had a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Avoiding the food afterwards is described as a kind of _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the main point made about why people dislike certain foods?",
+      "options": [
+        "Food dislikes are mostly created by childhood habits.",
+        "Food dislikes can come from both biology and experience.",
+        "Food dislikes are usually caused by cultural pressure.",
+        "Food dislikes disappear once people try the food again."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why is coriander mentioned in the discussion?",
+      "options": [
+        "To show that some foods are disliked because they are unfamiliar.",
+        "To explain why strong-smelling foods are usually unhealthy.",
+        "To suggest that people should avoid foods with a sharp taste.",
+        "To illustrate that genetics can affect smell and taste."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does the speaker summarise the expert’s view after the first extract?",
+      "options": [
+        "The way people sense food can be shaped by both genes and learning.",
+        "People usually dislike foods because they have never eaten them before.",
+        "Genetic differences are less important than cooking methods.",
+        "Most people can change their food preferences immediately."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "In this context, what does “hard-wired” mean?",
+      "options": [
+        "A reaction that is taught deliberately by parents.",
+        "A habit that appears only in adulthood.",
+        "A response that happens automatically, often because of genetics.",
+        "A preference that changes whenever the food is disguised."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the technique of masking involve?",
+      "options": [
+        "Pairing an unwanted food with something the person already likes.",
+        "Removing the smell of a food before it is served.",
+        "Replacing disliked foods with foods from another culture.",
+        "Telling people the food is different from what it really is."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does the example of chocolate-covered insects suggest about food dislike?",
+      "options": [
+        "People reject insects because they always taste bitter.",
+        "Parents are usually more adventurous eaters than children.",
+        "Sweet foods can permanently remove all food fears.",
+        "The idea of a food can be more off-putting than its actual taste."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "After people actually eat the masked food, what do they often discover?",
+      "options": [
+        "The food is difficult to chew.",
+        "The food itself is not naturally unpleasant.",
+        "The food tastes exactly like ordinary chocolate.",
+        "The food should be eaten only in small amounts."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How can one bad experience with food influence someone later?",
+      "options": [
+        "It can make the person prefer stronger flavours.",
+        "It can make the person forget what made them ill.",
+        "It can cause the person to link that food with illness.",
+        "It can prove the food is unsafe for everyone."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "When food is described as “dodgy”, what may be implied?",
+      "options": [
+        "It may be old, undercooked, or able to make someone sick.",
+        "It may be expensive but popular with most people.",
+        "It may be unfamiliar because it comes from another culture.",
+        "It may be healthy but unpleasant-looking."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does “avoidance” refer to in the discussion of food fears?",
+      "options": [
+        "Trying a food repeatedly until it becomes familiar.",
+        "Covering a food with a taste that is already liked.",
+        "Checking whether a food has gone bad before eating.",
+        "Keeping away from a food because of a negative association."
+      ]
+    }
+  ],
+  "matching": []
+}

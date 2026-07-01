@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260604",
+  "title": "The Power Of Poetry",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260604-the-power-of-poetry.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Different people respond to _____ very differently after school.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One speaker wants to read more poems but finds them hard to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A live event where people may perform songs or poems is an _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "At such events, people's words can _____, even after a difficult day.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "One poetry group attends events such as the UN _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "They listen to _____ before turning the ideas into poems.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A major barrier is that much scientific _____ is difficult for ordinary listeners.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "If science feels too hard to access, it can become a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The group tries to make complex _____ easier through poems.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Hearing the poem still gives the scientist _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How is poetry presented at the beginning of the discussion?",
+      "options": [
+        "As a subject that everyone continues to enjoy.",
+        "As something people may either leave behind or value deeply.",
+        "As a skill mainly used by professional writers.",
+        "As a school topic that has lost all importance."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What problem does one speaker have with poetry?",
+      "options": [
+        "He thinks poetry is only for schoolchildren.",
+        "He dislikes hearing poetry performed aloud.",
+        "He has written too much poetry already.",
+        "He is interested but finds it hard to follow."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What is an open mic night described as?",
+      "options": [
+        "A live event where people can perform songs or poems.",
+        "A private meeting where poets edit each other's work.",
+        "A formal school exam about poetry reading.",
+        "A radio programme for professional poets only."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What effect can open mic poetry have, according to the speaker?",
+      "options": [
+        "It guarantees that personal problems disappear.",
+        "It makes poems easier to publish.",
+        "It can improve someone's emotional state.",
+        "It helps people avoid difficult topics."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What process does Hot Poets follow when working with scientific issues?",
+      "options": [
+        "They write poems first and then ask scientists to justify them.",
+        "They listen to research, create poems, and perform them to an audience.",
+        "They replace scientific meetings with poetry competitions.",
+        "They collect poems from the public and turn them into research."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What kind of study is Liv's poem based on?",
+      "options": [
+        "A study of school poetry lessons.",
+        "A study of public speaking anxiety.",
+        "A study of restaurant behaviour.",
+        "A study related to biodiversity."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What problem does Liv identify in communicating science?",
+      "options": [
+        "Specialist language can make science hard for ordinary people.",
+        "Scientists avoid presenting their research in public.",
+        "Poets usually refuse to work with researchers.",
+        "Audiences already know too much technical vocabulary."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is one likely result when scientific material feels impenetrable?",
+      "options": [
+        "People become more willing to read technical reports.",
+        "People stop needing explanations from experts.",
+        "People may find the subject unappealing.",
+        "People immediately understand the research more deeply."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the main function of poetry in the Hot Poets project?",
+      "options": [
+        "To make difficult environmental ideas more accessible.",
+        "To remove the need for scientific research.",
+        "To entertain audiences without any educational aim.",
+        "To criticise scientists for using evidence."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does Kat's reaction suggest about Liv's poem?",
+      "options": [
+        "It made her reject the original study.",
+        "It was accurate but emotionally meaningless.",
+        "It was too technical for scientists to understand.",
+        "It expressed the science in an emotionally powerful way."
+      ]
+    }
+  ],
+  "matching": []
+}
