@@ -398,6 +398,13 @@ Shared rules:
   row. Explain uses a blue-green `?`; Argue uses an orange `!`. When both are
   present, `?` sits to the left of `!`.
 
+### Vocabulary Words
+
+- Vocabulary Words shows a sticky Study Set filter row under the Words toolbar.
+  It defaults to `All`; numbered round buttons filter the word cards by the
+  matching study group's word range, and the search field filters within the
+  currently selected Study Set.
+
 ### Vocabulary Learn
 
 - Vocabulary Learn mode uses each study group's own `Check Answer` button.

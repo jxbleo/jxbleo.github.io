@@ -16,6 +16,9 @@
   card so teachers can open that attempt's full-work review, including all
   recorded questions, submitted answers, correctness, correct answers, and
   attempt-history context.
+- Added a sticky Study Set filter row to Vocabulary Words so students can jump
+  between `All` words and numbered study-set word groups while keeping search
+  scoped to the selected group.
 
 ## 2026-06-30
 
