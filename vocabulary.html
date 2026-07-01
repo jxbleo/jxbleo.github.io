@@ -138,6 +138,75 @@
             border-color: var(--accent);
         }
 
+        .word-set-filter {
+            position: sticky;
+            top: 8px;
+            z-index: 35;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: -2px 0 16px;
+            padding: 8px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background:
+                linear-gradient(90deg, var(--card) 0%, rgba(255,255,255,0.92) 50%, var(--card) 100%);
+            border-radius: 999px;
+            scrollbar-width: none;
+        }
+
+        .word-set-filter::-webkit-scrollbar {
+            display: none;
+        }
+
+        .word-set-btn {
+            display: inline-grid;
+            min-width: 34px;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            flex: 0 0 auto;
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            border-radius: 999px;
+            color: var(--accent);
+            background: #fff;
+            font-size: 0.88rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.045);
+            transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, color 140ms ease;
+        }
+
+        .word-set-btn.all {
+            width: auto;
+            padding: 0 12px;
+        }
+
+        .word-set-btn:hover,
+        .word-set-btn:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 9px 18px rgba(15, 118, 110, 0.12);
+        }
+
+        .word-set-btn.active {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+        }
+
+        .word-list-empty {
+            grid-column: 1 / -1;
+            padding: 24px;
+            border: 1px dashed rgba(15, 118, 110, 0.22);
+            border-radius: 18px;
+            color: var(--muted);
+            background: rgba(15, 118, 110, 0.04);
+            font-weight: 800;
+            text-align: center;
+        }
+
         .word-table-wrap {
             overflow: auto;
             border: 1px solid var(--border);
@@ -1036,6 +1105,7 @@
                         </div>
                         <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
                     </div>
+                    <div id="word-set-filter" class="word-set-filter" aria-label="Study Set filter"></div>
                     <div id="word-list-grid" class="word-card-grid"></div>
                 </div>
 
@@ -1100,6 +1170,7 @@
         var testRemainingSeconds = 0;
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
+        var activeWordGroupId = '';
         var testStartedAt = null;
         var testLocked = false;
         var testSubmitting = false;
@@ -1594,6 +1665,10 @@
 
         function renderWords(words) {
             var root = document.getElementById('word-list-grid');
+            if (!words.length) {
+                root.innerHTML = '<div class="word-list-empty">No words match the current filter.</div>';
+                return;
+            }
             root.innerHTML = words.map(function(word) {
                 return '<article class="word-card">' +
                     '<div class="word-card-top">' +
@@ -1607,6 +1682,54 @@
                     '<p class="word-card-meaning">' + (word.meaning || '') + '</p>' +
                 '</article>';
             }).join('');
+        }
+
+        function activeWordGroup() {
+            if (!activeWordGroupId) return null;
+            return (unitData.quizGroups || []).find(function(group) {
+                return group.id === activeWordGroupId;
+            }) || null;
+        }
+
+        function wordMatchesSearch(word, query) {
+            if (!query) return true;
+            return [word.word, word.simpleDefinition, word.meaning, String(word.number)]
+                .join(' ')
+                .toLowerCase()
+                .indexOf(query) !== -1;
+        }
+
+        function filteredWordsForList() {
+            var search = document.getElementById('word-search');
+            var query = search ? search.value.trim().toLowerCase() : '';
+            var group = activeWordGroup();
+            var source = group ? getWordsForGroup(group) : (unitData.words || []);
+            return source.filter(function(word) {
+                return wordMatchesSearch(word, query);
+            });
+        }
+
+        function renderWordSetFilter(groups) {
+            var root = document.getElementById('word-set-filter');
+            if (!root) return;
+            if (!groups.length) {
+                root.innerHTML = '';
+                return;
+            }
+            root.innerHTML = '<button class="word-set-btn all' + (!activeWordGroupId ? ' active' : '') +
+                '" type="button" data-word-group="">All</button>' +
+                groups.map(function(group, index) {
+                    return '<button class="word-set-btn' + (group.id === activeWordGroupId ? ' active' : '') +
+                        '" type="button" data-word-group="' + escapeHtml(group.id) +
+                        '" title="' + escapeHtml(getWordRangeText(group)) + '">' +
+                        escapeHtml(index + 1) +
+                    '</button>';
+                }).join('');
+        }
+
+        function renderFilteredWords() {
+            renderWordSetFilter(unitData.quizGroups || []);
+            renderWords(filteredWordsForList());
         }
 
         function escapeHtml(value) {
@@ -2425,12 +2548,12 @@
                 });
             });
 
-            document.getElementById('word-search').addEventListener('input', function(e) {
-                var query = e.target.value.trim().toLowerCase();
-                var filtered = (unitData.words || []).filter(function(word) {
-                    return [word.word, word.simpleDefinition, word.meaning, String(word.number)].join(' ').toLowerCase().indexOf(query) !== -1;
-                });
-                renderWords(filtered);
+            document.getElementById('word-search').addEventListener('input', renderFilteredWords);
+            document.getElementById('word-set-filter').addEventListener('click', function(e) {
+                var button = e.target.closest('[data-word-group]');
+                if (!button) return;
+                activeWordGroupId = button.getAttribute('data-word-group') || '';
+                renderFilteredWords();
             });
 
             document.getElementById('self-study-groups').addEventListener('click', function(e) {
@@ -2469,7 +2592,8 @@
         function renderUnit(data) {
             unitData = data;
             renderHero(data);
-            renderWords(data.words || []);
+            activeWordGroupId = '';
+            renderFilteredWords();
             renderSelfStudyGroups(data.quizGroups || []);
             renderDictationRangeOptions(data.words || []);
             renderTestOptions(data.quizGroups || []);
