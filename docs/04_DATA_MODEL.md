@@ -190,6 +190,10 @@ Rules:
 - Failed attempts are still stored.
 - Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.
 - If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
+- Student historical review may return correct answers and explanations for
+  attempts that are already passed/mastered, or when the linked assignment has
+  `answer_revealed: true`. Attempts below the passing threshold still return
+  only submitted answers and correctness.
 - Argue `add`/`replace` may add upward-only adjusted fields to old attempts;
   original submitted answers and raw attempt history remain preserved.
 - The manual `backfillAcceptedAnswerRegrades` action may add the same adjusted
