@@ -208,7 +208,11 @@ async function getAttemptReview(student, event) {
     assignment_id: attempt.assignment_id,
     student_uid: student.auth_uid,
   }) : null;
-  const canShowFeedback = Boolean(assignment && assignment.answer_revealed === true);
+  const canShowFeedback = Boolean(
+    assignment && assignment.answer_revealed === true ||
+    effectivePassed(attempt) ||
+    attempt.mastered === true
+  );
   const disputeResult = await db.collection("answer_disputes").where({
     attempt_id: attemptId,
     student_uid: student.auth_uid,

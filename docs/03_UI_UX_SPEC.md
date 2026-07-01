@@ -397,6 +397,10 @@ Shared rules:
   side of the relevant question box instead of text buttons in the feedback
   row. Explain uses a blue-green `?`; Argue uses an orange `!`. When both are
   present, `?` sits to the left of `!`.
+- When a student opens a BBC lesson with a passed or mastered historical
+  attempt, the page should automatically load that historical review and show
+  the per-question Explain `?` buttons and wrong-question Argue `!` buttons.
+  Historical attempts below the passing threshold must still hide both actions.
 
 ### Vocabulary Words
 

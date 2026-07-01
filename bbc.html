@@ -462,7 +462,7 @@
             position: relative;
             margin-bottom: 35px;
             background: #fafbfc;
-            padding: 20px 56px 20px 20px;
+            padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
@@ -487,6 +487,7 @@
             font-size: 1.1em;
             margin-bottom: 15px;
             color: var(--primary);
+            overflow-wrap: anywhere;
         }
 
         .mc-options {
@@ -557,6 +558,12 @@
             padding: 12px 18px;
             cursor: pointer;
             width: 100%;
+        }
+
+        .mc-options label > span {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-wrap: anywhere;
         }
 
         .mc-options input[type="radio"] {
@@ -1918,7 +1925,7 @@
             body { padding: 10px 5px; }
             .container { padding: 25px 15px; }
             h1 { font-size: 1.5em; }
-            .mc-question { padding: 15px 50px 15px 12px; }
+            .mc-question { padding: 15px 12px; }
             .matching-section { padding: 15px 12px; }
             .matching-table th, .matching-table td { padding: 8px 10px; }
             .modal-box { padding: 24px 20px; }
@@ -2061,6 +2068,8 @@
     var historyBestPercentage = null;
     var historyLookupPromise = null;
     var historyLookupPending = false;
+    var historyFeedbackEligible = false;
+    var historyAutoReviewPromise = null;
     var focusQuestionId = '';
     var assignmentStatus = '';
     var answerRevealAvailable = false;
@@ -2618,12 +2627,12 @@
             applyBlankAttemptLocks();
             applyMcLocks();
             renderHistoryToolbar();
-            loadHistoryContextFromDashboard();
+            loadHistoryContextFromDashboard().then(renderEligibleHistoryReview);
             if (focusQuestionId) {
                 var historyPromise = historyAttemptId
-                    ? showHistoryAnswers()
+                    ? renderEligibleHistoryReview()
                     : loadHistoryContextFromDashboard().then(function() {
-                        return historyAttemptId ? showHistoryAnswers() : null;
+                        return historyAttemptId ? renderEligibleHistoryReview() : null;
                     });
                 historyPromise.then(function() {
                     window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 120);
@@ -2714,6 +2723,7 @@
         if (isNaN(historyBestPercentage)) historyBestPercentage = null;
         focusQuestionId = params.focus || '';
         assignmentStatus = params.status || '';
+        historyFeedbackEligible = assignmentStatus === 'passed' || assignmentStatus === 'mastered';
         teacherMode = params.teacher === '1';
         studentId = params.user || getStoredIdentity();
         if (params.user && params.user !== 'VISITOR') {
@@ -3243,10 +3253,28 @@
         }).catch(function() {});
     }
 
+    function attemptFeedbackEligible(attempt) {
+        return Boolean(attempt && (attempt.mastered === true || attempt.passed === true));
+    }
+
+    function renderEligibleHistoryReview() {
+        if (!historyAttemptId || !historyFeedbackEligible || !window.MrCatCloud) return Promise.resolve(null);
+        if (historyAutoReviewPromise) return historyAutoReviewPromise;
+        if (assignmentId) recordAnswerReveal();
+        historyAutoReviewPromise = showHistoryAnswers().then(function(result) {
+            historyAutoReviewPromise = null;
+            return result;
+        });
+        return historyAutoReviewPromise;
+    }
+
     function setHistoryContextFromAttempt(attempt) {
         if (!attempt || !attempt.attempt_id) return false;
         if (!historyAttemptId) historyAttemptId = attempt.attempt_id;
         if (!assignmentId && attempt.assignment_id) assignmentId = attempt.assignment_id;
+        historyFeedbackEligible = historyFeedbackEligible || attemptFeedbackEligible(attempt);
+        if (attempt.mastered === true) assignmentStatus = 'mastered';
+        else if (attempt.passed === true && assignmentStatus !== 'mastered') assignmentStatus = 'passed';
         if (attempt.percentage != null) {
             var percentage = Number(attempt.percentage);
             if (!isNaN(percentage)) historyBestPercentage = percentage;

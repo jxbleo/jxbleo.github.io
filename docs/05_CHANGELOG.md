@@ -19,6 +19,12 @@
 - Added a sticky Study Set filter row to Vocabulary Words so students can jump
   between `All` words and numbered study-set word groups while keeping search
   scoped to the selected group.
+- Updated BBC history review so passed/mastered historical attempts
+  automatically show per-question Explain/Argue icon entry points on entry,
+  while below-passing attempts keep those actions hidden.
+- Fixed BBC multiple-choice question spacing so the stem and choices use the
+  available width on iPad/tablet layouts instead of reserving action-button
+  space before the buttons exist.
 
 ## 2026-06-30
 
