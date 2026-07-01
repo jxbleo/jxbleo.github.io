@@ -12,6 +12,10 @@
   `This week`, `Last week`, and `All time` based on assignment time, and
   unclassed student options show the student name without an `Individual`
   prefix.
+- Added a compact paper icon button to each teacher matrix/notification attempt
+  card so teachers can open that attempt's full-work review, including all
+  recorded questions, submitted answers, correctness, correct answers, and
+  attempt-history context.
 
 ## 2026-06-30
 
