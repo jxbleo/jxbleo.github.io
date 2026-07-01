@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260521",
+  "title": "Making Cities Feel Quieter",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260521-making-cities-feel-quieter.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Around _____ people worldwide live in cities and are exposed to urban sound environments.",
+      "section": "Urban noise and its effects"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Examples of city noise include rattling _____, car horns and planes overhead.",
+      "section": "Urban noise and its effects"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "By 2050, about 2.5 billion people may experience _____.",
+      "section": "Urban noise and its effects"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Loud noise exposure has also been connected with _____.",
+      "section": "Urban noise and its effects"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "In Mumbai, daytime noise often reaches _____.",
+      "section": "A noisy city example"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "After years abroad, Chhavi says the thing she misses is _____.",
+      "section": "A noisy city example"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Living overseas made her used to _____ of noise.",
+      "section": "A noisy city example"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Soundscaping adds selected sounds to _____.",
+      "section": "Soundscaping as a solution"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The Montreal project used holiday sounds such as _____.",
+      "section": "Soundscaping as a solution"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The key idea is that a park can feel less noisy by adding _____.",
+      "section": "Soundscaping as a solution"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does the opening sound experiment show?",
+      "options": [
+        "People can ignore most sounds in cities.",
+        "Relaxing sounds are always louder than stressful ones.",
+        "City residents prefer traffic noise to natural sounds.",
+        "The surrounding sound environment can strongly affect us."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which set of urban noises is mentioned?",
+      "options": [
+        "Trains, car horns and aircraft.",
+        "Factories, dogs and construction tools.",
+        "Music, school bells and crowds.",
+        "Rain, wind and emergency sirens."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What health-related concern is linked to noise exposure?",
+      "options": [
+        "It has been shown to improve concentration.",
+        "It prevents all forms of hearing damage.",
+        "It is associated with hearing loss, stress and anxiety.",
+        "It only affects people who travel by plane."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How does daytime noise in Mumbai compare with WHO recommendations?",
+      "options": [
+        "It is slightly below the recommended level.",
+        "It is more than 20 decibels above the recommended level.",
+        "It matches the recommended level exactly.",
+        "It is too low to be measured reliably."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does Chhavi’s experience abroad change her reaction to India’s noise?",
+      "options": [
+        "It makes her enjoy louder celebrations more.",
+        "It leads her to forget what Indian cities sound like.",
+        "It convinces her that noise is never a serious issue.",
+        "It makes the noise harder for her to cope with after returning."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is the basic idea of soundscaping?",
+      "options": [
+        "Removing every sound from a public area.",
+        "Adding chosen sounds to make public places feel calmer.",
+        "Increasing traffic noise so people stop noticing it.",
+        "Replacing parks with indoor listening rooms."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why are the Magdalen Islands mentioned?",
+      "options": [
+        "They provided sounds that inspired the Montreal park project.",
+        "They are noisier than Mumbai during the day.",
+        "They are where the WHO measures city noise.",
+        "They proved that sand can remove traffic completely."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How was the sound installation physically set up in the park?",
+      "options": [
+        "With headphones handed to every visitor.",
+        "With screens placed beside the roads.",
+        "With speakers planted in flower beds.",
+        "With musicians performing near the sand."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why is Charles’s idea described as counterintuitive?",
+      "options": [
+        "It tries to make a park seem quieter by adding sound.",
+        "It depends on making every sound much louder.",
+        "It works by banning people from public parks.",
+        "It assumes city noise has no effect on people."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does the mention of Tokyo and Barcelona imply?",
+      "options": [
+        "Soundscaping only works in Canadian parks.",
+        "Similar approaches are being used beyond the Montreal example.",
+        "Mumbai has already become quieter than European cities.",
+        "City dwellers no longer need quiet public spaces."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260430",
+  "title": "Should We Eat Ultra-Processed Food?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260430-should-we-eat-ultra-processed-food.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Ultra-processed food is described as food containing _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Examples include additives and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "These foods have been connected with _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "One sign is that the food may contain five or more _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Ingredient labels may include substances such as _____, preservatives, additives, dyes and sweeteners.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A major reason for the popularity of ultra-processed food is _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A _____ can be put in the microwave and heated very quickly.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "By contrast, cooking a _____ from the beginning may take much longer.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Chocolate, biscuits or cake may be called a _____ when someone enjoys them but feels they should not.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The suggested approach is not panic, but eating everything in _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How is ultra-processed food initially characterised?",
+      "options": [
+        "It contains artificial ingredients such as additives or sweeteners.",
+        "It is always cooked in restaurants before being sold.",
+        "It contains only natural ingredients prepared at home.",
+        "It is mainly food that has lost its original flavour."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What health concern is raised about ultra-processed foods?",
+      "options": [
+        "They make people dislike fresh food immediately.",
+        "They are dangerous only when eaten at breakfast.",
+        "They have been associated with poor health and diseases such as obesity and diabetes.",
+        "They mainly cause problems because they are difficult to digest."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which feature helps identify an ultra-processed food according to the reporter?",
+      "options": [
+        "It is served cold and needs no preparation.",
+        "It is made with exactly three ingredients.",
+        "It is sold only in large supermarkets.",
+        "It includes several ingredients not normally found in an average kitchen."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why do the speakers say they now try to cook more themselves?",
+      "options": [
+        "They want to copy restaurant-style ready meals.",
+        "They want more control over what goes into their food.",
+        "They believe snacks are always more expensive than meals.",
+        "They think chocolate should be eaten only during programmes."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why are ready meals used to explain the popularity of ultra-processed food?",
+      "options": [
+        "They show how quickly convenient food can be prepared.",
+        "They prove processed food is usually healthier than fresh food.",
+        "They show that microwave meals require advanced cooking skills.",
+        "They explain why people no longer enjoy hot food."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does Annabel’s “guilty pleasure” example show?",
+      "options": [
+        "She believes sweet foods should be banned completely.",
+        "She eats chocolate only because it is cheap and convenient.",
+        "She enjoys some processed treats despite feeling she probably should not.",
+        "She thinks biscuits and cake are healthier than ready meals."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How are ready meals contrasted with cooking from scratch?",
+      "options": [
+        "Ready meals require more preparation but taste fresher.",
+        "Cooking from scratch is described as faster but less reliable.",
+        "Both methods are said to take the same amount of time.",
+        "Ready meals are quicker, while cooking from scratch takes longer."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why is ultra-processed food described as a tricky topic?",
+      "options": [
+        "Experts cannot identify which foods are processed.",
+        "It involves a trade-off between health concerns and practical appeal.",
+        "People agree that processed food tastes bad but is healthy.",
+        "It is difficult because processed food is rare in daily life."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the purpose of Hannah’s question about crisps?",
+      "options": [
+        "To ask whether occasional enjoyment is acceptable or complete avoidance is needed.",
+        "To prove that crisps are the healthiest ultra-processed snack.",
+        "To argue that people should eat crisps every day.",
+        "To compare crisps with fizzy drinks historically."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What final advice is given about eating ultra-processed foods?",
+      "options": [
+        "Avoid every processed product immediately.",
+        "Eat processed snacks whenever they are cheap.",
+        "Stay calm and avoid having too much of anything.",
+        "Replace all home-cooked meals with ready meals."
+      ]
+    }
+  ],
+  "matching": []
+}

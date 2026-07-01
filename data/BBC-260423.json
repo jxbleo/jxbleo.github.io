@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260423",
+  "title": "Why Are We All So Stressed?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260423-why-are-we-all-so-stressed.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Overwhelm is described as an _____ linked to difficulty dealing with life.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "A person may feel unable to handle their _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "They might feel _____, as if too much is happening at once.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "They may also feel they _____ with the pressure.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "If the feeling lasts, it can become a form of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Over time, this may finally lead to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "In exams, feeling stressed may not always be harmful; _____ can sharpen performance.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "According to the advice, nerves may help students _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A realistic first step is accepting that a _____ will never completely disappear.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Having new tasks every day can simply be a sign of a _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How is “overwhelm” defined in the extract?",
+      "options": [
+        "A permanent illness caused by too much studying.",
+        "A state of struggling with the situation one is facing.",
+        "A short period of happiness after finishing tasks.",
+        "A habit of avoiding all difficult responsibilities."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What risk is mentioned if overwhelm continues for a long time?",
+      "options": [
+        "It may make people lose interest in all work immediately.",
+        "It may turn into a useful source of motivation.",
+        "It may stop people from feeling temporary pressure.",
+        "It may develop into chronic stress and eventually burnout."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What surprising point is made about stress during an exam?",
+      "options": [
+        "It may help some students perform better by focusing their mind.",
+        "It should be removed completely before students begin writing.",
+        "It usually makes students forget what they have learned.",
+        "It is useful only when the exam is not important."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How do the speakers present “nerves” after the exam-stress advice?",
+      "options": [
+        "As a sign that students have failed to prepare.",
+        "As a problem that only affects actors and athletes.",
+        "As worry that can sometimes support clearer thinking.",
+        "As a feeling that should be ignored during performance."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the exchange suggest about advice for feeling overwhelmed?",
+      "options": [
+        "There is one method that works best for everyone.",
+        "Different people may need different ways to handle it.",
+        "General stress can only be solved by finishing work faster.",
+        "The best solution is to stop making plans completely."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What is Claudia’s first piece of general advice?",
+      "options": [
+        "Complete every task before starting another one.",
+        "Keep the to-do list short by avoiding difficult tasks.",
+        "Treat tomorrow’s tasks as more important than today’s.",
+        "Accept that the to-do list will continue to exist."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why does Claudia say her advice “might sound defeatist”?",
+      "options": [
+        "She realises accepting an endless list may sound negative.",
+        "She wants people to give up all their responsibilities.",
+        "She believes stress has no possible solution.",
+        "She is warning that busy people cannot be happy."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is implied by the idea that tomorrow will bring more tasks?",
+      "options": [
+        "Most tasks are unnecessary and should be deleted.",
+        "People should finish tomorrow’s tasks today.",
+        "A continuing to-do list is a normal part of a busy life.",
+        "Stress mainly comes from poor time-management skills."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why does Neil suggest people should not stress too much about their to-do list?",
+      "options": [
+        "Because written lists are less useful than memory.",
+        "Because new tasks will keep appearing anyway.",
+        "Because most tasks are easier than they look.",
+        "Because stress disappears when people work harder."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "Which broader message best matches the later advice on managing stress?",
+      "options": [
+        "Stress can be avoided only by lowering all ambitions.",
+        "The best method is to use the same routine every day.",
+        "People should judge themselves by perfect productivity.",
+        "Managing stress can involve acceptance rather than total control."
+      ]
+    }
+  ],
+  "matching": []
+}

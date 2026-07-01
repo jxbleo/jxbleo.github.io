@@ -498,6 +498,186 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "BBC-260326",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Weight Loss Drugs",
+      "href": "bbc.html?set=BBC-260326",
+      "displayValue": "2026-03-26",
+      "sortValue": "2026-03-26",
+      "topic": "Health / Medicine",
+      "tags": [
+        "Health",
+        "Medicine"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260402",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Are Saunas Good For You?",
+      "href": "bbc.html?set=BBC-260402",
+      "displayValue": "2026-04-02",
+      "sortValue": "2026-04-02",
+      "topic": "Health / Lifestyle",
+      "tags": [
+        "Health",
+        "Lifestyle"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260409",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Future Of Food",
+      "href": "bbc.html?set=BBC-260409",
+      "displayValue": "2026-04-09",
+      "sortValue": "2026-04-09",
+      "topic": "Food / Environment",
+      "tags": [
+        "Food",
+        "Environment"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260416",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Love The Foods You Hate",
+      "href": "bbc.html?set=BBC-260416",
+      "displayValue": "2026-04-16",
+      "sortValue": "2026-04-16",
+      "topic": "Food / Psychology",
+      "tags": [
+        "Food",
+        "Psychology"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260423",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Why Are We All So Stressed?",
+      "href": "bbc.html?set=BBC-260423",
+      "displayValue": "2026-04-23",
+      "sortValue": "2026-04-23",
+      "topic": "Health / Stress",
+      "tags": [
+        "Health",
+        "Stress"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260430",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Should We Eat Ultra-Processed Food?",
+      "href": "bbc.html?set=BBC-260430",
+      "displayValue": "2026-04-30",
+      "sortValue": "2026-04-30",
+      "topic": "Food / Health",
+      "tags": [
+        "Food",
+        "Health"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260507",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Searching For Life On Another Planet",
+      "href": "bbc.html?set=BBC-260507",
+      "displayValue": "2026-05-07",
+      "sortValue": "2026-05-07",
+      "topic": "Science / Space",
+      "tags": [
+        "Science",
+        "Space"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260514",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Reading Shapes Your Brain",
+      "href": "bbc.html?set=BBC-260514",
+      "displayValue": "2026-05-14",
+      "sortValue": "2026-05-14",
+      "topic": "Reading / Brain",
+      "tags": [
+        "Reading",
+        "Brain"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260521",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Making Cities Feel Quieter",
+      "href": "bbc.html?set=BBC-260521",
+      "displayValue": "2026-05-21",
+      "sortValue": "2026-05-21",
+      "topic": "Cities / Sound",
+      "tags": [
+        "Cities",
+        "Sound"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260528",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Living With Debt",
+      "href": "bbc.html?set=BBC-260528",
+      "displayValue": "2026-05-28",
+      "sortValue": "2026-05-28",
+      "topic": "Money / Society",
+      "tags": [
+        "Money",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260604",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Power Of Poetry",
+      "href": "bbc.html?set=BBC-260604",
+      "displayValue": "2026-06-04",
+      "sortValue": "2026-06-04",
+      "topic": "Culture / Poetry",
+      "tags": [
+        "Culture",
+        "Poetry"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-260611",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How Advertisers Make Us Spend Money",
+      "href": "bbc.html?set=BBC-260611",
+      "displayValue": "2026-06-11",
+      "sortValue": "2026-06-11",
+      "topic": "Advertising / Money",
+      "tags": [
+        "Advertising",
+        "Money"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "C7-T1-S1",
       "sectionId": "ielts-listening",
       "title": "C7-T1-S1 · Transport from Airport to Milton",

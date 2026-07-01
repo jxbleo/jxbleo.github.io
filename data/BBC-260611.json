@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260611",
+  "title": "How Advertisers Make Us Spend Money",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260611-how-advertisers-make-us-spend-money.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Promotion by a famous person is called a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "People often follow those they see as _____ when they are unsure.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "This quick decision aid is described as a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "This pattern of relying on trusted figures begins from an _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Parents and teachers help people learn and _____ of the world.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Ordering from a person may make customers _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Touchscreens give customers _____ to consider products and linked items.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Suggestions such as adding extra items are part of an _____ strategy.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "This can raise typical basket spend by _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The TV series relied on people learning by _____ others.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is meant by a celebrity endorsement in this context?",
+      "options": [
+        "A customer reviewing a product after buying it.",
+        "A famous or liked person promoting a product.",
+        "A shop reducing the price of a product.",
+        "A scientist testing whether a product works."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why can endorsements influence people when they are unsure?",
+      "options": [
+        "They remove all risk from the purchase.",
+        "They force people to copy their parents.",
+        "They provide detailed technical comparisons.",
+        "They offer a quick cue from someone trusted."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the speaker mean by a 'mental shortcut'?",
+      "options": [
+        "A way to make quick decisions under uncertainty.",
+        "A method for memorising advertisements.",
+        "A habit of buying the cheapest product.",
+        "A plan to avoid buying unnecessary items."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why are parents, teachers, dentists and athletes mentioned?",
+      "options": [
+        "To show that only experts can sell products.",
+        "To argue that childhood habits disappear in adulthood.",
+        "To illustrate how trusted figures can guide behaviour.",
+        "To compare education with professional sport."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why may customers refuse extra food when ordering from a human server?",
+      "options": [
+        "They cannot see the product clearly.",
+        "They may worry about being judged.",
+        "They have no time to make a choice.",
+        "They are not allowed to change orders."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What advantage do touchscreen ordering machines give customers?",
+      "options": [
+        "They prevent companies from upselling.",
+        "They make customers speak to staff more often.",
+        "They hide linked products from the customer.",
+        "They allow more time to view products and related items."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is the likely commercial effect of touchscreens in fast-food restaurants?",
+      "options": [
+        "Customers tend to spend more per transaction.",
+        "Customers usually buy fewer linked products.",
+        "Restaurants stop suggesting extra items.",
+        "Basket spend becomes impossible to measure."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why did the World Food Programme choose a TV series?",
+      "options": [
+        "To avoid showing any human behaviour.",
+        "To replace food assistance with entertainment.",
+        "To use stories creatively so viewers could recognise themselves.",
+        "To provide technical training for restaurant staff."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "According to Takwa, how do people learn and change in this project?",
+      "options": [
+        "By observing and copying behaviours and reactions.",
+        "By receiving direct financial rewards.",
+        "By reading scientific papers in detail.",
+        "By being ordered to eat together."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does the TV programme example show about behavioural science?",
+      "options": [
+        "It is only useful for selling fast food.",
+        "It works only when people are unaware of it.",
+        "It depends entirely on celebrity advertising.",
+        "It can encourage social behaviour by providing models to copy."
+      ]
+    }
+  ],
+  "matching": []
+}

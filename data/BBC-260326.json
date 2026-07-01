@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260326",
+  "title": "Weight Loss Drugs",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260326-weight-loss-drugs.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "In Britain, about _____ of adults are estimated to weigh more than the healthy range.",
+      "section": "Weight management and new medication"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Drugs such as Ozempic and Mounjaro are adapted forms of _____ found in the body.",
+      "section": "Weight management and new medication"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "These medicines copy the body’s signal that makes people feel _____ for longer.",
+      "section": "Weight management and new medication"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "After taking Mounjaro, one listener lost _____ within half a year.",
+      "section": "Effects reported by one user"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "She said she no longer felt hungry, so the repeated mental pressure around eating, known as _____, stopped.",
+      "section": "Effects reported by one user"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A long-term inner argument about food harmed her _____.",
+      "section": "Effects reported by one user"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "These medicines were first developed to treat _____, not to reduce body weight.",
+      "section": "Original purpose and later use"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "This condition is linked to excessively high _____.",
+      "section": "Original purpose and later use"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Weight loss was first noticed as a _____ of the diabetes medication.",
+      "section": "Original purpose and later use"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "UK public health advice suggests the drugs should not replace a _____.",
+      "section": "Original purpose and later use"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What problem is introduced before the discussion of weight loss drugs?",
+      "options": [
+        "Exercise routines are becoming less popular among adults.",
+        "Healthy habits do not help everyone maintain a healthy weight.",
+        "Most British adults refuse to change their eating habits.",
+        "New medicines have made diet and exercise unnecessary."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How are the drugs said to support weight loss?",
+      "options": [
+        "They increase the amount of exercise people can do.",
+        "They remove sugar from food before it is digested.",
+        "They permanently change the body’s natural hormones.",
+        "They extend the feeling of fullness so people eat less."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What change is reported in the listener’s experience with Mounjaro?",
+      "options": [
+        "She lost a substantial amount of weight and felt more positive about it.",
+        "She stopped taking the medicine after six months because of hunger.",
+        "She became unsure whether the drug had any real effect.",
+        "She used the drug mainly to improve her running performance."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "In this context, what does “food noise” mainly refer to?",
+      "options": [
+        "The physical sound made while preparing meals.",
+        "A medical warning that food has too much sugar.",
+        "Unwanted thoughts and judgement connected with eating.",
+        "A strict diet plan that tells people what not to eat."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the “angel and devil” image suggest about her relationship with food?",
+      "options": [
+        "She enjoyed choosing between two equally healthy diets.",
+        "She experienced a repeated internal struggle over eating.",
+        "She believed other people were controlling her meals.",
+        "She wanted to eat only foods that were considered forbidden."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What long-term effect did this inner conflict have?",
+      "options": [
+        "It made her more disciplined about daily exercise.",
+        "It encouraged her to study nutrition professionally.",
+        "It helped her separate hunger from temptation.",
+        "It weakened her confidence in herself over many years."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What contrast is made about the original purpose of these medicines?",
+      "options": [
+        "They were first intended for diabetes, not weight loss.",
+        "They were first sold for obesity, then withdrawn for diabetes.",
+        "They were created for mental health before being used for appetite.",
+        "They were designed as lifestyle products rather than medical treatments."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What did doctors notice when the diabetes medicine was used?",
+      "options": [
+        "Patients needed a higher dose of insulin.",
+        "Patients stopped experiencing all side effects.",
+        "Patients were also losing weight.",
+        "Patients no longer needed any medical advice."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "In the explanation, why is the side effect described as unusual in this case?",
+      "options": [
+        "It was impossible for doctors to observe it at first.",
+        "It was normally undesirable, but here it helped patients.",
+        "It had no connection with the medicine’s original use.",
+        "It affected only people who did not have diabetes."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What caution is given near the end of the discussion?",
+      "options": [
+        "Medication should be combined with broader healthy-living support.",
+        "People should avoid using these drugs under all circumstances.",
+        "The drugs have been proven to solve obesity by themselves.",
+        "Public health officials believe lifestyle advice is no longer useful."
+      ]
+    }
+  ],
+  "matching": []
+}
