@@ -402,6 +402,8 @@ Shared rules:
 - When a student opens a BBC lesson with a passed or mastered historical
   attempt, the page should automatically load that historical review and show
   the per-question Explain `?` buttons and wrong-question Argue `!` buttons.
+  Loading this historical review must not call `revealAnswers` or lock future
+  mastery by itself.
   Historical attempts below the passing threshold must still hide both actions.
 
 ### Vocabulary Words

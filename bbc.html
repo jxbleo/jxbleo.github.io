@@ -3260,7 +3260,6 @@
     function renderEligibleHistoryReview() {
         if (!historyAttemptId || !historyFeedbackEligible || !window.MrCatCloud) return Promise.resolve(null);
         if (historyAutoReviewPromise) return historyAutoReviewPromise;
-        if (assignmentId) recordAnswerReveal();
         historyAutoReviewPromise = showHistoryAnswers().then(function(result) {
             historyAutoReviewPromise = null;
             return result;

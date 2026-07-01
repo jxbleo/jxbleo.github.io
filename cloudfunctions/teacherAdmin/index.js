@@ -1390,10 +1390,18 @@ async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCoun
     if (assignment) {
       if (normalizedAssignmentStatus(assignment.status) === "cancelled") return;
       const set = await getOne("sets", { set_id: attempt.set_id });
+      const effectivePassingPercentage = Number(assignment.passing_percentage != null
+        ? assignment.passing_percentage
+        : passingPercentageForSet(set));
       const effectiveMasteryPercentage = Number(assignment.mastery_percentage != null
         ? assignment.mastery_percentage
         : masteryPercentageForSet(set));
-      const attemptStatus = percentage >= effectiveMasteryPercentage ? "mastered" : (passed ? "passed" : "to_do");
+      const attemptStatus = statusForPercentage(
+        percentage,
+        effectivePassingPercentage,
+        effectiveMasteryPercentage,
+        assignment
+      );
       const adjustedStatus = monotonicAssignmentStatus(assignment.status, attemptStatus);
       const currentBest = Number(assignment.best_percentage || 0);
       const improvesBest = percentage >= currentBest;
@@ -1411,7 +1419,7 @@ async function applyAdjustedAttemptEffects(attempt, adjustedAttempt, correctCoun
         assignmentUpdate.latest_percentage = percentage;
         assignmentUpdate.latest_raw_percentage = percentage;
       }
-      if (passed) {
+      if (attemptStatus === "passed" || attemptStatus === "mastered") {
         assignmentUpdate.status = adjustedStatus;
         if (!assignment.completed_at) assignmentUpdate.completed_at = now;
         if (adjustedStatus === "mastered" && !assignment.mastered_at) assignmentUpdate.mastered_at = now;
