@@ -36,9 +36,7 @@
         expandedAssignProgressGroups: {},
         matrixClassFilter: '',
         matrixColumnFilter: '',
-        matrixDateFilter: 'month',
-        matrixDateFrom: '',
-        matrixDateTo: '',
+        matrixDateFilter: 'all',
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
         selectedProgressDetailKey: '',
@@ -1595,8 +1593,12 @@
         return assignment.latest_submitted_at || assignment.completed_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
     }
 
+    function assignmentAssignedDate(assignment) {
+        return assignment.assigned_at || assignment.created_at || assignment.assignment_created_at || assignment.updated_at || null;
+    }
+
     function matrixDateValue(item) {
-        return assignmentSortDate(item);
+        return assignmentAssignedDate(item);
     }
 
     function startOfLocalDay(date) {
@@ -1611,15 +1613,9 @@
         return copy;
     }
 
-    function parseDateInput(value, endOfDay) {
-        if (!value) return null;
-        var date = new Date(value + 'T00:00:00');
-        if (isNaN(date.getTime())) return null;
-        return endOfDay ? endOfLocalDay(date) : startOfLocalDay(date);
-    }
-
     function matrixDateRange() {
-        var mode = state.matrixDateFilter || 'month';
+        var mode = state.matrixDateFilter || 'all';
+        if (mode === 'all') return { start: null, end: null };
         var now = new Date();
         if (mode === 'week') {
             var weekStart = startOfLocalDay(now);
@@ -1628,15 +1624,16 @@
             weekEnd.setDate(weekStart.getDate() + 6);
             return { start: weekStart, end: weekEnd };
         }
-        if (mode === 'custom') {
-            return {
-                start: parseDateInput(state.matrixDateFrom, false),
-                end: parseDateInput(state.matrixDateTo, true)
-            };
+        if (mode === 'last_week') {
+            var thisWeekStart = startOfLocalDay(now);
+            thisWeekStart.setDate(thisWeekStart.getDate() - ((thisWeekStart.getDay() + 6) % 7));
+            var lastWeekStart = startOfLocalDay(thisWeekStart);
+            lastWeekStart.setDate(thisWeekStart.getDate() - 7);
+            var lastWeekEnd = endOfLocalDay(lastWeekStart);
+            lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+            return { start: lastWeekStart, end: lastWeekEnd };
         }
-        var monthStart = startOfLocalDay(new Date(now.getFullYear(), now.getMonth(), 1));
-        var monthEnd = endOfLocalDay(new Date(now.getFullYear(), now.getMonth() + 1, 0));
-        return { start: monthStart, end: monthEnd };
+        return { start: null, end: null };
     }
 
     function dateMatchesMatrixRange(value, range) {
@@ -1651,10 +1648,7 @@
     function matrixItemMatchesDate(item) {
         var range = matrixDateRange();
         if (!range.start && !range.end) return true;
-        if (dateMatchesMatrixRange(matrixDateValue(item), range)) return true;
-        return progressAttemptsForAssignment(item).some(function(attempt) {
-            return dateMatchesMatrixRange(attempt.submitted_at, range);
-        });
+        return dateMatchesMatrixRange(matrixDateValue(item), range);
     }
 
     function visibleProgressAssignments(assignments) {
@@ -2384,18 +2378,17 @@
     }
 
     function renderMatrixClassSelect(classOptions) {
-        if (!classOptions.classes.length && !classOptions.individuals.length) return '';
         var classHtml = classOptions.classes.map(function(className) {
             return '<option value="' + escapeHtml(className) + '"' + (className === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(className) + '</option>';
         }).join('');
         var individualHtml = classOptions.individuals.map(function(student) {
-            return '<option value="' + escapeHtml(student.value) + '"' + (student.value === state.matrixClassFilter ? ' selected' : '') + '>Individual - ' + escapeHtml(student.label) + '</option>';
+            return '<option value="' + escapeHtml(student.value) + '"' + (student.value === state.matrixClassFilter ? ' selected' : '') + '>' + escapeHtml(student.label) + '</option>';
         }).join('');
-        return '<label class="matrix-class-filter"><span>Class</span><select id="matrix-class-filter">' +
+        return '<select class="matrix-class-filter" id="matrix-class-filter" aria-label="Class">' +
             '<option value="">All</option>' +
             classHtml +
             individualHtml +
-        '</select></label>';
+        '</select>';
     }
 
     function matrixClassFilterExists(classOptions, value) {
@@ -2414,23 +2407,18 @@
     }
 
     function renderMatrixDateSelect() {
-        var value = state.matrixDateFilter || 'month';
+        var value = state.matrixDateFilter || 'all';
         var options = [
+            { value: 'all', label: 'All time' },
             { value: 'week', label: 'This week' },
-            { value: 'month', label: 'This month' },
-            { value: 'custom', label: 'Custom' }
+            { value: 'last_week', label: 'Last week' }
         ];
-        var html = '<label class="matrix-date-filter"><span>Date</span><select id="matrix-date-filter">' +
+        return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Date">' +
             options.map(function(option) {
                 return '<option value="' + escapeHtml(option.value) + '"' + (option.value === value ? ' selected' : '') + '>' +
                     escapeHtml(option.label) + '</option>';
             }).join('') +
-        '</select></label>';
-        if (value === 'custom') {
-            html += '<label class="matrix-date-bound"><span>From</span><input id="matrix-date-from" type="date" value="' + escapeHtml(state.matrixDateFrom || '') + '"></label>' +
-                '<label class="matrix-date-bound"><span>To</span><input id="matrix-date-to" type="date" value="' + escapeHtml(state.matrixDateTo || '') + '"></label>';
-        }
-        return html;
+        '</select>';
     }
 
     function matrixColumnSource(item) {
@@ -2492,13 +2480,13 @@
     }
 
     function renderMatrixColumnSelect(columnOptions) {
-        return '<label class="matrix-column-filter"><span>Column</span><select id="matrix-column-filter">' +
-            '<option value="">All</option>' +
+        return '<select class="matrix-column-filter" id="matrix-column-filter" aria-label="Column">' +
+            '<option value="">All type</option>' +
             columnOptions.map(function(column) {
                 return '<option value="' + escapeHtml(column.key) + '"' + (column.key === state.matrixColumnFilter ? ' selected' : '') + '>' +
                     escapeHtml(column.label) + '</option>';
             }).join('') +
-        '</select></label>';
+        '</select>';
     }
 
     function matrixAttemptsForItem(item) {
@@ -2978,24 +2966,6 @@
         if (matrixDateFilter) {
             matrixDateFilter.addEventListener('change', function() {
                 state.matrixDateFilter = matrixDateFilter.value;
-                state.selectedMatrixCell = '';
-                state.selectedMatrixStudentKey = '';
-                renderAssignmentOverview();
-            });
-        }
-        var matrixDateFrom = document.getElementById('matrix-date-from');
-        if (matrixDateFrom) {
-            matrixDateFrom.addEventListener('change', function() {
-                state.matrixDateFrom = matrixDateFrom.value;
-                state.selectedMatrixCell = '';
-                state.selectedMatrixStudentKey = '';
-                renderAssignmentOverview();
-            });
-        }
-        var matrixDateTo = document.getElementById('matrix-date-to');
-        if (matrixDateTo) {
-            matrixDateTo.addEventListener('change', function() {
-                state.matrixDateTo = matrixDateTo.value;
                 state.selectedMatrixCell = '';
                 state.selectedMatrixStudentKey = '';
                 renderAssignmentOverview();
