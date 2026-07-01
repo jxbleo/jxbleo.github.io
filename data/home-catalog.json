@@ -1813,6 +1813,18 @@
       "visible": true
     },
     {
+      "id": "NGSL-D",
+      "sectionId": "vocabulary",
+      "title": "NGSL-D",
+      "href": "vocabulary.html?set=NGSL-D",
+      "displayValue": "NGSL-D",
+      "sortValue": 1004,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "NGSL-E",
       "sectionId": "vocabulary",
       "title": "NGSL-E",
