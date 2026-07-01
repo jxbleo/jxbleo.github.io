@@ -3020,6 +3020,34 @@
         });
     }
 
+    function captureViewport() {
+        return {
+            x: window.pageXOffset || document.documentElement.scrollLeft || 0,
+            y: window.pageYOffset || document.documentElement.scrollTop || 0
+        };
+    }
+
+    function restoreViewport(snapshot) {
+        if (!snapshot) return;
+        var restore = function() {
+            window.scrollTo(snapshot.x, snapshot.y);
+        };
+        restore();
+        window.setTimeout(restore, 0);
+        window.setTimeout(restore, 80);
+        window.requestAnimationFrame(function() {
+            restore();
+            window.requestAnimationFrame(restore);
+        });
+    }
+
+    function preserveViewport(action) {
+        var snapshot = captureViewport();
+        var result = action();
+        restoreViewport(snapshot);
+        return result;
+    }
+
     function saveDraftAnswers() {
         if (!setId || !studentId || studentId === 'VISITOR') return;
         try { localStorage.setItem(answerStorageKey(), JSON.stringify(collectAnswers())); } catch (e) {}
@@ -3241,14 +3269,16 @@
         }).then(function(results) {
             var result = results[0];
             if (result && result.success && result.attempt && result.attempt.answers) {
-                clearAllAnswers();
-                applyAnswers(result.attempt.answers);
-                enableAnswerEditing();
-                rememberMcLocksFromAnswers(result.attempt.answers);
-                applyMcLocks();
-                saveDraftAnswers();
-                currentArgueAttemptId = historyAttemptId;
-                if (results[1] && results[1].review) markHistoryReview(results[1].review);
+                preserveViewport(function() {
+                    clearAllAnswers();
+                    applyAnswers(result.attempt.answers);
+                    enableAnswerEditing();
+                    rememberMcLocksFromAnswers(result.attempt.answers);
+                    applyMcLocks();
+                    saveDraftAnswers();
+                    currentArgueAttemptId = historyAttemptId;
+                    if (results[1] && results[1].review) markHistoryReview(results[1].review);
+                });
             }
         }).catch(function() {});
     }
@@ -3450,8 +3480,10 @@
         explainBtn.setAttribute('data-explain-question', questionId);
         explainBtn.addEventListener('click', function() {
             if (requireRevealConfirm && !detailEl.classList.contains('show') && !confirmAnswerReveal()) return;
-            detailEl.classList.toggle('show');
-            explainBtn.classList.toggle('active', detailEl.classList.contains('show'));
+            preserveViewport(function() {
+                detailEl.classList.toggle('show');
+                explainBtn.classList.toggle('active', detailEl.classList.contains('show'));
+            });
         });
         containerEl.appendChild(explainBtn);
         return explainBtn;
@@ -3559,14 +3591,16 @@
 
     function toggleTeacherAnswers(button) {
         if (teacherAnswersVisible) {
-            clearTeacherAnswerDisplay();
+            preserveViewport(clearTeacherAnswerDisplay);
             teacherAnswersVisible = false;
             setTeacherButtonState(button, false);
             return;
         }
 
         if (teacherAnswerKey) {
-            renderTeacherAnswers(teacherAnswerKey);
+            preserveViewport(function() {
+                renderTeacherAnswers(teacherAnswerKey);
+            });
             setTeacherButtonState(button, true);
             return;
         }
@@ -3575,7 +3609,9 @@
         button.textContent = 'Loading...';
         teacherCall('getAnswerKeyForSet', { set_id: setId }).then(function(result) {
             teacherAnswerKey = result;
-            renderTeacherAnswers(teacherAnswerKey);
+            preserveViewport(function() {
+                renderTeacherAnswers(teacherAnswerKey);
+            });
             setTeacherButtonState(button, true);
         }).catch(function(error) {
             setTeacherButtonState(button, false);
@@ -3606,21 +3642,28 @@
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
             if (answerRevealAvailable) {
-                revealAllAnswers();
+                preserveViewport(revealAllAnswers);
                 return;
             }
+            var snapshot = captureViewport();
             loadHistoryContextFromDashboard().then(function() {
                 if (!historyAttemptId) {
                     alert('No history is available for this task yet.');
+                    restoreViewport(snapshot);
                     return;
                 }
-                if (!confirm('Replace all current answers with your best historical attempt?')) return;
-                showHistoryAnswers();
+                if (!confirm('Replace all current answers with your best historical attempt?')) {
+                    restoreViewport(snapshot);
+                    return;
+                }
+                showHistoryAnswers().then(function() {
+                    restoreViewport(snapshot);
+                });
             });
         });
         document.getElementById('clear-all-btn').addEventListener('click', function() {
             if (!confirm('Clear all answers on this page?')) return;
-            clearAllAnswers();
+            preserveViewport(clearAllAnswers);
         });
         updateHistoryToolbar();
     }
@@ -3634,9 +3677,11 @@
 
     function revealAllAnswers() {
         if (!confirmAnswerReveal()) return;
-        document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
-        document.querySelectorAll('.answer-toggle-btn').forEach(function(btn) {
-            btn.classList.add('active');
+        preserveViewport(function() {
+            document.querySelectorAll('.inline-explanation').forEach(function(el) { el.classList.add('show'); });
+            document.querySelectorAll('.answer-toggle-btn').forEach(function(btn) {
+                btn.classList.add('active');
+            });
         });
         answerRevealAvailable = false;
         updateHistoryToolbar();
@@ -4185,16 +4230,18 @@
                 };
             });
 
-            disableAllInputs();
-            recordBlankAttemptResults(feedback);
-            rememberMcLocks(feedback);
-            if (response.feedback_locked) {
-                applyFeedbackMarkers(feedback);
-                applyMcLocks();
-            } else {
-                applyFeedback(feedback);
-                applyMcLocks();
-            }
+            preserveViewport(function() {
+                disableAllInputs();
+                recordBlankAttemptResults(feedback);
+                rememberMcLocks(feedback);
+                if (response.feedback_locked) {
+                    applyFeedbackMarkers(feedback);
+                    applyMcLocks();
+                } else {
+                    applyFeedback(feedback);
+                    applyMcLocks();
+                }
+            });
             showResultOverlay(response);
             logEvent('submit', {
                 attemptId: response.attempt_id,
