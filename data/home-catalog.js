@@ -1945,6 +1945,30 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "NGSL-O",
+      "sectionId": "vocabulary",
+      "title": "NGSL-O",
+      "href": "vocabulary.html?set=NGSL-O",
+      "displayValue": "NGSL-O",
+      "sortValue": 1015,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "NGSL-P",
+      "sectionId": "vocabulary",
+      "title": "NGSL-P",
+      "href": "vocabulary.html?set=NGSL-P",
+      "displayValue": "NGSL-P",
+      "sortValue": 1016,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "NGSL-Q",
       "sectionId": "vocabulary",
       "title": "NGSL-Q",

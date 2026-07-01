@@ -1,0 +1,1619 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NGSL-O"] = {
+  "id": "NGSL-O",
+  "sectionId": "vocabulary",
+  "title": "NGSL-O",
+  "href": "vocabulary.html?set=NGSL-O",
+  "sortOrder": 1015,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NGSL",
+  "cefrLevel": "B1+–B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 2401,
+      "word": "dare",
+      "emoji": "😱🚀",
+      "meaning": "v.敢；挑战；n.挑战",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to be brave enough to do something"
+    },
+    {
+      "number": 2402,
+      "word": "barrier",
+      "emoji": "🚧🧱",
+      "meaning": "n.障碍；屏障",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that blocks movement or progress"
+    },
+    {
+      "number": 2403,
+      "word": "rid",
+      "emoji": "🧹🚫",
+      "meaning": "v.摆脱",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to remove something unwanted"
+    },
+    {
+      "number": 2404,
+      "word": "divorce",
+      "emoji": "💔📄",
+      "meaning": "n.离婚；v.离婚",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the legal ending of a marriage"
+    },
+    {
+      "number": 2405,
+      "word": "ruin",
+      "emoji": "🏚️💥",
+      "meaning": "v.毁灭；n.废墟",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to destroy or badly damage something"
+    },
+    {
+      "number": 2406,
+      "word": "bury",
+      "emoji": "⚰️🌱",
+      "meaning": "v.埋葬；隐藏",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put something under the ground"
+    },
+    {
+      "number": 2407,
+      "word": "counsel",
+      "emoji": "🗣️👔",
+      "meaning": "n.建议；v.劝告",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "advice, especially from a professional"
+    },
+    {
+      "number": 2408,
+      "word": "tendency",
+      "emoji": "📈🔄",
+      "meaning": "n.趋势；倾向",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a habit or natural direction of change"
+    },
+    {
+      "number": 2409,
+      "word": "frequent",
+      "emoji": "🔁📆",
+      "meaning": "adj.频繁的；v.常去",
+      "partOfSpeech": "adj. / v.",
+      "simpleDefinition": "happening often"
+    },
+    {
+      "number": 2410,
+      "word": "motor",
+      "emoji": "🚗⚙️",
+      "meaning": "n.发动机；马达",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a machine that gives power to make things move"
+    },
+    {
+      "number": 2411,
+      "word": "survival",
+      "emoji": "🧬🌱",
+      "meaning": "n.生存；幸存",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "continuing to live or exist"
+    },
+    {
+      "number": 2412,
+      "word": "counter",
+      "emoji": "🧮🔢",
+      "meaning": "n.柜台；计数器；v.反驳",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "to answer an argument against you"
+    },
+    {
+      "number": 2413,
+      "word": "possess",
+      "emoji": "🏠🔑",
+      "meaning": "v.拥有；支配",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to own or have something"
+    },
+    {
+      "number": 2414,
+      "word": "permission",
+      "emoji": "✅📝",
+      "meaning": "n.许可；允许",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the right to do something"
+    },
+    {
+      "number": 2415,
+      "word": "valley",
+      "emoji": "🏞️🌄",
+      "meaning": "n.山谷",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "low land between hills or mountains"
+    },
+    {
+      "number": 2416,
+      "word": "float",
+      "emoji": "🛶🎈",
+      "meaning": "v.漂浮；n.漂浮物",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to stay on the surface of water or air"
+    },
+    {
+      "number": 2417,
+      "word": "mad",
+      "emoji": "🤯😡",
+      "meaning": "adj.疯狂的；生气的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "angry, or not sensible"
+    },
+    {
+      "number": 2418,
+      "word": "greatly",
+      "emoji": "🌟📈",
+      "meaning": "adv.非常；极大地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "very much"
+    },
+    {
+      "number": 2419,
+      "word": "visible",
+      "emoji": "👀🌞",
+      "meaning": "adj.可见的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to be seen"
+    },
+    {
+      "number": 2420,
+      "word": "electric",
+      "emoji": "⚡🔌",
+      "meaning": "adj.电的；激动人心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "using or produced by electricity"
+    },
+    {
+      "number": 2421,
+      "word": "impressive",
+      "emoji": "😮👏",
+      "meaning": "adj.令人印象深刻的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "making you feel admiration"
+    },
+    {
+      "number": 2422,
+      "word": "evolution",
+      "emoji": "🐒➡️👨",
+      "meaning": "n.进化；发展",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "slow development or change over time"
+    },
+    {
+      "number": 2423,
+      "word": "awareness",
+      "emoji": "🧠👁️",
+      "meaning": "n.意识；认识",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "knowledge that something exists or matters"
+    },
+    {
+      "number": 2424,
+      "word": "violent",
+      "emoji": "🤬💣",
+      "meaning": "adj.暴力的；强烈的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "using force to hurt or damage"
+    },
+    {
+      "number": 2425,
+      "word": "slave",
+      "emoji": "🧑‍🌾⛓️",
+      "meaning": "n.奴隶；v.苦干",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a person owned and forced to work"
+    },
+    {
+      "number": 2426,
+      "word": "wealthy",
+      "emoji": "💰🏦",
+      "meaning": "adj.富有的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having a lot of money"
+    },
+    {
+      "number": 2427,
+      "word": "architecture",
+      "emoji": "🏛️📐",
+      "meaning": "n.建筑学；建筑风格",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the design and style of buildings"
+    },
+    {
+      "number": 2428,
+      "word": "acceptable",
+      "emoji": "👍✅",
+      "meaning": "adj.可接受的；合意的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "good enough to be allowed"
+    },
+    {
+      "number": 2429,
+      "word": "journal",
+      "emoji": "📓📰",
+      "meaning": "n.杂志；日志",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a magazine or record for a special subject"
+    },
+    {
+      "number": 2430,
+      "word": "coal",
+      "emoji": "🪨🔥",
+      "meaning": "n.煤；煤块",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a black fuel dug from the ground"
+    },
+    {
+      "number": 2431,
+      "word": "measurement",
+      "emoji": "📏📐",
+      "meaning": "n.测量；尺寸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act or result of measuring"
+    },
+    {
+      "number": 2432,
+      "word": "random",
+      "emoji": "🎲❓",
+      "meaning": "adj.随机的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "chosen without a clear plan or pattern"
+    },
+    {
+      "number": 2433,
+      "word": "successfully",
+      "emoji": "🏆✅",
+      "meaning": "adv.成功地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a way that achieves the wanted result"
+    },
+    {
+      "number": 2434,
+      "word": "depress",
+      "emoji": "😞⬇️",
+      "meaning": "v.使沮丧；压低",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone sad or less hopeful"
+    },
+    {
+      "number": 2435,
+      "word": "illustration",
+      "emoji": "📖🖼️",
+      "meaning": "n.插图；说明",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a picture or example that explains something"
+    },
+    {
+      "number": 2436,
+      "word": "burst",
+      "emoji": "💥🎈",
+      "meaning": "v.爆裂；n.爆发",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to break open suddenly"
+    },
+    {
+      "number": 2437,
+      "word": "privilege",
+      "emoji": "👑🎟️",
+      "meaning": "n.特权；v.给予特权",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a special right or advantage"
+    },
+    {
+      "number": 2438,
+      "word": "buyer",
+      "emoji": "🛒💳",
+      "meaning": "n.买家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who buys something"
+    },
+    {
+      "number": 2439,
+      "word": "mutual",
+      "emoji": "🤝🔄",
+      "meaning": "adj.相互的；共同的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "shared by two or more people"
+    },
+    {
+      "number": 2440,
+      "word": "rail",
+      "emoji": "🚆🛤️",
+      "meaning": "n.铁轨；栏杆；v.抱怨",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a bar used for support or as a track"
+    },
+    {
+      "number": 2441,
+      "word": "motivate",
+      "emoji": "🚀🎯",
+      "meaning": "v.激励；促使",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone want to do something"
+    },
+    {
+      "number": 2442,
+      "word": "laboratory",
+      "emoji": "🧪🏭",
+      "meaning": "n.实验室",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a room where scientific work is done"
+    },
+    {
+      "number": 2443,
+      "word": "mortgage",
+      "emoji": "🏠💸",
+      "meaning": "n.抵押贷款；v.抵押",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a loan used to buy a house"
+    },
+    {
+      "number": 2444,
+      "word": "promotion",
+      "emoji": "📈🎉",
+      "meaning": "n.晋升；促销",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a move to a higher job or a sales offer"
+    },
+    {
+      "number": 2445,
+      "word": "passion",
+      "emoji": "❤️🔥",
+      "meaning": "n.激情；爱好",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a very strong feeling or love for something"
+    },
+    {
+      "number": 2446,
+      "word": "champion",
+      "emoji": "🥇🏆",
+      "meaning": "n.冠军；v.支持",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a winner, or someone who supports a cause"
+    },
+    {
+      "number": 2447,
+      "word": "fulfill",
+      "emoji": "✅🎯",
+      "meaning": "v.实现；履行",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to do what was promised or hoped for"
+    },
+    {
+      "number": 2448,
+      "word": "dust",
+      "emoji": "🌫️🧹",
+      "meaning": "n.灰尘；v.擦去灰尘",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "fine dry dirt in the air or on surfaces"
+    },
+    {
+      "number": 2449,
+      "word": "dedicate",
+      "emoji": "🙏🎁",
+      "meaning": "v.奉献；题献",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give time, effort, or a work to someone"
+    },
+    {
+      "number": 2450,
+      "word": "roughly",
+      "emoji": "📏🔨",
+      "meaning": "adv.大约；粗暴地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "approximately, not exactly"
+    },
+    {
+      "number": 2451,
+      "word": "skirt",
+      "emoji": "👗👖",
+      "meaning": "n.裙子；v.绕过",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a piece of clothing worn below the waist"
+    },
+    {
+      "number": 2452,
+      "word": "province",
+      "emoji": "🇨🇳🏞️",
+      "meaning": "n.省；领域",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large region within a country"
+    },
+    {
+      "number": 2453,
+      "word": "march",
+      "emoji": "🚶‍♂️🎺",
+      "meaning": "v.行进；n.游行",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to walk together in an organized way"
+    },
+    {
+      "number": 2454,
+      "word": "evaluation",
+      "emoji": "📝📊",
+      "meaning": "n.评估；估价",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a careful judgment of quality or value"
+    },
+    {
+      "number": 2455,
+      "word": "compromise",
+      "emoji": "🤝⚖️",
+      "meaning": "n.妥协；v.妥协",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "an agreement where each side gives up something"
+    },
+    {
+      "number": 2456,
+      "word": "accomplish",
+      "emoji": "🎯🏅",
+      "meaning": "v.完成；实现",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to succeed in doing something"
+    },
+    {
+      "number": 2457,
+      "word": "weakness",
+      "emoji": "💪❌",
+      "meaning": "n.弱点；缺点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a weak point or fault"
+    },
+    {
+      "number": 2458,
+      "word": "announcement",
+      "emoji": "📢📰",
+      "meaning": "n.公告；通知",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a public statement of news"
+    },
+    {
+      "number": 2459,
+      "word": "salt",
+      "emoji": "🧂🌊",
+      "meaning": "n.盐；v.加盐",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a white substance used to flavor food"
+    },
+    {
+      "number": 2460,
+      "word": "glance",
+      "emoji": "👀⚡",
+      "meaning": "v.瞥一眼；n.一瞥",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a quick look"
+    },
+    {
+      "number": 2461,
+      "word": "opera",
+      "emoji": "🎼🏛️",
+      "meaning": "n.歌剧",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a stage play with music and singing"
+    },
+    {
+      "number": 2462,
+      "word": "contest",
+      "emoji": "🥊🏆",
+      "meaning": "n.比赛；v.争夺",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a competition"
+    },
+    {
+      "number": 2463,
+      "word": "brush",
+      "emoji": "🖌️🦷",
+      "meaning": "n.刷子；v.刷",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a tool with hairs used for cleaning or painting"
+    },
+    {
+      "number": 2464,
+      "word": "embarrass",
+      "emoji": "😳😬",
+      "meaning": "v.使尴尬",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone feel ashamed or awkward"
+    },
+    {
+      "number": 2465,
+      "word": "gallery",
+      "emoji": "🖼️🏛️",
+      "meaning": "n.画廊；走廊",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where art is shown"
+    },
+    {
+      "number": 2466,
+      "word": "genetic",
+      "emoji": "🧬🧑",
+      "meaning": "adj.基因的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to genes"
+    },
+    {
+      "number": 2467,
+      "word": "aggressive",
+      "emoji": "🥊😤",
+      "meaning": "adj.好斗的；积极进取的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "forceful, ready to attack or compete"
+    },
+    {
+      "number": 2468,
+      "word": "chest",
+      "emoji": "🏋️‍♂️💪",
+      "meaning": "n.胸部；箱子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the front part of the body between neck and stomach"
+    },
+    {
+      "number": 2469,
+      "word": "format",
+      "emoji": "📄🔤",
+      "meaning": "n.格式；v.使格式化",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "the shape, style, or arrangement of something"
+    },
+    {
+      "number": 2470,
+      "word": "literary",
+      "emoji": "📚✍️",
+      "meaning": "adj.文学的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected with literature"
+    },
+    {
+      "number": 2471,
+      "word": "govern",
+      "emoji": "🏛️⚖️",
+      "meaning": "v.统治；管理",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to officially control or direct"
+    },
+    {
+      "number": 2472,
+      "word": "embrace",
+      "emoji": "🤗💞",
+      "meaning": "v.拥抱；接受；n.拥抱",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to hold someone, or accept an idea"
+    },
+    {
+      "number": 2473,
+      "word": "praise",
+      "emoji": "👏🙌",
+      "meaning": "v.赞美；n.赞扬",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to say that someone did well"
+    },
+    {
+      "number": 2474,
+      "word": "silent",
+      "emoji": "🤫🔕",
+      "meaning": "adj.安静的；无声的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "making no sound"
+    },
+    {
+      "number": 2475,
+      "word": "pump",
+      "emoji": "🛢️💧",
+      "meaning": "n.泵；v.用泵抽",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a machine that moves liquid or gas"
+    },
+    {
+      "number": 2476,
+      "word": "publisher",
+      "emoji": "📚🏢",
+      "meaning": "n.出版商",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a company or person that produces books or media"
+    },
+    {
+      "number": 2477,
+      "word": "celebration",
+      "emoji": "🎉🎊",
+      "meaning": "n.庆祝",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a happy event for something special"
+    },
+    {
+      "number": 2478,
+      "word": "golf",
+      "emoji": "⛳🏌️",
+      "meaning": "n.高尔夫球",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a game played by hitting a small ball into holes"
+    },
+    {
+      "number": 2479,
+      "word": "compensation",
+      "emoji": "💵⚖️",
+      "meaning": "n.补偿；薪酬",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money paid for loss, injury, or work"
+    },
+    {
+      "number": 2480,
+      "word": "classical",
+      "emoji": "🎻🏛️",
+      "meaning": "adj.古典的；传统的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "traditional in style, especially in music or art"
+    },
+    {
+      "number": 2481,
+      "word": "weigh",
+      "emoji": "⚖️🏋️",
+      "meaning": "v.称重；权衡",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to measure weight or consider carefully"
+    },
+    {
+      "number": 2482,
+      "word": "versus",
+      "emoji": "⚔️🆚",
+      "meaning": "prep.对抗；与...相比",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "against or compared with"
+    },
+    {
+      "number": 2483,
+      "word": "deficit",
+      "emoji": "📉💸",
+      "meaning": "n.赤字；亏损",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an amount by which money is short"
+    },
+    {
+      "number": 2484,
+      "word": "modify",
+      "emoji": "✏️🔧",
+      "meaning": "v.修改；调整",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to change something slightly"
+    },
+    {
+      "number": 2485,
+      "word": "flash",
+      "emoji": "⚡📸",
+      "meaning": "n.闪光；v.闪现",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a sudden bright light"
+    },
+    {
+      "number": 2486,
+      "word": "friendship",
+      "emoji": "🤝💞",
+      "meaning": "n.友谊",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a relationship between friends"
+    },
+    {
+      "number": 2487,
+      "word": "profession",
+      "emoji": "👩‍⚕️🏛️",
+      "meaning": "n.职业；声明",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a skilled job that needs training"
+    },
+    {
+      "number": 2488,
+      "word": "literally",
+      "emoji": "📖🧐",
+      "meaning": "adv.字面上；确实地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the exact meaning, or really"
+    },
+    {
+      "number": 2489,
+      "word": "equation",
+      "emoji": "➕🧮",
+      "meaning": "n.方程式；等式",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a mathematical statement that two things are equal"
+    },
+    {
+      "number": 2490,
+      "word": "gesture",
+      "emoji": "🤟👋",
+      "meaning": "n.手势；v.做手势",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a movement that expresses an idea or feeling"
+    },
+    {
+      "number": 2491,
+      "word": "entertain",
+      "emoji": "🎤🎬",
+      "meaning": "v.娱乐；招待",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to amuse people or host guests"
+    },
+    {
+      "number": 2492,
+      "word": "fantastic",
+      "emoji": "🌈✨",
+      "meaning": "adj.极好的；奇异的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "extremely good or imaginative"
+    },
+    {
+      "number": 2493,
+      "word": "assign",
+      "emoji": "📝📋",
+      "meaning": "v.分配；指派",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give a task or role to someone"
+    },
+    {
+      "number": 2494,
+      "word": "inflation",
+      "emoji": "📈💸",
+      "meaning": "n.通货膨胀；膨胀",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a rise in prices over time"
+    },
+    {
+      "number": 2495,
+      "word": "historic",
+      "emoji": "🏛️📜",
+      "meaning": "adj.历史性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "important in history"
+    },
+    {
+      "number": 2496,
+      "word": "injure",
+      "emoji": "🤕🚑",
+      "meaning": "v.伤害；损害",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to hurt a person or part of the body"
+    },
+    {
+      "number": 2497,
+      "word": "remote",
+      "emoji": "🏔️📡",
+      "meaning": "adj.遥远的；偏僻的；n.遥控器",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "far away or not close to people"
+    },
+    {
+      "number": 2498,
+      "word": "therapy",
+      "emoji": "🛋️💊",
+      "meaning": "n.治疗",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "treatment for illness or stress"
+    },
+    {
+      "number": 2499,
+      "word": "orange",
+      "emoji": "🍊🧡",
+      "meaning": "n.橙子；adj.橙色的",
+      "partOfSpeech": "n. / adj.",
+      "simpleDefinition": "a round citrus fruit, or its color"
+    },
+    {
+      "number": 2500,
+      "word": "twist",
+      "emoji": "🌀🤸",
+      "meaning": "v.扭转；n.转折",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to turn, bend, or change unexpectedly"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "2401-2410",
+      "label": "第一组",
+      "rangeStart": 2401,
+      "rangeEnd": 2410,
+      "wordList": [
+        "motor",
+        "tendency",
+        "dare",
+        "bury",
+        "barrier",
+        "frequent",
+        "divorce",
+        "counsel",
+        "ruin",
+        "rid"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Few students would __________ to question the professor in front of the whole class.",
+          "answer": "dare",
+          "explanation": "语法上，would 后接动词原形，所以填 dare。语义上，在全班面前质疑教授需要“敢于”做某事。常见搭配：dare to do something。"
+        },
+        {
+          "number": 2,
+          "prompt": "A lack of confidence can become a serious __________ to learning a new language.",
+          "answer": "barrier",
+          "explanation": "语法上，前面有冠词 a 和形容词 serious，后面需要可数名词单数。语义上，缺乏自信会成为学习新语言的“障碍”。常见搭配：a barrier to something。"
+        },
+        {
+          "number": 3,
+          "prompt": "The new software helps users __________ their computers of unwanted files.",
+          "answer": "rid",
+          "explanation": "语法上，helps users 后可接动词原形，结构为 help someone do something。语义上，软件帮助用户“清除/摆脱”不需要的文件。常见搭配：rid something of something。"
+        },
+        {
+          "number": 4,
+          "prompt": "Their parents’ __________ had a deep effect on the children’s daily lives.",
+          "answer": "divorce",
+          "explanation": "语法上，前面是所有格 Their parents’，后面需要名词。语义上，父母“离婚”会影响孩子日常生活。"
+        },
+        {
+          "number": 5,
+          "prompt": "Heavy rain may __________ the outdoor concert if the stage is not protected.",
+          "answer": "ruin",
+          "explanation": "语法上，may 后接动词原形。语义上，大雨可能“毁掉”户外音乐会。常见搭配：ruin a plan / event / chance。"
+        },
+        {
+          "number": 6,
+          "prompt": "The villagers decided to __________ the old coins under a large tree.",
+          "answer": "bury",
+          "explanation": "语法上，decided to 后接动词原形。语义上，村民决定把旧硬币“埋”在树下。"
+        },
+        {
+          "number": 7,
+          "prompt": "You should seek professional __________ before making such a major legal decision.",
+          "answer": "counsel",
+          "explanation": "语法上，professional 修饰名词，所以填 counsel。语义上，重大法律决定前应寻求专业“建议/法律意见”。常见搭配：seek legal/professional counsel。"
+        },
+        {
+          "number": 8,
+          "prompt": "Teenagers often have a __________ to compare themselves with others online.",
+          "answer": "tendency",
+          "explanation": "语法上，前面有冠词 a，后面有不定式 to compare，需要名词。语义上，青少年常有与他人比较的“倾向”。常见搭配：have a tendency to do something。"
+        },
+        {
+          "number": 9,
+          "prompt": "There are __________ delays on this road during the morning rush hour.",
+          "answer": "frequent",
+          "explanation": "语法上，空格修饰名词 delays，需要形容词。语义上，早高峰这条路经常出现延误，所以填“频繁的”。"
+        },
+        {
+          "number": 10,
+          "prompt": "The boat’s __________ stopped suddenly in the middle of the lake.",
+          "answer": "motor",
+          "explanation": "语法上，前面是所有格 The boat’s，后面需要名词。语义上，船在湖中突然停下，是因为“发动机/马达”停止工作。"
+        }
+      ]
+    },
+    {
+      "id": "2411-2420",
+      "label": "第二组",
+      "rangeStart": 2411,
+      "rangeEnd": 2420,
+      "wordList": [
+        "permission",
+        "greatly",
+        "survival",
+        "counter",
+        "valley",
+        "visible",
+        "electric",
+        "mad",
+        "possess",
+        "float"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Clean drinking water is necessary for human __________ in extreme conditions.",
+          "answer": "survival",
+          "explanation": "语法上，for human 后需要名词。语义上，在极端环境中，干净饮用水对人类“生存”是必要的。常见搭配：human survival。"
+        },
+        {
+          "number": 2,
+          "prompt": "The speaker tried to __________ the criticism with clear evidence.",
+          "answer": "counter",
+          "explanation": "语法上，tried to 后接动词原形。语义上，演讲者用证据“反驳”批评。常见搭配：counter an argument / criticism。"
+        },
+        {
+          "number": 3,
+          "prompt": "Students are not allowed to leave early without their teacher’s __________.",
+          "answer": "permission",
+          "explanation": "语法上，所有格 their teacher’s 后需要名词。语义上，学生没有老师“许可”不能提前离开。常见搭配：without permission。"
+        },
+        {
+          "number": 4,
+          "prompt": "The village lies in a quiet __________ between two high mountains.",
+          "answer": "valley",
+          "explanation": "语法上，前面有冠词 a 和形容词 quiet，需要可数名词单数。语义上，村庄位于两座高山之间的“山谷”。"
+        },
+        {
+          "number": 5,
+          "prompt": "Some insects can __________ on the surface of water without sinking.",
+          "answer": "float",
+          "explanation": "语法上，can 后接动词原形。语义上，一些昆虫能在水面“漂浮”而不下沉。常见搭配：float on the surface of water。"
+        },
+        {
+          "number": 6,
+          "prompt": "My brother was __________ when he found out that I had used his bike.",
+          "answer": "mad",
+          "explanation": "语法上，was 后接形容词作表语。语义上，发现别人用了自己的自行车后感到“生气”。常见搭配：be mad at someone / be mad about something。"
+        },
+        {
+          "number": 7,
+          "prompt": "Better lighting has __________ improved safety in the underground station.",
+          "answer": "greatly",
+          "explanation": "语法上，空格修饰动词 improved，需要副词。语义上，更好的照明“极大地”提高了地铁站安全性。常见搭配：greatly improve / reduce / increase。"
+        },
+        {
+          "number": 8,
+          "prompt": "The warning sign is clearly __________ from the other side of the road.",
+          "answer": "visible",
+          "explanation": "语法上，is 后接形容词作表语。语义上，警示牌从路对面也“可见”。常见搭配：be visible from somewhere。"
+        },
+        {
+          "number": 9,
+          "prompt": "Many families now drive __________ cars to reduce fuel costs.",
+          "answer": "electric",
+          "explanation": "语法上，空格修饰名词 cars，需要形容词。语义上，许多家庭开“电动”汽车来降低燃油成本。常见搭配：electric car。"
+        },
+        {
+          "number": 10,
+          "prompt": "To join the club, members must __________ a valid student card.",
+          "answer": "possess",
+          "explanation": "语法上，must 后接动词原形。语义上，加入俱乐部的成员必须“拥有”有效学生证。常见搭配：possess a card / skill / quality。"
+        }
+      ]
+    },
+    {
+      "id": "2421-2430",
+      "label": "第三组",
+      "rangeStart": 2421,
+      "rangeEnd": 2430,
+      "wordList": [
+        "coal",
+        "impressive",
+        "slave",
+        "awareness",
+        "journal",
+        "acceptable",
+        "wealthy",
+        "violent",
+        "evolution",
+        "architecture"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Her speech was so __________ that even the judges stood up to applaud.",
+          "answer": "impressive",
+          "explanation": "语法上，was so 后接形容词。语义上，演讲非常“令人印象深刻”，以至于评委起立鼓掌。"
+        },
+        {
+          "number": 2,
+          "prompt": "Scientists study the __________ of animals to understand how species change over time.",
+          "answer": "evolution",
+          "explanation": "语法上，冠词 the 后需要名词。语义上，科学家研究动物“进化”以理解物种如何随时间变化。"
+        },
+        {
+          "number": 3,
+          "prompt": "The campaign aims to raise public __________ of online safety.",
+          "answer": "awareness",
+          "explanation": "语法上，raise public 后需要名词。语义上，活动旨在提升公众对网络安全的“意识”。常见搭配：raise awareness of/about something。"
+        },
+        {
+          "number": 4,
+          "prompt": "The police warned people to stay away from the __________ crowd.",
+          "answer": "violent",
+          "explanation": "语法上，空格修饰名词 crowd，需要形容词。语义上，警方警告人们远离“暴力的”人群。"
+        },
+        {
+          "number": 5,
+          "prompt": "In the past, a __________ could be bought and sold like property.",
+          "answer": "slave",
+          "explanation": "语法上，前面有冠词 a，后面需要可数名词单数。语义上，过去“奴隶”可能像财产一样被买卖。"
+        },
+        {
+          "number": 6,
+          "prompt": "The museum was built with money donated by a __________ businessman.",
+          "answer": "wealthy",
+          "explanation": "语法上，空格修饰名词 businessman，需要形容词。语义上，博物馆由一位“富有的”商人捐款建造。"
+        },
+        {
+          "number": 7,
+          "prompt": "The city is famous for its modern __________ and unusual building designs.",
+          "answer": "architecture",
+          "explanation": "语法上，介词 for 后需要名词。语义上，城市因现代“建筑风格/建筑设计”而出名。"
+        },
+        {
+          "number": 8,
+          "prompt": "Being ten minutes late is not __________ for such an important interview.",
+          "answer": "acceptable",
+          "explanation": "语法上，is not 后接形容词。语义上，这么重要的面试迟到十分钟是“不可接受的”。"
+        },
+        {
+          "number": 9,
+          "prompt": "The scientist published her findings in a medical __________ last month.",
+          "answer": "journal",
+          "explanation": "语法上，前面有冠词 a 和形容词 medical，需要名词。语义上，科学家把发现发表在医学“期刊”上。常见搭配：a medical/scientific journal。"
+        },
+        {
+          "number": 10,
+          "prompt": "Many factories used to burn __________ to produce energy.",
+          "answer": "coal",
+          "explanation": "语法上，burn 后接名词作宾语。语义上，许多工厂过去燃烧“煤”来生产能源。"
+        }
+      ]
+    },
+    {
+      "id": "2431-2440",
+      "label": "第四组",
+      "rangeStart": 2431,
+      "rangeEnd": 2440,
+      "wordList": [
+        "privilege",
+        "rail",
+        "measurement",
+        "burst",
+        "buyer",
+        "illustration",
+        "random",
+        "successfully",
+        "depress",
+        "mutual"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Accurate __________ is important when scientists record the growth of plants.",
+          "answer": "measurement",
+          "explanation": "语法上，形容词 Accurate 后需要名词。语义上，科学家记录植物生长时，准确“测量”很重要。"
+        },
+        {
+          "number": 2,
+          "prompt": "The teacher chose three students at __________ to answer the questions.",
+          "answer": "random",
+          "explanation": "语法上，介词短语 at random 是固定表达。语义上，老师随机选择三名学生回答问题。常见搭配：at random。"
+        },
+        {
+          "number": 3,
+          "prompt": "After months of practice, she __________ passed the driving test.",
+          "answer": "successfully",
+          "explanation": "语法上，空格修饰动词 passed，需要副词。语义上，她经过数月练习后“成功地”通过驾照考试。"
+        },
+        {
+          "number": 4,
+          "prompt": "Too much bad news can __________ young people and make them feel hopeless.",
+          "answer": "depress",
+          "explanation": "语法上，can 后接动词原形。语义上，过多负面新闻会“使年轻人沮丧”。常见搭配：depress someone。"
+        },
+        {
+          "number": 5,
+          "prompt": "The diagram gives a clear __________ of how the machine works.",
+          "answer": "illustration",
+          "explanation": "语法上，前面有冠词 a 和形容词 clear，需要名词。语义上，图示清楚“说明”机器如何运作。"
+        },
+        {
+          "number": 6,
+          "prompt": "The balloon may __________ if you blow too much air into it.",
+          "answer": "burst",
+          "explanation": "语法上，may 后接动词原形。语义上，气球充入太多空气可能会“爆裂”。"
+        },
+        {
+          "number": 7,
+          "prompt": "Studying abroad is still a __________ that not every family can afford.",
+          "answer": "privilege",
+          "explanation": "语法上，前面有冠词 a，后面有定语从句，空格需要名词。语义上，出国留学仍是并非所有家庭都能负担的“特权”。"
+        },
+        {
+          "number": 8,
+          "prompt": "The __________ asked several questions before deciding to buy the apartment.",
+          "answer": "buyer",
+          "explanation": "语法上，前面有冠词 The，后面谓语是 asked，需要名词作主语。语义上，买公寓前提问的人是“买家”。"
+        },
+        {
+          "number": 9,
+          "prompt": "Their business relationship is based on __________ trust and respect.",
+          "answer": "mutual",
+          "explanation": "语法上，空格修饰名词 trust and respect，需要形容词。语义上，商业关系建立在“相互的”信任和尊重上。常见搭配：mutual trust / respect / understanding。"
+        },
+        {
+          "number": 10,
+          "prompt": "Hold the __________ when you walk down the stairs.",
+          "answer": "rail",
+          "explanation": "语法上，the 后需要名词。语义上，下楼梯时应扶着“栏杆”。常见搭配：hold the rail。"
+        }
+      ]
+    },
+    {
+      "id": "2441-2450",
+      "label": "第五组",
+      "rangeStart": 2441,
+      "rangeEnd": 2450,
+      "wordList": [
+        "roughly",
+        "laboratory",
+        "passion",
+        "mortgage",
+        "motivate",
+        "fulfill",
+        "champion",
+        "promotion",
+        "dedicate",
+        "dust"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Good teachers can __________ students to keep learning even when work becomes difficult.",
+          "answer": "motivate",
+          "explanation": "语法上，can 后接动词原形。语义上，好老师能“激励”学生在困难时继续学习。常见搭配：motivate someone to do something。"
+        },
+        {
+          "number": 2,
+          "prompt": "The scientists tested the new medicine in a secure __________.",
+          "answer": "laboratory",
+          "explanation": "语法上，介词 in 后接名词。语义上，科学家在安全的“实验室”测试新药。"
+        },
+        {
+          "number": 3,
+          "prompt": "They took out a __________ to buy their first home.",
+          "answer": "mortgage",
+          "explanation": "语法上，前面有冠词 a，需要名词。语义上，他们为购买第一套房申请了“抵押贷款”。常见搭配：take out a mortgage。"
+        },
+        {
+          "number": 4,
+          "prompt": "The company offered a special __________ to attract new customers this weekend.",
+          "answer": "promotion",
+          "explanation": "语法上，前面有冠词 a 和形容词 special，需要名词。语义上，公司提供特别“促销”来吸引顾客。"
+        },
+        {
+          "number": 5,
+          "prompt": "She has a real __________ for painting and spends every evening in her studio.",
+          "answer": "passion",
+          "explanation": "语法上，前面有冠词 a 和形容词 real，需要名词。语义上，她对绘画有真正的“热情”。常见搭配：have a passion for something。"
+        },
+        {
+          "number": 6,
+          "prompt": "The young boxer became a national __________ after winning the final match.",
+          "answer": "champion",
+          "explanation": "语法上，前面有冠词 a 和形容词 national，需要名词。语义上，年轻拳击手赢得决赛后成为全国“冠军”。"
+        },
+        {
+          "number": 7,
+          "prompt": "We must __________ our promises if we want others to trust us.",
+          "answer": "fulfill",
+          "explanation": "语法上，must 后接动词原形。语义上，想获得他人信任，就必须“履行”承诺。常见搭配：fulfill a promise / duty / dream。"
+        },
+        {
+          "number": 8,
+          "prompt": "The writer decided to __________ his new book to his parents.",
+          "answer": "dedicate",
+          "explanation": "语法上，decided to 后接动词原形。语义上，作者决定把新书“题献”给父母。常见搭配：dedicate something to someone。"
+        },
+        {
+          "number": 9,
+          "prompt": "The shelves were covered with __________ after the house had been empty for months.",
+          "answer": "dust",
+          "explanation": "语法上，介词 with 后接名词。语义上，房子空置数月后，架子上布满“灰尘”。常见搭配：be covered with dust。"
+        },
+        {
+          "number": 10,
+          "prompt": "The repair will cost __________ two hundred dollars, depending on the damage.",
+          "answer": "roughly",
+          "explanation": "语法上，空格修饰数量 two hundred dollars，需要副词。语义上，修理费用“大约”两百美元。常见搭配：roughly two hundred / roughly speaking。"
+        }
+      ]
+    },
+    {
+      "id": "2451-2460",
+      "label": "第六组",
+      "rangeStart": 2451,
+      "rangeEnd": 2460,
+      "wordList": [
+        "announcement",
+        "skirt",
+        "accomplish",
+        "salt",
+        "province",
+        "evaluation",
+        "march",
+        "weakness",
+        "glance",
+        "compromise"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She wore a black __________ and a white shirt to the school concert.",
+          "answer": "skirt",
+          "explanation": "语法上，前面有冠词 a 和形容词 black，需要可数名词单数。语义上，她穿黑色“裙子”和白衬衫去学校音乐会。"
+        },
+        {
+          "number": 2,
+          "prompt": "Sichuan is a large __________ in southwest China.",
+          "answer": "province",
+          "explanation": "语法上，前面有冠词 a 和形容词 large，需要名词。语义上，四川是中国西南的一个大“省”。"
+        },
+        {
+          "number": 3,
+          "prompt": "The soldiers had to __________ for hours through the heavy rain.",
+          "answer": "march",
+          "explanation": "语法上，had to 后接动词原形。语义上，士兵不得不在大雨中“行进”数小时。"
+        },
+        {
+          "number": 4,
+          "prompt": "The manager wrote a detailed __________ of each employee’s performance.",
+          "answer": "evaluation",
+          "explanation": "语法上，前面有冠词 a 和形容词 detailed，需要名词。语义上，经理写了每位员工表现的详细“评估”。常见搭配：performance evaluation。"
+        },
+        {
+          "number": 5,
+          "prompt": "Both sides finally reached a __________ after a long discussion.",
+          "answer": "compromise",
+          "explanation": "语法上，前面有冠词 a，需要名词。语义上，双方经过长时间讨论后达成“妥协”。常见搭配：reach a compromise。"
+        },
+        {
+          "number": 6,
+          "prompt": "With careful planning, we can __________ the project before Friday.",
+          "answer": "accomplish",
+          "explanation": "语法上，can 后接动词原形。语义上，通过周密计划，我们能在周五前“完成”项目。常见搭配：accomplish a task / goal / project。"
+        },
+        {
+          "number": 7,
+          "prompt": "His main __________ is that he gives up too quickly under pressure.",
+          "answer": "weakness",
+          "explanation": "语法上，所有格 His main 后需要名词。语义上，他主要的“弱点”是在压力下太快放弃。"
+        },
+        {
+          "number": 8,
+          "prompt": "The school made an __________ about the new exam rules this morning.",
+          "answer": "announcement",
+          "explanation": "语法上，前面有冠词 an，需要以元音音素开头的名词。语义上，学校发布了关于新考试规则的“通知”。常见搭配：make an announcement。"
+        },
+        {
+          "number": 9,
+          "prompt": "Add a little __________ to the soup before serving it.",
+          "answer": "salt",
+          "explanation": "语法上，Add a little 后接不可数名词。语义上，上汤前加一点“盐”。"
+        },
+        {
+          "number": 10,
+          "prompt": "She took a quick __________ at her watch and hurried out.",
+          "answer": "glance",
+          "explanation": "语法上，前面有冠词 a 和形容词 quick，需要名词。语义上，她快速“瞥了一眼”手表然后匆忙离开。常见搭配：take a quick glance at something。"
+        }
+      ]
+    },
+    {
+      "id": "2461-2470",
+      "label": "第七组",
+      "rangeStart": 2461,
+      "rangeEnd": 2470,
+      "wordList": [
+        "format",
+        "opera",
+        "aggressive",
+        "chest",
+        "genetic",
+        "literary",
+        "gallery",
+        "embarrass",
+        "contest",
+        "brush"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "My grandmother enjoys listening to Italian __________ on Sunday afternoons.",
+          "answer": "opera",
+          "explanation": "语法上，listening to 后接名词。语义上，奶奶喜欢听意大利“歌剧”。"
+        },
+        {
+          "number": 2,
+          "prompt": "The school will hold a writing __________ for students next month.",
+          "answer": "contest",
+          "explanation": "语法上，前面有冠词 a 和名词修饰语 writing，需要名词。语义上，学校下个月要举行写作“比赛”。常见搭配：hold a contest。"
+        },
+        {
+          "number": 3,
+          "prompt": "You need a soft __________ to clean the camera lens safely.",
+          "answer": "brush",
+          "explanation": "语法上，前面有冠词 a 和形容词 soft，需要名词。语义上，清洁相机镜头需要软“刷子”。"
+        },
+        {
+          "number": 4,
+          "prompt": "Please do not __________ him by laughing at his mistake.",
+          "answer": "embarrass",
+          "explanation": "语法上，do not 后接动词原形。语义上，不要通过嘲笑他的错误让他“尴尬”。"
+        },
+        {
+          "number": 5,
+          "prompt": "The paintings will be shown in a small art __________ downtown.",
+          "answer": "gallery",
+          "explanation": "语法上，前面有冠词 a 和形容词短语 small art，需要名词。语义上，画作将在市中心的小型艺术“画廊”展出。常见搭配：art gallery。"
+        },
+        {
+          "number": 6,
+          "prompt": "Some diseases are linked to __________ factors passed down from parents.",
+          "answer": "genetic",
+          "explanation": "语法上，空格修饰名词 factors，需要形容词。语义上，一些疾病与从父母遗传下来的“基因”因素有关。常见搭配：genetic factors。"
+        },
+        {
+          "number": 7,
+          "prompt": "The coach told the players not to be too __________ during practice.",
+          "answer": "aggressive",
+          "explanation": "语法上，be too 后接形容词。语义上，教练告诉球员训练时不要太“好斗”。常见搭配：aggressive behaviour / an aggressive player。"
+        },
+        {
+          "number": 8,
+          "prompt": "He felt a sharp pain in his __________ after running too fast.",
+          "answer": "chest",
+          "explanation": "语法上，介词 in 后接名词。语义上，跑太快后他感到“胸部”剧痛。"
+        },
+        {
+          "number": 9,
+          "prompt": "The report must follow the correct __________, with clear headings and spacing.",
+          "answer": "format",
+          "explanation": "语法上，前面有冠词 the correct，需要名词。语义上，报告必须遵循正确“格式”。常见搭配：follow the correct format。"
+        },
+        {
+          "number": 10,
+          "prompt": "This course introduces students to modern __________ texts from different countries.",
+          "answer": "literary",
+          "explanation": "语法上，空格修饰名词 texts，需要形容词。语义上，课程介绍来自不同国家的现代“文学的”文本。常见搭配：literary texts / literary works。"
+        }
+      ]
+    },
+    {
+      "id": "2471-2480",
+      "label": "第八组",
+      "rangeStart": 2471,
+      "rangeEnd": 2480,
+      "wordList": [
+        "silent",
+        "govern",
+        "golf",
+        "pump",
+        "publisher",
+        "compensation",
+        "praise",
+        "celebration",
+        "embrace",
+        "classical"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Clear laws are needed to __________ how companies collect personal data.",
+          "answer": "govern",
+          "explanation": "语法上，are needed to 后接动词原形。语义上，需要明确法律来“管理/规范”公司如何收集个人数据。常见搭配：govern how / govern the use of something。"
+        },
+        {
+          "number": 2,
+          "prompt": "Many young people now __________ online learning as a normal part of education.",
+          "answer": "embrace",
+          "explanation": "语法上，主语 Many young people 后需要动词原形作谓语。语义上，许多年轻人现在“接受”在线学习作为教育的正常部分。"
+        },
+        {
+          "number": 3,
+          "prompt": "Parents should __________ effort, not only exam results.",
+          "answer": "praise",
+          "explanation": "语法上，should 后接动词原形。语义上，父母应该“赞美”努力，而不只是考试成绩。常见搭配：praise someone for something。"
+        },
+        {
+          "number": 4,
+          "prompt": "The room became completely __________ after the head teacher entered.",
+          "answer": "silent",
+          "explanation": "语法上，became completely 后接形容词。语义上，校长进入后房间变得完全“安静”。"
+        },
+        {
+          "number": 5,
+          "prompt": "The farmer used a water __________ to move water from the river to the field.",
+          "answer": "pump",
+          "explanation": "语法上，前面有冠词 a 和名词修饰语 water，需要名词。语义上，农民用水“泵”把河水抽到田里。常见搭配：water pump。"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ agreed to print the author’s first novel.",
+          "answer": "publisher",
+          "explanation": "语法上，前面有冠词 The，后面谓语是 agreed，需要名词作主语。语义上，同意出版作者第一部小说的是“出版商”。"
+        },
+        {
+          "number": 7,
+          "prompt": "The whole town joined the __________ after the team won the championship.",
+          "answer": "celebration",
+          "explanation": "语法上，前面有冠词 the，需要名词。语义上，球队夺冠后，全镇都加入“庆祝”。常见搭配：join the celebration。"
+        },
+        {
+          "number": 8,
+          "prompt": "He plays __________ every weekend with his colleagues.",
+          "answer": "golf",
+          "explanation": "语法上，plays 后接运动名词。语义上，他每周末和同事打“高尔夫球”。常见搭配：play golf。"
+        },
+        {
+          "number": 9,
+          "prompt": "The worker received financial __________ after being injured at work.",
+          "answer": "compensation",
+          "explanation": "语法上，形容词 financial 后需要名词。语义上，工人受伤后获得经济“补偿”。常见搭配：receive financial compensation。"
+        },
+        {
+          "number": 10,
+          "prompt": "She prefers __________ music to modern pop songs.",
+          "answer": "classical",
+          "explanation": "语法上，空格修饰名词 music，需要形容词。语义上，她比起现代流行音乐更喜欢“古典”音乐。常见搭配：classical music。"
+        }
+      ]
+    },
+    {
+      "id": "2481-2490",
+      "label": "第九组",
+      "rangeStart": 2481,
+      "rangeEnd": 2490,
+      "wordList": [
+        "friendship",
+        "flash",
+        "weigh",
+        "gesture",
+        "literally",
+        "equation",
+        "profession",
+        "modify",
+        "deficit",
+        "versus"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "You should __________ the advantages and disadvantages before making a decision.",
+          "answer": "weigh",
+          "explanation": "语法上，should 后接动词原形。语义上，做决定前应“权衡”优缺点。常见搭配：weigh the advantages and disadvantages。"
+        },
+        {
+          "number": 2,
+          "prompt": "The final match is Spain __________ Brazil, and tickets are already sold out.",
+          "answer": "versus",
+          "explanation": "语法上，空格连接两个比赛双方 Spain 和 Brazil，需要介词。语义上，决赛是西班牙“对阵”巴西。"
+        },
+        {
+          "number": 3,
+          "prompt": "The country faces a large budget __________ after years of heavy spending.",
+          "answer": "deficit",
+          "explanation": "语法上，前面有冠词 a 和形容词短语 large budget，需要名词。语义上，多年大量支出后，国家面临严重预算“赤字”。常见搭配：budget deficit。"
+        },
+        {
+          "number": 4,
+          "prompt": "We need to __________ the plan because the original schedule is no longer realistic.",
+          "answer": "modify",
+          "explanation": "语法上，need to 后接动词原形。语义上，原计划不现实，所以需要“修改”计划。常见搭配：modify a plan / design / rule。"
+        },
+        {
+          "number": 5,
+          "prompt": "A sudden __________ of light appeared in the dark sky.",
+          "answer": "flash",
+          "explanation": "语法上，前面有冠词 A 和形容词 sudden，需要名词。语义上，黑暗天空中出现一阵“闪光”。常见搭配：a flash of light。"
+        },
+        {
+          "number": 6,
+          "prompt": "Their __________ became stronger after they travelled together for two weeks.",
+          "answer": "friendship",
+          "explanation": "语法上，所有格 Their 后需要名词。语义上，一起旅行两周后，他们的“友谊”更牢固了。"
+        },
+        {
+          "number": 7,
+          "prompt": "Medicine is a respected __________ that requires many years of training.",
+          "answer": "profession",
+          "explanation": "语法上，前面有冠词 a 和形容词 respected，需要名词。语义上，医学是需要多年训练的受人尊敬的“职业”。常见搭配：a respected profession。"
+        },
+        {
+          "number": 8,
+          "prompt": "I was __________ shaking with fear when the lift suddenly stopped.",
+          "answer": "literally",
+          "explanation": "语法上，空格修饰动词短语 was shaking，需要副词。语义上，电梯突然停下时，我“真的/确实”吓得发抖。"
+        },
+        {
+          "number": 9,
+          "prompt": "The students solved the __________ by moving all numbers to one side.",
+          "answer": "equation",
+          "explanation": "语法上，前面有冠词 the，需要名词。语义上，学生通过把所有数字移到一边来解“方程式”。常见搭配：solve an equation。"
+        },
+        {
+          "number": 10,
+          "prompt": "A simple __________, such as a smile, can make a guest feel welcome.",
+          "answer": "gesture",
+          "explanation": "语法上，前面有冠词 A 和形容词 simple，需要名词。语义上，一个微笑这样的简单“动作/表示”能让客人感到受欢迎。"
+        }
+      ]
+    },
+    {
+      "id": "2491-2500",
+      "label": "第十组",
+      "rangeStart": 2491,
+      "rangeEnd": 2500,
+      "wordList": [
+        "historic",
+        "therapy",
+        "twist",
+        "entertain",
+        "orange",
+        "remote",
+        "inflation",
+        "assign",
+        "fantastic",
+        "injure"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The magician tried to __________ the children with tricks and funny stories.",
+          "answer": "entertain",
+          "explanation": "语法上，tried to 后接动词原形。语义上，魔术师用戏法和有趣故事“娱乐”孩子们。"
+        },
+        {
+          "number": 2,
+          "prompt": "The view from the mountain was absolutely __________ at sunset.",
+          "answer": "fantastic",
+          "explanation": "语法上，was absolutely 后接形容词。语义上，日落时山上的景色“极好的”。常见搭配：absolutely fantastic。"
+        },
+        {
+          "number": 3,
+          "prompt": "The teacher will __________ each group a different topic for the presentation.",
+          "answer": "assign",
+          "explanation": "语法上，will 后接动词原形。语义上，老师会给每组“分配”不同的展示主题。常见搭配：assign someone something / assign something to someone。"
+        },
+        {
+          "number": 4,
+          "prompt": "High __________ makes food and housing more expensive for ordinary families.",
+          "answer": "inflation",
+          "explanation": "语法上，形容词 High 后需要名词。语义上，高“通货膨胀”使普通家庭的食物和住房更贵。"
+        },
+        {
+          "number": 5,
+          "prompt": "The signing of the peace agreement was a __________ moment for the country.",
+          "answer": "historic",
+          "explanation": "语法上，空格修饰名词 moment，需要形容词。语义上，和平协议的签署对国家来说是“历史性的”时刻。常见搭配：a historic moment / decision / agreement。"
+        },
+        {
+          "number": 6,
+          "prompt": "Be careful when lifting heavy boxes, or you may __________ your back.",
+          "answer": "injure",
+          "explanation": "语法上，may 后接动词原形。语义上，搬重箱子不小心可能会“伤到”背部。"
+        },
+        {
+          "number": 7,
+          "prompt": "They live in a __________ village far from the nearest hospital.",
+          "answer": "remote",
+          "explanation": "语法上，空格修饰名词 village，需要形容词。语义上，他们住在远离最近医院的“偏僻”村庄。常见搭配：a remote village / area。"
+        },
+        {
+          "number": 8,
+          "prompt": "Music __________ can help some patients reduce stress and anxiety.",
+          "answer": "therapy",
+          "explanation": "语法上，Music 修饰名词，空格需要名词。语义上，音乐“治疗”能帮助一些病人减轻压力和焦虑。常见搭配：music therapy。"
+        },
+        {
+          "number": 9,
+          "prompt": "She bought an __________ jacket so drivers could see her clearly at night.",
+          "answer": "orange",
+          "explanation": "语法上，空格修饰名词 jacket，需要形容词。语义上，她买了一件“橙色的”夹克，让司机能在夜间清楚看到她。"
+        },
+        {
+          "number": 10,
+          "prompt": "The film has a surprising __________ near the end that changes the whole story.",
+          "answer": "twist",
+          "explanation": "语法上，前面有冠词 a 和形容词 surprising，需要名词。语义上，电影接近结尾处有一个令人惊讶的“转折”，改变了整个故事。常见搭配：a surprising twist。"
+        }
+      ]
+    }
+  ]
+};
