@@ -1933,6 +1933,18 @@
       "visible": true
     },
     {
+      "id": "NGSL-N",
+      "sectionId": "vocabulary",
+      "title": "NGSL-N",
+      "href": "vocabulary.html?set=NGSL-N",
+      "displayValue": "NGSL-N",
+      "sortValue": 1014,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "NGSL-Q",
       "sectionId": "vocabulary",
       "title": "NGSL-Q",
