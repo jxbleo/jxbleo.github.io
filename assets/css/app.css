@@ -3204,20 +3204,26 @@ body:not(.teacher-page) .tab-button.active {
     gap: 8px;
 }
 .matrix-work-button {
+    appearance: none;
+    -webkit-appearance: none;
     display: inline-grid;
     width: 34px;
     height: 34px;
     place-items: center;
     border: 1px solid rgba(124,58,237,0.18);
     border-radius: 999px;
+    padding: 0;
     color: var(--accent);
     background: rgba(255,255,255,0.82);
+    line-height: 1;
     cursor: pointer;
     transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 .matrix-work-button svg {
+    display: block;
     width: 17px;
     height: 17px;
+    margin: auto;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.9;
