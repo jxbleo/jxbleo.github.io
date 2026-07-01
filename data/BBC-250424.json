@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250424",
+  "title": "How Climate Change Affects Animal Migration",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250424-how-climate-change-affects-animal-migration.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Animal migration usually happens because of changes in _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Wildebeest move through two East African areas depending on the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Some animals migrate to find _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Migration can also be connected with reproduction, including mating and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Some shark species are able to travel _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "One example describes great white sharks travelling from Australia to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Climate change affects migration by changing ocean _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Sea turtles eat _____, which can absorb carbon.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Managing about ten animal groups could remove around _____ of carbon each year.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Some experts estimate that yearly climate goals require removing _____ of CO2.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How is animal migration introduced in the programme?",
+      "options": [
+        "As movement from one place to another, often linked to weather or temperature",
+        "As a rare behaviour found only in ocean animals",
+        "As a permanent move caused mainly by human activity",
+        "As a journey made only when animals are in danger"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which set of reasons for migration does Trisha give?",
+      "options": [
+        "Avoiding predators, finding shelter and escaping storms",
+        "Following human boats, cooling down and resting",
+        "Finding food, mating and giving birth",
+        "Learning routes, competing and changing colour"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What example is used to show that some sharks travel very far?",
+      "options": [
+        "They cross from Kenya to Tanzania each year",
+        "Great white sharks have moved from near Perth to South Africa",
+        "They swim only around the Maasai Mara",
+        "They follow sea turtles along the ocean floor"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What effect is climate change having on sharks?",
+      "options": [
+        "It is stopping sharks from eating sea turtles",
+        "It is making all sharks stay near Australia",
+        "It is increasing the number of sharks immediately",
+        "It is altering their migration patterns through ocean-temperature change"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why does the programme mention sea turtles and seagrass?",
+      "options": [
+        "To explain how sharks can indirectly help carbon absorption",
+        "To show that sharks mainly eat seagrass",
+        "To argue that sea turtles are the main cause of climate change",
+        "To prove that ocean plants cannot store carbon"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What follows when sharks are present in an area, according to Neil’s summary?",
+      "options": [
+        "Sea turtles protect more seagrass",
+        "Less carbon can be absorbed by the seabed",
+        "More seagrass remains, so more carbon is absorbed",
+        "Climate change immediately stops"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is Sophie’s point about migratory animals?",
+      "options": [
+        "Only sharks matter for climate action",
+        "Some migrating species can be an under-recognised climate tool",
+        "Migratory animals are too difficult to protect",
+        "Climate change has ended most migration"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does Trisha’s research suggest about managing about ten animal groups?",
+      "options": [
+        "It would remove all CO2 from the atmosphere",
+        "It would mainly protect tourism",
+        "It would produce six gigatonnes of CO2 each year",
+        "It could sequester about six gigatonnes of carbon yearly"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why does Sophie add the 10-gigatonne figure?",
+      "options": [
+        "To give scale to the six-gigatonne estimate",
+        "To reject Trisha’s research completely",
+        "To explain shark migration routes",
+        "To show that animal protection is unnecessary"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does the “60%” explanation imply about the six-gigatonne figure?",
+      "options": [
+        "It is a tiny amount that can be ignored",
+        "It is exactly equal to the total amount needed",
+        "It is a very large share of the estimated yearly removal need",
+        "It is unrelated to climate goals"
+      ]
+    }
+  ],
+  "matching": []
+}

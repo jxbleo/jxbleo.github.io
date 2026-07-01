@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250327",
+  "title": "Can We Boost The Immune System?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250327-can-we-boost-the-immune-system.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The immune system works as the body’s _____ against illness.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Oranges are often chosen because people link them with _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In winter, some people take _____ to strengthen their body’s protection.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Another common method is _____, although the programme questions how useful it is.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A nasal product was judged no more effective than _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A popular UK health trend mentioned in the programme is _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "People who do this activity say it benefits their _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Stress may matter because _____ can make the immune system weaker.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A stressed person may become more likely to suffer from _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The same possible benefit might also come from social activities such as _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the programme mainly going to examine at the start?",
+      "options": [
+        "Why winter illnesses have become more serious",
+        "Whether common immune-boosting habits really help",
+        "How vitamin C was first discovered",
+        "Which foods contain the most vitamins"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which group of illnesses is used to show why winter health is a concern?",
+      "options": [
+        "Allergies, asthma and headaches",
+        "Food poisoning and stomach problems",
+        "Skin infections and tiredness",
+        "Colds, flu and Covid-19"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What is Margaret McCartney’s view of the nasal product mentioned?",
+      "options": [
+        "It may be interesting, but it is not better than salt-water spray",
+        "It is clearly the best way to prevent winter illness",
+        "It works only if people also take vitamins",
+        "It is dangerous and should not be used"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What broader point is made about many popular health products?",
+      "options": [
+        "They are useful only for older adults",
+        "They work better when combined with exercise",
+        "There is not enough proof that they affect immune function",
+        "They are effective because many people buy them"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What do cold-water swimmers believe about the activity in winter?",
+      "options": [
+        "It may reduce their chance of becoming ill",
+        "It completely prevents colds",
+        "It replaces the need for medical treatment",
+        "It only helps competitive athletes"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why might being with other people help the immune system indirectly?",
+      "options": [
+        "It exposes people to more germs safely",
+        "It makes cold water less dangerous",
+        "It increases the amount of vitamin C in the body",
+        "It can reduce stress, which may otherwise weaken immunity"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What can be inferred about stress from John’s explanation?",
+      "options": [
+        "Stress has no connection with illness",
+        "Stress may make someone more vulnerable to infection",
+        "Stress only affects people who swim in cold water",
+        "Stress is always caused by being alone"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How does John limit his support for cold-water swimming?",
+      "options": [
+        "He says it is harmful for most people",
+        "He says it is useful only in winter",
+        "He says similar benefits may come from other activities",
+        "He says it works only with medical supervision"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "In the explanation, what does “dampens” mean when used about the immune system?",
+      "options": [
+        "Makes it weaker",
+        "Makes it quicker",
+        "Makes it more accurate",
+        "Makes it disappear"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the final cautious conclusion about cold-water swimming?",
+      "options": [
+        "Only cold-water swimming can improve winter health",
+        "It may help through stress reduction, but other activities may do the same",
+        "It has been proven to stop all winter colds",
+        "It works mainly because cold water kills viruses"
+      ]
+    }
+  ],
+  "matching": []
+}

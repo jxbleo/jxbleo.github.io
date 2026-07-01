@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250522",
+  "title": "Foods That Go Crunch",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250522-foods-that-go-crunch.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Crunchy food includes fruit, vegetables and even _____ in some cultures.",
+      "section": "Why crunchy food attracts people"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One scientist links her love of crunchy apples to growing up in an _____.",
+      "section": "Why crunchy food attracts people"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "She describes crunchy apples as one of life's _____.",
+      "section": "Why crunchy food attracts people"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Crunchy texture prepares the body for raw and _____.",
+      "section": "How crunch helps the body"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "This kind of fibre helps develop teeth and _____.",
+      "section": "How crunch helps the body"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The first bite helps us decide whether to _____ the food.",
+      "section": "How crunch helps the body"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Crunch can signal the _____.",
+      "section": "How crunch helps the body"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "A loud crunch may suggest that food is _____ and safe.",
+      "section": "How crunch helps the body"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Insect protein is presented as a _____ to meat.",
+      "section": "Insects as crunchy food"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Insects can also be turned into _____ for making foods like cakes and biscuits.",
+      "section": "Insects as crunchy food"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How does Danielle feel about the crunch of a fresh apple?",
+      "options": [
+        "She finds it deeply enjoyable and personally meaningful.",
+        "She thinks it is pleasant but not worth discussing.",
+        "She mainly values it because it is fashionable.",
+        "She dislikes it unless the apple is cooked first."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does Danielle mention growing up around apples?",
+      "options": [
+        "To explain why she avoids most other crunchy foods.",
+        "To prove that all apples have the same texture.",
+        "To show the source of her detailed understanding of apple crunch.",
+        "To argue that orchards are better than supermarkets."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does crunchy texture prepare the body for?",
+      "options": [
+        "A sweeter flavour than soft food.",
+        "Raw and rough fibre that supports chewing development.",
+        "A longer period of digestion after meals.",
+        "The need to drink more water with food."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What happens after the first bite, according to Danielle?",
+      "options": [
+        "The body immediately rejects all soft food.",
+        "The person stops noticing the food's texture.",
+        "The sound becomes less important than the colour.",
+        "The person receives information before deciding whether to swallow."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What example is used to show that the first bite can warn us about food quality?",
+      "options": [
+        "Biting into a mushy apple and refusing it.",
+        "Picking fresh apples from a tree.",
+        "Eating roasted beetles with salt.",
+        "Finding carrots too hard to chew."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What main information can crunch give about food?",
+      "options": [
+        "Whether the food is expensive.",
+        "Whether the food was cooked recently.",
+        "Whether the food is of good quality.",
+        "Whether the food contains enough sugar."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why might humans be naturally attracted to a loud crunch?",
+      "options": [
+        "It always means the food is sweet.",
+        "It shows the food was difficult to prepare.",
+        "It proves the food contains animal protein.",
+        "It can signal freshness and safety."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What contrast is introduced after the benefits of crunchy food are discussed?",
+      "options": [
+        "Fresh apples are healthy, but carrots are not.",
+        "Crunchy insects may feel more difficult to accept than apples or carrots.",
+        "Astronauts prefer soft food when they return to Earth.",
+        "Crunchy food is enjoyable but never nutritious."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "How does Dulsie try to make insect protein more acceptable?",
+      "options": [
+        "By using the insects' crunchy texture and presenting them as a cheap meat alternative.",
+        "By hiding the fact that the food contains insects.",
+        "By claiming insects taste exactly like apples.",
+        "By serving insects only to professional chefs."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does Dulsie's answer suggest about her attitude towards insects now?",
+      "options": [
+        "She still avoids eating them directly.",
+        "She only accepts them when mixed with fruit.",
+        "She has found several enjoyable ways to use them in food.",
+        "She believes insects should replace all meat immediately."
+      ]
+    }
+  ],
+  "matching": []
+}

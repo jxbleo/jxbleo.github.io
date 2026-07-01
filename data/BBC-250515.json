@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250515",
+  "title": "Which Cooking Oil Is The Best?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250515-which-cooking-oil-is-the-best.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "People may watch the amount of _____ they eat, but cooking oil is often overlooked.",
+      "section": "The confusion about cooking oils"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Some costly oils are advertised as containing extra _____.",
+      "section": "The confusion about cooking oils"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Older advice supported polyunsaturated oils such as _____.",
+      "section": "The confusion about cooking oils"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Some online experts now recommend _____ instead.",
+      "section": "The confusion about cooking oils"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The listener is unsure whether olive oil is safe at _____.",
+      "section": "The confusion about cooking oils"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Some advice promotes costly choices, for example _____ and avocado oil.",
+      "section": "Expensive oil claims"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Supporters describe these oils as _____.",
+      "section": "Expensive oil claims"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The key question is whether the benefits justify the _____.",
+      "section": "Expensive oil claims"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Avocado oil may suit a taste _____ who can afford it.",
+      "section": "Expensive oil claims"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Many claims about super foods and wonder oils are dismissed as _____.",
+      "section": "Expensive oil claims"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What problem does the programme raise about the fat people eat?",
+      "options": [
+        "People usually know exactly how much oil they consume.",
+        "A significant amount may come from everyday cooking oils.",
+        "Most fat comes from obvious treats such as chocolate and cake.",
+        "Cooking oils contain no fat unless they are used for frying."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What conflicting advice has the listener heard about cooking oils?",
+      "options": [
+        "Butter is healthier than every plant-based oil.",
+        "Olive oil should only be used in cold dishes.",
+        "Fast food is safer than food cooked at home.",
+        "Seed oils may be harmful while extra-virgin olive oil is encouraged."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What practical cooking problem does the listener want answered?",
+      "options": [
+        "Which oil can be used for frying and roasting.",
+        "How to make olive oil taste less strong.",
+        "Whether sunflower oil is cheaper than avocado oil.",
+        "Why online doctors disagree with radio presenters."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What feeling is expressed by the phrase used in the listener's question?",
+      "options": [
+        "Confidence about following expert advice.",
+        "Excitement about trying unusual oils.",
+        "Frustration about not knowing what to use.",
+        "Satisfaction with traditional cooking methods."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What general point is made after the listener's question?",
+      "options": [
+        "Most advice about cooking oils is now settled.",
+        "There is plenty of advice, but it is not consistent.",
+        "Only expensive oils create confusion among listeners.",
+        "People should stop using oil when cooking."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How do supporters of oils such as coconut and avocado oil present them?",
+      "options": [
+        "As basic low-cost kitchen products.",
+        "As oils mainly useful for East Asian food.",
+        "As products that should never be heated.",
+        "As unusually beneficial or effective products."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Under what condition does Nita suggest someone might buy avocado oil?",
+      "options": [
+        "They particularly like its taste and can afford it.",
+        "They want to avoid all other fats completely.",
+        "They need the cheapest option for frying fish.",
+        "They believe every superfood claim they hear."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is Nita's implied position on many claims about expensive oils?",
+      "options": [
+        "They are all proven by strong scientific studies.",
+        "They are mainly useful for professional chefs.",
+        "They are often exaggerated or not worth believing.",
+        "They are true only when oils are used cold."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why is Nita not fully convinced by avocado oil's benefits?",
+      "options": [
+        "She says it has no positive qualities at all.",
+        "She questions whether its benefits justify its cost.",
+        "She thinks its taste is always unpleasant.",
+        "She says it cannot be used in any cooked dish."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What final warning is given about expensive 'wonder' cooking products?",
+      "options": [
+        "They are dangerous whenever used at home.",
+        "They should replace cheaper oils immediately.",
+        "Their health claims may not deserve extra spending.",
+        "Their benefits are limited to people in Cambridge."
+      ]
+    }
+  ],
+  "matching": []
+}
