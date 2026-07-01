@@ -109,6 +109,8 @@ My Words:
 - has its own main navigation entry.
 - shows saved student-owned words and phrases from `studentVocabulary`.
 - uses a vocabulary-list/table layout with word, source/context, saved date, and archive action.
+- includes a manual add form where students can type a word or short phrase
+  plus optional context directly into My Words.
 - visitors see a login prompt instead of personal data.
 
 Student account menu:
@@ -470,7 +472,9 @@ Important mobile rules:
 - Cache query strings must be bumped after shared JS changes.
 - Teacher preview and student mode can accidentally share UI paths; keep reveal logic separate.
 - Vocabulary fallback JS is needed for local/file loading.
-- My Words selection should avoid answer/explanation/result regions.
+- My Words selection is allowed in answer, explanation, feedback, and result
+  content regions, but should still avoid form controls, buttons, login
+  dialogs, and teacher-only controls.
 - On touch devices, My Words should preserve the captured word or phrase while
   dismissing the browser's native selection callout so the site save button is
   the primary action.

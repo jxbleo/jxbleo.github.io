@@ -25,6 +25,8 @@
 - Fixed BBC multiple-choice question spacing so the stem and choices use the
   available width on iPad/tablet layouts instead of reserving action-button
   space before the buttons exist.
+- Updated My Words so students can save selected text from answer/explanation
+  content and manually add a word or phrase from the My Words dashboard view.
 
 ## 2026-06-30
 

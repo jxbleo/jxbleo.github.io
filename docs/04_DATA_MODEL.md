@@ -304,6 +304,8 @@ Rules:
 - Only active students can save.
 - Visitors and teachers cannot save.
 - Browser must call `studentVocabulary`, not write database directly.
+- Words may be saved either from selected page text, including answer and
+  explanation content, or from the manual My Words add form.
 
 ## 11. Browser Local Storage
 

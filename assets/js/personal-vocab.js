@@ -22,23 +22,8 @@
         '.modal-overlay',
         '.login-modal',
         '.highlight-toolbar',
-        '.inline-explanation',
-        '.feedback',
-        '.feedback-bar',
-        '.result-overlay',
-        '.result-card',
-        '.result-bar',
-        '.reveal.show',
-        '[data-answer-reveal="1"]',
-        '[data-teacher-answer="1"]',
-        '[data-feedback]',
-        '[data-history-dispute]',
-        '.history-dispute-note',
-        '.teacher-answer',
         '.teacher-argue-bar',
         '.teacher-reply-item',
-        '.review-answer',
-        '.dispute-explanation',
         '.dispute-comparison'
     ].join(', ');
 

@@ -1388,6 +1388,29 @@ body:not(.teacher-page) .tab-button.active {
 }
 .my-words-head .eyebrow { margin-bottom: 5px; }
 .my-words-head h2 { margin: 0; }
+.my-words-manual {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.8fr) minmax(180px, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.my-words-manual .resource-search {
+    width: 100%;
+}
+.my-word-add {
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 12px;
+    font-weight: 900;
+}
+.my-words-manual-status {
+    grid-column: 1 / -1;
+    min-height: 1.2em;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
 .my-words-tools {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -5523,6 +5546,8 @@ body:not(.teacher-page) .tab-button.active {
         grid-column: 1 / -1;
     }
     .profile-grid { grid-template-columns: 1fr; }
+    .my-words-manual { grid-template-columns: 1fr; }
+    .my-word-add { width: 100%; }
     .my-words-tools { grid-template-columns: 1fr; }
     .my-words-table-head { display: none; }
     .my-words-table-row {

@@ -1308,6 +1308,77 @@
         }).join('') + '</div>';
     }
 
+    function upsertVocabItem(word) {
+        if (!word || !word.vocab_id) return;
+        var next = (state.vocabItems || []).filter(function(item) {
+            return item.vocab_id !== word.vocab_id;
+        });
+        next.unshift(word);
+        state.vocabItems = next;
+    }
+
+    function manualWordValidation(text) {
+        var clean = String(text || '').replace(/\s+/g, ' ').trim();
+        if (!clean) return 'Enter a word or short phrase first.';
+        if (clean.length < 2) return 'Enter a longer word or phrase.';
+        if (clean.length > 120 || clean.split(/\s+/).filter(Boolean).length > 16) {
+            return 'Please add one word or a short phrase at a time.';
+        }
+        if (!/[\p{L}\p{N}]/u.test(clean)) return 'Use letters or numbers in the word.';
+        return '';
+    }
+
+    function bindManualWordAdd() {
+        var form = document.getElementById('my-words-manual-form');
+        if (!form) return;
+        var textInput = document.getElementById('my-words-manual-text');
+        var contextInput = document.getElementById('my-words-manual-context');
+        var status = document.getElementById('my-words-manual-status');
+        var submit = document.getElementById('my-words-manual-submit');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var text = String(textInput && textInput.value || '').replace(/\s+/g, ' ').trim();
+            var context = String(contextInput && contextInput.value || '').replace(/\s+/g, ' ').trim();
+            var validation = manualWordValidation(text);
+            if (validation) {
+                if (status) status.textContent = validation;
+                if (textInput) textInput.focus();
+                return;
+            }
+            if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+                if (status) status.textContent = 'Word saving is not available right now.';
+                return;
+            }
+            if (submit) {
+                submit.disabled = true;
+                submit.textContent = 'Adding...';
+            }
+            if (status) status.textContent = '';
+            window.MrCatCloud.callFunction('studentVocabulary', {
+                action: 'add',
+                text: text,
+                source_set_id: null,
+                source_title: 'My Words',
+                source_path: 'dashboard.html#my-words',
+                context: context
+            }).then(function(result) {
+                if (!result || !result.success) throw new Error(result && result.message || 'Unable to add this word.');
+                upsertVocabItem(result.word);
+                if (textInput) textInput.value = '';
+                if (contextInput) contextInput.value = '';
+                if (status) status.textContent = result.created ? 'Added to My Words.' : 'Already saved. Updated in My Words.';
+                renderMyWordsList();
+            }).catch(function(error) {
+                if (status) status.textContent = error.message || 'Unable to add this word.';
+            }).finally(function() {
+                if (submit) {
+                    submit.disabled = false;
+                    submit.textContent = 'Add';
+                }
+            });
+        });
+    }
+
     function bindMyWordActions() {
         document.querySelectorAll('[data-archive-word]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -1378,6 +1449,7 @@
             });
         }
         bindMyWordActions();
+        bindManualWordAdd();
     }
 
     function renderMyWordsCard() {
@@ -1392,6 +1464,12 @@
                 '</div>' +
                 '<span class="badge neutral" id="my-words-count">' + activeCount + ' saved</span>' +
             '</div>' +
+            '<form class="my-words-manual" id="my-words-manual-form">' +
+                '<input id="my-words-manual-text" class="resource-search" type="text" maxlength="120" placeholder="Add a word or phrase...">' +
+                '<input id="my-words-manual-context" class="resource-search" type="text" maxlength="320" placeholder="Optional note or context...">' +
+                '<button class="primary-button my-word-add" id="my-words-manual-submit" type="submit">Add</button>' +
+                '<span class="my-words-manual-status" id="my-words-manual-status" role="status" aria-live="polite"></span>' +
+            '</form>' +
             '<div class="my-words-tools">' +
                 '<input id="my-words-search" class="resource-search" type="search" placeholder="Search saved words...">' +
                 '<button class="outline-button my-word-refresh" id="my-words-refresh" type="button">Refresh</button>' +
