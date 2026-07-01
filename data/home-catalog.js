@@ -1897,6 +1897,18 @@ window.__HOME_CATALOG__ = {
       "visible": true
     },
     {
+      "id": "NGSL-K",
+      "sectionId": "vocabulary",
+      "title": "NGSL-K",
+      "href": "vocabulary.html?set=NGSL-K",
+      "displayValue": "NGSL-K",
+      "sortValue": 1011,
+      "topic": "",
+      "tags": [],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "NGSL-L",
       "sectionId": "vocabulary",
       "title": "NGSL-L",
