@@ -2336,6 +2336,17 @@
         return String(item.set_id || 'unknown');
     }
 
+    function assignmentCanEarnStar(item) {
+        return !item || (item.mastery_enabled !== false && item.mastery_enabled !== 'false');
+    }
+
+    function matrixStatusIcon(item, status) {
+        if (status === 'mastered') return assignmentCanEarnStar(item) ? '★' : '✓';
+        if (status === 'passed') return '✓';
+        if (status === 'cancelled') return '×';
+        return '○';
+    }
+
     function matrixStudentClass(item) {
         if (item.class_group) return String(item.class_group);
         var uid = item.student_uid || item.auth_uid || '';
@@ -2983,7 +2994,7 @@
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
                     var status = normalizedAssignmentStatus(item.status);
                     var score = numericPercent(item.best_percentage);
-                    var statusIcon = status === 'mastered' ? '★' : status === 'passed' ? '✓' : status === 'cancelled' ? '×' : '○';
+                    var statusIcon = matrixStatusIcon(item, status);
                     var label = status === 'cancelled' ? 'Cancelled' : score == null ? '—' : formatPercent(score);
                     var cellKey = matrixCellKey(item);
                     if (cellKey === state.selectedMatrixCell) selectedItem = item;

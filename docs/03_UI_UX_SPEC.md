@@ -267,7 +267,9 @@ It should include:
 - matrix cells use icon-plus-score status treatment: `Not yet` stays white
   with a neutral hollow circle, while `Passed` and `Mastered` share the same
   green cell background; `Passed` uses a green check circle and `Mastered` uses
-  a solid green circle with a white star.
+  a solid green circle with a white star only when the assignment can earn
+  STAR. If STAR earning is disabled for that assignment, the completed cell
+  uses the green check instead of a star.
 - clicking the left student-name column in the matrix opens an independent
   student timeline modal summarizing that student's assigned-work history,
   using the same overall student data represented by `By student`.

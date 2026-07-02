@@ -145,6 +145,8 @@ Check:
   one CloudBase read page
 - View matrix shows completed status from linked attempts even if assignment
   summary fields are stale
+- View matrix shows a green check, not a star, for completed assignments whose
+  `mastery_enabled` is false
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
 - Clicking the matrix left student-name column opens an independent student
