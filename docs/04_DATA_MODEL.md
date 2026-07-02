@@ -94,6 +94,7 @@ Core fields:
 | `due_at` | Date/null | due time |
 | `passing_percentage` | number | assignment passing threshold |
 | `mastery_percentage` | number | assignment mastery threshold |
+| `mastery_enabled` | boolean | whether this assignment can become mastered / earn STAR; missing means true |
 | `standards_updated_at` | Date/null | last teacher standards edit time |
 | `standards_updated_by_teacher_uid` | string/null | teacher who last edited due/threshold standards |
 | `latest_attempt_id` | string/null | latest submission |
@@ -128,10 +129,12 @@ the linked assignment attempts after recording a countable assignment attempt.
 Teacher progress views may use linked attempts as a fallback if stored summary
 fields are missing or stale.
 
-Teachers may edit an existing assignment's `due_at`, `passing_percentage`, and
-`mastery_percentage` from the View surface. Those edits affect future
-submissions and display standards, but do not automatically regrade historical
-attempts or downgrade completed assignments and protected STAR records.
+Teachers may edit an existing assignment's `due_at`, `passing_percentage`,
+`mastery_percentage`, and `mastery_enabled` from the View surface. Those edits
+affect future submissions and display standards, but do not automatically
+regrade historical attempts or downgrade completed assignments and protected
+STAR records. When `mastery_enabled` is false, future submissions can pass but
+cannot automatically move that assignment to `mastered` or create a new STAR.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled
@@ -149,7 +152,8 @@ Reassignment rule:
 - If the student already has a completed self-study attempt for the same
   `set_id`, the new assignment is initialized from that best self-study attempt:
   `passed` when it meets the assignment passing percentage, `mastered` when it
-  meets mastery. Only mastered conversions create or convert an assignment STAR.
+  meets mastery and `mastery_enabled` is not false. Only mastered conversions
+  create or convert an assignment STAR.
 
 ## 6. `attempts`
 

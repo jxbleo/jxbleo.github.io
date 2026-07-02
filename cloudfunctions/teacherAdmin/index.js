@@ -119,10 +119,14 @@ function assignmentMasteryLocked(assignment) {
   return Boolean(assignment && assignment.mastery_locked === true && assignment.status !== "mastered");
 }
 
+function assignmentMasteryEnabled(assignment) {
+  return !assignment || assignment.mastery_enabled !== false;
+}
+
 function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage, assignment) {
   const percentage = Number(rawPercentage);
   if (!Number.isFinite(percentage)) return "to_do";
-  if (!assignmentMasteryLocked(assignment) && percentage >= masteryPercentage) return "mastered";
+  if (assignmentMasteryEnabled(assignment) && !assignmentMasteryLocked(assignment) && percentage >= masteryPercentage) return "mastered";
   if (percentage >= passingPercentage) return "passed";
   return "to_do";
 }
@@ -318,6 +322,15 @@ function safePercentage(value, fallback) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < 0 || number > 100) throw new Error("INVALID_PERCENTAGE");
   return number;
+}
+
+function safeBoolean(value, fallback) {
+  if (value == null || value === "") return Boolean(fallback);
+  if (value === true || value === false) return value;
+  const normalizedValue = normalized(value);
+  if (["true", "1", "yes", "on"].includes(normalizedValue)) return true;
+  if (["false", "0", "no", "off"].includes(normalizedValue)) return false;
+  throw new Error("INVALID_BOOLEAN");
 }
 
 async function bestCompletedSelfStudyAttempt(studentUid, setId, passingPercentage, masteryPercentage) {
@@ -636,7 +649,7 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
-async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage) {
+async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled) {
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -664,7 +677,8 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
         ? selfStudyStar.best_percentage
         : (selfStudyAttempt ? effectivePercentage(selfStudyAttempt) : 0)
   );
-  const selfStudyStatus = statusForPercentage(selfStudyPercentage, passingPercentage, masteryPercentage, null);
+  const assignmentRules = { mastery_enabled: masteryEnabled };
+  const selfStudyStatus = statusForPercentage(selfStudyPercentage, passingPercentage, masteryPercentage, assignmentRules);
   const convertsSelfStudy = statusRank(selfStudyStatus) >= statusRank("passed");
   const convertsToMastery = selfStudyStatus === "mastered";
   const conversionAttempt = bestSelfStudyAttempt || selfStudyAttempt;
@@ -686,6 +700,7 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     due_at: dueAt,
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
+    mastery_enabled: masteryEnabled,
     completed_at: convertsSelfStudy ? convertedAt : null,
     latest_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
     attempt_count: convertsSelfStudy ? 1 : 0,
@@ -746,6 +761,7 @@ async function createAssignments(event) {
     }
     const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
     const masteryPercentage = safePercentage(event.mastery_percentage, masteryPercentageForSet(set));
+    const masteryEnabled = safeBoolean(event.mastery_enabled, true);
     if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
     for (const studentUid of studentUids) {
@@ -767,7 +783,7 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage);
+      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled);
       created.push({
         student_uid: studentUid,
         student_id: student.student_id,
@@ -791,7 +807,8 @@ async function updateAssignments(event, teacher) {
   const canUpdateDue = hasOwn(event, "due_at");
   const canUpdatePassing = hasOwn(event, "passing_percentage");
   const canUpdateMastery = hasOwn(event, "mastery_percentage");
-  if (!canUpdateDue && !canUpdatePassing && !canUpdateMastery) {
+  const canUpdateMasteryEnabled = hasOwn(event, "mastery_enabled");
+  if (!canUpdateDue && !canUpdatePassing && !canUpdateMastery && !canUpdateMasteryEnabled) {
     throw new Error("NO_ASSIGNMENT_UPDATES");
   }
 
@@ -822,6 +839,9 @@ async function updateAssignments(event, teacher) {
     const mastery = canUpdateMastery
       ? safePercentage(event.mastery_percentage, currentMastery)
       : currentMastery;
+    const masteryEnabled = canUpdateMasteryEnabled
+      ? safeBoolean(event.mastery_enabled, assignmentMasteryEnabled(assignment))
+      : assignmentMasteryEnabled(assignment);
     if (passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
 
     const update = {
@@ -832,6 +852,7 @@ async function updateAssignments(event, teacher) {
     if (canUpdateDue) update.due_at = safeDate(event.due_at);
     if (canUpdatePassing) update.passing_percentage = passing;
     if (canUpdateMastery) update.mastery_percentage = mastery;
+    if (canUpdateMasteryEnabled) update.mastery_enabled = masteryEnabled;
 
     await db.collection("assignments").doc(assignment._id).update(update);
     updated.push({
@@ -945,6 +966,7 @@ async function listAssignments() {
         due_at: assignment.due_at || null,
         passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
         mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
+        mastery_enabled: assignmentMasteryEnabled(assignment),
         answer_revealed: assignment.answer_revealed === true,
         answer_revealed_at: assignment.answer_revealed_at || null,
         mastery_locked: assignment.mastery_locked === true,
@@ -992,6 +1014,7 @@ function attemptView(record, gradingKey) {
     percentage: effectivePercentage(attempt),
     passing_percentage: Number(attempt.passing_percentage || 50),
     mastery_percentage: Number(attempt.mastery_percentage || 90),
+    mastery_enabled: attempt.mastery_enabled !== false,
     passed: effectivePassed(attempt),
     mastered: attempt.adjusted_mastered == null ? attempt.mastered === true : attempt.adjusted_mastered === true,
     selected_group_count: attempt.selected_group_count || null,
@@ -1075,6 +1098,7 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     due_at: assignment.due_at || null,
     passing_percentage: passingPercentageForAssignment(assignment, set),
     mastery_percentage: masteryPercentageForAssignment(assignment, set),
+    mastery_enabled: assignmentMasteryEnabled(assignment),
     answer_revealed: assignment.answer_revealed === true,
     answer_revealed_at: assignment.answer_revealed_at || null,
     mastery_locked: assignment.mastery_locked === true,
@@ -1355,10 +1379,11 @@ function buildAttemptAdjustmentUpdate(attempt, currentResults, teacher, now, gra
   const percentage = Math.max(effectivePercentage(attempt), recalculated);
   const passingPercentage = Number(attempt.passing_percentage || 50);
   const masteryPercentage = Number(attempt.mastery_percentage || 90);
+  const masteryEnabled = attempt.mastery_enabled !== false;
   const passed = effectivePassed(attempt) || percentage >= passingPercentage;
   const mastered = attempt.adjusted_mastered == null
-    ? (attempt.mastered === true || percentage >= masteryPercentage)
-    : (attempt.adjusted_mastered === true || percentage >= masteryPercentage);
+    ? (attempt.mastered === true || (masteryEnabled && percentage >= masteryPercentage))
+    : (attempt.adjusted_mastered === true || (masteryEnabled && percentage >= masteryPercentage));
   const update = {
     original_percentage: attempt.original_percentage == null
       ? Number(attempt.percentage || 0)
