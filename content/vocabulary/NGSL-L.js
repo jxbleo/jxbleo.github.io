@@ -1511,7 +1511,7 @@ window.__VOCABULARY_UNITS__["NGSL-L"] = {
         },
         {
           "number": 10,
-          "prompt": "The young musician gave an __________ performance that surprised all the critics."
+          "prompt": "The young musician gave a __________ performance that surprised all the critics."
         }
       ]
     }
