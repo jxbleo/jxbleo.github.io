@@ -21,6 +21,8 @@
   score shown beside `Check Answers`.
 - Removed the duplicate in-view Words heading and search box from Vocabulary
   Learn.
+- Removed the student Vocabulary bottom-right `Show Answers` capsule while
+  keeping the submitted Test review `Redo` capsule.
 
 ## 2026-07-01
 

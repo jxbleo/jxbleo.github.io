@@ -439,6 +439,8 @@ Shared rules:
   a confirmation dialog warning that the current review will be cleared and the
   cleared answers will not be recorded. Confirming Redo returns the student to
   the group-count selector for a fresh timed test.
+- Student Vocabulary views should not show a standalone bottom-right
+  `Show Answers` capsule.
 
 ## 6. Status Labels
 
