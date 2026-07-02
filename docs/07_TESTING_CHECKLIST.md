@@ -183,8 +183,8 @@ Check:
 
 Check:
 
-- Words/Dictate/Test modes render
-- selecting a numbered Vocabulary Words group shows `Go to Practice`, opens
+- Learn/Dictate/Test modes render
+- selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens
   that group's inline practice, and shows a score beside `Check Answers` after
   checking
 - JSON and JS fallback both work

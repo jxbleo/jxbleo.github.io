@@ -115,29 +115,6 @@
         .view { display: none; }
         .view.active { display: block; }
 
-        .word-toolbar {
-            display: flex;
-            gap: 12px;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .word-search {
-            width: min(320px, 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 14px;
-            font-size: 0.95rem;
-            outline: none;
-            background: #fff;
-        }
-
-        .word-search:focus {
-            border-color: var(--accent);
-        }
-
         .word-set-filter {
             position: sticky;
             top: 8px;
@@ -1124,18 +1101,12 @@
 
             <section class="panel">
                 <div class="switcher">
-                    <button class="switch-btn active" data-view-target="word-list-view">Words</button>
+                    <button class="switch-btn active" data-view-target="word-list-view">Learn</button>
                     <button class="switch-btn" data-view-target="dictation-view">Dictate</button>
                     <button class="switch-btn" data-view-target="test-view">Test</button>
                 </div>
 
                 <div class="view active" id="word-list-view">
-                    <div class="word-toolbar">
-                        <div>
-                            <h2>Words</h2>
-                        </div>
-                        <input id="word-search" class="word-search" type="text" placeholder="Search word, definition, or meaning...">
-                    </div>
                     <div id="word-set-filter" class="word-set-filter" aria-label="Study Set filter"></div>
                     <div id="word-list-grid" class="word-card-grid"></div>
                     <div id="word-practice-panel" class="word-practice-panel"></div>
@@ -1721,22 +1692,9 @@
             }) || null;
         }
 
-        function wordMatchesSearch(word, query) {
-            if (!query) return true;
-            return [word.word, word.simpleDefinition, word.meaning, String(word.number)]
-                .join(' ')
-                .toLowerCase()
-                .indexOf(query) !== -1;
-        }
-
         function filteredWordsForList() {
-            var search = document.getElementById('word-search');
-            var query = search ? search.value.trim().toLowerCase() : '';
             var group = activeWordGroup();
-            var source = group ? getWordsForGroup(group) : (unitData.words || []);
-            return source.filter(function(word) {
-                return wordMatchesSearch(word, query);
-            });
+            return group ? getWordsForGroup(group) : (unitData.words || []);
         }
 
         function renderWordSetFilter(groups) {
@@ -2617,7 +2575,6 @@
                 });
             });
 
-            document.getElementById('word-search').addEventListener('input', renderFilteredWords);
             document.getElementById('word-set-filter').addEventListener('click', function(e) {
                 var button = e.target.closest('[data-word-group]');
                 if (!button) return;

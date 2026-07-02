@@ -16,9 +16,11 @@
 - Vocabulary assignments opened from the student dashboard now land on the
   normal learning entry first instead of automatically restoring/entering Test
   mode.
-- Merged Vocabulary Learn into Words: numbered Study Set filters now expose
-  inline `Go to Practice` practice cards, with a score shown beside
-  `Check Answers`.
+- Merged the Vocabulary word list and practice flow into `Learn`: numbered
+  Study Set filters now expose inline `Go to Practice` practice cards, with a
+  score shown beside `Check Answers`.
+- Removed the duplicate in-view Words heading and search box from Vocabulary
+  Learn.
 
 ## 2026-07-01
 
