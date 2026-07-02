@@ -1162,6 +1162,7 @@
         var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
         if (isNaN(historyBestPercentage)) historyBestPercentage = null;
         var focusQuestionId = params.get('focus') || '';
+        var assignmentEntryMode = params.get('entry') || '';
         var assignmentStatus = params.get('status') || '';
         var answerRevealAvailable = false;
         var answerRevealConfirmed = false;
@@ -2610,7 +2611,9 @@
                 document.getElementById('submit-test-btn').textContent = 'Teacher Preview';
             } else {
                 renderHistoryToolbar();
-                if (!restoreTestDraft()) {
+                if (assignmentEntryMode === 'learn') {
+                    if (focusQuestionId) jumpToQuestion(focusQuestionId);
+                } else if (!restoreTestDraft()) {
                     fetchPrefillAttempt().then(function(started) {
                         if (!started && focusQuestionId) jumpToQuestion(focusQuestionId);
                     });

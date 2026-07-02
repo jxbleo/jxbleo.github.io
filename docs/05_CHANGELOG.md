@@ -11,6 +11,12 @@
   future mastered/STAR earning for selected assignments while still allowing
   passed / FINISHED completion.
 
+### Changed
+
+- Vocabulary assignments opened from the student dashboard now land on the
+  normal learning entry first instead of automatically restoring/entering Test
+  mode.
+
 ## 2026-07-01
 
 ### Changed

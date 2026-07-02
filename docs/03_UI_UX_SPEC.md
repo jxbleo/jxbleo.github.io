@@ -454,6 +454,10 @@ Teacher View assignment editing includes a `Can earn STAR` control. Turning it
 off keeps future completions in `passed` / FINISHED and prevents new STAR
 creation for that assignment, without revoking existing protected STAR records.
 
+Vocabulary assignments opened from the student Assignments view should enter
+the normal vocabulary learning surface first, matching Library entry, so
+students can study words before choosing Test mode themselves.
+
 Legacy labels:
 
 - `not_done`
