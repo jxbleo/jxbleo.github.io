@@ -1401,15 +1401,11 @@
             var toolbar = document.createElement('div');
             toolbar.className = 'history-toolbar';
             toolbar.id = 'history-toolbar';
-            toolbar.innerHTML = '<button type="button" id="show-history-btn">Show Answers</button>';
+            toolbar.innerHTML = '<button type="button" id="show-history-btn">Redo</button>';
             document.body.appendChild(toolbar);
             document.getElementById('show-history-btn').addEventListener('click', function() {
                 if (testRedoAvailable) {
                     requestRedoTest();
-                    return;
-                }
-                if (answerRevealAvailable) {
-                    revealAllAnswers();
                 }
             });
             updateHistoryToolbar();
@@ -1425,8 +1421,8 @@
             var btn = document.getElementById('show-history-btn');
             if (!toolbar || !btn) return;
             var showRedo = testRedoAvailable && activeVocabularyViewId() === 'test-view';
-            toolbar.hidden = (!answerRevealAvailable && !showRedo) || activeVocabularyViewId() === 'self-study-view';
-            btn.textContent = showRedo ? 'Redo' : 'Show Answers';
+            toolbar.hidden = !showRedo;
+            btn.textContent = 'Redo';
         }
 
         function revealAllAnswers() {

@@ -198,6 +198,7 @@ Check:
   show inline answer explanations
 - submitted Test review shows `Redo`; Redo confirms before clearing and
   returns to the group-count selector
+- student Vocabulary views do not show a bottom-right `Show Answers` capsule
 - 1-4 selected Test groups do not create CloudBase attempt
 - 5+ selected Test groups create attempt
 - group metadata is stored
