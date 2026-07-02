@@ -62,6 +62,8 @@ Check:
 
 - login succeeds
 - profile loads
+- opening `Change password` from the account panel shows the password dialog
+  above the account panel
 - forced password change appears when expected
 - Assignments shows `TO DO` and `FINISHED`
 - student opens assigned work
