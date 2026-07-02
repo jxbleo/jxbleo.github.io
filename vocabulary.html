@@ -211,6 +211,34 @@
             text-align: center;
         }
 
+        .word-practice-panel {
+            margin-top: 18px;
+        }
+
+        .word-practice-entry {
+            display: flex;
+            justify-content: center;
+            padding: 18px 0 2px;
+        }
+
+        .practice-score {
+            display: none;
+            align-items: center;
+            min-height: 42px;
+            padding: 9px 13px;
+            border: 1px solid rgba(15, 118, 110, 0.20);
+            border-radius: 999px;
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .practice-score.show {
+            display: inline-flex;
+        }
+
         .word-table-wrap {
             overflow: auto;
             border: 1px solid var(--border);
@@ -1097,7 +1125,6 @@
             <section class="panel">
                 <div class="switcher">
                     <button class="switch-btn active" data-view-target="word-list-view">Words</button>
-                    <button class="switch-btn" data-view-target="self-study-view">Learn</button>
                     <button class="switch-btn" data-view-target="dictation-view">Dictate</button>
                     <button class="switch-btn" data-view-target="test-view">Test</button>
                 </div>
@@ -1111,10 +1138,7 @@
                     </div>
                     <div id="word-set-filter" class="word-set-filter" aria-label="Study Set filter"></div>
                     <div id="word-list-grid" class="word-card-grid"></div>
-                </div>
-
-                <div class="view" id="self-study-view">
-                    <div id="self-study-groups" class="group-grid"></div>
+                    <div id="word-practice-panel" class="word-practice-panel"></div>
                 </div>
 
                 <div class="view" id="dictation-view">
@@ -1176,6 +1200,7 @@
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var activeWordGroupId = '';
+        var activePracticeGroupId = '';
         var testStartedAt = null;
         var testLocked = false;
         var testSubmitting = false;
@@ -1737,6 +1762,26 @@
             renderWords(filteredWordsForList());
         }
 
+        function renderWordPracticePanel() {
+            var root = document.getElementById('word-practice-panel');
+            if (!root) return;
+            var group = activeWordGroup();
+            if (!group) {
+                activePracticeGroupId = '';
+                root.innerHTML = '';
+                return;
+            }
+            if (activePracticeGroupId !== group.id) {
+                root.innerHTML = '<div class="word-practice-entry">' +
+                    '<button class="btn btn-primary" type="button" data-action="open-practice" data-group="' + escapeHtml(group.id) + '">Go to Practice</button>' +
+                '</div>';
+                return;
+            }
+            var groupIndex = (unitData.quizGroups || []).findIndex(function(item) { return item.id === group.id; });
+            root.innerHTML = '<div class="group-grid">' + renderSelfStudyGroup(group, groupIndex) + '</div>';
+            setupAdaptiveInputs(root);
+        }
+
         function escapeHtml(value) {
             return String(value || '')
                 .replace(/&/g, '&amp;')
@@ -1809,6 +1854,7 @@
                 if (!response || !response.success) throw new Error(response && response.message || 'Unable to check answers.');
                 var resultMap = {};
                 (response.question_results || []).forEach(function(item) { resultMap[item.question_id] = item; });
+                var correctCount = 0;
                 group.questions.forEach(function(question, index) {
                     var card = document.getElementById('self-' + groupId + '-question-' + index);
                     var input = card.querySelector('.answer-input');
@@ -1817,11 +1863,13 @@
                     var result = resultMap[key];
                     card.classList.remove('correct', 'wrong', 'pending');
                     if (!result) return;
+                    if (result.correct) correctCount += 1;
                     card.classList.add(result.correct ? 'correct' : (input.value.trim() ? 'wrong' : 'pending'));
                     reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
                         (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
                     reveal.classList.add('show');
                 });
+                updatePracticeScore(groupId, correctCount, group.questions.length, response.percentage);
                 var btn = document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
                 if (btn) {
                     btn.textContent = 'Hide Answer';
@@ -1849,7 +1897,7 @@
             });
             var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]');
             if (btn) {
-                btn.textContent = 'Check Answer';
+                btn.textContent = 'Check Answers';
                 btn.classList.remove('btn-hide-answer');
                 btn.classList.add('btn-primary');
                 btn.setAttribute('data-action', 'check');
@@ -1879,46 +1927,62 @@
                 }
             });
             if (groupCard) refreshChoiceAvailability(groupCard);
+            updatePracticeScore(groupId, null);
             var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]') ||
                       document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
             if (btn && btn.getAttribute('data-action') === 'hide') {
-                btn.textContent = 'Check Answer';
+                btn.textContent = 'Check Answers';
                 btn.classList.remove('btn-hide-answer');
                 btn.classList.add('btn-primary');
                 btn.setAttribute('data-action', 'check');
             }
         }
 
-        function renderSelfStudyGroups(groups) {
-            var root = document.getElementById('self-study-groups');
-            root.innerHTML = groups.map(function(group, groupIndex) {
-                var questions = group.questions.map(function(question, index) {
-                    var questionKey = question.questionKey || (group.id + ':' + question.number);
-                    return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
-                        '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
-                        renderChoicePanel(group.wordList || []) +
-                        '<div class="reveal"></div>' +
-                    '</div>';
-                }).join('');
+        function updatePracticeScore(groupId, correctCount, totalCount, percentage) {
+            var score = document.querySelector('[data-practice-score="' + groupId + '"]');
+            if (!score) return;
+            if (correctCount == null) {
+                score.classList.remove('show');
+                score.textContent = '';
+                return;
+            }
+            var percentText = percentage == null ? Math.round((correctCount / Math.max(1, totalCount)) * 100) : percentage;
+            score.textContent = 'Score: ' + correctCount + ' / ' + totalCount + ' · ' + percentText + '%';
+            score.classList.add('show');
+        }
 
-                return '<div class="group-card">' +
-                    '<div class="group-head">' +
-                        '<div class="group-head-main">' +
-                            '<div class="set-meta-row">' +
-                                '<span class="set-badge">Study Set ' + (groupIndex + 1) + '</span>' +
-                                '<span>' + getWordRangeText(group) + '</span>' +
-                            '</div>' +
-                            renderWordBank(group.wordList || []) +
-                        '</div>' +
-                        renderFontControls() +
-                    '</div>' +
-                    '<div class="question-list">' + questions + '</div>' +
-                    '<div class="group-actions">' +
-                        '<button class="btn btn-clear-all" data-action="clear-all" data-group="' + group.id + '">Clear All</button>' +
-                        '<button class="btn btn-primary" data-action="check" data-group="' + group.id + '">Check Answer</button>' +
-                    '</div>' +
+        function renderSelfStudyGroup(group, groupIndex) {
+            var questions = group.questions.map(function(question, index) {
+                var questionKey = question.questionKey || (group.id + ':' + question.number);
+                return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
+                    '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
+                    renderChoicePanel(group.wordList || []) +
+                    '<div class="reveal"></div>' +
                 '</div>';
             }).join('');
+
+            return '<div class="group-card">' +
+                '<div class="group-head">' +
+                    '<div class="group-head-main">' +
+                        '<div class="set-meta-row">' +
+                            '<span class="set-badge">Study Set ' + (groupIndex + 1) + '</span>' +
+                            '<span>' + getWordRangeText(group) + '</span>' +
+                        '</div>' +
+                        renderWordBank(group.wordList || []) +
+                    '</div>' +
+                    renderFontControls() +
+                '</div>' +
+                '<div class="question-list">' + questions + '</div>' +
+                '<div class="group-actions">' +
+                    '<span class="practice-score" data-practice-score="' + escapeHtml(group.id) + '" aria-live="polite"></span>' +
+                    '<button class="btn btn-clear-all" type="button" data-action="clear-all" data-group="' + escapeHtml(group.id) + '">Clear All</button>' +
+                    '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check Answers</button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderSelfStudyGroups(groups) {
+            return groups.map(renderSelfStudyGroup).join('');
         }
 
         function renderDictation(words) {
@@ -2558,13 +2622,24 @@
                 var button = e.target.closest('[data-word-group]');
                 if (!button) return;
                 activeWordGroupId = button.getAttribute('data-word-group') || '';
+                activePracticeGroupId = '';
                 renderFilteredWords();
+                renderWordPracticePanel();
             });
 
-            document.getElementById('self-study-groups').addEventListener('click', function(e) {
-                var action = e.target.getAttribute('data-action');
-                var groupId = e.target.getAttribute('data-group');
+            document.getElementById('word-practice-panel').addEventListener('click', function(e) {
+                var actionButton = e.target.closest('[data-action]');
+                if (!actionButton) return;
+                var action = actionButton.getAttribute('data-action');
+                var groupId = actionButton.getAttribute('data-group');
                 if (!action || !groupId) return;
+                if (action === 'open-practice') {
+                    activePracticeGroupId = groupId;
+                    renderWordPracticePanel();
+                    var groupCard = document.querySelector('#word-practice-panel .group-card');
+                    if (groupCard) groupCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
                 if (action === 'check') checkGroupAnswers(groupId);
                 if (action === 'hide') hideGroupAnswers(groupId);
                 if (action === 'clear-all') clearGroupAnswers(groupId);
@@ -2598,8 +2673,9 @@
             unitData = data;
             renderHero(data);
             activeWordGroupId = '';
+            activePracticeGroupId = '';
             renderFilteredWords();
-            renderSelfStudyGroups(data.quizGroups || []);
+            renderWordPracticePanel();
             renderDictationRangeOptions(data.words || []);
             renderTestOptions(data.quizGroups || []);
             wireEvents();
