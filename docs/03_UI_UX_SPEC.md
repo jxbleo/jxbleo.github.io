@@ -409,7 +409,8 @@ Shared rules:
 ### Vocabulary Learn
 
 - Vocabulary Learn shows a sticky Study Set filter row at the top of the view.
-  It defaults to `All`; numbered round buttons filter the word cards by the
+  It defaults to `All`, while the filter row displays numbered round buttons
+  first and `All` at the end. Numbered buttons filter the word cards by the
   matching study group's word range.
 - When a numbered Study Set is selected, the bottom of Learn shows a
   `Go to Practice` button. Clicking it opens that same group's practice card
