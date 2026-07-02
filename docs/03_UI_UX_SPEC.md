@@ -412,14 +412,14 @@ Shared rules:
   It defaults to `All`; numbered round buttons filter the word cards by the
   matching study group's word range, and the search field filters within the
   currently selected Study Set.
-
-### Vocabulary Learn
-
-- Vocabulary Learn mode uses each study group's own `Check Answer` button.
-  The floating global `Show Answers` history/reveal button should not appear
-  while the Learn view is active.
-- Vocabulary practice does not expose Argue buttons in Learn, Test, History,
-  or teacher preview surfaces.
+- When a numbered Study Set is selected, the bottom of Words shows a
+  `Go to Practice` button. Clicking it opens that same group's practice card
+  inline below the word cards, using the former Learn-mode questions and word
+  bank.
+- Vocabulary inline practice uses each study group's own `Check Answers`
+  button and shows a score pill beside the practice controls after checking.
+- Vocabulary practice does not expose Argue buttons in inline practice, Test,
+  History, or teacher preview surfaces.
 
 ### Vocabulary Test
 

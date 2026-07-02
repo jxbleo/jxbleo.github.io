@@ -183,7 +183,10 @@ Check:
 
 Check:
 
-- Word List/Learn/Dictate/Test modes render
+- Words/Dictate/Test modes render
+- selecting a numbered Vocabulary Words group shows `Go to Practice`, opens
+  that group's inline practice, and shows a score beside `Check Answers` after
+  checking
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
 - running Test mode disables other Vocabulary mode tabs and warns on
