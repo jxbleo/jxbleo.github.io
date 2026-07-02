@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-03
+
+### Changed
+
+- Changed Teacher View matrix cells so completed assignments with STAR earning
+  disabled show a green check instead of a star.
+
 ## 2026-07-02
 
 ### Added
