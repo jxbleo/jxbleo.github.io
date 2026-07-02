@@ -406,13 +406,12 @@ Shared rules:
   mastery by itself.
   Historical attempts below the passing threshold must still hide both actions.
 
-### Vocabulary Words
+### Vocabulary Learn
 
-- Vocabulary Words shows a sticky Study Set filter row under the Words toolbar.
+- Vocabulary Learn shows a sticky Study Set filter row at the top of the view.
   It defaults to `All`; numbered round buttons filter the word cards by the
-  matching study group's word range, and the search field filters within the
-  currently selected Study Set.
-- When a numbered Study Set is selected, the bottom of Words shows a
+  matching study group's word range.
+- When a numbered Study Set is selected, the bottom of Learn shows a
   `Go to Practice` button. Clicking it opens that same group's practice card
   inline below the word cards, using the former Learn-mode questions and word
   bank.
