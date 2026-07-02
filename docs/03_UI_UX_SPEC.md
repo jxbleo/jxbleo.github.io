@@ -117,6 +117,8 @@ Student account menu:
 
 - opens from the top-right identity chip.
 - shows profile/account information, password change, and logout.
+- the `Change password` dialog must layer above the account panel and remain
+  the topmost student-account surface while open.
 - teacher replies remain a message-center dialog opened from the top-right message indicator.
 
 ## 4. Teacher Interface

@@ -23,6 +23,8 @@
   Learn.
 - Removed the student Vocabulary bottom-right `Show Answers` capsule while
   keeping the submitted Test review `Redo` capsule.
+- Raised the student `Change password` dialog above the account panel so it is
+  the topmost surface after opening from the profile menu.
 
 ## 2026-07-01
 
