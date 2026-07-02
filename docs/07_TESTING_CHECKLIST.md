@@ -81,6 +81,8 @@ Check:
 - reveal answers works only after passing
 - reveal locks mastery only when not already mastered
 - mastered work creates backend STAR
+- assignment with `mastery_enabled: false` can pass but does not become
+  mastered or create a new STAR on later submissions
 - Vocabulary countable tests use `80%` passing and `100%` mastery by default
   unless the set or assignment explicitly overrides thresholds
 - a not-passed Vocabulary Test result can return to group selection and start

@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-02
+
+### Added
+
+- Added assignment-level `mastery_enabled` support so teachers can turn off
+  future mastered/STAR earning for selected assignments while still allowing
+  passed / FINISHED completion.
+
 ## 2026-07-01
 
 ### Changed

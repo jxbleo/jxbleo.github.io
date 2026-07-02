@@ -1240,12 +1240,15 @@
         var dueEl = document.getElementById('assign-due');
         var passingEl = document.getElementById('assign-passing');
         var masteryEl = document.getElementById('assign-mastery');
+        var masteryEnabledEl = document.getElementById('assign-mastery-enabled');
         var due = dueEl ? dueEl.value : '';
         var passing = passingEl ? passingEl.value : '';
         var mastery = masteryEl ? masteryEl.value : '';
+        var masteryEnabled = masteryEnabledEl ? masteryEnabledEl.value !== 'false' : true;
         if (due) parts.push('Due ' + due);
         if (passing) parts.push('Pass ' + passing + '%');
         if (mastery) parts.push('Mastery ' + mastery + '%');
+        if (!masteryEnabled) parts.push('No STAR');
         summary.textContent = parts.length ? parts.join(' · ') : 'Default';
     }
 
@@ -2160,6 +2163,8 @@
         var commonDue = commonFieldValue(items, 'due_at');
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
+        var commonMasteryEnabled = commonFieldValue(items, 'mastery_enabled');
+        var masteryEnabledChecked = commonMasteryEnabled !== 'false';
         var scopeSubtitle = group.subtitle ? group.subtitle + ' · ' : '';
         var overlay = document.createElement('div');
         overlay.className = 'assignment-edit-overlay';
@@ -2178,7 +2183,9 @@
                     '<input type="number" name="passing_percentage" min="0" max="100" step="0.01" placeholder="' + (commonPassing === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonPassing) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
                     '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
-                    '<p class="assignment-edit-note">This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards.</p>' +
+                    '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>STAR</span></label>' +
+                    '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
+                    '<p class="assignment-edit-note">This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
                     '<div class="dialog-actions">' +
                         '<button class="outline-button" type="button" data-cancel-edit>Cancel</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
@@ -2229,9 +2236,13 @@
             if (form.elements.change_mastery.checked) {
                 payload.mastery_percentage = form.elements.mastery_percentage.value;
             }
+            if (form.elements.change_mastery_enabled.checked) {
+                payload.mastery_enabled = form.elements.mastery_enabled.checked;
+            }
             if (!Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'passing_percentage') &&
-                !Object.prototype.hasOwnProperty.call(payload, 'mastery_percentage')) {
+                !Object.prototype.hasOwnProperty.call(payload, 'mastery_percentage') &&
+                !Object.prototype.hasOwnProperty.call(payload, 'mastery_enabled')) {
                 showMessage('Choose at least one field to update.', 'error');
                 return;
             }
@@ -2556,7 +2567,7 @@
         if (percent == null) return 'not-passed';
         var mastery = Number(assignment && assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
         var passing = Number(assignment && assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
-        if (isFinite(mastery) && percent >= mastery) return 'mastered';
+        if ((!assignment || assignment.mastery_enabled !== false) && isFinite(mastery) && percent >= mastery) return 'mastered';
         if (isFinite(passing) && percent >= passing) return 'passed';
         return 'not-passed';
     }
@@ -4112,7 +4123,7 @@
     });
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
-    ['assign-due', 'assign-passing', 'assign-mastery'].forEach(function(id) {
+    ['assign-due', 'assign-passing', 'assign-mastery', 'assign-mastery-enabled'].forEach(function(id) {
         var input = document.getElementById(id);
         if (input) input.addEventListener('input', updateAssignOptionsSummary);
     });
@@ -4156,7 +4167,8 @@
             student_uids: studentUids,
             due_at: due ? due + 'T23:59:59+08:00' : null,
             passing_percentage: document.getElementById('assign-passing').value,
-            mastery_percentage: document.getElementById('assign-mastery').value
+            mastery_percentage: document.getElementById('assign-mastery').value,
+            mastery_enabled: document.getElementById('assign-mastery-enabled').value !== 'false'
         }).then(function(result) {
             showMessage(
                 result.created.length + ' assignment(s) created' +

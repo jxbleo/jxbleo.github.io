@@ -95,10 +95,14 @@ function passingPercentageForAssignment(assignment, set) {
     : passingPercentageForSet(set));
 }
 
-function normalizedStatus(status, percentage, passingPercentage, masteryPercentage) {
+function assignmentMasteryEnabled(assignment) {
+  return !assignment || assignment.mastery_enabled !== false;
+}
+
+function normalizedStatus(status, percentage, passingPercentage, masteryPercentage, assignment) {
   if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
-  if (percentage >= masteryPercentage) return "mastered";
+  if (assignmentMasteryEnabled(assignment) && percentage >= masteryPercentage) return "mastered";
   if (percentage >= passingPercentage) return "passed";
   if (status === "passed" || status === "done") return "passed";
   return "to_do";
@@ -762,7 +766,7 @@ exports.main = async (event = {}) => {
           ? (computedBestPercentage == null ? assignment.latest_percentage : computedBestPercentage)
           : assignment.best_percentage);
       const percentage = displayPercentage(bestValue);
-      const status = normalizedStatus(assignment.status, Number(percentage || 0), passingPercentage, masteryPercentage);
+      const status = normalizedStatus(assignment.status, Number(percentage || 0), passingPercentage, masteryPercentage, assignment);
       const completedAt = assignment.completed_at
         || (status === "passed" || status === "mastered"
           ? (computedBestAttempt && computedBestAttempt.submitted_at) || null
@@ -818,6 +822,7 @@ exports.main = async (event = {}) => {
         star_claimed: claimedAssignmentIds.has(assignment.assignment_id || assignment._id),
         passing_percentage: passingPercentage,
         mastery_percentage: masteryPercentage,
+        mastery_enabled: assignmentMasteryEnabled(assignment),
         teacher_replies: teacherReplies,
         teacher_reply_count: teacherReplies.length,
         set: set || {

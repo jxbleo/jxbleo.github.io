@@ -98,12 +98,16 @@ function assignmentMasteryLocked(assignment) {
   return Boolean(assignment && assignment.mastery_locked === true && assignment.status !== "mastered");
 }
 
+function assignmentMasteryEnabled(assignment) {
+  return !assignment || assignment.mastery_enabled !== false;
+}
+
 function displayPercentage(rawPercentage, assignment, masteryPercentage) {
   return assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage ? masteryPercentage - 0.01 : rawPercentage;
 }
 
 function statusForPercentage(rawPercentage, passingPercentage, masteryPercentage, assignment) {
-  if (!assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage) return "mastered";
+  if (assignmentMasteryEnabled(assignment) && !assignmentMasteryLocked(assignment) && rawPercentage >= masteryPercentage) return "mastered";
   if (displayPercentage(rawPercentage, assignment, masteryPercentage) >= passingPercentage) return "passed";
   return "to_do";
 }
@@ -482,6 +486,7 @@ exports.main = async (event) => {
         display_percentage: grading.percentage,
         passing_percentage: passingPercentage,
         mastery_percentage: masteryPercentage,
+        mastery_enabled: assignmentMasteryEnabled(assignment),
         passed,
         mastered,
         status: "self_test",
@@ -539,10 +544,13 @@ exports.main = async (event) => {
       display_percentage: displayedPercentage,
       passing_percentage: passingPercentage,
       mastery_percentage: masteryPercentage,
+      mastery_enabled: assignmentMasteryEnabled(assignment),
       passed,
       mastered,
       mastery_eligible: mastered,
-      mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
+      mastery_blocked_reason: !assignmentMasteryEnabled(assignment)
+        ? "mastery_disabled"
+        : assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
       feedback_policy: feedbackPolicy,
       started_at: event.started_at || null,
       submitted_at: submittedAt,
@@ -594,13 +602,16 @@ exports.main = async (event) => {
       display_percentage: displayedPercentage,
       passing_percentage: passingPercentage,
       mastery_percentage: masteryPercentage,
+      mastery_enabled: assignmentMasteryEnabled(assignment),
       passed,
       mastered,
       status: finalAssignmentStatus,
       assignment_status: finalAssignmentStatus,
       attempt_status: attemptStatus,
       mastery_eligible: mastered,
-      mastery_blocked_reason: assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
+      mastery_blocked_reason: !assignmentMasteryEnabled(assignment)
+        ? "mastery_disabled"
+        : assignmentMasteryLocked(assignment) ? "answer_revealed" : "",
       question_results: mayShowFeedback ? grading.results : grading.results.map((item) => ({
         question_id: item.question_id,
         submitted_answer: item.submitted_answer,

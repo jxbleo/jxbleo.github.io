@@ -450,6 +450,10 @@ Preferred product labels:
 | `passed` | FINISHED | Passed / Finished |
 | `mastered` | FINISHED + STAR | Mastered |
 
+Teacher View assignment editing includes a `Can earn STAR` control. Turning it
+off keeps future completions in `passed` / FINISHED and prevents new STAR
+creation for that assignment, without revoking existing protected STAR records.
+
 Legacy labels:
 
 - `not_done`

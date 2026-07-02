@@ -279,6 +279,7 @@ flowchart TD
 - `status`：`to_do`、`passed`、`mastered`、`cancelled`
 - `passing_percentage`
 - `mastery_percentage`
+- `mastery_enabled`：是否允许本 assignment 升级为 mastered / STAR；默认 true
 - `attempt_count`
 - `latest_attempt_id`
 - `best_attempt_id`
@@ -300,6 +301,9 @@ flowchart TD
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
+- 老师可以关闭单条 assignment 的 `mastery_enabled`。关闭后学生仍可达到
+  `passed` / FINISHED，但后续提交不会把该 assignment 升级为 `mastered`，
+  也不会创建新的 STAR。已有 mastered 状态和受保护 STAR 不会因此被撤销。
 
 ### 7.4 attempts
 
@@ -788,6 +792,7 @@ due date、passing percentage 和 mastery percentage。修改后的标准用于�
 - `to_do -> passed -> mastered` 只能向上
 - later failed attempt 只更新 latest，不降低 completed status
 - latest 和 best 分开看
+- `mastery_enabled: false` 的 assignment 最高只自动进入 `passed`，不创建 STAR
 
 ### P0：完成后应允许重新布置（源码已修复，待部署验证）
 
