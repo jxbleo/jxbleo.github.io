@@ -1704,15 +1704,15 @@
                 root.innerHTML = '';
                 return;
             }
-            root.innerHTML = '<button class="word-set-btn all' + (!activeWordGroupId ? ' active' : '') +
-                '" type="button" data-word-group="">All</button>' +
-                groups.map(function(group, index) {
+            root.innerHTML = groups.map(function(group, index) {
                     return '<button class="word-set-btn' + (group.id === activeWordGroupId ? ' active' : '') +
                         '" type="button" data-word-group="' + escapeHtml(group.id) +
                         '" title="' + escapeHtml(getWordRangeText(group)) + '">' +
                         escapeHtml(index + 1) +
                     '</button>';
-                }).join('');
+                }).join('') +
+                '<button class="word-set-btn all' + (!activeWordGroupId ? ' active' : '') +
+                '" type="button" data-word-group="">All</button>';
         }
 
         function renderFilteredWords() {
