@@ -193,10 +193,11 @@ Check:
 Check:
 
 - Learn/Dictate/Test modes render
-- Vocabulary Learn numbered capsules stay above the word cards and inline
-  practice header while scrolling
-- Learn word cards do not show source numbers, and inline practice headers do
-  not repeat `Study Set` or word-range labels
+- Vocabulary Learn numbered capsules and active-group word bank share one
+  sticky learning bar that stays above word cards and practice questions while
+  scrolling
+- Learn word cards do not show source numbers, and inline practice cards do
+  not repeat `Study Set`, word-range labels, or a second word bank
 - Vocabulary practice word-bank chips show words only, without chip numbers or
   plus/minus font controls
 - selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens

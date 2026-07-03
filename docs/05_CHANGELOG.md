@@ -14,9 +14,9 @@
   appearing unusually short.
 - Changed finished Vocabulary assignment cards to open the Learn entry like
   Library cards instead of automatically entering Test/History mode.
-- Refined Vocabulary Learn so numbered group capsules stay on top while
-  scrolling, word cards omit source numbers, and inline practice headers no
-  longer repeat Study Set or word-range labels.
+- Refined Vocabulary Learn so numbered group capsules and the active word bank
+  share one sticky learning bar, word cards omit source numbers, and inline
+  practice cards no longer repeat Study Set, word-range, or word-bank headers.
 - Removed auto-numbering from Vocabulary practice word-bank chips and removed
   the plus/minus font controls from vocabulary practice cards.
 
