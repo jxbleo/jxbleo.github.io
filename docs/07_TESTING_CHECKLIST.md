@@ -197,6 +197,8 @@ Check:
   practice header while scrolling
 - Learn word cards do not show source numbers, and inline practice headers do
   not repeat `Study Set` or word-range labels
+- Vocabulary practice word-bank chips show words only, without chip numbers or
+  plus/minus font controls
 - selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens
   that group's inline practice, and shows a score beside `Check Answers` after
   checking

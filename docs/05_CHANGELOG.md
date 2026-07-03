@@ -17,6 +17,8 @@
 - Refined Vocabulary Learn so numbered group capsules stay on top while
   scrolling, word cards omit source numbers, and inline practice headers no
   longer repeat Study Set or word-range labels.
+- Removed auto-numbering from Vocabulary practice word-bank chips and removed
+  the plus/minus font controls from vocabulary practice cards.
 
 ## 2026-07-02
 
