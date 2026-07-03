@@ -214,9 +214,9 @@ Check:
   feedback in the answer blank
 - unanswered wrong Vocabulary inline practice blanks show `X` on the
   submitted-answer side, not `No answer`
-- Vocabulary inline practice questions with explanations show an always-visible
-  `?` button before and after checking; clicking it opens a floating
-  explanation popover that does not push the question layout down
+- every Vocabulary inline practice question card shows an always-visible `?`
+  button before and after checking; clicking it opens a floating explanation
+  popover that does not push the question layout down
 - Vocabulary inline practice with local `answer` fields checks without
   CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
   such as `t.scope`

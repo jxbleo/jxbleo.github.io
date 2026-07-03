@@ -1922,9 +1922,9 @@
         }
 
         function renderPracticeExplanation(question, groupId) {
-            if (!question.explanation) return '';
+            var explanation = question.explanation || 'No explanation available yet.';
             return '<button class="practice-explain-btn" type="button" data-action="toggle-practice-explanation" data-group="' + escapeHtml(groupId) + '" title="Explain this answer" aria-label="Explain this answer">?</button>' +
-                '<div class="reveal practice-explanation-popover">' + escapeHtml(question.explanation) + '</div>';
+                '<div class="reveal practice-explanation-popover">' + escapeHtml(explanation) + '</div>';
         }
 
         function renderPromptWithSelect(question, options) {
