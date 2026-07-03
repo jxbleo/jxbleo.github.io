@@ -32,6 +32,9 @@
   buttons with floating popovers, and removed the wrong-card pulse animation.
 - Changed Vocabulary inline practice so every question card renders the `?`
   explanation button, even before the popover is opened.
+- Refined Vocabulary Test mode with a sticky numbered test-set bar and inline
+  timer, number-only test-set labels, Learn-style inline answer feedback after
+  submit, a `Submit` button label, and bottom result summary plus `Redo`.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.

@@ -456,17 +456,22 @@ Shared rules:
 
 ### Vocabulary Test
 
-- The test countdown timer is fixed at the top-center of the screen with red text on a light-red background to create a sense of urgency.
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
+- While a Vocabulary Test is running, the top of the Test view uses a sticky
+  capsule bar like Vocabulary Learn. It centers numbered test-set capsules and
+  the countdown timer in the same row. The test-set labels show only numbers,
+  not `Test Set 1` text, and clicking a number jumps to that test set.
 - While a Vocabulary Test is running, the page is front-end locked to the Test
   view: other mode tabs are disabled, browser unload/back attempts show a
   warning, and the student must submit or wait for automatic time-up submission.
 - Manual Submit opens an early-submit confirmation; time-up submission does not
-  ask again.
+  ask again. The visible button label is `Submit`.
 - The Vocabulary Test result modal has one action only: `Close`.
-- After the result modal closes, incorrect Vocabulary Test questions remain
-  marked red and their answer explanations are shown inline for review.
+- After submission, Vocabulary Test answer feedback is written directly into
+  each question blank using the same inline answer treatment as Vocabulary
+  Learn. The bottom of the Test view shows the result summary and an inline
+  `Redo` button; results should not appear above the test questions.
 - Student Vocabulary pages should not show a bottom-right floating `Redo`
   capsule. Redo actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right
