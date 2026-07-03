@@ -417,12 +417,14 @@ Shared rules:
 
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
-  first and `All` at the end. A small triangle word-bank toggle sits at the far
-  left of the filter row. Numbered buttons filter the word cards by the matching
-  study group's word range. The sticky learning bar should sit as an opaque top
-  layer when it sticks, so the mode switcher or any earlier capsule row scrolls
-  away instead of showing as a second layer underneath. Selecting a group does
-  not show the word bank by itself.
+  first and `All` at the end. Numbered buttons filter the word cards by the
+  matching study group's word range. The word-bank triangle toggle is not part
+  of the numbered capsule row: when the word bank is collapsed, it sits below
+  the active number capsule; when the word bank is open, it sits outside and
+  below the word-bank box, centered. The sticky learning bar should sit as an
+  opaque top layer when it sticks, so the mode switcher or any earlier capsule
+  row scrolls away instead of showing as a second layer underneath. Selecting a
+  group does not show the word bank by itself.
 - Learn word cards show the word, emoji, definition, and Chinese meaning
   without repeating each word's source number.
 - When a numbered Study Set is selected, the bottom of Learn shows a
@@ -464,18 +466,22 @@ Shared rules:
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
-  capsule bar like Vocabulary Learn. It centers numbered test-set capsules and
-  the countdown timer in the same row. A small triangle word-bank toggle sits
-  at the far left of the test-set capsules. Test numbered capsules use a red
-  visual treatment to distinguish them from Learn groups. The test-set labels
-  show only numbers, not `Test Set 1` text, and clicking a number jumps to that
-  test set. The current test set's word bank appears directly below the
-  numbered capsules in the same sticky surface; when the student scrolls
-  between test sets, the active number and sticky word bank automatically update
-  to match the visible test set. If the student manually closes the word bank
-  with the triangle toggle, scrolling must not reopen it until the student opens
-  it manually again. The sticky word bank must layer above question-card `?`
-  explanation buttons and their floating explanation popovers while scrolling.
+  capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a
+  horizontal row; when there are more than six selected sets, the row scrolls
+  horizontally instead of wrapping into multiple lines. The countdown timer
+  remains a fixed capsule at the far right of the sticky row. Test numbered
+  capsules use a red visual treatment to distinguish them from Learn groups.
+  The test-set labels show only numbers, not `Test Set 1` text, and clicking a
+  number jumps to that test set. The current test set's word bank appears
+  directly below the numbered capsules in the same sticky surface; when the
+  student scrolls between test sets, the active number and sticky word bank
+  automatically update to match the visible test set. The word-bank triangle
+  toggle follows the same placement as Learn: below the active number when
+  collapsed, and centered below the word-bank box when open. If the student
+  manually closes the word bank with the triangle toggle, scrolling must not
+  reopen it until the student opens it manually again. The sticky word bank must
+  layer above question-card `?` explanation buttons and their floating
+  explanation popovers while scrolling.
 - While a Vocabulary Test is running, the page is front-end locked to the Test
   view: other mode tabs are disabled, browser unload/back attempts show a
   warning, and the student must submit or wait for automatic time-up submission.
