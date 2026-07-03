@@ -30,6 +30,8 @@
 - Restored Vocabulary inline practice explanations for local checks.
 - Changed Vocabulary inline practice explanations to use always-visible `?`
   buttons with floating popovers, and removed the wrong-card pulse animation.
+- Changed Vocabulary inline practice so every question card renders the `?`
+  explanation button, even before the popover is opened.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
