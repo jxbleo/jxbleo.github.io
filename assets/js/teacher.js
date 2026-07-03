@@ -85,6 +85,7 @@
     var libraryList = document.getElementById('teacher-library-list');
     var updatesPanel = document.getElementById('teacher-updates-panel');
     var updatesBody = document.getElementById('teacher-updates-body');
+    var notificationAttemptRoot = document.getElementById('teacher-notification-attempt-root');
     var teacherAccountPanel = document.getElementById('teacher-account-panel');
     var teacherAccountContent = document.getElementById('teacher-account-content');
 
@@ -3477,14 +3478,20 @@
         updatesPanel.hidden = !state.updatesOpen;
         var button = document.getElementById('teacher-updates-button');
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
-        if (!state.updatesOpen) return;
-        updatesBody.innerHTML = renderActivityFeed() + renderNotificationAttemptModal();
+        if (!state.updatesOpen) {
+            if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = '';
+            return;
+        }
+        updatesBody.innerHTML = renderActivityFeed();
+        var modalRoot = notificationAttemptRoot || updatesBody;
+        if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = renderNotificationAttemptModal();
+        else updatesBody.insertAdjacentHTML('beforeend', renderNotificationAttemptModal());
         updatesBody.querySelectorAll('[data-open-attempt-id]').forEach(function(row) {
             row.addEventListener('click', function() {
                 openAttemptFromNotification(row);
             });
         });
-        updatesBody.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
+        modalRoot.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
                 state.notificationAttemptId = '';
@@ -3493,20 +3500,20 @@
                 renderUpdatesPanel();
             });
         });
-        updatesBody.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
+        modalRoot.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.stopPropagation();
                 state.selectedMatrixReviewAttemptId = button.dataset.matrixReviewAttempt || '';
                 loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderUpdatesPanel);
             });
         });
-        updatesBody.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
+        modalRoot.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.selectedMatrixReviewAttemptId = '';
                 renderUpdatesPanel();
             });
         });
-        updatesBody.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
+        modalRoot.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
                 if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
                     state.selectedMatrixReviewAttemptId = button.dataset.matrixAttemptId;
@@ -3520,7 +3527,7 @@
         });
         if (state.notificationAttemptId && state.targetMatrixAttemptId) {
             window.setTimeout(function() {
-                var modal = updatesBody.querySelector('.notification-attempt-modal .progress-matrix-modal-shell');
+                var modal = modalRoot.querySelector('.notification-attempt-modal .progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('.matrix-attempt-card.highlight');
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 80);

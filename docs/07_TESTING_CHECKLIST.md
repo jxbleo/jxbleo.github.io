@@ -154,6 +154,9 @@ Check:
   history
 - Clicking a matrix cell opens the independent page-level detail modal instead
   of rendering the detail inline under the matrix
+- Opening a teacher notification attempt for the first time shows the full
+  attempt-detail dialog height; closing and reopening should not be required
+  to get the normal modal size
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
