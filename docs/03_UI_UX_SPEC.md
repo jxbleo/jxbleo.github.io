@@ -432,8 +432,14 @@ Shared rules:
   controls, or a second word bank because the sticky learning bar already
   identifies the group. The word bank shows words only, without auto-numbered
   chips or font-size plus/minus controls.
-- Vocabulary inline practice uses each study group's own `Check Answers`
-  button and shows a score pill beside the practice controls after checking.
+- Vocabulary inline practice uses each study group's own `Check` button. After
+  checking, correct cards turn green, incorrect cards turn red with a brief
+  pulse, and each answer blank is replaced by inline feedback: correct answers
+  show in green, while wrong answers show the submitted answer in red followed
+  by an arrow and the correct answer in green. The `Check` button is replaced
+  by a score pill and an inline `Redo` button; `Redo` clears all practice
+  answers and restores the group to an unchecked state. Inline practice does
+  not show `Clear All`, `Hide Answer`, or a floating `Redo` control.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 
@@ -450,11 +456,8 @@ Shared rules:
 - The Vocabulary Test result modal has one action only: `Close`.
 - After the result modal closes, incorrect Vocabulary Test questions remain
   marked red and their answer explanations are shown inline for review.
-- The submitted Test view shows a bottom-right floating `Redo` capsule instead
-  of the page-bottom Redo button or floating `Show Answers` capsule. Redo opens
-  a confirmation dialog warning that the current review will be cleared and the
-  cleared answers will not be recorded. Confirming Redo returns the student to
-  the group-count selector for a fresh timed test.
+- Student Vocabulary pages should not show a bottom-right floating `Redo`
+  capsule. Redo actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right
   `Show Answers` capsule.
 

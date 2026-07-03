@@ -252,6 +252,10 @@
             display: inline-flex;
         }
 
+        .practice-redo-btn[hidden] {
+            display: none;
+        }
+
         .word-table-wrap {
             overflow: auto;
             border: 1px solid var(--border);
@@ -558,6 +562,27 @@
             background: #fefce8;
         }
 
+        .self-question.correct {
+            border-color: #22c55e;
+            background: #ecfdf3;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.12);
+        }
+
+        .self-question.wrong {
+            border-color: #ef4444;
+            background: #fff1f2;
+            animation: practiceWrongPulse 980ms ease-in-out 0s 3;
+        }
+
+        @keyframes practiceWrongPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.0);
+            }
+            50% {
+                box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.20);
+            }
+        }
+
         .dictation-row.correct td {
             background: #f0fdf4;
         }
@@ -641,6 +666,39 @@
 
         .blank-trigger.selected {
             min-width: 4.5ch;
+        }
+
+        .blank-trigger.feedback {
+            min-width: 6ch;
+            gap: 6px;
+            border-bottom-width: 3px;
+            cursor: default;
+        }
+
+        .blank-trigger.feedback-correct {
+            border-bottom-color: #22c55e;
+            color: #15803d;
+        }
+
+        .blank-trigger.feedback-wrong {
+            border-bottom-color: #ef4444;
+        }
+
+        .feedback-submitted {
+            color: #dc2626;
+            font-weight: 900;
+            text-decoration: line-through;
+            text-decoration-thickness: 2px;
+        }
+
+        .feedback-arrow {
+            color: #64748b;
+            font-weight: 900;
+        }
+
+        .feedback-correct {
+            color: #16a34a;
+            font-weight: 900;
         }
 
         .choice-panel {
@@ -799,26 +857,6 @@
         .btn-secondary {
             background: #eef2f7;
             color: var(--ink);
-        }
-
-        .btn-clear-all {
-            background: #fff6ed;
-            color: #9a5a2a;
-            border: 1px solid #e2c8b0;
-        }
-
-        .btn-clear-all:hover {
-            background: #fde8d0;
-            color: #7a431a;
-        }
-
-        .btn-hide-answer {
-            background: #e0eef5;
-            color: #1a5f7a;
-        }
-
-        .btn-hide-answer:hover {
-            background: #cde2ee;
         }
 
         .test-setup {
@@ -1411,18 +1449,6 @@
         }
 
         function renderHistoryToolbar() {
-            if (document.getElementById('history-toolbar')) return;
-            var toolbar = document.createElement('div');
-            toolbar.className = 'history-toolbar';
-            toolbar.id = 'history-toolbar';
-            toolbar.innerHTML = '<button type="button" id="show-history-btn">Redo</button>';
-            document.body.appendChild(toolbar);
-            document.getElementById('show-history-btn').addEventListener('click', function() {
-                if (testRedoAvailable) {
-                    requestRedoTest();
-                }
-            });
-            updateHistoryToolbar();
         }
 
         function activeVocabularyViewId() {
@@ -1431,12 +1457,6 @@
         }
 
         function updateHistoryToolbar() {
-            var toolbar = document.getElementById('history-toolbar');
-            var btn = document.getElementById('show-history-btn');
-            if (!toolbar || !btn) return;
-            var showRedo = testRedoAvailable && activeVocabularyViewId() === 'test-view';
-            toolbar.hidden = !showRedo;
-            btn.textContent = 'Redo';
         }
 
         function revealAllAnswers() {
@@ -1866,6 +1886,49 @@
             return question.prompt + ' ' + blank;
         }
 
+        function renderPracticeAnswerFeedback(submitted, correctAnswer, isCorrect) {
+            var submittedText = submitted || 'No answer';
+            var correctText = correctAnswer || '';
+            if (isCorrect) {
+                return '<span class="feedback-correct">' + escapeHtml(correctText || submittedText) + '</span>';
+            }
+            return '<span class="feedback-submitted">' + escapeHtml(submittedText) + '</span>' +
+                '<span class="feedback-arrow">→</span>' +
+                '<span class="feedback-correct">' + escapeHtml(correctText) + '</span>';
+        }
+
+        function showPracticeFeedback(card, submitted, correctAnswer, isCorrect) {
+            var input = card.querySelector('.answer-input');
+            var trigger = card.querySelector('.blank-trigger');
+            var reveal = card.querySelector('.reveal');
+            if (input) input.value = submitted || '';
+            if (trigger) {
+                trigger.innerHTML = renderPracticeAnswerFeedback(submitted, correctAnswer, isCorrect);
+                trigger.classList.add('selected', 'feedback', isCorrect ? 'feedback-correct' : 'feedback-wrong');
+                trigger.disabled = true;
+            }
+            if (reveal) {
+                reveal.classList.remove('show');
+                reveal.innerHTML = '';
+            }
+        }
+
+        function resetPracticeFeedback(card) {
+            var input = card.querySelector('.answer-input');
+            var trigger = card.querySelector('.blank-trigger');
+            var reveal = card.querySelector('.reveal');
+            if (input) input.value = '';
+            if (trigger) {
+                trigger.textContent = '';
+                trigger.classList.remove('selected', 'feedback', 'feedback-correct', 'feedback-wrong');
+                trigger.disabled = false;
+            }
+            if (reveal) {
+                reveal.classList.remove('show');
+                reveal.innerHTML = '';
+            }
+        }
+
         function checkGroupAnswers(groupId) {
             var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
             if (!group) return;
@@ -1889,84 +1952,42 @@
                 group.questions.forEach(function(question, index) {
                     var card = document.getElementById('self-' + groupId + '-question-' + index);
                     var input = card.querySelector('.answer-input');
-                    var reveal = card.querySelector('.reveal');
                     var key = question.questionKey || (group.id + ':' + question.number);
                     var result = resultMap[key];
                     card.classList.remove('correct', 'wrong', 'pending');
+                    card.classList.remove('choice-open');
                     if (!result) return;
                     if (result.correct) correctCount += 1;
-                    card.classList.add(result.correct ? 'correct' : (input.value.trim() ? 'wrong' : 'pending'));
-                    reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
-                        (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
-                    reveal.classList.add('show');
+                    card.classList.add(result.correct ? 'correct' : 'wrong');
+                    showPracticeFeedback(card, (input && input.value || '').trim(), result.correct_answer, result.correct);
                 });
+                refreshChoiceAvailability(document.querySelector('#word-practice-panel .group-card'));
                 updatePracticeScore(groupId, correctCount, group.questions.length, response.percentage);
                 var btn = document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
-                if (btn) {
-                    btn.textContent = 'Hide Answer';
-                    btn.classList.remove('btn-primary');
-                    btn.classList.add('btn-hide-answer');
-                    btn.setAttribute('data-action', 'hide');
-                }
+                if (btn) btn.hidden = true;
+                var redo = document.querySelector('[data-action="redo-practice"][data-group="' + groupId + '"]');
+                if (redo) redo.hidden = false;
             }).catch(function(error) {
                 alert(error && error.message ? error.message : 'Unable to check answers.');
             });
         }
 
-        function hideGroupAnswers(groupId) {
-            var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
-            if (!group) return;
-            group.questions.forEach(function(question, index) {
-                var card = document.getElementById('self-' + groupId + '-question-' + index);
-                if (!card) return;
-                card.classList.remove('correct', 'wrong', 'pending');
-                var reveal = card.querySelector('.reveal');
-                if (reveal) {
-                    reveal.classList.remove('show');
-                    reveal.innerHTML = '';
-                }
-            });
-            var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]');
-            if (btn) {
-                btn.textContent = 'Check Answers';
-                btn.classList.remove('btn-hide-answer');
-                btn.classList.add('btn-primary');
-                btn.setAttribute('data-action', 'check');
-            }
-        }
-
         function clearGroupAnswers(groupId) {
             var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
             if (!group) return;
-            var groupCard = document.querySelector('[data-action="clear-all"][data-group="' + groupId + '"]');
-            if (groupCard) groupCard = groupCard.closest('.group-card');
+            var groupCard = document.querySelector('#word-practice-panel .group-card');
             group.questions.forEach(function(question, index) {
                 var card = document.getElementById('self-' + groupId + '-question-' + index);
                 if (!card) return;
-                card.classList.remove('correct', 'wrong', 'pending');
-                var input = card.querySelector('.answer-input');
-                var trigger = card.querySelector('.blank-trigger');
-                var reveal = card.querySelector('.reveal');
-                if (input) input.value = '';
-                if (trigger) {
-                    trigger.textContent = '';
-                    trigger.classList.remove('selected');
-                }
-                if (reveal) {
-                    reveal.classList.remove('show');
-                    reveal.innerHTML = '';
-                }
+                card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
+                resetPracticeFeedback(card);
             });
             if (groupCard) refreshChoiceAvailability(groupCard);
             updatePracticeScore(groupId, null);
-            var btn = document.querySelector('[data-action="hide"][data-group="' + groupId + '"]') ||
-                      document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
-            if (btn && btn.getAttribute('data-action') === 'hide') {
-                btn.textContent = 'Check Answers';
-                btn.classList.remove('btn-hide-answer');
-                btn.classList.add('btn-primary');
-                btn.setAttribute('data-action', 'check');
-            }
+            var check = document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
+            if (check) check.hidden = false;
+            var redo = document.querySelector('[data-action="redo-practice"][data-group="' + groupId + '"]');
+            if (redo) redo.hidden = true;
         }
 
         function updatePracticeScore(groupId, correctCount, totalCount, percentage) {
@@ -1996,8 +2017,8 @@
                 '<div class="question-list">' + questions + '</div>' +
                 '<div class="group-actions">' +
                     '<span class="practice-score" data-practice-score="' + escapeHtml(group.id) + '" aria-live="polite"></span>' +
-                    '<button class="btn btn-clear-all" type="button" data-action="clear-all" data-group="' + escapeHtml(group.id) + '">Clear All</button>' +
-                    '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check Answers</button>' +
+                    '<button class="btn btn-secondary practice-redo-btn" type="button" data-action="redo-practice" data-group="' + escapeHtml(group.id) + '" hidden>Redo</button>' +
+                    '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check</button>' +
                 '</div>' +
             '</div>';
         }
@@ -2643,8 +2664,7 @@
                     return;
                 }
                 if (action === 'check') checkGroupAnswers(groupId);
-                if (action === 'hide') hideGroupAnswers(groupId);
-                if (action === 'clear-all') clearGroupAnswers(groupId);
+                if (action === 'redo-practice') clearGroupAnswers(groupId);
             });
 
             document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);

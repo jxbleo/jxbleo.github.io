@@ -202,8 +202,13 @@ Check:
 - Vocabulary practice word-bank chips show words only, without chip numbers or
   plus/minus font controls
 - selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens
-  that group's inline practice, and shows a score beside `Check Answers` after
-  checking
+  that group's inline practice, shows only `Check` before checking, then
+  replaces it with a score pill plus inline `Redo` after checking
+- Vocabulary inline practice has no `Clear All`, no `Hide Answer`, and no
+  floating `Redo` button
+- checking Vocabulary inline practice turns correct cards green, wrong cards
+  red with a brief pulse, and writes correct or wrong-to-correct feedback in
+  the answer blank
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
 - running Test mode disables other Vocabulary mode tabs and warns on
@@ -213,8 +218,7 @@ Check:
 - the result modal has only one `Close` action
 - after the result modal closes, wrong Test questions remain marked red and
   show inline answer explanations
-- submitted Test review shows `Redo`; Redo confirms before clearing and
-  returns to the group-count selector
+- student Vocabulary views do not show a bottom-right floating `Redo` capsule
 - student Vocabulary views do not show a bottom-right `Show Answers` capsule
 - 1-4 selected Test groups do not create CloudBase attempt
 - 5+ selected Test groups create attempt
