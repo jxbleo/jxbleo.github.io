@@ -18,6 +18,9 @@
   bar while the word bank appears only after `Go to Practice`, expands and
   collapses more slowly, omits extra labels and controls, and collapses when
   students scroll back into the word-card area.
+- Changed Vocabulary inline practice so `Check` turns into a score plus inline
+  `Redo`, removes `Clear All` and floating Redo controls, and writes green/red
+  answer feedback directly into each blank.
 - Removed auto-numbering from Vocabulary practice word-bank chips and removed
   the plus/minus font controls from vocabulary practice cards.
 
