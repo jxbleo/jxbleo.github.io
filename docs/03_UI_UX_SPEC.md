@@ -433,16 +433,20 @@ Shared rules:
   identifies the group. The word bank shows words only, without auto-numbered
   chips or font-size plus/minus controls.
 - Vocabulary inline practice uses each study group's own `Check` button. After
-  checking, correct cards turn green, incorrect cards turn red with a brief
-  pulse, and each answer blank is replaced by inline feedback: correct answers
-  show in green, while wrong answers show the submitted answer in red followed
-  by an arrow and the correct answer in green. The `Check` button is replaced
-  by a score pill and an inline `Redo` button; `Redo` clears all practice
-  answers and restores the group to an unchecked state. Inline practice does
-  not show `Clear All`, `Hide Answer`, or a floating `Redo` control. When
-  local practice answers are present, checking is handled locally and does not
-  call CloudBase. Legacy vocabulary units that still need CloudBase answer
-  checks must show a friendly login/session message instead of raw SDK errors.
+  checking, correct cards turn green, incorrect cards turn orange-yellow with a
+  continuous pulse, and each answer blank is replaced by inline feedback:
+  correct answers show in green, while wrong answers show the submitted answer
+  in orange followed by an arrow and the correct answer in green. The `Check`
+  button is replaced by a centered score pill such as `Score: 7 / 10` and an
+  inline `Redo` button; `Redo` clears all practice answers and restores the
+  group to an unchecked state. Inline practice does not show `Clear All`,
+  `Hide Answer`, or a floating `Redo` control. The per-blank choice panel
+  opens as a floating overlay so the question layout does not shift; it has no
+  `Clear` button, and its final chip is a blank underline option for leaving an
+  answer empty. When local practice answers are present, checking is handled
+  locally and does not call CloudBase. Legacy vocabulary units that still need
+  CloudBase answer checks must show a friendly login/session message instead of
+  raw SDK errors.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 
