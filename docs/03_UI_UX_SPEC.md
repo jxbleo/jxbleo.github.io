@@ -418,11 +418,15 @@ Shared rules:
 - Vocabulary Learn shows a sticky Study Set filter row at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
   first and `All` at the end. Numbered buttons filter the word cards by the
-  matching study group's word range.
+  matching study group's word range. This filter row stays above the word cards
+  and inline practice header while scrolling.
+- Learn word cards show the word, emoji, definition, and Chinese meaning
+  without repeating each word's source number.
 - When a numbered Study Set is selected, the bottom of Learn shows a
   `Go to Practice` button. Clicking it opens that same group's practice card
   inline below the word cards, using the former Learn-mode questions and word
-  bank.
+  bank. The inline practice header should not repeat `Study Set` or word-range
+  labels because the selected numbered capsule already identifies the group.
 - Vocabulary inline practice uses each study group's own `Check Answers`
   button and shows a score pill beside the practice controls after checking.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
