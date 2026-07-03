@@ -49,6 +49,10 @@
   scrolling, made Vocabulary Test set capsules red with centered red test-card
   set badges, and let Test prompts use full width before post-submit `?`
   explanation buttons appear.
+- Refined Vocabulary Learn/Test word-bank controls so the triangle sits below
+  the active number when collapsed and below the word bank when open, and made
+  the Vocabulary Test number row horizontally scroll while the timer stays fixed
+  at the right.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
