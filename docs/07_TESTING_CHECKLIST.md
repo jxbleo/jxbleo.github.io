@@ -209,6 +209,9 @@ Check:
 - checking Vocabulary inline practice turns correct cards green, wrong cards
   red with a brief pulse, and writes correct or wrong-to-correct feedback in
   the answer blank
+- Vocabulary inline practice with local `answer` fields checks without
+  CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
+  such as `t.scope`
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
 - running Test mode disables other Vocabulary mode tabs and warns on

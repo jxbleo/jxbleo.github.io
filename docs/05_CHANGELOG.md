@@ -21,6 +21,9 @@
 - Changed Vocabulary inline practice so `Check` turns into a score plus inline
   `Redo`, removes `Clear All` and floating Redo controls, and writes green/red
   answer feedback directly into each blank.
+- Fixed Vocabulary inline practice `Check` so local-answer units no longer call
+  CloudBase, and legacy units show a friendly login/session message instead of
+  the raw `t.scope` SDK error.
 - Removed auto-numbering from Vocabulary practice word-bank chips and removed
   the plus/minus font controls from vocabulary practice cards.
 
