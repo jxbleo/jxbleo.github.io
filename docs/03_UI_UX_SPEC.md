@@ -417,9 +417,10 @@ Shared rules:
 
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
-  first and `All` at the end. Numbered buttons filter the word cards by the
-  matching study group's word range. Selecting a group does not show the word
-  bank by itself.
+  first and `All` at the end. A small triangle word-bank toggle sits at the far
+  left of the filter row. Numbered buttons filter the word cards by the matching
+  study group's word range. Selecting a group does not show the word bank by
+  itself.
 - Learn word cards show the word, emoji, definition, and Chinese meaning
   without repeating each word's source number.
 - When a numbered Study Set is selected, the bottom of Learn shows a
@@ -427,11 +428,13 @@ Shared rules:
   inline below the word cards, using the former Learn-mode questions and word
   bank. The word bank slowly expands inside the sticky learning bar only after
   Practice opens, and it automatically collapses when the student scrolls back
-  up into the word-card area. The inline practice card should begin with the
-  questions and not repeat `Study Set`, word-range labels, a `Word Bank` label,
-  controls, or a second word bank because the sticky learning bar already
-  identifies the group. The word bank shows words only, without auto-numbered
-  chips or font-size plus/minus controls.
+  up into the word-card area until the student manually uses the triangle
+  toggle. After a manual toggle, the word bank should keep that open/closed
+  state until the student changes it again. The inline practice card should
+  begin with the questions and not repeat `Study Set`, word-range labels, a
+  `Word Bank` label, controls, or a second word bank because the sticky
+  learning bar already identifies the group. The word bank shows words only,
+  without auto-numbered chips or font-size plus/minus controls.
 - Vocabulary inline practice uses each study group's own `Check` button. Each
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the explanation in a floating popover
@@ -460,12 +463,16 @@ Shared rules:
   cannot be paused or stopped.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. It centers numbered test-set capsules and
-  the countdown timer in the same row. The test-set labels show only numbers,
-  not `Test Set 1` text, and clicking a number jumps to that test set. The
-  current test set's word bank appears directly below the numbered capsules in
-  the same sticky surface; when the student scrolls between test sets, the
+  the countdown timer in the same row. A small triangle word-bank toggle sits
+  at the far left of the test-set capsules. The test-set labels show only
+  numbers, not `Test Set 1` text, and clicking a number jumps to that test set.
+  The current test set's word bank appears directly below the numbered capsules
+  in the same sticky surface; when the student scrolls between test sets, the
   active number and sticky word bank automatically update to match the visible
-  test set.
+  test set. If the student manually closes the word bank with the triangle
+  toggle, scrolling must not reopen it until the student opens it manually
+  again. The sticky word bank must layer above question-card `?` explanation
+  buttons and their floating explanation popovers while scrolling.
 - While a Vocabulary Test is running, the page is front-end locked to the Test
   view: other mode tabs are disabled, browser unload/back attempts show a
   warning, and the student must submit or wait for automatic time-up submission.
@@ -474,8 +481,11 @@ Shared rules:
 - The Vocabulary Test result modal has one action only: `Close`.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
-  Learn. The bottom of the Test view shows the result summary and an inline
-  `Redo` button; results should not appear above the test questions.
+  Learn. The bottom of the Test view shows only the direct result count such as
+  `7 / 10` plus an inline `Redo` button; it should not show `Score`, saved/not
+  saved status copy, or appear above the test questions. Test question `?`
+  explanation buttons appear only after submission or history review, not while
+  a timed test is in progress.
 - Student Vocabulary pages should not show a bottom-right floating `Redo`
   capsule. Redo actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right

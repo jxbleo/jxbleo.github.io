@@ -38,6 +38,12 @@
 - Refined Vocabulary Test mode so the sticky test-set bar includes the current
   set's word bank below the numbered capsules and updates both the active
   number and word bank while scrolling between test sets.
+- Refined Vocabulary question explanation controls so sticky Learn/Test word
+  banks layer above `?` buttons while scrolling, `?` buttons stay optically
+  centered on iPad, and Test results show only the direct correct/total count.
+- Refined Vocabulary Learn/Test sticky word banks with a triangle toggle that
+  preserves the student's manual open/closed choice, and hid Test explanation
+  `?` buttons until submission or history review.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
