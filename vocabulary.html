@@ -1903,7 +1903,7 @@
                 '<span class="feedback-correct">' + escapeHtml(correctText) + '</span>';
         }
 
-        function showPracticeFeedback(card, submitted, correctAnswer, isCorrect) {
+        function showPracticeFeedback(card, submitted, correctAnswer, isCorrect, explanation) {
             var input = card.querySelector('.answer-input');
             var trigger = card.querySelector('.blank-trigger');
             var reveal = card.querySelector('.reveal');
@@ -1914,8 +1914,13 @@
                 trigger.disabled = true;
             }
             if (reveal) {
-                reveal.classList.remove('show');
-                reveal.innerHTML = '';
+                if (explanation) {
+                    reveal.innerHTML = escapeHtml(explanation);
+                    reveal.classList.add('show');
+                } else {
+                    reveal.classList.remove('show');
+                    reveal.innerHTML = '';
+                }
             }
         }
 
@@ -1969,7 +1974,8 @@
                 return {
                     question_id: key,
                     correct: correct,
-                    correct_answer: answerText(question.answer)
+                    correct_answer: answerText(question.answer),
+                    explanation: question.explanation || ''
                 };
             });
             return {
@@ -1996,7 +2002,7 @@
                 if (!result) return;
                 if (result.correct) correctCount += 1;
                 card.classList.add(result.correct ? 'correct' : 'wrong');
-                showPracticeFeedback(card, (input && input.value || '').trim(), result.correct_answer, result.correct);
+                showPracticeFeedback(card, (input && input.value || '').trim(), result.correct_answer, result.correct, result.explanation);
             });
             refreshChoiceAvailability(document.querySelector('#word-practice-panel .group-card'));
             updatePracticeScore(group.id, correctCount, group.questions.length, response.percentage);
