@@ -20,6 +20,20 @@ file exists on this machine. The file is ignored by Git. Use only dedicated
 development test accounts, never the owner's real teacher account or a real
 student account.
 
+Future agents should look for the test-login setup in the repository root:
+
+- Local file: `.qa-secrets.local` (ignored by Git; do not print values)
+- Template file: `.qa-secrets.example`
+- Keys: `MR_CAT_TEST_BASE_URL`, `MR_CAT_TEST_TEACHER_ID`,
+  `MR_CAT_TEST_TEACHER_PASSWORD`, `MR_CAT_TEST_STUDENT_ID`,
+  `MR_CAT_TEST_STUDENT_PASSWORD`
+
+Useful search command:
+
+```bash
+rg -n "MR_CAT_TEST|qa-secrets|TEST_TEACHER|TEST_STUDENT" -S . .gitignore AGENTS.md AGENT_TODO.md
+```
+
 Create it from `.qa-secrets.example` and fill in local values:
 
 ```bash
