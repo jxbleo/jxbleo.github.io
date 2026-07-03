@@ -45,6 +45,10 @@
 - Refined Vocabulary Learn/Test sticky word banks with a triangle toggle that
   preserves the student's manual open/closed choice, and hid Test explanation
   `?` buttons until submission or history review.
+- Refined Vocabulary Learn/Test sticky bars to sit as an opaque top layer while
+  scrolling, made Vocabulary Test set capsules red with centered red test-card
+  set badges, and let Test prompts use full width before post-submit `?`
+  explanation buttons appear.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.

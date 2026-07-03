@@ -13,6 +13,8 @@
             --card: #ffffff;
             --accent: #0f766e;
             --accent-soft: #dbf5ef;
+            --test-red: #dc2626;
+            --test-red-soft: #fee2e2;
             --warm: #9a3412;
             --warm-soft: #ffedd5;
         }
@@ -117,15 +119,16 @@
 
         .learn-sticky {
             position: sticky;
-            top: 8px;
+            top: 0;
             z-index: 220;
             margin: -2px 0 18px;
             padding: 8px;
             border: 1px solid rgba(255,255,255,0.82);
             border-radius: 22px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,253,251,0.93));
+            background: linear-gradient(180deg, #ffffff, #f7fdfb);
             box-shadow: 0 18px 42px rgba(19, 70, 63, 0.13);
             backdrop-filter: blur(18px) saturate(1.1);
+            isolation: isolate;
         }
 
         .learn-sticky.has-word-bank::after,
@@ -618,8 +621,12 @@
         }
 
         .self-question .question-prompt,
-        .test-question .question-prompt {
+        .test-question.test-reviewed .question-prompt {
             padding-right: 42px;
+        }
+
+        .test-question:not(.test-reviewed) .question-prompt {
+            padding-right: 0;
         }
 
         .dictation-row.correct td {
@@ -1011,15 +1018,16 @@
 
         .test-sticky {
             position: sticky;
-            top: 8px;
+            top: 0;
             z-index: 220;
             margin: -2px 0 18px;
             padding: 8px;
             border: 1px solid rgba(255,255,255,0.82);
             border-radius: 22px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,253,251,0.93));
+            background: linear-gradient(180deg, #ffffff, #fff7f7);
             box-shadow: 0 18px 42px rgba(19, 70, 63, 0.13);
             backdrop-filter: blur(18px) saturate(1.1);
+            isolation: isolate;
         }
 
         .test-sticky[hidden] {
@@ -1053,11 +1061,11 @@
             width: 34px;
             height: 34px;
             flex: 0 0 auto;
-            border: 1px solid rgba(15, 118, 110, 0.14);
+            border: 1px solid rgba(220, 38, 38, 0.22);
             border-radius: 999px;
             padding: 0;
-            color: var(--accent);
-            background: #fff;
+            color: #b91c1c;
+            background: #fff1f2;
             font-size: 0.88rem;
             font-weight: 900;
             line-height: 1;
@@ -1068,14 +1076,25 @@
         .test-set-btn:hover,
         .test-set-btn:focus-visible {
             transform: translateY(-1px);
-            box-shadow: 0 9px 18px rgba(15, 118, 110, 0.12);
+            box-shadow: 0 9px 18px rgba(220, 38, 38, 0.14);
         }
 
         .test-set-btn.active {
-            border-color: var(--accent);
+            border-color: var(--test-red);
             color: #fff;
-            background: var(--accent);
-            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+            background: var(--test-red);
+            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+        }
+
+        .test-sticky .word-bank-toggle {
+            border-color: rgba(220, 38, 38, 0.22);
+            background: var(--test-red-soft);
+            color: #b91c1c;
+        }
+
+        .test-sticky .word-bank-toggle.is-collapsed {
+            background: #fff;
+            color: #b91c1c;
         }
 
         .word-bank-redo {
@@ -1086,29 +1105,44 @@
             justify-content: center;
             min-height: 34px;
             padding: 0 14px;
-            border: 1px solid rgba(15, 118, 110, 0.22);
+            border: 1px solid rgba(220, 38, 38, 0.22);
             border-radius: 999px;
-            background: var(--accent);
+            background: var(--test-red);
             color: #fff;
             font-size: 0.86rem;
             font-weight: 900;
             line-height: 1;
             cursor: pointer;
-            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
             transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
         }
 
         .word-bank-redo:hover,
         .word-bank-redo:focus-visible {
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.24);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
         }
 
         .test-set-card .group-head {
             position: relative;
             top: auto;
             z-index: 1;
+            padding: 16px 20px 0;
+            background: #fff;
+            border-bottom: 0;
             box-shadow: none;
+        }
+
+        .test-set-card .set-meta-row {
+            justify-content: center;
+        }
+
+        .test-set-card .set-badge.test-set {
+            min-width: 38px;
+            justify-content: center;
+            background: var(--test-red);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.18);
         }
 
         .range-picker {
@@ -1314,8 +1348,9 @@
                 padding: 9px 9px;
             }
 
-            .learn-sticky {
-                top: 8px;
+            .learn-sticky,
+            .test-sticky {
+                top: 0;
                 border-radius: 19px;
             }
 
