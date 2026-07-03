@@ -25,6 +25,8 @@
   orange-yellow continuous pulse, the score shows only correct/total, action
   pills are centered, and the per-blank choice panel opens as a floating
   overlay with a final blank underline chip instead of a `Clear` button.
+- Changed unanswered wrong Vocabulary inline practice blanks to display `X`
+  instead of `No answer`.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.

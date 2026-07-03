@@ -212,6 +212,8 @@ Check:
 - checking Vocabulary inline practice turns correct cards green, wrong cards
   orange-yellow with a continuous pulse, and writes correct or
   wrong-to-correct feedback in the answer blank
+- unanswered wrong Vocabulary inline practice blanks show `X` on the
+  submitted-answer side, not `No answer`
 - Vocabulary inline practice with local `answer` fields checks without
   CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
   such as `t.scope`
