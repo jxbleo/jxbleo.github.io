@@ -418,19 +418,20 @@ Shared rules:
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
   first and `All` at the end. Numbered buttons filter the word cards by the
-  matching study group's word range. When a numbered group is active, that same
-  sticky bar shows the group's word bank beneath the numbered capsules, sharing
-  one glassy background and shadow so the controls move as one unit while
-  scrolling.
+  matching study group's word range. Selecting a group does not show the word
+  bank by itself.
 - Learn word cards show the word, emoji, definition, and Chinese meaning
   without repeating each word's source number.
 - When a numbered Study Set is selected, the bottom of Learn shows a
   `Go to Practice` button. Clicking it opens that same group's practice card
   inline below the word cards, using the former Learn-mode questions and word
-  bank. The inline practice card should begin with the questions and not repeat
-  `Study Set`, word-range labels, or a second word bank because the sticky
-  learning bar already identifies the group. The word bank shows words only,
-  without auto-numbered chips or font-size plus/minus controls.
+  bank. The word bank slowly expands inside the sticky learning bar only after
+  Practice opens, and it automatically collapses when the student scrolls back
+  up to the word cards. The sticky word bank also includes a manual `Hide`
+  control. The inline practice card should begin with the questions and not
+  repeat `Study Set`, word-range labels, or a second word bank because the
+  sticky learning bar already identifies the group. The word bank shows words
+  only, without auto-numbered chips or font-size plus/minus controls.
 - Vocabulary inline practice uses each study group's own `Check Answers`
   button and shows a score pill beside the practice controls after checking.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
