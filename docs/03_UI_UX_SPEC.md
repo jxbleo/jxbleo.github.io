@@ -71,6 +71,8 @@ Frontend rule:
   scrolling. It reads `Show Finished` when collapsed and `Hide Finished` when
   expanded, and keeps the visible control to a check icon plus that label. Do
   not put counts or extra action text inside the capsule.
+- Finished Vocabulary assignment cards open the same Learn entry used by
+  Library Vocabulary cards, without automatically restoring Test/History mode.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment-tab notices, teacher notification counts, and
