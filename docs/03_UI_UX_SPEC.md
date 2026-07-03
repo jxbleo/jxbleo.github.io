@@ -427,11 +427,11 @@ Shared rules:
   inline below the word cards, using the former Learn-mode questions and word
   bank. The word bank slowly expands inside the sticky learning bar only after
   Practice opens, and it automatically collapses when the student scrolls back
-  up to the word cards. The sticky word bank also includes a manual `Hide`
-  control. The inline practice card should begin with the questions and not
-  repeat `Study Set`, word-range labels, or a second word bank because the
-  sticky learning bar already identifies the group. The word bank shows words
-  only, without auto-numbered chips or font-size plus/minus controls.
+  up into the word-card area. The inline practice card should begin with the
+  questions and not repeat `Study Set`, word-range labels, a `Word Bank` label,
+  controls, or a second word bank because the sticky learning bar already
+  identifies the group. The word bank shows words only, without auto-numbered
+  chips or font-size plus/minus controls.
 - Vocabulary inline practice uses each study group's own `Check Answers`
   button and shows a score pill beside the practice controls after checking.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
