@@ -118,12 +118,12 @@
         .word-set-filter {
             position: sticky;
             top: 8px;
-            z-index: 35;
+            z-index: 80;
             display: flex;
             align-items: center;
             gap: 8px;
             margin: -2px 0 16px;
-            padding: 8px 0;
+            padding: 8px 0 10px;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             background:
@@ -326,18 +326,12 @@
             display: flex;
             justify-content: space-between;
             gap: 14px;
-            align-items: flex-start;
+            align-items: center;
             margin-bottom: 12px;
         }
 
-        .word-card-number {
-            color: var(--muted);
-            font-size: 0.78rem;
-            font-weight: 900;
-        }
-
         .word-card-word {
-            margin: 3px 0 0;
+            margin: 0;
             color: var(--accent);
             font-size: 1.35rem;
             font-weight: 900;
@@ -381,8 +375,8 @@
 
         .group-head {
             position: sticky;
-            top: 0;
-            z-index: 40;
+            top: 60px;
+            z-index: 50;
             display: block;
             padding: 18px 20px;
             background: #f8fbfc;
@@ -410,6 +404,8 @@
             height: 28px;
             border: none;
             border-radius: 999px;
+            display: inline-grid;
+            place-items: center;
             background: rgba(255,255,255,0.82);
             color: var(--accent);
             font-size: 1rem;
@@ -1670,7 +1666,6 @@
                 return '<article class="word-card">' +
                     '<div class="word-card-top">' +
                         '<div>' +
-                            '<div class="word-card-number">' + escapeHtml(word.number) + '</div>' +
                             '<h3 class="word-card-word">' + escapeHtml(word.word) + '</h3>' +
                         '</div>' +
                         '<div class="word-card-emoji">' + escapeHtml(word.emoji) + '</div>' +
@@ -1731,8 +1726,7 @@
                 '</div>';
                 return;
             }
-            var groupIndex = (unitData.quizGroups || []).findIndex(function(item) { return item.id === group.id; });
-            root.innerHTML = '<div class="group-grid">' + renderSelfStudyGroup(group, groupIndex) + '</div>';
+            root.innerHTML = '<div class="group-grid">' + renderSelfStudyGroup(group) + '</div>';
             setupAdaptiveInputs(root);
         }
 
@@ -1905,7 +1899,7 @@
             score.classList.add('show');
         }
 
-        function renderSelfStudyGroup(group, groupIndex) {
+        function renderSelfStudyGroup(group) {
             var questions = group.questions.map(function(question, index) {
                 var questionKey = question.questionKey || (group.id + ':' + question.number);
                 return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
@@ -1918,10 +1912,6 @@
             return '<div class="group-card">' +
                 '<div class="group-head">' +
                     '<div class="group-head-main">' +
-                        '<div class="set-meta-row">' +
-                            '<span class="set-badge">Study Set ' + (groupIndex + 1) + '</span>' +
-                            '<span>' + getWordRangeText(group) + '</span>' +
-                        '</div>' +
                         renderWordBank(group.wordList || []) +
                     '</div>' +
                     renderFontControls() +

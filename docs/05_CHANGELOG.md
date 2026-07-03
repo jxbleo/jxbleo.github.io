@@ -14,6 +14,9 @@
   appearing unusually short.
 - Changed finished Vocabulary assignment cards to open the Learn entry like
   Library cards instead of automatically entering Test/History mode.
+- Refined Vocabulary Learn so numbered group capsules stay on top while
+  scrolling, word cards omit source numbers, and inline practice headers no
+  longer repeat Study Set or word-range labels.
 
 ## 2026-07-02
 
