@@ -21,14 +21,15 @@
 - Changed Vocabulary inline practice so `Check` turns into a score plus inline
   `Redo`, removes `Clear All` and floating Redo controls, and writes answer
   feedback directly into each blank.
-- Refined Vocabulary inline practice feedback: wrong answers now use an
-  orange-yellow continuous pulse, the score shows only correct/total, action
-  pills are centered, and the per-blank choice panel opens as a floating
-  overlay with a final blank underline chip instead of a `Clear` button.
+- Refined Vocabulary inline practice feedback: wrong answers use a static
+  orange-yellow state, the score shows only correct/total, action pills are
+  centered, and the per-blank choice panel opens as a floating overlay with a
+  final blank underline chip instead of a `Clear` button.
 - Changed unanswered wrong Vocabulary inline practice blanks to display `X`
   instead of `No answer`.
-- Restored Vocabulary inline practice explanations below the inline answer
-  feedback after local checks.
+- Restored Vocabulary inline practice explanations for local checks.
+- Changed Vocabulary inline practice explanations to use always-visible `?`
+  buttons with floating popovers, and removed the wrong-card pulse animation.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
