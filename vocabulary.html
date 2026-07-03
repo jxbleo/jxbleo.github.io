@@ -541,6 +541,7 @@
         }
 
         .question-item {
+            position: relative;
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 16px;
@@ -569,17 +570,17 @@
         }
 
         .self-question.wrong {
-            border-color: #ef4444;
-            background: #fff1f2;
-            animation: practiceWrongPulse 980ms ease-in-out 0s 3;
+            border-color: #f59e0b;
+            background: #fff7ed;
+            animation: practiceWrongPulse 1.45s ease-in-out infinite;
         }
 
         @keyframes practiceWrongPulse {
             0%, 100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.0);
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.00);
             }
             50% {
-                box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.20);
+                box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.26);
             }
         }
 
@@ -681,11 +682,11 @@
         }
 
         .blank-trigger.feedback-wrong {
-            border-bottom-color: #ef4444;
+            border-bottom-color: #f59e0b;
         }
 
         .feedback-submitted {
-            color: #dc2626;
+            color: #c2410c;
             font-weight: 900;
             text-decoration: line-through;
             text-decoration-thickness: 2px;
@@ -705,11 +706,18 @@
             display: none;
             flex-direction: column;
             gap: 8px;
-            margin-top: 12px;
+            position: absolute;
+            z-index: 80;
+            top: calc(100% - 8px);
+            left: 14px;
+            right: 14px;
+            margin-top: 0;
             padding: 12px;
             border: 1px solid rgba(15, 118, 110, 0.14);
-            border-radius: 14px;
-            background: #f8fbfc;
+            border-radius: 16px;
+            background: rgba(248, 251, 252, 0.98);
+            box-shadow: 0 18px 44px rgba(15, 76, 71, 0.18);
+            backdrop-filter: blur(12px);
         }
 
         .choice-options-wrap {
@@ -720,6 +728,10 @@
 
         .question-item.choice-open .choice-panel {
             display: flex;
+        }
+
+        .question-item.choice-open {
+            z-index: 85;
         }
 
         .choice-option {
@@ -739,17 +751,10 @@
             color: #fff;
         }
 
-        .choice-option.clear-choice {
-            align-self: flex-end;
-            border-color: #e2c8b0;
-            background: #fff6ed;
-            color: #9a5a2a;
-            font-size: 0.82rem;
-        }
-
-        .choice-option.clear-choice:hover {
-            background: #fde8d0;
-            color: #7a431a;
+        .choice-option.blank-choice {
+            min-width: 58px;
+            border-color: rgba(100, 116, 139, 0.22);
+            color: #64748b;
         }
 
         .dictation-input {
@@ -834,7 +839,8 @@
         .group-actions {
             display: flex;
             gap: 10px;
-            justify-content: flex-end;
+            align-items: center;
+            justify-content: center;
             flex-wrap: wrap;
             padding: 18px 20px 20px;
             margin-top: 4px;
@@ -1870,8 +1876,8 @@
                 (words || []).map(function(word) {
                     return '<button class="choice-option" type="button" data-value="' + escapeHtml(word) + '">' + escapeHtml(word) + '</button>';
                 }).join('') +
+                '<button class="choice-option blank-choice" type="button" data-value="" data-blank-choice="1" aria-label="Leave blank">_____</button>' +
                 '</div>' +
-                '<button class="choice-option clear-choice" type="button" data-action="clear-choice">Clear</button>' +
             '</div>';
         }
 
@@ -2065,8 +2071,7 @@
                 score.textContent = '';
                 return;
             }
-            var percentText = percentage == null ? Math.round((correctCount / Math.max(1, totalCount)) * 100) : percentage;
-            score.textContent = 'Score: ' + correctCount + ' / ' + totalCount + ' · ' + percentText + '%';
+            score.textContent = 'Score: ' + correctCount + ' / ' + totalCount;
             score.classList.add('show');
         }
 
@@ -2227,6 +2232,11 @@
             groupCard.querySelectorAll('.question-item').forEach(function(card) {
                 var ownValue = normalizeAnswer((card.querySelector('.answer-input') || {}).value);
                 card.querySelectorAll('.choice-option[data-value]').forEach(function(option) {
+                    if (option.hasAttribute('data-blank-choice')) {
+                        option.hidden = false;
+                        option.classList.remove('selected');
+                        return;
+                    }
                     var optionValue = normalizeAnswer(option.getAttribute('data-value'));
                     var usedElsewhere = selectedValues.indexOf(optionValue) !== -1 && optionValue !== ownValue;
                     option.hidden = usedElsewhere;
@@ -2236,30 +2246,18 @@
         }
 
         function handleChoiceClick(e) {
-            var clearButton = e.target.closest('.clear-choice');
-            if (clearButton) {
-                var clearCard = clearButton.closest('.question-item');
-                var clearInput = clearCard.querySelector('.answer-input');
-                var clearTrigger = clearCard.querySelector('.blank-trigger');
-                clearInput.value = '';
-                clearTrigger.textContent = '';
-                clearTrigger.classList.remove('selected');
-                clearCard.classList.remove('choice-open');
-                refreshChoiceAvailability(clearButton.closest('.group-card'));
-                return;
-            }
-
             var option = e.target.closest('.choice-option');
             if (option) {
                 var optionCard = option.closest('.question-item');
                 var input = optionCard.querySelector('.answer-input');
                 var trigger = optionCard.querySelector('.blank-trigger');
-                var value = option.getAttribute('data-value') || '';
+                var isBlankChoice = option.hasAttribute('data-blank-choice');
+                var value = isBlankChoice ? '' : (option.getAttribute('data-value') || '');
                 input.value = value;
                 trigger.textContent = value;
-                trigger.classList.add('selected');
+                trigger.classList.toggle('selected', !isBlankChoice);
                 optionCard.querySelectorAll('.choice-option').forEach(function(btn) {
-                    btn.classList.toggle('selected', btn === option);
+                    btn.classList.toggle('selected', !isBlankChoice && btn === option);
                 });
                 optionCard.classList.remove('choice-open');
                 refreshChoiceAvailability(option.closest('.group-card'));

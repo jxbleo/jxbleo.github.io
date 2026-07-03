@@ -19,8 +19,12 @@
   collapses more slowly, omits extra labels and controls, and collapses when
   students scroll back into the word-card area.
 - Changed Vocabulary inline practice so `Check` turns into a score plus inline
-  `Redo`, removes `Clear All` and floating Redo controls, and writes green/red
-  answer feedback directly into each blank.
+  `Redo`, removes `Clear All` and floating Redo controls, and writes answer
+  feedback directly into each blank.
+- Refined Vocabulary inline practice feedback: wrong answers now use an
+  orange-yellow continuous pulse, the score shows only correct/total, action
+  pills are centered, and the per-blank choice panel opens as a floating
+  overlay with a final blank underline chip instead of a `Clear` button.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.

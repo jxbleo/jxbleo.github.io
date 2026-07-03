@@ -203,12 +203,15 @@ Check:
   plus/minus font controls
 - selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens
   that group's inline practice, shows only `Check` before checking, then
-  replaces it with a score pill plus inline `Redo` after checking
+  replaces it with a centered correct/total score pill plus inline `Redo` after
+  checking
 - Vocabulary inline practice has no `Clear All`, no `Hide Answer`, and no
   floating `Redo` button
+- each blank's choice panel opens as a floating overlay that does not push
+  questions down, has no `Clear` button, and ends with a blank underline chip
 - checking Vocabulary inline practice turns correct cards green, wrong cards
-  red with a brief pulse, and writes correct or wrong-to-correct feedback in
-  the answer blank
+  orange-yellow with a continuous pulse, and writes correct or
+  wrong-to-correct feedback in the answer blank
 - Vocabulary inline practice with local `answer` fields checks without
   CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
   such as `t.scope`
