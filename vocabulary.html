@@ -1893,7 +1893,7 @@
         }
 
         function renderPracticeAnswerFeedback(submitted, correctAnswer, isCorrect) {
-            var submittedText = submitted || 'No answer';
+            var submittedText = submitted || 'X';
             var correctText = correctAnswer || '';
             if (isCorrect) {
                 return '<span class="feedback-correct">' + escapeHtml(correctText || submittedText) + '</span>';
