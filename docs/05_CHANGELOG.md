@@ -34,7 +34,8 @@
   explanation button, even before the popover is opened.
 - Refined Vocabulary Test mode with a sticky numbered test-set bar and inline
   timer, number-only test-set labels, Learn-style inline answer feedback after
-  submit, a `Submit` button label, and bottom result summary plus `Redo`.
+  submit, a `Submit` button label, a top timer capsule that becomes the direct
+  correct/total result, and a top sticky `Redo` capsule after submission.
 - Refined Vocabulary Test mode so the sticky test-set bar includes the current
   set's word bank below the numbered capsules and updates both the active
   number and word bank while scrolling between test sets.

@@ -481,11 +481,14 @@ Shared rules:
 - The Vocabulary Test result modal has one action only: `Close`.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
-  Learn. The bottom of the Test view shows only the direct result count such as
-  `7 / 10` plus an inline `Redo` button; it should not show `Score`, saved/not
-  saved status copy, or appear above the test questions. Test question `?`
-  explanation buttons appear only after submission or history review, not while
-  a timed test is in progress.
+  Learn. The top timer capsule changes from the countdown to the direct result
+  count such as `7 / 10`; the bottom of the Test view should not repeat a score
+  block. After submission, the sticky word bank collapses by default and the
+  far-left triangle word-bank toggle becomes a compact `Redo` capsule. The
+  Test result area should not show `Score`, saved/not saved status copy, or
+  appear above the test questions. Test question `?` explanation buttons appear
+  only after submission or history review, not while a timed test is in
+  progress.
 - Student Vocabulary pages should not show a bottom-right floating `Redo`
   capsule. Redo actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right
