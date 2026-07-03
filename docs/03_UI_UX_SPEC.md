@@ -439,7 +439,10 @@ Shared rules:
   by an arrow and the correct answer in green. The `Check` button is replaced
   by a score pill and an inline `Redo` button; `Redo` clears all practice
   answers and restores the group to an unchecked state. Inline practice does
-  not show `Clear All`, `Hide Answer`, or a floating `Redo` control.
+  not show `Clear All`, `Hide Answer`, or a floating `Redo` control. When
+  local practice answers are present, checking is handled locally and does not
+  call CloudBase. Legacy vocabulary units that still need CloudBase answer
+  checks must show a friendly login/session message instead of raw SDK errors.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 

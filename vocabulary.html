@@ -1929,47 +1929,114 @@
             }
         }
 
+        function practiceCheckError(error) {
+            var message = error && (error.message || error.code || String(error)) || '';
+            if (/t\.scope|null is not an object|AUTH_REQUIRED|LOGIN_REQUIRED|INVALID_LOGIN_STATE/i.test(message)) {
+                return new Error('Login session is not active. Please log in again, then reopen this vocabulary practice.');
+            }
+            return error instanceof Error ? error : new Error(message || 'Unable to check answers.');
+        }
+
+        function collectPracticeAnswers(group) {
+            var answers = {};
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById('self-' + group.id + '-question-' + index);
+                var key = question.questionKey || (group.id + ':' + question.number);
+                answers[key] = card ? ((card.querySelector('.answer-input') || {}).value || '') : '';
+            });
+            return answers;
+        }
+
+        function hasLocalPracticeAnswers(group) {
+            return !!group && (group.questions || []).every(function(question) {
+                return Object.prototype.hasOwnProperty.call(question, 'answer');
+            });
+        }
+
+        function buildLocalPracticeResponse(group, answers) {
+            var correctCount = 0;
+            var questionResults = (group.questions || []).map(function(question) {
+                var key = question.questionKey || (group.id + ':' + question.number);
+                var submitted = answers[key] || '';
+                var correct = answerMatches(submitted, question.answer);
+                if (correct) correctCount += 1;
+                return {
+                    question_id: key,
+                    correct: correct,
+                    correct_answer: answerText(question.answer)
+                };
+            });
+            return {
+                success: true,
+                correct_count: correctCount,
+                question_count: questionResults.length,
+                percentage: Math.round((correctCount / Math.max(1, questionResults.length)) * 100),
+                question_results: questionResults
+            };
+        }
+
+        function applyPracticeCheckResult(group, response) {
+            if (!response || !response.success) throw new Error(response && response.message || 'Unable to check answers.');
+            var resultMap = {};
+            (response.question_results || []).forEach(function(item) { resultMap[item.question_id] = item; });
+            var correctCount = 0;
+            group.questions.forEach(function(question, index) {
+                var card = document.getElementById('self-' + group.id + '-question-' + index);
+                var input = card.querySelector('.answer-input');
+                var key = question.questionKey || (group.id + ':' + question.number);
+                var result = resultMap[key];
+                card.classList.remove('correct', 'wrong', 'pending');
+                card.classList.remove('choice-open');
+                if (!result) return;
+                if (result.correct) correctCount += 1;
+                card.classList.add(result.correct ? 'correct' : 'wrong');
+                showPracticeFeedback(card, (input && input.value || '').trim(), result.correct_answer, result.correct);
+            });
+            refreshChoiceAvailability(document.querySelector('#word-practice-panel .group-card'));
+            updatePracticeScore(group.id, correctCount, group.questions.length, response.percentage);
+            var btn = document.querySelector('[data-action="check"][data-group="' + group.id + '"]');
+            if (btn) btn.hidden = true;
+            var redo = document.querySelector('[data-action="redo-practice"][data-group="' + group.id + '"]');
+            if (redo) redo.hidden = false;
+        }
+
         function checkGroupAnswers(groupId) {
             var group = (unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
             if (!group) return;
-            var answers = {};
-            group.questions.forEach(function(question, index) {
-                var card = document.getElementById('self-' + groupId + '-question-' + index);
-                var key = question.questionKey || (group.id + ':' + question.number);
-                answers[key] = (card.querySelector('.answer-input') || {}).value || '';
-            });
-            window.MrCatCloud.callFunction('submitAttempt', {
-                set_id: setId,
-                mode: 'vocabulary_practice',
-                answers: answers,
-                selected_group_count: 1,
-                selected_group_ids: [groupId]
-            }).then(function(response) {
-                if (!response || !response.success) throw new Error(response && response.message || 'Unable to check answers.');
-                var resultMap = {};
-                (response.question_results || []).forEach(function(item) { resultMap[item.question_id] = item; });
-                var correctCount = 0;
-                group.questions.forEach(function(question, index) {
-                    var card = document.getElementById('self-' + groupId + '-question-' + index);
-                    var input = card.querySelector('.answer-input');
-                    var key = question.questionKey || (group.id + ':' + question.number);
-                    var result = resultMap[key];
-                    card.classList.remove('correct', 'wrong', 'pending');
-                    card.classList.remove('choice-open');
-                    if (!result) return;
-                    if (result.correct) correctCount += 1;
-                    card.classList.add(result.correct ? 'correct' : 'wrong');
-                    showPracticeFeedback(card, (input && input.value || '').trim(), result.correct_answer, result.correct);
+            var answers = collectPracticeAnswers(group);
+            if (hasLocalPracticeAnswers(group)) {
+                applyPracticeCheckResult(group, buildLocalPracticeResponse(group, answers));
+                return;
+            }
+            if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+                alert(practiceCheckError(new Error('LOGIN_REQUIRED')).message);
+                return;
+            }
+            var loginStatePromise;
+            try {
+                loginStatePromise = typeof window.MrCatCloud.getLoginState === 'function'
+                    ? window.MrCatCloud.getLoginState()
+                    : null;
+            } catch (error) {
+                loginStatePromise = Promise.reject(error);
+            }
+            Promise.resolve(loginStatePromise)
+                .then(function(state) {
+                    if (!state) throw new Error('LOGIN_REQUIRED');
+                    return window.MrCatCloud.callFunction('submitAttempt', {
+                        set_id: setId,
+                        mode: 'vocabulary_practice',
+                        answers: answers,
+                        selected_group_count: 1,
+                        selected_group_ids: [groupId]
+                    });
+                })
+                .then(function(response) {
+                    applyPracticeCheckResult(group, response);
+                })
+                .catch(function(error) {
+                    alert(practiceCheckError(error).message);
                 });
-                refreshChoiceAvailability(document.querySelector('#word-practice-panel .group-card'));
-                updatePracticeScore(groupId, correctCount, group.questions.length, response.percentage);
-                var btn = document.querySelector('[data-action="check"][data-group="' + groupId + '"]');
-                if (btn) btn.hidden = true;
-                var redo = document.querySelector('[data-action="redo-practice"][data-group="' + groupId + '"]');
-                if (redo) redo.hidden = false;
-            }).catch(function(error) {
-                alert(error && error.message ? error.message : 'Unable to check answers.');
-            });
         }
 
         function clearGroupAnswers(groupId) {
