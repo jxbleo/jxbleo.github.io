@@ -388,37 +388,6 @@
             width: 100%;
         }
 
-        .font-controls {
-            position: absolute;
-            top: 14px;
-            right: 20px;
-            display: inline-flex;
-            gap: 6px;
-            padding: 4px;
-            border-radius: 999px;
-            background: rgba(15, 118, 110, 0.08);
-        }
-
-        .font-control-btn {
-            width: 28px;
-            height: 28px;
-            border: none;
-            border-radius: 999px;
-            display: inline-grid;
-            place-items: center;
-            background: rgba(255,255,255,0.82);
-            color: var(--accent);
-            font-size: 1rem;
-            font-weight: 900;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .font-control-btn:hover {
-            background: var(--accent);
-            color: #fff;
-        }
-
         .group-title {
             margin: 0;
             font-size: 0.9rem;
@@ -477,14 +446,11 @@
             gap: 8px;
             align-items: center;
             width: 100%;
-            counter-reset: word-bank;
         }
 
         .word-chip {
-            counter-increment: word-bank;
             display: inline-flex;
             align-items: center;
-            gap: 0.48em;
             min-height: 2.35em;
             padding: 0.48em 0.68em;
             flex: 0 1 auto;
@@ -497,21 +463,6 @@
             line-height: 1;
             white-space: nowrap;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
-        }
-
-        .word-chip::before {
-            content: counter(word-bank);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.45em;
-            height: 1.45em;
-            border-radius: 999px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 0.75em;
-            font-weight: 900;
-            flex: 0 0 auto;
         }
 
         .question-list {
@@ -1053,25 +1004,14 @@
                 padding: 9px 9px;
             }
 
-            .font-controls {
-                right: 16px;
-            }
-
             .word-chip-list {
                 gap: 6px;
             }
 
             .word-chip {
-                gap: 0.34em;
                 padding: 0.42em 0.52em;
                 font-size: 0.82em;
                 border-radius: 0.72em;
-            }
-
-            .word-chip::before {
-                width: 1.32em;
-                height: 1.32em;
-                font-size: 0.72em;
             }
         }
     </style>
@@ -1749,13 +1689,6 @@
             '</div>';
         }
 
-        function renderFontControls() {
-            return '<div class="font-controls" aria-label="Adjust font size">' +
-                '<button class="font-control-btn" type="button" data-action="font-smaller" aria-label="Smaller text">-</button>' +
-                '<button class="font-control-btn" type="button" data-action="font-larger" aria-label="Larger text">+</button>' +
-            '</div>';
-        }
-
         function renderAnswerBlank() {
             return '<input class="answer-input choice-value" type="hidden">' +
                 '<button class="blank-trigger" type="button" data-action="open-choice" aria-label="Choose answer"></button>';
@@ -1914,7 +1847,6 @@
                     '<div class="group-head-main">' +
                         renderWordBank(group.wordList || []) +
                     '</div>' +
-                    renderFontControls() +
                 '</div>' +
                 '<div class="question-list">' + questions + '</div>' +
                 '<div class="group-actions">' +
@@ -2053,15 +1985,6 @@
             });
         }
 
-        function adjustGroupFontSize(button, delta) {
-            var groupCard = button.closest('.group-card');
-            if (!groupCard) return;
-            var currentStep = Number(groupCard.getAttribute('data-font-step') || 0);
-            var nextStep = Math.max(-3, Math.min(5, currentStep + delta));
-            groupCard.setAttribute('data-font-step', String(nextStep));
-            groupCard.style.setProperty('--practice-font-size', (1 + nextStep * 0.06) + 'rem');
-        }
-
         function refreshChoiceAvailability(groupCard) {
             if (!groupCard) return;
             var selectedValues = Array.from(groupCard.querySelectorAll('.question-item .answer-input'))
@@ -2080,13 +2003,6 @@
         }
 
         function handleChoiceClick(e) {
-            var fontButton = e.target.closest('.font-control-btn');
-            if (fontButton) {
-                var action = fontButton.getAttribute('data-action');
-                adjustGroupFontSize(fontButton, action === 'font-larger' ? 1 : -1);
-                return;
-            }
-
             var clearButton = e.target.closest('.clear-choice');
             if (clearButton) {
                 var clearCard = clearButton.closest('.question-item');
@@ -2237,7 +2153,6 @@
                             '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
-                        renderFontControls() +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                 '</div>';
@@ -2282,7 +2197,6 @@
                             '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
-                        renderFontControls() +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                 '</div>';
@@ -2397,7 +2311,6 @@
                             '</div>' +
                             renderWordBank(group.wordList || []) +
                         '</div>' +
-                        renderFontControls() +
                     '</div>' +
                     '<div class="question-list">' + questions + '</div>' +
                 '</div>';

@@ -427,6 +427,8 @@ Shared rules:
   inline below the word cards, using the former Learn-mode questions and word
   bank. The inline practice header should not repeat `Study Set` or word-range
   labels because the selected numbered capsule already identifies the group.
+  The word bank shows words only, without auto-numbered chips or font-size
+  plus/minus controls.
 - Vocabulary inline practice uses each study group's own `Check Answers`
   button and shows a score pill beside the practice controls after checking.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
