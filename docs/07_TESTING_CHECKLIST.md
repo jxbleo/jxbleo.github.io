@@ -194,8 +194,9 @@ Check:
 
 - Learn/Dictate/Test modes render
 - Vocabulary Learn numbered capsules stay in the sticky learning bar, while the
-  word bank appears only after `Go to Practice`, expands smoothly, can be
-  hidden with `Hide`, and collapses when scrolling back to the word cards
+  word bank appears only after `Go to Practice`, expands and collapses slowly,
+  has no `Word Bank` label or `Hide` button, and collapses when scrolling back
+  into the word-card area
 - Learn word cards do not show source numbers, and inline practice cards do
   not repeat `Study Set`, word-range labels, or a second word bank
 - Vocabulary practice word-bank chips show words only, without chip numbers or

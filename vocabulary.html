@@ -146,9 +146,9 @@
             overflow: hidden;
             transform: translateY(-8px);
             transition:
-                max-height 520ms cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 320ms ease,
-                transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+                max-height 860ms cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 560ms ease,
+                transform 860ms cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .learn-word-bank.is-open {
@@ -497,40 +497,6 @@
             top: -1px;
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(15, 118, 110, 0.18), transparent);
-        }
-
-        .learn-word-bank-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.74rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .word-bank-collapse {
-            appearance: none;
-            -webkit-appearance: none;
-            border: 1px solid rgba(15, 118, 110, 0.14);
-            border-radius: 999px;
-            background: rgba(255,255,255,0.86);
-            color: var(--accent);
-            cursor: pointer;
-            font: inherit;
-            font-size: 0.72rem;
-            font-weight: 800;
-            letter-spacing: 0;
-            padding: 5px 10px;
-            text-transform: none;
-        }
-
-        .word-bank-collapse:hover {
-            border-color: rgba(15, 118, 110, 0.28);
-            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.12);
         }
 
         .learn-sticky .word-bank {
@@ -1219,8 +1185,6 @@
         var activeTestGroupCount = 0;
         var activeWordGroupId = '';
         var activePracticeGroupId = '';
-        var learnWordBankCollapsed = false;
-        var learnWordBankForceVisibleUntil = 0;
         var learnWordBankScrollTicking = false;
         var testStartedAt = null;
         var testLocked = false;
@@ -1784,18 +1748,12 @@
                 return;
             }
             root.innerHTML = '<div class="learn-word-bank-panel">' +
-                '<div class="learn-word-bank-head">' +
-                    '<span>Word Bank</span>' +
-                    '<button class="word-bank-collapse" type="button" data-action="collapse-word-bank" aria-label="Hide word bank">Hide</button>' +
-                '</div>' +
                 renderWordBank(group.wordList || []) +
             '</div>';
             root.hidden = false;
             root.classList.remove('is-open');
             if (shell) shell.classList.remove('has-word-bank');
             if (options && options.forceOpen) {
-                learnWordBankCollapsed = false;
-                learnWordBankForceVisibleUntil = Date.now() + 900;
                 requestAnimationFrame(function() {
                     setLearnWordBankOpen(true);
                 });
@@ -1813,14 +1771,17 @@
         }
 
         function shouldShowLearnWordBank() {
-            if (learnWordBankCollapsed) return false;
             var group = activeWordGroup();
             if (!group || activePracticeGroupId !== group.id) return false;
-            if (Date.now() < learnWordBankForceVisibleUntil) return true;
             var groupCard = document.querySelector('#word-practice-panel .group-card');
             if (!groupCard) return false;
             var sticky = document.getElementById('learn-sticky');
             var stickyBottom = sticky ? sticky.getBoundingClientRect().bottom : 0;
+            var wordGrid = document.getElementById('word-list-grid');
+            if (wordGrid) {
+                var wordRect = wordGrid.getBoundingClientRect();
+                if (wordRect.top < window.innerHeight - 48 && wordRect.bottom > stickyBottom + 18) return false;
+            }
             var rect = groupCard.getBoundingClientRect();
             return rect.top < window.innerHeight - 96 && rect.bottom > stickyBottom + 56;
         }
@@ -2663,18 +2624,8 @@
                 if (!button) return;
                 activeWordGroupId = button.getAttribute('data-word-group') || '';
                 activePracticeGroupId = '';
-                learnWordBankCollapsed = false;
-                learnWordBankForceVisibleUntil = 0;
                 renderFilteredWords();
                 renderWordPracticePanel();
-            });
-
-            document.getElementById('learn-sticky').addEventListener('click', function(e) {
-                var actionButton = e.target.closest('[data-action="collapse-word-bank"]');
-                if (!actionButton) return;
-                learnWordBankCollapsed = true;
-                learnWordBankForceVisibleUntil = 0;
-                setLearnWordBankOpen(false);
             });
 
             document.getElementById('word-practice-panel').addEventListener('click', function(e) {
@@ -2685,7 +2636,6 @@
                 if (!action || !groupId) return;
                 if (action === 'open-practice') {
                     activePracticeGroupId = groupId;
-                    learnWordBankCollapsed = false;
                     renderWordPracticePanel();
                     renderLearnStickyWordBank({ forceOpen: true });
                     var groupCard = document.querySelector('#word-practice-panel .group-card');

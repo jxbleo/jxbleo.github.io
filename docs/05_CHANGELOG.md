@@ -15,9 +15,9 @@
 - Changed finished Vocabulary assignment cards to open the Learn entry like
   Library cards instead of automatically entering Test/History mode.
 - Refined Vocabulary Learn so numbered group capsules stay in a sticky learning
-  bar while the word bank appears only after `Go to Practice`, expands
-  smoothly, can be hidden manually, and collapses when students scroll back to
-  the word cards.
+  bar while the word bank appears only after `Go to Practice`, expands and
+  collapses more slowly, omits extra labels and controls, and collapses when
+  students scroll back into the word-card area.
 - Removed auto-numbering from Vocabulary practice word-bank chips and removed
   the plus/minus font controls from vocabulary practice cards.
 
