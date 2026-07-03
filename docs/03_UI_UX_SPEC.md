@@ -22,7 +22,7 @@
 | `bbc.html` | BBC listening practice runtime |
 | `ielts-reading.html` | IELTS Reading runtime |
 | `ielts-listening.html` | IELTS Listening runtime |
-| `vocabulary.html` | Vocabulary learning, dictation, test |
+| `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
 
 ### Login
@@ -415,6 +415,9 @@ Shared rules:
 
 ### Vocabulary Learn
 
+- The Vocabulary mode switcher uses the visible labels `Learn`, `Spell`, and
+  `Use`. `Spell` opens the existing dictation/spelling view, and `Use` opens
+  the existing timed test flow.
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
   first and `All` at the end. Numbered buttons filter the word cards by the

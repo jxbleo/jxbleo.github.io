@@ -53,6 +53,8 @@
   the active number when collapsed and below the word bank when open, and made
   the Vocabulary Test number row horizontally scroll while the timer stays fixed
   at the right.
+- Changed the Vocabulary mode switcher labels to `Learn`, `Spell`, and `Use`
+  while preserving the existing underlying spelling and timed-test flows.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
