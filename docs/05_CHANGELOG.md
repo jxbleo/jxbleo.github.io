@@ -27,6 +27,8 @@
   overlay with a final blank underline chip instead of a `Clear` button.
 - Changed unanswered wrong Vocabulary inline practice blanks to display `X`
   instead of `No answer`.
+- Restored Vocabulary inline practice explanations below the inline answer
+  feedback after local checks.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
   CloudBase, and legacy units show a friendly login/session message instead of
   the raw `t.scope` SDK error.
