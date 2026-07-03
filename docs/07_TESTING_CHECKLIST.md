@@ -224,11 +224,17 @@ Check:
 - Test start shows the timed-test warning before questions appear
 - running Test mode disables other Vocabulary mode tabs and warns on
   browser-level leave/back attempts
+- running Test mode shows a sticky top bar with numbered test-set capsules and
+  the timer centered in the same row; clicking a number jumps to that set
+- Test set headings show numbers only, without `Test Set` text
 - manual Test submit asks for early-submit confirmation, while time-up submits
   automatically
+- the visible Test submit button says `Submit`
 - the result modal has only one `Close` action
-- after the result modal closes, wrong Test questions remain marked red and
-  show inline answer explanations
+- after Test submission, answer feedback appears inside each question blank
+  using the same treatment as Vocabulary Learn
+- the Test result summary and `Redo` button appear below the test questions,
+  not above them
 - student Vocabulary views do not show a bottom-right floating `Redo` capsule
 - student Vocabulary views do not show a bottom-right `Show Answers` capsule
 - 1-4 selected Test groups do not create CloudBase attempt

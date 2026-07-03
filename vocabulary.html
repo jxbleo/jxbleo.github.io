@@ -574,7 +574,8 @@
             background: #fff7ed;
         }
 
-        .self-question .question-prompt {
+        .self-question .question-prompt,
+        .test-question .question-prompt {
             padding-right: 42px;
         }
 
@@ -830,7 +831,8 @@
             display: block;
         }
 
-        .self-question .reveal {
+        .self-question .reveal,
+        .test-question .reveal {
             position: absolute;
             z-index: 95;
             top: 48px;
@@ -931,23 +933,80 @@
         }
 
         .timer {
-            display: none;
-            margin-left: auto;
-            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 8px 13px;
             border-radius: 999px;
             background: #fee2e2;
             color: #dc2626;
             font-weight: 800;
         }
 
-        .timer.sticky {
-            display: block;
-            position: fixed;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 50;
-            box-shadow: 0 12px 28px rgba(220, 38, 38, 0.22);
+        .test-sticky {
+            position: sticky;
+            top: 8px;
+            z-index: 78;
+            margin: -2px 0 18px;
+            padding: 8px;
+            border: 1px solid rgba(255,255,255,0.82);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,253,251,0.93));
+            box-shadow: 0 18px 42px rgba(19, 70, 63, 0.13);
+            backdrop-filter: blur(18px) saturate(1.1);
+        }
+
+        .test-sticky[hidden] {
+            display: none;
+        }
+
+        .test-sticky-row,
+        .test-set-filter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .test-set-filter {
+            margin: 0;
+            padding: 0;
+        }
+
+        .test-set-btn {
+            appearance: none;
+            -webkit-appearance: none;
+            display: inline-grid;
+            place-items: center;
+            min-width: 34px;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            border-radius: 999px;
+            padding: 0;
+            color: var(--accent);
+            background: #fff;
+            font-size: 0.88rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.045);
+        }
+
+        .test-set-btn:hover,
+        .test-set-btn:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 9px 18px rgba(15, 118, 110, 0.12);
+        }
+
+        .test-set-btn.active {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
         }
 
         .range-picker {
@@ -1230,11 +1289,17 @@
                         <button class="btn btn-primary" id="start-test-btn" type="button">Start</button>
                     </div>
                     <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
-                    <div class="timer" id="test-timer"></div>
-                    <div id="test-summary" class="test-summary"></div>
+                    <div class="test-sticky" id="test-sticky" hidden>
+                        <div class="test-sticky-row">
+                            <div id="test-set-filter" class="test-set-filter"></div>
+                            <div class="timer" id="test-timer"></div>
+                        </div>
+                    </div>
                     <div id="test-groups" class="group-grid"></div>
+                    <div id="test-summary" class="test-summary"></div>
                     <div class="group-actions">
-                        <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit Test</button>
+                        <button class="btn btn-secondary" id="redo-test-btn" type="button" style="display:none;">Redo</button>
+                        <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit</button>
                     </div>
                 </div>
             </section>
@@ -1457,22 +1522,7 @@
             document.querySelectorAll('.test-question').forEach(function(card) {
                 card.classList.remove('correct', 'wrong', 'pending', 'choice-open', 'history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
                 card.querySelectorAll('.history-dispute-note').forEach(function(el) { el.remove(); });
-                var input = card.querySelector('.answer-input');
-                var trigger = card.querySelector('.blank-trigger');
-                var reveal = card.querySelector('.reveal');
-                if (input) {
-                    input.value = '';
-                    input.disabled = false;
-                }
-                if (trigger) {
-                    trigger.textContent = '';
-                    trigger.classList.remove('selected');
-                    trigger.disabled = false;
-                }
-                if (reveal) {
-                    reveal.classList.remove('show');
-                    reveal.innerHTML = '';
-                }
+                resetPracticeFeedback(card);
             });
             saveTestDraft();
         }
@@ -1485,13 +1535,17 @@
                 var trigger = card.querySelector('.blank-trigger');
                 var reveal = card.querySelector('.reveal');
                 if (input) input.disabled = false;
-                if (trigger) trigger.disabled = false;
+                if (trigger) {
+                    trigger.classList.remove('feedback', 'feedback-correct', 'feedback-wrong');
+                    trigger.disabled = false;
+                }
                 if (reveal) reveal.classList.remove('show');
             });
             var submitButton = document.getElementById('submit-test-btn');
             submitButton.disabled = false;
-            submitButton.textContent = 'Submit Test';
+            submitButton.textContent = 'Submit';
             submitButton.style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
             saveTestDraft();
         }
 
@@ -1966,7 +2020,10 @@
             var trigger = card.querySelector('.blank-trigger');
             var reveal = card.querySelector('.reveal');
             var explainButton = card.querySelector('.practice-explain-btn');
-            if (input) input.value = '';
+            if (input) {
+                input.value = '';
+                input.disabled = false;
+            }
             if (trigger) {
                 trigger.textContent = '';
                 trigger.classList.remove('selected', 'feedback', 'feedback-correct', 'feedback-wrong');
@@ -1979,7 +2036,7 @@
         }
 
         function closePracticeExplanations(exceptCard) {
-            document.querySelectorAll('#word-practice-panel .self-question').forEach(function(card) {
+            document.querySelectorAll('#word-practice-panel .self-question, #test-groups .test-question').forEach(function(card) {
                 if (card === exceptCard) return;
                 var reveal = card.querySelector('.reveal');
                 var button = card.querySelector('.practice-explain-btn');
@@ -2373,8 +2430,43 @@
             var questionKey = question.questionKey || (group.id + ':' + question.number);
             return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                 '<p class="question-prompt with-inline-answer">' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
+                renderPracticeExplanation(question, group.id) +
                 renderChoicePanel(group.wordList || []) +
-                '<div class="reveal"></div>' +
+            '</div>';
+        }
+
+        function renderTestSetNav(groups) {
+            var sticky = document.getElementById('test-sticky');
+            var filter = document.getElementById('test-set-filter');
+            if (!sticky || !filter) return;
+            filter.innerHTML = (groups || []).map(function(group, index) {
+                return '<button class="test-set-btn' + (index === 0 ? ' active' : '') + '" type="button" data-test-set-index="' + index + '" aria-label="Go to test set ' + (index + 1) + '">' + (index + 1) + '</button>';
+            }).join('');
+            sticky.hidden = !(groups || []).length;
+        }
+
+        function setActiveTestSetIndex(index) {
+            document.querySelectorAll('#test-set-filter .test-set-btn').forEach(function(button) {
+                button.classList.toggle('active', Number(button.getAttribute('data-test-set-index')) === Number(index));
+            });
+        }
+
+        function scrollToTestSet(index) {
+            var card = document.getElementById('test-set-' + (Number(index) + 1));
+            if (!card) return;
+            setActiveTestSetIndex(index);
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderTestGroupCard(group, groupIndex, questions) {
+            return '<div class="group-card test-set-card" id="test-set-' + (groupIndex + 1) + '" data-test-set-index="' + groupIndex + '">' +
+                '<div class="group-head">' +
+                    '<div class="group-head-main">' +
+                        '<div class="set-meta-row"><span class="set-badge test-set">' + (groupIndex + 1) + '</span></div>' +
+                        renderWordBank(group.wordList || []) +
+                    '</div>' +
+                '</div>' +
+                '<div class="question-list">' + questions + '</div>' +
             '</div>';
         }
 
@@ -2405,9 +2497,10 @@
         function startTimer(seconds) {
             clearInterval(testTimerId);
             testRemainingSeconds = seconds;
+            var sticky = document.getElementById('test-sticky');
             var timer = document.getElementById('test-timer');
             timer.textContent = formatTime(testRemainingSeconds);
-            timer.classList.add('sticky');
+            if (sticky) sticky.hidden = false;
             testTimerId = setInterval(function() {
                 testRemainingSeconds--;
                 timer.textContent = formatTime(Math.max(0, testRemainingSeconds));
@@ -2444,20 +2537,14 @@
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
             document.getElementById('test-setup').style.display = 'none';
+            document.getElementById('test-count-note').style.display = 'none';
             root.innerHTML = selected.map(function(group, groupIndex) {
                 var questions = (group.questions || []).map(function(question, index) {
                     return renderTestQuestion(group, question, index);
                 }).join('');
-                return '<div class="group-card">' +
-                    '<div class="group-head">' +
-                        '<div class="group-head-main">' +
-                            '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
-                            renderWordBank(group.wordList || []) +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="question-list">' + questions + '</div>' +
-                '</div>';
+                return renderTestGroupCard(group, groupIndex, questions);
             }).join('');
+            renderTestSetNav(selected);
             setupAdaptiveInputs(root);
             Object.keys(draft.answers || {}).forEach(function(key) {
                 var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
@@ -2470,7 +2557,11 @@
                     trigger.classList.add('selected');
                 }
             });
-            document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            var restoredSubmitButton = document.getElementById('submit-test-btn');
+            restoredSubmitButton.disabled = false;
+            restoredSubmitButton.textContent = 'Submit';
+            restoredSubmitButton.style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
             testRedoAvailable = false;
             updateHistoryToolbar();
             switchView('test-view');
@@ -2488,20 +2579,14 @@
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
             document.getElementById('test-setup').style.display = 'none';
+            document.getElementById('test-count-note').style.display = 'none';
             root.innerHTML = selected.map(function(group, groupIndex) {
                 var questions = (group.questions || []).map(function(question, index) {
                     return renderTestQuestion(group, question, index);
                 }).join('');
-                return '<div class="group-card">' +
-                    '<div class="group-head">' +
-                        '<div class="group-head-main">' +
-                            '<div class="set-meta-row"><span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span></div>' +
-                            renderWordBank(group.wordList || []) +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="question-list">' + questions + '</div>' +
-                '</div>';
+                return renderTestGroupCard(group, groupIndex, questions);
             }).join('');
+            renderTestSetNav(selected);
             setupAdaptiveInputs(root);
             Object.keys(answers || {}).forEach(function(key) {
                 var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
@@ -2516,8 +2601,9 @@
             });
             var submitButton = document.getElementById('submit-test-btn');
             submitButton.disabled = false;
-            submitButton.textContent = 'Submit Test';
+            submitButton.textContent = 'Submit';
             submitButton.style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
             testRedoAvailable = false;
             updateHistoryToolbar();
             switchView('test-view');
@@ -2600,24 +2686,17 @@
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
             document.getElementById('test-setup').style.display = 'none';
+            document.getElementById('test-count-note').style.display = 'none';
             root.innerHTML = selected.map(function(group, groupIndex) {
                 var questions = shuffleList(group.questions || []).map(function(question, index) {
                     return renderTestQuestion(group, question, index);
                 }).join('');
-                return '<div class="group-card">' +
-                    '<div class="group-head">' +
-                        '<div class="group-head-main">' +
-                            '<div class="set-meta-row">' +
-                                '<span class="set-badge test-set">Test Set ' + (groupIndex + 1) + '</span>' +
-                            '</div>' +
-                            renderWordBank(group.wordList || []) +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="question-list">' + questions + '</div>' +
-                '</div>';
+                return renderTestGroupCard(group, groupIndex, questions);
             }).join('');
+            renderTestSetNav(selected);
             setupAdaptiveInputs(root);
             document.getElementById('submit-test-btn').style.display = 'inline-flex';
+            document.getElementById('redo-test-btn').style.display = 'none';
             testRedoAvailable = false;
             updateHistoryToolbar();
             setTestLocked(true);
@@ -2643,8 +2722,12 @@
             var root = document.getElementById('test-groups');
             var summary = document.getElementById('test-summary');
             var setup = document.getElementById('test-setup');
+            var note = document.getElementById('test-count-note');
+            var sticky = document.getElementById('test-sticky');
+            var filter = document.getElementById('test-set-filter');
             var timer = document.getElementById('test-timer');
             var submitButton = document.getElementById('submit-test-btn');
+            var redoButton = document.getElementById('redo-test-btn');
             if (root) root.innerHTML = '';
             if (summary) {
                 summary.innerHTML = '';
@@ -2654,15 +2737,18 @@
                 setup.classList.remove('locked');
                 setup.style.display = '';
             }
+            if (note) note.style.display = '';
+            if (sticky) sticky.hidden = true;
+            if (filter) filter.innerHTML = '';
             if (timer) {
                 timer.textContent = '';
-                timer.classList.remove('sticky');
             }
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Submit Test';
+                submitButton.textContent = 'Submit';
                 submitButton.style.display = 'none';
             }
+            if (redoButton) redoButton.style.display = 'none';
             updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -2729,16 +2815,17 @@
                     var input = card.querySelector('.answer-input');
                     var trigger = card.querySelector('.blank-trigger');
                     var reveal = card.querySelector('.reveal');
+                    var submitted = (input && input.value || '').trim();
                     card.classList.remove('correct', 'wrong', 'pending', 'choice-open');
                     if (input) input.disabled = true;
                     if (trigger) trigger.disabled = true;
+                    if (reveal) reveal.classList.remove('show');
                     if (!result) return;
                     card.classList.add(result.correct ? 'correct' : 'wrong');
-                    if (!result.correct && !response.feedback_locked) {
-                        reveal.innerHTML = '<strong>Answer:</strong> ' + escapeHtml(result.correct_answer) +
-                            (result.explanation ? '<br><br>' + escapeHtml(result.explanation) : '');
-                        reveal.classList.add('show');
-                        reveal.setAttribute('data-answer-reveal', '1');
+                    if (!response.feedback_locked) {
+                        if (reveal && result.explanation) reveal.innerHTML = escapeHtml(result.explanation);
+                        showPracticeFeedback(card, submitted, result.correct_answer, result.correct, result.explanation);
+                        if (reveal) reveal.setAttribute('data-answer-reveal', '1');
                     }
                 });
 
@@ -2752,8 +2839,8 @@
                 showResultOverlay(response);
                 var timer = document.getElementById('test-timer');
                 timer.textContent = 'Finished';
-                timer.classList.remove('sticky');
                 submitButton.style.display = 'none';
+                document.getElementById('redo-test-btn').style.display = 'inline-flex';
                 testRedoAvailable = true;
                 updateHistoryToolbar();
                 setTestLocked(false);
@@ -2762,7 +2849,7 @@
             }).catch(function(error) {
                 testSubmitting = false;
                 submitButton.disabled = false;
-                submitButton.textContent = 'Submit Test';
+                submitButton.textContent = 'Submit';
                 if (testLocked && options.remaining_seconds > 0) startTimer(options.remaining_seconds);
                 alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
             });
@@ -2810,8 +2897,19 @@
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', requestStartTest);
             document.getElementById('submit-test-btn').addEventListener('click', requestSubmitTest);
+            document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
             document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
+            document.getElementById('test-set-filter').addEventListener('click', function(e) {
+                var button = e.target.closest('[data-test-set-index]');
+                if (!button) return;
+                scrollToTestSet(button.getAttribute('data-test-set-index'));
+            });
             document.addEventListener('click', handleChoiceClick);
+            document.getElementById('test-groups').addEventListener('click', function(e) {
+                var actionButton = e.target.closest('[data-action="toggle-practice-explanation"]');
+                if (!actionButton) return;
+                togglePracticeExplanation(actionButton);
+            });
             document.getElementById('test-groups').addEventListener('change', saveTestDraft);
             document.getElementById('test-groups').addEventListener('input', saveTestDraft);
             window.addEventListener('scroll', requestLearnWordBankSync, { passive: true });
