@@ -128,7 +128,8 @@
             backdrop-filter: blur(18px) saturate(1.1);
         }
 
-        .learn-sticky.has-word-bank::after {
+        .learn-sticky.has-word-bank::after,
+        .test-sticky.has-word-bank::after {
             content: "";
             position: absolute;
             left: 18px;
@@ -140,7 +141,8 @@
             pointer-events: none;
         }
 
-        .learn-word-bank {
+        .learn-word-bank,
+        .test-word-bank {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
@@ -151,7 +153,8 @@
                 transform 860ms cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .learn-word-bank.is-open {
+        .learn-word-bank.is-open,
+        .test-word-bank.is-open {
             max-height: 190px;
             opacity: 1;
             transform: translateY(0);
@@ -480,11 +483,13 @@
             font-size: var(--practice-font-size);
         }
 
-        .learn-word-bank[hidden] {
+        .learn-word-bank[hidden],
+        .test-word-bank[hidden] {
             display: none;
         }
 
-        .learn-word-bank-panel {
+        .learn-word-bank-panel,
+        .test-word-bank-panel {
             position: relative;
             margin-top: 0;
             padding: 10px 11px 11px;
@@ -493,7 +498,8 @@
             background: linear-gradient(180deg, rgba(15, 118, 110, 0.055), rgba(255,255,255,0.74));
         }
 
-        .learn-word-bank-panel::before {
+        .learn-word-bank-panel::before,
+        .test-word-bank-panel::before {
             content: "";
             position: absolute;
             left: 18px;
@@ -503,7 +509,8 @@
             background: linear-gradient(90deg, transparent, rgba(15, 118, 110, 0.18), transparent);
         }
 
-        .learn-sticky .word-bank {
+        .learn-sticky .word-bank,
+        .test-sticky .word-bank {
             margin-top: 0;
             padding: 0;
         }
@@ -975,6 +982,10 @@
             padding: 0;
         }
 
+        .test-word-bank {
+            margin-top: 8px;
+        }
+
         .test-set-btn {
             appearance: none;
             -webkit-appearance: none;
@@ -1007,6 +1018,13 @@
             color: #fff;
             background: var(--accent);
             box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+        }
+
+        .test-set-card .group-head {
+            position: relative;
+            top: auto;
+            z-index: 1;
+            box-shadow: none;
         }
 
         .range-picker {
@@ -1294,6 +1312,7 @@
                             <div id="test-set-filter" class="test-set-filter"></div>
                             <div class="timer" id="test-timer"></div>
                         </div>
+                        <div id="test-word-bank" class="test-word-bank" hidden></div>
                     </div>
                     <div id="test-groups" class="group-grid"></div>
                     <div id="test-summary" class="test-summary"></div>
@@ -1333,9 +1352,11 @@
         var testRemainingSeconds = 0;
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
+        var activeTestSetIndex = 0;
         var activeWordGroupId = '';
         var activePracticeGroupId = '';
         var learnWordBankScrollTicking = false;
+        var testSetScrollTicking = false;
         var testStartedAt = null;
         var testLocked = false;
         var testSubmitting = false;
@@ -2439,15 +2460,87 @@
             var sticky = document.getElementById('test-sticky');
             var filter = document.getElementById('test-set-filter');
             if (!sticky || !filter) return;
+            activeTestSetIndex = 0;
             filter.innerHTML = (groups || []).map(function(group, index) {
                 return '<button class="test-set-btn' + (index === 0 ? ' active' : '') + '" type="button" data-test-set-index="' + index + '" aria-label="Go to test set ' + (index + 1) + '">' + (index + 1) + '</button>';
             }).join('');
             sticky.hidden = !(groups || []).length;
+            renderTestStickyWordBank(0);
         }
 
         function setActiveTestSetIndex(index) {
+            index = Number(index || 0);
+            if (isNaN(index) || index < 0) index = 0;
+            if (activeTestGroups.length && index >= activeTestGroups.length) index = activeTestGroups.length - 1;
+            if (index === activeTestSetIndex && document.getElementById('test-word-bank') && !document.getElementById('test-word-bank').hidden) {
+                return;
+            }
+            activeTestSetIndex = index;
             document.querySelectorAll('#test-set-filter .test-set-btn').forEach(function(button) {
-                button.classList.toggle('active', Number(button.getAttribute('data-test-set-index')) === Number(index));
+                var isActive = Number(button.getAttribute('data-test-set-index')) === Number(index);
+                button.classList.toggle('active', isActive);
+                if (isActive && typeof button.scrollIntoView === 'function') {
+                    button.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            });
+            renderTestStickyWordBank(index);
+        }
+
+        function renderTestStickyWordBank(index) {
+            var sticky = document.getElementById('test-sticky');
+            var root = document.getElementById('test-word-bank');
+            var group = activeTestGroups[Number(index || 0)];
+            if (!root || !sticky || !group) {
+                if (root) {
+                    root.hidden = true;
+                    root.innerHTML = '';
+                    root.classList.remove('is-open');
+                }
+                if (sticky) sticky.classList.remove('has-word-bank');
+                return;
+            }
+            root.innerHTML = '<div class="test-word-bank-panel">' + renderWordBank(group.wordList || []) + '</div>';
+            root.hidden = false;
+            requestAnimationFrame(function() {
+                root.classList.add('is-open');
+                sticky.classList.add('has-word-bank');
+            });
+        }
+
+        function visibleTestSetIndex() {
+            if (!activeTestGroups.length) return 0;
+            var sticky = document.getElementById('test-sticky');
+            var anchorY = sticky ? sticky.getBoundingClientRect().bottom + 28 : 72;
+            var bestIndex = activeTestSetIndex || 0;
+            var bestDistance = Infinity;
+            document.querySelectorAll('.test-set-card').forEach(function(card) {
+                var index = Number(card.getAttribute('data-test-set-index') || 0);
+                var rect = card.getBoundingClientRect();
+                if (rect.top <= anchorY && rect.bottom >= anchorY) {
+                    bestIndex = index;
+                    bestDistance = 0;
+                    return;
+                }
+                var distance = Math.abs(rect.top - anchorY);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestIndex = index;
+                }
+            });
+            return bestIndex;
+        }
+
+        function syncActiveTestSetFromScroll() {
+            if (!activeTestGroups.length || activeVocabularyViewId() !== 'test-view') return;
+            setActiveTestSetIndex(visibleTestSetIndex());
+        }
+
+        function requestTestSetSync() {
+            if (testSetScrollTicking) return;
+            testSetScrollTicking = true;
+            requestAnimationFrame(function() {
+                testSetScrollTicking = false;
+                syncActiveTestSetFromScroll();
             });
         }
 
@@ -2456,6 +2549,7 @@
             if (!card) return;
             setActiveTestSetIndex(index);
             card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.setTimeout(requestTestSetSync, 420);
         }
 
         function renderTestGroupCard(group, groupIndex, questions) {
@@ -2463,7 +2557,6 @@
                 '<div class="group-head">' +
                     '<div class="group-head-main">' +
                         '<div class="set-meta-row"><span class="set-badge test-set">' + (groupIndex + 1) + '</span></div>' +
-                        renderWordBank(group.wordList || []) +
                     '</div>' +
                 '</div>' +
                 '<div class="question-list">' + questions + '</div>' +
@@ -2711,6 +2804,7 @@
             testRemainingSeconds = 0;
             activeTestGroups = [];
             activeTestGroupCount = 0;
+            activeTestSetIndex = 0;
             testStartedAt = null;
             testSubmitting = false;
             setTestLocked(false);
@@ -2725,6 +2819,7 @@
             var note = document.getElementById('test-count-note');
             var sticky = document.getElementById('test-sticky');
             var filter = document.getElementById('test-set-filter');
+            var testWordBank = document.getElementById('test-word-bank');
             var timer = document.getElementById('test-timer');
             var submitButton = document.getElementById('submit-test-btn');
             var redoButton = document.getElementById('redo-test-btn');
@@ -2738,8 +2833,16 @@
                 setup.style.display = '';
             }
             if (note) note.style.display = '';
-            if (sticky) sticky.hidden = true;
+            if (sticky) {
+                sticky.hidden = true;
+                sticky.classList.remove('has-word-bank');
+            }
             if (filter) filter.innerHTML = '';
+            if (testWordBank) {
+                testWordBank.innerHTML = '';
+                testWordBank.hidden = true;
+                testWordBank.classList.remove('is-open');
+            }
             if (timer) {
                 timer.textContent = '';
             }
@@ -2912,8 +3015,14 @@
             });
             document.getElementById('test-groups').addEventListener('change', saveTestDraft);
             document.getElementById('test-groups').addEventListener('input', saveTestDraft);
-            window.addEventListener('scroll', requestLearnWordBankSync, { passive: true });
-            window.addEventListener('resize', requestLearnWordBankSync);
+            window.addEventListener('scroll', function() {
+                requestLearnWordBankSync();
+                requestTestSetSync();
+            }, { passive: true });
+            window.addEventListener('resize', function() {
+                requestLearnWordBankSync();
+                requestTestSetSync();
+            });
             window.addEventListener('beforeunload', function(event) {
                 saveTestDraft();
                 if (!testLocked) return;

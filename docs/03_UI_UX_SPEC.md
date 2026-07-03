@@ -461,7 +461,11 @@ Shared rules:
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. It centers numbered test-set capsules and
   the countdown timer in the same row. The test-set labels show only numbers,
-  not `Test Set 1` text, and clicking a number jumps to that test set.
+  not `Test Set 1` text, and clicking a number jumps to that test set. The
+  current test set's word bank appears directly below the numbered capsules in
+  the same sticky surface; when the student scrolls between test sets, the
+  active number and sticky word bank automatically update to match the visible
+  test set.
 - While a Vocabulary Test is running, the page is front-end locked to the Test
   view: other mode tabs are disabled, browser unload/back attempts show a
   warning, and the student must submit or wait for automatic time-up submission.

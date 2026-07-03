@@ -773,8 +773,19 @@ tested.
 - Never write passwords, CloudBase secrets, private grading keys, accepted
   answers, explanations, or long raw command output into `AGENT_TODO.md`.
 - Automated login tests may read dedicated development test credentials from
-  `.qa-secrets.local`; this file must remain ignored by Git and must not contain
-  real owner or real student accounts.
+  the repository root file `.qa-secrets.local`; this file must remain ignored by
+  Git and must not contain real owner or real student accounts. Future agents
+  can locate the local QA login setup with:
+
+  ```bash
+  rg -n "MR_CAT_TEST|qa-secrets|TEST_TEACHER|TEST_STUDENT" -S . .gitignore AGENTS.md AGENT_TODO.md
+  ```
+
+  Expected local-only keys are `MR_CAT_TEST_BASE_URL`,
+  `MR_CAT_TEST_TEACHER_ID`, `MR_CAT_TEST_TEACHER_PASSWORD`,
+  `MR_CAT_TEST_STUDENT_ID`, and `MR_CAT_TEST_STUDENT_PASSWORD`. Never print,
+  commit, paste, or summarize the secret values; only report whether the keys
+  are present and use them for owner-authorized QA login checks.
 
 ## 15. Session Record — Teacher Argue Enhancement (2026-06-12)
 
