@@ -12,6 +12,8 @@
 - Changed teacher notification attempt details to render outside the
   notification list scroll body, preventing the first-open dialog from
   appearing unusually short.
+- Changed finished Vocabulary assignment cards to open the Learn entry like
+  Library cards instead of automatically entering Test/History mode.
 
 ## 2026-07-02
 

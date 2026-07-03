@@ -212,6 +212,20 @@
         return href + (href.indexOf('?') === -1 ? '?' : '&') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
     }
 
+    function isVocabularyHref(href) {
+        return /(?:^|\/)vocabulary\.html(?:\?|$)/i.test(String(href || ''));
+    }
+
+    function vocabularyLearningHref(set) {
+        var href = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
+        var params = [
+            'app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1'),
+            'entry=learn'
+        ];
+        if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
+        return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+    }
+
     function practiceHref(item, assignmentId) {
         var href = item.link || item.href || '#';
         var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
@@ -220,7 +234,7 @@
         if (item.prefill_attempt_id) params.push('prefill=' + encodeURIComponent(item.prefill_attempt_id));
         if (item.history_attempt_id) params.push('history=' + encodeURIComponent(item.history_attempt_id));
         if (item.best_percentage != null) params.push('history_score=' + encodeURIComponent(item.best_percentage));
-        if (assignmentId && /(?:^|\/)vocabulary\.html(?:\?|$)/i.test(href) && !item.prefill_attempt_id && !item.history_attempt_id) {
+        if (assignmentId && isVocabularyHref(href) && !item.prefill_attempt_id && !item.history_attempt_id) {
             params.push('entry=learn');
         }
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
@@ -486,11 +500,16 @@
         var finished = isFinishedStatus(status);
         var replyCount = teacherReplyCount(item);
         var replyKey = replyKeyForItem(item);
-        var href = practiceHref(Object.assign({}, set, {
+        var assignmentHref = practiceHref(Object.assign({}, set, {
             prefill_attempt_id: item.prefill_attempt_id,
             history_attempt_id: item.history_attempt_id,
             best_percentage: item.best_percentage
         }), item.assignment_id);
+        var setId = set.set_id || set.id || set.title || '';
+        var setHref = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
+        var href = finished && isVocabularyHref(setHref)
+            ? vocabularyLearningHref(set)
+            : assignmentHref;
         var collected = isStarCollected(item);
         var replyButton = replyCount
             ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
@@ -500,7 +519,6 @@
         var eyebrow = sectionId
             ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment')
             : (set.course || set.type || 'Assignment');
-        var setId = set.set_id || set.id || set.title || '';
         var entryStatus = finished ? status : 'not-passed';
         return '<article class="resource-card library-task-card assignment-task-card' +
             (finished ? ' finished-assignment-card ' + escapeHtml(status) : '') +

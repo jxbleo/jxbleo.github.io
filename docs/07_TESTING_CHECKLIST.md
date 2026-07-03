@@ -67,6 +67,8 @@ Check:
 - forced password change appears when expected
 - Assignments shows `TO DO` and `FINISHED`
 - student opens assigned work
+- opening a finished Vocabulary assignment from `Show Finished` lands on
+  Vocabulary Learn like Library entry, not automatic Test/History mode
 - student opens the same assigned set from Library, submits, and the backend records it against the open assignment
 - BBC History works when the student opens a previously attempted set from
   Library without `history` or `assignment` URL parameters
