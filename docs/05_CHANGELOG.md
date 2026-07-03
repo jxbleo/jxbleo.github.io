@@ -9,6 +9,9 @@
 
 - Changed Teacher View matrix cells so completed assignments with STAR earning
   disabled show a green check instead of a star.
+- Changed teacher notification attempt details to render outside the
+  notification list scroll body, preventing the first-open dialog from
+  appearing unusually short.
 
 ## 2026-07-02
 

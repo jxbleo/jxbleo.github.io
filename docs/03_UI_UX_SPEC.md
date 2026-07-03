@@ -153,7 +153,8 @@ assignment or self-study thread at a glance. When opened from a specific
 notification attempt, the dialog highlights that attempt and automatically
 scrolls to its card. The attempt detail dialog must keep a visible `Close`
 action fixed at the bottom of the modal while the attempt history scrolls above
-it.
+it. The detail modal should render outside the notification list's scroll body
+so the first open uses the same full dialog height as later opens.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
