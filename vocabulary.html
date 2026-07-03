@@ -1004,6 +1004,11 @@
             font-weight: 800;
         }
 
+        .timer.result {
+            background: #ecfdf5;
+            color: var(--accent);
+        }
+
         .test-sticky {
             position: sticky;
             top: 8px;
@@ -1071,6 +1076,32 @@
             color: #fff;
             background: var(--accent);
             box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+        }
+
+        .word-bank-redo {
+            appearance: none;
+            -webkit-appearance: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 14px;
+            border: 1px solid rgba(15, 118, 110, 0.22);
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.86rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.20);
+            transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+        }
+
+        .word-bank-redo:hover,
+        .word-bank-redo:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.24);
         }
 
         .test-set-card .group-head {
@@ -1416,6 +1447,7 @@
         var testLocked = false;
         var testSubmitting = false;
         var testHistoryArmed = false;
+        var testReviewMode = false;
         var students = [
             { id: 'EI6688', label: '甘昕雨Eilene' },
             { id: 'EV3389', label: '刘榆雯Eva' },
@@ -1912,9 +1944,25 @@
         }
 
         function renderWordBankToggle(kind) {
+            if (kind === 'test' && testReviewMode) return renderTestStickyRedoButton();
             var attr = kind === 'test' ? 'data-test-word-bank-toggle' : 'data-learn-word-bank-toggle';
             return '<button class="word-bank-toggle is-collapsed" type="button" ' + attr +
                 ' aria-label="Expand word bank" aria-pressed="false" title="Expand word bank" disabled>▼</button>';
+        }
+
+        function renderTestStickyRedoButton() {
+            return '<button class="word-bank-redo" type="button" data-test-sticky-redo>Redo</button>';
+        }
+
+        function renderTestReviewControl() {
+            var filter = document.getElementById('test-set-filter');
+            if (!filter) return;
+            var existing = filter.querySelector('[data-test-word-bank-toggle], [data-test-sticky-redo]');
+            if (existing) {
+                existing.outerHTML = renderTestStickyRedoButton();
+                return;
+            }
+            filter.insertAdjacentHTML('afterbegin', renderTestStickyRedoButton());
         }
 
         function updateWordBankToggle(kind, isOpen, isEnabled) {
@@ -2707,6 +2755,7 @@
             testRemainingSeconds = seconds;
             var sticky = document.getElementById('test-sticky');
             var timer = document.getElementById('test-timer');
+            timer.classList.remove('result');
             timer.textContent = formatTime(testRemainingSeconds);
             if (sticky) sticky.hidden = false;
             testTimerId = setInterval(function() {
@@ -2741,6 +2790,7 @@
             activeTestGroups = selected;
             activeTestGroupCount = Number(draft.group_count || selected.length);
             testWordBankManualState = null;
+            testReviewMode = false;
             testStartedAt = draft.started_at;
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
@@ -2784,6 +2834,7 @@
             activeTestGroups = selected;
             activeTestGroupCount = selected.length;
             testWordBankManualState = null;
+            testReviewMode = false;
             testStartedAt = new Date().toISOString();
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
@@ -2893,6 +2944,7 @@
             activeTestGroups = selected;
             activeTestGroupCount = count;
             testWordBankManualState = null;
+            testReviewMode = false;
             testStartedAt = new Date().toISOString();
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
@@ -2925,6 +2977,7 @@
             activeTestGroupCount = 0;
             activeTestSetIndex = 0;
             testWordBankManualState = null;
+            testReviewMode = false;
             testStartedAt = null;
             testSubmitting = false;
             setTestLocked(false);
@@ -2965,6 +3018,7 @@
             }
             if (timer) {
                 timer.textContent = '';
+                timer.classList.remove('result');
             }
             if (submitButton) {
                 submitButton.disabled = false;
@@ -3054,13 +3108,18 @@
                 });
 
                 var summary = document.getElementById('test-summary');
-                summary.textContent = response.correct_count + ' / ' + response.question_count;
-                summary.classList.add('show');
+                summary.textContent = '';
+                summary.classList.remove('show');
                 showResultOverlay(response);
                 var timer = document.getElementById('test-timer');
-                timer.textContent = 'Finished';
+                timer.textContent = response.correct_count + ' / ' + response.question_count;
+                timer.classList.add('result');
+                testReviewMode = true;
+                testWordBankManualState = false;
+                setTestWordBankOpen(false);
+                renderTestReviewControl();
                 submitButton.style.display = 'none';
-                document.getElementById('redo-test-btn').style.display = 'inline-flex';
+                document.getElementById('redo-test-btn').style.display = 'none';
                 testRedoAvailable = true;
                 updateHistoryToolbar();
                 setTestLocked(false);
@@ -3127,6 +3186,11 @@
             document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
             document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.getElementById('test-set-filter').addEventListener('click', function(e) {
+                var redoControl = e.target.closest('[data-test-sticky-redo]');
+                if (redoControl) {
+                    requestRedoTest();
+                    return;
+                }
                 var toggle = e.target.closest('[data-test-word-bank-toggle]');
                 if (toggle) {
                     if (toggle.disabled) return;
