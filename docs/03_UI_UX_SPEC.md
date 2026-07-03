@@ -432,23 +432,25 @@ Shared rules:
   controls, or a second word bank because the sticky learning bar already
   identifies the group. The word bank shows words only, without auto-numbered
   chips or font-size plus/minus controls.
-- Vocabulary inline practice uses each study group's own `Check` button. After
-  checking, correct cards turn green, incorrect cards turn orange-yellow with a
-  continuous pulse, and each answer blank is replaced by inline feedback:
+- Vocabulary inline practice uses each study group's own `Check` button. Each
+  question with an explanation shows a compact blue-green `?` button at the
+  top right before and after checking; clicking it opens the explanation in a
+  floating popover so the practice layout does not shift. After checking,
+  correct cards turn green, incorrect cards turn orange-yellow, and each answer
+  blank is replaced by inline feedback:
   correct answers show in green, while wrong answers show the submitted answer
   in orange followed by an arrow and the correct answer in green. If the
   student left a blank unanswered, the submitted-answer side shows `X` instead
   of `No answer`. The `Check` button is replaced by a centered score pill such
   as `Score: 7 / 10` and an inline `Redo` button; `Redo` clears all practice
-  answers and restores the group to an unchecked state. The explanation for
-  each question remains visible below the answer feedback after checking.
-  Inline practice does not show `Clear All`, `Hide Answer`, or a floating
-  `Redo` control. The per-blank choice panel opens as a floating overlay so the
-  question layout does not shift; it has no `Clear` button, and its final chip
-  is a blank underline option for leaving an answer empty. When local practice
-  answers are present, checking is handled locally and does not call CloudBase.
-  Legacy vocabulary units that still need CloudBase answer checks must show a
-  friendly login/session message instead of raw SDK errors.
+  answers and restores the group to an unchecked state. Inline practice does
+  not show `Clear All`, `Hide Answer`, or a floating `Redo` control. The
+  per-blank choice panel opens as a floating overlay so the question layout
+  does not shift; it has no `Clear` button, and its final chip is a blank
+  underline option for leaving an answer empty. When local practice answers are
+  present, checking is handled locally and does not call CloudBase. Legacy
+  vocabulary units that still need CloudBase answer checks must show a friendly
+  login/session message instead of raw SDK errors.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 

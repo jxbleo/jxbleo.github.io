@@ -572,16 +572,10 @@
         .self-question.wrong {
             border-color: #f59e0b;
             background: #fff7ed;
-            animation: practiceWrongPulse 1.45s ease-in-out infinite;
         }
 
-        @keyframes practiceWrongPulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.00);
-            }
-            50% {
-                box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.26);
-            }
+        .self-question .question-prompt {
+            padding-right: 42px;
         }
 
         .dictation-row.correct td {
@@ -834,6 +828,52 @@
 
         .reveal.show {
             display: block;
+        }
+
+        .self-question .reveal {
+            position: absolute;
+            z-index: 95;
+            top: 48px;
+            right: 14px;
+            width: min(420px, calc(100% - 28px));
+            max-height: min(320px, 70vh);
+            overflow: auto;
+            margin-top: 0;
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            border-left: 4px solid var(--accent);
+            background: rgba(255, 255, 255, 0.98);
+            color: var(--ink);
+            box-shadow: 0 18px 44px rgba(15, 76, 71, 0.18);
+        }
+
+        .practice-explain-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid rgba(15, 118, 110, 0.22);
+            border-radius: 999px;
+            background: #e6f7f4;
+            color: #0f766e;
+            font-size: 0.88rem;
+            font-weight: 1000;
+            line-height: 1;
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.12);
+            cursor: pointer;
+        }
+
+        .practice-explain-btn:hover {
+            background: #d3f1ec;
+            color: #0b5f59;
+        }
+
+        .practice-explain-btn.active {
+            border-color: rgba(15, 118, 110, 0.42);
+            background: var(--accent);
+            color: #fff;
         }
 
         .group-actions {
@@ -1881,6 +1921,12 @@
             '</div>';
         }
 
+        function renderPracticeExplanation(question, groupId) {
+            if (!question.explanation) return '';
+            return '<button class="practice-explain-btn" type="button" data-action="toggle-practice-explanation" data-group="' + escapeHtml(groupId) + '" title="Explain this answer" aria-label="Explain this answer">?</button>' +
+                '<div class="reveal practice-explanation-popover">' + escapeHtml(question.explanation) + '</div>';
+        }
+
         function renderPromptWithSelect(question, options) {
             var blank = renderAnswerBlank();
             if (question.prompt.indexOf('__________') !== -1) {
@@ -1906,21 +1952,11 @@
         function showPracticeFeedback(card, submitted, correctAnswer, isCorrect, explanation) {
             var input = card.querySelector('.answer-input');
             var trigger = card.querySelector('.blank-trigger');
-            var reveal = card.querySelector('.reveal');
             if (input) input.value = submitted || '';
             if (trigger) {
                 trigger.innerHTML = renderPracticeAnswerFeedback(submitted, correctAnswer, isCorrect);
                 trigger.classList.add('selected', 'feedback', isCorrect ? 'feedback-correct' : 'feedback-wrong');
                 trigger.disabled = true;
-            }
-            if (reveal) {
-                if (explanation) {
-                    reveal.innerHTML = escapeHtml(explanation);
-                    reveal.classList.add('show');
-                } else {
-                    reveal.classList.remove('show');
-                    reveal.innerHTML = '';
-                }
             }
         }
 
@@ -1928,6 +1964,7 @@
             var input = card.querySelector('.answer-input');
             var trigger = card.querySelector('.blank-trigger');
             var reveal = card.querySelector('.reveal');
+            var explainButton = card.querySelector('.practice-explain-btn');
             if (input) input.value = '';
             if (trigger) {
                 trigger.textContent = '';
@@ -1936,8 +1973,30 @@
             }
             if (reveal) {
                 reveal.classList.remove('show');
-                reveal.innerHTML = '';
             }
+            if (explainButton) explainButton.classList.remove('active');
+        }
+
+        function closePracticeExplanations(exceptCard) {
+            document.querySelectorAll('#word-practice-panel .self-question').forEach(function(card) {
+                if (card === exceptCard) return;
+                var reveal = card.querySelector('.reveal');
+                var button = card.querySelector('.practice-explain-btn');
+                if (reveal) reveal.classList.remove('show');
+                if (button) button.classList.remove('active');
+            });
+        }
+
+        function togglePracticeExplanation(button) {
+            var card = button.closest('.self-question');
+            if (!card) return;
+            var reveal = card.querySelector('.reveal');
+            if (!reveal) return;
+            var willShow = !reveal.classList.contains('show');
+            closePracticeExplanations(willShow ? card : null);
+            reveal.classList.toggle('show', willShow);
+            button.classList.toggle('active', willShow);
+            card.classList.remove('choice-open');
         }
 
         function practiceCheckError(error) {
@@ -2086,8 +2145,8 @@
                 var questionKey = question.questionKey || (group.id + ':' + question.number);
                 return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                     '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
+                    renderPracticeExplanation(question, group.id) +
                     renderChoicePanel(group.wordList || []) +
-                    '<div class="reveal"></div>' +
                 '</div>';
             }).join('');
 
@@ -2252,6 +2311,10 @@
         }
 
         function handleChoiceClick(e) {
+            if (!e.target.closest('.practice-explain-btn') && !e.target.closest('.practice-explanation-popover')) {
+                closePracticeExplanations(null);
+            }
+
             var option = e.target.closest('.choice-option');
             if (option) {
                 var optionCard = option.closest('.question-item');
@@ -2725,6 +2788,10 @@
                 if (!actionButton) return;
                 var action = actionButton.getAttribute('data-action');
                 var groupId = actionButton.getAttribute('data-group');
+                if (action === 'toggle-practice-explanation') {
+                    togglePracticeExplanation(actionButton);
+                    return;
+                }
                 if (!action || !groupId) return;
                 if (action === 'open-practice') {
                     activePracticeGroupId = groupId;
