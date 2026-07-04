@@ -639,8 +639,8 @@
         }
 
         .question-item.wrong {
-            border-color: #fb923c;
-            background: #fff7ed;
+            border-color: #fca5a5;
+            background: #fef2f2;
         }
 
         .question-item.pending {
@@ -655,8 +655,8 @@
         }
 
         .self-question.wrong {
-            border-color: #f59e0b;
-            background: #fff7ed;
+            border-color: #fca5a5;
+            background: #fef2f2;
         }
 
         .self-question .question-prompt,
@@ -766,11 +766,11 @@
         }
 
         .blank-trigger.feedback-wrong {
-            border-bottom-color: #f59e0b;
+            border-bottom-color: #ef4444;
         }
 
         .feedback-submitted {
-            color: #c2410c;
+            color: #dc2626;
             font-weight: 900;
             text-decoration: line-through;
             text-decoration-thickness: 2px;
@@ -1009,6 +1009,27 @@
             color: #fff;
         }
 
+        #submit-test-btn {
+            border: 1px solid rgba(245, 158, 11, 0.42);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
+            font-weight: 900;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.82), 0 9px 20px var(--use-gold-glow);
+            transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, opacity 140ms ease;
+        }
+
+        #submit-test-btn:hover:not(:disabled),
+        #submit-test-btn:focus-visible:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 11px 24px rgba(245, 158, 11, 0.42);
+        }
+
+        #submit-test-btn:disabled {
+            opacity: 0.72;
+            cursor: progress;
+        }
+
         .btn-secondary {
             background: #eef2f7;
             color: var(--ink);
@@ -1053,6 +1074,10 @@
         .timer.result {
             background: #ecfdf5;
             color: var(--accent);
+        }
+
+        .timer[hidden] {
+            display: none;
         }
 
         .test-sticky {
@@ -1119,9 +1144,10 @@
         }
 
         .test-sticky-score {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
+            width: fit-content;
             min-height: 30px;
             margin: 6px auto 0;
             padding: 6px 14px;

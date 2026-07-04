@@ -445,10 +445,10 @@ Shared rules:
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the explanation in a floating popover
   so the practice layout does not shift. After checking,
-  correct cards turn green, incorrect cards turn orange-yellow, and each answer
+  correct cards turn green, incorrect cards turn light red, and each answer
   blank is replaced by inline feedback:
   correct answers show in green, while wrong answers show the submitted answer
-  in orange followed by an arrow and the correct answer in green. If the
+  in red followed by an arrow and the correct answer in green. If the
   student left a blank unanswered, the submitted-answer side shows `X` instead
   of `No answer`. The `Check` button is replaced by a centered score pill such
   as `Score: 7 / 10` and an inline `Redo` button; `Redo` clears all practice
@@ -488,13 +488,15 @@ Shared rules:
   view: other mode tabs are disabled, browser unload/back attempts show a
   warning, and the student must submit or wait for automatic time-up submission.
 - Manual Submit opens an early-submit confirmation; time-up submission does not
-  ask again. The visible button label is `Submit`.
+  ask again. The visible button label is `Submit`, and the bottom Submit button
+  uses the same gold glowing treatment as the Use-mode numbered capsules.
 - The Vocabulary Test result modal has one action only: `Close`.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
-  Learn. The top timer position changes into a compact `Redo` capsule, while
-  the direct result count such as `7 / 10` appears centered below the numbered
-  capsule row; the bottom of the Test view should not repeat a score block.
+  Learn. The countdown timer disappears completely and its right-side position
+  changes into a compact `Redo` capsule, while the direct result count such as
+  `7 / 10` appears centered on the next row below the numbered capsule row; the
+  bottom of the Test view should not repeat a score block.
   After submission, the sticky word bank collapses by default and the far-left
   triangle word-bank toggle remains available for reopening it. The Test result
   area should not show `Score`, saved/not saved status copy, or appear above
