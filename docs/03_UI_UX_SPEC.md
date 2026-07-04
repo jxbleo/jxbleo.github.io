@@ -400,18 +400,26 @@ Shared rules:
 - BBC MC option selection may add only lightweight sound and a right-side
   `✦` selection symbol. Do not add extra selected-state text; the blue render
   theme should show the symbol in blue.
+- In the BBC blue render theme, the top lesson tools show `Worksheet` only,
+  the exercise body does not show separate `Part 1` / `Part 2` headings, and
+  the main submission button reads `Submit`.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
 - BBC Explain and Argue entry points use compact icon buttons inside the right
   side of the relevant question box instead of text buttons in the feedback
   row. Explain uses a blue-green `?`; Argue uses an orange `!`. When both are
-  present, `?` sits to the left of `!`.
+  present, `?` sits to the left of `!`. In the blue render theme, these buttons
+  should take only their compact icon width so question text can wrap naturally
+  beside them instead of reserving a full vertical action column.
 - When a student opens a BBC lesson with a passed or mastered historical
   attempt, the page should automatically load that historical review and show
   the per-question Explain `?` buttons and wrong-question Argue `!` buttons.
   Loading this historical review must not call `revealAnswers` or lock future
   mastery by itself.
   Historical attempts below the passing threshold must still hide both actions.
+- In the BBC blue render theme, History review should not show the extra
+  per-question dispute status note box under each question. Keep the visual
+  correct/wrong state and any eligible Explain/Argue icon buttons.
 
 ### Vocabulary Learn
 
