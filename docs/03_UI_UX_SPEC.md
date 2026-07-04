@@ -455,11 +455,12 @@ Shared rules:
   answers and restores the group to an unchecked state. Inline practice does
   not show `Clear All`, `Hide Answer`, or a floating `Redo` control. The
   per-blank choice panel opens as a floating overlay so the question layout
-  does not shift; it has no `Clear` button, and its final chip is a blank
-  underline option for leaving an answer empty. When local practice answers are
-  present, checking is handled locally and does not call CloudBase. Legacy
-  vocabulary units that still need CloudBase answer checks must show a friendly
-  login/session message instead of raw SDK errors.
+  does not shift; its word choices are shuffled per question so they do not
+  reveal the answer order, it has no `Clear` button, and its final chip is a
+  blank underline option for leaving an answer empty. When local practice
+  answers are present, checking is handled locally and does not call CloudBase.
+  Legacy vocabulary units that still need CloudBase answer checks must show a
+  friendly login/session message instead of raw SDK errors.
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 
