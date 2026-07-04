@@ -21,6 +21,8 @@
 - Changed Vocabulary inline practice so `Check` turns into a score plus inline
   `Redo`, removes `Clear All` and floating Redo controls, and writes answer
   feedback directly into each blank.
+- Changed Vocabulary inline practice choice panels to shuffle word choices per
+  question, preventing the visible choice order from matching the answer order.
 - Refined Vocabulary inline practice feedback: wrong answers use a static
   light-red state, the score shows only correct/total, action pills are
   centered, and the per-blank choice panel opens as a floating overlay with a

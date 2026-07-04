@@ -2063,6 +2063,33 @@
             return copy;
         }
 
+        function seededNumber(seed) {
+            var value = 2166136261;
+            var text = String(seed || '');
+            for (var i = 0; i < text.length; i++) {
+                value ^= text.charCodeAt(i);
+                value = Math.imul(value, 16777619);
+            }
+            return value >>> 0;
+        }
+
+        function shuffleChoiceWords(words, seed) {
+            var original = (words || []).slice();
+            var copy = original.slice();
+            var state = seededNumber(seed);
+            for (var i = copy.length - 1; i > 0; i--) {
+                state = Math.imul(state ^ (state >>> 15), 2246822519) >>> 0;
+                var j = state % (i + 1);
+                var tmp = copy[i];
+                copy[i] = copy[j];
+                copy[j] = tmp;
+            }
+            if (copy.length > 1 && copy.every(function(word, index) { return word === original[index]; })) {
+                copy.push(copy.shift());
+            }
+            return copy;
+        }
+
         function formatTime(seconds) {
             var min = Math.floor(seconds / 60);
             var sec = seconds % 60;
@@ -2325,10 +2352,11 @@
                 '<button class="blank-trigger" type="button" data-action="open-choice" aria-label="Choose answer"></button>';
         }
 
-        function renderChoicePanel(words) {
+        function renderChoicePanel(words, seed) {
+            var choices = shuffleChoiceWords(words, seed);
             return '<div class="choice-panel">' +
                 '<div class="choice-options-wrap">' +
-                (words || []).map(function(word) {
+                choices.map(function(word) {
                     return '<button class="choice-option" type="button" data-value="' + escapeHtml(word) + '">' + escapeHtml(word) + '</button>';
                 }).join('') +
                 '<button class="choice-option blank-choice" type="button" data-value="" data-blank-choice="1" aria-label="Leave blank">_____</button>' +
@@ -2565,7 +2593,7 @@
                 return '<div class="question-item self-question" id="self-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                     '<p class="question-prompt with-inline-answer">' + question.number + '. ' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
                     renderPracticeExplanation(question, group.id) +
-                    renderChoicePanel(group.wordList || []) +
+                    renderChoicePanel(group.wordList || [], questionKey) +
                 '</div>';
             }).join('');
 
@@ -2792,7 +2820,7 @@
             return '<div class="question-item test-question" id="test-' + group.id + '-question-' + index + '" data-question-key="' + escapeHtml(questionKey) + '">' +
                 '<p class="question-prompt with-inline-answer">' + renderPromptWithSelect(question, group.wordList || []) + '</p>' +
                 renderPracticeExplanation(question, group.id) +
-                renderChoicePanel(group.wordList || []) +
+                renderChoicePanel(group.wordList || [], questionKey) +
             '</div>';
         }
 
