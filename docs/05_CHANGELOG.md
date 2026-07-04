@@ -22,7 +22,7 @@
   `Redo`, removes `Clear All` and floating Redo controls, and writes answer
   feedback directly into each blank.
 - Refined Vocabulary inline practice feedback: wrong answers use a static
-  orange-yellow state, the score shows only correct/total, action pills are
+  light-red state, the score shows only correct/total, action pills are
   centered, and the per-blank choice panel opens as a floating overlay with a
   final blank underline chip instead of a `Clear` button.
 - Changed unanswered wrong Vocabulary inline practice blanks to display `X`
