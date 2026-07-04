@@ -742,8 +742,6 @@
 
         .answer-toggle-btn,
         .argue-btn {
-            position: absolute;
-            top: 12px;
             display: inline-grid;
             place-items: center;
             width: 28px;
@@ -757,7 +755,6 @@
         }
 
         .answer-toggle-btn {
-            right: 12px;
             border: 1px solid rgba(15, 118, 110, 0.22);
             border-radius: 999px;
             background: #e6f7f4;
@@ -777,15 +774,10 @@
         }
 
         .argue-btn {
-            right: 12px;
             border: 1px solid #e2c8b0;
             background: #fff6ed;
             color: #9a5a2a;
             box-shadow: 0 8px 18px rgba(122, 67, 26, 0.12);
-        }
-
-        .question-action-host.has-argue-action .answer-toggle-btn {
-            right: 46px;
         }
 
         .argue-btn:hover {
@@ -1643,6 +1635,21 @@
             color: #1e7e34;
         }
 
+        .correct-answer-check {
+            display: inline-grid;
+            place-items: center;
+            width: 18px;
+            height: 18px;
+            margin-left: 6px;
+            border-radius: 999px;
+            color: #fff;
+            background: #1aa67d;
+            font-size: 0.78rem;
+            font-weight: 950;
+            line-height: 1;
+            vertical-align: -2px;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1796,19 +1803,9 @@
 
         .question-action-host {
             position: relative;
-            padding-right: 48px !important;
         }
 
-        .question-action-host.has-argue-action {
-            padding-right: 84px !important;
-        }
-
-        body.bbc-theme-blue-studio .question-action-host,
-        body.bbc-theme-blue-studio .question-action-host.has-argue-action {
-            padding-right: 16px !important;
-        }
-
-        body.bbc-theme-blue-studio .question-action-buttons {
+        .question-action-buttons {
             float: right;
             display: inline-flex;
             flex-wrap: wrap;
@@ -1816,22 +1813,20 @@
             justify-content: flex-end;
             gap: 6px;
             max-width: min(72px, 38%);
-            margin: 0 0 6px 10px;
+            margin: 0 0 2px 10px;
         }
 
-        body.bbc-theme-blue-studio .question-action-buttons .answer-toggle-btn,
-        body.bbc-theme-blue-studio .question-action-buttons .argue-btn {
+        .question-action-buttons .answer-toggle-btn,
+        .question-action-buttons .argue-btn {
             position: static;
-            top: auto;
-            right: auto;
             flex: 0 0 auto;
         }
 
-        body.bbc-theme-blue-studio .question-action-buttons .answer-toggle-btn {
+        .question-action-buttons .answer-toggle-btn {
             order: 1;
         }
 
-        body.bbc-theme-blue-studio .question-action-buttons .argue-btn {
+        .question-action-buttons .argue-btn {
             order: 2;
         }
 
@@ -3189,23 +3184,17 @@
         }) || null;
     }
 
-    function historyDisputeLabel(dispute) {
-        if (!dispute) return '';
-        if (dispute.status === 'approved') return dispute.decision === 'replace' ? 'Teacher updated rule' : 'Teacher accepted';
-        if (dispute.status === 'rejected') return 'Teacher reviewed';
-        return 'Argued · Waiting';
-    }
-
-    function isBlueStudioTheme() {
-        return document.body.classList.contains('bbc-theme-blue-studio');
+    function correctAnswerLine(label, value) {
+        return '<strong>' + escapeHtml(label || 'Correct answer') + ':</strong> ' +
+            escapeHtml(answerText(value)) +
+            '<span class="correct-answer-check" aria-hidden="true">&#10003;</span>';
     }
 
     function appendHistoryExplainButton(containerEl, actions, item) {
         if (!item || !item.feedback_available) return;
         var detail = document.createElement('div');
         detail.className = 'inline-explanation ' + (item.correct ? 'correct' : 'wrong');
-        detail.innerHTML = (item.correct ? '&#10004;' : '&#10060;') +
-            ' <strong>Correct answer:</strong> ' + escapeHtml(item.correct_answer == null ? '' : item.correct_answer) +
+        detail.innerHTML = correctAnswerLine('Correct answer', item.correct_answer) +
             (item.explanation ? '<br><strong>Evidence:</strong> ' + escapeHtml(item.explanation) : '');
 
         addQuestionExplainButton(item.question_id, containerEl, detail, 'Explain this answer', false);
@@ -3260,37 +3249,14 @@
             applyHistoryResultClass(targetInfo.optionTarget, item.correct);
             if (dispute) target.classList.add('history-disputed', 'history-dispute-' + (dispute.status || 'pending'));
             if (!container) return;
-            if (isBlueStudioTheme()) {
-                if (historyReviewActionsAllowed(review, item)) {
-                    appendHistoryExplainButton(container, null, item);
-                }
-                if (!item.correct && historyReviewActionsAllowed(review, item)) {
-                    addQuestionArgueButton(qid, container, dispute && dispute.status !== 'pending'
-                        ? 'Review teacher response'
-                        : (dispute ? 'View sent Argue request' : 'Argue this answer'));
-                }
-                return;
-            }
-            if (container.querySelector('[data-history-dispute="' + CSS.escape(qid) + '"]')) return;
-            var note = document.createElement('div');
-            note.className = 'history-dispute-note ' + (item.correct ? 'correct' : 'wrong') + (dispute ? ' ' + (dispute.status || 'pending') : '');
-            note.setAttribute('data-history-dispute', qid);
-            note.innerHTML =
-                (dispute ? '<span>' + escapeHtml(historyDisputeLabel(dispute)) + '</span>' : '') +
-                (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
-            var actions = document.createElement('div');
-            actions.className = 'history-review-actions';
-            note.appendChild(actions);
             if (historyReviewActionsAllowed(review, item)) {
-                appendHistoryExplainButton(container, actions, item);
+                appendHistoryExplainButton(container, null, item);
             }
             if (!item.correct && historyReviewActionsAllowed(review, item)) {
                 addQuestionArgueButton(qid, container, dispute && dispute.status !== 'pending'
                     ? 'Review teacher response'
                     : (dispute ? 'View sent Argue request' : 'Argue this answer'));
             }
-            if (!note.textContent.trim() && !actions.children.length) return;
-            container.appendChild(note);
         });
     }
 
@@ -3483,12 +3449,15 @@
     }
 
     function questionActionButtonHost(containerEl) {
-        if (!isBlueStudioTheme()) return containerEl;
-        var host = containerEl.querySelector(':scope > .question-action-buttons');
+        var lineEl = containerEl.classList && containerEl.classList.contains('mc-question')
+            ? (containerEl.querySelector('.mc-title') || containerEl)
+            : containerEl;
+        lineEl.classList.add('question-action-host');
+        var host = lineEl.querySelector(':scope > .question-action-buttons');
         if (host) return host;
         host = document.createElement('div');
         host.className = 'question-action-buttons';
-        containerEl.insertBefore(host, containerEl.firstChild);
+        lineEl.appendChild(host);
         return host;
     }
 
@@ -3563,7 +3532,7 @@
         div.className = 'inline-explanation correct teacher-answer show';
         div.setAttribute('data-teacher-answer', '1');
         div.setAttribute('data-question-id', questionId);
-        div.innerHTML = '&#10004; <strong>Answer:</strong> ' + escapeHtml(answerText(answer)) +
+        div.innerHTML = correctAnswerLine('Answer', answer) +
             (explanation ? '<br><strong>Explanation:</strong> ' + escapeHtml(explanation) : '');
         return div;
     }
@@ -4021,8 +3990,7 @@
                 if (li) {
                     var exp = document.createElement('div');
                     exp.className = 'inline-explanation' + (r.isCorrect ? ' correct' : ' wrong');
-                    var prefix = r.isCorrect ? '&#10004;' : '&#10060;';
-                    exp.innerHTML = prefix + ' <strong>Correct answer:</strong> ' + r.correctAnswer + (r.evidence ? '<br><strong>Evidence:</strong> ' + r.evidence : '');
+                    exp.innerHTML = correctAnswerLine('Correct answer', r.correctAnswer) + (r.evidence ? '<br><strong>Evidence:</strong> ' + escapeHtml(r.evidence) : '');
                     if (!r.isCorrect && blankAttemptState[r.id] && blankAttemptState[r.id].locked) {
                         exp.innerHTML += '<br><strong>Three tries used:</strong> This blank is now locked with your last answer.';
                     }
@@ -4047,8 +4015,7 @@
                 }
                 var exp = document.createElement('div');
                 exp.className = 'inline-explanation' + (r.isCorrect ? ' correct' : ' wrong');
-                var prefix = r.isCorrect ? '&#10004;' : '&#10060;';
-                exp.innerHTML = prefix + ' <strong>Correct answer:</strong> ' + r.correctAnswer + (r.evidence ? '<br><strong>Evidence:</strong> ' + r.evidence : '');
+                exp.innerHTML = correctAnswerLine('Correct answer', r.correctAnswer) + (r.evidence ? '<br><strong>Evidence:</strong> ' + escapeHtml(r.evidence) : '');
                 mcDiv.appendChild(exp);
                 addQuestionExplainButton(r.id, mcDiv, exp, 'Explain this answer');
                 if (!r.isCorrect) {
@@ -4061,7 +4028,7 @@
                 if (tr) {
                     var exp = document.createElement('div');
                     exp.className = 'inline-explanation wrong';
-                    exp.innerHTML = '&#10060; <strong>Correct match:</strong> ' + r.correctAnswer;
+                    exp.innerHTML = correctAnswerLine('Correct match', r.correctAnswer);
                     var td = tr.querySelector('td:last-child');
                     td.appendChild(exp);
                     td.classList.add('question-action-host');

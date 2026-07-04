@@ -79,6 +79,9 @@ Frontend rule:
   unread activity rows. On the student main navigation, the assignment count
   floats just outside the glass capsule so the rounded active tab is not
   clipped.
+- The student message/replies dialog opened from the top-right bell must be a
+  fully opaque top-layer modal. Dashboard navigation capsules such as
+  `Assignments`, `My Words`, and `Library` must never show through it.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.
@@ -405,21 +408,24 @@ Shared rules:
   the main submission button reads `Submit`.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
-- BBC Explain and Argue entry points use compact icon buttons inside the right
-  side of the relevant question box instead of text buttons in the feedback
-  row. Explain uses a blue-green `?`; Argue uses an orange `!`. When both are
-  present, `?` sits to the left of `!`. In the blue render theme, these buttons
-  should take only their compact icon width so question text can wrap naturally
-  beside them instead of reserving a full vertical action column.
+- BBC Explain and Argue entry points use compact icon buttons at the far right
+  of the final text line inside the relevant question box, in both the green
+  and blue render themes. Explain uses a blue-green `?`; Argue uses an orange
+  `!`. When both are present, `?` sits to the left of `!`. These buttons must
+  not reserve a full vertical action column or squeeze earlier lines of text.
+- BBC answer explanations opened through `?` should not put a check or cross
+  before `Correct answer:`. The answer value itself should be followed by a
+  compact green circular check icon matching the teacher View matrix passed
+  state.
 - When a student opens a BBC lesson with a passed or mastered historical
   attempt, the page should automatically load that historical review and show
   the per-question Explain `?` buttons and wrong-question Argue `!` buttons.
   Loading this historical review must not call `revealAnswers` or lock future
   mastery by itself.
   Historical attempts below the passing threshold must still hide both actions.
-- In the BBC blue render theme, History review should not show the extra
-  per-question dispute status note box under each question. Keep the visual
-  correct/wrong state and any eligible Explain/Argue icon buttons.
+- BBC History review should not show an extra per-question dispute status note
+  box under each question in any render theme. Keep the visual correct/wrong
+  state and any eligible Explain/Argue icon buttons.
 
 ### Vocabulary Learn
 
