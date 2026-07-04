@@ -1619,12 +1619,11 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-replies-overlay {
     position: fixed;
     inset: 0;
-    z-index: 51;
+    z-index: 2100;
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(24, 51, 47, 0.34);
-    backdrop-filter: blur(8px);
+    background: #f4f8f5;
 }
 .teacher-replies-dialog {
     position: relative;
@@ -1635,7 +1634,7 @@ body:not(.teacher-page) .tab-button.active {
     border: 1px solid var(--line);
     border-radius: 18px;
     background: #fff;
-    box-shadow: var(--shadow);
+    box-shadow: 0 30px 80px rgba(24, 51, 47, 0.22);
 }
 .teacher-replies-dialog-head {
     margin-bottom: 18px;
