@@ -1785,7 +1785,7 @@ window.__HOME_CATALOG__ = {
       "sortValue": 1001,
       "topic": "",
       "tags": [],
-      "note": "",
+      "note": "100 Words · 10 Quiz Groups",
       "visible": true
     },
     {
