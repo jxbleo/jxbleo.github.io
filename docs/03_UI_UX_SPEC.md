@@ -421,13 +421,12 @@ Shared rules:
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
   first and `All` at the end. Numbered buttons filter the word cards by the
-  matching study group's word range. The word-bank triangle toggle is not part
-  of the numbered capsule row: when the word bank is collapsed, it sits below
-  the active number capsule; when the word bank is open, it sits outside and
-  below the word-bank box, centered. The sticky learning bar should sit as an
-  opaque top layer when it sticks, so the mode switcher or any earlier capsule
-  row scrolls away instead of showing as a second layer underneath. Selecting a
-  group does not show the word bank by itself.
+  matching study group's word range. The word-bank triangle toggle sits in a
+  fixed far-left rail beside the numbered capsule row, so it remains visible
+  even when the numbered row scrolls horizontally. The sticky learning bar
+  should sit as an opaque top layer when it sticks, so the mode switcher or any
+  earlier capsule row scrolls away instead of showing as a second layer
+  underneath. Selecting a group does not show the word bank by itself.
 - Learn word cards show the word, emoji, definition, and Chinese meaning
   without repeating each word's source number.
 - When a numbered Study Set is selected, the bottom of Learn shows a
@@ -472,15 +471,15 @@ Shared rules:
   capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a
   horizontal row; when there are more than six selected sets, the row scrolls
   horizontally instead of wrapping into multiple lines. The countdown timer
-  remains a fixed capsule at the far right of the sticky row. Test numbered
-  capsules use a red visual treatment to distinguish them from Learn groups.
+  remains a fixed red capsule at the far right of the sticky row. Use-mode
+  numbered capsules and the word-bank triangle toggle use a gold glowing visual
+  treatment to distinguish them from Learn groups.
   The test-set labels show only numbers, not `Test Set 1` text, and clicking a
   number jumps to that test set. The current test set's word bank appears
   directly below the numbered capsules in the same sticky surface; when the
   student scrolls between test sets, the active number and sticky word bank
   automatically update to match the visible test set. The word-bank triangle
-  toggle follows the same placement as Learn: below the active number when
-  collapsed, and centered below the word-bank box when open. If the student
+  toggle follows the same fixed far-left placement as Learn. If the student
   manually closes the word bank with the triangle toggle, scrolling must not
   reopen it until the student opens it manually again. The sticky word bank must
   layer above question-card `?` explanation buttons and their floating
@@ -493,17 +492,18 @@ Shared rules:
 - The Vocabulary Test result modal has one action only: `Close`.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
-  Learn. The top timer capsule changes from the countdown to the direct result
-  count such as `7 / 10`; the bottom of the Test view should not repeat a score
-  block. After submission, the sticky word bank collapses by default and the
-  far-left triangle word-bank toggle becomes a compact `Redo` capsule. The
-  Test result area should not show `Score`, saved/not saved status copy, or
-  appear above the test questions. Test question `?` explanation buttons appear
-  only after submission or history review, not while a timed test is in
-  progress; before those buttons appear, test prompts use the full question
-  width, then reserve space for the `?` button after review state is available.
-- Test set cards show their set number as a centered red capsule above the
-  questions, not as a left-aligned Learn-style group marker.
+  Learn. The top timer position changes into a compact `Redo` capsule, while
+  the direct result count such as `7 / 10` appears centered below the numbered
+  capsule row; the bottom of the Test view should not repeat a score block.
+  After submission, the sticky word bank collapses by default and the far-left
+  triangle word-bank toggle remains available for reopening it. The Test result
+  area should not show `Score`, saved/not saved status copy, or appear above
+  the test questions. Test question `?` explanation buttons appear only after
+  submission or history review, not while a timed test is in progress; before
+  those buttons appear, test prompts use the full question width, then reserve
+  space for the `?` button after review state is available.
+- Test set cards show their set number as a centered gold glowing capsule above
+  the questions, not as a left-aligned Learn-style group marker.
 - Student Vocabulary pages should not show a bottom-right floating `Redo`
   capsule. Redo actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right

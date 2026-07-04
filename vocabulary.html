@@ -15,6 +15,10 @@
             --accent-soft: #dbf5ef;
             --test-red: #dc2626;
             --test-red-soft: #fee2e2;
+            --use-gold: #f59e0b;
+            --use-gold-deep: #92400e;
+            --use-gold-soft: #fef3c7;
+            --use-gold-glow: rgba(245, 158, 11, 0.34);
             --warm: #9a3412;
             --warm-soft: #ffedd5;
         }
@@ -144,6 +148,12 @@
             pointer-events: none;
         }
 
+        .sticky-number-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .learn-word-bank,
         .test-word-bank {
             max-height: 0;
@@ -167,6 +177,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex: 1 1 auto;
+            min-width: 0;
             margin: 0;
             padding: 2px 2px 6px;
             overflow-x: auto;
@@ -236,10 +248,13 @@
         }
 
         .word-bank-toggle-slot {
-            position: relative;
-            min-height: 40px;
-            margin-top: 0;
-            --word-bank-toggle-x: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 34px;
+            width: 34px;
+            min-height: 34px;
+            margin: 0;
         }
 
         .word-bank-toggle-slot[hidden] {
@@ -248,17 +263,15 @@
 
         .word-bank-toggle-slot .word-bank-toggle,
         .word-bank-toggle-slot .word-bank-redo {
-            position: absolute;
-            top: 4px;
-            left: var(--word-bank-toggle-x);
-            transform: translateX(-50%);
+            position: static;
+            transform: none;
         }
 
         .word-bank-toggle-slot .word-bank-toggle:hover:not(:disabled),
         .word-bank-toggle-slot .word-bank-toggle:focus-visible:not(:disabled),
         .word-bank-toggle-slot .word-bank-redo:hover,
         .word-bank-toggle-slot .word-bank-redo:focus-visible {
-            transform: translate(-50%, -1px);
+            transform: translateY(-1px);
         }
 
         .word-set-btn.all {
@@ -1050,8 +1063,8 @@
             padding: 8px;
             border: 1px solid rgba(255,255,255,0.82);
             border-radius: 22px;
-            background: linear-gradient(180deg, #ffffff, #fff7f7);
-            box-shadow: 0 18px 42px rgba(19, 70, 63, 0.13);
+            background: linear-gradient(180deg, #ffffff, #fffaf0);
+            box-shadow: 0 18px 42px rgba(146, 64, 14, 0.14);
             backdrop-filter: blur(18px) saturate(1.1);
             isolation: isolate;
         }
@@ -1070,7 +1083,8 @@
 
         .test-sticky-row {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
             gap: 10px;
         }
 
@@ -1097,6 +1111,34 @@
             margin-top: 4px;
         }
 
+        .test-timer-slot {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: max-content;
+        }
+
+        .test-sticky-score {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            margin: 6px auto 0;
+            padding: 6px 14px;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fff7d6, #fde68a);
+            color: #5f3b00;
+            font-size: 0.86rem;
+            font-weight: 950;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.86), 0 10px 24px var(--use-gold-glow);
+        }
+
+        .test-sticky-score[hidden],
+        .test-sticky-redo[hidden] {
+            display: none;
+        }
+
         .test-set-btn {
             appearance: none;
             -webkit-appearance: none;
@@ -1106,40 +1148,41 @@
             width: 34px;
             height: 34px;
             flex: 0 0 auto;
-            border: 1px solid rgba(220, 38, 38, 0.22);
+            border: 1px solid rgba(245, 158, 11, 0.35);
             border-radius: 999px;
             padding: 0;
-            color: #b91c1c;
-            background: #fff1f2;
+            color: var(--use-gold-deep);
+            background: linear-gradient(180deg, #fffdf3, var(--use-gold-soft));
             font-size: 0.88rem;
             font-weight: 900;
             line-height: 1;
             cursor: pointer;
-            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.045);
+            box-shadow: 0 5px 14px rgba(146, 64, 14, 0.08), 0 0 0 1px rgba(255,255,255,0.84);
         }
 
         .test-set-btn:hover,
         .test-set-btn:focus-visible {
             transform: translateY(-1px);
-            box-shadow: 0 9px 18px rgba(220, 38, 38, 0.14);
+            box-shadow: 0 9px 20px var(--use-gold-glow), 0 0 0 1px rgba(245, 158, 11, 0.18);
         }
 
         .test-set-btn.active {
-            border-color: var(--test-red);
-            color: #fff;
-            background: var(--test-red);
-            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+            border-color: #fbbf24;
+            color: #3f2600;
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.22), 0 0 22px var(--use-gold-glow);
         }
 
         .test-sticky .word-bank-toggle {
-            border-color: rgba(220, 38, 38, 0.22);
-            background: var(--test-red-soft);
-            color: #b91c1c;
+            border-color: rgba(245, 158, 11, 0.38);
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
+            box-shadow: 0 0 18px var(--use-gold-glow);
         }
 
         .test-sticky .word-bank-toggle.is-collapsed {
-            background: #fff;
-            color: #b91c1c;
+            background: linear-gradient(180deg, #fffdf3, var(--use-gold-soft));
+            color: var(--use-gold-deep);
         }
 
         .word-bank-redo {
@@ -1150,22 +1193,22 @@
             justify-content: center;
             min-height: 34px;
             padding: 0 14px;
-            border: 1px solid rgba(220, 38, 38, 0.22);
+            border: 1px solid rgba(245, 158, 11, 0.42);
             border-radius: 999px;
-            background: var(--test-red);
-            color: #fff;
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
             font-size: 0.86rem;
             font-weight: 900;
             line-height: 1;
             cursor: pointer;
-            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.82), 0 9px 20px var(--use-gold-glow);
             transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
         }
 
         .word-bank-redo:hover,
         .word-bank-redo:focus-visible {
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 11px 24px rgba(245, 158, 11, 0.42);
         }
 
         .test-set-card .group-head {
@@ -1185,9 +1228,10 @@
         .test-set-card .set-badge.test-set {
             min-width: 38px;
             justify-content: center;
-            background: var(--test-red);
-            color: #fff;
-            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.16), 0 0 22px var(--use-gold-glow);
         }
 
         .range-picker {
@@ -1444,9 +1488,11 @@
 
                 <div class="view active" id="word-list-view">
                     <div id="learn-sticky" class="learn-sticky">
-                        <div id="word-set-filter" class="word-set-filter" aria-label="Study Set filter"></div>
+                        <div class="sticky-number-row">
+                            <div id="learn-word-bank-toggle-slot" class="word-bank-toggle-slot" hidden></div>
+                            <div id="word-set-filter" class="word-set-filter" aria-label="Study Set filter"></div>
+                        </div>
                         <div id="learn-word-bank" class="learn-word-bank" hidden></div>
-                        <div id="learn-word-bank-toggle-slot" class="word-bank-toggle-slot" hidden></div>
                     </div>
                     <div id="word-list-grid" class="word-card-grid"></div>
                     <div id="word-practice-panel" class="word-practice-panel"></div>
@@ -1474,11 +1520,15 @@
                     <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
                     <div class="test-sticky" id="test-sticky" hidden>
                         <div class="test-sticky-row">
+                            <div id="test-word-bank-toggle-slot" class="word-bank-toggle-slot" hidden></div>
                             <div id="test-set-filter" class="test-set-filter"></div>
-                            <div class="timer" id="test-timer"></div>
+                            <div class="test-timer-slot">
+                                <div class="timer" id="test-timer"></div>
+                                <button class="word-bank-redo test-sticky-redo" id="test-sticky-redo-btn" type="button" data-test-sticky-redo hidden>Redo</button>
+                            </div>
                         </div>
+                        <div id="test-sticky-score" class="test-sticky-score" hidden aria-live="polite"></div>
                         <div id="test-word-bank" class="test-word-bank" hidden></div>
-                        <div id="test-word-bank-toggle-slot" class="word-bank-toggle-slot" hidden></div>
                     </div>
                     <div id="test-groups" class="group-grid"></div>
                     <div id="test-summary" class="test-summary"></div>
@@ -2026,14 +2076,9 @@
         }
 
         function renderWordBankToggle(kind) {
-            if (kind === 'test' && testReviewMode) return renderTestStickyRedoButton();
             var attr = kind === 'test' ? 'data-test-word-bank-toggle' : 'data-learn-word-bank-toggle';
             return '<button class="word-bank-toggle is-collapsed" type="button" ' + attr +
                 ' aria-label="Expand word bank" aria-pressed="false" title="Expand word bank" disabled>▼</button>';
-        }
-
-        function renderTestStickyRedoButton() {
-            return '<button class="word-bank-redo" type="button" data-test-sticky-redo>Redo</button>';
         }
 
         function wordBankControlSlot(kind) {
@@ -2045,37 +2090,10 @@
             if (!slot) return;
             slot.innerHTML = renderWordBankToggle(kind);
             slot.hidden = true;
-            slot.style.setProperty('--word-bank-toggle-x', '50%');
         }
 
-        function renderTestReviewControl() {
-            var slot = wordBankControlSlot('test');
-            if (!slot) return;
-            slot.innerHTML = renderTestStickyRedoButton();
-            slot.hidden = false;
-            slot.style.setProperty('--word-bank-toggle-x', '50%');
-        }
-
-        function updateWordBankControlPosition(kind, isOpen) {
-            var slot = wordBankControlSlot(kind);
-            if (!slot || slot.hidden) return;
-            if (isOpen || kind === 'test' && testReviewMode) {
-                slot.style.setProperty('--word-bank-toggle-x', '50%');
-                return;
-            }
-            var shell = document.getElementById(kind === 'test' ? 'test-sticky' : 'learn-sticky');
-            var active = kind === 'test'
-                ? document.querySelector('#test-set-filter .test-set-btn.active')
-                : document.querySelector('#word-set-filter .word-set-btn.active');
-            if (!shell || !active) {
-                slot.style.setProperty('--word-bank-toggle-x', '50%');
-                return;
-            }
-            var shellRect = shell.getBoundingClientRect();
-            var activeRect = active.getBoundingClientRect();
-            var x = activeRect.left + activeRect.width / 2 - shellRect.left;
-            x = Math.max(22, Math.min(shellRect.width - 22, x));
-            slot.style.setProperty('--word-bank-toggle-x', x + 'px');
+        function updateWordBankControlPosition() {
+            // The toggle stays in the fixed left rail; scroll position does not move it.
         }
 
         function updateWordBankToggle(kind, isOpen, isEnabled) {
@@ -2094,7 +2112,37 @@
             button.setAttribute('aria-pressed', isOpen ? 'true' : 'false');
             button.setAttribute('aria-label', isOpen ? 'Collapse word bank' : 'Expand word bank');
             button.title = isOpen ? 'Collapse word bank' : 'Expand word bank';
-            if (enabled) updateWordBankControlPosition(kind, isOpen);
+        }
+
+        function resetTestStickyReviewControls() {
+            var timer = document.getElementById('test-timer');
+            var redo = document.getElementById('test-sticky-redo-btn');
+            var score = document.getElementById('test-sticky-score');
+            if (timer) {
+                timer.hidden = false;
+                timer.classList.remove('result');
+            }
+            if (redo) redo.hidden = true;
+            if (score) {
+                score.textContent = '';
+                score.hidden = true;
+            }
+        }
+
+        function setTestStickyReviewControls(scoreText) {
+            var timer = document.getElementById('test-timer');
+            var redo = document.getElementById('test-sticky-redo-btn');
+            var score = document.getElementById('test-sticky-score');
+            if (timer) {
+                timer.textContent = '';
+                timer.hidden = true;
+                timer.classList.remove('result');
+            }
+            if (redo) redo.hidden = false;
+            if (score) {
+                score.textContent = scoreText || '';
+                score.hidden = !scoreText;
+            }
         }
 
         function isLearnWordBankOpen() {
@@ -2876,6 +2924,8 @@
             testRemainingSeconds = seconds;
             var sticky = document.getElementById('test-sticky');
             var timer = document.getElementById('test-timer');
+            resetTestStickyReviewControls();
+            if (!timer) return;
             timer.classList.remove('result');
             timer.textContent = formatTime(testRemainingSeconds);
             if (sticky) sticky.hidden = false;
@@ -3143,13 +3193,14 @@
             if (timer) {
                 timer.textContent = '';
                 timer.classList.remove('result');
+                timer.hidden = false;
             }
             var testToggleSlot = document.getElementById('test-word-bank-toggle-slot');
             if (testToggleSlot) {
                 testToggleSlot.innerHTML = '';
                 testToggleSlot.hidden = true;
-                testToggleSlot.style.setProperty('--word-bank-toggle-x', '50%');
             }
+            resetTestStickyReviewControls();
             if (submitButton) {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit';
@@ -3241,13 +3292,10 @@
                 summary.textContent = '';
                 summary.classList.remove('show');
                 showResultOverlay(response);
-                var timer = document.getElementById('test-timer');
-                timer.textContent = response.correct_count + ' / ' + response.question_count;
-                timer.classList.add('result');
                 testReviewMode = true;
                 testWordBankManualState = false;
                 setTestWordBankOpen(false);
-                renderTestReviewControl();
+                setTestStickyReviewControls(response.correct_count + ' / ' + response.question_count);
                 submitButton.style.display = 'none';
                 document.getElementById('redo-test-btn').style.display = 'none';
                 testRedoAvailable = true;

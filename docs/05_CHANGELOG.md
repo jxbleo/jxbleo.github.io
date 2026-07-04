@@ -34,8 +34,8 @@
   explanation button, even before the popover is opened.
 - Refined Vocabulary Test mode with a sticky numbered test-set bar and inline
   timer, number-only test-set labels, Learn-style inline answer feedback after
-  submit, a `Submit` button label, a top timer capsule that becomes the direct
-  correct/total result, and a top sticky `Redo` capsule after submission.
+  submit, a `Submit` button label, a top timer position that becomes `Redo`
+  after submission, and a centered top correct/total result.
 - Refined Vocabulary Test mode so the sticky test-set bar includes the current
   set's word bank below the numbered capsules and updates both the active
   number and word bank while scrolling between test sets.
@@ -46,13 +46,15 @@
   preserves the student's manual open/closed choice, and hid Test explanation
   `?` buttons until submission or history review.
 - Refined Vocabulary Learn/Test sticky bars to sit as an opaque top layer while
-  scrolling, made Vocabulary Test set capsules red with centered red test-card
-  set badges, and let Test prompts use full width before post-submit `?`
+  scrolling, made Vocabulary Use set capsules gold-glowing with centered gold
+  test-card set badges, and let Test prompts use full width before post-submit `?`
   explanation buttons appear.
-- Refined Vocabulary Learn/Test word-bank controls so the triangle sits below
-  the active number when collapsed and below the word bank when open, and made
-  the Vocabulary Test number row horizontally scroll while the timer stays fixed
-  at the right.
+- Refined Vocabulary Test number rows so larger selected test ranges scroll
+  horizontally while the timer stays fixed at the right.
+- Refined Vocabulary Learn/Use word-bank controls so the triangle sits in a
+  fixed far-left rail outside the horizontally scrolling number capsules, while
+  Use keeps the red countdown timer at the right and shows `Redo` there after
+  submission.
 - Changed the Vocabulary mode switcher labels to `Learn`, `Spell`, and `Use`
   while preserving the existing underlying spelling and timed-test flows.
 - Fixed Vocabulary inline practice `Check` so local-answer units no longer call
