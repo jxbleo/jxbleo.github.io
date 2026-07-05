@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Changed Teacher View matrix date filtering to use Beijing-time natural weeks
+  based on assignment `assigned_at`, and added a separate `Self study` date
+  option for records without an assignment.
 - Changed new Vocabulary assignments to default to STAR earning disabled; a
   teacher must turn `Can earn STAR` on from View before the assignment can
   become mastered / earn STAR.

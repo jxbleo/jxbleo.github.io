@@ -240,11 +240,13 @@ It should include:
   underneath
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
-  records. `Column` uses `All type`, `Date` uses `All time`, and date filtering only offers
-  `This week`, `Last week`, and `All time` based on when the teacher assigned
-  the work, not when the student completed it. Unclassed students appear in
-  the `Class` menu by student name so a teacher can isolate one student's
-  matrix rows without an `Individual` prefix.
+  records. `Column` uses `All type`, `Date` uses `All time`, and date filtering
+  offers `This week`, `Last week`, `All time`, and `Self study`. Week filters
+  use the assignment `assigned_at` timestamp, not student completion time, and
+  calculate fixed Monday-to-Sunday natural weeks in Beijing time. Self-study
+  records without an assignment are shown only by the `Self study` date option.
+  Unclassed students appear in the `Class` menu by student name so a teacher can
+  isolate one student's matrix rows without an `Individual` prefix.
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
 - the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column

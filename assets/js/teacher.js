@@ -1599,44 +1599,82 @@
     }
 
     function assignmentAssignedDate(assignment) {
-        return assignment.assigned_at || assignment.created_at || assignment.assignment_created_at || assignment.updated_at || null;
+        return assignment && assignment.assigned_at || null;
+    }
+
+    function isSelfStudyMatrixItem(item) {
+        return Boolean(item && (item.source === 'self_study' || !item.assignment_id));
+    }
+
+    function matrixFilterDateValue(item) {
+        return isSelfStudyMatrixItem(item) ? null : assignmentAssignedDate(item);
     }
 
     function matrixDateValue(item) {
-        return assignmentAssignedDate(item);
+        return matrixFilterDateValue(item) || (isSelfStudyMatrixItem(item) ? assignmentSortDate(item) : null);
     }
 
-    function startOfLocalDay(date) {
-        var copy = new Date(date);
-        copy.setHours(0, 0, 0, 0);
-        return copy;
+    function shanghaiDateParts(value) {
+        var date = value instanceof Date ? value : new Date(value);
+        if (isNaN(date.getTime())) return null;
+        var parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(date);
+        var output = {};
+        parts.forEach(function(part) {
+            if (part.type !== 'literal') output[part.type] = Number(part.value);
+        });
+        return output.year && output.month && output.day ? output : null;
     }
 
-    function endOfLocalDay(date) {
-        var copy = new Date(date);
-        copy.setHours(23, 59, 59, 999);
-        return copy;
+    function shanghaiWeekday(parts) {
+        return new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
+    }
+
+    function addShanghaiDays(parts, days) {
+        var date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + days));
+        return {
+            year: date.getUTCFullYear(),
+            month: date.getUTCMonth() + 1,
+            day: date.getUTCDate()
+        };
+    }
+
+    function shanghaiDateTime(parts, hour, minute, second, millisecond) {
+        return new Date(Date.UTC(
+            parts.year,
+            parts.month - 1,
+            parts.day,
+            hour - 8,
+            minute,
+            second,
+            millisecond
+        ));
+    }
+
+    function shanghaiWeekRange(weekOffset) {
+        var today = shanghaiDateParts(new Date());
+        if (!today) return { start: null, end: null };
+        var mondayOffset = -((shanghaiWeekday(today) + 6) % 7) + weekOffset * 7;
+        var startParts = addShanghaiDays(today, mondayOffset);
+        var endParts = addShanghaiDays(startParts, 6);
+        return {
+            start: shanghaiDateTime(startParts, 0, 0, 0, 0),
+            end: shanghaiDateTime(endParts, 23, 59, 59, 999)
+        };
     }
 
     function matrixDateRange() {
         var mode = state.matrixDateFilter || 'all';
         if (mode === 'all') return { start: null, end: null };
-        var now = new Date();
         if (mode === 'week') {
-            var weekStart = startOfLocalDay(now);
-            weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
-            var weekEnd = endOfLocalDay(weekStart);
-            weekEnd.setDate(weekStart.getDate() + 6);
-            return { start: weekStart, end: weekEnd };
+            return shanghaiWeekRange(0);
         }
         if (mode === 'last_week') {
-            var thisWeekStart = startOfLocalDay(now);
-            thisWeekStart.setDate(thisWeekStart.getDate() - ((thisWeekStart.getDay() + 6) % 7));
-            var lastWeekStart = startOfLocalDay(thisWeekStart);
-            lastWeekStart.setDate(thisWeekStart.getDate() - 7);
-            var lastWeekEnd = endOfLocalDay(lastWeekStart);
-            lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
-            return { start: lastWeekStart, end: lastWeekEnd };
+            return shanghaiWeekRange(-1);
         }
         return { start: null, end: null };
     }
@@ -1651,9 +1689,12 @@
     }
 
     function matrixItemMatchesDate(item) {
+        var mode = state.matrixDateFilter || 'all';
+        if (mode === 'self_study') return isSelfStudyMatrixItem(item);
+        if (isSelfStudyMatrixItem(item)) return false;
+        if (mode === 'all') return true;
         var range = matrixDateRange();
-        if (!range.start && !range.end) return true;
-        return dateMatchesMatrixRange(matrixDateValue(item), range);
+        return dateMatchesMatrixRange(matrixFilterDateValue(item), range);
     }
 
     function visibleProgressAssignments(assignments) {
@@ -2435,7 +2476,8 @@
         var options = [
             { value: 'all', label: 'All time' },
             { value: 'week', label: 'This week' },
-            { value: 'last_week', label: 'Last week' }
+            { value: 'last_week', label: 'Last week' },
+            { value: 'self_study', label: 'Self study' }
         ];
         return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Date">' +
             options.map(function(option) {
