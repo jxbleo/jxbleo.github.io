@@ -108,7 +108,9 @@ Check:
 - create student uses the vertical modal form and shows the checkmark success
   dialog with the Login ID after creation
 - reset password enables auth user and sets `must_change_password`
-- disable/enable updates auth and profile
+- deleting a student account removes the CloudBase Auth end user, hides the
+  student from Students, Assign candidates, View progress, activity attempts,
+  and Argue lists, while preserving historical attempts/assignments in storage
 - Assign shows available students
 - Assign keeps the main tab surface to selected work/student chips and opens
   standalone picker dialogs for work and student search/filter selection

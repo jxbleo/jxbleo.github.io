@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Replaced the teacher student enable/disable UI with account deletion: deleting
+  removes the CloudBase Auth end user, marks the student profile deleted, and
+  hides the student from teacher-visible lists and progress surfaces.
 - Changed Teacher View matrix date filtering to use Beijing-time natural weeks
   based on assignment `assigned_at`, and added a separate `Self study` date
   option for records without an assignment.
