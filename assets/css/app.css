@@ -2550,11 +2550,9 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-class-filter,
 .matrix-column-filter,
 .matrix-date-filter {
-    flex: 0 0 auto;
+    flex: 0 0 156px;
+    width: 156px;
 }
-.matrix-class-filter { max-width: 168px; }
-.matrix-column-filter { max-width: 138px; }
-.matrix-date-filter { max-width: 136px; }
 .matrix-date-bound {
     display: inline-flex;
     align-items: center;
@@ -5688,9 +5686,12 @@ body:not(.teacher-page) .tab-button.active {
         justify-content: flex-start;
         width: 100%;
     }
-    .matrix-class-filter { max-width: 154px; }
-    .matrix-column-filter { max-width: 126px; }
-    .matrix-date-filter { max-width: 124px; }
+    .matrix-class-filter,
+    .matrix-column-filter,
+    .matrix-date-filter {
+        flex-basis: 132px;
+        width: 132px;
+    }
     .matrix-date-bound,
     .matrix-date-bound input { max-width: 140px; }
     .progress-matrix-row {
