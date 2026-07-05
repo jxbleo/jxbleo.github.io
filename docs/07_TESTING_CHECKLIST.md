@@ -152,6 +152,10 @@ Check:
   summary fields are stale
 - View matrix shows a green check, not a star, for completed assignments whose
   `mastery_enabled` is false
+- View matrix date filtering uses assignment `assigned_at` in Beijing-time
+  natural weeks: `This week` is Monday-Sunday of the current Beijing week,
+  `Last week` is the previous Beijing Monday-Sunday range, and `Self study`
+  shows records without an assignment separately
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
 - Clicking the matrix left student-name column opens an independent student
