@@ -239,8 +239,8 @@ It should include:
 - matrix task headers show the stable task ID with the task name directly
   underneath
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
-  select capsules on one row; all three default to all records. `Column` uses
-  `All type`, `Date` uses `All time`, and date filtering only offers
+  select capsules on one row with equal visual width; all three default to all
+  records. `Column` uses `All type`, `Date` uses `All time`, and date filtering only offers
   `This week`, `Last week`, and `All time` based on when the teacher assigned
   the work, not when the student completed it. Unclassed students appear in
   the `Class` menu by student name so a teacher can isolate one student's
@@ -539,6 +539,8 @@ Preferred product labels:
 Teacher View assignment editing includes a `Can earn STAR` control. Turning it
 off keeps future completions in `passed` / FINISHED and prevents new STAR
 creation for that assignment, without revoking existing protected STAR records.
+New Vocabulary assignments default to not earning STAR until the teacher turns
+`Can earn STAR` on for the assignment.
 
 Vocabulary assignments opened from the student Assignments view should enter
 the normal vocabulary learning surface first, matching Library entry, so

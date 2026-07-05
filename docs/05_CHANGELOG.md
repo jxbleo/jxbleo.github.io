@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Changed new Vocabulary assignments to default to STAR earning disabled; a
+  teacher must turn `Can earn STAR` on from View before the assignment can
+  become mastered / earn STAR.
 - Changed Teacher View matrix cells so completed assignments with STAR earning
   disabled show a green check instead of a star.
 - Changed teacher notification attempt details to render outside the

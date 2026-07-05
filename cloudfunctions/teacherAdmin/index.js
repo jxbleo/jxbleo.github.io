@@ -188,6 +188,10 @@ function defaultMasteryPercentageForSet(set) {
   return isVocabularySet(set) ? 100 : 90;
 }
 
+function defaultMasteryEnabledForSet(set) {
+  return !isVocabularySet(set);
+}
+
 function passingPercentageForSet(set) {
   return Number(!set || set.passing_percentage == null ? defaultPassingPercentageForSet(set) : set.passing_percentage);
 }
@@ -761,7 +765,7 @@ async function createAssignments(event) {
     }
     const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
     const masteryPercentage = safePercentage(event.mastery_percentage, masteryPercentageForSet(set));
-    const masteryEnabled = safeBoolean(event.mastery_enabled, true);
+    const masteryEnabled = safeBoolean(event.mastery_enabled, defaultMasteryEnabledForSet(set));
     if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
     for (const studentUid of studentUids) {

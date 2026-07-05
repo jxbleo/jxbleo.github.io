@@ -89,6 +89,9 @@ Check:
   mastered or create a new STAR on later submissions
 - Vocabulary countable tests use `80%` passing and `100%` mastery by default
   unless the set or assignment explicitly overrides thresholds
+- new Vocabulary assignments default to `mastery_enabled: false`; after the
+  teacher turns `Can earn STAR` on from View, a later qualifying submission can
+  become mastered / STAR
 - a not-passed Vocabulary Test result can return to group selection and start
   a fresh test without keeping the previous questions or local draft
 - history review does not leak answers unless reveal is recorded

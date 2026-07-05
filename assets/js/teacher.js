@@ -1245,11 +1245,11 @@
         var due = dueEl ? dueEl.value : '';
         var passing = passingEl ? passingEl.value : '';
         var mastery = masteryEl ? masteryEl.value : '';
-        var masteryEnabled = masteryEnabledEl ? masteryEnabledEl.value !== 'false' : true;
+        var masteryEnabled = masteryEnabledEl ? masteryEnabledEl.value : '';
         if (due) parts.push('Due ' + due);
         if (passing) parts.push('Pass ' + passing + '%');
         if (mastery) parts.push('Mastery ' + mastery + '%');
-        if (!masteryEnabled) parts.push('No STAR');
+        if (masteryEnabled === 'false') parts.push('No STAR');
         summary.textContent = parts.length ? parts.join(' · ') : 'Default';
     }
 
@@ -4180,14 +4180,18 @@
         var due = document.getElementById('assign-due').value;
         button.disabled = true;
         showMessage('Assigning practice...', '');
-        teacherCall('createAssignments', {
+        var payload = {
             set_ids: assignmentTargetSetIds(),
             student_uids: studentUids,
             due_at: due ? due + 'T23:59:59+08:00' : null,
             passing_percentage: document.getElementById('assign-passing').value,
-            mastery_percentage: document.getElementById('assign-mastery').value,
-            mastery_enabled: document.getElementById('assign-mastery-enabled').value !== 'false'
-        }).then(function(result) {
+            mastery_percentage: document.getElementById('assign-mastery').value
+        };
+        var masteryEnabledValue = document.getElementById('assign-mastery-enabled').value;
+        if (masteryEnabledValue === 'true' || masteryEnabledValue === 'false') {
+            payload.mastery_enabled = masteryEnabledValue !== 'false';
+        }
+        teacherCall('createAssignments', payload).then(function(result) {
             showMessage(
                 result.created.length + ' assignment(s) created' +
                 (result.skipped.length ? '; ' + result.skipped.length + ' skipped.' : '.'),
