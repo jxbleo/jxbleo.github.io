@@ -236,6 +236,7 @@ flowchart TD
 - `role`：`student` 或 `teacher`
 - `active`：是否可用
 - `must_change_password`：是否需要改密码
+- `deleted_at` / `deleted_by_teacher_uid`：老师删除学生账号后的隐藏和审计字段
 
 规则：
 
@@ -244,6 +245,10 @@ flowchart TD
 - 学生姓名可以重复
 - 浏览器不能传一个 `student_id` 来冒充身份
 - 老师权限也来自 `students` 中的 active teacher profile
+- 老师删除学生账号时，CloudBase Auth end user 应被删除，学生 profile 标记
+  `active:false` 和 `deleted_at`，教师端学生列表、Assign 候选、View 进度、
+  attempt activity 和 Argue 列表都应隐藏该学生。历史 attempts、
+  assignments、STAR 和 Argue 记录不硬删。
 
 ### 7.2 sets
 
@@ -526,7 +531,7 @@ flowchart TD
 - 创建学生 auth user + students profile
 - 更新学生信息
 - reset password
-- enable / disable student
+- delete student auth user and hide the student profile from teacher views
 - list sets
 - assignment candidates
 - create assignments

@@ -3282,8 +3282,7 @@
                 '</div>' +
                 '<div class="student-account-actions">' +
                     '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
-                    '<button class="' + (student.active ? 'danger-button' : 'outline-button') + '" id="toggle-account" type="button">' +
-                        (student.active ? 'Disable Account' : 'Enable Account') + '</button>' +
+                    '<button class="danger-button" id="delete-student-account" type="button">Delete Account</button>' +
                 '</div>' +
             '</section>' +
             '<section class="profile-card student-progress-card">' +
@@ -3291,8 +3290,8 @@
                 progressModeTabs(assignments) + progressHtml +
             '</section>';
 
-        document.getElementById('toggle-account').addEventListener('click', function() {
-            updateStudent(student.auth_uid, { active: !student.active });
+        document.getElementById('delete-student-account').addEventListener('click', function() {
+            deleteStudentAccount(student);
         });
         document.getElementById('reset-password').addEventListener('click', function() {
             if (!confirm('Reset the password for ' + student.student_id + '?')) return;
@@ -3880,6 +3879,35 @@
                 showMessage('Student updated.', 'success');
                 return refreshStudents();
             }).catch(function(error) {
+                showMessage(error.message, 'error');
+            });
+    }
+
+    function deleteStudentAccount(student) {
+        if (!student || !student.auth_uid) return Promise.resolve();
+        var label = student.name || student.student_id || 'this student';
+        if (!confirm('Delete student account for ' + label + '? This removes the login account and hides the student from teacher views. Attempts and assignment history stay saved.')) {
+            return Promise.resolve();
+        }
+        showMessage('Deleting student account...', '');
+        return teacherCall('deleteStudentAccount', { auth_uid: student.auth_uid })
+            .then(function() {
+                state.selectedStudentProfileId = '';
+                delete state.selectedAssignStudentUids[student.auth_uid];
+                return refreshStudents();
+            })
+            .then(function() {
+                return Promise.all([teacherCall('listAssignments'), loadProgressData(), loadCandidates()]);
+            })
+            .then(function(results) {
+                state.assignments = results[0].assignments || [];
+                state.progressItems = results[1].progress || [];
+                renderSetOptions();
+                renderAssignmentOverview();
+                updateAssignView();
+                showMessage('Student account deleted.', 'success');
+            })
+            .catch(function(error) {
                 showMessage(error.message, 'error');
             });
     }

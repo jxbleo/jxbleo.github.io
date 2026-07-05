@@ -46,6 +46,12 @@ Core fields:
 | `role` | string | `student` or `teacher` |
 | `active` | boolean | account enabled in app |
 | `must_change_password` | boolean | force password change |
+| `delete_pending` | boolean | temporary marker while teacher deletion is in progress |
+| `deleted` | boolean | true after teacher deletion completes |
+| `deleted_at` | Date/null | teacher deletion time |
+| `deleted_by_teacher_uid` | string/null | teacher who deleted the profile |
+| `deleted_student_id_snapshot` | string | Login ID snapshot kept for audit/history |
+| `deleted_name_snapshot` | string | display-name snapshot kept for audit/history |
 | `created_at` | Date | created time |
 | `updated_at` | Date | updated time |
 
@@ -55,6 +61,11 @@ Rules:
 - `student_id` is unique but not used for authorization.
 - Teacher actions require `role: "teacher"` and `active: true`.
 - Student-facing functions should require `role: "student"`.
+- Teacher deletion removes the CloudBase Auth end user, sets `active:false`
+  plus deletion audit fields on the profile, and hides the student from teacher
+  student lists, Assign candidates, View progress, activity attempts, and Argue
+  lists. Historical attempts, assignments, STAR records, and disputes are not
+  hard-deleted.
 
 ## 4. `sets`
 

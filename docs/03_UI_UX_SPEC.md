@@ -304,7 +304,10 @@ It should include:
   are hidden from teacher View progress and from the student's To Do without
   deleting attempts or completed history.
 - student selection and student detail panels
-- student account management actions such as class/system edit, password reset, enable/disable, and account creation
+- student account management actions such as class/system edit, password reset,
+  deleting a student account, and account creation. Deleting a student account
+  should remove that student from teacher-visible lists and View progress after
+  confirmation.
 
 ### Library
 
@@ -349,7 +352,7 @@ Student detail should show:
 - assigned work
 - recent attempts
 - reset password
-- enable/disable
+- delete account
 - class/system editing
 
 ### Review

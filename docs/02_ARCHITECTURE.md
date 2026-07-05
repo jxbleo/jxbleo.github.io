@@ -89,7 +89,8 @@ Active or relevant functions:
 - `getResources`: visible set catalog for authenticated surfaces
 - `getDashboard`: student assignments, history, latest attempt lookup, replies, reveal, STAR fallback
 - `submitAttempt`: trusted grading and attempt storage
-- `teacherAdmin`: teacher-only admin, assignment, progress, disputes, answer-key access
+- `teacherAdmin`: teacher-only student account deletion/admin, assignment,
+  progress, disputes, answer-key access
 - `studentVocabulary`: personal My Words list
 - `changePassword`: authenticated student password change
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`

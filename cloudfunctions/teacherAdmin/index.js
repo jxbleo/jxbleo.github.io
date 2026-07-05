@@ -104,6 +104,14 @@ function recordData(record) {
     : record;
 }
 
+function isDeletedStudent(student) {
+  return Boolean(student && (student.deleted_at || student.delete_pending === true || student.deleted === true));
+}
+
+function visibleStudentRecords(rows) {
+  return (rows || []).map(recordData).filter((student) => !isDeletedStudent(student));
+}
+
 function normalizedAssignmentStatus(status) {
   if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
@@ -402,7 +410,7 @@ function studentView(student) {
 }
 
 async function listStudents() {
-  const students = await getAll("students");
+  const students = visibleStudentRecords(await getAll("students"));
   return {
     success: true,
     students: students
@@ -512,7 +520,7 @@ async function updateStudent(event) {
   const authUid = text(event.auth_uid);
   if (!authUid) throw new Error("AUTH_UID_REQUIRED");
   const student = await getOne("students", { auth_uid: authUid });
-  if (!student || student.role === "teacher") throw new Error("STUDENT_NOT_FOUND");
+  if (!student || student.role === "teacher" || isDeletedStudent(student)) throw new Error("STUDENT_NOT_FOUND");
 
   const update = { updated_at: new Date() };
   if (Object.prototype.hasOwnProperty.call(event, "name")) update.name = text(event.name);
@@ -553,11 +561,57 @@ async function updateStudent(event) {
   return { success: true };
 }
 
+async function deleteStudentAccount(event, teacher) {
+  const authUid = text(event.auth_uid);
+  if (!authUid) throw new Error("AUTH_UID_REQUIRED");
+  const student = await getOne("students", { auth_uid: authUid });
+  if (!student || student.role === "teacher" || isDeletedStudent(student)) throw new Error("STUDENT_NOT_FOUND");
+  const now = new Date();
+  const pendingUpdate = {
+    active: false,
+    delete_pending: true,
+    delete_requested_at: now,
+    delete_requested_by_teacher_uid: teacher.auth_uid,
+    updated_at: now,
+  };
+
+  await db.collection("students").doc(student._id).update(pendingUpdate);
+  try {
+    await manager.user.deleteEndUsers({ userList: [authUid] });
+  } catch (error) {
+    try {
+      await db.collection("students").doc(student._id).update({
+        active: student.active === true,
+        delete_pending: false,
+        delete_failed_at: new Date(),
+        delete_failed_reason: text(error.code || error.message || "UNKNOWN").slice(0, 200),
+        updated_at: new Date(),
+      });
+    } catch (rollbackError) {
+      console.error("Unable to roll back student delete marker", rollbackError);
+      throw new Error("AUTH_DELETE_FAILED_ROLLBACK_REQUIRED");
+    }
+    throw new Error(`AUTH_DELETE_FAILED:${error.code || error.message || "UNKNOWN"}`);
+  }
+
+  await db.collection("students").doc(student._id).update({
+    active: false,
+    delete_pending: false,
+    deleted: true,
+    deleted_at: now,
+    deleted_by_teacher_uid: teacher.auth_uid,
+    deleted_student_id_snapshot: student.student_id || "",
+    deleted_name_snapshot: student.name || "",
+    updated_at: now,
+  });
+  return { success: true };
+}
+
 async function resetStudentPassword(event) {
   const authUid = text(event.auth_uid);
   if (!authUid) throw new Error("AUTH_UID_REQUIRED");
   const student = await getOne("students", { auth_uid: authUid, role: "student" });
-  if (!student) throw new Error("STUDENT_NOT_FOUND");
+  if (!student || isDeletedStudent(student)) throw new Error("STUDENT_NOT_FOUND");
 
   const password = initialPassword();
   try {
@@ -641,7 +695,7 @@ async function getAssignmentCandidates(event) {
   const studentRows = await getAll("students", { where: {
     active: true,
   } });
-  const students = studentRows.filter((student) => student.role !== "teacher");
+  const students = visibleStudentRecords(studentRows).filter((student) => student.role !== "teacher");
   const assignmentsByStudent = await getAssignmentsByStudent(setId);
   const candidates = [];
   for (const student of students) {
@@ -773,7 +827,7 @@ async function createAssignments(event) {
         auth_uid: studentUid,
         active: true,
       });
-      if (!student || student.role === "teacher") {
+      if (!student || student.role === "teacher" || isDeletedStudent(student)) {
         skipped.push({ student_uid: studentUid, set_id: setId, reason: "inactive_or_missing" });
         continue;
       }
@@ -938,13 +992,14 @@ async function listAssignments() {
     getAll("students"),
     getAll("sets"),
   ]);
-  const rawAssignments = assignmentRows.filter((assignment) =>
-    normalizedAssignmentStatus(assignment.status) !== "cancelled"
-  );
-  const studentMap = new Map(studentRows.map((record) => {
+  const studentMap = new Map(visibleStudentRecords(studentRows).map((record) => {
     const student = record.data && typeof record.data === "object" ? record.data : record;
     return [student.auth_uid, student];
   }));
+  const rawAssignments = assignmentRows.filter((assignment) =>
+    normalizedAssignmentStatus(assignment.status) !== "cancelled"
+    && studentMap.has(recordData(assignment).student_uid)
+  );
   const setMap = new Map(setRows.map((set) => [set.set_id, set]));
 
   return {
@@ -1156,8 +1211,10 @@ async function listProgress() {
     getAll("sets"),
     getAll("grading_keys"),
   ]);
+  const studentMap = new Map(visibleStudentRecords(studentRows).map((student) => [student.auth_uid, student]));
   const assignments = assignmentRows.map(recordData).filter((assignment) =>
     normalizedAssignmentStatus(assignment.status) !== "cancelled"
+    && studentMap.has(assignment.student_uid)
   );
   const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
     const gradingKey = recordData(record);
@@ -1167,10 +1224,6 @@ async function listProgress() {
     const attempt = recordData(record);
     return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
   });
-  const studentMap = new Map(studentRows.map((record) => {
-    const student = recordData(record);
-    return [student.auth_uid, student];
-  }));
   const setMap = new Map(setRows.map((record) => {
     const set = recordData(record);
     return [set.set_id, set];
@@ -1186,7 +1239,7 @@ async function listProgress() {
       attemptsByAssignment.get(attempt.assignment_id).push(attempt);
       return;
     }
-    if (!attempt.student_uid || !attempt.set_id) return;
+    if (!attempt.student_uid || !attempt.set_id || !studentMap.has(attempt.student_uid)) return;
     const key = `${attempt.student_uid}::${attempt.set_id}`;
     if (!selfStudyGroups.has(key)) selfStudyGroups.set(key, []);
     selfStudyGroups.get(key).push(attempt);
@@ -1232,15 +1285,17 @@ async function listProgress() {
 }
 
 async function listAttempts() {
-  const [attemptRows, gradingKeyRows] = await Promise.all([
+  const [attemptRows, gradingKeyRows, studentRows] = await Promise.all([
     getAll("attempts"),
     getAll("grading_keys"),
+    getAll("students"),
   ]);
+  const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
   const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
     const gradingKey = recordData(record);
     return [gradingKey.set_id, gradingKey];
   }));
-  const attempts = attemptRows;
+  const attempts = attemptRows.filter((record) => visibleStudentUids.has(recordData(record).student_uid));
   return {
     success: true,
     attempts: attempts.map((record) => {
@@ -1325,13 +1380,14 @@ async function listDisputes() {
     getAll("grading_keys"),
     getAll("assignments"),
   ]);
-  const studentMap = new Map(studentRows.map((item) => [item.auth_uid, item]));
+  const studentMap = new Map(visibleStudentRecords(studentRows).map((item) => [item.auth_uid, item]));
   const setMap = new Map(setRows.map((item) => [item.set_id, item]));
   const gradingKeysMap = new Map(gradingKeyRows.map((item) => [item.set_id, item]));
   const assignmentMap = new Map(assignmentRows.map((item) => [item.assignment_id || item._id, item]));
   return {
     success: true,
     disputes: disputeRows.filter((dispute) => {
+      if (dispute.requester_role !== "teacher" && !studentMap.has(dispute.student_uid)) return false;
       if (!dispute.assignment_id) return true;
       const assignment = assignmentMap.get(dispute.assignment_id);
       return !assignment || normalizedAssignmentStatus(assignment.status) !== "cancelled";
@@ -1773,6 +1829,7 @@ exports.main = async (event) => {
     if (action === "listStudents") return await listStudents();
     if (action === "createStudent") return await createStudent(event);
     if (action === "updateStudent") return await updateStudent(event);
+    if (action === "deleteStudentAccount") return await deleteStudentAccount(event, teacher);
     if (action === "resetStudentPassword") return await resetStudentPassword(event);
     if (action === "listSets") return await listSets();
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
