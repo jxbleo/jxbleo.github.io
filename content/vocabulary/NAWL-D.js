@@ -10,7 +10,7 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NAWL",
-  "cefrLevel": "C1",
+  "cefrLevel": "C1+",
   "wordCount": 100,
   "words": [
     {
@@ -921,66 +921,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 301,
       "rangeEnd": 310,
       "wordList": [
-        "preliminary",
-        "indigenous",
-        "pre",
-        "philosophical",
-        "prominent",
-        "partially",
-        "render",
-        "transaction",
         "amino",
+        "partially",
+        "preliminary",
+        "philosophical",
+        "pre",
+        "transaction",
+        "prominent",
+        "indigenous",
+        "render",
         "independently"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The __________ findings suggest a correlation, though further research with larger sample sizes is required.",
+          "prompt": "Because proteins are built from chains of __________ acids, students first need to understand their chemical structure before studying nutrition.",
+          "answer": "amino",
+          "explanation": "amino。语法上，amino 是形容词，修饰后面的名词 acids，构成专业术语。语义上，蛋白质由氨基酸链构成，因此这里需要表示“氨基的”。常见搭配：amino acids。",
           "questionKey": "301-310:1"
         },
         {
           "number": 2,
-          "prompt": "Australia's __________ peoples have maintained their cultural practices for over 60,000 years.",
+          "prompt": "The report was only __________ complete, since several departments had not yet submitted their latest financial data.",
+          "answer": "partially",
+          "explanation": "partially。语法上，空格修饰形容词 complete，需要副词。语义上，报告还没有完全完成，只是“部分地”完成。常见搭配：partially complete。",
           "questionKey": "301-310:2"
         },
         {
           "number": 3,
-          "prompt": "All applicants attended a __________-interview briefing before the formal selection process began.",
+          "prompt": "Before launching the full investigation, the research team conducted a __________ review to identify the most obvious methodological weaknesses.",
+          "answer": "preliminary",
+          "explanation": "preliminary。语法上，空格修饰名词 review，需要形容词。语义上，在正式调查前进行的是“初步的”审查。常见搭配：preliminary review / investigation。",
           "questionKey": "301-310:3"
         },
         {
           "number": 4,
-          "prompt": "Despite facing numerous setbacks, she maintained a __________ attitude, viewing each failure as a learning opportunity.",
+          "prompt": "Rather than becoming angry about the delay, she took a surprisingly __________ attitude and accepted it as part of the process.",
+          "answer": "philosophical",
+          "explanation": "philosophical。语法上，空格修饰名词 attitude，需要形容词。语义上，她没有生气，而是以达观、冷静的态度接受延误。常见搭配：a philosophical attitude。",
           "questionKey": "301-310:4"
         },
         {
           "number": 5,
-          "prompt": "She became a __________ figure in neuroscience after her groundbreaking work on synaptic plasticity.",
+          "prompt": "The company required all candidates to complete a __________-employment assessment before they were invited to the final interview.",
+          "answer": "pre",
+          "explanation": "pre。语法上，pre- 是前缀，放在 employment 前构成复合形容词。语义上，候选人在正式入职前完成评估。常见搭配：pre-employment assessment。",
           "questionKey": "301-310:5"
         },
         {
           "number": 6,
-          "prompt": "The manuscript was only __________ completed when the publisher requested significant revisions.",
+          "prompt": "The bank flagged the international __________ because the payment pattern looked unusual compared with the customer’s previous activity.",
+          "answer": "transaction",
+          "explanation": "transaction。语法上，前面有定冠词 the 和形容词 international，后面需要名词。语义上，银行标记的是一笔国际交易。常见搭配：bank transaction / international transaction。",
           "questionKey": "301-310:6"
         },
         {
           "number": 7,
-          "prompt": "The lawyer's role is to __________ legal advice to clients navigating complex corporate mergers.",
+          "prompt": "Several __________ scientists criticized the policy because it ignored their communities’ long-standing knowledge of the local environment.",
+          "answer": "indigenous",
+          "explanation": "indigenous。语法上，空格修饰名词 scientists，需要形容词。语义上，这些科学家来自本土群体，因此强调本土知识。常见搭配：indigenous communities / indigenous knowledge。",
           "questionKey": "301-310:7"
         },
         {
           "number": 8,
-          "prompt": "The investigation revealed that the financial __________ had been deliberately concealed from regulatory authorities.",
+          "prompt": "The software can __________ complex three-dimensional images quickly, even when the original model contains millions of small details.",
+          "answer": "render",
+          "explanation": "render。语法上，情态动词 can 后接动词原形。语义上，软件可以快速“渲染”复杂三维图像。常见搭配：render images / render a model。",
           "questionKey": "301-310:8"
         },
         {
           "number": 9,
-          "prompt": "Essential __________ acids cannot be synthesized by the human body and must be obtained through diet.",
+          "prompt": "The student became a __________ figure in the debate club after winning several national speaking competitions.",
+          "answer": "prominent",
+          "explanation": "prominent。语法上，空格修饰名词 figure，需要形容词。语义上，学生因多次获奖而成为辩论社中突出、知名的人物。常见搭配：a prominent figure。",
           "questionKey": "301-310:9"
         },
         {
           "number": 10,
-          "prompt": "Each research team worked __________ to avoid any potential bias in their experimental results.",
+          "prompt": "Although the researchers worked in the same laboratory, each experiment was designed and analyzed __________ to reduce bias.",
+          "answer": "independently",
+          "explanation": "independently。语法上，空格修饰被动结构 was designed and analyzed，需要副词。语义上，每个实验都被独立设计和分析，以减少偏见。常见搭配：work independently / analyze independently。",
           "questionKey": "301-310:10"
         }
       ]
@@ -991,66 +1011,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 311,
       "rangeEnd": 320,
       "wordList": [
-        "assembly",
-        "psychiatric",
-        "physiological",
         "symbolic",
-        "indirect",
-        "strictly",
-        "calcium",
         "utilize",
-        "critique",
-        "unity"
+        "physiological",
+        "indirect",
+        "calcium",
+        "assembly",
+        "strictly",
+        "unity",
+        "psychiatric",
+        "critique"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The general __________ was postponed due to insufficient quorum among member states.",
+          "prompt": "The white dove is often used as a __________ representation of peace, especially in public ceremonies and political speeches.",
+          "answer": "symbolic",
+          "explanation": "symbolic。语法上，空格修饰名词 representation，需要形容词。语义上，白鸽常被用作和平的象征性表达。常见搭配：symbolic representation。",
           "questionKey": "311-320:1"
         },
         {
           "number": 2,
-          "prompt": "The therapist specialized in __________ disorders, particularly treatment-resistant depression.",
+          "prompt": "The school encouraged students to __________ the online library more effectively instead of relying only on printed textbooks.",
+          "answer": "utilize",
+          "explanation": "utilize。语法上，to 后接动词原形。语义上，学校鼓励学生更有效地使用线上图书馆。常见搭配：utilize resources / utilize a system。",
           "questionKey": "311-320:2"
         },
         {
           "number": 3,
-          "prompt": "The research examined the __________ responses of athletes during high-intensity interval training.",
+          "prompt": "Sleep, digestion, and heart rate are all examples of __________ processes that can be affected by chronic stress.",
+          "answer": "physiological",
+          "explanation": "physiological。语法上，空格修饰名词 processes，需要形容词。语义上，睡眠、消化和心率都是生理过程。常见搭配：physiological processes。",
           "questionKey": "311-320:3"
         },
         {
           "number": 4,
-          "prompt": "The peacock's elaborate tail feathers serve a __________ function in courtship displays.",
+          "prompt": "The manager avoided making a direct accusation and instead gave an __________ warning about professional behavior.",
+          "answer": "indirect",
+          "explanation": "indirect。语法上，空格修饰名词 warning，需要形容词。语义上，经理没有直接指责，而是给出间接警告。常见搭配：indirect warning / indirect criticism。",
           "questionKey": "311-320:4"
         },
         {
           "number": 5,
-          "prompt": "The evidence linking the suspect to the crime scene was purely __________ and circumstantial.",
+          "prompt": "Children need enough __________ during their early years because it plays an essential role in building strong bones and teeth.",
+          "answer": "calcium",
+          "explanation": "calcium。语法上，enough 后可接不可数名词。语义上，儿童成长阶段需要足够的钙来形成强壮骨骼和牙齿。常见搭配：enough calcium。",
           "questionKey": "311-320:5"
         },
         {
           "number": 6,
-          "prompt": "Access to the classified documents was __________ controlled and required multiple security clearances.",
+          "prompt": "The national __________ voted on the proposal after several weeks of public discussion and legal review.",
+          "answer": "assembly",
+          "explanation": "assembly。语法上，前面有 The national，后面需要名词作主语。语义上，对提案进行投票的是国家议会或大会。常见搭配：national assembly。",
           "questionKey": "311-320:6"
         },
         {
           "number": 7,
-          "prompt": "Adequate __________ intake is crucial for preventing osteoporosis in postmenopausal women.",
+          "prompt": "Access to the laboratory is __________ limited to trained staff because the chemicals inside may be dangerous.",
+          "answer": "strictly",
+          "explanation": "strictly。语法上，空格修饰形容词 limited，需要副词。语义上，实验室访问被严格限制在受训人员范围内。常见搭配：strictly limited。",
           "questionKey": "311-320:7"
         },
         {
           "number": 8,
-          "prompt": "Advanced machine learning algorithms __________ vast datasets to identify previously undetectable patterns.",
+          "prompt": "The speech emphasized national __________ at a time when political disagreements were becoming increasingly visible.",
+          "answer": "unity",
+          "explanation": "unity。语法上，空格作动词 emphasized 的宾语，需要名词。语义上，政治分歧明显时，演讲强调国家团结。常见搭配：national unity。",
           "questionKey": "311-320:8"
         },
         {
           "number": 9,
-          "prompt": "The literary __________ exposed fundamental flaws in the author's narrative structure.",
+          "prompt": "After the accident, the patient was referred for __________ evaluation because doctors were concerned about his emotional stability.",
+          "answer": "psychiatric",
+          "explanation": "psychiatric。语法上，空格修饰名词 evaluation，需要形容词。语义上，医生担心患者情绪稳定性，因此转介精神病学评估。常见搭配：psychiatric evaluation。",
           "questionKey": "311-320:9"
         },
         {
           "number": 10,
-          "prompt": "The peace treaty emphasized national __________ while respecting regional autonomy.",
+          "prompt": "The professor asked us to __________ the article by identifying its assumptions, evidence, and possible weaknesses.",
+          "answer": "critique",
+          "explanation": "critique。语法上，asked us to 后接动词原形。语义上，教授要求学生批判性评论文章的假设、证据和弱点。常见搭配：critique an article / critique an argument。",
           "questionKey": "311-320:10"
         }
       ]
@@ -1061,66 +1101,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 321,
       "rangeEnd": 330,
       "wordList": [
+        "differentiation",
         "closure",
-        "fertility",
-        "selective",
-        "parental",
         "minimize",
+        "selective",
+        "availability",
         "depict",
         "cue",
-        "differentiation",
-        "availability",
-        "ritual"
+        "parental",
+        "ritual",
+        "fertility"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The __________ of the factory resulted in significant unemployment in the region.",
+          "prompt": "Successful language teaching often depends on clear __________ between what students can recognize passively and what they can produce accurately.",
+          "answer": "differentiation",
+          "explanation": "differentiation。语法上，介词 on 后接名词，且 clear 修饰名词。语义上，教学需要区分学生被动识别和主动产出的能力。常见搭配：clear differentiation between A and B。",
           "questionKey": "321-330:1"
         },
         {
           "number": 2,
-          "prompt": "Farmers in the region struggled with declining soil __________ due to intensive monoculture practices.",
+          "prompt": "The sudden __________ of several factories left many workers uncertain about their future employment and financial security.",
+          "answer": "closure",
+          "explanation": "closure。语法上，前面有 The sudden，后面需要名词。语义上，工厂突然关闭使工人就业前景不确定。常见搭配：factory closure。",
           "questionKey": "321-330:2"
         },
         {
           "number": 3,
-          "prompt": "The company's __________ hiring process prioritized candidates with advanced degrees and international experience.",
+          "prompt": "To reduce unnecessary costs, the hospital introduced new procedures designed to __________ waste without lowering the quality of care.",
+          "answer": "minimize",
+          "explanation": "minimize。语法上，designed to 后接动词原形。语义上，新流程的目标是在不降低质量的情况下减少浪费。常见搭配：minimize waste / minimize costs。",
           "questionKey": "321-330:3"
         },
         {
           "number": 4,
-          "prompt": "The __________ leave policy was revised to include provisions for adoptive parents.",
+          "prompt": "Universities have become more __________ in recent years because the number of qualified applicants has increased sharply.",
+          "answer": "selective",
+          "explanation": "selective。语法上，系动词 have become 后接形容词。语义上，申请者增加使大学录取更有选择性。常见搭配：highly selective / more selective。",
           "questionKey": "321-330:4"
         },
         {
           "number": 5,
-          "prompt": "Engineers implemented redundant systems to __________ the risk of catastrophic failure.",
+          "prompt": "The __________ of affordable housing remains one of the most serious challenges facing young families in major cities.",
+          "answer": "availability",
+          "explanation": "availability。语法上，The availability of 结构中需要名词。语义上，负担得起住房的可获得性是大城市年轻家庭的难题。常见搭配：availability of affordable housing。",
           "questionKey": "321-330:5"
         },
         {
           "number": 6,
-          "prompt": "The ancient frescoes __________ scenes of daily life in remarkable detail.",
+          "prompt": "The documentary tries to __________ rural life without romanticizing poverty or ignoring the difficulties faced by local residents.",
+          "answer": "depict",
+          "explanation": "depict。语法上，tries to 后接动词原形。语义上，纪录片试图描绘乡村生活，而不是浪漫化贫困。常见搭配：depict rural life / depict reality。",
           "questionKey": "321-330:6"
         },
         {
           "number": 7,
-          "prompt": "The actor missed his __________ and entered the stage at the wrong moment during the performance.",
+          "prompt": "A raised eyebrow can serve as a social __________, telling the speaker that the listener is confused or skeptical.",
+          "answer": "cue",
+          "explanation": "cue。语法上，前面有冠词 a 和形容词 social，需要可数名词单数。语义上，扬眉可以作为社交提示，表明听者困惑或怀疑。常见搭配：social cue。",
           "questionKey": "321-330:7"
         },
         {
           "number": 8,
-          "prompt": "Cellular __________ is a complex process whereby stem cells develop into specialized cell types.",
+          "prompt": "Strong __________ involvement is often associated with better academic habits, although excessive control can damage independence.",
+          "answer": "parental",
+          "explanation": "parental。语法上，空格修饰名词 involvement，需要形容词。语义上，父母参与通常与更好的学习习惯相关。常见搭配：parental involvement。",
           "questionKey": "321-330:8"
         },
         {
           "number": 9,
-          "prompt": "The limited __________ of donor organs remains a critical challenge in transplant medicine.",
+          "prompt": "The lighting of candles became a small daily __________ that helped the community remember those who had been lost.",
+          "answer": "ritual",
+          "explanation": "ritual。语法上，前面有冠词 a 和形容词 small daily，需要名词。语义上，点蜡烛成为一种日常仪式，用于纪念逝者。常见搭配：daily ritual。",
           "questionKey": "321-330:9"
         },
         {
           "number": 10,
-          "prompt": "Indigenous communities perform this __________ annually to honor their ancestors and ensure good harvests.",
+          "prompt": "Soil __________ declined after years of intensive farming, so the villagers began using more sustainable agricultural methods.",
+          "answer": "fertility",
+          "explanation": "fertility。语法上，Soil 修饰后面的名词，空格作主语中心词。语义上，长期密集耕作导致土壤肥力下降。常见搭配：soil fertility。",
           "questionKey": "321-330:10"
         }
       ]
@@ -1131,66 +1191,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 331,
       "rangeEnd": 340,
       "wordList": [
+        "adjacent",
+        "readily",
+        "observer",
         "inhibition",
         "questionnaire",
-        "locally",
         "generalization",
-        "readily",
         "qualitative",
-        "transcription",
-        "adjacent",
         "tense",
-        "observer"
+        "transcription",
+        "locally"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Certain enzymes function through competitive __________ of substrate binding sites.",
+          "prompt": "The new library was built on a small piece of land __________ to the main lecture hall, making it easy for students to reach.",
+          "answer": "adjacent",
+          "explanation": "adjacent。语法上，空格后接介词 to，构成形容词短语修饰 land。语义上，图书馆建在主讲堂旁边的土地上。常见搭配：adjacent to。",
           "questionKey": "331-340:1"
         },
         {
           "number": 2,
-          "prompt": "Participants completed a comprehensive __________ assessing their attitudes toward climate change mitigation.",
+          "prompt": "Because the instructions were clearly written, most participants could __________ understand what they were expected to do.",
+          "answer": "readily",
+          "explanation": "readily。语法上，空格修饰动词 understand，需要副词。语义上，说明清楚，所以大多数参与者容易理解要求。常见搭配：readily understand / readily available。",
           "questionKey": "331-340:2"
         },
         {
           "number": 3,
-          "prompt": "While the policy was implemented __________, its effects were felt throughout the entire organization.",
+          "prompt": "The trained __________ recorded how children interacted with each other during the group problem-solving activity.",
+          "answer": "observer",
+          "explanation": "observer。语法上，前面有 The trained，后面需要名词作主语。语义上，记录儿童互动的人是受训观察者。常见搭配：trained observer。",
           "questionKey": "331-340:3"
         },
         {
           "number": 4,
-          "prompt": "Drawing such a broad __________ from limited data would constitute a methodological error.",
+          "prompt": "Fear of making mistakes can create strong __________, preventing students from speaking even when they know the answer.",
+          "answer": "inhibition",
+          "explanation": "inhibition。语法上，形容词 strong 修饰名词。语义上，害怕犯错会形成强烈抑制，使学生不敢开口。常见搭配：strong inhibition。",
           "questionKey": "331-340:4"
         },
         {
           "number": 5,
-          "prompt": "The compound dissolves __________ in polar solvents but remains insoluble in non-polar media.",
+          "prompt": "The researcher distributed a detailed __________ to collect information about students' study habits, reading preferences, and access to technology.",
+          "answer": "questionnaire",
+          "explanation": "questionnaire。语法上，冠词 a 和形容词 detailed 后接名词。语义上，研究者发放详细问卷收集学生学习习惯、阅读偏好和技术使用情况。常见搭配：detailed questionnaire / distribute a questionnaire。",
           "questionKey": "331-340:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ data revealed nuanced perspectives that quantitative measures had failed to capture.",
+          "prompt": "The survey was criticized because it encouraged a broad __________ from a very small and unrepresentative sample.",
+          "answer": "generalization",
+          "explanation": "generalization。语法上，冠词 a 和形容词 broad 后接可数名词单数。语义上，从小且不具代表性的样本得出广泛结论属于概括过度。常见搭配：broad generalization。",
           "questionKey": "331-340:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ of the ancient manuscript required expertise in paleography and dead languages.",
+          "prompt": "The study used __________ interviews to explore how patients described pain, rather than measuring symptoms only with numbers.",
+          "answer": "qualitative",
+          "explanation": "qualitative。语法上，空格修饰名词 interviews，需要形容词。语义上，该研究通过访谈探索患者如何描述疼痛，而非只用数字测量。常见搭配：qualitative interviews / qualitative research。",
           "questionKey": "331-340:7"
         },
         {
           "number": 8,
-          "prompt": "The two buildings are __________ to each other, sharing a common wall.",
+          "prompt": "The atmosphere became increasingly __________ when the negotiators realized that neither side was willing to compromise.",
+          "answer": "tense",
+          "explanation": "tense。语法上，系动词 became 后接形容词。语义上，谈判双方都不愿妥协，气氛变得紧张。常见搭配：a tense atmosphere。",
           "questionKey": "331-340:8"
         },
         {
           "number": 9,
-          "prompt": "The diplomat's __________ expression suggested underlying concerns about the negotiation's progress.",
+          "prompt": "The researcher checked the audio __________ carefully because even one missing word could change the meaning of the interview.",
+          "answer": "transcription",
+          "explanation": "transcription。语法上，前面有 the audio，后面需要名词作宾语。语义上，研究者检查音频转录，因为漏掉一个词可能改变意义。常见搭配：audio transcription。",
           "questionKey": "331-340:9"
         },
         {
           "number": 10,
-          "prompt": "An impartial __________ was appointed to monitor the electoral process and ensure fairness.",
+          "prompt": "The charity works __________ with schools and clinics instead of sending all decisions to its central office.",
+          "answer": "locally",
+          "explanation": "locally。语法上，空格修饰动词 works，需要副词。语义上，慈善机构在本地与学校和诊所合作。常见搭配：work locally。",
           "questionKey": "331-340:10"
         }
       ]
@@ -1201,66 +1281,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 341,
       "rangeEnd": 350,
       "wordList": [
-        "ecology",
+        "nutrient",
         "reinforce",
-        "informal",
+        "statistically",
+        "simulate",
         "dense",
+        "ecology",
         "null",
         "terminal",
-        "simulate",
-        "statistically",
-        "discharge",
-        "nutrient"
+        "informal",
+        "discharge"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Wetlands play a crucial role in the __________ of migratory bird species.",
+          "prompt": "Vitamin C is an important __________ that supports the immune system and helps the body repair damaged tissue.",
+          "answer": "nutrient",
+          "explanation": "nutrient。语法上，前面有冠词 an important，需要名词。语义上，维生素 C 是支持免疫系统的重要营养素。常见搭配：important nutrient。",
           "questionKey": "341-350:1"
         },
         {
           "number": 2,
-          "prompt": "Steel rods were installed to __________ the structure's foundation against seismic activity.",
+          "prompt": "Teachers used short review tasks to __________ key concepts before students moved on to the next unit.",
+          "answer": "reinforce",
+          "explanation": "reinforce。语法上，to 后接动词原形。语义上，教师用简短复习任务来强化关键概念，然后学生再进入下一单元。常见搭配：reinforce key concepts / reinforce learning。",
           "questionKey": "341-350:2"
         },
         {
           "number": 3,
-          "prompt": "The __________ gathering allowed colleagues to discuss ideas without rigid protocols.",
+          "prompt": "After several rounds of analysis, the difference between the two groups was found to be __________ significant.",
+          "answer": "statistically",
+          "explanation": "statistically。语法上，空格修饰形容词 significant，需要副词。语义上，两组差异经分析后达到统计显著。常见搭配：statistically significant。",
           "questionKey": "341-350:3"
         },
         {
           "number": 4,
-          "prompt": "The __________ rainforest canopy prevents sunlight from reaching the forest floor.",
+          "prompt": "Teachers can __________ exam conditions in class by setting strict time limits and removing unnecessary sources of help.",
+          "answer": "simulate",
+          "explanation": "simulate。语法上，情态动词 can 后接动词原形。语义上，教师可以通过限时和减少帮助来模拟考试环境。常见搭配：simulate exam conditions。",
           "questionKey": "341-350:4"
         },
         {
           "number": 5,
-          "prompt": "The __________ hypothesis was rejected at the 0.01 significance level.",
+          "prompt": "The old city center is extremely __________, with narrow streets, crowded housing, and very little open public space.",
+          "answer": "dense",
+          "explanation": "dense。语法上，系动词 is 后接形容词。语义上，老城区街道狭窄、住房拥挤、公共空间少，因此非常密集。常见搭配：dense urban area / dense housing。",
           "questionKey": "341-350:5"
         },
         {
           "number": 6,
-          "prompt": "The patient was moved to the __________ care unit as treatment options became exhausted.",
+          "prompt": "Her research focuses on forest __________, especially the relationship between soil quality, rainfall, and plant diversity.",
+          "answer": "ecology",
+          "explanation": "ecology。语法上，介词 on 后接名词。语义上，她研究森林生态学，尤其是土壤、降雨和植物多样性的关系。常见搭配：forest ecology。",
           "questionKey": "341-350:6"
         },
         {
           "number": 7,
-          "prompt": "The computer model can __________ complex weather patterns with remarkable accuracy.",
+          "prompt": "The experiment produced a __________ result, meaning the treatment showed no measurable effect under the tested conditions.",
+          "answer": "null",
+          "explanation": "null。语法上，空格修饰名词 result，需要形容词。语义上，实验没有测出处理效果，因此是零结果或无效结果。常见搭配：null result。",
           "questionKey": "341-350:7"
         },
         {
           "number": 8,
-          "prompt": "The __________ significance of the results was confirmed through rigorous hypothesis testing.",
+          "prompt": "The train arrived at the central __________ shortly before midnight, where passengers transferred to buses and taxis.",
+          "answer": "terminal",
+          "explanation": "terminal。语法上，前面有 the central，后面需要名词。语义上，火车到达中央终点站，乘客转乘其他交通工具。常见搭配：central terminal / bus terminal。",
           "questionKey": "341-350:8"
         },
         {
           "number": 9,
-          "prompt": "Industrial facilities must monitor the __________ of pollutants into waterways.",
+          "prompt": "The interview was deliberately __________, so participants could speak naturally rather than follow a strict script.",
+          "answer": "informal",
+          "explanation": "informal。语法上，系动词 was 后接形容词。语义上，访谈刻意设计得比较非正式，让参与者自然表达，而不是严格照脚本回答。常见搭配：informal interview / informal conversation。",
           "questionKey": "341-350:9"
         },
         {
           "number": 10,
-          "prompt": "Essential __________ depletion in agricultural soils necessitates careful fertilization strategies.",
+          "prompt": "Factories must not __________ untreated chemicals into the river because they can damage wildlife and public health.",
+          "answer": "discharge",
+          "explanation": "discharge。语法上，情态动词 must not 后接动词原形。语义上，工厂不能向河流排放未经处理的化学物质。常见搭配：discharge chemicals / discharge waste。",
           "questionKey": "341-350:10"
         }
       ]
@@ -1271,66 +1371,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 351,
       "rangeEnd": 360,
       "wordList": [
-        "protocol",
-        "progressive",
-        "agriculture",
-        "equivalence",
-        "aesthetic",
         "adaptive",
         "ecological",
+        "protocol",
+        "progressive",
+        "aesthetic",
         "exploit",
-        "practitioners",
-        "occupation"
+        "agriculture",
+        "practitioner",
+        "occupation",
+        "equivalence"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The research __________ adhered strictly to ethical guidelines for human subject research.",
+          "prompt": "The school introduced an __________ learning system that changes question difficulty according to each student’s performance.",
+          "answer": "adaptive",
+          "explanation": "adaptive。语法上，空格修饰名词 learning system，需要形容词。语义上，系统会根据学生表现调整题目难度，因此是适应性学习系统。常见搭配：adaptive learning system。",
           "questionKey": "351-360:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ taxation system imposed higher rates on those with greater incomes.",
+          "prompt": "The new housing project was rejected because it would cause serious __________ damage to the surrounding wetland.",
+          "answer": "ecological",
+          "explanation": "ecological。语法上，空格修饰名词 damage，需要形容词。语义上，住房项目会对湿地造成生态损害。常见搭配：ecological damage。",
           "questionKey": "351-360:2"
         },
         {
           "number": 3,
-          "prompt": "Sustainable __________ practices are essential for feeding the growing global population.",
+          "prompt": "Every laboratory must follow a clear safety __________ before handling biological samples or dangerous equipment.",
+          "answer": "protocol",
+          "explanation": "protocol。语法上，形容词 clear safety 后接名词。语义上，实验室处理样本和危险设备前必须遵守安全协议。常见搭配：safety protocol。",
           "questionKey": "351-360:3"
         },
         {
           "number": 4,
-          "prompt": "The principle of __________ ensures that qualifications are recognized across member states.",
+          "prompt": "The course follows a __________ structure, introducing basic concepts first and then gradually moving toward complex analysis.",
+          "answer": "progressive",
+          "explanation": "progressive。语法上，空格修饰名词 structure，需要形容词。语义上，课程从基础概念逐步过渡到复杂分析，属于渐进式结构。常见搭配：progressive structure / progressive development。",
           "questionKey": "351-360:4"
         },
         {
           "number": 5,
-          "prompt": "The museum's collection reflects diverse __________ traditions from across centuries.",
+          "prompt": "The museum’s new design has strong __________ appeal, but some visitors complain that the building is difficult to navigate.",
+          "answer": "aesthetic",
+          "explanation": "aesthetic。语法上，空格修饰名词 appeal，需要形容词。语义上，博物馆设计在审美上有吸引力，但实际动线不便。常见搭配：aesthetic appeal。",
           "questionKey": "351-360:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ immune system responds dynamically to novel pathogenic threats.",
+          "prompt": "Some companies try to __________ legal loopholes in order to reduce costs, even when the practice damages workers’ rights.",
+          "answer": "exploit",
+          "explanation": "exploit。语法上，try to 后接动词原形。语义上，一些公司试图利用法律漏洞降低成本。常见搭配：exploit loopholes。",
           "questionKey": "351-360:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ consequences of deforestation extend far beyond immediate habitat loss.",
+          "prompt": "Modern __________ depends not only on machinery and fertilizers but also on water management and soil protection.",
+          "answer": "agriculture",
+          "explanation": "agriculture。语法上，空格作主语中心词，需要名词。语义上，现代农业不仅依赖机器和肥料，也依赖水和土壤管理。常见搭配：modern agriculture。",
           "questionKey": "351-360:7"
         },
         {
           "number": 8,
-          "prompt": "The company was accused of attempting to __________ vulnerable workers through unfair labor practices.",
+          "prompt": "A skilled medical __________ must combine technical knowledge with careful communication and professional judgment.",
+          "answer": "practitioner",
+          "explanation": "practitioner。语法上，前面有冠词 A 和形容词 skilled medical，需要可数名词单数。语义上，具备专业知识和沟通能力的人是医疗从业者。常见搭配：medical practitioner。",
           "questionKey": "351-360:8"
         },
         {
           "number": 9,
-          "prompt": "Medical __________ must complete continuing education to maintain their licenses.",
+          "prompt": "Many graduates choose an __________ based on salary expectations, social status, and the possibility of long-term development.",
+          "answer": "occupation",
+          "explanation": "occupation。语法上，前面有冠词 an，需要名词。语义上，毕业生根据薪资、地位和发展选择职业。常见搭配：choose an occupation。",
           "questionKey": "351-360:9"
         },
         {
           "number": 10,
-          "prompt": "Fishing has been the primary __________ of coastal communities for generations.",
+          "prompt": "The two qualifications have rough __________, but employers may still value one more highly in specific professional contexts.",
+          "answer": "equivalence",
+          "explanation": "equivalence。语法上，动词 have 后接名词作宾语。语义上，两种资格大致等价，但雇主可能更重视其中一种。常见搭配：rough equivalence。",
           "questionKey": "351-360:10"
         }
       ]
@@ -1341,66 +1461,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 361,
       "rangeEnd": 370,
       "wordList": [
-        "reproducibility",
-        "consensus",
-        "arrow",
-        "residue",
-        "radius",
         "pragmatic",
-        "unstable",
-        "commentary",
         "productivity",
-        "simplify"
+        "arrow",
+        "reproduce",
+        "commentary",
+        "residue",
+        "unstable",
+        "consensus",
+        "simplify",
+        "radius"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Scientific __________ requires that experiments yield consistent results under identical conditions.",
+          "prompt": "Instead of defending an ideal plan, the mayor took a __________ approach and supported the option most likely to pass.",
+          "answer": "pragmatic",
+          "explanation": "pragmatic。语法上，空格修饰名词 approach，需要形容词。语义上，市长选择最可能通过的方案，而不是坚持理想方案，体现务实。常见搭配：a pragmatic approach。",
           "questionKey": "361-370:1"
         },
         {
           "number": 2,
-          "prompt": "After lengthy deliberations, the committee reached a __________ on the proposed reforms.",
+          "prompt": "Higher workplace __________ does not always mean longer hours; it often depends on better tools and clearer processes.",
+          "answer": "productivity",
+          "explanation": "productivity。语法上，形容词 Higher workplace 后接名词。语义上，工作场所生产力不一定来自更长工时，也可能来自工具和流程优化。常见搭配：workplace productivity。",
           "questionKey": "361-370:2"
         },
         {
           "number": 3,
-          "prompt": "The archaeological site yielded stone __________ points dating back 12,000 years.",
+          "prompt": "The diagram used a thick __________ to show the direction in which information moved through the system.",
+          "answer": "arrow",
+          "explanation": "arrow。语法上，前面有冠词 a 和形容词 thick，需要可数名词单数。语义上，图中用箭头表示信息流动方向。常见搭配：use an arrow to show。",
           "questionKey": "361-370:3"
         },
         {
           "number": 4,
-          "prompt": "Chemical __________ from the manufacturing process contaminated the groundwater supply.",
+          "prompt": "Some plants can __________ without seeds, using roots, stems, or other biological structures to create new individuals.",
+          "answer": "reproduce",
+          "explanation": "reproduce。语法上，情态动词 can 后接动词原形。语义上，有些植物不用种子也能繁殖。常见搭配：reproduce without seeds。",
           "questionKey": "361-370:4"
         },
         {
           "number": 5,
-          "prompt": "The evacuation zone extended to a __________ of five kilometers from the reactor.",
+          "prompt": "The radio station provided live __________ throughout the election night, explaining each result as it was announced.",
+          "answer": "commentary",
+          "explanation": "commentary。语法上，形容词 live 后接名词。语义上，广播电台在选举夜提供实时评论和解释。常见搭配：live commentary。",
           "questionKey": "361-370:5"
         },
         {
           "number": 6,
-          "prompt": "The government adopted a __________ approach, prioritizing immediate economic recovery over ideological purity.",
+          "prompt": "After the chemical reaction, a sticky __________ remained at the bottom of the container and had to be removed carefully.",
+          "answer": "residue",
+          "explanation": "residue。语法上，前面有冠词 a 和形容词 sticky，需要名词。语义上，化学反应后容器底部留下黏性残渣。常见搭配：chemical residue。",
           "questionKey": "361-370:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ political situation deterred foreign investment in the region.",
+          "prompt": "The patient’s condition was still __________, so doctors decided to keep him under close observation overnight.",
+          "answer": "unstable",
+          "explanation": "unstable。语法上，系动词 was 后接形容词。语义上，病人状况仍不稳定，所以医生继续观察。常见搭配：unstable condition。",
           "questionKey": "361-370:7"
         },
         {
           "number": 8,
-          "prompt": "The political __________ provided real-time analysis of the election results as they emerged.",
+          "prompt": "After months of debate, the committee finally reached a broad __________ on how the new policy should be implemented.",
+          "answer": "consensus",
+          "explanation": "consensus。语法上，动词 reached 后接名词作宾语。语义上，委员会经过讨论后终于达成广泛共识。常见搭配：reach a consensus。",
           "questionKey": "361-370:8"
         },
         {
           "number": 9,
-          "prompt": "Automation has dramatically increased manufacturing __________ while reducing labor costs.",
+          "prompt": "The teacher tried to __________ the explanation without removing the key ideas students needed for the exam.",
+          "answer": "simplify",
+          "explanation": "simplify。语法上，tried to 后接动词原形。语义上，教师试图简化解释，但不删除关键思想。常见搭配：simplify an explanation。",
           "questionKey": "361-370:9"
         },
         {
           "number": 10,
-          "prompt": "Mathematicians often __________ complex equations to make them more tractable.",
+          "prompt": "The search team checked every house within a five-kilometer __________ of the missing child’s last known location.",
+          "answer": "radius",
+          "explanation": "radius。语法上，前面有数量表达 a five-kilometer，后面需要名词。语义上，搜索范围是最后出现地点周围五公里半径。常见搭配：within a radius of。",
           "questionKey": "361-370:10"
         }
       ]
@@ -1411,66 +1551,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 371,
       "rangeEnd": 380,
       "wordList": [
-        "replicate",
         "artificial",
-        "assignment",
         "harvest",
         "suicide",
-        "mechanical",
         "pi",
         "monkey",
         "habitat",
+        "assignment",
+        "replicate",
+        "mechanical",
         "disability"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Researchers struggled to __________ the original experiment's results, raising questions about reproducibility.",
+          "prompt": "The flowers looked beautiful, but their color was clearly __________ because it had been added during processing.",
+          "answer": "artificial",
+          "explanation": "artificial。语法上，系动词 was 后接形容词。语义上，花的颜色是在加工中添加的，不是天然的。常见搭配：artificial color。",
           "questionKey": "371-380:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ intelligence system demonstrated capabilities that exceeded human performance in specific domains.",
+          "prompt": "Farmers had to __________ the wheat earlier than usual because heavy rain was expected later in the week.",
+          "answer": "harvest",
+          "explanation": "harvest。语法上，had to 后接动词原形。语义上，因为预计有大雨，农民必须提前收割小麦。常见搭配：harvest wheat / harvest crops。",
           "questionKey": "371-380:2"
         },
         {
           "number": 3,
-          "prompt": "Students received their final __________ three weeks before the semester's conclusion.",
+          "prompt": "The organization focuses on __________ prevention by training teachers to recognize warning signs and respond responsibly.",
+          "answer": "suicide",
+          "explanation": "suicide。语法上，空格修饰名词 prevention，构成名词短语。语义上，该组织关注预防自杀，通过培训教师识别风险信号。常见搭配：suicide prevention。",
           "questionKey": "371-380:3"
         },
         {
           "number": 4,
-          "prompt": "The __________ of wheat typically occurs in late summer when the grain reaches optimal moisture content.",
+          "prompt": "The value of __________ is commonly introduced in geometry when students learn how to calculate the area of a circle.",
+          "answer": "pi",
+          "explanation": "pi。语法上，空格作介词 of 的宾语，需要名词。语义上，计算圆面积时常引入圆周率。常见搭配：the value of pi。",
           "questionKey": "371-380:4"
         },
         {
           "number": 5,
-          "prompt": "Prevention programs aim to reduce __________ rates among vulnerable populations through early intervention.",
+          "prompt": "The children watched a young __________ copy the movements of its mother while climbing through the trees.",
+          "answer": "monkey",
+          "explanation": "monkey。语法上，前面有冠词 a young，需要可数名词单数。语义上，孩子们看到小猴子模仿母猴动作。常见搭配：young monkey。",
           "questionKey": "371-380:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ repetition of tasks led to decreased worker satisfaction and increased error rates.",
+          "prompt": "Pollution has destroyed much of the bird’s natural __________, forcing it to search for food in nearby towns.",
+          "answer": "habitat",
+          "explanation": "habitat。语法上，形容词 natural 修饰名词。语义上，污染破坏了鸟类自然栖息地。常见搭配：natural habitat。",
           "questionKey": "371-380:6"
         },
         {
           "number": 7,
-          "prompt": "The value of __________ is approximately 3.14159 and represents the ratio of a circle's circumference to its diameter.",
+          "prompt": "The final __________ required students to compare two research articles and evaluate the strength of their evidence.",
+          "answer": "assignment",
+          "explanation": "assignment。语法上，形容词 final 后接名词。语义上，要求学生比较研究文章并评价证据的是期末作业。常见搭配：final assignment。",
           "questionKey": "371-380:7"
         },
         {
           "number": 8,
-          "prompt": "The capuchin __________ demonstrated remarkable tool-use abilities in laboratory settings.",
+          "prompt": "Other scientists were unable to __________ the original experiment, raising doubts about the reliability of its findings.",
+          "answer": "replicate",
+          "explanation": "replicate。语法上，were unable to 后接动词原形。语义上，其他科学家无法重复原实验，因此结果可靠性受到质疑。常见搭配：replicate an experiment。",
           "questionKey": "371-380:8"
         },
         {
           "number": 9,
-          "prompt": "Climate change threatens the __________ of polar bears as Arctic ice continues to diminish.",
+          "prompt": "The engineer blamed the accident on a __________ failure in the braking system rather than on human error.",
+          "answer": "mechanical",
+          "explanation": "mechanical。语法上，空格修饰名词 failure，需要形容词。语义上，事故原因是刹车系统的机械故障。常见搭配：mechanical failure。",
           "questionKey": "371-380:9"
         },
         {
           "number": 10,
-          "prompt": "Comprehensive __________ legislation ensures equal access to employment opportunities.",
+          "prompt": "A physical __________ should not prevent someone from receiving equal access to education, employment, or public services.",
+          "answer": "disability",
+          "explanation": "disability。语法上，前面有冠词 A 和形容词 physical，需要名词。语义上，身体残疾不应阻碍平等获得教育、就业和公共服务。常见搭配：physical disability。",
           "questionKey": "371-380:10"
         }
       ]
@@ -1481,66 +1641,86 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 381,
       "rangeEnd": 390,
       "wordList": [
-        "linguistics",
-        "ethics",
+        "cattle",
         "purely",
-        "problematic",
-        "scatter",
-        "hormone",
-        "correction",
-        "primitive",
         "contradiction",
-        "cattle"
+        "scatter",
+        "problematic",
+        "correction",
+        "linguistics",
+        "hormone",
+        "primitive",
+        "ethics"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Computational __________ has revolutionized our understanding of language acquisition and processing.",
+          "prompt": "The farmer moved the __________ to higher ground before the river flooded the lower fields.",
+          "answer": "cattle",
+          "explanation": "cattle。语法上，空格作动词 moved 的宾语，需要名词。语义上，农民在洪水前把牛群转移到高地。常见搭配：move cattle。",
           "questionKey": "381-390:1"
         },
         {
           "number": 2,
-          "prompt": "Medical __________ committees review research proposals involving human subjects.",
+          "prompt": "The decision was made __________ for economic reasons, with no serious consideration of cultural or environmental effects.",
+          "answer": "purely",
+          "explanation": "purely。语法上，空格修饰介词短语 for economic reasons，需要副词。语义上，决定完全出于经济原因，没有认真考虑文化或环境影响。常见搭配：purely for economic reasons。",
           "questionKey": "381-390:2"
         },
         {
           "number": 3,
-          "prompt": "The decision was made __________ on financial grounds, without considering social implications.",
+          "prompt": "His public statement contained a clear __________ because he denied the problem while also promising to fix it.",
+          "answer": "contradiction",
+          "explanation": "contradiction。语法上，前面有冠词 a 和形容词 clear，需要名词。语义上，他一边否认问题，一边承诺解决，构成明显矛盾。常见搭配：clear contradiction。",
           "questionKey": "381-390:3"
         },
         {
           "number": 4,
-          "prompt": "The methodology proved __________ as it failed to account for confounding variables.",
+          "prompt": "The seeds began to __________ across the field after strong winds broke open the dry outer shells.",
+          "answer": "scatter",
+          "explanation": "scatter。语法上，began to 后接动词原形。语义上，强风使种子从外壳中散落到田野各处。常见搭配：scatter across。",
           "questionKey": "381-390:4"
         },
         {
           "number": 5,
-          "prompt": "Strong winds __________ the seeds across the field, ensuring wide distribution.",
+          "prompt": "In academic writing, vague claims are __________ because they make it difficult for readers to evaluate the argument.",
+          "answer": "problematic",
+          "explanation": "problematic。语法上，系动词 are 后接形容词。语义上，模糊说法会让读者难以评估论点，因此有问题。常见搭配：problematic claims。",
           "questionKey": "381-390:5"
         },
         {
           "number": 6,
-          "prompt": "Growth __________ levels fluctuate significantly during adolescence, influencing physical development.",
+          "prompt": "The editor made one small __________ to the paragraph because the original sentence contained a misleading statistic.",
+          "answer": "correction",
+          "explanation": "correction。语法上，前面有 one small，需要可数名词单数。语义上，编辑对段落做了一个小修正，因为原句数据误导。常见搭配：make a correction。",
           "questionKey": "381-390:6"
         },
         {
           "number": 7,
-          "prompt": "The editor's __________ improved the manuscript's clarity and coherence significantly.",
+          "prompt": "Modern __________ examines how language is structured, learned, used, and changed across different communities.",
+          "answer": "linguistics",
+          "explanation": "linguistics。语法上，形容词 Modern 后接学科名词作主语。语义上，研究语言结构、习得、使用和变化的是语言学。常见搭配：modern linguistics。",
           "questionKey": "381-390:7"
         },
         {
           "number": 8,
-          "prompt": "The __________ tools discovered at the site provide insights into early human technology.",
+          "prompt": "Insulin is a __________ that helps regulate blood sugar levels after a person eats carbohydrates.",
+          "answer": "hormone",
+          "explanation": "hormone。语法上，前面有冠词 a，后面有定语从句说明其功能，需要名词。语义上，胰岛素是一种调节血糖的激素。常见搭配：a hormone that regulates。",
           "questionKey": "381-390:8"
         },
         {
           "number": 9,
-          "prompt": "The apparent __________ in the witness's testimony undermined the prosecution's case.",
+          "prompt": "The tool may look __________, but it solved an important practical problem for people living thousands of years ago.",
+          "answer": "primitive",
+          "explanation": "primitive。语法上，系动词 look 后接形容词。语义上，工具看似原始，却解决了古人的实际问题。常见搭配：primitive tool。",
           "questionKey": "381-390:9"
         },
         {
           "number": 10,
-          "prompt": "Ranchers in the region raise __________ primarily for beef production.",
+          "prompt": "Research __________ requires scientists to protect participants, report results honestly, and avoid unnecessary harm.",
+          "answer": "ethics",
+          "explanation": "ethics。语法上，Research 修饰后面的名词，空格作主语中心词。语义上，保护参与者、诚实报告结果、避免伤害属于研究伦理。常见搭配：research ethics。",
           "questionKey": "381-390:10"
         }
       ]
@@ -1551,69 +1731,90 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "rangeStart": 391,
       "rangeEnd": 400,
       "wordList": [
+        "accumulation",
+        "static",
         "consent",
         "substrate",
-        "discrimination",
         "straightforward",
-        "randomize",
-        "accumulation",
+        "discrimination",
         "separately",
+        "randomize",
         "sensory",
-        "confine",
-        "static"
+        "confine"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Informed __________ must be obtained from all participants before beginning the clinical trial.",
+          "prompt": "The long-term __________ of plastic waste in the ocean has become a serious environmental and political concern.",
+          "answer": "accumulation",
+          "explanation": "accumulation。语法上，The long-term 后接名词，且后面有 of plastic waste 作补充说明。语义上，海洋塑料垃圾长期堆积成为严重环境和政治问题。常见搭配：accumulation of waste。",
           "questionKey": "391-400:1"
         },
         {
           "number": 2,
-          "prompt": "The enzyme catalyzes the reaction by binding to a specific __________ molecule.",
+          "prompt": "The image on the screen remained __________ for several minutes, which suggested that the software had stopped responding.",
+          "answer": "static",
+          "explanation": "static。语法上，系动词 remained 后接形容词。语义上，屏幕图像几分钟不动，说明软件可能停止响应。常见搭配：remain static。",
           "questionKey": "391-400:2"
         },
         {
           "number": 3,
-          "prompt": "Gender __________ in hiring practices violates federal employment law.",
+          "prompt": "Participants must give informed __________ before researchers are allowed to collect or analyze their personal medical data.",
+          "answer": "consent",
+          "explanation": "consent。语法上，动词 give 后接名词作宾语。语义上，研究者收集或分析个人医疗数据前，参与者必须给予知情同意。常见搭配：give informed consent。",
           "questionKey": "391-400:3"
         },
         {
           "number": 4,
-          "prompt": "The instructions were __________ and easy to follow, requiring no additional clarification.",
+          "prompt": "The plant roots spread through the artificial __________ that scientists had designed to test water retention.",
+          "answer": "substrate",
+          "explanation": "substrate。语法上，形容词 artificial 修饰名词。语义上，植物根系在科学家设计的人工基质中扩展。常见搭配：artificial substrate。",
           "questionKey": "391-400:4"
         },
         {
           "number": 5,
-          "prompt": "Researchers __________ participants into treatment and control groups to eliminate selection bias.",
+          "prompt": "The instructions were surprisingly __________, so even students with little technical experience completed the task successfully.",
+          "answer": "straightforward",
+          "explanation": "straightforward。语法上，系动词 were 后接形容词。语义上，说明非常直接清楚，所以技术经验少的学生也能完成。常见搭配：straightforward instructions。",
           "questionKey": "391-400:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ of heavy metals in soil poses long-term environmental and health risks.",
+          "prompt": "Laws against racial __________ are meant to protect people from unfair treatment in housing, education, and employment.",
+          "answer": "discrimination",
+          "explanation": "discrimination。语法上，介词 against 后接名词。语义上，反对种族歧视的法律保护人们免受住房、教育和就业中的不公平待遇。常见搭配：racial discrimination。",
           "questionKey": "391-400:6"
         },
         {
           "number": 7,
-          "prompt": "Each variable must be analyzed __________ before examining potential interactions.",
+          "prompt": "The two issues should be discussed __________ because combining them would make the policy debate unnecessarily confusing.",
+          "answer": "separately",
+          "explanation": "separately。语法上，空格修饰被动结构 should be discussed，需要副词。语义上，两个问题应分开讨论，否则政策辩论会混乱。常见搭配：discuss separately。",
           "questionKey": "391-400:7"
         },
         {
           "number": 8,
-          "prompt": "The disease damages __________ neurons, resulting in progressive loss of vision and hearing.",
+          "prompt": "Researchers decided to __________ the order of the questions so that earlier items would not influence later answers.",
+          "answer": "randomize",
+          "explanation": "randomize。语法上，decided to 后接动词原形。语义上，研究者将题目顺序随机化，避免前面题目影响后面回答。常见搭配：randomize the order。",
           "questionKey": "391-400:8"
         },
         {
           "number": 9,
-          "prompt": "Authorities decided to __________ the outbreak to a limited geographic area through strict quarantine measures.",
+          "prompt": "Babies gradually develop __________ awareness as they learn to respond to sounds, colors, textures, and movement.",
+          "answer": "sensory",
+          "explanation": "sensory。语法上，空格修饰名词 awareness，需要形容词。语义上，婴儿逐渐形成对声音、颜色、质地和运动的感官意识。常见搭配：sensory awareness。",
           "questionKey": "391-400:9"
         },
         {
           "number": 10,
-          "prompt": "The economic model assumes __________ conditions, though real markets are inherently dynamic.",
+          "prompt": "The government tried to __________ the disease to one region by restricting travel and increasing local testing.",
+          "answer": "confine",
+          "explanation": "confine。语法上，tried to 后接动词原形。语义上，政府试图通过限制旅行和增加检测，将疾病控制在一个区域内。常见搭配：confine something to an area / region。",
           "questionKey": "391-400:10"
         }
       ]
     }
-  ]
+  ],
+  "description": "Academic vocabulary practice for NAWL-D (301-400)."
 };
