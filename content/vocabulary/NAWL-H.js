@@ -10,7 +10,7 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NAWL",
-  "cefrLevel": "C1",
+  "cefrLevel": "C1+",
   "wordCount": 100,
   "words": [
     {
@@ -921,66 +921,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 701,
       "rangeEnd": 710,
       "wordList": [
-        "wisdom",
-        "bacteria",
-        "genetically",
-        "reactive",
-        "deliberately",
-        "potassium",
-        "realism",
         "parenthesis",
         "noble",
-        "crude"
+        "potassium",
+        "reactive",
+        "genetically",
+        "bacteria",
+        "wisdom",
+        "crude",
+        "realism",
+        "deliberately"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "After decades of experience in diplomacy, the ambassador's __________ proved invaluable during the tense international negotiations last month.",
+          "prompt": "In academic writing, additional clarification is often placed in a __________ when the information is useful but not central to the argument.",
+          "answer": "parenthesis",
+          "explanation": "parenthesis。语法上，前面有 a，后面需要可数名词单数。语义上，额外解释通常放在“圆括号/插入语”中。常见搭配：in parenthesis / in parentheses。",
           "questionKey": "701-710:1"
         },
         {
           "number": 2,
-          "prompt": "The laboratory analysis revealed that harmful __________ had contaminated the water supply, posing serious health risks to residents.",
+          "prompt": "The scientist argued that the tribe’s oral traditions preserved a form of practical __________ that modern policy makers had largely ignored.",
+          "answer": "wisdom",
+          "explanation": "wisdom。语法上，a form of 后接名词，表示某种形式的东西。语义上，口头传统保存的是“实践智慧”。常见搭配：practical wisdom。",
           "questionKey": "701-710:2"
         },
         {
           "number": 3,
-          "prompt": "The agricultural corporation has __________ modified the crop to enhance its resistance to drought and pest infestations.",
+          "prompt": "Because the metal is highly __________, it must be stored carefully to prevent it from reacting violently with moisture or air.",
+          "answer": "reactive",
+          "explanation": "reactive。语法上，is highly 后接形容词。语义上，金属容易与水分或空气剧烈反应，因此是“反应性强的”。常见搭配：highly reactive。",
           "questionKey": "701-710:3"
         },
         {
           "number": 4,
-          "prompt": "Certain highly __________ metals must be stored under oil to prevent spontaneous combustion when exposed to atmospheric oxygen.",
+          "prompt": "The painter rejected romantic idealization and instead embraced __________, showing poverty, labour, and ordinary domestic life without decoration.",
+          "answer": "realism",
+          "explanation": "realism。语法上，embraced 后接名词作宾语。语义上，画家拒绝浪漫化，转而采用表现现实生活的“现实主义”。",
           "questionKey": "701-710:4"
         },
         {
           "number": 5,
-          "prompt": "The defendant __________ concealed evidence from investigators, demonstrating a calculated attempt to obstruct the course of justice in the case.",
+          "prompt": "The charity described the doctor’s decision to remain in the war zone as a __________ act of professional courage and human responsibility.",
+          "answer": "noble",
+          "explanation": "noble。语法上，a noble act 中需要形容词修饰名词 act。语义上，医生留在战区是崇高而勇敢的行为。常见搭配：a noble act / noble cause。",
           "questionKey": "701-710:5"
         },
         {
           "number": 6,
-          "prompt": "Bananas are an excellent dietary source of __________, which is essential for maintaining proper cardiovascular function and regulating blood pressure.",
+          "prompt": "The laboratory confirmed that the infection was caused by antibiotic-resistant __________, making the treatment more complicated than expected.",
+          "answer": "bacteria",
+          "explanation": "bacteria。语法上，caused by 后接名词，且 were 暗示复数。语义上，感染由抗药性细菌引起。常见搭配：antibiotic-resistant bacteria。",
           "questionKey": "701-710:6"
         },
         {
           "number": 7,
-          "prompt": "The author's use of __________ in the narrative added a layer of gritty authenticity to the depiction of urban poverty.",
+          "prompt": "The oil company reported that global demand for __________ had fallen slightly after several countries tightened environmental regulations.",
+          "answer": "crude",
+          "explanation": "crude。语法上，demand for 后接名词或名词性表达，这里 crude 指“原油”。语义上，石油公司讨论的是全球原油需求。常见搭配：crude oil。",
           "questionKey": "701-710:7"
         },
         {
           "number": 8,
-          "prompt": "The scientist enclosed the supplementary data within a __________ to avoid disrupting the flow of the main argument.",
+          "prompt": "The crop had been __________ modified to resist drought, but local farmers were still worried about long-term ecological consequences.",
+          "answer": "genetically",
+          "explanation": "genetically。语法上，副词修饰过去分词 modified。语义上，作物是通过基因方式改造以抗旱。常见搭配：genetically modified。",
           "questionKey": "701-710:8"
         },
         {
           "number": 9,
-          "prompt": "Throughout history, the __________ class has often wielded disproportionate influence over political and economic institutions in European societies.",
+          "prompt": "The nutritionist warned that a serious lack of __________ could affect muscle function, heart rhythm, and fluid balance in the body.",
+          "answer": "potassium",
+          "explanation": "potassium。语法上，a serious lack of 后接名词。语义上，钾缺乏会影响肌肉、心律和体液平衡。",
           "questionKey": "701-710:9"
         },
         {
           "number": 10,
-          "prompt": "The extraction of __________ oil from underground reserves requires sophisticated drilling technology and substantial capital investment in infrastructure.",
+          "prompt": "The manager was not careless; he had __________ left the document unsigned so that the legal team would review it one final time.",
+          "answer": "deliberately",
+          "explanation": "deliberately。语法上，副词修饰动词短语 left the document unsigned。语义上，经理不是粗心，而是“故意”不签署以便法律团队复核。",
           "questionKey": "701-710:10"
         }
       ]
@@ -991,66 +1011,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 711,
       "rangeEnd": 720,
       "wordList": [
-        "portfolio",
-        "lifestyle",
         "chemotherapy",
-        "alien",
-        "invert",
-        "directive",
         "surplus",
-        "globalization",
         "capillary",
-        "monopoly"
+        "directive",
+        "globalization",
+        "alien",
+        "portfolio",
+        "monopoly",
+        "lifestyle",
+        "invert"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The company's __________ includes diverse investments in technology startups, real estate properties, and international commodity futures markets worldwide.",
+          "prompt": "After the company sold several small businesses, its investment __________ became less diverse but much easier to manage.",
+          "answer": "portfolio",
+          "explanation": "portfolio。语法上，所有格 its investment 后需要名词。语义上，公司出售业务后，投资组合变得不那么多元。常见搭配：investment portfolio。",
           "questionKey": "711-720:1"
         },
         {
           "number": 2,
-          "prompt": "Adopting a sedentary __________ with minimal physical activity significantly increases the risk of developing cardiovascular disease and metabolic disorders over time.",
+          "prompt": "The government issued a new __________ requiring hospitals to report critical drug shortages within twenty-four hours.",
+          "answer": "directive",
+          "explanation": "directive。语法上，a new 后接可数名词单数。语义上，政府发布的是要求医院上报短缺的“指令”。",
           "questionKey": "711-720:2"
         },
         {
           "number": 3,
-          "prompt": "The oncologist recommended an aggressive __________ regimen to combat the rapidly spreading cancer cells throughout the patient's lymphatic system.",
+          "prompt": "Because one firm controlled nearly the entire market, regulators accused it of maintaining an illegal __________ over digital payments.",
+          "answer": "monopoly",
+          "explanation": "monopoly。语法上，an illegal 后接名词。语义上，一家公司控制几乎整个市场，因此被指控形成垄断。常见搭配：maintain a monopoly over。",
           "questionKey": "711-720:3"
         },
         {
           "number": 4,
-          "prompt": "The concept of personal privacy seems utterly __________ to younger generations who have grown up sharing their lives on social media.",
+          "prompt": "The patient suffered severe fatigue during __________, although the treatment significantly reduced the size of the tumour.",
+          "answer": "chemotherapy",
+          "explanation": "chemotherapy。语法上，during 后接名词。语义上，患者在化疗期间疲劳，但肿瘤缩小。",
           "questionKey": "711-720:4"
         },
         {
           "number": 5,
-          "prompt": "To solve the complex mathematical equation, students must first __________ the matrix and then multiply it by its transpose.",
+          "prompt": "When pressure rises in tiny blood vessels, fluid may leak through the __________ walls and cause swelling in nearby tissue.",
+          "answer": "capillary",
+          "explanation": "capillary。语法上，capillary walls 中需要形容词修饰 walls。语义上，液体从毛细血管壁渗出导致肿胀。",
           "questionKey": "711-720:5"
         },
         {
           "number": 6,
-          "prompt": "The government issued a new __________ mandating that all public institutions must implement stricter environmental protection measures by next quarter.",
+          "prompt": "The country produced a wheat __________ that year, forcing officials to decide whether to export the extra grain or store it.",
+          "answer": "surplus",
+          "explanation": "surplus。语法上，a wheat 后接名词。语义上，小麦产量超过需求，所以出现盈余。常见搭配：produce a surplus。",
           "questionKey": "711-720:6"
         },
         {
           "number": 7,
-          "prompt": "The agricultural __________ from this year's harvest will be distributed to food banks and exported to countries experiencing severe shortages.",
+          "prompt": "The professor asked students to __________ the diagram so they could understand how the image changed when viewed upside down.",
+          "answer": "invert",
+          "explanation": "invert。语法上，asked students to 后接动词原形。语义上，学生被要求把图像倒置来看变化。",
           "questionKey": "711-720:7"
         },
         {
           "number": 8,
-          "prompt": "Economic __________ has facilitated unprecedented cross-border trade but has also exacerbated income inequality in many developing nations around the world.",
+          "prompt": "The documentary examined how __________ has transformed supply chains, labour markets, and cultural habits across several continents.",
+          "answer": "globalization",
+          "explanation": "globalization。语法上，how 引导的宾语从句中需要名词作主语。语义上，全球化改变供应链、劳动力市场和文化习惯。",
           "questionKey": "711-720:8"
         },
         {
           "number": 9,
-          "prompt": "Oxygen and nutrients are transported to tissues through an intricate network of __________ vessels that permeate virtually every organ in the body.",
+          "prompt": "To many older villagers, the new factory felt almost __________, not because it came from another planet but because it disrupted familiar routines.",
+          "answer": "alien",
+          "explanation": "alien。语法上，felt almost 后接形容词。语义上，新工厂对村民来说非常陌生，像外来的东西。",
           "questionKey": "711-720:9"
         },
         {
           "number": 10,
-          "prompt": "The telecommunications company was accused of maintaining an illegal __________ that stifled competition and artificially inflated prices for consumers nationwide.",
+          "prompt": "The doctor said medication would help, but lasting improvement depended on a healthier __________ involving sleep, diet, and regular exercise.",
+          "answer": "lifestyle",
+          "explanation": "lifestyle。语法上，a healthier 后接名词。语义上，医生强调睡眠、饮食和运动构成健康生活方式。常见搭配：a healthy lifestyle。",
           "questionKey": "711-720:10"
         }
       ]
@@ -1061,66 +1101,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 721,
       "rangeEnd": 730,
       "wordList": [
+        "thread",
+        "clay",
         "dye",
         "transcribe",
         "dilute",
-        "economically",
-        "secrete",
-        "critically",
+        "tribe",
         "damp",
-        "clay",
-        "thread",
-        "tribe"
+        "economically",
+        "critically",
+        "secrete"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The textile manufacturer uses natural __________ derived from plants to color fabrics, avoiding synthetic chemicals that harm the environment.",
+          "prompt": "The journalist tried to follow the main __________ of the argument, but the speaker kept moving between law, history, and personal experience.",
+          "answer": "thread",
+          "explanation": "thread。语法上，the main 后接名词。语义上，记者试图跟上论证的主线，但说话者不断转换话题。常见搭配：the main thread of an argument。",
           "questionKey": "721-730:1"
         },
         {
           "number": 2,
-          "prompt": "The journalist needed to __________ hours of recorded interviews before she could begin writing her investigative article for publication.",
+          "prompt": "The archaeologists found cooking pots made of __________, suggesting that the settlement had developed basic craft production.",
+          "answer": "clay",
+          "explanation": "clay。语法上，made of 后接材料名词。语义上，考古学家发现的是黏土制成的炊具。",
           "questionKey": "721-730:2"
         },
         {
           "number": 3,
-          "prompt": "The laboratory technician was instructed to __________ the concentrated acid solution with distilled water to achieve the required molarity.",
+          "prompt": "The fabric factory used a natural __________ made from plants, which gave the cloth a softer colour than synthetic chemicals.",
+          "answer": "dye",
+          "explanation": "dye。语法上，a natural 后接名词。语义上，工厂使用植物制成的天然染料给布料上色。",
           "questionKey": "721-730:3"
         },
         {
           "number": 4,
-          "prompt": "Many developing nations struggle to grow __________ while simultaneously addressing urgent social welfare needs and infrastructure development requirements throughout their territories.",
+          "prompt": "The assistant was asked to __________ the interview word for word so that researchers could analyse the speaker’s exact phrasing.",
+          "answer": "transcribe",
+          "explanation": "transcribe。语法上，was asked to 后接动词原形。语义上，助理要逐字转录采访内容。常见搭配：transcribe an interview。",
           "questionKey": "721-730:4"
         },
         {
           "number": 5,
-          "prompt": "The pancreatic cells __________ insulin into the bloodstream in response to elevated glucose levels after consuming a carbohydrate-rich meal.",
+          "prompt": "The chemical solution was too strong, so the technician had to __________ it before applying it to the delicate sample.",
+          "answer": "dilute",
+          "explanation": "dilute。语法上，had to 后接动词原形。语义上，溶液太浓，技术员必须稀释。",
           "questionKey": "721-730:5"
         },
         {
           "number": 6,
-          "prompt": "The patient's condition deteriorated so __________ that the medical team decided to transfer him to the intensive care unit immediately.",
+          "prompt": "The hikers slept in a __________ tent after the storm, and by morning most of their clothes smelled of wet canvas.",
+          "answer": "damp",
+          "explanation": "damp。语法上，a damp tent 中需要形容词修饰名词。语义上，暴风雨后帐篷潮湿，衣服有湿帆布味。",
           "questionKey": "721-730:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ conditions in the basement created an ideal environment for mold growth, necessitating immediate remediation to prevent health hazards.",
+          "prompt": "The indigenous __________ negotiated with the state to protect ancestral land from mining and commercial logging.",
+          "answer": "tribe",
+          "explanation": "tribe。语法上，the indigenous 后接名词。语义上，与政府谈判保护祖传土地的是原住民部落。",
           "questionKey": "721-730:7"
         },
         {
           "number": 8,
-          "prompt": "The archaeologist discovered ancient pottery fragments made from fired __________ that dated back to the Neolithic period in Mesopotamia.",
+          "prompt": "The project was technically impressive but not __________ viable, since production costs were far higher than expected revenue.",
+          "answer": "economically",
+          "explanation": "economically。语法上，副词修饰形容词 viable。语义上，项目技术上可行，但经济上不可行。常见搭配：economically viable。",
           "questionKey": "721-730:8"
         },
         {
           "number": 9,
-          "prompt": "The detective followed the __________ of evidence through multiple crime scenes, gradually piecing together the suspect's movements that fateful night.",
+          "prompt": "The reviewer responded __________ to the proposal, questioning not only its evidence but also its basic assumptions.",
+          "answer": "critically",
+          "explanation": "critically。语法上，副词修饰动词 responded。语义上，评论者对提案进行了批判性回应。常见搭配：respond critically to。",
           "questionKey": "721-730:9"
         },
         {
           "number": 10,
-          "prompt": "The indigenous __________ has maintained its traditional customs and language despite centuries of pressure to assimilate into mainstream society.",
+          "prompt": "Some glands __________ hormones directly into the bloodstream, allowing the body to regulate growth, stress, and metabolism.",
+          "answer": "secrete",
+          "explanation": "secrete。语法上，主语 glands 后接谓语动词原形。语义上，腺体会把激素分泌到血液中。常见搭配：secrete hormones。",
           "questionKey": "721-730:10"
         }
       ]
@@ -1131,66 +1191,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 731,
       "rangeEnd": 740,
       "wordList": [
-        "onwards",
-        "prejudice",
         "hip",
-        "interrupt",
-        "anti",
-        "domination",
-        "soluble",
         "plantation",
+        "prejudice",
+        "onwards",
+        "anti",
         "helix",
-        "undergraduate"
+        "interrupt",
+        "domination",
+        "undergraduate",
+        "soluble"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "From the Renaissance __________, European powers embarked on aggressive colonial expansion that reshaped global political and economic landscapes for centuries.",
+          "prompt": "The athlete injured his __________ during the final race and could barely walk without assistance afterward.",
+          "answer": "hip",
+          "explanation": "hip。语法上，所有格 his 后接身体部位名词。语义上，运动员髋部受伤，之后几乎无法行走。",
           "questionKey": "731-740:1"
         },
         {
           "number": 2,
-          "prompt": "Unconscious __________ in hiring practices continues to disadvantage qualified candidates from minority backgrounds despite decades of anti-discrimination legislation and corporate initiatives.",
+          "prompt": "The old sugar __________ depended heavily on forced labour, leaving a social legacy that lasted long after slavery ended.",
+          "answer": "plantation",
+          "explanation": "plantation。语法上，the old sugar 后接名词。语义上，糖料种植园依赖强迫劳动。常见搭配：sugar plantation。",
           "questionKey": "731-740:2"
         },
         {
           "number": 3,
-          "prompt": "The elderly woman fractured her __________ in a fall and required surgical intervention to insert a prosthetic joint replacement.",
+          "prompt": "The company’s market __________ allowed it to set prices without serious pressure from smaller competitors.",
+          "answer": "domination",
+          "explanation": "domination。语法上，所有格 The company’s market 后接名词。语义上，公司在市场上的支配地位使其能设定价格。常见搭配：market domination。",
           "questionKey": "731-740:3"
         },
         {
           "number": 4,
-          "prompt": "Please do not __________ the speaker during her presentation unless you have an urgent question that cannot wait until the end.",
+          "prompt": "The university introduced an __________ programme for students who wanted research experience before entering postgraduate study.",
+          "answer": "undergraduate",
+          "explanation": "undergraduate。语法上，an undergraduate programme 中需要形容词修饰 programme。语义上，该项目面向进入研究生阶段前的学生。",
           "questionKey": "731-740:4"
         },
         {
           "number": 5,
-          "prompt": "The __________ movement gained momentum in the 1960s as activists protested against the escalating military involvement in Southeast Asia.",
+          "prompt": "The medicine is water-__________, so patients can dissolve it in a glass instead of swallowing a large tablet.",
+          "answer": "soluble",
+          "explanation": "soluble。语法上，is water- 后接形容词构成复合表达。语义上，药物可溶于水。常见搭配：water-soluble。",
           "questionKey": "731-740:5"
         },
         {
           "number": 6,
-          "prompt": "The historian's thesis examined the mechanisms of colonial __________ and their lasting impact on post-independence political institutions in Africa.",
+          "prompt": "The campaign was clearly __________ corruption, but critics said it offered slogans rather than serious institutional reform.",
+          "answer": "anti",
+          "explanation": "anti。语法上，anti corruption 构成前缀式修饰。语义上，运动反对腐败，但缺乏制度改革方案。常见搭配：anti-corruption campaign。",
           "questionKey": "731-740:6"
         },
         {
           "number": 7,
-          "prompt": "Sodium chloride is highly __________ in water, which explains why salt dissolves so readily when added to aqueous solutions.",
+          "prompt": "The discovery of the double __________ structure helped explain how genetic information could be copied and transmitted.",
+          "answer": "helix",
+          "explanation": "helix。语法上，the double 后接名词。语义上，双螺旋结构解释遗传信息如何复制和传递。常见搭配：double helix。",
           "questionKey": "731-740:7"
         },
         {
           "number": 8,
-          "prompt": "The historic __________ in Louisiana has been converted into a museum documenting the harsh realities of slavery in antebellum America.",
+          "prompt": "The judge warned the jury not to let personal __________ influence their interpretation of the evidence.",
+          "answer": "prejudice",
+          "explanation": "prejudice。语法上，personal 后接名词。语义上，法官要求陪审团不要让个人偏见影响证据判断。",
           "questionKey": "731-740:8"
         },
         {
           "number": 9,
-          "prompt": "The double __________ structure of DNA was first elucidated by Watson and Crick in their groundbreaking 1953 publication in Nature.",
+          "prompt": "From the second year __________, students are expected to design their own research projects with less direct supervision.",
+          "answer": "onwards",
+          "explanation": "onwards。语法上，From the second year onwards 是固定表达，表示“从第二年起/以后”。语义上，从第二年开始，学生需要更独立地设计研究项目。常见搭配：from then onwards / from 2020 onwards。",
           "questionKey": "731-740:9"
         },
         {
           "number": 10,
-          "prompt": "The __________ enrollment at the university has increased dramatically over the past decade, straining campus resources and classroom capacity significantly.",
+          "prompt": "Please do not __________ the witness while she is answering, because even small disruptions can affect the accuracy of her testimony.",
+          "answer": "interrupt",
+          "explanation": "interrupt。语法上，do not 后接动词原形。语义上，证人作答时不应被打断，因为干扰会影响证词准确性。",
           "questionKey": "731-740:10"
         }
       ]
@@ -1202,65 +1282,85 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeEnd": 750,
       "wordList": [
         "innate",
-        "emit",
-        "goat",
         "dioxide",
-        "container",
-        "layout",
-        "degrade",
+        "goat",
+        "emit",
         "confound",
+        "competent",
+        "degrade",
+        "layout",
         "fabric",
-        "competent"
+        "container"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Linguists debate whether the human capacity for language acquisition is an __________ ability or a learned skill developed through environmental exposure.",
+          "prompt": "The researcher argued that language ability is partly __________, although social interaction remains essential for development.",
+          "answer": "innate",
+          "explanation": "innate。语法上，is partly 后接形容词。语义上，研究者认为语言能力部分是天生的。",
           "questionKey": "741-750:1"
         },
         {
           "number": 2,
-          "prompt": "Industrial facilities that __________ excessive carbon pollutants into the atmosphere face increasingly stringent regulations and substantial financial penalties from environmental authorities.",
+          "prompt": "The machine began to __________ a high-pitched sound whenever the internal temperature rose above the safety limit.",
+          "answer": "emit",
+          "explanation": "emit。语法上，began to 后接动词原形。语义上，机器温度过高时会发出尖锐声音。常见搭配：emit a sound / signal。",
           "questionKey": "741-750:2"
         },
         {
           "number": 3,
-          "prompt": "The mountainous terrain is ideal for raising __________ herds, as these hardy animals can thrive on sparse vegetation in rugged landscapes.",
+          "prompt": "The mountain villagers kept a __________ for milk, meat, and occasional trade with neighbouring communities.",
+          "answer": "goat",
+          "explanation": "goat。语法上，kept a 后接可数名词单数。语义上，山村居民养山羊获取奶、肉和交易物。",
           "questionKey": "741-750:3"
         },
         {
           "number": 4,
-          "prompt": "Carbon __________ levels in the atmosphere have risen dramatically since the Industrial Revolution, contributing significantly to global climate change and ocean acidification.",
+          "prompt": "The poor lighting and confusing __________ of the museum made it difficult for visitors to move through the exhibition logically.",
+          "answer": "layout",
+          "explanation": "layout。语法上，the confusing 后接名词。语义上，博物馆布局混乱，游客难以按逻辑参观。",
           "questionKey": "741-750:4"
         },
         {
           "number": 5,
-          "prompt": "The shipping __________ was loaded onto the cargo vessel and secured with heavy chains to prevent shifting during the voyage.",
+          "prompt": "The engineer was clearly __________, but she lacked the political skill needed to persuade senior executives.",
+          "answer": "competent",
+          "explanation": "competent。语法上，was clearly 后接形容词。语义上，工程师能力足够，但缺乏政治说服力。",
           "questionKey": "741-750:5"
         },
         {
           "number": 6,
-          "prompt": "The architect spent weeks refining the __________ of the building to optimize natural lighting, traffic flow, and spatial efficiency throughout.",
+          "prompt": "Plastic waste can slowly __________ into smaller particles, creating environmental risks that are difficult to monitor.",
+          "answer": "degrade",
+          "explanation": "degrade。语法上，情态动词 can 后接动词原形。语义上，塑料垃圾会逐渐降解为更小颗粒。",
           "questionKey": "741-750:6"
         },
         {
           "number": 7,
-          "prompt": "Exposure to ultraviolet radiation and harsh chemicals will gradually __________ the polymer, causing it to lose structural integrity and mechanical properties.",
+          "prompt": "The rare disease can __________ doctors because its early symptoms look almost identical to several common infections.",
+          "answer": "confound",
+          "explanation": "confound。语法上，情态动词 can 后接动词原形。语义上，罕见病早期症状像常见感染，因此会使医生困惑。",
           "questionKey": "741-750:7"
         },
         {
           "number": 8,
-          "prompt": "The experimental results continue to __________ researchers, as they contradict established theoretical predictions and cannot be easily explained by existing models.",
+          "prompt": "The dress was made from a light silk __________ that moved elegantly but tore easily under pressure.",
+          "answer": "fabric",
+          "explanation": "fabric。语法上，a light silk 后接名词。语义上，裙子由轻薄丝质织物制成。常见搭配：silk fabric。",
           "questionKey": "741-750:8"
         },
         {
           "number": 9,
-          "prompt": "The designer selected a luxurious silk __________ for the evening gown, ensuring it would drape elegantly and catch the light beautifully.",
+          "prompt": "The chemicals were stored in a sealed __________ to prevent evaporation, contamination, or accidental exposure.",
+          "answer": "container",
+          "explanation": "container。语法上，a sealed 后接名词。语义上，化学品被储存在密封容器中以防风险。",
           "questionKey": "741-750:9"
         },
         {
           "number": 10,
-          "prompt": "Only a __________ surgeon with extensive experience should attempt such a delicate procedure, given the high risk of complications and potential consequences.",
+          "prompt": "Sulfur __________ released by factories can contribute to air pollution and acid rain when not properly controlled.",
+          "answer": "dioxide",
+          "explanation": "dioxide。语法上，Sulfur dioxide 构成化学名词。语义上，工厂释放的二氧化硫会造成空气污染和酸雨。常见搭配：sulfur dioxide。",
           "questionKey": "741-750:10"
         }
       ]
@@ -1271,66 +1371,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 751,
       "rangeEnd": 760,
       "wordList": [
-        "affirm",
-        "jazz",
         "fungus",
-        "bodily",
-        "urine",
-        "vague",
         "reservoir",
-        "afterward",
         "footnote",
-        "niche"
+        "bodily",
+        "niche",
+        "vague",
+        "affirm",
+        "urine",
+        "afterward",
+        "jazz"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The witness was asked to __________ under oath that the testimony provided was truthful and accurate to the best of her knowledge.",
+          "prompt": "The damp basement encouraged the growth of a dangerous __________, forcing the landlord to remove the damaged walls immediately.",
+          "answer": "fungus",
+          "explanation": "fungus。语法上，a dangerous 后接可数名词单数。语义上，潮湿地下室促使危险真菌生长。",
           "questionKey": "751-760:1"
         },
         {
           "number": 2,
-          "prompt": "The musicians improvised brilliantly during the __________ performance, creating spontaneous melodies that captivated the audience at the renowned nightclub downtown.",
+          "prompt": "The mountain __________ supplied drinking water to three cities, but prolonged drought reduced its level to a record low.",
+          "answer": "reservoir",
+          "explanation": "reservoir。语法上，The mountain 后接名词。语义上，山地水库为三个城市供水。",
           "questionKey": "751-760:2"
         },
         {
           "number": 3,
-          "prompt": "The pathogenic __________ infection spread rapidly through the immunocompromised patient's respiratory system, requiring immediate antifungal treatment to prevent systemic complications.",
+          "prompt": "The author added a __________ to explain that the statistic came from an unpublished government report.",
+          "answer": "footnote",
+          "explanation": "footnote。语法上，a 后接可数名词单数。语义上，作者添加脚注说明数据来源。",
           "questionKey": "751-760:3"
         },
         {
           "number": 4,
-          "prompt": "The impact caused severe __________ trauma, including multiple fractures, internal bleeding, and damage to vital organs that required emergency surgical intervention.",
+          "prompt": "The start-up found a profitable __________ by serving small clinics that larger software companies had ignored.",
+          "answer": "niche",
+          "explanation": "niche。语法上，a profitable 后接名词。语义上，初创公司找到大公司忽视的细分市场。常见搭配：find a niche。",
           "questionKey": "751-760:4"
         },
         {
           "number": 5,
-          "prompt": "Medical examiners analyze __________ samples to detect the presence of drugs, toxins, or metabolic abnormalities that might indicate underlying health conditions.",
+          "prompt": "The witness gave only a __________ description of the attacker, making it difficult for police to identify a suspect.",
+          "answer": "vague",
+          "explanation": "vague。语法上，a vague description 中需要形容词修饰名词。语义上，描述模糊，警方难以识别嫌疑人。",
           "questionKey": "751-760:5"
         },
         {
           "number": 6,
-          "prompt": "The defendant's __________ recollection of events that night made it difficult for the jury to determine what actually transpired during the incident.",
+          "prompt": "The court asked the official to __________ that the documents were authentic and had not been altered.",
+          "answer": "affirm",
+          "explanation": "affirm。语法上，asked the official to 后接动词原形。语义上，法院要求官员确认文件真实且未被篡改。",
           "questionKey": "751-760:6"
         },
         {
           "number": 7,
-          "prompt": "The massive __________ supplies water to millions of residents in the metropolitan area and also generates hydroelectric power for the region.",
+          "prompt": "Doctors tested the patient’s __________ to check kidney function, infection markers, and possible drug use.",
+          "answer": "urine",
+          "explanation": "urine。语法上，所有格 patient’s 后接名词。语义上，医生检测尿液以判断肾功能、感染指标和药物使用。",
           "questionKey": "751-760:7"
         },
         {
           "number": 8,
-          "prompt": "The conference concluded with a reception, and __________ the delegates continued their discussions informally over dinner at a nearby restaurant.",
+          "prompt": "The athlete suffered __________ injuries in the crash, though none of them appeared life-threatening at the time.",
+          "answer": "bodily",
+          "explanation": "bodily。语法上，bodily injuries 中需要形容词修饰名词。语义上，运动员遭受身体伤害，但暂无生命危险。常见搭配：bodily injury / bodily harm。",
           "questionKey": "751-760:8"
         },
         {
           "number": 9,
-          "prompt": "The author included a detailed __________ explaining the historical context of the obscure reference that appeared in the third chapter.",
+          "prompt": "The small club became famous for live __________, attracting musicians who improvised late into the night.",
+          "answer": "jazz",
+          "explanation": "jazz。语法上，live 后接音乐类型名词，jazz 表示“爵士乐”。语义上，乐手即兴演奏到深夜，符合爵士乐场景。常见搭配：live jazz / jazz musician / jazz club。",
           "questionKey": "751-760:9"
         },
         {
           "number": 10,
-          "prompt": "The entrepreneur identified a profitable __________ in the market for eco-friendly products that larger corporations had overlooked or deemed unprofitable.",
+          "prompt": "The experiment failed on the first attempt; __________, the team redesigned the procedure and obtained more reliable results.",
+          "answer": "afterward",
+          "explanation": "afterward。语法上，句首副词连接前后事件。语义上，实验第一次失败，后来团队重新设计流程并得到可靠结果。",
           "questionKey": "751-760:10"
         }
       ]
@@ -1341,66 +1461,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 761,
       "rangeEnd": 770,
       "wordList": [
-        "toxic",
+        "antiquity",
         "unemployed",
-        "republic",
-        "processor",
-        "bleed",
+        "toxic",
         "yeast",
         "punish",
         "forum",
+        "bleed",
         "overhead",
-        "antiquity"
+        "republic",
+        "processor"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The industrial accident released __________ chemicals into the river, contaminating the water supply and forcing the evacuation of downstream communities.",
+          "prompt": "The historian specialised in Mediterranean __________, focusing on trade, religion, and political institutions before the medieval period.",
+          "answer": "antiquity",
+          "explanation": "antiquity。语法上，介词 in 后接名词。语义上，历史学家研究的是中世纪以前的古代地中海。",
           "questionKey": "761-770:1"
         },
         {
           "number": 2,
-          "prompt": "The economic recession left millions of workers __________ and struggling to support their families as businesses downsized or closed permanently.",
+          "prompt": "After the factory closed, hundreds of workers became __________ and had to rely on temporary government support.",
+          "answer": "unemployed",
+          "explanation": "unemployed。语法上，became 后接形容词。语义上，工厂关闭后，工人失业并依赖临时支持。",
           "questionKey": "761-770:2"
         },
         {
           "number": 3,
-          "prompt": "After decades of authoritarian rule, the nation transitioned to a democratic __________ with elected representatives and constitutional protections for civil liberties.",
+          "prompt": "The chemical spill released a __________ gas, so emergency teams evacuated nearby residents within minutes.",
+          "answer": "toxic",
+          "explanation": "toxic。语法上，a toxic gas 中需要形容词修饰名词。语义上，化学泄漏释放有毒气体。",
           "questionKey": "761-770:3"
         },
         {
           "number": 4,
-          "prompt": "The computer's central __________ executes billions of calculations per second, enabling complex simulations and data analysis that were impossible just decades ago.",
+          "prompt": "Bakers add __________ to dough because it produces carbon dioxide and helps bread rise during fermentation.",
+          "answer": "yeast",
+          "explanation": "yeast。语法上，add 后接名词作宾语。语义上，面包师加入酵母，使面团发酵膨胀。",
           "questionKey": "761-770:4"
         },
         {
           "number": 5,
-          "prompt": "The accident victim continued to __________ profusely from the deep laceration despite the paramedics' efforts to apply pressure and control the hemorrhaging.",
+          "prompt": "The school should not __________ students simply for making mistakes, but it must respond firmly to cheating or violence.",
+          "answer": "punish",
+          "explanation": "punish。语法上，情态动词 should not 后接动词原形。语义上，学校不应仅因错误惩罚学生。",
           "questionKey": "761-770:5"
         },
         {
           "number": 6,
-          "prompt": "Bakers rely on __________ to leaven dough, as the microorganisms produce carbon dioxide gas that creates the characteristic texture of bread.",
+          "prompt": "The international __________ allowed scientists, ministers, and activists to debate climate policy in front of a global audience.",
+          "answer": "forum",
+          "explanation": "forum。语法上，The international 后接名词。语义上，科学家、部长和活动人士在国际论坛上辩论气候政策。",
           "questionKey": "761-770:6"
         },
         {
           "number": 7,
-          "prompt": "The judicial system must __________ offenders appropriately while also providing opportunities for rehabilitation and reintegration into society after incarceration.",
+          "prompt": "The wound continued to __________ despite the bandage, so the nurse applied pressure and called for medical assistance.",
+          "answer": "bleed",
+          "explanation": "bleed。语法上，continued to 后接动词原形。语义上，伤口继续流血，所以护士加压处理。",
           "questionKey": "761-770:7"
         },
         {
           "number": 8,
-          "prompt": "The online __________ has become a vibrant space for scholars worldwide to exchange ideas, debate theories, and collaborate on research projects.",
+          "prompt": "The aircraft flew __________ for several minutes before disappearing behind a thick layer of cloud.",
+          "answer": "overhead",
+          "explanation": "overhead。语法上，副词修饰动词 flew。语义上，飞机在头顶上飞过。",
           "questionKey": "761-770:8"
         },
         {
           "number": 9,
-          "prompt": "The company's __________ costs, including rent, utilities, and administrative salaries, have increased substantially, eroding profit margins and threatening long-term financial viability.",
+          "prompt": "The ancient city eventually became a __________, replacing hereditary rule with elected officials and civic institutions.",
+          "answer": "republic",
+          "explanation": "republic。语法上，became a 后接可数名词单数。语义上，古城从世袭统治转变为共和国。",
           "questionKey": "761-770:9"
         },
         {
           "number": 10,
-          "prompt": "The archaeological excavations unearthed artifacts from classical __________ that provided invaluable insights into daily life in ancient Roman civilization.",
+          "prompt": "The new laptop has a faster __________, allowing it to handle video editing and data analysis more efficiently.",
+          "answer": "processor",
+          "explanation": "processor。语法上，a faster 后接名词。语义上，新笔记本有更快处理器，因此能更好处理剪辑和数据分析。常见搭配：a fast processor。",
           "questionKey": "761-770:10"
         }
       ]
@@ -1411,66 +1551,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 771,
       "rangeEnd": 780,
       "wordList": [
-        "legend",
-        "media",
         "goodness",
         "comply",
-        "abdominal",
-        "slot",
         "audit",
-        "tempt",
+        "legend",
+        "slot",
         "drain",
+        "abdominal",
+        "media",
+        "tempt",
         "outlet"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "According to local __________, the ancient castle is haunted by the ghost of a nobleman who was betrayed and murdered there.",
+          "prompt": "The charity praised her __________, but critics argued that kindness alone could not solve structural poverty.",
+          "answer": "goodness",
+          "explanation": "goodness。语法上，所有格 her 后接名词。语义上，慈善机构称赞她的善良，但批评者指出善良无法单独解决结构性贫困。",
           "questionKey": "771-780:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ coverage of the scandal was relentless, with journalists investigating every aspect of the politician's financial dealings and personal relationships.",
+          "prompt": "Companies must __________ with data protection laws or face heavy fines and reputational damage.",
+          "answer": "comply",
+          "explanation": "comply。语法上，情态动词 must 后接动词原形。语义上，公司必须遵守数据保护法律。常见搭配：comply with laws / regulations。",
           "questionKey": "771-780:2"
         },
         {
           "number": 3,
-          "prompt": "The accountant's integrity and fundamental __________ were never questioned throughout her distinguished career spanning more than three decades in public service.",
+          "prompt": "The finance department ordered an independent __________ after several irregular payments appeared in the accounts.",
+          "answer": "audit",
+          "explanation": "audit。语法上，an independent 后接名词。语义上，财务部门要求独立审计以调查异常付款。常见搭配：conduct / order an audit。",
           "questionKey": "771-780:3"
         },
         {
           "number": 4,
-          "prompt": "Corporations must __________ with increasingly complex environmental regulations or face substantial fines and potential criminal prosecution from regulatory authorities nationwide.",
+          "prompt": "The map’s __________ explained what each colour and symbol represented, preventing readers from misinterpreting the data.",
+          "answer": "legend",
+          "explanation": "legend。语法上，The map’s 后接名词。语义上，地图图例解释颜色和符号的含义。",
           "questionKey": "771-780:4"
         },
         {
           "number": 5,
-          "prompt": "The surgeon performed laparoscopic __________ surgery to remove the patient's appendix through several small incisions rather than one large opening.",
+          "prompt": "The conference organiser gave each speaker a twenty-minute __________, leaving only five minutes for questions.",
+          "answer": "slot",
+          "explanation": "slot。语法上，a twenty-minute 后接名词。语义上，会议组织者给每位演讲者一个二十分钟时段。常见搭配：time slot。",
           "questionKey": "771-780:5"
         },
         {
           "number": 6,
-          "prompt": "The airline had only one available __________ for the flight, so passengers were advised to book their tickets immediately.",
+          "prompt": "Heavy rain overwhelmed the street __________, causing dirty water to flood the underground station.",
+          "answer": "drain",
+          "explanation": "drain。语法上，the street 后接名词。语义上，大雨使街道排水管超负荷，导致污水倒灌。",
           "questionKey": "771-780:6"
         },
         {
           "number": 7,
-          "prompt": "The independent __________ revealed significant financial irregularities and accounting discrepancies that had gone undetected for several years within the organization.",
+          "prompt": "The patient complained of severe __________ pain, so the doctor ordered tests to rule out internal bleeding.",
+          "answer": "abdominal",
+          "explanation": "abdominal。语法上，abdominal pain 中需要形容词修饰名词。语义上，患者腹部剧痛，医生需要排除内出血。常见搭配：abdominal pain。",
           "questionKey": "771-780:7"
         },
         {
           "number": 8,
-          "prompt": "The bakery's window display was designed to __________ passersby with an irresistible array of freshly baked pastries and aromatic bread.",
+          "prompt": "The scandal spread quickly through social __________, forcing the minister to respond before the evening news.",
+          "answer": "media",
+          "explanation": "media。语法上，social media 构成固定名词短语。语义上，丑闻通过社交媒体迅速传播。常见搭配：social media。",
           "questionKey": "771-780:8"
         },
         {
           "number": 9,
-          "prompt": "The construction of new infrastructure will __________ the municipal budget, leaving insufficient funds for essential social services and educational programs.",
+          "prompt": "Advertisers often __________ consumers with limited-time discounts, even when the product is not genuinely necessary.",
+          "answer": "tempt",
+          "explanation": "tempt。语法上，主语 Advertisers 后接谓语动词。语义上，广告商用限时折扣诱惑消费者购买。常见搭配：tempt consumers with。",
           "questionKey": "771-780:9"
         },
         {
           "number": 10,
-          "prompt": "The electrical __________ was faulty, causing intermittent power failures that disrupted operations and damaged sensitive electronic equipment throughout the entire facility.",
+          "prompt": "The company opened a new retail __________ near the airport to reach travellers and international customers.",
+          "answer": "outlet",
+          "explanation": "outlet。语法上，a new retail 后接名词。语义上，公司开设新的零售店以接触旅客和国际客户。常见搭配：retail outlet。",
           "questionKey": "771-780:10"
         }
       ]
@@ -1481,66 +1641,86 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 781,
       "rangeEnd": 790,
       "wordList": [
-        "apple",
-        "gut",
         "precipitation",
-        "invade",
-        "emperor",
-        "planner",
-        "swell",
         "founds",
+        "invade",
+        "interviewer",
+        "apple",
+        "planner",
         "supposedly",
-        "interviewer"
+        "gut",
+        "swell",
+        "emperor"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The orchard produces thousands of bushels of __________ fruit each autumn, supplying local markets and cider mills throughout the region.",
+          "prompt": "Meteorologists predicted heavy __________ in the northern region, increasing the risk of floods and landslides overnight.",
+          "answer": "precipitation",
+          "explanation": "precipitation。语法上，heavy 后接名词。语义上，气象学家预测强降水，会增加洪水和山体滑坡风险。常见搭配：heavy precipitation。",
           "questionKey": "781-790:1"
         },
         {
           "number": 2,
-          "prompt": "The surgeon's __________ instinct told her that something was wrong despite the normal test results, prompting her to order additional imaging.",
+          "prompt": "Researchers are studying how bacteria in the human __________ may influence immunity, digestion, and even mood.",
+          "answer": "gut",
+          "explanation": "gut。语法上，the human 后接身体部位名词。语义上，影响免疫、消化甚至情绪的细菌通常指肠道菌群。常见搭配：human gut / gut bacteria / gut health。",
           "questionKey": "781-790:2"
         },
         {
           "number": 3,
-          "prompt": "Climate models predict that annual __________ patterns will become increasingly erratic, with some regions experiencing severe droughts while others face catastrophic flooding.",
+          "prompt": "Foreign armies attempted to __________ the island several times, but difficult terrain and local resistance slowed their advance.",
+          "answer": "invade",
+          "explanation": "invade。语法上，attempted to 后接动词原形。语义上，外国军队多次试图入侵岛屿。",
           "questionKey": "781-790:3"
         },
         {
           "number": 4,
-          "prompt": "The military strategists planned to __________ enemy territory at dawn, hoping to catch the opposing forces unprepared and achieve a decisive victory.",
+          "prompt": "The __________ asked follow-up questions when the candidate avoided giving a clear answer about her previous experience.",
+          "answer": "interviewer",
+          "explanation": "interviewer。语法上，The 后接表示人的名词作主语。语义上，面试官在候选人回避问题时追问。",
           "questionKey": "781-790:4"
         },
         {
           "number": 5,
-          "prompt": "The Roman __________ wielded absolute power over the vast empire, commanding legions and making decisions that affected millions of subjects across continents.",
+          "prompt": "The project __________ created a detailed schedule, but unexpected supply problems disrupted almost every deadline.",
+          "answer": "planner",
+          "explanation": "planner。语法上，The project 后接名词。语义上，项目规划师制定详细日程。常见搭配：project planner。",
           "questionKey": "781-790:5"
         },
         {
           "number": 6,
-          "prompt": "The urban __________ proposed a comprehensive redevelopment scheme that would transform the waterfront district into a vibrant mixed-use community with residential and commercial spaces.",
+          "prompt": "The company __________ a research institute every year to support innovation in clean energy and medical technology.",
+          "answer": "founds",
+          "explanation": "founds。语法上，主语 The company 是第三人称单数，且 every year 表示习惯性动作，因此用动词第三人称单数。语义上，公司每年创办一个研究机构。",
           "questionKey": "781-790:6"
         },
         {
           "number": 7,
-          "prompt": "The injured ankle began to __________ dramatically within hours of the accident, becoming so enlarged that the patient couldn't fit into her shoe.",
+          "prompt": "The child ate an __________ before practice because he wanted a light snack rather than a heavy meal.",
+          "answer": "apple",
+          "explanation": "apple。语法上，an 后接以元音音素开头的可数名词单数。语义上，孩子训练前吃了一个苹果作为轻食。",
           "questionKey": "781-790:7"
         },
         {
           "number": 8,
-          "prompt": "The historical document __________ the claim that the treaty was signed under duress, contradicting the official narrative promoted by authorities.",
+          "prompt": "The CEO __________ knew about the safety problem months earlier, although the company denied any formal warning.",
+          "answer": "supposedly",
+          "explanation": "supposedly。语法上，副词修饰整个谓语信息。语义上，CEO“据称”数月前已知道安全问题，但公司否认正式警告。",
           "questionKey": "781-790:8"
         },
         {
           "number": 9,
-          "prompt": "The ancient artifact __________ belonged to a prominent nobleman, though recent carbon dating has cast doubt on its authenticity and provenance.",
+          "prompt": "His ankle began to __________ after the fall, so the coach told him to stop playing immediately.",
+          "answer": "swell",
+          "explanation": "swell。语法上，began to 后接动词原形。语义上，脚踝摔倒后开始肿胀。",
           "questionKey": "781-790:9"
         },
         {
           "number": 10,
-          "prompt": "The experienced __________ asked probing questions that revealed inconsistencies in the candidate's résumé and prompted him to admit his fabrications.",
+          "prompt": "The ancient __________ ordered the construction of a vast road system to strengthen control over distant provinces.",
+          "answer": "emperor",
+          "explanation": "emperor。语法上，The ancient 后接表示人的名词。语义上，古代皇帝下令修建道路系统以加强统治。",
           "questionKey": "781-790:10"
         }
       ]
@@ -1551,69 +1731,90 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "rangeStart": 791,
       "rangeEnd": 800,
       "wordList": [
-        "blank",
-        "sub",
+        "altitude",
+        "gauge",
         "transparency",
+        "sub",
+        "blank",
+        "chloride",
         "sensible",
         "weave",
         "destination",
-        "chloride",
-        "gauge",
-        "altitude",
         "precipitate"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The student stared at the __________ examination paper, her mind completely empty despite months of diligent preparation and study.",
+          "prompt": "At high __________, the air contains less oxygen, so climbers may suffer headaches, dizziness, and reduced concentration.",
+          "answer": "altitude",
+          "explanation": "altitude。语法上，介词短语 At high 后接名词。语义上，高海拔地区氧气较少，会影响登山者状态。常见搭配：high altitude。",
           "questionKey": "791-800:1"
         },
         {
           "number": 2,
-          "prompt": "The naval __________ descended silently beneath the ocean surface, disappearing from radar detection as it embarked on its classified reconnaissance mission.",
+          "prompt": "The mechanic used a pressure __________ to check whether the tyres had been inflated to the correct level.",
+          "answer": "gauge",
+          "explanation": "gauge。语法上，a pressure 后接名词。语义上，机械师用压力计检查轮胎气压。常见搭配：pressure gauge。",
           "questionKey": "791-800:2"
         },
         {
           "number": 3,
-          "prompt": "The government's commitment to __________ in decision-making processes has improved public trust and accountability among elected officials and bureaucratic institutions.",
+          "prompt": "The government promised greater __________ in public spending, but several contracts were still awarded without open competition.",
+          "answer": "transparency",
+          "explanation": "transparency。语法上，greater 后接名词。语义上，政府承诺提高公共支出透明度。",
           "questionKey": "791-800:3"
         },
         {
           "number": 4,
-          "prompt": "The most __________ approach to addressing climate change involves implementing comprehensive policies that balance environmental protection with economic development and social equity.",
+          "prompt": "The restaurant offered a vegetarian __________ for customers who did not want the meat-based lunch option.",
+          "answer": "sub",
+          "explanation": "sub。语法上，a vegetarian 后接名词。语义上，餐厅提供素食替代选项。这里 sub 表示 substitute，即“替代品”。",
           "questionKey": "791-800:4"
         },
         {
           "number": 5,
-          "prompt": "Indigenous artisans __________ intricate patterns into traditional textiles using techniques passed down through generations, creating beautiful works of functional art.",
+          "prompt": "Students should leave a __________ line between paragraphs so that the examiner can follow the structure of the answer.",
+          "answer": "blank",
+          "explanation": "blank。语法上，a blank line 中需要形容词修饰名词。语义上，学生应在段落之间留空行。常见搭配：blank line。",
           "questionKey": "791-800:5"
         },
         {
           "number": 6,
-          "prompt": "After months of arduous travel through treacherous terrain and hostile territory, the expedition finally reached its intended __________ in the remote mountains.",
+          "prompt": "Sodium __________ is commonly known as salt, though the chemical term is more precise in laboratory contexts.",
+          "answer": "chloride",
+          "explanation": "chloride。语法上，Sodium chloride 构成化学名词。语义上，氯化钠通常被称为食盐。常见搭配：sodium chloride。",
           "questionKey": "791-800:6"
         },
         {
           "number": 7,
-          "prompt": "The chemical analysis detected elevated levels of sodium __________ in the soil samples, indicating contamination from industrial waste or road salt.",
+          "prompt": "A __________ decision would be to delay the launch until the security flaws have been properly tested.",
+          "answer": "sensible",
+          "explanation": "sensible。语法上，A sensible decision 中需要形容词修饰名词。语义上，推迟发布直到安全漏洞被测试是明智决定。",
           "questionKey": "791-800:7"
         },
         {
           "number": 8,
-          "prompt": "Engineers use sophisticated instruments to __________ the structural integrity of bridges, ensuring they can safely support heavy traffic loads and withstand environmental stresses.",
+          "prompt": "Skilled workers can __________ thin threads into complex patterns that are both decorative and structurally strong.",
+          "answer": "weave",
+          "explanation": "weave。语法上，情态动词 can 后接动词原形。语义上，熟练工人能把细线编织成复杂图案。",
           "questionKey": "791-800:8"
         },
         {
           "number": 9,
-          "prompt": "Commercial aircraft typically cruise at an __________ of approximately 35,000 feet to maximize fuel efficiency and avoid turbulent weather conditions below.",
+          "prompt": "For many migrants, the capital city became a final __________ rather than a temporary stop on the journey.",
+          "answer": "destination",
+          "explanation": "destination。语法上，a final 后接名词。语义上，对许多移民来说，首都成为最终目的地。常见搭配：final destination。",
           "questionKey": "791-800:9"
         },
         {
           "number": 10,
-          "prompt": "The diplomatic crisis could __________ a military confrontation if both nations continue their aggressive posturing and refuse to engage in meaningful negotiations.",
+          "prompt": "A careless statement from the central bank could __________ a market panic if investors interpret it as a signal of crisis.",
+          "answer": "precipitate",
+          "explanation": "precipitate。语法上，情态动词 could 后接动词原形。语义上，央行不慎发言可能引发市场恐慌。常见搭配：precipitate a crisis / panic。",
           "questionKey": "791-800:10"
         }
       ]
     }
-  ]
+  ],
+  "description": "Academic vocabulary practice for NAWL-H (701-800)."
 };
