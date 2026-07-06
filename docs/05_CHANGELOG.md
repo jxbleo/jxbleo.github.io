@@ -14,6 +14,15 @@
 
 ### Changed
 
+- Changed Student and Teacher Library to use only `Practice` and `Exam` as
+  top-level filters, with lesson sections folded into Practice.
+- Split Vocabulary surfaces into `NGSL`, `NAWL`, and `TK2` capsules/labels in
+  Student Library, Teacher Library, Teacher Assign filters, Teacher View matrix
+  type filters, and student assignment cards; removed the old Library
+  `Vocabulary`, `Grammar`, `Writing`, and `Grammar Lessons` sub-filters.
+- Changed teacher notification read behavior: opening the bell clears the
+  header badge, while red attempt rows remain until the teacher opens a related
+  attempt for that same student assignment.
 - Changed countable Vocabulary Test anti-cheat behavior so switching apps/tabs,
   hiding/leaving the page, heartbeat timeout, or session expiry abandons the
   session without recording an attempt or changing assignment status.

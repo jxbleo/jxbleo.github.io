@@ -24,6 +24,7 @@
         reviewOpen: false,
         studentLookupOpen: false,
         attemptsSeenAt: null,
+        activityReviewedAttemptIds: [],
         notificationAttemptId: '',
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
@@ -176,6 +177,39 @@
             .replace(/'/g, '&#39;');
     }
 
+    function vocabularySourceKey(item) {
+        var raw = [
+            item && item.sourceName,
+            item && item.source_name,
+            item && item.set_id,
+            item && item.id,
+            item && item.title,
+            item && item.topic,
+            item && item.course,
+            item && item.type,
+            item && item.section,
+            item && item.sectionId,
+            item && item.section_id
+        ].join(' ').toUpperCase();
+        if (/(^|\s|-)NGSL(?:\s|-|$)/.test(raw)) return 'ngsl';
+        if (/(^|\s|-)NAWL(?:\s|-|$)/.test(raw)) return 'nawl';
+        if (/THINK\s*2|THINK2|TK2/.test(raw)) return 'tk2';
+        return '';
+    }
+
+    function vocabularySourceLabel(item) {
+        var labels = {
+            ngsl: 'NGSL',
+            nawl: 'NAWL',
+            tk2: 'TK2'
+        };
+        return labels[vocabularySourceKey(item)] || '';
+    }
+
+    function isVocabularyCategory(category) {
+        return category === 'ngsl' || category === 'nawl' || category === 'tk2';
+    }
+
     function systemLogoPath(value) {
         var system = String(value || '').trim().toUpperCase();
         if (system === 'DSE') return 'assets/logos/dse-logo.png';
@@ -230,6 +264,19 @@
     function isAttemptUnread(attempt) {
         var submitted = new Date(attempt.submitted_at || 0);
         return !isNaN(submitted.getTime()) && submitted > attemptsSeenDate();
+    }
+
+    function reviewedAttemptIdMap() {
+        return (state.activityReviewedAttemptIds || []).reduce(function(map, id) {
+            if (id) map[String(id)] = true;
+            return map;
+        }, {});
+    }
+
+    function isAttemptReviewUnread(attempt) {
+        var attemptId = attempt && attempt.attempt_id;
+        if (!attemptId) return false;
+        return reviewedAttemptIdMap()[String(attemptId)] !== true;
     }
 
     function activityAttemptCounts() {
@@ -503,7 +550,7 @@
 
     function loadActivityState() {
         return teacherCall('getActivityState').catch(function() {
-            return { attempts_seen_at: null };
+            return { attempts_seen_at: null, reviewed_attempt_ids: [] };
         });
     }
 
@@ -522,17 +569,6 @@
         }).sort();
     }
 
-    function setSections() {
-        var seen = {};
-        return state.sets.map(function(set) {
-            return String(set.section || set.course || set.type || 'Other').trim();
-        }).filter(function(value) {
-            if (!value || seen[value]) return false;
-            seen[value] = true;
-            return true;
-        }).sort();
-    }
-
     function setCategory(set) {
         var haystack = [
             set.set_id,
@@ -544,12 +580,70 @@
             set.sectionId,
             set.category
         ].join(' ').toLowerCase();
+        var vocabKey = vocabularySourceKey(set);
+        if (vocabKey) return vocabKey;
         if (haystack.indexOf('ielts-reading') !== -1 || haystack.indexOf('ielts reading') !== -1) return 'ielts-reading';
         if (haystack.indexOf('ielts-listening') !== -1 || haystack.indexOf('ielts listening') !== -1) return 'ielts-listening';
         if (haystack.indexOf('bbc-six-minute-english') !== -1 || haystack.indexOf('bbc listening') !== -1 || haystack.indexOf('bbc') !== -1) return 'bbc-listening';
-        if (haystack.indexOf('vocab') !== -1 || haystack.indexOf('ngsl') !== -1) return 'vocabulary';
         if (haystack.indexOf('grammar') !== -1) return 'grammar';
         return 'other';
+    }
+
+    function setFilterKey(set) {
+        var category = setCategory(set);
+        if (category !== 'other') return category;
+        var raw = String(set.section || set.course || set.type || 'Other').trim();
+        return raw ? raw.toLowerCase().replace(/\s+/g, '-') : 'other';
+    }
+
+    function setFilterLabel(key, set) {
+        var labels = {
+            'bbc-listening': 'BBC',
+            ngsl: 'NGSL',
+            nawl: 'NAWL',
+            tk2: 'TK2',
+            'ielts-reading': 'IELTS Reading',
+            'ielts-listening': 'IELTS Listening',
+            grammar: 'Grammar',
+            other: 'Other'
+        };
+        if (labels[key]) return labels[key];
+        var raw = set && String(set.section || set.course || set.type || '').trim();
+        if (raw) return raw;
+        return key.split('-').map(function(part) {
+            return part ? part.charAt(0).toUpperCase() + part.slice(1) : part;
+        }).join(' ');
+    }
+
+    function filterOptionOrder(key) {
+        var order = {
+            'bbc-listening': 10,
+            ngsl: 20,
+            nawl: 30,
+            tk2: 40,
+            'ielts-reading': 50,
+            'ielts-listening': 60,
+            grammar: 70,
+            other: 999
+        };
+        return order[key] || 500;
+    }
+
+    function setSections() {
+        var byKey = {};
+        state.sets.forEach(function(set) {
+            var key = setFilterKey(set);
+            if (!byKey[key]) byKey[key] = {
+                key: key,
+                label: setFilterLabel(key, set)
+            };
+        });
+        return Object.keys(byKey).map(function(key) {
+            return byKey[key];
+        }).sort(function(left, right) {
+            return filterOptionOrder(left.key) - filterOptionOrder(right.key) ||
+                left.label.localeCompare(right.label);
+        });
     }
 
     function isCambridgeCategory(category) {
@@ -591,18 +685,18 @@
     var teacherLibraryCatalog = null;
 
     var TEACHER_LIBRARY_GROUP_IDS = {
-        general: ['basics'],
-        exam: ['ielts', 'dse'],
-        lessons: ['lessons']
+        general: ['basics', 'lessons'],
+        exam: ['ielts', 'dse']
     };
 
     var TEACHER_LIBRARY_SUB_TABS = {
         general: [
-            { id: '', label: 'All' },
             { id: 'bbc-six-minute-english', label: 'BBC' },
-            { id: 'vocabulary', label: 'Vocabulary' },
-            { id: 'grammar', label: 'Grammar' },
-            { id: 'general-writing', label: 'Writing' }
+            { id: 'ngsl', label: 'NGSL', vocabularySource: 'ngsl' },
+            { id: 'nawl', label: 'NAWL', vocabularySource: 'nawl' },
+            { id: 'tk2', label: 'TK2', vocabularySource: 'tk2' },
+            { id: 'lesson-dse', label: 'DSE' },
+            { id: 'lesson-ielts', label: 'IELTS' }
         ],
         exam: [
             { id: '', label: 'All' },
@@ -612,12 +706,6 @@
             { id: 'dse-english-paper-2', label: 'DSE Writing' },
             { id: 'dse-integrated', label: 'DSE Integrated' },
             { id: 'dse-english-paper-4', label: 'DSE Speaking' }
-        ],
-        lessons: [
-            { id: '', label: 'All' },
-            { id: 'lesson-grammar', label: 'Grammar' },
-            { id: 'lesson-dse', label: 'DSE' },
-            { id: 'lesson-ielts', label: 'IELTS' }
         ]
     };
 
@@ -646,17 +734,31 @@
         return labels[sectionId] || fallback || 'Practice';
     }
 
+    function teacherLibrarySubTabMatchesSection(config, section) {
+        if (!config || !config.id) return true;
+        if (config.vocabularySource) return section && section.id === 'vocabulary';
+        return section && section.id === config.id;
+    }
+
+    function teacherLibrarySubTabMatchesItem(config, item) {
+        if (!config || !config.id) return true;
+        if (config.vocabularySource) return vocabularySourceKey(item) === config.vocabularySource;
+        return true;
+    }
+
     function teacherBuildCard(item, section, hidden, itemYear) {
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        var meta = teacherLibrarySectionLabel(sectionId, section && section.title || item.section || item.course || item.type || sectionId);
+        var meta = vocabularySourceLabel(item) ||
+            teacherLibrarySectionLabel(sectionId, section && section.title || item.section || item.course || item.type || sectionId);
         var setId = item.set_id || item.id || item.displayValue || '';
-        var badge = teacherLibraryBadge(item, section, itemYear);
         var href = teacherPracticeHref(item);
         var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
+        var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="resource-card library-task-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
             ' data-entry-kind="' + escapeHtml(meta) + '" data-entry-title="' + escapeHtml(item.title || setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="' + (itemLocked ? 'true' : 'false') + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || setId) + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
@@ -664,9 +766,6 @@
                     '<span>' + escapeHtml(setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(item.title || setId) + '</h3>' +
-            '</div>' +
-            '<div class="library-task-actions">' +
-                (badge ? '<span class="library-card-badge">' + escapeHtml(badge) + '</span>' : '') +
             '</div>' +
         '</article>';
     }
@@ -707,13 +806,13 @@
         return (Math.round(number * 10) / 10).toString().replace(/\.0$/, '') + '%';
     }
 
-    function practiceEntryStatusText(status, best) {
-        if (status === 'not-passed') return 'Not yet';
-        var labels = {
-            passed: 'Passed',
-            mastered: 'Mastered'
-        };
-        return (labels[status] || 'Not yet') + ' · Best ' + formatEntryPercent(best);
+    function practiceEntryLocked(element) {
+        return String(element && element.dataset && element.dataset.entryLocked || '').toLowerCase() === 'true';
+    }
+
+    function practiceEntryScoreHtml(best, locked) {
+        return (locked ? '<span class="practice-entry-score-lock" aria-hidden="true">&#128274;</span>' : '') +
+            '<span>Score: ' + escapeHtml(formatEntryPercent(best)) + '</span>';
     }
 
     function ensurePracticeEntryDialog() {
@@ -726,7 +825,6 @@
         overlay.innerHTML =
             '<div class="practice-entry-shell">' +
                 '<section class="practice-entry-card" role="dialog" aria-modal="true" aria-label="Practice entry confirmation">' +
-                    '<div class="practice-entry-stamp">Ready?</div>' +
                     '<div class="practice-entry-task">' +
                         '<small id="practice-entry-kind">Practice</small>' +
                         '<strong id="practice-entry-title">Practice</strong>' +
@@ -781,11 +879,12 @@
         var overlay = ensurePracticeEntryDialog();
         var status = practiceEntryStatus(element);
         var best = element && element.dataset && element.dataset.entryBest;
+        var locked = practiceEntryLocked(element);
         overlay.dataset.href = href || '';
         overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
         overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
         overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
-        overlay.querySelector('#practice-entry-status').textContent = practiceEntryStatusText(status, best);
+        overlay.querySelector('#practice-entry-status').innerHTML = practiceEntryScoreHtml(best, locked);
         overlay.hidden = false;
         overlay.querySelector('#practice-entry-enter').focus();
         document.addEventListener('keydown', handlePracticeEntryKeydown);
@@ -903,7 +1002,9 @@
 
         var categorySectionIds = {
             'bbc-listening': 'bbc-six-minute-english',
-            vocabulary: 'vocabulary',
+            ngsl: 'vocabulary',
+            nawl: 'vocabulary',
+            tk2: 'vocabulary',
             grammar: 'grammar',
             'ielts-reading': 'ielts-reading',
             'ielts-listening': 'ielts-listening'
@@ -979,7 +1080,7 @@
 
         var subTabHtml = '';
         for (var si = 0; si < subTabs.length; si++) {
-            var isActive = (!teacherLibraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === teacherLibraryActiveSubTab;
+            var isActive = (!teacherLibraryActiveSubTab && si === 0) || subTabs[si].id === teacherLibraryActiveSubTab;
             subTabHtml += '<button class="sub-tab-btn' + (isActive ? ' active' : '') + '" data-subtab="' + escapeHtml(subTabs[si].id) + '">' + escapeHtml(subTabs[si].label) + '</button>';
         }
         subTabBar.innerHTML = subTabHtml;
@@ -987,7 +1088,7 @@
 
         var activeSubTabConfig = subTabs[0];
         for (var si = 0; si < subTabs.length; si++) {
-            if ((!teacherLibraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === teacherLibraryActiveSubTab) {
+            if ((!teacherLibraryActiveSubTab && si === 0) || subTabs[si].id === teacherLibraryActiveSubTab) {
                 activeSubTabConfig = subTabs[si];
                 break;
             }
@@ -1003,7 +1104,7 @@
             var sid = item.sectionId || item.section_id || '';
             if (!sid) {
                 var cat = setCategory(item);
-                if (cat === 'vocabulary') sid = 'vocabulary';
+                if (isVocabularyCategory(cat)) sid = 'vocabulary';
                 else if (cat === 'grammar') sid = 'grammar';
                 else if (cat === 'bbc-listening') sid = 'bbc-six-minute-english';
                 else if (cat === 'ielts-reading') sid = 'ielts-reading';
@@ -1054,9 +1155,10 @@
         var cardsHtml = '';
         for (var i = 0; i < tabSections.length; i++) {
             var section = tabSections[i];
-            if (targetSectionId && section.id !== targetSectionId) continue;
+            if (!teacherLibrarySubTabMatchesSection(activeSubTabConfig, section)) continue;
 
             var sectionItems = (itemsBySection[section.id] || []).filter(function(item) {
+                if (!teacherLibrarySubTabMatchesItem(activeSubTabConfig, item)) return false;
                 if (!searchText) return true;
                 return [item.title, item.set_id, item.id, item.topic, item.displayValue].join(' ').toLowerCase().indexOf(searchText) !== -1;
             });
@@ -1079,7 +1181,7 @@
             }
         }
 
-        if (targetSectionId && !cardsHtml) {
+        if (targetSectionId && !cardsHtml && !activeSubTabConfig.vocabularySource) {
             for (var i = 0; i < teacherLibraryCatalog.sections.length; i++) {
                 if (teacherLibraryCatalog.sections[i].id === targetSectionId) {
                     cardsHtml = teacherBuildPlaceholder(teacherLibraryCatalog.sections[i]);
@@ -1109,7 +1211,7 @@
 
     function fillSetSectionFilters() {
         var options = '<option value="">All</option>' + setSections().map(function(section) {
-            return '<option value="' + escapeHtml(section) + '">' + escapeHtml(section) + '</option>';
+            return '<option value="' + escapeHtml(section.key) + '">' + escapeHtml(section.label) + '</option>';
         }).join('');
         ['assign-section-filter'].forEach(function(id) {
             var select = document.getElementById(id);
@@ -1130,8 +1232,7 @@
         }) : [];
         var libraryBook = prefix === 'library' ? currentLibraryBook(cambridgeBooks(libraryCategorySets)) : '';
         var sets = state.sets.filter(function(set) {
-            var setSection = String(set.section || set.course || set.type || 'Other');
-            var matchesSection = !section || setSection === section;
+            var matchesSection = !section || setFilterKey(set) === section;
             var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter;
             var matchesBook = prefix !== 'library' || !libraryBook || cambridgeBookId(set) === libraryBook;
             var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
@@ -2573,7 +2674,9 @@
             'ielts-reading': 'IELTS Reading',
             'ielts-listening': 'IELTS Listening',
             'bbc-listening': 'BBC',
-            vocabulary: 'Vocabulary',
+            ngsl: 'NGSL',
+            nawl: 'NAWL',
+            tk2: 'TK2',
             grammar: 'Grammar',
             other: 'Other'
         };
@@ -2598,7 +2701,10 @@
         });
         return Object.keys(columns)
             .map(function(key) { return { key: key, label: columns[key] }; })
-            .sort(function(a, b) { return a.label.localeCompare(b.label); });
+            .sort(function(a, b) {
+                return filterOptionOrder(a.key) - filterOptionOrder(b.key) ||
+                    a.label.localeCompare(b.label);
+            });
     }
 
     function renderMatrixColumnSelect(columnOptions) {
@@ -3423,7 +3529,7 @@
         return {
             type: 'attempt',
             date: attempt.submitted_at || null,
-            unread: isAttemptUnread(attempt),
+            unread: isAttemptReviewUnread(attempt),
             attempt: attempt,
             label: name + ' ' + action + ' ' + (setTitleFor(attempt.set_id) || attempt.set_id),
             meta: formatPercent(attempt.percentage) + ' · #' + (attempt.attempt_number || 1),
@@ -3467,10 +3573,53 @@
             '</div>';
     }
 
-    function markAttemptsReadSilently() {
+    function markAttemptsSeenSilently() {
+        state.attemptsSeenAt = new Date().toISOString();
+        updateActivityBadges();
         teacherCall('markAttemptsRead').then(function(result) {
             state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
             updateActivityBadges();
+        }).catch(function() {});
+    }
+
+    function relatedAttemptIdsForAttempt(attempt) {
+        if (!attempt) return [];
+        var assignmentId = attempt.assignment_id || '';
+        var ids = (state.attempts || []).filter(function(item) {
+            if (!item || !item.attempt_id) return false;
+            if (assignmentId) {
+                return item.student_uid === attempt.student_uid &&
+                    item.assignment_id &&
+                    String(item.assignment_id) === String(assignmentId);
+            }
+            return item.student_uid === attempt.student_uid &&
+                item.set_id === attempt.set_id &&
+                !item.assignment_id;
+        }).map(function(item) {
+            return item.attempt_id;
+        });
+        if (attempt.attempt_id && ids.indexOf(attempt.attempt_id) === -1) ids.push(attempt.attempt_id);
+        return ids;
+    }
+
+    function setReviewedAttemptIds(ids) {
+        var map = {};
+        (state.activityReviewedAttemptIds || []).forEach(function(id) {
+            if (id) map[String(id)] = true;
+        });
+        (ids || []).forEach(function(id) {
+            if (id) map[String(id)] = true;
+        });
+        state.activityReviewedAttemptIds = Object.keys(map);
+    }
+
+    function markAttemptGroupReviewed(attempt) {
+        var ids = relatedAttemptIdsForAttempt(attempt);
+        if (!ids.length) return;
+        setReviewedAttemptIds(ids);
+        teacherCall('markActivityAttemptsReviewed', { attempt_ids: ids }).then(function(result) {
+            state.activityReviewedAttemptIds = result.reviewed_attempt_ids || state.activityReviewedAttemptIds || [];
+            renderUpdatesPanel();
         }).catch(function() {});
     }
 
@@ -3567,11 +3716,14 @@
 
     function openAttemptFromNotification(row) {
         var attemptId = row.dataset.openAttemptId || '';
+        var attempt = (state.attempts || []).find(function(item) {
+            return item.attempt_id === attemptId;
+        });
         state.notificationAttemptId = attemptId;
         state.targetMatrixAttemptId = attemptId;
         state.selectedMatrixReviewAttemptId = '';
+        markAttemptGroupReviewed(attempt);
         renderUpdatesPanel();
-        markAttemptsReadSilently();
     }
 
     function renderUpdatesPanel() {
@@ -4101,6 +4253,7 @@
             state.attempts = results[4].attempts || [];
             state.progressItems = results[5].progress || [];
             state.attemptsSeenAt = results[6].attempts_seen_at || null;
+            state.activityReviewedAttemptIds = results[6].reviewed_attempt_ids || [];
             return loadPublicCatalog().catch(function() {
                 teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
             }).then(function() {
@@ -4177,7 +4330,10 @@
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
         if (!state.updatesOpen) state.notificationAttemptId = '';
-        if (state.updatesOpen) setReviewPanel(false);
+        if (state.updatesOpen) {
+            setReviewPanel(false);
+            markAttemptsSeenSilently();
+        }
         renderUpdatesPanel();
     });
     document.getElementById('teacher-updates-close').addEventListener('click', function() {

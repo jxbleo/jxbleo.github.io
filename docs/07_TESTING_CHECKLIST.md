@@ -118,6 +118,16 @@ Check:
   disabled import-required rows instead of hiding them
 - Assign still resolves imported CloudBase `sets` when the live `sets`
   collection has more than 200 visible records
+- Student and Teacher Library expose only `Practice` and `Exam` top-level
+  filters; lesson sections appear under Practice
+- Practice Library sub-filters show `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
+  `IELTS`, with no generic `Vocabulary`, `Grammar`, `Writing`, or
+  `Grammar Lessons` sub-filter
+- Teacher Assign filters, Teacher View matrix type filters, and student
+  assignment cards show Vocabulary sets as `NGSL`, `NAWL`, or `TK2`
+- opening the teacher notification bell clears the header badge immediately
+- clicking an attempt notification clears red unread styling for attempts tied
+  to the same student assignment, while unclicked attempt rows remain red
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`

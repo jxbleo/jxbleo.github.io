@@ -50,8 +50,8 @@ Assignments display:
   pale green aurora-rainbow animated background instead of the older dark green
   panel
 - the main `Assignments` / `My Words` / `Library` capsule and the student
-  Library `General Practice` / `Exam Practice` / `Lessons` capsule use a soft
-  translucent glass treatment with subtle rainbow active states
+  Library `Practice` / `Exam` capsule use a soft translucent glass treatment
+  with subtle rainbow active states
 
 Backend statuses:
 
@@ -79,6 +79,19 @@ Frontend rule:
   unread activity rows. On the student main navigation, the assignment count
   floats just outside the glass capsule so the rounded active tab is not
   clipped.
+- Teacher Library and Student Library show only two top-level filters:
+  `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
+  sub-filters rather than as a separate top-level `Lessons` button.
+- Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
+  `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
+  `Grammar Lessons` sub-filters are not shown in Library. Vocabulary task cards,
+  Teacher Assign type filters, Teacher View matrix type filters, and student
+  assignment cards should label vocabulary sets by source (`NGSL`, `NAWL`, or
+  `TK2`) instead of the generic `Vocabulary` label.
+- Opening the teacher notification bell immediately clears the top-right badge.
+  Individual attempt rows stay red until the teacher opens one related attempt;
+  opening any attempt for the same student assignment clears the red state for
+  that assignment's related attempts.
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
@@ -96,12 +109,15 @@ Student cards should show:
 
 - the same compact task capsule structure used by Library task cards
 - title
-- `PASSED` / `MASTERED` stamp-style state for finished work
+- no `PASSED` / `MASTERED` stamp-style state on finished task capsules
 - STAR state if mastered
 - the whole card opens the original task when clicked, except for explicit
   buttons such as Teacher replies or Get Star
 - opening a task card first shows the shared practice-entry confirmation dialog
   so accidental taps do not immediately leave the dashboard
+- the shared practice-entry confirmation dialog has no top-right stamp; its
+  bottom ribbon shows only `Score: 90%` style copy, with the same lock icon
+  treatment as the teacher View matrix when the score is locked
 - the practice-entry confirmation dialog must close before navigation and must
   not be restored by browser Back/bfcache; returning from a practice page should
   show the page behind the dialog
@@ -322,6 +338,8 @@ capsules/cards with set metadata, title, and stable set ID. The whole capsule
 opens the practice item after the shared practice-entry confirmation dialog;
 do not add a separate `Go` action. The dialog must close before navigation and
 must not reappear when browser Back returns to the Library/dashboard surface.
+It should not show the old top-right `Ready?` stamp, and its bottom ribbon
+should show only `Score: …`, plus the score-lock icon when available.
 Teacher Library uses CloudBase `sets` as the authoritative assignable source,
 but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
