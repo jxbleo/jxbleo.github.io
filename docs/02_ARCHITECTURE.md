@@ -166,6 +166,8 @@ linked attempts as a display fallback when an assignment summary is stale.
 3. Function checks set and student eligibility.
 4. Open duplicate assignments are skipped.
 5. Completed/passed/mastered history can be reassigned with a new `assignment_id`.
+   Assignments created for the same set in one teacher Assign action also share
+   an `assignment_batch_id` for teacher matrix grouping.
 6. Existing assignments can be edited by explicit `assignment_id` selections
    for due date, passing percentage, and mastery percentage.
 7. Open assignments can be soft-cancelled through `teacherAdmin`; cancellation

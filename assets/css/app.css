@@ -2441,27 +2441,6 @@ body:not(.teacher-page) .tab-button.active {
     mix-blend-mode: multiply;
     animation: matrixColorWash 2.4s ease-in-out infinite;
 }
-.matrix-loading-spinner {
-    position: relative;
-    z-index: 2;
-    width: 44px;
-    height: 44px;
-    border: 4px solid #dff3e7;
-    border-top-color: #46a36a;
-    border-radius: 50%;
-    box-shadow: 0 0 0 10px rgba(255,255,255,0.76);
-    animation: matrixSpin 0.9s linear infinite;
-}
-.matrix-loading-spinner::after {
-    content: "";
-    position: absolute;
-    inset: -12px;
-    border: 1px solid rgba(70, 163, 106, 0.18);
-    border-radius: 50%;
-}
-@keyframes matrixSpin {
-    to { transform: rotate(360deg); }
-}
 @keyframes matrixSheetMove {
     to { background-position: 220px 0, 42px 42px, 42px 42px, 0 0; }
 }
@@ -2634,6 +2613,13 @@ body:not(.teacher-page) .tab-button.active {
     color: var(--ink);
     font-size: 0.72rem;
     line-height: 1.1;
+}
+.progress-matrix-week-label {
+    margin: 2px 0;
+    color: #0d6f58;
+    font-size: 0.68rem;
+    font-weight: 950;
+    letter-spacing: 0;
 }
 .progress-matrix-task-name {
     display: -webkit-box !important;
@@ -3912,12 +3898,6 @@ body:not(.teacher-page) .tab-button.active {
         linear-gradient(180deg, transparent 0%, rgba(131,56,236,0.10) 42%, transparent 68%);
     background-size: 320px 100%, 100% 180px;
 }
-.teacher-page .matrix-loading-spinner {
-    border-color: rgba(255,255,255,0.74);
-    border-top-color: #ef476f;
-    box-shadow: 0 0 0 10px rgba(255,255,255,0.76);
-}
-
 .teacher-page .matrix-class-filter,
 .teacher-page .matrix-column-filter,
 .teacher-page .matrix-date-filter,

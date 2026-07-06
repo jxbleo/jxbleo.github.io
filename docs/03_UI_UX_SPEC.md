@@ -163,9 +163,9 @@ so the first open uses the same full dialog height as later opens.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
-subtle rainbow color movement, and a centered spinner. On the first
-successful matrix render, the real matrix content should softly fade and lift
-into place instead of replacing the loading state abruptly.
+subtle rainbow color movement, and no centered spinner. On the first successful
+matrix render, the real matrix content should softly fade and lift into place
+instead of replacing the loading state abruptly.
 
 Teacher visual style uses a warm, animated rainbow theme. Rainbow gradients
 appear on the hero, active tabs, primary actions, matrix headers, group-card
@@ -236,15 +236,19 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
-- matrix task headers show the stable task ID with the task name directly
-  underneath
+- matrix task headers show the stable task ID, a zero-padded week label such as
+  `W03`, and the task name underneath. Week labels are calculated from
+  assignment `assigned_at` in Beijing time: dates before that year's first
+  Monday show `W00`, and the first Monday-Sunday range is `W01`.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. `Column` uses `All type`, `Date` uses `All time`, and date filtering
-  offers `This week`, `Last week`, `All time`, and `Self study`. Week filters
-  use the assignment `assigned_at` timestamp, not student completion time, and
-  calculate fixed Monday-to-Sunday natural weeks in Beijing time. Self-study
-  records without an assignment are shown only by the `Self study` date option.
+  offers `This week - Wxx`, `Last week - Wxx`, `All time`, and `Self study`.
+  Week filters use the assignment `assigned_at` timestamp, not student
+  completion time, and calculate fixed Monday-to-Sunday natural weeks in
+  Beijing time. Self-study records without an assignment are shown only by the
+  `Self study` date option. Repeated assignments of the same set should render
+  as separate matrix columns, even when they occur in the same week.
   Unclassed students appear in the `Class` menu by student name so a teacher can
   isolate one student's matrix rows without an `Individual` prefix.
 - the matrix renders every student matching the current filters; do not hide

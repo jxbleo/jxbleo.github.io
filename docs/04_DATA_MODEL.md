@@ -98,6 +98,7 @@ Core fields:
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `assignment_id` | string | unique assignment instance |
+| `assignment_batch_id` | string/null | shared batch key for assignments created by the same teacher Assign action for the same set |
 | `student_uid` | string | owner `students.auth_uid` |
 | `set_id` | string | assigned set |
 | `status` | string | `to_do`, `passed`, `mastered`, `cancelled` |
@@ -162,6 +163,10 @@ Reassignment rule:
 - Completed history (`passed`, `mastered`, legacy `done`) does not block future reassignment.
 - Cancelled history (`cancelled`) does not block future reassignment.
 - Reassignment creates a new `assignment_id`.
+- New assignments also receive an `assignment_batch_id` shared by the records
+  created for the same set in one teacher Assign action. Teacher View may use
+  this to render repeated assignments of the same set as separate matrix
+  columns without splitting one class assignment into per-student columns.
 - If the student already has a completed self-study attempt for the same
   `set_id`, the new assignment is initialized from that best self-study attempt:
   `passed` when it meets the assignment passing percentage, `mastered` when it

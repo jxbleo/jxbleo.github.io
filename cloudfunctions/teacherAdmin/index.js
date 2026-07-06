@@ -707,7 +707,7 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
-async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled) {
+async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -751,6 +751,7 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
   ].join("-");
   const assignment = {
     assignment_id: assignmentId,
+    assignment_batch_id: assignmentBatchId,
     student_uid: student.auth_uid,
     set_id: setId,
     status: convertsSelfStudy ? selfStudyStatus : "to_do",
@@ -820,6 +821,12 @@ async function createAssignments(event) {
     const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
     const masteryPercentage = safePercentage(event.mastery_percentage, masteryPercentageForSet(set));
     const masteryEnabled = safeBoolean(event.mastery_enabled, defaultMasteryEnabledForSet(set));
+    const assignmentBatchId = [
+      "assign",
+      setId,
+      Date.now(),
+      Math.random().toString(36).slice(2, 8),
+    ].join("-");
     if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
     for (const studentUid of studentUids) {
@@ -841,7 +848,7 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled);
+      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId);
       created.push({
         student_uid: studentUid,
         student_id: student.student_id,
@@ -1010,6 +1017,7 @@ async function listAssignments() {
       const set = setMap.get(assignment.set_id) || {};
       return {
         assignment_id: assignment.assignment_id || assignment._id,
+        assignment_batch_id: assignment.assignment_batch_id || null,
         student_uid: assignment.student_uid,
         student_id: student.student_id || assignment.student_uid,
         student_name: student.name || "",
@@ -1140,6 +1148,7 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     progress_id: `assigned::${assignment.assignment_id || assignment._id}`,
     source: "assigned",
     assignment_id: assignment.assignment_id || assignment._id,
+    assignment_batch_id: assignment.assignment_batch_id || null,
     student_uid: assignment.student_uid,
     student_id: student.student_id || assignment.student_uid,
     student_name: student.name || "",

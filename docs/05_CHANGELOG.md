@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Changed Teacher View matrix assignment columns to show `Wxx` week labels based
+  on Beijing-time assignment dates, with `W00` before the year's first Monday,
+  and to keep repeated assignments of the same set as separate columns.
 - Replaced the teacher student enable/disable UI with account deletion: deleting
   removes the CloudBase Auth end user, marks the student profile deleted, and
   hides the student from teacher-visible lists and progress surfaces.
