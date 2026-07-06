@@ -1634,6 +1634,10 @@
         return new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
     }
 
+    function shanghaiDayIndex(parts) {
+        return Math.floor(Date.UTC(parts.year, parts.month - 1, parts.day) / 86400000);
+    }
+
     function addShanghaiDays(parts, days) {
         var date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + days));
         return {
@@ -1665,6 +1669,48 @@
             start: shanghaiDateTime(startParts, 0, 0, 0, 0),
             end: shanghaiDateTime(endParts, 23, 59, 59, 999)
         };
+    }
+
+    function firstMondayOfShanghaiYear(year) {
+        var janFirst = { year: year, month: 1, day: 1 };
+        return addShanghaiDays(janFirst, (8 - shanghaiWeekday(janFirst)) % 7);
+    }
+
+    function shanghaiCalendarWeekInfoFromParts(parts) {
+        if (!parts) return null;
+        var firstMonday = firstMondayOfShanghaiYear(parts.year);
+        var dayDiff = shanghaiDayIndex(parts) - shanghaiDayIndex(firstMonday);
+        var weekNumber = dayDiff < 0 ? 0 : Math.floor(dayDiff / 7) + 1;
+        return {
+            year: parts.year,
+            week: weekNumber,
+            label: 'W' + String(weekNumber).padStart(2, '0')
+        };
+    }
+
+    function shanghaiCalendarWeekInfo(value) {
+        return shanghaiCalendarWeekInfoFromParts(shanghaiDateParts(value));
+    }
+
+    function shanghaiCurrentWeekLabel(dayOffset) {
+        var today = shanghaiDateParts(new Date());
+        var target = today ? addShanghaiDays(today, dayOffset || 0) : null;
+        var weekInfo = shanghaiCalendarWeekInfoFromParts(target);
+        return weekInfo ? weekInfo.label : 'W--';
+    }
+
+    function matrixWeekInfo(item) {
+        if (isSelfStudyMatrixItem(item)) {
+            return { year: null, week: null, label: 'Self study' };
+        }
+        return shanghaiCalendarWeekInfo(assignmentAssignedDate(item));
+    }
+
+    function legacyMatrixAssignedBucket(item) {
+        var assigned = assignmentAssignedDate(item);
+        var date = assigned ? new Date(assigned) : null;
+        if (!date || isNaN(date.getTime())) return 'unassigned';
+        return String(Math.floor(date.getTime() / (5 * 60 * 1000)));
     }
 
     function matrixDateRange() {
@@ -2375,7 +2421,17 @@
     }
 
     function matrixSetKey(item) {
-        return String(item.set_id || 'unknown');
+        if (isSelfStudyMatrixItem(item)) {
+            return 'self-study::' + String(item.progress_id || item.set_id || 'unknown');
+        }
+        if (item && item.assignment_batch_id) {
+            return 'batch::' + String(item.assignment_batch_id);
+        }
+        return [
+            'legacy',
+            String(item && item.set_id || 'unknown'),
+            legacyMatrixAssignedBucket(item)
+        ].join('::');
     }
 
     function assignmentCanEarnStar(item) {
@@ -2475,8 +2531,8 @@
         var value = state.matrixDateFilter || 'all';
         var options = [
             { value: 'all', label: 'All time' },
-            { value: 'week', label: 'This week' },
-            { value: 'last_week', label: 'Last week' },
+            { value: 'week', label: 'This week - ' + shanghaiCurrentWeekLabel(0) },
+            { value: 'last_week', label: 'Last week - ' + shanghaiCurrentWeekLabel(-7) },
             { value: 'self_study', label: 'Self study' }
         ];
         return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Date">' +
@@ -2978,11 +3034,14 @@
         var studentMap = {};
         matrixItems.forEach(function(item) {
             var setKey = matrixSetKey(item);
+            var weekInfo = matrixWeekInfo(item);
             if (!setMap[setKey]) {
                 setMap[setKey] = {
                     id: setKey,
+                    set_id: item.set_id || setKey,
                     title: item.set_title || setTitleFor(item.set_id),
-                    date: new Date(matrixDateValue(item) || 0).getTime()
+                    date: new Date(matrixDateValue(item) || 0).getTime(),
+                    week_label: weekInfo && weekInfo.label || ''
                 };
             } else {
                 setMap[setKey].date = Math.max(setMap[setKey].date, new Date(matrixDateValue(item) || 0).getTime());
@@ -3020,8 +3079,10 @@
             '<span class="progress-matrix-student-cell">Student</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
+                var weekLabel = set.week_label || '';
                 return '<span class="progress-matrix-task-head" title="' + escapeHtml(title) + '">' +
-                    '<strong>' + escapeHtml(set.id) + '</strong>' +
+                    '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
+                    (weekLabel ? '<small class="progress-matrix-week-label">' + escapeHtml(weekLabel) + '</small>' : '') +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</span>';
             }).join('') +

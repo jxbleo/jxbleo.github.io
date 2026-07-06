@@ -125,7 +125,8 @@ Check:
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts
 - Teacher page opens to View by default, and the initial matrix loading state
-  shows only the animated grid/spinner without visible loading copy
+  shows only the animated grid/radar wash without visible loading copy or a
+  centered spinner
 - top-right circular student ID icon opens the standalone student lookup
   modal; Choose/Search expands a scrollable student list inside the modal, the
   modal's internal `+` opens create-student, and View no longer shows student
@@ -158,6 +159,11 @@ Check:
   natural weeks: `This week` is Monday-Sunday of the current Beijing week,
   `Last week` is the previous Beijing Monday-Sunday range, and `Self study`
   shows records without an assignment separately
+- View matrix task headers show zero-padded week labels such as `W03`; week
+  numbering starts at the first Monday of the assignment year, and dates before
+  that Monday show `W00`
+- View matrix renders repeated assignments of the same set as separate columns,
+  including repeated assignments in the same week
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
 - Clicking the matrix left student-name column opens an independent student
