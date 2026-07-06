@@ -3,6 +3,25 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-07
+
+### Added
+
+- Added countable Vocabulary Test integrity sessions through
+  `vocabulary_test_sessions`: 5+ group tests now create a server session before
+  questions appear, heartbeat while active, validate `test_session_id` on
+  submit, and grade the session's recorded question IDs.
+
+### Changed
+
+- Changed countable Vocabulary Test anti-cheat behavior so switching apps/tabs,
+  hiding/leaving the page, heartbeat timeout, or session expiry abandons the
+  session without recording an attempt or changing assignment status.
+- Blocked other devices or browser page instances from student cloud-backed
+  features while the same account has an active countable Vocabulary Test.
+- Changed the client page-instance identifier to per-page-load memory state so
+  cloned/new tabs cannot inherit the active test's owner ID.
+
 ## 2026-07-03
 
 ### Changed

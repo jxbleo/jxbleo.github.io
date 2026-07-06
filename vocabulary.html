@@ -1568,8 +1568,8 @@
     </div>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260616-1"></script>
-    <script src="assets/js/cloudbase-client.js?v=20260611-2"></script>
+    <script src="assets/js/config.public.js?v=20260707-2"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260707-2"></script>
     <script src="assets/js/practice-session.js?v=20260623-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
     <script>
@@ -1591,7 +1591,9 @@
         var teacherAnswersVisible = false;
         var unitData = null;
         var testTimerId = null;
+        var testHeartbeatId = null;
         var testRemainingSeconds = 0;
+        var activeTestSessionId = '';
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var activeTestSetIndex = 0;
@@ -1606,6 +1608,8 @@
         var testSubmitting = false;
         var testHistoryArmed = false;
         var testReviewMode = false;
+        var testIntegrityEnded = false;
+        var pendingIntegrityNotice = '';
         var students = [
             { id: 'EI6688', label: '甘昕雨Eilene' },
             { id: 'EV3389', label: '刘榆雯Eva' },
@@ -1654,6 +1658,7 @@
                 localStorage.setItem(testDraftKey(), JSON.stringify({
                     group_ids: activeTestGroups.map(function(group) { return group.id; }),
                     group_count: activeTestGroupCount,
+                    test_session_id: activeTestSessionId || '',
                     started_at: testStartedAt,
                     total_seconds: activeTestGroupCount * 120,
                     answers: answers
@@ -1663,6 +1668,147 @@
 
         function clearTestDraft() {
             try { localStorage.removeItem(testDraftKey()); } catch (e) {}
+        }
+
+        function isCountedGroupCount(count) {
+            return Number(count || 0) >= 5;
+        }
+
+        function isActiveCountedTest() {
+            return testLocked && isCountedGroupCount(activeTestGroupCount) && !!activeTestSessionId;
+        }
+
+        function normalizeDateString(value) {
+            if (!value) return new Date().toISOString();
+            var date = new Date(value);
+            return isNaN(date.getTime()) ? String(value) : date.toISOString();
+        }
+
+        function questionKeyFor(group, question) {
+            return question.questionKey || (group.id + ':' + question.number);
+        }
+
+        function questionIdsForGroups(groups) {
+            var ids = [];
+            (groups || []).forEach(function(group) {
+                (group.questions || []).forEach(function(question) {
+                    ids.push(questionKeyFor(group, question));
+                });
+            });
+            return ids;
+        }
+
+        function sessionError(error, fallback) {
+            var message = error && (error.message || error.code || String(error)) || '';
+            if (/VOCABULARY_TEST_DEVICE_BLOCKED/i.test(message)) {
+                return new Error('This account is already taking a vocabulary test on another device or browser tab. Finish that test before opening student features here.');
+            }
+            if (/VOCABULARY_TEST_SESSION_EXPIRED|VOCABULARY_TEST_SESSION_CLOSED/i.test(message)) {
+                return new Error('This vocabulary test has ended because the page was left or the heartbeat expired. Please start again when you are ready.');
+            }
+            return error instanceof Error ? error : new Error(message || fallback || 'Unable to manage this vocabulary test session.');
+        }
+
+        function callVocabularyTestSession(action, payload) {
+            if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+                return Promise.reject(new Error('LOGIN_REQUIRED'));
+            }
+            return window.MrCatCloud.callFunction('submitAttempt', Object.assign({
+                action: action,
+                set_id: setId,
+                assignment_id: assignmentId || null
+            }, payload || {})).then(function(response) {
+                if (!response || !response.success) {
+                    var error = new Error(response && response.message || response && response.code || 'VOCABULARY_TEST_SESSION_ERROR');
+                    if (response && response.code) error.code = response.code;
+                    throw error;
+                }
+                return response;
+            }).catch(function(error) {
+                throw sessionError(error);
+            });
+        }
+
+        function applyTestSession(session) {
+            session = session || {};
+            activeTestSessionId = session.test_session_id || '';
+            testStartedAt = normalizeDateString(session.started_at);
+        }
+
+        function startTestHeartbeat() {
+            stopTestHeartbeat();
+            if (!activeTestSessionId || !isCountedGroupCount(activeTestGroupCount)) return;
+            testHeartbeatId = window.setInterval(function() {
+                callVocabularyTestSession('heartbeatVocabularyTestSession', {
+                    test_session_id: activeTestSessionId
+                }).catch(function(error) {
+                    if (!testLocked || testSubmitting) return;
+                    endTestForIntegrity('heartbeat_failed', sessionError(error).message);
+                });
+            }, 10000);
+        }
+
+        function stopTestHeartbeat() {
+            if (testHeartbeatId) {
+                clearInterval(testHeartbeatId);
+                testHeartbeatId = null;
+            }
+        }
+
+        function startVocabularyTestSession(groups) {
+            if (!isCountedGroupCount(groups.length)) {
+                activeTestSessionId = '';
+                testStartedAt = new Date().toISOString();
+                return Promise.resolve(null);
+            }
+            return callVocabularyTestSession('startVocabularyTestSession', {
+                selected_group_count: groups.length,
+                selected_group_ids: groups.map(function(group) { return group.id; }),
+                question_ids: questionIdsForGroups(groups)
+            }).then(function(response) {
+                applyTestSession(response.test_session || {});
+                return response;
+            });
+        }
+
+        function resumeVocabularyTestSession(sessionId) {
+            return callVocabularyTestSession('resumeVocabularyTestSession', {
+                test_session_id: sessionId
+            }).then(function(response) {
+                applyTestSession(response.test_session || {});
+                return response;
+            });
+        }
+
+        function abandonVocabularyTestSession(reason) {
+            if (!activeTestSessionId) return Promise.resolve();
+            var sessionId = activeTestSessionId;
+            return callVocabularyTestSession('abandonVocabularyTestSession', {
+                test_session_id: sessionId,
+                reason: reason || 'abandoned'
+            }).catch(function() {});
+        }
+
+        function showIntegrityNotice(message) {
+            pendingIntegrityNotice = '';
+            showTestDialog({
+                title: 'Test ended',
+                copy: message || 'This vocabulary test ended because the page was left. Your assignment is still waiting for a new attempt.',
+                primary: 'OK'
+            });
+        }
+
+        function endTestForIntegrity(reason, message) {
+            if (!isActiveCountedTest() || testIntegrityEnded) return;
+            testIntegrityEnded = true;
+            pendingIntegrityNotice = message || 'This vocabulary test ended because the page was left. Your assignment is still waiting for a new attempt.';
+            stopTestHeartbeat();
+            clearInterval(testTimerId);
+            abandonVocabularyTestSession(reason || 'page_hidden');
+            activeTestSessionId = '';
+            clearTestDraft();
+            resetTestSelection();
+            if (!document.hidden) showIntegrityNotice(pendingIntegrityNotice);
         }
 
         function setTestLocked(locked) {
@@ -3034,73 +3180,15 @@
             }, 1000);
         }
 
-        function restoreTestDraft() {
-            if (params.get('retry') === '1') {
-                clearTestDraft();
-                return false;
-            }
-            var draft = null;
-            try { draft = JSON.parse(localStorage.getItem(testDraftKey()) || 'null'); } catch (e) {}
-            if (!draft || !draft.group_ids || !draft.group_ids.length || !draft.started_at) return false;
-            var elapsed = Math.max(0, Math.round((Date.now() - new Date(draft.started_at).getTime()) / 1000));
-            var remaining = Math.max(0, Number(draft.total_seconds || draft.group_count * 120) - elapsed);
-            if (remaining <= 0) {
-                clearTestDraft();
-                return false;
-            }
-            var groupMap = {};
-            (unitData.quizGroups || []).forEach(function(group) { groupMap[group.id] = group; });
-            var selected = draft.group_ids.map(function(id) { return groupMap[id]; }).filter(Boolean);
-            if (!selected.length) return false;
-            activeTestGroups = selected;
-            activeTestGroupCount = Number(draft.group_count || selected.length);
-            testWordBankManualState = null;
-            testReviewMode = false;
-            testStartedAt = draft.started_at;
-            var root = document.getElementById('test-groups');
-            document.getElementById('test-summary').classList.remove('show');
-            document.getElementById('test-setup').classList.add('locked');
-            document.getElementById('test-setup').style.display = 'none';
-            document.getElementById('test-count-note').style.display = 'none';
-            root.innerHTML = selected.map(function(group, groupIndex) {
-                var questions = (group.questions || []).map(function(question, index) {
-                    return renderTestQuestion(group, question, index);
-                }).join('');
-                return renderTestGroupCard(group, groupIndex, questions);
-            }).join('');
-            renderTestSetNav(selected);
-            setupAdaptiveInputs(root);
-            Object.keys(draft.answers || {}).forEach(function(key) {
-                var card = document.querySelector('[data-question-key="' + CSS.escape(key) + '"]');
-                if (!card) return;
-                var input = card.querySelector('.answer-input');
-                var trigger = card.querySelector('.blank-trigger');
-                if (input) input.value = draft.answers[key] || '';
-                if (trigger && draft.answers[key]) {
-                    trigger.textContent = draft.answers[key];
-                    trigger.classList.add('selected');
-                }
-            });
-            var restoredSubmitButton = document.getElementById('submit-test-btn');
-            restoredSubmitButton.disabled = false;
-            restoredSubmitButton.textContent = 'Submit';
-            restoredSubmitButton.style.display = 'inline-flex';
-            document.getElementById('redo-test-btn').style.display = 'none';
-            testRedoAvailable = false;
-            updateHistoryToolbar();
-            switchView('test-view');
-            setTestLocked(true);
-            startTimer(remaining);
-            return true;
-        }
-
-        function startTestWithGroups(selected, answers) {
+        function renderStartedTest(selected, answers, seconds, scrollToRoot) {
             if (!selected || !selected.length) return false;
             activeTestGroups = selected;
             activeTestGroupCount = selected.length;
+            activeTestSetIndex = 0;
             testWordBankManualState = null;
             testReviewMode = false;
-            testStartedAt = new Date().toISOString();
+            testIntegrityEnded = false;
+            if (!testStartedAt) testStartedAt = new Date().toISOString();
             var root = document.getElementById('test-groups');
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
@@ -3134,9 +3222,59 @@
             updateHistoryToolbar();
             switchView('test-view');
             setTestLocked(true);
-            startTimer(selected.length * 120);
+            startTimer(seconds || selected.length * 120);
+            startTestHeartbeat();
             saveTestDraft();
+            if (scrollToRoot) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
             return true;
+        }
+
+        function restoreTestDraft() {
+            if (params.get('retry') === '1') {
+                clearTestDraft();
+                return Promise.resolve(false);
+            }
+            var draft = null;
+            try { draft = JSON.parse(localStorage.getItem(testDraftKey()) || 'null'); } catch (e) {}
+            if (!draft || !draft.group_ids || !draft.group_ids.length || !draft.started_at) return Promise.resolve(false);
+            var elapsed = Math.max(0, Math.round((Date.now() - new Date(draft.started_at).getTime()) / 1000));
+            var remaining = Math.max(0, Number(draft.total_seconds || draft.group_count * 120) - elapsed);
+            if (remaining <= 0) {
+                clearTestDraft();
+                return Promise.resolve(false);
+            }
+            var groupMap = {};
+            (unitData.quizGroups || []).forEach(function(group) { groupMap[group.id] = group; });
+            var selected = draft.group_ids.map(function(id) { return groupMap[id]; }).filter(Boolean);
+            if (!selected.length) return Promise.resolve(false);
+            testStartedAt = draft.started_at;
+            if (isCountedGroupCount(Number(draft.group_count || selected.length))) {
+                if (!draft.test_session_id) {
+                    clearTestDraft();
+                    return Promise.resolve(false);
+                }
+                activeTestSessionId = draft.test_session_id;
+                return resumeVocabularyTestSession(draft.test_session_id).then(function(response) {
+                    var seconds = response.remaining_seconds == null ? remaining : Math.max(1, Number(response.remaining_seconds || 0));
+                    return renderStartedTest(selected, draft.answers || {}, seconds, false);
+                }).catch(function() {
+                    activeTestSessionId = '';
+                    clearTestDraft();
+                    return false;
+                });
+            }
+            activeTestSessionId = '';
+            return Promise.resolve(renderStartedTest(selected, draft.answers || {}, remaining, false));
+        }
+
+        function startTestWithGroups(selected, answers) {
+            if (!selected || !selected.length) return Promise.resolve(false);
+            return startVocabularyTestSession(selected).then(function() {
+                return renderStartedTest(selected, answers || {}, selected.length * 120, false);
+            }).catch(function(error) {
+                alert(sessionError(error).message);
+                return false;
+            });
         }
 
         function fetchPrefillAttempt(force, attemptIdOverride) {
@@ -3165,12 +3303,13 @@
                 var groupMap = {};
                 (unitData.quizGroups || []).forEach(function(group) { groupMap[group.id] = group; });
                 var selected = groupIds.map(function(id) { return groupMap[id]; }).filter(Boolean);
-                var started = startTestWithGroups(selected, result.attempt.answers);
-                if (started && results[1] && results[1].review) markHistoryReview(results[1].review);
-                if (started && focusQuestionId) {
-                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
-                }
-                return started;
+                return startTestWithGroups(selected, result.attempt.answers).then(function(started) {
+                    if (started && results[1] && results[1].review) markHistoryReview(results[1].review);
+                    if (started && focusQuestionId) {
+                        window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                    }
+                    return started;
+                });
             }).catch(function() { return false; });
         }
 
@@ -3205,39 +3344,34 @@
         function startTest() {
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
-            var selected = shuffleList(groups).slice(0, count);
-            activeTestGroups = selected;
-            activeTestGroupCount = count;
-            testWordBankManualState = null;
-            testReviewMode = false;
-            testStartedAt = new Date().toISOString();
-            var root = document.getElementById('test-groups');
-            document.getElementById('test-summary').classList.remove('show');
-            document.getElementById('test-setup').classList.add('locked');
-            document.getElementById('test-setup').style.display = 'none';
-            document.getElementById('test-count-note').style.display = 'none';
-            root.innerHTML = selected.map(function(group, groupIndex) {
-                var questions = shuffleList(group.questions || []).map(function(question, index) {
-                    return renderTestQuestion(group, question, index);
-                }).join('');
-                return renderTestGroupCard(group, groupIndex, questions);
-            }).join('');
-            renderTestSetNav(selected);
-            setupAdaptiveInputs(root);
-            document.getElementById('submit-test-btn').style.display = 'inline-flex';
-            document.getElementById('redo-test-btn').style.display = 'none';
-            testRedoAvailable = false;
-            updateHistoryToolbar();
-            setTestLocked(true);
-            startTimer(count * 120);
-            saveTestDraft();
-            root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            var selected = shuffleList(groups).slice(0, count).map(function(group) {
+                return Object.assign({}, group, {
+                    questions: shuffleList(group.questions || [])
+                });
+            });
+            var startButton = document.getElementById('start-test-btn');
+            if (startButton) {
+                startButton.disabled = true;
+                startButton.textContent = 'Starting...';
+            }
+            startVocabularyTestSession(selected).then(function() {
+                renderStartedTest(selected, {}, count * 120, true);
+            }).catch(function(error) {
+                alert(sessionError(error).message);
+            }).then(function() {
+                if (startButton && !testLocked) {
+                    startButton.disabled = false;
+                    startButton.textContent = 'Start Test';
+                }
+            });
         }
 
         function resetTestSelection() {
             clearInterval(testTimerId);
+            stopTestHeartbeat();
             testTimerId = null;
             testRemainingSeconds = 0;
+            activeTestSessionId = '';
             activeTestGroups = [];
             activeTestGroupCount = 0;
             activeTestSetIndex = 0;
@@ -3245,6 +3379,7 @@
             testReviewMode = false;
             testStartedAt = null;
             testSubmitting = false;
+            testIntegrityEnded = false;
             setTestLocked(false);
             answerRevealAvailable = false;
             testRedoAvailable = false;
@@ -3342,6 +3477,7 @@
                 set_id: setId,
                 assignment_id: assignmentId || null,
                 mode: 'vocabulary_test',
+                test_session_id: activeTestSessionId || null,
                 answers: answers,
                 selected_group_count: activeTestGroupCount,
                 selected_group_ids: activeTestGroups.map(function(group) { return group.id; }),
@@ -3395,13 +3531,18 @@
                 testRedoAvailable = true;
                 updateHistoryToolbar();
                 setTestLocked(false);
+                stopTestHeartbeat();
+                activeTestSessionId = '';
                 testSubmitting = false;
                 clearTestDraft();
             }).catch(function(error) {
                 testSubmitting = false;
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit';
-                if (testLocked && options.remaining_seconds > 0) startTimer(options.remaining_seconds);
+                if (testLocked && options.remaining_seconds > 0) {
+                    startTimer(options.remaining_seconds);
+                    startTestHeartbeat();
+                }
                 alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
             });
         }
@@ -3495,8 +3636,23 @@
                 requestLearnWordBankSync();
                 requestTestSetSync();
             });
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    endTestForIntegrity('page_hidden');
+                    return;
+                }
+                if (pendingIntegrityNotice) showIntegrityNotice(pendingIntegrityNotice);
+            });
+            window.addEventListener('pagehide', function() {
+                if (isActiveCountedTest()) endTestForIntegrity('pagehide');
+            });
             window.addEventListener('beforeunload', function(event) {
                 saveTestDraft();
+                if (isActiveCountedTest()) {
+                    abandonVocabularyTestSession('page_unload');
+                    clearTestDraft();
+                    return;
+                }
                 if (!testLocked) return;
                 event.preventDefault();
                 event.returnValue = '';
@@ -3508,6 +3664,35 @@
                     window.history.pushState({ vocabTestLocked: true }, '', window.location.href);
                 } catch (e) {}
                 showTestLockNotice();
+            });
+        }
+
+        function checkVocabularyPageAccess() {
+            if (teacherMode || !window.MrCatCloud || typeof window.MrCatCloud.getLoginState !== 'function') {
+                return Promise.resolve(true);
+            }
+            return window.MrCatCloud.getLoginState().then(function(state) {
+                if (!state) return true;
+                return window.MrCatCloud.callFunction('submitAttempt', {
+                    action: 'checkVocabularyTestAccess',
+                    set_id: setId,
+                    assignment_id: assignmentId || null
+                }).then(function(response) {
+                    if (response && response.success === false) {
+                        var responseError = new Error(response.message || response.code || 'Unable to verify vocabulary test access.');
+                        if (response.code) responseError.code = response.code;
+                        throw responseError;
+                    }
+                    return true;
+                });
+            }).catch(function(error) {
+                var marker = error && (error.code || error.message || error.errMsg || String(error)) || '';
+                if (/VOCABULARY_TEST_DEVICE_BLOCKED|already taking a vocabulary test|already in progress/i.test(marker)) {
+                    var blocked = new Error(error.message || 'This account is already taking a vocabulary test on another device or browser tab.');
+                    blocked.code = 'VOCABULARY_TEST_DEVICE_BLOCKED';
+                    throw blocked;
+                }
+                return true;
             });
         }
 
@@ -3531,12 +3716,21 @@
                 renderHistoryToolbar();
                 if (assignmentEntryMode === 'learn') {
                     if (focusQuestionId) jumpToQuestion(focusQuestionId);
-                } else if (!restoreTestDraft()) {
-                    fetchPrefillAttempt().then(function(started) {
-                        if (!started && focusQuestionId) jumpToQuestion(focusQuestionId);
-                    });
                 } else if (focusQuestionId) {
-                    window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                    restoreTestDraft().then(function(restored) {
+                        if (restored) {
+                            window.setTimeout(function() { jumpToQuestion(focusQuestionId); }, 160);
+                            return;
+                        }
+                        fetchPrefillAttempt().then(function(started) {
+                            if (!started && focusQuestionId) jumpToQuestion(focusQuestionId);
+                        });
+                    });
+                } else {
+                    restoreTestDraft().then(function(restored) {
+                        if (restored) return;
+                        fetchPrefillAttempt();
+                    });
                 }
             }
         }
@@ -3560,7 +3754,11 @@
         }
 
         loadVocabularyUnit()
-            .then(renderUnit)
+            .then(function(data) {
+                return checkVocabularyPageAccess().then(function() {
+                    renderUnit(data);
+                });
+            })
             .catch(function(error) {
                 showError(error.message || 'Unable to load vocabulary unit.');
             });

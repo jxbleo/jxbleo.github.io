@@ -29,6 +29,7 @@ Only CloudBase cloud functions should read or write private collections.
 | `answer_disputes` | student/teacher Argue requests |
 | `grading_key_history` | answer-rule change history |
 | `student_vocabulary_items` | personal saved words |
+| `vocabulary_test_sessions` | active/ended Vocabulary Test integrity sessions |
 
 All collections should remain `ADMINONLY`.
 
@@ -307,7 +308,54 @@ Rules:
 - Previous grading changes can be repaired with the paginated teacher-only
   `backfillAcceptedAnswerRegrades` action.
 
-## 10. `student_vocabulary_items`
+## 10. `vocabulary_test_sessions`
+
+Purpose: server-side integrity session for countable Vocabulary Test mode
+only. A session is created before a 5+ group Vocabulary Test begins, receives
+heartbeats while the page remains active, and is closed when the test submits,
+is abandoned, expires, or is replaced by another same-page test.
+
+Core fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `test_session_id` | string | stable session ID |
+| `student_uid` | string | owner auth UID |
+| `student_id_snapshot` | string | display snapshot |
+| `set_id` | string | Vocabulary set |
+| `assignment_id` | string/null | linked assignment if any |
+| `status` | string | `active`, `submitted`, `abandoned`, or `invalidated` |
+| `selected_group_count` | number | official group count |
+| `selected_group_ids` | array | official selected groups |
+| `question_ids` | array | official submitted/graded question set |
+| `client_device_id` | string/null | browser/device identifier for diagnostics |
+| `client_instance_id` | string | per-page-load in-memory identifier used for ownership checks |
+| `started_at` | Date | server start time |
+| `due_at` | Date | timer deadline |
+| `expires_at` | Date | deadline plus submit grace |
+| `last_heartbeat_at` | Date | latest active-page heartbeat |
+| `heartbeat_timeout_seconds` | number | timeout threshold |
+| `integrity_flags` | array | reasons such as `page_hidden` or `heartbeat_timeout` |
+| `attempt_id` | string/null | recorded attempt after submit |
+| `created_at` / `updated_at` | Date | audit timestamps |
+
+Rules:
+
+- Only 5+ group Vocabulary Test mode creates a session.
+- `submitAttempt` grades countable Vocabulary Tests from the session's
+  `question_ids`, not from a browser-provided question list.
+- Missing submitted answers for session questions count as blank answers.
+- A different `client_instance_id` is blocked from student cloud-function
+  surfaces while a session is active. The browser must generate this ID in
+  memory for each page load rather than storing it in `sessionStorage`, because
+  cloned tabs can inherit session storage.
+- Leaving the page, switching apps/tabs, heartbeat timeout, or timer expiry
+  closes the session as `abandoned` and does not create an attempt or change
+  assignment status.
+- Abandoned/invalidated sessions are audit records only; they are not teacher
+  progress records in the first implementation.
+
+## 11. `student_vocabulary_items`
 
 Core fields:
 

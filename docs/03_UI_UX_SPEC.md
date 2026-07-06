@@ -509,8 +509,17 @@ Shared rules:
   layer above question-card `?` explanation buttons and their floating
   explanation popovers while scrolling.
 - While a Vocabulary Test is running, the page is front-end locked to the Test
-  view: other mode tabs are disabled, browser unload/back attempts show a
-  warning, and the student must submit or wait for automatic time-up submission.
+  view: other mode tabs are disabled, browser back attempts show a warning,
+  and the student must submit or wait for automatic time-up submission.
+- Countable Vocabulary Tests, meaning 5 selected groups or more, must start a
+  server `vocabulary_test_sessions` record before questions appear.
+- Countable Vocabulary Tests heartbeat every 10 seconds. Switching apps,
+  switching tabs, hiding the page, leaving the page, or heartbeat timeout ends
+  the session as abandoned and returns the student to the Test setup without
+  recording a score.
+- While another page instance is taking a countable Vocabulary Test, student
+  cloud-backed features opened from other devices or tabs show a blocked
+  session message instead of entering the student surface.
 - Manual Submit opens an early-submit confirmation; time-up submission does not
   ask again. The visible button label is `Submit`, and the bottom Submit button
   uses the same gold glowing treatment as the Use-mode numbered capsules.
