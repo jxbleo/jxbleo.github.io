@@ -10,7 +10,7 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
   "note": "63 Words · 6 Quiz Groups",
   "visible": true,
   "sourceName": "NAWL",
-  "cefrLevel": "C1",
+  "cefrLevel": "C1+",
   "wordCount": 63,
   "words": [
     {
@@ -588,66 +588,86 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "rangeStart": 901,
       "rangeEnd": 910,
       "wordList": [
-        "herbicide",
+        "deceive",
+        "syllabus",
+        "neat",
+        "factorial",
+        "lever",
         "descriptor",
         "semester",
-        "syllabus",
-        "factorial",
-        "neat",
-        "deceive",
+        "underneath",
         "reactor",
-        "lever",
-        "underneath"
+        "herbicide"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Agricultural scientists are developing environmentally sustainable alternatives to conventional __________ products that harm beneficial insects and soil microorganisms.",
+          "prompt": "The company’s glossy brochure was designed less to inform investors than to __________ them about the real level of financial risk.",
+          "answer": "deceive",
+          "explanation": "deceive。语法上，was designed to 后接动词原形，所以填 deceive。语义上，公司宣传册不是为了告知投资者，而是为了“欺骗”他们，使他们低估真实财务风险。常见搭配：deceive someone about something。",
           "questionKey": "901-910:1"
         },
         {
           "number": 2,
-          "prompt": "Database administrators use a unique __________ to identify and categorize each record within the complex relational database management system.",
+          "prompt": "Before the course began, the professor uploaded a detailed __________ outlining the weekly readings, assessment criteria, and final research project.",
+          "answer": "syllabus",
+          "explanation": "syllabus。语法上，前面有 a detailed，后面需要可数名词单数。语义上，列出每周阅读、考核标准和研究项目的是“课程大纲”。常见搭配：a course syllabus / detailed syllabus。",
           "questionKey": "901-910:2"
         },
         {
           "number": 3,
-          "prompt": "International students must complete at least one full __________ of coursework before becoming eligible to apply for competitive research assistantship positions.",
+          "prompt": "Although the apartment was small, every shelf, cable, and document was arranged in a remarkably __________ and efficient way.",
+          "answer": "neat",
+          "explanation": "neat。语法上，was arranged in a remarkably ___ and efficient way 中需要形容词，与 efficient 并列修饰 way。语义上，书架、电线和文件都摆放得整齐有序，所以用 neat。",
           "questionKey": "901-910:3"
         },
         {
           "number": 4,
-          "prompt": "The professor distributed the course __________ on the first day, outlining all assignments and examination dates for the entire academic term.",
+          "prompt": "In combinatorics, students often use the __________ of a number when calculating how many ways several objects can be arranged.",
+          "answer": "factorial",
+          "explanation": "factorial。语法上，前面有 the，后面有 of a number，需要名词。语义上，在排列组合中用于计算排列方式的是数字的“阶乘”。常见搭配：the factorial of a number。",
           "questionKey": "901-910:4"
         },
         {
           "number": 5,
-          "prompt": "In combinatorial mathematics, the __________ of a positive integer n is the product of all positive integers less than or equal to n.",
+          "prompt": "By placing a long metal bar beneath the stone, the workers used it as a __________ to lift one side without machinery.",
+          "answer": "lever",
+          "explanation": "lever。语法上，as a ___ 中需要可数名词单数。语义上，工人把金属杆放在石头下面，用作“杠杆”来抬起石头。常见搭配：use something as a lever。",
           "questionKey": "901-910:5"
         },
         {
           "number": 6,
-          "prompt": "Her __________ handwriting and meticulously organized notes made it considerably easier for other researchers to comprehend her groundbreaking experimental findings.",
+          "prompt": "The assessment rubric included a specific __________ for each band, explaining what counted as fluent, accurate, or limited performance.",
+          "answer": "descriptor",
+          "explanation": "descriptor。语法上，前面有 a specific，需要可数名词单数。语义上，评分量表中解释每个分数等级表现特征的是“描述符”。常见搭配：assessment descriptor / band descriptor。",
           "questionKey": "901-910:6"
         },
         {
           "number": 7,
-          "prompt": "The con artist managed to __________ hundreds of investors by presenting fabricated financial statements and promising unrealistic returns on their capital.",
+          "prompt": "Because the exchange programme lasts only one __________, students must choose their courses carefully before arriving on campus.",
+          "answer": "semester",
+          "explanation": "semester。语法上，one ___ 后需要可数名词单数。语义上，交换项目只持续一个“学期”，所以学生必须提前谨慎选课。",
           "questionKey": "901-910:7"
         },
         {
           "number": 8,
-          "prompt": "The nuclear __________ underwent emergency shutdown procedures when sensors detected abnormal temperature fluctuations in the cooling system's primary circuit.",
+          "prompt": "The child found an old envelope hidden __________ the loose floorboard while helping his parents clean the attic.",
+          "answer": "underneath",
+          "explanation": "underneath。语法上，空格后接名词短语 the loose floorboard，需要介词。语义上，信封藏在松动地板“下面”。常见搭配：underneath the floorboard / surface。",
           "questionKey": "901-910:8"
         },
         {
           "number": 9,
-          "prompt": "The mechanic used a long metal __________ to pry open the jammed engine compartment door that had been stuck for several weeks.",
+          "prompt": "Engineers inspected the cooling system carefully because any fault inside the nuclear __________ could have severe safety consequences.",
+          "answer": "reactor",
+          "explanation": "reactor。语法上，前面有 the nuclear，需要名词。语义上，冷却系统故障会影响核“反应堆”的安全。常见搭配：nuclear reactor。",
           "questionKey": "901-910:9"
         },
         {
           "number": 10,
-          "prompt": "Hidden __________ the floorboards of the old Victorian mansion, archaeologists discovered a collection of letters dating back to the nineteenth century.",
+          "prompt": "The farmer avoided spraying the field before rain, since the __________ might wash into nearby streams and damage aquatic plants.",
+          "answer": "herbicide",
+          "explanation": "herbicide。语法上，前面有 the，后面谓语是 might wash，需要名词作主语。语义上，农民避免雨前喷洒，因为“除草剂”可能流入河流伤害水生植物。",
           "questionKey": "901-910:10"
         }
       ]
@@ -658,66 +678,86 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "rangeStart": 911,
       "rangeEnd": 920,
       "wordList": [
-        "cheat",
-        "radar",
         "bonus",
-        "bullet",
-        "whoever",
-        "whichever",
+        "cheat",
         "missile",
         "rub",
+        "radar",
         "memorize",
-        "scripture"
+        "scripture",
+        "whoever",
+        "whichever",
+        "bullet"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Academic institutions have implemented stringent policies and surveillance technologies to detect students who attempt to __________ during examinations or plagiarize assignments.",
+          "prompt": "The finance team received a year-end __________ after the company exceeded its revenue target for the third consecutive quarter.",
+          "answer": "bonus",
+          "explanation": "bonus。语法上，前面有 a year-end，需要可数名词单数。语义上，公司超过营收目标后，财务团队获得的是年终“奖金”。常见搭配：year-end bonus。",
           "questionKey": "911-920:1"
         },
         {
           "number": 2,
-          "prompt": "Aviation authorities rely on sophisticated __________ systems to monitor aircraft positions and prevent potential collisions in congested airspace around major airports.",
+          "prompt": "During the exam, the invigilator warned that anyone attempting to __________ would immediately lose their marks and face disciplinary action.",
+          "answer": "cheat",
+          "explanation": "cheat。语法上，attempting to 后接动词原形。语义上，考试中试图“作弊”的人会被取消成绩并受到处分。",
           "questionKey": "911-920:2"
         },
         {
           "number": 3,
-          "prompt": "The company's performance-based compensation structure includes an annual __________ that can amount to thirty percent of an employee's base salary.",
+          "prompt": "The defence system failed to detect the incoming __________ until it had already crossed the border at high speed.",
+          "answer": "missile",
+          "explanation": "missile。语法上，前面有 the incoming，需要名词。语义上，防御系统未能探测到高速越境的“导弹”。常见搭配：incoming missile。",
           "questionKey": "911-920:3"
         },
         {
           "number": 4,
-          "prompt": "The forensic ballistics expert examined the __________ fragments recovered from the crime scene to determine the caliber and possible origin of the weapon.",
+          "prompt": "To remove the stain, she had to __________ the fabric gently rather than scrub it so hard that the colour faded.",
+          "answer": "rub",
+          "explanation": "rub。语法上，had to 后接动词原形。语义上，去污时需要轻轻“揉搓”布料，而不是用力刷坏颜色。",
           "questionKey": "911-920:4"
         },
         {
           "number": 5,
-          "prompt": "The scholarship committee stated that __________ demonstrates the most outstanding academic achievement and community service will receive the prestigious award.",
+          "prompt": "Air-traffic controllers rely on __________ to track aircraft movements even when visibility is reduced by fog or heavy rain.",
+          "answer": "radar",
+          "explanation": "radar。语法上，rely on 后接名词。语义上，空管在雾天或大雨中追踪飞机位置依赖的是“雷达”。常见搭配：rely on radar / radar system。",
           "questionKey": "911-920:5"
         },
         {
           "number": 6,
-          "prompt": "Participants may select __________ workshop session appeals most to their professional development interests and aligns with their career advancement objectives.",
+          "prompt": "Medical students cannot simply understand the concept; they also have to __________ long lists of symptoms, procedures, and drug interactions.",
+          "answer": "memorize",
+          "explanation": "memorize。语法上，have to 后接动词原形。语义上，医学生不仅要理解概念，还要“记住”大量症状、流程和药物相互作用。常见搭配：memorize a list / memorize information。",
           "questionKey": "911-920:6"
         },
         {
           "number": 7,
-          "prompt": "The defense ministry announced successful testing of an intercontinental ballistic __________ capable of reaching targets thousands of kilometers away with unprecedented accuracy.",
+          "prompt": "The scholar compared several passages of ancient __________ to show how different traditions interpreted moral responsibility.",
+          "answer": "scripture",
+          "explanation": "scripture。语法上，ancient ___ 中需要名词。语义上，学者比较古代“经文”段落，分析不同传统如何解释道德责任。",
           "questionKey": "911-920:7"
         },
         {
           "number": 8,
-          "prompt": "The physiotherapist instructed the patient to gently __________ the injured muscle tissue using circular motions to improve blood circulation and accelerate healing.",
+          "prompt": "The committee agreed that __________ submitted the strongest proposal would receive funding, regardless of seniority or department.",
+          "answer": "whoever",
+          "explanation": "whoever。语法上，空格引导名词性从句作 agreed that 后面从句的主语。语义上，委员会决定“无论谁”提交最强方案，都能获得资助。",
           "questionKey": "911-920:8"
         },
         {
           "number": 9,
-          "prompt": "Actors performing in classical theatre productions must __________ extensive passages of dialogue, sometimes comprising thousands of words in archaic language.",
+          "prompt": "You may choose __________ option suits your research design, provided that your method is clearly justified in the final report.",
+          "answer": "whichever",
+          "explanation": "whichever。语法上，空格修饰 option，需要限定词。语义上，学生可以选择“无论哪个”适合研究设计的选项。常见搭配：whichever option / whichever method。",
           "questionKey": "911-920:9"
         },
         {
           "number": 10,
-          "prompt": "Theological scholars spent decades analyzing ancient __________ manuscripts to better understand the historical context and linguistic nuances of religious texts.",
+          "prompt": "The editor asked him to replace the long paragraph with a single __________ point so readers could scan the key idea quickly.",
+          "answer": "bullet",
+          "explanation": "bullet。语法上，a single ___ point 中需要名词作定语。语义上，编辑要求把长段落改成一个“项目符号点”，方便读者快速浏览。常见搭配：bullet point。",
           "questionKey": "911-920:10"
         }
       ]
@@ -728,66 +768,86 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "rangeStart": 921,
       "rangeEnd": 930,
       "wordList": [
-        "halfway",
-        "postgraduate",
-        "bang",
-        "incredible",
-        "deadline",
-        "pardon",
-        "semi",
-        "artwork",
         "punch",
-        "millimeter"
+        "postgraduate",
+        "artwork",
+        "pardon",
+        "millimeter",
+        "incredible",
+        "halfway",
+        "deadline",
+        "bang",
+        "semi"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The expedition team reached the __________ point of their journey to the summit before deteriorating weather conditions forced them to establish camp.",
+          "prompt": "The frustrated player did not merely push the locker; he tried to __________ it with enough force to leave a visible dent.",
+          "answer": "punch",
+          "explanation": "punch。语法上，tried to 后接动词原形。语义上，球员不是推柜子，而是用力“拳击”柜子，甚至留下凹痕。",
           "questionKey": "921-930:1"
         },
         {
           "number": 2,
-          "prompt": "The university offers numerous __________ programs in specialized fields such as molecular biology, artificial intelligence, and comparative literature for advanced students.",
+          "prompt": "After finishing her undergraduate degree, she applied for a __________ programme in environmental policy at a university abroad.",
+          "answer": "postgraduate",
+          "explanation": "postgraduate。语法上，a ___ programme 中需要形容词修饰 programme。语义上，她本科毕业后申请的是“研究生”项目。常见搭配：postgraduate programme / postgraduate degree。",
           "questionKey": "921-930:2"
         },
         {
           "number": 3,
-          "prompt": "The manufacturing plant suffered significant damage when a gas leak caused a massive __________ that shattered windows in buildings several blocks away.",
+          "prompt": "The museum restored the damaged __________ carefully before displaying it in the main gallery for the public exhibition.",
+          "answer": "artwork",
+          "explanation": "artwork。语法上，前面有 the damaged，需要名词。语义上，博物馆修复并展出的是受损“艺术品”。常见搭配：restore artwork / display artwork。",
           "questionKey": "921-930:3"
         },
         {
           "number": 4,
-          "prompt": "The acrobat's performance featured __________ feats of balance and strength that left the audience gasping in astonishment and admiration.",
+          "prompt": "The minister requested an official __________ for several prisoners whose sentences were considered unusually harsh.",
+          "answer": "pardon",
+          "explanation": "pardon。语法上，前面有 an official，需要可数名词单数。语义上，部长为刑罚过重的囚犯请求正式“赦免”。常见搭配：request/grant a pardon。",
           "questionKey": "921-930:4"
         },
         {
           "number": 5,
-          "prompt": "The journalist missed the submission __________ for the investigative report despite working through the night to verify sources and fact-check information.",
+          "prompt": "The engineer adjusted the component by less than one __________, yet the tiny change solved the alignment problem.",
+          "answer": "millimeter",
+          "explanation": "millimeter。语法上，less than one 后接可数名词单数。语义上，工程师只调整了不到一“毫米”，却解决了对齐问题。",
           "questionKey": "921-930:5"
         },
         {
           "number": 6,
-          "prompt": "The governor granted a controversial __________ to the convicted criminal, citing newly discovered evidence that cast doubt on the original verdict.",
+          "prompt": "The rescue team made an __________ effort to reach the trapped climbers despite freezing temperatures and falling rocks.",
+          "answer": "incredible",
+          "explanation": "incredible。语法上，空格修饰名词 effort，需要形容词。语义上，救援队在极端环境下完成了“惊人的”努力。常见搭配：an incredible effort。",
           "questionKey": "921-930:6"
         },
         {
           "number": 7,
-          "prompt": "The logistics company operates a fleet of __________ trucks that transport goods across the continent on regular scheduled routes between distribution centers.",
+          "prompt": "We were only __________ through the report when the client called to say the project requirements had changed again.",
+          "answer": "halfway",
+          "explanation": "halfway。语法上，were only ___ through 中需要副词。语义上，他们报告只看到“一半/中途”，客户就改变了要求。常见搭配：halfway through something。",
           "questionKey": "921-930:7"
         },
         {
           "number": 8,
-          "prompt": "Museum curators carefully examined the Renaissance __________ using ultraviolet light and chemical analysis to authenticate its provenance and detect any restoration work.",
+          "prompt": "The grant application must be submitted before the final __________, because late proposals are automatically rejected by the system.",
+          "answer": "deadline",
+          "explanation": "deadline。语法上，前面有 the final，需要名词。语义上，申请必须在最后“截止日期”前提交，迟交会被系统拒绝。常见搭配：meet/submit before a deadline。",
           "questionKey": "921-930:8"
         },
         {
           "number": 9,
-          "prompt": "The boxer delivered a devastating __________ to his opponent's midsection that ended the championship match in the seventh round with a technical knockout.",
+          "prompt": "A sudden __________ from the kitchen made everyone stop talking and turn toward the door in alarm.",
+          "answer": "bang",
+          "explanation": "bang。语法上，前面有 a sudden，需要可数名词单数。语义上，厨房突然传来“砰的一声”，让大家停下谈话。",
           "questionKey": "921-930:9"
         },
         {
           "number": 10,
-          "prompt": "The engineering specifications required that all measurements be accurate to within one __________ to ensure proper assembly of the precision machinery.",
+          "prompt": "The driver parked the __________ near the loading bay while workers prepared to unload the refrigerated goods.",
+          "answer": "semi",
+          "explanation": "semi。语法上，前面有 the，这里需要名词。语义上，司机把“半挂车”停在装卸区附近，等待卸货。",
           "questionKey": "921-930:10"
         }
       ]
@@ -798,66 +858,86 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "rangeStart": 931,
       "rangeEnd": 940,
       "wordList": [
-        "volition",
-        "ridiculous",
-        "shuttle",
-        "tricky",
-        "athletic",
-        "cheer",
-        "multi",
-        "aerosol",
         "slash",
-        "homework"
+        "ridiculous",
+        "multi",
+        "homework",
+        "volition",
+        "tricky",
+        "cheer",
+        "shuttle",
+        "aerosol",
+        "athletic"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The philosopher argued that genuine moral responsibility requires actions to be performed of one's own __________ rather than under coercion or manipulation.",
+          "prompt": "The company decided to __________ its advertising budget after two consecutive quarters of disappointing sales.",
+          "answer": "slash",
+          "explanation": "slash。语法上，decided to 后接动词原形。语义上，公司销售不佳后决定“大幅削减”广告预算。常见搭配：slash a budget / slash costs。",
           "questionKey": "931-940:1"
         },
         {
           "number": 2,
-          "prompt": "His __________ assertion that the earth is flat contradicts centuries of scientific evidence and demonstrates a fundamental misunderstanding of basic astronomy.",
+          "prompt": "The lawyer dismissed the accusation as __________ because there was no evidence, no motive, and no credible witness.",
+          "answer": "ridiculous",
+          "explanation": "ridiculous。语法上，as ___ 中需要形容词作宾语补足语。语义上，没有证据、动机或可信证人，所以这个指控“荒谬”。常见搭配：dismiss something as ridiculous。",
           "questionKey": "931-940:2"
         },
         {
           "number": 3,
-          "prompt": "The airport operates a complimentary __________ service that transports passengers between the terminal building and remote parking facilities every fifteen minutes.",
+          "prompt": "The new platform supports __________ user accounts, allowing teachers, students, and administrators to access different functions.",
+          "answer": "multi",
+          "explanation": "multi。语法上，空格与 user 构成复合形容词，修饰 accounts。语义上，平台支持“多用户”账号，让不同角色进入不同功能。常见搭配：multi-user accounts / multi-user platform。",
           "questionKey": "931-940:3"
         },
         {
           "number": 4,
-          "prompt": "The negotiation proved __________ because both parties had conflicting interests and were unwilling to compromise on several critical contractual provisions.",
+          "prompt": "Teachers should avoid assigning repetitive __________ that measures endurance more than understanding or independent thinking.",
+          "answer": "homework",
+          "explanation": "homework。语法上，assigning repetitive ___ 中需要名词。语义上，老师应避免布置重复性“家庭作业”，否则测的是耐力而不是理解力。",
           "questionKey": "931-940:4"
         },
         {
           "number": 5,
-          "prompt": "The university's __________ department offers comprehensive training programs in various sports including swimming, gymnastics, track and field, and team games.",
+          "prompt": "The concept of free __________ becomes complicated when people’s choices are shaped by poverty, pressure, or limited information.",
+          "answer": "volition",
+          "explanation": "volition。语法上，free ___ 中需要名词。语义上，当选择受到贫困、压力和限制影响时，“自由意志”这个概念会变复杂。常见搭配：free volition。",
           "questionKey": "931-940:5"
         },
         {
           "number": 6,
-          "prompt": "Spectators began to __________ enthusiastically when the underdog team scored an unexpected goal in the final minutes of the championship tournament.",
+          "prompt": "Negotiating with several departments at once can be __________ because each team has different priorities and hidden constraints.",
+          "answer": "tricky",
+          "explanation": "tricky。语法上，can be ___ 中需要形容词作表语。语义上，同时和多个部门谈判很“棘手”，因为各方优先级和隐藏约束不同。",
           "questionKey": "931-940:6"
         },
         {
           "number": 7,
-          "prompt": "The corporation's __________ national expansion strategy involves establishing subsidiaries in fifteen countries across four continents within the next fiscal year.",
+          "prompt": "The crowd began to __________ when the injured runner stood up and slowly crossed the finish line.",
+          "answer": "cheer",
+          "explanation": "cheer。语法上，began to 后接动词原形。语义上，观众看到受伤选手站起来冲线，于是开始“欢呼”。",
           "questionKey": "931-940:7"
         },
         {
           "number": 8,
-          "prompt": "Environmental regulations now prohibit the use of certain __________ propellants that contribute to ozone layer depletion and atmospheric pollution problems.",
+          "prompt": "A regular airport __________ takes passengers from the terminal to nearby hotels every twenty minutes.",
+          "answer": "shuttle",
+          "explanation": "shuttle。语法上，airport ___ 中需要名词。语义上，机场到酒店之间定时往返的是“穿梭巴士”。常见搭配：airport shuttle。",
           "questionKey": "931-940:8"
         },
         {
           "number": 9,
-          "prompt": "The government announced plans to __________ the education budget by twenty percent, prompting widespread protests from teachers and parents across the nation.",
+          "prompt": "Scientists measured the spread of an __________ in the air to understand how tiny particles remain suspended indoors.",
+          "answer": "aerosol",
+          "explanation": "aerosol。语法上，前面有 an，需要可数名词单数。语义上，科学家测量空气中“气溶胶”的扩散，以理解微粒如何悬浮在室内。",
           "questionKey": "931-940:9"
         },
         {
           "number": 10,
-          "prompt": "Students complained that the excessive amount of __________ assigned over the holiday break prevented them from spending quality time with their families.",
+          "prompt": "Although he was academically strong, his unusually __________ build also made him a natural candidate for the rowing team.",
+          "answer": "athletic",
+          "explanation": "athletic。语法上，空格修饰名词 build，需要形容词。语义上，他体格健壮，因此适合赛艇队。常见搭配：athletic build。",
           "questionKey": "931-940:10"
         }
       ]
@@ -868,157 +948,180 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "rangeStart": 941,
       "rangeEnd": 950,
       "wordList": [
-        "connector",
-        "terribly",
-        "nasty",
-        "sponsorship",
-        "scroll",
         "chess",
+        "terribly",
         "unintelligible",
-        "incredibly",
         "circa",
+        "scroll",
+        "sponsorship",
+        "connector",
+        "nasty",
+        "incredibly",
         "neo"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The electronics technician identified a faulty __________ as the source of the intermittent power supply problem affecting the computer network's server equipment.",
+          "prompt": "Playing competitive __________ requires not only memory and calculation but also emotional control under long periods of pressure.",
+          "answer": "chess",
+          "explanation": "chess。语法上，playing competitive ___ 中需要名词。语义上，需要记忆、计算和长期情绪控制的竞技项目是“国际象棋”。常见搭配：competitive chess。",
           "questionKey": "941-950:1"
         },
         {
           "number": 2,
-          "prompt": "The patient felt __________ anxious about the upcoming surgical procedure despite the surgeon's reassurances regarding the operation's high success rate.",
+          "prompt": "The patient was __________ anxious before the operation, even though the doctor had explained that the procedure was routine.",
+          "answer": "terribly",
+          "explanation": "terribly。语法上，空格修饰形容词 anxious，需要副词。语义上，病人在手术前“非常”焦虑，即使医生说手术很常规。常见搭配：terribly anxious / terribly sorry。",
           "questionKey": "941-950:2"
         },
         {
           "number": 3,
-          "prompt": "The restaurant received numerous complaints about the __________ behavior of a particular waiter who was subsequently dismissed for unprofessional conduct toward customers.",
+          "prompt": "The recording was almost __________ because the speaker was too far from the microphone and traffic noise drowned out every sentence.",
+          "answer": "unintelligible",
+          "explanation": "unintelligible。语法上，was almost ___ 中需要形容词作表语。语义上，录音中说话者离麦克风太远、交通噪音太大，所以几乎“难以理解”。",
           "questionKey": "941-950:3"
         },
         {
           "number": 4,
-          "prompt": "The telecommunications company secured a lucrative __________ deal with the professional sports franchise worth millions of dollars over a five-year contract period.",
+          "prompt": "The manuscript was probably written __________ 1450, although the exact date remains uncertain because the original cover is missing.",
+          "answer": "circa",
+          "explanation": "circa。语法上，空格位于年份前，表示大约时间，需要介词。语义上，手稿大约写于 1450 年，但准确日期不确定。",
           "questionKey": "941-950:4"
         },
         {
           "number": 5,
-          "prompt": "Ancient manuscripts require careful preservation because the parchment __________ documents are extremely fragile and susceptible to deterioration from humidity and light.",
+          "prompt": "Users often __________ through social media automatically, barely noticing how much time has passed before they stop.",
+          "answer": "scroll",
+          "explanation": "scroll。语法上，often ___ through 中需要动词原形。语义上，用户常常无意识地在社交媒体上“滚动浏览”。常见搭配：scroll through social media。",
           "questionKey": "941-950:5"
         },
         {
           "number": 6,
-          "prompt": "The grandmaster's brilliant __________ strategy involved sacrificing a knight to create a devastating attack that his opponent failed to anticipate adequately.",
+          "prompt": "The athlete lost her main __________ after the brand decided to shift its marketing budget to younger competitors.",
+          "answer": "sponsorship",
+          "explanation": "sponsorship。语法上，前面有 her main，需要名词。语义上，品牌改变营销预算后，运动员失去了主要“赞助”。常见搭配：lose/gain sponsorship。",
           "questionKey": "941-950:6"
         },
         {
           "number": 7,
-          "prompt": "The speaker's heavy accent and use of technical jargon rendered his presentation virtually __________ to audience members unfamiliar with the specialized terminology.",
+          "prompt": "The cable failed because a small plastic __________ inside the device had cracked after years of repeated use.",
+          "answer": "connector",
+          "explanation": "connector。语法上，前面有 a small plastic，需要名词。语义上，设备里一个塑料“连接器”裂开，导致电缆失效。",
           "questionKey": "941-950:7"
         },
         {
           "number": 8,
-          "prompt": "The research findings were __________ significant, potentially revolutionizing our understanding of cellular mechanisms and opening new avenues for therapeutic interventions.",
+          "prompt": "The food left a __________ smell in the fridge, so they threw it away and cleaned every shelf with disinfectant.",
+          "answer": "nasty",
+          "explanation": "nasty。语法上，空格修饰名词 smell，需要形容词。语义上，食物在冰箱里留下令人不快的气味，所以用 nasty。常见搭配：a nasty smell。",
           "questionKey": "941-950:8"
         },
         {
           "number": 9,
-          "prompt": "The archaeological excavation uncovered pottery fragments dating to __________ 3000 BCE, providing valuable insights into early Bronze Age civilization and trade.",
+          "prompt": "The film was __________ popular among teenagers, partly because its humour spread quickly through short online clips.",
+          "answer": "incredibly",
+          "explanation": "incredibly。语法上，空格修饰形容词 popular，需要副词。语义上，这部电影在青少年中“非常”受欢迎，部分原因是短视频传播很快。常见搭配：incredibly popular / incredibly difficult。",
           "questionKey": "941-950:9"
         },
         {
           "number": 10,
-          "prompt": "The architectural movement known as __________ classical design incorporates traditional elements while employing modern materials and construction techniques.",
+          "prompt": "Critics described the building as __________ classical because it borrowed ancient forms but used modern materials and technology.",
+          "answer": "neo",
+          "explanation": "neo。语法上，空格与 classical 组成形容词，修饰建筑风格。语义上，该建筑借用古典形式但使用现代材料，因此被称为“新古典式”。常见搭配：neo-classical architecture。",
           "questionKey": "941-950:10"
         }
       ]
     },
     {
-      "id": "951-963",
+      "id": "951-960",
       "label": "第六组",
       "rangeStart": 951,
-      "rangeEnd": 963,
+      "rangeEnd": 960,
       "wordList": [
         "entrant",
         "hawk",
         "handout",
-        "demonstrator",
-        "descendent",
-        "sniff",
+        "tech",
         "rack",
+        "applause",
+        "demonstrator",
         "calculator",
         "mall",
-        "tech",
-        "applause",
-        "stadium",
         "sneeze"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The newest __________ to the competitive smartphone market announced an innovative device featuring advanced artificial intelligence capabilities and extended battery life.",
-          "questionKey": "951-963:1"
+          "prompt": "As a new __________ to the competition, she had to submit proof of age, a portfolio, and a short personal statement.",
+          "answer": "entrant",
+          "explanation": "entrant。语法上，前面有 a new，后面有 to the competition，需要可数名词单数。语义上，首次参加比赛的人是“参赛者”。常见搭配：entrant to a competition。",
+          "questionKey": "951-960:1"
         },
         {
           "number": 2,
-          "prompt": "Ornithologists observed the __________ circling high above the canyon, searching for prey with its remarkably acute vision and powerful hunting instincts.",
-          "questionKey": "951-963:2"
+          "prompt": "In the debate, the senator was known as a foreign-policy __________ who consistently supported military intervention.",
+          "answer": "hawk",
+          "explanation": "hawk。语法上，前面有 a foreign-policy，需要名词。语义上，这位参议员长期支持军事干预，因此是外交政策上的“鹰派人物”。常见搭配：foreign-policy hawk。",
+          "questionKey": "951-960:2"
         },
         {
           "number": 3,
-          "prompt": "The professor prepared a comprehensive __________ containing detailed diagrams and supplementary explanations to help students understand the complex theoretical concepts.",
-          "questionKey": "951-963:3"
+          "prompt": "The teacher prepared a printed __________ so students could follow the lecture without copying every definition by hand.",
+          "answer": "handout",
+          "explanation": "handout。语法上，前面有 a printed，需要可数名词单数。语义上，老师准备的是课堂“讲义”，方便学生跟上讲解。常见搭配：printed handout。",
+          "questionKey": "951-960:3"
         },
         {
           "number": 4,
-          "prompt": "Political activists organized as a __________ group marched through the city center demanding immediate government action on climate change and environmental protection.",
-          "questionKey": "951-963:4"
+          "prompt": "Many small businesses now rely on basic __________ tools to manage bookings, payments, customer messages, and inventory.",
+          "answer": "tech",
+          "explanation": "tech。语法上，空格修饰 tools，作名词定语。语义上，小企业依赖基础“科技/技术”工具管理预约、付款、消息和库存。常见搭配：tech tools / tech company。",
+          "questionKey": "951-960:4"
         },
         {
           "number": 5,
-          "prompt": "Genealogical research revealed that she was a direct __________ of a prominent historical figure who played a crucial role in the nation's independence.",
-          "questionKey": "951-963:5"
+          "prompt": "Heavy coats were hanging from the metal __________ near the entrance, leaving little space for umbrellas or bags.",
+          "answer": "rack",
+          "explanation": "rack。语法上，前面有 the metal，需要名词。语义上，大衣挂在入口处的金属“架子”上。常见搭配：coat rack / metal rack。",
+          "questionKey": "951-960:5"
         },
         {
           "number": 6,
-          "prompt": "The sommelier encouraged guests to __________ the wine's complex bouquet before tasting to fully appreciate its aromatic characteristics and subtle nuances.",
-          "questionKey": "951-963:6"
+          "prompt": "The audience gave a long round of __________ after the actor delivered the final speech with unusual restraint and power.",
+          "answer": "applause",
+          "explanation": "applause。语法上，a long round of 后接不可数名词或集合性名词。语义上，演员完成最后演讲后，观众给予长时间“掌声”。常见搭配：a round of applause。",
+          "questionKey": "951-960:6"
         },
         {
           "number": 7,
-          "prompt": "The wine cellar featured an impressive __________ system that could store thousands of bottles at precisely controlled temperature and humidity levels.",
-          "questionKey": "951-963:7"
+          "prompt": "The police arrested a __________ who had blocked the road during a protest against the proposed housing development.",
+          "answer": "demonstrator",
+          "explanation": "demonstrator。语法上，前面有 a，需要可数名词单数。语义上，在抗议中堵路的人是“示威者”。常见搭配：arrest a demonstrator。",
+          "questionKey": "951-960:7"
         },
         {
           "number": 8,
-          "prompt": "Students are prohibited from using a __________ during the mathematics examination as the test is designed to assess mental arithmetic skills.",
-          "questionKey": "951-963:8"
+          "prompt": "Students were allowed to use a scientific __________ during the exam, but phones and smart watches were strictly forbidden.",
+          "answer": "calculator",
+          "explanation": "calculator。语法上，前面有 a scientific，需要名词。语义上，考试允许使用科学“计算器”，但禁止手机和智能手表。常见搭配：scientific calculator。",
+          "questionKey": "951-960:8"
         },
         {
           "number": 9,
-          "prompt": "The massive shopping __________ complex features over two hundred retail stores, multiple restaurants, and entertainment facilities spread across three expansive floors.",
-          "questionKey": "951-963:9"
+          "prompt": "The new shopping __________ includes restaurants, cinemas, clinics, and a large supermarket on the basement level.",
+          "answer": "mall",
+          "explanation": "mall。语法上，shopping ___ 中需要名词。语义上，包含餐厅、影院、诊所和超市的是“购物中心”。常见搭配：shopping mall。",
+          "questionKey": "951-960:9"
         },
         {
           "number": 10,
-          "prompt": "The innovative startup company attracted significant investment from venture capital firms specializing in emerging __________ sectors and disruptive digital technologies.",
-          "questionKey": "951-963:10"
-        },
-        {
-          "number": 11,
-          "prompt": "The orchestra received thunderous __________ from the audience following their magnificent performance of the symphony's challenging final movement at the concert.",
-          "questionKey": "951-963:11"
-        },
-        {
-          "number": 12,
-          "prompt": "The newly constructed __________ can accommodate seventy thousand spectators and features state-of-the-art facilities for hosting international sporting competitions and concerts.",
-          "questionKey": "951-963:12"
-        },
-        {
-          "number": 13,
-          "prompt": "The allergic reaction caused her to __________ repeatedly throughout the presentation, forcing her to excuse herself temporarily from the important board meeting.",
-          "questionKey": "951-963:13"
+          "prompt": "He tried not to __________ during the recording, but the dust in the studio made it almost impossible to stay silent.",
+          "answer": "sneeze",
+          "explanation": "sneeze。语法上，tried not to 后接动词原形。语义上，录音时他尽量不“打喷嚏”，但工作室灰尘让他很难保持安静。",
+          "questionKey": "951-960:10"
         }
       ]
     }
-  ]
+  ],
+  "description": "Academic vocabulary practice for NAWL-J (901-963), with quiz groups for 901-960."
 };
