@@ -1318,6 +1318,9 @@ async function getActivityState(teacher) {
   return {
     success: true,
     attempts_seen_at: teacher.teacher_activity_attempts_seen_at || null,
+    reviewed_attempt_ids: Array.isArray(teacher.teacher_activity_attempt_reviewed_ids)
+      ? teacher.teacher_activity_attempt_reviewed_ids.map(text).filter(Boolean)
+      : [],
   };
 }
 
@@ -1331,6 +1334,27 @@ async function markAttemptsRead(teacher) {
   return {
     success: true,
     attempts_seen_at: now,
+  };
+}
+
+async function markActivityAttemptsReviewed(event, teacher) {
+  if (!teacher._id) throw new Error("TEACHER_PROFILE_ID_MISSING");
+  const incomingIds = Array.isArray(event.attempt_ids)
+    ? event.attempt_ids.map(text).filter(Boolean).slice(0, 100)
+    : [];
+  const currentIds = Array.isArray(teacher.teacher_activity_attempt_reviewed_ids)
+    ? teacher.teacher_activity_attempt_reviewed_ids.map(text).filter(Boolean)
+    : [];
+  const merged = [...new Set([...currentIds, ...incomingIds])].slice(-3000);
+  const now = new Date();
+  await db.collection("students").doc(teacher._id).update({
+    teacher_activity_attempt_reviewed_ids: merged,
+    teacher_activity_attempt_reviewed_at: now,
+    updated_at: now,
+  });
+  return {
+    success: true,
+    reviewed_attempt_ids: merged,
   };
 }
 
@@ -1851,6 +1875,7 @@ exports.main = async (event) => {
     if (action === "listAttempts") return await listAttempts();
     if (action === "getActivityState") return await getActivityState(teacher);
     if (action === "markAttemptsRead") return await markAttemptsRead(teacher);
+    if (action === "markActivityAttemptsReviewed") return await markActivityAttemptsReviewed(event, teacher);
     if (action === "listDisputes") return await listDisputes();
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);

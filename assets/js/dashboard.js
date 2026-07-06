@@ -73,6 +73,35 @@
             .replace(/'/g, '&#39;');
     }
 
+    function vocabularySourceKey(item) {
+        var raw = [
+            item && item.sourceName,
+            item && item.source_name,
+            item && item.set_id,
+            item && item.id,
+            item && item.title,
+            item && item.topic,
+            item && item.course,
+            item && item.type,
+            item && item.section,
+            item && item.sectionId,
+            item && item.section_id
+        ].join(' ').toUpperCase();
+        if (/(^|\s|-)NGSL(?:\s|-|$)/.test(raw)) return 'ngsl';
+        if (/(^|\s|-)NAWL(?:\s|-|$)/.test(raw)) return 'nawl';
+        if (/THINK\s*2|THINK2|TK2/.test(raw)) return 'tk2';
+        return '';
+    }
+
+    function vocabularySourceLabel(item) {
+        var labels = {
+            ngsl: 'NGSL',
+            nawl: 'NAWL',
+            tk2: 'TK2'
+        };
+        return labels[vocabularySourceKey(item)] || '';
+    }
+
     function appIconConfig(system) {
         var normalized = String(system || '').trim().toUpperCase();
         if (normalized === 'IELTS') {
@@ -516,16 +545,19 @@
                 'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
             : '';
         var sectionId = set.sectionId || set.section_id || '';
-        var eyebrow = sectionId
+        var vocabLabel = vocabularySourceLabel(set);
+        var eyebrow = vocabLabel || (sectionId
             ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment')
-            : (set.course || set.type || 'Assignment');
+            : (set.course || set.type || 'Assignment'));
         var entryStatus = finished ? status : 'not-passed';
+        var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="resource-card library-task-card assignment-task-card' +
             (finished ? ' finished-assignment-card ' + escapeHtml(status) : '') +
             (replyCount ? ' has-teacher-replies' : '') +
             '" data-assignment-id="' + escapeHtml(item.assignment_id || '') + '" data-reply-key="' + escapeHtml(replyKey) + '"' +
             ' data-entry-kind="' + escapeHtml(eyebrow) + '" data-entry-title="' + escapeHtml(set.title || setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(entryStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(set.title || setId || 'assignment') + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
@@ -539,7 +571,6 @@
                     ? '<button class="card-button star-button" type="button" data-get-star="' + escapeHtml(item.assignment_id || '') + '">Get Star</button>'
                     : '') +
                 replyButton +
-                (finished ? '<span class="assignment-result-stamp ' + escapeHtml(status) + '">' + escapeHtml(status === 'mastered' ? 'MASTERED' : 'PASSED') + '</span>' : '') +
             '</div>' +
         '</article>';
     }
@@ -578,13 +609,13 @@
         return (Math.round(number * 10) / 10).toString().replace(/\.0$/, '') + '%';
     }
 
-    function practiceEntryStatusText(status, best) {
-        if (status === 'not-passed') return 'Not yet';
-        var labels = {
-            passed: 'Passed',
-            mastered: 'Mastered'
-        };
-        return (labels[status] || 'Not yet') + ' · Best ' + formatEntryPercent(best);
+    function practiceEntryLocked(element) {
+        return String(element && element.dataset && element.dataset.entryLocked || '').toLowerCase() === 'true';
+    }
+
+    function practiceEntryScoreHtml(best, locked) {
+        return (locked ? '<span class="practice-entry-score-lock" aria-hidden="true">&#128274;</span>' : '') +
+            '<span>Score: ' + escapeHtml(formatEntryPercent(best)) + '</span>';
     }
 
     function ensurePracticeEntryDialog() {
@@ -597,7 +628,6 @@
         overlay.innerHTML =
             '<div class="practice-entry-shell">' +
                 '<section class="practice-entry-card" role="dialog" aria-modal="true" aria-label="Practice entry confirmation">' +
-                    '<div class="practice-entry-stamp">Ready?</div>' +
                     '<div class="practice-entry-task">' +
                         '<small id="practice-entry-kind">Practice</small>' +
                         '<strong id="practice-entry-title">Practice</strong>' +
@@ -652,11 +682,12 @@
         var overlay = ensurePracticeEntryDialog();
         var status = practiceEntryStatus(element);
         var best = element && element.dataset && element.dataset.entryBest;
+        var locked = practiceEntryLocked(element);
         overlay.dataset.href = href || '';
         overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
         overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
         overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
-        overlay.querySelector('#practice-entry-status').textContent = practiceEntryStatusText(status, best);
+        overlay.querySelector('#practice-entry-status').innerHTML = practiceEntryScoreHtml(best, locked);
         overlay.hidden = false;
         overlay.querySelector('#practice-entry-enter').focus();
         document.addEventListener('keydown', handlePracticeEntryKeydown);
@@ -936,18 +967,18 @@
     var libraryCatalog = null;
 
     var LIBRARY_GROUP_IDS = {
-        general: ['basics'],
-        exam: ['ielts', 'dse'],
-        lessons: ['lessons']
+        general: ['basics', 'lessons'],
+        exam: ['ielts', 'dse']
     };
 
     var LIBRARY_SUB_TABS = {
         general: [
-            { id: '', label: 'All' },
             { id: 'bbc-six-minute-english', label: 'BBC', yearFilter: true },
-            { id: 'vocabulary', label: 'Vocabulary' },
-            { id: 'grammar', label: 'Grammar' },
-            { id: 'general-writing', label: 'Writing' }
+            { id: 'ngsl', label: 'NGSL', vocabularySource: 'ngsl' },
+            { id: 'nawl', label: 'NAWL', vocabularySource: 'nawl' },
+            { id: 'tk2', label: 'TK2', vocabularySource: 'tk2' },
+            { id: 'lesson-dse', label: 'DSE' },
+            { id: 'lesson-ielts', label: 'IELTS' }
         ],
         exam: [
             { id: '', label: 'All' },
@@ -957,12 +988,6 @@
             { id: 'dse-english-paper-2', label: 'DSE Writing' },
             { id: 'dse-integrated', label: 'DSE Integrated' },
             { id: 'dse-english-paper-4', label: 'DSE Speaking' }
-        ],
-        lessons: [
-            { id: '', label: 'All' },
-            { id: 'lesson-grammar', label: 'Grammar' },
-            { id: 'lesson-dse', label: 'DSE' },
-            { id: 'lesson-ielts', label: 'IELTS' }
         ]
     };
 
@@ -990,6 +1015,18 @@
         return labels[sectionId] || fallback || 'Practice';
     }
 
+    function librarySubTabMatchesSection(config, section) {
+        if (!config || !config.id) return true;
+        if (config.vocabularySource) return section && section.id === 'vocabulary';
+        return section && section.id === config.id;
+    }
+
+    function librarySubTabMatchesItem(config, item) {
+        if (!config || !config.id) return true;
+        if (config.vocabularySource) return vocabularySourceKey(item) === config.vocabularySource;
+        return true;
+    }
+
     function libraryCardBadge(item, section, itemYear) {
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
         if (sectionId === 'bbc-six-minute-english') return itemYear || String(item.sortValue || '').substring(0, 4);
@@ -999,7 +1036,8 @@
     function libraryCardMeta(item, section, itemYear) {
         var badge = libraryCardBadge(item, section, itemYear);
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        var sectionLabel = librarySectionLabel(sectionId, section && section.title || item.sectionTitle || item.course || item.type);
+        var sectionLabel = vocabularySourceLabel(item) ||
+            librarySectionLabel(sectionId, section && section.title || item.sectionTitle || item.course || item.type);
         var setId = item.set_id || item.id || item.displayValue || '';
         return {
             badge: badge,
@@ -1082,10 +1120,12 @@
         var href = practiceHref(item, null);
         var meta = libraryCardMeta(item, section, itemYear);
         var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
+        var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
             ' data-entry-kind="' + escapeHtml(meta.sectionLabel) + '" data-entry-title="' + escapeHtml(item.title || meta.setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="' + (itemLocked ? 'true' : 'false') + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || meta.setId) + '">' +
             '<div class="library-task-copy">' +
                 '<div class="resource-card-head">' +
@@ -1097,9 +1137,6 @@
                     '<div class="tags">' + libraryBuildTags(item.tags, item.topic) + '</div>' +
                     (libraryShouldShowNote(item) ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
                 '</div>' +
-            '</div>' +
-            '<div class="library-task-actions">' +
-                (meta.badge ? '<span class="library-card-badge">' + escapeHtml(meta.badge) + '</span>' : '') +
             '</div>' +
         '</article>';
     }
@@ -1145,7 +1182,7 @@
 
         var subTabHtml = '';
         for (var si = 0; si < subTabs.length; si++) {
-            var isActive = (!libraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === libraryActiveSubTab;
+            var isActive = (!libraryActiveSubTab && si === 0) || subTabs[si].id === libraryActiveSubTab;
             subTabHtml += '<button class="sub-tab-btn' + (isActive ? ' active' : '') + '" data-subtab="' + escapeHtml(subTabs[si].id) + '">' + escapeHtml(subTabs[si].label) + '</button>';
         }
         subTabBar.innerHTML = subTabHtml;
@@ -1153,7 +1190,7 @@
 
         var activeSubTabConfig = subTabs[0];
         for (var si = 0; si < subTabs.length; si++) {
-            if ((!libraryActiveSubTab && !subTabs[si].id) || subTabs[si].id === libraryActiveSubTab) {
+            if ((!libraryActiveSubTab && si === 0) || subTabs[si].id === libraryActiveSubTab) {
                 activeSubTabConfig = subTabs[si];
                 break;
             }
@@ -1213,9 +1250,10 @@
         var cardsHtml = '';
         for (var i = 0; i < tabSections.length; i++) {
             var section = tabSections[i];
-            if (targetSectionId && section.id !== targetSectionId) continue;
+            if (!librarySubTabMatchesSection(activeSubTabConfig, section)) continue;
 
             var sectionItems = (itemsBySection[section.id] || []).filter(function(item) {
+                if (!librarySubTabMatchesItem(activeSubTabConfig, item)) return false;
                 if (!searchText) return true;
                 return [
                     item.title, item.id, item.set_id, item.topic, item.displayValue,
@@ -1241,7 +1279,7 @@
             }
         }
 
-        if (targetSectionId && !cardsHtml) {
+        if (targetSectionId && !cardsHtml && !activeSubTabConfig.vocabularySource) {
             for (var i = 0; i < libraryCatalog.sections.length; i++) {
                 if (libraryCatalog.sections[i].id === targetSectionId) {
                     cardsHtml = libraryBuildPlaceholderCard(libraryCatalog.sections[i]);

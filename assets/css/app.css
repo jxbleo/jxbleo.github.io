@@ -1066,69 +1066,6 @@ body:not(.teacher-page) .tab-button.active {
     position: relative;
     z-index: 2;
 }
-.assignment-result-stamp {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-width: 104px;
-    height: 46px;
-    padding: 0 14px;
-    border: 3px solid currentColor;
-    border-radius: 11px;
-    color: #147964;
-    background:
-        radial-gradient(circle at 18% 24%, rgba(255,255,255,.42) 0 2px, transparent 3px),
-        radial-gradient(circle at 76% 32%, rgba(255,255,255,.34) 0 1px, transparent 2px),
-        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.13) 8px 9px),
-        rgba(236, 249, 241, 0.78);
-    box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset, 0 8px 20px rgba(20, 121, 100, 0.1);
-    font-size: 0.78rem;
-    font-weight: 950;
-    line-height: 1;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    text-shadow: 1px 0 0 rgba(255,255,255,.18), -1px 0 0 rgba(255,255,255,.10);
-    transform: rotate(3deg);
-    mix-blend-mode: multiply;
-    white-space: nowrap;
-}
-.assignment-result-stamp::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border: 1.5px solid currentColor;
-    border-radius: 7px;
-    opacity: .62;
-    pointer-events: none;
-}
-.assignment-result-stamp:hover {
-    color: #0f8a70;
-    background-color: rgba(236, 249, 241, 0.92);
-    transform: rotate(3deg) translateY(-1px) scale(1.02);
-    box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset, 0 12px 24px rgba(20, 121, 100, 0.14);
-}
-.assignment-result-stamp.mastered {
-    color: #d89528;
-    background:
-        radial-gradient(circle at 26% 28%, rgba(255,255,255,.46) 0 2px, transparent 3px),
-        radial-gradient(circle at 75% 34%, rgba(255,255,255,.32) 0 1px, transparent 2px),
-        repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.16) 8px 9px),
-        rgba(255, 247, 216, 0.84);
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,.34) inset,
-        0 0 18px rgba(255, 205, 74, .28),
-        0 8px 20px rgba(216, 149, 40, 0.12);
-}
-.assignment-result-stamp.mastered:hover {
-    color: #c27a13;
-    background-color: rgba(255, 247, 216, 0.96);
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,.34) inset,
-        0 0 22px rgba(255, 205, 74, .36),
-        0 12px 24px rgba(216, 149, 40, 0.15);
-}
 .practice-entry-overlay {
     position: fixed;
     inset: 0;
@@ -1157,36 +1094,6 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: 0 28px 78px rgba(24, 53, 47, 0.22);
     animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;
     overflow: visible;
-}
-.practice-entry-stamp {
-    position: absolute;
-    z-index: 2;
-    right: -14px;
-    top: -18px;
-    display: grid;
-    place-items: center;
-    width: 126px;
-    height: 50px;
-    border: 4px solid currentColor;
-    border-radius: 14px;
-    color: #147964;
-    background: rgba(255, 255, 255, 0.42);
-    box-shadow: 0 0 0 2px rgba(255,255,255,.34) inset;
-    font-size: 1.05rem;
-    font-weight: 950;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    transform: rotate(8deg);
-    mix-blend-mode: multiply;
-    animation: practiceEntryStamp 480ms 160ms cubic-bezier(.2,.95,.3,1.35) both;
-}
-.practice-entry-stamp::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border: 2px solid currentColor;
-    border-radius: inherit;
-    opacity: .66;
 }
 .practice-entry-task {
     position: relative;
@@ -1268,6 +1175,25 @@ body:not(.teacher-page) .tab-button.active {
     font-size: .86rem;
     font-weight: 950;
 }
+#practice-entry-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+.practice-entry-score-lock {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid rgba(21,127,85,0.16);
+    border-radius: 999px;
+    color: var(--success);
+    background: rgba(232,247,239,0.62);
+    font-size: .78rem;
+    line-height: 1;
+}
 .practice-entry-ribbon.not-passed {
     color: #8b3f0d;
     background: linear-gradient(90deg, #fff0df, #ffd1a6);
@@ -1306,10 +1232,6 @@ body:not(.teacher-page) .tab-button.active {
 @keyframes practiceEntryPop {
     from { opacity: 0; transform: translateY(18px) scale(.94); }
     to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes practiceEntryStamp {
-    from { opacity: 0; transform: rotate(8deg) scale(1.34); filter: blur(1px); }
-    to { opacity: .96; transform: rotate(8deg) scale(1); filter: none; }
 }
 .teacher-page .library-task-card:hover {
     border-color: rgba(124, 58, 237, 0.3);
@@ -5562,13 +5484,6 @@ body:not(.teacher-page) .tab-button.active {
     .practice-entry-card {
         padding: 28px 20px 0;
         border-radius: 26px;
-    }
-    .practice-entry-stamp {
-        right: 10px;
-        top: -24px;
-        width: 112px;
-        height: 46px;
-        font-size: .92rem;
     }
     .practice-entry-ribbon {
         width: calc(100% + 40px);
