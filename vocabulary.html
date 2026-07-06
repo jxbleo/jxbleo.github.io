@@ -2309,6 +2309,46 @@
             });
         }
 
+        function expectedLearnStickyHeight() {
+            var sticky = document.getElementById('learn-sticky');
+            if (!sticky) return 0;
+            var root = document.getElementById('learn-word-bank');
+            var height = sticky.getBoundingClientRect().height;
+            if (!root || root.hidden || !root.classList.contains('is-open')) return height;
+            var currentBankHeight = root.getBoundingClientRect().height;
+            var maxHeight = parseFloat(window.getComputedStyle(root).maxHeight);
+            var finalBankHeight = root.scrollHeight;
+            if (!isNaN(maxHeight)) finalBankHeight = Math.min(finalBankHeight, maxHeight);
+            return height - currentBankHeight + finalBankHeight;
+        }
+
+        function scrollPracticeToFirstQuestion() {
+            var firstQuestion = document.querySelector('#word-practice-panel .group-card .question-item');
+            if (!firstQuestion) return;
+            var stickyHeight = expectedLearnStickyHeight();
+            var targetTop = window.pageYOffset + firstQuestion.getBoundingClientRect().top - stickyHeight - 10;
+            window.scrollTo({
+                top: Math.max(0, targetTop),
+                behavior: 'smooth'
+            });
+        }
+
+        function settlePracticeScrollBelowWordBank() {
+            var root = document.getElementById('learn-word-bank');
+            requestAnimationFrame(function() {
+                scrollPracticeToFirstQuestion();
+            });
+            window.setTimeout(scrollPracticeToFirstQuestion, 240);
+            window.setTimeout(scrollPracticeToFirstQuestion, 900);
+            if (root && !root.hidden) {
+                root.addEventListener('transitionend', function(event) {
+                    if (event.target === root && event.propertyName === 'max-height') {
+                        scrollPracticeToFirstQuestion();
+                    }
+                }, { once: true });
+            }
+        }
+
         function renderWordPracticePanel() {
             var root = document.getElementById('word-practice-panel');
             if (!root) return;
@@ -3406,8 +3446,7 @@
                     activePracticeGroupId = groupId;
                     renderWordPracticePanel();
                     renderLearnStickyWordBank({ forceOpen: true });
-                    var groupCard = document.querySelector('#word-practice-panel .group-card');
-                    if (groupCard) groupCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    settlePracticeScrollBelowWordBank();
                     return;
                 }
                 if (action === 'check') checkGroupAnswers(groupId);
