@@ -10,7 +10,7 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NAWL",
-  "cefrLevel": "C1",
+  "cefrLevel": "C1+",
   "wordCount": 100,
   "words": [
     {
@@ -921,66 +921,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 801,
       "rangeEnd": 810,
       "wordList": [
-        "audio",
-        "minus",
-        "facet",
-        "subtract",
-        "seminar",
-        "industrialization",
         "painful",
+        "industrialization",
         "lab",
-        "splice",
-        "conduction"
+        "seminar",
+        "minus",
+        "conduction",
+        "audio",
+        "subtract",
+        "facet",
+        "splice"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The recording studio invested heavily in professional __________ equipment to ensure pristine sound quality for their clients.",
+          "prompt": "The committee admitted that the reform had produced growth, but also created a deeply __________ transition for workers whose skills were suddenly obsolete.",
+          "answer": "painful",
+          "explanation": "painful。语法上，空格前有副词 deeply，后面修饰名词 transition，需要形容词。语义上，工人技能突然过时，这种转型是“痛苦的、艰难的”。常见搭配：a painful transition。",
           "questionKey": "801-810:1"
         },
         {
           "number": 2,
-          "prompt": "The temperature dropped to five degrees __________ zero, forcing authorities to issue severe weather warnings across the region.",
+          "prompt": "Rapid __________ transformed the coastal province from a farming region into a manufacturing hub, but it also intensified pollution and inequality.",
+          "answer": "industrialization",
+          "explanation": "industrialization。语法上，句首需要名词作主语。语义上，农业地区变成制造业中心，指“工业化”带来的变化。",
           "questionKey": "801-810:2"
         },
         {
           "number": 3,
-          "prompt": "The sociologist examined every __________ of urban poverty, from housing inequality to limited access to quality education.",
+          "prompt": "The samples were stored in a sealed university __________ because even slight contamination would have invalidated the entire experiment.",
+          "answer": "lab",
+          "explanation": "lab。语法上，前面有冠词 a 和形容词 sealed university，需要可数名词单数。语义上，样本储存在大学“实验室”中以避免污染。",
           "questionKey": "801-810:3"
         },
         {
           "number": 4,
-          "prompt": "When you __________ the total expenses from the quarterly revenue, the company's profit margin appears disappointingly slim this year.",
+          "prompt": "During the graduate __________, students were expected not merely to listen, but to challenge the speaker’s assumptions with evidence.",
+          "answer": "seminar",
+          "explanation": "seminar。语法上，graduate 作定语，后面需要名词。语义上，学生不仅听讲，还要质疑发言者假设，符合“研讨会”的场景。",
           "questionKey": "801-810:4"
         },
         {
           "number": 5,
-          "prompt": "The graduate students attended a week-long __________ on postcolonial literature, engaging in intensive discussions with renowned scholars.",
+          "prompt": "The final score was calculated as the total number of correct responses __________ the number of penalties for late submission.",
+          "answer": "minus",
+          "explanation": "minus。语法上，total number… minus the number… 是数学表达结构。语义上，最终得分等于正确答案总数“减去”处罚分。常见搭配：A minus B。",
           "questionKey": "801-810:5"
         },
         {
           "number": 6,
-          "prompt": "The rapid __________ of China transformed the nation from an agrarian society into a global manufacturing powerhouse within decades.",
+          "prompt": "Copper is often used in electrical wiring because its high level of __________ allows energy to pass through it efficiently.",
+          "answer": "conduction",
+          "explanation": "conduction。语法上，level of 后接名词。语义上，铜适合电线，因为它的“传导”能力强。常见搭配：electrical conduction。",
           "questionKey": "801-810:6"
         },
         {
           "number": 7,
-          "prompt": "The documentary's __________ portrayal of war veterans left many audience members in tears throughout the screening.",
+          "prompt": "The editor improved the documentary by replacing the distorted __________ with a clearer recording from the original interview.",
+          "answer": "audio",
+          "explanation": "audio。语法上，前面有形容词 distorted，后面需要名词。语义上，纪录片编辑替换失真的“音频”。常见搭配：audio recording。",
           "questionKey": "801-810:7"
         },
         {
           "number": 8,
-          "prompt": "Advanced research in molecular biology requires state-of-the-art equipment that can only be found in a specialized __________.",
+          "prompt": "To calculate the company’s net profit, analysts had to __________ taxes, transport costs, and administrative expenses from gross revenue.",
+          "answer": "subtract",
+          "explanation": "subtract。语法上，had to 后接动词原形。语义上，计算净利润需要从总收入中“扣除”税费和成本。常见搭配：subtract A from B。",
           "questionKey": "801-810:8"
         },
         {
           "number": 9,
-          "prompt": "Film editors must carefully __________ together different takes to create a seamless narrative flow in the final production.",
+          "prompt": "The ethical __________ of the decision was more complicated than the financial one, since it affected patients who had few alternatives.",
+          "answer": "facet",
+          "explanation": "facet。语法上，前面有定冠词 the 和形容词 ethical，需要名词。语义上，决策的伦理“方面”比财务方面更复杂。",
           "questionKey": "801-810:9"
         },
         {
           "number": 10,
-          "prompt": "Heat __________ through copper wires is significantly more efficient than through materials with lower thermal conductivity coefficients.",
+          "prompt": "The technician had to carefully __________ two sections of cable so that the signal would remain stable across the repaired line.",
+          "answer": "splice",
+          "explanation": "splice。语法上，had to 后接动词原形。语义上，技术员要把两段电缆“拼接”起来。常见搭配：splice cable / wire。",
           "questionKey": "801-810:10"
         }
       ]
@@ -991,66 +1011,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 811,
       "rangeEnd": 820,
       "wordList": [
-        "tutor",
-        "biodiversity",
         "incumbent",
-        "credibility",
-        "liable",
-        "gram",
-        "aluminum",
+        "biodiversity",
         "chunk",
+        "credibility",
+        "tutor",
+        "super",
         "fin",
-        "super"
+        "aluminum",
+        "gram",
+        "liable"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The wealthy family hired a private __________ to help their son prepare for the challenging university entrance examinations.",
+          "prompt": "The __________ mayor defended his record during the debate, arguing that continuity was safer than an inexperienced challenger’s promises.",
+          "answer": "incumbent",
+          "explanation": "incumbent。语法上，空格修饰 mayor，需要形容词。语义上，市长为自己的任期表现辩护，说明他是“现任的”。常见搭配：incumbent mayor / president。",
           "questionKey": "811-820:1"
         },
         {
           "number": 2,
-          "prompt": "Tropical rainforests harbor extraordinary __________, containing thousands of species that scientists have yet to discover and classify properly.",
+          "prompt": "The collapse of local __________ has made the ecosystem less resilient, because many species once supported one another through complex relationships.",
+          "answer": "biodiversity",
+          "explanation": "biodiversity。语法上，collapse of local 后接名词。语义上，多种物种之间的关系被破坏，指“生物多样性”的下降。",
           "questionKey": "811-820:2"
         },
         {
           "number": 3,
-          "prompt": "The __________ president faced mounting criticism for failing to address the economic crisis that had plagued the nation.",
+          "prompt": "The researcher divided the long transcript into a manageable __________ so that the coding process would be more consistent and less exhausting.",
+          "answer": "chunk",
+          "explanation": "chunk。语法上，前面有 a manageable，需要可数名词单数。语义上，把长文本分成可处理的“一块”。常见搭配：a chunk of text / data。",
           "questionKey": "811-820:3"
         },
         {
           "number": 4,
-          "prompt": "The journalist's __________ was severely damaged when investigators discovered she had fabricated sources for several high-profile articles.",
+          "prompt": "The journalist’s __________ suffered after several quoted sources denied making the statements attributed to them in the published article.",
+          "answer": "credibility",
+          "explanation": "credibility。语法上，所有格 journalist’s 后接名词作主语。语义上，消息源否认引语后，记者的“可信度”受损。常见搭配：damage / suffer credibility。",
           "questionKey": "811-820:4"
         },
         {
           "number": 5,
-          "prompt": "Companies that fail to implement adequate safety measures are __________ for any injuries sustained by employees in workplace accidents.",
+          "prompt": "The family hired a private __________ to help their son prepare for the entrance examination, especially in academic writing and interview skills.",
+          "answer": "tutor",
+          "explanation": "tutor。语法上，前面有 a private，需要可数名词单数。语义上，家庭请人辅导孩子考试，指“私人导师、家教”。常见搭配：private tutor。",
           "questionKey": "811-820:5"
         },
         {
           "number": 6,
-          "prompt": "The pharmaceutical company measured the active ingredient precisely, ensuring each tablet contained exactly five hundred milligrams, or half a __________.",
+          "prompt": "The new laptop casing is made of recycled __________, making it lighter than steel while still offering reasonable protection.",
+          "answer": "aluminum",
+          "explanation": "aluminum。语法上，made of recycled 后接材料名词。语义上，笔记本外壳由回收“铝”制成。",
           "questionKey": "811-820:6"
         },
         {
           "number": 7,
-          "prompt": "Modern aircraft manufacturers increasingly use __________ alloys in construction because they offer strength while significantly reducing overall weight.",
+          "prompt": "The patient was advised to take one __________ of the powder daily, because a larger amount could interfere with other medication.",
+          "answer": "gram",
+          "explanation": "gram。语法上，one 后接计量单位单数。语义上，每天服用一“克”粉末，符合剂量语境。",
           "questionKey": "811-820:7"
         },
         {
           "number": 8,
-          "prompt": "The construction workers removed a massive __________ of concrete from the demolished building using heavy machinery and cranes.",
+          "prompt": "Under the contract, the supplier may be __________ for damages if the delayed shipment causes measurable losses to the buyer.",
+          "answer": "liable",
+          "explanation": "liable。语法上，may be 后接形容词。语义上，供应商若造成损失，可能“负有法律责任”。常见搭配：be liable for damages。",
           "questionKey": "811-820:8"
         },
         {
           "number": 9,
-          "prompt": "Marine biologists discovered that the shark's dorsal __________ plays a crucial role in maintaining balance during high-speed pursuits.",
+          "prompt": "The biologist identified the fish by the shape of its dorsal __________, which remained visible above the water as it swam near the surface.",
+          "answer": "fin",
+          "explanation": "fin。语法上，dorsal 后接名词，构成“背鳍”的表达。语义上，鱼在水面附近游动时露出的身体部位是鳍。常见搭配：dorsal fin / shark fin。",
           "questionKey": "811-820:9"
         },
         {
           "number": 10,
-          "prompt": "The marketing team believed their new product would be a __________ hit, projecting unprecedented sales figures for launch.",
+          "prompt": "The manager was __________ careful during negotiations because one vague clause could later expose the company to legal risk.",
+          "answer": "super",
+          "explanation": "super。语法上，空格修饰形容词 careful，作程度副词。语义上，经理“非常”谨慎，因为模糊条款会带来法律风险。",
           "questionKey": "811-820:10"
         }
       ]
@@ -1061,66 +1101,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 821,
       "rangeEnd": 830,
       "wordList": [
-        "criteria",
-        "pesticide",
-        "connotation",
-        "biologist",
-        "messenger",
-        "fringe",
-        "technically",
         "marble",
-        "tremendous",
-        "delta"
+        "pesticide",
+        "technically",
+        "criteria",
+        "fringe",
+        "messenger",
+        "biologist",
+        "connotation",
+        "delta",
+        "tremendous"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The university established rigorous __________ for tenure evaluation, including publication records, teaching excellence, and significant research contributions to the field.",
+          "prompt": "The museum floor was made of polished __________, which looked elegant but became dangerously slippery when visitors entered on rainy days.",
+          "answer": "marble",
+          "explanation": "marble。语法上，made of polished 后接材料名词。语义上，博物馆地板由抛光“大理石”制成。常见搭配：polished marble。",
           "questionKey": "821-830:1"
         },
         {
           "number": 2,
-          "prompt": "Organic farmers refuse to use synthetic __________ on their crops, relying instead on natural methods to control pests.",
+          "prompt": "Excessive use of __________ can protect crops in the short term, yet it may damage soil health and contaminate nearby water sources.",
+          "answer": "pesticide",
+          "explanation": "pesticide。语法上，use of 后接名词。语义上，保护作物但损害土壤和水源，指“杀虫剂、农药”的使用。",
           "questionKey": "821-830:2"
         },
         {
           "number": 3,
-          "prompt": "The word \"ambitious\" carries a positive __________ in Western cultures but may suggest selfishness in more collectivist societies worldwide.",
+          "prompt": "The policy is __________ legal, but several experts argue that it violates the spirit of the original consumer protection law.",
+          "answer": "technically",
+          "explanation": "technically。语法上，空格修饰形容词 legal，需要副词。语义上，政策“技术上、严格说来”合法，但可能违背法律精神。常见搭配：technically legal。",
           "questionKey": "821-830:3"
         },
         {
           "number": 4,
-          "prompt": "The marine __________ spent years studying coral reef ecosystems, documenting the devastating effects of ocean acidification on biodiversity.",
+          "prompt": "The word “ambitious” has a positive __________ in business contexts, but it may sound slightly negative when describing a ruthless politician.",
+          "answer": "connotation",
+          "explanation": "connotation。语法上，前面有冠词 a 和形容词 positive，需要可数名词单数。语义上，一个词在不同语境中的附加意义，指“内涵、言外之意”。",
           "questionKey": "821-830:4"
         },
         {
           "number": 5,
-          "prompt": "In ancient times, the __________ would travel for days on horseback to deliver important communications between distant kingdoms.",
+          "prompt": "The river formed a fertile __________ near the coast, where sediment had accumulated for centuries and supported intensive agriculture.",
+          "answer": "delta",
+          "explanation": "delta。语法上，前面有冠词 a fertile，需要名词。语义上，河流在海岸附近沉积形成肥沃“三角洲”。常见搭配：river delta。",
           "questionKey": "821-830:5"
         },
         {
           "number": 6,
-          "prompt": "The radical political party remained on the __________ of mainstream politics, attracting only a small percentage of voters.",
+          "prompt": "The discovery represented a __________ advance in cancer research, although doctors warned that clinical use was still years away.",
+          "answer": "tremendous",
+          "explanation": "tremendous。语法上，空格修饰名词 advance，需要形容词。语义上，癌症研究取得“巨大”进展。常见搭配：a tremendous advance。",
           "questionKey": "821-830:6"
         },
         {
           "number": 7,
-          "prompt": "Although the proposal was __________ compliant with regulations, it clearly violated the spirit of environmental protection laws in practice.",
+          "prompt": "The candidate appealed to a __________ group of voters whose views were rarely represented in mainstream political debate.",
+          "answer": "fringe",
+          "explanation": "fringe。语法上，空格修饰 group of voters，需要形容词。语义上，这些选民观点很少进入主流讨论，属于“边缘的”群体。常见搭配：fringe group。",
           "questionKey": "821-830:7"
         },
         {
           "number": 8,
-          "prompt": "The Renaissance sculptors preferred Carrara __________ for their masterpieces because of its pure white color and fine texture.",
+          "prompt": "The emergency __________ carried written instructions across the flooded district because mobile networks had failed during the storm.",
+          "answer": "messenger",
+          "explanation": "messenger。语法上，前面有 the emergency，需要名词。语义上，移动网络瘫痪后，有人传递书面指令，指“信使”。常见搭配：carry a message。",
           "questionKey": "821-830:8"
         },
         {
           "number": 9,
-          "prompt": "The pharmaceutical breakthrough represented a __________ achievement in cancer treatment, offering hope to millions of patients facing terminal diagnoses.",
+          "prompt": "The marine __________ spent ten years studying how rising ocean temperatures were altering the migration patterns of endangered fish.",
+          "answer": "biologist",
+          "explanation": "biologist。语法上，前面有 the marine，需要表示职业的人名词。语义上，研究鱼类迁徙和海洋温度变化的人是“生物学家”。常见搭配：marine biologist。",
           "questionKey": "821-830:9"
         },
         {
           "number": 10,
-          "prompt": "The Nile River __________ in Egypt is one of the most fertile agricultural regions, supporting millions of people for millennia.",
+          "prompt": "The scholarship committee uses strict __________, including academic performance, leadership experience, and evidence of financial need.",
+          "answer": "criteria",
+          "explanation": "criteria。语法上，strict 后接名词复数，且后面列举多个标准。语义上，奖学金委员会使用严格“标准”。注意 criteria 是 criterion 的复数。",
           "questionKey": "821-830:10"
         }
       ]
@@ -1131,66 +1191,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 831,
       "rangeEnd": 840,
       "wordList": [
-        "surgeon",
-        "denominator",
-        "ghost",
-        "junior",
-        "marrow",
-        "industrialize",
-        "stripe",
-        "instinct",
         "snake",
-        "flesh"
+        "flesh",
+        "ghost",
+        "marrow",
+        "surgeon",
+        "instinct",
+        "industrialize",
+        "denominator",
+        "stripe",
+        "junior"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The cardiovascular __________ performed a complex eight-hour operation to repair the patient's damaged heart valves using minimally invasive techniques.",
+          "prompt": "The hikers froze when they saw a __________ lying across the narrow trail, its body almost hidden among the dry leaves.",
+          "answer": "snake",
+          "explanation": "snake。语法上，前面有冠词 a，需要可数名词单数。语义上，躺在小路上、身体藏在树叶中的动物是“蛇”。",
           "questionKey": "831-840:1"
         },
         {
           "number": 2,
-          "prompt": "To add fractions successfully, students must first find a common __________ before they can proceed with the calculation.",
+          "prompt": "The wound was deep enough to expose the __________ beneath the skin, so the doctor insisted that it needed immediate treatment.",
+          "answer": "flesh",
+          "explanation": "flesh。语法上，the 后接名词。语义上，伤口深到露出皮肤下面的“肉”。常见搭配：expose the flesh。",
           "questionKey": "831-840:2"
         },
         {
           "number": 3,
-          "prompt": "Local legends claim that the __________ of a murdered nobleman still haunts the abandoned castle on stormy nights.",
+          "prompt": "Many children imagine a __________ as a frightening figure, although most traditional stories use it to express guilt or unfinished business.",
+          "answer": "ghost",
+          "explanation": "ghost。语法上，前面有冠词 a，需要可数名词单数。语义上，儿童想象的恐怖形象，符合“鬼、幽灵”。",
           "questionKey": "831-840:3"
         },
         {
           "number": 4,
-          "prompt": "The __________ associate was assigned to shadow senior partners, learning the intricacies of corporate law through observation and practice.",
+          "prompt": "The transplant required healthy bone __________ from a donor whose tissue type closely matched that of the patient.",
+          "answer": "marrow",
+          "explanation": "marrow。语法上，bone 作定语，后面需要名词。语义上，移植需要健康的“骨髓”。常见搭配：bone marrow。",
           "questionKey": "831-840:4"
         },
         {
           "number": 5,
-          "prompt": "Bone __________ transplants have become increasingly successful in treating patients with leukemia and other blood disorders in recent years.",
+          "prompt": "The senior __________ explained the risks of the operation carefully before asking the patient to sign the consent form.",
+          "answer": "surgeon",
+          "explanation": "surgeon。语法上，前面有形容词 senior，需要表示职业的人名词。语义上，解释手术风险并让病人签同意书的是“外科医生”。",
           "questionKey": "831-840:5"
         },
         {
           "number": 6,
-          "prompt": "Developing nations often struggle to __________ their economies without adequate infrastructure, skilled workforce, or sufficient capital investment from abroad.",
+          "prompt": "Her first __________ was to reject the offer, but after reviewing the contract she realized the opportunity was unusually strong.",
+          "answer": "instinct",
+          "explanation": "instinct。语法上，所有格 her first 后接名词。语义上，她第一反应是拒绝，后来才理性评估，指“本能、直觉”。常见搭配：first instinct。",
           "questionKey": "831-840:6"
         },
         {
           "number": 7,
-          "prompt": "The zebra's distinctive black and white __________ pattern serves as camouflage, confusing predators when the herd moves together.",
+          "prompt": "The government tried to __________ the rural economy by attracting factories, expanding transport networks, and training local workers.",
+          "answer": "industrialize",
+          "explanation": "industrialize。语法上，tried to 后接动词原形。语义上，通过吸引工厂、扩展交通和培训工人来“使工业化”。",
           "questionKey": "831-840:7"
         },
         {
           "number": 8,
-          "prompt": "Maternal __________ drove the lioness to defend her cubs ferociously against the approaching hyenas despite being outnumbered significantly.",
+          "prompt": "In this fraction, the __________ determines how many equal parts the whole has been divided into.",
+          "answer": "denominator",
+          "explanation": "denominator。语法上，前面有定冠词 the，需要名词。语义上，在分数中决定整体被分成几份的是“分母”。",
           "questionKey": "831-840:8"
         },
         {
           "number": 9,
-          "prompt": "The river began to __________ through the valley, creating dramatic meanders that carved deep channels into the landscape.",
+          "prompt": "The uniform had a narrow blue __________ on each sleeve, indicating that the officer belonged to a specialized unit.",
+          "answer": "stripe",
+          "explanation": "stripe。语法上，前面有 a narrow blue，需要可数名词单数。语义上，制服袖子上的蓝色“条纹”表示所属单位。",
           "questionKey": "831-840:9"
         },
         {
           "number": 10,
-          "prompt": "The forensic pathologist examined the decomposed __________ carefully, searching for any evidence that might reveal the cause of death.",
+          "prompt": "As a __________ analyst, he was not allowed to approve investment reports without supervision from a senior colleague.",
+          "answer": "junior",
+          "explanation": "junior。语法上，空格修饰 analyst，需要形容词。语义上，他不能独立批准报告，说明是“初级的、下级的”分析师。常见搭配：junior analyst。",
           "questionKey": "831-840:10"
         }
       ]
@@ -1202,65 +1282,85 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeEnd": 850,
       "wordList": [
         "solvent",
-        "plug",
         "kilometer",
-        "spray",
-        "indifference",
-        "naked",
+        "slab",
         "click",
         "hedge",
+        "spray",
         "cinema",
-        "slab"
+        "plug",
+        "naked",
+        "indifference"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The chemical laboratory stored various organic __________ compounds in specially designed cabinets to prevent dangerous fumes from escaping.",
+          "prompt": "The company remained financially __________ despite the recession, largely because it had avoided excessive borrowing during the previous expansion.",
+          "answer": "solvent",
+          "explanation": "solvent。语法上，remained financially 后接形容词。语义上，公司在经济衰退中仍有偿付能力，指“有偿债能力的”。常见搭配：financially solvent。",
           "questionKey": "841-850:1"
         },
         {
           "number": 2,
-          "prompt": "The electrician needed to __________ the damaged power cord into a different outlet to restore electricity to the room.",
+          "prompt": "The village was only one __________ from the border, yet residents felt culturally closer to the capital than to the neighboring country.",
+          "answer": "kilometer",
+          "explanation": "kilometer。语法上，one 后接可数名词单数。语义上，村庄距离边境一“公里”。",
           "questionKey": "841-850:2"
         },
         {
           "number": 3,
-          "prompt": "The marathon runners had already covered thirty __________ when they reached the halfway point of the grueling race.",
+          "prompt": "Workers lifted a heavy concrete __________ into position before sealing the joints and checking that the surface was level.",
+          "answer": "slab",
+          "explanation": "slab。语法上，前面有 a heavy concrete，需要可数名词单数。语义上，工人吊装混凝土“厚板、平板”。常见搭配：concrete slab。",
           "questionKey": "841-850:3"
         },
         {
           "number": 4,
-          "prompt": "The gardener used a hose to __________ insecticide on the rose bushes, protecting them from the aphid infestation that threatened blooms.",
+          "prompt": "To reduce risk, the investor used gold as a __________ against inflation and sudden currency depreciation.",
+          "answer": "hedge",
+          "explanation": "hedge。语法上，前面有冠词 a，后面接 against，需要名词。语义上，黄金被用作对冲通胀和汇率风险的“防护手段”。常见搭配：a hedge against inflation。",
           "questionKey": "841-850:4"
         },
         {
           "number": 5,
-          "prompt": "The politician's blatant __________ to the suffering of homeless citizens sparked outrage among advocacy groups and humanitarian organizations nationwide.",
+          "prompt": "The gardener used a fine __________ to water the seedlings, because a stronger stream would have damaged their delicate roots.",
+          "answer": "spray",
+          "explanation": "spray。语法上，前面有 a fine，需要名词。语义上，用细小“喷雾”浇幼苗，避免水流过强。",
           "questionKey": "841-850:5"
         },
         {
           "number": 6,
-          "prompt": "The emperor appeared before his subjects completely __________, exposing the truth that his supposedly magnificent robes were merely an illusion.",
+          "prompt": "The old __________ was restored as an independent cinema, showing documentaries and foreign films that commercial chains rarely offered.",
+          "answer": "cinema",
+          "explanation": "cinema。语法上，前面有 the old，需要名词。语义上，建筑被修复成独立“电影院”。常见搭配：independent cinema。",
           "questionKey": "841-850:6"
         },
         {
           "number": 7,
-          "prompt": "When you __________ on the hyperlink embedded in the email, it will redirect you to the secure payment portal.",
+          "prompt": "The technician warned us not to touch the damaged __________ because the exposed wire could cause an electric shock.",
+          "answer": "plug",
+          "explanation": "plug。语法上，前面有 the damaged，需要名词。语义上，破损插头露出电线，可能触电，指“插头”。",
           "questionKey": "841-850:7"
         },
         {
           "number": 8,
-          "prompt": "Investors often __________ their bets by diversifying portfolios across multiple asset classes to minimize potential losses during market volatility.",
+          "prompt": "The lecturer asked students to __________ on the link only after reading the security warning at the top of the page.",
+          "answer": "click",
+          "explanation": "click。语法上，asked students to 后接动词原形。语义上，学生在阅读安全警告后才能“点击”链接。常见搭配：click on a link。",
           "questionKey": "841-850:8"
         },
         {
           "number": 9,
-          "prompt": "The independent __________ showcased avant-garde films from emerging directors that mainstream theaters would never consider screening for audiences.",
+          "prompt": "The article presented the __________ facts without emotional language, allowing readers to judge the evidence for themselves.",
+          "answer": "naked",
+          "explanation": "naked。语法上，空格修饰 facts，需要形容词。语义上，文章只呈现“赤裸的、未经修饰的”事实。常见搭配：the naked facts / truth。",
           "questionKey": "841-850:9"
         },
         {
           "number": 10,
-          "prompt": "The butcher placed a thick __________ of prime beef on the counter, preparing to cut it into steaks.",
+          "prompt": "Public __________ to corruption may be more dangerous than anger, because it allows abuse to become normal and invisible.",
+          "answer": "indifference",
+          "explanation": "indifference。语法上，public 修饰名词，且作主语。语义上，公众对腐败的“冷漠”比愤怒更危险。常见搭配：public indifference to something。",
           "questionKey": "841-850:10"
         }
       ]
@@ -1271,66 +1371,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 851,
       "rangeEnd": 860,
       "wordList": [
-        "micro",
-        "solute",
-        "statistics",
-        "portrayal",
-        "thumb",
-        "clip",
         "erase",
         "powder",
+        "micro",
+        "clip",
+        "solute",
         "dissection",
-        "censor"
+        "censor",
+        "portrayal",
+        "statistics",
+        "thumb"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Recent advances in __________ surgery allow surgeons to perform delicate operations on individual cells using specialized robotic instruments precisely.",
+          "prompt": "The company tried to __________ the negative comments from its website, but screenshots had already spread across social media.",
+          "answer": "erase",
+          "explanation": "erase。语法上，tried to 后接动词原形。语义上，公司试图从网站上“删除、抹去”负面评论。",
           "questionKey": "851-860:1"
         },
         {
           "number": 2,
-          "prompt": "When sugar acts as a __________ in water, the molecules disperse evenly throughout the solution, creating a homogeneous mixture.",
+          "prompt": "The chemist added a white __________ to the solution and waited to see whether the liquid would change color.",
+          "answer": "powder",
+          "explanation": "powder。语法上，前面有 a white，需要名词。语义上，化学家向溶液中加入白色“粉末”。",
           "questionKey": "851-860:2"
         },
         {
           "number": 3,
-          "prompt": "Recent __________ indicate that income inequality has reached unprecedented levels, with the wealthiest one percent controlling disproportionate resources globally.",
+          "prompt": "The editor selected a short video __________ from the interview because it captured the speaker’s argument more clearly than the full recording.",
+          "answer": "clip",
+          "explanation": "clip。语法上，前面有 a short video，需要名词。语义上，从采访中选出短视频“片段”。常见搭配：video clip。",
           "questionKey": "851-860:3"
         },
         {
           "number": 4,
-          "prompt": "The actor's nuanced __________ of the troubled genius earned him widespread critical acclaim and numerous prestigious awards that season.",
+          "prompt": "In this experiment, salt is the __________ because it dissolves in the water rather than acting as the liquid medium.",
+          "answer": "solute",
+          "explanation": "solute。语法上，前面有 the，需要名词。语义上，盐溶于水，不是液体介质，因此是“溶质”。",
           "questionKey": "851-860:4"
         },
         {
           "number": 5,
-          "prompt": "The hitchhiker stood by the roadside, desperately trying to __________ a ride from passing motorists during the torrential downpour.",
+          "prompt": "The biology class performed a careful __________ of the frog to identify its major organs and understand their functions.",
+          "answer": "dissection",
+          "explanation": "dissection。语法上，前面有冠词 a careful，需要名词。语义上，生物课解剖青蛙以识别器官，指“解剖”。常见搭配：perform a dissection。",
           "questionKey": "851-860:5"
         },
         {
           "number": 6,
-          "prompt": "The teacher asked students to __________ their research papers together and submit them in chronological order by publication date.",
+          "prompt": "The government attempted to __________ the report before publication, removing passages that criticized senior officials.",
+          "answer": "censor",
+          "explanation": "censor。语法上，attempted to 后接动词原形。语义上，政府在出版前删除批评内容，指“审查”。常见搭配：censor a report / article。",
           "questionKey": "851-860:6"
         },
         {
           "number": 7,
-          "prompt": "The authoritarian government attempted to __________ all evidence of the massacre from historical records and public memory entirely.",
+          "prompt": "The film’s __________ of rural poverty was praised for its realism, but some viewers found it too bleak to watch.",
+          "answer": "portrayal",
+          "explanation": "portrayal。语法上，所有格 film’s 后接名词。语义上，电影对农村贫困的“描绘”被称赞真实。常见搭配：portrayal of poverty / society。",
           "questionKey": "851-860:7"
         },
         {
           "number": 8,
-          "prompt": "The pharmaceutical company developed a new medication in __________ form that dissolves rapidly when mixed with water or juice.",
+          "prompt": "The economist used recent __________ to show that wage growth had slowed even though headline unemployment remained low.",
+          "answer": "statistics",
+          "explanation": "statistics。语法上，recent 后接名词复数或不可数名词。语义上，经济学家用近期“统计数据”证明工资增长放缓。",
           "questionKey": "851-860:8"
         },
         {
           "number": 9,
-          "prompt": "The biology students conducted a careful __________ of the frog specimen, identifying various organs and documenting their observations meticulously.",
+          "prompt": "The engineers detected several __________ cracks in the metal surface that were too small to see without special equipment.",
+          "answer": "micro",
+          "explanation": "micro。语法上，micro 作前缀式形容词，修饰 cracks，表示“微小的”。语义上，这些裂纹小到需要特殊设备才能看到，符合 micro cracks 的含义。常见搭配：micro cracks / micro level / micro scale。",
           "questionKey": "851-860:9"
         },
         {
           "number": 10,
-          "prompt": "The repressive regime employed thousands of officials to __________ newspapers, films, and books, suppressing any criticism of government policies.",
+          "prompt": "He injured his __________ while closing the car door, making it difficult to write or hold small objects.",
+          "answer": "thumb",
+          "explanation": "thumb。语法上，所有格 his 后接身体部位名词。语义上，车门夹伤后影响书写和拿小物件，指“拇指”。",
           "questionKey": "851-860:10"
         }
       ]
@@ -1341,66 +1461,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 861,
       "rangeEnd": 870,
       "wordList": [
-        "parcel",
-        "flip",
-        "lecturer",
-        "congruent",
-        "sword",
-        "photographic",
         "acidic",
         "uplift",
+        "flip",
+        "congruent",
+        "parcel",
+        "lecturer",
         "skip",
-        "poster"
+        "poster",
+        "sword",
+        "photographic"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The postal service delivered a mysterious __________ to her doorstep, wrapped in brown paper and covered with exotic stamps.",
+          "prompt": "The charity’s main goal was to __________ communities by improving schools, public health services, and access to reliable employment.",
+          "answer": "uplift",
+          "explanation": "uplift。语法上，was to 后接动词原形。语义上，慈善机构通过改善教育、医疗和就业来“提升、振兴”社区。",
           "questionKey": "861-870:1"
         },
         {
           "number": 2,
-          "prompt": "The gymnast executed a perfect backward __________ on the balance beam, landing gracefully without losing her balance or composure.",
+          "prompt": "The chef asked me to __________ the pancake only once the edges had become firm and small bubbles appeared on the surface.",
+          "answer": "flip",
+          "explanation": "flip。语法上，asked me to 后接动词原形。语义上，厨师让人把煎饼“翻面”。常见搭配：flip a pancake。",
           "questionKey": "861-870:2"
         },
         {
           "number": 3,
-          "prompt": "The distinguished __________ captivated students with fascinating anecdotes from her decades of archaeological fieldwork in remote regions of Central Asia.",
+          "prompt": "The two triangles are __________ because their corresponding sides and angles are exactly equal.",
+          "answer": "congruent",
+          "explanation": "congruent。语法上，are 后接形容词。语义上，两三角形对应边和角完全相等，说明它们“全等”。常见搭配：congruent triangles。",
           "questionKey": "861-870:3"
         },
         {
           "number": 4,
-          "prompt": "The two triangles are __________ in every respect, having identical side lengths and corresponding angles that match precisely.",
+          "prompt": "The courier left the __________ with a neighbor after failing to find anyone at home during the delivery window.",
+          "answer": "parcel",
+          "explanation": "parcel。语法上，前面有定冠词 the，需要名词。语义上，快递员把“包裹”留给邻居。常见搭配：deliver / leave a parcel。",
           "questionKey": "861-870:4"
         },
         {
           "number": 5,
-          "prompt": "Medieval knights trained from childhood to master the __________, learning complex techniques of combat that required years of dedicated practice.",
+          "prompt": "The visiting __________ argued that urban design affects mental health more directly than many policymakers assume.",
+          "answer": "lecturer",
+          "explanation": "lecturer。语法上，前面有 the visiting，需要表示身份的人名词。语义上，受邀来发表观点的人是“讲师、演讲者”。常见搭配：visiting lecturer。",
           "questionKey": "861-870:5"
         },
         {
           "number": 6,
-          "prompt": "The artist possessed a __________ memory, able to recall visual details with extraordinary precision and reproduce them accurately years later.",
+          "prompt": "Students who regularly __________ the introductory readings often struggle later because the advanced material assumes detailed background knowledge.",
+          "answer": "skip",
+          "explanation": "skip。语法上，students who regularly 后接动词原形。语义上，不读导论材料会影响后续理解，指“跳过”。常见搭配：skip the reading / class。",
           "questionKey": "861-870:6"
         },
         {
           "number": 7,
-          "prompt": "Acid rain, which is highly __________, can damage buildings, kill aquatic life, and devastate entire forest ecosystems over time.",
+          "prompt": "The campaign team designed a large __________ to attract voters’ attention near the entrance to the train station.",
+          "answer": "poster",
+          "explanation": "poster。语法上，前面有 a large，需要可数名词单数。语义上，竞选团队设计放在车站入口吸引注意的“海报”。",
           "questionKey": "861-870:7"
         },
         {
           "number": 8,
-          "prompt": "The inspirational speaker's message served to __________ the spirits of the discouraged community members facing economic hardship and uncertainty.",
+          "prompt": "The museum displayed a ceremonial __________ that had never been used in battle but symbolized royal authority.",
+          "answer": "sword",
+          "explanation": "sword。语法上，前面有冠词 a ceremonial，需要名词。语义上，象征王权但未用于战斗的是“剑”。常见搭配：ceremonial sword。",
           "questionKey": "861-870:8"
         },
         {
           "number": 9,
-          "prompt": "The impatient reader tends to __________ lengthy descriptive passages in novels, preferring instead to focus on dialogue and action.",
+          "prompt": "The journalist’s memory was almost __________, allowing her to recall faces, dates, and conversations with unusual precision.",
+          "answer": "photographic",
+          "explanation": "photographic。语法上，空格修饰 memory，需要形容词。语义上，她能精确回忆面孔、日期和对话，指“照相般的记忆”。常见搭配：photographic memory。",
           "questionKey": "861-870:9"
         },
         {
           "number": 10,
-          "prompt": "The activist designed a provocative __________ that challenged viewers to reconsider their assumptions about climate change and environmental responsibility.",
+          "prompt": "Lemon juice is naturally __________, which is why it can react with baking soda and produce bubbles.",
+          "answer": "acidic",
+          "explanation": "acidic。语法上，is naturally 后接形容词。语义上，柠檬汁会与小苏打反应产生气泡，说明它是“酸性的”。",
           "questionKey": "861-870:10"
         }
       ]
@@ -1411,66 +1551,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 871,
       "rangeEnd": 880,
       "wordList": [
-        "lump",
         "auction",
+        "barrel",
+        "mentor",
+        "nicely",
+        "lump",
+        "quiz",
+        "watershed",
         "liter",
         "oxidize",
-        "quiz",
-        "mercury",
-        "mentor",
-        "barrel",
-        "nicely",
-        "watershed"
+        "mercury"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The doctor discovered a suspicious __________ during the routine examination and immediately ordered additional tests to determine its nature.",
+          "prompt": "The rare painting was sold at __________ after several collectors competed aggressively during the final minutes of bidding.",
+          "answer": "auction",
+          "explanation": "auction。语法上，at 后接名词，构成地点或方式短语。语义上，收藏家竞价购买画作，符合“拍卖”。常见搭配：sold at auction。",
           "questionKey": "871-880:1"
         },
         {
           "number": 2,
-          "prompt": "The rare painting was sold at __________ for an astronomical sum, far exceeding the estimates provided by experts.",
+          "prompt": "Oil prices rose sharply after the market expected each __________ of crude to become more expensive during the supply shortage.",
+          "answer": "barrel",
+          "explanation": "barrel。语法上，each 后接可数名词单数。语义上，原油价格通常按“桶”计算。常见搭配：a barrel of crude oil。",
           "questionKey": "871-880:2"
         },
         {
           "number": 3,
-          "prompt": "The recipe requires exactly one __________ of milk, which should be heated gradually to the appropriate temperature before adding flour.",
+          "prompt": "The doctor examined the small __________ under the patient’s arm and recommended further tests to rule out anything serious.",
+          "answer": "lump",
+          "explanation": "lump。语法上，前面有 the small，需要可数名词单数。语义上，医生检查腋下小“肿块”。常见搭配：a lump under the arm。",
           "questionKey": "871-880:3"
         },
         {
           "number": 4,
-          "prompt": "When iron is exposed to moisture and oxygen for extended periods, it will inevitably __________ and develop a reddish-brown rust.",
+          "prompt": "The court’s decision became a __________ moment in privacy law, changing how companies handled personal data.",
+          "answer": "watershed",
+          "explanation": "watershed。语法上，前面有冠词 a，修饰 moment。语义上，法院判决成为隐私法的重大转折，指“分水岭”。常见搭配：a watershed moment。",
           "questionKey": "871-880:4"
         },
         {
           "number": 5,
-          "prompt": "The professor administered a surprise __________ at the beginning of class to assess whether students had completed the assigned readings.",
+          "prompt": "The bottle contains one __________ of solution, so the technician must measure the chemicals carefully before diluting it.",
+          "answer": "liter",
+          "explanation": "liter。语法上，one 后接计量单位单数。语义上，瓶子里有一“升”溶液。",
           "questionKey": "871-880:5"
         },
         {
           "number": 6,
-          "prompt": "The old thermometer contained __________, a toxic heavy metal that poses serious health risks if the glass breaks and releases vapors.",
+          "prompt": "Iron will gradually __________ when exposed to oxygen and moisture, producing rust on the surface.",
+          "answer": "oxidize",
+          "explanation": "oxidize。语法上，will gradually 后接动词原形。语义上，铁暴露于氧气和水分后产生锈，指“氧化”。",
           "questionKey": "871-880:6"
         },
         {
           "number": 7,
-          "prompt": "The experienced professor agreed to __________ the promising graduate student, providing guidance on research methodology and career development strategies.",
+          "prompt": "The thermometer once contained __________, but modern versions avoid it because the substance is toxic if released.",
+          "answer": "mercury",
+          "explanation": "mercury。语法上，contained 后接物质名词。语义上，传统温度计曾含有有毒的“汞、水银”。",
           "questionKey": "871-880:7"
         },
         {
           "number": 8,
-          "prompt": "The protesters formed a human chain, blocking the __________ of toxic waste from being transported through their residential neighborhood.",
+          "prompt": "A senior researcher agreed to __________ the new graduate students, helping them design experiments and avoid common mistakes.",
+          "answer": "mentor",
+          "explanation": "mentor。语法上，agreed to 后接动词原形。语义上，资深研究员指导新研究生设计实验、避免错误，表示“指导、辅导”。常见搭配：mentor students / mentor young researchers。",
           "questionKey": "871-880:8"
         },
         {
           "number": 9,
-          "prompt": "The diplomatic negotiations proceeded __________, with both parties making reasonable concessions and working toward a mutually beneficial agreement successfully.",
+          "prompt": "The teacher gave a short __________ at the beginning of class to check whether students had understood the reading.",
+          "answer": "quiz",
+          "explanation": "quiz。语法上，a short 后接可数名词单数。语义上，老师用简短测验检查学生是否理解阅读内容。常见搭配：short quiz / take a quiz / give a quiz。",
           "questionKey": "871-880:9"
         },
         {
           "number": 10,
-          "prompt": "The landmark Supreme Court decision proved to be a __________ moment in civil rights history, fundamentally transforming legal protections nationwide.",
+          "prompt": "The new software works __________ with existing databases, which means users can upgrade without redesigning their entire workflow.",
+          "answer": "nicely",
+          "explanation": "nicely。语法上，空格修饰动词 works，需要副词。语义上，新软件与现有数据库配合良好，指“很好地”。常见搭配：work nicely with something。",
           "questionKey": "871-880:10"
         }
       ]
@@ -1481,66 +1641,86 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 881,
       "rangeEnd": 890,
       "wordList": [
-        "multinational",
-        "comma",
-        "socialize",
-        "phenomenal",
-        "enormously",
         "noisy",
         "headquarters",
-        "specialty",
+        "phenomenal",
+        "multinational",
+        "comma",
         "bizarre",
-        "novice"
+        "specialty",
+        "socialize",
+        "novice",
+        "enormously"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The __________ technology company operates manufacturing facilities across four continents, employing hundreds of thousands of workers in diverse markets.",
+          "prompt": "The apartment became unbearably __________ after the construction work began, especially when drilling continued early every morning.",
+          "answer": "noisy",
+          "explanation": "noisy。语法上，became unbearably 后接形容词。语义上，施工钻孔让公寓变得难以忍受地“嘈杂”。",
           "questionKey": "881-890:1"
         },
         {
           "number": 2,
-          "prompt": "Many students struggle with proper __________ placement in complex sentences, frequently making punctuation errors that obscure their intended meaning.",
+          "prompt": "The school’s main __________ is advanced mathematics, although it also offers strong programs in literature and economics.",
+          "answer": "specialty",
+          "explanation": "specialty。语法上，所有格 school’s main 后接名词。语义上，学校最强的是高等数学，指“专长、特色”。常见搭配：main specialty。",
           "questionKey": "881-890:2"
         },
         {
           "number": 3,
-          "prompt": "Introverted individuals often find it exhausting to __________ at large gatherings, preferring intimate conversations with close friends instead.",
+          "prompt": "New students are encouraged to __________ during orientation because early friendships can make university life less isolating.",
+          "answer": "socialize",
+          "explanation": "socialize。语法上，are encouraged to 后接动词原形。语义上，迎新期间鼓励新生“社交”。常见搭配：socialize during orientation。",
           "questionKey": "881-890:3"
         },
         {
           "number": 4,
-          "prompt": "The young violinist demonstrated __________ talent, mastering complex concertos that even seasoned professionals found challenging to perform flawlessly.",
+          "prompt": "As a complete __________, she made predictable mistakes, but her questions revealed a serious willingness to learn.",
+          "answer": "novice",
+          "explanation": "novice。语法上，前面有 a complete，需要表示人的名词。语义上，她犯了初学者常见错误，说明是“新手”。常见搭配：complete novice。",
           "questionKey": "881-890:4"
         },
         {
           "number": 5,
-          "prompt": "The new treatment protocol has improved patient survival rates __________, representing the most significant medical breakthrough in decades of research.",
+          "prompt": "The company’s new __________ occupies three floors of a downtown tower and houses its legal, finance, and strategy teams.",
+          "answer": "headquarters",
+          "explanation": "headquarters。语法上，所有格 company’s new 后接机构名词。语义上，占据市中心大楼三层、容纳核心部门的是“总部”。",
           "questionKey": "881-890:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ construction site disturbed residents throughout the night, prompting numerous complaints to the city's noise control department.",
+          "prompt": "The explanation sounded __________ at first, but the evidence showed that the strange behavior had a clear scientific cause.",
+          "answer": "bizarre",
+          "explanation": "bizarre。语法上，sounded 后接形容词。语义上，解释起初听起来“古怪”，但证据显示背后有科学原因。",
           "questionKey": "881-890:6"
         },
         {
           "number": 7,
-          "prompt": "The corporation relocated its global __________ to Singapore, taking advantage of favorable tax policies and strategic location for business operations.",
+          "prompt": "The results improved __________ after the team replaced vague instructions with a structured checklist and weekly feedback.",
+          "answer": "enormously",
+          "explanation": "enormously。语法上，空格修饰动词 improved，需要副词。语义上，更换清晰流程后结果“极大地”改善。",
           "questionKey": "881-890:7"
         },
         {
           "number": 8,
-          "prompt": "The restaurant's __________ is authentic Sichuan cuisine, featuring dishes prepared with traditional techniques and imported spices from China's southwest region.",
+          "prompt": "A missing __________ can change the meaning of a sentence, especially when several clauses are joined together.",
+          "answer": "comma",
+          "explanation": "comma。语法上，前面有冠词 a missing，需要可数名词单数。语义上，缺少一个标点会改变句意，指“逗号”。",
           "questionKey": "881-890:8"
         },
         {
           "number": 9,
-          "prompt": "The artist's __________ sculptures challenged conventional aesthetics, featuring surreal combinations of organic and mechanical elements that disturbed viewers profoundly.",
+          "prompt": "The company is a __________ corporation, with factories in Asia, research centers in Europe, and sales teams worldwide.",
+          "answer": "multinational",
+          "explanation": "multinational。语法上，空格修饰 corporation，需要形容词。语义上，公司在多个国家有工厂、研究中心和销售团队，说明它是“跨国的”。常见搭配：multinational corporation。",
           "questionKey": "881-890:9"
         },
         {
           "number": 10,
-          "prompt": "The __________ mountaineer made several critical mistakes during the ascent, endangering the entire expedition team's safety unnecessarily through poor judgment.",
+          "prompt": "The athlete delivered a __________ performance, breaking the national record by a margin that shocked even experienced coaches.",
+          "answer": "phenomenal",
+          "explanation": "phenomenal。语法上，空格修饰 performance，需要形容词。语义上，运动员大幅打破全国纪录，表现“非凡”。常见搭配：a phenomenal performance。",
           "questionKey": "881-890:10"
         }
       ]
@@ -1551,69 +1731,90 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "rangeStart": 891,
       "rangeEnd": 900,
       "wordList": [
-        "deflection",
+        "rope",
         "campus",
+        "clever",
+        "mole",
         "sometime",
+        "bucket",
+        "swap",
         "recipe",
         "airplane",
-        "clever",
-        "bucket",
-        "mole",
-        "rope",
-        "swap"
+        "deflection"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The engineer calculated the beam's __________ under various load conditions to ensure the bridge structure would remain stable during earthquakes.",
+          "prompt": "The climbers tied the equipment with a strong __________ before crossing the exposed ridge in increasingly dangerous weather.",
+          "answer": "rope",
+          "explanation": "rope。语法上，前面有 a strong，需要可数名词单数。语义上，登山者用“绳索”固定装备。常见搭配：tie something with a rope。",
           "questionKey": "891-900:1"
         },
         {
           "number": 2,
-          "prompt": "The university __________ spans over two hundred acres, featuring state-of-the-art research facilities, libraries, and recreational spaces for students.",
+          "prompt": "The two departments agreed to __________ office spaces because each team’s new location better matched its daily workflow.",
+          "answer": "swap",
+          "explanation": "swap。语法上，agreed to 后接动词原形。语义上，两个部门同意“交换”办公空间。常见搭配：swap places / seats / spaces。",
           "questionKey": "891-900:2"
         },
         {
           "number": 3,
-          "prompt": "We should meet __________ next week to discuss the project details and finalize our collaborative research proposal for submission.",
+          "prompt": "The chef adjusted the __________ by reducing the sugar and adding lemon zest to make the dessert taste fresher.",
+          "answer": "recipe",
+          "explanation": "recipe。语法上，前面有定冠词 the，需要名词。语义上，厨师通过减少糖和加入柠檬皮调整“食谱、配方”。",
           "questionKey": "891-900:3"
         },
         {
           "number": 4,
-          "prompt": "The chef's secret __________ for chocolate soufflé had been passed down through three generations of her family's culinary tradition.",
+          "prompt": "We should meet __________ next week to review the proposal properly, rather than rushing through it between other meetings.",
+          "answer": "sometime",
+          "explanation": "sometime。语法上，空格修饰 next week，表示不确定时间。语义上，建议下周“某个时候”见面详谈。常见搭配：sometime next week。",
           "questionKey": "891-900:4"
         },
         {
           "number": 5,
-          "prompt": "The commercial __________ encountered severe turbulence over the Atlantic Ocean, causing passengers to experience moments of genuine terror and anxiety.",
+          "prompt": "The __________ was delayed for three hours because heavy fog made it unsafe to land at the destination airport.",
+          "answer": "airplane",
+          "explanation": "airplane。语法上，前面有定冠词 the，需要名词。语义上，因大雾无法降落而延误的是“飞机”。",
           "questionKey": "891-900:5"
         },
         {
           "number": 6,
-          "prompt": "The detective devised a __________ strategy to trap the criminal, using psychological manipulation to force a confession during interrogation.",
+          "prompt": "She filled a metal __________ with water and carried it across the garden to wash the tools.",
+          "answer": "bucket",
+          "explanation": "bucket。语法上，前面有 a metal，需要可数名词单数。语义上，她装水并提到花园，指“桶”。",
           "questionKey": "891-900:6"
         },
         {
           "number": 7,
-          "prompt": "The firefighters formed a human chain, passing __________ of water to extinguish the blaze when mechanical pumps failed completely.",
+          "prompt": "The scientist used the concept of a __________ to compare quantities of atoms in different chemical samples.",
+          "answer": "mole",
+          "explanation": "mole。语法上，前面有冠词 a，需要可数名词单数。语义上，用来比较不同样本中原子数量的是化学单位“摩尔”。",
           "questionKey": "891-900:7"
         },
         {
           "number": 8,
-          "prompt": "The dermatologist examined the suspicious __________ on the patient's back, concerned that it might be an early sign of melanoma.",
+          "prompt": "The bridge’s slight __________ under heavy traffic was expected, but engineers still monitored it for safety.",
+          "answer": "deflection",
+          "explanation": "deflection。语法上，所有格 bridge’s slight 后接名词。语义上，桥在重车下轻微偏移，指“偏斜、偏转”。常见搭配：structural deflection。",
           "questionKey": "891-900:8"
         },
         {
           "number": 9,
-          "prompt": "The rescue team used heavy-duty __________ to secure themselves while descending the treacherous cliff face during the dangerous operation.",
+          "prompt": "The university __________ includes libraries, laboratories, sports facilities, and several quiet gardens for students.",
+          "answer": "campus",
+          "explanation": "campus。语法上，university 修饰名词。语义上，包括图书馆、实验室、运动设施和花园的是大学“校园”。常见搭配：university campus。",
           "questionKey": "891-900:9"
         },
         {
           "number": 10,
-          "prompt": "The two countries agreed to __________ political prisoners as a goodwill gesture, hoping to improve diplomatic relations and reduce tensions.",
+          "prompt": "Her solution was __________ because it solved the technical problem without increasing cost or adding unnecessary complexity.",
+          "answer": "clever",
+          "explanation": "clever。语法上，was 后接形容词。语义上，她的方案不增加成本也不增加复杂度，说明“聪明、巧妙”。常见搭配：a clever solution。",
           "questionKey": "891-900:10"
         }
       ]
     }
-  ]
+  ],
+  "description": "Academic vocabulary practice for NAWL-I (801-900)."
 };
