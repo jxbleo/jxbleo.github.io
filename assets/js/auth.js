@@ -42,7 +42,11 @@
         return window.MrCatCloud.getLoginState().then(function(state) {
             if (!state) return { mode: 'none', profile: null };
             return window.MrCatCloud.callFunction('getCurrentStudent').then(function(result) {
-                if (!result || !result.success) throw new Error(result && result.message || 'Student profile unavailable.');
+                if (!result || !result.success) {
+                    var error = new Error(result && result.message || 'Student profile unavailable.');
+                    if (result && result.code) error.code = result.code;
+                    throw error;
+                }
                 saveProfile(result.student);
                 return {
                     mode: result.student.role === 'teacher' ? 'teacher' : 'student',

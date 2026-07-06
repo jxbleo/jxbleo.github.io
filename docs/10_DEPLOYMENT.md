@@ -42,6 +42,7 @@ All project collections should remain `ADMINONLY`:
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
+- `vocabulary_test_sessions`
 
 Recommended unique indexes where supported:
 
@@ -50,10 +51,12 @@ Recommended unique indexes where supported:
 - `grading_key_history.history_id`
 - `student_vocabulary_items.vocab_id`
 - `student_vocabulary_items.student_uid + normalized_text`
+- `vocabulary_test_sessions.test_session_id`
 
 Recommended query index:
 
 - `student_vocabulary_items.student_uid + status + updated_at`
+- `vocabulary_test_sessions.student_uid + status`
 
 Create required collections before deploying functions that depend on them.
 

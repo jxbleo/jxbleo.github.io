@@ -254,6 +254,16 @@ Check:
 - student Vocabulary views do not show a bottom-right `Show Answers` capsule
 - 1-4 selected Test groups do not create CloudBase attempt
 - 5+ selected Test groups create attempt
+- 5+ selected Test groups create a `vocabulary_test_sessions` record before
+  questions appear and submit with its `test_session_id`
+- countable Vocabulary Test submission grades the session's recorded question
+  IDs, not a browser-edited question list
+- switching apps/tabs or hiding/leaving the page during a 5+ group Test marks
+  the session abandoned and does not create an attempt
+- another device or browser tab for the same account is blocked from student
+  cloud-backed features while a 5+ group Vocabulary Test is active
+- heartbeat runs about every 10 seconds, and sessions with no heartbeat for
+  more than 30 seconds become abandoned
 - group metadata is stored
 - My Words cannot save from answer/result regions
 

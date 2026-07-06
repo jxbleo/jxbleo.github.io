@@ -453,6 +453,25 @@ flowchart TD
 - 访客和老师预览不能保存个人词汇
 - 这类数据不属于 assignment、attempt 或 grading key
 
+### 7.10 vocabulary_test_sessions
+
+用途：只服务词汇正式 Test 的防作弊 session。
+
+规则：
+
+- 只在 Vocabulary Test 选择 5 组或以上、会计入成绩时创建
+- 1-4 组 self-test、Vocabulary Practice、BBC、IELTS 不创建该 session
+- session 记录本次正式测试的 group IDs、question IDs、开始时间、截止时间、
+  最后 heartbeat、页面实例 ID 和状态；页面实例 ID 必须是每次页面加载生成的内存标识，
+  不能用会被新标签继承的持久存储
+- `submitAttempt` 提交词汇正式测试时必须校验 `test_session_id`
+- 正式测试判分使用 session 中记录的 `question_ids`，不能相信浏览器临时传来的题目范围
+- 同一学生有 active 词汇正式测试时，其他设备或其他浏览器页签不能进入学生云函数功能
+- 切换 App、切换页签、离开页面、heartbeat 超时或测试过期会把 session 标记为
+  `abandoned`
+- `abandoned` / `invalidated` 不写入正式 attempt，不改变 assignment 状态，
+  学生可以重新开始
+
 ## 8. 云函数职责
 
 ### 8.1 getCurrentStudent
@@ -495,6 +514,7 @@ flowchart TD
 
 - 只返回当前 authenticated student 的数据
 - 不允许看别人的作业或 attempt
+- 如果该学生正在另一设备或页签进行 active 词汇正式 Test，应拒绝学生功能请求
 - 历史 review 默认不返回正确答案和解析
 - reveal answers 后才允许历史 review 返回 explanation
 
@@ -522,6 +542,8 @@ flowchart TD
 - 状态不能因为后续低分而向下回退
 - Vocabulary 1-4 组选 Test Mode 不记录 attempt
 - Vocabulary 5 组及以上才记录
+- Vocabulary 5 组及以上提交必须带有效 `vocabulary_test_sessions.test_session_id`
+- Vocabulary 5 组及以上的题目范围以后端 session 中的 `question_ids` 为准
 - Vocabulary Test 提交后应立即返回错题复盘所需的正确答案和解析；
   这不改变 attempt 记录规则，只改变学生提交后的反馈可见性
 

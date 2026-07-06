@@ -113,6 +113,7 @@ Main collections:
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
+- `vocabulary_test_sessions`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
 
@@ -132,6 +133,8 @@ Rules:
 - Teacher authority comes from a `students` document with `role: "teacher"` and `active: true`.
 - Frontend role flags are never trusted.
 - Visitors are frontend-only browsing state and cannot write CloudBase data.
+- During an active countable Vocabulary Test, student cloud-function surfaces
+  reject requests from other browser page instances for the same student.
 
 ## 8. Main Data Flows
 
@@ -153,6 +156,20 @@ Rules:
 7. Function writes an immutable `attempts` record.
 8. Function recomputes assignment latest/best/status summary from assignment-bound attempts.
 9. Function creates or repairs STAR if mastered.
+
+### Vocabulary Test Integrity Session
+
+1. `vocabulary.html` creates a `vocabulary_test_sessions` record before a
+   countable 5+ group Vocabulary Test starts.
+2. The session stores selected group IDs, graded question IDs, server start and
+   expiry times, an in-memory page-instance ID generated on each page load, and
+   heartbeat state.
+3. The page heartbeats every 10 seconds while visible and active.
+4. `submitAttempt` validates `test_session_id` and grades the session's
+   recorded question IDs, treating missing answers as blanks.
+5. Switching apps/tabs, leaving the page, heartbeat timeout, or time expiry
+   closes the session as `abandoned` without creating an attempt or changing
+   assignment status.
 
 Teacher progress and student dashboard reads use paginated CloudBase reads for
 owned or relevant records instead of assuming the first page contains every
