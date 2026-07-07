@@ -1,0 +1,1522 @@
+{
+  "id": "Oxford5000-R",
+  "sectionId": "vocabulary",
+  "title": "Oxford5000-R",
+  "href": "vocabulary.html?set=Oxford5000-R",
+  "sortOrder": 4018,
+  "displayValue": "R · 1701-1800",
+  "topic": "Oxford5000 Vocabulary",
+  "tags": [
+    "Oxford5000",
+    "R"
+  ],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "Oxford5000",
+  "cefrLevel": "C1+",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1701,
+      "word": "anonymous",
+      "emoji": "🕵️‍♂️❓",
+      "meaning": "匿名的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "If someone is anonymous, people do not know their name."
+    },
+    {
+      "number": 1702,
+      "word": "complexity",
+      "emoji": "🧩🌀",
+      "meaning": "复杂性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Complexity means something has many parts and is hard to understand."
+    },
+    {
+      "number": 1703,
+      "word": "dismissal",
+      "emoji": "🚪📄",
+      "meaning": "解雇；驳回",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Dismissal means sending someone away or saying something is not accepted."
+    },
+    {
+      "number": 1704,
+      "word": "experimental",
+      "emoji": "🧪🔬",
+      "meaning": "实验性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Experimental means trying something new to see if it works."
+    },
+    {
+      "number": 1705,
+      "word": "intimate",
+      "emoji": "💞🤫",
+      "meaning": "亲密的；私人的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Intimate means very close, private, or personal."
+    },
+    {
+      "number": 1706,
+      "word": "prevention",
+      "emoji": "🛡️🚫",
+      "meaning": "预防",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Prevention means stopping something bad before it happens."
+    },
+    {
+      "number": 1707,
+      "word": "revenge",
+      "emoji": "😠⚔️",
+      "meaning": "报复",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Revenge means hurting someone because they hurt you first."
+    },
+    {
+      "number": 1708,
+      "word": "specimen",
+      "emoji": "🔬🧫",
+      "meaning": "样本；标本",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A specimen is a sample used for study."
+    },
+    {
+      "number": 1709,
+      "word": "apparatus",
+      "emoji": "⚙️🔧",
+      "meaning": "仪器；设备",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Apparatus means tools or equipment used for a job or experiment."
+    },
+    {
+      "number": 1710,
+      "word": "compliance",
+      "emoji": "✅📋",
+      "meaning": "遵守；服从",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Compliance means doing what rules or people ask you to do."
+    },
+    {
+      "number": 1711,
+      "word": "displace",
+      "emoji": "🏚️➡️",
+      "meaning": "迫使离开；取代",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To displace means to move people or things from their usual place."
+    },
+    {
+      "number": 1712,
+      "word": "expire",
+      "emoji": "⏰📅",
+      "meaning": "过期；失效",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To expire means to stop being useful or allowed after a time."
+    },
+    {
+      "number": 1713,
+      "word": "intriguing",
+      "emoji": "🤔✨",
+      "meaning": "有趣的；引人入胜的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Intriguing means very interesting and makes you want to know more."
+    },
+    {
+      "number": 1714,
+      "word": "prey",
+      "emoji": "🐭🦅",
+      "meaning": "猎物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Prey is an animal hunted by another animal."
+    },
+    {
+      "number": 1715,
+      "word": "reverse",
+      "emoji": "🔄⬅️",
+      "meaning": "逆转；相反",
+      "partOfSpeech": "v. / n. / adj.",
+      "simpleDefinition": "Reverse means to turn something the opposite way."
+    },
+    {
+      "number": 1716,
+      "word": "spectacle",
+      "emoji": "🎪👀",
+      "meaning": "壮观场面；奇观",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spectacle is something exciting or impressive to see."
+    },
+    {
+      "number": 1717,
+      "word": "appealing",
+      "emoji": "😍🎯",
+      "meaning": "有吸引力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Appealing means pleasant or attractive."
+    },
+    {
+      "number": 1718,
+      "word": "complication",
+      "emoji": "⚠️🧩",
+      "meaning": "复杂情况；并发症",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A complication is a new problem that makes things harder."
+    },
+    {
+      "number": 1719,
+      "word": "disposal",
+      "emoji": "🗑️♻️",
+      "meaning": "处理；处置",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Disposal means getting rid of something."
+    },
+    {
+      "number": 1720,
+      "word": "explicit",
+      "emoji": "📢✅",
+      "meaning": "明确的；直白的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Explicit means very clear and direct."
+    },
+    {
+      "number": 1721,
+      "word": "investigator",
+      "emoji": "🕵️‍♀️🔍",
+      "meaning": "调查员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "An investigator is someone who finds out what happened."
+    },
+    {
+      "number": 1722,
+      "word": "principal",
+      "emoji": "🏫👔",
+      "meaning": "校长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A principal is the head teacher of a school."
+    },
+    {
+      "number": 1723,
+      "word": "revival",
+      "emoji": "🌱🔁",
+      "meaning": "复兴；恢复",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Revival means something becomes active or popular again."
+    },
+    {
+      "number": 1724,
+      "word": "spectrum",
+      "emoji": "🌈📊",
+      "meaning": "范围；光谱",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spectrum is a wide range of different things."
+    },
+    {
+      "number": 1725,
+      "word": "appetite",
+      "emoji": "🍽️😋",
+      "meaning": "食欲；欲望",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Appetite means wanting to eat or wanting something."
+    },
+    {
+      "number": 1726,
+      "word": "comply",
+      "emoji": "✅📜",
+      "meaning": "遵守",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To comply means to follow a rule or request."
+    },
+    {
+      "number": 1727,
+      "word": "dispose",
+      "emoji": "🗑️➡️",
+      "meaning": "处理；丢弃",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To dispose means to throw away or get rid of something."
+    },
+    {
+      "number": 1728,
+      "word": "explicitly",
+      "emoji": "📢🔎",
+      "meaning": "明确地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Explicitly means in a very clear and direct way."
+    },
+    {
+      "number": 1729,
+      "word": "invisible",
+      "emoji": "👻🚫",
+      "meaning": "看不见的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Invisible means something cannot be seen."
+    },
+    {
+      "number": 1730,
+      "word": "privatization",
+      "emoji": "🏢💰",
+      "meaning": "私有化",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Privatization means changing something from government control to private control."
+    },
+    {
+      "number": 1731,
+      "word": "revive",
+      "emoji": "🌱⚡",
+      "meaning": "复兴；使恢复",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To revive means to make something strong or active again."
+    },
+    {
+      "number": 1732,
+      "word": "spell",
+      "emoji": "⏳🌧️",
+      "meaning": "一段时间",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spell is a short period of time."
+    },
+    {
+      "number": 1733,
+      "word": "applaud",
+      "emoji": "👏🎉",
+      "meaning": "鼓掌；称赞",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To applaud means to clap or praise someone."
+    },
+    {
+      "number": 1734,
+      "word": "composition",
+      "emoji": "📝🎼",
+      "meaning": "作文；构成",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Composition means writing, music, or what something is made of."
+    },
+    {
+      "number": 1735,
+      "word": "dispute",
+      "emoji": "⚖️🗣️",
+      "meaning": "争议；争论",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "A dispute is an argument or disagreement."
+    },
+    {
+      "number": 1736,
+      "word": "exploitation",
+      "emoji": "🏭😓",
+      "meaning": "剥削；利用",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Exploitation means using someone unfairly for your own benefit."
+    },
+    {
+      "number": 1737,
+      "word": "invoke",
+      "emoji": "📜🗣️",
+      "meaning": "援引；调用",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To invoke means to use a rule, idea, or power to support something."
+    },
+    {
+      "number": 1738,
+      "word": "privilege",
+      "emoji": "👑🎟️",
+      "meaning": "特权",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A privilege is a special right or advantage."
+    },
+    {
+      "number": 1739,
+      "word": "revolutionary",
+      "emoji": "🔥🔄",
+      "meaning": "革命性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Revolutionary means causing a big new change."
+    },
+    {
+      "number": 1740,
+      "word": "sphere",
+      "emoji": "🌐⭕",
+      "meaning": "领域；球体",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A sphere is a round shape or an area of activity."
+    },
+    {
+      "number": 1741,
+      "word": "applicable",
+      "emoji": "✅📌",
+      "meaning": "适用的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Applicable means useful or right for a situation."
+    },
+    {
+      "number": 1742,
+      "word": "compromise",
+      "emoji": "🤝⚖️",
+      "meaning": "妥协",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "A compromise is an agreement where both sides give up something."
+    },
+    {
+      "number": 1743,
+      "word": "disrupt",
+      "emoji": "🚧💥",
+      "meaning": "扰乱；中断",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To disrupt means to stop something from working normally."
+    },
+    {
+      "number": 1744,
+      "word": "explosive",
+      "emoji": "💣🔥",
+      "meaning": "爆炸性的；炸药",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "Explosive means able to burst suddenly or cause strong reactions."
+    },
+    {
+      "number": 1745,
+      "word": "involvement",
+      "emoji": "🙋‍♂️🔗",
+      "meaning": "参与；牵涉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Involvement means taking part in something."
+    },
+    {
+      "number": 1746,
+      "word": "probe",
+      "emoji": "🔍🛰️",
+      "meaning": "调查；探测器",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "To probe means to examine something carefully."
+    },
+    {
+      "number": 1747,
+      "word": "rhetoric",
+      "emoji": "🗣️🎭",
+      "meaning": "修辞；言辞",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Rhetoric means strong words used to persuade people."
+    },
+    {
+      "number": 1748,
+      "word": "spin",
+      "emoji": "🌀🧺",
+      "meaning": "旋转；解读",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "To spin means to turn around quickly."
+    },
+    {
+      "number": 1749,
+      "word": "appoint",
+      "emoji": "👔📌",
+      "meaning": "任命",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To appoint means to choose someone for a job."
+    },
+    {
+      "number": 1750,
+      "word": "compute",
+      "emoji": "💻🧮",
+      "meaning": "计算",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To compute means to calculate using numbers or a computer."
+    },
+    {
+      "number": 1751,
+      "word": "disruption",
+      "emoji": "🚧⚡",
+      "meaning": "中断；扰乱",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Disruption means something stops normal activity."
+    },
+    {
+      "number": 1752,
+      "word": "extract",
+      "emoji": "🧪⛏️",
+      "meaning": "提取；摘录",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To extract means to take something out."
+    },
+    {
+      "number": 1753,
+      "word": "ironic",
+      "emoji": "🙃🎭",
+      "meaning": "讽刺的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Ironic means strange or funny because it is opposite to what you expect."
+    },
+    {
+      "number": 1754,
+      "word": "problematic",
+      "emoji": "⚠️🧩",
+      "meaning": "有问题的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Problematic means causing problems."
+    },
+    {
+      "number": 1755,
+      "word": "rifle",
+      "emoji": "🔫🎯",
+      "meaning": "步枪",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A rifle is a long gun."
+    },
+    {
+      "number": 1756,
+      "word": "spine",
+      "emoji": "🦴📚",
+      "meaning": "脊柱；书脊",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spine is the row of bones in your back."
+    },
+    {
+      "number": 1757,
+      "word": "appreciation",
+      "emoji": "🙏💎",
+      "meaning": "感激；欣赏",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Appreciation means feeling thankful or understanding value."
+    },
+    {
+      "number": 1758,
+      "word": "conceal",
+      "emoji": "🙈📦",
+      "meaning": "隐藏",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To conceal means to hide something."
+    },
+    {
+      "number": 1759,
+      "word": "dissolve",
+      "emoji": "🧂💧",
+      "meaning": "溶解；解散",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To dissolve means to disappear into liquid or come to an end."
+    },
+    {
+      "number": 1760,
+      "word": "extremist",
+      "emoji": "🔥⚠️",
+      "meaning": "极端分子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "An extremist is someone with very extreme beliefs."
+    },
+    {
+      "number": 1761,
+      "word": "ironically",
+      "emoji": "🙃📌",
+      "meaning": "讽刺地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Ironically means in a way that is opposite to what people expect."
+    },
+    {
+      "number": 1762,
+      "word": "proceedings",
+      "emoji": "⚖️📋",
+      "meaning": "诉讼程序；会议记录",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Proceedings are formal actions in a meeting or court."
+    },
+    {
+      "number": 1763,
+      "word": "riot",
+      "emoji": "👥🔥",
+      "meaning": "暴乱",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A riot is a violent crowd disturbance."
+    },
+    {
+      "number": 1764,
+      "word": "spotlight",
+      "emoji": "🔦🌟",
+      "meaning": "聚光灯；关注",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spotlight is strong attention or a bright stage light."
+    },
+    {
+      "number": 1765,
+      "word": "arbitrary",
+      "emoji": "🎲📌",
+      "meaning": "任意的；武断的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Arbitrary means decided without a clear reason."
+    },
+    {
+      "number": 1766,
+      "word": "concede",
+      "emoji": "🏳️🤝",
+      "meaning": "承认；让步",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To concede means to admit something or give in."
+    },
+    {
+      "number": 1767,
+      "word": "distinction",
+      "emoji": "🔍⚖️",
+      "meaning": "区别；荣誉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Distinction means a clear difference or special honor."
+    },
+    {
+      "number": 1768,
+      "word": "irony",
+      "emoji": "🙃🎭",
+      "meaning": "讽刺；反讽",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Irony is when something is opposite to what is expected."
+    },
+    {
+      "number": 1769,
+      "word": "proceeds",
+      "emoji": "💰🎟️",
+      "meaning": "收益",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Proceeds are money made from an event or sale."
+    },
+    {
+      "number": 1770,
+      "word": "rip",
+      "emoji": "✂️📄",
+      "meaning": "撕裂",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To rip means to tear something quickly."
+    },
+    {
+      "number": 1771,
+      "word": "spouse",
+      "emoji": "💍👫",
+      "meaning": "配偶",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A spouse is a husband or wife."
+    },
+    {
+      "number": 1772,
+      "word": "architectural",
+      "emoji": "🏛️📐",
+      "meaning": "建筑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Architectural means related to building design."
+    },
+    {
+      "number": 1773,
+      "word": "conceive",
+      "emoji": "💡👶",
+      "meaning": "构想；怀孕",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To conceive means to think of an idea or become pregnant."
+    },
+    {
+      "number": 1774,
+      "word": "distinctive",
+      "emoji": "🌟🔍",
+      "meaning": "独特的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Distinctive means easy to recognize because it is different."
+    },
+    {
+      "number": 1775,
+      "word": "irrelevant",
+      "emoji": "🚫📌",
+      "meaning": "不相关的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Irrelevant means not connected to the topic."
+    },
+    {
+      "number": 1776,
+      "word": "processing",
+      "emoji": "⚙️📊",
+      "meaning": "处理；加工",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Processing means dealing with information or materials."
+    },
+    {
+      "number": 1777,
+      "word": "ritual",
+      "emoji": "🕯️🔁",
+      "meaning": "仪式；惯例",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A ritual is something done in the same way again and again."
+    },
+    {
+      "number": 1778,
+      "word": "spy",
+      "emoji": "🕵️‍♂️👀",
+      "meaning": "间谍；暗中监视",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "A spy secretly gets information."
+    },
+    {
+      "number": 1779,
+      "word": "archive",
+      "emoji": "🗄️📚",
+      "meaning": "档案馆；档案",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "An archive is a place or collection for old records."
+    },
+    {
+      "number": 1780,
+      "word": "conception",
+      "emoji": "💡🌱",
+      "meaning": "构想；观念",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Conception means an idea or the start of something."
+    },
+    {
+      "number": 1781,
+      "word": "distort",
+      "emoji": "🪞🌀",
+      "meaning": "扭曲",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To distort means to change something so it is not true or clear."
+    },
+    {
+      "number": 1782,
+      "word": "isolation",
+      "emoji": "🏝️🚪",
+      "meaning": "隔离；孤立",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "Isolation means being alone or separated from others."
+    },
+    {
+      "number": 1783,
+      "word": "processor",
+      "emoji": "💻🧠",
+      "meaning": "处理器",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A processor is the part of a computer that does work."
+    },
+    {
+      "number": 1784,
+      "word": "robust",
+      "emoji": "💪🛡️",
+      "meaning": "强健的；稳健的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Robust means strong and able to keep working well."
+    },
+    {
+      "number": 1785,
+      "word": "squad",
+      "emoji": "👥🛡️",
+      "meaning": "小队",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A squad is a small group working together."
+    },
+    {
+      "number": 1786,
+      "word": "arena",
+      "emoji": "🏟️⚔️",
+      "meaning": "场馆；领域",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "An arena is a place for events or competition."
+    },
+    {
+      "number": 1787,
+      "word": "concession",
+      "emoji": "🤝🎟️",
+      "meaning": "让步；特许权",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A concession is something given up or allowed."
+    },
+    {
+      "number": 1788,
+      "word": "distress",
+      "emoji": "😟🚨",
+      "meaning": "痛苦；使苦恼",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "Distress means great worry or suffering."
+    },
+    {
+      "number": 1789,
+      "word": "proclaim",
+      "emoji": "📢👑",
+      "meaning": "宣布；宣称",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To proclaim means to announce something publicly."
+    },
+    {
+      "number": 1790,
+      "word": "rock",
+      "emoji": "🌊💥",
+      "meaning": "震动；使震惊",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To rock means to shake or shock strongly."
+    },
+    {
+      "number": 1791,
+      "word": "squeeze",
+      "emoji": "🤏🍋",
+      "meaning": "挤压",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To squeeze means to press something tightly."
+    },
+    {
+      "number": 1792,
+      "word": "arguably",
+      "emoji": "🤔📌",
+      "meaning": "可以说",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "Arguably means something can reasonably be said."
+    },
+    {
+      "number": 1793,
+      "word": "condemn",
+      "emoji": "⚖️❌",
+      "meaning": "谴责",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To condemn means to say strongly that something is wrong."
+    },
+    {
+      "number": 1794,
+      "word": "disturbing",
+      "emoji": "😨⚠️",
+      "meaning": "令人不安的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Disturbing means making people feel worried or upset."
+    },
+    {
+      "number": 1795,
+      "word": "productive",
+      "emoji": "✅📈",
+      "meaning": "高效的；富有成果的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "Productive means making good results."
+    },
+    {
+      "number": 1796,
+      "word": "rod",
+      "emoji": "🪵📏",
+      "meaning": "杆；棒",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "A rod is a long thin stick or bar."
+    },
+    {
+      "number": 1797,
+      "word": "stab",
+      "emoji": "🔪⚠️",
+      "meaning": "刺；戳",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To stab means to push a sharp object into something."
+    },
+    {
+      "number": 1798,
+      "word": "arm",
+      "emoji": "🛡️🔫",
+      "meaning": "武装；配备",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To arm means to give weapons or equipment."
+    },
+    {
+      "number": 1799,
+      "word": "confer",
+      "emoji": "🗣️🎓",
+      "meaning": "商议；授予",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To confer means to discuss or officially give something."
+    },
+    {
+      "number": 1800,
+      "word": "divert",
+      "emoji": "🔀🚧",
+      "meaning": "转移；改道",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "To divert means to change the direction or attention of something."
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1701-1710",
+      "label": "第一组",
+      "rangeStart": 1701,
+      "rangeEnd": 1710,
+      "wordList": [
+        "apparatus",
+        "revenge",
+        "complexity",
+        "anonymous",
+        "prevention",
+        "dismissal",
+        "intimate",
+        "compliance",
+        "specimen",
+        "experimental"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Although the report attracted public attention, the whistle-blower chose to remain __________ to avoid professional punishment.",
+          "questionKey": "1701-1710:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The new tax system seemed simple at first, but small exceptions soon revealed its hidden __________.",
+          "questionKey": "1701-1710:2"
+        },
+        {
+          "number": 3,
+          "prompt": "After repeated violations of company policy, the manager finally recommended the employee’s immediate __________.",
+          "questionKey": "1701-1710:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Because the treatment had not yet been tested widely, the hospital classified it as an __________ procedure.",
+          "questionKey": "1701-1710:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The journalist gained rare access to the politician’s private letters, which revealed several surprisingly __________ details.",
+          "questionKey": "1701-1710:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Public health campaigns usually focus less on punishment and more on disease __________.",
+          "questionKey": "1701-1710:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The hero refused to seek __________, arguing that justice should not become personal retaliation.",
+          "questionKey": "1701-1710:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The biologist placed the rare plant __________ under glass so that students could observe its structure safely.",
+          "questionKey": "1701-1710:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The laboratory purchased new measuring __________ after the old equipment produced unreliable results.",
+          "questionKey": "1701-1710:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The company avoided a large fine by proving full __________ with the new safety regulations.",
+          "questionKey": "1701-1710:10"
+        }
+      ]
+    },
+    {
+      "id": "1711-1720",
+      "label": "第二组",
+      "rangeStart": 1711,
+      "rangeEnd": 1720,
+      "wordList": [
+        "explicit",
+        "appealing",
+        "spectacle",
+        "displace",
+        "intriguing",
+        "expire",
+        "complication",
+        "reverse",
+        "disposal",
+        "prey"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Rising sea levels may eventually __________ thousands of families from low-lying coastal communities.",
+          "questionKey": "1711-1720:1"
+        },
+        {
+          "number": 2,
+          "prompt": "My passport will __________ next month, so I need to renew it before booking the international conference.",
+          "questionKey": "1711-1720:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The documentary became more __________ when it connected personal stories with broader historical change.",
+          "questionKey": "1711-1720:3"
+        },
+        {
+          "number": 4,
+          "prompt": "In the natural food chain, small fish often become __________ for larger predators.",
+          "questionKey": "1711-1720:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The central bank tried to __________ the decline by cutting interest rates and restoring market confidence.",
+          "questionKey": "1711-1720:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The opening ceremony was a carefully staged __________ watched by millions around the world.",
+          "questionKey": "1711-1720:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The advertisement was visually __________, but its actual product claims remained weak and unconvincing.",
+          "questionKey": "1711-1720:7"
+        },
+        {
+          "number": 8,
+          "prompt": "A sudden legal __________ delayed the merger, even though both companies had already approved the deal.",
+          "questionKey": "1711-1720:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The factory introduced a stricter system for the safe __________ of chemical waste.",
+          "questionKey": "1711-1720:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The contract gave __________ instructions about payment deadlines, leaving little room for misunderstanding.",
+          "questionKey": "1711-1720:10"
+        }
+      ]
+    },
+    {
+      "id": "1721-1730",
+      "label": "第三组",
+      "rangeStart": 1721,
+      "rangeEnd": 1730,
+      "wordList": [
+        "spectrum",
+        "invisible",
+        "explicitly",
+        "appetite",
+        "principal",
+        "revival",
+        "privatization",
+        "comply",
+        "dispose",
+        "investigator"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The police assigned a senior __________ to examine the financial records and interview the company’s former directors.",
+          "questionKey": "1721-1730:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The school __________ defended the new homework policy after several parents complained about student stress.",
+          "questionKey": "1721-1730:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The city’s old theatre enjoyed a cultural __________ after young artists began performing there again.",
+          "questionKey": "1721-1730:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Political opinions on the issue fall across a wide __________, from complete support to total opposition.",
+          "questionKey": "1721-1730:4"
+        },
+        {
+          "number": 5,
+          "prompt": "After the illness, she lost her __________ and could barely finish a small bowl of soup.",
+          "questionKey": "1721-1730:5"
+        },
+        {
+          "number": 6,
+          "prompt": "All visitors must __________ with security procedures before entering the research facility.",
+          "questionKey": "1721-1730:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Residents were told not to __________ of batteries with ordinary household rubbish.",
+          "questionKey": "1721-1730:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The minister stated __________ that the funding would not be used for private businesses.",
+          "questionKey": "1721-1730:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Air pollution is often __________, but its effects on children’s lungs can be serious.",
+          "questionKey": "1721-1730:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Critics argued that the rapid __________ of public transport would raise prices for ordinary passengers.",
+          "questionKey": "1721-1730:10"
+        }
+      ]
+    },
+    {
+      "id": "1731-1740",
+      "label": "第四组",
+      "rangeStart": 1731,
+      "rangeEnd": 1740,
+      "wordList": [
+        "revolutionary",
+        "sphere",
+        "invoke",
+        "exploitation",
+        "spell",
+        "privilege",
+        "composition",
+        "dispute",
+        "revive",
+        "applaud"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The government introduced tax cuts to __________ small businesses after several years of weak consumer demand.",
+          "questionKey": "1731-1740:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After a short __________ of heavy rain, the match resumed under much better conditions.",
+          "questionKey": "1731-1740:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The audience stood up to __________ the pianist after her final performance of the evening.",
+          "questionKey": "1731-1740:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The chemical __________ of the soil changed after years of intensive farming.",
+          "questionKey": "1731-1740:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The border __________ continued for decades because neither side accepted the historical maps.",
+          "questionKey": "1731-1740:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Human rights groups condemned the __________ of migrant workers in unsafe factories.",
+          "questionKey": "1731-1740:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The lawyer tried to __________ a constitutional principle to defend the journalist’s right to publish.",
+          "questionKey": "1731-1740:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Access to clean water should be a basic right, not a __________ enjoyed only by wealthy communities.",
+          "questionKey": "1731-1740:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The invention was considered __________ because it completely changed how people stored and shared information.",
+          "questionKey": "1731-1740:9"
+        },
+        {
+          "number": 10,
+          "prompt": "In the public __________, celebrities often receive more attention than serious policy experts.",
+          "questionKey": "1731-1740:10"
+        }
+      ]
+    },
+    {
+      "id": "1741-1750",
+      "label": "第五组",
+      "rangeStart": 1741,
+      "rangeEnd": 1750,
+      "wordList": [
+        "rhetoric",
+        "explosive",
+        "appoint",
+        "involvement",
+        "compute",
+        "compromise",
+        "applicable",
+        "disrupt",
+        "spin",
+        "probe"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The rule is not __________ in this case because the accident happened outside the company’s property.",
+          "questionKey": "1741-1750:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After weeks of negotiation, both sides accepted a practical __________ that avoided a costly strike.",
+          "questionKey": "1741-1750:2"
+        },
+        {
+          "number": 3,
+          "prompt": "A sudden cyberattack could __________ hospital services and delay treatment for thousands of patients.",
+          "questionKey": "1741-1750:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Firefighters warned that the gas leak had created a highly __________ situation near the shopping centre.",
+          "questionKey": "1741-1750:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The charity welcomed greater community __________ in planning the new youth education programme.",
+          "questionKey": "1741-1750:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The committee launched an independent __________ into allegations of corruption in the construction project.",
+          "questionKey": "1741-1750:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The mayor’s speech contained powerful __________, but few concrete proposals for reducing poverty.",
+          "questionKey": "1741-1750:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The washing machine began to __________ violently when the heavy clothes gathered on one side.",
+          "questionKey": "1741-1750:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The board voted to __________ a new director with experience in international expansion.",
+          "questionKey": "1741-1750:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The software can __________ thousands of possible routes within seconds and recommend the most efficient one.",
+          "questionKey": "1741-1750:10"
+        }
+      ]
+    },
+    {
+      "id": "1751-1760",
+      "label": "第六组",
+      "rangeStart": 1751,
+      "rangeEnd": 1760,
+      "wordList": [
+        "rifle",
+        "extremist",
+        "problematic",
+        "spine",
+        "conceal",
+        "ironic",
+        "disruption",
+        "dissolve",
+        "appreciation",
+        "extract"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The airport strike caused serious __________ to international travel during one of the busiest weeks of the year.",
+          "questionKey": "1751-1760:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Scientists can __________ useful information from large datasets, but poor data quality still limits accuracy.",
+          "questionKey": "1751-1760:2"
+        },
+        {
+          "number": 3,
+          "prompt": "It was __________ that the safety campaign itself created confusion by giving drivers unclear instructions.",
+          "questionKey": "1751-1760:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The proposal became __________ when officials realized it would increase costs without improving public services.",
+          "questionKey": "1751-1760:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The soldier cleaned his __________ carefully before returning it to the weapons storage room.",
+          "questionKey": "1751-1760:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Long hours at a desk can damage the lower __________ if workers sit with poor posture.",
+          "questionKey": "1751-1760:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The teacher expressed sincere __________ for the volunteers who helped organize the school event.",
+          "questionKey": "1751-1760:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The company tried to __________ evidence of pollution by deleting internal emails and reports.",
+          "questionKey": "1751-1760:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Sugar will __________ more quickly in hot water than in cold water.",
+          "questionKey": "1751-1760:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Police arrested a suspected __________ after discovering plans for a violent attack.",
+          "questionKey": "1751-1760:10"
+        }
+      ]
+    },
+    {
+      "id": "1761-1770",
+      "label": "第七组",
+      "rangeStart": 1761,
+      "rangeEnd": 1770,
+      "wordList": [
+        "proceeds",
+        "distinction",
+        "concede",
+        "arbitrary",
+        "spotlight",
+        "riot",
+        "proceedings",
+        "ironically",
+        "irony",
+        "rip"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The policy was criticized as __________ because officials never explained why some applicants were rejected.",
+          "questionKey": "1761-1770:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After the evidence became overwhelming, the minister had to __________ that serious mistakes had been made.",
+          "questionKey": "1761-1770:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The report makes a useful __________ between temporary discomfort and long-term psychological harm.",
+          "questionKey": "1761-1770:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The __________ of the situation was that the privacy campaign accidentally exposed thousands of personal records.",
+          "questionKey": "1761-1770:4"
+        },
+        {
+          "number": 5,
+          "prompt": "All __________ from the charity concert will be used to rebuild the village school.",
+          "questionKey": "1761-1770:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The child tried to __________ the envelope open, but accidentally tore the letter inside.",
+          "questionKey": "1761-1770:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The court __________ lasted three weeks and attracted intense media attention.",
+          "questionKey": "1761-1770:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The peaceful protest turned into a __________ after police and demonstrators clashed outside parliament.",
+          "questionKey": "1761-1770:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The scandal placed the company’s hiring practices under the national __________.",
+          "questionKey": "1761-1770:9"
+        },
+        {
+          "number": 10,
+          "prompt": "__________, the politician who promised transparency later refused to answer basic questions.",
+          "questionKey": "1761-1770:10"
+        }
+      ]
+    },
+    {
+      "id": "1771-1780",
+      "label": "第八组",
+      "rangeStart": 1771,
+      "rangeEnd": 1780,
+      "wordList": [
+        "distinctive",
+        "conception",
+        "ritual",
+        "archive",
+        "architectural",
+        "processing",
+        "irrelevant",
+        "spy",
+        "spouse",
+        "conceive"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Employees may bring their __________ to the annual dinner, but they must register the guest in advance.",
+          "questionKey": "1771-1780:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The museum is famous for its __________ design, especially the glass roof and curved entrance hall.",
+          "questionKey": "1771-1780:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The singer’s __________ voice made her easy to recognize after only a few seconds.",
+          "questionKey": "1771-1780:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The lawyer objected that the witness’s comments were __________ to the central issue of the trial.",
+          "questionKey": "1771-1780:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Data __________ can take several hours when millions of customer records must be checked and organized.",
+          "questionKey": "1771-1780:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Lighting a candle before dinner became a family __________ that marked the beginning of every holiday meal.",
+          "questionKey": "1771-1780:6"
+        },
+        {
+          "number": 7,
+          "prompt": "During the Cold War, governments often used a __________ to collect secret military information.",
+          "questionKey": "1771-1780:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Historians found the original treaty in a national __________ that had been closed for renovation.",
+          "questionKey": "1771-1780:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The early __________ of the project was ambitious, but the final design became far more practical.",
+          "questionKey": "1771-1780:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The founders tried to __________ a platform where teachers could share lessons and students could ask questions safely.",
+          "questionKey": "1771-1780:10"
+        }
+      ]
+    },
+    {
+      "id": "1781-1790",
+      "label": "第九组",
+      "rangeStart": 1781,
+      "rangeEnd": 1790,
+      "wordList": [
+        "squad",
+        "arena",
+        "distress",
+        "distort",
+        "processor",
+        "robust",
+        "isolation",
+        "rock",
+        "proclaim",
+        "concession"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Propaganda can __________ public understanding by presenting selected facts without their proper context.",
+          "questionKey": "1781-1790:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Months of social __________ made many elderly residents feel forgotten by the wider community.",
+          "questionKey": "1781-1790:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new laptop uses a faster __________, allowing complex video files to be edited more smoothly.",
+          "questionKey": "1781-1790:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The system proved __________ enough to continue operating during storms, power cuts, and heavy traffic.",
+          "questionKey": "1781-1790:4"
+        },
+        {
+          "number": 5,
+          "prompt": "A rescue __________ arrived within minutes after hikers reported smoke near the mountain trail.",
+          "questionKey": "1781-1790:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Education has become a major political __________ where competing parties fight over values and resources.",
+          "questionKey": "1781-1790:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The company won a government __________ to operate the airport shops for the next ten years.",
+          "questionKey": "1781-1790:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The child showed clear signs of __________ after being separated from his parents in the crowded station.",
+          "questionKey": "1781-1790:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The president will __________ a national day of mourning after the disaster.",
+          "questionKey": "1781-1790:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The explosion was powerful enough to __________ nearby buildings and shatter windows across the street.",
+          "questionKey": "1781-1790:10"
+        }
+      ]
+    },
+    {
+      "id": "1791-1800",
+      "label": "第十组",
+      "rangeStart": 1791,
+      "rangeEnd": 1800,
+      "wordList": [
+        "divert",
+        "productive",
+        "disturbing",
+        "arguably",
+        "stab",
+        "condemn",
+        "rod",
+        "arm",
+        "confer",
+        "squeeze"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The crowded meeting was surprisingly __________ because everyone came prepared and focused on specific decisions.",
+          "questionKey": "1791-1800:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The documentary included several __________ images that forced viewers to confront the reality of the war.",
+          "questionKey": "1791-1800:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This is __________ the most important reform the education system has introduced in twenty years.",
+          "questionKey": "1791-1800:3"
+        },
+        {
+          "number": 4,
+          "prompt": "International leaders quickly moved to __________ the attack and demand an independent investigation.",
+          "questionKey": "1791-1800:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The mechanic used a thin metal __________ to push the broken part back into position.",
+          "questionKey": "1791-1800:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Do not __________ the fruit too hard, or the juice will spill over the edge of the glass.",
+          "questionKey": "1791-1800:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The attacker tried to __________ the victim with a kitchen knife during the argument.",
+          "questionKey": "1791-1800:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The government decided to __________ local police with better protective equipment after the riots.",
+          "questionKey": "1791-1800:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Universities often __________ honorary degrees on writers, scientists, or public leaders.",
+          "questionKey": "1791-1800:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The roadworks forced officials to __________ traffic through several narrow residential streets.",
+          "questionKey": "1791-1800:10"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1523 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["Oxford5000-N"] = {
+  "id": "Oxford5000-N",
+  "sectionId": "vocabulary",
+  "title": "Oxford5000-N",
+  "href": "vocabulary.html?set=Oxford5000-N",
+  "sortOrder": 4014,
+  "displayValue": "N · 1301-1400",
+  "topic": "Oxford5000 Vocabulary",
+  "tags": [
+    "Oxford5000",
+    "N"
+  ],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "Oxford5000",
+  "cefrLevel": "B2-C1",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 1301,
+      "word": "initiate",
+      "emoji": "🚀🔛",
+      "meaning": "发起；开始",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to start something important"
+    },
+    {
+      "number": 1302,
+      "word": "line-up",
+      "emoji": "👥🎤",
+      "meaning": "阵容；名单",
+      "partOfSpeech": "",
+      "simpleDefinition": "a group of people or things chosen for an event"
+    },
+    {
+      "number": 1303,
+      "word": "mentor",
+      "emoji": "🧑‍🏫🌱",
+      "meaning": "导师；指导者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who guides and helps someone less experienced"
+    },
+    {
+      "number": 1304,
+      "word": "pledge",
+      "emoji": "🤝📜",
+      "meaning": "承诺；保证",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to promise seriously to do something"
+    },
+    {
+      "number": 1305,
+      "word": "rehabilitation",
+      "emoji": "🏥🔄",
+      "meaning": "康复；改造",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "help that lets someone recover or return to normal life"
+    },
+    {
+      "number": 1306,
+      "word": "sheer",
+      "emoji": "😮💯",
+      "meaning": "纯粹的；十足的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "used to emphasize the size, amount, or force of something"
+    },
+    {
+      "number": 1307,
+      "word": "tobacco",
+      "emoji": "🚬🌿",
+      "meaning": "烟草",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a plant used for making cigarettes and similar products"
+    },
+    {
+      "number": 1308,
+      "word": "administrator",
+      "emoji": "🗂️👩‍💼",
+      "meaning": "管理人员；行政人员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who manages an organization or system"
+    },
+    {
+      "number": 1309,
+      "word": "bonus",
+      "emoji": "💰🎁",
+      "meaning": "奖金；额外好处",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "extra money or an extra good thing"
+    },
+    {
+      "number": 1310,
+      "word": "classification",
+      "emoji": "🗃️🏷️",
+      "meaning": "分类；类别划分",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of putting things into groups"
+    },
+    {
+      "number": 1311,
+      "word": "deputy",
+      "emoji": "👔🤝",
+      "meaning": "副手；代理人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who is second in command"
+    },
+    {
+      "number": 1312,
+      "word": "enforcement",
+      "emoji": "⚖️🚨",
+      "meaning": "执行；执法",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of making people obey a rule or law"
+    },
+    {
+      "number": 1313,
+      "word": "forthcoming",
+      "emoji": "📅📢",
+      "meaning": "即将到来的；乐于提供信息的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening soon or willing to give information"
+    },
+    {
+      "number": 1314,
+      "word": "inject",
+      "emoji": "💉➡️",
+      "meaning": "注射；注入",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put a liquid or new quality into something"
+    },
+    {
+      "number": 1315,
+      "word": "linger",
+      "emoji": "⏳🌫️",
+      "meaning": "逗留；持续存在",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to stay longer than expected"
+    },
+    {
+      "number": 1316,
+      "word": "merchant",
+      "emoji": "🛒⚓",
+      "meaning": "商人；批发商",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who buys and sells goods"
+    },
+    {
+      "number": 1317,
+      "word": "plug",
+      "emoji": "🔌📣",
+      "meaning": "堵塞；插入；宣传",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to fill a hole or connect something to power"
+    },
+    {
+      "number": 1318,
+      "word": "reign",
+      "emoji": "👑⏳",
+      "meaning": "统治时期",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the period when a king, queen, or leader rules"
+    },
+    {
+      "number": 1319,
+      "word": "shipping",
+      "emoji": "🚢📦",
+      "meaning": "航运；运输",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the business of sending goods by ship or other transport"
+    },
+    {
+      "number": 1320,
+      "word": "tolerance",
+      "emoji": "🤝🌈",
+      "meaning": "容忍；耐受力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to accept differences or endure something"
+    },
+    {
+      "number": 1321,
+      "word": "admission",
+      "emoji": "🎟️🏫",
+      "meaning": "进入许可；承认",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "permission to enter or a statement that something is true"
+    },
+    {
+      "number": 1322,
+      "word": "boom",
+      "emoji": "📈💥",
+      "meaning": "繁荣；激增",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sudden increase in activity or growth"
+    },
+    {
+      "number": 1323,
+      "word": "cling",
+      "emoji": "🤲🧲",
+      "meaning": "紧抓；依附",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to hold tightly or refuse to stop believing"
+    },
+    {
+      "number": 1324,
+      "word": "descend",
+      "emoji": "⬇️🏔️",
+      "meaning": "下降；下来",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move downward or come from a higher place"
+    },
+    {
+      "number": 1325,
+      "word": "engagement",
+      "emoji": "💬🤝",
+      "meaning": "参与；订婚",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "active involvement or a promise to marry"
+    },
+    {
+      "number": 1326,
+      "word": "foster",
+      "emoji": "🌱🤝",
+      "meaning": "促进；培养",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to encourage something to grow or develop"
+    },
+    {
+      "number": 1327,
+      "word": "injection",
+      "emoji": "💉🩺",
+      "meaning": "注射；注入",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an act of putting medicine or money into something"
+    },
+    {
+      "number": 1328,
+      "word": "listing",
+      "emoji": "📋🏠",
+      "meaning": "列表；上市信息",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an item shown on a list, especially online"
+    },
+    {
+      "number": 1329,
+      "word": "mercy",
+      "emoji": "🙏⚖️",
+      "meaning": "仁慈；宽恕",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "kindness shown to someone you could punish"
+    },
+    {
+      "number": 1330,
+      "word": "plunge",
+      "emoji": "📉🌊",
+      "meaning": "骤降；猛跌",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to fall suddenly and sharply"
+    },
+    {
+      "number": 1331,
+      "word": "rejection",
+      "emoji": "❌💔",
+      "meaning": "拒绝；否决",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of refusing or not accepting something"
+    },
+    {
+      "number": 1332,
+      "word": "shoot",
+      "emoji": "📸🎬",
+      "meaning": "拍摄；嫩芽",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a photography or film session"
+    },
+    {
+      "number": 1333,
+      "word": "tolerate",
+      "emoji": "😐🤝",
+      "meaning": "容忍；忍受",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to accept something unpleasant without stopping it"
+    },
+    {
+      "number": 1334,
+      "word": "adolescent",
+      "emoji": "🧒🌱",
+      "meaning": "青少年",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a young person who is developing into an adult"
+    },
+    {
+      "number": 1335,
+      "word": "bounce",
+      "emoji": "🏀↩️",
+      "meaning": "弹起；反弹",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to move back after hitting a surface"
+    },
+    {
+      "number": 1336,
+      "word": "clinical",
+      "emoji": "🏥🔬",
+      "meaning": "临床的；冷静客观的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to medical treatment or very unemotional"
+    },
+    {
+      "number": 1337,
+      "word": "descent",
+      "emoji": "⬇️🧬",
+      "meaning": "下降；血统",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a movement downward or family origin"
+    },
+    {
+      "number": 1338,
+      "word": "engaging",
+      "emoji": "✨💬",
+      "meaning": "吸引人的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "interesting and pleasant"
+    },
+    {
+      "number": 1339,
+      "word": "fragile",
+      "emoji": "🧊⚠️",
+      "meaning": "脆弱的；易碎的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "easily broken or damaged"
+    },
+    {
+      "number": 1340,
+      "word": "injustice",
+      "emoji": "⚖️😡",
+      "meaning": "不公正",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "unfair treatment"
+    },
+    {
+      "number": 1341,
+      "word": "literacy",
+      "emoji": "📖🧠",
+      "meaning": "读写能力；素养",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to read, write, or understand a field"
+    },
+    {
+      "number": 1342,
+      "word": "mere",
+      "emoji": "🔹🤏",
+      "meaning": "仅仅的；只不过的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "used to emphasize how small or unimportant something is"
+    },
+    {
+      "number": 1343,
+      "word": "pole",
+      "emoji": "🪧🧲",
+      "meaning": "杆；柱；极",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long thin stick or one end of an axis"
+    },
+    {
+      "number": 1344,
+      "word": "relevance",
+      "emoji": "🔗🎯",
+      "meaning": "相关性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the connection with what is being discussed"
+    },
+    {
+      "number": 1345,
+      "word": "shrink",
+      "emoji": "📉🧺",
+      "meaning": "缩水；缩小",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to become smaller"
+    },
+    {
+      "number": 1346,
+      "word": "toll",
+      "emoji": "💀🔔",
+      "meaning": "伤亡人数；代价；通行费",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the number of deaths or the cost caused by something"
+    },
+    {
+      "number": 1347,
+      "word": "adoption",
+      "emoji": "👶✅",
+      "meaning": "收养；采用",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of accepting or starting to use something"
+    },
+    {
+      "number": 1348,
+      "word": "boundary",
+      "emoji": "🚧🗺️",
+      "meaning": "边界；界限",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a line separating two areas or limits"
+    },
+    {
+      "number": 1349,
+      "word": "closure",
+      "emoji": "🔒🏫",
+      "meaning": "关闭；结束感",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of closing something or feeling an issue is finished"
+    },
+    {
+      "number": 1350,
+      "word": "designate",
+      "emoji": "🏷️✅",
+      "meaning": "指定；标明",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to officially choose or mark something for a purpose"
+    },
+    {
+      "number": 1351,
+      "word": "enquire",
+      "emoji": "❓📞",
+      "meaning": "询问",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to ask for information"
+    },
+    {
+      "number": 1352,
+      "word": "franchise",
+      "emoji": "🏪📄",
+      "meaning": "特许经营权；加盟店",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a business allowed to sell a company’s products"
+    },
+    {
+      "number": 1353,
+      "word": "inmate",
+      "emoji": "🚔🏢",
+      "meaning": "囚犯",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person kept in prison"
+    },
+    {
+      "number": 1354,
+      "word": "liver",
+      "emoji": "🫀🩺",
+      "meaning": "肝脏",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large organ that cleans blood and helps digestion"
+    },
+    {
+      "number": 1355,
+      "word": "merely",
+      "emoji": "🔹🗣️",
+      "meaning": "仅仅；只是",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "only, and nothing more"
+    },
+    {
+      "number": 1356,
+      "word": "poll",
+      "emoji": "🗳️📊",
+      "meaning": "民意调查",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a survey asking people for their opinions"
+    },
+    {
+      "number": 1357,
+      "word": "reliability",
+      "emoji": "✅🔧",
+      "meaning": "可靠性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being trusted to work well"
+    },
+    {
+      "number": 1358,
+      "word": "shrug",
+      "emoji": "🤷‍♂️🧥",
+      "meaning": "耸肩",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to raise your shoulders to show uncertainty or indifference"
+    },
+    {
+      "number": 1359,
+      "word": "top",
+      "emoji": "🏆⬆️",
+      "meaning": "超过；居于首位",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be higher than or better than something"
+    },
+    {
+      "number": 1360,
+      "word": "adverse",
+      "emoji": "⚠️🌧️",
+      "meaning": "不利的；有害的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "negative or harmful"
+    },
+    {
+      "number": 1361,
+      "word": "bow",
+      "emoji": "🙇🎀",
+      "meaning": "鞠躬；蝴蝶结；弓",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to bend forward or a curved object"
+    },
+    {
+      "number": 1362,
+      "word": "cluster",
+      "emoji": "🍇📍",
+      "meaning": "群；簇",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of things close together"
+    },
+    {
+      "number": 1363,
+      "word": "desirable",
+      "emoji": "👍✨",
+      "meaning": "理想的；值得拥有的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "wanted or considered good"
+    },
+    {
+      "number": 1364,
+      "word": "enrich",
+      "emoji": "🌟📚",
+      "meaning": "丰富；使充实",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to improve something by adding value or quality"
+    },
+    {
+      "number": 1365,
+      "word": "frankly",
+      "emoji": "🗣️🔍",
+      "meaning": "坦率地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "honestly and directly"
+    },
+    {
+      "number": 1366,
+      "word": "insertion",
+      "emoji": "➕📄",
+      "meaning": "插入；嵌入",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of putting something into something else"
+    },
+    {
+      "number": 1367,
+      "word": "lobby",
+      "emoji": "🏛️📣",
+      "meaning": "游说",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to try to persuade officials to support something"
+    },
+    {
+      "number": 1368,
+      "word": "merge",
+      "emoji": "🔀🏢",
+      "meaning": "合并；融合",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to combine into one"
+    },
+    {
+      "number": 1369,
+      "word": "pond",
+      "emoji": "🐟💧",
+      "meaning": "池塘",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small area of still water"
+    },
+    {
+      "number": 1370,
+      "word": "reluctant",
+      "emoji": "😬🚪",
+      "meaning": "不情愿的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not willing to do something"
+    },
+    {
+      "number": 1371,
+      "word": "sigh",
+      "emoji": "😮‍💨💭",
+      "meaning": "叹气",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to breathe out heavily because of sadness or relief"
+    },
+    {
+      "number": 1372,
+      "word": "torture",
+      "emoji": "⛓️😖",
+      "meaning": "折磨；酷刑",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "severe physical or mental pain"
+    },
+    {
+      "number": 1373,
+      "word": "advocate",
+      "emoji": "📣⚖️",
+      "meaning": "倡导者；提倡",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "to publicly support an idea or a person who supports it"
+    },
+    {
+      "number": 1374,
+      "word": "breach",
+      "emoji": "🚨📄",
+      "meaning": "违反；缺口",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "a failure to obey a rule or agreement"
+    },
+    {
+      "number": 1375,
+      "word": "coalition",
+      "emoji": "🤝🏛️",
+      "meaning": "联盟；联合政府",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group formed to work together"
+    },
+    {
+      "number": 1376,
+      "word": "desktop",
+      "emoji": "🖥️📁",
+      "meaning": "台式电脑；桌面",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a computer or the main screen on a computer"
+    },
+    {
+      "number": 1377,
+      "word": "enrol",
+      "emoji": "📝🏫",
+      "meaning": "注册；入学",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to officially join a course or school"
+    },
+    {
+      "number": 1378,
+      "word": "frustrated",
+      "emoji": "😤🚧",
+      "meaning": "沮丧的；受挫的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "annoyed because something blocks progress"
+    },
+    {
+      "number": 1379,
+      "word": "insider",
+      "emoji": "🔐👤",
+      "meaning": "内部人士",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone with special inside knowledge"
+    },
+    {
+      "number": 1380,
+      "word": "log",
+      "emoji": "📓💻",
+      "meaning": "记录；日志",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to record information or a written record"
+    },
+    {
+      "number": 1381,
+      "word": "merger",
+      "emoji": "🏢➕",
+      "meaning": "合并",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the joining of two companies or organisations"
+    },
+    {
+      "number": 1382,
+      "word": "pop",
+      "emoji": "🎈⚡",
+      "meaning": "突然出现；发出砰声",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to appear suddenly or make a short sharp sound"
+    },
+    {
+      "number": 1383,
+      "word": "remainder",
+      "emoji": "➗📦",
+      "meaning": "剩余部分",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the part that is left"
+    },
+    {
+      "number": 1384,
+      "word": "simulate",
+      "emoji": "🧪🎮",
+      "meaning": "模拟",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to copy a real situation for practice or study"
+    },
+    {
+      "number": 1385,
+      "word": "toss",
+      "emoji": "🪙🤾",
+      "meaning": "扔；抛",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to throw something lightly or carelessly"
+    },
+    {
+      "number": 1386,
+      "word": "aesthetic",
+      "emoji": "🎨✨",
+      "meaning": "审美的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to beauty or artistic appearance"
+    },
+    {
+      "number": 1387,
+      "word": "breakdown",
+      "emoji": "📉🔧",
+      "meaning": "故障；崩溃；分解",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a failure or detailed division of information"
+    },
+    {
+      "number": 1388,
+      "word": "coastal",
+      "emoji": "🌊🏘️",
+      "meaning": "沿海的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "near the sea"
+    },
+    {
+      "number": 1389,
+      "word": "destructive",
+      "emoji": "💥🏚️",
+      "meaning": "破坏性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "causing serious damage"
+    },
+    {
+      "number": 1390,
+      "word": "ensue",
+      "emoji": "➡️🔥",
+      "meaning": "接着发生",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to happen as a result after something else"
+    },
+    {
+      "number": 1391,
+      "word": "frustrating",
+      "emoji": "😣🔁",
+      "meaning": "令人沮丧的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "making someone feel annoyed or blocked"
+    },
+    {
+      "number": 1392,
+      "word": "inspect",
+      "emoji": "🔍✅",
+      "meaning": "检查；视察",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to look at something carefully"
+    },
+    {
+      "number": 1393,
+      "word": "logic",
+      "emoji": "🧠🔗",
+      "meaning": "逻辑",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "clear reasoning"
+    },
+    {
+      "number": 1394,
+      "word": "merit",
+      "emoji": "🏅⚖️",
+      "meaning": "优点；价值",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a good quality that deserves respect"
+    },
+    {
+      "number": 1395,
+      "word": "portfolio",
+      "emoji": "💼📊",
+      "meaning": "作品集；投资组合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a collection of work or investments"
+    },
+    {
+      "number": 1396,
+      "word": "remains",
+      "emoji": "🦴🏛️",
+      "meaning": "遗迹；遗体；残留物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "what is left after something has gone or died"
+    },
+    {
+      "number": 1397,
+      "word": "simulation",
+      "emoji": "🎮🧪",
+      "meaning": "模拟",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a model or practice version of a real situation"
+    },
+    {
+      "number": 1398,
+      "word": "total",
+      "emoji": "🧮📊",
+      "meaning": "总计达",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to add up to a particular amount"
+    },
+    {
+      "number": 1399,
+      "word": "affection",
+      "emoji": "❤️🤗",
+      "meaning": "喜爱；感情",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a gentle feeling of liking or love"
+    },
+    {
+      "number": 1400,
+      "word": "breakthrough",
+      "emoji": "🚀💡",
+      "meaning": "突破",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an important discovery or improvement"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1301-1310",
+      "label": "第一组",
+      "rangeStart": 1301,
+      "rangeEnd": 1310,
+      "wordList": [
+        "pledge",
+        "bonus",
+        "line-up",
+        "tobacco",
+        "initiate",
+        "classification",
+        "rehabilitation",
+        "administrator",
+        "mentor",
+        "sheer"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After months of planning, the research team finally decided to __________ the project once the funding agreement was formally approved.",
+          "questionKey": "1301-1310:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The festival attracted more visitors this year because the organisers announced an unusually strong __________ of international performers and local bands.",
+          "questionKey": "1301-1310:2"
+        },
+        {
+          "number": 3,
+          "prompt": "During her first year at the company, she met every Friday with a senior __________ who helped her avoid common mistakes.",
+          "questionKey": "1301-1310:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The mayor asked every department to __________ greater transparency after several reports revealed serious problems in public spending.",
+          "questionKey": "1301-1310:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The athlete returned to competition only after a year of careful __________ following surgery on his damaged knee.",
+          "questionKey": "1301-1310:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The plan succeeded not because it was elegant, but because of the team’s __________ determination under extreme pressure.",
+          "questionKey": "1301-1310:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Doctors warned that the village’s rising cancer rate was closely linked to heavy __________ use among older residents.",
+          "questionKey": "1301-1310:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The school hired a new __________ to manage admissions, parent communication, and the daily operation of the campus.",
+          "questionKey": "1301-1310:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Employees who exceeded their annual targets received a generous __________ at the end of the financial year.",
+          "questionKey": "1301-1310:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The museum changed the __________ of several ancient objects after experts discovered new evidence about their origin.",
+          "questionKey": "1301-1310:10"
+        }
+      ]
+    },
+    {
+      "id": "1311-1320",
+      "label": "第二组",
+      "rangeStart": 1311,
+      "rangeEnd": 1320,
+      "wordList": [
+        "inject",
+        "shipping",
+        "enforcement",
+        "plug",
+        "deputy",
+        "tolerance",
+        "linger",
+        "reign",
+        "forthcoming",
+        "merchant"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "When the director was abroad, her __________ approved urgent decisions and represented the organisation at public meetings.",
+          "questionKey": "1311-1320:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Without consistent __________ of safety rules, even the best written policies become meaningless in a busy factory.",
+          "questionKey": "1311-1320:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Investors are waiting for details about the company’s __________ report before deciding whether to buy more shares.",
+          "questionKey": "1311-1320:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The central bank tried to __________ confidence into the market by announcing a package of emergency measures.",
+          "questionKey": "1311-1320:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Even after the argument ended, an uncomfortable silence seemed to __________ in the room for several minutes.",
+          "questionKey": "1311-1320:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The old port became wealthy because every successful __________ used it to trade silk, spices, and metal tools.",
+          "questionKey": "1311-1320:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Engineers rushed to __________ the leak before polluted water spread into nearby farms and residential areas.",
+          "questionKey": "1311-1320:7"
+        },
+        {
+          "number": 8,
+          "prompt": "During the queen’s long __________, the country expanded its navy and built several major public institutions.",
+          "questionKey": "1311-1320:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Rising fuel prices have made international __________ far more expensive for small companies that depend on imported materials.",
+          "questionKey": "1311-1320:9"
+        },
+        {
+          "number": 10,
+          "prompt": "A healthy classroom requires both high standards and genuine __________ for students who learn at different speeds.",
+          "questionKey": "1311-1320:10"
+        }
+      ]
+    },
+    {
+      "id": "1321-1330",
+      "label": "第三组",
+      "rangeStart": 1321,
+      "rangeEnd": 1330,
+      "wordList": [
+        "descend",
+        "mercy",
+        "boom",
+        "injection",
+        "admission",
+        "plunge",
+        "engagement",
+        "listing",
+        "cling",
+        "foster"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Her __________ to the medical school depended not only on grades but also on interviews and clinical experience.",
+          "questionKey": "1321-1330:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The city experienced a housing __________ after several technology firms moved their offices into the downtown area.",
+          "questionKey": "1321-1330:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Some managers still __________ to outdated methods, even when data clearly shows that the new system works better.",
+          "questionKey": "1321-1330:3"
+        },
+        {
+          "number": 4,
+          "prompt": "As the rescue team began to __________ the mountain, thick fog made every step slower and more dangerous.",
+          "questionKey": "1321-1330:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The teacher redesigned the project to increase student __________ during long reading lessons that had previously felt mechanical.",
+          "questionKey": "1321-1330:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A well-designed discussion task can __________ critical thinking because students must compare evidence instead of repeating opinions.",
+          "questionKey": "1321-1330:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The patient needed a second __________ because the pain returned only a few hours after the first treatment.",
+          "questionKey": "1321-1330:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The apartment looked perfect online, but the __________ did not mention the noisy road directly behind the building.",
+          "questionKey": "1321-1330:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The judge showed __________ by reducing the sentence after hearing evidence of the prisoner’s cooperation.",
+          "questionKey": "1321-1330:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Shares in the airline began to __________ after the company reported a much larger loss than expected.",
+          "questionKey": "1321-1330:10"
+        }
+      ]
+    },
+    {
+      "id": "1331-1340",
+      "label": "第四组",
+      "rangeStart": 1331,
+      "rangeEnd": 1340,
+      "wordList": [
+        "adolescent",
+        "fragile",
+        "shoot",
+        "descent",
+        "rejection",
+        "injustice",
+        "bounce",
+        "engaging",
+        "tolerate",
+        "clinical"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "His first manuscript received a polite __________, but the editor encouraged him to revise and submit again.",
+          "questionKey": "1331-1340:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The fashion magazine delayed the outdoor __________ because heavy rain made the planned beach location unusable.",
+          "questionKey": "1331-1340:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new policy says managers should not __________ rude behaviour simply because an employee has strong sales results.",
+          "questionKey": "1331-1340:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The clinic created a separate programme for each __________ who struggled with anxiety during the transition to secondary school.",
+          "questionKey": "1331-1340:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The ball hit the metal post and seemed to __________ unpredictably across the wet playground after the storm.",
+          "questionKey": "1331-1340:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The drug showed promising results in early laboratory tests, but it still needs large __________ trials.",
+          "questionKey": "1331-1340:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The plane began its gradual __________ after the pilot received permission from air traffic control.",
+          "questionKey": "1331-1340:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The documentary was surprisingly __________ because it explained climate science through personal stories rather than dry statistics.",
+          "questionKey": "1331-1340:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The peace agreement remained __________ because neither side trusted the other enough to make long-term concessions.",
+          "questionKey": "1331-1340:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The journalist wrote the article to expose the __________ suffered by workers who had not been paid for months.",
+          "questionKey": "1331-1340:10"
+        }
+      ]
+    },
+    {
+      "id": "1341-1350",
+      "label": "第五组",
+      "rangeStart": 1341,
+      "rangeEnd": 1350,
+      "wordList": [
+        "relevance",
+        "closure",
+        "mere",
+        "adoption",
+        "literacy",
+        "designate",
+        "shrink",
+        "boundary",
+        "pole",
+        "toll"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Digital __________ is now essential because students must judge whether online information is reliable or misleading.",
+          "questionKey": "1341-1350:1"
+        },
+        {
+          "number": 2,
+          "prompt": "A __________ apology will not repair the damage unless the company also changes the policy that caused it.",
+          "questionKey": "1341-1350:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The workers placed a warning sign on a tall __________ so drivers could see it from far away.",
+          "questionKey": "1341-1350:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The professor questioned the __________ of the statistic because it came from a country with a completely different economy.",
+          "questionKey": "1341-1350:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The company’s profit margin may __________ further if transport costs continue rising throughout the next quarter.",
+          "questionKey": "1341-1350:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The emotional __________ of caring for a sick parent is often underestimated by employers and even close friends.",
+          "questionKey": "1341-1350:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The rapid __________ of mobile payment changed how small shops handled daily sales and customer records.",
+          "questionKey": "1341-1350:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Good teachers are friendly, but they still maintain a clear __________ between professional support and personal involvement.",
+          "questionKey": "1341-1350:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Parents protested against the sudden __________ of the local library, which had served the neighbourhood for decades.",
+          "questionKey": "1341-1350:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The council will __________ the old theatre as a protected building because of its historical importance.",
+          "questionKey": "1341-1350:10"
+        }
+      ]
+    },
+    {
+      "id": "1351-1360",
+      "label": "第六组",
+      "rangeStart": 1351,
+      "rangeEnd": 1360,
+      "wordList": [
+        "liver",
+        "top",
+        "franchise",
+        "reliability",
+        "enquire",
+        "adverse",
+        "merely",
+        "shrug",
+        "inmate",
+        "poll"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Several parents called the office to __________ about scholarship requirements after the school published its new fee structure.",
+          "questionKey": "1351-1360:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The restaurant grew quickly by selling its __________ model to local owners in several neighbouring cities.",
+          "questionKey": "1351-1360:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The programme teaches each __________ practical skills so they have a better chance of finding work after release.",
+          "questionKey": "1351-1360:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Doctors advised him to stop drinking because repeated damage to the __________ could become permanent.",
+          "questionKey": "1351-1360:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The report does not __________ describe the problem; it also proposes practical solutions for small schools.",
+          "questionKey": "1351-1360:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A recent __________ showed that most residents supported stricter rules on noise near hospitals and schools.",
+          "questionKey": "1351-1360:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Customers care about price, but long-term __________ is often more important when they choose medical equipment.",
+          "questionKey": "1351-1360:7"
+        },
+        {
+          "number": 8,
+          "prompt": "When asked why the plan had failed, the manager could only __________ and blame poor communication.",
+          "questionKey": "1351-1360:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The film is expected to __________ last year’s box-office record if ticket sales remain strong this weekend.",
+          "questionKey": "1351-1360:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The drug was withdrawn after several patients reported serious __________ effects during the final testing stage.",
+          "questionKey": "1351-1360:10"
+        }
+      ]
+    },
+    {
+      "id": "1361-1370",
+      "label": "第七组",
+      "rangeStart": 1361,
+      "rangeEnd": 1370,
+      "wordList": [
+        "enrich",
+        "pond",
+        "cluster",
+        "lobby",
+        "bow",
+        "reluctant",
+        "frankly",
+        "merge",
+        "desirable",
+        "insertion"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The actor returned to the stage to __________ after the audience gave him a standing ovation.",
+          "questionKey": "1361-1370:1"
+        },
+        {
+          "number": 2,
+          "prompt": "A __________ of small cafés appeared near the station after the new university campus opened nearby.",
+          "questionKey": "1361-1370:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Flexible working hours are highly __________ for parents who need to manage childcare and professional responsibilities.",
+          "questionKey": "1361-1370:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Studying abroad can __________ a student’s understanding of culture, language, and different ways of solving problems.",
+          "questionKey": "1361-1370:4"
+        },
+        {
+          "number": 5,
+          "prompt": "__________, the proposal is too expensive for a small charity unless the company agrees to reduce the service fee.",
+          "questionKey": "1361-1370:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The editor recommended the __________ of one extra paragraph to explain the historical background more clearly.",
+          "questionKey": "1361-1370:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Environmental groups plan to __________ parliament for stricter limits on plastic packaging in supermarkets.",
+          "questionKey": "1361-1370:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The two departments will __________ next month to reduce administrative costs and improve communication between teams.",
+          "questionKey": "1361-1370:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Children gathered around the __________ to watch frogs jump between stones after the rain stopped.",
+          "questionKey": "1361-1370:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The witness was __________ to speak publicly because she feared that her employer might punish her afterwards.",
+          "questionKey": "1361-1370:10"
+        }
+      ]
+    },
+    {
+      "id": "1371-1380",
+      "label": "第八组",
+      "rangeStart": 1371,
+      "rangeEnd": 1380,
+      "wordList": [
+        "breach",
+        "insider",
+        "torture",
+        "enrol",
+        "sigh",
+        "log",
+        "coalition",
+        "frustrated",
+        "advocate",
+        "desktop"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After hearing that the flight had been delayed again, several passengers began to __________ in obvious frustration.",
+          "questionKey": "1371-1380:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The survivor described years of psychological __________ that left him unable to sleep without professional help.",
+          "questionKey": "1371-1380:2"
+        },
+        {
+          "number": 3,
+          "prompt": "As a children’s rights __________, she argued that schools should listen more carefully to student complaints.",
+          "questionKey": "1371-1380:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Sharing the client’s private records was a serious __________ of trust and could lead to legal action.",
+          "questionKey": "1371-1380:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Several small parties formed a __________ to challenge the ruling party in the upcoming election.",
+          "questionKey": "1371-1380:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Please save the file on the __________ so I can find it quickly before the presentation begins.",
+          "questionKey": "1371-1380:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Students must __________ before Friday if they want to join the summer writing course.",
+          "questionKey": "1371-1380:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Many users became __________ when the app crashed repeatedly during the final step of payment.",
+          "questionKey": "1371-1380:8"
+        },
+        {
+          "number": 9,
+          "prompt": "An industry __________ said the company had been preparing the merger quietly for more than six months.",
+          "questionKey": "1371-1380:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Nurses must __________ each dose of medicine immediately so later staff can check the patient’s treatment history.",
+          "questionKey": "1371-1380:10"
+        }
+      ]
+    },
+    {
+      "id": "1381-1390",
+      "label": "第九组",
+      "rangeStart": 1381,
+      "rangeEnd": 1390,
+      "wordList": [
+        "simulate",
+        "destructive",
+        "pop",
+        "breakdown",
+        "merger",
+        "ensue",
+        "toss",
+        "coastal",
+        "remainder",
+        "aesthetic"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The proposed __________ could create the largest delivery company in the region, but regulators are still reviewing it.",
+          "questionKey": "1381-1390:1"
+        },
+        {
+          "number": 2,
+          "prompt": "A warning message may __________ up if the software detects that your password is too weak.",
+          "questionKey": "1381-1390:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The team spent half the budget on research and saved the __________ for marketing and customer support.",
+          "questionKey": "1381-1390:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The training software can __________ an emergency landing so pilots can practise without risking real passengers.",
+          "questionKey": "1381-1390:4"
+        },
+        {
+          "number": 5,
+          "prompt": "He decided to __________ the old documents into the bin after scanning the important pages.",
+          "questionKey": "1381-1390:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The hotel’s renovation improved its __________ appeal without changing the basic structure of the historic building.",
+          "questionKey": "1381-1390:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The report includes a detailed __________ of costs, showing exactly how much each department spent last year.",
+          "questionKey": "1381-1390:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Many __________ communities are investing in flood defences because storms have become stronger in recent years.",
+          "questionKey": "1381-1390:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The hurricane was especially __________ because it hit several towns before residents had enough time to evacuate.",
+          "questionKey": "1381-1390:9"
+        },
+        {
+          "number": 10,
+          "prompt": "If the court cancels the election results, political chaos may __________ across the whole country.",
+          "questionKey": "1381-1390:10"
+        }
+      ]
+    },
+    {
+      "id": "1391-1400",
+      "label": "第十组",
+      "rangeStart": 1391,
+      "rangeEnd": 1400,
+      "wordList": [
+        "merit",
+        "affection",
+        "inspect",
+        "simulation",
+        "frustrating",
+        "breakthrough",
+        "portfolio",
+        "total",
+        "logic",
+        "remains"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "It was __________ to complete the online form because the website kept deleting information without warning.",
+          "questionKey": "1391-1400:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Officials will __________ the restaurant tomorrow after customers complained about poor hygiene and unsafe food storage.",
+          "questionKey": "1391-1400:2"
+        },
+        {
+          "number": 3,
+          "prompt": "I understand your conclusion, but I cannot follow the __________ behind it because two key assumptions are missing.",
+          "questionKey": "1391-1400:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The proposal has some __________, but it ignores the cost of training staff to use the new system.",
+          "questionKey": "1391-1400:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Applicants must submit a writing __________ so the programme can judge their range, accuracy, and originality.",
+          "questionKey": "1391-1400:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Archaeologists discovered the __________ of an ancient village beneath the modern shopping centre.",
+          "questionKey": "1391-1400:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The emergency __________ helped hospital staff practise making quick decisions during a large-scale accident.",
+          "questionKey": "1391-1400:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The repair costs may __________ more than the car is worth if the engine also needs replacement.",
+          "questionKey": "1391-1400:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Although he rarely expressed emotion in public, his __________ for his grandparents was obvious in small daily actions.",
+          "questionKey": "1391-1400:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The new vaccine represents a major __________ because it works against several forms of the virus.",
+          "questionKey": "1391-1400:10"
+        }
+      ]
+    }
+  ]
+};

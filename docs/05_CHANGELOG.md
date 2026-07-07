@@ -3,10 +3,24 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-08
+
+### Added
+
+- Added `Oxford5000-R`, `Oxford5000-S`, and `Oxford5000-T` as Oxford5000
+  Vocabulary units, covering words `1701-2000` with 30 quiz groups and private
+  CloudBase grading data, bringing Oxford5000 coverage to `001-2000`.
+
 ## 2026-07-07
 
 ### Added
 
+- Added `Oxford5000-A`, `Oxford5000-B`, `Oxford5000-C`, `Oxford5000-D`,
+  `Oxford5000-E`, `Oxford5000-F`, `Oxford5000-G`, `Oxford5000-H`,
+  `Oxford5000-I`, `Oxford5000-J`, `Oxford5000-K`, `Oxford5000-L`,
+  `Oxford5000-M`, `Oxford5000-N`, `Oxford5000-O`, `Oxford5000-P`, and
+  `Oxford5000-Q` as the first Oxford5000 Vocabulary units, covering words
+  `001-1700` with 170 quiz groups and private CloudBase grading data.
 - Added countable Vocabulary Test integrity sessions through
   `vocabulary_test_sessions`: 5+ group tests now create a server session before
   questions appear, heartbeat while active, validate `test_session_id` on
@@ -18,9 +32,9 @@
   superseded NAWL letter records retired in CloudBase.
 - Changed Student and Teacher Library to use only `Practice` and `Exam` as
   top-level filters, with lesson sections folded into Practice.
-- Split Vocabulary surfaces into `NGSL`, `NAWL`, and `TK2` capsules/labels in
-  Student Library, Teacher Library, Teacher Assign filters, Teacher View matrix
-  type filters, and student assignment cards; removed the old Library
+- Split Vocabulary surfaces into `NGSL`, `NAWL`, `TK2`, and `Oxford5000`
+  capsules/labels in Student Library, Teacher Library, Teacher Assign filters,
+  Teacher View matrix type filters, and student assignment cards; removed the old Library
   `Vocabulary`, `Grammar`, `Writing`, and `Grammar Lessons` sub-filters.
 - Changed teacher notification read behavior: opening the bell clears the
   header badge, while red attempt rows remain until the teacher opens a related
