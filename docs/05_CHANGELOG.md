@@ -28,6 +28,8 @@
 - Changed countable Vocabulary Test anti-cheat behavior so switching apps/tabs,
   hiding/leaving the page, heartbeat timeout, or session expiry abandons the
   session without recording an attempt or changing assignment status.
+- Changed the Vocabulary Test interruption notice to show a clear `Close`
+  dialog when a student returns after leaving the page or switching windows.
 - Fixed Vocabulary Test `Redo` so the Start button returns to a clickable
   `Start` state after clearing a completed review.
 - Blocked other devices or browser page instances from student cloud-backed

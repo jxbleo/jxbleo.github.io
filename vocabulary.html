@@ -1792,16 +1792,16 @@
         function showIntegrityNotice(message) {
             pendingIntegrityNotice = '';
             showTestDialog({
-                title: 'Test ended',
-                copy: message || 'This vocabulary test ended because the page was left. Your assignment is still waiting for a new attempt.',
-                primary: 'OK'
+                title: 'Test interrupted',
+                copy: message || 'You left this page or switched windows. This vocabulary test was interrupted. Please start again when you are ready.',
+                primary: 'Close'
             });
         }
 
         function endTestForIntegrity(reason, message) {
             if (!isActiveCountedTest() || testIntegrityEnded) return;
             testIntegrityEnded = true;
-            pendingIntegrityNotice = message || 'This vocabulary test ended because the page was left. Your assignment is still waiting for a new attempt.';
+            pendingIntegrityNotice = message || 'You left this page or switched windows. This vocabulary test was interrupted. Please start again when you are ready.';
             stopTestHeartbeat();
             clearInterval(testTimerId);
             abandonVocabularyTestSession(reason || 'page_hidden');
