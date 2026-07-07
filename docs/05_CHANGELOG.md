@@ -14,6 +14,8 @@
 
 ### Changed
 
+- Removed the NAWL vocabulary batch from static vocabulary content and Library
+  sub-filters.
 - Changed Student and Teacher Library to use only `Practice` and `Exam` as
   top-level filters, with lesson sections folded into Practice.
 - Split Vocabulary surfaces into `NGSL`, `NAWL`, and `TK2` capsules/labels in
