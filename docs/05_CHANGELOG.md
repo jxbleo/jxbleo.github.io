@@ -28,6 +28,8 @@
 - Changed countable Vocabulary Test anti-cheat behavior so switching apps/tabs,
   hiding/leaving the page, heartbeat timeout, or session expiry abandons the
   session without recording an attempt or changing assignment status.
+- Changed the Vocabulary Test start confirmation to remind students to turn on
+  Do Not Disturb before starting.
 - Changed the Vocabulary Test interruption notice to show a clear `Close`
   dialog when a student returns after leaving the page or switching windows.
 - Changed Teacher Assign success feedback from the small page message line to
