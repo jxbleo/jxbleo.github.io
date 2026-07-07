@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-C"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-C (201-300)."
+  "description": "Academic vocabulary practice for NAWL-C (201-300).",
+  "displayValue": "201-300"
 };

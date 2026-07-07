@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-H (701-800)."
+  "description": "Academic vocabulary practice for NAWL-H (701-800).",
+  "displayValue": "701-800"
 };

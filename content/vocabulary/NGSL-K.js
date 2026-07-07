@@ -1615,5 +1615,6 @@ window.__VOCABULARY_UNITS__["NGSL-K"] = {
         }
       ]
     }
-  ]
+  ],
+  "displayValue": "2001-2100"
 };

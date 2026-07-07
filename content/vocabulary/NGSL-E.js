@@ -1615,5 +1615,6 @@ window.__VOCABULARY_UNITS__["NGSL-E"] = {
         }
       ]
     }
-  ]
+  ],
+  "displayValue": "1401-1500"
 };

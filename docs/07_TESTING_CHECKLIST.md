@@ -218,7 +218,7 @@ Check:
 
 Check:
 
-- Learn/Dictate/Test modes render
+- Learn/Spell/Cloze modes render
 - Vocabulary Learn numbered capsules stay in the sticky learning bar, while the
   word bank appears only after `Go to Practice`, expands and collapses slowly,
   has no `Word Bank` label or `Hide` button, and collapses when scrolling back
@@ -248,7 +248,7 @@ Check:
   such as `t.scope`
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
-- Use/Test timing gives each selected group 90 seconds
+- Cloze/Test timing gives each selected group 60 seconds
 - running Test mode disables other Vocabulary mode tabs and warns on
   browser-level leave/back attempts
 - running Test mode shows a sticky top bar with numbered test-set capsules and

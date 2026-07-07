@@ -1123,5 +1123,6 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-J (901-963), with quiz groups for 901-960."
+  "description": "Academic vocabulary practice for NAWL-J (901-963), with quiz groups for 901-960.",
+  "displayValue": "901-963"
 };

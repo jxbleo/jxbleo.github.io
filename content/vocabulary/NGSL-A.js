@@ -1716,5 +1716,5 @@ window.__VOCABULARY_UNITS__["NGSL-A"] = {
       ]
     }
   ],
-  "displayValue": "Words 1001-1100"
+  "displayValue": "1001-1100"
 };

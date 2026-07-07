@@ -1815,5 +1815,6 @@ window.__VOCABULARY_UNITS__["NAWL-A"] = {
         }
       ]
     }
-  ]
+  ],
+  "displayValue": "001-100"
 };

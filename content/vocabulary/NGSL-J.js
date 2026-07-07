@@ -1615,5 +1615,6 @@ window.__VOCABULARY_UNITS__["NGSL-J"] = {
         }
       ]
     }
-  ]
+  ],
+  "displayValue": "1901-2000"
 };

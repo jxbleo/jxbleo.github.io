@@ -1509,7 +1509,7 @@
                 <div class="switcher">
                     <button class="switch-btn active" data-view-target="word-list-view">Learn</button>
                     <button class="switch-btn" data-view-target="dictation-view">Spell</button>
-                    <button class="switch-btn" data-view-target="test-view">Use</button>
+                    <button class="switch-btn" data-view-target="test-view">Cloze</button>
                 </div>
 
                 <div class="view active" id="word-list-view">
@@ -1568,7 +1568,7 @@
     </div>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260707-4"></script>
+    <script src="assets/js/config.public.js?v=20260708-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/practice-session.js?v=20260623-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
@@ -1576,7 +1576,7 @@
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
         var assignmentId = params.get('assignment') || '';
-        var VOCABULARY_TEST_SECONDS_PER_GROUP = 90;
+        var VOCABULARY_TEST_SECONDS_PER_GROUP = 60;
         var prefillAttemptId = params.get('prefill') || '';
         var historyAttemptId = params.get('history') || prefillAttemptId;
         var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
@@ -1677,6 +1677,13 @@
 
         function testDurationSecondsForGroupCount(count) {
             return Math.max(60, Number(count || 0) * VOCABULARY_TEST_SECONDS_PER_GROUP);
+        }
+
+        function formatTestDurationLabel(seconds) {
+            var totalSeconds = Math.max(0, Number(seconds || 0));
+            if (totalSeconds < 60) return totalSeconds + ' sec';
+            var minutes = Math.round((totalSeconds / 60) * 10) / 10;
+            return String(minutes).replace(/\.0$/, '') + ' min';
         }
 
         function isActiveCountedTest() {
@@ -2991,7 +2998,7 @@
             select.innerHTML = groups.map(function(group, index) {
                 var count = index + 1;
                 var status = count < 5 ? ' · Self-test only' : ' · Counts toward results';
-                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + (count * 2) + ' min' + status + '</option>';
+                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + status + '</option>';
             }).join('');
             updateTestCountNote();
         }

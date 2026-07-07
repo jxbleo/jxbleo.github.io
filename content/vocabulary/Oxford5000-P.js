@@ -5,7 +5,7 @@ window.__VOCABULARY_UNITS__["Oxford5000-P"] = {
   "title": "Oxford5000-P",
   "href": "vocabulary.html?set=Oxford5000-P",
   "sortOrder": 4016,
-  "displayValue": "P · 1501-1600",
+  "displayValue": "1501-1600",
   "topic": "Oxford5000 Vocabulary",
   "tags": [
     "Oxford5000",
