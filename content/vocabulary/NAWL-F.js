@@ -1,0 +1,1820 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["NAWL-F"] = {
+  "id": "NAWL-F",
+  "sectionId": "vocabulary",
+  "title": "NAWL-F",
+  "href": "vocabulary.html?set=NAWL-F",
+  "sortOrder": 2006,
+  "topic": "",
+  "tags": [],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "NAWL",
+  "cefrLevel": "C1+",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 501,
+      "word": "deficiency",
+      "emoji": "📉❌",
+      "meaning": "n. 缺乏，不足；缺陷",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a lack, shortage, or weakness",
+      "wordForms": "deficient (adj.)"
+    },
+    {
+      "number": 502,
+      "word": "legitimate",
+      "emoji": "✅⚖️",
+      "meaning": "adj. 合法的，正当的；v. 使合法",
+      "partOfSpeech": "adj. / v.",
+      "simpleDefinition": "allowed by law or accepted as reasonable",
+      "wordForms": "legitimacy (n.), legitimize (v.)"
+    },
+    {
+      "number": 503,
+      "word": "sophisticate",
+      "emoji": "🎩✨",
+      "meaning": "v. 使复杂化；使老练；n. 老练的人",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to make something more complex or refined",
+      "wordForms": "sophisticated (adj.), sophistication (n.)"
+    },
+    {
+      "number": 504,
+      "word": "accelerate",
+      "emoji": "🚀⚡",
+      "meaning": "v. 加速，促进",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something happen faster",
+      "wordForms": "acceleration (n.), accelerator (n.)"
+    },
+    {
+      "number": 505,
+      "word": "exponential",
+      "emoji": "📈💥",
+      "meaning": "adj. 指数的，急剧增长的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "growing or increasing very quickly",
+      "wordForms": "exponentially (adv.), exponent (n.)"
+    },
+    {
+      "number": 506,
+      "word": "formally",
+      "emoji": "👔📜",
+      "meaning": "adv. 正式地，形式上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in an official or proper way",
+      "wordForms": "formal (adj.), formality (n.)"
+    },
+    {
+      "number": 507,
+      "word": "socially",
+      "emoji": "👥🤝",
+      "meaning": "adv. 在社会上，社交上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to society or people together",
+      "wordForms": "social (adj.), society (n.)"
+    },
+    {
+      "number": 508,
+      "word": "accurately",
+      "emoji": "🎯✓",
+      "meaning": "adv. 准确地，精确地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a correct and exact way",
+      "wordForms": "accurate (adj.), accuracy (n.)"
+    },
+    {
+      "number": 509,
+      "word": "influential",
+      "emoji": "💪🌟",
+      "meaning": "adj. 有影响力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to affect people or events",
+      "wordForms": "influence (n./v.)"
+    },
+    {
+      "number": 510,
+      "word": "progression",
+      "emoji": "➡️📊",
+      "meaning": "n. 前进，进展；连续",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a process of moving forward or developing",
+      "wordForms": "progress (n./v.), progressive (adj.)"
+    },
+    {
+      "number": 511,
+      "word": "essence",
+      "emoji": "💎🔑",
+      "meaning": "n. 本质，精髓；香精",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the most important nature or quality of something",
+      "wordForms": "essential (adj.), essentially (adv.)"
+    },
+    {
+      "number": 512,
+      "word": "cylinder",
+      "emoji": "🥫⚙️",
+      "meaning": "n. 圆柱体，汽缸",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a solid object with circular ends and straight sides",
+      "wordForms": "cylindrical (adj.)"
+    },
+    {
+      "number": 513,
+      "word": "scholarship",
+      "emoji": "📚🎓",
+      "meaning": "n. 奖学金；学问，学识",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money for study, or serious academic learning",
+      "wordForms": "scholar (n.), scholarly (adj.)"
+    },
+    {
+      "number": 514,
+      "word": "sodium",
+      "emoji": "🧂⚗️",
+      "meaning": "n. 钠",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a soft chemical element found in salt",
+      "wordForms": "-"
+    },
+    {
+      "number": 515,
+      "word": "predominantly",
+      "emoji": "👑📊",
+      "meaning": "adv. 主要地，占主导地位地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "mainly or mostly",
+      "wordForms": "predominant (adj.), predominate (v.)"
+    },
+    {
+      "number": 516,
+      "word": "oscillation",
+      "emoji": "〰️↔️",
+      "meaning": "n. 振荡，摆动；犹豫",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "repeated movement from side to side or up and down",
+      "wordForms": "oscillate (v.), oscillator (n.)"
+    },
+    {
+      "number": 517,
+      "word": "impulse",
+      "emoji": "⚡💭",
+      "meaning": "n. 冲动，推动力；脉冲",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sudden wish to act, or a push of energy",
+      "wordForms": "impulsive (adj.), impulsively (adv.)"
+    },
+    {
+      "number": 518,
+      "word": "theorist",
+      "emoji": "🧠💡",
+      "meaning": "n. 理论家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who develops or studies theories",
+      "wordForms": "theory (n.), theoretical (adj.), theorize (v.)"
+    },
+    {
+      "number": 519,
+      "word": "manipulate",
+      "emoji": "🎮🤲",
+      "meaning": "v. 操纵，控制；操作",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to control or handle something skillfully or unfairly",
+      "wordForms": "manipulation (n.), manipulative (adj.), manipulator (n.)"
+    },
+    {
+      "number": 520,
+      "word": "alliance",
+      "emoji": "🤝🛡️",
+      "meaning": "n. 联盟，联合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group or agreement for working together",
+      "wordForms": "ally (n./v.), allied (adj.)"
+    },
+    {
+      "number": 521,
+      "word": "crystal",
+      "emoji": "💎❄️",
+      "meaning": "n. 水晶，晶体；adj. 清澈的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a clear solid with a regular shape",
+      "wordForms": "crystalline (adj.), crystallize (v.)"
+    },
+    {
+      "number": 522,
+      "word": "importantly",
+      "emoji": "⭐❗",
+      "meaning": "adv. 重要地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that matters",
+      "wordForms": "important (adj.), importance (n.)"
+    },
+    {
+      "number": 523,
+      "word": "stack",
+      "emoji": "📚🥞",
+      "meaning": "n. 堆，叠；v. 堆积",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a pile of things, or to put things in a pile",
+      "wordForms": "-"
+    },
+    {
+      "number": 524,
+      "word": "drift",
+      "emoji": "🌊💨",
+      "meaning": "v. 漂流，漂移；n. 漂移，趋势",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to move slowly without clear control or direction",
+      "wordForms": "-"
+    },
+    {
+      "number": 525,
+      "word": "nest",
+      "emoji": "🪺🏠",
+      "meaning": "n. 巢，窝；v. 筑巢",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a place where birds or animals live and keep young",
+      "wordForms": "-"
+    },
+    {
+      "number": 526,
+      "word": "fossil",
+      "emoji": "🦴🦕",
+      "meaning": "n. 化石；adj. 化石的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the remains or mark of an ancient living thing",
+      "wordForms": "fossilize (v.)"
+    },
+    {
+      "number": 527,
+      "word": "resistant",
+      "emoji": "🛡️💪",
+      "meaning": "adj. 抵抗的，有抵抗力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "able to fight against something",
+      "wordForms": "resist (v.), resistance (n.)"
+    },
+    {
+      "number": 528,
+      "word": "dimensional",
+      "emoji": "📐📏",
+      "meaning": "adj. 维度的，空间的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to size, direction, or measured space",
+      "wordForms": "dimension (n.)"
+    },
+    {
+      "number": 529,
+      "word": "punishment",
+      "emoji": "⚖️👮",
+      "meaning": "n. 惩罚，处罚",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a penalty for doing something wrong",
+      "wordForms": "punish (v.), punitive (adj.)"
+    },
+    {
+      "number": 530,
+      "word": "rhetoric",
+      "emoji": "🗣️🎭",
+      "meaning": "n. 修辞，修辞学；华丽的辞藻",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "speech or writing used to persuade people",
+      "wordForms": "rhetorical (adj.), rhetorically (adv.)"
+    },
+    {
+      "number": 531,
+      "word": "artifact",
+      "emoji": "🏺🔨",
+      "meaning": "n. 人工制品，文物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an object made by people, especially long ago",
+      "wordForms": "-"
+    },
+    {
+      "number": 532,
+      "word": "carrier",
+      "emoji": "📦🚚",
+      "meaning": "n. 运送者，载体；航空母舰",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person, thing, or company that carries something",
+      "wordForms": "carry (v.)"
+    },
+    {
+      "number": 533,
+      "word": "surgical",
+      "emoji": "🔪⚕️",
+      "meaning": "adj. 外科的，手术的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to medical operations",
+      "wordForms": "surgery (n.), surgeon (n.)"
+    },
+    {
+      "number": 534,
+      "word": "coordination",
+      "emoji": "🤝⚙️",
+      "meaning": "n. 协调，配合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability or act of making parts work together",
+      "wordForms": "coordinate (v./adj.), coordinator (n.)"
+    },
+    {
+      "number": 535,
+      "word": "turbulent",
+      "emoji": "🌪️🌊",
+      "meaning": "adj. 动荡的，骚乱的；湍流的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "violent, confused, or full of sudden change",
+      "wordForms": "turbulence (n.)"
+    },
+    {
+      "number": 536,
+      "word": "quantum",
+      "emoji": "⚛️🔬",
+      "meaning": "n. 量子；定量；adj. 量子的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the smallest unit of energy or a very small amount",
+      "wordForms": "-"
+    },
+    {
+      "number": 537,
+      "word": "sediment",
+      "emoji": "🪨🌊",
+      "meaning": "n. 沉积物，沉淀物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "material that settles at the bottom of liquid",
+      "wordForms": "sedimentary (adj.), sedimentation (n.)"
+    },
+    {
+      "number": 538,
+      "word": "ray",
+      "emoji": "☀️📡",
+      "meaning": "n. 光线，射线；鳐鱼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a narrow line of light or energy",
+      "wordForms": "-"
+    },
+    {
+      "number": 539,
+      "word": "conserve",
+      "emoji": "🌱💚",
+      "meaning": "v. 保存，保护；n. 果酱",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to protect or use carefully",
+      "wordForms": "conservation (n.), conservative (adj./n.)"
+    },
+    {
+      "number": 540,
+      "word": "primer",
+      "emoji": "📖🎨",
+      "meaning": "n. 入门书，初级读物；底漆",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a basic book or first layer of paint",
+      "wordForms": "primary (adj.), prime (adj./v.)"
+    },
+    {
+      "number": 541,
+      "word": "grasp",
+      "emoji": "🤲💡",
+      "meaning": "v. 抓住，理解；n. 抓，理解力",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to hold firmly or understand",
+      "wordForms": "-"
+    },
+    {
+      "number": 542,
+      "word": "bulk",
+      "emoji": "📦💪",
+      "meaning": "n. 大部分，体积；adj. 大批的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "the main or largest part of something",
+      "wordForms": "bulky (adj.)"
+    },
+    {
+      "number": 543,
+      "word": "terminology",
+      "emoji": "📚🔤",
+      "meaning": "n. 术语，专门用语",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "special words used in a subject",
+      "wordForms": "term (n.), terminal (adj./n.)"
+    },
+    {
+      "number": 544,
+      "word": "vegetation",
+      "emoji": "🌿🌳",
+      "meaning": "n. 植被，植物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "plants growing in an area",
+      "wordForms": "vegetate (v.), vegetative (adj.)"
+    },
+    {
+      "number": 545,
+      "word": "triangle",
+      "emoji": "🔺📐",
+      "meaning": "n. 三角形",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a shape with three sides",
+      "wordForms": "triangular (adj.)"
+    },
+    {
+      "number": 546,
+      "word": "traditionally",
+      "emoji": "🏛️👴",
+      "meaning": "adv. 传统上，习惯上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way based on long-established customs",
+      "wordForms": "traditional (adj.), tradition (n.)"
+    },
+    {
+      "number": 547,
+      "word": "execute",
+      "emoji": "⚡✅",
+      "meaning": "v. 执行，实施；处决",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to carry out a plan or order",
+      "wordForms": "execution (n.), executive (adj./n.), executor (n.)"
+    },
+    {
+      "number": 548,
+      "word": "intensive",
+      "emoji": "💪🔥",
+      "meaning": "adj. 密集的，加强的；精耕细作的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very strong, concentrated, or using great effort",
+      "wordForms": "intensify (v.), intensity (n.), intense (adj.)"
+    },
+    {
+      "number": 549,
+      "word": "reconstruct",
+      "emoji": "🔨🏗️",
+      "meaning": "v. 重建，重构",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to build or form again",
+      "wordForms": "reconstruction (n.), reconstructive (adj.)"
+    },
+    {
+      "number": 550,
+      "word": "broadly",
+      "emoji": "📏🌍",
+      "meaning": "adv. 广泛地，大体上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a general or wide way",
+      "wordForms": "broad (adj.), broaden (v.)"
+    },
+    {
+      "number": 551,
+      "word": "metabolism",
+      "emoji": "🔥🧬",
+      "meaning": "n. 新陈代谢",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the chemical processes that keep a body alive",
+      "wordForms": "metabolic (adj.), metabolize (v.)"
+    },
+    {
+      "number": 552,
+      "word": "revolutionary",
+      "emoji": "🔥⚡",
+      "meaning": "adj. 革命的，创新的；n. 革命者",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "involving a major new change or revolution",
+      "wordForms": "revolution (n.), revolutionize (v.)"
+    },
+    {
+      "number": 553,
+      "word": "merge",
+      "emoji": "🔀🤝",
+      "meaning": "v. 合并，融合",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to join together into one",
+      "wordForms": "merger (n.)"
+    },
+    {
+      "number": 554,
+      "word": "dilemma",
+      "emoji": "🤔⚖️",
+      "meaning": "n. 困境，进退两难",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a difficult choice between options",
+      "wordForms": "-"
+    },
+    {
+      "number": 555,
+      "word": "motif",
+      "emoji": "🎨🎵",
+      "meaning": "n. 主题，图案；动机",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a repeated idea, pattern, or design",
+      "wordForms": "-"
+    },
+    {
+      "number": 556,
+      "word": "motive",
+      "emoji": "🎯💭",
+      "meaning": "n. 动机，目的；adj. 发动的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a reason for doing something",
+      "wordForms": "motivate (v.), motivation (n.)"
+    },
+    {
+      "number": 557,
+      "word": "subtle",
+      "emoji": "🌫️🎭",
+      "meaning": "adj. 微妙的，细微的；巧妙的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not obvious; delicate or hard to notice",
+      "wordForms": "subtly (adv.), subtlety (n.)"
+    },
+    {
+      "number": 558,
+      "word": "clinic",
+      "emoji": "🏥⚕️",
+      "meaning": "n. 诊所，门诊部",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place where people receive medical treatment",
+      "wordForms": "clinical (adj.), clinically (adv.)"
+    },
+    {
+      "number": 559,
+      "word": "allocate",
+      "emoji": "📊💰",
+      "meaning": "v. 分配，拨出",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to give something for a particular purpose",
+      "wordForms": "allocation (n.)"
+    },
+    {
+      "number": 560,
+      "word": "hydrogen",
+      "emoji": "💧⚛️",
+      "meaning": "n. 氢",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a light chemical element that can form water",
+      "wordForms": "-"
+    },
+    {
+      "number": 561,
+      "word": "dissertation",
+      "emoji": "📝🎓",
+      "meaning": "n. 学位论文，专题论文",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long research paper for a degree",
+      "wordForms": "-"
+    },
+    {
+      "number": 562,
+      "word": "susceptible",
+      "emoji": "🤒💔",
+      "meaning": "adj. 易受影响的，易感的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "likely to be affected by something",
+      "wordForms": "susceptibility (n.)"
+    },
+    {
+      "number": 563,
+      "word": "architect",
+      "emoji": "🏛️📐",
+      "meaning": "n. 建筑师，设计师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who designs buildings or systems",
+      "wordForms": "architecture (n.), architectural (adj.)"
+    },
+    {
+      "number": 564,
+      "word": "coronary",
+      "emoji": "❤️🩺",
+      "meaning": "adj. 冠状动脉的；n. 冠状动脉",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to the heart's blood vessels",
+      "wordForms": "-"
+    },
+    {
+      "number": 565,
+      "word": "breakdown",
+      "emoji": "💔⚙️",
+      "meaning": "n. 崩溃，故障；分解",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a failure, collapse, or analysis into parts",
+      "wordForms": "break (v.)"
+    },
+    {
+      "number": 566,
+      "word": "inject",
+      "emoji": "💉➡️",
+      "meaning": "v. 注射，注入",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put liquid or an idea into something",
+      "wordForms": "injection (n.)"
+    },
+    {
+      "number": 567,
+      "word": "economist",
+      "emoji": "💰📊",
+      "meaning": "n. 经济学家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who studies economies",
+      "wordForms": "economy (n.), economic (adj.), economical (adj.)"
+    },
+    {
+      "number": 568,
+      "word": "momentum",
+      "emoji": "🚀⚡",
+      "meaning": "n. 动量，势头；动力",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the force that keeps movement or progress going",
+      "wordForms": "-"
+    },
+    {
+      "number": 569,
+      "word": "polar",
+      "emoji": "❄️🧭",
+      "meaning": "adj. 极地的，两极的；截然相反的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to the poles or complete opposites",
+      "wordForms": "polarity (n.), polarize (v.)"
+    },
+    {
+      "number": 570,
+      "word": "backward",
+      "emoji": "⬅️🔙",
+      "meaning": "adj. 向后的，落后的；adv. 向后地",
+      "partOfSpeech": "adj. / adv. / v.",
+      "simpleDefinition": "toward the back or less developed",
+      "wordForms": "-"
+    },
+    {
+      "number": 571,
+      "word": "multiply",
+      "emoji": "✖️📈",
+      "meaning": "v. 乘，使相乘；繁殖，增加",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to increase greatly or find a product in math",
+      "wordForms": "multiplication (n.), multiple (adj./n.)"
+    },
+    {
+      "number": 572,
+      "word": "morality",
+      "emoji": "⚖️💭",
+      "meaning": "n. 道德，道德性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "ideas about right and wrong behavior",
+      "wordForms": "moral (adj./n.), morally (adv.)"
+    },
+    {
+      "number": 573,
+      "word": "communicative",
+      "emoji": "🗣️💬",
+      "meaning": "adj. 爱说话的，善于交际的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "willing or able to share information",
+      "wordForms": "communicate (v.), communication (n.)"
+    },
+    {
+      "number": 574,
+      "word": "physically",
+      "emoji": "💪🏃",
+      "meaning": "adv. 身体上，物质上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to the body or material things",
+      "wordForms": "physical (adj.)"
+    },
+    {
+      "number": 575,
+      "word": "rainfall",
+      "emoji": "🌧️💧",
+      "meaning": "n. 降雨，降雨量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the amount of rain that falls",
+      "wordForms": "rain (n./v.)"
+    },
+    {
+      "number": 576,
+      "word": "politically",
+      "emoji": "🏛️🗳️",
+      "meaning": "adv. 政治上",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way related to government or power",
+      "wordForms": "political (adj.), politics (n.)"
+    },
+    {
+      "number": 577,
+      "word": "invasion",
+      "emoji": "⚔️🚀",
+      "meaning": "n. 入侵，侵略；侵犯",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an act of entering by force",
+      "wordForms": "invade (v.), invasive (adj.), invader (n.)"
+    },
+    {
+      "number": 578,
+      "word": "inevitably",
+      "emoji": "⏰✓",
+      "meaning": "adv. 不可避免地，必然地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that cannot be avoided",
+      "wordForms": "inevitable (adj.), inevitability (n.)"
+    },
+    {
+      "number": 579,
+      "word": "capitalism",
+      "emoji": "💰🏭",
+      "meaning": "n. 资本主义",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an economic system based on private ownership",
+      "wordForms": "capital (n./adj.), capitalist (n./adj.), capitalize (v.)"
+    },
+    {
+      "number": 580,
+      "word": "expertise",
+      "emoji": "🎯🧠",
+      "meaning": "n. 专门知识，专长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "special skill or knowledge",
+      "wordForms": "expert (n./adj.)"
+    },
+    {
+      "number": 581,
+      "word": "inferior",
+      "emoji": "👎📉",
+      "meaning": "adj. 较差的，次等的；n. 下级",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "lower in quality, rank, or importance",
+      "wordForms": "inferiority (n.)"
+    },
+    {
+      "number": 582,
+      "word": "actively",
+      "emoji": "🏃💪",
+      "meaning": "adv. 积极地，活跃地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in a way that involves action or effort",
+      "wordForms": "active (adj.), activity (n.), activate (v.)"
+    },
+    {
+      "number": 583,
+      "word": "quotation",
+      "emoji": "💬📝",
+      "meaning": "n. 引文，引语；报价",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "words repeated from another source",
+      "wordForms": "quote (v./n.)"
+    },
+    {
+      "number": 584,
+      "word": "composite",
+      "emoji": "🧩🔗",
+      "meaning": "adj. 合成的，复合的；n. 复合物",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "made from several different parts",
+      "wordForms": "compose (v.), composition (n.)"
+    },
+    {
+      "number": 585,
+      "word": "historically",
+      "emoji": "📜⏳",
+      "meaning": "adv. 历史上，从历史角度",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "in relation to history",
+      "wordForms": "historical (adj.), history (n.), historic (adj.)"
+    },
+    {
+      "number": 586,
+      "word": "textbook",
+      "emoji": "📚📖",
+      "meaning": "n. 教科书，课本；adj. 典型的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "a book used for study",
+      "wordForms": "text (n.)"
+    },
+    {
+      "number": 587,
+      "word": "bundle",
+      "emoji": "📦🎁",
+      "meaning": "n. 捆，束；v. 捆扎",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "a group of things tied or gathered together",
+      "wordForms": "-"
+    },
+    {
+      "number": 588,
+      "word": "elementary",
+      "emoji": "🔤👶",
+      "meaning": "adj. 基本的，初级的；元素的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "basic or at an early level",
+      "wordForms": "element (n.), elemental (adj.)"
+    },
+    {
+      "number": 589,
+      "word": "capitalist",
+      "emoji": "💰👔",
+      "meaning": "n. 资本家；adj. 资本主义的",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "related to capitalism or a person who supports it",
+      "wordForms": "capital (n./adj.), capitalism (n.), capitalize (v.)"
+    },
+    {
+      "number": 590,
+      "word": "flexibility",
+      "emoji": "🤸🔄",
+      "meaning": "n. 灵活性，弹性",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to bend, change, or adapt",
+      "wordForms": "flexible (adj.), flex (v.)"
+    },
+    {
+      "number": 591,
+      "word": "cord",
+      "emoji": "🪢🔌",
+      "meaning": "n. 绳索，电线",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long thin rope or wire",
+      "wordForms": "-"
+    },
+    {
+      "number": 592,
+      "word": "realistic",
+      "emoji": "👁️✅",
+      "meaning": "adj. 现实的，实际的；逼真的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "practical or showing things as they are",
+      "wordForms": "realism (n.), realist (n.), reality (n.)"
+    },
+    {
+      "number": 593,
+      "word": "initiation",
+      "emoji": "🎬🔑",
+      "meaning": "n. 开始，发起；入会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of starting something",
+      "wordForms": "initiate (v.), initiative (n./adj.), initiator (n.)"
+    },
+    {
+      "number": 594,
+      "word": "horizon",
+      "emoji": "🌅👁️",
+      "meaning": "n. 地平线；眼界，范围",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the line where the sky seems to meet land or sea",
+      "wordForms": "horizontal (adj.)"
+    },
+    {
+      "number": 595,
+      "word": "consultation",
+      "emoji": "🗣️💼",
+      "meaning": "n. 咨询，商议",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a discussion to get advice or make a decision",
+      "wordForms": "consult (v.), consultant (n.), consultative (adj.)"
+    },
+    {
+      "number": 596,
+      "word": "ruler",
+      "emoji": "📏👑",
+      "meaning": "n. 统治者；尺子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a tool for measuring or a person who governs",
+      "wordForms": "rule (v./n.)"
+    },
+    {
+      "number": 597,
+      "word": "freely",
+      "emoji": "🕊️💨",
+      "meaning": "adv. 自由地，免费地",
+      "partOfSpeech": "adv. / v.",
+      "simpleDefinition": "without being controlled or limited",
+      "wordForms": "free (adj./v.), freedom (n.)"
+    },
+    {
+      "number": 598,
+      "word": "rotate",
+      "emoji": "🔄🌀",
+      "meaning": "v. 旋转，轮流",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to turn around a center point",
+      "wordForms": "rotation (n.), rotary (adj.)"
+    },
+    {
+      "number": 599,
+      "word": "commodity",
+      "emoji": "📦💰",
+      "meaning": "n. 商品，货物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a product or raw material that can be bought and sold",
+      "wordForms": "-"
+    },
+    {
+      "number": 600,
+      "word": "elevation",
+      "emoji": "⛰️📈",
+      "meaning": "n. 高度，海拔；提升",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "height above a level or an act of raising",
+      "wordForms": "elevate (v.), elevated (adj.), elevator (n.)"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "501-510",
+      "label": "第一组",
+      "rangeStart": 501,
+      "rangeEnd": 510,
+      "wordList": [
+        "deficiency",
+        "legitimate",
+        "sophisticate",
+        "accelerate",
+        "exponential",
+        "formally",
+        "socially",
+        "accurately",
+        "influential",
+        "progression"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The hospital introduced routine blood screening because even a minor nutritional __________ can seriously affect recovery after major surgery.",
+          "answer": "deficiency",
+          "explanation": "deficiency。语法上，前面有 a minor nutritional，后面需要可数名词单数，deficiency 表示“缺乏，不足”。语义上，营养不足会影响术后恢复。常见搭配：nutritional deficiency。",
+          "questionKey": "501-510:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Although the charity’s finances were questioned at first, the investigation later confirmed that its fundraising activities were entirely __________.",
+          "answer": "legitimate",
+          "explanation": "legitimate。语法上，were entirely 后需要形容词作表语，legitimate 表示“合法的，正当的”。语义上，调查确认慈善机构的筹款活动完全合规。常见搭配：legitimate activities / legitimate business。",
+          "questionKey": "501-510:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The consultant warned that adding unnecessary reporting layers would only __________ the workflow without improving accountability or decision-making.",
+          "answer": "sophisticate",
+          "explanation": "sophisticate。语法上，would only 后接动词原形，sophisticate 在此表示“使复杂化”。语义上，增加不必要的汇报层级只会让流程更复杂，而不会提升责任制。",
+          "questionKey": "501-510:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Governments often invest in transport infrastructure because reliable rail links can __________ economic development across neglected regions.",
+          "answer": "accelerate",
+          "explanation": "accelerate。语法上，情态含义的 can 后接动词原形，accelerate 表示“加速，促进”。语义上，可靠铁路能促进被忽视地区的经济发展。常见搭配：accelerate economic development / growth。",
+          "questionKey": "501-510:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Once the platform reached a critical mass of users, its data storage needs began to grow at an almost __________ rate.",
+          "answer": "exponential",
+          "explanation": "exponential。语法上，an almost … rate 中需要形容词修饰名词 rate，exponential 表示“指数式的”。语义上，平台用户达到临界规模后，数据存储需求会急剧增长。常见搭配：exponential growth / exponential rate。",
+          "questionKey": "501-510:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The two universities had collaborated for years, but the partnership was not __________ recognized until the agreement was signed.",
+          "answer": "formally",
+          "explanation": "formally。语法上，空格修饰动词 recognized，需要副词，formally 表示“正式地”。语义上，两所大学多年合作，但直到签署协议后才被正式承认。常见搭配：formally recognized。",
+          "questionKey": "501-510:6"
+        },
+        {
+          "number": 7,
+          "prompt": "In some communities, refusing an invitation without explanation may be considered __________ inappropriate, even if no rule has been broken.",
+          "answer": "socially",
+          "explanation": "socially。语法上，空格修饰形容词 inappropriate，需要副词，socially 表示“在社交上，在社会习俗上”。语义上，不解释就拒绝邀请可能在社交层面不合适。常见搭配：socially inappropriate / socially acceptable。",
+          "questionKey": "501-510:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The witness described the suspect so __________ that the police were able to reconstruct the sequence of events.",
+          "answer": "accurately",
+          "explanation": "accurately。语法上，空格修饰动词 described，需要副词，accurately 表示“准确地”。语义上，目击者描述足够准确，警方才能重建事件顺序。",
+          "questionKey": "501-510:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Her early research was not widely read at first, but it later became highly __________ in debates about climate policy.",
+          "answer": "influential",
+          "explanation": "influential。语法上，became highly 后需要形容词作表语，influential 表示“有影响力的”。语义上，她的早期研究后来对气候政策讨论产生重要影响。常见搭配：highly influential / influential in debates。",
+          "questionKey": "501-510:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The course is designed as a gradual __________ from basic statistical concepts to advanced methods used in academic research.",
+          "answer": "progression",
+          "explanation": "progression。语法上，a gradual 后需要可数名词单数，progression 表示“进展，递进”。语义上，课程从基础统计概念逐步过渡到高级方法。常见搭配：a gradual progression from…to…。",
+          "questionKey": "501-510:10"
+        }
+      ]
+    },
+    {
+      "id": "511-520",
+      "label": "第二组",
+      "rangeStart": 511,
+      "rangeEnd": 520,
+      "wordList": [
+        "essence",
+        "cylinder",
+        "scholarship",
+        "sodium",
+        "predominantly",
+        "oscillation",
+        "impulse",
+        "theorist",
+        "manipulate",
+        "alliance"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The lecture was dense, but the professor managed to explain the __________ of the argument in one clear final paragraph.",
+          "answer": "essence",
+          "explanation": "essence。语法上，the … of the argument 中需要名词，essence 表示“本质，精髓”。语义上，教授把复杂论证的核心内容总结成清晰的一段。常见搭配：the essence of an argument / idea。",
+          "questionKey": "511-520:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The engine failed because pressure had built up unevenly inside one __________ during the final stage of testing.",
+          "answer": "cylinder",
+          "explanation": "cylinder。语法上，one 后需要可数名词单数，cylinder 表示“汽缸，圆柱体”。语义上，发动机故障是因为某个汽缸内部压力不均。",
+          "questionKey": "511-520:2"
+        },
+        {
+          "number": 3,
+          "prompt": "She received a full __________ to study abroad after submitting an outstanding portfolio and passing several interviews.",
+          "answer": "scholarship",
+          "explanation": "scholarship。语法上，a full 后需要可数名词单数，scholarship 表示“奖学金”。语义上，她凭借优秀作品集和面试获得全额奖学金。常见搭配：receive a scholarship / full scholarship。",
+          "questionKey": "511-520:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Doctors advised him to reduce his intake of __________ because his blood pressure had remained dangerously high for months.",
+          "answer": "sodium",
+          "explanation": "sodium。语法上，intake of 后接名词，sodium 表示“钠”。语义上，高血压患者通常需要减少钠摄入。常见搭配：sodium intake。",
+          "questionKey": "511-520:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The region is __________ rural, although several small cities have expanded rapidly along the new railway line.",
+          "answer": "predominantly",
+          "explanation": "predominantly。语法上，空格修饰形容词 rural，需要副词，predominantly 表示“主要地”。语义上，该地区虽然有小城市扩张，但整体仍以农村为主。常见搭配：predominantly rural / urban。",
+          "questionKey": "511-520:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The graph shows a regular __________ between high and low temperatures over each twenty-four-hour cycle.",
+          "answer": "oscillation",
+          "explanation": "oscillation。语法上，a regular 后需要可数名词单数，oscillation 表示“振荡，摆动”。语义上，图表显示温度在一天内高低之间规律波动。常见搭配：regular oscillation。",
+          "questionKey": "511-520:6"
+        },
+        {
+          "number": 7,
+          "prompt": "He resisted the sudden __________ to reply angrily and instead waited until he could write a more measured response.",
+          "answer": "impulse",
+          "explanation": "impulse。语法上，the sudden 后需要名词，impulse 表示“冲动”。语义上，他克制住立刻愤怒回复的冲动，选择冷静后再写。常见搭配：resist an impulse / sudden impulse。",
+          "questionKey": "511-520:7"
+        },
+        {
+          "number": 8,
+          "prompt": "As a political __________, she is less interested in election results than in the ideas that shape public institutions.",
+          "answer": "theorist",
+          "explanation": "theorist。语法上，a political 后需要可数名词单数，theorist 表示“理论家”。语义上，她关注塑造公共制度的思想，而不只是选举结果。常见搭配：political theorist。",
+          "questionKey": "511-520:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The company was accused of trying to __________ consumer behavior by hiding important information in confusing contract language.",
+          "answer": "manipulate",
+          "explanation": "manipulate。语法上，trying to 后接动词原形，manipulate 表示“操纵，控制”。语义上，公司通过混乱合同语言影响消费者行为。常见搭配：manipulate consumer behavior / public opinion。",
+          "questionKey": "511-520:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The two parties formed an uneasy __________ to pass the emergency bill, despite disagreeing on nearly every other issue.",
+          "answer": "alliance",
+          "explanation": "alliance。语法上，an uneasy 后需要可数名词单数，alliance 表示“联盟”。语义上，两个政党虽分歧巨大，但为了通过紧急法案暂时结盟。常见搭配：form an alliance / uneasy alliance。",
+          "questionKey": "511-520:10"
+        }
+      ]
+    },
+    {
+      "id": "521-530",
+      "label": "第三组",
+      "rangeStart": 521,
+      "rangeEnd": 530,
+      "wordList": [
+        "crystal",
+        "importantly",
+        "stack",
+        "drift",
+        "nest",
+        "fossil",
+        "resistant",
+        "dimensional",
+        "punishment",
+        "rhetoric"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The committee accepted the proposal because it was affordable, practical, and, __________, supported by evidence from several independent studies.",
+          "answer": "importantly",
+          "explanation": "importantly。语法上，空格位于插入语位置，修饰后面的 supported by evidence，需要副词。语义上，委员会接受方案的关键原因之一是它有多项独立研究证据支持。常见搭配：importantly, ... / more importantly。",
+          "questionKey": "521-530:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Under the microscope, the mineral formed a nearly perfect __________ structure, with each surface reflecting light sharply.",
+          "answer": "crystal",
+          "explanation": "crystal。语法上，a nearly perfect … structure 中需要名词作定语，crystal 表示“晶体”。语义上，矿物在显微镜下形成规则晶体结构。常见搭配：crystal structure。",
+          "questionKey": "521-530:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The assistant placed every application in a separate __________ so that the committee could review them by department.",
+          "answer": "stack",
+          "explanation": "stack。语法上，a separate 后需要可数名词单数，stack 表示“一堆，一叠”。语义上，申请材料被分成不同堆，方便委员会按部门审阅。",
+          "questionKey": "521-530:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Without a clear agenda, the discussion began to __________ away from policy details and toward personal complaints.",
+          "answer": "drift",
+          "explanation": "drift。语法上，began to 后接动词原形，drift 表示“偏离，漂移”。语义上，没有明确议程时，讨论会从政策细节偏向个人抱怨。常见搭配：drift away from。",
+          "questionKey": "521-530:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The birds returned to the same tree each spring to repair their __________ before the breeding season began.",
+          "answer": "nest",
+          "explanation": "nest。语法上，their 后需要名词，nest 表示“巢”。语义上，鸟每年春天回到同一棵树修补鸟巢。",
+          "questionKey": "521-530:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A nearly complete dinosaur __________ was discovered in the desert, preserved beneath several layers of ancient rock.",
+          "answer": "fossil",
+          "explanation": "fossil。语法上，A nearly complete dinosaur 后需要名词，fossil 表示“化石”。语义上，恐龙遗骸被古老岩层保存下来。常见搭配：dinosaur fossil / fossil record。",
+          "questionKey": "521-530:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The new strain of bacteria proved __________ to several common antibiotics, forcing doctors to use a less familiar treatment.",
+          "answer": "resistant",
+          "explanation": "resistant。语法上，proved 后接形容词作表语，resistant 表示“有抵抗力的”。语义上，新菌株对多种常见抗生素有耐药性。常见搭配：resistant to antibiotics。",
+          "questionKey": "521-530:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Architects used three-__________ modeling software to test how sunlight would move through the building during winter.",
+          "answer": "dimensional",
+          "explanation": "dimensional。语法上，three-… modeling software 中需要构成复合形容词，dimensional 表示“维度的”。语义上，建筑师使用三维建模软件测试冬季光照。常见搭配：three-dimensional modeling。",
+          "questionKey": "521-530:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The school introduced restorative conversations instead of automatic __________ for minor rule-breaking incidents.",
+          "answer": "punishment",
+          "explanation": "punishment。语法上，automatic 后需要名词，punishment 表示“惩罚，处罚”。语义上，学校用修复性谈话替代轻微违规的自动惩罚。",
+          "questionKey": "521-530:9"
+        },
+        {
+          "number": 10,
+          "prompt": "His speech was full of patriotic __________, but it offered very few practical proposals for solving the crisis.",
+          "answer": "rhetoric",
+          "explanation": "rhetoric。语法上，was full of 后接名词，rhetoric 表示“修辞，华丽言辞”。语义上，他的演讲爱国口号很多，但实际方案很少。常见搭配：political rhetoric / patriotic rhetoric。",
+          "questionKey": "521-530:10"
+        }
+      ]
+    },
+    {
+      "id": "531-540",
+      "label": "第四组",
+      "rangeStart": 531,
+      "rangeEnd": 540,
+      "wordList": [
+        "artifact",
+        "carrier",
+        "surgical",
+        "coordination",
+        "turbulent",
+        "quantum",
+        "sediment",
+        "ray",
+        "conserve",
+        "primer"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The museum displayed the ancient __________ in a glass case to prevent damage from humidity and careless handling.",
+          "answer": "artifact",
+          "explanation": "artifact。语法上，the ancient 后需要名词，artifact 表示“文物，人工制品”。语义上，博物馆把古代文物放进玻璃柜，以防受潮或被损坏。常见搭配：ancient artifact。",
+          "questionKey": "531-540:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The airline became the country’s largest international __________ after expanding its routes across Asia and Europe.",
+          "answer": "carrier",
+          "explanation": "carrier。语法上，the country’s largest international 后需要名词，carrier 表示“航空公司，运输者”。语义上，该航空公司拓展航线后成为最大国际承运商。常见搭配：international carrier / air carrier。",
+          "questionKey": "531-540:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The patient required immediate __________ treatment because the infection had spread too quickly for medication alone.",
+          "answer": "surgical",
+          "explanation": "surgical。语法上，空格修饰名词 treatment，需要形容词，surgical 表示“外科的，手术的”。语义上，感染扩散太快，单靠药物不够，需要手术治疗。常见搭配：surgical treatment / surgical procedure。",
+          "questionKey": "531-540:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Large rescue operations require close __________ among police, medical teams, and local volunteers.",
+          "answer": "coordination",
+          "explanation": "coordination。语法上，require close 后需要名词，coordination 表示“协调，配合”。语义上，大规模救援需要警方、医疗队和志愿者密切配合。常见搭配：close coordination among / between。",
+          "questionKey": "531-540:4"
+        },
+        {
+          "number": 5,
+          "prompt": "After months of __________ negotiations, the government finally reached a fragile agreement with opposition leaders.",
+          "answer": "turbulent",
+          "explanation": "turbulent。语法上，空格修饰名词 negotiations，需要形容词，turbulent 表示“动荡的，不稳定的”。语义上，谈判过程长期混乱，最终才达成脆弱协议。",
+          "questionKey": "531-540:5"
+        },
+        {
+          "number": 6,
+          "prompt": "In physics, a __________ event may involve behavior that appears impossible under ordinary classical assumptions.",
+          "answer": "quantum",
+          "explanation": "quantum。语法上，空格修饰名词 event，需要形容词，quantum 表示“量子的”。语义上，量子事件可能呈现经典物理无法解释的行为。常见搭配：quantum event / quantum mechanics。",
+          "questionKey": "531-540:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Over centuries, layers of __________ collected at the bottom of the lake and preserved traces of earlier climates.",
+          "answer": "sediment",
+          "explanation": "sediment。语法上，layers of 后接名词，sediment 表示“沉积物”。语义上，湖底沉积物长期积累，并保存早期气候痕迹。常见搭配：layers of sediment。",
+          "questionKey": "531-540:7"
+        },
+        {
+          "number": 8,
+          "prompt": "A single __________ of sunlight entered through the broken roof and illuminated the dusty floor of the abandoned house.",
+          "answer": "ray",
+          "explanation": "ray。语法上，A single 后需要可数名词单数，ray 表示“光线”。语义上，一束阳光从破屋顶照进废弃房屋。常见搭配：a ray of sunlight。",
+          "questionKey": "531-540:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The campaign encouraged households to __________ water by repairing leaks and using more efficient appliances.",
+          "answer": "conserve",
+          "explanation": "conserve。语法上，to 后接动词原形，conserve 表示“保存，节约”。语义上，活动鼓励家庭通过修漏和高效电器节约用水。常见搭配：conserve water / energy。",
+          "questionKey": "531-540:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Before beginning the advanced course, students were asked to read a short __________ on basic economic theory.",
+          "answer": "primer",
+          "explanation": "primer。语法上，a short 后需要可数名词单数，primer 表示“入门书，初级读物”。语义上，高阶课程前要求学生阅读经济理论入门材料。常见搭配：a primer on。",
+          "questionKey": "531-540:10"
+        }
+      ]
+    },
+    {
+      "id": "541-550",
+      "label": "第五组",
+      "rangeStart": 541,
+      "rangeEnd": 550,
+      "wordList": [
+        "grasp",
+        "bulk",
+        "terminology",
+        "vegetation",
+        "triangle",
+        "traditionally",
+        "execute",
+        "intensive",
+        "reconstruct",
+        "broadly"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After several demonstrations, most students could finally __________ why the theorem worked rather than simply memorizing it.",
+          "answer": "grasp",
+          "explanation": "grasp。语法上，could finally 后接动词原形，grasp 表示“理解”。语义上，学生终于理解定理为何成立，而不是机械记忆。常见搭配：grasp a concept / idea。",
+          "questionKey": "541-550:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company buys grain in __________ during harvest season, when prices are usually lower and supply is more predictable.",
+          "answer": "bulk",
+          "explanation": "bulk。语法上，in 后接名词构成短语，bulk 表示“大批，大量”。语义上，公司在收获季大量购买谷物以降低价格风险。常见搭配：buy in bulk。",
+          "questionKey": "541-550:2"
+        },
+        {
+          "number": 3,
+          "prompt": "New interns often struggle with medical __________ because familiar words can have highly specific meanings in clinical settings.",
+          "answer": "terminology",
+          "explanation": "terminology。语法上，medical 后需要名词，terminology 表示“术语”。语义上，实习生会因临床语境中词义专业化而难以理解医学术语。常见搭配：medical terminology。",
+          "questionKey": "541-550:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Satellite images showed that the fire had destroyed most of the dense __________ covering the lower mountain slopes.",
+          "answer": "vegetation",
+          "explanation": "vegetation。语法上，dense 后需要名词，vegetation 表示“植被”。语义上，卫星图像显示山坡下部的茂密植被被烧毁。",
+          "questionKey": "541-550:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The designer used a simple __________ to create a logo that looked balanced, memorable, and easy to reproduce.",
+          "answer": "triangle",
+          "explanation": "triangle。语法上，a simple 后需要可数名词单数，triangle 表示“三角形”。语义上，设计师用三角形制作平衡、易记、易复制的标志。",
+          "questionKey": "541-550:5"
+        },
+        {
+          "number": 6,
+          "prompt": "In many legal systems, property has __________ been passed to the eldest son, though that practice is now widely challenged.",
+          "answer": "traditionally",
+          "explanation": "traditionally。语法上，空格修饰谓语 has been passed，需要副词，traditionally 表示“传统上”。语义上，许多法律体系中财产过去常传给长子。常见搭配：traditionally been。",
+          "questionKey": "541-550:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The military was ordered to __________ the evacuation plan before the storm reached the coastal cities.",
+          "answer": "execute",
+          "explanation": "execute。语法上，was ordered to 后接动词原形，execute 表示“执行，实施”。语义上，军方被命令在风暴抵达前执行疏散计划。常见搭配：execute a plan / strategy。",
+          "questionKey": "541-550:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The language program offers an __________ summer course for students who need rapid improvement before university begins.",
+          "answer": "intensive",
+          "explanation": "intensive。语法上，空格修饰名词 summer course，需要形容词，intensive 表示“密集的，加强的”。语义上，课程服务于需要短期快速提高的学生。常见搭配：intensive course / intensive training。",
+          "questionKey": "541-550:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Historians used letters, maps, and tax records to __________ how the medieval town was organized.",
+          "answer": "reconstruct",
+          "explanation": "reconstruct。语法上，to 后接动词原形，reconstruct 表示“重建，重构”。语义上，历史学家利用多种资料重构中世纪城镇组织方式。",
+          "questionKey": "541-550:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The proposal was __________ supported by environmental groups, although some criticized its weak enforcement mechanisms.",
+          "answer": "broadly",
+          "explanation": "broadly。语法上，空格修饰过去分词 supported，需要副词，broadly 表示“广泛地，大体上”。语义上，环保组织总体支持该提案，但也有人批评执行机制薄弱。常见搭配：broadly supported。",
+          "questionKey": "541-550:10"
+        }
+      ]
+    },
+    {
+      "id": "551-560",
+      "label": "第六组",
+      "rangeStart": 551,
+      "rangeEnd": 560,
+      "wordList": [
+        "metabolism",
+        "revolutionary",
+        "merge",
+        "dilemma",
+        "motif",
+        "motive",
+        "subtle",
+        "clinic",
+        "allocate",
+        "hydrogen"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Regular exercise can affect the body’s __________ by changing how efficiently it converts food into usable energy.",
+          "answer": "metabolism",
+          "explanation": "metabolism。语法上，the body’s 后需要名词，metabolism 表示“新陈代谢”。语义上，运动会影响身体把食物转化为能量的效率。常见搭配：affect metabolism / body’s metabolism。",
+          "questionKey": "551-560:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The invention was considered __________ because it changed not only production methods but also the structure of the entire industry.",
+          "answer": "revolutionary",
+          "explanation": "revolutionary。语法上，was considered 后接形容词作补足语，revolutionary 表示“革命性的，创新的”。语义上，该发明改变了生产方式和整个行业结构。常见搭配：revolutionary invention / revolutionary change。",
+          "questionKey": "551-560:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The two departments decided to __________ their databases so that researchers could access patient records more efficiently.",
+          "answer": "merge",
+          "explanation": "merge。语法上，decided to 后接动词原形，merge 表示“合并，融合”。语义上，两个部门合并数据库以提高研究人员访问效率。常见搭配：merge databases / merge departments。",
+          "questionKey": "551-560:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The manager faced a difficult __________: reduce staff to cut costs or keep everyone and risk bankruptcy.",
+          "answer": "dilemma",
+          "explanation": "dilemma。语法上，a difficult 后需要可数名词单数，dilemma 表示“困境，进退两难”。语义上，经理在裁员降本和保留员工但冒破产风险之间两难。常见搭配：face a dilemma。",
+          "questionKey": "551-560:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The same floral __________ appears throughout the novel, linking scenes of memory, loss, and renewal.",
+          "answer": "motif",
+          "explanation": "motif。语法上，The same floral 后需要名词，motif 表示“主题，图案”。语义上，同一花卉意象贯穿小说，连接记忆、失去和更新等场景。常见搭配：recurring motif / floral motif。",
+          "questionKey": "551-560:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Investigators still could not identify a clear __________ for the attack, even after interviewing dozens of witnesses.",
+          "answer": "motive",
+          "explanation": "motive。语法上，a clear 后需要名词，motive 表示“动机，目的”。语义上，调查人员仍无法确认袭击的明确动机。常见搭配：identify a motive / clear motive。",
+          "questionKey": "551-560:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The difference between the two editions is __________, but careful readers may notice changes in tone and emphasis.",
+          "answer": "subtle",
+          "explanation": "subtle。语法上，is 后需要形容词作表语，subtle 表示“微妙的，细微的”。语义上，两版差异很小，但细心读者能发现语气变化。",
+          "questionKey": "551-560:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The local __________ provides free vaccinations for children whose families cannot easily afford private medical care.",
+          "answer": "clinic",
+          "explanation": "clinic。语法上，The local 后需要名词，clinic 表示“诊所，门诊部”。语义上，当地诊所为无力负担私人医疗的儿童提供免费疫苗。",
+          "questionKey": "551-560:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The committee voted to __________ more funding to mental health services after reviewing the latest hospital data.",
+          "answer": "allocate",
+          "explanation": "allocate。语法上，voted to 后接动词原形，allocate 表示“分配，拨出”。语义上，委员会审阅医院数据后决定给心理健康服务分配更多资金。常见搭配：allocate funding / resources。",
+          "questionKey": "551-560:9"
+        },
+        {
+          "number": 10,
+          "prompt": "When burned, __________ produces water rather than carbon dioxide, which is why it is discussed as a cleaner fuel.",
+          "answer": "hydrogen",
+          "explanation": "hydrogen。语法上，When burned 的主语位置需要名词，hydrogen 表示“氢”。语义上，氢燃烧产生水而非二氧化碳，因此被讨论为更清洁燃料。",
+          "questionKey": "551-560:10"
+        }
+      ]
+    },
+    {
+      "id": "561-570",
+      "label": "第七组",
+      "rangeStart": 561,
+      "rangeEnd": 570,
+      "wordList": [
+        "dissertation",
+        "susceptible",
+        "architect",
+        "coronary",
+        "breakdown",
+        "inject",
+        "economist",
+        "momentum",
+        "polar",
+        "backward"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Her doctoral __________ examines how digital platforms have changed the relationship between readers, publishers, and authors.",
+          "answer": "dissertation",
+          "explanation": "dissertation。语法上，Her doctoral 后需要名词，dissertation 表示“学位论文”。语义上，句子描述她博士论文的研究主题。常见搭配：doctoral dissertation。",
+          "questionKey": "561-570:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Young children are especially __________ to respiratory infections because their immune systems are still developing.",
+          "answer": "susceptible",
+          "explanation": "susceptible。语法上，are especially 后需要形容词，susceptible 表示“易受影响的，易感的”。语义上，儿童免疫系统尚在发展，因此更容易感染呼吸道疾病。常见搭配：susceptible to infection / disease。",
+          "questionKey": "561-570:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The lead __________ designed the new library to maximize natural light without increasing summer heat.",
+          "answer": "architect",
+          "explanation": "architect。语法上，The lead 后需要名词，architect 表示“建筑师，设计师”。语义上，主建筑师设计图书馆以增加自然光并避免夏季过热。",
+          "questionKey": "561-570:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Doctors discovered a serious __________ blockage and recommended immediate treatment to reduce the risk of a heart attack.",
+          "answer": "coronary",
+          "explanation": "coronary。语法上，空格修饰名词 blockage，需要形容词，coronary 表示“冠状动脉的”。语义上，医生发现冠状动脉堵塞，并建议立即治疗。常见搭配：coronary blockage / coronary artery。",
+          "questionKey": "561-570:4"
+        },
+        {
+          "number": 5,
+          "prompt": "A complete __________ in communication between departments caused the project to miss several important deadlines.",
+          "answer": "breakdown",
+          "explanation": "breakdown。语法上，A complete 后需要名词，breakdown 表示“崩溃，故障”。语义上，部门间沟通完全失灵导致项目错过期限。常见搭配：breakdown in communication。",
+          "questionKey": "561-570:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The nurse prepared to __________ the vaccine only after confirming the patient’s identity and medical history.",
+          "answer": "inject",
+          "explanation": "inject。语法上，prepared to 后接动词原形，inject 表示“注射”。语义上，护士确认身份和病史后才准备注射疫苗。",
+          "questionKey": "561-570:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The government hired an __________ to assess whether the tax reform would increase investment or reduce consumer spending.",
+          "answer": "economist",
+          "explanation": "economist。语法上，an 后需要以元音音素开头的可数名词单数，economist 表示“经济学家”。语义上，政府聘请经济学家评估税改影响。",
+          "questionKey": "561-570:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The campaign gained __________ after the televised debate, attracting volunteers and donations from across the country.",
+          "answer": "momentum",
+          "explanation": "momentum。语法上，gained 后需要名词作宾语，momentum 表示“势头，动力”。语义上，竞选活动在电视辩论后获得志愿者和捐款支持。常见搭配：gain momentum。",
+          "questionKey": "561-570:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The two candidates took almost __________ positions on immigration, leaving little room for compromise.",
+          "answer": "polar",
+          "explanation": "polar。语法上，空格修饰名词 positions，需要形容词，polar 表示“截然相反的”。语义上，两位候选人在移民问题上立场几乎完全对立。常见搭配：polar opposites / polar positions。",
+          "questionKey": "561-570:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The software update is not compatible with older systems, so installing it may make some functions move __________ rather than forward.",
+          "answer": "backward",
+          "explanation": "backward。语法上，move 后可接副词，backward 表示“向后，倒退”。语义上，新软件与旧系统不兼容，可能让某些功能倒退而不是进步。",
+          "questionKey": "561-570:10"
+        }
+      ]
+    },
+    {
+      "id": "571-580",
+      "label": "第八组",
+      "rangeStart": 571,
+      "rangeEnd": 580,
+      "wordList": [
+        "multiply",
+        "morality",
+        "communicative",
+        "physically",
+        "rainfall",
+        "politically",
+        "invasion",
+        "inevitably",
+        "capitalism",
+        "expertise"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Bacteria can __________ rapidly in warm conditions, which is why cooked food should not be left out overnight.",
+          "answer": "multiply",
+          "explanation": "multiply。语法上，情态动词 can 后接动词原形，multiply 表示“繁殖，增加”。语义上，细菌在温暖环境中会快速繁殖。常见搭配：multiply rapidly。",
+          "questionKey": "571-580:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The novel raises questions about __________ by showing characters who break the law for reasons they believe are justified.",
+          "answer": "morality",
+          "explanation": "morality。语法上，questions about 后接名词，morality 表示“道德，道德性”。语义上，小说通过人物违法但自认正当的行为探讨道德问题。",
+          "questionKey": "571-580:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The new teacher is highly __________, encouraging students to ask questions, clarify ideas, and negotiate meaning in English.",
+          "answer": "communicative",
+          "explanation": "communicative。语法上，is highly 后需要形容词，communicative 表示“善于交流的，交际性的”。语义上，新老师鼓励学生提问、澄清和协商意义，体现交际型教学特点。",
+          "questionKey": "571-580:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The job is __________ demanding because workers must lift heavy equipment and stand for most of the day.",
+          "answer": "physically",
+          "explanation": "physically。语法上，空格修饰形容词 demanding，需要副词，physically 表示“身体上”。语义上，该工作需要搬重物并长时间站立，因此体力要求高。常见搭配：physically demanding。",
+          "questionKey": "571-580:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Annual __________ has decreased in the region, putting pressure on farmers who depend on seasonal storms.",
+          "answer": "rainfall",
+          "explanation": "rainfall。语法上，Annual 后需要名词，rainfall 表示“降雨量”。语义上，该地区年降雨量下降，影响依赖季节性降雨的农民。常见搭配：annual rainfall。",
+          "questionKey": "571-580:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The sudden __________ of foreign troops forced thousands of civilians to leave their homes within days.",
+          "answer": "invasion",
+          "explanation": "invasion。语法上，The sudden 后需要名词，invasion 表示“入侵，侵略”。语义上，外国军队突然进入迫使平民短时间内离开家园。",
+          "questionKey": "571-580:6"
+        },
+        {
+          "number": 7,
+          "prompt": "If the city continues expanding without planning, traffic congestion will __________ become worse over the next decade.",
+          "answer": "inevitably",
+          "explanation": "inevitably。语法上，空格修饰 become worse，需要副词，inevitably 表示“不可避免地”。语义上，若城市无规划扩张，交通拥堵必然恶化。",
+          "questionKey": "571-580:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The reform was __________ risky because it angered powerful interest groups before the election.",
+          "answer": "politically",
+          "explanation": "politically。语法上，空格修饰形容词 risky，需要副词，politically 表示“政治上”。语义上，改革在选举前激怒强大利益集团，因此有政治风险。常见搭配：politically risky / politically sensitive。",
+          "questionKey": "571-580:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Critics argue that modern __________ rewards innovation but can also deepen inequality when markets are poorly regulated.",
+          "answer": "capitalism",
+          "explanation": "capitalism。语法上，modern 后需要名词，capitalism 表示“资本主义”。语义上，批评者认为现代资本主义鼓励创新，但监管不足时也会加剧不平等。",
+          "questionKey": "571-580:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The hospital relied on her __________ in infectious diseases when designing new safety procedures.",
+          "answer": "expertise",
+          "explanation": "expertise。语法上，her 后需要名词，expertise 表示“专门知识，专长”。语义上，医院依赖她在传染病方面的专业能力来设计安全流程。常见搭配：expertise in。",
+          "questionKey": "571-580:10"
+        }
+      ]
+    },
+    {
+      "id": "581-590",
+      "label": "第九组",
+      "rangeStart": 581,
+      "rangeEnd": 590,
+      "wordList": [
+        "inferior",
+        "actively",
+        "quotation",
+        "composite",
+        "historically",
+        "textbook",
+        "bundle",
+        "elementary",
+        "capitalist",
+        "flexibility"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The cheaper material looked similar at first, but laboratory tests showed that it was clearly __________ in strength and durability.",
+          "answer": "inferior",
+          "explanation": "inferior。语法上，was clearly 后需要形容词作表语，inferior 表示“较差的，次等的”。语义上，实验显示廉价材料强度和耐久性更差。常见搭配：inferior in quality / strength。",
+          "questionKey": "581-590:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The coach encouraged injured players to participate __________ in recovery rather than waiting passively for treatment to work.",
+          "answer": "actively",
+          "explanation": "actively。语法上，空格修饰动词 participate，需要副词，actively 表示“积极地”。语义上，教练鼓励受伤球员主动参与康复，而不是被动等待。常见搭配：actively participate in。",
+          "questionKey": "581-590:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The article begins with a famous __________ from Darwin before discussing how scientific theories change over time.",
+          "answer": "quotation",
+          "explanation": "quotation。语法上，a famous 后需要可数名词单数，quotation 表示“引文，引语”。语义上，文章以达尔文名言开头，再讨论科学理论变化。常见搭配：a famous quotation from。",
+          "questionKey": "581-590:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The aircraft wing is made from a lightweight __________ material that combines strength with resistance to corrosion.",
+          "answer": "composite",
+          "explanation": "composite。语法上，空格修饰名词 material，需要形容词，composite 表示“复合的，合成的”。语义上，机翼材料结合轻量、强度和抗腐蚀性。常见搭配：composite material。",
+          "questionKey": "581-590:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The policy can only be understood __________ because it developed through decades of conflict, compromise, and reform.",
+          "answer": "historically",
+          "explanation": "historically。语法上，空格修饰整句 can only be understood，需要副词，historically 表示“从历史角度”。语义上，该政策必须放在长期冲突、妥协和改革中理解。",
+          "questionKey": "581-590:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The judge described the case as a __________ example of negligence because the company had ignored repeated safety warnings.",
+          "answer": "textbook",
+          "explanation": "textbook。语法上，空格修饰名词 example，作形容词用，textbook 表示“典型的”。语义上，公司多次忽视安全警告，是典型的疏忽案例。常见搭配：a textbook example of。",
+          "questionKey": "581-590:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The farmer tied the branches into a __________ before carrying them back to the storage shed.",
+          "answer": "bundle",
+          "explanation": "bundle。语法上，a 后需要可数名词单数，bundle 表示“一捆，一束”。语义上，农民把树枝捆成一束带回仓库。",
+          "questionKey": "581-590:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The course covers __________ algebra before moving on to functions, graphs, and more abstract mathematical reasoning.",
+          "answer": "elementary",
+          "explanation": "elementary。语法上，空格修饰名词 algebra，需要形容词，elementary 表示“基础的，初级的”。语义上，课程先讲基础代数，再进入函数、图像和抽象推理。常见搭配：elementary algebra。",
+          "questionKey": "581-590:8"
+        },
+        {
+          "number": 9,
+          "prompt": "As a wealthy __________, he invested in factories, railways, and shipping companies during the industrial boom.",
+          "answer": "capitalist",
+          "explanation": "capitalist。语法上，a wealthy 后需要可数名词单数，capitalist 表示“资本家”。语义上，他在工业繁荣时期投资工厂、铁路和航运公司。",
+          "questionKey": "581-590:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Remote work gives employees greater __________ in managing their schedules, but it also requires stronger self-discipline.",
+          "answer": "flexibility",
+          "explanation": "flexibility。语法上，greater 后需要名词，flexibility 表示“灵活性”。语义上，远程工作提高日程安排灵活性，但也要求更强自律。常见搭配：greater flexibility。",
+          "questionKey": "581-590:10"
+        }
+      ]
+    },
+    {
+      "id": "591-600",
+      "label": "第十组",
+      "rangeStart": 591,
+      "rangeEnd": 600,
+      "wordList": [
+        "cord",
+        "realistic",
+        "initiation",
+        "horizon",
+        "consultation",
+        "ruler",
+        "freely",
+        "rotate",
+        "commodity",
+        "elevation"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The technician replaced the damaged electrical __________ after discovering that the outer covering had melted near the socket.",
+          "answer": "cord",
+          "explanation": "cord。语法上，the damaged electrical 后需要名词，cord 表示“电线，绳索”。语义上，技术员发现插座附近外皮熔化后更换了损坏电线。常见搭配：electrical cord。",
+          "questionKey": "591-600:1"
+        },
+        {
+          "number": 2,
+          "prompt": "A successful __________ must balance authority with legitimacy, especially when governing a society divided by class and region.",
+          "answer": "ruler",
+          "explanation": "ruler。语法上，A successful 后需要可数名词单数，ruler 表示“统治者”。语义上，成功统治者需要在权威和合法性之间取得平衡。",
+          "questionKey": "591-600:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The proposal is ambitious, but it is not __________ unless the team receives more staff and a longer timeline.",
+          "answer": "realistic",
+          "explanation": "realistic。语法上，is not 后需要形容词作表语，realistic 表示“现实的，实际的”。语义上，方案虽有野心，但在人手和时间不足时并不现实。",
+          "questionKey": "591-600:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Joining the professional association requires an official __________ process that introduces members to its rules and values.",
+          "answer": "initiation",
+          "explanation": "initiation。语法上，an official 后需要名词，initiation 表示“入会，开始”。语义上，加入专业协会需要正式入会流程来了解规则和价值观。常见搭配：initiation process。",
+          "questionKey": "591-600:4"
+        },
+        {
+          "number": 5,
+          "prompt": "From the mountain’s higher __________, the climbers could see clouds forming far below them in the valley.",
+          "answer": "elevation",
+          "explanation": "elevation。语法上，the mountain’s higher 后需要名词，elevation 表示“高度，海拔”。语义上，登山者在更高海拔处能看到山谷下方云层形成。",
+          "questionKey": "591-600:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The architect requested a formal __________ with engineers before approving changes to the building’s foundation.",
+          "answer": "consultation",
+          "explanation": "consultation。语法上，a formal 后需要可数名词单数，consultation 表示“咨询，商议”。语义上，建筑师批准地基修改前要求与工程师正式商议。常见搭配：formal consultation with。",
+          "questionKey": "591-600:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Students were encouraged to speak __________ during the seminar, provided they supported their claims with evidence.",
+          "answer": "freely",
+          "explanation": "freely。语法上，空格修饰动词 speak，需要副词，freely 表示“自由地”。语义上，学生可自由发言，但必须用证据支持观点。常见搭配：speak freely。",
+          "questionKey": "591-600:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Farmers worry that water may become a traded __________ if shortages continue and private companies gain control of supplies.",
+          "answer": "commodity",
+          "explanation": "commodity。语法上，a traded 后需要名词，commodity 表示“商品，货物”。语义上，农民担心水资源被私企控制后变成交易商品。常见搭配：traded commodity。",
+          "questionKey": "591-600:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Staff members __________ between morning and evening shifts so that no one is permanently assigned the most difficult hours.",
+          "answer": "rotate",
+          "explanation": "rotate。语法上，主语 Staff members 后需要谓语动词，rotate 表示“轮流，轮换”。语义上，员工在早晚班之间轮换，避免固定承担最困难时段。常见搭配：rotate between shifts。",
+          "questionKey": "591-600:9"
+        },
+        {
+          "number": 10,
+          "prompt": "After years of routine work, the fellowship broadened her intellectual __________ and introduced her to new research questions.",
+          "answer": "horizon",
+          "explanation": "horizon。语法上，her intellectual 后需要名词，horizon 表示“眼界，范围”。语义上，奖学金拓宽了她的学术视野，并带来新的研究问题。常见搭配：broaden one’s horizon。",
+          "questionKey": "591-600:10"
+        }
+      ]
+    }
+  ],
+  "description": "Academic vocabulary practice for NAWL-F (501-600)."
+};

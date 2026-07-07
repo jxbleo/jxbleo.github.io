@@ -975,6 +975,7 @@
         general: [
             { id: 'bbc-six-minute-english', label: 'BBC', yearFilter: true },
             { id: 'ngsl', label: 'NGSL', vocabularySource: 'ngsl' },
+            { id: 'nawl', label: 'NAWL', vocabularySource: 'nawl' },
             { id: 'tk2', label: 'TK2', vocabularySource: 'tk2' },
             { id: 'lesson-dse', label: 'DSE' },
             { id: 'lesson-ielts', label: 'IELTS' }

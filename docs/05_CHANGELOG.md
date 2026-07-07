@@ -14,8 +14,8 @@
 
 ### Changed
 
-- Removed the NAWL vocabulary batch from static vocabulary content and Library
-  sub-filters.
+- Restored the current NAWL vocabulary units in Library while keeping old
+  superseded NAWL letter records retired in CloudBase.
 - Changed Student and Teacher Library to use only `Practice` and `Exam` as
   top-level filters, with lesson sections folded into Practice.
 - Split Vocabulary surfaces into `NGSL`, `NAWL`, and `TK2` capsules/labels in

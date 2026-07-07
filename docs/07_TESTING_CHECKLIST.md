@@ -120,7 +120,7 @@ Check:
   collection has more than 200 visible records
 - Student and Teacher Library expose only `Practice` and `Exam` top-level
   filters; lesson sections appear under Practice
-- Practice Library sub-filters show `BBC`, `NGSL`, `TK2`, `DSE`, and
+- Practice Library sub-filters show `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
   `IELTS`, with no generic `Vocabulary`, `Grammar`, `Writing`, or
   `Grammar Lessons` sub-filter
 - Teacher Assign filters, Teacher View matrix type filters, and student
