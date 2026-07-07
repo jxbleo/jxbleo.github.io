@@ -3341,6 +3341,13 @@
             }
         }
 
+        function setStartTestButtonStarting(starting) {
+            var startButton = document.getElementById('start-test-btn');
+            if (!startButton) return;
+            startButton.disabled = starting === true;
+            startButton.textContent = starting === true ? 'Starting...' : 'Start';
+        }
+
         function startTest() {
             var groups = unitData.quizGroups || [];
             var count = Number(document.getElementById('test-group-count').value || 1);
@@ -3349,20 +3356,13 @@
                     questions: shuffleList(group.questions || [])
                 });
             });
-            var startButton = document.getElementById('start-test-btn');
-            if (startButton) {
-                startButton.disabled = true;
-                startButton.textContent = 'Starting...';
-            }
+            setStartTestButtonStarting(true);
             startVocabularyTestSession(selected).then(function() {
                 renderStartedTest(selected, {}, count * 120, true);
             }).catch(function(error) {
                 alert(sessionError(error).message);
             }).then(function() {
-                if (startButton && !testLocked) {
-                    startButton.disabled = false;
-                    startButton.textContent = 'Start Test';
-                }
+                if (!testLocked) setStartTestButtonStarting(false);
             });
         }
 
@@ -3435,6 +3435,7 @@
                 submitButton.textContent = 'Submit';
                 submitButton.style.display = 'none';
             }
+            setStartTestButtonStarting(false);
             if (redoButton) redoButton.style.display = 'none';
             updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
