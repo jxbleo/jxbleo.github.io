@@ -247,6 +247,7 @@ Check:
   such as `t.scope`
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
+- Use/Test timing gives each selected group 90 seconds
 - running Test mode disables other Vocabulary mode tabs and warns on
   browser-level leave/back attempts
 - running Test mode shows a sticky top bar with numbered test-set capsules and

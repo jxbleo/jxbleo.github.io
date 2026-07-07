@@ -30,6 +30,8 @@
   session without recording an attempt or changing assignment status.
 - Changed the Vocabulary Test start confirmation to remind students to turn on
   Do Not Disturb before starting.
+- Changed Vocabulary Use timing from 2 minutes per selected group to 1.5
+  minutes per selected group.
 - Changed the Vocabulary Test interruption notice to show a clear `Close`
   dialog when a student returns after leaving the page or switching windows.
 - Changed Teacher Assign success feedback from the small page message line to
