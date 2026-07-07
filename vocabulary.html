@@ -1576,6 +1576,7 @@
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
         var assignmentId = params.get('assignment') || '';
+        var VOCABULARY_TEST_SECONDS_PER_GROUP = 90;
         var prefillAttemptId = params.get('prefill') || '';
         var historyAttemptId = params.get('history') || prefillAttemptId;
         var historyBestPercentage = params.get('history_score') == null ? null : Number(params.get('history_score'));
@@ -1660,7 +1661,7 @@
                     group_count: activeTestGroupCount,
                     test_session_id: activeTestSessionId || '',
                     started_at: testStartedAt,
-                    total_seconds: activeTestGroupCount * 120,
+                    total_seconds: testDurationSecondsForGroupCount(activeTestGroupCount),
                     answers: answers
                 }));
             } catch (e) {}
@@ -1672,6 +1673,10 @@
 
         function isCountedGroupCount(count) {
             return Number(count || 0) >= 5;
+        }
+
+        function testDurationSecondsForGroupCount(count) {
+            return Math.max(60, Number(count || 0) * VOCABULARY_TEST_SECONDS_PER_GROUP);
         }
 
         function isActiveCountedTest() {
@@ -3222,7 +3227,7 @@
             updateHistoryToolbar();
             switchView('test-view');
             setTestLocked(true);
-            startTimer(seconds || selected.length * 120);
+            startTimer(seconds || testDurationSecondsForGroupCount(selected.length));
             startTestHeartbeat();
             saveTestDraft();
             if (scrollToRoot) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3238,7 +3243,13 @@
             try { draft = JSON.parse(localStorage.getItem(testDraftKey()) || 'null'); } catch (e) {}
             if (!draft || !draft.group_ids || !draft.group_ids.length || !draft.started_at) return Promise.resolve(false);
             var elapsed = Math.max(0, Math.round((Date.now() - new Date(draft.started_at).getTime()) / 1000));
-            var remaining = Math.max(0, Number(draft.total_seconds || draft.group_count * 120) - elapsed);
+            var draftGroupCount = Number(draft.group_count || draft.group_ids.length || 0);
+            var draftHasServerSession = isCountedGroupCount(draftGroupCount) && !!draft.test_session_id;
+            var savedDraftTotalSeconds = Number(draft.total_seconds || testDurationSecondsForGroupCount(draftGroupCount));
+            var draftTotalSeconds = draftHasServerSession
+                ? savedDraftTotalSeconds
+                : Math.min(savedDraftTotalSeconds, testDurationSecondsForGroupCount(draftGroupCount));
+            var remaining = Math.max(0, draftTotalSeconds - elapsed);
             if (remaining <= 0) {
                 clearTestDraft();
                 return Promise.resolve(false);
@@ -3270,7 +3281,7 @@
         function startTestWithGroups(selected, answers) {
             if (!selected || !selected.length) return Promise.resolve(false);
             return startVocabularyTestSession(selected).then(function() {
-                return renderStartedTest(selected, answers || {}, selected.length * 120, false);
+                return renderStartedTest(selected, answers || {}, testDurationSecondsForGroupCount(selected.length), false);
             }).catch(function(error) {
                 alert(sessionError(error).message);
                 return false;
@@ -3358,7 +3369,7 @@
             });
             setStartTestButtonStarting(true);
             startVocabularyTestSession(selected).then(function() {
-                renderStartedTest(selected, {}, count * 120, true);
+                renderStartedTest(selected, {}, testDurationSecondsForGroupCount(count), true);
             }).catch(function(error) {
                 alert(sessionError(error).message);
             }).then(function() {

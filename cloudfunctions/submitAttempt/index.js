@@ -5,6 +5,7 @@ const db = app.database();
 const READ_PAGE_LIMIT = 500;
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
 const VOCABULARY_TEST_MIN_GROUPS = 5;
+const VOCABULARY_TEST_SECONDS_PER_GROUP = 90;
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
 const VOCABULARY_TEST_SUBMIT_GRACE_MS = 30 * 1000;
 
@@ -656,7 +657,7 @@ async function startVocabularyTestSession(student, event) {
   }
 
   const now = new Date();
-  const totalSeconds = Math.max(60, selectedGroupCount * 120);
+  const totalSeconds = Math.max(60, selectedGroupCount * VOCABULARY_TEST_SECONDS_PER_GROUP);
   const dueAt = new Date(now.getTime() + totalSeconds * 1000);
   const expiresAt = new Date(dueAt.getTime() + VOCABULARY_TEST_SUBMIT_GRACE_MS);
   const record = {

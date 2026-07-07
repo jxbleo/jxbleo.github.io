@@ -162,8 +162,8 @@ Rules:
 1. `vocabulary.html` creates a `vocabulary_test_sessions` record before a
    countable 5+ group Vocabulary Test starts.
 2. The session stores selected group IDs, graded question IDs, server start and
-   expiry times, an in-memory page-instance ID generated on each page load, and
-   heartbeat state.
+   expiry times based on 90 seconds per selected group, an in-memory
+   page-instance ID generated on each page load, and heartbeat state.
 3. The page heartbeats every 10 seconds while visible and active.
 4. `submitAttempt` validates `test_session_id` and grades the session's
    recorded question IDs, treating missing answers as blanks.
