@@ -224,6 +224,10 @@ filters, candidate lists, and filtered-class selection live in the standalone
 picker dialogs. There are no visible multi-step accordions, no legend, and no
 visible due/pass/mastery fields in the default flow. Assignment creation
 continues to use the existing server-side validation and default thresholds.
+After successful assignment creation, Assign should show a standalone
+checkmark success dialog using the same confirmation style as student account
+creation. It should not write the success result into the small page message
+line; the dialog's bottom action is a `Close` button.
 If a visible static catalog item has been published but its CloudBase `sets`
 record is missing, the Assign picker should still show it as a disabled,
 catalog-only row with an import-required note instead of hiding it completely.
