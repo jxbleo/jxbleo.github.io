@@ -82,7 +82,7 @@ Frontend rule:
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
-- Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
+- Practice Library sub-filters are `BBC`, `NGSL`, `TK2`, `DSE`, and
   `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
   `Grammar Lessons` sub-filters are not shown in Library. Vocabulary task cards,
   Teacher Assign type filters, Teacher View matrix type filters, and student
