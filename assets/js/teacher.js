@@ -439,6 +439,30 @@
         }
     }
 
+    function setAssignSuccessModal(open, result) {
+        var panel = document.getElementById('assign-success-panel');
+        if (!panel) return;
+        if (result) {
+            var created = result.created || [];
+            var skipped = result.skipped || [];
+            var copy = document.getElementById('assign-success-copy');
+            if (copy) {
+                var createdLabel = created.length + ' assignment' + (created.length === 1 ? '' : 's') + ' created';
+                var skippedLabel = skipped.length
+                    ? '; ' + skipped.length + ' skipped because an open assignment already exists.'
+                    : '.';
+                copy.textContent = createdLabel + skippedLabel;
+            }
+        }
+        panel.hidden = open !== true;
+        if (open) {
+            window.setTimeout(function() {
+                var closeButton = document.getElementById('assign-success-close');
+                if (closeButton) closeButton.focus();
+            }, 0);
+        }
+    }
+
     function setHeaderIconLoading(isLoading) {
         ['teacher-review-button', 'teacher-updates-button'].forEach(function(id) {
             var button = document.getElementById(id);
@@ -4465,6 +4489,7 @@
         var button = this;
         var studentUids = selectedCandidateUids();
         var due = document.getElementById('assign-due').value;
+        var assignSuccessResult = null;
         button.disabled = true;
         showMessage('Assigning practice...', '');
         var payload = {
@@ -4479,11 +4504,8 @@
             payload.mastery_enabled = masteryEnabledValue !== 'false';
         }
         teacherCall('createAssignments', payload).then(function(result) {
-            showMessage(
-                result.created.length + ' assignment(s) created' +
-                (result.skipped.length ? '; ' + result.skipped.length + ' skipped.' : '.'),
-                'success'
-            );
+            assignSuccessResult = result;
+            showMessage('', '');
             state.selectedAssignSetIds = {};
             state.selectedAssignStudentUids = {};
             document.getElementById('assign-set-search').value = '';
@@ -4500,6 +4522,7 @@
             renderStudentDetail();
             renderAssignmentOverview();
             updateAssignView();
+            setAssignSuccessModal(true, assignSuccessResult);
         }).catch(function(error) {
             showMessage(error.message, 'error');
         }).finally(updateSelectedCount);
@@ -4532,6 +4555,11 @@
         var createSuccessPanel = document.getElementById('create-student-success-panel');
         if (createSuccessPanel && !createSuccessPanel.hidden && event.target === createSuccessPanel) {
             setCreateStudentSuccessModal(false);
+            return;
+        }
+        var assignSuccessPanel = document.getElementById('assign-success-panel');
+        if (assignSuccessPanel && !assignSuccessPanel.hidden && event.target === assignSuccessPanel) {
+            setAssignSuccessModal(false);
             return;
         }
         var studentLookupPanel = document.getElementById('student-lookup-panel');
@@ -4595,6 +4623,11 @@
                 setCreateStudentSuccessModal(false);
                 return;
             }
+            var assignSuccessPanel = document.getElementById('assign-success-panel');
+            if (assignSuccessPanel && !assignSuccessPanel.hidden) {
+                setAssignSuccessModal(false);
+                return;
+            }
             if (state.studentLookupOpen) {
                 setStudentLookupPanel(false);
                 return;
@@ -4634,6 +4667,12 @@
     if (createSuccessClose) {
         createSuccessClose.addEventListener('click', function() {
             setCreateStudentSuccessModal(false);
+        });
+    }
+    var assignSuccessClose = document.getElementById('assign-success-close');
+    if (assignSuccessClose) {
+        assignSuccessClose.addEventListener('click', function() {
+            setAssignSuccessModal(false);
         });
     }
     studentForm.addEventListener('submit', function(event) {

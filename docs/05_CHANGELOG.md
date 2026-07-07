@@ -30,6 +30,8 @@
   session without recording an attempt or changing assignment status.
 - Changed the Vocabulary Test interruption notice to show a clear `Close`
   dialog when a student returns after leaving the page or switching windows.
+- Changed Teacher Assign success feedback from the small page message line to
+  a standalone checkmark dialog with a bottom `Close` button.
 - Fixed Vocabulary Test `Redo` so the Start button returns to a clickable
   `Start` state after clearing a completed review.
 - Blocked other devices or browser page instances from student cloud-backed
