@@ -55,7 +55,7 @@ depend on them.
 | BBC | `BBC-YYMMDD` | `BBC-250724` |
 | IELTS Reading | `C<book>-T<test>-P<passage>` | `C7-T1-P2` |
 | IELTS Listening | `C<book>-T<test>-S<section>` | `C7-T1-S1` |
-| Vocabulary | source/group code | `NGSL-A` |
+| Vocabulary | source/group code | `NGSL-A`, `Oxford5000-A` |
 
 Do not rename a `set_id` after it has been assigned or attempted unless the
 owner approves a deliberate migration.
@@ -224,9 +224,11 @@ Rules to preserve:
   `50` / `90` thresholds unless a set or assignment overrides them.
 - Countable vocabulary attempts must retain selected group count, selected
   group IDs, overall score, and per-group results.
-- NGSL and NAWL are independent source sequences. Do not continue NAWL letter
-  IDs after the final NGSL unit; NAWL starts again at `NAWL-A`, with natural
-  word ranges such as `1-100`, `101-200`, and so on.
+- NGSL, NAWL, and Oxford5000 are independent source sequences. Do not continue
+  NAWL or Oxford5000 letter IDs after another source's final unit. NAWL starts
+  at `NAWL-A`; Oxford5000 starts at `Oxford5000-A` for words `001-100`, with
+  later 100-word batches continuing as `Oxford5000-B`, `Oxford5000-C`, and so
+  on.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

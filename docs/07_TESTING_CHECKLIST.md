@@ -120,11 +120,12 @@ Check:
   collection has more than 200 visible records
 - Student and Teacher Library expose only `Practice` and `Exam` top-level
   filters; lesson sections appear under Practice
-- Practice Library sub-filters show `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
-  `IELTS`, with no generic `Vocabulary`, `Grammar`, `Writing`, or
+- Practice Library sub-filters show `BBC`, `NGSL`, `NAWL`, `TK2`,
+  `Oxford5000`, `DSE`, and `IELTS`, with no generic `Vocabulary`, `Grammar`, `Writing`, or
   `Grammar Lessons` sub-filter
 - Teacher Assign filters, Teacher View matrix type filters, and student
-  assignment cards show Vocabulary sets as `NGSL`, `NAWL`, or `TK2`
+  assignment cards show Vocabulary sets as `NGSL`, `NAWL`, `TK2`, or
+  `Oxford5000`
 - opening the teacher notification bell clears the header badge immediately
 - clicking an attempt notification clears red unread styling for attempts tied
   to the same student assignment, while unclicked attempt rows remain red

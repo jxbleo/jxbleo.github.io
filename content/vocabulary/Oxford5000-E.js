@@ -1,0 +1,1523 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["Oxford5000-E"] = {
+  "id": "Oxford5000-E",
+  "sectionId": "vocabulary",
+  "title": "Oxford5000-E",
+  "href": "vocabulary.html?set=Oxford5000-E",
+  "sortOrder": 4005,
+  "displayValue": "E · 401-500",
+  "topic": "Oxford5000 Vocabulary",
+  "tags": [
+    "Oxford5000",
+    "E"
+  ],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "Oxford5000",
+  "cefrLevel": "B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 401,
+      "word": "reinforce",
+      "emoji": "🧱💪",
+      "meaning": "加强；巩固",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something stronger"
+    },
+    {
+      "number": 402,
+      "word": "significance",
+      "emoji": "⭐🔍",
+      "meaning": "重要性；意义",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "why something matters"
+    },
+    {
+      "number": 403,
+      "word": "thesis",
+      "emoji": "📄🎓",
+      "meaning": "论文；论点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a long school paper or main idea"
+    },
+    {
+      "number": 404,
+      "word": "ambulance",
+      "emoji": "🚑🏥",
+      "meaning": "救护车",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a vehicle that takes sick people to hospital"
+    },
+    {
+      "number": 405,
+      "word": "brick",
+      "emoji": "🧱🏠",
+      "meaning": "砖",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a hard block for building walls"
+    },
+    {
+      "number": 406,
+      "word": "clinic",
+      "emoji": "🏥🩺",
+      "meaning": "诊所",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small place where people get medical help"
+    },
+    {
+      "number": 407,
+      "word": "differ",
+      "emoji": "↔️🤔",
+      "meaning": "不同；有区别",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be not the same"
+    },
+    {
+      "number": 408,
+      "word": "ethic",
+      "emoji": "⚖️🧭",
+      "meaning": "道德准则；伦理",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a rule about right and wrong behavior"
+    },
+    {
+      "number": 409,
+      "word": "forum",
+      "emoji": "💬🌐",
+      "meaning": "论坛；讨论会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place for people to discuss ideas"
+    },
+    {
+      "number": 410,
+      "word": "ink",
+      "emoji": "🖊️⚫",
+      "meaning": "墨水",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "colored liquid used for writing"
+    },
+    {
+      "number": 411,
+      "word": "modest",
+      "emoji": "🙂📉",
+      "meaning": "谦虚的；适度的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not too proud or not too large"
+    },
+    {
+      "number": 412,
+      "word": "precede",
+      "emoji": "⬅️⏳",
+      "meaning": "在……之前发生",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to come before something"
+    },
+    {
+      "number": 413,
+      "word": "relieve",
+      "emoji": "😌💊",
+      "meaning": "缓解；减轻",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make pain or worry less"
+    },
+    {
+      "number": 414,
+      "word": "skilled",
+      "emoji": "🛠️⭐",
+      "meaning": "熟练的；有技能的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "good at doing something"
+    },
+    {
+      "number": 415,
+      "word": "thorough",
+      "emoji": "🔎✅",
+      "meaning": "彻底的；仔细的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "careful and complete"
+    },
+    {
+      "number": 416,
+      "word": "amusing",
+      "emoji": "😄🎭",
+      "meaning": "有趣的；好笑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "funny and enjoyable"
+    },
+    {
+      "number": 417,
+      "word": "briefly",
+      "emoji": "⏱️🗣️",
+      "meaning": "简短地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "for a short time or with few words"
+    },
+    {
+      "number": 418,
+      "word": "clip",
+      "emoji": "🎬✂️",
+      "meaning": "短片；夹子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a short part of a video or a small holder"
+    },
+    {
+      "number": 419,
+      "word": "disability",
+      "emoji": "♿🧑‍🦯",
+      "meaning": "残疾；障碍",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a condition that makes some activities harder"
+    },
+    {
+      "number": 420,
+      "word": "ethnic",
+      "emoji": "🌍👥",
+      "meaning": "民族的；种族的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to a group’s culture or people"
+    },
+    {
+      "number": 421,
+      "word": "fossil",
+      "emoji": "🦴⛰️",
+      "meaning": "化石",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "remains of a very old plant or animal"
+    },
+    {
+      "number": 422,
+      "word": "innovation",
+      "emoji": "💡🚀",
+      "meaning": "创新",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a new idea or way of doing things"
+    },
+    {
+      "number": 423,
+      "word": "monster",
+      "emoji": "👹🌙",
+      "meaning": "怪物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a scary imaginary creature"
+    },
+    {
+      "number": 424,
+      "word": "precious",
+      "emoji": "💎❤️",
+      "meaning": "珍贵的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very valuable or important"
+    },
+    {
+      "number": 425,
+      "word": "relieved",
+      "emoji": "😌✅",
+      "meaning": "宽慰的；放心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "feeling happy because worry is gone"
+    },
+    {
+      "number": 426,
+      "word": "skull",
+      "emoji": "💀🦴",
+      "meaning": "头骨",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the bone structure of the head"
+    },
+    {
+      "number": 427,
+      "word": "thoroughly",
+      "emoji": "🔎🧼",
+      "meaning": "彻底地；仔细地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a careful and complete way"
+    },
+    {
+      "number": 428,
+      "word": "analyst",
+      "emoji": "📊🧠",
+      "meaning": "分析师",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who studies information carefully"
+    },
+    {
+      "number": 429,
+      "word": "broadcaster",
+      "emoji": "📺🎙️",
+      "meaning": "广播员；播音员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who speaks on TV or radio"
+    },
+    {
+      "number": 430,
+      "word": "coincidence",
+      "emoji": "🎲🤝",
+      "meaning": "巧合",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "when two things happen together by chance"
+    },
+    {
+      "number": 431,
+      "word": "disabled",
+      "emoji": "♿🚪",
+      "meaning": "残疾的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having a condition that makes some activities harder"
+    },
+    {
+      "number": 432,
+      "word": "evaluation",
+      "emoji": "📝🔍",
+      "meaning": "评估",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a careful judgment of something"
+    },
+    {
+      "number": 433,
+      "word": "foundation",
+      "emoji": "🏗️🧱",
+      "meaning": "基础；基金会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the base that supports something"
+    },
+    {
+      "number": 434,
+      "word": "innovative",
+      "emoji": "💡🆕",
+      "meaning": "创新的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "using new and clever ideas"
+    },
+    {
+      "number": 435,
+      "word": "monthly",
+      "emoji": "📅🔁",
+      "meaning": "每月的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening once every month"
+    },
+    {
+      "number": 436,
+      "word": "precise",
+      "emoji": "🎯📏",
+      "meaning": "精确的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "exact and careful"
+    },
+    {
+      "number": 437,
+      "word": "remarkable",
+      "emoji": "🌟👏",
+      "meaning": "非凡的；显著的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very unusual or impressive"
+    },
+    {
+      "number": 438,
+      "word": "slogan",
+      "emoji": "📢📝",
+      "meaning": "标语；口号",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a short phrase used to advertise an idea"
+    },
+    {
+      "number": 439,
+      "word": "thumb",
+      "emoji": "👍✋",
+      "meaning": "拇指",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the short thick finger on your hand"
+    },
+    {
+      "number": 440,
+      "word": "ancestor",
+      "emoji": "👴🌳",
+      "meaning": "祖先",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a family member who lived long ago"
+    },
+    {
+      "number": 441,
+      "word": "broadly",
+      "emoji": "🌍↔️",
+      "meaning": "广泛地；大体上",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a general or wide way"
+    },
+    {
+      "number": 442,
+      "word": "collector",
+      "emoji": "🧺🖼️",
+      "meaning": "收藏家；收集者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who gathers things"
+    },
+    {
+      "number": 443,
+      "word": "disagreement",
+      "emoji": "🙅💬",
+      "meaning": "分歧；不同意",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "when people do not agree"
+    },
+    {
+      "number": 444,
+      "word": "evident",
+      "emoji": "👀✅",
+      "meaning": "明显的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "easy to see or understand"
+    },
+    {
+      "number": 445,
+      "word": "founder",
+      "emoji": "🏢🌱",
+      "meaning": "创始人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who starts an organization"
+    },
+    {
+      "number": 446,
+      "word": "input",
+      "emoji": "⌨️📥",
+      "meaning": "输入；意见",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "information or ideas put into something"
+    },
+    {
+      "number": 447,
+      "word": "monument",
+      "emoji": "🗿🏛️",
+      "meaning": "纪念碑",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a structure built to remember someone or something"
+    },
+    {
+      "number": 448,
+      "word": "precisely",
+      "emoji": "🎯🗣️",
+      "meaning": "精确地；正是",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "exactly and clearly"
+    },
+    {
+      "number": 449,
+      "word": "remarkably",
+      "emoji": "🌟📈",
+      "meaning": "非常；显著地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in an unusual or impressive way"
+    },
+    {
+      "number": 450,
+      "word": "so-called",
+      "emoji": "🏷️🤨",
+      "meaning": "所谓的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "used when a name may not be accurate"
+    },
+    {
+      "number": 451,
+      "word": "timing",
+      "emoji": "⏰🎯",
+      "meaning": "时机；时间安排",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "choosing when something happens"
+    },
+    {
+      "number": 452,
+      "word": "animation",
+      "emoji": "🎞️🐭",
+      "meaning": "动画",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "moving pictures made from drawings or models"
+    },
+    {
+      "number": 453,
+      "word": "bug",
+      "emoji": "🐛💻",
+      "meaning": "虫子；程序错误",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an insect or a mistake in a program"
+    },
+    {
+      "number": 454,
+      "word": "colony",
+      "emoji": "🐜🏝️",
+      "meaning": "群体；殖民地",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group living together in one place"
+    },
+    {
+      "number": 455,
+      "word": "disappoint",
+      "emoji": "😞⬇️",
+      "meaning": "使失望",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone feel sad because hopes fail"
+    },
+    {
+      "number": 456,
+      "word": "evolution",
+      "emoji": "🧬🐒",
+      "meaning": "进化；发展",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "slow change over a long time"
+    },
+    {
+      "number": 457,
+      "word": "fraction",
+      "emoji": "🔢🍰",
+      "meaning": "小部分；分数",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small part of something"
+    },
+    {
+      "number": 458,
+      "word": "insert",
+      "emoji": "➕📄",
+      "meaning": "插入",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to put something into something else"
+    },
+    {
+      "number": 459,
+      "word": "moreover",
+      "emoji": "➕🗣️",
+      "meaning": "此外",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "also and more importantly"
+    },
+    {
+      "number": 460,
+      "word": "predictable",
+      "emoji": "🔮📋",
+      "meaning": "可预测的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "easy to guess before it happens"
+    },
+    {
+      "number": 461,
+      "word": "reporting",
+      "emoji": "📰🎙️",
+      "meaning": "报道",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the work of giving news"
+    },
+    {
+      "number": 462,
+      "word": "somehow",
+      "emoji": "🤷✨",
+      "meaning": "不知怎么地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in some way that is not clear"
+    },
+    {
+      "number": 463,
+      "word": "tissue",
+      "emoji": "🧻🧬",
+      "meaning": "纸巾；组织",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "soft paper or body material"
+    },
+    {
+      "number": 464,
+      "word": "annually",
+      "emoji": "📅🔁",
+      "meaning": "每年地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "once every year"
+    },
+    {
+      "number": 465,
+      "word": "colourful",
+      "emoji": "🌈🎨",
+      "meaning": "多彩的；生动的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "full of bright colors or details"
+    },
+    {
+      "number": 466,
+      "word": "disappointment",
+      "emoji": "😞💔",
+      "meaning": "失望",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "sadness because hopes fail"
+    },
+    {
+      "number": 467,
+      "word": "evolve",
+      "emoji": "🧬➡️",
+      "meaning": "进化；逐渐发展",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to slowly change and develop"
+    },
+    {
+      "number": 468,
+      "word": "fragment",
+      "emoji": "🧩💥",
+      "meaning": "碎片；片段",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small broken piece"
+    },
+    {
+      "number": 469,
+      "word": "inspector",
+      "emoji": "🔍👮",
+      "meaning": "检查员",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone who checks if things are correct"
+    },
+    {
+      "number": 470,
+      "word": "mortgage",
+      "emoji": "🏠🏦",
+      "meaning": "房贷",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "money borrowed to buy a house"
+    },
+    {
+      "number": 471,
+      "word": "preference",
+      "emoji": "❤️✅",
+      "meaning": "偏好",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "liking one thing more than another"
+    },
+    {
+      "number": 472,
+      "word": "resign",
+      "emoji": "📄🚪",
+      "meaning": "辞职",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to officially leave a job"
+    },
+    {
+      "number": 473,
+      "word": "sometime",
+      "emoji": "📅🤔",
+      "meaning": "在某时",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at an unknown time"
+    },
+    {
+      "number": 474,
+      "word": "ton",
+      "emoji": "⚖️🚚",
+      "meaning": "吨；大量",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a very heavy weight or a lot"
+    },
+    {
+      "number": 475,
+      "word": "anticipate",
+      "emoji": "🔮👀",
+      "meaning": "预料；期待",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to expect something before it happens"
+    },
+    {
+      "number": 476,
+      "word": "comic",
+      "emoji": "😂📖",
+      "meaning": "滑稽的；漫画",
+      "partOfSpeech": "adj. / n.",
+      "simpleDefinition": "funny, or a book with picture stories"
+    },
+    {
+      "number": 477,
+      "word": "discourage",
+      "emoji": "🚫😔",
+      "meaning": "阻止；使泄气",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone less willing to do something"
+    },
+    {
+      "number": 478,
+      "word": "exceed",
+      "emoji": "📈🔝",
+      "meaning": "超过",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to be greater than a number or limit"
+    },
+    {
+      "number": 479,
+      "word": "framework",
+      "emoji": "🧱📋",
+      "meaning": "框架",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a basic structure for ideas or plans"
+    },
+    {
+      "number": 480,
+      "word": "installation",
+      "emoji": "🔧💻",
+      "meaning": "安装；装置",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the act of putting equipment in place"
+    },
+    {
+      "number": 481,
+      "word": "mosque",
+      "emoji": "🕌🙏",
+      "meaning": "清真寺",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a building where Muslims pray"
+    },
+    {
+      "number": 482,
+      "word": "pride",
+      "emoji": "🦁💪",
+      "meaning": "自豪；骄傲",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a good feeling about yourself or others"
+    },
+    {
+      "number": 483,
+      "word": "resolution",
+      "emoji": "✅📜",
+      "meaning": "决心；解决；分辨率",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a firm decision or a solution"
+    },
+    {
+      "number": 484,
+      "word": "sophisticated",
+      "emoji": "🧠✨",
+      "meaning": "复杂精密的；老练的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "advanced, complex, or refined"
+    },
+    {
+      "number": 485,
+      "word": "tonne",
+      "emoji": "⚖️🚛",
+      "meaning": "公吨",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a metric unit of heavy weight"
+    },
+    {
+      "number": 486,
+      "word": "anxiety",
+      "emoji": "😟💭",
+      "meaning": "焦虑",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "worry or nervous fear"
+    },
+    {
+      "number": 487,
+      "word": "commander",
+      "emoji": "🪖📢",
+      "meaning": "指挥官",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who leads soldiers or a group"
+    },
+    {
+      "number": 488,
+      "word": "disorder",
+      "emoji": "🌪️❌",
+      "meaning": "混乱；疾病",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "lack of order or a medical problem"
+    },
+    {
+      "number": 489,
+      "word": "exception",
+      "emoji": "🚫📌",
+      "meaning": "例外",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something not following the usual rule"
+    },
+    {
+      "number": 490,
+      "word": "fraud",
+      "emoji": "🕵️💸",
+      "meaning": "欺诈",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "dishonest action to get money or advantage"
+    },
+    {
+      "number": 491,
+      "word": "instant",
+      "emoji": "⚡⏱️",
+      "meaning": "立即的；速成的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "happening immediately"
+    },
+    {
+      "number": 492,
+      "word": "motion",
+      "emoji": "🏃➡️",
+      "meaning": "运动；动作",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "movement"
+    },
+    {
+      "number": 493,
+      "word": "primarily",
+      "emoji": "🎯1️⃣",
+      "meaning": "主要地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "mainly"
+    },
+    {
+      "number": 494,
+      "word": "restore",
+      "emoji": "🔧🏚️",
+      "meaning": "修复；恢复",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to bring something back to good condition"
+    },
+    {
+      "number": 495,
+      "word": "spare",
+      "emoji": "➕🔑",
+      "meaning": "备用的；空闲的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "extra or not being used"
+    },
+    {
+      "number": 496,
+      "word": "tournament",
+      "emoji": "🏆⚽",
+      "meaning": "锦标赛",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sports competition with many players"
+    },
+    {
+      "number": 497,
+      "word": "apology",
+      "emoji": "🙏💬",
+      "meaning": "道歉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "words saying you are sorry"
+    },
+    {
+      "number": 498,
+      "word": "comparative",
+      "emoji": "⚖️📊",
+      "meaning": "比较的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "showing how things are different or similar"
+    },
+    {
+      "number": 499,
+      "word": "distant",
+      "emoji": "🏔️↔️",
+      "meaning": "遥远的；疏远的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "far away in space, time, or feeling"
+    },
+    {
+      "number": 500,
+      "word": "excessive",
+      "emoji": "🚨📈",
+      "meaning": "过度的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "too much"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "401-410",
+      "label": "第一组",
+      "rangeStart": 401,
+      "rangeEnd": 410,
+      "wordList": [
+        "clinic",
+        "significance",
+        "differ",
+        "reinforce",
+        "ink",
+        "ambulance",
+        "ethic",
+        "brick",
+        "thesis",
+        "forum"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The teacher used one more example near the end of the lesson to __________ the main grammar point for weaker students.",
+          "questionKey": "401-410:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Many people understood the historical __________ of the old bridge only after the museum explained its role in trade.",
+          "questionKey": "401-410:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Before she can graduate from university, Mei must write a long __________ about how social media affects teenagers’ reading habits.",
+          "questionKey": "401-410:3"
+        },
+        {
+          "number": 4,
+          "prompt": "After the cyclist was badly injured on the road, a nearby driver called an __________ and waited until help arrived.",
+          "questionKey": "401-410:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The workers replaced every broken __________ in the wall because the old building had become unsafe after years of rain.",
+          "questionKey": "401-410:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The new medical __________ near the station offers basic health checks, vaccinations, and advice for families in the area.",
+          "questionKey": "401-410:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Although the twins look almost the same, their interests __________ greatly when it comes to music, sport, and school subjects.",
+          "questionKey": "401-410:7"
+        },
+        {
+          "number": 8,
+          "prompt": "A strong work __________ helped him arrive on time, keep promises, and finish difficult tasks even when nobody was watching.",
+          "questionKey": "401-410:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The online __________ allowed parents, teachers, and students to discuss homework pressure and suggest practical changes to the school.",
+          "questionKey": "401-410:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Please let the writing dry before closing the notebook, because the blue __________ may spread across the page.",
+          "questionKey": "401-410:10"
+        }
+      ]
+    },
+    {
+      "id": "411-420",
+      "label": "第二组",
+      "rangeStart": 411,
+      "rangeEnd": 420,
+      "wordList": [
+        "skilled",
+        "disability",
+        "amusing",
+        "relieve",
+        "briefly",
+        "precede",
+        "clip",
+        "modest",
+        "ethnic",
+        "thorough"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Even after winning the prize, the young scientist remained __________ and gave most of the credit to her research team.",
+          "questionKey": "411-420:1"
+        },
+        {
+          "number": 2,
+          "prompt": "In the ceremony, a short speech will __________ the award presentation so that guests understand why each winner was chosen.",
+          "questionKey": "411-420:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Drinking warm water may help __________ a sore throat, but serious pain should still be checked by a doctor.",
+          "questionKey": "411-420:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The company hired a highly __________ designer who could solve problems quickly and improve the website’s appearance.",
+          "questionKey": "411-420:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Before buying the second-hand car, my father asked a mechanic to make a __________ inspection of the engine and brakes.",
+          "questionKey": "411-420:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The comedian told an __________ story about losing his phone while using it to find directions in the shopping mall.",
+          "questionKey": "411-420:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The manager spoke only __________ at the start of the meeting because most details had already been sent by email.",
+          "questionKey": "411-420:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The teacher showed a short video __________ to introduce the topic before students began the reading exercise.",
+          "questionKey": "411-420:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The new entrance was built for students with a physical __________ so that everyone could reach the library more easily.",
+          "questionKey": "411-420:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The festival included music, food, and clothing from different __________ groups living in the city.",
+          "questionKey": "411-420:10"
+        }
+      ]
+    },
+    {
+      "id": "421-430",
+      "label": "第三组",
+      "rangeStart": 421,
+      "rangeEnd": 430,
+      "wordList": [
+        "monster",
+        "precious",
+        "broadcaster",
+        "fossil",
+        "innovation",
+        "skull",
+        "analyst",
+        "coincidence",
+        "relieved",
+        "thoroughly"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The museum displayed a dinosaur __________ that had been found by farmers while they were digging near the river.",
+          "questionKey": "421-430:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company’s latest __________ allows people to charge their phones fully in just a few minutes.",
+          "questionKey": "421-430:2"
+        },
+        {
+          "number": 3,
+          "prompt": "In the story, the children enter a dark cave and meet a terrible __________ with huge eyes and sharp teeth.",
+          "questionKey": "421-430:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The old letters were extremely __________ to the family because they were the only things left from their grandparents.",
+          "questionKey": "421-430:4"
+        },
+        {
+          "number": 5,
+          "prompt": "I felt deeply __________ when I heard that my lost passport had been found at the airport information desk.",
+          "questionKey": "421-430:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Scientists studied the ancient animal’s __________ to learn more about the size of its brain and the shape of its face.",
+          "questionKey": "421-430:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Please read the instructions __________ before you connect the machine, because one small mistake could damage the equipment.",
+          "questionKey": "421-430:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The financial __________ warned that the company might lose money if it expanded too quickly into new markets.",
+          "questionKey": "421-430:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The famous __________ interviewed two athletes live on television after the national team won the final match.",
+          "questionKey": "421-430:9"
+        },
+        {
+          "number": 10,
+          "prompt": "It was a strange __________ that my old classmate booked the seat next to mine on the same flight.",
+          "questionKey": "421-430:10"
+        }
+      ]
+    },
+    {
+      "id": "431-440",
+      "label": "第四组",
+      "rangeStart": 431,
+      "rangeEnd": 440,
+      "wordList": [
+        "evaluation",
+        "slogan",
+        "foundation",
+        "disabled",
+        "thumb",
+        "precise",
+        "monthly",
+        "ancestor",
+        "innovative",
+        "remarkable"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The hotel has several rooms for __________ guests, including wider doors, lower switches, and bathrooms with safety handles.",
+          "questionKey": "431-440:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After the training course, each student received a written __________ showing their strengths and areas that still needed work.",
+          "questionKey": "431-440:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Good pronunciation is an important __________ for confident speaking, especially when students must answer questions under time pressure.",
+          "questionKey": "431-440:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The school introduced an __________ learning app that gives students instant feedback after each vocabulary exercise.",
+          "questionKey": "431-440:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Our club holds a __________ meeting on the first Friday of every month to review plans and share new ideas.",
+          "questionKey": "431-440:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The engineer gave very __________ measurements, so the workers knew exactly where to cut the metal pieces.",
+          "questionKey": "431-440:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The rescue team made a __________ effort to find the missing child, searching through the forest for nearly ten hours.",
+          "questionKey": "431-440:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The campaign’s short __________ was easy to remember and appeared on posters, T-shirts, and the school website.",
+          "questionKey": "431-440:8"
+        },
+        {
+          "number": 9,
+          "prompt": "He injured his __________ while playing basketball, so writing and holding a pen became difficult for several days.",
+          "questionKey": "431-440:9"
+        },
+        {
+          "number": 10,
+          "prompt": "My grandmother often tells stories about an __________ who moved to this city more than one hundred years ago.",
+          "questionKey": "431-440:10"
+        }
+      ]
+    },
+    {
+      "id": "441-450",
+      "label": "第五组",
+      "rangeStart": 441,
+      "rangeEnd": 450,
+      "wordList": [
+        "collector",
+        "disagreement",
+        "so-called",
+        "monument",
+        "input",
+        "founder",
+        "broadly",
+        "remarkably",
+        "precisely",
+        "evident"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The results were __________ similar in both classes, even though the students used completely different study materials.",
+          "questionKey": "441-450:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The old soldier stood silently beside the war __________ and remembered the friends he had lost many years earlier.",
+          "questionKey": "441-450:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The art __________ bought rare paintings from small markets before they became famous and expensive.",
+          "questionKey": "441-450:3"
+        },
+        {
+          "number": 4,
+          "prompt": "There was a serious __________ between the two coaches about whether the team should train harder before the final.",
+          "questionKey": "441-450:4"
+        },
+        {
+          "number": 5,
+          "prompt": "It became __________ that the new rule was confusing students because many of them made the same mistake.",
+          "questionKey": "441-450:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The company’s __________ started the business in a small apartment before it grew into an international brand.",
+          "questionKey": "441-450:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The teacher asked for student __________ before changing the homework system, because learners understood the problems best.",
+          "questionKey": "441-450:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The plan was __________ supported by parents, although a few still worried about the cost and the travel time.",
+          "questionKey": "441-450:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The scientist explained __________ how the experiment should be repeated so that other researchers could check the results.",
+          "questionKey": "441-450:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The newspaper criticized the __________ expert because he had no real training or experience in the subject.",
+          "questionKey": "441-450:10"
+        }
+      ]
+    },
+    {
+      "id": "451-460",
+      "label": "第六组",
+      "rangeStart": 451,
+      "rangeEnd": 460,
+      "wordList": [
+        "bug",
+        "animation",
+        "disappoint",
+        "fraction",
+        "timing",
+        "evolution",
+        "insert",
+        "colony",
+        "moreover",
+        "predictable"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ of your question was perfect, because the speaker had just finished explaining the most difficult point.",
+          "questionKey": "451-460:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The children enjoyed the short __________ because the animals moved smoothly and the story was easy to follow.",
+          "questionKey": "451-460:2"
+        },
+        {
+          "number": 3,
+          "prompt": "A tiny __________ in the app caused the screen to freeze whenever users tried to upload a photo.",
+          "questionKey": "451-460:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I do not want to __________ my parents, so I will prepare carefully before the important entrance interview.",
+          "questionKey": "451-460:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ of modern birds from earlier animals took millions of years and involved many small changes.",
+          "questionKey": "451-460:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Only a small __________ of the students chose physics, while most preferred business, biology, or computer science.",
+          "questionKey": "451-460:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Please __________ your card into the machine and wait until the green light appears before entering the building.",
+          "questionKey": "451-460:7"
+        },
+        {
+          "number": 8,
+          "prompt": "A large __________ of ants had built tunnels under the garden path and appeared whenever food was left outside.",
+          "questionKey": "451-460:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The apartment is close to the station; __________, the rent is lower than many similar places in the same area.",
+          "questionKey": "451-460:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The ending of the film was too __________, so most viewers guessed the result long before the final scene.",
+          "questionKey": "451-460:10"
+        }
+      ]
+    },
+    {
+      "id": "461-470",
+      "label": "第七组",
+      "rangeStart": 461,
+      "rangeEnd": 470,
+      "wordList": [
+        "evolve",
+        "mortgage",
+        "inspector",
+        "colourful",
+        "fragment",
+        "somehow",
+        "disappointment",
+        "annually",
+        "tissue",
+        "reporting"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The charity event is held __________, usually in late March, to raise money for children who need medical support.",
+          "questionKey": "461-470:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The artist used __________ paper, bright paint, and pieces of cloth to create a lively picture of the market.",
+          "questionKey": "461-470:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Losing the final match was a major __________ for the team, especially after they had trained so hard all year.",
+          "questionKey": "461-470:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Language continues to __________ as people invent new words, borrow expressions, and use technology in different ways.",
+          "questionKey": "461-470:4"
+        },
+        {
+          "number": 5,
+          "prompt": "A small __________ of glass was found near the window, which helped the police understand how the thief entered.",
+          "questionKey": "461-470:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The safety __________ visited the restaurant and checked whether the kitchen followed all the health rules.",
+          "questionKey": "461-470:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Many families need a long-term __________ to buy a flat because property prices are far higher than their savings.",
+          "questionKey": "461-470:7"
+        },
+        {
+          "number": 8,
+          "prompt": "I thought I had lost the file forever, but __________ it appeared again when I restarted the computer.",
+          "questionKey": "461-470:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The journalist’s careful __________ helped the public understand what had happened during the storm and why it mattered.",
+          "questionKey": "461-470:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The child used a soft __________ to wipe blue ink from his fingers after finishing the art project.",
+          "questionKey": "461-470:10"
+        }
+      ]
+    },
+    {
+      "id": "471-480",
+      "label": "第八组",
+      "rangeStart": 471,
+      "rangeEnd": 480,
+      "wordList": [
+        "discourage",
+        "anticipate",
+        "installation",
+        "preference",
+        "comic",
+        "framework",
+        "exceed",
+        "resign",
+        "ton",
+        "sometime"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Her strong __________ for quiet study spaces explains why she rarely works in cafés or crowded school libraries.",
+          "questionKey": "471-480:1"
+        },
+        {
+          "number": 2,
+          "prompt": "We should __________ heavy traffic near the stadium because thousands of fans will arrive before the evening match.",
+          "questionKey": "471-480:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Teachers should not __________ shy students from speaking; instead, they should give them safer chances to practise.",
+          "questionKey": "471-480:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The runner’s final score did not __________ the national record, but it was still his best performance of the season.",
+          "questionKey": "471-480:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The school created a clear __________ for writing lessons, including planning, drafting, editing, and final correction.",
+          "questionKey": "471-480:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ of the new air-conditioning system took two days because several classrooms needed extra wiring.",
+          "questionKey": "471-480:6"
+        },
+        {
+          "number": 7,
+          "prompt": "After months of pressure and poor health, the manager decided to __________ from his position at the company.",
+          "questionKey": "471-480:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The truck was carrying more than a __________ of vegetables, so the driver had to move slowly on the mountain road.",
+          "questionKey": "471-480:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Let’s meet __________ next week to discuss the project, once both of us know our teaching schedules.",
+          "questionKey": "471-480:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The actor’s __________ timing made the serious scene unexpectedly funny, and the whole audience started laughing.",
+          "questionKey": "471-480:10"
+        }
+      ]
+    },
+    {
+      "id": "481-490",
+      "label": "第九组",
+      "rangeStart": 481,
+      "rangeEnd": 490,
+      "wordList": [
+        "tonne",
+        "commander",
+        "sophisticated",
+        "pride",
+        "exception",
+        "anxiety",
+        "disorder",
+        "mosque",
+        "fraud",
+        "resolution"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The old __________ in the center of town is visited by many local Muslims for prayer every Friday afternoon.",
+          "questionKey": "481-490:1"
+        },
+        {
+          "number": 2,
+          "prompt": "She felt great __________ when her younger brother passed the exam after months of effort and support.",
+          "questionKey": "481-490:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The city used a more __________ traffic system to control lights automatically and reduce delays during rush hour.",
+          "questionKey": "481-490:3"
+        },
+        {
+          "number": 4,
+          "prompt": "One __________ of rice was sent to the village after the flood destroyed many farms and food stores.",
+          "questionKey": "481-490:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The army __________ gave clear instructions to the rescue team before they entered the dangerous mountain area.",
+          "questionKey": "481-490:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Before the exam, many students feel __________, but careful preparation and enough sleep can reduce that nervousness.",
+          "questionKey": "481-490:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The child has a sleep __________, so his parents took him to a specialist for careful medical advice.",
+          "questionKey": "481-490:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Everyone must follow the safety rule, with no __________, because even one mistake could cause a serious accident.",
+          "questionKey": "481-490:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The email asked for bank details and was later proved to be a case of online __________.",
+          "questionKey": "481-490:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The two sides finally reached a peaceful __________ after several difficult meetings with community leaders.",
+          "questionKey": "481-490:10"
+        }
+      ]
+    },
+    {
+      "id": "491-500",
+      "label": "第十组",
+      "rangeStart": 491,
+      "rangeEnd": 500,
+      "wordList": [
+        "distant",
+        "tournament",
+        "excessive",
+        "motion",
+        "apology",
+        "comparative",
+        "restore",
+        "instant",
+        "spare",
+        "primarily"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The noodles are not fresh, but they are __________ food that can be prepared quickly with only hot water.",
+          "questionKey": "491-500:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The camera recorded every __________ of the player’s hand, making it clear when he touched the ball.",
+          "questionKey": "491-500:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The charity project aims to __________ the old theater and turn it into a public arts center.",
+          "questionKey": "491-500:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I keep a __________ key in my school bag in case I leave the main one at home.",
+          "questionKey": "491-500:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The football __________ will include sixteen schools, and the final match will be played on Sunday afternoon.",
+          "questionKey": "491-500:5"
+        },
+        {
+          "number": 6,
+          "prompt": "His written __________ sounded sincere because he clearly explained what he had done wrong and how he would fix it.",
+          "questionKey": "491-500:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The report includes a __________ study of two teaching methods and explains which one helped students improve faster.",
+          "questionKey": "491-500:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The village looked small and __________ from the top of the hill, almost hidden behind the morning fog.",
+          "questionKey": "491-500:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The doctor warned that __________ screen time could cause eye strain, poor sleep, and lower concentration in class.",
+          "questionKey": "491-500:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The course is designed __________ for teenagers, although some younger students with strong English may also join.",
+          "questionKey": "491-500:10"
+        }
+      ]
+    }
+  ]
+};

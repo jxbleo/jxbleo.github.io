@@ -1,0 +1,1523 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["Oxford5000-C"] = {
+  "id": "Oxford5000-C",
+  "sectionId": "vocabulary",
+  "title": "Oxford5000-C",
+  "href": "vocabulary.html?set=Oxford5000-C",
+  "sortOrder": 4003,
+  "displayValue": "C · 201-300",
+  "topic": "Oxford5000 Vocabulary",
+  "tags": [
+    "Oxford5000",
+    "C"
+  ],
+  "note": "100 Words · 10 Quiz Groups",
+  "visible": true,
+  "sourceName": "Oxford5000",
+  "cefrLevel": "B2",
+  "wordCount": 100,
+  "words": [
+    {
+      "number": 201,
+      "word": "rebuild",
+      "emoji": "🧱🏗️",
+      "meaning": "重建；重新建立",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to build something again"
+    },
+    {
+      "number": 202,
+      "word": "seminar",
+      "emoji": "👥📚",
+      "meaning": "研讨会",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a class where people discuss a topic"
+    },
+    {
+      "number": 203,
+      "word": "terminal",
+      "emoji": "🚉💻",
+      "meaning": "终点站；航站楼；终端",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place or machine at the end of a system"
+    },
+    {
+      "number": 204,
+      "word": "universal",
+      "emoji": "🌍🔁",
+      "meaning": "普遍的；全体的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "true or used everywhere"
+    },
+    {
+      "number": 205,
+      "word": "withdraw",
+      "emoji": "🚪↩️",
+      "meaning": "撤回；退出；取钱",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take back or move away"
+    },
+    {
+      "number": 206,
+      "word": "activate",
+      "emoji": "🔘⚡",
+      "meaning": "激活；启动",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make something start working"
+    },
+    {
+      "number": 207,
+      "word": "beside",
+      "emoji": "↔️🪑",
+      "meaning": "在……旁边",
+      "partOfSpeech": "prep.",
+      "simpleDefinition": "next to someone or something"
+    },
+    {
+      "number": 208,
+      "word": "charming",
+      "emoji": "😊🌸",
+      "meaning": "迷人的；有魅力的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very pleasant and likable"
+    },
+    {
+      "number": 209,
+      "word": "democracy",
+      "emoji": "🗳️🏛️",
+      "meaning": "民主；民主制度",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system where people vote for leaders"
+    },
+    {
+      "number": 210,
+      "word": "emission",
+      "emoji": "🏭💨",
+      "meaning": "排放；排放物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "gas or smoke sent into the air"
+    },
+    {
+      "number": 211,
+      "word": "firework",
+      "emoji": "🎆🧨",
+      "meaning": "烟花",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a bright explosion in the sky"
+    },
+    {
+      "number": 212,
+      "word": "globalization",
+      "emoji": "🌍🤝",
+      "meaning": "全球化",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "countries becoming more connected"
+    },
+    {
+      "number": 213,
+      "word": "hilarious",
+      "emoji": "😂🎭",
+      "meaning": "极好笑的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very funny"
+    },
+    {
+      "number": 214,
+      "word": "incorrect",
+      "emoji": "❌📝",
+      "meaning": "不正确的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not right or not true"
+    },
+    {
+      "number": 215,
+      "word": "limitation",
+      "emoji": "🚧📏",
+      "meaning": "限制；局限",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something that stops you from doing more"
+    },
+    {
+      "number": 216,
+      "word": "mayor",
+      "emoji": "🏙️👔",
+      "meaning": "市长",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the leader of a city or town"
+    },
+    {
+      "number": 217,
+      "word": "notebook",
+      "emoji": "📓✏️",
+      "meaning": "笔记本",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a book for writing notes"
+    },
+    {
+      "number": 218,
+      "word": "optimistic",
+      "emoji": "🌤️😊",
+      "meaning": "乐观的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "hoping good things will happen"
+    },
+    {
+      "number": 219,
+      "word": "patience",
+      "emoji": "⏳😌",
+      "meaning": "耐心",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the ability to wait calmly"
+    },
+    {
+      "number": 220,
+      "word": "receiver",
+      "emoji": "📞📦",
+      "meaning": "接收者；听筒",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person or thing that receives something"
+    },
+    {
+      "number": 221,
+      "word": "settler",
+      "emoji": "🏕️🌄",
+      "meaning": "移民；定居者",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who starts living in a new place"
+    },
+    {
+      "number": 222,
+      "word": "terms",
+      "emoji": "📄🤝",
+      "meaning": "条款；条件；措辞",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "rules or conditions in an agreement"
+    },
+    {
+      "number": 223,
+      "word": "urgent",
+      "emoji": "🚨⏰",
+      "meaning": "紧急的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "needing action very soon"
+    },
+    {
+      "number": 224,
+      "word": "workforce",
+      "emoji": "👷‍♀️👨‍💼",
+      "meaning": "劳动力；全体员工",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "all the people who work for an organization"
+    },
+    {
+      "number": 225,
+      "word": "addiction",
+      "emoji": "🔁⚠️",
+      "meaning": "上瘾；沉迷",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a strong need to keep doing something"
+    },
+    {
+      "number": 226,
+      "word": "besides",
+      "emoji": "➕🗣️",
+      "meaning": "除……之外；而且",
+      "partOfSpeech": "prep. / adv.",
+      "simpleDefinition": "in addition to something"
+    },
+    {
+      "number": 227,
+      "word": "chase",
+      "emoji": "🏃‍♂️🐕",
+      "meaning": "追赶；追逐",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to run after someone or something"
+    },
+    {
+      "number": 228,
+      "word": "democratic",
+      "emoji": "🗳️⚖️",
+      "meaning": "民主的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "based on people having a vote"
+    },
+    {
+      "number": 229,
+      "word": "emotionally",
+      "emoji": "❤️🧠",
+      "meaning": "情感上；情绪上",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a way connected with feelings"
+    },
+    {
+      "number": 230,
+      "word": "firm",
+      "emoji": "🪨✅",
+      "meaning": "坚定的；结实的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "strong and not easy to move or change"
+    },
+    {
+      "number": 231,
+      "word": "globe",
+      "emoji": "🌍🗺️",
+      "meaning": "地球；地球仪",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the world or a round map of it"
+    },
+    {
+      "number": 232,
+      "word": "hip",
+      "emoji": "🦴🚶",
+      "meaning": "臀部；髋部",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the side part of your body below your waist"
+    },
+    {
+      "number": 233,
+      "word": "independence",
+      "emoji": "🕊️🏁",
+      "meaning": "独立",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "freedom from control by others"
+    },
+    {
+      "number": 234,
+      "word": "literally",
+      "emoji": "🔤✅",
+      "meaning": "确实地；字面上",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the exact meaning of the words"
+    },
+    {
+      "number": 235,
+      "word": "mechanic",
+      "emoji": "🔧🚗",
+      "meaning": "机械师；修理工",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who repairs machines or cars"
+    },
+    {
+      "number": 236,
+      "word": "novelist",
+      "emoji": "📖✍️",
+      "meaning": "小说家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who writes novels"
+    },
+    {
+      "number": 237,
+      "word": "orchestra",
+      "emoji": "🎻🎺",
+      "meaning": "管弦乐队",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a large group of musicians playing together"
+    },
+    {
+      "number": 238,
+      "word": "pause",
+      "emoji": "⏸️🗣️",
+      "meaning": "暂停；停顿",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to stop for a short time"
+    },
+    {
+      "number": 239,
+      "word": "recession",
+      "emoji": "📉💼",
+      "meaning": "经济衰退",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a time when business becomes weak"
+    },
+    {
+      "number": 240,
+      "word": "severely",
+      "emoji": "⚠️🤕",
+      "meaning": "严重地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "very badly or seriously"
+    },
+    {
+      "number": 241,
+      "word": "terribly",
+      "emoji": "😣📉",
+      "meaning": "非常；很糟糕地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "very much or very badly"
+    },
+    {
+      "number": 242,
+      "word": "usage",
+      "emoji": "🗣️📘",
+      "meaning": "用法；使用",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way something is used"
+    },
+    {
+      "number": 243,
+      "word": "workplace",
+      "emoji": "🏢💼",
+      "meaning": "工作场所",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the place where people work"
+    },
+    {
+      "number": 244,
+      "word": "additionally",
+      "emoji": "➕📌",
+      "meaning": "此外；另外",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "also or in addition"
+    },
+    {
+      "number": 245,
+      "word": "bias",
+      "emoji": "⚖️👀",
+      "meaning": "偏见；偏向",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "an unfair preference for one side"
+    },
+    {
+      "number": 246,
+      "word": "cheek",
+      "emoji": "😊👧",
+      "meaning": "脸颊",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the soft side of your face"
+    },
+    {
+      "number": 247,
+      "word": "demonstration",
+      "emoji": "📢👥",
+      "meaning": "示威；演示",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a public protest or a show of how something works"
+    },
+    {
+      "number": 248,
+      "word": "empire",
+      "emoji": "👑🗺️",
+      "meaning": "帝国",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "many lands ruled by one leader or country"
+    },
+    {
+      "number": 249,
+      "word": "firmly",
+      "emoji": "✊🪨",
+      "meaning": "坚定地；牢牢地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in a strong and steady way"
+    },
+    {
+      "number": 250,
+      "word": "golden",
+      "emoji": "🟡🏆",
+      "meaning": "金色的；美好的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "bright yellow like gold"
+    },
+    {
+      "number": 251,
+      "word": "historian",
+      "emoji": "📜🔍",
+      "meaning": "历史学家",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who studies history"
+    },
+    {
+      "number": 252,
+      "word": "index",
+      "emoji": "📚🔎",
+      "meaning": "索引；指数",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a list or number used to find or measure things"
+    },
+    {
+      "number": 253,
+      "word": "literary",
+      "emoji": "📖✒️",
+      "meaning": "文学的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected with books and writing"
+    },
+    {
+      "number": 254,
+      "word": "mechanical",
+      "emoji": "⚙️🔧",
+      "meaning": "机械的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected with machines"
+    },
+    {
+      "number": 255,
+      "word": "nowadays",
+      "emoji": "📅🌆",
+      "meaning": "如今；现在",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "at the present time"
+    },
+    {
+      "number": 256,
+      "word": "organic",
+      "emoji": "🌱🥕",
+      "meaning": "有机的；天然的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "grown without artificial chemicals"
+    },
+    {
+      "number": 257,
+      "word": "peer",
+      "emoji": "👥🧑",
+      "meaning": "同龄人；同等地位的人",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "someone the same age or level"
+    },
+    {
+      "number": 258,
+      "word": "reckon",
+      "emoji": "🤔🧮",
+      "meaning": "认为；估计",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think or guess something"
+    },
+    {
+      "number": 259,
+      "word": "sexy",
+      "emoji": "🔥✨",
+      "meaning": "性感的；吸引人的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "attractive in a confident way"
+    },
+    {
+      "number": 260,
+      "word": "terrify",
+      "emoji": "😱⚡",
+      "meaning": "使害怕",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone very afraid"
+    },
+    {
+      "number": 261,
+      "word": "useless",
+      "emoji": "🗑️❌",
+      "meaning": "无用的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not helpful at all"
+    },
+    {
+      "number": 262,
+      "word": "workshop",
+      "emoji": "🛠️👥",
+      "meaning": "工作坊；车间",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a place or class for practical work"
+    },
+    {
+      "number": 263,
+      "word": "adequate",
+      "emoji": "✅📏",
+      "meaning": "足够的；合格的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "good enough for what is needed"
+    },
+    {
+      "number": 264,
+      "word": "bid",
+      "emoji": "💰🙋",
+      "meaning": "出价；投标",
+      "partOfSpeech": "n. / v.",
+      "simpleDefinition": "an offer to pay or do something"
+    },
+    {
+      "number": 265,
+      "word": "cheer",
+      "emoji": "📣😊",
+      "meaning": "欢呼；鼓励",
+      "partOfSpeech": "v. / n.",
+      "simpleDefinition": "to shout happily or support someone"
+    },
+    {
+      "number": 266,
+      "word": "depart",
+      "emoji": "✈️🚪",
+      "meaning": "离开；出发",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to leave a place"
+    },
+    {
+      "number": 267,
+      "word": "enjoyable",
+      "emoji": "😊🎮",
+      "meaning": "令人愉快的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "fun or pleasant"
+    },
+    {
+      "number": 268,
+      "word": "flavour",
+      "emoji": "🍓👅",
+      "meaning": "味道；风味",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the taste of food or drink"
+    },
+    {
+      "number": 269,
+      "word": "goodness",
+      "emoji": "😇💛",
+      "meaning": "善良；美德",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of being kind and good"
+    },
+    {
+      "number": 270,
+      "word": "homeless",
+      "emoji": "🏚️😔",
+      "meaning": "无家可归的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having no home"
+    },
+    {
+      "number": 271,
+      "word": "indication",
+      "emoji": "🔍➡️",
+      "meaning": "迹象；表明",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a sign that something may be true"
+    },
+    {
+      "number": 272,
+      "word": "litre",
+      "emoji": "🧴📏",
+      "meaning": "升",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a unit for measuring liquid"
+    },
+    {
+      "number": 273,
+      "word": "mechanism",
+      "emoji": "⚙️🔍",
+      "meaning": "机制；机械装置",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a system that makes something work"
+    },
+    {
+      "number": 274,
+      "word": "nursing",
+      "emoji": "🏥👩‍⚕️",
+      "meaning": "护理的；护士的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected with caring for sick people"
+    },
+    {
+      "number": 275,
+      "word": "outfit",
+      "emoji": "👕👖",
+      "meaning": "一套衣服",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a set of clothes worn together"
+    },
+    {
+      "number": 276,
+      "word": "penalty",
+      "emoji": "⚽🚫",
+      "meaning": "处罚；罚款；点球",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a punishment for breaking a rule"
+    },
+    {
+      "number": 277,
+      "word": "recognition",
+      "emoji": "👏🏅",
+      "meaning": "认可；识别",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "praise or the act of knowing something"
+    },
+    {
+      "number": 278,
+      "word": "shaped",
+      "emoji": "🔺🧩",
+      "meaning": "……形状的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "having a particular shape"
+    },
+    {
+      "number": 279,
+      "word": "territory",
+      "emoji": "🗺️🚩",
+      "meaning": "领土；领域",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "land controlled by someone or something"
+    },
+    {
+      "number": 280,
+      "word": "worm",
+      "emoji": "🪱🌱",
+      "meaning": "蠕虫；虫子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small long soft animal"
+    },
+    {
+      "number": 281,
+      "word": "adequately",
+      "emoji": "✅📊",
+      "meaning": "充分地；足够好地",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "well enough for what is needed"
+    },
+    {
+      "number": 282,
+      "word": "biological",
+      "emoji": "🧬🌱",
+      "meaning": "生物的；生物学的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "connected with living things"
+    },
+    {
+      "number": 283,
+      "word": "choir",
+      "emoji": "🎶👥",
+      "meaning": "合唱团",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a group of people who sing together"
+    },
+    {
+      "number": 284,
+      "word": "dependent",
+      "emoji": "🔗👶",
+      "meaning": "依赖的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "needing someone or something"
+    },
+    {
+      "number": 285,
+      "word": "entertaining",
+      "emoji": "🎬😄",
+      "meaning": "有趣的；娱乐性的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "fun to watch, read, or hear"
+    },
+    {
+      "number": 286,
+      "word": "fond",
+      "emoji": "😊❤️",
+      "meaning": "喜爱的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "liking someone or something"
+    },
+    {
+      "number": 287,
+      "word": "gorgeous",
+      "emoji": "🌟😍",
+      "meaning": "极美的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very beautiful"
+    },
+    {
+      "number": 288,
+      "word": "honesty",
+      "emoji": "✅🗣️",
+      "meaning": "诚实",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the quality of telling the truth"
+    },
+    {
+      "number": 289,
+      "word": "inevitable",
+      "emoji": "🛤️⏳",
+      "meaning": "不可避免的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "sure to happen"
+    },
+    {
+      "number": 290,
+      "word": "litter",
+      "emoji": "🗑️🚯",
+      "meaning": "垃圾；废弃物",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "rubbish left in a public place"
+    },
+    {
+      "number": 291,
+      "word": "medal",
+      "emoji": "🏅🎖️",
+      "meaning": "奖牌",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a prize made of metal"
+    },
+    {
+      "number": 292,
+      "word": "nutrition",
+      "emoji": "🥗💪",
+      "meaning": "营养",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the food and health your body needs"
+    },
+    {
+      "number": 293,
+      "word": "output",
+      "emoji": "📊🏭",
+      "meaning": "产量；输出",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the amount produced"
+    },
+    {
+      "number": 294,
+      "word": "perceive",
+      "emoji": "👀🧠",
+      "meaning": "察觉；看待",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to notice or understand something"
+    },
+    {
+      "number": 295,
+      "word": "recovery",
+      "emoji": "🏥🌱",
+      "meaning": "恢复；复苏",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the process of becoming well again"
+    },
+    {
+      "number": 296,
+      "word": "shocking",
+      "emoji": "😱⚡",
+      "meaning": "令人震惊的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very surprising or upsetting"
+    },
+    {
+      "number": 297,
+      "word": "terror",
+      "emoji": "😨🌑",
+      "meaning": "恐惧；恐怖",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "very strong fear"
+    },
+    {
+      "number": 298,
+      "word": "wrist",
+      "emoji": "✋⌚",
+      "meaning": "手腕",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the body part between hand and arm"
+    },
+    {
+      "number": 299,
+      "word": "adjust",
+      "emoji": "🔧📏",
+      "meaning": "调整；适应",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to change something a little"
+    },
+    {
+      "number": 300,
+      "word": "blanket",
+      "emoji": "🛏️🧣",
+      "meaning": "毯子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a warm cover used in bed"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "201-210",
+      "label": "第一组",
+      "rangeStart": 201,
+      "rangeEnd": 210,
+      "wordList": [
+        "activate",
+        "democracy",
+        "universal",
+        "beside",
+        "rebuild",
+        "seminar",
+        "emission",
+        "withdraw",
+        "terminal",
+        "charming"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "After the earthquake damaged several classrooms, the school raised money to __________ the old science building safely.",
+          "questionKey": "201-210:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Students in the research course must attend a weekly __________ where they discuss articles with their teacher.",
+          "questionKey": "201-210:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Passengers were told to wait at the airport __________ because their flight gate had not been announced yet.",
+          "questionKey": "201-210:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The need for clean water is almost __________, because people in every country depend on it to survive.",
+          "questionKey": "201-210:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The company decided to __________ its advertisement after many customers complained that the message was misleading.",
+          "questionKey": "201-210:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Press this small button to __________ the alarm system before you leave the office in the evening.",
+          "questionKey": "201-210:6"
+        },
+        {
+          "number": 7,
+          "prompt": "She placed her bag __________ the chair so that no one would step on it during the crowded meeting.",
+          "questionKey": "201-210:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The guide was so __________ that even the tired tourists enjoyed listening to his stories about the old town.",
+          "questionKey": "201-210:8"
+        },
+        {
+          "number": 9,
+          "prompt": "In a healthy __________, citizens should be able to vote freely and question those in power.",
+          "questionKey": "201-210:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The factory reduced its carbon __________ by using cleaner machines and saving energy during production.",
+          "questionKey": "201-210:10"
+        }
+      ]
+    },
+    {
+      "id": "211-220",
+      "label": "第二组",
+      "rangeStart": 211,
+      "rangeEnd": 220,
+      "wordList": [
+        "optimistic",
+        "limitation",
+        "hilarious",
+        "notebook",
+        "mayor",
+        "globalization",
+        "receiver",
+        "firework",
+        "incorrect",
+        "patience"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The children watched a bright __________ explode above the river during the city’s New Year celebration.",
+          "questionKey": "211-220:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Many small businesses have grown because __________ makes it easier to sell products to customers overseas.",
+          "questionKey": "211-220:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The film was so __________ that the whole class kept laughing even after the final scene ended.",
+          "questionKey": "211-220:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Your answer is __________ because you multiplied the numbers correctly but forgot to add the final tax.",
+          "questionKey": "211-220:4"
+        },
+        {
+          "number": 5,
+          "prompt": "One serious __________ of online lessons is that students may lose focus when no teacher is watching them.",
+          "questionKey": "211-220:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The __________ promised to improve public transport and build safer bike lanes across the city.",
+          "questionKey": "211-220:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I wrote the teacher’s advice in my __________ so I would remember how to improve my essay later.",
+          "questionKey": "211-220:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Although the project failed twice, the team stayed __________ and believed the next version would work.",
+          "questionKey": "211-220:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Good teachers need __________ because some students require repeated explanations before they fully understand a new idea.",
+          "questionKey": "211-220:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The radio __________ was broken, so we could hear the speaker’s voice but could not reply clearly.",
+          "questionKey": "211-220:10"
+        }
+      ]
+    },
+    {
+      "id": "221-230",
+      "label": "第三组",
+      "rangeStart": 221,
+      "rangeEnd": 230,
+      "wordList": [
+        "addiction",
+        "firm",
+        "workforce",
+        "terms",
+        "democratic",
+        "besides",
+        "settler",
+        "chase",
+        "urgent",
+        "emotionally"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The first European __________ built a small wooden house near the river and started farming the land.",
+          "questionKey": "221-230:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Please read the contract __________ carefully before you sign, because they explain your rights and responsibilities.",
+          "questionKey": "221-230:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This message is __________, so you need to reply before the office closes this afternoon.",
+          "questionKey": "221-230:3"
+        },
+        {
+          "number": 4,
+          "prompt": "A skilled __________ is important for economic growth because companies need trained people to produce better goods.",
+          "questionKey": "221-230:4"
+        },
+        {
+          "number": 5,
+          "prompt": "His gaming __________ became a problem when he stopped sleeping properly and ignored his schoolwork.",
+          "questionKey": "221-230:5"
+        },
+        {
+          "number": 6,
+          "prompt": "__________ studying English, she also takes piano lessons and volunteers at a local animal shelter.",
+          "questionKey": "221-230:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The dog tried to __________ the cyclist down the street, but its owner quickly pulled it back.",
+          "questionKey": "221-230:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Student elections should be fair and __________, giving every student one equal vote.",
+          "questionKey": "221-230:8"
+        },
+        {
+          "number": 9,
+          "prompt": "After hearing the sad news, she felt __________ exhausted and decided not to attend the party.",
+          "questionKey": "221-230:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The manager gave a __________ answer and refused to lower the safety standards for the factory.",
+          "questionKey": "221-230:10"
+        }
+      ]
+    },
+    {
+      "id": "231-240",
+      "label": "第四组",
+      "rangeStart": 231,
+      "rangeEnd": 240,
+      "wordList": [
+        "globe",
+        "mechanic",
+        "literally",
+        "orchestra",
+        "independence",
+        "severely",
+        "hip",
+        "recession",
+        "pause",
+        "novelist"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The teacher used a __________ to show how countries are positioned around the world.",
+          "questionKey": "231-240:1"
+        },
+        {
+          "number": 2,
+          "prompt": "After the accident, he hurt his __________ and could not walk comfortably for several weeks.",
+          "questionKey": "231-240:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The country celebrated its __________ after many years of foreign control and political struggle.",
+          "questionKey": "231-240:3"
+        },
+        {
+          "number": 4,
+          "prompt": "I was __________ shocked when the bill arrived, because the repair cost twice as much as expected.",
+          "questionKey": "231-240:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The __________ checked the engine carefully before explaining why the car would not start.",
+          "questionKey": "231-240:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The famous __________ spent five years writing a story about family, memory, and war.",
+          "questionKey": "231-240:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Before answering the difficult question, she made a short __________ and looked at her notes.",
+          "questionKey": "231-240:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The school __________ performed beautifully, with violins, drums, and flutes playing together.",
+          "questionKey": "231-240:8"
+        },
+        {
+          "number": 9,
+          "prompt": "During the __________, many companies closed stores and reduced the number of workers.",
+          "questionKey": "231-240:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The patient was __________ injured in the crash and had to stay in hospital for months.",
+          "questionKey": "231-240:10"
+        }
+      ]
+    },
+    {
+      "id": "241-250",
+      "label": "第五组",
+      "rangeStart": 241,
+      "rangeEnd": 250,
+      "wordList": [
+        "demonstration",
+        "golden",
+        "additionally",
+        "workplace",
+        "cheek",
+        "empire",
+        "bias",
+        "terribly",
+        "usage",
+        "firmly"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "I felt __________ nervous before the interview because three senior managers were sitting across from me.",
+          "questionKey": "241-250:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The teacher explained the correct __________ of the word by giving three clear example sentences.",
+          "questionKey": "241-250:2"
+        },
+        {
+          "number": 3,
+          "prompt": "__________, students must submit a short reflection after completing the reading project.",
+          "questionKey": "241-250:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The judge showed no __________ and treated both sides of the argument fairly.",
+          "questionKey": "241-250:4"
+        },
+        {
+          "number": 5,
+          "prompt": "A tear rolled down her __________ when she heard that her friend was moving away.",
+          "questionKey": "241-250:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Thousands joined a peaceful __________ to demand better housing and cleaner air in the city.",
+          "questionKey": "241-250:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The Roman __________ controlled large parts of Europe, North Africa, and the Middle East.",
+          "questionKey": "241-250:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He held the ladder __________ while his brother climbed up to repair the window.",
+          "questionKey": "241-250:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The company created a safer __________ by improving lighting, training, and emergency exits.",
+          "questionKey": "241-250:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The old building looked beautiful in the __________ light of the late afternoon sun.",
+          "questionKey": "241-250:10"
+        }
+      ]
+    },
+    {
+      "id": "251-260",
+      "label": "第六组",
+      "rangeStart": 251,
+      "rangeEnd": 260,
+      "wordList": [
+        "sexy",
+        "historian",
+        "index",
+        "terrify",
+        "organic",
+        "nowadays",
+        "literary",
+        "mechanical",
+        "peer",
+        "reckon"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ spent years studying old letters to understand how ordinary people lived during the war.",
+          "questionKey": "251-260:1"
+        },
+        {
+          "number": 2,
+          "prompt": "This novel uses rich language and many __________ techniques, so it is often discussed in advanced classes.",
+          "questionKey": "251-260:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The lift stopped because of a __________ problem, not because anyone pressed the wrong button.",
+          "questionKey": "251-260:3"
+        },
+        {
+          "number": 4,
+          "prompt": "__________, many teenagers use online videos when they want to learn a new skill quickly.",
+          "questionKey": "251-260:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The farmer grows __________ vegetables without using artificial chemicals or strong pesticides.",
+          "questionKey": "251-260:5"
+        },
+        {
+          "number": 6,
+          "prompt": "A teenager may trust advice from a __________ more than advice from a parent or teacher.",
+          "questionKey": "251-260:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I __________ we should leave early tomorrow, because traffic will probably be terrible after the concert.",
+          "questionKey": "251-260:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The horror movie did not just surprise me; it seemed designed to __________ younger viewers.",
+          "questionKey": "251-260:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The textbook has a useful __________ at the back, so students can quickly find key terms and page numbers.",
+          "questionKey": "251-260:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The advertisement tried to make the new sports car look fast, modern, and __________.",
+          "questionKey": "251-260:10"
+        }
+      ]
+    },
+    {
+      "id": "261-270",
+      "label": "第七组",
+      "rangeStart": 261,
+      "rangeEnd": 270,
+      "wordList": [
+        "enjoyable",
+        "depart",
+        "homeless",
+        "adequate",
+        "flavour",
+        "goodness",
+        "bid",
+        "cheer",
+        "useless",
+        "workshop"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The train will __________ from platform six at 8:20, so passengers should arrive ten minutes early.",
+          "questionKey": "261-270:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The company made a high __________ for the construction project, hoping to beat several competitors.",
+          "questionKey": "261-270:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The fans began to __________ loudly when their team scored the winning goal in the final minute.",
+          "questionKey": "261-270:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The picnic was surprisingly __________ because the weather stayed warm and everyone brought good food.",
+          "questionKey": "261-270:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Strawberry is still my favourite ice cream __________, especially when it is made with real fruit.",
+          "questionKey": "261-270:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The charity provides meals and temporary rooms for __________ people during the coldest months of winter.",
+          "questionKey": "261-270:6"
+        },
+        {
+          "number": 7,
+          "prompt": "Without batteries, the remote control was completely __________ and could not turn on the television.",
+          "questionKey": "261-270:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The art teacher ran a weekend __________ where students learned to make simple clay bowls.",
+          "questionKey": "261-270:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The report was __________ for a first draft, but it still needed more evidence and clearer examples.",
+          "questionKey": "261-270:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Her quiet __________ appeared in small actions, like helping classmates who were too shy to ask.",
+          "questionKey": "261-270:10"
+        }
+      ]
+    },
+    {
+      "id": "271-280",
+      "label": "第八组",
+      "rangeStart": 271,
+      "rangeEnd": 280,
+      "wordList": [
+        "outfit",
+        "indication",
+        "shaped",
+        "penalty",
+        "nursing",
+        "worm",
+        "mechanism",
+        "recognition",
+        "territory",
+        "litre"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Dark clouds are usually an __________ that heavy rain may arrive within the next hour.",
+          "questionKey": "271-280:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The door lock has a simple __________ that turns when you put the correct key inside.",
+          "questionKey": "271-280:2"
+        },
+        {
+          "number": 3,
+          "prompt": "She wore a formal __________ to the interview because she wanted to look professional and confident.",
+          "questionKey": "271-280:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Students training for a __________ career must learn both medical knowledge and communication skills.",
+          "questionKey": "271-280:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The bottle holds one __________ of water, which is enough for the whole hike.",
+          "questionKey": "271-280:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The player received a __________ for pushing another player during the match.",
+          "questionKey": "271-280:6"
+        },
+        {
+          "number": 7,
+          "prompt": "After years of hard work, the scientist finally gained international __________ for her research.",
+          "questionKey": "271-280:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The island became disputed __________ because two countries both claimed historical rights to it.",
+          "questionKey": "271-280:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The child found a tiny __________ in the garden soil and carefully moved it away from the path.",
+          "questionKey": "271-280:9"
+        },
+        {
+          "number": 10,
+          "prompt": "The cookies were heart-__________, so many customers bought them as gifts for Valentine’s Day.",
+          "questionKey": "271-280:10"
+        }
+      ]
+    },
+    {
+      "id": "281-290",
+      "label": "第九组",
+      "rangeStart": 281,
+      "rangeEnd": 290,
+      "wordList": [
+        "dependent",
+        "gorgeous",
+        "choir",
+        "biological",
+        "fond",
+        "litter",
+        "inevitable",
+        "entertaining",
+        "adequately",
+        "honesty"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The city failed to prepare __________ for the storm, so many roads flooded within an hour.",
+          "questionKey": "281-290:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Human sleep is affected by several __________ processes inside the body and brain.",
+          "questionKey": "281-290:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The school __________ sang beautifully at the concert, and even the younger students stayed quiet.",
+          "questionKey": "281-290:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Young children are often __________ on adults for food, safety, and emotional support.",
+          "questionKey": "281-290:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The documentary was both informative and __________, so students learned a lot without feeling bored.",
+          "questionKey": "281-290:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My grandmother is especially __________ of old black-and-white films because they remind her of her youth.",
+          "questionKey": "281-290:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The view from the mountain was __________, with blue lakes, green forests, and snow-covered peaks.",
+          "questionKey": "281-290:7"
+        },
+        {
+          "number": 8,
+          "prompt": "Teachers value __________ because students cannot improve if they hide their mistakes or copy homework.",
+          "questionKey": "281-290:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Some change is __________ when a small company grows into a much larger organization.",
+          "questionKey": "281-290:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Visitors were asked not to drop __________ in the park, especially near the lake and picnic area.",
+          "questionKey": "281-290:10"
+        }
+      ]
+    },
+    {
+      "id": "291-300",
+      "label": "第十组",
+      "rangeStart": 291,
+      "rangeEnd": 300,
+      "wordList": [
+        "blanket",
+        "shocking",
+        "recovery",
+        "output",
+        "perceive",
+        "wrist",
+        "medal",
+        "nutrition",
+        "terror",
+        "adjust"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "She won a silver __________ in the swimming competition after training every morning for six months.",
+          "questionKey": "291-300:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Good __________ is important for teenagers because their bodies and brains are still developing quickly.",
+          "questionKey": "291-300:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The company’s monthly __________ fell after several machines broke and workers had to slow production.",
+          "questionKey": "291-300:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Many people __________ public speaking as frightening, even when the audience is friendly and supportive.",
+          "questionKey": "291-300:4"
+        },
+        {
+          "number": 5,
+          "prompt": "His __________ after surgery was slower than expected, but the doctor said he was improving every week.",
+          "questionKey": "291-300:5"
+        },
+        {
+          "number": 6,
+          "prompt": "The report revealed a __________ level of waste in the school cafeteria, surprising both teachers and parents.",
+          "questionKey": "291-300:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The child screamed in __________ when the lights suddenly went out during the storm.",
+          "questionKey": "291-300:7"
+        },
+        {
+          "number": 8,
+          "prompt": "He injured his __________ while playing basketball and could not write comfortably for several days.",
+          "questionKey": "291-300:8"
+        },
+        {
+          "number": 9,
+          "prompt": "You may need to __________ the seat before driving, because the last driver was much taller than you.",
+          "questionKey": "291-300:9"
+        },
+        {
+          "number": 10,
+          "prompt": "She pulled a warm __________ over her shoulders while reading on the sofa late at night.",
+          "questionKey": "291-300:10"
+        }
+      ]
+    }
+  ]
+};

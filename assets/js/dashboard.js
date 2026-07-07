@@ -90,6 +90,7 @@
         if (/(^|\s|-)NGSL(?:\s|-|$)/.test(raw)) return 'ngsl';
         if (/(^|\s|-)NAWL(?:\s|-|$)/.test(raw)) return 'nawl';
         if (/THINK\s*2|THINK2|TK2/.test(raw)) return 'tk2';
+        if (/OXFORD\s*5000|OXFORD5000/.test(raw)) return 'oxford5000';
         return '';
     }
 
@@ -97,7 +98,8 @@
         var labels = {
             ngsl: 'NGSL',
             nawl: 'NAWL',
-            tk2: 'TK2'
+            tk2: 'TK2',
+            oxford5000: 'Oxford5000'
         };
         return labels[vocabularySourceKey(item)] || '';
     }
@@ -977,6 +979,7 @@
             { id: 'ngsl', label: 'NGSL', vocabularySource: 'ngsl' },
             { id: 'nawl', label: 'NAWL', vocabularySource: 'nawl' },
             { id: 'tk2', label: 'TK2', vocabularySource: 'tk2' },
+            { id: 'oxford5000', label: 'Oxford5000', vocabularySource: 'oxford5000' },
             { id: 'lesson-dse', label: 'DSE' },
             { id: 'lesson-ielts', label: 'IELTS' }
         ],

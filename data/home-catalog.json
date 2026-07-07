@@ -1993,6 +1993,306 @@
       "visible": true
     },
     {
+      "id": "Oxford5000-A",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-A",
+      "href": "vocabulary.html?set=Oxford5000-A",
+      "displayValue": "A · 001-100",
+      "sortValue": 4001,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "A"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-B",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-B",
+      "href": "vocabulary.html?set=Oxford5000-B",
+      "displayValue": "B · 101-200",
+      "sortValue": 4002,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "B"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-C",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-C",
+      "href": "vocabulary.html?set=Oxford5000-C",
+      "displayValue": "C · 201-300",
+      "sortValue": 4003,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "C"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-D",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-D",
+      "href": "vocabulary.html?set=Oxford5000-D",
+      "displayValue": "D · 301-400",
+      "sortValue": 4004,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "D"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-E",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-E",
+      "href": "vocabulary.html?set=Oxford5000-E",
+      "displayValue": "E · 401-500",
+      "sortValue": 4005,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "E"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-F",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-F",
+      "href": "vocabulary.html?set=Oxford5000-F",
+      "displayValue": "F · 501-600",
+      "sortValue": 4006,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "F"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-G",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-G",
+      "href": "vocabulary.html?set=Oxford5000-G",
+      "displayValue": "G · 601-700",
+      "sortValue": 4007,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "G"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-H",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-H",
+      "href": "vocabulary.html?set=Oxford5000-H",
+      "displayValue": "H · 701-800",
+      "sortValue": 4008,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "H"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-I",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-I",
+      "href": "vocabulary.html?set=Oxford5000-I",
+      "displayValue": "I · 801-900",
+      "sortValue": 4009,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "I"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-J",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-J",
+      "href": "vocabulary.html?set=Oxford5000-J",
+      "displayValue": "J · 901-1000",
+      "sortValue": 4010,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "J"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-K",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-K",
+      "href": "vocabulary.html?set=Oxford5000-K",
+      "displayValue": "K · 1001-1100",
+      "sortValue": 4011,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "K"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-L",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-L",
+      "href": "vocabulary.html?set=Oxford5000-L",
+      "displayValue": "L · 1101-1200",
+      "sortValue": 4012,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "L"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-M",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-M",
+      "href": "vocabulary.html?set=Oxford5000-M",
+      "displayValue": "M · 1201-1300",
+      "sortValue": 4013,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "M"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-N",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-N",
+      "href": "vocabulary.html?set=Oxford5000-N",
+      "displayValue": "N · 1301-1400",
+      "sortValue": 4014,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "N"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-O",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-O",
+      "href": "vocabulary.html?set=Oxford5000-O",
+      "displayValue": "O · 1401-1500",
+      "sortValue": 4015,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "O"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-P",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-P",
+      "href": "vocabulary.html?set=Oxford5000-P",
+      "displayValue": "P · 1501-1600",
+      "sortValue": 4016,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "P"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-Q",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-Q",
+      "href": "vocabulary.html?set=Oxford5000-Q",
+      "displayValue": "Q · 1601-1700",
+      "sortValue": 4017,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "Q"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-R",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-R",
+      "href": "vocabulary.html?set=Oxford5000-R",
+      "displayValue": "R · 1701-1800",
+      "sortValue": 4018,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "R"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-S",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-S",
+      "href": "vocabulary.html?set=Oxford5000-S",
+      "displayValue": "S · 1801-1900",
+      "sortValue": 4019,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "S"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
+      "id": "Oxford5000-T",
+      "sectionId": "vocabulary",
+      "title": "Oxford5000-T",
+      "href": "vocabulary.html?set=Oxford5000-T",
+      "displayValue": "T · 1901-2000",
+      "sortValue": 4020,
+      "topic": "Oxford5000 Vocabulary",
+      "tags": [
+        "Oxford5000",
+        "T"
+      ],
+      "note": "100 Words · 10 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "THINK2-U1",
       "sectionId": "vocabulary",
       "title": "THINK2-U1",

@@ -82,12 +82,12 @@ Frontend rule:
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
-- Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`, `DSE`, and
-  `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
+- Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`,
+  `Oxford5000`, `DSE`, and `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
   `Grammar Lessons` sub-filters are not shown in Library. Vocabulary task cards,
   Teacher Assign type filters, Teacher View matrix type filters, and student
-  assignment cards should label vocabulary sets by source (`NGSL`, `NAWL`, or
-  `TK2`) instead of the generic `Vocabulary` label.
+  assignment cards should label vocabulary sets by source (`NGSL`, `NAWL`,
+  `TK2`, or `Oxford5000`) instead of the generic `Vocabulary` label.
 - Opening the teacher notification bell immediately clears the top-right badge.
   Individual attempt rows stay red until the teacher opens one related attempt;
   opening any attempt for the same student assignment clears the red state for
