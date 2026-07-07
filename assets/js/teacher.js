@@ -208,6 +208,39 @@
         return labels[vocabularySourceKey(item)] || '';
     }
 
+    function vocabularyLibraryUsesNumberRange(item) {
+        var source = vocabularySourceKey(item);
+        return source === 'ngsl' || source === 'nawl' || source === 'oxford5000';
+    }
+
+    function vocabularyRangeNumberLabel(number) {
+        return number < 1000 ? String(number).padStart(3, '0') : String(number);
+    }
+
+    function vocabularyLibraryRangeFromId(item) {
+        var source = vocabularySourceKey(item);
+        var identity = String(item && (item.set_id || item.id || item.title) || '');
+        var match = identity.match(/-([A-Z])\b/i);
+        if (!match) return '';
+        var index = match[1].toUpperCase().charCodeAt(0) - 64;
+        if (index < 1 || index > 26) return '';
+        var start = (source === 'ngsl' ? 1001 : 1) + ((index - 1) * 100);
+        var end = start + 99;
+        if (source === 'nawl' && index === 10) end = 963;
+        return vocabularyRangeNumberLabel(start) + '-' + vocabularyRangeNumberLabel(end);
+    }
+
+    function vocabularyLibraryRangeLabel(item) {
+        if (!vocabularyLibraryUsesNumberRange(item)) return '';
+        var displayValue = String(item && item.displayValue || '').trim();
+        var rangeMatch = displayValue.match(/(\d{1,4})\s*[-–]\s*(\d{1,4})/);
+        return rangeMatch ? rangeMatch[1] + '-' + rangeMatch[2] : vocabularyLibraryRangeFromId(item) || displayValue;
+    }
+
+    function vocabularyLibrarySectionLabel(item) {
+        return vocabularyLibraryUsesNumberRange(item) ? 'vocabulary' : vocabularySourceLabel(item);
+    }
+
     function isVocabularyCategory(category) {
         return category === 'ngsl' || category === 'nawl' || category === 'tk2' || category === 'oxford5000';
     }
@@ -777,9 +810,9 @@
 
     function teacherBuildCard(item, section, hidden, itemYear) {
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        var meta = vocabularySourceLabel(item) ||
+        var meta = vocabularyLibrarySectionLabel(item) ||
             teacherLibrarySectionLabel(sectionId, section && section.title || item.section || item.course || item.type || sectionId);
-        var setId = item.set_id || item.id || item.displayValue || '';
+        var setId = vocabularyLibraryRangeLabel(item) || item.set_id || item.id || item.displayValue || '';
         var href = teacherPracticeHref(item);
         var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
         var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
@@ -1354,7 +1387,7 @@
         var container = document.getElementById(containerId);
         if (!container) return;
         if (!items.length) {
-            container.innerHTML = '<span class="assign-empty-chip">Nothing selected yet</span>';
+            container.innerHTML = '';
             return;
         }
         var visible = items.slice(0, 3);
@@ -1423,16 +1456,16 @@
         var studentDialogCount = document.getElementById('assign-students-dialog-count');
         if (setCount) setCount.textContent = sets.length
             ? sets.length + ' selected'
-            : 'None selected';
+            : '';
         if (studentCount) studentCount.textContent = students.length
             ? students.length + ' selected'
-            : 'None selected';
+            : '';
         if (setDialogCount) setDialogCount.textContent = sets.length
             ? sets.length + ' selected'
-            : 'None selected';
+            : '';
         if (studentDialogCount) studentDialogCount.textContent = students.length
             ? students.length + ' selected'
-            : 'None selected';
+            : '';
         renderAssignChips('assign-set-chips', sets, function(set) { return set.set_id || set.title; });
         renderAssignChips('assign-student-chips', students, function(student) { return student.name || student.student_id || student.auth_uid; });
         updateAssignOptionsSummary();

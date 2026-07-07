@@ -1615,5 +1615,6 @@ window.__VOCABULARY_UNITS__["NGSL-F"] = {
         }
       ]
     }
-  ]
+  ],
+  "displayValue": "1501-1600"
 };

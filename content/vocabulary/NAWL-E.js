@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-E"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-E (401-500)."
+  "description": "Academic vocabulary practice for NAWL-E (401-500).",
+  "displayValue": "401-500"
 };

@@ -104,6 +104,39 @@
         return labels[vocabularySourceKey(item)] || '';
     }
 
+    function vocabularyLibraryUsesNumberRange(item) {
+        var source = vocabularySourceKey(item);
+        return source === 'ngsl' || source === 'nawl' || source === 'oxford5000';
+    }
+
+    function vocabularyRangeNumberLabel(number) {
+        return number < 1000 ? String(number).padStart(3, '0') : String(number);
+    }
+
+    function vocabularyLibraryRangeFromId(item) {
+        var source = vocabularySourceKey(item);
+        var identity = String(item && (item.set_id || item.id || item.title) || '');
+        var match = identity.match(/-([A-Z])\b/i);
+        if (!match) return '';
+        var index = match[1].toUpperCase().charCodeAt(0) - 64;
+        if (index < 1 || index > 26) return '';
+        var start = (source === 'ngsl' ? 1001 : 1) + ((index - 1) * 100);
+        var end = start + 99;
+        if (source === 'nawl' && index === 10) end = 963;
+        return vocabularyRangeNumberLabel(start) + '-' + vocabularyRangeNumberLabel(end);
+    }
+
+    function vocabularyLibraryRangeLabel(item) {
+        if (!vocabularyLibraryUsesNumberRange(item)) return '';
+        var displayValue = String(item && item.displayValue || '').trim();
+        var rangeMatch = displayValue.match(/(\d{1,4})\s*[-–]\s*(\d{1,4})/);
+        return rangeMatch ? rangeMatch[1] + '-' + rangeMatch[2] : vocabularyLibraryRangeFromId(item) || displayValue;
+    }
+
+    function vocabularyLibrarySectionLabel(item) {
+        return vocabularyLibraryUsesNumberRange(item) ? 'vocabulary' : vocabularySourceLabel(item);
+    }
+
     function appIconConfig(system) {
         var normalized = String(system || '').trim().toUpperCase();
         if (normalized === 'IELTS') {
@@ -1039,9 +1072,9 @@
     function libraryCardMeta(item, section, itemYear) {
         var badge = libraryCardBadge(item, section, itemYear);
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
-        var sectionLabel = vocabularySourceLabel(item) ||
+        var sectionLabel = vocabularyLibrarySectionLabel(item) ||
             librarySectionLabel(sectionId, section && section.title || item.sectionTitle || item.course || item.type);
-        var setId = item.set_id || item.id || item.displayValue || '';
+        var setId = vocabularyLibraryRangeLabel(item) || item.set_id || item.id || item.displayValue || '';
         return {
             badge: badge,
             sectionLabel: sectionLabel,

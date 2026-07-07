@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-D (301-400)."
+  "description": "Academic vocabulary practice for NAWL-D (301-400).",
+  "displayValue": "301-400"
 };

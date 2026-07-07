@@ -84,10 +84,12 @@ Frontend rule:
   sub-filters rather than as a separate top-level `Lessons` button.
 - Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`,
   `Oxford5000`, `DSE`, and `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
-  `Grammar Lessons` sub-filters are not shown in Library. Vocabulary task cards,
-  Teacher Assign type filters, Teacher View matrix type filters, and student
-  assignment cards should label vocabulary sets by source (`NGSL`, `NAWL`,
-  `TK2`, or `Oxford5000`) instead of the generic `Vocabulary` label.
+  `Grammar Lessons` sub-filters are not shown in Library. NGSL, NAWL, and
+  Oxford5000 Library task cards use `vocabulary` as the eyebrow and show the
+  source-specific word-number range in the top-right metadata. Teacher Assign
+  type filters, Teacher View matrix type filters, and student assignment cards
+  still identify vocabulary sets by source (`NGSL`, `NAWL`, `TK2`, or
+  `Oxford5000`).
 - Opening the teacher notification bell immediately clears the top-right badge.
   Individual attempt rows stay red until the teacher opens one related attempt;
   opening any attempt for the same student assignment clears the red state for
@@ -222,8 +224,10 @@ The Assign surface should stay visually minimal: the default Assign tab shows
 only selected work and selected student chips plus the Assign action. Search,
 filters, candidate lists, and filtered-class selection live in the standalone
 picker dialogs. There are no visible multi-step accordions, no legend, and no
-visible due/pass/mastery fields in the default flow. Assignment creation
-continues to use the existing server-side validation and default thresholds.
+visible due/pass/mastery fields in the default flow. Empty Work/Students
+summaries and picker footers should not show `None selected` or `Nothing
+selected` placeholder text. Assignment creation continues to use the existing
+server-side validation and default thresholds.
 After successful assignment creation, Assign should show a standalone
 checkmark success dialog using the same confirmation style as student account
 creation. It should not write the success result into the small page message
@@ -338,12 +342,15 @@ It should include:
 Teacher opens existing practice pages in `teacher=1` mode.
 
 Student and teacher Library task items should render as the same compact task
-capsules/cards with set metadata, title, and stable set ID. The whole capsule
-opens the practice item after the shared practice-entry confirmation dialog;
+capsules/cards with set metadata, title, and stable set ID or display range.
+The whole capsule opens the practice item after the shared practice-entry confirmation dialog;
 do not add a separate `Go` action. The dialog must close before navigation and
 must not reappear when browser Back returns to the Library/dashboard surface.
 It should not show the old top-right `Ready?` stamp, and its bottom ribbon
 should show only `Score: …`, plus the score-lock icon when available.
+NGSL, NAWL, and Oxford5000 Library task capsules keep the black main title
+unchanged while the eyebrow reads `vocabulary` and the top-right metadata shows
+the source word-number range, for example `001-100` or `1001-1100`.
 Teacher Library uses CloudBase `sets` as the authoritative assignable source,
 but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
@@ -461,7 +468,7 @@ Shared rules:
 ### Vocabulary Learn
 
 - The Vocabulary mode switcher uses the visible labels `Learn`, `Spell`, and
-  `Use`. `Spell` opens the existing dictation/spelling view, and `Use` opens
+  `Cloze`. `Spell` opens the existing dictation/spelling view, and `Cloze` opens
   the existing timed test flow.
 - Vocabulary Learn shows a fused sticky learning bar at the top of the view.
   It defaults to `All`, while the filter row displays numbered round buttons
@@ -513,12 +520,12 @@ Shared rules:
 
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
-- Use-mode timing gives each selected group 90 seconds, or 1.5 minutes.
+- Cloze-mode timing gives each selected group 60 seconds, or 1 minute.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a
   horizontal row; when there are more than six selected sets, the row scrolls
   horizontally instead of wrapping into multiple lines. The countdown timer
-  remains a fixed red capsule at the far right of the sticky row. Use-mode
+  remains a fixed red capsule at the far right of the sticky row. Cloze-mode
   numbered capsules and the word-bank triangle toggle use a gold glowing visual
   treatment to distinguish them from Learn groups.
   The test-set labels show only numbers, not `Test Set 1` text, and clicking a
@@ -545,7 +552,7 @@ Shared rules:
   session message instead of entering the student surface.
 - Manual Submit opens an early-submit confirmation; time-up submission does not
   ask again. The visible button label is `Submit`, and the bottom Submit button
-  uses the same gold glowing treatment as the Use-mode numbered capsules.
+  uses the same gold glowing treatment as the Cloze-mode numbered capsules.
 - The Vocabulary Test result modal has one action only: `Close`.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary

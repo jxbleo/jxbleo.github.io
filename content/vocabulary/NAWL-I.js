@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-I (801-900)."
+  "description": "Academic vocabulary practice for NAWL-I (801-900).",
+  "displayValue": "801-900"
 };

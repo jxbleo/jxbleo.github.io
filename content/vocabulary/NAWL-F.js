@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-F"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-F (501-600)."
+  "description": "Academic vocabulary practice for NAWL-F (501-600).",
+  "displayValue": "501-600"
 };

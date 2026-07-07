@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-G"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-G (601-700)."
+  "description": "Academic vocabulary practice for NAWL-G (601-700).",
+  "displayValue": "601-700"
 };

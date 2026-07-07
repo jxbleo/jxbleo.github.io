@@ -11,6 +11,16 @@
   Vocabulary units, covering words `1701-2000` with 30 quiz groups and private
   CloudBase grading data, bringing Oxford5000 coverage to `001-2000`.
 
+### Changed
+
+- Changed NGSL, NAWL, and Oxford5000 Library task capsules so the eyebrow reads
+  `vocabulary` and the top-right metadata shows the source word-number range,
+  while keeping the main card title unchanged.
+- Changed the Vocabulary mode switcher label from `Use` to `Cloze`, aligned
+  Cloze timing to 60 seconds per selected group in the frontend and
+  `submitAttempt`, and removed empty `None selected` / `Nothing selected`
+  placeholders from the Teacher Assign work/student pickers.
+
 ## 2026-07-07
 
 ### Added

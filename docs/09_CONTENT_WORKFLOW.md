@@ -229,6 +229,10 @@ Rules to preserve:
   at `NAWL-A`; Oxford5000 starts at `Oxford5000-A` for words `001-100`, with
   later 100-word batches continuing as `Oxford5000-B`, `Oxford5000-C`, and so
   on.
+- For NGSL, NAWL, and Oxford5000 catalog display, keep `displayValue` as the
+  source word-number range only, such as `001-100`, `901-963`, or
+  `1001-1100`. Student and teacher Library cards use that range as the
+  top-right metadata while preserving the unit title as the main card title.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

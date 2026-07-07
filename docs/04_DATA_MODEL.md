@@ -350,7 +350,7 @@ Core fields:
 Rules:
 
 - Only 5+ group Vocabulary Test mode creates a session.
-- Vocabulary Test `due_at` is based on 90 seconds, or 1.5 minutes, per selected
+- Vocabulary Test `due_at` is based on 60 seconds, or 1 minute, per selected
   group.
 - `submitAttempt` grades countable Vocabulary Tests from the session's
   `question_ids`, not from a browser-provided question list.

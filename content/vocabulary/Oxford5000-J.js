@@ -5,7 +5,7 @@ window.__VOCABULARY_UNITS__["Oxford5000-J"] = {
   "title": "Oxford5000-J",
   "href": "vocabulary.html?set=Oxford5000-J",
   "sortOrder": 4010,
-  "displayValue": "J · 901-1000",
+  "displayValue": "901-1000",
   "topic": "Oxford5000 Vocabulary",
   "tags": [
     "Oxford5000",

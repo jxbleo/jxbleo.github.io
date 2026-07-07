@@ -1816,5 +1816,6 @@ window.__VOCABULARY_UNITS__["NAWL-B"] = {
       ]
     }
   ],
-  "description": "Academic vocabulary practice for NAWL-B (101-200)."
+  "description": "Academic vocabulary practice for NAWL-B (101-200).",
+  "displayValue": "101-200"
 };
