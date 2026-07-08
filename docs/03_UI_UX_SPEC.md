@@ -82,14 +82,14 @@ Frontend rule:
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
-- Practice Library sub-filters are `BBC`, `NGSL`, `NAWL`, `TK2`,
-  `Oxford5000`, `DSE`, and `IELTS`. The old generic `Vocabulary`, `Grammar`, `Writing`, and
-  `Grammar Lessons` sub-filters are not shown in Library. NGSL, NAWL, and
-  Oxford5000 Library task cards use `vocabulary` as the eyebrow and show the
-  source-specific word-number range in the top-right metadata. Teacher Assign
-  type filters, Teacher View matrix type filters, and student assignment cards
-  still identify vocabulary sets by source (`NGSL`, `NAWL`, `TK2`, or
-  `Oxford5000`).
+- Practice Library sub-filters are `BBC2024`, `BBC2025`, `BBC2026`, `NGSL`,
+  `NAWL`, `TK2`, `Oxford5000`, `DSE`, and `IELTS`. The old generic
+  `Vocabulary`, `Grammar`, `Writing`, and `Grammar Lessons` sub-filters are not
+  shown in Library. NGSL, NAWL, and Oxford5000 Library task cards use
+  `vocabulary` as the eyebrow and show the source-specific word-number range in
+  the top-right metadata. Teacher Assign type filters, Teacher View matrix type
+  filters, and student assignment cards still identify vocabulary sets by
+  source (`NGSL`, `NAWL`, `TK2`, or `Oxford5000`).
 - Opening the teacher notification bell immediately clears the top-right badge.
   Individual attempt rows stay red until the teacher opens one related attempt;
   opening any attempt for the same student assignment clears the red state for
@@ -355,10 +355,10 @@ Teacher Library uses CloudBase `sets` as the authoritative assignable source,
 but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
 being checked.
-BBC task cards should not show a year badge inside each task capsule. Teacher
-Library currently does not expose a BBC year sub-filter; keep BBC as a simple
-column unless the owner explicitly asks to restore 2025/2026 sub-tabs. IELTS
-task cards should not show the Cambridge book badge inside each task capsule.
+BBC entries in Student and Teacher Library are split into `BBC2024`, `BBC2025`,
+and `BBC2026` sub-filter buttons. BBC task cards should not show a year badge
+inside each task capsule; the year belongs in the sub-filter layer. IELTS task
+cards should not show the Cambridge book badge inside each task capsule.
 IELTS book/filter labels belong in the yellow capsule tab layer above the task
 list. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
 and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when

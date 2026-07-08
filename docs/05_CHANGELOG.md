@@ -18,6 +18,8 @@
 - Changed NGSL, NAWL, and Oxford5000 Library task capsules so the eyebrow reads
   `vocabulary` and the top-right metadata shows the source word-number range,
   while keeping the main card title unchanged.
+- Changed Student and Teacher Library BBC practice entry points from one `BBC`
+  sub-filter into `BBC2024`, `BBC2025`, and `BBC2026` year-specific sub-filters.
 - Changed the Vocabulary mode switcher label from `Use` to `Cloze`, aligned
   Cloze timing to 90 seconds per selected group in the frontend and
   `submitAttempt`, and removed empty `None selected` / `Nothing selected`

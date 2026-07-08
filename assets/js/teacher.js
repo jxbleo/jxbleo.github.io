@@ -752,7 +752,9 @@
 
     var TEACHER_LIBRARY_SUB_TABS = {
         general: [
-            { id: 'bbc-six-minute-english', label: 'BBC' },
+            { id: 'bbc-2024', sectionId: 'bbc-six-minute-english', label: 'BBC2024', itemYear: '2024' },
+            { id: 'bbc-2025', sectionId: 'bbc-six-minute-english', label: 'BBC2025', itemYear: '2025' },
+            { id: 'bbc-2026', sectionId: 'bbc-six-minute-english', label: 'BBC2026', itemYear: '2026' },
             { id: 'ngsl', label: 'NGSL', vocabularySource: 'ngsl' },
             { id: 'nawl', label: 'NAWL', vocabularySource: 'nawl' },
             { id: 'tk2', label: 'TK2', vocabularySource: 'tk2' },
@@ -799,12 +801,13 @@
     function teacherLibrarySubTabMatchesSection(config, section) {
         if (!config || !config.id) return true;
         if (config.vocabularySource) return section && section.id === 'vocabulary';
-        return section && section.id === config.id;
+        return section && section.id === (config.sectionId || config.id);
     }
 
     function teacherLibrarySubTabMatchesItem(config, item) {
         if (!config || !config.id) return true;
         if (config.vocabularySource) return vocabularySourceKey(item) === config.vocabularySource;
+        if (config.itemYear) return teacherLibraryItemYear(item) === config.itemYear;
         return true;
     }
 
@@ -961,6 +964,18 @@
 
     function teacherLibraryItemIdentity(item) {
         return String(item && (item.set_id || item.id || item.displayValue || item.href || item.title) || '');
+    }
+
+    function teacherLibraryItemYear(item) {
+        var raw = String((item && (item.sortValue || item.publishedOn || item.displayValue)) || '');
+        var dateMatch = raw.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) return dateMatch[1];
+        var idMatch = teacherLibraryItemIdentity(item).match(/BBC-(\d{2})(\d{2})(\d{2})/i);
+        if (idMatch) {
+            var year = Number(idMatch[1]);
+            return (year < 70 ? '20' : '19') + idMatch[1];
+        }
+        return '';
     }
 
     function teacherLibraryDateSortValue(item) {
@@ -1158,7 +1173,7 @@
         }
 
         var tabSections = teacherGetTabSections(tabId);
-        var targetSectionId = activeSubTabConfig.id;
+        var targetSectionId = activeSubTabConfig.sectionId || activeSubTabConfig.id;
 
         var itemsBySection = {};
         var allItems = teacherLibraryDisplayItems().filter(function(item) { return item.visible !== false; });
@@ -1235,7 +1250,7 @@
             if (sortedItems.length) {
                 for (var k = 0; k < sortedItems.length; k++) {
                     var item = sortedItems[k];
-                    var itemYear = section.yearFilter ? String(item.sortValue || '').substring(0, 4) : '';
+                    var itemYear = section.yearFilter ? teacherLibraryItemYear(item) : '';
                     var hidden = activeYear && itemYear !== activeYear;
                     cardsHtml += teacherBuildCard(item, section, hidden, itemYear);
                 }
