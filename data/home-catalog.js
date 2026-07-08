@@ -168,6 +168,81 @@ window.__HOME_CATALOG__ = {
   ],
   "items": [
     {
+      "id": "BBC-241205",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Can You Trust Ancestry DNA Kits?",
+      "href": "bbc.html?set=BBC-241205",
+      "displayValue": "2024-12-05",
+      "sortValue": "2024-12-05",
+      "topic": "Science / Ancestry",
+      "tags": [
+        "Science",
+        "Ancestry"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241212",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Making 'Mum Friends'",
+      "href": "bbc.html?set=BBC-241212",
+      "displayValue": "2024-12-12",
+      "sortValue": "2024-12-12",
+      "topic": "Family / Friendship",
+      "tags": [
+        "Family",
+        "Friendship"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241219",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Call Centres: Are You Talking To AI?",
+      "href": "bbc.html?set=BBC-241219",
+      "displayValue": "2024-12-19",
+      "sortValue": "2024-12-19",
+      "topic": "Technology / Work",
+      "tags": [
+        "Technology",
+        "Work"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-241226",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Embarrassed To Go To The Doctor?",
+      "href": "bbc.html?set=BBC-241226",
+      "displayValue": "2024-12-26",
+      "sortValue": "2024-12-26",
+      "topic": "Health / Communication",
+      "tags": [
+        "Health",
+        "Communication"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250102",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Are You Drinking Enough Water?",
+      "href": "bbc.html?set=BBC-250102",
+      "displayValue": "2025-01-02",
+      "sortValue": "2025-01-02",
+      "topic": "Health / Hydration",
+      "tags": [
+        "Health",
+        "Hydration"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "BBC-250109",
       "sectionId": "bbc-six-minute-english",
       "title": "Eating 50-Year-Old Stew",

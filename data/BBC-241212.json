@@ -1,0 +1,181 @@
+{
+  "id": "BBC-241212",
+  "title": "Making 'Mum Friends'",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/241212-making-mum-friends.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Parents meet at school gates when they drop children off and pick them _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The programme discusses relationships often called _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A play date is arranged so children can play _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "According to the Oxford English Dictionary, play date comes from the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Jayne says the school gates take you back to being at _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A clique may seem _____ towards people outside it.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Glam is short for _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "If you fit into a group, you feel you _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "If something is down to luck, it depends on _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "If you click with someone, you feel a positive _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What situation is the programme mainly about?",
+      "options": [
+        "Children learning to read at school",
+        "Parents trying to make friends around the school gate",
+        "Teachers organising school lessons",
+        "Children choosing after-school clubs"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Who are 'mum friends' usually?",
+      "options": [
+        "The mums of other children in your child's class",
+        "Professional teachers hired by parents",
+        "Old school friends from childhood",
+        "Relatives who help with homework"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the quiz question ask about?",
+      "options": [
+        "The age when children start school",
+        "The best way to organise babysitting",
+        "The origin of the term play date",
+        "The number of mums at a school gate"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why can school gates feel stressful for Jayne?",
+      "options": [
+        "They remind her of exams",
+        "They are always physically dangerous",
+        "They make parents wait for too long",
+        "They bring back school pressure and cliques"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does glam mean in the programme?",
+      "options": [
+        "Very sporty",
+        "Visually attractive and exciting",
+        "Unfriendly towards outsiders",
+        "Dependent on luck"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What problem starts when someone does not fit into a clique?",
+      "options": [
+        "They may feel rejected or left out",
+        "They automatically become a teacher",
+        "Their child cannot attend school",
+        "They forget the meaning of play date"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does Jayne decide after difficult baby group experiences?",
+      "options": [
+        "Making a real connection is mostly down to luck",
+        "All parents should avoid each other",
+        "Baby yoga always creates friendships",
+        "Only sporty mums can make friends"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does down to luck mean?",
+      "options": [
+        "Controlled by a teacher",
+        "Based on a written rule",
+        "Dependent on chance rather than skill or effort",
+        "Impossible to happen"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does it mean to click with someone?",
+      "options": [
+        "To dislike them at once",
+        "To meet them only online",
+        "To arrange a play date for them",
+        "To feel a friendly connection quickly"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "Where was play date first used, according to the programme?",
+      "options": [
+        "In a newspaper in Nebraska, USA",
+        "In an Australian school report",
+        "In a New Zealand dictionary",
+        "In a British medical journal"
+      ]
+    }
+  ],
+  "matching": []
+}

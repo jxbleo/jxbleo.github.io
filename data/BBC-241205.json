@@ -1,0 +1,181 @@
+{
+  "id": "BBC-241205",
+  "title": "Can You Trust Ancestry DNA Kits?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/241205-can-you-trust-ancestry-dna-kits.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A family tree is a diagram showing all the members of a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Ancestry refers to the origins of your _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "DNA is passed down from parents to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Chris wondered whether his results should be taken with a pinch of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Humans share _____ of their DNA with each other.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Forebears are relatives who lived in the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Ethnicity is closely connected to a geographical _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Greg sent DNA samples to two different _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The second test said Greg was 66% north and west _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "If something blows your mind, it makes you excited or _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the programme mainly discussing?",
+      "options": [
+        "How to draw a family tree by hand",
+        "How accurate DNA ancestry tracing can be",
+        "How to change your surname",
+        "How to store historical documents"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why did Chris question his DNA ancestry test?",
+      "options": [
+        "The results broadly matched expectations but included some glitches",
+        "The company refused to send him any result",
+        "He had never sent a sample to the company",
+        "The test only showed his surname"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does it mean to take something with a pinch of salt?",
+      "options": [
+        "To accept it immediately",
+        "To study it in a laboratory",
+        "To doubt that it is completely true",
+        "To compare it with your family tree"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why should people be cautious about DNA ancestry tests?",
+      "options": [
+        "They cannot use databases",
+        "They only work for people with unusual surnames",
+        "They ignore family history completely",
+        "Humans share most of their DNA with each other"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How does Louise Baldock distinguish ancestry from ethnicity?",
+      "options": [
+        "Ancestry is about continents, while ethnicity is only about names",
+        "Ancestry is about actual forebears; ethnicity is more cultural and geographical",
+        "Ancestry is always less accurate than ethnicity",
+        "Ethnicity is only about parents and children"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What happened with Greg Foot's first DNA test?",
+      "options": [
+        "It showed five generations from England, matching what he knew",
+        "It said he was mostly from the United States",
+        "It refused to compare his sample",
+        "It found no connection to his known family"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What was surprising about Greg's second DNA test?",
+      "options": [
+        "It found no evidence of English ancestry",
+        "It said all his DNA was identical to Beth's",
+        "It proved every family record was false",
+        "It gave only one percentage: 100% English"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why can two DNA companies give different results?",
+      "options": [
+        "DNA changes after it is mailed",
+        "The same person has different DNA each day",
+        "The presenter used a fake surname",
+        "Companies compare samples with different databases"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What percentage of DNA do humans share, according to the programme?",
+      "options": [
+        "79.9%",
+        "89.9%",
+        "99.9%",
+        "100%"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the safest interpretation of these tests?",
+      "options": [
+        "They are useless for all family research",
+        "They can be interesting, but results should be interpreted carefully",
+        "They always prove exact national identity",
+        "They replace all historical records"
+      ]
+    }
+  ],
+  "matching": []
+}

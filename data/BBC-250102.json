@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250102",
+  "title": "Are You Drinking Enough Water?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250102-are-you-drinking-enough-water.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Many people carry water bottles to make sure they drink _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Over half the human body is made up of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Many people have heard they should drink _____ a day.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Professor Speakman says the two-litre idea has taken grip in many _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The phrase pretty much means _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The exact two-litre number is described as a _____ figure.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The body loses water when people breathe, sweat, or go to the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "How much water you need mainly depends on your _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Dehydration can make people feel tired or have a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The programme says blood consists of around _____ water.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does the programme mainly discuss?",
+      "options": [
+        "Whether coffee is better than tea",
+        "Exactly how much water people need to stay healthy",
+        "How to manufacture water bottles",
+        "Why blood contains no water"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does our blood need water?",
+      "options": [
+        "To carry nutrients to the body's cells and organs",
+        "To make people feel hungry",
+        "To replace all food",
+        "To stop people breathing"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does arrive at a number mean?",
+      "options": [
+        "To decide it by doing calculations",
+        "To write it on a bottle",
+        "To ignore scientific evidence",
+        "To travel to another country"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does it mean if an idea has taken grip?",
+      "options": [
+        "It has disappeared",
+        "It has taken control or become strongly accepted",
+        "It has become impossible to understand",
+        "It has been scientifically proven"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is the two-litre recommendation called a ballpark figure?",
+      "options": [
+        "It is an exact medical law for everyone",
+        "It only applies to athletes",
+        "It is an approximate number rather than a proven exact amount",
+        "It describes the size of a sports field"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why can water needs differ between people?",
+      "options": [
+        "All people lose water at the same rate",
+        "Only blood needs water",
+        "No one loses water while breathing",
+        "People lose water and need to replace different amounts, partly depending on size"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What is dehydration?",
+      "options": [
+        "Not having enough water in the body so you feel ill or weak",
+        "Drinking exactly two litres every day",
+        "Having too much water in the blood",
+        "A type of bank balance"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What mistake can happen when someone is dehydrated?",
+      "options": [
+        "They may think they are cold",
+        "They may think they are hungry when they are actually thirsty",
+        "They may forget how to breathe",
+        "They may stop needing nutrients"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What are symptoms?",
+      "options": [
+        "Government recommendations",
+        "Exact scientific facts",
+        "Signs or feelings showing an illness or condition",
+        "Containers for drinking water"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the programme's conclusion about two litres a day?",
+      "options": [
+        "It is dangerous for everyone",
+        "It is a useful general guide, but exact needs vary",
+        "It is always too little",
+        "It applies only to children"
+      ]
+    }
+  ],
+  "matching": []
+}
