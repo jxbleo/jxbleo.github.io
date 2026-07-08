@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250206",
+  "title": "Why Smells Make Us Feel At Home",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250206-why-smells-make-us-feel-at-home.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "For the brain, one of the strongest signs of home is _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One presenter associated home with pine, damp and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Another remembered a parent’s perfume and a father’s _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "After a long trip, a house may smell a bit _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "One possible reason is that the house has been _____ for weeks.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The normal smell of home often remains _____ while people are living there.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Receptor cells in the nose detect air _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Olfactory organs analyse smells for possible _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "We stop noticing the smell of home because it is not a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Even unnoticed, home scent is linked with comfort and _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What central claim is made about home and the brain?",
+      "options": [
+        "Visual details are the only way to recognise home",
+        "Smell can strongly identify a place as home",
+        "People recognise home mainly through sound",
+        "The brain ignores smell completely"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why are pine, damp, books, perfume and soap mentioned?",
+      "options": [
+        "To list dangerous household chemicals",
+        "To compare expensive and cheap smells",
+        "To show everyone dislikes home smells",
+        "To give examples of smells connected with home"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "When might people especially notice their home’s smell?",
+      "options": [
+        "After returning from a long trip",
+        "Only when moving to a new country",
+        "Before leaving for work each day",
+        "While watching television at home"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What alternative explanation is given for a strange smell at home?",
+      "options": [
+        "The home must have become unsafe",
+        "The smell is always caused by cooking",
+        "It may simply be the usual smell that was previously unnoticed",
+        "The smell proves the house has no ventilation"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What happens when we breathe in, according to the explanation?",
+      "options": [
+        "The brain immediately removes all emotions",
+        "Nose receptor cells detect molecules in the air",
+        "The house stops producing any smell",
+        "The limbic system blocks every signal"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What function do olfactory organs perform?",
+      "options": [
+        "They analyse smells for danger",
+        "They create molecules in the nose",
+        "They make familiar smells stronger",
+        "They prevent people from breathing smoke"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why does filtering out familiar smells help us?",
+      "options": [
+        "It makes all ordinary smells disappear forever",
+        "It stops people from remembering their homes",
+        "It makes pleasant smells become dangerous",
+        "It helps us notice unusual smells that may signal danger"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is the burning toast example used to show?",
+      "options": [
+        "People usually prefer burnt food",
+        "Smoke is never treated as a threat",
+        "A change in smell can alert the brain to possible harm",
+        "The scent of home always smells like toast"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does the word “entangled” suggest about scent and home?",
+      "options": [
+        "Home scent is closely connected with feelings of comfort and safety",
+        "Home scent is separate from emotional memory",
+        "Only dangerous smells affect the brain",
+        "People can never recognise comfort through smell"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader conclusion is given about smell?",
+      "options": [
+        "Smell affects only the nose, not the brain",
+        "Home smells matter only when they are unpleasant",
+        "Smell is weaker than all other senses",
+        "Smell is strongly linked to memory, emotion and feeling at home"
+      ]
+    }
+  ],
+  "matching": []
+}

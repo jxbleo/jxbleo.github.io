@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250116",
+  "title": "Which Country Has The Best Schools?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250116-which-country-has-the-best-schools.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "The OECD carries out the Pisa tests _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The tests compare teaching in maths, science and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "At first, comparing countries through Pisa caused _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Some critics questioned the _____ of comparing very different countries.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A common pattern is that top-performing countries tend to be _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Large Western European countries are being _____ by faster-rising places.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Pisa is defended as a way to measure readiness for a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Successful systems help all pupils reach a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "This should happen regardless of students’ _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Estonia avoids teaching students by separate levels because it does not want to _____ them.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What do the Pisa tests try to measure?",
+      "options": [
+        "How much schools spend on education",
+        "How effectively countries teach key school subjects",
+        "How satisfied students are with teachers",
+        "How many students enter university"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why were the Pisa rankings controversial when introduced?",
+      "options": [
+        "They were only available in small countries",
+        "They ignored maths and science completely",
+        "They were designed by individual schools",
+        "People doubted whether very different places could be compared"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What pattern is mentioned in the rankings?",
+      "options": [
+        "Smaller countries often appear among the strongest performers",
+        "Western Europe always leads the tables",
+        "Large countries are excluded from the rankings",
+        "Only English-speaking countries perform well"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How are places such as Singapore, Estonia and Taiwan described in relation to larger European countries?",
+      "options": [
+        "Too small to be considered rivals",
+        "Historically dominant economic powers",
+        "Fast-rising competitors that outperform them",
+        "Countries with weaker school systems"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What is meant by a knowledge economy here?",
+      "options": [
+        "An economy based mainly on farming",
+        "An economy relying on highly educated workers in skilled industries",
+        "A system where students study only technology",
+        "A ranking that measures national income"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What factor is introduced as helping countries do well in Pisa?",
+      "options": [
+        "Allowing only top students to take tests",
+        "Dividing all pupils by ability from the start",
+        "Focusing mostly on private schools",
+        "Prioritising getting every pupil to a certain level"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does Sean say successful systems do?",
+      "options": [
+        "They ensure pupils reach a standard whatever their background",
+        "They select pupils according to family background",
+        "They remove reading from the curriculum",
+        "They measure only the strongest students"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is Rando Kuustik’s view of teaching students by different ability levels?",
+      "options": [
+        "It is the only way to improve scores",
+        "It is useful if done internationally",
+        "It separates people in a way schools should avoid",
+        "It has no connection with Estonia’s success"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "In the phrase “regardless of their background”, what is being treated as not a barrier?",
+      "options": [
+        "The country’s population size",
+        "Pupils’ personal or social background",
+        "The school’s test schedule",
+        "The language used in the exam"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader idea does Estonia’s example support?",
+      "options": [
+        "Elite separation is essential for top rankings",
+        "School success depends only on national wealth",
+        "Large countries should not take Pisa tests",
+        "Inclusive education can be linked to strong performance"
+      ]
+    }
+  ],
+  "matching": []
+}

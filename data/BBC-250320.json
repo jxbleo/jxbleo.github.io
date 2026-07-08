@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250320",
+  "title": "Healthy Meals On A Budget",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250320-healthy-meals-on-a-budget.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Alicia worried that lower-income people struggled to afford a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Poor diets may lead to earlier _____ among people in poverty.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Many people lacked cooking knowledge and could not afford to _____ with ingredients.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The programme first sends all the necessary _____ to people’s homes.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The project assumes that real _____ begins at home.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Each online group includes a _____ who gives practical cooking advice.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Participants are encouraged to cook the first recipe by _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The onion-cutting method impressed Ally because of its neatness and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Ally would use less chilli next time because her husband likes a lot of _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Being heavy-handed with an ingredient means using _____ of it.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What problem creates the context for the project?",
+      "options": [
+        "People have stopped shopping for food completely.",
+        "Rising food prices make shopping difficult for some people.",
+        "Restaurants have become cheaper than home cooking.",
+        "The UK is the only place where food prices have risen."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is the main purpose of Bags of Taste?",
+      "options": [
+        "To sell restaurant meals to twelve customers each night.",
+        "To teach people only how to use social media.",
+        "To replace supermarkets with online cooking groups.",
+        "To help people eat better while spending less on food."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What claim does Alicia make about diet in the UK?",
+      "options": [
+        "Diet is a major driver of unequal health outcomes.",
+        "Diet has little connection with poverty.",
+        "Poorer people usually have the best diets.",
+        "Young people become healthier because of poverty."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What practical barrier did Alicia identify?",
+      "options": [
+        "People refused to eat meals they already liked.",
+        "People had too many free ingredients to test.",
+        "People lacked cooking confidence and could not risk wasting food.",
+        "People found all healthy meals quick and cheap."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why does the programme deliver ingredients to people’s homes?",
+      "options": [
+        "To stop participants from cooking at home.",
+        "To make behaviour change practical in the home environment.",
+        "To test whether restaurants can deliver faster.",
+        "To avoid giving people any recipes."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What role does the WhatsApp mentor play?",
+      "options": [
+        "Providing cooking guidance and practical suggestions.",
+        "Judging participants in a formal competition.",
+        "Charging extra money for every recipe.",
+        "Replacing all interaction with videos only."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why is the onion-cutting video mentioned?",
+      "options": [
+        "To show that participants must avoid onions.",
+        "To prove chana masala is impossible to cook.",
+        "To advertise a restaurant’s professional recipe.",
+        "To show how the project removes a small cooking difficulty."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How does Ally respond to the onion-cutting method?",
+      "options": [
+        "She thinks it is confusing and not worth using.",
+        "She says it makes the dish too spicy.",
+        "She finds it positive, tidy and easy to follow.",
+        "She refuses to try it until the next recipe."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does Ally’s comment suggest about her cooking experience?",
+      "options": [
+        "She reflected on the result and would adjust the seasoning next time.",
+        "She decided never to cook chana masala again.",
+        "She believed the recipe contained no chilli at all.",
+        "She thought the mentor had forbidden spicy food."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What overall benefit of Bags of Taste is highlighted near the end?",
+      "options": [
+        "It makes restaurant dining affordable for everyone.",
+        "It combines cooking skills, healthier eating and lower cost.",
+        "It removes the need for participants to buy food forever.",
+        "It focuses mainly on expensive meals for special occasions."
+      ]
+    }
+  ],
+  "matching": []
+}

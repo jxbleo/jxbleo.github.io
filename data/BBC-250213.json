@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250213",
+  "title": "Rage Bait: How Online Anger Makes Money",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250213-rage-bait-how-online-anger-makes-money.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Rage bait refers to online material created to make users feel _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "A provocative post can attract reactions, raise traffic and bring financial _____ to the creator.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Some creators chase more _____ because payment rises with audience numbers.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The reactions can still be profitable even when they are _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "A normal marketing hook should reflect the content accurately and be based on _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Unlike a trustworthy hook, rage bait relies on _____ to influence users.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Influencers exploit _____ so that users pay more attention to certain content.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Algorithmic amplification can finally lead to more _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Biases are often not deliberate; they may be _____ feelings for or against an idea.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "By provoking emotions, creators are more likely to capture users’ _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What distinguishes rage bait from ordinary attention-grabbing online content at the beginning of the discussion?",
+      "options": [
+        "It mainly uses celebrity gossip to encourage curiosity.",
+        "It is deliberately designed to produce anger or outrage.",
+        "It usually asks users to compare different political views.",
+        "It depends on software that blocks emotional reactions."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "According to the explanation, what usually happens after people react angrily to a provocative post?",
+      "options": [
+        "The creator immediately removes the original post.",
+        "The post becomes less visible because users dislike it.",
+        "The audience stops sharing similar content.",
+        "The content receives wider attention and traffic."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What commercial logic does Andrea Jones identify behind some creators’ behaviour?",
+      "options": [
+        "Higher engagement can mean higher payment.",
+        "Negative comments usually reduce creators’ income.",
+        "Creators are paid only when users feel positive.",
+        "Marketing platforms ban content that causes anger."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How does Andrea contrast a marketing hook with rage-baiting content?",
+      "options": [
+        "A hook is usually longer, while rage bait is usually shorter.",
+        "A hook avoids emotion, while rage bait avoids online sharing.",
+        "A hook should honestly match the content, while rage bait manipulates users.",
+        "A hook is used by amateurs, while rage bait is used by professionals."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why does Andrea’s view imply that rage bait is worse than clickbait?",
+      "options": [
+        "It is less truthful and tries to influence people for its own advantage.",
+        "It is mainly unsuccessful at attracting online reactions.",
+        "It only works when users already agree with the creator.",
+        "It is used mostly to teach marketing clients about trust."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does Dr Brady suggest influencers try to exploit?",
+      "options": [
+        "Users’ technical knowledge of algorithms.",
+        "Users’ desire to avoid advertising.",
+        "Users’ ability to detect fake headlines.",
+        "Users’ psychological biases that guide attention."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "In Dr Brady’s explanation, what is the role of algorithms?",
+      "options": [
+        "They judge whether comments are morally acceptable.",
+        "They amplify content that people are likely to notice.",
+        "They prevent creators from earning advertising money.",
+        "They remove emotional posts from social platforms."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does the informal word “eyeballs” refer to in this context?",
+      "options": [
+        "People who produce angry online comments.",
+        "The emotional biases behind a reaction.",
+        "People viewing online content.",
+        "The visual design of a social media post."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why can emotional content be especially effective?",
+      "options": [
+        "Human beings have evolved to pay attention to emotions.",
+        "Users are unable to recognise any emotional manipulation.",
+        "Algorithms only promote content with positive emotions.",
+        "Creators are usually unaware that emotions affect users."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What practical response is suggested for users who encounter outrageous content?",
+      "options": [
+        "Share it quickly so others can judge it.",
+        "Comment angrily to reduce its reach.",
+        "Follow creators who post more extreme examples.",
+        "Pause and think before reacting or sharing."
+      ]
+    }
+  ],
+  "matching": []
+}

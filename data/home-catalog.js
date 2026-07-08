@@ -168,6 +168,171 @@ window.__HOME_CATALOG__ = {
   ],
   "items": [
     {
+      "id": "BBC-250109",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Eating 50-Year-Old Stew",
+      "href": "bbc.html?set=BBC-250109",
+      "displayValue": "2025-01-09",
+      "sortValue": "2025-01-09",
+      "topic": "Food / Culture",
+      "tags": [
+        "Food",
+        "Culture"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250116",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Which Country Has The Best Schools?",
+      "href": "bbc.html?set=BBC-250116",
+      "displayValue": "2025-01-16",
+      "sortValue": "2025-01-16",
+      "topic": "Education / Society",
+      "tags": [
+        "Education",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250123",
+      "sectionId": "bbc-six-minute-english",
+      "title": "How The World Learned To Love Fast Food",
+      "href": "bbc.html?set=BBC-250123",
+      "displayValue": "2025-01-23",
+      "sortValue": "2025-01-23",
+      "topic": "Food / Business",
+      "tags": [
+        "Food",
+        "Business"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250130",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Becoming A Musician",
+      "href": "bbc.html?set=BBC-250130",
+      "displayValue": "2025-01-30",
+      "sortValue": "2025-01-30",
+      "topic": "Music / Careers",
+      "tags": [
+        "Music",
+        "Careers"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250206",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Why Smells Make Us Feel At Home",
+      "href": "bbc.html?set=BBC-250206",
+      "displayValue": "2025-02-06",
+      "sortValue": "2025-02-06",
+      "topic": "Memory / Senses",
+      "tags": [
+        "Memory",
+        "Senses"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250213",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Rage Bait: How Online Anger Makes Money",
+      "href": "bbc.html?set=BBC-250213",
+      "displayValue": "2025-02-13",
+      "sortValue": "2025-02-13",
+      "topic": "Online Media / Money",
+      "tags": [
+        "Online Media",
+        "Money"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250220",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Young Women On Social Media",
+      "href": "bbc.html?set=BBC-250220",
+      "displayValue": "2025-02-20",
+      "sortValue": "2025-02-20",
+      "topic": "Social Media / Society",
+      "tags": [
+        "Social Media",
+        "Society"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250227",
+      "sectionId": "bbc-six-minute-english",
+      "title": "A Vaccine For Cancer",
+      "href": "bbc.html?set=BBC-250227",
+      "displayValue": "2025-02-27",
+      "sortValue": "2025-02-27",
+      "topic": "Health / Medicine",
+      "tags": [
+        "Health",
+        "Medicine"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250306",
+      "sectionId": "bbc-six-minute-english",
+      "title": "The Country That Measures Happiness",
+      "href": "bbc.html?set=BBC-250306",
+      "displayValue": "2025-03-06",
+      "sortValue": "2025-03-06",
+      "topic": "Society / Happiness",
+      "tags": [
+        "Society",
+        "Happiness"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250313",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Should We Eat Less Rice?",
+      "href": "bbc.html?set=BBC-250313",
+      "displayValue": "2025-03-13",
+      "sortValue": "2025-03-13",
+      "topic": "Food / Climate",
+      "tags": [
+        "Food",
+        "Climate"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250320",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Healthy Meals On A Budget",
+      "href": "bbc.html?set=BBC-250320",
+      "displayValue": "2025-03-20",
+      "sortValue": "2025-03-20",
+      "topic": "Food / Money",
+      "tags": [
+        "Food",
+        "Money"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
       "id": "BBC-250327",
       "sectionId": "bbc-six-minute-english",
       "title": "Can We Boost The Immune System?",
@@ -178,6 +343,51 @@ window.__HOME_CATALOG__ = {
       "tags": [
         "Health",
         "Immunity"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250403",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Are We Getting More Allergic To Things?",
+      "href": "bbc.html?set=BBC-250403",
+      "displayValue": "2025-04-03",
+      "sortValue": "2025-04-03",
+      "topic": "Health / Allergies",
+      "tags": [
+        "Health",
+        "Allergies"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250410",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Learning Multiple Languages",
+      "href": "bbc.html?set=BBC-250410",
+      "displayValue": "2025-04-10",
+      "sortValue": "2025-04-10",
+      "topic": "Language / Brain",
+      "tags": [
+        "Language",
+        "Brain"
+      ],
+      "note": "Listening Practice",
+      "visible": true
+    },
+    {
+      "id": "BBC-250417",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Can AI Solve Crime?",
+      "href": "bbc.html?set=BBC-250417",
+      "displayValue": "2025-04-17",
+      "sortValue": "2025-04-17",
+      "topic": "Technology / Crime",
+      "tags": [
+        "Technology",
+        "Crime"
       ],
       "note": "Listening Practice",
       "visible": true

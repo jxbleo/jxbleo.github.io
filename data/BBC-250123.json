@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250123",
+  "title": "How The World Learned To Love Fast Food",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250123-how-the-world-learned-to-love-fast-food.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Major fast food brands are described as _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The episode focuses on the _____ of fast food.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The story begins in _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Many founders did not have a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Fast food made business _____ easier for ordinary people.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A can-do attitude includes confidence and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "The American dream links success to _____ and determination.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Today, two McDonald’s restaurants far apart can serve exactly the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Iceland already had a long-standing _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The financial crash helped cause McDonald’s final _____ in Iceland.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What historical development is the programme mainly discussing?",
+      "options": [
+        "How fast food spread globally from mid-century America",
+        "Why British people stopped eating fast food",
+        "How home cooking replaced restaurant chains",
+        "Why all fast food brands began in Iceland"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which foods are given as examples of cheap and easy American fast food?",
+      "options": [
+        "Pizza, pasta and salads",
+        "Soup, rice and vegetables",
+        "Fish, chips and tea",
+        "Hamburgers, French fries and milkshakes"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does Adam Chandler suggest about early fast-food founders?",
+      "options": [
+        "They usually came from wealthy academic families",
+        "They could succeed without traditional educational advantages",
+        "They mainly worked outside the United States",
+        "They avoided joining established systems"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why is the phrase “at the heart of the story” explained?",
+      "options": [
+        "To introduce a medical problem caused by fast food",
+        "To show that fast food was unpopular after the war",
+        "To identify the key idea behind fast food’s rise",
+        "To argue that the story is mainly about recipes"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does a can-do attitude involve?",
+      "options": [
+        "Confidence and determination to solve problems",
+        "Refusing to follow any system",
+        "Waiting for others to provide money",
+        "Avoiding new challenges"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "Why did fast food brands connect with the American dream?",
+      "options": [
+        "They made success depend on family background",
+        "They promised success without effort",
+        "They were limited to one social class",
+        "They suggested ordinary people could succeed through work"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does the example of two McDonald’s on opposite sides of the planet show?",
+      "options": [
+        "Menus change completely in each country",
+        "The brand offers a highly standardised product",
+        "Fast food is no longer available in America",
+        "Customers must travel far to eat the meal"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How did Iceland differ from places where McDonald’s was easily accepted?",
+      "options": [
+        "It had no local food traditions",
+        "It welcomed every foreign chain warmly",
+        "It gave McDonald’s a cold reception",
+        "It banned all burger restaurants immediately"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why is the shalpuborgari mentioned?",
+      "options": [
+        "To show Iceland already had its own version of a burger",
+        "To prove Iceland copied McDonald’s exactly",
+        "To explain why burgers were unknown in Iceland",
+        "To describe McDonald’s most popular product"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does McDonald’s experience in Iceland imply?",
+      "options": [
+        "Global brands always succeed everywhere",
+        "Financial crises help fast food chains expand",
+        "Local food culture has no effect on foreign chains",
+        "Local habits and economic shocks can limit global brands"
+      ]
+    }
+  ],
+  "matching": []
+}
