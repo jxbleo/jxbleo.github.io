@@ -20,6 +20,9 @@
   while keeping the main card title unchanged.
 - Changed Student and Teacher Library BBC practice entry points from one `BBC`
   sub-filter into `BBC2024`, `BBC2025`, and `BBC2026` year-specific sub-filters.
+- Changed BBC Argue question controls from an orange `!` to a raised-hand SVG,
+  and added the student's submitted answer to the `Tell me why.` dialog before
+  the reason textarea.
 - Changed the Vocabulary mode switcher label from `Use` to `Cloze`, aligned
   Cloze timing to 90 seconds per selected group in the frontend and
   `submitAttempt`, and removed empty `None selected` / `Nothing selected`

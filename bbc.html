@@ -780,6 +780,21 @@
             box-shadow: 0 8px 18px rgba(122, 67, 26, 0.12);
         }
 
+        .argue-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+            overflow: visible;
+        }
+
+        .argue-btn svg path {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 5.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
         .argue-btn:hover {
             background: #fde8d0;
             color: #7a431a;
@@ -860,6 +875,45 @@
         .argue-modal-status.pending { color: #7a5528; background: #fff8e5; }
         .argue-modal-status.approved { color: #237a52; background: #ecf9f1; }
         .argue-modal-status.rejected { color: #b54747; background: #fff0ed; }
+        .argue-answer-panel {
+            display: grid;
+            gap: 4px;
+            padding: 10px 12px;
+            border: 1px solid #dbe5ef;
+            border-radius: 12px;
+            background: #f7fafc;
+        }
+
+        .argue-answer-panel span {
+            color: #667085;
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .argue-answer-panel strong {
+            color: var(--ink);
+            font-size: 0.94rem;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .argue-answer-panel.empty strong {
+            color: #8a98a8;
+            font-style: italic;
+        }
+
+        .argue-reason-label {
+            display: block;
+            margin-bottom: -4px;
+            color: #667085;
+            font-size: 0.8rem;
+            font-weight: 850;
+            line-height: 1.35;
+        }
+
         .argue-content {
             position: relative;
             z-index: 1;
@@ -3440,6 +3494,30 @@
         });
     }
 
+    function argueHandIconMarkup() {
+        return '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+            '<path d="M28 47V26c0-4 3-7 7-7s7 3 7 7v23"/>' +
+            '<path d="M42 45V20c0-4 3-7 7-7s7 3 7 7v27"/>' +
+            '<path d="M56 47V25c0-4 3-7 7-7s7 3 7 7v31"/>' +
+            '<path d="M70 56V39c0-4 3-7 7-7s7 3 7 7v27c0 18-12 29-29 29H45c-10 0-18-4-24-12L12 70c-3-4-2-9 2-12s9-2 12 2l7 8"/>' +
+        '</svg>';
+    }
+
+    function submittedAnswerForQuestion(questionId) {
+        var answers = collectAnswers();
+        var value = answers[questionId];
+        var raw = answerText(value).trim();
+        if (!raw) return '';
+        var mc = (lessonData.multipleChoice || []).find(function(item) { return item.id === questionId; });
+        if (mc && /^[A-Z]$/i.test(raw)) {
+            var index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(raw.toUpperCase());
+            if (index >= 0 && mc.options && mc.options[index]) {
+                return raw.toUpperCase() + '. ' + mc.options[index];
+            }
+        }
+        return raw;
+    }
+
     function questionTextForId(questionId) {
         var blank = (lessonData.blanks || []).find(function(item) { return item.id === questionId; });
         if (blank) return blank.prompt || blank.sentence || '';
@@ -3475,7 +3553,7 @@
         var argueBtn = document.createElement('button');
         argueBtn.className = 'argue-btn';
         argueBtn.type = 'button';
-        argueBtn.textContent = '!';
+        argueBtn.innerHTML = argueHandIconMarkup();
         argueBtn.title = label || 'Argue this answer';
         argueBtn.setAttribute('aria-label', label || 'Argue this answer');
         argueBtn.setAttribute('data-argue-question', questionId);
@@ -4043,6 +4121,8 @@
 
     function openArgueInline(questionId, containerEl) {
         var modal = document.createElement('div');
+        var submittedAnswer = submittedAnswerForQuestion(questionId);
+        var noteId = 'argue-note-' + String(questionId || '').replace(/[^a-z0-9_-]/gi, '-');
         modal.className = 'argue-modal';
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
@@ -4051,7 +4131,12 @@
                 '<div class="argue-content">' +
                     '<h2>Tell me why.</h2>' +
                     '<p class="argue-modal-status" hidden></p>' +
-                    '<textarea aria-label="Argue note"></textarea>' +
+                    '<div class="argue-answer-panel' + (submittedAnswer ? '' : ' empty') + '">' +
+                        '<span>Your answer</span>' +
+                        '<strong>' + escapeHtml(submittedAnswer || 'No answer') + '</strong>' +
+                    '</div>' +
+                    '<label class="argue-reason-label" for="' + noteId + '">Why do you think this answer should be accepted?</label>' +
+                    '<textarea id="' + noteId + '" aria-label="Argue note"></textarea>' +
                     '<div class="argue-modal-actions">' +
                         '<button class="argue-modal-cancel" type="button">Cancel</button>' +
                         '<button class="argue-modal-submit" type="button">Submit</button>' +
