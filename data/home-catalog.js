@@ -2319,7 +2319,7 @@ window.__HOME_CATALOG__ = {
         "THINK 2",
         "U12"
       ],
-      "note": "36 Words · 5 Quiz Groups",
+      "note": "36 Words · 4 Quiz Groups",
       "visible": true
     },
     {

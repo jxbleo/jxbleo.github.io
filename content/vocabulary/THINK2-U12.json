@@ -10,7 +10,7 @@
     "THINK 2",
     "U12"
   ],
-  "note": "36 Words · 5 Quiz Groups",
+  "note": "36 Words · 4 Quiz Groups",
   "visible": true,
   "sourceName": "THINK 2",
   "cefrLevel": "B1+",
@@ -483,97 +483,82 @@
       ]
     },
     {
-      "id": "21-25",
+      "id": "21-30",
       "label": "第三组",
       "rangeStart": 21,
-      "rangeEnd": 25,
+      "rangeEnd": 30,
       "wordList": [
-        "behaviour",
         "schooling",
         "practical",
         "home-making",
-        "religion"
-      ],
-      "questions": [
-        {
-          "number": 1,
-          "prompt": "Good __________ is not only about sitting quietly, but also about listening carefully and respecting other people.",
-          "questionKey": "21-25:1"
-        },
-        {
-          "number": 2,
-          "prompt": "His parents could not pay for his __________, so he had to leave school and start working at twelve.",
-          "questionKey": "21-25:2"
-        },
-        {
-          "number": 3,
-          "prompt": "This course teaches __________ skills, such as cooking simple meals, fixing clothes, and managing money.",
-          "questionKey": "21-25:3"
-        },
-        {
-          "number": 4,
-          "prompt": "In some families, __________ includes cleaning, cooking, shopping, and taking care of younger children.",
-          "questionKey": "21-25:4"
-        },
-        {
-          "number": 5,
-          "prompt": "Different people may follow different forms of __________, but they should still respect each other's beliefs.",
-          "questionKey": "21-25:5"
-        }
-      ]
-    },
-    {
-      "id": "26-31",
-      "label": "第四组",
-      "rangeStart": 26,
-      "rangeEnd": 31,
-      "wordList": [
+        "religion",
+        "behaviour",
         "exactly",
         "introduction",
         "publish",
         "biscuit",
-        "toss a coin",
-        "cabbage"
+        "toss a coin"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Please arrive at __________ eight o'clock, not earlier or later, because the exam room will open at that time.",
-          "questionKey": "26-31:1"
+          "prompt": "His parents could not pay for his __________, so he had to leave school and start working at twelve.",
+          "questionKey": "21-30:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ of the book explains who the main characters are and where the story begins.",
-          "questionKey": "26-31:2"
+          "prompt": "This course teaches __________ skills, such as cooking simple meals, fixing clothes, and managing money.",
+          "questionKey": "21-30:2"
         },
         {
           "number": 3,
-          "prompt": "The young writer hopes to __________ her first short story in the school magazine next month.",
-          "questionKey": "26-31:3"
+          "prompt": "In some families, __________ includes cleaning, cooking, shopping, and taking care of younger children.",
+          "questionKey": "21-30:3"
         },
         {
           "number": 4,
-          "prompt": "Tom ate a chocolate __________ with a glass of milk after he finished his homework.",
-          "questionKey": "26-31:4"
+          "prompt": "Different people may follow different forms of __________, but they should still respect each other's beliefs.",
+          "questionKey": "21-30:4"
         },
         {
           "number": 5,
-          "prompt": "We could not decide who should go first, so we decided to __________.",
-          "questionKey": "26-31:5"
+          "prompt": "Good __________ is not only about sitting quietly, but also about listening carefully and respecting other people.",
+          "questionKey": "21-30:5"
         },
         {
           "number": 6,
-          "prompt": "My grandmother cut the __________ into small pieces and cooked it with carrots and chicken.",
-          "questionKey": "26-31:6"
+          "prompt": "Please arrive at __________ eight o'clock, not earlier or later, because the exam room will open at that time.",
+          "questionKey": "21-30:6"
+        },
+        {
+          "number": 7,
+          "prompt": "The __________ of the book explains who the main characters are and where the story begins.",
+          "questionKey": "21-30:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The young writer hopes to __________ her first short story in the school magazine next month.",
+          "questionKey": "21-30:8"
+        },
+        {
+          "number": 9,
+          "prompt": "Tom ate a chocolate __________ with a glass of milk after he finished his homework.",
+          "questionKey": "21-30:9"
+        },
+        {
+          "number": 10,
+          "prompt": "We could not decide who should go first, so we decided to __________.",
+          "questionKey": "21-30:10"
         }
       ]
     },
     {
-      "id": "32-36",
-      "label": "第五组",
-      "rangeStart": 32,
+      "id": "31-36",
+      "label": "第四组",
+      "rangeStart": 31,
       "rangeEnd": 36,
       "wordList": [
+        "cabbage",
         "plate",
         "sick",
         "shocked",
@@ -583,28 +568,33 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Please put your dirty __________ in the kitchen after you finish eating.",
-          "questionKey": "32-36:1"
+          "prompt": "My grandmother cut the __________ into small pieces and cooked it with carrots and chicken.",
+          "questionKey": "31-36:1"
         },
         {
           "number": 2,
-          "prompt": "Lily felt __________ after eating too much cold food, so she went home early.",
-          "questionKey": "32-36:2"
+          "prompt": "Please put your dirty __________ in the kitchen after you finish eating.",
+          "questionKey": "31-36:2"
         },
         {
           "number": 3,
-          "prompt": "Everyone was __________ when they heard that the quiet boy had won first prize in the speech competition.",
-          "questionKey": "32-36:3"
+          "prompt": "Lily felt __________ after eating too much cold food, so she went home early.",
+          "questionKey": "31-36:3"
         },
         {
           "number": 4,
-          "prompt": "You do not need to __________ at me; I can hear you clearly from here.",
-          "questionKey": "32-36:4"
+          "prompt": "Everyone was __________ when they heard that the quiet boy had won first prize in the speech competition.",
+          "questionKey": "31-36:4"
         },
         {
           "number": 5,
+          "prompt": "You do not need to __________ at me; I can hear you clearly from here.",
+          "questionKey": "31-36:5"
+        },
+        {
+          "number": 6,
           "prompt": "The children tried to __________ a new board game with funny rules and colorful cards.",
-          "questionKey": "32-36:5"
+          "questionKey": "31-36:6"
         }
       ]
     }
