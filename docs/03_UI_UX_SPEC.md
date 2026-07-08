@@ -520,7 +520,7 @@ Shared rules:
 
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
-- Cloze-mode timing gives each selected group 60 seconds, or 1 minute.
+- Cloze-mode timing gives each selected group 90 seconds, or 1.5 minutes.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a
   horizontal row; when there are more than six selected sets, the row scrolls

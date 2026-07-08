@@ -461,7 +461,7 @@ flowchart TD
 
 - 只在 Vocabulary Test 选择 5 组或以上、会计入成绩时创建
 - 1-4 组 self-test、Vocabulary Practice、BBC、IELTS 不创建该 session
-- Vocabulary Test 计时按每组 60 秒计算，即每组选中组 1 分钟
+- Vocabulary Test 计时按每组 90 秒计算，即每组选中组 1.5 分钟
 - session 记录本次正式测试的 group IDs、question IDs、开始时间、截止时间、
   最后 heartbeat、页面实例 ID 和状态；页面实例 ID 必须是每次页面加载生成的内存标识，
   不能用会被新标签继承的持久存储
