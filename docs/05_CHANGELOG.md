@@ -7,7 +7,7 @@
 
 ### Added
 
-- Added `THINK2-U12` as a TK2 Vocabulary unit with 36 words, 5 quiz groups, and
+- Added `THINK2-U12` as a TK2 Vocabulary unit with 36 words, 4 quiz groups, and
   private CloudBase grading data.
 - Added `Oxford5000-R`, `Oxford5000-S`, and `Oxford5000-T` as Oxford5000
   Vocabulary units, covering words `1701-2000` with 30 quiz groups and private
