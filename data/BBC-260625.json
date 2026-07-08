@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260625",
+  "title": "Stress-Free Family Meals",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260625-stress-free-family-meals.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "When children reject the meal prepared for them, family dinners may lead to _____ instead of enjoyment. (1)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Children may have periods when their _____ is much lower, before it suddenly returns. (2)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Whether children eat well may depend on the day, the weather and their _____. (3)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Food choices at dinner can trigger a lot of family _____. (4)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "For young children, eating is one of the few areas where they have some _____. (5)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Deciding whether to eat can have special _____ for young children. (6)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "One mother’s daughter was born with _____, which made feeding her difficult at first. (7)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The family eventually found a safe food combination: _____. (8)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Experts recommend giving children a _____ rather than controlling every part of the meal. (9)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "A calmer dinner atmosphere can be created by avoiding _____ on children to finish all their food. (10)",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What problem is introduced about family mealtimes?",
+      "options": [
+        "Parents usually cook food too late",
+        "Children rarely know what food they like",
+        "Refusing food can turn dinner into conflict",
+        "Family meals are no longer common"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What pattern does Charlotte describe in her children’s eating?",
+      "options": [
+        "Their appetite rises and falls over time",
+        "They consistently refuse all healthy food",
+        "They eat better only when the weather is cold",
+        "Their food preferences never change"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which factor is mentioned as affecting whether children eat happily?",
+      "options": [
+        "The price of the meal",
+        "The size of the kitchen",
+        "The parents’ cooking skill",
+        "The child’s mood"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What issue does Ruth Alexander’s question highlight?",
+      "options": [
+        "Children are naturally interested in nutrition science",
+        "Mealtimes can become emotionally charged",
+        "Parents should stop asking children what they want",
+        "Food allergies are the main source of all tension"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "According to Anne Fishel, why can dinner become difficult with small children?",
+      "options": [
+        "Children are usually trying to upset their parents",
+        "Parents serve meals at unpredictable times",
+        "Eating is one area where children can exercise control",
+        "Children understand nutrition better than adults"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What can be inferred from the phrase “a big deal” in this context?",
+      "options": [
+        "Food decisions matter strongly to children",
+        "The meal itself is usually expensive",
+        "Children are making a formal agreement",
+        "Parents have lost all authority"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What extra difficulty is introduced after the discussion of control?",
+      "options": [
+        "Children eating too quickly",
+        "Families avoiding dinner together",
+        "Parents refusing to cook vegetables",
+        "A child having a food allergy"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why is Sharon Wee’s example of rice and beans mentioned?",
+      "options": [
+        "To show that allergic children should eat only two foods forever",
+        "To illustrate a safe routine that worked for her daughter",
+        "To prove that Singaporean food causes allergies",
+        "To argue that all families need the same meal plan"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does “the winning formula” refer to in Sharon’s case?",
+      "options": [
+        "A professional diet plan for all children",
+        "A method for making children try new flavours",
+        "A food combination her daughter could safely eat",
+        "A rule requiring children to finish the plate"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the overall practical advice given at the end?",
+      "options": [
+        "Offer choice and reduce pressure at mealtimes",
+        "Make children finish meals before snacks",
+        "Introduce many new tastes as quickly as possible",
+        "Avoid giving children any food before dinner"
+      ]
+    }
+  ],
+  "matching": []
+}

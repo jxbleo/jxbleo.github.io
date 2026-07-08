@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260618",
+  "title": "Limiting Screen Time For Children",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260618-limiting-screen-time-for-children.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Screen time refers to the amount of time spent using digital _____ such as phones, tablets and laptops. (1)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Australia has restricted social media access for _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The expert does not argue for removing technology, but for being more _____ in how adults use it with children. (3)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Product design should put _____ rather than technology itself at the centre. (4)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Technology should support children’s learning and _____. (5)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Saying that “the bar needs to be higher” means adults should raise their _____ about children’s technology use. (6)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Many parents want _____ things they can do at home.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Parents may benefit from making _____ rather than dramatic changes. (8)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "One suggested strategy is reducing the device’s _____ in the room. (9)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Leaving the screen visible may fail to set the child up for _____. (10)",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is meant by “screen time” in the discussion?",
+      "options": [
+        "Time spent watching television only",
+        "Time spent using digital devices",
+        "Time spent studying online lessons",
+        "Time spent checking work messages"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why is children’s device use presented as a public concern?",
+      "options": [
+        "Children are unable to use laptops safely",
+        "Parents want schools to ban all technology",
+        "Australia has stopped children using all devices",
+        "Children may be spending too much time on devices"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does Emily Goodacre frame the solution to children’s technology use?",
+      "options": [
+        "Use technology more deliberately with children",
+        "Remove technology from children’s lives completely",
+        "Let children decide their own limits",
+        "Focus mainly on parents’ phone habits"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the explanation of “intentional” add to Emily’s view?",
+      "options": [
+        "Technology should be used only for education",
+        "Children should avoid devices when possible",
+        "Adults should act with a clear purpose",
+        "Product designers should ignore children’s age"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What attitude is implied by saying “the bar needs to be higher”?",
+      "options": [
+        "Current expectations may be too low",
+        "Children should meet fewer requirements",
+        "Technology companies have solved the problem",
+        "Parents should stop setting expectations"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What positive role might technology have, according to the summary of Emily’s view?",
+      "options": [
+        "It can replace adult guidance",
+        "It can remove the need for limits",
+        "It can make children develop faster than normal",
+        "It can support children’s learning and development"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does Becky Kennedy say many parents are looking for?",
+      "options": [
+        "Scientific proof that screens are always harmful",
+        "Strict rules that apply to every family",
+        "Realistic actions they can take at home",
+        "A way to remove every device immediately"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What kind of change is introduced before Becky’s example?",
+      "options": [
+        "A small adjustment in the home environment",
+        "A complete ban on screens at home",
+        "A formal punishment for device use",
+        "A new educational app for children"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why might moving a visible screen help a child?",
+      "options": [
+        "It teaches the child to use technology faster",
+        "It reduces the temptation created by seeing it",
+        "It proves the child dislikes screens",
+        "It makes the child responsible for adult choices"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What does the phrase “set them up for success” mean in this context?",
+      "options": [
+        "Reward children after they use a screen",
+        "Let children learn by failing repeatedly",
+        "Make screen use more entertaining",
+        "Create conditions that help children succeed"
+      ]
+    }
+  ],
+  "matching": []
+}
