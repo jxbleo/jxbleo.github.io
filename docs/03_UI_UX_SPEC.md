@@ -449,17 +449,22 @@ Shared rules:
 - BBC Explain and Argue entry points use compact icon buttons at the far right
   of the final text line inside the relevant question box, in both the green
   and blue render themes. Explain uses a blue-green `?`; Argue uses an orange
-  `!`. When both are present, `?` sits to the left of `!`. These buttons must
-  not reserve a full vertical action column or squeeze earlier lines of text.
+  raised-hand SVG. When both are present, `?` sits to the left of the raised
+  hand. These buttons must not reserve a full vertical action column or squeeze
+  earlier lines of text.
+- The BBC Argue `Tell me why.` dialog shows a compact `Your answer` panel
+  above the reason textarea. It displays the student's submitted/filled answer
+  for that question, or `No answer` when blank. It must not show the correct
+  answer in this panel.
 - BBC answer explanations opened through `?` should not put a check or cross
   before `Correct answer:`. The answer value itself should be followed by a
   compact green circular check icon matching the teacher View matrix passed
   state.
 - When a student opens a BBC lesson with a passed or mastered historical
   attempt, the page should automatically load that historical review and show
-  the per-question Explain `?` buttons and wrong-question Argue `!` buttons.
-  Loading this historical review must not call `revealAnswers` or lock future
-  mastery by itself.
+  the per-question Explain `?` buttons and wrong-question Argue raised-hand
+  buttons. Loading this historical review must not call `revealAnswers` or lock
+  future mastery by itself.
   Historical attempts below the passing threshold must still hide both actions.
 - BBC History review should not show an extra per-question dispute status note
   box under each question in any render theme. Keep the visual correct/wrong
