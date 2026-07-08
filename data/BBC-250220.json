@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250220",
+  "title": "Young Women On Social Media",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250220-young-women-on-social-media.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Australia is debating a law to restrict social media access for _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One drawback mentioned is that social media can be highly _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Young women are often strongly affected by issues such as _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Social media helped educate _____ about policies and candidates.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Its growth has started more public _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "To have a soft spot means to feel _____ towards someone or something.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Some young women feel online _____ to look perfect.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Maanvi says some men react with _____ because many people watch her online.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Public comments about her posts are affecting her _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Kemi feels some people fail to _____ her when others criticise her.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What current issue frames the programme’s discussion of social media?",
+      "options": [
+        "A university campaign about voting rights.",
+        "A proposed Australian limit on younger teenagers’ social media use.",
+        "A new platform designed only for young women.",
+        "A global ban on political debate online."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "How does Neil present social media in his own life?",
+      "options": [
+        "As useful for study but harmful for physical health.",
+        "As mainly political and rarely personal.",
+        "As necessary for work but impossible to control.",
+        "As helpful for distant friendships but also addictive."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Which group is identified as often being especially affected by cyber-bullying?",
+      "options": [
+        "Young women.",
+        "Adult male users.",
+        "Professional journalists.",
+        "Older voters."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What benefit does Haleigh associate with social media during the election period?",
+      "options": [
+        "It reduces the need for voters to discuss candidates.",
+        "It guarantees that young people choose the same party.",
+        "It helps inform young voters and encourages debate.",
+        "It prevents political leaders from using platforms."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does the phrase “has a soft spot for TikTok” mean in the explanation?",
+      "options": [
+        "He likes TikTok or feels fond of it.",
+        "He considers TikTok politically neutral.",
+        "He thinks TikTok should replace other platforms.",
+        "He uses TikTok only for private conversations."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What shift does the programme make after Haleigh’s example?",
+      "options": [
+        "It turns from social media laws to website design.",
+        "It moves from online voting to offline education.",
+        "It changes from young women’s views to men’s experiences.",
+        "It moves from benefits to pressures and negative effects."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What concern does Maanvi describe about how some men judge her social media presence?",
+      "options": [
+        "They think she spends too little time online.",
+        "They may see her visibility as making her unsuitable as a partner.",
+        "They want her to post more about marriage.",
+        "They believe she should campaign in elections."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does Kemi imply when she says some people want her to “shrink” herself?",
+      "options": [
+        "They want her to leave social media completely.",
+        "They want her to travel less often.",
+        "They want her to limit herself so others feel bigger or more comfortable.",
+        "They want her to become more popular online."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What emotional reaction from men does the explanation highlight in relation to Maanvi’s Instagram popularity?",
+      "options": [
+        "They may feel nervous or threatened by her visibility.",
+        "They feel proud that she has a large audience.",
+        "They are indifferent to public comments about her.",
+        "They become more confident because of her posts."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What support does Kemi feel is missing when she faces online criticism?",
+      "options": [
+        "More advice on how to grow her audience.",
+        "More rules about travel blogging.",
+        "More comments expressing shock or surprise.",
+        "People defending her against bullying or criticism."
+      ]
+    }
+  ],
+  "matching": []
+}

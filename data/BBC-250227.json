@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250227",
+  "title": "A Vaccine For Cancer",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250227-a-vaccine-for-cancer.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Around _____ people will be affected by cancer in their lifetime.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Cancer involves cells growing out of control and causing _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In 2022, malignant cancers caused about _____ deaths worldwide.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Vaccines protect the body by making it _____ to a disease.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The development of mRNA is described as a sudden important _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Cancer can avoid attack by hiding from the body’s _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Cancer cells may put _____ on their surface to mislead the immune system.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Chemotherapy can attack the cancer but also damage _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "New vaccines train the immune system in cancer-cell _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "The aim of vaccines is the _____ of the immune system.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How does the opening description distinguish benign from malignant tumours?",
+      "options": [
+        "Benign tumours grow faster than malignant tumours.",
+        "Benign tumours are not cancerous, while malignant tumours are cancerous.",
+        "Benign tumours are always fatal, while malignant tumours are harmless.",
+        "Benign tumours affect only children, while malignant tumours affect adults."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What basic function of vaccines is explained near the start?",
+      "options": [
+        "They remove tumours through surgery.",
+        "They replace chemotherapy in every patient.",
+        "They make cancer cells grow more slowly.",
+        "They protect the body by creating immunity."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why does the immune system not automatically fight cancer effectively?",
+      "options": [
+        "Cancer can hide from the body’s natural defences.",
+        "The immune system only works after chemotherapy.",
+        "Cancer cells are always outside the body’s tissues.",
+        "Vaccines make the immune system less active."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What is the purpose of the “Go away! There’s nothing here to look at!” image?",
+      "options": [
+        "To show that cancer cells communicate with doctors.",
+        "To suggest cancer can be removed by moving patients away.",
+        "To illustrate how cancer cells mislead the immune system.",
+        "To argue that immune therapy has failed over the past decade."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is the phrase “Nothing to see here!” used in the explanation?",
+      "options": [
+        "It explains how cancer hides by pretending there is no threat.",
+        "It warns that cancer research is impossible to observe.",
+        "It describes how police officers treat cancer patients.",
+        "It shows that healthy cells are more dangerous than cancer cells."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "In this context, what does it mean that cancer “hijacks” healthy cells?",
+      "options": [
+        "It repairs healthy cells after chemotherapy.",
+        "It asks healthy cells to create vaccines.",
+        "It destroys all healthy cells immediately.",
+        "It takes control of something for its own advantage."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How are existing treatments like chemotherapy contrasted with new vaccines?",
+      "options": [
+        "Chemotherapy is natural, while vaccines damage healthy tissue.",
+        "Chemotherapy can harm healthy tissue, while vaccines aim to target cancer cells naturally.",
+        "Chemotherapy teaches the immune system, while vaccines directly attack all tissue.",
+        "Chemotherapy and vaccines work in exactly the same way."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What problem does Professor Sanchez identify in the immune system of cancer patients?",
+      "options": [
+        "It has become too aggressive against every healthy cell.",
+        "It refuses to respond to any form of treatment.",
+        "It has lost the ability to recognise cancer-cell abnormalities.",
+        "It attacks vaccines before they can enter the body."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does the vaccine try to do when the immune system is “blind” to cancerous growths?",
+      "options": [
+        "Teach it to notice the danger and behave differently.",
+        "Make it ignore cancerous growths more completely.",
+        "Replace it with chemotherapy.",
+        "Stop it from recognising any abnormal cells."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader conclusion is drawn about cancer treatments and vaccines?",
+      "options": [
+        "Only vaccines should be used because other treatments no longer work.",
+        "Natural defences are useless once cancer has appeared.",
+        "Chemotherapy and vaccines must never be used together.",
+        "Different approaches may be used together or separately."
+      ]
+    }
+  ],
+  "matching": []
+}

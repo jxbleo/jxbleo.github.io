@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250313",
+  "title": "Should We Eat Less Rice?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250313-should-we-eat-less-rice.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A food eaten regularly by many people can be called a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Rice farming is under pressure from droughts and floods linked to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Around four billion people depend on rice as their _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Brown, long-grained and basmati rice are examples of rice _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Current research aims to improve rice’s environmental _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "The new farming method is called _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "In AWD, measuring pipes are installed _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "One target of AWD is methane-emission _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Farmers were worried that trying AWD might reduce their _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Besides saving resources, the amount of rice produced also _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What does Dr Pinto emphasise about rice?",
+      "options": [
+        "It is mainly a luxury food in Europe.",
+        "It feeds a very large share of the global population.",
+        "It is grown only in South and Southeast Asia.",
+        "It has recently stopped being popular in Africa."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is a major aim of current rice research?",
+      "options": [
+        "To make rice depend on constant flooding only.",
+        "To remove traditional rice varieties from farms.",
+        "To reduce demand for rice in Asia.",
+        "To develop rice that copes with water extremes."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does “appetite” mean in this part of the discussion?",
+      "options": [
+        "A strong global demand for rice.",
+        "A physical hunger caused by rice farming.",
+        "A preference only for basmati rice.",
+        "A decrease in rice consumption worldwide."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What is presented as a possible way to make rice farming greener?",
+      "options": [
+        "Growing rice only in Europe.",
+        "Replacing rice with potatoes.",
+        "Using a method called Alternate Wet Drying.",
+        "Flooding paddies more often than before."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why are measuring pipes used in AWD?",
+      "options": [
+        "To keep the paddies flooded permanently.",
+        "To let farmers monitor field water levels.",
+        "To measure the amount of rice sold.",
+        "To increase methane emissions deliberately."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What happened in the AWD experiment mentioned?",
+      "options": [
+        "Over a thousand farmers used the method to cut methane emissions.",
+        "Only a few farmers tested AWD without clear targets.",
+        "Farmers used AWD mainly to increase water use.",
+        "The technique was tested without involving farmers."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why were some farmers hesitant about AWD?",
+      "options": [
+        "They did not understand what rice was used for.",
+        "They preferred to grow only European rice varieties.",
+        "They wanted more floods caused by climate change.",
+        "They feared losing income from their crops."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What would help persuade farmers to keep using AWD?",
+      "options": [
+        "A promise that no measurements are needed.",
+        "A guarantee that rice farming will stop.",
+        "Clear evidence of better results after harvest.",
+        "Proof that methane emissions are irrelevant."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What was the overall result of using AWD?",
+      "options": [
+        "It saved water but reduced rice output.",
+        "It improved efficiency, emissions and yield at the same time.",
+        "It helped farmers only by increasing electricity use.",
+        "It had no measurable impact after harvest."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What can be inferred about AWD from the final outcome?",
+      "options": [
+        "It is useful only when farmers accept lower yields.",
+        "It solves climate change completely.",
+        "It works by making rice a less popular food.",
+        "It can offer both environmental and practical farming benefits."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250109",
+  "title": "Eating 50-Year-Old Stew",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250109-eating-50-year-old-stew.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A Bangkok restaurant is known for a soup that has been cooked for _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The listener found a stew which had been _____ for half a century.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "In a perpetual stew, ingredients are cooked _____ rather than in separate batches.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "In China, some professionals refer to a bǎinián laolu, meaning a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Keeping the broth safe requires good _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "One daily practice is to _____ before adding more ingredients as needed.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "With repeated care and tasting, the broth can gradually gain more _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Before the stew is used up, cooks add _____ to fill it again.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Boiling is presented as a way to maintain food _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "In the Middle Ages, keeping a fire burning all day was mainly possible for _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What is the programme’s central food topic?",
+      "options": [
+        "Rare ingredients eaten while travelling",
+        "Restaurants that keep recipes secret",
+        "Dishes that continue cooking over long periods",
+        "Modern methods for preserving packaged food"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What surprised the listener in Bangkok?",
+      "options": [
+        "He found a stew that had been cooking for decades",
+        "He was asked to prepare the stew himself",
+        "He discovered that the soup was served cold",
+        "He learned the restaurant changed the soup daily"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "How does the transcript define a perpetual stew?",
+      "options": [
+        "A soup made only with old ingredients",
+        "A dish that is reheated after being emptied",
+        "A stew cooked once and stored for years",
+        "A pot where new ingredients are added as it continues cooking"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "How is the idea of a 50-year-old soup presented?",
+      "options": [
+        "Universally appealing",
+        "Not attractive to everyone, but more common than expected",
+        "Dangerous unless eaten immediately",
+        "A recent trend found only in Bangkok"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What condition does Fuchsia give for keeping a very old broth?",
+      "options": [
+        "It must be skimmed, boiled, replenished and tasted",
+        "It must be sealed and never opened",
+        "It must use only water and spices",
+        "It must be replaced every few days"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does Fuchsia’s comment suggest about the 100-year claim?",
+      "options": [
+        "She has personally verified every case",
+        "She believes the claim is impossible",
+        "She treats it as possible but not fully proven",
+        "She says it only happens in restaurants"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why do cooks replenish a forever stew?",
+      "options": [
+        "To make it colder before serving",
+        "To refill it before it is completely eaten",
+        "To remove the need for boiling",
+        "To change it into a new dish"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is Beth’s interpretation of Fuchsia’s view?",
+      "options": [
+        "The story must be completely false",
+        "The broth can last only if frozen",
+        "The method is too unsafe to consider",
+        "The idea is theoretically possible if hygiene is maintained"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why might medieval people have kept a stew pot bubbling?",
+      "options": [
+        "Restarting a fire took effort and time",
+        "They wanted to avoid adding fresh food",
+        "They believed cold meals were unhealthy",
+        "They had no interest in fresh cooking"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What limitation does Professor Carlin’s explanation include?",
+      "options": [
+        "Only travellers used this cooking method",
+        "Wood was free for most households",
+        "Poor families cooked in the same way every day",
+        "Only wealthier families could afford enough wood"
+      ]
+    }
+  ],
+  "matching": []
+}

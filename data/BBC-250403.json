@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250403",
+  "title": "Are We Getting More Allergic To Things?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250403-are-we-getting-more-allergic-to-things.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Mia has more than 50 allergies, including all nuts and their _____.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "She cannot eat most fish, except cooked tuna and cooked _____.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "These allergies affect her life _____.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Before going to a restaurant, she needs to speak to the manager and the _____.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The restaurant must follow rules to avoid allergen _____ with her food.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Social situations can be difficult because she does not want to feel like a _____.",
+      "section": "Living with many allergies"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Australia is described as the allergy _____ of the world.",
+      "section": "Allergy rates and possible responses"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Research shows that almost one in ten Australian _____ have an allergy.",
+      "section": "Allergy rates and possible responses"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Allergy rates show a clear _____ as children grow older.",
+      "section": "Allergy rates and possible responses"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "One possible treatment is to build up a baby’s _____.",
+      "section": "Allergy rates and possible responses"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What makes Mia’s situation unusual compared with many people who have allergies?",
+      "options": [
+        "She has allergies only during certain seasons.",
+        "She has a very large number of allergies.",
+        "She is mainly allergic to dairy products.",
+        "She became allergic only as an adult."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does Mia contact restaurants before visiting them?",
+      "options": [
+        "To ask whether they offer cheaper meals.",
+        "To check whether they can meet her dietary safety needs.",
+        "To request a private room for her friends.",
+        "To explain why she does not eat dairy."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why are restaurant protocols important for Mia?",
+      "options": [
+        "They help staff prepare meals faster.",
+        "They make it easier for Mia to choose from the menu.",
+        "They reduce the chance of allergens reaching her food.",
+        "They allow Mia to avoid speaking to the chef."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What is Mia worried about when socialising?",
+      "options": [
+        "Her friends may not understand medical advice.",
+        "Her friends may feel that her needs cause trouble.",
+        "Restaurants may not allow her to bring friends.",
+        "She may have to explain allergies to strangers."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is Australia called the allergy capital of the world?",
+      "options": [
+        "It has the most allergy doctors.",
+        "It is famous for allergy research.",
+        "It has especially high allergy rates.",
+        "It has the strictest food rules."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does Frances Mao say about allergies among Australians as they get older?",
+      "options": [
+        "The percentage becomes lower with age.",
+        "Food allergies become more serious.",
+        "Respiratory allergies disappear completely.",
+        "Adults are more likely to develop allergies than infants."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What does “or so” show when talking about age six?",
+      "options": [
+        "The speaker is giving an approximate number.",
+        "The speaker is correcting a previous mistake.",
+        "The speaker is comparing two age groups.",
+        "The speaker is giving a scientific definition."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is one method scientists are studying to reduce allergies?",
+      "options": [
+        "Giving babies vitamin D.",
+        "Avoiding restaurants completely.",
+        "Testing adults every six years.",
+        "Removing dairy from children’s diets."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "How does immunotherapy work according to the programme?",
+      "options": [
+        "Children are kept away from all allergens.",
+        "Children receive small amounts of the allergen gradually.",
+        "Babies take medicine only after an allergic reaction.",
+        "Doctors replace food allergies with respiratory allergies."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the overall picture given about allergies in this episode?",
+      "options": [
+        "Allergies are becoming more common, but researchers are exploring ways to manage them.",
+        "Allergies mainly affect adults and are usually easy to avoid.",
+        "Most allergies are caused by poor restaurant safety rules.",
+        "Australia has solved the problem of childhood allergies."
+      ]
+    }
+  ],
+  "matching": []
+}

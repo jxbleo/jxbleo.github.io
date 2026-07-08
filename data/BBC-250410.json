@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250410",
+  "title": "Learning Multiple Languages",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250410-learning-multiple-languages.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "A person who knows many languages is called a _____.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Research suggests that knowing more than one language can change the _____.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Even before speaking, babies need to pay _____ to the languages around them.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Children who use several languages must focus on one language and _____ another.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "In bilingual adults with dementia, symptoms may appear after a _____.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Managing several languages can improve brain _____.",
+      "section": "How multilingual people use their brains"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Hannah says she did not learn languages out of _____.",
+      "section": "Language learning through life experience"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Victoria speaks five languages and understands _____.",
+      "section": "Language learning through life experience"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Her family moved from Rwanda to Kenya and then to _____.",
+      "section": "Language learning through life experience"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Victoria recommends language _____, such as listening to people in markets or streets.",
+      "section": "Language learning through life experience"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What has research suggested about knowing more than one language?",
+      "options": [
+        "It may affect the brain and bring health benefits.",
+        "It makes people speak faster in every language.",
+        "It prevents children from learning their first language.",
+        "It removes the need for formal education."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What do babies in multilingual environments need to do?",
+      "options": [
+        "Choose one language and stop hearing the others.",
+        "Listen carefully to the languages around them.",
+        "Speak all languages before they understand them.",
+        "Learn grammar rules before they can communicate."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What skill do multilingual children practise when speaking?",
+      "options": [
+        "Translating every word into their mother tongue.",
+        "Focusing on one language while setting another aside.",
+        "Using the same language with every person.",
+        "Avoiding difficult conversations."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What difference is mentioned between bilinguals and monolinguals with dementia?",
+      "options": [
+        "Bilinguals may show symptoms later.",
+        "Monolinguals never develop symptoms.",
+        "Bilinguals recover more quickly.",
+        "Monolinguals forget all languages first."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why is juggling several languages compared to a brain workout?",
+      "options": [
+        "It may make the brain work more efficiently.",
+        "It is physically tiring like sports training.",
+        "It requires people to avoid using their first language.",
+        "It works only for people who start as babies."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How did Neil’s motivation for language learning change later in life?",
+      "options": [
+        "He became more motivated when he worked abroad.",
+        "He stopped learning because languages were too difficult.",
+        "He found school language lessons more useful than work.",
+        "He learned languages mainly to pass university exams."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "How was Hannah’s experience different from Neil’s?",
+      "options": [
+        "She found languages easier at school and university.",
+        "She learned languages only after moving abroad.",
+        "She avoided learning languages until adulthood.",
+        "She learned languages because her job required it."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why did Victoria learn several languages?",
+      "options": [
+        "Her family moved between different countries.",
+        "She wanted to become a language teacher.",
+        "Her school required eight official languages.",
+        "She studied them all at university."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why did Victoria’s parents continue learning Norwegian even though it was hard?",
+      "options": [
+        "They needed it to work and live in Norway.",
+        "Their children refused to speak their mother tongue.",
+        "They wanted to become professional translators.",
+        "They already knew many European languages."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What advice does Victoria give for learning a language?",
+      "options": [
+        "Surround yourself with real examples of the language.",
+        "Memorise grammar before listening to people.",
+        "Avoid public places until you speak perfectly.",
+        "Learn only through online lessons."
+      ]
+    }
+  ],
+  "matching": []
+}

@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250306",
+  "title": "The Country That Measures Happiness",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250306-the-country-that-measures-happiness.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Gross National Happiness links development with the _____ of nature and culture.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Bhutan tries to follow a model of sustainable and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "For a long time, Bhutan had limited contact with the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The King wanted people to gain the advantages of _____ without harming traditions.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Modernisation was expected to protect culture, the environment and Bhutan’s strong _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Citizens’ happiness became the country’s central _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Some workers left Bhutan to look for _____ and opportunities abroad.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "The Mindfulness City is planned to run on _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The city aims to bring back _____ who have gained experience overseas.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Workers may apply abilities developed overseas through _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What makes Bhutan’s approach to national progress different from a purely economic model?",
+      "options": [
+        "It rejects modern development completely.",
+        "It places environmental and cultural goals above unrestricted growth.",
+        "It measures success only through religious practice.",
+        "It depends mainly on international tourism."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What tension was the King trying to manage?",
+      "options": [
+        "Attracting tourists while removing television.",
+        "Increasing exports while reducing local jobs.",
+        "Replacing Buddhist traditions with new policies.",
+        "Opening up to technology while protecting cultural life."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why is Bhutan presented as having a particularly well-preserved culture?",
+      "options": [
+        "It avoided colonisation and kept its traditions largely undamaged.",
+        "It banned outside experts from influencing government policy.",
+        "It developed faster than most other Asian countries.",
+        "It used tourism to rebuild lost cultural practices."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does the phrase “took centre stage” suggest in this context?",
+      "options": [
+        "It became a public performance for citizens.",
+        "It was discussed only in cultural events.",
+        "It became the main focus of government thinking.",
+        "It was treated as less urgent than growth."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What problem did Bhutan face despite global admiration for its happiness policy?",
+      "options": [
+        "Foreign workers were replacing local communities.",
+        "Skilled citizens were leaving for better opportunities abroad.",
+        "The government stopped investing in education.",
+        "Tourists were discouraged by environmental rules."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How is The Mindfulness City characterised?",
+      "options": [
+        "A conventional industrial zone for foreign investors.",
+        "A heritage district designed mainly for tourists.",
+        "A temporary employment scheme outside Bhutan.",
+        "A new city guided by spiritual and environmental values."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why is the project linked to Bhutan’s brain drain?",
+      "options": [
+        "It is intended to draw back people who have left the country.",
+        "It will prevent all young people from studying overseas.",
+        "It replaces local workers with foreign experts.",
+        "It mainly records why citizens choose to migrate."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What value might returning migrants bring to The Mindfulness City?",
+      "options": [
+        "They can help Bhutan depend less on environmental policies.",
+        "They can introduce colonisation-era traditions.",
+        "They can use skills acquired from overseas work.",
+        "They can make the city separate from local society."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What does “upskilling” refer to in this discussion?",
+      "options": [
+        "Moving trained workers permanently overseas.",
+        "Creating higher salaries without extra training.",
+        "Selecting only foreign experts for a project.",
+        "Improving workers’ abilities through training."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader conclusion is drawn about Bhutan’s model?",
+      "options": [
+        "It attempts to combine economic development with citizens’ wellbeing.",
+        "It proves economic growth is unnecessary for happiness.",
+        "It shows migration can be solved without policy action.",
+        "It argues that technology is harmful in every country."
+      ]
+    }
+  ],
+  "matching": []
+}

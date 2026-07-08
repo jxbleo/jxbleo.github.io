@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250417",
+  "title": "Can AI Solve Crime?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250417-can-ai-solve-crime.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Real police investigations are different from what people often see on _____.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Solving crimes involves collecting and reviewing lots of _____.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "This work takes a lot of _____.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Alastair is interested in AI because his professional background is in _____.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "When officers review large amounts of information, it can be hard to find useful _____.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "AI may improve police _____ by speeding up this work.",
+      "section": "Police work and AI"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "There is renewed _____ in pattern-recognition evidence.",
+      "section": "Pattern evidence and concerns"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Examples include finger marks and _____.",
+      "section": "Pattern evidence and concerns"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "This type of evidence became less popular partly because of interest in _____.",
+      "section": "Pattern evidence and concerns"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "A possible concern is that AI would require collecting lots of _____.",
+      "section": "Pattern evidence and concerns"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "How are real police investigations described in the programme?",
+      "options": [
+        "They are usually the same as television murder mysteries.",
+        "They depend mainly on one detective’s personality.",
+        "They involve practical evidence-gathering and review.",
+        "They are mostly solved by guessing the criminal’s motive."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What problem could AI help with in police work?",
+      "options": [
+        "Making police investigations more entertaining.",
+        "Reducing the time needed to review evidence.",
+        "Replacing all traditional forms of evidence.",
+        "Deciding whether a crime has happened."
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "Why is Alastair interested in artificial intelligence?",
+      "options": [
+        "He works in policing and has investigation experience.",
+        "He designs fictional detective programmes.",
+        "He is building a robot detective.",
+        "He wants to replace police training completely."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does Alastair mean by asking “What can it do for me?”",
+      "options": [
+        "He wants to know how AI may be practically useful.",
+        "He wants AI to explain its personal opinions.",
+        "He is asking whether AI can watch detective dramas.",
+        "He is unsure what artificial intelligence means."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What is difficult when police officers have a lot of information to review?",
+      "options": [
+        "Knowing what matters and finding relevant patterns.",
+        "Choosing which television detective to copy.",
+        "Avoiding all forms of forensic science.",
+        "Taking photographs with mobile phones."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What development does Ruth Morgan describe?",
+      "options": [
+        "A new interest in evidence based on recognising patterns.",
+        "A complete end to the use of fingerprints.",
+        "A move away from all forensic science.",
+        "A system where witnesses replace physical evidence."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why did pattern-recognition evidence become less popular for a time?",
+      "options": [
+        "DNA evidence attracted more excitement.",
+        "Police officers stopped collecting physical evidence.",
+        "Databases became illegal in all investigations.",
+        "Marks from shoes and fingers disappeared."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "How could AI make marks from a crime scene useful?",
+      "options": [
+        "By comparing a photo of a mark with a database quickly.",
+        "By asking witnesses to describe the mark from memory.",
+        "By changing the mark to match a suspect.",
+        "By removing the need to collect evidence."
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the broader benefit of AI when dealing with evidence patterns?",
+      "options": [
+        "It can make pattern-finding quicker and more dependable.",
+        "It can prove that every suspect is guilty.",
+        "It can remove the need for human police officers immediately.",
+        "It can stop crimes before they happen."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What concern is raised about using AI to solve crimes?",
+      "options": [
+        "It may require access to large amounts of private information.",
+        "It cannot recognise any kind of physical evidence.",
+        "It would make databases too slow to use.",
+        "It would make DNA evidence more popular."
+      ]
+    }
+  ],
+  "matching": []
+}

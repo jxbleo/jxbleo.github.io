@@ -1,0 +1,181 @@
+{
+  "id": "BBC-250130",
+  "title": "Becoming A Musician",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/250130-becoming-a-musician.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "One speaker thinks being a musician could be _____ if a person became very successful.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The programme hears from people in the UK who want to become _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Bailey grew up in a _____ in St Ives.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "From around age 11, she attended _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "After school on Fridays, she went to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Music from the 1970s had a strong _____ on Bailey.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Older musicians gave Bailey protection and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Josh learned his first proper guitar song when he was _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "A busker performs in public places to _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Busking helped Josh get opportunities, including all his _____ and connections.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why does Pippa hesitate about becoming a musician?",
+      "options": [
+        "She dislikes listening to music",
+        "She thinks musicians rarely have fans",
+        "She believes success could bring stress",
+        "She has never met a musician"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What question is the programme trying to explore?",
+      "options": [
+        "What life is like for people trying to become musicians",
+        "Which instrument is easiest for beginners",
+        "Why UK charts are no longer important",
+        "How to record music in a studio"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What early musical experience did Bailey have?",
+      "options": [
+        "She studied only classical music at school",
+        "She avoided performing until adulthood",
+        "She grew up without local music events",
+        "She attended open mic events from about age eleven"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What do the older musicians and 1970s songs help explain about Bailey?",
+      "options": [
+        "Why she stopped writing music",
+        "How her musical taste and development were shaped",
+        "Why she moved away from St Ives",
+        "How she became the oldest person in the group"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What are songwriters’ circles?",
+      "options": [
+        "Meetings for people interested in writing music",
+        "Paid concerts for famous artists only",
+        "Competitions for chart positions",
+        "Lessons about music marketing"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does “took me under their wing” imply in Bailey’s case?",
+      "options": [
+        "They ignored her because she was young",
+        "They forced her to copy their songs",
+        "They prevented her from performing publicly",
+        "They offered her support and guidance"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What did Josh do soon after learning his first proper guitar song?",
+      "options": [
+        "He joined a famous band",
+        "He started busking",
+        "He stopped playing guitar",
+        "He moved out of London"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is a busker?",
+      "options": [
+        "A person who writes music reviews",
+        "A musician who performs only online",
+        "Someone who performs in public places for money",
+        "A manager who organises concerts"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "How has busking helped Josh?",
+      "options": [
+        "It has provided income, gigs and connections",
+        "It has stopped him from performing to people",
+        "It has replaced all his interest in music",
+        "It has made him avoid new opportunities"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What broader point does Josh’s story suggest?",
+      "options": [
+        "Street performance has no value for musicians",
+        "Musicians succeed only through formal training",
+        "Public performance prevents networking",
+        "Informal performance can become a serious career pathway"
+      ]
+    }
+  ],
+  "matching": []
+}
