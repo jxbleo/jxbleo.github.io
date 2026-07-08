@@ -1,0 +1,613 @@
+window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
+window.__VOCABULARY_UNITS__["THINK2-U12"] = {
+  "id": "THINK2-U12",
+  "sectionId": "vocabulary",
+  "title": "THINK2-U12",
+  "href": "vocabulary.html?set=THINK2-U12",
+  "sortOrder": 3012,
+  "displayValue": "U12 · 36 Words",
+  "topic": "THINK 2 Vocabulary",
+  "tags": [
+    "THINK 2",
+    "U12"
+  ],
+  "note": "36 Words · 5 Quiz Groups",
+  "visible": true,
+  "sourceName": "THINK 2",
+  "cefrLevel": "B1+",
+  "wordCount": 36,
+  "words": [
+    {
+      "number": 1,
+      "word": "fair",
+      "emoji": "⚖️🌈",
+      "meaning": "公平的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "treating everyone in a good and equal way",
+      "wordForms": "--"
+    },
+    {
+      "number": 2,
+      "word": "complaint",
+      "emoji": "😣🗣️",
+      "meaning": "抱怨；投诉",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something you say when you are unhappy",
+      "wordForms": "--"
+    },
+    {
+      "number": 3,
+      "word": "familiar",
+      "emoji": "👀🤝",
+      "meaning": "熟悉的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "something you know well because you have seen it before",
+      "wordForms": "--"
+    },
+    {
+      "number": 4,
+      "word": "ancient",
+      "emoji": "🏺⏳",
+      "meaning": "古代的；古老的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very, very old",
+      "wordForms": "--"
+    },
+    {
+      "number": 5,
+      "word": "get rid of",
+      "emoji": "🗑️👋",
+      "meaning": "摆脱；除掉",
+      "partOfSpeech": "phr.",
+      "simpleDefinition": "to remove something you do not want",
+      "wordForms": "--"
+    },
+    {
+      "number": 6,
+      "word": "the rest of",
+      "emoji": "➡️⏰",
+      "meaning": "其余的；剩下的",
+      "partOfSpeech": "phr.",
+      "simpleDefinition": "the part that is left",
+      "wordForms": "--"
+    },
+    {
+      "number": 7,
+      "word": "slave",
+      "emoji": "⛓️😞",
+      "meaning": "奴隶",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who must work for someone else and has no freedom",
+      "wordForms": "--"
+    },
+    {
+      "number": 8,
+      "word": "ceremony",
+      "emoji": "🎉🙏",
+      "meaning": "仪式；典礼",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a special event for an important time",
+      "wordForms": "--"
+    },
+    {
+      "number": 9,
+      "word": "weave",
+      "emoji": "🧵🪡",
+      "meaning": "编织",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make cloth or baskets by crossing things together",
+      "wordForms": "--"
+    },
+    {
+      "number": 10,
+      "word": "strict",
+      "emoji": "🧑‍🏫🚫",
+      "meaning": "严格的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "making people follow rules exactly",
+      "wordForms": "--"
+    },
+    {
+      "number": 11,
+      "word": "military",
+      "emoji": "🪖🎖️",
+      "meaning": "军事的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "related to soldiers and the army",
+      "wordForms": "--"
+    },
+    {
+      "number": 12,
+      "word": "soldier",
+      "emoji": "🪖🛡️",
+      "meaning": "士兵",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a person who works in an army",
+      "wordForms": "--"
+    },
+    {
+      "number": 13,
+      "word": "survive",
+      "emoji": "🌱⛺",
+      "meaning": "生存；活下来",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to stay alive, even when life is hard",
+      "wordForms": "--"
+    },
+    {
+      "number": 14,
+      "word": "steal",
+      "emoji": "🕵️‍♂️🍎",
+      "meaning": "偷；偷窃",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to take something that is not yours",
+      "wordForms": "--"
+    },
+    {
+      "number": 15,
+      "word": "get caught",
+      "emoji": "🚨👀",
+      "meaning": "被抓住",
+      "partOfSpeech": "phr.",
+      "simpleDefinition": "to be found and stopped when doing something wrong",
+      "wordForms": "--"
+    },
+    {
+      "number": 16,
+      "word": "punish",
+      "emoji": "🧱😠",
+      "meaning": "惩罚",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make someone suffer for doing something wrong",
+      "wordForms": "--"
+    },
+    {
+      "number": 17,
+      "word": "expect",
+      "emoji": "🔮🤔",
+      "meaning": "预料；期待",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to think something will happen",
+      "wordForms": "--"
+    },
+    {
+      "number": 18,
+      "word": "nasty",
+      "emoji": "😖☠️",
+      "meaning": "严厉的；糟糕的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very bad or unpleasant",
+      "wordForms": "--"
+    },
+    {
+      "number": 19,
+      "word": "punishment",
+      "emoji": "🚫⚡",
+      "meaning": "惩罚",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "something bad that happens because of a wrong act",
+      "wordForms": "--"
+    },
+    {
+      "number": 20,
+      "word": "plus",
+      "emoji": "➕🌟",
+      "meaning": "好处；优点",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a good part or advantage",
+      "wordForms": "--"
+    },
+    {
+      "number": 21,
+      "word": "schooling",
+      "emoji": "🏫📘",
+      "meaning": "学校教育",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "learning at school",
+      "wordForms": "--"
+    },
+    {
+      "number": 22,
+      "word": "practical",
+      "emoji": "🛠️✅",
+      "meaning": "实用的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "useful for real life",
+      "wordForms": "--"
+    },
+    {
+      "number": 23,
+      "word": "home-making",
+      "emoji": "🏠🧹",
+      "meaning": "家务；操持家务",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "making and taking care of a home",
+      "wordForms": "--"
+    },
+    {
+      "number": 24,
+      "word": "religion",
+      "emoji": "⛪🕊️",
+      "meaning": "宗教",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "beliefs about God or gods",
+      "wordForms": "--"
+    },
+    {
+      "number": 25,
+      "word": "behaviour",
+      "emoji": "🙂🙁",
+      "meaning": "行为；举止",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the way someone acts",
+      "wordForms": "--"
+    },
+    {
+      "number": 26,
+      "word": "exactly",
+      "emoji": "🎯🕒",
+      "meaning": "精确地；正好",
+      "partOfSpeech": "adv.",
+      "simpleDefinition": "in the same amount, no more and no less",
+      "wordForms": "--"
+    },
+    {
+      "number": 27,
+      "word": "introduction",
+      "emoji": "📘👋",
+      "meaning": "介绍；引言",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "the first part that tells you what something is about",
+      "wordForms": "--"
+    },
+    {
+      "number": 28,
+      "word": "publish",
+      "emoji": "📰📢",
+      "meaning": "发表；出版",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make a story or news ready for people to read",
+      "wordForms": "--"
+    },
+    {
+      "number": 29,
+      "word": "biscuit",
+      "emoji": "🍪😋",
+      "meaning": "饼干",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a small baked snack, often sweet",
+      "wordForms": "--"
+    },
+    {
+      "number": 30,
+      "word": "toss a coin",
+      "emoji": "🪙🤲",
+      "meaning": "掷硬币",
+      "partOfSpeech": "phr.",
+      "simpleDefinition": "to throw a coin up to help choose between two things",
+      "wordForms": "--"
+    },
+    {
+      "number": 31,
+      "word": "cabbage",
+      "emoji": "🥬🥗",
+      "meaning": "卷心菜；甘蓝",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a green vegetable with leaves packed together",
+      "wordForms": "--"
+    },
+    {
+      "number": 32,
+      "word": "plate",
+      "emoji": "🍽️🥄",
+      "meaning": "盘子",
+      "partOfSpeech": "n.",
+      "simpleDefinition": "a flat dish you put food on",
+      "wordForms": "--"
+    },
+    {
+      "number": 33,
+      "word": "sick",
+      "emoji": "🤢🛏️",
+      "meaning": "生病的；恶心的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "not feeling well in your body",
+      "wordForms": "--"
+    },
+    {
+      "number": 34,
+      "word": "shocked",
+      "emoji": "😲⚡",
+      "meaning": "震惊的",
+      "partOfSpeech": "adj.",
+      "simpleDefinition": "very surprised in a strong way",
+      "wordForms": "--"
+    },
+    {
+      "number": 35,
+      "word": "shout",
+      "emoji": "📣🗣️",
+      "meaning": "喊；大叫",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to say something very loudly",
+      "wordForms": "--"
+    },
+    {
+      "number": 36,
+      "word": "invent",
+      "emoji": "💡🛠️",
+      "meaning": "发明",
+      "partOfSpeech": "v.",
+      "simpleDefinition": "to make a new thing or a new game for the first time",
+      "wordForms": "--"
+    }
+  ],
+  "quizGroups": [
+    {
+      "id": "1-10",
+      "label": "第一组",
+      "rangeStart": 1,
+      "rangeEnd": 10,
+      "wordList": [
+        "fair",
+        "complaint",
+        "familiar",
+        "ancient",
+        "get rid of",
+        "the rest of",
+        "slave",
+        "ceremony",
+        "weave",
+        "strict"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The teacher tried to be __________ when she gave everyone the same amount of time to finish the test.",
+          "questionKey": "1-10:1"
+        },
+        {
+          "number": 2,
+          "prompt": "I made a __________ to the hotel manager because our room was dirty and the shower did not work.",
+          "questionKey": "1-10:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This street looks very __________ to me because I used to walk here every day after school.",
+          "questionKey": "1-10:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Many tourists visit the museum to see tools and paintings from an __________ city.",
+          "questionKey": "1-10:4"
+        },
+        {
+          "number": 5,
+          "prompt": "We need to __________ these old boxes because they take up too much space in the classroom.",
+          "questionKey": "1-10:5"
+        },
+        {
+          "number": 6,
+          "prompt": "You can finish the first two questions now and do __________ the worksheet at home.",
+          "questionKey": "1-10:6"
+        },
+        {
+          "number": 7,
+          "prompt": "In the past, a __________ had no freedom and was forced to work for another person.",
+          "questionKey": "1-10:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The school held a short __________ to welcome the new students and their parents.",
+          "questionKey": "1-10:8"
+        },
+        {
+          "number": 9,
+          "prompt": "My grandmother can __________ baskets from thin pieces of wood and sell them at the market.",
+          "questionKey": "1-10:9"
+        },
+        {
+          "number": 10,
+          "prompt": "Our coach is quite __________, so we must arrive on time and follow every training rule.",
+          "questionKey": "1-10:10"
+        }
+      ]
+    },
+    {
+      "id": "11-20",
+      "label": "第二组",
+      "rangeStart": 11,
+      "rangeEnd": 20,
+      "wordList": [
+        "military",
+        "soldier",
+        "survive",
+        "steal",
+        "get caught",
+        "punish",
+        "expect",
+        "nasty",
+        "punishment",
+        "plus"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The __________ camp teaches young people teamwork, discipline, and basic skills used by the army.",
+          "questionKey": "11-20:1"
+        },
+        {
+          "number": 2,
+          "prompt": "A brave __________ helped carry injured people away from the dangerous area after the attack.",
+          "questionKey": "11-20:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Some plants can __________ in very dry places because they store water inside their thick leaves.",
+          "questionKey": "11-20:3"
+        },
+        {
+          "number": 4,
+          "prompt": "The police warned the boys not to __________ bicycles from outside the shop, even as a joke.",
+          "questionKey": "11-20:4"
+        },
+        {
+          "number": 5,
+          "prompt": "If you cheat in the exam and __________, your parents and teachers will be very disappointed.",
+          "questionKey": "11-20:5"
+        },
+        {
+          "number": 6,
+          "prompt": "Teachers should not __________ students too harshly for small mistakes, but rules still need to be clear.",
+          "questionKey": "11-20:6"
+        },
+        {
+          "number": 7,
+          "prompt": "I __________ the restaurant to be expensive, but the meal was actually cheap and very good.",
+          "questionKey": "11-20:7"
+        },
+        {
+          "number": 8,
+          "prompt": "The soup had a __________ smell because it had been left outside the fridge for two days.",
+          "questionKey": "11-20:8"
+        },
+        {
+          "number": 9,
+          "prompt": "The main __________ for breaking the rule was cleaning the classroom after school for a week.",
+          "questionKey": "11-20:9"
+        },
+        {
+          "number": 10,
+          "prompt": "One big __________ of learning online is that students can review the lesson again at home.",
+          "questionKey": "11-20:10"
+        }
+      ]
+    },
+    {
+      "id": "21-25",
+      "label": "第三组",
+      "rangeStart": 21,
+      "rangeEnd": 25,
+      "wordList": [
+        "behaviour",
+        "schooling",
+        "practical",
+        "home-making",
+        "religion"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Good __________ is not only about sitting quietly, but also about listening carefully and respecting other people.",
+          "questionKey": "21-25:1"
+        },
+        {
+          "number": 2,
+          "prompt": "His parents could not pay for his __________, so he had to leave school and start working at twelve.",
+          "questionKey": "21-25:2"
+        },
+        {
+          "number": 3,
+          "prompt": "This course teaches __________ skills, such as cooking simple meals, fixing clothes, and managing money.",
+          "questionKey": "21-25:3"
+        },
+        {
+          "number": 4,
+          "prompt": "In some families, __________ includes cleaning, cooking, shopping, and taking care of younger children.",
+          "questionKey": "21-25:4"
+        },
+        {
+          "number": 5,
+          "prompt": "Different people may follow different forms of __________, but they should still respect each other's beliefs.",
+          "questionKey": "21-25:5"
+        }
+      ]
+    },
+    {
+      "id": "26-31",
+      "label": "第四组",
+      "rangeStart": 26,
+      "rangeEnd": 31,
+      "wordList": [
+        "exactly",
+        "introduction",
+        "publish",
+        "biscuit",
+        "toss a coin",
+        "cabbage"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Please arrive at __________ eight o'clock, not earlier or later, because the exam room will open at that time.",
+          "questionKey": "26-31:1"
+        },
+        {
+          "number": 2,
+          "prompt": "The __________ of the book explains who the main characters are and where the story begins.",
+          "questionKey": "26-31:2"
+        },
+        {
+          "number": 3,
+          "prompt": "The young writer hopes to __________ her first short story in the school magazine next month.",
+          "questionKey": "26-31:3"
+        },
+        {
+          "number": 4,
+          "prompt": "Tom ate a chocolate __________ with a glass of milk after he finished his homework.",
+          "questionKey": "26-31:4"
+        },
+        {
+          "number": 5,
+          "prompt": "We could not decide who should go first, so we decided to __________.",
+          "questionKey": "26-31:5"
+        },
+        {
+          "number": 6,
+          "prompt": "My grandmother cut the __________ into small pieces and cooked it with carrots and chicken.",
+          "questionKey": "26-31:6"
+        }
+      ]
+    },
+    {
+      "id": "32-36",
+      "label": "第五组",
+      "rangeStart": 32,
+      "rangeEnd": 36,
+      "wordList": [
+        "plate",
+        "sick",
+        "shocked",
+        "shout",
+        "invent"
+      ],
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "Please put your dirty __________ in the kitchen after you finish eating.",
+          "questionKey": "32-36:1"
+        },
+        {
+          "number": 2,
+          "prompt": "Lily felt __________ after eating too much cold food, so she went home early.",
+          "questionKey": "32-36:2"
+        },
+        {
+          "number": 3,
+          "prompt": "Everyone was __________ when they heard that the quiet boy had won first prize in the speech competition.",
+          "questionKey": "32-36:3"
+        },
+        {
+          "number": 4,
+          "prompt": "You do not need to __________ at me; I can hear you clearly from here.",
+          "questionKey": "32-36:4"
+        },
+        {
+          "number": 5,
+          "prompt": "The children tried to __________ a new board game with funny rules and colorful cards.",
+          "questionKey": "32-36:5"
+        }
+      ]
+    }
+  ]
+};

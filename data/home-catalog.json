@@ -2308,6 +2308,21 @@
       "visible": true
     },
     {
+      "id": "THINK2-U12",
+      "sectionId": "vocabulary",
+      "title": "THINK2-U12",
+      "href": "vocabulary.html?set=THINK2-U12",
+      "displayValue": "U12 · 36 Words",
+      "sortValue": 3012,
+      "topic": "THINK 2 Vocabulary",
+      "tags": [
+        "THINK 2",
+        "U12"
+      ],
+      "note": "36 Words · 5 Quiz Groups",
+      "visible": true
+    },
+    {
       "id": "THINK2-U2",
       "sectionId": "vocabulary",
       "title": "THINK2-U2",
