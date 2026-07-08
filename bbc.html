@@ -3345,11 +3345,20 @@
     }
 
     function attemptFeedbackEligible(attempt) {
-        return Boolean(attempt && (attempt.mastered === true || attempt.passed === true));
+        if (!attempt) return false;
+        var status = String(attempt.status || '').toLowerCase();
+        return Boolean(
+            attempt.mastered === true ||
+            attempt.passed === true ||
+            status === 'passed' ||
+            status === 'mastered' ||
+            status === 'done'
+        );
     }
 
     function renderEligibleHistoryReview() {
-        if (!historyAttemptId || !historyFeedbackEligible || !window.MrCatCloud) return Promise.resolve(null);
+        var explicitHistoryReview = Boolean(getParams().history || prefillAttemptId);
+        if (!historyAttemptId || (!historyFeedbackEligible && !explicitHistoryReview) || !window.MrCatCloud) return Promise.resolve(null);
         if (historyAutoReviewPromise) return historyAutoReviewPromise;
         historyAutoReviewPromise = showHistoryAnswers().then(function(result) {
             historyAutoReviewPromise = null;
@@ -3382,7 +3391,8 @@
         return setHistoryContextFromAttempt({
             attempt_id: attemptId,
             assignment_id: item.assignment_id || null,
-            percentage: item.best_percentage == null ? item.latest_percentage : item.best_percentage
+            percentage: item.best_percentage == null ? item.latest_percentage : item.best_percentage,
+            status: item.status || item.assignment_status || ''
         });
     }
 

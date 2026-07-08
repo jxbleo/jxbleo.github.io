@@ -23,6 +23,9 @@
 - Changed BBC Argue question controls from an orange `!` to a raised-hand SVG,
   and added the student's submitted answer to the `Tell me why.` dialog before
   the reason textarea.
+- Fixed BBC completed-attempt entry so a passed/mastered history URL can
+  automatically render Explain and Argue controls without requiring students to
+  press `History` first.
 - Changed the Vocabulary mode switcher label from `Use` to `Cloze`, aligned
   Cloze timing to 90 seconds per selected group in the frontend and
   `submitAttempt`, and removed empty `None selected` / `Nothing selected`
