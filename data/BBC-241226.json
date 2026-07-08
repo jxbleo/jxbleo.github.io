@@ -1,0 +1,181 @@
+{
+  "id": "BBC-241226",
+  "title": "Embarrassed To Go To The Doctor?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/241226-embarrassed-to-go-to-the-doctor.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Embarrassment is a self-conscious, uncomfortable feeling when your face _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Medical embarrassment may stop people seeing a _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "The survey answer was _____ of people delayed visiting the doctor and were later diagnosed.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Many people _____ going to the doctor.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "To diagnose means to identify a disease through medical _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "Some people prefer to suffer in _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Doctors can put people at _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Dr Apea says the conversation should be a safe, _____ space.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Confidential information is kept _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Non-verbal cues include facial expressions, hand gestures or tone of _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What issue does the programme focus on?",
+      "options": [
+        "Eating healthy food at home",
+        "Embarrassment that stops people seeking medical help",
+        "How to train new doctors",
+        "Why people blush in car parks"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What can happen when people delay going to a clinic?",
+      "options": [
+        "They may miss earlier diagnosis and intervention",
+        "They automatically recover faster",
+        "They never need treatment again",
+        "They become doctors themselves"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does suffer in silence mean?",
+      "options": [
+        "To speak loudly about pain",
+        "To avoid all medical words",
+        "To struggle with painful feelings without asking for help",
+        "To diagnose someone by phone"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Which practical ideas are mentioned for patients?",
+      "options": [
+        "Learning medical Latin",
+        "Only searching online",
+        "Waiting until symptoms disappear",
+        "Writing the problem down, going with a friend, or choosing a trusted doctor"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What does put someone at ease mean?",
+      "options": [
+        "To make them feel calm and relaxed",
+        "To make them leave quickly",
+        "To ask them no questions",
+        "To share their private information"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does confidential mean?",
+      "options": [
+        "Kept private and not shared",
+        "Physically painful",
+        "Written in a notebook",
+        "Open to everyone"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "What are non-verbal cues?",
+      "options": [
+        "Medical test results",
+        "Types of communication using expressions, gestures or tone of voice",
+        "A list of hospital departments",
+        "Words printed on a form"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What is the correct survey answer?",
+      "options": [
+        "21%",
+        "41%",
+        "61%",
+        "80%"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why do people often feel embarrassed, according to the programme?",
+      "options": [
+        "Because they never need doctors",
+        "Because they dislike all questions",
+        "Because they feel different from others, especially physically",
+        "Because doctors are always judgemental"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the programme's overall message?",
+      "options": [
+        "Embarrassment is normal, and support can help people visit the doctor",
+        "Embarrassment should stop people from seeking care",
+        "Doctors cannot help with sensitive problems",
+        "Medical information is never private"
+      ]
+    }
+  ],
+  "matching": []
+}

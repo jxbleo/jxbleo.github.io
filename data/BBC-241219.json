@@ -1,0 +1,181 @@
+{
+  "id": "BBC-241219",
+  "title": "Call Centres: Are You Talking To AI?",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/241219-call-centres-are-you-talking-to-ai.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Call centre jobs are important in countries like India and the _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "Mylene Cabalona is president of a call centre workers' _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "Angry customers may be aggravated and _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "To pacify a client means to _____ them down.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Mylene's conversations are monitored by _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "She fears AI will replace workers in the near _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "A study said around 300,000 workers, or _____, may be displaced.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "Mylene says AI lacks _____.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "Filler words include 'um', 'ah' and '_____'.",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "Globally, about _____ people work in call centres.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What question does the programme ask about call centres?",
+      "options": [
+        "Whether phone queues should be banned",
+        "Who is really in charge: humans or AI",
+        "How to train workers to speak faster",
+        "Why companies never use AI"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "What is one difficult part of Mylene's job?",
+      "options": [
+        "Pacifying angry customers and resolving their concerns",
+        "Designing new AI systems",
+        "Choosing music for phone queues",
+        "Selling robots to clients"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What adds extra stress to Mylene's conversations?",
+      "options": [
+        "She has to write newspaper articles",
+        "She never speaks to customers",
+        "Her calls are monitored by AI",
+        "She works without a phone"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does in the near future mean?",
+      "options": [
+        "A long time ago",
+        "Very soon or within a short time",
+        "Only after retirement",
+        "At an unknown historical date"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "Why does Mylene use 'as a matter of fact'?",
+      "options": [
+        "To apologise for a mistake",
+        "To change the topic completely",
+        "To introduce a joke",
+        "To add emphasis and evidence"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "What does empathetic mean?",
+      "options": [
+        "Able to share or understand another person's feelings",
+        "Able to speak without filler words",
+        "Able to replace every worker",
+        "Able to count phone calls"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why does Mylene think AI will not fully replace humans?",
+      "options": [
+        "AI is too expensive for companies",
+        "AI cannot use telephones",
+        "AI lacks human empathy and compassion",
+        "AI refuses to monitor workers"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What are filler words used for?",
+      "options": [
+        "To make a caller angry",
+        "To give speakers time to think or show uncertainty",
+        "To prove a worker is wrong",
+        "To replace all grammar"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is the correct quiz answer about global call centre workers?",
+      "options": [
+        "7 million",
+        "17 million",
+        "27 million",
+        "300,000"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "Which worker is the programme's main example?",
+      "options": [
+        "Mylene Cabalona from the Philippines",
+        "A robot from an Indian company",
+        "A customer waiting in queue number 89",
+        "A BBC website designer"
+      ]
+    }
+  ],
+  "matching": []
+}
