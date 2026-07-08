@@ -1,0 +1,181 @@
+{
+  "id": "BBC-260702",
+  "title": "Rude Emails",
+  "renderTheme": "blue-studio",
+  "audioSrc": "bbc-audio/260702-rude-emails.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "Email is common in modern workplaces, and most people try to make their messages sound _____. (1)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "One listener dislikes emails that begin with only a name and no simple _____. (2)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "This unnecessary formality can make the reader feel immediately _____. (3)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "Another example of rude email behaviour was replying to a careful message with a single _____. (4)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "Such rude email behaviour is described as _____. (5)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "A fight response may involve dominance or _____ of other people. (6)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "One hostile email tactic is copying in _____ to escalate the issue. (7)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "By contrast, a flight response involves self-protection through _____ or avoidance. (8)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "To get something “off your plate” means moving a task away from your own _____. (9)",
+      "section": "Notes"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "People are more likely to be uncivil when they are _____.",
+      "section": "Notes"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "What workplace issue is introduced at the start?",
+      "options": [
+        "Some emails can feel impolite despite efforts to be polite",
+        "Most workers no longer use email professionally",
+        "Rude emails are mainly a problem outside work",
+        "Email has become less important in modern offices"
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Why does the opening style of some emails annoy one listener?",
+      "options": [
+        "It contains too many friendly phrases",
+        "It includes a long personal introduction",
+        "It asks for a reply too quickly",
+        "It feels unnecessarily formal and threatening"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What does the single-emoji example show?",
+      "options": [
+        "Emojis are always unacceptable at work",
+        "A minimal reply can feel disrespectful after a careful message",
+        "Carefully written emails are usually unclear",
+        "Anonymous messages are more polite than signed ones"
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "What does “put someone on the defensive” mean here?",
+      "options": [
+        "Make someone eager to continue the exchange",
+        "Force someone to answer every point in detail",
+        "Make someone feel threatened or unsure",
+        "Encourage someone to use a warmer greeting"
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "How are the two early email examples classified?",
+      "options": [
+        "As uncivil forms of communication",
+        "As formal but acceptable workplace habits",
+        "As examples of efficient messaging",
+        "As unavoidable technical problems"
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How does Emma Russell distinguish fight and flight responses in emails?",
+      "options": [
+        "Fight means ignoring emails; flight means copying senior people",
+        "Fight means apologising; flight means writing more politely",
+        "Fight attacks or dominates; flight withdraws or avoids",
+        "Fight happens only to managers; flight happens only to junior staff"
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "In the example of a fight response, what does the boss do?",
+      "options": [
+        "Refuses to answer all points in an email",
+        "Deletes the worker’s message without reading it",
+        "Asks the worker to delay a deadline",
+        "Gives someone else credit for the worker’s work"
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "What does “get work off their plate” refer to?",
+      "options": [
+        "Finishing every task carefully before replying",
+        "Passing tasks or problems to someone else",
+        "Refusing to receive emails from colleagues",
+        "Organising work into a clearer schedule"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "Why are people more likely to behave uncivilly in email?",
+      "options": [
+        "They are working in stressful, frazzled environments",
+        "They prefer short messages to long ones",
+        "They have stopped using workplace greetings altogether",
+        "They believe rude emails save money"
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What practical advice is given for writing an angry email?",
+      "options": [
+        "Copy in senior staff before sending",
+        "Reply with an emoji to reduce tension",
+        "Pause before pressing send",
+        "Avoid answering any of the email’s points"
+      ]
+    }
+  ],
+  "matching": []
+}
