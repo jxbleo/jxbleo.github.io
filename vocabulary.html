@@ -55,6 +55,18 @@
             gap: 14px;
         }
 
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .hero-actions[hidden] {
+            display: none;
+        }
+
         .stat {
             background: rgba(255,255,255,0.14);
             border: 1px solid rgba(255,255,255,0.18);
@@ -311,8 +323,42 @@
 
         .word-practice-entry {
             display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             justify-content: center;
             padding: 18px 0 2px;
+        }
+
+        .worksheet-download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            border: 1px solid rgba(15, 118, 110, 0.20);
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.10);
+        }
+
+        .worksheet-download:hover,
+        .worksheet-download:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(15, 118, 110, 0.16);
+        }
+
+        .worksheet-download.list {
+            border-color: rgba(255,255,255,0.32);
+            background: #fff;
+            color: #0f5f57;
+        }
+
+        .worksheet-download.set {
+            background: #f8fafc;
+            color: #0f5f57;
+        }
+
+        .worksheet-download .download-glyph {
+            font-size: 0.95em;
+            line-height: 1;
         }
 
         .practice-score {
@@ -1503,6 +1549,7 @@
                         <div class="stat-value" id="stat-cefr"></div>
                     </div>
                 </div>
+                <div id="worksheet-list-download" class="hero-actions" hidden></div>
             </section>
 
             <section class="panel">
@@ -2184,6 +2231,38 @@
         function renderHero(data) {
             document.getElementById('stat-source').textContent = data.id || data.sourceName || 'Vocabulary';
             document.getElementById('stat-cefr').textContent = data.cefrLevel || '—';
+            renderWorksheetListDownload(data);
+        }
+
+        function worksheetConfig() {
+            return unitData && unitData.worksheetPdf ? unitData.worksheetPdf : null;
+        }
+
+        function worksheetListHref() {
+            var config = worksheetConfig();
+            return config && config.list ? config.list : '';
+        }
+
+        function worksheetSetHref(group) {
+            var config = worksheetConfig();
+            var setMap = config && config.sets ? config.sets : null;
+            return group && setMap && setMap[group.id] ? setMap[group.id] : '';
+        }
+
+        function worksheetDownloadLink(href, label, kind) {
+            if (!href) return '';
+            var filename = href.split('/').pop() || '';
+            return '<a class="btn worksheet-download ' + escapeHtml(kind || '') + '" href="' + escapeHtml(href) +
+                '" download="' + escapeHtml(filename) + '"><span class="download-glyph" aria-hidden="true">&#x2B07;</span><span>' +
+                escapeHtml(label) + '</span></a>';
+        }
+
+        function renderWorksheetListDownload(data) {
+            var root = document.getElementById('worksheet-list-download');
+            if (!root) return;
+            var href = data && data.worksheetPdf && data.worksheetPdf.list ? data.worksheetPdf.list : '';
+            root.innerHTML = worksheetDownloadLink(href, 'Download This List', 'list');
+            root.hidden = !href;
         }
 
         function getWordRangeText(group) {
@@ -2519,6 +2598,7 @@
             if (activePracticeGroupId !== group.id) {
                 root.innerHTML = '<div class="word-practice-entry">' +
                     '<button class="btn btn-primary" type="button" data-action="open-practice" data-group="' + escapeHtml(group.id) + '">Go to Practice</button>' +
+                    worksheetDownloadLink(worksheetSetHref(group), 'Download This Set', 'set') +
                 '</div>';
                 return;
             }
@@ -2798,6 +2878,7 @@
             return '<div class="group-card">' +
                 '<div class="question-list">' + questions + '</div>' +
                 '<div class="group-actions">' +
+                    worksheetDownloadLink(worksheetSetHref(group), 'Download This Set', 'set') +
                     '<span class="practice-score" data-practice-score="' + escapeHtml(group.id) + '" aria-live="polite"></span>' +
                     '<button class="btn btn-secondary practice-redo-btn" type="button" data-action="redo-practice" data-group="' + escapeHtml(group.id) + '" hidden>Redo</button>' +
                     '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check</button>' +
