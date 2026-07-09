@@ -10,7 +10,7 @@ window.__VOCABULARY_UNITS__["NAWL-C"] = {
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NAWL",
-  "cefrLevel": "C1+",
+  "cefrLevel": "C1",
   "wordCount": 100,
   "worksheetPdf": {
     "list": "assets/pdf/vocabulary/NAWL-C/NAWL-C-all-sets.pdf",
