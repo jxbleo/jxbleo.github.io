@@ -821,66 +821,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1601,
       "rangeEnd": 1610,
       "wordList": [
-        "fuel",
-        "youth",
-        "expectation",
-        "increasingly",
-        "shoulder",
         "employment",
-        "celebrate",
-        "lock",
+        "sexual",
         "breath",
-        "sexual"
+        "lock",
+        "increasingly",
+        "youth",
+        "shoulder",
+        "expectation",
+        "fuel",
+        "celebrate"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The excitement of winning the championship gave the team the __________ they needed to continue their training.",
+          "prompt": "Local leaders believe the energy and creativity of __________ can bring fresh ideas to community projects.",
           "questionKey": "1601-1610:1"
         },
         {
           "number": 2,
-          "prompt": "As she grew older, her __________ was marked by adventures and learning experiences.",
+          "prompt": "Before leaving the office, please __________ the back door, as the cleaning staff will not return tonight.",
           "questionKey": "1601-1610:2"
         },
         {
           "number": 3,
-          "prompt": "The reality of the job didn't meet his __________ of what working in the industry would be like.",
+          "prompt": "The city is testing cleaner __________ for buses in order to reduce smoke and air pollution near schools.",
           "questionKey": "1601-1610:3"
         },
         {
           "number": 4,
-          "prompt": "Climate change is __________ becoming a concern for people around the world.",
+          "prompt": "There was a clear __________ that every student would complete the reading before joining the class discussion.",
           "questionKey": "1601-1610:4"
         },
         {
           "number": 5,
-          "prompt": "He put his hand on her __________ to comfort her during the difficult time.",
+          "prompt": "After several interviews, she finally found stable __________ with a company that offered training and health benefits.",
           "questionKey": "1601-1610:5"
         },
         {
           "number": 6,
-          "prompt": "After graduating from college, many young people struggle to find __________ in their chosen field.",
+          "prompt": "The whole family gathered to __________ my grandmother’s eightieth birthday with dinner, photos, and old songs.",
           "questionKey": "1601-1610:6"
         },
         {
           "number": 7,
-          "prompt": "The company decided to __________ their 50th anniversary with a special event for all employees.",
+          "prompt": "The school invited a nurse to talk about __________ health, personal boundaries, and safe relationships for teenagers.",
           "questionKey": "1601-1610:7"
         },
         {
           "number": 8,
-          "prompt": "Don't forget to __________ the door when you leave the house.",
+          "prompt": "He injured his __________ during basketball practice, which made it painful to carry his schoolbag the next day.",
           "questionKey": "1601-1610:8"
         },
         {
           "number": 9,
-          "prompt": "The runner stopped to catch her __________ after completing the marathon.",
+          "prompt": "She took a deep __________ before answering the difficult question in front of the whole class.",
           "questionKey": "1601-1610:9"
         },
         {
           "number": 10,
-          "prompt": "The teacher provided education about __________ health as part of the biology curriculum.",
+          "prompt": "Public transport is becoming __________ popular as fuel prices rise and people look for cheaper ways to travel.",
           "questionKey": "1601-1610:10"
         }
       ]
@@ -891,66 +891,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1611,
       "rangeEnd": 1620,
       "wordList": [
-        "notion",
-        "cast",
-        "conservative",
-        "import",
-        "journey",
         "sheet",
-        "engine",
+        "conservative",
+        "journey",
+        "notion",
+        "import",
         "ourselves",
+        "engine",
+        "bottle",
         "opposition",
-        "bottle"
+        "cast"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The __________ that success comes without hard work is completely false.",
+          "prompt": "Because local farms cannot meet demand, the country has to __________ large amounts of rice from abroad.",
           "questionKey": "1611-1620:1"
         },
         {
           "number": 2,
-          "prompt": "The director will __________ actors for the new movie next week.",
+          "prompt": "I always carry a water __________ on long walks, especially when the weather is hot and dry.",
           "questionKey": "1611-1620:2"
         },
         {
           "number": 3,
-          "prompt": "She has a __________ approach to investing her money, preferring safe options.",
+          "prompt": "We repaired the broken shelf by __________ because no one else was free to help us that afternoon.",
           "questionKey": "1611-1620:3"
         },
         {
           "number": 4,
-          "prompt": "We need to __________ more food supplies due to the local shortage.",
+          "prompt": "The teacher handed each student a blank __________ of paper and asked them to plan their essay first.",
           "questionKey": "1611-1620:4"
         },
         {
           "number": 5,
-          "prompt": "The __________ of traveling around the world became a reality when they saved enough money.",
+          "prompt": "The car’s __________ began making a strange noise, so we stopped at a garage before continuing the trip.",
           "questionKey": "1611-1620:5"
         },
         {
           "number": 6,
-          "prompt": "Please put a clean __________ on the bed before the guests arrive.",
+          "prompt": "The director announced the final __________ of the school play after three days of auditions.",
           "questionKey": "1611-1620:6"
         },
         {
           "number": 7,
-          "prompt": "The car wouldn't start because there was a problem with the __________.",
+          "prompt": "Many people still have the __________ that success mainly depends on exam results, but experience also matters.",
           "questionKey": "1611-1620:7"
         },
         {
           "number": 8,
-          "prompt": "Let's challenge __________ to try something new this year.",
+          "prompt": "His grandparents are fairly __________ in their views and dislike sudden changes in family traditions.",
           "questionKey": "1611-1620:8"
         },
         {
           "number": 9,
-          "prompt": "The government faced strong __________ to their new tax policy.",
+          "prompt": "The overnight train __________ was uncomfortable, but it saved us the cost of a hotel room.",
           "questionKey": "1611-1620:9"
         },
         {
           "number": 10,
-          "prompt": "He poured the homemade wine into a glass __________ for storage.",
+          "prompt": "The housing plan faced strong __________ from residents who worried about traffic and noise.",
           "questionKey": "1611-1620:10"
         }
       ]
@@ -961,66 +961,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1621,
       "rangeEnd": 1630,
       "wordList": [
-        "debt",
-        "honor",
         "recover",
         "dad",
         "outcome",
         "relief",
+        "honor",
         "arise",
         "explanation",
-        "blame",
-        "musical"
+        "musical",
+        "debt",
+        "blame"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "After paying off her student __________, she felt financially free for the first time.",
+          "prompt": "When the missing child was found safe, the whole village felt a strong sense of __________.",
           "questionKey": "1621-1630:1"
         },
         {
           "number": 2,
-          "prompt": "It was an __________ to be selected as the team captain for the championship.",
+          "prompt": "The family was left with a heavy __________ after borrowing money to pay for the new apartment.",
           "questionKey": "1621-1630:2"
         },
         {
           "number": 3,
-          "prompt": "The doctors weren't sure if he would fully __________ from his injuries after the accident.",
+          "prompt": "The school decided to __________ the retired teacher for his long service and kindness to students.",
           "questionKey": "1621-1630:3"
         },
         {
           "number": 4,
-          "prompt": "My __________ taught me how to ride a bicycle when I was six years old.",
+          "prompt": "No one could predict the final __________ of the competition because both teams played extremely well.",
           "questionKey": "1621-1630:4"
         },
         {
           "number": 5,
-          "prompt": "The positive __________ of the experiment surprised even the researchers.",
+          "prompt": "It is unfair to __________ one student for the failure of a group project without checking everyone’s work.",
           "questionKey": "1621-1630:5"
         },
         {
           "number": 6,
-          "prompt": "She felt a sense of __________ when she found out she had passed the difficult exam.",
+          "prompt": "The scientist gave a clear __________ of why the experiment failed and what should be changed next time.",
           "questionKey": "1621-1630:6"
         },
         {
           "number": 7,
-          "prompt": "New challenges will __________ as the project moves forward.",
+          "prompt": "Small problems may __________ if the instructions are unclear or students start the task too late.",
           "questionKey": "1621-1630:7"
         },
         {
           "number": 8,
-          "prompt": "The director gave a detailed __________ about why the project was delayed.",
+          "prompt": "We watched a lively __________ in London, and several of the songs were still in my head the next morning.",
           "questionKey": "1621-1630:8"
         },
         {
           "number": 9,
-          "prompt": "Instead of finding a solution, they just tried to __________ each other for the mistake.",
+          "prompt": "She needed almost a month to __________ fully after the accident, even though the injury was not serious.",
           "questionKey": "1621-1630:9"
         },
         {
           "number": 10,
-          "prompt": "\"The Lion King\" is a popular __________ that has been performed on Broadway for many years.",
+          "prompt": "My __________ taught me that being reliable is more important than making impressive promises.",
           "questionKey": "1621-1630:10"
         }
       ]
@@ -1031,66 +1031,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1631,
       "rangeEnd": 1640,
       "wordList": [
-        "fruit",
         "suitable",
-        "analyze",
         "native",
-        "declare",
-        "witness",
         "tiny",
+        "declare",
+        "stretch",
+        "analyze",
+        "witness",
         "retire",
-        "careful",
-        "stretch"
+        "fruit",
+        "careful"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Oranges and apples are examples of __________ that contain important vitamins.",
+          "prompt": "You should __________ your arms and legs before training, especially if you have been sitting for a long time.",
           "questionKey": "1631-1640:1"
         },
         {
           "number": 2,
-          "prompt": "This venue would be __________ for hosting a conference of about 200 people.",
+          "prompt": "The mayor will __________ the new sports centre open at a ceremony on Saturday morning.",
           "questionKey": "1631-1640:2"
         },
         {
           "number": 3,
-          "prompt": "Scientists will __________ the data collected from the experiment to draw conclusions.",
+          "prompt": "My aunt hopes to __________ at sixty, but she may continue working part-time because she enjoys teaching.",
           "questionKey": "1631-1640:3"
         },
         {
           "number": 4,
-          "prompt": "English is not her __________ language, but she speaks it fluently.",
+          "prompt": "The apartment was __________, but it was close to the station and cheaper than the larger ones nearby.",
           "questionKey": "1631-1640:4"
         },
         {
           "number": 5,
-          "prompt": "The president will __________ a state of emergency due to the natural disaster.",
+          "prompt": "Be __________ when you open email attachments from strangers, as they may contain harmful files.",
           "questionKey": "1631-1640:5"
         },
         {
           "number": 6,
-          "prompt": "The police need to interview anyone who was a __________ to the accident.",
+          "prompt": "This website is not __________ for young children because some videos contain frightening images.",
           "questionKey": "1631-1640:6"
         },
         {
           "number": 7,
-          "prompt": "The kitten was so __________ that it could fit in the palm of my hand.",
+          "prompt": "He is a __________ speaker of Korean, so students often ask him about pronunciation and natural expressions.",
           "questionKey": "1631-1640:7"
         },
         {
           "number": 8,
-          "prompt": "Many people plan to __________ at the age of 65 after working for many years.",
+          "prompt": "The doctor advised him to eat more fresh __________ instead of buying sweet snacks after school.",
           "questionKey": "1631-1640:8"
         },
         {
           "number": 9,
-          "prompt": "Be __________ when crossing the street in heavy traffic.",
+          "prompt": "Before writing the report, we need to __________ the survey results and look for clear patterns.",
           "questionKey": "1631-1640:9"
         },
         {
           "number": 10,
-          "prompt": "You should __________ your muscles before and after exercising to prevent injury.",
+          "prompt": "A taxi driver became an important __________ because he saw the accident happen from across the road.",
           "questionKey": "1631-1640:10"
         }
       ]
@@ -1101,66 +1101,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1641,
       "rangeEnd": 1650,
       "wordList": [
+        "vision",
         "mental",
-        "participant",
+        "anywhere",
+        "personality",
+        "researcher",
         "mail",
         "selection",
-        "vision",
-        "researcher",
-        "personality",
+        "participant",
         "terrible",
-        "ordinary",
-        "anywhere"
+        "ordinary"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Regular exercise is good for both physical and __________ health.",
+          "prompt": "Please __________ the signed form to the school office before Friday, or your application may be delayed.",
           "questionKey": "1641-1650:1"
         },
         {
           "number": 2,
-          "prompt": "Every __________ in the experiment received a small payment for their time.",
+          "prompt": "The weather was __________ during the trip, with heavy rain, strong winds, and very little sunshine.",
           "questionKey": "1641-1650:2"
         },
         {
           "number": 3,
-          "prompt": "The __________ usually arrives between 10 AM and noon on weekdays.",
+          "prompt": "A university __________ interviewed teenagers about their sleeping habits for a study on school stress.",
           "questionKey": "1641-1650:3"
         },
         {
           "number": 4,
-          "prompt": "The company offers a wide __________ of products for customers to choose from.",
+          "prompt": "He looked like an __________ student, but his ability to explain difficult ideas was surprisingly strong.",
           "questionKey": "1641-1650:4"
         },
         {
           "number": 5,
-          "prompt": "His __________ of creating a sustainable business became reality after years of hard work.",
+          "prompt": "The online shop offers a wide __________ of bags, including cheap school bags and expensive leather ones.",
           "questionKey": "1641-1650:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ collected data from over 1,000 people for the scientific study.",
+          "prompt": "You can work __________ in the library, as long as you do not disturb other people.",
           "questionKey": "1641-1650:6"
         },
         {
           "number": 7,
-          "prompt": "She has a friendly and outgoing __________ that makes her popular at social events.",
+          "prompt": "Long-term stress can damage __________ health, so students need rest as well as hard work.",
           "questionKey": "1641-1650:7"
         },
         {
           "number": 8,
-          "prompt": "I had a __________ headache that lasted for three days.",
+          "prompt": "Every __________ in the study had to answer the same questions before and after the lesson.",
           "questionKey": "1641-1650:8"
         },
         {
           "number": 9,
-          "prompt": "What seems like an __________ day might actually be quite special if you pay attention.",
+          "prompt": "Poor __________ may affect a child’s reading speed, especially if words become unclear after a few minutes.",
           "questionKey": "1641-1650:9"
         },
         {
           "number": 10,
-          "prompt": "With remote work, many people can now work from __________ with an internet connection.",
+          "prompt": "Her calm __________ helped the team stay focused when everyone else was worried about the deadline.",
           "questionKey": "1641-1650:10"
         }
       ]
@@ -1171,66 +1171,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1651,
       "rangeEnd": 1660,
       "wordList": [
-        "peak",
-        "fellow",
-        "chairman",
-        "discount",
         "capture",
-        "chemical",
-        "entry",
         "fat",
+        "fellow",
+        "discount",
+        "peak",
         "specifically",
+        "entry",
+        "chairman",
+        "chemical",
         "tip"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The mountain's __________ is covered with snow throughout the year.",
+          "prompt": "The examiner asked her to explain __________ which part of the graph showed the biggest change.",
           "questionKey": "1651-1660:1"
         },
         {
           "number": 2,
-          "prompt": "My __________ students and I worked together on the group project.",
+          "prompt": "Foods high in __________ can taste good, but eating too much of them may lead to health problems.",
           "questionKey": "1651-1660:2"
         },
         {
           "number": 3,
-          "prompt": "The __________ of the committee called for a vote on the proposal.",
+          "prompt": "Each diary __________ should include the date, a clear event, and at least one personal reflection.",
           "questionKey": "1651-1660:3"
         },
         {
           "number": 4,
-          "prompt": "Students can get a 10% __________ at many stores if they show their ID card.",
+          "prompt": "My __________ students shared their notes with me after I missed two lessons because of illness.",
           "questionKey": "1651-1660:4"
         },
         {
           "number": 5,
-          "prompt": "The photographer tried to __________ the beautiful sunset with his camera.",
+          "prompt": "Workers must wear gloves when handling any dangerous __________ in the science laboratory.",
           "questionKey": "1651-1660:5"
         },
         {
           "number": 6,
-          "prompt": "The scientists mixed several __________ compounds to create the new material.",
+          "prompt": "The photographer managed to __________ the moment when the runner crossed the finish line.",
           "questionKey": "1651-1660:6"
         },
         {
           "number": 7,
-          "prompt": "The diary __________ from July 15th described her first day at the new job.",
+          "prompt": "One useful __________ for improving listening is to predict the topic before the audio begins.",
           "questionKey": "1651-1660:7"
         },
         {
           "number": 8,
-          "prompt": "Too much __________ in your diet can lead to health problems.",
+          "prompt": "The store offered a twenty percent __________ to customers who bought more than two books.",
           "questionKey": "1651-1660:8"
         },
         {
           "number": 9,
-          "prompt": "The instructions __________ state not to use water when cleaning the device.",
+          "prompt": "The climbers reached the __________ just before sunset and took photos above the clouds.",
           "questionKey": "1651-1660:9"
         },
         {
           "number": 10,
-          "prompt": "She gave me a useful __________ about how to solve the math problem.",
+          "prompt": "The __________ of the committee opened the meeting by summarising last month’s decisions.",
           "questionKey": "1651-1660:10"
         }
       ]
@@ -1241,66 +1241,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1661,
       "rangeEnd": 1670,
       "wordList": [
-        "instructions",
         "constant",
-        "proportion",
-        "disappear",
-        "ear",
-        "significantly",
-        "shout",
         "considerable",
+        "significantly",
+        "instruction",
         "yard",
-        "hill"
+        "ear",
+        "hill",
+        "shout",
+        "proportion",
+        "disappear"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Please read the __________ carefully before assembling the furniture.",
+          "prompt": "A high __________ of students said they preferred short daily practice to one long weekly lesson.",
           "questionKey": "1661-1670:1"
         },
         {
           "number": 2,
-          "prompt": "She needs to pay __________ attention to detail in her role as an editor.",
+          "prompt": "My right __________ started to hurt after I listened to music through headphones for three hours.",
           "questionKey": "1661-1670:2"
         },
         {
           "number": 3,
-          "prompt": "A large __________ of students choose to continue their education after high school.",
+          "prompt": "The small stain seemed to __________ after my mother washed the shirt with warm water.",
           "questionKey": "1661-1670:3"
         },
         {
           "number": 4,
-          "prompt": "The magician made the rabbit __________ right before our eyes.",
+          "prompt": "Please do not __________ across the classroom; raise your hand if you need the teacher’s help.",
           "questionKey": "1661-1670:4"
         },
         {
           "number": 5,
-          "prompt": "My dog has an infection in his right __________ and needs medication.",
+          "prompt": "The children built a snowman in the front __________ while their parents cleared the driveway.",
           "questionKey": "1661-1670:5"
         },
         {
           "number": 6,
-          "prompt": "The house prices in this area have increased __________ over the past year.",
+          "prompt": "The baby needed __________ attention because he woke up whenever the room became too quiet.",
           "questionKey": "1661-1670:6"
         },
         {
           "number": 7,
-          "prompt": "I had to __________ to be heard over the noise of the crowd.",
+          "prompt": "The number of online orders increased __________ after the company lowered delivery fees.",
           "questionKey": "1661-1670:7"
         },
         {
           "number": 8,
-          "prompt": "The project will require a __________ amount of time and resources.",
+          "prompt": "We climbed a steep __________ behind the hotel to get a better view of the coastline.",
           "questionKey": "1661-1670:8"
         },
         {
           "number": 9,
-          "prompt": "The children played in the __________ while their parents talked inside.",
+          "prompt": "Preparing for a public exam requires a __________ amount of time, especially for weaker students.",
           "questionKey": "1661-1670:9"
         },
         {
           "number": 10,
-          "prompt": "The view from the top of the __________ was absolutely breathtaking.",
+          "prompt": "Read each __________ carefully before starting the test, because some questions ask for two answers.",
           "questionKey": "1661-1670:10"
         }
       ]
@@ -1311,66 +1311,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1671,
       "rangeEnd": 1680,
       "wordList": [
-        "kiss",
-        "joint",
-        "surely",
+        "folk",
         "intelligence",
-        "presentation",
+        "joint",
         "cat",
-        "guard",
-        "somewhat",
+        "surely",
         "ideal",
-        "folk"
+        "guard",
+        "kiss",
+        "presentation",
+        "somewhat"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The couple shared a goodbye __________ before he left for his business trip.",
+          "prompt": "Artificial __________ can complete some tasks quickly, but it still needs clear instructions from humans.",
           "questionKey": "1671-1680:1"
         },
         {
           "number": 2,
-          "prompt": "The knee is a complex __________ that connects the thigh bone to the lower leg bones.",
+          "prompt": "The small café is an __________ place for quiet study because it has comfortable seats and few customers.",
           "questionKey": "1671-1680:2"
         },
         {
           "number": 3,
-          "prompt": "You will __________ succeed if you continue to work this hard.",
+          "prompt": "The festival included traditional __________ songs, local dances, and stories from older villagers.",
           "questionKey": "1671-1680:3"
         },
         {
           "number": 4,
-          "prompt": "Artificial __________ is changing how many industries operate.",
+          "prompt": "If you keep practising these questions, you will __________ become faster and more accurate.",
           "questionKey": "1671-1680:4"
         },
         {
           "number": 5,
-          "prompt": "The CEO's __________ about the company's future plans impressed the investors.",
+          "prompt": "A security __________ checked our bags before we entered the museum.",
           "questionKey": "1671-1680:5"
         },
         {
           "number": 6,
-          "prompt": "My __________ always sleeps on the windowsill during the afternoon.",
+          "prompt": "The family’s old __________ sleeps beside the window every afternoon and watches people walk past.",
           "questionKey": "1671-1680:6"
         },
         {
           "number": 7,
-          "prompt": "The security __________ asked to see my identification before letting me enter the building.",
+          "prompt": "The instructions were __________ confusing at first, but the example helped us understand the task.",
           "questionKey": "1671-1680:7"
         },
         {
           "number": 8,
-          "prompt": "She was __________ disappointed when she didn't get the job she wanted.",
+          "prompt": "She gave the child a quick __________ on the forehead before leaving for work.",
           "questionKey": "1671-1680:8"
         },
         {
           "number": 9,
-          "prompt": "The weather is __________ for a picnic today - warm and sunny with no wind.",
+          "prompt": "His history __________ was clear and well organised, with useful pictures and a strong conclusion.",
           "questionKey": "1671-1680:9"
         },
         {
           "number": 10,
-          "prompt": "__________ music often reflects the traditions and history of a culture.",
+          "prompt": "The doctor said the pain came from the knee __________, not from the muscle above it.",
           "questionKey": "1671-1680:10"
         }
       ]
@@ -1381,66 +1381,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1681,
       "rangeEnd": 1690,
       "wordList": [
-        "mission",
-        "reserve",
-        "somehow",
-        "faith",
-        "complaint",
-        "compete",
-        "poll",
-        "reduction",
         "weak",
-        "bore"
+        "mission",
+        "poll",
+        "somehow",
+        "reduction",
+        "compete",
+        "reserve",
+        "complaint",
+        "bore",
+        "faith"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The astronauts' __________ to the space station will last approximately six months.",
+          "prompt": "Several local schools will __________ in a science competition designed to test teamwork and creativity.",
           "questionKey": "1681-1690:1"
         },
         {
           "number": 2,
-          "prompt": "Please __________ a table for dinner at the restaurant for Friday evening.",
+          "prompt": "A recent __________ showed that most parents supported a later start time for secondary schools.",
           "questionKey": "1681-1690:2"
         },
         {
           "number": 3,
-          "prompt": "__________, she managed to finish all her work before the deadline despite the challenges.",
+          "prompt": "After the long illness, he felt too __________ to climb the stairs without stopping.",
           "questionKey": "1681-1690:3"
         },
         {
           "number": 4,
-          "prompt": "She has complete __________ in her team's ability to succeed.",
+          "prompt": "She has great __________ in her team because they have solved many difficult problems together.",
           "questionKey": "1681-1690:4"
         },
         {
           "number": 5,
-          "prompt": "Several customers filed a __________ about the poor service they received.",
+          "prompt": "The government announced a __________ in bus fares to encourage more people to use public transport.",
           "questionKey": "1681-1690:5"
         },
         {
           "number": 6,
-          "prompt": "Many athletes train for years to __________ in the Olympic Games.",
+          "prompt": "We should __________ seats early because the evening show often sells out by Wednesday.",
           "questionKey": "1681-1690:6"
         },
         {
           "number": 7,
-          "prompt": "According to the latest __________, the mayor's approval rating has increased.",
+          "prompt": "The customer wrote a formal __________ after receiving the wrong product twice in one week.",
           "questionKey": "1681-1690:7"
         },
         {
           "number": 8,
-          "prompt": "The company aims for a 15% __________ in carbon emissions by next year.",
+          "prompt": "A speaker who reads every word from the screen may __________ the audience very quickly.",
           "questionKey": "1681-1690:8"
         },
         {
           "number": 9,
-          "prompt": "After being sick for a week, she still felt __________ and tired.",
+          "prompt": "The rescue team’s __________ was to reach the village before the river flooded the road.",
           "questionKey": "1681-1690:9"
         },
         {
           "number": 10,
-          "prompt": "Long speeches with no visual aids can __________ the audience quickly.",
+          "prompt": "I missed the first bus, but __________ arrived at school on time after taking a different route.",
           "questionKey": "1681-1690:10"
         }
       ]
@@ -1451,66 +1451,66 @@ window.__VOCABULARY_UNITS__["NGSL-G"] = {
       "rangeStart": 1691,
       "rangeEnd": 1700,
       "wordList": [
+        "formal",
         "passenger",
         "tone",
-        "rush",
         "religion",
-        "neighborhood",
-        "justice",
         "phase",
-        "thin",
         "employer",
-        "formal"
+        "justice",
+        "rush",
+        "neighborhood",
+        "thin"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Every __________ must fasten their seatbelt during takeoff and landing.",
+          "prompt": "The manager’s polite __________ made the criticism easier to accept, even though the message was serious.",
           "questionKey": "1691-1700:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ of his voice indicated that he was upset about the situation.",
+          "prompt": "Our __________ has become safer since new street lights were installed near the park.",
           "questionKey": "1691-1700:2"
         },
         {
           "number": 3,
-          "prompt": "Don't __________ through your work - take time to do it properly.",
+          "prompt": "Each __________ must show a ticket before boarding the train during busy travel periods.",
           "questionKey": "1691-1700:3"
         },
         {
           "number": 4,
-          "prompt": "__________ plays an important role in many people's lives around the world.",
+          "prompt": "The lawyer argued that __________ requires listening carefully to both sides before making a decision.",
           "questionKey": "1691-1700:4"
         },
         {
           "number": 5,
-          "prompt": "She prefers to live in a quiet __________ away from the busy downtown area.",
+          "prompt": "The project entered a difficult __________ when the budget was cut and two team members left.",
           "questionKey": "1691-1700:5"
         },
         {
           "number": 6,
-          "prompt": "The criminal was sentenced to prison, and the victim's family felt that __________ had been served.",
+          "prompt": "The soup tasted too __________, so my mother cooked it longer to make it richer.",
           "questionKey": "1691-1700:6"
         },
         {
           "number": 7,
-          "prompt": "The first __________ of the project will be completed by the end of this month.",
+          "prompt": "Do not __________ through the reading passage, or you may miss small but important details.",
           "questionKey": "1691-1700:7"
         },
         {
           "number": 8,
-          "prompt": "The slice of bread was too __________ to make a proper sandwich.",
+          "prompt": "A __________ email to a university should use polite language and a clear subject line.",
           "questionKey": "1691-1700:8"
         },
         {
           "number": 9,
-          "prompt": "An increasing number of companies offer flexible working hours, making them attractive as an __________.",
+          "prompt": "In many cultures, __________ influences festivals, family traditions, and ideas about right and wrong.",
           "questionKey": "1691-1700:9"
         },
         {
           "number": 10,
-          "prompt": "The interview requires __________ attire, such as a suit and tie.",
+          "prompt": "A responsible __________ should provide training, fair pay, and a safe working environment.",
           "questionKey": "1691-1700:10"
         }
       ]
