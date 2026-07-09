@@ -721,12 +721,13 @@
         }
     </style>
 </head>
-<body>
+<body data-practice-nav="manual">
 <header class="exam-topbar">
     <div class="exam-set-id" id="exam-set-id">IELTS Reading</div>
     <div class="exam-timer" id="exam-timer" aria-live="polite"><strong id="exam-time-left">60</strong><span id="exam-time-label">minutes left</span></div>
     <div class="exam-actions">
         <button type="button" id="exam-dashboard-btn">Back</button>
+        <button type="button" id="exam-home-btn">Home</button>
     </div>
 </header>
 <div class="identity-status" id="identity-status">Login</div>
@@ -799,9 +800,9 @@
 </nav>
 
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-<script src="assets/js/config.public.js?v=20260708-1"></script>
+<script src="assets/js/config.public.js?v=20260709-1"></script>
 <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
-<script src="assets/js/practice-session.js?v=20260623-1"></script>
+<script src="assets/js/practice-session.js?v=20260709-1"></script>
 <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
 <script>
     function logEvent(studentId, taskId, eventType, timestamp, eventData) {
@@ -848,6 +849,10 @@
 
     function getQuestionsEl() {
         return document.getElementById('questions-container');
+    }
+
+    function contentVersion() {
+        return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
     }
 
     function getHighlightStorageKey() {
@@ -2484,7 +2489,7 @@
         loadingDisplay.style.display = 'block';
         errorDisplay.style.display = 'none';
 
-        fetch('data/' + setId + '.json?_=' + Date.now())
+        fetch('data/' + encodeURIComponent(setId) + '.json?v=' + encodeURIComponent(contentVersion()))
             .then(function(res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.json();
@@ -2542,6 +2547,16 @@
                     window.history.back();
                 } else {
                     window.location.href = 'dashboard.html';
+                }
+            };
+        }
+        var homeBtn = document.getElementById('exam-home-btn');
+        if (homeBtn) {
+            homeBtn.onclick = function() {
+                if (window.MrCatPractice && window.MrCatPractice.confirmHome) {
+                    window.MrCatPractice.confirmHome();
+                } else {
+                    window.location.href = teacherMode ? 'teacher.html?view=library' : 'dashboard.html';
                 }
             };
         }

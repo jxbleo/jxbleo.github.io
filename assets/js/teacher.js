@@ -46,6 +46,7 @@
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
     };
+    var teacherViews = ['tasks', 'view', 'library'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -175,6 +176,34 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    function appVersion() {
+        return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
+    }
+
+    function appendQueryParam(href, key, value) {
+        if (!href || href === '#' || value == null || value === '') return href || '#';
+        return href + (href.indexOf('?') === -1 ? '?' : '&') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
+    }
+
+    function removeQueryParam(href, key) {
+        var hashIndex = href.indexOf('#');
+        var hash = hashIndex === -1 ? '' : href.slice(hashIndex);
+        var baseAndQuery = hashIndex === -1 ? href : href.slice(0, hashIndex);
+        var queryIndex = baseAndQuery.indexOf('?');
+        if (queryIndex === -1) return href;
+        var base = baseAndQuery.slice(0, queryIndex);
+        var query = baseAndQuery.slice(queryIndex + 1).split('&').filter(function(part) {
+            return part && decodeURIComponent(part.split('=')[0]) !== key;
+        }).join('&');
+        return base + (query ? '?' + query : '') + hash;
+    }
+
+    function withReturnParam(href, returnUrl) {
+        if (!href || href === '#') return href || '#';
+        var cleanHref = removeQueryParam(href, 'return');
+        return appendQueryParam(cleanHref, 'return', returnUrl || 'teacher.html?view=library');
     }
 
     function vocabularySourceKey(item) {
@@ -775,7 +804,7 @@
 
     function teacherLibraryLoadSections() {
         if (teacherLibraryCatalog) return Promise.resolve();
-        return fetch('data/home-catalog.json?_=' + Date.now())
+        return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
             .then(function(r) { if (!r.ok) return; return r.json(); })
             .then(function(c) { if (c) teacherLibraryCatalog = c; })
             .catch(function() {});
@@ -1489,10 +1518,11 @@
     function teacherPracticeHref(set) {
         var href = set.link || '#';
         var params = ['teacher=1'];
-        if (window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion) {
-            params.push('app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion));
+        if (appVersion()) {
+            params.push('app=' + encodeURIComponent(appVersion()));
         }
-        return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        href = href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        return withReturnParam(href, 'teacher.html?view=library');
     }
 
     function renderLibrary() {
@@ -4204,20 +4234,36 @@
             });
     }
 
-    function activateView(viewName) {
+    function initialTeacherView() {
+        var view = new URLSearchParams(window.location.search).get('view') || '';
+        return teacherViews.indexOf(view) === -1 ? 'view' : view;
+    }
+
+    function rememberTeacherView(viewName) {
+        if (teacherViews.indexOf(viewName) === -1 || !window.history || !window.history.replaceState) return;
+        var url = new URL(window.location.href);
+        if (viewName === 'view') url.searchParams.delete('view');
+        else url.searchParams.set('view', viewName);
+        window.history.replaceState({}, '', url);
+    }
+
+    function activateView(viewName, skipUrlUpdate) {
+        if (teacherViews.indexOf(viewName) === -1) viewName = 'view';
         document.querySelectorAll('.tab-button').forEach(function(button) {
             button.classList.toggle('active', button.dataset.view === viewName);
         });
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
+        if (!skipUrlUpdate) rememberTeacherView(viewName);
         setTeacherAccountPanel(false);
         if (viewName === 'tasks') updateAssignView();
         if (viewName === 'view') renderAssignmentOverview();
+        if (viewName === 'library') renderTeacherLibrary(teacherLibraryActiveTab);
     }
 
     function loadPublicCatalog() {
-        return fetch('data/home-catalog.json?_=' + Date.now())
+        return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
             .then(function(response) {
                 if (!response.ok) throw new Error('Catalog unavailable');
                 return response.json();
@@ -4775,6 +4821,9 @@
         document.getElementById('teacher-greeting').textContent = greetingFor(preferredName);
         document.getElementById('teacher-hero-copy').textContent = randomItem(motivationalQuotes);
         return loadData();
+    }).then(function(result) {
+        if (result === null) return;
+        activateView(initialTeacherView(), true);
     }).catch(function(error) {
         setHeaderIconLoading(false);
         showMessage(error.message || 'Unable to load the teacher desk.', 'error');

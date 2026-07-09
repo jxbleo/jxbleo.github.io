@@ -7,6 +7,9 @@
 
 ### Added
 
+- Added shared practice navigation with explicit `Back` and `Home` controls.
+  Student practice returns now use safe same-origin `return` targets from
+  Dashboard or Library, while teacher previews return to Teacher Library.
 - Added static no-answer worksheet PDF downloads for all current BBC listening
   lessons, exposed through a top-corner `Download Practice` button on
   `bbc.html`.
@@ -16,6 +19,13 @@
 - Updated the Vocabulary PDF controls to use document/download icons with
   `Wordlist` and `Practice` labels, and removed the per-set download button from
   inline Study Set practice.
+
+### Changed
+
+- Changed practice and catalog static-data fetches to use the public
+  `appVersion` cache key instead of timestamp cache busting, so normal browser
+  caching and back/forward restoration can keep practice pages faster while
+  still refreshing after version bumps.
 
 ## 2026-07-08
 
