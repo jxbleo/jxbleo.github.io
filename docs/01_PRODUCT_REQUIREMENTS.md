@@ -285,8 +285,8 @@ flowchart TD
 - `status`：`to_do`、`passed`、`mastered`、`cancelled`
 - `passing_percentage`
 - `mastery_percentage`
-- `mastery_enabled`：是否允许本 assignment 升级为 mastered / STAR；默认 true；
-  Vocabulary assignment 默认 false，除非老师明确开启
+- `mastery_enabled`：是否允许本 assignment 升级为 mastered / STAR；新布置的
+  assignment 默认 false，除非老师在 Assign 参数中明确勾选 `Earn STAR`
 - `attempt_count`
 - `latest_attempt_id`
 - `best_attempt_id`
@@ -294,7 +294,8 @@ flowchart TD
 - `best_percentage`
 - `answer_revealed`
 - `mastery_locked`
-- `assigned_at`
+- `assigned_at`：老师在 Assign 参数中选择的计划日期或周，教师 View 的 Wxx
+  矩阵列和日期筛选使用这个时间；默认是当前上海时区周
 - `completed_at`
 - `mastered_at`
 
@@ -311,8 +312,9 @@ flowchart TD
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
-- 老师可以开启或关闭单条 assignment 的 `mastery_enabled`。Vocabulary 新作业默认关闭
-  STAR earning，其他题型默认开启。关闭后学生仍可达到
+- 老师可以开启或关闭单条 assignment 的 `mastery_enabled`。新作业默认关闭
+  STAR earning，只有 Assign 时勾选 `Earn STAR` 或后续在 View 中开启后，
+  才会要求/使用 mastery percentage。关闭后学生仍可达到
   `passed` / FINISHED，但后续提交不会把该 assignment 升级为 `mastered`，
   也不会创建新的 STAR。已有 mastered 状态和受保护 STAR 不会因此被撤销。
 

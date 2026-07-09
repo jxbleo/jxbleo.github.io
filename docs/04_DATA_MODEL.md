@@ -112,11 +112,11 @@ Core fields:
 | `student_uid` | string | owner `students.auth_uid` |
 | `set_id` | string | assigned set |
 | `status` | string | `to_do`, `passed`, `mastered`, `cancelled` |
-| `assigned_at` | Date | assignment time |
+| `assigned_at` | Date | teacher-selected assignment date/week used for View week grouping; defaults to creation time/current week |
 | `due_at` | Date/null | due time |
 | `passing_percentage` | number | assignment passing threshold |
 | `mastery_percentage` | number | assignment mastery threshold |
-| `mastery_enabled` | boolean | whether this assignment can become mastered / earn STAR; missing means true, except new Vocabulary assignments default to false |
+| `mastery_enabled` | boolean | whether this assignment can become mastered / earn STAR; new Assign-created records default to false unless the teacher selects `Earn STAR` |
 | `standards_updated_at` | Date/null | last teacher standards edit time |
 | `standards_updated_by_teacher_uid` | string/null | teacher who last edited due/threshold standards |
 | `latest_attempt_id` | string/null | latest submission |
@@ -151,14 +151,17 @@ the linked assignment attempts after recording a countable assignment attempt.
 Teacher progress views may use linked attempts as a fallback if stored summary
 fields are missing or stale.
 
-Teachers may edit an existing assignment's `due_at`, `passing_percentage`,
+Teachers may choose a planned assignment date or week during Assign. That value
+is stored in `assigned_at` and drives Teacher View Wxx matrix grouping and date
+filters, while `created_at` remains the creation audit timestamp. Teachers may
+edit an existing assignment's `due_at`, `passing_percentage`,
 `mastery_percentage`, and `mastery_enabled` from the View surface. New
-Vocabulary assignments default to `mastery_enabled: false`; other new
-assignments default to true. Those edits affect future submissions and display
-standards, but do not automatically regrade historical attempts or downgrade
-completed assignments and protected STAR records. When `mastery_enabled` is
-false, future submissions can pass but cannot automatically move that
-assignment to `mastered` or create a new STAR.
+Assign-created records default to `mastery_enabled: false`; `mastery_percentage`
+is required during Assign only when the teacher selects `Earn STAR`. Those
+edits affect future submissions and display standards, but do not automatically
+regrade historical attempts or downgrade completed assignments and protected
+STAR records. When `mastery_enabled` is false, future submissions can pass but
+cannot automatically move that assignment to `mastered` or create a new STAR.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled

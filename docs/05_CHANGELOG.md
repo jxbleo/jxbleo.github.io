@@ -33,6 +33,14 @@
   `appVersion` cache key instead of timestamp cache busting, so normal browser
   caching and back/forward restoration can keep practice pages faster while
   still refreshing after version bumps.
+- Added a Teacher Assign task-parameters area for Week/Date scheduling,
+  passing percentage, and explicit `Earn STAR` selection. New assignments now
+  default to no STAR earning unless the teacher checks `Earn STAR`; checked STAR
+  assignments require `Mastery %`.
+- Changed Teacher Assign pickers so Work and Students can be chosen in either
+  order. The opposite picker now color-codes prior assignment state, disables
+  open `in_progress` pairs, and keeps completed pairs selectable for
+  reassignment.
 
 ## 2026-07-08
 

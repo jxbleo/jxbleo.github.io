@@ -283,8 +283,11 @@ The separate `teacher.html` interface has four capsules:
 
 The teacher can choose a visible set or filter by column/keyword to assign
 multiple sets, search students, filter by `class_group`, select one or multiple
-students, assign to a filtered class, and optionally set a due date, passing
-percentage, and mastery percentage.
+students, assign to a filtered class, and set assignment parameters. Assignment
+parameters include a planned assignment date/week stored as `assigned_at`, a
+passing percentage, and an explicit `Earn STAR` choice. New assignments do not
+earn STAR by default; only when `Earn STAR` is selected is `mastery_percentage`
+required and used for future mastery/STAR upgrades.
 
 For the same student and `set_id`:
 

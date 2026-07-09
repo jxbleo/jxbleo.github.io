@@ -112,9 +112,9 @@ Check:
   mastered or create a new STAR on later submissions
 - Vocabulary countable tests use `80%` passing and `100%` mastery by default
   unless the set or assignment explicitly overrides thresholds
-- new Vocabulary assignments default to `mastery_enabled: false`; after the
-  teacher turns `Can earn STAR` on from View, a later qualifying submission can
-  become mastered / STAR
+- new Assign-created assignments default to `mastery_enabled: false`; after the
+  teacher selects `Earn STAR` during Assign or turns `Can earn STAR` on from
+  View, a later qualifying submission can become mastered / STAR
 - a not-passed Vocabulary Test result can return to group selection and start
   a fresh test without keeping the previous questions or local draft
 - history review does not leak answers unless reveal is recorded
@@ -155,6 +155,16 @@ Check:
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`
+- Assign supports choosing Students before Work and Work before Students; the
+  opposite picker color-codes prior assignment state
+- Assign marks open `in_progress` student/work pairs with color and disables
+  selection, while completed/mastered pairs stay colored but selectable
+- Assign task parameters default to current Beijing-time week, selected work's
+  passing percentage where possible, and unchecked `Earn STAR`
+- Assign rejects `Earn STAR` creation until `Mastery %` is filled, and stores
+  checked STAR assignments with `mastery_enabled: true`
+- Assign-created work for a future Week appears in Teacher View under that Wxx
+  assignment column/date filter
 - Library opens practice pages in `teacher=1`
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts

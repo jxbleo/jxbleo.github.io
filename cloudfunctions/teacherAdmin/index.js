@@ -196,10 +196,6 @@ function defaultMasteryPercentageForSet(set) {
   return isVocabularySet(set) ? 100 : 90;
 }
 
-function defaultMasteryEnabledForSet(set) {
-  return !isVocabularySet(set);
-}
-
 function passingPercentageForSet(set) {
   return Number(!set || set.passing_percentage == null ? defaultPassingPercentageForSet(set) : set.passing_percentage);
 }
@@ -707,7 +703,7 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
-async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
+async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId, assignedAt) {
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -755,7 +751,7 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     student_uid: student.auth_uid,
     set_id: setId,
     status: convertsSelfStudy ? selfStudyStatus : "to_do",
-    assigned_at: now,
+    assigned_at: assignedAt || now,
     due_at: dueAt,
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
@@ -810,6 +806,7 @@ async function createAssignments(event) {
   if (!setIds.length || !studentUids.length) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
   if (studentUids.length > 200) throw new Error("TOO_MANY_STUDENTS");
   const dueAt = safeDate(event.due_at);
+  const assignedAt = safeDate(event.assigned_at) || new Date();
   const created = [];
   const skipped = [];
   for (const setId of setIds) {
@@ -819,8 +816,12 @@ async function createAssignments(event) {
       continue;
     }
     const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
-    const masteryPercentage = safePercentage(event.mastery_percentage, masteryPercentageForSet(set));
-    const masteryEnabled = safeBoolean(event.mastery_enabled, defaultMasteryEnabledForSet(set));
+    const masteryEnabled = safeBoolean(event.mastery_enabled, false);
+    if (masteryEnabled && text(event.mastery_percentage) === "") throw new Error("MASTERY_REQUIRED");
+    const defaultMastery = masteryEnabled
+      ? masteryPercentageForSet(set)
+      : Math.max(passingPercentage, masteryPercentageForSet(set));
+    const masteryPercentage = safePercentage(event.mastery_percentage, defaultMastery);
     const assignmentBatchId = [
       "assign",
       setId,
@@ -848,7 +849,7 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId);
+      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId, assignedAt);
       created.push({
         student_uid: studentUid,
         student_id: student.student_id,
@@ -1890,7 +1891,11 @@ exports.main = async (event) => {
         ? "Teacher access is required."
         : error.message === "STUDENT_ID_EXISTS"
           ? "This Login ID already exists. Please use a different ID."
-          : `Unable to complete this teacher action (${error.message || "TEACHER_ADMIN_ERROR"}).`,
+          : error.message === "MASTERY_REQUIRED"
+            ? "Mastery percentage is required when Earn STAR is enabled."
+            : error.message === "PASSING_ABOVE_MASTERY"
+              ? "Passing percentage cannot be higher than mastery percentage."
+              : `Unable to complete this teacher action (${error.message || "TEACHER_ADMIN_ERROR"}).`,
     };
   }
 };

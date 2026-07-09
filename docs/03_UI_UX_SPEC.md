@@ -223,16 +223,25 @@ Teacher can:
   card
 - filter students inside that dialog with one search field and one `Class`
   select
+- choose Work first or Students first. The opposite picker should color-code
+  existing assignment state for the selected counterpart: open `in_progress`
+  pairs are colored and disabled; completed/mastered history is colored but
+  remains selectable for reassignment
+- set task parameters in a bottom Assign area: assignment week/date, passing
+  percentage, and whether the assignment can earn STAR
 - assign the selected work to the selected students
 
 The Assign surface should stay visually minimal: the default Assign tab shows
-only selected work and selected student chips plus the Assign action. Search,
-filters, candidate lists, and filtered-class selection live in the standalone
-picker dialogs. There are no visible multi-step accordions, no legend, and no
-visible due/pass/mastery fields in the default flow. Empty Work/Students
-summaries and picker footers should not show `None selected` or `Nothing
-selected` placeholder text. Assignment creation continues to use the existing
-server-side validation and default thresholds.
+selected work and selected student chips, a compact task-parameters area, and
+the Assign action. Search, filters, candidate lists, and filtered-class
+selection live in the standalone picker dialogs. There are no visible
+multi-step accordions or legend. Empty Work/Students summaries and picker
+footers should not show `None selected` or `Nothing selected` placeholder text.
+Assignment creation continues to use server-side validation.
+The task-parameters area defaults to Week mode using the current Beijing-time
+Wxx week, with Date as an alternate mode. Passing percentage is filled from the
+selected work's default when possible. `Earn STAR` is unchecked by default; only
+when checked does `Mastery %` become enabled and required.
 After successful assignment creation, Assign should show a standalone
 checkmark success dialog using the same confirmation style as student account
 creation. It should not write the success result into the small page message
@@ -637,11 +646,11 @@ Preferred product labels:
 | `passed` | FINISHED | Passed / Finished |
 | `mastered` | FINISHED + STAR | Mastered |
 
-Teacher View assignment editing includes a `Can earn STAR` control. Turning it
-off keeps future completions in `passed` / FINISHED and prevents new STAR
-creation for that assignment, without revoking existing protected STAR records.
-New Vocabulary assignments default to not earning STAR until the teacher turns
-`Can earn STAR` on for the assignment.
+Teacher Assign and Teacher View assignment editing include STAR controls.
+New assignments default to not earning STAR unless the teacher selects
+`Earn STAR` during Assign. Turning `Can earn STAR` off keeps future completions
+in `passed` / FINISHED and prevents new STAR creation for that assignment,
+without revoking existing protected STAR records.
 
 Vocabulary assignments opened from the student Assignments view should enter
 the normal vocabulary learning surface first, matching Library entry, so
