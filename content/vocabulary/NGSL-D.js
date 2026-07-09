@@ -822,76 +822,66 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeEnd": 1310,
       "wordList": [
         "fresh",
+        "boat",
+        "safety",
+        "kitchen",
+        "fan",
+        "twice",
         "engineer",
         "delay",
-        "boat",
-        "twice",
-        "safety",
         "settle",
-        "fan",
-        "aid",
-        "kitchen"
+        "aid"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Please put the milk back in the __________ before it gets warm.",
-          "answer": "kitchen",
-          "explanation": "语法上，“in the kitchen” 是介词短语，表示地点，空格需要一个名词。语义上，牛奶变热前要放回“厨房”，符合生活场景。"
+          "prompt": "After a long talk, the two sides finally agreed to __________ the problem peacefully.",
+          "questionKey": "1301-1310:1"
         },
         {
           "number": 2,
-          "prompt": "The train arrived after a long __________ because of heavy rain.",
-          "answer": "delay",
-          "explanation": "语法上，“a long delay” 中空格需要单数名词，delay 表示“延误、耽搁”。语义上，火车因为大雨晚到，是典型的 delay 场景。"
+          "prompt": "We took a small __________ across the lake because the bridge was closed.",
+          "questionKey": "1301-1310:2"
         },
         {
           "number": 3,
-          "prompt": "My uncle is an __________ who builds bridges and roads.",
-          "answer": "engineer",
-          "explanation": "语法上，“an engineer” 中空格需要以元音音素开头的职业名词。语义上，后文 “builds bridges and roads” 指建桥修路，所以是工程师。"
+          "prompt": "The charity group sent food and medical __________ to families after the flood.",
+          "questionKey": "1301-1310:3"
         },
         {
           "number": 4,
-          "prompt": "We crossed the lake in a small __________ yesterday.",
-          "answer": "boat",
-          "explanation": "语法上，“in a small boat” 中空格需要名词。语义上，过湖通常坐小船，boat 符合场景。"
+          "prompt": "It was very hot in the room, so Dad turned on the __________ near the window.",
+          "questionKey": "1301-1310:4"
         },
         {
           "number": 5,
-          "prompt": "The fruit is still __________, so you can eat it today.",
-          "answer": "fresh",
-          "explanation": "语法上，“is still fresh” 中空格需要形容词作表语。语义上，水果还能吃，说明仍然“新鲜”。"
+          "prompt": "Please wash your hands before you help me cook in the __________.",
+          "questionKey": "1301-1310:5"
         },
         {
           "number": 6,
-          "prompt": "The rules are there for your __________, so please follow them.",
-          "answer": "safety",
-          "explanation": "语法上，“for your safety” 是固定表达，空格需要名词。语义上，规则存在的目的是保障“安全”。"
+          "prompt": "I usually exercise once a week, but this month I want to go __________ a week.",
+          "questionKey": "1301-1310:6"
         },
         {
           "number": 7,
-          "prompt": "She used a paper __________ because the room was too hot.",
-          "answer": "fan",
-          "explanation": "语法上，“a paper fan” 中空格需要名词。语义上，房间太热，用纸扇降温，fan 正确。"
+          "prompt": "The market sells __________ vegetables every morning, so many people shop there early.",
+          "questionKey": "1301-1310:7"
         },
         {
           "number": 8,
-          "prompt": "The family decided to __________ in a quiet town near the sea.",
-          "answer": "settle",
-          "explanation": "语法上，“decided to + 动词原形”，所以用 settle。语义上，一家人决定在海边小镇“定居/安顿下来”。常见搭配：**settle in / settle down / settle in a place**。"
+          "prompt": "Heavy rain caused a long __________, and the train arrived almost one hour late.",
+          "questionKey": "1301-1310:8"
         },
         {
           "number": 9,
-          "prompt": "I called him __________, but he did not answer either time.",
-          "answer": "twice",
-          "explanation": "语法上，twice 是副词，修饰 “called him”，表示“打了两次电话”。语义上，后文 “either time” 指两次都没有接。"
+          "prompt": "For your own __________, wear a helmet when you ride a bike on busy roads.",
+          "questionKey": "1301-1310:9"
         },
         {
           "number": 10,
-          "prompt": "The charity gave food and medical __________ to poor families.",
-          "answer": "aid",
-          "explanation": "语法上，“medical aid” 是名词短语，aid 作名词。语义上，慈善机构提供食物和医疗援助。常见搭配：**medical aid / financial aid / first aid**。"
+          "prompt": "My cousin wants to become an __________ because she enjoys designing bridges.",
+          "questionKey": "1301-1310:10"
         }
       ]
     },
@@ -901,77 +891,67 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeStart": 1311,
       "rangeEnd": 1320,
       "wordList": [
-        "commit",
+        "somewhere",
         "quiet",
         "package",
-        "expand",
-        "length",
-        "somewhere",
-        "divide",
+        "investigation",
+        "commit",
         "nurse",
         "insurance",
-        "investigation"
+        "divide",
+        "expand",
+        "length"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The police started an __________ after the money disappeared.",
-          "answer": "investigation",
-          "explanation": "语法上，“an investigation” 中空格需要名词。语义上，钱不见了，警察开始“调查”。常见搭配：**start/open an investigation into something**。"
+          "prompt": "The baby is sleeping, so please keep your voice __________ in the living room.",
+          "questionKey": "1311-1320:1"
         },
         {
           "number": 2,
-          "prompt": "Please keep __________ while the baby is sleeping.",
-          "answer": "quiet",
-          "explanation": "语法上，“keep quiet” 是固定表达，quiet 作形容词。语义上，婴儿睡觉时要保持安静。常见搭配：**keep quiet**。"
+          "prompt": "Travel __________ can help pay for medical costs if you get ill abroad.",
+          "questionKey": "1311-1320:2"
         },
         {
           "number": 3,
-          "prompt": "You should buy travel __________ before going abroad.",
-          "answer": "insurance",
-          "explanation": "语法上，“travel insurance” 是名词短语。语义上，出国前买旅行保险符合场景。常见搭配：**travel insurance / health insurance / car insurance**。"
+          "prompt": "My aunt works as a __________ in a large hospital and looks after sick children.",
+          "questionKey": "1311-1320:3"
         },
         {
           "number": 4,
-          "prompt": "The teacher asked us to __________ the cake into eight pieces.",
-          "answer": "divide",
-          "explanation": "语法上，“ask sb. to do sth.” 后接动词原形，所以用 divide。语义上，把蛋糕分成八块。常见搭配：**divide something into parts/groups/pieces**。"
+          "prompt": "The teacher asked us to __________ the class into four small teams for the project.",
+          "questionKey": "1311-1320:4"
         },
         {
           "number": 5,
-          "prompt": "The company plans to __________ its business into Europe.",
-          "answer": "expand",
-          "explanation": "语法上，“plans to + 动词原形”，所以用 expand。语义上，公司计划把业务扩展到欧洲。常见搭配：**expand into a market / expand a business**。"
+          "prompt": "The __________ of the river is about twenty kilometres from the town to the sea.",
+          "questionKey": "1311-1320:5"
         },
         {
           "number": 6,
-          "prompt": "The __________ of the movie is about two hours.",
-          "answer": "length",
-          "explanation": "语法上，“The length of…” 中空格需要名词。语义上，电影大约两小时，指电影“时长”。"
+          "prompt": "The police started an __________ after several bikes were stolen near the station.",
+          "questionKey": "1311-1320:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ arrived this morning, but I have not opened it yet.",
-          "answer": "package",
-          "explanation": "语法上，“The package arrived” 中 package 作主语名词。语义上，早上到了但还没打开，说明是包裹。"
+          "prompt": "I ordered a book online, and the __________ arrived at my door two days later.",
+          "questionKey": "1311-1320:7"
         },
         {
           "number": 8,
-          "prompt": "A __________ checked my temperature at the hospital.",
-          "answer": "nurse",
-          "explanation": "语法上，“A nurse checked…” 中空格需要职业名词。语义上，在医院量体温的人通常是护士。"
+          "prompt": "I put my keys __________ in this room, but I cannot remember exactly where.",
+          "questionKey": "1311-1320:8"
         },
         {
           "number": 9,
-          "prompt": "I left my keys __________ in the house, but I cannot find them.",
-          "answer": "somewhere",
-          "explanation": "语法上，somewhere 是副词，表示“在某处”。语义上，钥匙落在房子里的某个地方，但找不到。"
+          "prompt": "The company plans to __________ its business by opening three new shops next year.",
+          "questionKey": "1311-1320:9"
         },
         {
           "number": 10,
-          "prompt": "If you __________ to a plan, you must try your best to finish it.",
-          "answer": "commit",
-          "explanation": "语法上，“If you commit to a plan” 中 commit 是动词。语义上，对计划作出承诺，就应努力完成。常见搭配：**commit to something / commit to doing something**。"
+          "prompt": "If you __________ to a goal, you should give it enough time and real effort.",
+          "questionKey": "1311-1320:10"
         }
       ]
     },
@@ -981,77 +961,67 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeStart": 1321,
       "rangeEnd": 1330,
       "wordList": [
+        "weapon",
+        "obvious",
         "district",
         "winter",
-        "host",
-        "jump",
-        "weapon",
+        "relatively",
         "spring",
         "broad",
         "tire",
-        "obvious",
-        "relatively"
+        "jump",
+        "host"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "It is __________ that he is angry because he has not said a word.",
-          "answer": "obvious",
-          "explanation": "语法上，“It is obvious that…” 是固定句型，obvious 作表语形容词。语义上，他一句话不说，明显生气了。常见句型：**It is obvious that…**"
+          "prompt": "It was __________ that Tom was angry because he stopped talking to everyone.",
+          "questionKey": "1321-1330:1"
         },
         {
           "number": 2,
-          "prompt": "Our school is in a busy shopping __________.",
-          "answer": "district",
-          "explanation": "语法上，“a busy shopping district” 是名词短语。语义上，学校在繁忙的购物区。"
+          "prompt": "The children like to __________ over small stones when they play in the park.",
+          "questionKey": "1321-1330:2"
         },
         {
           "number": 3,
-          "prompt": "Please do not __________ over the fence; use the gate.",
-          "answer": "jump",
-          "explanation": "语法上，“do not + 动词原形”，所以用 jump。语义上，不要跳过围栏，要走门。"
+          "prompt": "The police found a dangerous __________ in the car during the search.",
+          "questionKey": "1321-1330:3"
         },
         {
           "number": 4,
-          "prompt": "The police found a dangerous __________ in the bag.",
-          "answer": "weapon",
-          "explanation": "语法上，“a dangerous weapon” 中空格需要名词。语义上，警察在包里发现危险武器。"
+          "prompt": "This hotel is __________ cheap compared with the others near the beach.",
+          "questionKey": "1321-1330:4"
         },
         {
           "number": 5,
-          "prompt": "In __________, many people wear thick coats.",
-          "answer": "winter",
-          "explanation": "语法上，“In winter” 是时间状语。语义上，穿厚外套对应冬天。常见表达：**in winter**。"
+          "prompt": "Our school will __________ a music show for parents this Friday evening.",
+          "questionKey": "1321-1330:5"
         },
         {
           "number": 6,
-          "prompt": "This road is very __________, so two cars can pass easily.",
-          "answer": "broad",
-          "explanation": "语法上，“broad wide” 这里 broad 修饰 road，表示“宽阔的”。语义上，两辆车能轻松通过，说明路很宽。"
+          "prompt": "We usually wear thick coats in __________ because the weather becomes very cold.",
+          "questionKey": "1321-1330:6"
         },
         {
           "number": 7,
-          "prompt": "The TV show needs a friendly __________ to introduce the guests.",
-          "answer": "host",
-          "explanation": "语法上，“a friendly host” 中空格需要名词。语义上，介绍嘉宾的人是主持人。常见搭配：**TV host / show host**。"
+          "prompt": "This city has a shopping __________ with many stores, restaurants, and cinemas.",
+          "questionKey": "1321-1330:7"
         },
         {
           "number": 8,
-          "prompt": "The children love playing outside in __________ when flowers appear.",
-          "answer": "spring",
-          "explanation": "语法上，“in spring” 是时间状语。语义上，花开对应春天。"
+          "prompt": "The road is __________ enough for two buses to pass each other safely.",
+          "questionKey": "1321-1330:8"
         },
         {
           "number": 9,
-          "prompt": "Driving for six hours can __________ anyone.",
-          "answer": "tire",
-          "explanation": "语法上，“can + 动词原形”，所以用 tire。语义上，开车六小时会使任何人疲劳。这里 tire 是动词，表示“使疲劳”。"
+          "prompt": "A flat __________ made the driver stop at the side of the road.",
+          "questionKey": "1321-1330:9"
         },
         {
           "number": 10,
-          "prompt": "The test was __________ easy compared with the last one.",
-          "answer": "relatively",
-          "explanation": "语法上，relatively 是副词，修饰形容词 easy。语义上，与上次相比，这次测试“相对容易”。"
+          "prompt": "Flowers begin to grow again in __________ when the weather becomes warmer.",
+          "questionKey": "1321-1330:10"
         }
       ]
     },
@@ -1062,76 +1032,66 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeEnd": 1340,
       "wordList": [
         "cash",
-        "battle",
-        "hardly",
         "actual",
-        "coach",
-        "tradition",
+        "battle",
         "pool",
+        "coach",
         "spirit",
         "award",
-        "lunch"
+        "lunch",
+        "tradition",
+        "hardly"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "I usually have __________ at school at 12:30.",
-          "answer": "lunch",
-          "explanation": "语法上，“have lunch” 是固定搭配，lunch 作名词。语义上，中午12:30在学校吃午餐。常见搭配：**have lunch**。"
+          "prompt": "The team showed strong fighting __________ and did not give up after losing the first game.",
+          "questionKey": "1331-1340:1"
         },
         {
           "number": 2,
-          "prompt": "Many Chinese families follow the __________ of eating together during festivals.",
-          "answer": "tradition",
-          "explanation": "语法上，“follow the tradition of…” 是常见搭配，空格需要名词。语义上，节日期间一起吃饭是许多中国家庭的传统。"
+          "prompt": "We usually have __________ at school at about twelve thirty every day.",
+          "questionKey": "1331-1340:2"
         },
         {
           "number": 3,
-          "prompt": "She won an __________ for her excellent science project.",
-          "answer": "award",
-          "explanation": "语法上，“won an award” 是固定搭配，award 作名词。语义上，因为优秀科学项目获奖。常见搭配：**win an award / receive an award**。"
+          "prompt": "The __________ cost of the trip was higher than the price shown online.",
+          "questionKey": "1331-1340:3"
         },
         {
           "number": 4,
-          "prompt": "I do not have any __________, so I need to pay by card.",
-          "answer": "cash",
-          "explanation": "语法上，cash 是不可数名词。语义上，没有现金，所以需要刷卡。"
+          "prompt": "Many children swim in the outdoor __________ during the summer holiday.",
+          "questionKey": "1331-1340:4"
         },
         {
           "number": 5,
-          "prompt": "The basketball __________ taught us how to pass better.",
-          "answer": "coach",
-          "explanation": "语法上，“The basketball coach” 中空格需要名词。语义上，教传球的人是篮球教练。"
+          "prompt": "The soldiers won the __________ after many hours of difficult fighting.",
+          "questionKey": "1331-1340:5"
         },
         {
           "number": 6,
-          "prompt": "The two teams had a close __________ in the final game.",
-          "answer": "battle",
-          "explanation": "语法上，“had a close battle” 中空格需要名词。语义上，两队在决赛中激烈竞争，battle 可表示“斗争、较量”。"
+          "prompt": "It is a family __________ to eat together on the first day of the new year.",
+          "questionKey": "1331-1340:6"
         },
         {
           "number": 7,
-          "prompt": "His brave __________ helped the team keep trying.",
-          "answer": "spirit",
-          "explanation": "语法上，“His brave spirit” 是名词短语。语义上，勇敢的精神帮助团队继续努力。"
+          "prompt": "I need some __________ because this small shop does not accept cards.",
+          "questionKey": "1331-1340:7"
         },
         {
           "number": 8,
-          "prompt": "The hotel has a swimming __________ on the second floor.",
-          "answer": "pool",
-          "explanation": "语法上，“a swimming pool” 是固定搭配。语义上，酒店二楼有游泳池。"
+          "prompt": "I could __________ hear the speaker because the music outside was very loud.",
+          "questionKey": "1331-1340:8"
         },
         {
           "number": 9,
-          "prompt": "The __________ price was higher than we expected.",
-          "answer": "actual",
-          "explanation": "语法上，actual 是形容词，修饰 price。语义上，实际价格比预期更高。"
+          "prompt": "She won an __________ for her excellent science project at school.",
+          "questionKey": "1331-1340:9"
         },
         {
           "number": 10,
-          "prompt": "I could __________ hear him because the room was so noisy.",
-          "answer": "hardly",
-          "explanation": "语法上，hardly 是副词，修饰 hear。语义上，房间太吵，所以几乎听不见。注意：**hardly** 表示“几乎不”，不是 “hard” 的普通副词“努力地”。"
+          "prompt": "Our basketball __________ teaches us how to pass, shoot, and work as a team.",
+          "questionKey": "1331-1340:10"
         }
       ]
     },
@@ -1142,76 +1102,66 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeEnd": 1350,
       "wordList": [
         "code",
-        "revenue",
-        "experiment",
-        "enable",
-        "threat",
-        "consideration",
-        "strange",
-        "impossible",
         "possibly",
-        "accident"
+        "revenue",
+        "accident",
+        "consideration",
+        "experiment",
+        "threat",
+        "enable",
+        "impossible",
+        "strange"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "The scientist did an __________ to test the new idea.",
-          "answer": "experiment",
-          "explanation": "语法上，“did an experiment” 是固定搭配，空格需要名词。语义上，科学家做实验来测试新想法。常见搭配：**do/conduct an experiment**。"
+          "prompt": "The students did a simple science __________ to see which plant grew faster.",
+          "questionKey": "1341-1350:1"
         },
         {
           "number": 2,
-          "prompt": "Please enter the secret __________ to open the door.",
-          "answer": "code",
-          "explanation": "语法上，“the secret code” 中空格需要名词。语义上，输入密码开门，code 可表示“密码”。"
+          "prompt": "Price is an important __________ when most families choose a new phone.",
+          "questionKey": "1341-1350:2"
         },
         {
           "number": 3,
-          "prompt": "The company’s __________ increased after it sold more products.",
-          "answer": "revenue",
-          "explanation": "语法上，“The company’s revenue” 中空格需要名词。语义上，卖出更多产品后，公司收入增加。"
+          "prompt": "A __________ noise came from the old house, so we stopped walking for a moment.",
+          "questionKey": "1341-1350:3"
         },
         {
           "number": 4,
-          "prompt": "It is __________ to finish this huge project in one hour.",
-          "answer": "impossible",
-          "explanation": "语法上，“It is impossible to…” 是固定句型，impossible 作表语形容词。语义上，一小时完成大项目是不可能的。"
+          "prompt": "You need to enter the correct __________ before you can open the door.",
+          "questionKey": "1341-1350:4"
         },
         {
           "number": 5,
-          "prompt": "The new app will __________ students to practise English at home.",
-          "answer": "enable",
-          "explanation": "语法上，“will + 动词原形”，所以用 enable。语义上，新应用使学生能够在家练英语。常见搭配：**enable sb. to do sth.**"
+          "prompt": "It is __________ going to rain later, so you should take an umbrella.",
+          "questionKey": "1341-1350:5"
         },
         {
           "number": 6,
-          "prompt": "We need more __________ before choosing the best plan.",
-          "answer": "consideration",
-          "explanation": "语法上，“need more consideration” 中空格需要名词。语义上，选择最佳计划前需要更多考虑。"
+          "prompt": "The email was a serious __________ because it said the building would be attacked.",
+          "questionKey": "1341-1350:6"
         },
         {
           "number": 7,
-          "prompt": "There was a car __________ near the school this morning.",
-          "answer": "accident",
-          "explanation": "语法上，“a car accident” 是名词短语。语义上，学校附近发生车祸。"
+          "prompt": "Three people were hurt in a road __________ on the way to the airport.",
+          "questionKey": "1341-1350:7"
         },
         {
           "number": 8,
-          "prompt": "The dark clouds are a __________ to the outdoor concert.",
-          "answer": "threat",
-          "explanation": "语法上，“a threat to…” 是固定搭配。语义上，乌云对户外音乐会构成威胁。常见搭配：**a threat to something**。"
+          "prompt": "It is almost __________ to finish this large project in only one hour.",
+          "questionKey": "1341-1350:8"
         },
         {
           "number": 9,
-          "prompt": "I heard a __________ noise outside my window last night.",
-          "answer": "strange",
-          "explanation": "语法上，strange 是形容词，修饰 noise。语义上，晚上窗外有奇怪的声音。"
+          "prompt": "The shop’s __________ increased after it started selling products online.",
+          "questionKey": "1341-1350:9"
         },
         {
           "number": 10,
-          "prompt": "She will __________ arrive late because her bus was delayed.",
-          "answer": "possibly",
-          "explanation": "语法上，possibly 是副词，修饰 arrive。语义上，因为公交延误，她可能会迟到。"
+          "prompt": "These new tools will __________ students to learn English more easily at home.",
+          "questionKey": "1341-1350:10"
         }
       ]
     },
@@ -1221,77 +1171,67 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeStart": 1351,
       "rangeEnd": 1360,
       "wordList": [
-        "sun",
-        "healthy",
-        "environmental",
+        "convince",
         "religious",
-        "vary",
-        "active",
-        "afraid",
-        "cancer",
         "conclude",
-        "convince"
+        "healthy",
+        "cancer",
+        "environmental",
+        "active",
+        "vary",
+        "afraid",
+        "sun"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Many doctors say that smoking can cause __________.",
-          "answer": "cancer",
-          "explanation": "语法上，“cause cancer” 是固定搭配，cancer 作名词。语义上，吸烟可能导致癌症。常见搭配：**cause cancer**。"
+          "prompt": "Many young children are __________ of the dark when they sleep alone at night.",
+          "questionKey": "1351-1360:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ was very bright, so I wore sunglasses.",
-          "answer": "sun",
-          "explanation": "语法上，“The sun was…” 中 sun 作主语名词。语义上，太阳很亮，所以戴太阳镜。"
+          "prompt": "My grandfather is still very __________ and walks for thirty minutes every morning.",
+          "questionKey": "1351-1360:2"
         },
         {
           "number": 3,
-          "prompt": "He is __________ of dogs because one bit him when he was young.",
-          "answer": "afraid",
-          "explanation": "语法上，“be afraid of…” 是固定搭配。语义上，他小时候被狗咬过，所以怕狗。常见搭配：**be afraid of something**。"
+          "prompt": "At the end of the lesson, the teacher asked us to __________ what we had learned.",
+          "questionKey": "1351-1360:3"
         },
         {
           "number": 4,
-          "prompt": "Prices may __________ from shop to shop.",
-          "answer": "vary",
-          "explanation": "语法上，“may + 动词原形”，所以用 vary。语义上，价格可能因商店不同而变化。常见搭配：**vary from… to… / vary from place to place**。"
+          "prompt": "Some people visit this old temple for __________ reasons rather than for tourism.",
+          "questionKey": "1351-1360:4"
         },
         {
           "number": 5,
-          "prompt": "We should eat more vegetables to stay __________.",
-          "answer": "healthy",
-          "explanation": "语法上，“stay healthy” 是固定搭配，healthy 作形容词。语义上，多吃蔬菜有助于保持健康。"
+          "prompt": "Doctors are looking for better ways to treat __________ and help patients live longer.",
+          "questionKey": "1351-1360:5"
         },
         {
           "number": 6,
-          "prompt": "She tried to __________ her parents to let her join the trip.",
-          "answer": "convince",
-          "explanation": "语法上，“tried to + 动词原形”，所以用 convince。语义上，她试图说服父母让她参加旅行。常见搭配：**convince sb. to do sth.**"
+          "prompt": "I tried to __________ my parents to let me join the school trip.",
+          "questionKey": "1351-1360:6"
         },
         {
           "number": 7,
-          "prompt": "The school club is very __________ and meets every week.",
-          "answer": "active",
-          "explanation": "语法上，active 是形容词，作表语。语义上，俱乐部每周见面，说明很活跃。"
+          "prompt": "Prices may __________ from shop to shop, so it is smart to compare before buying.",
+          "questionKey": "1351-1360:7"
         },
         {
           "number": 8,
-          "prompt": "This is a serious __________ problem because the river is polluted.",
-          "answer": "environmental",
-          "explanation": "语法上，environmental 是形容词，修饰 problem。语义上，河流被污染，是环境问题。常见搭配：**environmental problem / environmental issue**。"
+          "prompt": "The government should take stronger action on __________ problems such as air pollution.",
+          "questionKey": "1351-1360:8"
         },
         {
           "number": 9,
-          "prompt": "The meeting will __________ at five o’clock.",
-          "answer": "conclude",
-          "explanation": "语法上，“will + 动词原形”，所以用 conclude。语义上，会议将在五点结束。"
+          "prompt": "The afternoon __________ was very bright, so we sat under a large tree.",
+          "questionKey": "1351-1360:9"
         },
         {
           "number": 10,
-          "prompt": "They visited an old __________ building in the city center.",
-          "answer": "religious",
-          "explanation": "语法上，religious 是形容词，修饰 building。语义上，参观古老的宗教建筑。"
+          "prompt": "Eating more vegetables and sleeping well can help you stay __________.",
+          "questionKey": "1351-1360:10"
         }
       ]
     },
@@ -1301,77 +1241,67 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeStart": 1361,
       "rangeEnd": 1370,
       "wordList": [
+        "proceed",
+        "glad",
+        "whereas",
+        "tape",
+        "wash",
+        "blow",
         "volume",
         "actor",
         "invest",
-        "tape",
-        "location",
-        "whereas",
-        "glad",
-        "proceed",
-        "wash",
-        "blow"
+        "location"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Please turn down the __________; the music is too loud.",
-          "answer": "volume",
-          "explanation": "语法上，“turn down the volume” 是固定搭配。语义上，音乐太大声，所以调低音量。常见搭配：**turn up/down the volume**。"
+          "prompt": "A strong wind began to __________ through the trees before the storm arrived.",
+          "questionKey": "1361-1370:1"
         },
         {
           "number": 2,
-          "prompt": "My brother wants to become an __________ in movies.",
-          "answer": "actor",
-          "explanation": "语法上，“become an actor” 中空格需要职业名词。语义上，想出演电影，所以想成为演员。"
+          "prompt": "Please turn down the __________ because the TV is too loud for the baby.",
+          "questionKey": "1361-1370:2"
         },
         {
           "number": 3,
-          "prompt": "We need to choose a good __________ for the new restaurant.",
-          "answer": "location",
-          "explanation": "语法上，“a good location” 是名词短语。语义上，开新餐厅要选好地点。"
+          "prompt": "The exact __________ of the new school is still unknown to most parents.",
+          "questionKey": "1361-1370:3"
         },
         {
           "number": 4,
-          "prompt": "I am __________ to hear that you passed the exam.",
-          "answer": "glad",
-          "explanation": "语法上，“be glad to do sth.” 是固定搭配。语义上，听说你通过考试，我很高兴。常见搭配：**be glad to hear/see/know…**"
+          "prompt": "My uncle decided to __________ his savings in a small restaurant business.",
+          "questionKey": "1361-1370:4"
         },
         {
           "number": 5,
-          "prompt": "You should __________ your hands before dinner.",
-          "answer": "wash",
-          "explanation": "语法上，“should + 动词原形”，所以用 wash。语义上，饭前应该洗手。"
+          "prompt": "After checking our tickets, the guard told us to __________ to the main hall.",
+          "questionKey": "1361-1370:5"
         },
         {
           "number": 6,
-          "prompt": "The strong wind may __________ the papers off the desk.",
-          "answer": "blow",
-          "explanation": "语法上，“may + 动词原形”，所以用 blow。语义上，强风可能把纸吹下桌子。"
+          "prompt": "You should __________ your hands carefully before eating dinner.",
+          "questionKey": "1361-1370:6"
         },
         {
           "number": 7,
-          "prompt": "My sister likes tea, __________ I prefer coffee.",
-          "answer": "whereas",
-          "explanation": "语法上，whereas 是连词，连接两个对比句。语义上，姐姐喜欢茶，而我喜欢咖啡。常见用法：**A…, whereas B…** 表示对比。"
+          "prompt": "The famous __________ played a brave doctor in the new film.",
+          "questionKey": "1361-1370:7"
         },
         {
           "number": 8,
-          "prompt": "The company will __________ a lot of money in new technology.",
-          "answer": "invest",
-          "explanation": "语法上，“will + 动词原形”，所以用 invest。语义上，公司将在新技术上投入大量资金。常见搭配：**invest money in something**。"
+          "prompt": "I am __________ that you came to my birthday party even though you were busy.",
+          "questionKey": "1361-1370:8"
         },
         {
           "number": 9,
-          "prompt": "Use some __________ to close the box.",
-          "answer": "tape",
-          "explanation": "语法上，“some tape” 中 tape 作不可数名词，表示胶带。语义上，用胶带封箱子。"
+          "prompt": "Use this __________ to close the box before you send it by post.",
+          "questionKey": "1361-1370:9"
         },
         {
           "number": 10,
-          "prompt": "After checking the tickets, we can __________ into the hall.",
-          "answer": "proceed",
-          "explanation": "语法上，“can + 动词原形”，所以用 proceed。语义上，检查完票后，可以继续进入大厅。常见搭配：**proceed into/to/with…**"
+          "prompt": "My sister enjoys maths, __________ I prefer history and literature.",
+          "questionKey": "1361-1370:10"
         }
       ]
     },
@@ -1382,76 +1312,66 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeEnd": 1380,
       "wordList": [
         "murder",
-        "egg",
-        "concert",
-        "opposite",
         "finance",
-        "soldier",
+        "opposite",
+        "concert",
+        "monitor",
         "hate",
         "stone",
-        "monitor",
-        "sum"
+        "soldier",
+        "sum",
+        "egg"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "There is a bank on the __________ side of the street.",
-          "answer": "opposite",
-          "explanation": "语法上，“on the opposite side of the street” 是固定表达。语义上，银行在街道对面。常见搭配：**the opposite side of…**"
+          "prompt": "The bank is on the __________ side of the street, across from the library.",
+          "questionKey": "1371-1380:1"
         },
         {
           "number": 2,
-          "prompt": "She boiled an __________ for breakfast.",
-          "answer": "egg",
-          "explanation": "语法上，“an egg” 中空格需要可数名词单数。语义上，早餐煮了一个鸡蛋。"
+          "prompt": "The children picked up a small __________ and threw it into the river.",
+          "questionKey": "1371-1380:2"
         },
         {
           "number": 3,
-          "prompt": "The police arrested a man for __________.",
-          "answer": "murder",
-          "explanation": "语法上，“for murder” 是介词短语，murder 作名词。语义上，警察因谋杀逮捕了一名男子。"
+          "prompt": "The teacher asked us to find the __________ of all the numbers on the board.",
+          "questionKey": "1371-1380:3"
         },
         {
           "number": 4,
-          "prompt": "We went to a pop __________ last Friday night.",
-          "answer": "concert",
-          "explanation": "语法上，“a pop concert” 是名词短语。语义上，去听流行音乐会。"
+          "prompt": "The police arrested a man for __________ after a woman was found dead.",
+          "questionKey": "1371-1380:4"
         },
         {
           "number": 5,
-          "prompt": "The teacher asked me to __________ up the main ideas in one sentence.",
-          "answer": "sum",
-          "explanation": "语法上，“asked me to + 动词原形”，所以用 sum。语义上，用一句话总结主要观点。常见短语：**sum up**，表示“总结”。"
+          "prompt": "Parents should __________ how much time young children spend online.",
+          "questionKey": "1371-1380:5"
         },
         {
           "number": 6,
-          "prompt": "A __________ stood at the gate of the army camp.",
-          "answer": "soldier",
-          "explanation": "语法上，“A soldier stood…” 中空格需要名词作主语。语义上，在军营门口站岗的人是士兵。"
+          "prompt": "The __________ stood near the gate and checked every car entering the camp.",
+          "questionKey": "1371-1380:6"
         },
         {
           "number": 7,
-          "prompt": "The school uses cameras to __________ the entrance.",
-          "answer": "monitor",
-          "explanation": "语法上，“uses cameras to + 动词原形”，所以用 monitor。语义上，学校用摄像头监控入口。"
+          "prompt": "The company needs more money to __________ its new building project.",
+          "questionKey": "1371-1380:7"
         },
         {
           "number": 8,
-          "prompt": "I really __________ waiting in long lines.",
-          "answer": "hate",
-          "explanation": "语法上，“I really hate doing sth.” 是常见结构。语义上，讨厌排长队。常见搭配：**hate doing something / hate to do something**。"
+          "prompt": "I do not __________ vegetables, but I prefer meat when I am very hungry.",
+          "questionKey": "1371-1380:8"
         },
         {
           "number": 9,
-          "prompt": "The old house was built from grey __________.",
-          "answer": "stone",
-          "explanation": "语法上，“built from grey stone” 中 stone 作材料名词。语义上，老房子由灰色石头建成。"
+          "prompt": "My mother boiled an __________ for breakfast before she went to work.",
+          "questionKey": "1371-1380:9"
         },
         {
           "number": 10,
-          "prompt": "He studied __________ because he wants to work in a bank.",
-          "answer": "finance",
-          "explanation": "语法上，finance 作学科名词。语义上，他想在银行工作，所以学习金融。"
+          "prompt": "We bought two tickets for a pop __________ in the city centre.",
+          "questionKey": "1371-1380:10"
         }
       ]
     },
@@ -1462,76 +1382,66 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeEnd": 1390,
       "wordList": [
         "usual",
+        "camera",
+        "shock",
+        "carefully",
+        "comfortable",
+        "manufacture",
         "pack",
         "swim",
         "recall",
-        "comfortable",
-        "wine",
-        "shock",
-        "manufacture",
-        "camera",
-        "carefully"
+        "wine"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "Please read the instructions __________ before using the machine.",
-          "answer": "carefully",
-          "explanation": "语法上，carefully 是副词，修饰 read。语义上，使用机器前要仔细阅读说明。"
+          "prompt": "The news of the sudden fire was a great __________ to everyone in the village.",
+          "questionKey": "1381-1390:1"
         },
         {
           "number": 2,
-          "prompt": "I need to __________ my bag before the trip.",
-          "answer": "pack",
-          "explanation": "语法上，“need to + 动词原形”，所以用 pack。语义上，旅行前需要打包行李。"
+          "prompt": "This sofa is very __________, so I often fall asleep on it after dinner.",
+          "questionKey": "1381-1390:2"
         },
         {
           "number": 3,
-          "prompt": "The sofa is very __________, so I often fall asleep on it.",
-          "answer": "comfortable",
-          "explanation": "语法上，comfortable 是形容词，作表语。语义上，沙发很舒服，所以常常睡着。"
+          "prompt": "I got up at my __________ time, but the bus arrived earlier than normal.",
+          "questionKey": "1381-1390:3"
         },
         {
           "number": 4,
-          "prompt": "She brought a __________ to take photos of the mountains.",
-          "answer": "camera",
-          "explanation": "语法上，“a camera” 中空格需要名词。语义上，拍山景照片需要相机。"
+          "prompt": "Read the instructions __________ before you use the machine for the first time.",
+          "questionKey": "1381-1390:4"
         },
         {
           "number": 5,
-          "prompt": "Can you __________ the name of the restaurant we visited?",
-          "answer": "recall",
-          "explanation": "语法上，“Can you + 动词原形”，所以用 recall。语义上，问你能否回想起餐厅名字。"
+          "prompt": "We need to __________ our clothes tonight because the flight leaves early tomorrow.",
+          "questionKey": "1381-1390:5"
         },
         {
           "number": 6,
-          "prompt": "The factory will __________ new phones next year.",
-          "answer": "manufacture",
-          "explanation": "语法上，“will + 动词原形”，所以用 manufacture。语义上，工厂明年制造新手机。"
+          "prompt": "I cannot __________ his phone number, although I know his name very well.",
+          "questionKey": "1381-1390:6"
         },
         {
           "number": 7,
-          "prompt": "He felt great __________ when he heard the bad news.",
-          "answer": "shock",
-          "explanation": "语法上，“felt great shock” 中 shock 作名词。语义上，听到坏消息感到震惊。"
+          "prompt": "My father opened a bottle of red __________ during the family dinner.",
+          "questionKey": "1381-1390:7"
         },
         {
           "number": 8,
-          "prompt": "We usually __________ in the pool after school.",
-          "answer": "swim",
-          "explanation": "语法上，“usually + 动词原形” 用于一般现在时。语义上，放学后通常在泳池游泳。"
+          "prompt": "She bought a new __________ to take better photos during her holiday.",
+          "questionKey": "1381-1390:8"
         },
         {
           "number": 9,
-          "prompt": "My __________ breakfast is bread and eggs.",
-          "answer": "usual",
-          "explanation": "语法上，usual 是形容词，修饰 breakfast。语义上，平常的早餐是面包和鸡蛋。"
+          "prompt": "Children should learn to __________ because it can save their lives near water.",
+          "questionKey": "1381-1390:9"
         },
         {
           "number": 10,
-          "prompt": "Adults sometimes drink __________ with dinner.",
-          "answer": "wine",
-          "explanation": "语法上，wine 作名词。语义上，成年人有时晚餐喝葡萄酒。"
+          "prompt": "This factory can __________ thousands of shoes every week.",
+          "questionKey": "1381-1390:10"
         }
       ]
     },
@@ -1541,77 +1451,67 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "rangeStart": 1391,
       "rangeEnd": 1400,
       "wordList": [
-        "visitor",
-        "theater",
-        "museum",
-        "coffee",
-        "cycle",
-        "freedom",
-        "objective",
-        "construction",
         "totally",
-        "dear"
+        "construction",
+        "theater",
+        "visitor",
+        "coffee",
+        "objective",
+        "cycle",
+        "dear",
+        "freedom",
+        "museum"
       ],
       "questions": [
         {
           "number": 1,
-          "prompt": "We watched a play at the __________ last night.",
-          "answer": "theater",
-          "explanation": "语法上，“at the theater” 是地点介词短语。语义上，看戏剧的地方是剧院。注意：英式拼写常为 **theatre**。"
+          "prompt": "We watched a play at the __________ near our hotel last night.",
+          "questionKey": "1391-1400:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ looked at the painting for a long time.",
-          "answer": "visitor",
-          "explanation": "语法上，“The visitor looked…” 中空格需要名词作主语。语义上，看画很久的人是游客/参观者。"
+          "prompt": "The water __________ in nature moves from the sea to the sky and back again.",
+          "questionKey": "1391-1400:2"
         },
         {
           "number": 3,
-          "prompt": "I drink a cup of __________ every morning.",
-          "answer": "coffee",
-          "explanation": "语法上，coffee 作名词。语义上，每天早上喝一杯咖啡。"
+          "prompt": "I usually drink a cup of __________ in the morning to help me wake up.",
+          "questionKey": "1391-1400:3"
         },
         {
           "number": 4,
-          "prompt": "The __________ of the lesson is to help students speak more clearly.",
-          "answer": "objective",
-          "explanation": "语法上，“The objective of…” 是固定表达，objective 作名词，表示“目标”。语义上，这节课的目标是帮助学生说得更清楚。"
+          "prompt": "I __________ forgot about the meeting and arrived thirty minutes late.",
+          "questionKey": "1391-1400:4"
         },
         {
           "number": 5,
-          "prompt": "The new bridge is still under __________.",
-          "answer": "construction",
-          "explanation": "语法上，“under construction” 是固定搭配。语义上，新桥还在建设中。常见搭配：**under construction**。"
+          "prompt": "The new art __________ has many paintings from different countries.",
+          "questionKey": "1391-1400:5"
         },
         {
           "number": 6,
-          "prompt": "Many people visit the history __________ on weekends.",
-          "answer": "museum",
-          "explanation": "语法上，“the history museum” 是名词短语。语义上，周末很多人参观历史博物馆。"
+          "prompt": "Every __________ must show a ticket before entering the exhibition hall.",
+          "questionKey": "1391-1400:6"
         },
         {
           "number": 7,
-          "prompt": "In some countries, people have more __________ to choose their jobs.",
-          "answer": "freedom",
-          "explanation": "语法上，freedom 是名词，作 have 的宾语。语义上，人们有更多自由选择工作。常见搭配：**freedom to do something**。"
+          "prompt": "Many people believe that __________ of speech is important in modern society.",
+          "questionKey": "1391-1400:7"
         },
         {
           "number": 8,
-          "prompt": "The weather is __________ different from yesterday.",
-          "answer": "totally",
-          "explanation": "语法上，totally 是副词，修饰 different。语义上，天气和昨天完全不同。"
+          "prompt": "The __________ of the new bridge will take about two years to finish.",
+          "questionKey": "1391-1400:8"
         },
         {
           "number": 9,
-          "prompt": "A butterfly has a life __________ with several stages.",
-          "answer": "cycle",
-          "explanation": "语法上，“a life cycle” 是固定搭配。语义上，蝴蝶有几个阶段的生命周期。常见搭配：**life cycle**。"
+          "prompt": "“My __________ friend, thank you for helping me when I was in trouble.”",
+          "questionKey": "1391-1400:9"
         },
         {
           "number": 10,
-          "prompt": "“My __________ friend,” she wrote at the start of the letter.",
-          "answer": "dear",
-          "explanation": "语法上，dear 是形容词，修饰 friend。语义上，信件开头写 “My dear friend”。常见书信表达：**Dear… / My dear friend**。"
+          "prompt": "The main __________ of this course is to improve students’ speaking confidence.",
+          "questionKey": "1391-1400:10"
         }
       ]
     }
