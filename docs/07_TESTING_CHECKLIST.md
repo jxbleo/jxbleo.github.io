@@ -23,6 +23,7 @@ Run after JavaScript changes:
 find cloudfunctions -name index.js -exec node --check {} \;
 node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
+node --check assets/js/practice-session.js
 ```
 
 Run after catalog/content changes:
@@ -51,6 +52,23 @@ Open:
 - at least one IELTS Reading page
 - at least one IELTS Listening page
 - at least one Vocabulary page
+
+Practice navigation checks:
+
+- opening a task from Dashboard Assignments appends a safe `return` target and
+  the practice `Back` control returns to Dashboard Assignments
+- opening a task from Dashboard Library appends a safe `return` target and
+  the practice `Back` control returns to Dashboard Library
+- opening a teacher preview from Teacher Library returns to
+  `teacher.html?view=library`
+- practice `Home` goes to `dashboard.html` for students/visitors and Teacher
+  Library for `teacher=1`
+- BBC and Vocabulary shared practice pages show both `Back` and `Home`; IELTS
+  Reading and IELTS Listening show both controls in the exam top bar
+- static practice data requests use the public app-version query, not
+  timestamp cache busting such as `?_=` + `Date.now()`
+- Vocabulary 5+ group countable Test still abandons the active server session
+  on page hide/leave and must not be restored as an ordinary draft
 
 For BBC pages with worksheet PDFs, verify the top-corner `Download Practice`
 link returns HTTP 200 for the current set's PDF, and render at least one

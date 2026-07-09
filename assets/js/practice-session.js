@@ -1,12 +1,17 @@
 (function(window, document) {
     'use strict';
 
-    var visitor = new URLSearchParams(window.location.search).get('visitor') === '1'
+    var params = new URLSearchParams(window.location.search);
+    var visitor = params.get('visitor') === '1'
         || localStorage.getItem('mrcat_visitor') === 'true';
+    var teacherMode = params.get('teacher') === '1';
     var profile = null;
 
     window.addEventListener('pageshow', function(event) {
-        if (event.persisted) window.location.reload();
+        if (!event.persisted) return;
+        document.querySelectorAll('.mrcat-back-modal.show,.mrcat-visitor-modal.show').forEach(function(modal) {
+            modal.classList.remove('show');
+        });
     });
 
     try {
@@ -27,7 +32,9 @@
     function addStyles() {
         var style = document.createElement('style');
         style.textContent =
-            '.mrcat-back{position:fixed;z-index:9990;left:14px;bottom:14px;padding:10px 14px;border:1px solid rgba(15,118,110,.22);border-radius:999px;color:#0f5f57;background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(15,76,71,.16);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-decoration:none;backdrop-filter:blur(12px)}' +
+            '.mrcat-practice-nav{position:fixed;z-index:9990;left:14px;bottom:14px;display:flex;gap:8px;align-items:center}' +
+            '.mrcat-practice-nav button{min-height:38px;padding:0 14px;border:1px solid rgba(15,118,110,.22);border-radius:999px;color:#0f5f57;background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(15,76,71,.16);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-decoration:none;backdrop-filter:blur(12px);cursor:pointer}' +
+            '.mrcat-practice-nav button:hover{color:#0b4f49;border-color:rgba(15,118,110,.36);transform:translateY(-1px)}' +
             '.mrcat-back-modal{position:fixed;z-index:10001;inset:0;display:none;place-items:center;padding:20px;background:rgba(10,35,32,.48);backdrop-filter:blur(7px)}' +
             '.mrcat-back-modal.show{display:grid}.mrcat-back-box{width:min(390px,100%);padding:26px;border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.22);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}' +
             '.mrcat-back-box h2{margin:0 0 8px;color:#18332f;font-size:1.35rem}.mrcat-back-box p{margin:0 0 20px;color:#647b75;line-height:1.55}.mrcat-back-actions{display:grid;gap:9px}.mrcat-back-actions button{min-height:44px;border-radius:12px;font-weight:800}' +
@@ -42,29 +49,75 @@
         document.head.appendChild(style);
     }
 
-    function addBackLink() {
-        var link = document.createElement('a');
-        link.className = 'mrcat-back';
-        link.href = 'dashboard.html';
-        link.textContent = 'Back';
-        link.setAttribute('aria-label', 'Back');
-        link.title = 'Back';
-        link.addEventListener('click', function(event) {
+    function safeLocalUrl(value) {
+        if (!value) return '';
+        try {
+            var url = new URL(value, window.location.href);
+            if (url.origin !== window.location.origin) return '';
+            return url.href;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function samePage(url) {
+        if (!url) return false;
+        try {
+            var target = new URL(url, window.location.href);
+            return target.origin === window.location.origin
+                && target.pathname === window.location.pathname
+                && target.search === window.location.search;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function homeUrl() {
+        return teacherMode ? 'teacher.html?view=library' : 'dashboard.html';
+    }
+
+    function returnUrl() {
+        var explicit = safeLocalUrl(params.get('return'));
+        if (explicit && !samePage(explicit)) return explicit;
+        var referrer = safeLocalUrl(document.referrer);
+        if (referrer && !samePage(referrer)) return referrer;
+        return homeUrl();
+    }
+
+    function addPracticeNav() {
+        if (document.body && document.body.getAttribute('data-practice-nav') === 'manual') return;
+        if (document.getElementById('mrcat-practice-nav')) return;
+        var nav = document.createElement('nav');
+        nav.className = 'mrcat-practice-nav';
+        nav.id = 'mrcat-practice-nav';
+        nav.setAttribute('aria-label', 'Practice navigation');
+        nav.innerHTML =
+            '<button class="mrcat-back" type="button" aria-label="Back">Back</button>' +
+            '<button class="mrcat-home" type="button" aria-label="Home">Home</button>';
+        nav.querySelector('.mrcat-back').addEventListener('click', function(event) {
             event.preventDefault();
             confirmBack();
         });
-        document.body.appendChild(link);
+        nav.querySelector('.mrcat-home').addEventListener('click', function(event) {
+            event.preventDefault();
+            confirmHome();
+        });
+        document.body.appendChild(nav);
     }
 
-    function goBack() {
+    function goTo(url) {
         document.querySelectorAll('.mrcat-back-modal.show').forEach(function(modal) {
             modal.classList.remove('show');
         });
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.location.href = 'dashboard.html';
-        }
+        window.location.href = url;
+    }
+
+    function goBack() {
+        goTo(returnUrl());
+    }
+
+    function goHome() {
+        goTo(homeUrl());
     }
 
     function buildBackModal() {
@@ -74,14 +127,18 @@
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
             '<div class="mrcat-back-box">' +
-                '<h2>Leave this page?</h2>' +
-                '<p>You will go back to the previous page. Unsaved answers on this page may be lost.</p>' +
+                '<h2 id="mrcat-leave-title">Leave this page?</h2>' +
+                '<p id="mrcat-leave-copy">Unsaved answers on this page may be lost.</p>' +
                 '<div class="mrcat-back-actions">' +
                     '<button class="mrcat-back-confirm" type="button">Back</button>' +
                     '<button class="mrcat-back-cancel" type="button">Stay here</button>' +
                 '</div>' +
             '</div>';
-        modal.querySelector('.mrcat-back-confirm').addEventListener('click', goBack);
+        modal.querySelector('.mrcat-back-confirm').addEventListener('click', function() {
+            var action = modal.getAttribute('data-leave-action');
+            if (action === 'home') goHome();
+            else goBack();
+        });
         modal.querySelector('.mrcat-back-cancel').addEventListener('click', function() {
             modal.classList.remove('show');
         });
@@ -89,9 +146,24 @@
         return modal;
     }
 
-    function confirmBack() {
+    function showLeaveModal(action, label, copy) {
         var modal = document.querySelector('.mrcat-back-modal') || buildBackModal();
+        modal.setAttribute('data-leave-action', action);
+        var title = modal.querySelector('#mrcat-leave-title');
+        var text = modal.querySelector('#mrcat-leave-copy');
+        var confirm = modal.querySelector('.mrcat-back-confirm');
+        if (title) title.textContent = 'Leave this page?';
+        if (text) text.textContent = copy;
+        if (confirm) confirm.textContent = label;
         modal.classList.add('show');
+    }
+
+    function confirmBack() {
+        showLeaveModal('back', 'Back', 'You will return to the page that opened this practice. Unsaved answers on this page may be lost.');
+    }
+
+    function confirmHome() {
+        showLeaveModal('home', 'Home', 'You will go to your main learning page. Unsaved answers on this page may be lost.');
     }
 
     function buildVisitorModal() {
@@ -154,7 +226,7 @@
 
     function init() {
         addStyles();
-        addBackLink();
+        addPracticeNav();
         if (visitor) installVisitorGuard(buildVisitorModal());
     }
 
@@ -168,6 +240,10 @@
         isVisitor: function() { return visitor; },
         profile: profile,
         confirmBack: confirmBack,
-        goBack: goBack
+        confirmHome: confirmHome,
+        goBack: goBack,
+        goHome: goHome,
+        returnUrl: returnUrl,
+        homeUrl: homeUrl
     };
 })(window, document);

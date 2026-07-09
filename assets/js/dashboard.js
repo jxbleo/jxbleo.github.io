@@ -17,6 +17,7 @@
         finishedExpanded: false,
         accountPanelOpen: false
     };
+    var dashboardViews = ['assignments', 'words', 'resources'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -276,23 +277,52 @@
         return href + (href.indexOf('?') === -1 ? '?' : '&') + encodeURIComponent(key) + '=' + encodeURIComponent(value);
     }
 
+    function appVersion() {
+        return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
+    }
+
+    function removeQueryParam(href, key) {
+        var hashIndex = href.indexOf('#');
+        var hash = hashIndex === -1 ? '' : href.slice(hashIndex);
+        var baseAndQuery = hashIndex === -1 ? href : href.slice(0, hashIndex);
+        var queryIndex = baseAndQuery.indexOf('?');
+        if (queryIndex === -1) return href;
+        var base = baseAndQuery.slice(0, queryIndex);
+        var query = baseAndQuery.slice(queryIndex + 1).split('&').filter(function(part) {
+            return part && decodeURIComponent(part.split('=')[0]) !== key;
+        }).join('&');
+        return base + (query ? '?' + query : '') + hash;
+    }
+
+    function withReturnParam(href, returnUrl) {
+        if (!href || href === '#') return href || '#';
+        var cleanHref = removeQueryParam(href, 'return');
+        return appendQueryParam(cleanHref, 'return', returnUrl || 'dashboard.html');
+    }
+
+    function dashboardReturnUrl(viewName) {
+        var view = dashboardViews.indexOf(viewName) === -1 ? 'assignments' : viewName;
+        return 'dashboard.html?view=' + encodeURIComponent(view);
+    }
+
     function isVocabularyHref(href) {
         return /(?:^|\/)vocabulary\.html(?:\?|$)/i.test(String(href || ''));
     }
 
-    function vocabularyLearningHref(set) {
+    function vocabularyLearningHref(set, returnView) {
         var href = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
         var params = [
-            'app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1'),
+            'app=' + encodeURIComponent(appVersion()),
             'entry=learn'
         ];
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
-        return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        href = href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        return withReturnParam(href, dashboardReturnUrl(returnView || 'resources'));
     }
 
-    function practiceHref(item, assignmentId) {
+    function practiceHref(item, assignmentId, returnView) {
         var href = item.link || item.href || '#';
-        var params = ['app=' + encodeURIComponent(window.MRCAT_CONFIG.appVersion || '1')];
+        var params = ['app=' + encodeURIComponent(appVersion())];
         if (assignmentId) params.push('assignment=' + encodeURIComponent(assignmentId));
         if (item.status) params.push('status=' + encodeURIComponent(normalizedStatus(item.status)));
         if (item.prefill_attempt_id) params.push('prefill=' + encodeURIComponent(item.prefill_attempt_id));
@@ -302,7 +332,8 @@
             params.push('entry=learn');
         }
         if (state.session && state.session.mode === 'visitor') params.push('visitor=1');
-        return href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        href = href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
+        return withReturnParam(href, dashboardReturnUrl(returnView || (assignmentId ? 'assignments' : 'resources')));
     }
 
     function defaultPracticeLink(setId) {
@@ -572,7 +603,7 @@
         var setId = set.set_id || set.id || set.title || '';
         var setHref = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
         var href = finished && isVocabularyHref(setHref)
-            ? vocabularyLearningHref(set)
+            ? vocabularyLearningHref(set, 'assignments')
             : assignmentHref;
         var collected = isStarCollected(item);
         var replyButton = replyCount
@@ -1658,7 +1689,7 @@
     }
 
     function loadPublicCatalog() {
-        return fetch('data/home-catalog.json?_=' + Date.now())
+        return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
             .then(function(response) {
                 if (!response.ok) throw new Error('Catalog unavailable');
                 return response.json();
@@ -1683,7 +1714,7 @@
 
     function loadPublicCatalogSections() {
         if (libraryCatalog) return Promise.resolve();
-        return fetch('data/home-catalog.json?_=' + Date.now())
+        return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
             .then(function(response) {
                 if (!response.ok) return;
                 return response.json();
@@ -1724,13 +1755,28 @@
         });
     }
 
-    function activateView(viewName) {
+    function initialDashboardView() {
+        var view = new URLSearchParams(window.location.search).get('view') || '';
+        return dashboardViews.indexOf(view) === -1 ? 'assignments' : view;
+    }
+
+    function rememberDashboardView(viewName) {
+        if (dashboardViews.indexOf(viewName) === -1 || !window.history || !window.history.replaceState) return;
+        var url = new URL(window.location.href);
+        if (viewName === 'assignments') url.searchParams.delete('view');
+        else url.searchParams.set('view', viewName);
+        window.history.replaceState({}, '', url);
+    }
+
+    function activateView(viewName, skipUrlUpdate) {
+        if (dashboardViews.indexOf(viewName) === -1) viewName = 'assignments';
         document.querySelectorAll('.tab-button').forEach(function(button) {
             button.classList.toggle('active', button.dataset.view === viewName);
         });
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
+        if (!skipUrlUpdate) rememberDashboardView(viewName);
         if (viewName === 'words') renderMyWordsView();
     }
 
@@ -1863,6 +1909,7 @@
             renderAssignments();
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();
+            activateView(initialDashboardView(), true);
         })
         .catch(function(error) {
             assignmentContent.innerHTML = '<div class="empty-card"><strong>Unable to load the dashboard</strong>' + escapeHtml(error.message || 'Please sign in again.') + '</div>';

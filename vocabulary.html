@@ -1659,9 +1659,9 @@
     </div>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260708-1"></script>
+    <script src="assets/js/config.public.js?v=20260709-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
-    <script src="assets/js/practice-session.js?v=20260623-1"></script>
+    <script src="assets/js/practice-session.js?v=20260709-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
     <script>
         var params = new URLSearchParams(window.location.search);
@@ -1733,6 +1733,10 @@
 
         function currentUserId() {
             return localStorage.getItem('opencode_user') || (localStorage.getItem('opencode_visitor') === 'true' ? 'VISITOR' : '');
+        }
+
+        function contentVersion() {
+            return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
         }
 
         function testDraftKey() {
@@ -3904,13 +3908,13 @@
         updateIdentityStatus();
 
         function loadVocabularyUnit() {
-            return fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?_=' + Date.now())
+            return fetch('content/vocabulary/' + encodeURIComponent(setId) + '.json?v=' + encodeURIComponent(contentVersion()))
                 .then(function(response) {
                     if (!response.ok) throw new Error('Vocabulary unit not found.');
                     return response.json();
                 })
                 .catch(function(fetchError) {
-                    return injectScript('content/vocabulary/' + encodeURIComponent(setId) + '.js')
+                    return injectScript('content/vocabulary/' + encodeURIComponent(setId) + '.js?v=' + encodeURIComponent(contentVersion()))
                         .then(function() {
                             var fallback = window.__VOCABULARY_UNITS__ && window.__VOCABULARY_UNITS__[setId];
                             if (!fallback) throw fetchError;

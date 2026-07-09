@@ -123,9 +123,14 @@ Student cards should show:
 - the practice-entry confirmation dialog must close before navigation and must
   not be restored by browser Back/bfcache; returning from a practice page should
   show the page behind the dialog
-- practice pages use `Back`, not `Home`, for return controls. Tapping Back
-  first shows a leave-page confirmation, then returns one browser-history page;
-  if no history is available, it falls back to `dashboard.html`.
+- practice pages expose both `Back` and `Home` controls. `Back` first shows a
+  leave-page confirmation, then returns to the page that opened the practice
+  using a safe same-origin `return` URL when available. If no safe return target
+  exists, it falls back to the appropriate home surface. `Home` goes directly to
+  the student's dashboard, or to Teacher Library for `teacher=1` preview pages.
+  Do not rely on raw `window.history.back()` for the primary practice return
+  control, because a browser tab may contain older login or navigation history
+  that is not the previous learning surface.
 
 My Words:
 
