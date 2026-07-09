@@ -9,7 +9,7 @@
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NGSL",
-  "cefrLevel": "C1",
+  "cefrLevel": "B1+",
   "wordCount": 100,
   "worksheetPdf": {
     "list": "assets/pdf/vocabulary/NGSL-J/NGSL-J-all-sets.pdf",
@@ -952,52 +952,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Without __________, the rule applies to all employees regardless of their position in the company.",
+          "prompt": "The hotel offered cheap __________ for students who needed a safe place to stay during the summer course.",
           "questionKey": "1901-1910:1"
         },
         {
           "number": 2,
-          "prompt": "The political __________ has become increasingly polarized over the past decade.",
+          "prompt": "During the meeting, the manager used a red pen to __________ the most important figures in the report.",
           "questionKey": "1901-1910:2"
         },
         {
           "number": 3,
-          "prompt": "The documentary will __________ the most pressing environmental issues facing our generation.",
+          "prompt": "The __________ asked the mayor several direct questions after the new transport plan was announced.",
           "questionKey": "1901-1910:3"
         },
         {
           "number": 4,
-          "prompt": "The multinational __________ announced record profits despite the economic downturn.",
+          "prompt": "Many farmers are worried because the changing __________ has made the weather less predictable than before.",
           "questionKey": "1901-1910:4"
         },
         {
           "number": 5,
-          "prompt": "The investigative __________ spent months uncovering evidence of corporate fraud.",
+          "prompt": "Tom wore a white __________ to the interview because he wanted to look neat and professional.",
           "questionKey": "1901-1910:5"
         },
         {
           "number": 6,
-          "prompt": "Finding affordable __________ in London during peak tourist season can be extremely challenging.",
+          "prompt": "Everyone must finish the safety training by Friday, and there will be no __________ for late applications.",
           "questionKey": "1901-1910:6"
         },
         {
           "number": 7,
-          "prompt": "During her travels through Southeast Asia, she would frequently __________ local artisans selling their crafts.",
+          "prompt": "The large __________ opened three new offices in Asia after its sales grew quickly last year.",
           "questionKey": "1901-1910:7"
         },
         {
           "number": 8,
-          "prompt": "He wore a crisp white __________ to the job interview to make a professional impression.",
+          "prompt": "My phone stopped working because one small computer __________ inside it had been damaged by water.",
           "questionKey": "1901-1910:8"
         },
         {
           "number": 9,
-          "prompt": "The semiconductor __________ shortage has significantly impacted global automobile production.",
+          "prompt": "The __________ of the singing competition received a recording contract and a small cash prize.",
           "questionKey": "1901-1910:9"
         },
         {
           "number": 10,
-          "prompt": "The Olympic __________ was greeted with a hero's welcome upon returning to her hometown.",
+          "prompt": "On my first day at university, I had an unexpected __________ with an old friend from primary school.",
           "questionKey": "1901-1910:10"
         }
       ]
@@ -1022,52 +1022,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "She practices __________ three times a week at the local sports club.",
+          "prompt": "The cake turned dark __________ after it stayed in the oven a little longer than the recipe suggested.",
           "questionKey": "1911-1920:1"
         },
         {
           "number": 2,
-          "prompt": "The leaves turn golden __________ in autumn, creating a spectacular display.",
+          "prompt": "The doctor told him to sit down and __________ slowly until his heartbeat became normal again.",
           "questionKey": "1911-1920:2"
         },
         {
           "number": 3,
-          "prompt": "After running the marathon, he could barely __________ and needed immediate medical attention.",
+          "prompt": "Being tired is not a good __________ for missing the deadline when you had two weeks to finish the work.",
           "questionKey": "1911-1920:3"
         },
         {
           "number": 4,
-          "prompt": "The natural __________ of the Norwegian fjords attracts millions of tourists annually.",
+          "prompt": "The project failed __________ because the team started too late and did not test the product carefully.",
           "questionKey": "1911-1920:4"
         },
         {
           "number": 5,
-          "prompt": "The rapid __________ development has led to significant environmental concerns in the region.",
+          "prompt": "She plays __________ every weekend at the sports centre, although she has never entered a serious competition.",
           "questionKey": "1911-1920:5"
         },
         {
           "number": 6,
-          "prompt": "The instructions were so poorly written that they only served to __________ customers further.",
+          "prompt": "Many young people prefer __________ life because there are more jobs, schools, and public services in the city.",
           "questionKey": "1911-1920:6"
         },
         {
           "number": 7,
-          "prompt": "The factory's __________ has increased by 40% since implementing the new automation system.",
+          "prompt": "These two words sound similar, so they often __________ students who are learning English for the first time.",
           "questionKey": "1911-1920:7"
         },
         {
           "number": 8,
-          "prompt": "His constant tardiness and weak __________ for missing deadlines frustrated his colleagues.",
+          "prompt": "The city is in the __________ part of the country, close to the sea and far from the capital.",
           "questionKey": "1911-1920:8"
         },
         {
           "number": 9,
-          "prompt": "The __________ states experienced unprecedented flooding last spring.",
+          "prompt": "The factory increased its weekly __________ after it installed faster machines and hired more workers.",
           "questionKey": "1911-1920:9"
         },
         {
           "number": 10,
-          "prompt": "The success of the project was __________ due to the dedication of the volunteer team.",
+          "prompt": "Many tourists come to this small island because of the natural __________ of its beaches and mountains.",
           "questionKey": "1911-1920:10"
         }
       ]
@@ -1092,52 +1092,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The company plans to __________ new security software across all departments next month.",
+          "prompt": "The storm caused __________ damage to the village, destroying homes, roads, and most of the fishing boats.",
           "questionKey": "1921-1930:1"
         },
         {
           "number": 2,
-          "prompt": "We need __________ evidence before we can proceed with the prosecution.",
+          "prompt": "You need to __________ the app before you can use your phone to control the new speaker.",
           "questionKey": "1921-1930:2"
         },
         {
           "number": 3,
-          "prompt": "The architect presented a detailed __________ of the proposed building design to the committee.",
+          "prompt": "The teacher asked us to __________ the total cost of the trip before collecting money from the class.",
           "questionKey": "1921-1930:3"
         },
         {
           "number": 4,
-          "prompt": "Advanced __________ skills are essential for careers in data science and engineering.",
+          "prompt": "A small __________ ran across the kitchen floor, so my mother quickly closed the food cupboard.",
           "questionKey": "1921-1930:4"
         },
         {
           "number": 5,
-          "prompt": "The laboratory __________ escaped from its cage during the night shift.",
+          "prompt": "He has always enjoyed __________ because he likes solving problems with numbers, shapes, and patterns.",
           "questionKey": "1921-1930:5"
         },
         {
           "number": 6,
-          "prompt": "Scientists use complex algorithms to __________ the trajectory of satellites orbiting Earth.",
+          "prompt": "The bedrooms are on the __________ floor, while the kitchen and living room are downstairs.",
           "questionKey": "1921-1930:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ earthquake caused widespread destruction across three provinces.",
+          "prompt": "The artist described the painting as the __________ of months of careful thought and quiet practice.",
           "questionKey": "1921-1930:7"
         },
         {
           "number": 8,
-          "prompt": "The protesters continued to __________ the government building for the third consecutive day.",
+          "prompt": "Protesters continued to __________ the square until the government agreed to meet their representatives.",
           "questionKey": "1921-1930:8"
         },
         {
           "number": 9,
-          "prompt": "The artist's latest __________ has been praised for its innovative use of recycled materials.",
+          "prompt": "Before writing the essay, you should make a clear __________ of your main ideas and examples.",
           "questionKey": "1921-1930:9"
         },
         {
           "number": 10,
-          "prompt": "The __________ floors of the building offer panoramic views of the city skyline.",
+          "prompt": "We have __________ food for twenty guests, so there is no need to buy anything else today.",
           "questionKey": "1921-1930:10"
         }
       ]
@@ -1162,52 +1162,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "His __________ departure from the meeting raised suspicions among board members.",
+          "prompt": "Please __________ your password regularly because old passwords can make your account less secure.",
           "questionKey": "1931-1940:1"
         },
         {
           "number": 2,
-          "prompt": "The political party began to __________ over disagreements regarding economic policy.",
+          "prompt": "She said it was pure __________ that she found her lost wallet on the bus seat.",
           "questionKey": "1931-1940:2"
         },
         {
           "number": 3,
-          "prompt": "The software requires users to __________ to the latest version for security purposes.",
+          "prompt": "The museum works hard to __________ old photographs so future generations can understand local history.",
           "questionKey": "1931-1940:3"
         },
         {
           "number": 4,
-          "prompt": "Public opinion can __________ dramatically depending on media coverage of events.",
+          "prompt": "The teacher asked the class to __________ into small groups before starting the speaking activity.",
           "questionKey": "1931-1940:4"
         },
         {
           "number": 5,
-          "prompt": "Through sheer __________ and determination, she managed to secure funding for her startup.",
+          "prompt": "The children waited in line to use the __________ in the park after school.",
           "questionKey": "1931-1940:5"
         },
         {
           "number": 6,
-          "prompt": "The committee voted to __________ the historic building from demolition.",
+          "prompt": "His long __________ kept him away from school for nearly three weeks, so he needed extra help.",
           "questionKey": "1931-1940:6"
         },
         {
           "number": 7,
-          "prompt": "The company's online __________ went viral, reaching millions of users.",
+          "prompt": "A good __________ checks facts carefully before publishing a story in a newspaper or on a website.",
           "questionKey": "1931-1940:7"
         },
         {
           "number": 8,
-          "prompt": "Her performance has been remarkably __________ throughout the entire season.",
+          "prompt": "A __________ noise outside the window made everyone stop talking and look towards the street.",
           "questionKey": "1931-1940:8"
         },
         {
           "number": 9,
-          "prompt": "The investigative __________ won a Pulitzer Prize for her exposé on government corruption.",
+          "prompt": "The company placed an __________ online to introduce its new language-learning course to parents.",
           "questionKey": "1931-1940:9"
         },
         {
           "number": 10,
-          "prompt": "Mental __________ remains heavily stigmatized in many conservative societies.",
+          "prompt": "Her work has been __________ this term, with strong homework, careful notes, and steady test results.",
           "questionKey": "1931-1940:10"
         }
       ]
@@ -1232,52 +1232,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The novel's intricate __________ kept readers guessing until the final chapter.",
+          "prompt": "The restaurant was __________ a small family shop, but it later became a popular chain across the city.",
           "questionKey": "1941-1950:1"
         },
         {
           "number": 2,
-          "prompt": "Whiplash injuries to the __________ are common in rear-end vehicle collisions.",
+          "prompt": "She put her phone __________ during dinner because she wanted to focus on the conversation with her parents.",
           "questionKey": "1941-1950:2"
         },
         {
           "number": 3,
-          "prompt": "The ergonomic chair provides excellent lumbar support and __________ during long working hours.",
+          "prompt": "The nurse tried to __________ the crying child before the doctor came into the room.",
           "questionKey": "1941-1950:3"
         },
         {
           "number": 4,
-          "prompt": "The building was __________ designed as a warehouse before being converted into apartments.",
+          "prompt": "__________, we need to think about transport costs, not just the price of the hotel.",
           "questionKey": "1941-1950:4"
         },
         {
           "number": 5,
-          "prompt": "Setting money __________ for retirement should be a priority for young professionals.",
+          "prompt": "The road was closed after a __________ accident involving two buses and several cars.",
           "questionKey": "1941-1950:5"
         },
         {
           "number": 6,
-          "prompt": "Heavy __________ disrupted transportation networks across the entire region.",
+          "prompt": "Scientists believe that this __________ may influence eye colour, but the full process is still complex.",
           "questionKey": "1941-1950:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ of finding employment in this field has improved significantly this year.",
+          "prompt": "The company has a good __________ of success because demand for its product is rising quickly.",
           "questionKey": "1941-1950:7"
         },
         {
           "number": 8,
-          "prompt": "Firstly, we need to address the budget concerns; __________, we must consider the timeline.",
+          "prompt": "Heavy __________ covered the mountain village, so students could not return to school for two days.",
           "questionKey": "1941-1950:8"
         },
         {
           "number": 9,
-          "prompt": "The medication can cause __________ side effects if not taken as prescribed.",
+          "prompt": "The movie has an exciting __________ about a detective who discovers the truth behind a strange crime.",
           "questionKey": "1941-1950:9"
         },
         {
           "number": 10,
-          "prompt": "Researchers have identified a specific __________ linked to increased longevity.",
+          "prompt": "He hurt his __________ while playing basketball, so he found it difficult to turn his head.",
           "questionKey": "1941-1950:10"
         }
       ]
@@ -1302,52 +1302,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Schools are working to better __________ technology into traditional classroom teaching methods.",
+          "prompt": "The main __________ for choosing the winner is not speed but the quality of the final project.",
           "questionKey": "1951-1960:1"
         },
         {
           "number": 2,
-          "prompt": "The film received harsh __________ from reviewers for its weak screenplay and poor acting.",
+          "prompt": "The course is designed __________ for students who want to improve academic reading and writing skills.",
           "questionKey": "1951-1960:2"
         },
         {
           "number": 3,
-          "prompt": "She decided to __________ at the local homeless shelter every weekend.",
+          "prompt": "The school hopes to __________ technology into lessons without replacing real discussion between teachers and students.",
           "questionKey": "1951-1960:3"
         },
         {
           "number": 4,
-          "prompt": "The instructions were written in __________ language to ensure everyone could understand them.",
+          "prompt": "His article received strong __________ because some readers thought the argument was unfair and badly supported.",
           "questionKey": "1951-1960:4"
         },
         {
           "number": 5,
-          "prompt": "The company's strategy focuses __________ on expanding into emerging markets.",
+          "prompt": "At the science __________, teachers from different countries shared new ideas for classroom experiments.",
           "questionKey": "1951-1960:5"
         },
         {
           "number": 6,
-          "prompt": "The annual medical __________ attracts thousands of healthcare professionals from around the world.",
+          "prompt": "I would not __________ on the result of the match because both teams are equally strong.",
           "questionKey": "1951-1960:6"
         },
         {
           "number": 7,
-          "prompt": "I wouldn't __________ against her succeeding—she's incredibly determined and talented.",
+          "prompt": "The company tried to __________ experienced workers by offering better pay and more flexible working hours.",
           "questionKey": "1951-1960:7"
         },
         {
           "number": 8,
-          "prompt": "The main __________ for selection is relevant professional experience in the field.",
+          "prompt": "The video explains the cooking process in a clear __________, from washing the vegetables to serving the meal.",
           "questionKey": "1951-1960:8"
         },
         {
           "number": 9,
-          "prompt": "The DNA __________ provided crucial evidence in solving the criminal case.",
+          "prompt": "She chose a __________ black dress for the ceremony because she preferred a simple and clean style.",
           "questionKey": "1951-1960:9"
         },
         {
           "number": 10,
-          "prompt": "Companies struggle to __________ experienced employees in today's competitive job market.",
+          "prompt": "Many students decided to __________ at the animal centre during the long summer holiday.",
           "questionKey": "1951-1960:10"
         }
       ]
@@ -1372,52 +1372,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The medical __________ revealed several abnormalities that required further investigation.",
+          "prompt": "My grandparents live in a __________ area where there are more fields than shops or apartment buildings.",
           "questionKey": "1961-1970:1"
         },
         {
           "number": 2,
-          "prompt": "The industrial __________ transformed society from agrarian to urban-based economies.",
+          "prompt": "Please stay __________ during the emergency, because panic will make it harder for everyone to follow instructions.",
           "questionKey": "1961-1970:2"
         },
         {
           "number": 3,
-          "prompt": "Access to quality healthcare remains a significant challenge in __________ communities.",
+          "prompt": "The family had to __________ their old car after the repair cost became higher than its value.",
           "questionKey": "1961-1970:3"
         },
         {
           "number": 4,
-          "prompt": "To her __________, the surprise party was attended by friends from across the country.",
+          "prompt": "The doctor ordered a full medical __________ after the patient complained about chest pain and dizziness.",
           "questionKey": "1961-1970:4"
         },
         {
           "number": 5,
-          "prompt": "Could you __________ your name for me? I want to make sure I have it correct.",
+          "prompt": "A long __________ filled the room after the teacher asked who had broken the window.",
           "questionKey": "1961-1970:5"
         },
         {
           "number": 6,
-          "prompt": "An uncomfortable __________ fell over the room after his controversial statement.",
+          "prompt": "The fire spread __________ through the dry forest because strong winds pushed it towards nearby homes.",
           "questionKey": "1961-1970:6"
         },
         {
           "number": 7,
-          "prompt": "The family was forced to __________ their home due to the approaching wildfire.",
+          "prompt": "Online booking is more __________ than phone booking because customers can choose seats and pay within minutes.",
           "questionKey": "1961-1970:7"
         },
         {
           "number": 8,
-          "prompt": "The technology sector is evolving __________, making continuous learning essential.",
+          "prompt": "The Industrial __________ changed the way goods were made and created many new types of jobs.",
           "questionKey": "1961-1970:8"
         },
         {
           "number": 9,
-          "prompt": "The meditation techniques helped her remain __________ during stressful situations at work.",
+          "prompt": "To my great __________, my students all passed the speaking test after weeks of careful practice.",
           "questionKey": "1961-1970:9"
         },
         {
           "number": 10,
-          "prompt": "The new manufacturing process is far more __________ than the previous method.",
+          "prompt": "Can you __________ your surname for the hotel receptionist, because she needs to write it correctly?",
           "questionKey": "1961-1970:10"
         }
       ]
@@ -1442,52 +1442,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The documentary showed the __________ transformation of the city over three decades.",
+          "prompt": "The whole argument is based on the false __________ that all students learn best in the same way.",
           "questionKey": "1971-1980:1"
         },
         {
           "number": 2,
-          "prompt": "The university prides itself on fostering __________ curiosity and critical thinking skills.",
+          "prompt": "He had to __________ against the wall for support after running ten kilometres in the hot weather.",
           "questionKey": "1971-1980:2"
         },
         {
           "number": 3,
-          "prompt": "Cultural attitudes toward work-life balance __________ significantly between countries.",
+          "prompt": "The school play showed a __________ change in the main character, from selfish teenager to responsible leader.",
           "questionKey": "1971-1980:3"
         },
         {
           "number": 4,
-          "prompt": "I'm deeply __________ for all the support you've provided during this difficult period.",
+          "prompt": "British and American spelling sometimes __________, even when the meaning of the word is exactly the same.",
           "questionKey": "1971-1980:4"
         },
         {
           "number": 5,
-          "prompt": "The charity organization will __________ food packages to families affected by the disaster.",
+          "prompt": "I am truly __________ for your advice because it helped me avoid a very expensive mistake.",
           "questionKey": "1971-1980:5"
         },
         {
           "number": 6,
-          "prompt": "Many English words __________ from Latin and Greek roots.",
+          "prompt": "Athletes need enough __________ in their diet to help repair muscles after hard training.",
           "questionKey": "1971-1980:6"
         },
         {
           "number": 7,
-          "prompt": "Athletes require adequate __________ intake to support muscle recovery and growth.",
+          "prompt": "She usually rides her __________ to work because it is cheaper and healthier than taking a taxi.",
           "questionKey": "1971-1980:7"
         },
         {
           "number": 8,
-          "prompt": "In times of economic uncertainty, companies tend to __________ toward conservative investment strategies.",
+          "prompt": "Volunteers helped __________ food and clean water to families affected by the flood.",
           "questionKey": "1971-1980:8"
         },
         {
           "number": 9,
-          "prompt": "The entire argument is based on the false __________ that correlation implies causation.",
+          "prompt": "The professor is known as a serious __________ who writes about history, politics, and education.",
           "questionKey": "1971-1980:9"
         },
         {
           "number": 10,
-          "prompt": "Many urban professionals now __________ to work to avoid traffic congestion and reduce emissions.",
+          "prompt": "Many English words __________ from Latin or French, which explains some unusual spellings.",
           "questionKey": "1971-1980:10"
         }
       ]
@@ -1512,52 +1512,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The poem is open to more than one __________ depending on the reader's perspective.",
+          "prompt": "Sleep is __________ for teenagers because their brains and bodies are still developing quickly.",
           "questionKey": "1981-1990:1"
         },
         {
           "number": 2,
-          "prompt": "The invention of the __________ revolutionized transportation and commerce in ancient civilizations.",
+          "prompt": "High __________ can create serious social problems when many people lose income at the same time.",
           "questionKey": "1981-1990:2"
         },
         {
           "number": 3,
-          "prompt": "Climate change is threatening __________ yields worldwide, raising food security concerns.",
+          "prompt": "The front __________ of my bicycle was damaged, so I had to walk home instead of riding.",
           "questionKey": "1981-1990:3"
         },
         {
           "number": 4,
-          "prompt": "Protecting __________ rights is fundamental to maintaining a democratic society.",
+          "prompt": "The storm destroyed most of the rice __________, leaving farmers with very little to sell that year.",
           "questionKey": "1981-1990:4"
         },
         {
           "number": 5,
-          "prompt": "The Scottish __________ features rugged mountains, pristine lochs, and rolling highlands.",
+          "prompt": "In that school, students from abroad are a small __________, but they are supported by special language classes.",
           "questionKey": "1981-1990:5"
         },
         {
           "number": 6,
-          "prompt": "Historians continue to debate the __________ of this ancient manuscript.",
+          "prompt": "The museum explains the __________ of the city, from a fishing village to a modern business centre.",
           "questionKey": "1981-1990:6"
         },
         {
           "number": 7,
-          "prompt": "Securing adequate funding is __________ to the success of this research project.",
+          "prompt": "Different readers may have a different __________ of the poem because some lines are open to several meanings.",
           "questionKey": "1981-1990:7"
         },
         {
           "number": 8,
-          "prompt": "Rising __________ rates have become a major concern for policymakers across Europe.",
+          "prompt": "The old man behaved like a true __________, offering his seat and speaking politely to everyone.",
           "questionKey": "1981-1990:8"
         },
         {
           "number": 9,
-          "prompt": "The elderly __________ held the door open for everyone entering the building.",
+          "prompt": "She studies __________ because she loves acting, stage design, and stories written for performance.",
           "questionKey": "1981-1990:9"
         },
         {
           "number": 10,
-          "prompt": "The political __________ unfolding in parliament has captivated the nation's attention.",
+          "prompt": "The mountain __________ looked peaceful in the evening light, with forests, rivers, and small farms below.",
           "questionKey": "1981-1990:10"
         }
       ]
@@ -1582,52 +1582,52 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The __________ fog made driving conditions extremely hazardous on the motorway.",
+          "prompt": "Good schools should __________ students to think clearly, communicate well, and act responsibly in society.",
           "questionKey": "1991-2000:1"
         },
         {
           "number": 2,
-          "prompt": "The tropical __________ caused widespread power outages and property damage.",
+          "prompt": "The child carried his favourite __________ everywhere, even when his family went on holiday.",
           "questionKey": "1991-2000:2"
         },
         {
           "number": 3,
-          "prompt": "The earthquake occurred along a geological __________ line that had been dormant for decades.",
+          "prompt": "The accident was not entirely my __________ because the other driver was also going too fast.",
           "questionKey": "1991-2000:3"
         },
         {
           "number": 4,
-          "prompt": "The museum will __________ rare artifacts from ancient Egypt for the next six months.",
+          "prompt": "The museum will __________ rare paintings from Italy for only three weeks this spring.",
           "questionKey": "1991-2000:4"
         },
         {
           "number": 5,
-          "prompt": "The accident resulted in only __________ injuries, fortunately no one was seriously hurt.",
+          "prompt": "The problem is __________, so we can fix it quickly without changing the whole plan.",
           "questionKey": "1991-2000:5"
         },
         {
           "number": 6,
-          "prompt": "Public campaigns aim to __________ citizens about the dangers of misinformation online.",
+          "prompt": "The police continued to __________ for the missing child in nearby parks and empty buildings.",
           "questionKey": "1991-2000:6"
         },
         {
           "number": 7,
-          "prompt": "Vintage __________ collections can be worth substantial amounts at auction.",
+          "prompt": "A powerful __________ hit the coast last night, bringing heavy rain and strong winds.",
           "questionKey": "1991-2000:7"
         },
         {
           "number": 8,
-          "prompt": "Conservation groups oppose the annual __________ for endangered species.",
+          "prompt": "The soup became too __________ after it cooked for an hour, so I added more water.",
           "questionKey": "1991-2000:8"
         },
         {
           "number": 9,
-          "prompt": "Union representatives will __________ with management over wage increases and working conditions.",
+          "prompt": "Finishing the difficult research project was a real __________ for the whole team.",
           "questionKey": "1991-2000:9"
         },
         {
           "number": 10,
-          "prompt": "Graduating summa cum laude was her greatest academic __________ to date.",
+          "prompt": "The two sides agreed to __________ a new contract after several months of disagreement.",
           "questionKey": "1991-2000:10"
         }
       ]

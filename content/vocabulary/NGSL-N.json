@@ -9,7 +9,7 @@
   "note": "100 Words · 10 Quiz Groups",
   "visible": true,
   "sourceName": "NGSL",
-  "cefrLevel": "B1+–B2",
+  "cefrLevel": "B2+",
   "wordCount": 100,
   "worksheetPdf": {
     "list": "assets/pdf/vocabulary/NGSL-N/NGSL-N-all-sets.pdf",
@@ -852,63 +852,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "You should __________ to your classmate for speaking so rudely.",
-          "answer": "apologize",
-          "explanation": "语法上，should 后接动词原形，apologize 作动词。语义上，说话粗鲁后应该向同学道歉。固定搭配：apologize to someone for something。"
+          "prompt": "After arriving late to the meeting, James decided to __________ to the whole team before explaining what had happened.",
+          "questionKey": "2301-2310:1"
         },
         {
           "number": 2,
-          "prompt": "The project cannot begin without official __________ from the school.",
-          "answer": "approval",
-          "explanation": "语法上，official 修饰名词，approval 表示“批准”。语义上，项目开始前需要学校正式批准。常见搭配：official approval。"
+          "prompt": "The project cannot begin until the manager gives final __________ for the new budget and timeline.",
+          "questionKey": "2301-2310:2"
         },
         {
           "number": 3,
-          "prompt": "He tried to __________ the last seat before anyone else saw it.",
-          "answer": "grab",
-          "explanation": "语法上，tried to 后接动词原形，grab 表示“抓住，抢占”。语义上，他想在别人看到前抢到最后一个座位。"
+          "prompt": "The child tried to __________ the glass before it fell from the edge of the table.",
+          "questionKey": "2301-2310:3"
         },
         {
           "number": 4,
-          "prompt": "This ticket will __________ you to a free drink at the café.",
-          "answer": "entitle",
-          "explanation": "语法上，will 后接动词原形，entitle 表示“给予权利”。语义上，这张票让你有资格获得免费饮料。固定搭配：entitle someone to something。"
+          "prompt": "Owning a valid ticket does not automatically __________ passengers to enter the restricted staff area.",
+          "questionKey": "2301-2310:4"
         },
         {
           "number": 5,
-          "prompt": "Could you __________ me your dictionary until tomorrow morning?",
-          "answer": "lend",
-          "explanation": "语法上，Could you 后接动词原形，lend 表示“借出”。语义上，请别人把词典借给自己。注意：lend me your dictionary 是“借给我”，不是“向我借”。"
+          "prompt": "Could you __________ me your laptop for ten minutes so I can send this urgent file?",
+          "questionKey": "2301-2310:5"
         },
         {
           "number": 6,
-          "prompt": "Her __________ in the drama club improved her confidence greatly.",
-          "answer": "involvement",
-          "explanation": "语法上，Her 后接名词，involvement 表示“参与”。语义上，参加戏剧社提升了她的自信。常见搭配：involvement in。"
+          "prompt": "The police found no evidence of his direct __________ in the online fraud case.",
+          "questionKey": "2301-2310:6"
         },
         {
           "number": 7,
-          "prompt": "Too much sun __________ can damage your skin badly.",
-          "answer": "exposure",
-          "explanation": "语法上，sun 修饰名词，exposure 表示“暴露，接触”。语义上，过度晒太阳会伤害皮肤。常见搭配：sun exposure。"
+          "prompt": "Long-term __________ to loud noise can seriously damage a person’s hearing over time.",
+          "questionKey": "2301-2310:7"
         },
         {
           "number": 8,
-          "prompt": "Many young people prefer online lessons to __________ classroom teaching.",
-          "answer": "conventional",
-          "explanation": "语法上，空格修饰 classroom teaching，需要形容词。语义上，年轻人更喜欢线上课，而不是传统课堂教学。"
+          "prompt": "Many schools still prefer __________ textbooks, although more students are now using online materials.",
+          "questionKey": "2301-2310:8"
         },
         {
           "number": 9,
-          "prompt": "The school uses a __________ system to record students’ homework.",
-          "answer": "digital",
-          "explanation": "语法上，空格修饰 system，需要形容词。语义上，学校使用数字系统记录作业。"
+          "prompt": "The museum created a __________ guide so visitors could explore the exhibition on their phones.",
+          "questionKey": "2301-2310:9"
         },
         {
           "number": 10,
-          "prompt": "Can you __________ this paragraph from Chinese into English?",
-          "answer": "translate",
-          "explanation": "语法上，Can you 后接动词原形。语义上，把中文段落翻译成英文。固定搭配：translate A from Chinese into English。"
+          "prompt": "It is difficult to __________ jokes from one language into another without losing their cultural meaning.",
+          "questionKey": "2301-2310:10"
         }
       ]
     },
@@ -932,63 +922,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Please __________ your essay before you hand it in tomorrow.",
-          "answer": "edit",
-          "explanation": "语法上，Please 后接动词原形。语义上，交作文前需要编辑、修改文章。"
+          "prompt": "Before publishing the article, the journalist had to __________ several paragraphs that were unclear or too long.",
+          "questionKey": "2311-2320:1"
         },
         {
           "number": 2,
-          "prompt": "The __________ of good habits takes time and patience.",
-          "answer": "formation",
-          "explanation": "语法上，The 后接名词，formation 表示“形成”。语义上，好习惯的形成需要时间和耐心。常见搭配：the formation of habits。"
+          "prompt": "The early __________ of a child’s reading habits is strongly influenced by parents and teachers.",
+          "questionKey": "2311-2320:2"
         },
         {
           "number": 3,
-          "prompt": "You must pay a small __________ before renting the apartment.",
-          "answer": "deposit",
-          "explanation": "语法上，a small 后接可数名词单数。语义上，租房前需要支付一小笔押金。"
+          "prompt": "You need to pay a small __________ before the landlord will reserve the apartment for you.",
+          "questionKey": "2311-2320:3"
         },
         {
           "number": 4,
-          "prompt": "We had a __________ conversation during the long train journey.",
-          "answer": "pleasant",
-          "explanation": "语法上，空格修饰 conversation，需要形容词。语义上，旅途中进行了一次愉快的交谈。"
+          "prompt": "The hotel staff were polite, and the quiet garden made our stay especially __________.",
+          "questionKey": "2311-2320:4"
         },
         {
           "number": 5,
-          "prompt": "My cousin is studying __________ at a university in Canada.",
-          "answer": "overseas",
-          "explanation": "语法上，空格作副词，修饰 studying。语义上，表兄弟正在加拿大海外学习。常见搭配：study overseas。"
+          "prompt": "Many students choose to study __________ because they want to experience a different education system.",
+          "questionKey": "2311-2320:5"
         },
         {
           "number": 6,
-          "prompt": "Many doctors __________ more exercise and less junk food.",
-          "answer": "advocate",
-          "explanation": "语法上，主语 Many doctors 后接谓语动词原形。语义上，医生提倡多运动、少吃垃圾食品。"
+          "prompt": "Some doctors __________ regular exercise as a practical way to reduce stress and improve sleep.",
+          "questionKey": "2311-2320:6"
         },
         {
           "number": 7,
-          "prompt": "The __________ of the new school took almost three years.",
-          "answer": "establishment",
-          "explanation": "语法上，The 后接名词。语义上，新学校的建立用了将近三年。常见搭配：the establishment of。"
+          "prompt": "The __________ of a new research center helped the university attract more international scholars.",
+          "questionKey": "2311-2320:7"
         },
         {
           "number": 8,
-          "prompt": "Write a short __________ of the article in your own words.",
-          "answer": "summary",
-          "explanation": "语法上，a short 后接名词。语义上，用自己的话写文章摘要。常见搭配：a summary of the article。"
+          "prompt": "The teacher asked each group to write a short __________ of the article instead of copying every detail.",
+          "questionKey": "2311-2320:8"
         },
         {
           "number": 9,
-          "prompt": "This is only a __________ plan, so we can still change it.",
-          "answer": "rough",
-          "explanation": "语法上，空格修饰 plan，需要形容词。语义上，这只是粗略计划，还可以修改。"
+          "prompt": "The first design was only a __________ version, so we changed the colours and layout later.",
+          "questionKey": "2311-2320:9"
         },
         {
           "number": 10,
-          "prompt": "She used a black __________ to sign the agreement.",
-          "answer": "pen",
-          "explanation": "语法上，a black 后接名词。语义上，她用黑色钢笔签署协议。"
+          "prompt": "The poet used a simple blue __________ to sign every copy of his new book.",
+          "questionKey": "2311-2320:10"
         }
       ]
     },
@@ -1012,63 +992,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "His __________ after the surgery was slower than expected.",
-          "answer": "recovery",
-          "explanation": "语法上，His 后接名词。语义上，手术后的恢复比预期更慢。常见搭配：recovery after surgery。"
+          "prompt": "Her doctor said that full __________ after knee surgery could take several months of careful training.",
+          "questionKey": "2321-2330:1"
         },
         {
           "number": 2,
-          "prompt": "Make sure you __________ the bottle tightly after using it.",
-          "answer": "seal",
-          "explanation": "语法上，Make sure you 后接动词原形。语义上，用完后要把瓶子密封好。"
+          "prompt": "Please __________ the envelope carefully so that the documents inside do not fall out during delivery.",
+          "questionKey": "2321-2330:2"
         },
         {
           "number": 3,
-          "prompt": "The scientist placed the liquid inside a glass __________.",
-          "answer": "tube",
-          "explanation": "语法上，a glass 后接名词。语义上，科学家把液体放进玻璃管中。常见搭配：test tube / glass tube。"
+          "prompt": "The scientist placed the blood sample in a glass __________ before sending it to the laboratory.",
+          "questionKey": "2321-2330:3"
         },
         {
           "number": 4,
-          "prompt": "The old stone __________ stands above the whole town.",
-          "answer": "tower",
-          "explanation": "语法上，The old stone 后接名词。语义上，古老石塔矗立在小镇上方。"
+          "prompt": "From the hill, we could see the old church __________ above the small houses in the village.",
+          "questionKey": "2321-2330:4"
         },
         {
           "number": 5,
-          "prompt": "Bright colors and simple shapes __________ her early paintings.",
-          "answer": "characterize",
-          "explanation": "语法上，主语是复数 Bright colors and simple shapes，后接动词原形。语义上，明亮色彩和简单形状是她早期绘画的特征。"
+          "prompt": "Researchers often __________ this period as a time of rapid social and economic change.",
+          "questionKey": "2321-2330:5"
         },
         {
           "number": 6,
-          "prompt": "Please __________ the exact date of your arrival.",
-          "answer": "specify",
-          "explanation": "语法上，Please 后接动词原形。语义上，要求对方具体说明到达日期。常见搭配：specify the date / time / details。"
+          "prompt": "The form asks applicants to __________ the exact dates when they worked for each company.",
+          "questionKey": "2321-2330:6"
         },
         {
           "number": 7,
-          "prompt": "I need the __________ address, not just the street name.",
-          "answer": "exact",
-          "explanation": "语法上，空格修饰 address，需要形容词。语义上，需要精确地址，而不只是街道名。"
+          "prompt": "The engineer needed the __________ measurements before ordering materials for the new machine.",
+          "questionKey": "2321-2330:7"
         },
         {
           "number": 8,
-          "prompt": "The wheels began to __________ faster on the wet road.",
-          "answer": "spin",
-          "explanation": "语法上，began to 后接动词原形。语义上，车轮在湿路上开始更快旋转。"
+          "prompt": "The dancer began to __________ slowly as the music grew louder and the audience moved closer.",
+          "questionKey": "2321-2330:8"
         },
         {
           "number": 9,
-          "prompt": "The machine __________ stopped production after noticing smoke.",
-          "answer": "operator",
-          "explanation": "语法上，The machine 修饰名词 operator。语义上，机器操作员看到烟后停止生产。"
+          "prompt": "The phone __________ asked me to hold the line while she checked the booking details.",
+          "questionKey": "2321-2330:9"
         },
         {
           "number": 10,
-          "prompt": "The young mother held her sleeping __________ carefully.",
-          "answer": "infant",
-          "explanation": "语法上，her sleeping 后接名词。语义上，年轻母亲小心抱着熟睡的婴儿。"
+          "prompt": "The hospital created a separate waiting area for parents with an __________ younger than six months.",
+          "questionKey": "2321-2330:10"
         }
       ]
     },
@@ -1092,63 +1062,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The children helped their parents __________ holes for new trees.",
-          "answer": "dig",
-          "explanation": "语法上，helped their parents 后可接动词原形，dig 表示“挖”。语义上，孩子们帮助父母挖树坑。"
+          "prompt": "The workers had to __________ a deeper hole before they could repair the broken water pipe.",
+          "questionKey": "2331-2340:1"
         },
         {
           "number": 2,
-          "prompt": "Please do not __________ the chair across the wooden floor.",
-          "answer": "drag",
-          "explanation": "语法上，do not 后接动词原形。语义上，不要把椅子在木地板上拖来拖去。"
+          "prompt": "Do not __________ the heavy suitcase across the floor, because it may scratch the wooden surface.",
+          "questionKey": "2331-2340:2"
         },
         {
           "number": 3,
-          "prompt": "The climbers began to __________ the hill before sunrise.",
-          "answer": "mount",
-          "explanation": "语法上，began to 后接动词原形。语义上，登山者天亮前开始登上小山。"
+          "prompt": "Complaints began to __________ after the company announced another increase in service charges.",
+          "questionKey": "2331-2340:3"
         },
         {
           "number": 4,
-          "prompt": "You should __________ the gift carefully before the party.",
-          "answer": "wrap",
-          "explanation": "语法上，should 后接动词原形。语义上，派对前应该把礼物包好。"
+          "prompt": "Please __________ the fragile cups in newspaper before putting them into the moving box.",
+          "questionKey": "2331-2340:4"
         },
         {
           "number": 5,
-          "prompt": "We __________ heavy traffic during the holiday weekend.",
-          "answer": "anticipate",
-          "explanation": "语法上，主语 We 后接谓语动词。语义上，预计假期周末会交通拥堵。"
+          "prompt": "We did not __________ such heavy traffic, so we left home too late and missed the opening speech.",
+          "questionKey": "2331-2340:5"
         },
         {
           "number": 6,
-          "prompt": "Young children are usually __________ on adults for safety.",
-          "answer": "dependent",
-          "explanation": "语法上，are 后接形容词。语义上，儿童通常依赖成年人保证安全。固定搭配：be dependent on。"
+          "prompt": "Children are usually __________ on adults for food, safety, and emotional support during their early years.",
+          "questionKey": "2331-2340:6"
         },
         {
           "number": 7,
-          "prompt": "Some doctors __________ in heart disease and serious operations.",
-          "answer": "specialize",
-          "explanation": "语法上，主语 Some doctors 后接动词原形。语义上，有些医生专攻心脏病和重大手术。固定搭配：specialize in。"
+          "prompt": "After medical school, she decided to __________ in heart surgery rather than general medicine.",
+          "questionKey": "2331-2340:7"
         },
         {
           "number": 8,
-          "prompt": "Hold the camera at a better __________ for the photo.",
-          "answer": "angle",
-          "explanation": "语法上，a better 后接名词。语义上，为了拍照，需要以更好的角度拿相机。"
+          "prompt": "The photographer changed the camera __________ to make the building look taller in the final picture.",
+          "questionKey": "2331-2340:8"
         },
         {
           "number": 9,
-          "prompt": "We had rice and __________ for lunch at school.",
-          "answer": "chicken",
-          "explanation": "语法上，rice and 后接名词。语义上，午餐吃了米饭和鸡肉。"
+          "prompt": "The restaurant serves roast __________ with rice, vegetables, and a mild lemon sauce.",
+          "questionKey": "2331-2340:9"
         },
         {
           "number": 10,
-          "prompt": "Exam pressure can cause serious __________ in some teenagers.",
-          "answer": "anxiety",
-          "explanation": "语法上，serious 修饰名词。语义上，考试压力会造成严重焦虑。"
+          "prompt": "Before the exam, many students felt serious __________ because they had not practised enough timed writing.",
+          "questionKey": "2331-2340:10"
         }
       ]
     },
@@ -1172,63 +1132,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "The computer __________ spread quickly through the school network.",
-          "answer": "virus",
-          "explanation": "语法上，The computer 修饰名词 virus。语义上，电脑病毒在学校网络中快速传播。"
+          "prompt": "The school closed for two days after a stomach __________ spread quickly through several classes.",
+          "questionKey": "2341-2350:1"
         },
         {
           "number": 2,
-          "prompt": "The meeting will start __________ at nine o’clock tomorrow.",
-          "answer": "precisely",
-          "explanation": "语法上，空格修饰时间表达 at nine o’clock，需要副词。语义上，会议会在九点整准时开始。"
+          "prompt": "The train arrived at __________ eight o’clock, which surprised everyone because the weather was terrible.",
+          "questionKey": "2341-2350:2"
         },
         {
           "number": 3,
-          "prompt": "Their main __________ sells similar products at lower prices.",
-          "answer": "rival",
-          "explanation": "语法上，Their main 后接名词。语义上，主要竞争对手以更低价格销售类似产品。"
+          "prompt": "Their biggest __________ launched a cheaper product, so the company had to rethink its pricing strategy.",
+          "questionKey": "2341-2350:3"
         },
         {
           "number": 4,
-          "prompt": "Driving without a licence is a serious __________.",
-          "answer": "offense",
-          "explanation": "语法上，a serious 后接名词。语义上，无证驾驶是一种严重违法行为。"
+          "prompt": "Parking in front of the hospital entrance is a serious __________ because it can block emergency vehicles.",
+          "questionKey": "2341-2350:4"
         },
         {
           "number": 5,
-          "prompt": "This device can __________ smoke before people notice danger.",
-          "answer": "detect",
-          "explanation": "语法上，情态动词 can 后接动词原形。语义上，设备能在人们发现危险前侦测烟雾。"
+          "prompt": "The security system can __________ unusual movement near the door and send an alert to the owner.",
+          "questionKey": "2341-2350:5"
         },
         {
           "number": 6,
-          "prompt": "As a __________, he often argues with his parents.",
-          "answer": "teenager",
-          "explanation": "语法上，As a 后接名词。语义上，作为青少年，他经常和父母争论。"
+          "prompt": "Many schools now teach online safety because a __________ may not always understand how quickly private photos can spread on social media.",
+          "questionKey": "2341-2350:6"
         },
         {
           "number": 7,
-          "prompt": "I really __________ people who keep learning after failure.",
-          "answer": "admire",
-          "explanation": "语法上，主语 I 后接谓语动词。语义上，我钦佩那些失败后仍继续学习的人。"
+          "prompt": "Many students __________ her because she stayed calm under pressure and treated everyone fairly.",
+          "questionKey": "2341-2350:7"
         },
         {
           "number": 8,
-          "prompt": "Doctors suggest __________ exercise for older adults.",
-          "answer": "moderate",
-          "explanation": "语法上，空格修饰 exercise，需要形容词。语义上，医生建议老年人进行适度运动。常见搭配：moderate exercise。"
+          "prompt": "The teacher took a __________ approach, giving clear rules without making the class feel controlled.",
+          "questionKey": "2341-2350:8"
         },
         {
           "number": 9,
-          "prompt": "She needed knee __________ after the skiing accident.",
-          "answer": "surgery",
-          "explanation": "语法上，knee 修饰名词 surgery。语义上，滑雪事故后她需要膝盖手术。"
+          "prompt": "He needed emergency __________ after cutting his hand badly with a kitchen knife.",
+          "questionKey": "2341-2350:9"
         },
         {
           "number": 10,
-          "prompt": "The young __________ played guitar beautifully on stage.",
-          "answer": "musician",
-          "explanation": "语法上，The young 后接名词。语义上，年轻音乐家在舞台上优美地弹吉他。"
+          "prompt": "The young __________ practised for years before performing at a major concert hall.",
+          "questionKey": "2341-2350:10"
         }
       ]
     },
@@ -1252,63 +1202,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Few people understood the full __________ of the discovery at first.",
-          "answer": "significance",
-          "explanation": "语法上，the full 后接名词。语义上，起初很少有人理解这个发现的全部意义。常见搭配：the significance of。"
+          "prompt": "The discovery has great __________ because it changes how scientists understand early human migration.",
+          "questionKey": "2351-2360:1"
         },
         {
           "number": 2,
-          "prompt": "I usually take a quick __________ after basketball practice.",
-          "answer": "shower",
-          "explanation": "语法上，a quick 后接名词。语义上，篮球训练后通常快速冲个澡。常见搭配：take a shower。"
+          "prompt": "Take a quick __________ before dinner, especially if you have been playing football in the heat.",
+          "questionKey": "2351-2360:2"
         },
         {
           "number": 3,
-          "prompt": "It is __________ to sell alcohol to children in many countries.",
-          "answer": "illegal",
-          "explanation": "语法上，It is 后接形容词。语义上，在许多国家，向儿童卖酒是违法的。"
+          "prompt": "The street market was closed because several sellers were using __________ copies of famous brands.",
+          "questionKey": "2351-2360:3"
         },
         {
           "number": 4,
-          "prompt": "The students raised money for a local __________.",
-          "answer": "charity",
-          "explanation": "语法上，a local 后接名词。语义上，学生为当地慈善机构筹款。"
+          "prompt": "The local __________ raised enough money to buy winter coats for children in need.",
+          "questionKey": "2351-2360:4"
         },
         {
           "number": 5,
-          "prompt": "A smile is often described as a __________ sign of friendliness.",
-          "answer": "universal",
-          "explanation": "语法上，空格修饰 sign，需要形容词。语义上，微笑常被视为友好的普遍信号。"
+          "prompt": "The idea that children need love and safety is almost __________ across cultures.",
+          "questionKey": "2351-2360:5"
         },
         {
           "number": 6,
-          "prompt": "He lit a __________ outside the restaurant after dinner.",
-          "answer": "cigarette",
-          "explanation": "语法上，a 后接可数名词单数。语义上，晚饭后他在餐厅外点了一支香烟。"
+          "prompt": "Smoking even one __________ indoors can leave a strong smell in the room for hours.",
+          "questionKey": "2351-2360:6"
         },
         {
           "number": 7,
-          "prompt": "Women __________ more than half of the club’s members.",
-          "answer": "constitute",
-          "explanation": "语法上，主语 Women 后接谓语动词原形。语义上，女性构成了俱乐部成员的一半以上。"
+          "prompt": "These three departments __________ the core of the company’s new training system.",
+          "questionKey": "2351-2360:7"
         },
         {
           "number": 8,
-          "prompt": "The room was small but __________ for one person.",
-          "answer": "adequate",
-          "explanation": "语法上，was 后接形容词。语义上，房间虽小，但对一个人来说足够。"
+          "prompt": "The report found that the school did not provide __________ support for students with reading difficulties.",
+          "questionKey": "2351-2360:8"
         },
         {
           "number": 9,
-          "prompt": "The company hired a financial __________ to reduce costs.",
-          "answer": "consultant",
-          "explanation": "语法上，a financial 后接名词。语义上，公司雇佣财务顾问来降低成本。"
+          "prompt": "The company hired a business __________ to review its costs and suggest practical changes.",
+          "questionKey": "2351-2360:9"
         },
         {
           "number": 10,
-          "prompt": "The __________ studied letters written during the war.",
-          "answer": "historian",
-          "explanation": "语法上，The 后接名词。语义上，历史学家研究战争时期写的信件。"
+          "prompt": "A careful __________ can explain how political decisions shaped everyday life in the past.",
+          "questionKey": "2351-2360:10"
         }
       ]
     },
@@ -1332,63 +1272,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "My __________ lives in Hong Kong and visits us often.",
-          "answer": "cousin",
-          "explanation": "语法上，My 后接名词。语义上，我的表兄弟/堂兄弟住在香港，经常来看我们。"
+          "prompt": "My __________ is staying with us this weekend because his parents are travelling for work.",
+          "questionKey": "2361-2370:1"
         },
         {
           "number": 2,
-          "prompt": "Charts provide useful __________ support for difficult ideas.",
-          "answer": "visual",
-          "explanation": "语法上，空格修饰 support，需要形容词。语义上，图表为难懂概念提供视觉支持。"
+          "prompt": "The presentation included strong __________ examples, such as maps, charts, and photographs.",
+          "questionKey": "2361-2370:2"
         },
         {
           "number": 3,
-          "prompt": "It was __________ to leave your passport on the bus.",
-          "answer": "stupid",
-          "explanation": "语法上，It was 后接形容词。语义上，把护照落在公交车上很愚蠢。"
+          "prompt": "It was __________ to ignore the warning signs and drive through the flooded road.",
+          "questionKey": "2361-2370:3"
         },
         {
           "number": 4,
-          "prompt": "She is __________ to join the school debate team.",
-          "answer": "keen",
-          "explanation": "语法上，is 后接形容词。语义上，她渴望加入学校辩论队。固定搭配：be keen to do something。"
+          "prompt": "She is __________ to join the debate team because she enjoys public speaking and argument.",
+          "questionKey": "2361-2370:4"
         },
         {
           "number": 5,
-          "prompt": "The city has restaurants from many different __________ groups.",
-          "answer": "ethnic",
-          "explanation": "语法上，空格修饰 groups，需要形容词。语义上，城市里有来自许多不同民族群体的餐馆。"
+          "prompt": "The festival celebrates the music, food, and clothing of different __________ groups in the city.",
+          "questionKey": "2361-2370:5"
         },
         {
           "number": 6,
-          "prompt": "His __________ brother looks almost exactly like him.",
-          "answer": "twin",
-          "explanation": "语法上，空格修饰 brother，表示“双胞胎的”。语义上，他的双胞胎兄弟几乎和他一模一样。"
+          "prompt": "Her __________ sister looks almost the same, but their personalities are completely different.",
+          "questionKey": "2361-2370:6"
         },
         {
           "number": 7,
-          "prompt": "The medicine is still being tested in __________ trials.",
-          "answer": "clinical",
-          "explanation": "语法上，空格修饰 trials，需要形容词。语义上，这种药仍在临床试验中。常见搭配：clinical trials。"
+          "prompt": "The new medicine is still in __________ trials, so patients cannot buy it in pharmacies yet.",
+          "questionKey": "2361-2370:7"
         },
         {
           "number": 8,
-          "prompt": "The storm moved across the __________ part of the country.",
-          "answer": "eastern",
-          "explanation": "语法上，空格修饰 part，需要形容词。语义上，风暴穿过了该国东部地区。"
+          "prompt": "Many tourists visit the __________ part of the country because it has beaches and old fishing towns.",
+          "questionKey": "2361-2370:8"
         },
         {
           "number": 9,
-          "prompt": "The weather __________ says it will rain this afternoon.",
-          "answer": "forecast",
-          "explanation": "语法上，The weather 修饰名词 forecast。语义上，天气预报说今天下午会下雨。"
+          "prompt": "The weather __________ says that heavy rain will arrive late tonight and continue through the morning.",
+          "questionKey": "2361-2370:9"
         },
         {
           "number": 10,
-          "prompt": "The final __________ of the show was the most exciting.",
-          "answer": "segment",
-          "explanation": "语法上，The final 后接名词。语义上，节目的最后一个片段最精彩。"
+          "prompt": "This video course is divided into a short __________ on pronunciation and a longer one on vocabulary.",
+          "questionKey": "2361-2370:10"
         }
       ]
     },
@@ -1412,63 +1342,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Bowing is an old __________ in some Asian countries.",
-          "answer": "custom",
-          "explanation": "语法上，an old 后接名词。语义上，鞠躬在一些亚洲国家是古老习俗。"
+          "prompt": "The designer created a __________ wedding dress because the customer wanted something completely different from the shop samples.",
+          "questionKey": "2371-2380:1"
         },
         {
           "number": 2,
-          "prompt": "New students need time to __________ to school life.",
-          "answer": "adapt",
-          "explanation": "语法上，need time to 后接动词原形。语义上，新生需要时间适应学校生活。固定搭配：adapt to。"
+          "prompt": "When moving to a new country, children often __________ faster than adults because they meet the language every day.",
+          "questionKey": "2371-2380:2"
         },
         {
           "number": 3,
-          "prompt": "The children built a castle from wet __________.",
-          "answer": "sand",
-          "explanation": "语法上，wet 修饰名词 sand。语义上，孩子们用湿沙建城堡。"
+          "prompt": "The children built a castle from wet __________ while their parents watched from under a beach umbrella.",
+          "questionKey": "2371-2380:3"
         },
         {
           "number": 4,
-          "prompt": "Wear a __________ to protect your head from the sun.",
-          "answer": "cap",
-          "explanation": "语法上，a 后接可数名词单数。语义上，戴帽子可以保护头部免受太阳照射。"
+          "prompt": "The company placed a strict __________ on travel expenses after costs rose sharply last year.",
+          "questionKey": "2371-2380:4"
         },
         {
           "number": 5,
-          "prompt": "His careless words may __________ an angry response.",
-          "answer": "prompt",
-          "explanation": "语法上，情态动词 may 后接动词原形。语义上，他粗心的话可能引发愤怒反应。"
+          "prompt": "His poor grades should __________ a serious conversation about study habits, not just another punishment.",
+          "questionKey": "2371-2380:5"
         },
         {
           "number": 6,
-          "prompt": "The village has a quiet __________ that attracts many visitors.",
-          "answer": "charm",
-          "explanation": "语法上，a quiet 后接名词。语义上，村庄有一种安静的魅力，吸引游客。"
+          "prompt": "The old town still has a special __________, with narrow streets, small cafés, and quiet squares.",
+          "questionKey": "2371-2380:6"
         },
         {
           "number": 7,
-          "prompt": "How did your parents __________ when they heard the news?",
-          "answer": "react",
-          "explanation": "语法上，助动词 did 后接动词原形。语义上，问父母听到消息后如何反应。固定搭配：react to。"
+          "prompt": "People may __________ differently to criticism depending on their confidence and relationship with the speaker.",
+          "questionKey": "2371-2380:7"
         },
         {
           "number": 8,
-          "prompt": "The professor gave a __________ on climate change.",
-          "answer": "lecture",
-          "explanation": "语法上，a 后接名词。语义上，教授做了一场关于气候变化的讲座。常见搭配：give a lecture on。"
+          "prompt": "The professor gave a public __________ on climate change to students, parents, and local officials.",
+          "questionKey": "2371-2380:8"
         },
         {
           "number": 9,
-          "prompt": "Starting a small business is always a risky __________.",
-          "answer": "venture",
-          "explanation": "语法上，a risky 后接名词。语义上，创业总是一个有风险的项目。"
+          "prompt": "Starting a small restaurant is a risky __________ because rent and food costs can change quickly.",
+          "questionKey": "2371-2380:9"
         },
         {
           "number": 10,
-          "prompt": "Water is a chemical __________ because it contains hydrogen and oxygen.",
-          "answer": "compound",
-          "explanation": "语法上，a chemical 后接名词，compound 表示“化合物”。语义上，水由氢和氧组成，因此是化学化合物。这里按题目句意考查 compound 的“化合物”。"
+          "prompt": "The cleaning liquid contains a chemical __________ that can remove oil from kitchen surfaces.",
+          "questionKey": "2371-2380:10"
         }
       ]
     },
@@ -1492,63 +1412,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "Firefighters worked all night to __________ people from the building.",
-          "answer": "rescue",
-          "explanation": "语法上，to 后接动词原形。语义上，消防员整夜营救楼里的人。"
+          "prompt": "Volunteers helped __________ the injured hikers after they got trapped on the mountain during heavy rain.",
+          "questionKey": "2381-2390:1"
         },
         {
           "number": 2,
-          "prompt": "Your room is a complete __________, so clean it now.",
-          "answer": "mess",
-          "explanation": "语法上，a complete 后接名词。语义上，房间非常乱，所以需要清理。"
+          "prompt": "The kitchen was a complete __________ after the children tried to bake a cake by themselves.",
+          "questionKey": "2381-2390:2"
         },
         {
           "number": 3,
-          "prompt": "I have a strong __________ for tea rather than coffee.",
-          "answer": "preference",
-          "explanation": "语法上，a strong 后接名词。语义上，比起咖啡，我更偏爱茶。固定搭配：a preference for。"
+          "prompt": "Students were asked to state their __________ for morning or afternoon classes before the timetable was finalized.",
+          "questionKey": "2381-2390:3"
         },
         {
           "number": 4,
-          "prompt": "The report gives a __________ view of the whole problem.",
-          "answer": "comprehensive",
-          "explanation": "语法上，空格修饰 view，需要形容词。语义上，报告全面展示了整个问题。"
+          "prompt": "The report offers a __________ review of the school’s strengths, weaknesses, costs, and future risks.",
+          "questionKey": "2381-2390:4"
         },
         {
           "number": 5,
-          "prompt": "Extra marks can be a useful __________ for lazy students.",
-          "answer": "incentive",
-          "explanation": "语法上，a useful 后接名词。语义上，额外分数可作为激励懒散学生的有效手段。"
+          "prompt": "The company offered a cash __________ to employees who completed the safety training before Friday.",
+          "questionKey": "2381-2390:5"
         },
         {
           "number": 6,
-          "prompt": "Our school team joined a local basketball __________.",
-          "answer": "league",
-          "explanation": "语法上，a local basketball 后接名词。语义上，校队加入了当地篮球联赛。"
+          "prompt": "Our school football team joined a local __________ so that students could play regular matches.",
+          "questionKey": "2381-2390:6"
         },
         {
           "number": 7,
-          "prompt": "The film includes a short __________ between father and son.",
-          "answer": "dialog",
-          "explanation": "语法上，a short 后接名词。语义上，电影包含父子之间的一段简短对话。"
+          "prompt": "The teacher encouraged open __________ between parents and students instead of one-way criticism.",
+          "questionKey": "2381-2390:7"
         },
         {
           "number": 8,
-          "prompt": "She added some __________ to the soup before serving it.",
-          "answer": "cream",
-          "explanation": "语法上，some 后接不可数名词。语义上，她在上菜前往汤里加了一些奶油。"
+          "prompt": "Add a little __________ to the soup if you want it to taste smoother and richer.",
+          "questionKey": "2381-2390:8"
         },
         {
           "number": 9,
-          "prompt": "The company has seen __________ growth in online sales.",
-          "answer": "rapid",
-          "explanation": "语法上，空格修饰 growth，需要形容词。语义上，公司线上销售增长迅速。常见搭配：rapid growth。"
+          "prompt": "The city has seen __________ growth in electric vehicle sales over the last two years.",
+          "questionKey": "2381-2390:9"
         },
         {
           "number": 10,
-          "prompt": "They had to __________ the trip because of the storm.",
-          "answer": "cancel",
-          "explanation": "语法上，had to 后接动词原形。语义上，因为暴风雨，他们不得不取消旅行。"
+          "prompt": "We may have to __________ the outdoor concert if the storm becomes stronger this evening.",
+          "questionKey": "2381-2390:10"
         }
       ]
     },
@@ -1572,63 +1482,53 @@
       "questions": [
         {
           "number": 1,
-          "prompt": "I deeply __________ wasting so much time last year.",
-          "answer": "regret",
-          "explanation": "语法上，主语 I 后接谓语动词。语义上，我非常后悔去年浪费那么多时间。固定搭配：regret doing something。"
+          "prompt": "Many adults __________ not learning a second language earlier because it limits their work opportunities later.",
+          "questionKey": "2391-2400:1"
         },
         {
           "number": 2,
-          "prompt": "The manager decided to __________ him for repeated lateness.",
-          "answer": "dismiss",
-          "explanation": "语法上，decided to 后接动词原形。语义上，经理决定因他多次迟到而解雇他。"
+          "prompt": "The manager decided to __________ the employee after repeated warnings about unsafe behaviour were ignored.",
+          "questionKey": "2391-2400:2"
         },
         {
           "number": 3,
-          "prompt": "Write your notes in the left __________ of the page.",
-          "answer": "margin",
-          "explanation": "语法上，the left 后接名词。语义上，把笔记写在页面左边空白处。常见搭配：the margin of the page。"
+          "prompt": "The shop has a small profit __________ because rent and delivery costs are both very high.",
+          "questionKey": "2391-2400:3"
         },
         {
           "number": 4,
-          "prompt": "The cat was hiding __________ the old wooden table.",
-          "answer": "beneath",
-          "explanation": "语法上，空格后接名词短语，需介词。语义上，猫藏在旧木桌下面。"
+          "prompt": "The old coins were found __________ the floorboards when workers repaired the historic house.",
+          "questionKey": "2391-2400:4"
         },
         {
           "number": 5,
-          "prompt": "Her strongest __________ in the final match was from Japan.",
-          "answer": "opponent",
-          "explanation": "语法上，Her strongest 后接名词。语义上，她决赛中最强的对手来自日本。"
+          "prompt": "Her strongest __________ in the debate attacked the evidence, not her personality or background.",
+          "questionKey": "2391-2400:5"
         },
         {
           "number": 6,
-          "prompt": "Children often find it hard to __________ sweet snacks.",
-          "answer": "resist",
-          "explanation": "语法上，find it hard to 后接动词原形。语义上，孩子常觉得很难抵抗甜食诱惑。"
+          "prompt": "Children often __________ going to bed when they are excited or want to keep playing.",
+          "questionKey": "2391-2400:6"
         },
         {
           "number": 7,
-          "prompt": "This phone has the __________ to take excellent photos.",
-          "answer": "capability",
-          "explanation": "语法上，the 后接名词。语义上，这部手机有拍出优秀照片的能力。固定搭配：the capability to do something。"
+          "prompt": "The hospital has the technical __________ to treat rare eye diseases that smaller clinics cannot handle.",
+          "questionKey": "2391-2400:7"
         },
         {
           "number": 8,
-          "prompt": "There is __________ silence in the room after the bad news.",
-          "answer": "absolute",
-          "explanation": "语法上，空格修饰 silence，需要形容词。语义上，坏消息之后房间里一片绝对安静。"
+          "prompt": "There is no __________ proof that the new rule caused the improvement in test scores.",
+          "questionKey": "2391-2400:8"
         },
         {
           "number": 9,
-          "prompt": "These figures do not __________ with the numbers in your report.",
-          "answer": "correspond",
-          "explanation": "语法上，do not 后接动词原形。语义上，这些数据和报告中的数字不一致。固定搭配：correspond with。"
+          "prompt": "The figures in this table do not __________ with the numbers in last month’s financial report.",
+          "questionKey": "2391-2400:9"
         },
         {
           "number": 10,
-          "prompt": "The swimmer improved his back __________ before the competition.",
-          "answer": "stroke",
-          "explanation": "语法上，his back 修饰名词 stroke。语义上，游泳运动员在比赛前改进了仰泳划水动作。常见搭配：back stroke / swimming stroke。"
+          "prompt": "The swimmer changed his breathing pattern during the final __________ of the race.",
+          "questionKey": "2391-2400:10"
         }
       ]
     }
