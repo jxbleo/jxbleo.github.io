@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260707-4">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260709-2">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -218,10 +218,44 @@
                         <div class="assign-chip-list" id="assign-student-chips"></div>
                     </article>
                 </div>
-                <input id="assign-due" type="hidden">
-                <input id="assign-passing" type="hidden">
-                <input id="assign-mastery" type="hidden">
-                <input id="assign-mastery-enabled" type="hidden" value="">
+                <section class="assign-params-panel" aria-labelledby="assign-params-title">
+                    <div class="assign-params-head">
+                        <div>
+                            <p class="eyebrow accent">TASK PARAMETERS</p>
+                            <h2 id="assign-params-title">Parameters</h2>
+                        </div>
+                        <p id="assign-options-summary">Default</p>
+                    </div>
+                    <div class="assign-params-grid">
+                        <label>
+                            <span>Assign by</span>
+                            <select id="assign-date-mode">
+                                <option value="week" selected>Week</option>
+                                <option value="date">Date</option>
+                            </select>
+                        </label>
+                        <label id="assign-week-control">
+                            <span>Week</span>
+                            <select id="assign-week"></select>
+                        </label>
+                        <label id="assign-date-control" hidden>
+                            <span>Date</span>
+                            <input id="assign-date" type="date">
+                        </label>
+                        <label>
+                            <span>Passing %</span>
+                            <input id="assign-passing" type="number" min="0" max="100" step="0.01" placeholder="Default">
+                        </label>
+                        <label class="assign-star-toggle">
+                            <span>Earn STAR</span>
+                            <input id="assign-mastery-enabled" type="checkbox">
+                        </label>
+                        <label>
+                            <span>Mastery %</span>
+                            <input id="assign-mastery" type="number" min="0" max="100" step="0.01" placeholder="Required for STAR" disabled>
+                        </label>
+                    </div>
+                </section>
                 <div class="assign-submit-bar">
                     <span id="selected-count">0 work · 0 students</span>
                     <button class="primary-button assign-button" id="assign-selected" type="button" disabled>Assign</button>
@@ -309,6 +343,6 @@
     <script src="assets/js/config.public.js?v=20260709-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260709-1"></script>
+    <script src="assets/js/teacher.js?v=20260709-2"></script>
 </body>
 </html>

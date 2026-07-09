@@ -2208,6 +2208,22 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(229, 244, 235, 0.88);
     box-shadow: inset 0 0 0 1px rgba(19, 118, 109, 0.08);
 }
+.assign-choice-card.progress {
+    border-color: #ecd7b8;
+    background: #fffaf2;
+}
+.assign-choice-card.starred,
+.assign-choice-card.completed {
+    border-color: #e1c56f;
+    background: #fff9e5;
+}
+.assign-choice-card.progress .assign-choice-copy small {
+    color: #8a622d;
+}
+.assign-choice-card.starred .assign-choice-copy small,
+.assign-choice-card.completed .assign-choice-copy small {
+    color: #8a6819;
+}
 .assign-choice-card.disabled {
     cursor: not-allowed;
     opacity: .52;
@@ -4226,6 +4242,78 @@ body:not(.teacher-page) .tab-button.active {
 .assign-options-panel .assign-controls.compact {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.assign-params-panel {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(19, 118, 109, 0.12);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 10px 28px rgba(25, 68, 61, 0.05);
+}
+.assign-params-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 16px;
+}
+.assign-params-head h2 {
+    margin: 2px 0 0;
+    font-size: 1rem;
+    letter-spacing: 0;
+}
+.assign-params-head p:last-child {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 850;
+    text-align: right;
+}
+.assign-params-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.2fr 0.8fr 0.7fr 0.8fr;
+    gap: 9px;
+    align-items: end;
+}
+.assign-params-grid label {
+    display: grid;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 850;
+}
+.assign-params-grid select,
+.assign-params-grid input {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 11px;
+    border: 1px solid rgba(72, 86, 78, 0.16);
+    border-radius: 8px;
+    color: var(--ink);
+    background: white;
+    font-size: 0.82rem;
+    font-weight: 780;
+    outline: none;
+}
+.assign-params-grid select:focus,
+.assign-params-grid input:focus {
+    border-color: rgba(19, 118, 109, 0.34);
+    box-shadow: 0 0 0 3px rgba(19, 118, 109, 0.08);
+}
+.assign-params-grid input:disabled {
+    color: rgba(71, 85, 105, 0.46);
+    background: rgba(241, 245, 249, 0.88);
+}
+.assign-star-toggle {
+    align-content: end;
+}
+.assign-star-toggle input {
+    justify-self: start;
+    width: 22px;
+    min-height: 22px;
+    padding: 0;
+    accent-color: var(--accent);
+}
 .assign-controls label,
 .assign-list-label,
 .horizontal-form label {
@@ -5513,9 +5601,15 @@ body:not(.teacher-page) .tab-button.active {
     .assign-toolbar,
     .assign-toolbar.compact,
     .assign-minimal-grid,
+    .assign-params-grid,
     .assign-minimal-controls,
     .horizontal-form,
     .student-directory { grid-template-columns: 1fr; }
+    .assign-params-head {
+        align-items: start;
+        flex-direction: column;
+    }
+    .assign-params-head p:last-child { text-align: left; }
     .assign-picker-card { min-height: 0; }
     .candidate-grid { grid-template-columns: 1fr; }
     .assign-submit-bar {
