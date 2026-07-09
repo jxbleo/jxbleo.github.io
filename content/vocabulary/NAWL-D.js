@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-D"] = {
       "391-400": "assets/pdf/vocabulary/NAWL-D/NAWL-D-set-391-400.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-D/NAWL-D-wordlist.pdf"
+  },
   "words": [
     {
       "number": 301,

@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-F"] = {
       "1591-1600": "assets/pdf/vocabulary/NGSL-F/NGSL-F-set-1591-1600.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-F/NGSL-F-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1501,

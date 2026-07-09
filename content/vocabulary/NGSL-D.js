@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-D"] = {
       "1391-1400": "assets/pdf/vocabulary/NGSL-D/NGSL-D-set-1391-1400.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-D/NGSL-D-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1301,

@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-G"] = {
       "691-700": "assets/pdf/vocabulary/NAWL-G/NAWL-G-set-691-700.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-G/NAWL-G-wordlist.pdf"
+  },
   "words": [
     {
       "number": 601,

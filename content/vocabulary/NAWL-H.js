@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-H"] = {
       "791-800": "assets/pdf/vocabulary/NAWL-H/NAWL-H-set-791-800.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-H/NAWL-H-wordlist.pdf"
+  },
   "words": [
     {
       "number": 701,

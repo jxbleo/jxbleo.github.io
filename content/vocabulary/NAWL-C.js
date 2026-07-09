@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-C"] = {
       "291-300": "assets/pdf/vocabulary/NAWL-C/NAWL-C-set-291-300.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-C/NAWL-C-wordlist.pdf"
+  },
   "words": [
     {
       "number": 201,

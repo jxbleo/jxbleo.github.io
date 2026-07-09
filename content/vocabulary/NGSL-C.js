@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-C"] = {
       "1291-1300": "assets/pdf/vocabulary/NGSL-C/NGSL-C-set-1291-1300.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-C/NGSL-C-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1201,

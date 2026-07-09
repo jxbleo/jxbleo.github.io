@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-P"] = {
       "2591-2600": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2591-2600.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-P/NGSL-P-wordlist.pdf"
+  },
   "words": [
     {
       "number": 2501,

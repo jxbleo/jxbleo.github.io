@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-A"] = {
       "1091-1100": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1091-1100.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-A/NGSL-A-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1001,

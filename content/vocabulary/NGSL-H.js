@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-H"] = {
       "1791-1800": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1791-1800.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-H/NGSL-H-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1701,

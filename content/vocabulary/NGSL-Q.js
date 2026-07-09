@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-Q"] = {
       "2691-2700": "assets/pdf/vocabulary/NGSL-Q/NGSL-Q-set-2691-2700.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-Q/NGSL-Q-wordlist.pdf"
+  },
   "words": [
     {
       "number": 2601,

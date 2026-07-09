@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-J"] = {
       "1991-2000": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1991-2000.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-J/NGSL-J-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1901,

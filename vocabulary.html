@@ -345,9 +345,15 @@
             box-shadow: 0 12px 22px rgba(15, 118, 110, 0.16);
         }
 
-        .worksheet-download.list {
+        .worksheet-download.wordlist {
             border-color: rgba(255,255,255,0.32);
             background: #fff;
+            color: #0f5f57;
+        }
+
+        .worksheet-download.practice {
+            border-color: rgba(255,255,255,0.32);
+            background: rgba(255,255,255,0.88);
             color: #0f5f57;
         }
 
@@ -2249,20 +2255,27 @@
             return group && setMap && setMap[group.id] ? setMap[group.id] : '';
         }
 
-        function worksheetDownloadLink(href, label, kind) {
+        function wordlistHref(data) {
+            return data && data.wordlistPdf && data.wordlistPdf.list ? data.wordlistPdf.list : '';
+        }
+
+        function worksheetDownloadLink(href, label, kind, icon) {
             if (!href) return '';
             var filename = href.split('/').pop() || '';
             return '<a class="btn worksheet-download ' + escapeHtml(kind || '') + '" href="' + escapeHtml(href) +
-                '" download="' + escapeHtml(filename) + '"><span class="download-glyph" aria-hidden="true">&#x2B07;</span><span>' +
+                '" download="' + escapeHtml(filename) + '"><span class="download-glyph" aria-hidden="true">' + escapeHtml(icon || '⬇') + '</span><span>' +
                 escapeHtml(label) + '</span></a>';
         }
 
         function renderWorksheetListDownload(data) {
             var root = document.getElementById('worksheet-list-download');
             if (!root) return;
-            var href = data && data.worksheetPdf && data.worksheetPdf.list ? data.worksheetPdf.list : '';
-            root.innerHTML = worksheetDownloadLink(href, 'Download This List', 'list');
-            root.hidden = !href;
+            var links = [
+                worksheetDownloadLink(wordlistHref(data), 'Download Wordlist', 'wordlist', '📚'),
+                worksheetDownloadLink(worksheetListHref(), 'Download Practice', 'practice', '📝')
+            ].filter(Boolean);
+            root.innerHTML = links.join('');
+            root.hidden = !links.length;
         }
 
         function getWordRangeText(group) {

@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-K"] = {
       "2091-2100": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2091-2100.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-K/NGSL-K-wordlist.pdf"
+  },
   "words": [
     {
       "number": 2001,
