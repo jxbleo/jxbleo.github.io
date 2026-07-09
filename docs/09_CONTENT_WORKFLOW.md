@@ -259,12 +259,15 @@ Rules to preserve:
   Vocabulary outputs live under `assets/pdf/vocabulary/<set_id>/`: one
   `<set_id>-wordlist.pdf`, one `<set_id>-all-sets.pdf`, and one
   `<set_id>-set-<group-id>.pdf` per quiz group. The current worksheet style is
-  a black-and-white exam-paper table with separate number, sentence, and blank
-  answer columns. The current wordlist style is a fold-and-cover study table
-  with emoji cues, grouped words, meaning/definition text, and self-check
-  boxes. After generating, render representative pages to images and visually
-  verify page headers, table rows, blanks, emoji rendering, and no-answer
-  practice content before publishing.
+  a black-and-white exam-paper layout: the header shows only the vocabulary
+  source/unit, the top right has separate `Name`, `Date`, and `Score` labels,
+  each group uses a black `SET` ribbon beside a word-bank grid, and questions
+  use only `No.` and `Sentence` columns with longer inline blanks. Do not add a
+  separate answer column or answer lines. The current wordlist style is a
+  fold-and-cover study table with emoji cues, grouped words, meaning/definition
+  text, and self-check boxes. After generating, render representative pages to
+  images and visually verify page headers, table rows, blanks, emoji rendering,
+  and no-answer practice content before publishing.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.
