@@ -264,8 +264,12 @@ Check:
 - unanswered wrong Vocabulary inline practice blanks show `X` on the
   submitted-answer side, not `No answer`
 - every Vocabulary inline practice question card shows an always-visible `?`
-  button before and after checking; clicking it opens a floating explanation
-  popover that does not push the question layout down
+  button before and after checking; clicking it opens a floating answer and
+  explanation popover that does not push the question layout down, including
+  before `Check` is clicked
+- private-answer Vocabulary units load only the selected question's answer and
+  explanation on the first `?` click and must not mark the whole practice group
+  correct or wrong
 - Vocabulary inline practice with local `answer` fields checks without
   CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
   such as `t.scope`

@@ -545,6 +545,8 @@ flowchart TD
 - Vocabulary 5 组及以上才记录
 - Vocabulary 5 组及以上提交必须带有效 `vocabulary_test_sessions.test_session_id`
 - Vocabulary 5 组及以上的题目范围以后端 session 中的 `question_ids` 为准
+- Vocabulary Practice 不记录 attempt；学生在 inline practice 中点击单题 `?` 时，可以
+  在未点击 `Check` 的情况下请求该题正确答案和解析用于自学反馈
 - Vocabulary Test 提交后应立即返回错题复盘所需的正确答案和解析；
   这不改变 attempt 记录规则，只改变学生提交后的反馈可见性
 

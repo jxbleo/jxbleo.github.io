@@ -2701,10 +2701,24 @@
             '</div>';
         }
 
+        function renderPracticeExplanationContent(correctAnswer, explanation) {
+            var correctText = correctAnswer == null ? '' : answerText(correctAnswer);
+            var explanationText = explanation || '';
+            return (correctText
+                ? '<strong>Answer:</strong> ' + escapeHtml(correctText)
+                : '<strong>Answer:</strong> Not available') +
+                (explanationText ? '<br><br>' + escapeHtml(explanationText) : '<br><br>No explanation available yet.');
+        }
+
         function renderPracticeExplanation(question, groupId) {
-            var explanation = question.explanation || 'No explanation available yet.';
+            var hasLocalAnswer = Object.prototype.hasOwnProperty.call(question, 'answer');
+            var explanation = hasLocalAnswer
+                ? renderPracticeExplanationContent(question.answer, question.explanation || '')
+                : 'Click to load the answer and explanation.';
             return '<button class="practice-explain-btn" type="button" data-action="toggle-practice-explanation" data-group="' + escapeHtml(groupId) + '" title="Explain this answer" aria-label="Explain this answer">?</button>' +
-                '<div class="reveal practice-explanation-popover">' + escapeHtml(explanation) + '</div>';
+                '<div class="reveal practice-explanation-popover" data-explanation-ready="' + (hasLocalAnswer ? '1' : '0') + '">' +
+                    (hasLocalAnswer ? explanation : escapeHtml(explanation)) +
+                '</div>';
         }
 
         function renderPromptWithSelect(question, options) {
@@ -2740,12 +2754,8 @@
                 trigger.disabled = true;
             }
             if (reveal) {
-                var correctText = correctAnswer == null ? '' : answerText(correctAnswer);
-                var explanationText = explanation || '';
-                reveal.innerHTML = (correctText
-                    ? '<strong>Answer:</strong> ' + escapeHtml(correctText)
-                    : '<strong>Answer:</strong> Not available') +
-                    (explanationText ? '<br><br>' + escapeHtml(explanationText) : '<br><br>No explanation available yet.');
+                reveal.innerHTML = renderPracticeExplanationContent(correctAnswer, explanation);
+                reveal.setAttribute('data-explanation-ready', '1');
             }
         }
 
@@ -2766,6 +2776,9 @@
             }
             if (reveal) {
                 reveal.classList.remove('show');
+                if (reveal.getAttribute('data-explanation-ready') !== '1') {
+                    reveal.innerHTML = 'Click to load the answer and explanation.';
+                }
             }
             card.classList.remove('explanation-open');
             if (explainButton) explainButton.classList.remove('active');
@@ -2782,6 +2795,70 @@
             });
         }
 
+        function findPracticeQuestion(groupId, questionKey) {
+            var group = (unitData && unitData.quizGroups || []).find(function(item) { return item.id === groupId; });
+            if (!group) return null;
+            return (group.questions || []).find(function(question) {
+                return (question.questionKey || (group.id + ':' + question.number)) === questionKey;
+            }) || null;
+        }
+
+        function loadPracticeExplanation(button, card, reveal) {
+            if (reveal.getAttribute('data-explanation-ready') === '1') return Promise.resolve();
+            if (reveal.getAttribute('data-explanation-loading') === '1') return Promise.resolve();
+            var groupId = button.getAttribute('data-group') || '';
+            var questionKey = card.getAttribute('data-question-key') || '';
+            var question = findPracticeQuestion(groupId, questionKey);
+            if (question && Object.prototype.hasOwnProperty.call(question, 'answer')) {
+                reveal.innerHTML = renderPracticeExplanationContent(question.answer, question.explanation || '');
+                reveal.setAttribute('data-explanation-ready', '1');
+                return Promise.resolve();
+            }
+            if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') {
+                reveal.innerHTML = 'Please log in to load the answer and explanation.';
+                return Promise.resolve();
+            }
+            reveal.setAttribute('data-explanation-loading', '1');
+            reveal.innerHTML = 'Loading answer and explanation...';
+            var loginStatePromise;
+            try {
+                loginStatePromise = typeof window.MrCatCloud.getLoginState === 'function'
+                    ? window.MrCatCloud.getLoginState()
+                    : null;
+            } catch (error) {
+                loginStatePromise = Promise.reject(error);
+            }
+            return Promise.resolve(loginStatePromise)
+                .then(function(state) {
+                    if (!state) throw new Error('LOGIN_REQUIRED');
+                    var input = card.querySelector('.answer-input');
+                    var answers = {};
+                    answers[questionKey] = input ? input.value || '' : '';
+                    return window.MrCatCloud.callFunction('submitAttempt', {
+                        set_id: setId,
+                        mode: 'vocabulary_practice',
+                        answers: answers,
+                        selected_group_count: 1,
+                        selected_group_ids: [groupId]
+                    });
+                })
+                .then(function(response) {
+                    if (!response || !response.success) throw new Error(response && response.message || 'Unable to load explanation.');
+                    var result = (response.question_results || []).find(function(item) {
+                        return item.question_id === questionKey;
+                    });
+                    if (!result || response.feedback_locked) throw new Error('Explanation is not available yet.');
+                    reveal.innerHTML = renderPracticeExplanationContent(result.correct_answer, result.explanation || '');
+                    reveal.setAttribute('data-explanation-ready', '1');
+                })
+                .catch(function(error) {
+                    reveal.innerHTML = escapeHtml(practiceCheckError(error).message);
+                })
+                .then(function() {
+                    reveal.removeAttribute('data-explanation-loading');
+                });
+        }
+
         function togglePracticeExplanation(button) {
             var card = button.closest('.self-question, .test-question');
             if (!card) return;
@@ -2793,6 +2870,9 @@
             button.classList.toggle('active', willShow);
             card.classList.toggle('explanation-open', willShow);
             card.classList.remove('choice-open');
+            if (willShow && card.classList.contains('self-question')) {
+                loadPracticeExplanation(button, card, reveal);
+            }
         }
 
         function practiceCheckError(error) {

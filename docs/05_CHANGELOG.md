@@ -23,6 +23,9 @@
 
 ### Changed
 
+- Changed Vocabulary inline practice `?` explanations so students can reveal a
+  question's answer and explanation before clicking `Check`; private-answer
+  units load only the selected question's feedback from the backend.
 - Changed practice and catalog static-data fetches to use the public
   `appVersion` cache key instead of timestamp cache busting, so normal browser
   caching and back/forward restoration can keep practice pages faster while
