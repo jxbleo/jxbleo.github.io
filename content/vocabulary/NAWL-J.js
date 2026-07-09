@@ -23,6 +23,9 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
       "951-960": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-951-960.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-J/NAWL-J-wordlist.pdf"
+  },
   "words": [
     {
       "number": 901,

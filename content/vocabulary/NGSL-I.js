@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-I"] = {
       "1891-1900": "assets/pdf/vocabulary/NGSL-I/NGSL-I-set-1891-1900.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-I/NGSL-I-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1801,

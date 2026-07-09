@@ -235,12 +235,13 @@ Review condition:
 
 Revisit if UI complexity grows enough that static pages slow development or cause frequent regressions.
 
-## 2026-07-09: Generate Vocabulary Worksheet PDFs With ReportLab
+## 2026-07-09: Generate Vocabulary PDF Downloads With ReportLab
 
 Decision:
 
-Use a local Python ReportLab script to generate static, no-answer Vocabulary
-worksheet PDFs from `content/vocabulary/<set_id>.json`.
+Use a local Python ReportLab script to generate static Vocabulary PDF downloads
+from `content/vocabulary/<set_id>.json`: no-answer practice worksheets and
+fold-and-cover wordlists.
 
 Reason:
 
@@ -256,9 +257,13 @@ Trade-offs:
 - Good: no frontend PDF library or CloudBase function is needed.
 - Good: the current worksheet style is a black-and-white exam-paper table with
   no logo or image dependency, keeping generated files small and printable.
+- Good: wordlist PDFs embed a local CJK TrueType font for Chinese meanings and
+  render emoji cues to small images before embedding them, avoiding missing
+  glyph boxes in PDF viewers.
 - Cost: generated PDFs must be rebuilt when vocabulary prompts or groups
   change.
-- Cost: the local generation environment needs Python with ReportLab.
+- Cost: the local generation environment needs Python with ReportLab and
+  Pillow for emoji wordlist rendering.
 
 Review condition:
 

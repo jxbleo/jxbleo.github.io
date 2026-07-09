@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-M"] = {
       "2291-2300": "assets/pdf/vocabulary/NGSL-M/NGSL-M-set-2291-2300.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-M/NGSL-M-wordlist.pdf"
+  },
   "words": [
     {
       "number": 2201,

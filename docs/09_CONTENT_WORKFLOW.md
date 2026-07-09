@@ -233,21 +233,28 @@ Rules to preserve:
   source word-number range only, such as `001-100`, `901-963`, or
   `1001-1100`. Student and teacher Library cards use that range as the
   top-right metadata while preserving the unit title as the main card title.
-- NGSL and NAWL vocabulary units include no-answer worksheet PDF downloads by
-  adding `worksheetPdf` metadata to `content/vocabulary/<set_id>.json`. Other
-  vocabulary families may opt into the same pattern later. The `list`
-  field points to a complete unit worksheet, while `sets` maps each
-  `quizGroups[].id` to a single-set worksheet. Student PDFs must include only
-  public exercise material such as group labels, word banks, and prompts; do
-  not include answers, explanations, accepted variants, or grading rules.
-- Generate worksheet PDFs with
-  `python3 scripts/generate-vocabulary-worksheets.py <set_id>`. NGSL and NAWL
-  outputs live under `assets/pdf/vocabulary/<set_id>/`: one
-  `<set_id>-all-sets.pdf` file and one `<set_id>-set-<group-id>.pdf` per quiz
-  group. The current worksheet style is a black-and-white exam-paper table with
-  separate number, sentence, and blank answer columns. After generating, render
-  representative pages to images and visually verify page headers, table rows,
-  blanks, and no-answer content before publishing.
+- NGSL and NAWL vocabulary units include two static PDF download families by
+  adding `wordlistPdf` and `worksheetPdf` metadata to
+  `content/vocabulary/<set_id>.json`. Other vocabulary families may opt into
+  the same pattern later. `wordlistPdf.list` points to the complete unit
+  wordlist. `worksheetPdf.list` points to a complete unit worksheet, while
+  `worksheetPdf.sets` maps each `quizGroups[].id` to a single-set worksheet.
+  Practice worksheet PDFs must include only public exercise material such as
+  group labels, word banks, and prompts; do not include answers, explanations,
+  accepted variants, or grading rules.
+- Generate practice PDFs with
+  `python3 scripts/generate-vocabulary-worksheets.py <set_id> --kind practice`
+  and wordlist PDFs with
+  `python3 scripts/generate-vocabulary-worksheets.py <set_id> --kind wordlist`.
+  NGSL and NAWL outputs live under `assets/pdf/vocabulary/<set_id>/`: one
+  `<set_id>-wordlist.pdf`, one `<set_id>-all-sets.pdf`, and one
+  `<set_id>-set-<group-id>.pdf` per quiz group. The current worksheet style is
+  a black-and-white exam-paper table with separate number, sentence, and blank
+  answer columns. The current wordlist style is a fold-and-cover study table
+  with emoji cues, grouped words, meaning/definition text, and self-check
+  boxes. After generating, render representative pages to images and visually
+  verify page headers, table rows, blanks, emoji rendering, and no-answer
+  practice content before publishing.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

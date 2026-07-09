@@ -26,6 +26,9 @@
       "191-200": "assets/pdf/vocabulary/NAWL-B/NAWL-B-set-191-200.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-B/NAWL-B-wordlist.pdf"
+  },
   "words": [
     {
       "number": 101,

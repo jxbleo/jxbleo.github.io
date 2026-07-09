@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-I"] = {
       "891-900": "assets/pdf/vocabulary/NAWL-I/NAWL-I-set-891-900.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-I/NAWL-I-wordlist.pdf"
+  },
   "words": [
     {
       "number": 801,

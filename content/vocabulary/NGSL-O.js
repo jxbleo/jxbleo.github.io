@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-O"] = {
       "2491-2500": "assets/pdf/vocabulary/NGSL-O/NGSL-O-set-2491-2500.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-O/NGSL-O-wordlist.pdf"
+  },
   "words": [
     {
       "number": 2401,

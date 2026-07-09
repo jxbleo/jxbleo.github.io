@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-F"] = {
       "591-600": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-591-600.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-F/NAWL-F-wordlist.pdf"
+  },
   "words": [
     {
       "number": 501,

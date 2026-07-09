@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NGSL-E"] = {
       "1491-1500": "assets/pdf/vocabulary/NGSL-E/NGSL-E-set-1491-1500.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-E/NGSL-E-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1401,

@@ -27,6 +27,9 @@ window.__VOCABULARY_UNITS__["NAWL-E"] = {
       "491-500": "assets/pdf/vocabulary/NAWL-E/NAWL-E-set-491-500.pdf"
     }
   },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-E/NAWL-E-wordlist.pdf"
+  },
   "words": [
     {
       "number": 401,
