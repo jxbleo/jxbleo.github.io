@@ -11,6 +11,21 @@
   "sourceName": "NGSL",
   "cefrLevel": "B2",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-P/NGSL-P-all-sets.pdf",
+    "sets": {
+      "2501-2510": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2501-2510.pdf",
+      "2511-2520": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2511-2520.pdf",
+      "2521-2530": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2521-2530.pdf",
+      "2531-2540": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2531-2540.pdf",
+      "2541-2550": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2541-2550.pdf",
+      "2551-2560": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2551-2560.pdf",
+      "2561-2570": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2561-2570.pdf",
+      "2571-2580": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2571-2580.pdf",
+      "2581-2590": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2581-2590.pdf",
+      "2591-2600": "assets/pdf/vocabulary/NGSL-P/NGSL-P-set-2591-2600.pdf"
+    }
+  },
   "words": [
     {
       "number": 2501,

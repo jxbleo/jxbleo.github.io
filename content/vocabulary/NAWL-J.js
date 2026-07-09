@@ -12,6 +12,17 @@ window.__VOCABULARY_UNITS__["NAWL-J"] = {
   "sourceName": "NAWL",
   "cefrLevel": "C1+",
   "wordCount": 63,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-J/NAWL-J-all-sets.pdf",
+    "sets": {
+      "901-910": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-901-910.pdf",
+      "911-920": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-911-920.pdf",
+      "921-930": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-921-930.pdf",
+      "931-940": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-931-940.pdf",
+      "941-950": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-941-950.pdf",
+      "951-960": "assets/pdf/vocabulary/NAWL-J/NAWL-J-set-951-960.pdf"
+    }
+  },
   "words": [
     {
       "number": 901,

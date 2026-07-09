@@ -12,6 +12,21 @@ window.__VOCABULARY_UNITS__["NAWL-F"] = {
   "sourceName": "NAWL",
   "cefrLevel": "C1+",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NAWL-F/NAWL-F-all-sets.pdf",
+    "sets": {
+      "501-510": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-501-510.pdf",
+      "511-520": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-511-520.pdf",
+      "521-530": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-521-530.pdf",
+      "531-540": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-531-540.pdf",
+      "541-550": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-541-550.pdf",
+      "551-560": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-551-560.pdf",
+      "561-570": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-561-570.pdf",
+      "571-580": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-571-580.pdf",
+      "581-590": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-581-590.pdf",
+      "591-600": "assets/pdf/vocabulary/NAWL-F/NAWL-F-set-591-600.pdf"
+    }
+  },
   "words": [
     {
       "number": 501,

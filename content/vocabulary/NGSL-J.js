@@ -12,6 +12,21 @@ window.__VOCABULARY_UNITS__["NGSL-J"] = {
   "sourceName": "NGSL",
   "cefrLevel": "C1",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-J/NGSL-J-all-sets.pdf",
+    "sets": {
+      "1901-1910": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1901-1910.pdf",
+      "1911-1920": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1911-1920.pdf",
+      "1921-1930": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1921-1930.pdf",
+      "1931-1940": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1931-1940.pdf",
+      "1941-1950": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1941-1950.pdf",
+      "1951-1960": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1951-1960.pdf",
+      "1961-1970": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1961-1970.pdf",
+      "1971-1980": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1971-1980.pdf",
+      "1981-1990": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1981-1990.pdf",
+      "1991-2000": "assets/pdf/vocabulary/NGSL-J/NGSL-J-set-1991-2000.pdf"
+    }
+  },
   "words": [
     {
       "number": 1901,
