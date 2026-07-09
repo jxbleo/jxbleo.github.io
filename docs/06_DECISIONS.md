@@ -256,7 +256,9 @@ Trade-offs:
 - Good: download buttons can link to ordinary static files.
 - Good: no frontend PDF library or CloudBase function is needed.
 - Good: the current worksheet style is a black-and-white exam-paper table with
-  no logo or image dependency, keeping generated files small and printable.
+  no logo or image dependency, a simple source/unit header, top-right
+  `Name`/`Date`/`Score` tags, a black `SET` word-bank ribbon, and two-column
+  question tables without a separate answer column.
 - Good: wordlist PDFs embed a local CJK TrueType font for Chinese meanings and
   render emoji cues to small images before embedding them, avoiding missing
   glyph boxes in PDF viewers.

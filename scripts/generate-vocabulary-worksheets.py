@@ -7,6 +7,7 @@ import argparse
 import html
 import io
 import json
+import math
 import re
 from pathlib import Path
 
@@ -45,7 +46,6 @@ STUDY_ACCENT = colors.HexColor("#0f766e")
 STUDY_LIGHT = colors.HexColor("#edf7f5")
 STUDY_RULE = colors.HexColor("#667085")
 NUMBER_COLUMN_WIDTH = 11 * mm
-ANSWER_COLUMN_WIDTH = 20.4 * mm
 WORDLIST_CJK_FONT = "Times-Roman"
 WORDLIST_CJK_BOLD_FONT = "Times-Bold"
 EMOJI_FONT_PATH = Path("/System/Library/Fonts/Apple Color Emoji.ttc")
@@ -100,7 +100,7 @@ def group_title(unit: dict, group: dict) -> str:
 
 def normalize_prompt(prompt: str) -> str:
     text = str(prompt or "")
-    return re.sub(r"_{5,}", "________", text)
+    return re.sub(r"_{5,}", "___________", text)
 
 
 def clean_inline_text(value: str, break_replacement: str = "; ") -> str:
@@ -214,20 +214,105 @@ class WorksheetPdf:
         self.page_number += 1
         draw_page_frame(self.canvas, self.page_number, "Mr. Cat Academy")
 
-    def draw_word_bank(self, group: dict, x: float, y: float, width: float) -> float:
-        words = " | ".join(group.get("wordList") or [])
-        bank = paragraph_markup(f"<b>Words:</b> {html.escape(words)}", self.bank_style)
-        height = bank.wrap(width - 10 * mm, 100)[1] + 8 * mm
+    def draw_info_tags(self, x: float, y: float, width: float) -> None:
+        c = self.canvas
+        c.saveState()
+        labels = ("Name", "Date", "Score")
+        tag_gap = 3.2 * mm
+        tag_width = 31 * mm
+        tag_height = 11.5 * mm
+        total_width = len(labels) * tag_width + (len(labels) - 1) * tag_gap
+        start_x = x + width - total_width
+        top = y + 3.2 * mm
+
+        c.setStrokeColor(RULE)
+        c.setFillColor(RULE)
+        c.setLineWidth(0.55)
+        for index, label in enumerate(labels):
+            tag_x = start_x + index * (tag_width + tag_gap)
+            c.roundRect(tag_x, top - tag_height, tag_width, tag_height, 1.8 * mm, fill=0, stroke=1)
+            c.setFont("Times-Bold", 5.8)
+            c.drawString(tag_x + 2.2 * mm, top - 3.7 * mm, label)
+            c.setLineWidth(0.35)
+            c.line(tag_x + 2.2 * mm, top - 8.3 * mm, tag_x + tag_width - 2.2 * mm, top - 8.3 * mm)
+            c.setLineWidth(0.55)
+        c.restoreState()
+
+    def word_bank_layout(self, words: list[str], width: float) -> tuple[int, int, float]:
+        if not words:
+            return 1, 1, 9.6
+
+        c = self.canvas
+        columns = 5
+        if len(words) <= 5:
+            columns = len(words)
+        else:
+            c.saveState()
+            c.setFont("Times-Roman", 9.6)
+            max_word_width = max(c.stringWidth(str(word), "Times-Roman", 9.6) for word in words)
+            c.restoreState()
+            if max_word_width > width / 5 - 8 * mm:
+                columns = 4
+
+        cell_width = width / columns
+        c.saveState()
+        c.setFont("Times-Roman", 9.6)
+        max_word_width = max(c.stringWidth(str(word), "Times-Roman", 9.6) for word in words)
+        c.restoreState()
+        font_size = 9.6
+        available_width = cell_width - 5 * mm
+        if max_word_width > available_width:
+            font_size = max(7.2, 9.6 * available_width / max_word_width)
+        rows = max(2 if len(words) <= 5 else 1, math.ceil(len(words) / columns))
+        return columns, rows, font_size
+
+    def draw_word_grid(self, words: list[str], x: float, y: float, width: float) -> float:
+        columns, row_count, font_size = self.word_bank_layout(words, width)
+        row_height = 8.6 * mm
+        height = row_count * row_height
+        cell_width = width / columns
 
         c = self.canvas
         c.saveState()
-        c.setStrokeColor(MUTED)
-        c.setFillColor(colors.white)
-        c.setLineWidth(0.55)
+        c.setStrokeColor(RULE)
+        c.setFillColor(RULE)
+        c.setLineWidth(0.45)
         c.rect(x, y - height, width, height, fill=0, stroke=1)
+        for column in range(1, columns):
+            c.line(x + column * cell_width, y, x + column * cell_width, y - height)
+        for row in range(1, row_count):
+            c.line(x, y - row * row_height, x + width, y - row * row_height)
+
+        c.setFont("Times-Roman", font_size)
+        for index, word in enumerate(words):
+            row = index // columns
+            column = index % columns
+            c.drawCentredString(
+                x + column * cell_width + cell_width / 2,
+                y - row * row_height - row_height / 2 - font_size / 3,
+                str(word),
+            )
         c.restoreState()
-        bank.drawOn(c, x + 5 * mm, y - height + 4 * mm)
-        return y - height
+        return height
+
+    def draw_word_bank(self, group: dict, x: float, y: float, width: float) -> float:
+        ribbon_width = 14.5 * mm
+        words = group.get("wordList") or []
+        grid_height = self.draw_word_grid(words, x + ribbon_width, y, width - ribbon_width)
+
+        c = self.canvas
+        set_number = group_index(self.unit, group)
+        c.saveState()
+        c.setFillColor(colors.black)
+        c.setStrokeColor(colors.black)
+        c.rect(x, y - grid_height, ribbon_width, grid_height, fill=1, stroke=1)
+        c.setFillColor(colors.white)
+        c.setFont("Times-Bold", 7.2)
+        c.drawCentredString(x + ribbon_width / 2, y - grid_height / 2 + 4.4 * mm, "SET")
+        c.setFont("Helvetica-Bold", 20)
+        c.drawCentredString(x + ribbon_width / 2, y - grid_height / 2 - 4.5 * mm, str(set_number))
+        c.restoreState()
+        return y - grid_height
 
     def question_rows(self, questions: list[dict], sentence_width: float) -> list[dict]:
         rows = []
@@ -271,8 +356,7 @@ class WorksheetPdf:
     def draw_question_table(self, group: dict, x: float, y: float, width: float) -> float:
         c = self.canvas
         number_width = NUMBER_COLUMN_WIDTH
-        answer_width = ANSWER_COLUMN_WIDTH
-        sentence_width = width - number_width - answer_width
+        sentence_width = width - number_width
         header_height = 9 * mm
         rows = self.question_rows(group.get("questions") or [], sentence_width)
         self.shrink_rows_to_fit(rows, y - BOTTOM_Y - header_height)
@@ -284,11 +368,9 @@ class WorksheetPdf:
 
         c.rect(x, y - header_height, number_width, header_height)
         c.rect(x + number_width, y - header_height, sentence_width, header_height)
-        c.rect(x + number_width + sentence_width, y - header_height, answer_width, header_height)
         c.setFont("Times-Bold", 10)
         c.drawCentredString(x + number_width / 2, y - 6 * mm, "No.")
         c.drawCentredString(x + number_width + sentence_width / 2, y - 6 * mm, "Sentence")
-        c.drawCentredString(x + number_width + sentence_width + answer_width / 2, y - 6 * mm, "Answer")
         y -= header_height
 
         for row in rows:
@@ -297,7 +379,6 @@ class WorksheetPdf:
             para_height = row["paragraph_height"]
             c.rect(x, y - row_height, number_width, row_height)
             c.rect(x + number_width, y - row_height, sentence_width, row_height)
-            c.rect(x + number_width + sentence_width, y - row_height, answer_width, row_height)
 
             c.setFont("Times-Roman", 9.4)
             c.drawCentredString(x + number_width / 2, y - row_height / 2 - 3, row["number"])
@@ -316,23 +397,18 @@ class WorksheetPdf:
         x = CONTENT_X
         y = TOP_Y
         width = CONTENT_WIDTH
-        title = group_title(self.unit, group)
 
         c.saveState()
-        c.setFont("Times-Roman", 10.3)
+        c.setFont("Times-Bold", 11.2)
         c.setFillColor(RULE)
-        c.drawString(x, y, str(group_index(self.unit, group)))
-        c.setFont("Times-Italic", 9.3)
-        c.drawRightString(x + width, y, "(10 marks)")
+        c.drawString(x, y, self.unit.get("id", "Vocabulary"))
+        self.draw_info_tags(x, y, width)
+        c.setStrokeColor(RULE)
+        c.setLineWidth(0.55)
+        c.line(x, y - 7.2 * mm, x + width - 106 * mm, y - 7.2 * mm)
         c.restoreState()
 
-        instruction = (
-            f"{title}. Fill in each blank with ONE word from the box and "
-            "write your answers in the Answer column."
-        )
-        y = draw_wrapped(c, paragraph_markup(html.escape(instruction), self.instruction_style), x + 8 * mm, y + 2, width - 23 * mm)
-        y -= 7 * mm
-
+        y -= 29 * mm
         y = self.draw_word_bank(group, x, y, width)
         y -= 8 * mm
         self.draw_question_table(group, x, y, width)
