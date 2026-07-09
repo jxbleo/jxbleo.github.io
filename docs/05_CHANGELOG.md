@@ -11,7 +11,11 @@
   lessons, exposed through a top-corner `Download Practice` button on
   `bbc.html`.
 - Added exam-style no-answer worksheet PDF downloads for all current NGSL and
-  NAWL Vocabulary units, with both full-list and single-set download links.
+  NAWL Vocabulary units, with full-unit download links and generated
+  single-set PDF files.
+- Updated the Vocabulary PDF controls to use document/download icons with
+  `Wordlist` and `Practice` labels, and removed the per-set download button from
+  inline Study Set practice.
 
 ## 2026-07-08
 

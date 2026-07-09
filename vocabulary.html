@@ -334,8 +334,12 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
+            padding-left: 13px;
+            padding-right: 15px;
             text-decoration: none;
             border: 1px solid rgba(15, 118, 110, 0.20);
+            background: linear-gradient(180deg, #fff, #f7fffb);
             box-shadow: 0 8px 18px rgba(15, 118, 110, 0.10);
         }
 
@@ -353,18 +357,48 @@
 
         .worksheet-download.practice {
             border-color: rgba(255,255,255,0.32);
-            background: rgba(255,255,255,0.88);
             color: #0f5f57;
         }
 
-        .worksheet-download.set {
-            background: #f8fafc;
-            color: #0f5f57;
+        .worksheet-download .download-icon-wrap {
+            position: relative;
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 auto;
         }
 
-        .worksheet-download .download-glyph {
-            font-size: 0.95em;
-            line-height: 1;
+        .worksheet-download .download-main-icon {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .worksheet-download .download-mini-icon {
+            position: absolute;
+            right: -5px;
+            bottom: -3px;
+            display: inline-grid;
+            place-items: center;
+            width: 11px;
+            height: 11px;
+            border-radius: 999px;
+            color: #fff;
+            background: #0f766e;
+            box-shadow: 0 0 0 2px #fff;
+        }
+
+        .worksheet-download .download-mini-icon svg {
+            width: 9px;
+            height: 9px;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
         }
 
         .practice-score {
@@ -2249,30 +2283,35 @@
             return config && config.list ? config.list : '';
         }
 
-        function worksheetSetHref(group) {
-            var config = worksheetConfig();
-            var setMap = config && config.sets ? config.sets : null;
-            return group && setMap && setMap[group.id] ? setMap[group.id] : '';
-        }
-
         function wordlistHref(data) {
             return data && data.wordlistPdf && data.wordlistPdf.list ? data.wordlistPdf.list : '';
         }
 
-        function worksheetDownloadLink(href, label, kind, icon) {
+        function worksheetDownloadIcon(kind) {
+            var documentIcon = kind === 'wordlist'
+                ? '<path d="M8 4h9l3 3v13H8z"></path><path d="M17 4v4h3"></path><path d="M11 11h5"></path><path d="M11 15h5"></path>'
+                : '<path d="M6 3h10l3 3v15H6z"></path><path d="M16 3v4h3"></path><path d="M9 11h6"></path><path d="M9 15h3"></path><path d="M14 15h2"></path>';
+            return '<span class="download-icon-wrap" aria-hidden="true">' +
+                '<svg class="download-main-icon" viewBox="0 0 24 24" focusable="false">' + documentIcon + '</svg>' +
+                '<span class="download-mini-icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 5v10"></path><path d="m8 11 4 4 4-4"></path></svg></span>' +
+                '</span>';
+        }
+
+        function worksheetDownloadLink(href, label, kind) {
             if (!href) return '';
             var filename = href.split('/').pop() || '';
             return '<a class="btn worksheet-download ' + escapeHtml(kind || '') + '" href="' + escapeHtml(href) +
-                '" download="' + escapeHtml(filename) + '"><span class="download-glyph" aria-hidden="true">' + escapeHtml(icon || '⬇') + '</span><span>' +
-                escapeHtml(label) + '</span></a>';
+                '" download="' + escapeHtml(filename) + '" aria-label="Download ' + escapeHtml(label) +
+                '" title="Download ' + escapeHtml(label) + '">' + worksheetDownloadIcon(kind) +
+                '<span>' + escapeHtml(label) + '</span></a>';
         }
 
         function renderWorksheetListDownload(data) {
             var root = document.getElementById('worksheet-list-download');
             if (!root) return;
             var links = [
-                worksheetDownloadLink(wordlistHref(data), 'Download Wordlist', 'wordlist', '📚'),
-                worksheetDownloadLink(worksheetListHref(), 'Download Practice', 'practice', '📝')
+                worksheetDownloadLink(wordlistHref(data), 'Wordlist', 'wordlist'),
+                worksheetDownloadLink(worksheetListHref(), 'Practice', 'practice')
             ].filter(Boolean);
             root.innerHTML = links.join('');
             root.hidden = !links.length;
@@ -2611,7 +2650,6 @@
             if (activePracticeGroupId !== group.id) {
                 root.innerHTML = '<div class="word-practice-entry">' +
                     '<button class="btn btn-primary" type="button" data-action="open-practice" data-group="' + escapeHtml(group.id) + '">Go to Practice</button>' +
-                    worksheetDownloadLink(worksheetSetHref(group), 'Download This Set', 'set') +
                 '</div>';
                 return;
             }
@@ -2891,7 +2929,6 @@
             return '<div class="group-card">' +
                 '<div class="question-list">' + questions + '</div>' +
                 '<div class="group-actions">' +
-                    worksheetDownloadLink(worksheetSetHref(group), 'Download This Set', 'set') +
                     '<span class="practice-score" data-practice-score="' + escapeHtml(group.id) + '" aria-live="polite"></span>' +
                     '<button class="btn btn-secondary practice-redo-btn" type="button" data-action="redo-practice" data-group="' + escapeHtml(group.id) + '" hidden>Redo</button>' +
                     '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check</button>' +
