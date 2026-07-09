@@ -254,12 +254,11 @@ Trade-offs:
 - Good: stable A4 pagination, headers, footers, and no-answer exercise output.
 - Good: download buttons can link to ordinary static files.
 - Good: no frontend PDF library or CloudBase function is needed.
-- Good: the generator downsizes the shared DSE logo before embedding it, so
-  generated files stay small enough for static hosting and student downloads.
+- Good: the current worksheet style is a black-and-white exam-paper table with
+  no logo or image dependency, keeping generated files small and printable.
 - Cost: generated PDFs must be rebuilt when vocabulary prompts or groups
   change.
-- Cost: the local generation environment needs Python with ReportLab; Pillow is
-  used when available for logo compression and falls back to the source image.
+- Cost: the local generation environment needs Python with ReportLab.
 
 Review condition:
 
