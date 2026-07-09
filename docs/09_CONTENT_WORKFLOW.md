@@ -245,7 +245,7 @@ Rules to preserve:
   outputs live under `assets/pdf/vocabulary/<set_id>/`: one
   `<set_id>-all-sets.pdf` file and one `<set_id>-set-<group-id>.pdf` per quiz
   group. The current worksheet style is a black-and-white exam-paper table with
-  a sentence column and a blank answer column. After generating, render
+  separate number, sentence, and blank answer columns. After generating, render
   representative pages to images and visually verify page headers, table rows,
   blanks, and no-answer content before publishing.
 
