@@ -15,6 +15,7 @@
         vocabItems: [],
         vocabSearch: '',
         finishedExpanded: false,
+        progressSelectedDay: '',
         accountPanelOpen: false
     };
     var dashboardViews = ['assignments', 'words', 'resources'];
@@ -56,6 +57,8 @@
     var selfStudyStarCounter = null;
     var greeting = document.getElementById('greeting');
     var heroCopy = document.getElementById('hero-copy');
+    var heroProgressStats = document.getElementById('hero-progress-stats');
+    var progressBoard = document.getElementById('progress-board');
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
@@ -188,6 +191,75 @@
         if (isNaN(date.getTime())) return '';
         return new Intl.DateTimeFormat('en-GB', {
             timeZone: 'Asia/Shanghai',
+            month: 'short',
+            day: 'numeric'
+        }).format(date);
+    }
+
+    function shanghaiDateParts(value) {
+        var date = value instanceof Date ? value : new Date(value || Date.now());
+        if (isNaN(date.getTime())) return null;
+        var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(date);
+        var result = {};
+        parts.forEach(function(part) {
+            if (part.type !== 'literal') result[part.type] = part.value;
+        });
+        var year = Number(result.year);
+        var month = Number(result.month);
+        var day = Number(result.day);
+        if (!year || !month || !day) return null;
+        return {
+            year: year,
+            month: month,
+            day: day,
+            key: year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0')
+        };
+    }
+
+    function utcDateFromShanghaiParts(parts) {
+        return new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+    }
+
+    function addUtcDays(date, days) {
+        var next = new Date(date.getTime());
+        next.setUTCDate(next.getUTCDate() + days);
+        return next;
+    }
+
+    function keyFromUtcDate(date) {
+        return date.getUTCFullYear() + '-' +
+            String(date.getUTCMonth() + 1).padStart(2, '0') + '-' +
+            String(date.getUTCDate()).padStart(2, '0');
+    }
+
+    function mondayIndexFromUtcDate(date) {
+        return (date.getUTCDay() + 6) % 7;
+    }
+
+    function currentShanghaiWeekStart() {
+        var parts = shanghaiDateParts(new Date());
+        var today = utcDateFromShanghaiParts(parts);
+        return addUtcDays(today, -mondayIndexFromUtcDate(today));
+    }
+
+    function isoWeekNumber(date) {
+        var target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+        var dayNumber = (target.getUTCDay() + 6) % 7;
+        target.setUTCDate(target.getUTCDate() - dayNumber + 3);
+        var firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+        var firstDayNumber = (firstThursday.getUTCDay() + 6) % 7;
+        firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNumber + 3);
+        return 1 + Math.round((target.getTime() - firstThursday.getTime()) / 604800000);
+    }
+
+    function formatProgressDayTitle(date) {
+        return new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'UTC',
             month: 'short',
             day: 'numeric'
         }).format(date);
@@ -915,6 +987,216 @@
         return new Date(item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || 0).getTime();
     }
 
+    function progressItemDateValue(item) {
+        if (!item || !isFinishedStatus(item.status)) return null;
+        var value = item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
+        var date = value ? new Date(value) : null;
+        return date && !isNaN(date.getTime()) ? date : null;
+    }
+
+    function progressBadgeForItem(item) {
+        if (item && (normalizedStatus(item.status) === 'mastered' || item.star_claimed === true)) return 'STAR';
+        if (item && item.source === 'self_study') return 'Self-study';
+        return 'Done';
+    }
+
+    function progressBadgeClass(item) {
+        if (item && (normalizedStatus(item.status) === 'mastered' || item.star_claimed === true)) return ' gold';
+        if (item && item.source === 'self_study') return ' blue';
+        return ' green';
+    }
+
+    function progressItemKind(item) {
+        var set = item && (item.set || item) || {};
+        var sectionId = set.sectionId || set.section_id || '';
+        return vocabularySourceLabel(set) ||
+            librarySectionLabel(sectionId, set.course || set.type || 'Practice');
+    }
+
+    function progressItemTitle(item) {
+        var set = item && (item.set || item) || {};
+        return set.title || set.set_id || set.id || 'Practice';
+    }
+
+    function progressItemMeta(item) {
+        var set = item && (item.set || item) || {};
+        var parts = [];
+        var kind = progressItemKind(item);
+        var setId = set.set_id || set.id || '';
+        if (kind) parts.push(kind);
+        if (setId) parts.push(setId);
+        if (item && item.best_percentage != null) parts.push(formatEntryPercent(item.best_percentage));
+        return parts.join(' · ');
+    }
+
+    function progressDayModel() {
+        var weekStart = currentShanghaiWeekStart();
+        var firstWeekStart = addUtcDays(weekStart, -21);
+        var todayParts = shanghaiDateParts(new Date());
+        var todayKey = todayParts && todayParts.key;
+        var days = [];
+        var daysByKey = {};
+        var weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        for (var weekIndex = 0; weekIndex < 4; weekIndex++) {
+            var weekDate = addUtcDays(firstWeekStart, weekIndex * 7);
+            for (var dayIndex = 0; dayIndex < 7; dayIndex++) {
+                var date = addUtcDays(weekDate, dayIndex);
+                var key = keyFromUtcDate(date);
+                var day = {
+                    key: key,
+                    date: date,
+                    weekLabel: 'W' + isoWeekNumber(date),
+                    dayLabel: weekdayLabels[dayIndex],
+                    items: [],
+                    isFuture: todayKey ? key > todayKey : false
+                };
+                days.push(day);
+                daysByKey[key] = day;
+            }
+        }
+
+        (state.assignments || []).forEach(function(item) {
+            var date = progressItemDateValue(item);
+            if (!date) return;
+            var parts = shanghaiDateParts(date);
+            if (!parts || !daysByKey[parts.key]) return;
+            daysByKey[parts.key].items.push(item);
+        });
+
+        days.forEach(function(day) {
+            day.items.sort(function(left, right) {
+                return progressItemDateValue(right).getTime() - progressItemDateValue(left).getTime();
+            });
+            day.hasStar = day.items.some(function(item) {
+                return normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
+            });
+            day.level = Math.min(4, day.items.length);
+        });
+
+        var selected = state.progressSelectedDay && daysByKey[state.progressSelectedDay];
+        if (!selected) selected = daysByKey[todayKey];
+        if (!selected) {
+            for (var i = days.length - 1; i >= 0; i--) {
+                if (days[i].items.length) {
+                    selected = days[i];
+                    break;
+                }
+            }
+        }
+        if (!selected) selected = days[days.length - 1];
+        state.progressSelectedDay = selected ? selected.key : '';
+
+        return {
+            days: days,
+            selected: selected,
+            todayKey: todayKey,
+            weekdayLabels: weekdayLabels
+        };
+    }
+
+    function renderProgressStats() {
+        if (!heroProgressStats) return;
+        if (!state.session || state.session.mode !== 'student') {
+            if (heroCopy) heroCopy.textContent = 'Explore lessons as a visitor.';
+            heroProgressStats.innerHTML =
+                '<span><strong>0</strong><small>Finished</small></span>' +
+                '<span><strong>0</strong><small>STAR</small></span>' +
+                '<span><strong>0</strong><small>To do</small></span>';
+            return;
+        }
+        var assignments = state.assignments || [];
+        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); });
+        var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; });
+        var weekStartKey = keyFromUtcDate(currentShanghaiWeekStart());
+        var finishedThisWeek = finished.filter(function(item) {
+            var date = progressItemDateValue(item);
+            var parts = date && shanghaiDateParts(date);
+            return parts && parts.key >= weekStartKey;
+        }).length;
+        if (heroCopy) {
+            heroCopy.textContent = finishedThisWeek + ' finished this week · ' + todo.length + ' waiting';
+        }
+        heroProgressStats.innerHTML =
+            '<span><strong>' + escapeHtml(finished.length) + '</strong><small>Finished</small></span>' +
+            '<span><strong>' + escapeHtml(state.starCount || 0) + '</strong><small>STAR</small></span>' +
+            '<span><strong>' + escapeHtml(todo.length) + '</strong><small>To do</small></span>';
+    }
+
+    function renderProgressDetail(day) {
+        if (!day) return '';
+        var weekDay = day.weekLabel + ' · ' + day.dayLabel;
+        var title = weekDay + ' · ' + formatProgressDayTitle(day.date);
+        var count = day.items.length;
+        var summary = count
+            ? count + ' finished item' + (count === 1 ? '' : 's') + ' recorded.'
+            : (day.isFuture ? 'Upcoming day.' : 'No finished work recorded.');
+        var body = count
+            ? day.items.map(function(item) {
+                return '<article class="progress-detail-task">' +
+                    '<div>' +
+                        '<strong>' + escapeHtml(progressItemTitle(item)) + '</strong>' +
+                        '<span>' + escapeHtml(progressItemMeta(item)) + '</span>' +
+                    '</div>' +
+                    '<span class="pill' + progressBadgeClass(item) + '">' + escapeHtml(progressBadgeForItem(item)) + '</span>' +
+                '</article>';
+            }).join('')
+            : '<div class="progress-detail-empty">' + escapeHtml(day.isFuture ? 'Planned work will appear here after it is completed.' : 'A blank day is fine. The next practice session can start a new streak.') + '</div>';
+        return '<section class="progress-detail-panel" aria-live="polite">' +
+            '<div>' +
+                '<h2>' + escapeHtml(title) + '</h2>' +
+                '<p>' + escapeHtml(summary) + '</p>' +
+            '</div>' +
+            '<div class="progress-detail-list">' + body + '</div>' +
+        '</section>';
+    }
+
+    function renderProgressBoard() {
+        if (!progressBoard) return;
+        renderProgressStats();
+        if (!state.session || state.session.mode !== 'student') {
+            progressBoard.innerHTML =
+                '<section class="progress-map-panel visitor">' +
+                    '<div class="progress-dot-map" aria-hidden="true">' +
+                        '<span></span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>' +
+                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
+                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
+                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
+                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
+                    '</div>' +
+                '</section>' +
+                '<section class="progress-detail-panel"><div><h2>Visitor mode</h2><p>Progress appears after login.</p></div><div class="progress-detail-empty">Log in to keep assignment history and STAR records.</div></section>';
+            return;
+        }
+
+        var model = progressDayModel();
+        var cells = '';
+        model.days.forEach(function(day, index) {
+            if (index % 7 === 0) cells += '<span class="progress-week-label">' + escapeHtml(day.weekLabel) + '</span>';
+            var classes = ['progress-dot'];
+            if (day.level) classes.push('l' + day.level);
+            if (day.hasStar) classes.push('star');
+            if (day.isFuture) classes.push('future');
+            if (day.key === state.progressSelectedDay) classes.push('active');
+            var label = day.weekLabel + ' ' + day.dayLabel + ', ' + day.items.length + ' finished';
+            cells += '<button class="' + classes.join(' ') + '" type="button" data-progress-day="' + escapeHtml(day.key) + '" aria-label="' + escapeHtml(label) + '"></button>';
+        });
+        progressBoard.innerHTML =
+            '<section class="progress-map-panel">' +
+                '<div class="progress-dot-map" aria-label="Recent assignment progress">' +
+                    '<span></span>' +
+                    model.weekdayLabels.map(function(label) { return '<span class="progress-day-label">' + escapeHtml(label) + '</span>'; }).join('') +
+                    cells +
+                '</div>' +
+                '<div class="progress-map-legend">' +
+                    '<span><i class="progress-dot l1"></i>1</span>' +
+                    '<span><i class="progress-dot l3"></i>2+</span>' +
+                    '<span><i class="progress-dot star"></i>STAR</span>' +
+                '</div>' +
+            '</section>' +
+            renderProgressDetail(model.selected);
+    }
+
     function finishedIconSvg() {
         return '<svg class="finished-mini-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
             '<circle cx="12" cy="12" r="9"></circle>' +
@@ -1002,6 +1284,7 @@
                     state.selfStudyStarCount = Number(result.self_study_star_count == null ? state.selfStudyStarCount : result.self_study_star_count);
                     playStarSound();
                     animateStarToCounter(button);
+                    renderProgressBoard();
                     button.classList.add('collected');
                     window.setTimeout(function() { button.remove(); }, 120);
                 }).catch(function(error) {
@@ -1816,6 +2099,12 @@
             openHrefCard(openCard, e);
             return;
         }
+        var progressDay = e.target.closest('[data-progress-day]');
+        if (progressDay) {
+            state.progressSelectedDay = progressDay.dataset.progressDay || '';
+            renderProgressBoard();
+            return;
+        }
         var tabBtn = e.target.closest('.library-tab-btn');
         if (tabBtn) {
             librarySwitchTab(tabBtn.getAttribute('data-tab'));
@@ -1906,6 +2195,7 @@
         })
         .then(function() {
             if (!state.session) return;
+            renderProgressBoard();
             renderAssignments();
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();
