@@ -149,6 +149,13 @@ BBC public runtime rules:
 - Optional `renderTheme` metadata may change only the front-end presentation in
   shared `bbc.html`; it must not change question IDs, grading keys, attempts,
   History/Clear, Explain, or Argue behavior.
+- BBC practice pages can expose generated no-answer worksheet PDFs from
+  `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. Generate
+  them with `python3 scripts/generate-bbc-worksheets.py` for all BBC lessons or
+  `python3 scripts/generate-bbc-worksheets.py BBC-YYMMDD` for one lesson. These
+  PDFs must use only public exercise content: titles, fill-in sentences, blank
+  lines, multiple-choice questions, and options. They must not include answers,
+  explanations, accepted variants, evidence, or grading rules.
 - Fill-in-the-blank placeholders in `data/BBC-*.json` must be exactly `_____`.
 - If a blank accepts multiple answers, store that answer as an array in the
   ignored private source so the importer can create accepted variants.
@@ -158,6 +165,7 @@ Required artifacts for a full BBC addition:
 
 - runtime data under `data/`
 - metadata under `content/bbc-six-minute-english/`
+- worksheet PDF under `assets/pdf/bbc-six-minute-english/<set_id>/`
 - audio asset if applicable
 - updated `data/home-catalog.*`
 - imported CloudBase `sets`

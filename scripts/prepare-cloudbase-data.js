@@ -226,7 +226,7 @@ function buildSet(meta, overrides = {}) {
   const type = overrides.type || meta.sectionId;
   const course = overrides.course || meta.sectionId;
   const isVocabulary = type === "vocabulary" || meta.sectionId === "vocabulary";
-  return {
+  const set = {
     set_id: meta.id,
     section_id: meta.sectionId,
     title: meta.title,
@@ -240,6 +240,8 @@ function buildSet(meta, overrides = {}) {
     feedback_policy: "always",
     visible: meta.visible !== false,
   };
+  if (meta.renderTheme) set.renderTheme = meta.renderTheme;
+  return set;
 }
 
 function main() {

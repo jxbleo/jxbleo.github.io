@@ -428,6 +428,35 @@ Shared rules:
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,
   submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
+- BBC practice pages show a top-corner `Download Practice` control when the
+  current set has a generated worksheet PDF under
+  `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. The
+  download target is a static no-answer exercise PDF, not a browser print view.
+- The BBC `classroom-worksheet` render theme presents the runtime as a
+  worksheet-style handout: clean paper surface without ruled background lines,
+  thick outer worksheet border, compact low-noise question numbers, full-width
+  multiple-choice options, and a header subtitle limited to
+  `BBC Six Minute English` plus the episode date in
+  `YYYY-MM-DD` format. It must not show a separate question-count badge. Its
+  title should use a classic serif face while the subtitle remains a compact
+  sans-serif information line; the title, audio player, and exercise sheet
+  should read as one continuous paper surface. Fill-in blanks should stay inline
+  with the sentence as compact
+  worksheet-style boxes that expand as students type. Fill-in questions should
+  use the same low-noise divider treatment as multiple-choice questions and
+  should use the available sheet width rather than a narrow card column. Each
+  section title bar should keep its own `-` / `+` controls at the far right,
+  and those controls should resize only the questions under that title. If a
+  fill-in set has no explicit section label, the section title should be
+  `Notes`. Multiple-choice question numbers in this theme should omit trailing
+  punctuation, matching the fill-in number treatment, and options should use a
+  quieter worksheet-body text style rather than heavy card text. Multiple-choice
+  options should render as rounded worksheet boxes; if an option wraps, the
+  continuation line should align with the option sentence rather than the option
+  letter. The student identity should remain in the audio bar as the English
+  name only rather than the title row, `Visitor` should not be shown there,
+  selected multiple-choice options should keep a visible green left-edge line,
+  and the floating History toolbar should not include `Clear`.
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.

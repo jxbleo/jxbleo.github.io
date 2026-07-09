@@ -93,6 +93,7 @@ Core fields:
 | `passing_percentage` | number/null | override passing threshold |
 | `mastery_percentage` | number/null | override mastery threshold |
 | `feedback_policy` | string/null | feedback behavior |
+| `renderTheme` | string/null | optional front-end render theme for supported runtimes |
 | `visible` | boolean | visible in Library/Explore |
 
 Rules:
