@@ -2728,11 +2728,20 @@
         function showPracticeFeedback(card, submitted, correctAnswer, isCorrect, explanation) {
             var input = card.querySelector('.answer-input');
             var trigger = card.querySelector('.blank-trigger');
+            var reveal = card.querySelector('.reveal');
             if (input) input.value = submitted || '';
             if (trigger) {
                 trigger.innerHTML = renderPracticeAnswerFeedback(submitted, correctAnswer, isCorrect);
                 trigger.classList.add('selected', 'feedback', isCorrect ? 'feedback-correct' : 'feedback-wrong');
                 trigger.disabled = true;
+            }
+            if (reveal) {
+                var correctText = correctAnswer == null ? '' : answerText(correctAnswer);
+                var explanationText = explanation || '';
+                reveal.innerHTML = (correctText
+                    ? '<strong>Answer:</strong> ' + escapeHtml(correctText)
+                    : '<strong>Answer:</strong> Not available') +
+                    (explanationText ? '<br><br>' + escapeHtml(explanationText) : '<br><br>No explanation available yet.');
             }
         }
 
