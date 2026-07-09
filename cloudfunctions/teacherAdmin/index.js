@@ -796,6 +796,23 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
   return { assignmentId, convertedFromSelfStudy: convertsSelfStudy };
 }
 
+function createAssignmentOptionsBySet(event, setIds) {
+  const allowed = new Set(setIds);
+  const map = new Map();
+  if (!Array.isArray(event.set_options)) return map;
+  event.set_options.forEach((option) => {
+    if (!option || typeof option !== "object") return;
+    const setId = text(option.set_id);
+    if (!setId || !allowed.has(setId)) return;
+    map.set(setId, option);
+  });
+  return map;
+}
+
+function optionOrEventValue(option, event, key) {
+  return hasOwn(option, key) ? option[key] : event[key];
+}
+
 async function createAssignments(event) {
   const setIds = Array.isArray(event.set_ids)
     ? [...new Set(event.set_ids.map(text).filter(Boolean))]
@@ -805,8 +822,7 @@ async function createAssignments(event) {
     : [];
   if (!setIds.length || !studentUids.length) throw new Error("ASSIGNMENT_FIELDS_REQUIRED");
   if (studentUids.length > 200) throw new Error("TOO_MANY_STUDENTS");
-  const dueAt = safeDate(event.due_at);
-  const assignedAt = safeDate(event.assigned_at) || new Date();
+  const optionsBySet = createAssignmentOptionsBySet(event, setIds);
   const created = [];
   const skipped = [];
   for (const setId of setIds) {
@@ -815,13 +831,23 @@ async function createAssignments(event) {
       skipped.push({ set_id: setId, reason: "set_not_found" });
       continue;
     }
-    const passingPercentage = safePercentage(event.passing_percentage, passingPercentageForSet(set));
-    const masteryEnabled = safeBoolean(event.mastery_enabled, false);
-    if (masteryEnabled && text(event.mastery_percentage) === "") throw new Error("MASTERY_REQUIRED");
+    const setOptions = optionsBySet.get(setId) || {};
+    const dueAt = safeDate(optionOrEventValue(setOptions, event, "due_at"));
+    const assignedAt = safeDate(optionOrEventValue(setOptions, event, "assigned_at")) || new Date();
+    const passingPercentage = safePercentage(
+      optionOrEventValue(setOptions, event, "passing_percentage"),
+      passingPercentageForSet(set)
+    );
+    const masteryEnabled = safeBoolean(
+      optionOrEventValue(setOptions, event, "mastery_enabled"),
+      false
+    );
+    const masteryValue = optionOrEventValue(setOptions, event, "mastery_percentage");
+    if (masteryEnabled && text(masteryValue) === "") throw new Error("MASTERY_REQUIRED");
     const defaultMastery = masteryEnabled
       ? masteryPercentageForSet(set)
       : Math.max(passingPercentage, masteryPercentageForSet(set));
-    const masteryPercentage = safePercentage(event.mastery_percentage, defaultMastery);
+    const masteryPercentage = safePercentage(masteryValue, defaultMastery);
     const assignmentBatchId = [
       "assign",
       setId,

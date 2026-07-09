@@ -306,6 +306,9 @@ flowchart TD
 - 同一次老师 Assign 操作中，同一个 set 给多个学生创建的作业应共享
   `assignment_batch_id`，供教师 View 矩阵按布置批次显示；同一个 set 即使在
   同一周重复布置，也应显示为不同 column
+- Assign 参数按选中的 task 逐行设置。每个 task row 都有自己的计划日期/周、
+  passing percentage 和 `Earn STAR`/mastery percentage，因此同一次 Assign
+  可以把不同 task 布置到不同周或不同日期。
 - 旧作业和旧提交不能被覆盖
 - 已完成或已 STAR 的历史记录不应阻止未来重新布置
 - 只应阻止同一学生同一 set 同时存在未完成开放作业

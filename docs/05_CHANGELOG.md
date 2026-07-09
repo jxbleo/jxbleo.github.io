@@ -41,6 +41,12 @@
   order. The opposite picker now color-codes prior assignment state, disables
   open `in_progress` pairs, and keeps completed pairs selectable for
   reassignment.
+- Changed Teacher Assign selected Work/Students summaries to show one selected
+  item per row with a small remove control, and removed the student picker's
+  `Select filtered` bulk-select button.
+- Changed Teacher Assign task parameters into a per-selected-task matrix. Each
+  task now has its own date/week, passing percentage, and optional Earn STAR /
+  mastery setting in the same Assign submit.
 
 ## 2026-07-08
 

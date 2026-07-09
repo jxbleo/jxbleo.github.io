@@ -12,10 +12,10 @@
         candidates: [],
         selectedAssignSetIds: {},
         selectedAssignStudentUids: {},
+        assignSetParams: {},
         selectedStudentProfileId: '',
         studentPickerMode: 'choose',
         assignPanels: { sets: false, students: false, options: false },
-        assignPassingTouched: false,
         taskView: 'assign',
         assignProgressMode: 'student',
         studentProgressView: 'to_do',
@@ -1398,7 +1398,6 @@
                 });
             });
         }
-        syncAssignPassingDefault(false);
         updateAssignSummary();
         updateSelectedCount();
         renderLibrary();
@@ -1503,19 +1502,42 @@
         return { label: 'Available', css: 'available', disabled: false };
     }
 
-    function renderAssignChips(containerId, items, labelFn) {
+    function removeSelectedAssignItem(kind, id) {
+        if (kind === 'set') {
+            delete state.selectedAssignSetIds[id];
+            delete state.assignSetParams[id];
+            renderSetOptions();
+            loadCandidates();
+            return;
+        }
+        if (kind === 'student') {
+            delete state.selectedAssignStudentUids[id];
+            renderSetOptions();
+            loadCandidates();
+        }
+    }
+
+    function renderAssignChips(containerId, items, labelFn, idFn, removeKind) {
         var container = document.getElementById(containerId);
         if (!container) return;
         if (!items.length) {
             container.innerHTML = '';
             return;
         }
-        var visible = items.slice(0, 3);
-        container.innerHTML = visible.map(function(item) {
-            return '<span class="assign-chip">' + escapeHtml(labelFn(item)) + '</span>';
-        }).join('') + (items.length > visible.length
-            ? '<span class="assign-chip more">+ ' + escapeHtml(items.length - visible.length) + ' more</span>'
-            : '');
+        container.innerHTML = items.map(function(item) {
+            var id = idFn(item);
+            var label = labelFn(item);
+            return '<span class="assign-chip">' +
+                '<span class="assign-chip-label">' + escapeHtml(label) + '</span>' +
+                '<button class="assign-chip-remove" type="button" data-remove-assign-' + escapeHtml(removeKind) + '="' + escapeHtml(id) + '" aria-label="Remove ' + escapeHtml(label) + '">x</button>' +
+            '</span>';
+        }).join('');
+        container.querySelectorAll('[data-remove-assign-' + removeKind + ']').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                removeSelectedAssignItem(removeKind, button.getAttribute('data-remove-assign-' + removeKind));
+            });
+        });
     }
 
     function formatPercentInput(value) {
@@ -1526,28 +1548,6 @@
 
     function configuredDefaultPassing() {
         return Number(window.MRCAT_CONFIG && window.MRCAT_CONFIG.defaultPassingPercentage || 50);
-    }
-
-    function commonSelectedSetNumber(field, fallback) {
-        var sets = selectedSetRecords();
-        if (!sets.length) return formatPercentInput(fallback);
-        var values = [];
-        sets.forEach(function(set) {
-            var raw = set && set[field];
-            var number = Number(raw == null || raw === '' ? fallback : raw);
-            if (isFinite(number)) values.push(formatPercentInput(number));
-        });
-        var unique = values.filter(function(value, index) {
-            return value && values.indexOf(value) === index;
-        });
-        return unique.length === 1 ? unique[0] : '';
-    }
-
-    function syncAssignPassingDefault(force) {
-        var passing = document.getElementById('assign-passing');
-        if (!passing) return;
-        if (!force && state.assignPassingTouched) return;
-        passing.value = commonSelectedSetNumber('passing_percentage', configuredDefaultPassing());
     }
 
     function shanghaiDateInputValueFromParts(parts) {
@@ -1570,6 +1570,16 @@
         return addShanghaiDays(today, mondayOffset);
     }
 
+    function shanghaiDatePartsFromInput(value) {
+        var match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!match) return null;
+        return {
+            year: Number(match[1]),
+            month: Number(match[2]),
+            day: Number(match[3])
+        };
+    }
+
     function weekOptionLabel(startParts) {
         var endParts = addShanghaiDays(startParts, 6);
         var weekInfo = shanghaiCalendarWeekInfoFromParts(startParts);
@@ -1579,62 +1589,219 @@
         ].join(' · ');
     }
 
-    function populateAssignWeekOptions() {
-        var select = document.getElementById('assign-week');
-        if (!select || select.options.length) return;
+    function assignDefaultDateValue(weekOffset) {
+        return shanghaiDateInputValueFromParts(currentShanghaiMondayParts(weekOffset || 0));
+    }
+
+    function weekLabelFromDateInput(value) {
+        var parts = shanghaiDatePartsFromInput(value);
+        var weekInfo = shanghaiCalendarWeekInfoFromParts(parts);
+        return weekInfo ? weekInfo.label : 'W--';
+    }
+
+    function assignWeekOptionsHtml(selectedValue) {
         var options = [];
         for (var offset = 0; offset <= 15; offset += 1) {
             var startParts = currentShanghaiMondayParts(offset);
             if (!startParts) continue;
             var value = shanghaiDateInputValueFromParts(startParts);
-            options.push('<option value="' + escapeHtml(value) + '">' + escapeHtml(weekOptionLabel(startParts)) + '</option>');
+            options.push('<option value="' + escapeHtml(value) + '"' +
+                (value === selectedValue ? ' selected' : '') + '>' +
+                escapeHtml(weekOptionLabel(startParts)) + '</option>');
         }
-        select.innerHTML = options.join('');
+        return options.join('');
     }
 
-    function syncAssignDateMode() {
-        var mode = document.getElementById('assign-date-mode');
-        var weekControl = document.getElementById('assign-week-control');
-        var dateControl = document.getElementById('assign-date-control');
-        var useDate = mode && mode.value === 'date';
-        if (weekControl) weekControl.hidden = useDate;
-        if (dateControl) dateControl.hidden = !useDate;
+    function defaultPassingForSet(set) {
+        var raw = set && set.passing_percentage;
+        var number = Number(raw == null || raw === '' ? configuredDefaultPassing() : raw);
+        return isFinite(number) ? number : configuredDefaultPassing();
+    }
+
+    function defaultMasteryForSet(set) {
+        var raw = set && set.mastery_percentage;
+        var number = Number(raw == null || raw === '' ? 90 : raw);
+        return isFinite(number) ? number : 90;
+    }
+
+    function defaultAssignParamsForSet(set) {
+        return {
+            datePreset: 'this_week',
+            customMode: 'week',
+            week: assignDefaultDateValue(0),
+            date: shanghaiDateInputValue(new Date()),
+            passingPercentage: formatPercentInput(defaultPassingForSet(set)),
+            masteryEnabled: false,
+            masteryPercentage: ''
+        };
+    }
+
+    function assignParamForSet(set) {
+        var setId = String(set && set.set_id || '');
+        if (!setId) return defaultAssignParamsForSet(set);
+        if (!state.assignSetParams[setId]) {
+            state.assignSetParams[setId] = defaultAssignParamsForSet(set);
+        }
+        var params = state.assignSetParams[setId];
+        if (!params.week) params.week = assignDefaultDateValue(0);
+        if (!params.date) params.date = shanghaiDateInputValue(new Date());
+        if (!params.customMode) params.customMode = 'week';
+        if (!params.datePreset) params.datePreset = 'this_week';
+        if (!params.passingPercentage) params.passingPercentage = formatPercentInput(defaultPassingForSet(set));
+        return params;
+    }
+
+    function pruneAssignSetParams() {
+        var selected = {};
+        assignmentTargetSetIds().forEach(function(setId) {
+            selected[setId] = true;
+        });
+        Object.keys(state.assignSetParams || {}).forEach(function(setId) {
+            if (!selected[setId]) delete state.assignSetParams[setId];
+        });
+    }
+
+    function assignDateLabel(params) {
+        if (params.datePreset === 'next_week') {
+            return 'Next week ' + weekLabelFromDateInput(assignDefaultDateValue(1));
+        }
+        if (params.datePreset === 'custom') {
+            if (params.customMode === 'date') return params.date || 'Date';
+            return 'Week ' + weekLabelFromDateInput(params.week || assignDefaultDateValue(0));
+        }
+        return 'This week ' + weekLabelFromDateInput(assignDefaultDateValue(0));
+    }
+
+    function assignScheduledAtIso(params) {
+        var value = '';
+        if (params.datePreset === 'next_week') {
+            value = assignDefaultDateValue(1);
+        } else if (params.datePreset === 'custom') {
+            value = params.customMode === 'date'
+                ? params.date
+                : params.week;
+        } else {
+            value = assignDefaultDateValue(0);
+        }
+        return value ? value + 'T00:00:00+08:00' : null;
+    }
+
+    function renderAssignDateControls(setId, params) {
+        var preset = params.datePreset || 'this_week';
+        var html = '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="datePreset" aria-label="Assignment date">' +
+            '<option value="this_week"' + (preset === 'this_week' ? ' selected' : '') + '>This week</option>' +
+            '<option value="next_week"' + (preset === 'next_week' ? ' selected' : '') + '>Next week</option>' +
+            '<option value="custom"' + (preset === 'custom' ? ' selected' : '') + '>Customize</option>' +
+        '</select>' +
+        '<small>' + escapeHtml(assignDateLabel(params)) + '</small>';
+        if (preset !== 'custom') return html;
+        html += '<div class="assign-custom-date-controls">' +
+            '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="customMode" aria-label="Customize by week or date">' +
+                '<option value="week"' + (params.customMode === 'week' ? ' selected' : '') + '>Week</option>' +
+                '<option value="date"' + (params.customMode === 'date' ? ' selected' : '') + '>Date</option>' +
+            '</select>';
+        if (params.customMode === 'date') {
+            html += '<input type="date" value="' + escapeHtml(params.date || '') + '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="date" aria-label="Assignment date">';
+        } else {
+            html += '<small class="assign-week-current-label">This week is ' + escapeHtml(shanghaiCurrentWeekLabel(0)) + '</small>' +
+                '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="week" aria-label="Assignment week">' +
+                    assignWeekOptionsHtml(params.week || assignDefaultDateValue(0)) +
+                '</select>';
+        }
+        return html + '</div>';
+    }
+
+    function renderAssignStarControls(setId, params, set) {
+        var masteryDefault = formatPercentInput(defaultMasteryForSet(set));
+        var checked = params.masteryEnabled === true;
+        var html = '<label class="assign-star-toggle compact">' +
+            '<input type="checkbox" data-set-id="' + escapeHtml(setId) + '" data-assign-param="masteryEnabled"' + (checked ? ' checked' : '') + '>' +
+            '<span>Earn STAR</span>' +
+        '</label>';
+        if (checked) {
+            html += '<label class="assign-mastery-inline">' +
+                '<span>Mastery %</span>' +
+                '<input type="number" min="0" max="100" step="0.01" value="' +
+                    escapeHtml(params.masteryPercentage || '') +
+                    '" placeholder="' + escapeHtml(masteryDefault) +
+                    '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="masteryPercentage">' +
+            '</label>';
+        }
+        return html;
+    }
+
+    function renderAssignParamRow(set) {
+        var setId = String(set && set.set_id || '');
+        var params = assignParamForSet(set);
+        return '<div class="assign-params-row" role="row">' +
+            '<div class="assign-params-cell task" role="cell">' +
+                '<strong>' + escapeHtml(set && (set.title || set.set_id) || setId) + '</strong>' +
+                '<small>' + escapeHtml(setId) + '</small>' +
+            '</div>' +
+            '<div class="assign-params-cell date" role="cell">' + renderAssignDateControls(setId, params) + '</div>' +
+            '<div class="assign-params-cell passing" role="cell">' +
+                '<input type="number" min="0" max="100" step="0.01" value="' +
+                    escapeHtml(params.passingPercentage || '') +
+                    '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage" aria-label="Passing percentage">' +
+            '</div>' +
+            '<div class="assign-params-cell star" role="cell">' + renderAssignStarControls(setId, params, set) + '</div>' +
+        '</div>';
+    }
+
+    function handleAssignParamChange(control) {
+        var setId = control.getAttribute('data-set-id');
+        var key = control.getAttribute('data-assign-param');
+        var set = state.sets.find(function(item) { return item.set_id === setId; }) || { set_id: setId };
+        var params = assignParamForSet(set);
+        if (key === 'masteryEnabled') {
+            params.masteryEnabled = control.checked === true;
+            if (!params.masteryEnabled) params.masteryPercentage = '';
+            renderAssignParameterTable();
+            return;
+        }
+        params[key] = control.value;
+        if (key === 'datePreset' || key === 'customMode') {
+            if (params.datePreset === 'custom' && !params.customMode) params.customMode = 'week';
+            renderAssignParameterTable();
+            return;
+        }
         updateAssignOptionsSummary();
     }
 
-    function updateAssignMasteryState() {
-        var enabled = document.getElementById('assign-mastery-enabled');
-        var mastery = document.getElementById('assign-mastery');
-        if (!mastery) return;
-        var canEarnStar = enabled && enabled.checked === true;
-        mastery.disabled = !canEarnStar;
-        mastery.required = canEarnStar;
-        if (!canEarnStar) mastery.value = '';
+    function bindAssignParameterTable() {
+        var table = document.getElementById('assign-params-table');
+        if (!table) return;
+        table.querySelectorAll('[data-assign-param]').forEach(function(control) {
+            var eventName = control.tagName === 'SELECT' || control.type === 'checkbox' || control.type === 'date' ? 'change' : 'input';
+            control.addEventListener(eventName, function() {
+                handleAssignParamChange(control);
+            });
+        });
+    }
+
+    function renderAssignParameterTable() {
+        var table = document.getElementById('assign-params-table');
+        if (!table) return;
+        pruneAssignSetParams();
+        var sets = selectedSetRecords();
+        if (!sets.length) {
+            table.innerHTML = '<div class="assign-params-empty">Choose work to set task parameters.</div>';
+            updateAssignOptionsSummary();
+            return;
+        }
+        table.innerHTML = '<div class="assign-params-row assign-params-header" role="row">' +
+            '<div role="columnheader">Task</div>' +
+            '<div role="columnheader">Date</div>' +
+            '<div role="columnheader">Passing %</div>' +
+            '<div role="columnheader">STAR</div>' +
+        '</div>' + sets.map(renderAssignParamRow).join('');
+        bindAssignParameterTable();
         updateAssignOptionsSummary();
     }
 
     function resetAssignParameters() {
-        state.assignPassingTouched = false;
-        populateAssignWeekOptions();
-        var dateMode = document.getElementById('assign-date-mode');
-        var assignDate = document.getElementById('assign-date');
-        var masteryEnabled = document.getElementById('assign-mastery-enabled');
-        var mastery = document.getElementById('assign-mastery');
-        if (dateMode) dateMode.value = 'week';
-        if (assignDate) assignDate.value = shanghaiDateInputValue(new Date());
-        if (masteryEnabled) masteryEnabled.checked = false;
-        if (mastery) mastery.value = '';
-        syncAssignPassingDefault(true);
-        syncAssignDateMode();
-        updateAssignMasteryState();
-    }
-
-    function assignScheduledAtIso() {
-        var mode = document.getElementById('assign-date-mode');
-        var useDate = mode && mode.value === 'date';
-        var source = document.getElementById(useDate ? 'assign-date' : 'assign-week');
-        var value = source ? String(source.value || '').trim() : '';
-        return value ? value + 'T00:00:00+08:00' : null;
+        state.assignSetParams = {};
+        renderAssignParameterTable();
     }
 
     function validateAssignPercent(value, label, required) {
@@ -1651,52 +1818,54 @@
     }
 
     function collectAssignParameters() {
-        var passingInput = document.getElementById('assign-passing');
-        var masteryInput = document.getElementById('assign-mastery');
-        var masteryEnabledInput = document.getElementById('assign-mastery-enabled');
-        var masteryEnabled = masteryEnabledInput && masteryEnabledInput.checked === true;
-        var passing = validateAssignPercent(passingInput && passingInput.value, 'Passing %', false);
-        var mastery = validateAssignPercent(masteryInput && masteryInput.value, 'Mastery %', masteryEnabled);
-        if (masteryEnabled && passing && Number(mastery) < Number(passing)) {
-            throw new Error('Mastery % must be at least the Passing %.');
-        }
-        var assignedAt = assignScheduledAtIso();
-        if (!assignedAt) throw new Error('Choose an assignment week or date.');
+        var sets = selectedSetRecords();
+        if (!sets.length) throw new Error('Choose work first.');
+        var options = sets.map(function(set) {
+            var params = assignParamForSet(set);
+            var label = set.title || set.set_id || 'Task';
+            var passing = validateAssignPercent(params.passingPercentage, label + ' Passing %', true);
+            var masteryEnabled = params.masteryEnabled === true;
+            var mastery = validateAssignPercent(params.masteryPercentage, label + ' Mastery %', masteryEnabled);
+            if (masteryEnabled && Number(mastery) < Number(passing)) {
+                throw new Error(label + ' Mastery % must be at least the Passing %.');
+            }
+            var assignedAt = assignScheduledAtIso(params);
+            if (!assignedAt) throw new Error('Choose an assignment week or date for ' + label + '.');
+            var option = {
+                set_id: set.set_id,
+                assigned_at: assignedAt,
+                passing_percentage: passing,
+                mastery_enabled: masteryEnabled
+            };
+            if (masteryEnabled) option.mastery_percentage = mastery;
+            return option;
+        });
         return {
-            assigned_at: assignedAt,
-            passing_percentage: passing,
-            mastery_percentage: mastery,
-            mastery_enabled: masteryEnabled
+            set_options: options
         };
     }
 
     function updateAssignOptionsSummary() {
         var summary = document.getElementById('assign-options-summary');
         if (!summary) return;
-        var parts = [];
-        var dateModeEl = document.getElementById('assign-date-mode');
-        var weekEl = document.getElementById('assign-week');
-        var dateEl = document.getElementById('assign-date');
-        var passingEl = document.getElementById('assign-passing');
-        var masteryEl = document.getElementById('assign-mastery');
-        var masteryEnabledEl = document.getElementById('assign-mastery-enabled');
-        var dateMode = dateModeEl ? dateModeEl.value : 'week';
-        var dateLabel = dateMode === 'date'
-            ? (dateEl && dateEl.value ? dateEl.value : '')
-            : (weekEl && weekEl.selectedOptions && weekEl.selectedOptions[0]
-                ? weekEl.selectedOptions[0].textContent.split(' · ')[0]
-                : '');
-        var passing = passingEl ? passingEl.value : '';
-        var mastery = masteryEl ? masteryEl.value : '';
-        var masteryEnabled = masteryEnabledEl && masteryEnabledEl.checked === true;
-        if (dateLabel) parts.push(dateLabel);
-        if (passing) parts.push('Pass ' + passing + '%');
-        if (masteryEnabled) {
-            parts.push('STAR' + (mastery ? ' ' + mastery + '%' : ''));
-        } else {
-            parts.push('No STAR');
+        var sets = selectedSetRecords();
+        if (!sets.length) {
+            summary.textContent = 'Choose work';
+            return;
         }
-        summary.textContent = parts.length ? parts.join(' · ') : 'Default';
+        var dateLabels = sets.map(function(set) {
+            return assignDateLabel(assignParamForSet(set));
+        }).filter(function(value, index, arr) {
+            return value && arr.indexOf(value) === index;
+        });
+        var starCount = sets.filter(function(set) {
+            return assignParamForSet(set).masteryEnabled === true;
+        }).length;
+        summary.textContent = [
+            sets.length + ' task' + (sets.length === 1 ? '' : 's'),
+            dateLabels.length === 1 ? dateLabels[0] : 'Mixed dates',
+            starCount ? starCount + ' STAR' : 'No STAR'
+        ].join(' · ');
     }
 
     function updateAssignPanelState() {
@@ -1748,9 +1917,17 @@
         if (studentDialogCount) studentDialogCount.textContent = students.length
             ? students.length + ' selected'
             : '';
-        renderAssignChips('assign-set-chips', sets, function(set) { return set.set_id || set.title; });
-        renderAssignChips('assign-student-chips', students, function(student) { return student.name || student.student_id || student.auth_uid; });
-        updateAssignOptionsSummary();
+        renderAssignChips('assign-set-chips', sets, function(set) {
+            return [set.title || set.set_id, set.set_id].filter(Boolean).join(' · ');
+        }, function(set) {
+            return set.set_id;
+        }, 'set');
+        renderAssignChips('assign-student-chips', students, function(student) {
+            return [student.name || student.student_id || student.auth_uid, student.class_group || 'No class'].filter(Boolean).join(' · ');
+        }, function(student) {
+            return student.auth_uid;
+        }, 'student');
+        renderAssignParameterTable();
     }
 
     function teacherPracticeHref(set) {
@@ -4770,23 +4947,6 @@
     });
     document.getElementById('assign-search').addEventListener('input', renderCandidates);
     document.getElementById('assign-class-filter').addEventListener('change', renderCandidates);
-    var assignDateMode = document.getElementById('assign-date-mode');
-    if (assignDateMode) assignDateMode.addEventListener('change', syncAssignDateMode);
-    var assignWeek = document.getElementById('assign-week');
-    if (assignWeek) assignWeek.addEventListener('change', updateAssignOptionsSummary);
-    var assignDate = document.getElementById('assign-date');
-    if (assignDate) assignDate.addEventListener('input', updateAssignOptionsSummary);
-    var assignPassing = document.getElementById('assign-passing');
-    if (assignPassing) {
-        assignPassing.addEventListener('input', function() {
-            state.assignPassingTouched = true;
-            updateAssignOptionsSummary();
-        });
-    }
-    var assignMastery = document.getElementById('assign-mastery');
-    if (assignMastery) assignMastery.addEventListener('input', updateAssignOptionsSummary);
-    var assignMasteryEnabled = document.getElementById('assign-mastery-enabled');
-    if (assignMasteryEnabled) assignMasteryEnabled.addEventListener('change', updateAssignMasteryState);
     document.getElementById('library-search').addEventListener('input', function() {
         renderTeacherLibrary(teacherLibraryActiveTab);
     });
@@ -4806,17 +4966,6 @@
         }
         renderTeacherLibrary(tabId);
     });
-    var selectClassButton = document.getElementById('select-class');
-    if (selectClassButton) {
-        selectClassButton.addEventListener('click', function() {
-            candidateList.querySelectorAll('.candidate-checkbox:not(:disabled)').forEach(function(checkbox) {
-                state.selectedAssignStudentUids[checkbox.value] = true;
-                checkbox.checked = true;
-            });
-            renderSetOptions();
-            updateSelectedCount();
-        });
-    }
     document.getElementById('assign-selected').addEventListener('click', function() {
         var button = this;
         var studentUids = selectedCandidateUids();
@@ -4833,11 +4982,8 @@
         var payload = {
             set_ids: assignmentTargetSetIds(),
             student_uids: studentUids,
-            assigned_at: assignParameters.assigned_at,
-            mastery_enabled: assignParameters.mastery_enabled
+            set_options: assignParameters.set_options
         };
-        if (assignParameters.passing_percentage) payload.passing_percentage = assignParameters.passing_percentage;
-        if (assignParameters.mastery_enabled) payload.mastery_percentage = assignParameters.mastery_percentage;
         teacherCall('createAssignments', payload).then(function(result) {
             assignSuccessResult = result;
             showMessage('', '');

@@ -153,15 +153,19 @@ fields are missing or stale.
 
 Teachers may choose a planned assignment date or week during Assign. That value
 is stored in `assigned_at` and drives Teacher View Wxx matrix grouping and date
-filters, while `created_at` remains the creation audit timestamp. Teachers may
-edit an existing assignment's `due_at`, `passing_percentage`,
+filters, while `created_at` remains the creation audit timestamp. Assign accepts
+per-task row parameters, so different selected `set_id` values in one teacher
+operation may create assignments with different `assigned_at`,
+`passing_percentage`, `mastery_percentage`, and `mastery_enabled` values.
+Teachers may edit an existing assignment's `due_at`, `passing_percentage`,
 `mastery_percentage`, and `mastery_enabled` from the View surface. New
 Assign-created records default to `mastery_enabled: false`; `mastery_percentage`
-is required during Assign only when the teacher selects `Earn STAR`. Those
-edits affect future submissions and display standards, but do not automatically
-regrade historical attempts or downgrade completed assignments and protected
-STAR records. When `mastery_enabled` is false, future submissions can pass but
-cannot automatically move that assignment to `mastered` or create a new STAR.
+is required during Assign only when the teacher selects `Earn STAR` for that
+task row. Those edits affect future submissions and display standards, but do
+not automatically regrade historical attempts or downgrade completed
+assignments and protected STAR records. When `mastery_enabled` is false, future
+submissions can pass but cannot automatically move that assignment to
+`mastered` or create a new STAR.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled
