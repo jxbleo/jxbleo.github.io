@@ -7,6 +7,9 @@
 
 ### Added
 
+- Added static no-answer worksheet PDF downloads for all current BBC listening
+  lessons, exposed through a top-corner `Download Practice` button on
+  `bbc.html`.
 - Added exam-style no-answer worksheet PDF downloads for all current NGSL and
   NAWL Vocabulary units, with both full-list and single-set download links.
 
@@ -33,6 +36,12 @@
 - Fixed BBC completed-attempt entry so a passed/mastered history URL can
   automatically render Explain and Argue controls without requiring students to
   press `History` first.
+- Added a BBC `classroom-worksheet` render theme and applied it to the 2024 BBC
+  lessons for review, giving those pages a worksheet-style paper layout with
+  serif exam-style lesson titles, compact question numbering, boxed fill-in
+  blanks, a default `Notes` fill-in section, section-local text-size controls,
+  separated fill-in rows, rounded multiple-choice option boxes, and
+  English-name-only student identity in the audio bar.
 - Changed the Vocabulary mode switcher label from `Use` to `Cloze`, aligned
   Cloze timing to 90 seconds per selected group in the frontend and
   `submitAttempt`, and removed empty `None selected` / `Nothing selected`

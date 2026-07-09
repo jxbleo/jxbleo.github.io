@@ -52,6 +52,11 @@ Open:
 - at least one IELTS Listening page
 - at least one Vocabulary page
 
+For BBC pages with worksheet PDFs, verify the top-corner `Download Practice`
+link returns HTTP 200 for the current set's PDF, and render at least one
+representative generated PDF page to confirm it contains no answer key or
+explanation text.
+
 Stop the server after testing.
 
 ## 4. Student Flow Checklist

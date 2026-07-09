@@ -145,6 +145,19 @@
             margin-top: 18px;
         }
 
+        .lesson-hero.has-download {
+            padding-top: 76px;
+        }
+
+        .hero-tools.has-download {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0;
+        }
+
         .hero-tool-btn {
             display: inline-flex;
             align-items: center;
@@ -159,6 +172,7 @@
             font-weight: 900;
             cursor: pointer;
             box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+            text-decoration: none;
         }
 
         .hero-tool-btn svg {
@@ -362,6 +376,14 @@
             background: rgba(15, 118, 110, 0.09);
         }
 
+        .section-font-controls {
+            display: none;
+        }
+
+        .mc-section-title {
+            display: none;
+        }
+
         ul.fill-blanks {
             list-style-type: none;
             padding-left: 0;
@@ -391,6 +413,9 @@
             font-weight: 900;
             color: #fff;
             background: var(--accent);
+        }
+        .blank-text {
+            min-width: 0;
         }
         .blank-section-title {
             font-weight: 900;
@@ -488,6 +513,10 @@
             margin-bottom: 15px;
             color: var(--primary);
             overflow-wrap: anywhere;
+        }
+
+        .mc-num {
+            margin-right: 0.32em;
         }
 
         .mc-options {
@@ -1545,6 +1574,478 @@
             box-shadow: 0 10px 28px rgba(52,88,246,.12);
         }
 
+        body.bbc-theme-classroom-worksheet {
+            --primary: #172033;
+            --accent: #0f766e;
+            --accent-bright: #14b8a6;
+            --bg: #eef3f5;
+            --card-bg: rgba(255,255,255,0.72);
+            --text-main: #172033;
+            --text-light: #667085;
+            --border-color: #1f2937;
+            --correct-bg: #e8f7f3;
+            --wrong-bg: #fff0ed;
+            --ink: #172033;
+            --muted: #667085;
+            --line: #d7c9b3;
+            --border: #1f2937;
+            --bg-page: #eef3f5;
+            --text-primary: #172033;
+            --text-secondary: #667085;
+            --text-muted: #667085;
+            --accent-dark: #0b6259;
+            background: linear-gradient(180deg, #f3f6f8 0%, #e7edf1 100%);
+            background-size: 100% 100%;
+            color: var(--text-main);
+        }
+
+        body.bbc-theme-classroom-worksheet .container {
+            max-width: 1120px;
+        }
+
+        body.bbc-theme-classroom-worksheet .lesson-hero {
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 0;
+            margin-bottom: 0;
+            padding: 26px 28px 16px;
+            color: var(--text-main);
+            background: rgba(255, 249, 236, 0.94);
+            border: 10px solid #2b2823;
+            border-radius: 6px 6px 0 0;
+            border-bottom-width: 0;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+        }
+
+        body.bbc-theme-classroom-worksheet .lesson-hero::before,
+        body.bbc-theme-classroom-worksheet .lesson-hero::after {
+            display: none;
+        }
+
+        body.bbc-theme-classroom-worksheet #title-area {
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1f2937;
+        }
+
+        body.bbc-theme-classroom-worksheet h1 {
+            margin: 0;
+            color: #172033;
+            text-align: left;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            font-size: clamp(2.05rem, 5vw, 3.45rem);
+            font-weight: 700;
+            line-height: 1.06;
+            letter-spacing: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .hero-subtitle {
+            margin-top: 9px;
+            color: #405066;
+            text-align: left;
+            font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+            font-size: 0.84rem;
+            font-weight: 850;
+            line-height: 1.25;
+            letter-spacing: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .hero-meta,
+        body.bbc-theme-classroom-worksheet .hero-tools {
+            display: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .hero-tools.has-download {
+            top: 16px;
+            right: 18px;
+            display: flex;
+        }
+
+        body.bbc-theme-classroom-worksheet .hero-tool-btn {
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            color: #172033;
+            background: #ffffff;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .sticky-player {
+            margin: 0;
+            padding: 10px 14px;
+            border: 10px solid #2b2823;
+            border-top-width: 0;
+            border-bottom-width: 0;
+            border-radius: 0;
+            background: rgba(255, 249, 236, 0.94);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+            backdrop-filter: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .sticky-player .play-btn,
+        body.bbc-theme-classroom-worksheet .sticky-player .back-btn {
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            color: #172033;
+            background: #ffffff;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .sticky-player .back-btn {
+            width: 38px;
+            height: 38px;
+        }
+
+        body.bbc-theme-classroom-worksheet .progress-wrap {
+            transform: translateY(2px);
+        }
+
+        body.bbc-theme-classroom-worksheet .progress-track {
+            height: 9px;
+            border: 2px solid #1f2937;
+            border-radius: 0;
+            background: rgba(255,255,255,0.62);
+        }
+
+        body.bbc-theme-classroom-worksheet .progress-fill {
+            border-radius: 0;
+            background: linear-gradient(90deg, #0f766e, #14b8a6);
+        }
+
+        body.bbc-theme-classroom-worksheet .time-row,
+        body.bbc-theme-classroom-worksheet .sticky-identity {
+            color: #405066;
+        }
+
+        body.bbc-theme-classroom-worksheet .time-row {
+            grid-template-columns: 1fr auto 1fr;
+            margin-top: 7px;
+        }
+
+        body.bbc-theme-classroom-worksheet .sticky-identity {
+            display: block;
+            color: #405066;
+            font-weight: 900;
+        }
+
+        body.bbc-theme-classroom-worksheet .content-card {
+            margin-top: 0;
+            padding: 24px 24px 30px;
+            border: 10px solid #2b2823;
+            border-top-width: 0;
+            border-radius: 0 0 6px 6px;
+            background: rgba(255, 249, 236, 0.94);
+            background-size: 100% 100%;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+            backdrop-filter: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .quiz-toolbar {
+            display: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .font-size-btn {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            background: #fff;
+            color: #172033;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet ul.fill-blanks {
+            font-size: 1em;
+        }
+
+        body.bbc-theme-classroom-worksheet .section-title-bar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+        }
+
+        body.bbc-theme-classroom-worksheet .section-title-text {
+            min-width: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .section-font-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-self: end;
+        }
+
+        body.bbc-theme-classroom-worksheet .section-font-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            color: #172033;
+            background: #fff;
+            font-size: 0.95rem;
+            font-weight: 950;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        body.bbc-theme-classroom-worksheet .section-font-btn:hover {
+            background: rgba(232, 247, 243, 0.92);
+        }
+
+        body.bbc-theme-classroom-worksheet ul.fill-blanks > li.blank-section-title {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            margin: 16px 0 9px;
+            padding: 8px 10px;
+            border: 2px solid #1f2937;
+            border-radius: 0;
+            background: rgba(255,255,255,0.72);
+            color: #172033;
+            font-size: 0.82rem;
+            font-weight: 950;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            line-height: 1.2;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet ul.fill-blanks > li.blank-section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet ul.fill-blanks li.blank-question {
+            display: grid;
+            grid-template-columns: 18px minmax(0, 1fr);
+            gap: 6px;
+            align-items: baseline;
+            margin-bottom: 0;
+            padding: 8px 0 10px;
+            border: 0;
+            border-bottom: 2px solid rgba(31, 41, 55, 0.18);
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            line-height: 1.55;
+        }
+
+        body.bbc-theme-classroom-worksheet ul.fill-blanks li.blank-question:last-child {
+            border-bottom: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-num {
+            align-self: baseline;
+            min-width: 0;
+            width: auto;
+            height: auto;
+            margin-right: 0;
+            border-radius: 0;
+            color: #79654f;
+            background: transparent;
+            font-size: 0.68rem;
+            font-weight: 850;
+            transform: translateY(-1px);
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input {
+            min-width: 64px;
+            min-height: 28px;
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.72);
+            color: #172033;
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 800;
+            padding: 2px 7px;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input::placeholder {
+            color: transparent;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input:focus {
+            border-color: #0f766e;
+            background: #fff;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input.correct {
+            background: rgba(232, 247, 243, 0.92) !important;
+            border-color: #0f766e !important;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input.wrong,
+        body.bbc-theme-classroom-worksheet .blank-input.attempt-locked {
+            background: rgba(255, 240, 237, 0.92) !important;
+            border-color: #b42318 !important;
+        }
+
+        body.bbc-theme-classroom-worksheet hr {
+            margin: 28px 0 !important;
+            border-top: 2px solid #1f2937 !important;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-question {
+            display: grid;
+            grid-template-columns: 22px minmax(0, 1fr);
+            gap: 6px;
+            margin-bottom: 13px;
+            padding: 0 0 11px;
+            border: 0;
+            border-bottom: 2px solid rgba(31, 41, 55, 0.18);
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-question.correct,
+        body.bbc-theme-classroom-worksheet .mc-question.wrong,
+        body.bbc-theme-classroom-worksheet .mc-question.mc-locked-reminder {
+            padding-left: 0;
+            border-left: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-title {
+            display: contents;
+            margin: 0;
+            color: #172033;
+            font-size: 0.98em;
+            font-weight: 820;
+            line-height: 1.35;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-num {
+            grid-column: 1;
+            color: #79654f;
+            font-size: 0.68em;
+            font-weight: 850;
+            margin-right: 0;
+            transform: translateY(2px);
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-title-text {
+            grid-column: 2;
+            min-width: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-section-title {
+            display: grid;
+            margin: 0 0 12px;
+            padding: 8px 10px;
+            border: 2px solid #1f2937;
+            border-radius: 0;
+            background: rgba(255,255,255,0.72);
+            color: #172033;
+            font-size: 0.82rem;
+            font-weight: 950;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 5px 12px;
+            margin-top: 4px;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li {
+            margin: 0;
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.72);
+            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:hover:not(.disabled) {
+            border-color: #0f766e;
+            background: rgba(255,255,255,0.86);
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:checked) {
+            padding-right: 30px;
+            border-color: #0f766e;
+            background: rgba(232, 247, 243, 0.92);
+            box-shadow: inset 4px 0 0 #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:checked)::after {
+            right: 10px;
+            color: #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.correct {
+            background: rgba(232, 247, 243, 0.92) !important;
+            border-color: #0f766e !important;
+            box-shadow: inset 4px 0 0 #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.wrong,
+        body.bbc-theme-classroom-worksheet .mc-options li.mc-locked-answer {
+            background: rgba(255, 240, 237, 0.92) !important;
+            border-color: #b42318 !important;
+            box-shadow: inset 4px 0 0 #b42318;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options label {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: 7px;
+            align-items: start;
+            padding: 8px 10px;
+            color: #2f3d50;
+            font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+            font-size: 0.91em;
+            font-weight: 620;
+            line-height: 1.38;
+        }
+
+        body.bbc-theme-classroom-worksheet .option-label {
+            color: #0f766e;
+            font-size: 0.78em;
+            font-weight: 900;
+            margin-right: 0;
+            line-height: 1.55;
+        }
+
+        body.bbc-theme-classroom-worksheet .option-text {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        body.bbc-theme-classroom-worksheet .question-action-buttons {
+            max-width: none;
+            margin-left: 8px;
+        }
+
+        body.bbc-theme-classroom-worksheet .submit-btn {
+            max-width: 360px;
+            margin: 34px auto 10px;
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            color: #fff;
+            background: #1f2937;
+            box-shadow: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .submit-btn:hover:not(:disabled) {
+            background: #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .history-toolbar button {
+            border: 2px solid #1f2937;
+            border-radius: 4px;
+            color: #172033;
+            background: #fff9ec;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+        }
+
         .lesson-words-panel {
             position: fixed;
             top: 0;
@@ -2014,11 +2515,59 @@
                 grid-template-columns: 1fr;
                 padding: 22px 20px;
             }
+            .lesson-hero.has-download {
+                padding-top: 70px;
+            }
+            .hero-tools.has-download {
+                top: 14px;
+                right: 14px;
+            }
             body.bbc-theme-blue-studio .hero-tools {
                 justify-content: flex-start;
             }
             body.bbc-theme-blue-studio h1 {
                 font-size: clamp(2rem, 12vw, 3.2rem);
+            }
+            body.bbc-theme-classroom-worksheet {
+                padding: 8px;
+            }
+            body.bbc-theme-classroom-worksheet .container {
+                padding: 0;
+            }
+            body.bbc-theme-classroom-worksheet .lesson-hero {
+                padding: 20px 16px 14px;
+                border-width: 6px;
+                border-bottom-width: 0;
+            }
+            body.bbc-theme-classroom-worksheet .lesson-hero.has-download {
+                padding-top: 68px;
+            }
+            body.bbc-theme-classroom-worksheet .hero-tools.has-download {
+                top: 12px;
+                right: 12px;
+            }
+            body.bbc-theme-classroom-worksheet h1 {
+                font-size: clamp(1.62rem, 9vw, 2.45rem);
+            }
+            body.bbc-theme-classroom-worksheet .sticky-player {
+                padding: 9px 10px;
+                border-width: 6px;
+                border-top-width: 0;
+                border-bottom-width: 0;
+            }
+            body.bbc-theme-classroom-worksheet .content-card {
+                padding: 16px 8px 22px;
+                border-width: 6px;
+                border-top-width: 0;
+            }
+            body.bbc-theme-classroom-worksheet ul.fill-blanks li.blank-question {
+                grid-template-columns: 18px minmax(0, 1fr);
+            }
+            body.bbc-theme-classroom-worksheet .mc-question {
+                grid-template-columns: 20px minmax(0, 1fr);
+            }
+            body.bbc-theme-classroom-worksheet .mc-options {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -2139,6 +2688,7 @@
     var mcCount = 0;
     var matchCount = 0;
     var quizFontScale = 1;
+    var sectionFontScales = {};
     var assignmentId = '';
     var attemptStartedAt = new Date().toISOString();
     var currentArgueAttemptId = null;
@@ -2213,6 +2763,12 @@
         return id;
     }
 
+    function getStudentEnglishName(id) {
+        var label = getStudentLabel(id);
+        var matches = String(label || '').match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        return matches && matches.length ? matches[matches.length - 1] : label;
+    }
+
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
@@ -2227,10 +2783,13 @@
     }
 
     function updateIdentityStatus() {
-        var el = document.getElementById('identity-status');
-        if (!el) return;
         var id = studentId || getStoredIdentity();
-        el.textContent = id ? (id === 'VISITOR' ? 'Visitor' : getStudentLabel(id)) : 'Login';
+        var label = id ? (id === 'VISITOR' ? '' : getStudentEnglishName(id)) : 'Login';
+        var ids = ['identity-status'];
+        for (var i = 0; i < ids.length; i++) {
+            var el = document.getElementById(ids[i]);
+            if (el) el.textContent = label;
+        }
     }
 
     function getParams() {
@@ -2423,6 +2982,23 @@
         if (form) form.style.fontSize = quizFontScale.toFixed(2) + 'em';
     }
 
+    function sectionFontControlsHtml(groupId) {
+        return '<span class="section-font-controls" aria-label="Text size controls">' +
+            '<button class="section-font-btn" type="button" data-font-delta="-0.05" data-font-group="' + escapeHtml(groupId) + '" aria-label="Decrease this section text size">−</button>' +
+            '<button class="section-font-btn" type="button" data-font-delta="0.05" data-font-group="' + escapeHtml(groupId) + '" aria-label="Increase this section text size">+</button>' +
+        '</span>';
+    }
+
+    function updateQuestionGroupFontSize(groupId, delta) {
+        if (!groupId) return;
+        var current = sectionFontScales[groupId] || 1;
+        var next = Math.min(1.25, Math.max(0.88, current + delta));
+        sectionFontScales[groupId] = next;
+        document.querySelectorAll('[data-question-font-group="' + CSS.escape(groupId) + '"]').forEach(function(el) {
+            el.style.fontSize = next.toFixed(2) + 'em';
+        });
+    }
+
     function showIncompleteModal(missingCount) {
         var modal = document.getElementById('incomplete-modal');
         var message = document.getElementById('incomplete-message');
@@ -2441,17 +3017,25 @@
         blankCount = blanks.length;
         var html = '';
         var currentSection = '';
+        var currentGroup = 'blank-section-0';
+        var sectionIndex = -1;
         for (var i = 0; i < blanks.length; i++) {
             var b = blanks[i];
             var num = b.number || (i + 1);
-            if (b.section && b.section !== currentSection) {
-                currentSection = b.section;
-                html += '<div class="blank-section-title">' + currentSection + '</div>';
+            var sectionTitle = (b.section || '').trim() || 'Notes';
+            if (sectionTitle !== currentSection) {
+                currentSection = sectionTitle;
+                sectionIndex += 1;
+                currentGroup = 'blank-section-' + sectionIndex;
+                html += '<li class="blank-section-title section-title-bar">' +
+                    '<span class="section-title-text">' + escapeHtml(currentSection) + '</span>' +
+                    sectionFontControlsHtml(currentGroup) +
+                '</li>';
             }
             var sentence = b.sentence;
             var inputHtml = ' <input type="text" name="' + b.id + '" class="blank-input" placeholder="' + num + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">';
             sentence = sentence.replace('_____', inputHtml);
-            html += '<li><span class="blank-num">' + num + '</span>' + sentence + '</li>';
+            html += '<li class="blank-question" data-question-font-group="' + currentGroup + '"><span class="blank-num">' + num + '</span><span class="blank-text">' + sentence + '</span></li>';
         }
         container.innerHTML = html;
 
@@ -2473,12 +3057,15 @@
         }
         mcCount = mcItems.length;
         var labels = ['A', 'B', 'C', 'D'];
-        var html = '';
+        var html = '<div class="mc-section-title section-title-bar">' +
+            '<span class="section-title-text">Multiple Choice</span>' +
+            sectionFontControlsHtml('mc-section') +
+        '</div>';
         for (var i = 0; i < mcItems.length; i++) {
             var m = mcItems[i];
             var qNum = m.number || (i + 1);
-            html += '<div class="mc-question" data-id="' + m.id + '">';
-            html += '<div class="mc-title">' + qNum + '. ' + m.question + '</div>';
+            html += '<div class="mc-question" data-id="' + m.id + '" data-question-font-group="mc-section">';
+            html += '<div class="mc-title"><span class="mc-num">' + qNum + '</span><span class="mc-title-text">' + m.question + '</span></div>';
             html += '<ul class="mc-options">';
             for (var o = 0; o < m.options.length; o++) {
                 var opt = m.options[o];
@@ -2490,7 +3077,7 @@
                 html += '<li>';
                 html += '<label>';
                 html += '<input type="radio" name="' + m.id + '" value="' + letter + '">';
-                html += '<span><span class="option-label">' + letter + '.</span> ' + displayOpt.substring(letter.length + 2) + '</span>';
+                html += '<span class="option-label">' + letter + '.</span><span class="option-text">' + displayOpt.substring(letter.length + 2) + '</span>';
                 html += '</label>';
                 html += '</li>';
             }
@@ -2581,26 +3168,42 @@
             document.getElementById('hero-meta').innerHTML = '';
             return;
         }
+        if (theme === 'classroom-worksheet') {
+            titleEl.innerHTML = '<h1 data-lesson-title>' + escapeHtml(data.title) + '</h1>' +
+                '<div class="hero-subtitle">BBC Six Minute English' + (date ? ' · ' + escapeHtml(date) : '') + '</div>';
+            document.getElementById('hero-meta').innerHTML = '';
+            return;
+        }
         titleEl.innerHTML = '<h1 data-lesson-title>' + escapeHtml(data.title) + '</h1>' +
             '<div class="hero-subtitle">BBC Six Minute English, ' + escapeHtml(date) + '</div>';
         document.getElementById('hero-meta').innerHTML = '';
     }
 
+    function worksheetPdfHref(data) {
+        var id = data && data.id ? String(data.id) : '';
+        if (!id) return '';
+        var encodedId = encodeURIComponent(id);
+        return 'assets/pdf/bbc-six-minute-english/' + encodedId + '/' + encodedId + '-worksheet.pdf';
+    }
+
     function renderHeroTools(theme) {
         var tools = document.getElementById('hero-tools');
         if (!tools) return;
-        if (theme !== 'blue-studio') {
+        var hero = tools.closest ? tools.closest('.lesson-hero') : null;
+        var href = worksheetPdfHref(lessonData);
+        if (!href) {
             tools.innerHTML = '';
+            tools.classList.remove('has-download');
+            if (hero) hero.classList.remove('has-download');
             return;
         }
+        tools.classList.add('has-download');
+        if (hero) hero.classList.add('has-download');
         tools.innerHTML =
-            '<button class="hero-tool-btn" type="button" id="lesson-worksheet-btn">' +
+            '<a class="hero-tool-btn hero-tool-download" id="lesson-worksheet-download" href="' + escapeHtml(href) + '" download="' + escapeHtml(href.split('/').pop() || '') + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
                     '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>' +
-                '</svg>Worksheet</button>';
-        document.getElementById('lesson-worksheet-btn').addEventListener('click', function() {
-            window.print();
-        });
+                '</svg>Download Practice</a>';
     }
 
     function renderLessonWords(words, message) {
@@ -2674,10 +3277,12 @@
 
     function renderLesson(data) {
         lessonData = data;
+        sectionFontScales = {};
         var theme = lessonRenderTheme(data);
         applyRenderTheme(theme);
         setupLessonWordsPanel();
         renderHeroTitle(data, theme);
+        updateIdentityStatus();
         renderHeroTools(theme);
 
         var audioSrc = document.getElementById('audio-source');
@@ -3539,7 +4144,7 @@
     function questionActionButtonHost(containerEl) {
         var lineEl = containerEl.classList && containerEl.classList.contains('mc-question')
             ? (containerEl.querySelector('.mc-title') || containerEl)
-            : containerEl;
+            : (containerEl.querySelector(':scope > .blank-text') || containerEl);
         lineEl.classList.add('question-action-host');
         var host = lineEl.querySelector(':scope > .question-action-buttons');
         if (host) return host;
@@ -3746,9 +4351,7 @@
         var toolbar = document.createElement('div');
         toolbar.className = 'history-toolbar';
         toolbar.id = 'history-toolbar';
-        toolbar.innerHTML =
-            '<button type="button" id="show-history-btn">History</button>' +
-            '<button type="button" id="clear-all-btn">Clear</button>';
+        toolbar.innerHTML = '<button type="button" id="show-history-btn">History</button>';
         document.body.appendChild(toolbar);
         document.getElementById('show-history-btn').addEventListener('click', function() {
             if (answerRevealAvailable) {
@@ -3770,10 +4373,6 @@
                     restoreViewport(snapshot);
                 });
             });
-        });
-        document.getElementById('clear-all-btn').addEventListener('click', function() {
-            if (!confirm('Clear all answers on this page?')) return;
-            preserveViewport(clearAllAnswers);
         });
         updateHistoryToolbar();
     }
@@ -4374,6 +4973,13 @@
         var form = document.getElementById('quiz-form');
 
         form.addEventListener('submit', handleSubmit);
+
+        form.addEventListener('click', function(e) {
+            var button = e.target.closest && e.target.closest('.section-font-btn');
+            if (!button) return;
+            e.preventDefault();
+            updateQuestionGroupFontSize(button.getAttribute('data-font-group'), Number(button.getAttribute('data-font-delta') || 0));
+        });
 
         form.addEventListener('change', function(e) {
             var target = e.target;
