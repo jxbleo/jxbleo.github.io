@@ -16,6 +16,21 @@ window.__VOCABULARY_UNITS__["THINK2-U3"] = {
   "sourceName": "THINK 2",
   "cefrLevel": "A2",
   "wordCount": 73,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-all-sets.pdf",
+    "sets": {
+      "1-10": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-1-10.pdf",
+      "11-20": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-11-20.pdf",
+      "21-30": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-21-30.pdf",
+      "31-40": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-31-40.pdf",
+      "41-50": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-41-50.pdf",
+      "51-60": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-51-60.pdf",
+      "61-73": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-set-61-73.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U3/THINK2-U3-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1,

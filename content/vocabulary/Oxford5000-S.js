@@ -16,6 +16,24 @@ window.__VOCABULARY_UNITS__["Oxford5000-S"] = {
   "sourceName": "Oxford5000",
   "cefrLevel": "C1+",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-all-sets.pdf",
+    "sets": {
+      "1801-1810": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1801-1810.pdf",
+      "1811-1820": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1811-1820.pdf",
+      "1821-1830": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1821-1830.pdf",
+      "1831-1840": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1831-1840.pdf",
+      "1841-1850": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1841-1850.pdf",
+      "1851-1860": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1851-1860.pdf",
+      "1861-1870": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1861-1870.pdf",
+      "1871-1880": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1871-1880.pdf",
+      "1881-1890": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1881-1890.pdf",
+      "1891-1900": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-set-1891-1900.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-S/Oxford5000-S-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1801,

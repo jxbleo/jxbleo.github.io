@@ -15,6 +15,25 @@
   "sourceName": "THINK 2",
   "cefrLevel": "A2",
   "wordCount": 108,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-all-sets.pdf",
+    "sets": {
+      "1-10": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-1-10.pdf",
+      "11-17": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-11-17.pdf",
+      "18-27": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-18-27.pdf",
+      "28-38": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-28-38.pdf",
+      "39-48": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-39-48.pdf",
+      "49-60": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-49-60.pdf",
+      "61-70": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-61-70.pdf",
+      "71-80": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-71-80.pdf",
+      "81-90": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-81-90.pdf",
+      "91-100": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-91-100.pdf",
+      "101-108": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-set-101-108.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U4/THINK2-U4-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1,

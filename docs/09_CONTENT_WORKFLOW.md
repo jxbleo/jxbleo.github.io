@@ -241,11 +241,11 @@ Rules to preserve:
   source word-number range only, such as `001-100`, `901-963`, or
   `1001-1100`. Student and teacher Library cards use that range as the
   top-right metadata while preserving the unit title as the main card title.
-- NGSL and NAWL vocabulary units include two static PDF download families by
-  adding `wordlistPdf` and `worksheetPdf` metadata to
-  `content/vocabulary/<set_id>.json`. Other vocabulary families may opt into
-  the same pattern later. `wordlistPdf.list` points to the complete unit
-  wordlist. `worksheetPdf.list` points to a complete unit worksheet, while
+- NGSL, NAWL, Oxford5000, and THINK2 vocabulary units include two static PDF
+  download families by adding `wordlistPdf` and `worksheetPdf` metadata to both
+  `content/vocabulary/<set_id>.json` and the browser-loaded companion
+  `content/vocabulary/<set_id>.js`. `wordlistPdf.list` points to the complete
+  unit wordlist. `worksheetPdf.list` points to a complete unit worksheet, while
   `worksheetPdf.sets` may map each `quizGroups[].id` to a generated single-set
   worksheet for future use. The student-facing vocabulary page exposes only the
   top-level `Wordlist` and `Practice` PDF buttons, not per-set download buttons.
@@ -256,7 +256,7 @@ Rules to preserve:
   `python3 scripts/generate-vocabulary-worksheets.py <set_id> --kind practice`
   and wordlist PDFs with
   `python3 scripts/generate-vocabulary-worksheets.py <set_id> --kind wordlist`.
-  NGSL and NAWL outputs live under `assets/pdf/vocabulary/<set_id>/`: one
+  Vocabulary outputs live under `assets/pdf/vocabulary/<set_id>/`: one
   `<set_id>-wordlist.pdf`, one `<set_id>-all-sets.pdf`, and one
   `<set_id>-set-<group-id>.pdf` per quiz group. The current worksheet style is
   a black-and-white exam-paper table with separate number, sentence, and blank
