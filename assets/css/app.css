@@ -2129,18 +2129,6 @@ body:not(.teacher-page) .tab-button.active {
     overflow-y: auto;
     padding: 2px 4px 6px 2px;
 }
-.assign-picker-tools {
-    display: flex;
-    justify-content: flex-end;
-}
-.assign-picker-tools .outline-button {
-    width: auto;
-    min-height: 36px;
-    padding: 0 13px;
-    border-radius: 999px;
-    font-size: 0.76rem;
-    font-weight: 900;
-}
 .assign-picker-dialog-actions {
     display: flex;
     align-items: center;
@@ -4195,8 +4183,7 @@ body:not(.teacher-page) .tab-button.active {
     background: var(--accent);
 }
 .assign-chip-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 6px;
     min-height: 26px;
 }
@@ -4212,12 +4199,39 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 850;
 }
 .assign-chip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22px;
+    gap: 8px;
+    width: 100%;
+    min-height: 34px;
+    padding: 4px 6px 4px 10px;
     color: var(--accent-dark);
     background: var(--accent-soft);
 }
-.assign-chip.more {
-    color: var(--muted);
-    background: rgba(124, 58, 237, 0.08);
+.assign-chip-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.assign-chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 1px solid rgba(19, 118, 109, 0.2);
+    border-radius: 50%;
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.82);
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+}
+.assign-chip-remove:hover {
+    color: white;
+    background: var(--accent);
 }
 .assign-empty-chip {
     color: var(--muted);
@@ -4269,21 +4283,59 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 850;
     text-align: right;
 }
-.assign-params-grid {
-    display: grid;
-    grid-template-columns: 0.9fr 1.2fr 0.8fr 0.7fr 0.8fr;
-    gap: 9px;
-    align-items: end;
+.assign-params-table-wrap {
+    overflow-x: auto;
 }
-.assign-params-grid label {
+.assign-params-table {
     display: grid;
     gap: 7px;
-    color: var(--muted);
-    font-size: 0.76rem;
-    font-weight: 850;
+    min-width: 760px;
 }
-.assign-params-grid select,
-.assign-params-grid input {
+.assign-params-row {
+    display: grid;
+    grid-template-columns: minmax(210px, 1.5fr) minmax(230px, 1.35fr) minmax(110px, 0.65fr) minmax(180px, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 10px;
+    border: 1px solid rgba(19, 118, 109, 0.1);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.86);
+}
+.assign-params-header {
+    padding: 0 10px 2px;
+    border: 0;
+    color: var(--muted);
+    background: transparent;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.assign-params-cell {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+}
+.assign-params-cell.task strong,
+.assign-params-cell.task small {
+    display: block;
+}
+.assign-params-cell.task strong {
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 0.82rem;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.assign-params-cell.task small,
+.assign-params-cell.date small {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 820;
+}
+.assign-params-cell select,
+.assign-params-cell input {
     width: 100%;
     min-height: 40px;
     padding: 0 11px;
@@ -4295,24 +4347,51 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 780;
     outline: none;
 }
-.assign-params-grid select:focus,
-.assign-params-grid input:focus {
+.assign-params-cell select:focus,
+.assign-params-cell input:focus {
     border-color: rgba(19, 118, 109, 0.34);
     box-shadow: 0 0 0 3px rgba(19, 118, 109, 0.08);
 }
-.assign-params-grid input:disabled {
-    color: rgba(71, 85, 105, 0.46);
-    background: rgba(241, 245, 249, 0.88);
+.assign-custom-date-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: 7px;
 }
-.assign-star-toggle {
-    align-content: end;
+.assign-custom-date-controls .assign-week-current-label {
+    grid-column: 1 / -1;
+    color: var(--accent-dark);
 }
-.assign-star-toggle input {
-    justify-self: start;
+.assign-star-toggle.compact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 860;
+}
+.assign-star-toggle.compact input {
     width: 22px;
+    height: 22px;
     min-height: 22px;
     padding: 0;
     accent-color: var(--accent);
+}
+.assign-mastery-inline {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.assign-params-empty {
+    padding: 12px;
+    border: 1px dashed rgba(19, 118, 109, 0.18);
+    border-radius: 8px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.62);
+    font-size: 0.78rem;
+    font-weight: 820;
 }
 .assign-controls label,
 .assign-list-label,
@@ -5601,10 +5680,17 @@ body:not(.teacher-page) .tab-button.active {
     .assign-toolbar,
     .assign-toolbar.compact,
     .assign-minimal-grid,
-    .assign-params-grid,
     .assign-minimal-controls,
     .horizontal-form,
     .student-directory { grid-template-columns: 1fr; }
+    .assign-params-table { min-width: 0; }
+    .assign-params-row {
+        grid-template-columns: 1fr;
+    }
+    .assign-params-header { display: none; }
+    .assign-custom-date-controls {
+        grid-template-columns: 1fr;
+    }
     .assign-params-head {
         align-items: start;
         flex-direction: column;

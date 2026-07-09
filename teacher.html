@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260709-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260710-2">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -226,34 +226,10 @@
                         </div>
                         <p id="assign-options-summary">Default</p>
                     </div>
-                    <div class="assign-params-grid">
-                        <label>
-                            <span>Assign by</span>
-                            <select id="assign-date-mode">
-                                <option value="week" selected>Week</option>
-                                <option value="date">Date</option>
-                            </select>
-                        </label>
-                        <label id="assign-week-control">
-                            <span>Week</span>
-                            <select id="assign-week"></select>
-                        </label>
-                        <label id="assign-date-control" hidden>
-                            <span>Date</span>
-                            <input id="assign-date" type="date">
-                        </label>
-                        <label>
-                            <span>Passing %</span>
-                            <input id="assign-passing" type="number" min="0" max="100" step="0.01" placeholder="Default">
-                        </label>
-                        <label class="assign-star-toggle">
-                            <span>Earn STAR</span>
-                            <input id="assign-mastery-enabled" type="checkbox">
-                        </label>
-                        <label>
-                            <span>Mastery %</span>
-                            <input id="assign-mastery" type="number" min="0" max="100" step="0.01" placeholder="Required for STAR" disabled>
-                        </label>
+                    <div class="assign-params-table-wrap">
+                        <div class="assign-params-table" id="assign-params-table">
+                            <div class="assign-params-empty">Choose work to set task parameters.</div>
+                        </div>
                     </div>
                 </section>
                 <div class="assign-submit-bar">
@@ -301,9 +277,6 @@
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="assign-picker-tools">
-                    <button class="outline-button" id="select-class" type="button">Select filtered</button>
-                </div>
                 <div class="candidate-grid assign-choice-list assign-modal-list" id="assign-candidates">
                     <div class="empty-card"><strong>Choose work</strong>Student availability will appear here.</div>
                 </div>
@@ -343,6 +316,6 @@
     <script src="assets/js/config.public.js?v=20260709-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260709-2"></script>
+    <script src="assets/js/teacher.js?v=20260710-2"></script>
 </body>
 </html>

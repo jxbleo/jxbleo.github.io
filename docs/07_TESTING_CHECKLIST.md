@@ -159,9 +159,16 @@ Check:
   opposite picker color-codes prior assignment state
 - Assign marks open `in_progress` student/work pairs with color and disables
   selection, while completed/mastered pairs stay colored but selectable
-- Assign task parameters default to current Beijing-time week, selected work's
-  passing percentage where possible, and unchecked `Earn STAR`
-- Assign rejects `Earn STAR` creation until `Mastery %` is filled, and stores
+- Assign selected Work and Students render one row per item, each with a small
+  remove control that clears that selection without reopening the picker
+- Student picker no longer shows a `Select filtered` bulk-select button
+- Assign task parameters render as one row per selected Work item with Task,
+  Date, Passing %, and STAR columns
+- Assign Date offers only `This week`, `Next week`, and `Customize`; Customize
+  reveals Week/Date controls, and Week clearly labels the current Wxx week
+- Assign supports different dates/weeks, passing percentages, and STAR settings
+  for different selected Work rows in the same submit
+- Assign rejects an `Earn STAR` row until `Mastery %` is filled, and stores
   checked STAR assignments with `mastery_enabled: true`
 - Assign-created work for a future Week appears in Teacher View under that Wxx
   assignment column/date filter
