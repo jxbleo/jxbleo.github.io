@@ -12,6 +12,21 @@ window.__VOCABULARY_UNITS__["NGSL-A"] = {
   "sourceName": "NGSL",
   "cefrLevel": "A2+",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-A/NGSL-A-all-sets.pdf",
+    "sets": {
+      "1001-1010": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1001-1010.pdf",
+      "1011-1020": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1011-1020.pdf",
+      "1021-1030": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1021-1030.pdf",
+      "1031-1040": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1031-1040.pdf",
+      "1041-1050": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1041-1050.pdf",
+      "1051-1060": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1051-1060.pdf",
+      "1061-1070": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1061-1070.pdf",
+      "1071-1080": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1071-1080.pdf",
+      "1081-1090": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1081-1090.pdf",
+      "1091-1100": "assets/pdf/vocabulary/NGSL-A/NGSL-A-set-1091-1100.pdf"
+    }
+  },
   "words": [
     {
       "number": 1001,

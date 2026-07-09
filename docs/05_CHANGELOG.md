@@ -3,6 +3,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-09
+
+### Added
+
+- Added exam-style no-answer worksheet PDF downloads for all current NGSL and
+  NAWL Vocabulary units, with both full-list and single-set download links.
+
 ## 2026-07-08
 
 ### Added

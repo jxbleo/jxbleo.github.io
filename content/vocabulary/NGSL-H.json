@@ -11,6 +11,21 @@
   "sourceName": "NGSL",
   "cefrLevel": "B1+",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-H/NGSL-H-all-sets.pdf",
+    "sets": {
+      "1701-1710": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1701-1710.pdf",
+      "1711-1720": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1711-1720.pdf",
+      "1721-1730": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1721-1730.pdf",
+      "1731-1740": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1731-1740.pdf",
+      "1741-1750": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1741-1750.pdf",
+      "1751-1760": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1751-1760.pdf",
+      "1761-1770": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1761-1770.pdf",
+      "1771-1780": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1771-1780.pdf",
+      "1781-1790": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1781-1790.pdf",
+      "1791-1800": "assets/pdf/vocabulary/NGSL-H/NGSL-H-set-1791-1800.pdf"
+    }
+  },
   "words": [
     {
       "number": 1701,

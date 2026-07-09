@@ -12,6 +12,21 @@ window.__VOCABULARY_UNITS__["NGSL-K"] = {
   "sourceName": "NGSL",
   "cefrLevel": "B1+–B2",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/NGSL-K/NGSL-K-all-sets.pdf",
+    "sets": {
+      "2001-2010": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2001-2010.pdf",
+      "2011-2020": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2011-2020.pdf",
+      "2021-2030": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2021-2030.pdf",
+      "2031-2040": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2031-2040.pdf",
+      "2041-2050": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2041-2050.pdf",
+      "2051-2060": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2051-2060.pdf",
+      "2061-2070": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2061-2070.pdf",
+      "2071-2080": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2071-2080.pdf",
+      "2081-2090": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2081-2090.pdf",
+      "2091-2100": "assets/pdf/vocabulary/NGSL-K/NGSL-K-set-2091-2100.pdf"
+    }
+  },
   "words": [
     {
       "number": 2001,

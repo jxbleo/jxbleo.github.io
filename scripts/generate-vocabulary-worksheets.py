@@ -235,8 +235,8 @@ class WorksheetPdf:
         c.restoreState()
 
         instruction = (
-            f"{title}. Fill in each blank with ONE word from the box. "
-            "Write your answers in the Answer column."
+            f"{title}. Fill in each blank with ONE word from the box and "
+            "write your answers in the Answer column."
         )
         y = draw_wrapped(c, paragraph_markup(html.escape(instruction), self.instruction_style), x + 8 * mm, y + 2, width - 23 * mm)
         y -= 7 * mm
