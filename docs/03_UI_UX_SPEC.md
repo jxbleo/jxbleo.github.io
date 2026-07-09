@@ -527,6 +527,10 @@ Shared rules:
   `Word Bank` label, controls, or a second word bank because the sticky
   learning bar already identifies the group. The word bank shows words only,
   without auto-numbered chips or font-size plus/minus controls.
+- Vocabulary PDF downloads appear only at the top of the vocabulary unit:
+  `Wordlist` and `Practice` buttons use document icons with a small download
+  badge instead of emoji or visible `Download` wording. Individual Study Set
+  practice cards do not show per-set download buttons.
 - Vocabulary inline practice uses each study group's own `Check` button. Each
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the explanation in a floating popover

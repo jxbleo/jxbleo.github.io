@@ -246,7 +246,9 @@ Rules to preserve:
   `content/vocabulary/<set_id>.json`. Other vocabulary families may opt into
   the same pattern later. `wordlistPdf.list` points to the complete unit
   wordlist. `worksheetPdf.list` points to a complete unit worksheet, while
-  `worksheetPdf.sets` maps each `quizGroups[].id` to a single-set worksheet.
+  `worksheetPdf.sets` may map each `quizGroups[].id` to a generated single-set
+  worksheet for future use. The student-facing vocabulary page exposes only the
+  top-level `Wordlist` and `Practice` PDF buttons, not per-set download buttons.
   Practice worksheet PDFs must include only public exercise material such as
   group labels, word banks, and prompts; do not include answers, explanations,
   accepted variants, or grading rules.
