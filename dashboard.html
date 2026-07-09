@@ -8,7 +8,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260707-4">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260710-1">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -33,9 +33,15 @@
             <div id="profile-content"></div>
         </section>
 
-        <section class="hero-card">
-            <h1 id="greeting">Hello.</h1>
-            <p id="hero-copy">Your assignments and learning resources live here.</p>
+        <section class="hero-card student-progress-hero">
+            <div class="hero-progress-head">
+                <div>
+                    <h1 id="greeting">Hello.</h1>
+                    <p id="hero-copy">Your assignments and learning resources live here.</p>
+                </div>
+                <div class="hero-progress-stats" id="hero-progress-stats" aria-label="Assignment summary"></div>
+            </div>
+            <div class="progress-board" id="progress-board" aria-label="Four week assignment progress"></div>
         </section>
 
         <nav class="dashboard-tabs" aria-label="Dashboard sections">
@@ -81,6 +87,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260709-1"></script>
+    <script src="assets/js/dashboard.js?v=20260710-1"></script>
 </body>
 </html>

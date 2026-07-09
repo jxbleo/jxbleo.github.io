@@ -46,9 +46,15 @@ Assignments display:
 
 - open `TO DO` assignments directly
 - a small bottom `Finished` completion button for completed work
-- the top billboard keeps the existing greeting/copy structure, but uses a
-  pale green aurora-rainbow animated background instead of the older dark green
-  panel
+- the top student billboard is a progress board rather than a pure welcome
+  panel. It keeps the greeting, but its supporting copy summarizes finished
+  work this week and waiting assignments. The board shows the current week plus
+  the previous three weeks as a compact GitHub-style grid with weekday labels
+  across the top and `Wxx` week labels on the left. On desktop and tablet, the
+  grid sits on the left half of the same dark progress panel and the selected
+  day's completion details sit on the right half; on mobile the same panel
+  stacks the grid above the details. Clicking a day square changes the detail
+  pane to show completed assignment/self-study items for that date.
 - the main `Assignments` / `My Words` / `Library` capsule and the student
   Library `Practice` / `Exam` capsule use a soft translucent glass treatment
   with subtle rainbow active states

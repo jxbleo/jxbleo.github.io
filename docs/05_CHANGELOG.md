@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-10
+
+### Changed
+
+- Changed the student Dashboard top billboard into a four-week progress board:
+  students now see recent completion squares with weekday/week labels, summary
+  counts, and a selected-day completion detail pane before the assignment list.
+
 ## 2026-07-09
 
 ### Added
