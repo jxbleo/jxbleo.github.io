@@ -16,6 +16,24 @@ window.__VOCABULARY_UNITS__["Oxford5000-T"] = {
   "sourceName": "Oxford5000",
   "cefrLevel": "C1+–C2",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-all-sets.pdf",
+    "sets": {
+      "1901-1910": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1901-1910.pdf",
+      "1911-1920": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1911-1920.pdf",
+      "1921-1930": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1921-1930.pdf",
+      "1931-1940": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1931-1940.pdf",
+      "1941-1950": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1941-1950.pdf",
+      "1951-1960": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1951-1960.pdf",
+      "1961-1970": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1961-1970.pdf",
+      "1971-1980": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1971-1980.pdf",
+      "1981-1990": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1981-1990.pdf",
+      "1991-2000": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-set-1991-2000.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-T/Oxford5000-T-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1901,

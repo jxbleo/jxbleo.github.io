@@ -15,6 +15,24 @@
   "sourceName": "Oxford5000",
   "cefrLevel": "B2-C1",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-all-sets.pdf",
+    "sets": {
+      "1201-1210": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1201-1210.pdf",
+      "1211-1220": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1211-1220.pdf",
+      "1221-1230": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1221-1230.pdf",
+      "1231-1240": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1231-1240.pdf",
+      "1241-1250": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1241-1250.pdf",
+      "1251-1260": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1251-1260.pdf",
+      "1261-1270": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1261-1270.pdf",
+      "1271-1280": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1271-1280.pdf",
+      "1281-1290": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1281-1290.pdf",
+      "1291-1300": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-set-1291-1300.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-M/Oxford5000-M-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1201,

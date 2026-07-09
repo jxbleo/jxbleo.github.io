@@ -15,6 +15,24 @@
   "sourceName": "Oxford5000",
   "cefrLevel": "B2-C1",
   "wordCount": 100,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-all-sets.pdf",
+    "sets": {
+      "901-910": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-901-910.pdf",
+      "911-920": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-911-920.pdf",
+      "921-930": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-921-930.pdf",
+      "931-940": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-931-940.pdf",
+      "941-950": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-941-950.pdf",
+      "951-960": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-951-960.pdf",
+      "961-970": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-961-970.pdf",
+      "971-980": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-971-980.pdf",
+      "981-990": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-981-990.pdf",
+      "991-1000": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-set-991-1000.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/Oxford5000-J/Oxford5000-J-wordlist.pdf"
+  },
   "words": [
     {
       "number": 901,

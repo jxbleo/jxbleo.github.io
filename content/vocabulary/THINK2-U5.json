@@ -15,6 +15,21 @@
   "sourceName": "THINK 2",
   "cefrLevel": "A2",
   "wordCount": 70,
+  "worksheetPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-all-sets.pdf",
+    "sets": {
+      "1-10": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-1-10.pdf",
+      "11-20": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-11-20.pdf",
+      "21-33": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-21-33.pdf",
+      "34-43": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-34-43.pdf",
+      "44-54": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-44-54.pdf",
+      "55-64": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-55-64.pdf",
+      "65-70": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-set-65-70.pdf"
+    }
+  },
+  "wordlistPdf": {
+    "list": "assets/pdf/vocabulary/THINK2-U5/THINK2-U5-wordlist.pdf"
+  },
   "words": [
     {
       "number": 1,
