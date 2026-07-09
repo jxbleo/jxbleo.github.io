@@ -17,6 +17,9 @@
   wordlist PDF downloads for all current NGSL, NAWL, Oxford5000, and THINK2
   Vocabulary units, with full-unit download links and generated single-set PDF
   files.
+- Added a Vocabulary `Practice` download dialog with `Confirm` for the static
+  full worksheet and `Customise` for selected-group worksheet PDFs, including
+  per-group word-bank/question shuffling from a visible randomiser seed.
 - Updated the Vocabulary PDF controls to use document/download icons with
   `Wordlist` and `Practice` labels, and removed the per-set download button from
   inline Study Set practice.

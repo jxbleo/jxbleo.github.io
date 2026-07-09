@@ -535,7 +535,13 @@ Shared rules:
 - Vocabulary PDF downloads appear only at the top of the vocabulary unit:
   `Wordlist` and `Practice` buttons use document icons with a small download
   badge instead of emoji or visible `Download` wording. Individual Study Set
-  practice cards do not show per-set download buttons.
+  practice cards do not show per-set download buttons. Clicking `Practice`
+  opens a download dialog. `Confirm` downloads the static all-groups worksheet
+  in original order. `Customise` opens a group multiselect with an `All` chip
+  that unchecks when any group is removed and rechecks when every group is
+  selected again. The `Shuffle` control keeps group numbers and group order in
+  place, but randomises each selected group's word bank and question order with
+  a visible randomiser seed; shuffled questions are renumbered from `1`.
 - Vocabulary inline practice uses each study group's own `Check` button. Each
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the correct answer and explanation in a

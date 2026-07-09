@@ -273,6 +273,17 @@ Check:
 - Vocabulary inline practice with local `answer` fields checks without
   CloudBase, and legacy CloudBase fallback errors do not expose raw SDK messages
   such as `t.scope`
+- Vocabulary top `Practice` download opens a dialog; `Confirm` downloads the
+  static all-groups worksheet in original order
+- Vocabulary `Practice` download `Customise` opens a group multiselect where
+  removing any group unchecks `All`, and selecting every group rechecks `All`
+- Vocabulary custom worksheet download with shuffle off uses static PDFs for
+  all-groups and one-group cases, and browser-generates selected multi-group
+  PDFs without answers
+- Vocabulary custom worksheet download with shuffle on keeps group order and
+  group numbers stable, randomises each selected group's word bank and question
+  order from the visible randomiser seed, and renumbers shuffled questions from
+  `1`
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
 - Cloze/Test timing gives each selected group 90 seconds

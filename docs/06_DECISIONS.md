@@ -269,3 +269,38 @@ Review condition:
 
 Revisit if worksheet styling becomes too complex for ReportLab or if the owner
 wants dynamic per-student PDF content.
+
+## 2026-07-09: Use Browser PDF Generation Only for Custom Vocabulary Worksheets
+
+Decision:
+
+Keep the static ReportLab Vocabulary PDFs as the default `Confirm` download,
+and add a small local browser PDF generator for `Customise` downloads that need
+selected groups or shuffled worksheet order.
+
+Reason:
+
+The owner wants `Download Practice` to support custom group selection and a
+randomiser that shuffles each selected group's word bank and question order.
+Pre-generating every group combination and shuffle permutation is not practical,
+while a browser-generated PDF can use the already public no-answer vocabulary
+question data without calling CloudBase or exposing grading keys. Keeping the
+static full worksheet as the default preserves the most stable path for normal
+classroom use.
+
+Trade-offs:
+
+- Good: no external CDN, network dependency, or CloudBase function is required
+  for custom worksheet downloads.
+- Good: static all-groups and single-group PDFs remain available for the common
+  non-shuffled cases.
+- Good: shuffled worksheets can show a randomiser seed while keeping group
+  numbers and group order stable.
+- Cost: the local browser generator uses a simpler PDF layout than the Python
+  ReportLab source and should stay limited to no-answer worksheet output.
+- Cost: custom multi-group or shuffled PDFs depend on browser Blob downloads.
+
+Review condition:
+
+Revisit if custom worksheet PDFs need CJK wordlist text, richer typography, or
+server-side archival.
