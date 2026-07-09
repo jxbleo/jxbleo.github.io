@@ -234,3 +234,34 @@ Trade-offs:
 Review condition:
 
 Revisit if UI complexity grows enough that static pages slow development or cause frequent regressions.
+
+## 2026-07-09: Generate Vocabulary Worksheet PDFs With ReportLab
+
+Decision:
+
+Use a local Python ReportLab script to generate static, no-answer Vocabulary
+worksheet PDFs from `content/vocabulary/<set_id>.json`.
+
+Reason:
+
+The owner wants student downloads to feel like deliberate worksheet handouts,
+not browser printouts of the interactive page. Static PDFs keep the student
+experience simple, avoid browser-specific print layout drift, and do not
+require CloudBase or runtime grading access.
+
+Trade-offs:
+
+- Good: stable A4 pagination, headers, footers, and no-answer exercise output.
+- Good: download buttons can link to ordinary static files.
+- Good: no frontend PDF library or CloudBase function is needed.
+- Good: the generator downsizes the shared DSE logo before embedding it, so
+  generated files stay small enough for static hosting and student downloads.
+- Cost: generated PDFs must be rebuilt when vocabulary prompts or groups
+  change.
+- Cost: the local generation environment needs Python with ReportLab; Pillow is
+  used when available for logo compression and falls back to the source image.
+
+Review condition:
+
+Revisit if worksheet styling becomes too complex for ReportLab or if the owner
+wants dynamic per-student PDF content.

@@ -233,6 +233,19 @@ Rules to preserve:
   source word-number range only, such as `001-100`, `901-963`, or
   `1001-1100`. Student and teacher Library cards use that range as the
   top-right metadata while preserving the unit title as the main card title.
+- Vocabulary units may opt into no-answer worksheet PDF downloads by adding
+  `worksheetPdf` metadata to `content/vocabulary/<set_id>.json`. The `list`
+  field points to a complete unit worksheet, while `sets` maps each
+  `quizGroups[].id` to a single-set worksheet. Student PDFs must include only
+  public exercise material such as group labels, word banks, and prompts; do
+  not include answers, explanations, accepted variants, or grading rules.
+- Generate worksheet PDFs with
+  `python3 scripts/generate-vocabulary-worksheets.py <set_id>`. For the NAWL-A
+  pilot, outputs live under `assets/pdf/vocabulary/NAWL-A/`: one
+  `NAWL-A-all-sets.pdf` file and one `NAWL-A-set-<group-id>.pdf` per quiz
+  group. After generating, render representative pages to images and visually
+  verify page headers, group breaks, blanks, and no-answer content before
+  publishing.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.
