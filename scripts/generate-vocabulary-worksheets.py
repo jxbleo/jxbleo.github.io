@@ -32,6 +32,8 @@ BOTTOM_Y = 31 * mm
 
 RULE = colors.HexColor("#000000")
 MUTED = colors.HexColor("#333333")
+NUMBER_COLUMN_WIDTH = 11 * mm
+ANSWER_COLUMN_WIDTH = 20.4 * mm
 
 
 def register_fonts() -> None:
@@ -153,11 +155,15 @@ class WorksheetPdf:
         for fallback_number, question in enumerate(questions, start=1):
             number = question.get("number") or fallback_number
             prompt = normalize_prompt(question.get("prompt") or "")
-            markup = f"{html.escape(str(number))}.&nbsp;&nbsp;{html.escape(prompt)}"
-            para = paragraph_markup(markup, self.question_style)
-            para_height = para.wrap(sentence_width - 12 * mm, 500)[1]
+            para = paragraph_markup(html.escape(prompt), self.question_style)
+            para_height = para.wrap(sentence_width - 8 * mm, 500)[1]
             row_height = max(14.6 * mm, para_height + 7 * mm)
-            rows.append({"paragraph": para, "paragraph_height": para_height, "row_height": row_height})
+            rows.append({
+                "number": str(number),
+                "paragraph": para,
+                "paragraph_height": para_height,
+                "row_height": row_height,
+            })
         return rows
 
     def shrink_rows_to_fit(self, rows: list[dict], available_height: float) -> None:
@@ -185,8 +191,9 @@ class WorksheetPdf:
 
     def draw_question_table(self, group: dict, x: float, y: float, width: float) -> float:
         c = self.canvas
-        answer_width = 34 * mm
-        sentence_width = width - answer_width
+        number_width = NUMBER_COLUMN_WIDTH
+        answer_width = ANSWER_COLUMN_WIDTH
+        sentence_width = width - number_width - answer_width
         header_height = 9 * mm
         rows = self.question_rows(group.get("questions") or [], sentence_width)
         self.shrink_rows_to_fit(rows, y - BOTTOM_Y - header_height)
@@ -196,23 +203,29 @@ class WorksheetPdf:
         c.setFillColor(RULE)
         c.setLineWidth(0.55)
 
-        c.rect(x, y - header_height, sentence_width, header_height)
-        c.rect(x + sentence_width, y - header_height, answer_width, header_height)
+        c.rect(x, y - header_height, number_width, header_height)
+        c.rect(x + number_width, y - header_height, sentence_width, header_height)
+        c.rect(x + number_width + sentence_width, y - header_height, answer_width, header_height)
         c.setFont("Times-Bold", 10)
-        c.drawCentredString(x + sentence_width / 2, y - 6 * mm, "Sentence")
-        c.drawCentredString(x + sentence_width + answer_width / 2, y - 6 * mm, "Answer")
+        c.drawCentredString(x + number_width / 2, y - 6 * mm, "No.")
+        c.drawCentredString(x + number_width + sentence_width / 2, y - 6 * mm, "Sentence")
+        c.drawCentredString(x + number_width + sentence_width + answer_width / 2, y - 6 * mm, "Answer")
         y -= header_height
 
         for row in rows:
             row_height = row["row_height"]
             para = row["paragraph"]
             para_height = row["paragraph_height"]
-            c.rect(x, y - row_height, sentence_width, row_height)
-            c.rect(x + sentence_width, y - row_height, answer_width, row_height)
+            c.rect(x, y - row_height, number_width, row_height)
+            c.rect(x + number_width, y - row_height, sentence_width, row_height)
+            c.rect(x + number_width + sentence_width, y - row_height, answer_width, row_height)
+
+            c.setFont("Times-Roman", 9.4)
+            c.drawCentredString(x + number_width / 2, y - row_height / 2 - 3, row["number"])
 
             # Center the sentence paragraph vertically inside the table cell.
             paragraph_y = y - row_height + (row_height - para_height) / 2
-            para.drawOn(c, x + 6 * mm, paragraph_y)
+            para.drawOn(c, x + number_width + 4 * mm, paragraph_y)
             y -= row_height
 
         c.restoreState()
