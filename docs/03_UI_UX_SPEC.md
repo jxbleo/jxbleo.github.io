@@ -534,7 +534,9 @@ Shared rules:
 - Vocabulary inline practice uses each study group's own `Check` button. Each
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the explanation in a floating popover
-  so the practice layout does not shift. After checking,
+  so the practice layout does not shift. The open explanation popover must sit
+  above neighboring question cards and their `?` buttons, even when the popover
+  is tall. After checking,
   correct cards turn green, incorrect cards turn light red, and each answer
   blank is replaced by inline feedback:
   correct answers show in green, while wrong answers show the submitted answer

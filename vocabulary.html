@@ -719,6 +719,10 @@
             background: #fff;
         }
 
+        .question-item.explanation-open {
+            z-index: 130;
+        }
+
         .question-item.correct {
             border-color: #4ade80;
             background: #f0fdf4;
@@ -1009,7 +1013,7 @@
         .self-question .reveal,
         .test-question .reveal {
             position: absolute;
-            z-index: 95;
+            z-index: 135;
             top: 48px;
             right: 14px;
             width: min(420px, calc(100% - 28px));
@@ -2750,6 +2754,7 @@
             if (reveal) {
                 reveal.classList.remove('show');
             }
+            card.classList.remove('explanation-open');
             if (explainButton) explainButton.classList.remove('active');
         }
 
@@ -2760,6 +2765,7 @@
                 var button = card.querySelector('.practice-explain-btn');
                 if (reveal) reveal.classList.remove('show');
                 if (button) button.classList.remove('active');
+                card.classList.remove('explanation-open');
             });
         }
 
@@ -2772,6 +2778,7 @@
             closePracticeExplanations(willShow ? card : null);
             reveal.classList.toggle('show', willShow);
             button.classList.toggle('active', willShow);
+            card.classList.toggle('explanation-open', willShow);
             card.classList.remove('choice-open');
         }
 
