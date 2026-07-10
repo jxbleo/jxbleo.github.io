@@ -10,6 +10,9 @@
 - Changed the student Dashboard top billboard into a four-week progress board:
   students now see recent completion squares with weekday/week labels, summary
   counts, and a selected-day completion detail pane before the assignment list.
+- Changed the Dashboard billboard summary from three separate count cards into
+  one completion progress bar, and expanded the randomized greeting and
+  motivational copy shown above the progress board.
 
 ## 2026-07-09
 
