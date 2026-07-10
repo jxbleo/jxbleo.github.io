@@ -1065,18 +1065,6 @@
         return date && !isNaN(date.getTime()) ? date : null;
     }
 
-    function progressBadgeForItem(item) {
-        if (item && (normalizedStatus(item.status) === 'mastered' || item.star_claimed === true)) return 'STAR';
-        if (item && item.source === 'self_study') return 'Self-study';
-        return 'Done';
-    }
-
-    function progressBadgeClass(item) {
-        if (item && (normalizedStatus(item.status) === 'mastered' || item.star_claimed === true)) return ' gold';
-        if (item && item.source === 'self_study') return ' blue';
-        return ' green';
-    }
-
     function progressItemKind(item) {
         var set = item && (item.set || item) || {};
         var sectionId = set.sectionId || set.section_id || '';
@@ -1089,15 +1077,16 @@
         return set.title || set.set_id || set.id || 'Practice';
     }
 
-    function progressItemMeta(item) {
-        var set = item && (item.set || item) || {};
-        var parts = [];
-        var kind = progressItemKind(item);
-        var setId = set.set_id || set.id || '';
-        if (kind) parts.push(kind);
-        if (setId) parts.push(setId);
-        if (item && item.best_percentage != null) parts.push(formatEntryPercent(item.best_percentage));
-        return parts.join(' · ');
+    function progressItemScoreLabel(item) {
+        return item && item.best_percentage != null ? formatEntryPercent(item.best_percentage) : '--';
+    }
+
+    function renderProgressTask(item) {
+        return '<article class="progress-detail-task">' +
+            '<strong>' + escapeHtml(progressItemTitle(item)) + '</strong>' +
+            '<span class="progress-task-type">' + escapeHtml(progressItemKind(item) || 'Practice') + '</span>' +
+            '<span class="progress-task-score">' + escapeHtml(progressItemScoreLabel(item)) + '</span>' +
+        '</article>';
     }
 
     function progressDayModel() {
@@ -1107,22 +1096,38 @@
         var todayKey = todayParts && todayParts.key;
         var days = [];
         var daysByKey = {};
+        var weeks = [];
+        var weeksByKey = {};
         var weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         for (var weekIndex = 0; weekIndex < 4; weekIndex++) {
             var weekDate = addUtcDays(firstWeekStart, weekIndex * 7);
+            var weekKey = 'week:' + keyFromUtcDate(weekDate);
+            var week = {
+                key: weekKey,
+                startKey: keyFromUtcDate(weekDate),
+                weekLabel: 'W' + isoWeekNumber(weekDate),
+                type: 'week',
+                days: [],
+                items: []
+            };
+            weeks.push(week);
+            weeksByKey[weekKey] = week;
             for (var dayIndex = 0; dayIndex < 7; dayIndex++) {
                 var date = addUtcDays(weekDate, dayIndex);
                 var key = keyFromUtcDate(date);
                 var day = {
                     key: key,
+                    weekKey: weekKey,
                     date: date,
-                    weekLabel: 'W' + isoWeekNumber(date),
+                    weekLabel: week.weekLabel,
                     dayLabel: weekdayLabels[dayIndex],
+                    type: 'day',
                     items: [],
                     isFuture: todayKey ? key > todayKey : false
                 };
                 days.push(day);
+                week.days.push(day);
                 daysByKey[key] = day;
             }
         }
@@ -1145,7 +1150,18 @@
             day.level = Math.min(4, day.items.length);
         });
 
-        var selected = state.progressSelectedDay && daysByKey[state.progressSelectedDay];
+        weeks.forEach(function(week) {
+            week.items = week.days.reduce(function(items, day) {
+                return items.concat(day.items);
+            }, []).sort(function(left, right) {
+                return progressItemDateValue(right).getTime() - progressItemDateValue(left).getTime();
+            });
+        });
+
+        var selected = null;
+        if (state.progressSelectedDay) {
+            selected = weeksByKey[state.progressSelectedDay] || daysByKey[state.progressSelectedDay] || null;
+        }
         if (!selected) selected = daysByKey[todayKey];
         if (!selected) {
             for (var i = days.length - 1; i >= 0; i--) {
@@ -1160,6 +1176,7 @@
 
         return {
             days: days,
+            weeks: weeks,
             selected: selected,
             todayKey: todayKey,
             weekdayLabels: weekdayLabels
@@ -1170,10 +1187,8 @@
         var total = finishedCount + todoCount;
         var percent = total ? Math.round((finishedCount / total) * 100) : 0;
         var label = total ? finishedCount + ' / ' + total : '0 / 0';
-        var copy = total ? 'Finished assignments' : 'Ready to begin';
         return '<div class="hero-meter-row">' +
                 '<strong>' + escapeHtml(label) + '</strong>' +
-                '<span>' + escapeHtml(copy) + '</span>' +
             '</div>' +
             '<div class="hero-meter-track" role="progressbar" aria-label="Assignment completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(percent) + '">' +
                 '<i style="width: ' + escapeHtml(percent) + '%"></i>' +
@@ -1186,6 +1201,7 @@
 
     function renderProgressStats() {
         if (!heroProgressStats) return;
+        heroProgressStats.classList.remove('is-loading');
         if (!state.session || state.session.mode !== 'student') {
             heroProgressStats.innerHTML = renderHeroProgressMeter(0, 0);
             return;
@@ -1200,16 +1216,8 @@
         if (!day) return '';
         var count = day.items.length;
         var body = count
-            ? day.items.map(function(item) {
-                return '<article class="progress-detail-task">' +
-                    '<div>' +
-                        '<strong>' + escapeHtml(progressItemTitle(item)) + '</strong>' +
-                        '<span>' + escapeHtml(progressItemMeta(item)) + '</span>' +
-                    '</div>' +
-                    '<span class="pill' + progressBadgeClass(item) + '">' + escapeHtml(progressBadgeForItem(item)) + '</span>' +
-                '</article>';
-            }).join('')
-            : '<div class="progress-detail-empty">' + escapeHtml(day.isFuture ? 'Planned work will appear here after it is completed.' : 'A blank day is fine. The next practice session can start a new streak.') + '</div>';
+            ? day.items.map(renderProgressTask).join('')
+            : '';
         return '<section class="progress-detail-panel" aria-live="polite">' +
             '<div class="progress-detail-list">' + body + '</div>' +
         '</section>';
@@ -1217,6 +1225,7 @@
 
     function renderProgressBoard() {
         if (!progressBoard) return;
+        progressBoard.classList.remove('is-loading');
         renderProgressStats();
         if (!state.session || state.session.mode !== 'student') {
             progressBoard.innerHTML =
@@ -1236,7 +1245,14 @@
         var model = progressDayModel();
         var cells = '';
         model.days.forEach(function(day, index) {
-            if (index % 7 === 0) cells += '<span class="progress-week-label">' + escapeHtml(day.weekLabel) + '</span>';
+            if (index % 7 === 0) {
+                var week = model.weeks[index / 7];
+                var weekClasses = ['progress-week-label', 'progress-week-button'];
+                if (week && week.key === state.progressSelectedDay) weekClasses.push('active');
+                var weekLabel = week ? week.weekLabel : day.weekLabel;
+                var weekItemCount = week ? week.items.length : 0;
+                cells += '<button class="' + weekClasses.join(' ') + '" type="button" data-progress-week="' + escapeHtml(week ? week.key : '') + '" aria-label="' + escapeHtml(weekLabel + ', ' + weekItemCount + ' finished this week') + '">' + escapeHtml(weekLabel) + '</button>';
+            }
             var classes = ['progress-dot'];
             if (day.level) classes.push('l' + day.level);
             if (day.hasStar) classes.push('star');
@@ -2161,6 +2177,12 @@
         var progressDay = e.target.closest('[data-progress-day]');
         if (progressDay) {
             state.progressSelectedDay = progressDay.dataset.progressDay || '';
+            renderProgressBoard();
+            return;
+        }
+        var progressWeek = e.target.closest('[data-progress-week]');
+        if (progressWeek) {
+            state.progressSelectedDay = progressWeek.dataset.progressWeek || '';
             renderProgressBoard();
             return;
         }

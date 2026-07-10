@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-11
+
+### Changed
+
+- Changed the student Dashboard progress board so the completion meter centers
+  its `Finished / total` value, week labels open weekly completion summaries,
+  blank selections stay visually quiet, and loading states reserve the meter and
+  board layout before dashboard data arrives.
+
 ## 2026-07-10
 
 ### Changed
