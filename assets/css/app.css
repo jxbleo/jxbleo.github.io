@@ -642,48 +642,94 @@ button { cursor: pointer; }
 }
 .student-progress-hero h1 {
     color: var(--ink);
+    max-width: 760px;
+    font-size: clamp(1.95rem, 4.8vw, 3.7rem);
+    line-height: 1.02;
     letter-spacing: 0;
+    overflow-wrap: break-word;
+    text-wrap: balance;
 }
 .student-progress-hero p {
+    max-width: 760px;
     color: rgba(24, 53, 47, 0.68);
+    font-size: clamp(0.98rem, 1.8vw, 1.12rem);
+    font-weight: 760;
+    line-height: 1.45;
+    overflow-wrap: break-word;
+}
+.hero-copy-stack {
+    min-width: 0;
 }
 .hero-progress-head {
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+    gap: 20px;
     align-items: end;
     margin-bottom: 22px;
 }
 .hero-progress-stats {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-end;
-}
-.hero-progress-stats span {
-    min-width: 82px;
-    padding: 10px 12px;
+    display: grid;
+    gap: 11px;
+    min-width: 0;
+    padding: 16px;
     border: 1px solid rgba(19, 118, 109, 0.12);
-    border-radius: 15px;
+    border-radius: 18px;
     background: rgba(255,255,255,0.68);
     box-shadow: 0 10px 26px rgba(19, 118, 109, 0.08);
-    text-align: left;
 }
-.hero-progress-stats strong {
+.hero-meter-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+}
+.hero-meter-row strong {
     display: block;
     color: var(--accent-dark);
-    font-size: 1.24rem;
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
     line-height: 1;
     font-weight: 950;
+    white-space: nowrap;
 }
-.hero-progress-stats small {
-    display: block;
-    margin-top: 5px;
-    color: rgba(24, 53, 47, 0.58);
-    font-size: 0.68rem;
+.hero-meter-row span {
+    color: rgba(24, 53, 47, 0.6);
+    font-size: 0.78rem;
     font-weight: 900;
+    line-height: 1.25;
+    text-align: right;
+}
+.hero-meter-track {
+    position: relative;
+    overflow: hidden;
+    height: 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    box-shadow: inset 0 0 0 1px rgba(19,118,109,0.09);
+}
+.hero-meter-track i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: block;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8ad6aa, #13766d);
+}
+.hero-meter-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: rgba(24, 53, 47, 0.58);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.hero-meter-legend span {
+    min-width: 0;
+}
+.hero-meter-legend b {
+    color: var(--ink);
+    font-weight: 950;
 }
 .progress-board {
     position: relative;
@@ -5834,13 +5880,20 @@ body:not(.teacher-page) .tab-button.active {
         gap: 14px;
         margin-bottom: 16px;
     }
-    .hero-progress-stats {
-        justify-content: stretch;
+    .student-progress-hero h1 {
+        font-size: clamp(1.76rem, 9vw, 2.7rem);
     }
-    .hero-progress-stats span {
-        flex: 1 1 0;
-        min-width: 0;
-        padding: 9px 10px;
+    .student-progress-hero p {
+        font-size: 0.96rem;
+    }
+    .hero-progress-stats {
+        padding: 12px;
+    }
+    .hero-meter-row {
+        align-items: start;
+    }
+    .hero-meter-row span {
+        max-width: 118px;
     }
     .progress-board {
         grid-template-columns: 1fr;

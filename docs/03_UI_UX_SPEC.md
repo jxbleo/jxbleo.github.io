@@ -47,16 +47,21 @@ Assignments display:
 - open `TO DO` assignments directly
 - a small bottom `Finished` completion button for completed work
 - the top student billboard is a progress board rather than a pure welcome
-  panel. It keeps the greeting, but its supporting copy summarizes finished
-  work this week and waiting assignments. The board shows the current week plus
-  the previous three weeks as a compact GitHub-style grid with weekday labels
-  across the top and `Wxx` week labels on the left. The visual treatment should
-  match the login/home page's pale green paper-and-glass style, not a dark
-  cockpit panel. On desktop and tablet, the grid sits on the left half of the
-  same progress panel and uses the available width generously so it does not
-  feel like a small inset widget; the selected day's completion details sit on
-  the right half. On mobile the same panel stacks the grid above the details,
-  and the grid should adapt to nearly the full screen width.
+  panel. It keeps a fixed two-part copy structure: one randomly selected
+  English greeting that includes the student's English name, followed by one
+  randomly selected motivational sentence. These lines should wrap naturally
+  instead of being squeezed into one row. The old three summary cards are
+  replaced by one completion progress bar showing `Finished / total`, with
+  `Finished` on the lower-left and To do on the lower-right as compact
+  supporting metadata. The board shows the current
+  week plus the previous three weeks as a compact GitHub-style grid with weekday
+  labels across the top and `Wxx` week labels on the left. The visual treatment
+  should match the login/home page's pale green paper-and-glass style, not a
+  dark cockpit panel. On desktop and tablet, the grid sits on the left half of
+  the same progress panel and uses the available width generously so it does
+  not feel like a small inset widget; the selected day's completion details sit
+  on the right half. On mobile the same panel stacks the grid above the
+  details, and the grid should adapt to nearly the full screen width.
   Clicking a day square changes the detail pane to show only completed
   assignment/self-study task items for that date, without an extra date
   heading, count summary, or separate color legend.

@@ -49,7 +49,47 @@
         'Your best learning happens when you keep asking why.',
         'Challenges are part of becoming more capable.',
         'Give this moment your attention and let progress follow.',
-        'There is always something valuable in another attempt.'
+        'There is always something valuable in another attempt.',
+        'A steady learner becomes a strong learner.',
+        'You only need the next useful step.',
+        'Practice turns uncertainty into skill.',
+        'Give yourself credit for showing up.',
+        'The next question is a new chance.',
+        'Your attention is powerful when you use it well.',
+        'A careful attempt is already progress.',
+        'Keep your goals close and your steps simple.',
+        'Small wins are still wins.',
+        'Every finished task adds to your foundation.',
+        'The habit matters as much as the score.',
+        'You are training your brain to stay with hard things.',
+        'A strong result often starts quietly.',
+        'One clear answer can unlock the next one.',
+        'Let today be a solid page in your learning story.',
+        'The work you do now makes later work lighter.',
+        'Progress is built in ordinary moments.',
+        'Stay steady. The skills are forming.',
+        'A focused start is half the battle.',
+        'You can do hard things one piece at a time.',
+        'Keep choosing the next right effort.',
+        'Your future confidence is being built here.',
+        'The best learners keep returning.',
+        'A little discipline can create a lot of freedom.',
+        'Do the next task with care.',
+        'Every practice session gives you more evidence that you can improve.',
+        'Learning is not a race. It is a rhythm.',
+        'Try, notice, adjust, and try again.',
+        'You are allowed to grow at a human pace.',
+        'A brave attempt is better than a perfect delay.',
+        'Keep your curiosity awake.',
+        'One more thoughtful try can change the pattern.',
+        'Build the skill, not just the score.',
+        'The next small effort still counts.',
+        'You are closer than you were before you started.',
+        'Let the work be simple and honest today.',
+        'Strong students are made by steady choices.',
+        'You do not need a perfect day to make progress.',
+        'Take the next step and let momentum find you.',
+        'Your practice is becoming your strength.'
     ];
 
     var identityChip = document.getElementById('identity-chip');
@@ -282,10 +322,34 @@
     function greetingFor(name) {
         var hour = shanghaiHour();
         var timeGreetings = hour < 12
-            ? ['Good morning, {name}.', 'A fresh morning, {name}.', 'Morning, {name}. Ready to begin?']
+            ? [
+                'Good morning, {name}.',
+                'A fresh morning, {name}.',
+                'Morning, {name}. Ready to begin?',
+                'Rise and shine, {name}.',
+                'A new morning is here, {name}.',
+                'Good morning, {name}. Let us start strong.',
+                'Morning, {name}. One calm step first.'
+            ]
             : hour < 18
-                ? ['Good afternoon, {name}.', 'A bright afternoon, {name}.', 'Afternoon, {name}. Let us keep moving.']
-                : ['Good evening, {name}.', 'A calm evening, {name}.', 'Evening, {name}. One more step forward.'];
+                ? [
+                    'Good afternoon, {name}.',
+                    'A bright afternoon, {name}.',
+                    'Afternoon, {name}. Let us keep moving.',
+                    'Good afternoon, {name}. Your next task is ready.',
+                    'A steady afternoon, {name}.',
+                    'Afternoon, {name}. Time for one useful step.',
+                    'Good to see you this afternoon, {name}.'
+                ]
+                : [
+                    'Good evening, {name}.',
+                    'A calm evening, {name}.',
+                    'Evening, {name}. One more step forward.',
+                    'Good evening, {name}. Let us finish with care.',
+                    'A quiet evening for progress, {name}.',
+                    'Evening, {name}. Your effort still counts.',
+                    'Good to see you tonight, {name}.'
+                ];
         var flexibleGreetings = [
             'Welcome back, {name}.',
             'Great to see you, {name}.',
@@ -301,7 +365,22 @@
             'Today has possibilities, {name}.',
             'One step at a time, {name}.',
             'You are back, {name}. Let us do this.',
-            'Ready for something new, {name}?'
+            'Ready for something new, {name}?',
+            'Let us make today useful, {name}.',
+            'Your learning space is ready, {name}.',
+            'Back to the next step, {name}.',
+            'You have got this, {name}.',
+            'Let us keep building, {name}.',
+            'A little progress today, {name}.',
+            'The next win is waiting, {name}.',
+            'Take your time and begin, {name}.',
+            'Good energy today, {name}.',
+            'Your next challenge is here, {name}.',
+            'Let us turn effort into progress, {name}.',
+            'Start small and stay steady, {name}.',
+            'Ready to grow a little more, {name}?',
+            'Let us focus in, {name}.',
+            'A good session can start now, {name}.'
         ];
         return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
     }
@@ -1087,32 +1166,34 @@
         };
     }
 
+    function renderHeroProgressMeter(finishedCount, todoCount) {
+        var total = finishedCount + todoCount;
+        var percent = total ? Math.round((finishedCount / total) * 100) : 0;
+        var label = total ? finishedCount + ' / ' + total : '0 / 0';
+        var copy = total ? 'Finished assignments' : 'Ready to begin';
+        return '<div class="hero-meter-row">' +
+                '<strong>' + escapeHtml(label) + '</strong>' +
+                '<span>' + escapeHtml(copy) + '</span>' +
+            '</div>' +
+            '<div class="hero-meter-track" role="progressbar" aria-label="Assignment completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(percent) + '">' +
+                '<i style="width: ' + escapeHtml(percent) + '%"></i>' +
+            '</div>' +
+            '<div class="hero-meter-legend">' +
+                '<span><b>' + escapeHtml(finishedCount) + '</b> finished</span>' +
+                '<span><b>' + escapeHtml(todoCount) + '</b> to do</span>' +
+            '</div>';
+    }
+
     function renderProgressStats() {
         if (!heroProgressStats) return;
         if (!state.session || state.session.mode !== 'student') {
-            if (heroCopy) heroCopy.textContent = 'Explore lessons as a visitor.';
-            heroProgressStats.innerHTML =
-                '<span><strong>0</strong><small>Finished</small></span>' +
-                '<span><strong>0</strong><small>STAR</small></span>' +
-                '<span><strong>0</strong><small>To do</small></span>';
+            heroProgressStats.innerHTML = renderHeroProgressMeter(0, 0);
             return;
         }
         var assignments = state.assignments || [];
         var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); });
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; });
-        var weekStartKey = keyFromUtcDate(currentShanghaiWeekStart());
-        var finishedThisWeek = finished.filter(function(item) {
-            var date = progressItemDateValue(item);
-            var parts = date && shanghaiDateParts(date);
-            return parts && parts.key >= weekStartKey;
-        }).length;
-        if (heroCopy) {
-            heroCopy.textContent = finishedThisWeek + ' finished this week · ' + todo.length + ' waiting';
-        }
-        heroProgressStats.innerHTML =
-            '<span><strong>' + escapeHtml(finished.length) + '</strong><small>Finished</small></span>' +
-            '<span><strong>' + escapeHtml(state.starCount || 0) + '</strong><small>STAR</small></span>' +
-            '<span><strong>' + escapeHtml(todo.length) + '</strong><small>To do</small></span>';
+        heroProgressStats.innerHTML = renderHeroProgressMeter(finished.length, todo.length);
     }
 
     function renderProgressDetail(day) {
