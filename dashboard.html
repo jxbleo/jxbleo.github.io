@@ -8,7 +8,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260710-5">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260711-1">
 </head>
 <body class="app-page">
     <main class="app-shell">
@@ -39,9 +39,35 @@
                     <h1 id="greeting">Hello.</h1>
                     <p id="hero-copy">Your assignments and learning resources live here.</p>
                 </div>
-                <div class="hero-progress-stats" id="hero-progress-stats" aria-label="Assignment summary"></div>
+                <div class="hero-progress-stats is-loading" id="hero-progress-stats" aria-label="Assignment summary">
+                    <div class="hero-meter-row">
+                        <strong class="progress-skeleton-text">-- / --</strong>
+                    </div>
+                    <div class="hero-meter-track loading-track" aria-hidden="true"><i></i></div>
+                    <div class="hero-meter-legend">
+                        <span><b>--</b> finished</span>
+                        <span><b>--</b> to do</span>
+                    </div>
+                </div>
             </div>
-            <div class="progress-board" id="progress-board" aria-label="Four week assignment progress"></div>
+            <div class="progress-board is-loading" id="progress-board" aria-label="Four week assignment progress">
+                <section class="progress-map-panel">
+                    <div class="progress-dot-map progress-dot-map-loading" aria-hidden="true">
+                        <span></span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
+                </section>
+                <section class="progress-detail-panel">
+                    <div class="progress-detail-list">
+                        <div class="progress-detail-loading"></div>
+                        <div class="progress-detail-loading short"></div>
+                        <div class="progress-loading-copy">Loading progress</div>
+                    </div>
+                </section>
+            </div>
         </section>
 
         <nav class="dashboard-tabs" aria-label="Dashboard sections">
@@ -87,6 +113,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260710-6"></script>
+    <script src="assets/js/dashboard.js?v=20260711-1"></script>
 </body>
 </html>
