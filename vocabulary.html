@@ -462,15 +462,23 @@
 
         .worksheet-group-grid {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            align-items: center;
             gap: 8px;
-            max-height: 190px;
             margin-top: 10px;
-            padding: 2px 2px 4px;
-            overflow: auto;
+            padding: 2px 2px 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .worksheet-group-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .worksheet-group-chip {
+            flex: 0 0 auto;
             border: 1px solid rgba(15, 118, 110, 0.20);
             border-radius: 999px;
             padding: 8px 11px;
@@ -519,31 +527,6 @@
 
         .worksheet-toggle.active::after {
             transform: translateX(20px);
-        }
-
-        .worksheet-seed-row {
-            align-items: center;
-        }
-
-        .worksheet-seed-value {
-            display: inline-flex;
-            align-items: center;
-            min-height: 34px;
-            padding: 0 10px;
-            border: 1px solid rgba(15, 118, 110, 0.18);
-            border-radius: 999px;
-            background: rgba(15, 118, 110, 0.06);
-            color: #0f5f57;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-weight: 900;
-        }
-
-        .worksheet-seed-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-            gap: 8px;
         }
 
         .worksheet-custom-actions {
@@ -1752,7 +1735,6 @@
                 flex-direction: column;
             }
 
-            .worksheet-seed-actions,
             .worksheet-custom-actions {
                 justify-content: flex-start;
                 width: 100%;
@@ -1847,7 +1829,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/practice-session.js?v=20260709-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
-    <script src="assets/js/vocabulary-worksheet-pdf.js?v=20260711-1"></script>
+    <script src="assets/js/vocabulary-worksheet-pdf.js?v=20260711-2"></script>
     <script>
         var params = new URLSearchParams(window.location.search);
         var setId = params.get('set') || 'NGSL-A';
@@ -2537,9 +2519,9 @@
             });
         }
 
-        function worksheetDynamicFilename(selectedGroups, shuffle, seed) {
+        function worksheetDynamicFilename(selectedGroups, shuffle) {
             var id = unitData && unitData.id ? unitData.id : 'vocabulary';
-            if (shuffle) return id + '-practice-random-' + String(seed || '').toUpperCase() + '.pdf';
+            if (shuffle) return id + '-practice-shuffled.pdf';
             if (selectedGroups.length === 1) return id + '-practice-' + selectedGroups[0].id + '.pdf';
             return id + '-practice-custom.pdf';
         }
@@ -2566,7 +2548,7 @@
                 groups: groups,
                 shuffle: shuffle,
                 seed: seed,
-                filename: worksheetDynamicFilename(groups, shuffle, seed)
+                filename: worksheetDynamicFilename(groups, shuffle)
             });
         }
 
@@ -2606,13 +2588,6 @@
                             '<div class="worksheet-custom-label">Shuffle</div>' +
                             '<button class="worksheet-toggle" type="button" data-worksheet-shuffle aria-pressed="false" aria-label="Shuffle"></button>' +
                         '</div>' +
-                        '<div class="worksheet-custom-row worksheet-seed-row">' +
-                            '<div class="worksheet-custom-label">Randomiser</div>' +
-                            '<div class="worksheet-seed-actions">' +
-                                '<span class="worksheet-seed-value" data-worksheet-seed>' + escapeHtml(seed) + '</span>' +
-                                '<button class="btn btn-secondary" type="button" data-worksheet-reroll>Reroll</button>' +
-                            '</div>' +
-                        '</div>' +
                         '<div class="worksheet-download-error" data-worksheet-error></div>' +
                         '<div class="worksheet-custom-actions">' +
                             '<button class="btn btn-secondary" type="button" data-worksheet-download-dialog="cancel">Cancel</button>' +
@@ -2626,7 +2601,6 @@
             var panel = overlay.querySelector('[data-worksheet-custom-panel]');
             var groupGrid = overlay.querySelector('[data-worksheet-group-grid]');
             var shuffleButton = overlay.querySelector('[data-worksheet-shuffle]');
-            var seedValue = overlay.querySelector('[data-worksheet-seed]');
             var error = overlay.querySelector('[data-worksheet-error]');
             var downloadButton = overlay.querySelector('[data-worksheet-download-dialog="download"]');
 
@@ -2643,10 +2617,10 @@
             function renderGroups() {
                 var allActive = allSelected();
                 groupGrid.innerHTML = '<button class="worksheet-group-chip ' + (allActive ? 'active' : '') + '" type="button" data-worksheet-group="all" aria-pressed="' + (allActive ? 'true' : 'false') + '">All</button>' +
-                    groups.map(function(group) {
+                    groups.map(function(group, index) {
                         var active = selectedIds.has(group.id);
                         return '<button class="worksheet-group-chip ' + (active ? 'active' : '') + '" type="button" data-worksheet-group="' + escapeHtml(group.id) + '" aria-pressed="' + (active ? 'true' : 'false') + '">' +
-                            escapeHtml(group.id) +
+                            'Set ' + escapeHtml(String(index + 1)) +
                         '</button>';
                     }).join('');
                 if (downloadButton) downloadButton.disabled = selectedIds.size === 0;
@@ -2655,7 +2629,6 @@
             function renderShuffle() {
                 shuffleButton.classList.toggle('active', shuffle);
                 shuffleButton.setAttribute('aria-pressed', shuffle ? 'true' : 'false');
-                seedValue.textContent = seed;
             }
 
             function close() {
@@ -2724,13 +2697,6 @@
                     shuffle = !shuffle;
                     renderShuffle();
                     return;
-                }
-
-                if (event.target.closest('[data-worksheet-reroll]')) {
-                    seed = window.MrCatVocabularyWorksheetPdf && window.MrCatVocabularyWorksheetPdf.makeSeed
-                        ? window.MrCatVocabularyWorksheetPdf.makeSeed()
-                        : String(Math.random()).slice(2, 8).toUpperCase();
-                    renderShuffle();
                 }
             });
 
