@@ -268,6 +268,11 @@ Rules to preserve:
   text, and self-check boxes. After generating, render representative pages to
   images and visually verify page headers, table rows, blanks, emoji rendering,
   and no-answer practice content before publishing.
+- The `Download Practice` `Customise` path uses
+  `assets/js/vocabulary-worksheet-pdf.js` to generate selected-group or
+  shuffled worksheets in the browser. Keep that browser PDF generator visually
+  aligned with the static ReportLab practice worksheet style whenever the paper
+  layout changes.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

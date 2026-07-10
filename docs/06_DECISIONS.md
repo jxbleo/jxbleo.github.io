@@ -298,8 +298,9 @@ Trade-offs:
   non-shuffled cases.
 - Good: shuffled worksheets can show a randomiser seed while keeping group
   numbers and group order stable.
-- Cost: the local browser generator uses a simpler PDF layout than the Python
-  ReportLab source and should stay limited to no-answer worksheet output.
+- Cost: the local browser generator duplicates the public no-answer worksheet
+  layout used by the Python ReportLab source, so visual worksheet changes must
+  be mirrored in both implementations.
 - Cost: custom multi-group or shuffled PDFs depend on browser Blob downloads.
 
 Review condition:

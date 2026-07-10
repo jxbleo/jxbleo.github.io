@@ -17,7 +17,6 @@
     var TOP_Y = PAGE_HEIGHT - 25 * MM;
     var BOTTOM_Y = 31 * MM;
     var NUMBER_COLUMN_WIDTH = 11 * MM;
-    var ANSWER_COLUMN_WIDTH = 20.4 * MM;
     var SEED_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
     function fmt(value) {
@@ -48,7 +47,7 @@
     }
 
     function normalizePrompt(prompt) {
-        return cleanText(prompt).replace(/_{5,}/g, '________');
+        return cleanText(prompt).replace(/_{5,}/g, '___________');
     }
 
     function pdfString(value) {
@@ -104,6 +103,24 @@
 
     function rectCommand(x, y, width, height) {
         return fmt(x) + ' ' + fmt(y) + ' ' + fmt(width) + ' ' + fmt(height) + ' re S';
+    }
+
+    function roundRectCommand(x, y, width, height, radius) {
+        var k = 0.5522847498;
+        var r = Math.min(radius, width / 2, height / 2);
+        var c = r * k;
+        return [
+            fmt(x + r) + ' ' + fmt(y) + ' m',
+            fmt(x + width - r) + ' ' + fmt(y) + ' l',
+            fmt(x + width - r + c) + ' ' + fmt(y) + ' ' + fmt(x + width) + ' ' + fmt(y + r - c) + ' ' + fmt(x + width) + ' ' + fmt(y + r) + ' c',
+            fmt(x + width) + ' ' + fmt(y + height - r) + ' l',
+            fmt(x + width) + ' ' + fmt(y + height - r + c) + ' ' + fmt(x + width - r + c) + ' ' + fmt(y + height) + ' ' + fmt(x + width - r) + ' ' + fmt(y + height) + ' c',
+            fmt(x + r) + ' ' + fmt(y + height) + ' l',
+            fmt(x + r - c) + ' ' + fmt(y + height) + ' ' + fmt(x) + ' ' + fmt(y + height - r + c) + ' ' + fmt(x) + ' ' + fmt(y + height - r) + ' c',
+            fmt(x) + ' ' + fmt(y + r) + ' l',
+            fmt(x) + ' ' + fmt(y + r - c) + ' ' + fmt(x + r - c) + ' ' + fmt(y) + ' ' + fmt(x + r) + ' ' + fmt(y) + ' c',
+            'h S'
+        ].join(' ');
     }
 
     function fillRectCommand(x, y, width, height, shade) {
@@ -197,6 +214,14 @@
         if (options.shuffle) {
             copy.wordList = shuffled(copy.wordList, options.seed + ':' + group.id + ':words');
             copy.questions = shuffled(copy.questions, options.seed + ':' + group.id + ':questions');
+            copy.questions = copy.questions.map(function(question, index) {
+                var next = {};
+                Object.keys(question || {}).forEach(function(key) {
+                    next[key] = question[key];
+                });
+                next._worksheetNumber = index + 1;
+                return next;
+            });
         }
         return copy;
     }
@@ -210,55 +235,127 @@
         commands.push('Q');
     }
 
-    function drawWordBank(commands, group, x, topY, width) {
-        var words = (group.wordList || []).map(cleanText).join(' | ');
-        var lines = wrapText('Words: ' + words, width - 10 * MM, 9.5);
-        var height = lines.length * 12 + 8 * MM;
-        commands.push(rectCommand(x, topY - height, width, height));
-        lines.forEach(function(line, index) {
-            commands.push(textCommand(x + 5 * MM, topY - 5 * MM - (index * 12), line, {
-                font: index === 0 ? 'F2' : 'F1',
-                size: 9.5
-            }));
+    function drawInfoTags(commands, x, topY, width) {
+        var labels = ['Name', 'Date', 'Score'];
+        var tagGap = 3.2 * MM;
+        var tagWidth = 31 * MM;
+        var tagHeight = 11.5 * MM;
+        var totalWidth = labels.length * tagWidth + (labels.length - 1) * tagGap;
+        var startX = x + width - totalWidth;
+        var top = topY + 3.2 * MM;
+        commands.push('q 0 G 0 g 0.55 w');
+        labels.forEach(function(label, index) {
+            var tagX = startX + index * (tagWidth + tagGap);
+            var tagY = top - tagHeight;
+            commands.push(roundRectCommand(tagX, tagY, tagWidth, tagHeight, 1.8 * MM));
+            commands.push(textCommand(tagX + 2.2 * MM, top - 3.7 * MM, label, { font: 'F2', size: 5.8 }));
+            commands.push('0.35 w');
+            commands.push(lineCommand(tagX + 2.2 * MM, top - 8.3 * MM, tagX + tagWidth - 2.2 * MM, top - 8.3 * MM));
+            commands.push('0.55 w');
         });
-        return topY - height;
+        commands.push('Q');
+    }
+
+    function wordBankLayout(words, width) {
+        var list = words && words.length ? words : [''];
+        var columns = 5;
+        var fontSize = 9.6;
+        if (words.length <= 5) {
+            columns = Math.max(1, words.length);
+        } else {
+            var fiveColumnWidth = width / 5;
+            var maxFiveColumnWordWidth = list.reduce(function(max, word) {
+                return Math.max(max, textWidth(word, fontSize));
+            }, 0);
+            if (maxFiveColumnWordWidth > fiveColumnWidth - 8 * MM) columns = 4;
+        }
+        var cellWidth = width / columns;
+        var maxWordWidth = list.reduce(function(max, word) {
+            return Math.max(max, textWidth(word, fontSize));
+        }, 0);
+        var available = cellWidth - 5 * MM;
+        if (maxWordWidth > available) {
+            fontSize = Math.max(7.2, fontSize * available / maxWordWidth);
+        }
+        return {
+            columns: columns,
+            rows: Math.max(words.length <= 5 ? 2 : 1, Math.ceil(words.length / columns)),
+            fontSize: fontSize
+        };
+    }
+
+    function drawWordGrid(commands, words, x, topY, width) {
+        words = (words || []).map(cleanText);
+        var layout = wordBankLayout(words, width);
+        var rowHeight = 8.6 * MM;
+        var height = layout.rows * rowHeight;
+        var cellWidth = width / layout.columns;
+
+        commands.push('q 0 G 0 g 0.45 w');
+        commands.push(rectCommand(x, topY - height, width, height));
+        for (var column = 1; column < layout.columns; column += 1) {
+            commands.push(lineCommand(x + column * cellWidth, topY, x + column * cellWidth, topY - height));
+        }
+        for (var row = 1; row < layout.rows; row += 1) {
+            commands.push(lineCommand(x, topY - row * rowHeight, x + width, topY - row * rowHeight));
+        }
+        words.forEach(function(word, index) {
+            var rowIndex = Math.floor(index / layout.columns);
+            var columnIndex = index % layout.columns;
+            commands.push(textCommand(
+                x + columnIndex * cellWidth + cellWidth / 2,
+                topY - rowIndex * rowHeight - rowHeight / 2 - layout.fontSize / 3,
+                word,
+                { size: layout.fontSize, align: 'center' }
+            ));
+        });
+        commands.push('Q');
+        return height;
+    }
+
+    function drawWordBank(commands, unit, group, x, topY, width) {
+        var ribbonWidth = 14.5 * MM;
+        var gridHeight = drawWordGrid(commands, group.wordList || [], x + ribbonWidth, topY, width - ribbonWidth);
+        var centerY = topY - gridHeight / 2;
+        commands.push(fillRectCommand(x, topY - gridHeight, ribbonWidth, gridHeight, 0));
+        commands.push('q 1 g');
+        commands.push(textCommand(x + ribbonWidth / 2, centerY + 4.4 * MM, 'SET', { font: 'F2', size: 7.2, align: 'center' }));
+        commands.push(textCommand(x + ribbonWidth / 2, centerY - 4.5 * MM, String(groupIndex(unit, group)), { font: 'F4', size: 20, align: 'center' }));
+        commands.push('Q');
+        return topY - gridHeight;
     }
 
     function drawQuestionTable(commands, group, x, topY, width) {
         var numberWidth = NUMBER_COLUMN_WIDTH;
-        var answerWidth = ANSWER_COLUMN_WIDTH;
-        var sentenceWidth = width - numberWidth - answerWidth;
+        var sentenceWidth = width - numberWidth;
         var headerHeight = 9 * MM;
         var questions = group.questions || [];
         var sentenceTextWidth = sentenceWidth - 8 * MM;
         var rows = questions.map(function(question, index) {
             var lines = wrapText(normalizePrompt(question.prompt || ''), sentenceTextWidth, 9.2);
             return {
-                number: String(index + 1),
+                number: String(question._worksheetNumber || question.number || index + 1),
                 lines: lines,
-                height: Math.max(12.8 * MM, lines.length * 11.2 + 7 * MM)
+                height: Math.max(14.6 * MM, lines.length * 11.2 + 7 * MM)
             };
         });
         var available = topY - BOTTOM_Y - headerHeight;
         var total = rows.reduce(function(sum, row) { return sum + row.height; }, 0);
         if (total > available && rows.length) {
-            var reduced = Math.max(10.8 * MM, available / rows.length);
+            var reduced = Math.max(12.8 * MM, available / rows.length);
             rows.forEach(function(row) { row.height = Math.min(row.height, reduced); });
         }
 
         commands.push('q 0 G 0 g 0.55 w');
         commands.push(rectCommand(x, topY - headerHeight, numberWidth, headerHeight));
         commands.push(rectCommand(x + numberWidth, topY - headerHeight, sentenceWidth, headerHeight));
-        commands.push(rectCommand(x + numberWidth + sentenceWidth, topY - headerHeight, answerWidth, headerHeight));
         commands.push(textCommand(x + numberWidth / 2, topY - 6 * MM, 'No.', { font: 'F2', size: 10, align: 'center' }));
         commands.push(textCommand(x + numberWidth + sentenceWidth / 2, topY - 6 * MM, 'Sentence', { font: 'F2', size: 10, align: 'center' }));
-        commands.push(textCommand(x + numberWidth + sentenceWidth + answerWidth / 2, topY - 6 * MM, 'Answer', { font: 'F2', size: 10, align: 'center' }));
 
         var y = topY - headerHeight;
         rows.forEach(function(row) {
             commands.push(rectCommand(x, y - row.height, numberWidth, row.height));
             commands.push(rectCommand(x + numberWidth, y - row.height, sentenceWidth, row.height));
-            commands.push(rectCommand(x + numberWidth + sentenceWidth, y - row.height, answerWidth, row.height));
             commands.push(textCommand(x + numberWidth / 2, y - row.height / 2 - 3, row.number, { size: 9.2, align: 'center' }));
             var textTop = y - 6 * MM;
             row.lines.forEach(function(line, lineIndex) {
@@ -274,18 +371,16 @@
         var x = CONTENT_X;
         var y = TOP_Y;
         var width = CONTENT_WIDTH;
-        drawFrame(commands, pageNumber, 'Mr. Cat Academy');
+        drawFrame(commands, pageNumber, options.shuffle ? 'Randomiser: ' + options.seed : 'Mr. Cat Academy');
 
-        commands.push(textCommand(x, y, String(groupIndex(unit, group)), { size: 10.3 }));
-        commands.push(textCommand(x + width, y, '(10 marks)', { font: 'F3', size: 9.3, align: 'right' }));
-        var instruction = groupTitle(unit, group) + '. Fill in each blank with ONE word from the box and write your answers in the Answer column.';
-        y = drawWrapped(commands, instruction, x + 8 * MM, y + 2, width - 23 * MM, { size: 10.2, leading: 13 });
-        if (options.shuffle) {
-            commands.push(textCommand(x + 8 * MM, y - 1.5 * MM, 'Randomiser: ' + options.seed, { font: 'F3', size: 8.8 }));
-            y -= 6 * MM;
-        }
-        y -= 7 * MM;
-        y = drawWordBank(commands, group, x, y, width);
+        commands.push(textCommand(x, y, cleanText(unit.id || 'Vocabulary'), { font: 'F2', size: 11.2 }));
+        drawInfoTags(commands, x, y, width);
+        commands.push('q 0 G 0 g 0.55 w');
+        commands.push(lineCommand(x, y - 7.2 * MM, x + width - 106 * MM, y - 7.2 * MM));
+        commands.push('Q');
+
+        y -= 29 * MM;
+        y = drawWordBank(commands, unit, group, x, y, width);
         y -= 8 * MM;
         drawQuestionTable(commands, group, x, y, width);
         return commands.join('\n');
@@ -297,13 +392,14 @@
         objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>';
         objects[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>';
         objects[5] = '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>';
+        objects[6] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
 
         var kids = [];
         pages.forEach(function(content, index) {
-            var contentId = 6 + index * 2;
+            var contentId = 7 + index * 2;
             var pageId = contentId + 1;
             objects[contentId] = '<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream';
-            objects[pageId] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + fmt(PAGE_WIDTH) + ' ' + fmt(PAGE_HEIGHT) + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents ' + contentId + ' 0 R >>';
+            objects[pageId] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + fmt(PAGE_WIDTH) + ' ' + fmt(PAGE_HEIGHT) + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents ' + contentId + ' 0 R >>';
             kids.push(pageId + ' 0 R');
         });
         objects[2] = '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + pages.length + ' >>';
