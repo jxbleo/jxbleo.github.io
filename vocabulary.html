@@ -405,11 +405,21 @@
 
         .worksheet-download-card {
             width: min(620px, 100%);
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             padding: 24px;
             border-radius: 22px;
             background: #fff;
             box-shadow: 0 24px 70px rgba(0,0,0,.24);
             animation: resultPop 320ms ease-out both;
+        }
+
+        .worksheet-download-overlay {
+            place-items: start center;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .worksheet-download-card h2 {
@@ -453,7 +463,12 @@
             margin-top: 14px;
         }
 
+        .worksheet-set-row {
+            align-items: center;
+        }
+
         .worksheet-custom-label {
+            flex: 0 0 auto;
             font-size: 0.82rem;
             font-weight: 900;
             color: #0f5f57;
@@ -464,8 +479,10 @@
             display: flex;
             flex-wrap: nowrap;
             align-items: center;
+            flex: 1 1 auto;
+            min-width: 0;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 0;
             padding: 2px 2px 8px;
             overflow-x: auto;
             overflow-y: hidden;
@@ -1723,6 +1740,7 @@
             }
 
             .worksheet-download-card {
+                max-height: calc(100dvh - 24px);
                 padding: 20px 16px;
             }
 
@@ -1733,6 +1751,11 @@
             .worksheet-custom-row {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .worksheet-set-row {
+                align-items: center;
+                flex-direction: row;
             }
 
             .worksheet-custom-actions {
@@ -2571,7 +2594,7 @@
                 : String(Math.random()).slice(2, 8).toUpperCase();
 
             var overlay = document.createElement('div');
-            overlay.className = 'test-confirm-overlay';
+            overlay.className = 'test-confirm-overlay worksheet-download-overlay';
             overlay.setAttribute('role', 'dialog');
             overlay.setAttribute('aria-modal', 'true');
             overlay.innerHTML =
@@ -2582,8 +2605,10 @@
                         '<button class="btn btn-secondary" type="button" data-worksheet-download-dialog="customise">Customise</button>' +
                     '</div>' +
                     '<div class="worksheet-custom-panel" data-worksheet-custom-panel hidden>' +
-                        '<div class="worksheet-custom-label">Groups</div>' +
-                        '<div class="worksheet-group-grid" data-worksheet-group-grid></div>' +
+                        '<div class="worksheet-custom-row worksheet-set-row">' +
+                            '<div class="worksheet-custom-label">Set</div>' +
+                            '<div class="worksheet-group-grid" data-worksheet-group-grid></div>' +
+                        '</div>' +
                         '<div class="worksheet-custom-row">' +
                             '<div class="worksheet-custom-label">Shuffle</div>' +
                             '<button class="worksheet-toggle" type="button" data-worksheet-shuffle aria-pressed="false" aria-label="Shuffle"></button>' +
@@ -2620,7 +2645,7 @@
                     groups.map(function(group, index) {
                         var active = selectedIds.has(group.id);
                         return '<button class="worksheet-group-chip ' + (active ? 'active' : '') + '" type="button" data-worksheet-group="' + escapeHtml(group.id) + '" aria-pressed="' + (active ? 'true' : 'false') + '">' +
-                            'Set ' + escapeHtml(String(index + 1)) +
+                            escapeHtml(String(index + 1)) +
                         '</button>';
                     }).join('');
                 if (downloadButton) downloadButton.disabled = selectedIds.size === 0;
