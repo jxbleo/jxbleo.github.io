@@ -47,10 +47,10 @@ Assignments display:
 - open `TO DO` assignments directly
 - a small bottom `Finished` completion button for completed work
 - the top student billboard is a progress board rather than a pure welcome
-  panel. It keeps a fixed two-part copy structure: one randomly selected
-  English greeting that includes the student's English name, followed by one
-  randomly selected motivational sentence. These lines should wrap naturally
-  instead of being squeezed into one row. The old three summary cards are
+  panel. It keeps one short randomly selected English greeting that includes
+  the student's English name; the greeting should stay on one line unless the
+  viewport is too narrow. A smaller randomly selected motivational sentence
+  appears below it. The old three summary cards are
   replaced by one completion progress bar with the `Finished / total` value
   centered above the bar, and `Finished` on the lower-left plus To do on the
   lower-right as compact supporting metadata. The board shows the current

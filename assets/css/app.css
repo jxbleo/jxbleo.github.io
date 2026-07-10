@@ -647,7 +647,6 @@ button { cursor: pointer; }
     line-height: 1.02;
     letter-spacing: 0;
     overflow-wrap: break-word;
-    text-wrap: balance;
 }
 .student-progress-hero p {
     max-width: 760px;
