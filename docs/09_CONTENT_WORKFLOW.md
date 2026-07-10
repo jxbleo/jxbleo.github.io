@@ -270,9 +270,11 @@ Rules to preserve:
   and no-answer practice content before publishing.
 - The `Download Practice` `Customise` path uses
   `assets/js/vocabulary-worksheet-pdf.js` to generate selected-group or
-  shuffled worksheets in the browser. Keep that browser PDF generator visually
-  aligned with the static ReportLab practice worksheet style whenever the paper
-  layout changes.
+  shuffled worksheets in the browser. Its group picker should show one
+  horizontal scrolling row of `Set 1`, `Set 2`, and so on, while shuffle uses a
+  hidden seed rather than exposing a Randomiser control. Keep that browser PDF
+  generator visually aligned with the static ReportLab practice worksheet style
+  whenever the paper layout changes.
 
 Personal saved words are not content imports. They belong to
 `student_vocabulary_items` through the `studentVocabulary` cloud function.

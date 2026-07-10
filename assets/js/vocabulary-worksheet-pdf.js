@@ -371,7 +371,7 @@
         var x = CONTENT_X;
         var y = TOP_Y;
         var width = CONTENT_WIDTH;
-        drawFrame(commands, pageNumber, options.shuffle ? 'Randomiser: ' + options.seed : 'Mr. Cat Academy');
+        drawFrame(commands, pageNumber, 'Mr. Cat Academy');
 
         commands.push(textCommand(x, y, cleanText(unit.id || 'Vocabulary'), { font: 'F2', size: 11.2 }));
         drawInfoTags(commands, x, y, width);
@@ -438,7 +438,7 @@
     function filenameFor(options) {
         var unit = options.unit || {};
         var id = cleanText(unit.id || 'vocabulary');
-        if (options.shuffle) return id + '-practice-random-' + cleanText(options.seed || '').toUpperCase() + '.pdf';
+        if (options.shuffle) return id + '-practice-shuffled.pdf';
         return id + '-practice-custom.pdf';
     }
 

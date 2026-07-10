@@ -296,8 +296,8 @@ Trade-offs:
   for custom worksheet downloads.
 - Good: static all-groups and single-group PDFs remain available for the common
   non-shuffled cases.
-- Good: shuffled worksheets can show a randomiser seed while keeping group
-  numbers and group order stable.
+- Good: shuffled worksheets use a hidden randomiser seed so the dialog stays
+  simple while selected groups and group order remain stable.
 - Cost: the local browser generator duplicates the public no-answer worksheet
   layout used by the Python ReportLab source, so visual worksheet changes must
   be mirrored in both implementations.
