@@ -53,8 +53,10 @@ Assignments display:
   across the top and `Wxx` week labels on the left. The visual treatment should
   match the login/home page's pale green paper-and-glass style, not a dark
   cockpit panel. On desktop and tablet, the grid sits on the left half of the
-  same progress panel and the selected day's completion details sit on the
-  right half; on mobile the same panel stacks the grid above the details.
+  same progress panel and uses the available width generously so it does not
+  feel like a small inset widget; the selected day's completion details sit on
+  the right half. On mobile the same panel stacks the grid above the details,
+  and the grid should adapt to nearly the full screen width.
   Clicking a day square changes the detail pane to show only completed
   assignment/self-study task items for that date, without an extra date
   heading, count summary, or separate color legend.
