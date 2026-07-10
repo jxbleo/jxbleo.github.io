@@ -309,80 +309,24 @@
             : fullName;
     }
 
-    function shanghaiHour() {
-        var parts = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Asia/Shanghai',
-            hour: '2-digit',
-            hourCycle: 'h23'
-        }).formatToParts(new Date());
-        var hourPart = parts.find(function(part) { return part.type === 'hour'; });
-        return Number(hourPart ? hourPart.value : 12);
-    }
-
     function greetingFor(name) {
-        var hour = shanghaiHour();
-        var timeGreetings = hour < 12
-            ? [
-                'Good morning, {name}.',
-                'A fresh morning, {name}.',
-                'Morning, {name}. Ready to begin?',
-                'Rise and shine, {name}.',
-                'A new morning is here, {name}.',
-                'Good morning, {name}. Let us start strong.',
-                'Morning, {name}. One calm step first.'
-            ]
-            : hour < 18
-                ? [
-                    'Good afternoon, {name}.',
-                    'A bright afternoon, {name}.',
-                    'Afternoon, {name}. Let us keep moving.',
-                    'Good afternoon, {name}. Your next task is ready.',
-                    'A steady afternoon, {name}.',
-                    'Afternoon, {name}. Time for one useful step.',
-                    'Good to see you this afternoon, {name}.'
-                ]
-                : [
-                    'Good evening, {name}.',
-                    'A calm evening, {name}.',
-                    'Evening, {name}. One more step forward.',
-                    'Good evening, {name}. Let us finish with care.',
-                    'A quiet evening for progress, {name}.',
-                    'Evening, {name}. Your effort still counts.',
-                    'Good to see you tonight, {name}.'
-                ];
-        var flexibleGreetings = [
+        var greetings = [
+            'Hi, {name}.',
+            'Hello, {name}.',
             'Welcome back, {name}.',
-            'Great to see you, {name}.',
-            'Ready when you are, {name}.',
-            'Let us make some progress, {name}.',
-            'Here we go, {name}.',
-            'Your next win starts here, {name}.',
-            'Let us build on yesterday, {name}.',
-            'A new chance to grow, {name}.',
-            'Good to have you here, {name}.',
-            'Let us get started, {name}.',
-            'Keep the momentum going, {name}.',
-            'Today has possibilities, {name}.',
+            'Good to see you, {name}.',
+            'Nice to see you, {name}.',
+            'Glad you are here, {name}.',
+            'Here you are, {name}.',
+            'Welcome, {name}.',
+            'Let us begin, {name}.',
+            'Keep going, {name}.',
+            'Start here, {name}.',
             'One step at a time, {name}.',
-            'You are back, {name}. Let us do this.',
-            'Ready for something new, {name}?',
-            'Let us make today useful, {name}.',
-            'Your learning space is ready, {name}.',
-            'Back to the next step, {name}.',
-            'You have got this, {name}.',
-            'Let us keep building, {name}.',
-            'A little progress today, {name}.',
-            'The next win is waiting, {name}.',
-            'Take your time and begin, {name}.',
-            'Good energy today, {name}.',
-            'Your next challenge is here, {name}.',
-            'Let us turn effort into progress, {name}.',
-            'Start small and stay steady, {name}.',
-            'Ready to grow a little more, {name}?',
-            'Let us focus in, {name}.',
-            'A good session can start now, {name}.'
+            'Back to learning, {name}.',
+            'Your next step, {name}.'
         ];
-        return randomItem(timeGreetings.concat(flexibleGreetings)).replace('{name}', name);
+        return randomItem(greetings).replace('{name}', name);
     }
 
     function normalizedStatus(status) {
