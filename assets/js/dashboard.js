@@ -257,14 +257,6 @@
         return 1 + Math.round((target.getTime() - firstThursday.getTime()) / 604800000);
     }
 
-    function formatProgressDayTitle(date) {
-        return new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'UTC',
-            month: 'short',
-            day: 'numeric'
-        }).format(date);
-    }
-
     function randomItem(items) {
         return items[Math.floor(Math.random() * items.length)];
     }
@@ -1125,12 +1117,7 @@
 
     function renderProgressDetail(day) {
         if (!day) return '';
-        var weekDay = day.weekLabel + ' · ' + day.dayLabel;
-        var title = weekDay + ' · ' + formatProgressDayTitle(day.date);
         var count = day.items.length;
-        var summary = count
-            ? count + ' finished item' + (count === 1 ? '' : 's') + ' recorded.'
-            : (day.isFuture ? 'Upcoming day.' : 'No finished work recorded.');
         var body = count
             ? day.items.map(function(item) {
                 return '<article class="progress-detail-task">' +
@@ -1143,10 +1130,6 @@
             }).join('')
             : '<div class="progress-detail-empty">' + escapeHtml(day.isFuture ? 'Planned work will appear here after it is completed.' : 'A blank day is fine. The next practice session can start a new streak.') + '</div>';
         return '<section class="progress-detail-panel" aria-live="polite">' +
-            '<div>' +
-                '<h2>' + escapeHtml(title) + '</h2>' +
-                '<p>' + escapeHtml(summary) + '</p>' +
-            '</div>' +
             '<div class="progress-detail-list">' + body + '</div>' +
         '</section>';
     }
@@ -1165,7 +1148,7 @@
                         '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
                     '</div>' +
                 '</section>' +
-                '<section class="progress-detail-panel"><div><h2>Visitor mode</h2><p>Progress appears after login.</p></div><div class="progress-detail-empty">Log in to keep assignment history and STAR records.</div></section>';
+                '<section class="progress-detail-panel"><div class="progress-detail-list"><div class="progress-detail-empty">Log in to keep assignment history and STAR records.</div></div></section>';
             return;
         }
 
@@ -1187,11 +1170,6 @@
                     '<span></span>' +
                     model.weekdayLabels.map(function(label) { return '<span class="progress-day-label">' + escapeHtml(label) + '</span>'; }).join('') +
                     cells +
-                '</div>' +
-                '<div class="progress-map-legend">' +
-                    '<span><i class="progress-dot l1"></i>1</span>' +
-                    '<span><i class="progress-dot l3"></i>2+</span>' +
-                    '<span><i class="progress-dot star"></i>STAR</span>' +
                 '</div>' +
             '</section>' +
             renderProgressDetail(model.selected);
