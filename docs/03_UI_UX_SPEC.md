@@ -50,11 +50,14 @@ Assignments display:
   panel. It keeps the greeting, but its supporting copy summarizes finished
   work this week and waiting assignments. The board shows the current week plus
   the previous three weeks as a compact GitHub-style grid with weekday labels
-  across the top and `Wxx` week labels on the left. On desktop and tablet, the
-  grid sits on the left half of the same dark progress panel and the selected
-  day's completion details sit on the right half; on mobile the same panel
-  stacks the grid above the details. Clicking a day square changes the detail
-  pane to show completed assignment/self-study items for that date.
+  across the top and `Wxx` week labels on the left. The visual treatment should
+  match the login/home page's pale green paper-and-glass style, not a dark
+  cockpit panel. On desktop and tablet, the grid sits on the left half of the
+  same progress panel and the selected day's completion details sit on the
+  right half; on mobile the same panel stacks the grid above the details.
+  Clicking a day square changes the detail pane to show only completed
+  assignment/self-study task items for that date, without an extra date
+  heading, count summary, or separate color legend.
 - the main `Assignments` / `My Words` / `Library` capsule and the student
   Library `Practice` / `Exam` capsule use a soft translucent glass treatment
   with subtle rainbow active states
