@@ -68,8 +68,12 @@ Assignment access and progress display:
   width. Clicking a day square changes the detail pane to show only completed
   assignment/self-study task items for that date; clicking a `Wxx` label shows
   all completed task items for that week. Each completed-task capsule in the
-  selected day/week detail opens the shared practice-entry confirmation and can
-  re-enter that task. Blank days or blank weeks keep the
+  student board and the Teacher View `By student` monthly board uses the same
+  task-detail hierarchy as the teacher matrix: the full wrapping task title is
+  the largest element, while task type and best percentage share one compact
+  right-aligned metadata group. Tablet layouts must not truncate the title.
+  Each completed-task capsule in the selected day/week detail opens the shared
+  practice-entry confirmation and can re-enter that task. Blank days or blank weeks keep the
   reserved detail area but do not show an empty-state text field. While dashboard
   data is loading, the progress meter and four-week board reserve their final
   space with a lightweight loading skeleton.

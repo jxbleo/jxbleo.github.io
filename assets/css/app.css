@@ -895,13 +895,13 @@ button.progress-dot.active {
 }
 .progress-detail-task {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: 10px;
-    align-items: center;
-    min-height: 54px;
-    padding: 10px 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: start;
+    min-height: 64px;
+    padding: 13px 14px;
     border: 1px solid rgba(19,118,109,0.1);
-    border-radius: 999px;
+    border-radius: 16px;
     background: rgba(255,255,255,0.68);
     box-shadow: 0 8px 20px rgba(19, 118, 109, 0.06);
 }
@@ -919,23 +919,32 @@ button.progress-dot.active {
 }
 .progress-detail-task strong {
     display: block;
+    grid-column: 1 / -1;
     min-width: 0;
-    overflow: hidden;
+    overflow-wrap: anywhere;
     color: var(--ink);
-    font-size: 0.92rem;
-    line-height: 1.2;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 950;
+    line-height: 1.32;
+}
+.progress-task-meta {
+    display: inline-flex;
+    grid-column: 2;
+    align-items: center;
+    justify-content: flex-end;
+    justify-self: end;
+    flex-wrap: nowrap;
+    gap: 6px;
 }
 .progress-task-type,
 .progress-task-score {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 28px;
-    padding: 5px 9px;
+    min-height: 26px;
+    padding: 4px 8px;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 950;
     white-space: nowrap;
 }
@@ -6113,17 +6122,21 @@ body:not(.teacher-page) .tab-button.active {
     }
     .progress-detail-task {
         grid-template-columns: minmax(0, 1fr) auto;
-        justify-items: start;
-        border-radius: 18px;
+        gap: 8px;
+        padding: 11px 12px;
+        border-radius: 14px;
     }
-    .progress-task-type {
-        grid-column: 1;
-        justify-self: start;
+    .progress-detail-task strong {
+        font-size: 0.94rem;
     }
+    .progress-task-meta {
+        align-self: end;
+    }
+    .progress-task-type,
     .progress-task-score {
-        grid-column: 2;
-        grid-row: 2;
-        justify-self: end;
+        min-height: 24px;
+        padding: 3px 7px;
+        font-size: 0.64rem;
     }
     .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .revise-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
