@@ -4830,8 +4830,7 @@
     }
 
     function initialTeacherView() {
-        var view = new URLSearchParams(window.location.search).get('view') || '';
-        return teacherViews.indexOf(view) === -1 ? 'view' : view;
+        return 'view';
     }
 
     function rememberTeacherView(viewName) {
