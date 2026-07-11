@@ -41,6 +41,7 @@
         matrixDateFilter: 'all',
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
+        matrixStudentProgressSelections: {},
         selectedMatrixReviewAttemptId: '',
         selectedProgressDetailKey: '',
         matrixInitialRevealPending: true,
@@ -3525,6 +3526,167 @@
         };
     }
 
+    function matrixStudentProgressItems(studentKey, fallbackItems) {
+        var source = state.progressItems.length ? state.progressItems : (fallbackItems || []);
+        return source.filter(function(item) {
+            return matrixStudentKey(item) === studentKey &&
+                normalizedAssignmentStatus(item.status) !== 'cancelled';
+        });
+    }
+
+    function matrixStudentCompletionDate(item) {
+        if (!item || !isFinishedAssignmentStatus(normalizedAssignmentStatus(item.status))) return null;
+        var value = item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
+        var date = value ? new Date(value) : null;
+        return date && !isNaN(date.getTime()) ? date : null;
+    }
+
+    function matrixStudentProgressDate(parts) {
+        return new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+    }
+
+    function matrixStudentProgressKey(parts) {
+        return parts.year + '-' + String(parts.month).padStart(2, '0') + '-' + String(parts.day).padStart(2, '0');
+    }
+
+    function matrixStudentIsoWeekNumber(parts) {
+        var target = matrixStudentProgressDate(parts);
+        var dayNumber = (target.getUTCDay() + 6) % 7;
+        target.setUTCDate(target.getUTCDate() - dayNumber + 3);
+        var firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+        var firstDayNumber = (firstThursday.getUTCDay() + 6) % 7;
+        firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNumber + 3);
+        return 1 + Math.round((target.getTime() - firstThursday.getTime()) / 604800000);
+    }
+
+    function matrixStudentProgressModel(studentKey, items) {
+        var today = shanghaiDateParts(new Date());
+        if (!today) return { days: [], weeks: [], selected: null, weekdayLabels: [] };
+        var mondayOffset = -((shanghaiWeekday(today) + 6) % 7);
+        var currentWeekStart = addShanghaiDays(today, mondayOffset);
+        var firstWeekStart = addShanghaiDays(currentWeekStart, -21);
+        var todayKey = matrixStudentProgressKey(today);
+        var days = [];
+        var daysByKey = {};
+        var weeks = [];
+        var weeksByKey = {};
+        var weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        for (var weekIndex = 0; weekIndex < 4; weekIndex++) {
+            var weekParts = addShanghaiDays(firstWeekStart, weekIndex * 7);
+            var weekStartKey = matrixStudentProgressKey(weekParts);
+            var weekKey = 'week:' + weekStartKey;
+            var week = {
+                key: weekKey,
+                weekLabel: 'W' + matrixStudentIsoWeekNumber(weekParts),
+                days: [],
+                items: []
+            };
+            weeks.push(week);
+            weeksByKey[weekKey] = week;
+            for (var dayIndex = 0; dayIndex < 7; dayIndex++) {
+                var parts = addShanghaiDays(weekParts, dayIndex);
+                var key = matrixStudentProgressKey(parts);
+                var day = {
+                    key: key,
+                    weekKey: weekKey,
+                    weekLabel: week.weekLabel,
+                    dayLabel: weekdayLabels[dayIndex],
+                    items: [],
+                    isFuture: key > todayKey
+                };
+                days.push(day);
+                week.days.push(day);
+                daysByKey[key] = day;
+            }
+        }
+
+        (items || []).forEach(function(item) {
+            var date = matrixStudentCompletionDate(item);
+            var parts = date && shanghaiDateParts(date);
+            var key = parts && matrixStudentProgressKey(parts);
+            if (!key || !daysByKey[key]) return;
+            daysByKey[key].items.push(item);
+        });
+
+        days.forEach(function(day) {
+            day.items.sort(function(left, right) {
+                return matrixStudentCompletionDate(right).getTime() - matrixStudentCompletionDate(left).getTime();
+            });
+            day.hasStar = day.items.some(function(item) {
+                return normalizedAssignmentStatus(item.status) === 'mastered' || item.star_claimed === true;
+            });
+            day.level = Math.min(4, day.items.length);
+        });
+        weeks.forEach(function(week) {
+            week.items = week.days.reduce(function(result, day) {
+                return result.concat(day.items);
+            }, []).sort(function(left, right) {
+                return matrixStudentCompletionDate(right).getTime() - matrixStudentCompletionDate(left).getTime();
+            });
+        });
+
+        var selectedKey = state.matrixStudentProgressSelections[studentKey] || '';
+        var selected = weeksByKey[selectedKey] || daysByKey[selectedKey] || daysByKey[todayKey] || days[days.length - 1];
+        state.matrixStudentProgressSelections[studentKey] = selected ? selected.key : '';
+        return {
+            days: days,
+            weeks: weeks,
+            selected: selected,
+            weekdayLabels: weekdayLabels
+        };
+    }
+
+    function renderMatrixStudentProgressTask(item) {
+        var source = matrixColumnSource(item);
+        var kind = matrixColumnLabel(matrixColumnKey(item), item);
+        return '<article class="progress-detail-task matrix-student-progress-task">' +
+            '<strong>' + escapeHtml(item.set_title || source.title || setTitleFor(item.set_id) || item.set_id || 'Task') + '</strong>' +
+            '<span class="progress-task-type">' + escapeHtml(kind || 'Practice') + '</span>' +
+            '<span class="progress-task-score">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
+        '</article>';
+    }
+
+    function renderMatrixStudentProgressBoard(studentKey, items) {
+        var model = matrixStudentProgressModel(studentKey, items);
+        var cells = '';
+        model.days.forEach(function(day, index) {
+            if (index % 7 === 0) {
+                var week = model.weeks[index / 7];
+                var weekClasses = ['progress-week-label', 'progress-week-button'];
+                if (week && model.selected && week.key === model.selected.key) weekClasses.push('active');
+                cells += '<button class="' + weekClasses.join(' ') + '" type="button" data-matrix-student-progress-week="' +
+                    escapeHtml(week ? week.key : '') + '" aria-label="' +
+                    escapeHtml((week ? week.weekLabel : day.weekLabel) + ', ' + (week ? week.items.length : 0) + ' finished this week') + '">' +
+                    escapeHtml(week ? week.weekLabel : day.weekLabel) + '</button>';
+            }
+            var classes = ['progress-dot'];
+            if (day.level) classes.push('l' + day.level);
+            if (day.hasStar) classes.push('star');
+            if (day.isFuture) classes.push('future');
+            if (model.selected && day.key === model.selected.key) classes.push('active');
+            cells += '<button class="' + classes.join(' ') + '" type="button" data-matrix-student-progress-day="' +
+                escapeHtml(day.key) + '" aria-label="' + escapeHtml(day.weekLabel + ' ' + day.dayLabel + ', ' + day.items.length + ' finished') + '"></button>';
+        });
+        var detail = model.selected && model.selected.items.length
+            ? model.selected.items.map(renderMatrixStudentProgressTask).join('')
+            : '';
+        return '<div class="progress-board matrix-student-progress-board">' +
+            '<section class="progress-map-panel">' +
+                '<div class="progress-dot-map" aria-label="Recent assignment progress">' +
+                    '<span></span>' +
+                    model.weekdayLabels.map(function(label) {
+                        return '<span class="progress-day-label">' + escapeHtml(label) + '</span>';
+                    }).join('') +
+                    cells +
+                '</div>' +
+            '</section>' +
+            '<section class="progress-detail-panel" aria-live="polite">' +
+                '<div class="progress-detail-list">' + detail + '</div>' +
+            '</section>' +
+        '</div>';
+    }
+
     function renderMatrixStudentTimeline(items) {
         var sorted = items.slice().sort(function(a, b) {
             return new Date(assignmentSortDate(b) || 0) - new Date(assignmentSortDate(a) || 0) ||
@@ -3553,18 +3715,19 @@
 
     function renderMatrixStudentModal(studentKey, items) {
         if (!studentKey) return '';
-        var studentItems = (items || []).filter(function(item) {
+        var matrixItems = (items || []).filter(function(item) {
             return matrixStudentKey(item) === studentKey;
         });
-        if (!studentItems.length) return '';
-        var sample = studentItems[0];
+        var studentItems = matrixStudentProgressItems(studentKey, items);
+        if (!matrixItems.length && !studentItems.length) return '';
+        var sample = matrixItems[0] || studentItems[0];
         var name = matrixStudentName(sample);
         var studentId = matrixStudentId(sample);
         var className = matrixStudentClass(sample) || 'Individual';
         var metrics = matrixStudentOverviewMetrics(studentItems);
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
             '<div class="progress-matrix-modal-shell">' +
-                '<section class="progress-matrix-modal matrix-student-modal" role="dialog" aria-modal="true" aria-label="Student progress timeline">' +
+                '<section class="progress-matrix-modal matrix-student-modal" role="dialog" aria-modal="true" aria-label="Student monthly progress">' +
                     '<div class="progress-matrix-modal-scroll">' +
                         '<div class="matrix-student-overview">' +
                             '<div class="matrix-student-identity">' +
@@ -3578,7 +3741,7 @@
                                 '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
                             '</div>' +
                         '</div>' +
-                        renderMatrixStudentTimeline(studentItems) +
+                        renderMatrixStudentProgressBoard(studentKey, studentItems) +
                     '</div>' +
                     '<div class="matrix-modal-actions">' +
                         '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
@@ -3822,6 +3985,18 @@
                 state.selectedProgressDetailKey = '';
                 state.targetMatrixAttemptId = '';
                 state.selectedMatrixReviewAttemptId = '';
+                renderAssignmentOverview();
+                restoreMatrixScroll(scrollSnapshot);
+            });
+        });
+        container.querySelectorAll('[data-matrix-student-progress-day], [data-matrix-student-progress-week]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                var key = button.dataset.matrixStudentProgressDay || button.dataset.matrixStudentProgressWeek || '';
+                var studentKey = state.selectedMatrixStudentKey || '';
+                if (!key || !studentKey) return;
+                var scrollSnapshot = matrixScrollSnapshot(container);
+                state.matrixStudentProgressSelections[studentKey] = key;
                 renderAssignmentOverview();
                 restoreMatrixScroll(scrollSnapshot);
             });

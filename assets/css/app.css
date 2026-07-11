@@ -3149,6 +3149,23 @@ body:not(.teacher-page) .tab-button.active {
     padding-bottom: 14px;
     border-bottom: 1px solid rgba(31,45,38,0.09);
 }
+.matrix-student-progress-board {
+    margin-top: 16px;
+    border-color: rgba(19,118,109,0.12);
+    background:
+        radial-gradient(circle at 18% 0%, rgba(255,255,255,0.9), transparent 35%),
+        linear-gradient(145deg, rgba(242,251,246,0.96), rgba(226,245,237,0.9));
+    box-shadow: 0 16px 38px rgba(19,118,109,0.1);
+}
+.matrix-student-progress-board .progress-map-panel,
+.matrix-student-progress-board .progress-detail-panel {
+    min-height: 270px;
+    padding: 20px;
+}
+.matrix-student-progress-task {
+    width: 100%;
+    text-align: left;
+}
 .matrix-student-identity {
     display: flex;
     align-items: center;
@@ -6065,6 +6082,11 @@ body:not(.teacher-page) .tab-button.active {
     }
     .progress-map-panel,
     .progress-detail-panel {
+        min-height: 0;
+        padding: 10px;
+    }
+    .matrix-student-progress-board .progress-map-panel,
+    .matrix-student-progress-board .progress-detail-panel {
         min-height: 0;
         padding: 10px;
     }
