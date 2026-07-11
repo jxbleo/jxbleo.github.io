@@ -93,6 +93,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   `a`、`I` 等单字母词；访客和教师预览不能保存
 - 从铃铛右边的笔记本图标打开独立 My Words 生词本弹窗；关闭后再次打开时
   恢复到上次的滚动位置
+- 保存生词后立即看到已保存状态；系统随后自动补充词性、音标和释义，词典
+  查询不能阻塞或撤销已经成功的保存
 
 ### 3.3 访客
 
@@ -463,6 +465,19 @@ flowchart TD
 - 浏览器不能直接写数据库
 - 访客和老师预览不能保存个人词汇
 - 这类数据不属于 assignment、attempt 或 grading key
+- 已有共享词条直接显示中英文释义、词性和音标；未知词以 pending 状态保存，
+  后端查询完成后自动更新
+
+### 7.9a vocabulary_lexicon
+
+用途：所有学生共享的词典缓存。
+
+规则：
+
+- 优先使用项目已有 Vocabulary 课程词条和可选 ECDICT 高频词库
+- 只有共享词库未命中时才由 `studentVocabulary` 后端调用外部英文词典
+- 同一个 normalized word 的外部结果只缓存一次，不能按学生重复调用
+- 外部词典密钥或访问逻辑不得放在浏览器；词典失败不能影响个人生词保存
 
 ### 7.10 vocabulary_test_sessions
 
@@ -611,6 +626,8 @@ flowchart TD
 - 不允许 teacher 和 visitor
 - 所有权来自 authenticated UID
 - 一个学生重复保存同一 normalized text 时增加次数，不创建重复记录
+- `add` 先完成个人词条保存并返回；`enrich` 自动补充共享词典信息
+- 外部查询超时或失败时保留 pending 状态并延迟重试，不能无限即时重试
 
 ### 8.8 resetStudentPassword
 

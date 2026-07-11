@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
+const { spawnSync } = require("child_process");
 
 const projectRoot = path.resolve(__dirname, "..");
 const outputRoot = path.resolve(process.argv[2] || path.join(projectRoot, ".cloudbase-private"));
@@ -44,6 +46,87 @@ function listJson(dirPath) {
     .filter((name) => name.endsWith(".json"))
     .sort()
     .map((name) => path.join(dirPath, name));
+}
+
+function normalizeLexiconText(value) {
+  return String(value == null ? "" : value)
+    .normalize("NFKC")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function cleanLexiconText(value) {
+  return String(value == null ? "" : value)
+    .replace(/<br\s*\/?>/gi, "; ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s*;\s*/g, "; ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function lexiconId(normalizedWord) {
+  return `lex_${crypto.createHash("sha256").update(normalizedWord).digest("hex").slice(0, 32)}`;
+}
+
+function addCuratedLexiconWords(lexiconMap, unit) {
+  (unit.words || []).forEach((entry) => {
+    const normalizedWord = normalizeLexiconText(entry.word);
+    if (!normalizedWord) return;
+    const source = String(unit.sourceName || unit.id || "Mr. Cat Academy").trim();
+    const candidate = {
+      lexicon_id: lexiconId(normalizedWord),
+      normalized_word: normalizedWord,
+      word: String(entry.word || "").trim(),
+      phonetic: cleanLexiconText(entry.phonetic || entry.ipa || ""),
+      part_of_speech: cleanLexiconText(entry.partOfSpeech || ""),
+      english_definition: cleanLexiconText(entry.simpleDefinition || entry.definition || ""),
+      chinese_meaning: cleanLexiconText(entry.meaning || entry.translation || ""),
+      word_forms: cleanLexiconText(entry.wordForms || ""),
+      emoji: cleanLexiconText(entry.emoji || ""),
+      sources: source ? [source] : [],
+      source_type: "curated",
+      verified: true,
+      lexicon_version: "2026-07-12",
+    };
+    const existing = lexiconMap.get(normalizedWord);
+    if (!existing) {
+      lexiconMap.set(normalizedWord, candidate);
+      return;
+    }
+    ["phonetic", "part_of_speech", "english_definition", "chinese_meaning", "word_forms", "emoji"].forEach((field) => {
+      if (!existing[field] && candidate[field]) existing[field] = candidate[field];
+    });
+    candidate.sources.forEach((item) => {
+      if (item && !existing.sources.includes(item)) existing.sources.push(item);
+    });
+  });
+}
+
+function prepareVocabularyLexicon(records) {
+  const finalPath = path.join(privateRoot, "vocabulary-lexicon-cloudbase.json");
+  const ecdictSource = String(process.env.ECDICT_SOURCE || "").trim();
+  if (!ecdictSource) {
+    writeJsonLines(finalPath, records);
+    return records.length;
+  }
+
+  const curatedPath = path.join(outputRoot, "vocabulary-lexicon-curated.jsonl");
+  writeJsonLines(curatedPath, records);
+  const helper = path.join(projectRoot, "scripts", "prepare-ecdict-lexicon.py");
+  const result = spawnSync("python3", [
+    helper,
+    "--source", ecdictSource,
+    "--curated", curatedPath,
+    "--output", finalPath,
+    "--limit", String(process.env.ECDICT_LIMIT || "30000"),
+  ], { cwd: projectRoot, encoding: "utf8", maxBuffer: 1024 * 1024 * 20 });
+  if (result.status !== 0) {
+    throw new Error(`ECDICT preparation failed: ${(result.stderr || result.stdout || "unknown error").trim()}`);
+  }
+  const count = fs.readFileSync(finalPath, "utf8").split(/\r?\n/).filter(Boolean).length;
+  if (result.stdout.trim()) console.log(result.stdout.trim());
+  return count;
 }
 
 function withoutPrivateFields(value) {
@@ -254,6 +337,7 @@ function buildSet(meta, overrides = {}) {
 function main() {
   const sets = [];
   const gradingKeys = [];
+  const vocabularyLexicon = new Map();
 
   listJson(path.join(projectRoot, "data"))
     .filter((filePath) => /^BBC-/.test(path.basename(filePath)))
@@ -302,6 +386,7 @@ function main() {
 
   listJson(path.join(projectRoot, "content", "vocabulary")).forEach((filePath) => {
     const source = readJson(filePath);
+    addCuratedLexiconWords(vocabularyLexicon, source);
     const extracted = extractVocabulary(source, privateSourceFor("vocabulary", source.id));
     sets.push(buildSet(source, { type: "vocabulary", course: source.sourceName || "Vocabulary" }));
     gradingKeys.push(extracted.gradingKey);
@@ -331,8 +416,13 @@ function main() {
   writeJsonLines(path.join(privateRoot, "grading-keys-cloudbase.json"), gradingKeys);
   writeJsonLines(path.join(privateRoot, "system-config-cloudbase.json"), systemConfig);
 
+  const vocabularyLexiconCount = prepareVocabularyLexicon(
+    Array.from(vocabularyLexicon.values()).sort((left, right) => left.normalized_word.localeCompare(right.normalized_word))
+  );
+
   console.log(`Prepared ${sets.length} sets`);
   console.log(`Prepared ${gradingKeys.length} private grading keys`);
+  console.log(`Prepared ${vocabularyLexiconCount} shared vocabulary lexicon entries`);
   console.log(`Output: ${outputRoot}`);
   console.log("Do not commit the output directory.");
 }

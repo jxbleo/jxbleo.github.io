@@ -42,6 +42,7 @@ All project collections should remain `ADMINONLY`:
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
+- `vocabulary_lexicon`
 - `vocabulary_test_sessions`
 
 Recommended unique indexes where supported:
@@ -51,6 +52,8 @@ Recommended unique indexes where supported:
 - `grading_key_history.history_id`
 - `student_vocabulary_items.vocab_id`
 - `student_vocabulary_items.student_uid + normalized_text`
+- `vocabulary_lexicon.lexicon_id`
+- `vocabulary_lexicon.normalized_word`
 - `vocabulary_test_sessions.test_session_id`
 
 Recommended query index:
@@ -59,6 +62,22 @@ Recommended query index:
 - `vocabulary_test_sessions.student_uid + status`
 
 Create required collections before deploying functions that depend on them.
+
+Prepare the built-in curated lexicon with the normal content command. To merge
+the 30,000 highest-frequency ECDICT-only records without committing the source
+CSV, provide a local path or HTTPS URL:
+
+```bash
+ECDICT_SOURCE=/path/to/ecdict.csv node scripts/prepare-cloudbase-data.js
+# or ECDICT_SOURCE=https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv
+```
+
+Dry-run and owner-import the shared lexicon separately:
+
+```bash
+npm run cloudbase:import:content -- --only vocabulary_lexicon
+npm run cloudbase:import:content -- --apply --only vocabulary_lexicon
+```
 
 ## 4. Static Site Deployment
 

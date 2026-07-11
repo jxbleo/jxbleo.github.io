@@ -61,7 +61,13 @@ Practice navigation checks:
 - opening a task from Dashboard Assignments appends a safe `return` target and
   the practice `Back` control returns to Dashboard Assignments
 - opening a task from Dashboard Library appends a safe `return` target and
-  the practice `Back` control returns to Dashboard Library
+  the practice `Back` control returns exactly one history step to the existing
+  Dashboard Library instance, preserving its selected sub-filter, search,
+  scroll position, and avoiding a second dashboard data load when bfcache is
+  available
+- opening a practice URL directly, or with a referrer path that does not match
+  its safe `return` target, makes `Back` use the validated URL fallback instead
+  of arbitrary older browser history
 - opening a teacher preview from Teacher Library returns to
   `teacher.html?view=library`
 - practice `Home` goes to `dashboard.html` for students/visitors and Teacher
@@ -388,6 +394,13 @@ Check:
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons
 - My Words accepts single-letter words such as `a` and `I`
+- a curated/shared-lexicon word displays dictionary details immediately after
+  save/list, while an unknown word saves first and then enriches automatically
+- a dictionary timeout leaves the word visible as pending, a confirmed miss is
+  throttled and offers Retry, and a cached unknown word does not call the
+  external provider again for another student
+- My Words search matches Chinese meaning, English definition, and part of speech
+- pronunciation uses browser speech without exposing a provider key
 - BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt
   Review load the same cache-versioned My Words selection script
 

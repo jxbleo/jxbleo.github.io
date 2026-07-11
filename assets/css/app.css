@@ -1626,7 +1626,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .my-words-table-row {
     display: grid;
-    grid-template-columns: minmax(130px, 0.9fr) minmax(0, 1.45fr) minmax(84px, 0.55fr) auto;
+    grid-template-columns: minmax(190px, 1.25fr) minmax(0, 1.3fr) minmax(84px, 0.5fr) auto;
     gap: 12px;
     align-items: center;
     padding: 12px 14px;
@@ -1651,6 +1651,42 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 1rem;
     line-height: 1.25;
 }
+.my-word-dictionary {
+    display: grid;
+    gap: 5px;
+    margin-top: 8px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+.my-word-dictionary.pending {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    color: var(--muted);
+}
+.my-word-dictionary-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: #13766d;
+    font-weight: 900;
+}
+.my-word-dictionary p { margin: 0; }
+.my-word-chinese { color: #23463e; font-weight: 850; }
+.my-word-definition { color: #49645e; }
+.my-word-dictionary small { color: var(--muted); font-size: 0.68rem; }
+.my-word-speak,
+.my-word-lookup {
+    border: 1px solid rgba(19,118,109,0.16);
+    border-radius: 999px;
+    color: #13766d;
+    background: #eff9f5;
+    font: inherit;
+    font-weight: 900;
+    cursor: pointer;
+}
+.my-word-speak { width: 28px; height: 28px; padding: 0; }
+.my-word-lookup { padding: 4px 9px; }
 .my-word-source span,
 .my-word-date {
     display: block;

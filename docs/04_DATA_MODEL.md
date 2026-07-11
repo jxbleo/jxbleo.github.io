@@ -29,6 +29,7 @@ Only CloudBase cloud functions should read or write private collections.
 | `answer_disputes` | student/teacher Argue requests |
 | `grading_key_history` | answer-rule change history |
 | `student_vocabulary_items` | personal saved words |
+| `vocabulary_lexicon` | shared curated/ECDICT/API dictionary entries |
 | `vocabulary_test_sessions` | active/ended Vocabulary Test integrity sessions |
 
 All collections should remain `ADMINONLY`.
@@ -381,7 +382,34 @@ Rules:
 - Abandoned/invalidated sessions are audit records only; they are not teacher
   progress records in the first implementation.
 
-## 11. `student_vocabulary_items`
+## 11. `vocabulary_lexicon`
+
+Core fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `lexicon_id` | string | deterministic hash ID |
+| `normalized_word` | string | unique lookup key |
+| `word` | string | display headword |
+| `phonetic` | string | phonetic spelling when available |
+| `part_of_speech` | string | one or more lexical categories |
+| `english_definition` | string | compact primary English definition |
+| `chinese_meaning` | string | Chinese meaning when available |
+| `word_forms` | string | inflections/derived forms when available |
+| `senses` | array | bounded external dictionary senses |
+| `source_type` | string | `curated`, `ecdict`, or external provider |
+| `source_name` / `sources` | string/array | attribution |
+| `verified` | boolean | teacher-curated status |
+
+Rules:
+
+- Collection remains `ADMINONLY`; only trusted functions and owner imports write.
+- `normalized_word` and `lexicon_id` are unique.
+- Project-curated entries take precedence over ECDICT and external API data.
+- External misses and failures are throttled on the student item rather than
+  creating repeated provider requests.
+
+## 12. `student_vocabulary_items`
 
 Core fields:
 
@@ -397,6 +425,10 @@ Core fields:
 | `source_path` | string | source URL/path |
 | `context` | string | short surrounding text |
 | `times_added` | number | repeat saves |
+| `lookup_status` | string | `pending`, `ready`, or `not_found` |
+| `lookup_error` | string | bounded last lookup note |
+| `lookup_retry_after` | Date/null | retry throttle |
+| `dictionary` | response-only object | joined shared lexicon view; not required in stored item |
 
 Rules:
 
@@ -406,7 +438,7 @@ Rules:
 - Words may be saved either from selected page text, including answer and
   explanation content, or from the manual My Words add form.
 
-## 11. Browser Local Storage
+## 13. Browser Local Storage
 
 LocalStorage may hold:
 

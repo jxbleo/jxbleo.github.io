@@ -100,6 +100,13 @@ but still required for CloudBase upload. `package:functions` uses locked
 dependencies and esbuild to include only reachable runtime code, so deployed
 functions do not depend on CloudBase resolving npm ranges during an update.
 
+My Words enrichment uses a dictionary-first cascade inside `studentVocabulary`:
+the shared `vocabulary_lexicon` collection is checked first, then the fixed
+`dictionaryapi.dev` endpoint is used only for a cache miss. Saving the personal
+word completes before the browser starts enrichment. Curated/ECDICT hits are
+shared across students; external results are normalized and cached once. API
+access never comes directly from the browser.
+
 ## 6. Database and Storage
 
 CloudBase collections are `ADMINONLY`. Browsers should not directly read or write them.
