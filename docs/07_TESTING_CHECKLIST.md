@@ -361,7 +361,11 @@ Check:
 - heartbeat runs about every 10 seconds, and sessions with no heartbeat for
   more than 30 seconds become abandoned
 - group metadata is stored
-- My Words cannot save from answer/result regions
+- My Words can save selected text from answer, explanation, feedback, and
+  result regions, including disabled answer-feedback buttons
+- My Words accepts single-letter words such as `a` and `I`
+- BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt
+  Review load the same cache-versioned My Words selection script
 
 ## 8. Content Import Checklist
 

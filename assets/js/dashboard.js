@@ -1846,7 +1846,6 @@
     function manualWordValidation(text) {
         var clean = String(text || '').replace(/\s+/g, ' ').trim();
         if (!clean) return 'Enter a word or short phrase first.';
-        if (clean.length < 2) return 'Enter a longer word or phrase.';
         if (clean.length > 120 || clean.split(/\s+/).filter(Boolean).length > 16) {
             return 'Please add one word or a short phrase at a time.';
         }

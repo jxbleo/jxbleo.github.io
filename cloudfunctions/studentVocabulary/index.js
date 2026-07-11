@@ -25,7 +25,6 @@ function hasWordCharacter(value) {
 function validationErrorForText(value) {
   const text = compactText(value, 160);
   if (!text) return "TEXT_REQUIRED";
-  if (text.length < 2) return "TEXT_TOO_SHORT";
   if (!hasWordCharacter(text)) return "TEXT_INVALID";
   if (text.length > 120) return "TEXT_TOO_LONG";
   const words = text.split(/\s+/).filter(Boolean);
@@ -269,7 +268,6 @@ function errorMessage(code) {
   if (code === "STUDENT_NOT_LINKED") return "This login is not linked to an active student.";
   if (code === "VOCABULARY_TEST_DEVICE_BLOCKED") return "This account is taking a vocabulary test on another device or browser tab. Please finish that test first.";
   if (code === "TEXT_REQUIRED") return "Select a word or short phrase first.";
-  if (code === "TEXT_TOO_SHORT") return "Select a longer word or phrase.";
   if (code === "TEXT_TOO_LONG") return "Please save one word or a short phrase at a time.";
   if (code === "TEXT_INVALID") return "Select a word or phrase with letters or numbers.";
   if (code === "VOCAB_ID_REQUIRED") return "Word ID is required.";
