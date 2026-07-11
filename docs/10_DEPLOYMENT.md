@@ -122,7 +122,11 @@ find cloudfunctions -name index.js -exec node --check {} \;
 Function runtime expectation:
 
 - Node.js 18
-- automatic dependency installation
+- deployment ZIPs are bundled with the runtime code they use;
+- CloudBase automatic dependency installation is not required and should stay
+  disabled for bundled functions;
+- root and function-level lockfiles pin the SDK and bundler versions, so a
+  package rebuild cannot silently pick a newer dependency tree.
 - development environment unless owner approves otherwise
 
 `teacherAdmin` additionally requires the environment variable:
@@ -202,7 +206,7 @@ What each command does:
 | Command | What it may do | What it must not do |
 | --- | --- | --- |
 | `npm run verify:release` | syntax-check cloud functions, parse public JSON, check required docs, warn about dirty files | deploy, read secrets, modify CloudBase |
-| `npm run package:functions:all` | rebuild local ZIPs in `deploy-packages/` | upload ZIPs or change function settings |
+| `npm run package:functions:all` | bundle runtime dependencies and rebuild local ZIPs in `deploy-packages/` | upload ZIPs or change function settings |
 | `npm run release:plan` | write `.cloudbase-private/deploy-plan.md` for owner review | deploy, import data, request credentials |
 | `npm run cloudbase:import:content` | dry-run CloudBase data import plan | write CloudBase unless `-- --apply` is passed |
 

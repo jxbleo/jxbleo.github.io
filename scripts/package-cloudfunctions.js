@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const esbuild = require("esbuild");
 
 const root = path.resolve(__dirname, "..");
 const functionsRoot = path.join(root, "cloudfunctions");
@@ -67,11 +69,7 @@ function assertZipAvailable() {
 function packageFunction(functionName) {
   const sourceDir = path.join(functionsRoot, functionName);
   const indexPath = path.join(sourceDir, "index.js");
-  const packagePath = path.join(sourceDir, "package.json");
   const outputPath = path.join(outputRoot, `${functionName}.zip`);
-  const helperPaths = fs.readdirSync(sourceDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".js") && entry.name !== "index.js")
-    .map((entry) => path.join(sourceDir, entry.name));
 
   const check = run("node", ["--check", indexPath]);
   if (check.status !== 0) {
@@ -81,18 +79,50 @@ function packageFunction(functionName) {
   }
 
   if (dryRun) {
-    console.log(`[dry-run] Would create ${path.relative(root, outputPath)} from ${functionName}/index.js + package.json`);
+    console.log(`[dry-run] Would bundle ${functionName}/index.js into ${path.relative(root, outputPath)}`);
     return;
   }
 
   fs.mkdirSync(outputRoot, { recursive: true });
   fs.rmSync(outputPath, { force: true });
+  const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), `mrcat-${functionName}-`));
+  const bundledIndexPath = path.join(stagingDir, "index.js");
+  const bundledPackagePath = path.join(stagingDir, "package.json");
 
-  const zip = run("zip", ["-q", "-j", outputPath, indexPath, ...helperPaths, packagePath]);
-  if (zip.status !== 0) {
-    console.error(`Failed to package ${functionName}:`);
-    console.error(zip.stderr || zip.stdout);
-    process.exit(1);
+  try {
+    esbuild.buildSync({
+      entryPoints: [indexPath],
+      outfile: bundledIndexPath,
+      bundle: true,
+      platform: "node",
+      target: "node18",
+      format: "cjs",
+      external: ["@aws-sdk/client-s3"],
+      logLevel: "silent"
+    });
+    fs.writeFileSync(bundledPackagePath, `${JSON.stringify({
+      name: functionName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase(),
+      version: "1.0.0",
+      private: true,
+      main: "index.js",
+      dependencies: {}
+    }, null, 2)}\n`);
+
+    const bundledCheck = run("node", ["--check", bundledIndexPath]);
+    if (bundledCheck.status !== 0) {
+      console.error(`Bundled syntax check failed for ${functionName}:`);
+      console.error(bundledCheck.stderr || bundledCheck.stdout);
+      process.exit(1);
+    }
+
+    const zip = run("zip", ["-q", "-j", outputPath, bundledIndexPath, bundledPackagePath]);
+    if (zip.status !== 0) {
+      console.error(`Failed to package ${functionName}:`);
+      console.error(zip.stderr || zip.stdout);
+      process.exit(1);
+    }
+  } finally {
+    fs.rmSync(stagingDir, { recursive: true, force: true });
   }
 
   console.log(`Created ${path.relative(root, outputPath)}`);
