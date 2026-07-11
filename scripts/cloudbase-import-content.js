@@ -37,6 +37,7 @@ Options:
   --apply                    Execute CloudBase writes
   --only <list>              Comma-separated collections: sets,grading_keys,system_config,vocabulary_lexicon
   --ids <list>               Comma-separated keys to import, matched against each collection key field
+  --offset <number>           Skip this many input records before importing, default 0
   --overwrite-existing       Update existing records instead of insert-missing only
   --env-id <envId>           CloudBase environment ID
   --region <region>          CloudBase region
@@ -58,6 +59,7 @@ function parseArgs(argv) {
     apply: false,
     only: ["sets", "grading_keys"],
     ids: null,
+    offset: 0,
     overwriteExisting: false,
     envId: process.env.TCB_ENV_ID || DEFAULT_ENV_ID,
     region: process.env.TCB_REGION || DEFAULT_REGION,
@@ -79,6 +81,12 @@ function parseArgs(argv) {
       options.only = requireValue(argv, ++index, arg).split(",").map((item) => item.trim()).filter(Boolean);
     } else if (arg === "--ids") {
       options.ids = requireValue(argv, ++index, arg).split(",").map((item) => item.trim()).filter(Boolean);
+    } else if (arg === "--offset") {
+      const value = Number(requireValue(argv, ++index, arg));
+      if (!Number.isInteger(value) || value < 0) {
+        throw new Error("--offset must be a non-negative integer");
+      }
+      options.offset = value;
     } else if (arg === "--env-id" || arg === "-e") {
       options.envId = requireValue(argv, ++index, arg);
     } else if (arg === "--region" || arg === "-r") {
@@ -210,6 +218,7 @@ function main() {
   console.log(`Environment: ${options.envId} (${options.region})`);
   console.log(`Write mode: ${writeMode}`);
   if (idFilter) console.log(`ID filter: ${options.ids.join(", ")}`);
+  if (options.offset) console.log(`Input offset: ${options.offset}`);
   console.log("");
 
   for (const collectionName of options.only) {
@@ -219,7 +228,7 @@ function main() {
       throw new Error(`Missing import file: ${config.file}`);
     }
 
-    const allRecords = readJsonLines(filePath);
+    const allRecords = readJsonLines(filePath).slice(options.offset);
     const records = idFilter
       ? allRecords.filter((record) => idFilter.has(record[config.keyField]))
       : allRecords;
