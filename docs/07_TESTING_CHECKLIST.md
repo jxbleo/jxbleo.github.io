@@ -55,6 +55,9 @@ Open:
 
 Practice navigation checks:
 
+- clicking a completed-task capsule in the Dashboard four-week board opens the
+  shared entry confirmation, and `Enter` opens that completed task with a safe
+  Dashboard return target
 - opening a task from Dashboard Assignments appends a safe `return` target and
   the practice `Back` control returns to Dashboard Assignments
 - opening a task from Dashboard Library appends a safe `return` target and
