@@ -97,7 +97,11 @@ Check:
 - forced password change appears when expected
 - the lower dashboard navigation shows only `Library`
 - the top-right bell opens `TO DO` and finished assignment messages
-- the notebook icon beside the bell opens My Words and gains an active state
+- the student bell uses the same SVG bell design as the teacher bell
+- the notebook icon sits immediately to the right of the bell and opens My
+  Words in an independent modal
+- scrolling the My Words modal, closing it, and reopening it restores the prior
+  internal scroll position
 - neither Assignments nor My Words appears as a lower navigation entry
 - student opens assigned work
 - opening a finished Vocabulary assignment from `Show Finished` lands on

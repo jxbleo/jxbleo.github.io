@@ -14,9 +14,11 @@
         vocabItems: [],
         vocabSearch: '',
         progressSelectedDay: '',
-        accountPanelOpen: false
+        accountPanelOpen: false,
+        wordsPanelOpen: false,
+        myWordsScrollTop: 0
     };
-    var dashboardViews = ['words', 'resources'];
+    var dashboardViews = ['resources'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -104,6 +106,8 @@
     var resourceSearch = document.getElementById('resource-search');
     var accountPanel = document.getElementById('student-account-panel');
     var wordsButton = document.getElementById('student-words-button');
+    var wordsOverlay = document.getElementById('student-words-overlay');
+    var wordsScroll = document.getElementById('student-words-dialog-scroll');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
 
@@ -2015,6 +2019,10 @@
 
     function renderMyWordsView() {
         if (!myWordsContent) return;
+        if (!state.session) {
+            myWordsContent.innerHTML = '<div class="profile-card loading-card">Loading My Words...</div>';
+            return;
+        }
         if (state.session.mode === 'visitor') {
             myWordsContent.innerHTML =
                 '<div class="profile-card"><h2>My Words</h2><p class="muted">Log in as a student to save words and phrases.</p>' +
@@ -2026,6 +2034,42 @@
         }
         myWordsContent.innerHTML = renderMyWordsCard();
         bindMyWordsCard();
+    }
+
+    function rememberedMyWordsScrollTop() {
+        if (state.myWordsScrollTop > 0) return state.myWordsScrollTop;
+        try {
+            return Math.max(0, Number(sessionStorage.getItem('mrcat_my_words_scroll_top') || 0));
+        } catch (error) {
+            return 0;
+        }
+    }
+
+    function saveMyWordsScrollPosition() {
+        if (!wordsScroll) return;
+        state.myWordsScrollTop = Math.max(0, wordsScroll.scrollTop || 0);
+        try {
+            sessionStorage.setItem('mrcat_my_words_scroll_top', String(state.myWordsScrollTop));
+        } catch (error) {}
+    }
+
+    function setWordsPanel(open) {
+        state.wordsPanelOpen = open === true;
+        if (!wordsOverlay) return;
+        if (!state.wordsPanelOpen) saveMyWordsScrollPosition();
+        wordsOverlay.hidden = !state.wordsPanelOpen;
+        if (wordsButton) {
+            wordsButton.classList.toggle('active', state.wordsPanelOpen);
+            wordsButton.setAttribute('aria-expanded', state.wordsPanelOpen ? 'true' : 'false');
+        }
+        if (!state.wordsPanelOpen) return;
+        setAccountPanel(false);
+        renderMyWordsView();
+        window.requestAnimationFrame(function() {
+            if (wordsScroll) wordsScroll.scrollTop = rememberedMyWordsScrollTop();
+            var close = document.getElementById('student-words-close');
+            if (close) close.focus({ preventScroll: true });
+        });
     }
 
     function renderProfile() {
@@ -2167,15 +2211,10 @@
         document.querySelectorAll('.tab-button').forEach(function(button) {
             button.classList.toggle('active', button.dataset.view === viewName);
         });
-        if (wordsButton) {
-            wordsButton.classList.toggle('active', viewName === 'words');
-            wordsButton.setAttribute('aria-pressed', viewName === 'words' ? 'true' : 'false');
-        }
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
         if (!skipUrlUpdate) rememberDashboardView(viewName);
-        if (viewName === 'words') renderMyWordsView();
     }
 
     document.querySelectorAll('.tab-button').forEach(function(button) {
@@ -2203,8 +2242,18 @@
     }
     if (wordsButton) {
         wordsButton.addEventListener('click', function() {
-            activateView('words');
-            setAccountPanel(false);
+            setWordsPanel(true);
+        });
+    }
+    var wordsClose = document.getElementById('student-words-close');
+    if (wordsClose) {
+        wordsClose.addEventListener('click', function() {
+            setWordsPanel(false);
+        });
+    }
+    if (wordsOverlay) {
+        wordsOverlay.addEventListener('click', function(event) {
+            if (event.target === wordsOverlay) setWordsPanel(false);
         });
     }
     resourceSearch.addEventListener('input', function() {
@@ -2271,6 +2320,11 @@
     });
 
     document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && state.wordsPanelOpen) {
+            setWordsPanel(false);
+            if (wordsButton) wordsButton.focus();
+            return;
+        }
         if (e.key !== 'Enter' && e.key !== ' ') return;
         var openCard = e.target.closest('[data-open-href]');
         if (!openCard) return;
@@ -2287,8 +2341,7 @@
             return item.vocab_id !== word.vocab_id;
         });
         state.vocabItems.unshift(word);
-        var wordsView = document.getElementById('view-words');
-        if (wordsView && !wordsView.hidden) renderMyWordsView();
+        if (state.wordsPanelOpen) renderMyWordsView();
     });
 
     window.MrCatAuth.getSession()
@@ -2327,6 +2380,9 @@
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();
             activateView(initialDashboardView(), true);
+            if (new URLSearchParams(window.location.search).get('view') === 'words') {
+                setWordsPanel(true);
+            }
         })
         .catch(function(error) {
             assignmentContent.innerHTML = '<div class="empty-card"><strong>Unable to load the dashboard</strong>' + escapeHtml(error.message || 'Please sign in again.') + '</div>';

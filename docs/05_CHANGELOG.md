@@ -1,5 +1,8 @@
 # Changelog
 
+- Moved the student My Words notebook icon to the right of the bell, matched the
+  student bell to the teacher SVG design, and changed My Words into an
+  independent modal that restores its internal scroll position after closing.
 - Removed the lower student Assignments and My Words navigation entries. The
   lower capsule now exposes only Library, assignments remain in the top-right
   bell, and a matching notebook icon beside the bell opens My Words.

@@ -685,7 +685,9 @@ Student dashboard navigation:
 
 - The lower main navigation exposes only `Library`.
 - Assignments and finished work live in the top-right notification bell.
-- My Words opens from the notebook icon beside the notification bell.
+- My Words opens in an independent modal from the notebook icon immediately to
+  the right of the notification bell. Closing and reopening that modal restores
+  its previous internal scroll position.
 - Profile/account actions open from the top-right identity chip.
 
 Do not restore a lower Assignments or My Words navigation capsule unless the
