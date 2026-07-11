@@ -30,6 +30,11 @@
 
 ### Changed
 
+- Unified student and Teacher View `By student` monthly-progress task details
+  with the teacher matrix visual hierarchy: full wrapping task titles now take
+  priority, with compact task-type and best-score metadata aligned together on
+  the right for iPad and smaller layouts.
+
 - Made Teacher View matrix task headers open their corresponding teacher
   practice preview and return to Teacher View.
 

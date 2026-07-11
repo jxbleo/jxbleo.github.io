@@ -3642,8 +3642,10 @@
         var kind = matrixColumnLabel(matrixColumnKey(item), item);
         return '<article class="progress-detail-task matrix-student-progress-task">' +
             '<strong>' + escapeHtml(item.set_title || source.title || setTitleFor(item.set_id) || item.set_id || 'Task') + '</strong>' +
-            '<span class="progress-task-type">' + escapeHtml(kind || 'Practice') + '</span>' +
-            '<span class="progress-task-score">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
+            '<span class="progress-task-meta">' +
+                '<span class="progress-task-type">' + escapeHtml(kind || 'Practice') + '</span>' +
+                '<span class="progress-task-score">' + escapeHtml(formatPercent(item.best_percentage)) + '</span>' +
+            '</span>' +
         '</article>';
     }
 

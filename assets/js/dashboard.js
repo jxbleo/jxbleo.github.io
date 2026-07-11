@@ -1164,8 +1164,10 @@
             ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '" role="link" tabindex="0"' +
             ' aria-label="Open completed task ' + escapeHtml(title) + '">' +
             '<strong>' + escapeHtml(title) + '</strong>' +
-            '<span class="progress-task-type">' + escapeHtml(kind) + '</span>' +
-            '<span class="progress-task-score">' + escapeHtml(progressItemScoreLabel(item)) + '</span>' +
+            '<span class="progress-task-meta">' +
+                '<span class="progress-task-type">' + escapeHtml(kind) + '</span>' +
+                '<span class="progress-task-score">' + escapeHtml(progressItemScoreLabel(item)) + '</span>' +
+            '</span>' +
         '</article>';
     }
 
