@@ -1,6 +1,7 @@
 window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
 window.__VOCABULARY_UNITS__["NGSL-H"] = {
   "id": "NGSL-H",
+  "contentVersion": "2",
   "sectionId": "vocabulary",
   "title": "NGSL-H",
   "href": "vocabulary.html?set=NGSL-H",

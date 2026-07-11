@@ -1,6 +1,7 @@
 window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
 window.__VOCABULARY_UNITS__["Oxford5000-H"] = {
   "id": "Oxford5000-H",
+  "contentVersion": "1",
   "sectionId": "vocabulary",
   "title": "Oxford5000-H",
   "href": "vocabulary.html?set=Oxford5000-H",

@@ -69,6 +69,9 @@ function packageFunction(functionName) {
   const indexPath = path.join(sourceDir, "index.js");
   const packagePath = path.join(sourceDir, "package.json");
   const outputPath = path.join(outputRoot, `${functionName}.zip`);
+  const helperPaths = fs.readdirSync(sourceDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".js") && entry.name !== "index.js")
+    .map((entry) => path.join(sourceDir, entry.name));
 
   const check = run("node", ["--check", indexPath]);
   if (check.status !== 0) {
@@ -85,7 +88,7 @@ function packageFunction(functionName) {
   fs.mkdirSync(outputRoot, { recursive: true });
   fs.rmSync(outputPath, { force: true });
 
-  const zip = run("zip", ["-q", "-j", outputPath, indexPath, packagePath]);
+  const zip = run("zip", ["-q", "-j", outputPath, indexPath, ...helperPaths, packagePath]);
   if (zip.status !== 0) {
     console.error(`Failed to package ${functionName}:`);
     console.error(zip.stderr || zip.stdout);

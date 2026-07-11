@@ -1,6 +1,7 @@
 window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
 window.__VOCABULARY_UNITS__["NAWL-G"] = {
   "id": "NAWL-G",
+  "contentVersion": "1",
   "sectionId": "vocabulary",
   "title": "NAWL-G",
   "href": "vocabulary.html?set=NAWL-G",

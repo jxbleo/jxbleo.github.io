@@ -1,5 +1,6 @@
 {
   "id": "NGSL-P",
+  "contentVersion": "1",
   "sectionId": "vocabulary",
   "title": "NGSL-P",
   "href": "vocabulary.html?set=NGSL-P",
@@ -854,61 +855,71 @@
           "number": 1,
           "prompt": "The company will hire more __________ to deal with customer complaints.",
           "answer": "personnel",
-          "explanation": "语法上，空格作 hire 的宾语，需要名词。语义上，公司招聘更多“员工/人员”处理投诉。常见搭配：company personnel / military personnel。"
+          "explanation": "语法上，空格作 hire 的宾语，需要名词。语义上，公司招聘更多“员工/人员”处理投诉。常见搭配：company personnel / military personnel。",
+          "questionKey": "2501-2510:1"
         },
         {
           "number": 2,
           "prompt": "Children often have a powerful __________ and can create stories from simple objects.",
           "answer": "imagination",
-          "explanation": "语法上，形容词 powerful 后接名词。语义上，孩子有强大的“想象力”，能从简单物品创造故事。"
+          "explanation": "语法上，形容词 powerful 后接名词。语义上，孩子有强大的“想象力”，能从简单物品创造故事。",
+          "questionKey": "2501-2510:2"
         },
         {
           "number": 3,
           "prompt": "I respect your opinion, but I must __________ with your conclusion.",
           "answer": "disagree",
-          "explanation": "语法上，must 后接动词原形。语义上，说话人尊重对方观点，但“不同意”结论。常见搭配：disagree with someone / disagree with an opinion。"
+          "explanation": "语法上，must 后接动词原形。语义上，说话人尊重对方观点，但“不同意”结论。常见搭配：disagree with someone / disagree with an opinion。",
+          "questionKey": "2501-2510:3"
         },
         {
           "number": 4,
           "prompt": "After shouting for two hours, he had a sore __________.",
           "answer": "throat",
-          "explanation": "语法上，形容词 sore 修饰名词。语义上，大喊两小时后“喉咙”痛。常见搭配：a sore throat。"
+          "explanation": "语法上，形容词 sore 修饰名词。语义上，大喊两小时后“喉咙”痛。常见搭配：a sore throat。",
+          "questionKey": "2501-2510:4"
         },
         {
           "number": 5,
           "prompt": "The report offers useful __________ into how teenagers use social media.",
           "answer": "insight",
-          "explanation": "语法上，offers useful 后接名词。语义上，报告提供关于青少年使用社交媒体的“洞察/见解”。常见搭配：insight into something。"
+          "explanation": "语法上，offers useful 后接名词。语义上，报告提供关于青少年使用社交媒体的“洞察/见解”。常见搭配：insight into something。",
+          "questionKey": "2501-2510:5"
         },
         {
           "number": 6,
           "prompt": "The government needs to __________ the problem of youth unemployment.",
           "answer": "tackle",
-          "explanation": "语法上，needs to 后接动词原形。语义上，政府需要“处理/解决”青年失业问题。常见搭配：tackle a problem / issue / challenge。"
+          "explanation": "语法上，needs to 后接动词原形。语义上，政府需要“处理/解决”青年失业问题。常见搭配：tackle a problem / issue / challenge。",
+          "questionKey": "2501-2510:6"
         },
         {
           "number": 7,
           "prompt": "Some people believe that true friendship can last __________.",
           "answer": "forever",
-          "explanation": "语法上，空格修饰动词 last，需要副词。语义上，真正的友谊可以“永远”持续。"
+          "explanation": "语法上，空格修饰动词 last，需要副词。语义上，真正的友谊可以“永远”持续。",
+          "questionKey": "2501-2510:7"
         },
         {
           "number": 8,
           "prompt": "The cost of the project should not __________ the original budget.",
           "answer": "exceed",
-          "explanation": "语法上，should not 后接动词原形。语义上，项目成本不应“超过”原预算。常见搭配：exceed the budget / limit / speed limit。"
+          "explanation": "语法上，should not 后接动词原形。语义上，项目成本不应“超过”原预算。常见搭配：exceed the budget / limit / speed limit。",
+          "questionKey": "2501-2510:8"
         },
         {
           "number": 9,
           "prompt": "Public __________ on education has increased sharply this year.",
           "answer": "expenditure",
-          "explanation": "语法上，形容词 Public 后接名词。语义上，教育方面的公共“支出”今年大幅增加。常见搭配：public expenditure / government expenditure。"
+          "explanation": "语法上，形容词 Public 后接名词。语义上，教育方面的公共“支出”今年大幅增加。常见搭配：public expenditure / government expenditure。",
+          "questionKey": "2501-2510:9"
         },
         {
           "number": 10,
           "prompt": "She cried with __________ when she heard that she had passed the exam.",
           "answer": "joy",
-          "explanation": "语法上，介词 with 后接名词。语义上，听到通过考试后，她喜极而泣。常见搭配：cry with joy / tears of joy。"
+          "explanation": "语法上，介词 with 后接名词。语义上，听到通过考试后，她喜极而泣。常见搭配：cry with joy / tears of joy。",
+          "questionKey": "2501-2510:10"
         }
       ]
     },
@@ -934,61 +945,71 @@
           "number": 1,
           "prompt": "The doctor advised the __________ woman to avoid heavy lifting.",
           "answer": "pregnant",
-          "explanation": "语法上，空格修饰名词 woman，需要形容词。语义上，医生建议“怀孕的”女性避免搬重物。"
+          "explanation": "语法上，空格修饰名词 woman，需要形容词。语义上，医生建议“怀孕的”女性避免搬重物。",
+          "questionKey": "2511-2520:1"
         },
         {
           "number": 2,
           "prompt": "We need a more __________ source of information before making a decision.",
           "answer": "reliable",
-          "explanation": "语法上，空格修饰名词 source，需要形容词。语义上，做决定前需要更“可靠的”信息来源。常见搭配：a reliable source / reliable information。"
+          "explanation": "语法上，空格修饰名词 source，需要形容词。语义上，做决定前需要更“可靠的”信息来源。常见搭配：a reliable source / reliable information。",
+          "questionKey": "2511-2520:2"
         },
         {
           "number": 3,
           "prompt": "Remember to bring your camping __________, including a tent and a sleeping bag.",
           "answer": "gear",
-          "explanation": "语法上，bring your camping 后接名词。语义上，帐篷和睡袋属于露营“装备”。常见搭配：camping gear / sports gear。"
+          "explanation": "语法上，bring your camping 后接名词。语义上，帐篷和睡袋属于露营“装备”。常见搭配：camping gear / sports gear。",
+          "questionKey": "2511-2520:3"
         },
         {
           "number": 4,
           "prompt": "To open the file, simply __________ on the icon twice.",
           "answer": "click",
-          "explanation": "语法上，祈使句中用动词原形。语义上，打开文件需要双击图标。常见搭配：click on an icon / click twice。"
+          "explanation": "语法上，祈使句中用动词原形。语义上，打开文件需要双击图标。常见搭配：click on an icon / click twice。",
+          "questionKey": "2511-2520:4"
         },
         {
           "number": 5,
           "prompt": "The famous __________ wrote many poems about nature and loneliness.",
           "answer": "poet",
-          "explanation": "语法上，形容词 famous 后接名词。语义上，写诗的人是“诗人”。"
+          "explanation": "语法上，形容词 famous 后接名词。语义上，写诗的人是“诗人”。",
+          "questionKey": "2511-2520:5"
         },
         {
           "number": 6,
           "prompt": "He made a __________ by investing in technology companies early.",
           "answer": "fortune",
-          "explanation": "语法上，冠词 a 后接名词。语义上，他早期投资科技公司赚了一大笔“财富”。常见搭配：make a fortune。"
+          "explanation": "语法上，冠词 a 后接名词。语义上，他早期投资科技公司赚了一大笔“财富”。常见搭配：make a fortune。",
+          "questionKey": "2511-2520:6"
         },
         {
           "number": 7,
           "prompt": "The award __________ will be held in the school hall on Friday.",
           "answer": "ceremony",
-          "explanation": "语法上，名词 award 修饰另一个名词。语义上，颁奖“典礼”将在学校礼堂举行。常见搭配：award ceremony / graduation ceremony。"
+          "explanation": "语法上，名词 award 修饰另一个名词。语义上，颁奖“典礼”将在学校礼堂举行。常见搭配：award ceremony / graduation ceremony。",
+          "questionKey": "2511-2520:7"
         },
         {
           "number": 8,
           "prompt": "There was a huge __________ of books on the teacher’s desk.",
           "answer": "pile",
-          "explanation": "语法上，冠词 a 和形容词 huge 后接名词。语义上，老师桌上有一大“堆”书。常见搭配：a pile of books / a pile of papers。"
+          "explanation": "语法上，冠词 a 和形容词 huge 后接名词。语义上，老师桌上有一大“堆”书。常见搭配：a pile of books / a pile of papers。",
+          "questionKey": "2511-2520:8"
         },
         {
           "number": 9,
           "prompt": "The farmer keeps cows, chickens, and one small __________.",
           "answer": "pig",
-          "explanation": "语法上，数词 one small 后接可数名词单数。语义上，农场养了牛、鸡和一只小“猪”。"
+          "explanation": "语法上，数词 one small 后接可数名词单数。语义上，农场养了牛、鸡和一只小“猪”。",
+          "questionKey": "2511-2520:9"
         },
         {
           "number": 10,
           "prompt": "The drink is a strange __________ of fruit juice, milk, and ice.",
           "answer": "mixture",
-          "explanation": "语法上，冠词 a 和形容词 strange 后接名词。语义上，这种饮料是果汁、牛奶和冰的奇怪“混合物”。常见搭配：a mixture of A, B and C。"
+          "explanation": "语法上，冠词 a 和形容词 strange 后接名词。语义上，这种饮料是果汁、牛奶和冰的奇怪“混合物”。常见搭配：a mixture of A, B and C。",
+          "questionKey": "2511-2520:10"
         }
       ]
     },
@@ -1014,61 +1035,71 @@
           "number": 1,
           "prompt": "The lights turn on __________ when someone enters the room.",
           "answer": "automatically",
-          "explanation": "语法上，空格修饰动词短语 turn on，需要副词。语义上，有人进入房间时，灯会“自动地”打开。"
+          "explanation": "语法上，空格修饰动词短语 turn on，需要副词。语义上，有人进入房间时，灯会“自动地”打开。",
+          "questionKey": "2521-2530:1"
         },
         {
           "number": 2,
           "prompt": "The university invited a famous __________ to give a lecture on ancient history.",
           "answer": "scholar",
-          "explanation": "语法上，形容词 famous 后接名词。语义上，大学邀请著名“学者”做古代史讲座。"
+          "explanation": "语法上，形容词 famous 后接名词。语义上，大学邀请著名“学者”做古代史讲座。",
+          "questionKey": "2521-2530:2"
         },
         {
           "number": 3,
           "prompt": "Long-term stress can cause serious __________ problems.",
           "answer": "psychological",
-          "explanation": "语法上，空格修饰名词 problems，需要形容词。语义上，长期压力会造成严重“心理的”问题。常见搭配：psychological problems / psychological effects。"
+          "explanation": "语法上，空格修饰名词 problems，需要形容词。语义上，长期压力会造成严重“心理的”问题。常见搭配：psychological problems / psychological effects。",
+          "questionKey": "2521-2530:3"
         },
         {
           "number": 4,
           "prompt": "House prices have risen __________ in the past ten years.",
           "answer": "dramatically",
-          "explanation": "语法上，空格修饰动词 risen，需要副词。语义上，房价在过去十年“显著地”上涨。常见搭配：rise dramatically / change dramatically。"
+          "explanation": "语法上，空格修饰动词 risen，需要副词。语义上，房价在过去十年“显著地”上涨。常见搭配：rise dramatically / change dramatically。",
+          "questionKey": "2521-2530:4"
         },
         {
           "number": 5,
           "prompt": "The investors have a large financial __________ in the company.",
           "answer": "stake",
-          "explanation": "语法上，形容词 financial 后接名词。语义上，投资者在公司有很大的经济“股份/利益”。常见搭配：have a stake in something。"
+          "explanation": "语法上，形容词 financial 后接名词。语义上，投资者在公司有很大的经济“股份/利益”。常见搭配：have a stake in something。",
+          "questionKey": "2521-2530:5"
         },
         {
           "number": 6,
           "prompt": "Scientists discovered a tiny sea __________ living near the rocks.",
           "answer": "creature",
-          "explanation": "语法上，形容词 tiny sea 后接名词。语义上，科学家发现一种小型海洋“生物”。"
+          "explanation": "语法上，形容词 tiny sea 后接名词。语义上，科学家发现一种小型海洋“生物”。",
+          "questionKey": "2521-2530:6"
         },
         {
           "number": 7,
           "prompt": "The two schools formed a __________ to share teaching resources.",
           "answer": "partnership",
-          "explanation": "语法上，冠词 a 后接名词。语义上，两所学校建立“合作关系”来共享教学资源。常见搭配：form a partnership。"
+          "explanation": "语法上，冠词 a 后接名词。语义上，两所学校建立“合作关系”来共享教学资源。常见搭配：form a partnership。",
+          "questionKey": "2521-2530:7"
         },
         {
           "number": 8,
           "prompt": "Student __________ in class discussions is part of the final grade.",
           "answer": "participation",
-          "explanation": "语法上，名词 Student 修饰后面的名词。语义上，学生课堂“参与”是期末成绩的一部分。常见搭配：student participation / participation in something。"
+          "explanation": "语法上，名词 Student 修饰后面的名词。语义上，学生课堂“参与”是期末成绩的一部分。常见搭配：student participation / participation in something。",
+          "questionKey": "2521-2530:8"
         },
         {
           "number": 9,
           "prompt": "Read every __________ in the contract before you sign it.",
           "answer": "clause",
-          "explanation": "语法上，every 后接可数名词单数。语义上，签合同前要阅读每一个“条款”。常见搭配：a clause in a contract。"
+          "explanation": "语法上，every 后接可数名词单数。语义上，签合同前要阅读每一个“条款”。常见搭配：a clause in a contract。",
+          "questionKey": "2521-2530:9"
         },
         {
           "number": 10,
           "prompt": "Drivers who park illegally may have to pay a heavy __________.",
           "answer": "penalty",
-          "explanation": "语法上，形容词 heavy 后接名词。语义上，违停司机可能要支付高额“罚款”。常见搭配：pay a penalty / a heavy penalty。"
+          "explanation": "语法上，形容词 heavy 后接名词。语义上，违停司机可能要支付高额“罚款”。常见搭配：pay a penalty / a heavy penalty。",
+          "questionKey": "2521-2530:10"
         }
       ]
     },
@@ -1094,61 +1125,71 @@
           "number": 1,
           "prompt": "The king entered the private __________ to meet his advisers.",
           "answer": "chamber",
-          "explanation": "语法上，形容词 private 后接名词。语义上，国王进入私人“房间”会见顾问。"
+          "explanation": "语法上，形容词 private 后接名词。语义上，国王进入私人“房间”会见顾问。",
+          "questionKey": "2531-2540:1"
         },
         {
           "number": 2,
           "prompt": "Do you __________ going out for dinner tonight?",
           "answer": "fancy",
-          "explanation": "语法上，助动词 Do 后接动词原形。语义上，fancy doing something 表示“想要做某事”。常见搭配：fancy going out / fancy a drink。"
+          "explanation": "语法上，助动词 Do 后接动词原形。语义上，fancy doing something 表示“想要做某事”。常见搭配：fancy going out / fancy a drink。",
+          "questionKey": "2531-2540:2"
         },
         {
           "number": 3,
           "prompt": "Many students find modern __________ difficult but beautiful.",
           "answer": "poetry",
-          "explanation": "语法上，形容词 modern 后接名词。语义上，学生觉得现代“诗歌”难但美。"
+          "explanation": "语法上，形容词 modern 后接名词。语义上，学生觉得现代“诗歌”难但美。",
+          "questionKey": "2531-2540:3"
         },
         {
           "number": 4,
           "prompt": "We had a short __________ after class about the homework.",
           "answer": "chat",
-          "explanation": "语法上，冠词 a 和形容词 short 后接名词。语义上，下课后简短“聊天”。常见搭配：have a chat about something。"
+          "explanation": "语法上，冠词 a 和形容词 short 后接名词。语义上，下课后简短“聊天”。常见搭配：have a chat about something。",
+          "questionKey": "2531-2540:4"
         },
         {
           "number": 5,
           "prompt": "Warm __________ is necessary if you are hiking in winter.",
           "answer": "clothing",
-          "explanation": "语法上，形容词 Warm 后接名词。语义上，冬天徒步需要保暖“衣物”。"
+          "explanation": "语法上，形容词 Warm 后接名词。语义上，冬天徒步需要保暖“衣物”。",
+          "questionKey": "2531-2540:5"
         },
         {
           "number": 6,
           "prompt": "Languages continue to __________ as society changes.",
           "answer": "evolve",
-          "explanation": "语法上，continue to 后接动词原形。语义上，语言会随着社会变化继续“发展/演变”。"
+          "explanation": "语法上，continue to 后接动词原形。语义上，语言会随着社会变化继续“发展/演变”。",
+          "questionKey": "2531-2540:6"
         },
         {
           "number": 7,
           "prompt": "She stayed quiet for the __________ of peace.",
           "answer": "sake",
-          "explanation": "语法上，固定表达 for the sake of。语义上，她为了和平保持沉默。常见搭配：for the sake of peace / safety / convenience。"
+          "explanation": "语法上，固定表达 for the sake of。语义上，她为了和平保持沉默。常见搭配：for the sake of peace / safety / convenience。",
+          "questionKey": "2531-2540:7"
         },
         {
           "number": 8,
           "prompt": "Put the dictionary back on the top __________ after using it.",
           "answer": "shelf",
-          "explanation": "语法上，形容词 top 后接名词。语义上，用完词典后放回最上面的“架子”。常见搭配：on the shelf。"
+          "explanation": "语法上，形容词 top 后接名词。语义上，用完词典后放回最上面的“架子”。常见搭配：on the shelf。",
+          "questionKey": "2531-2540:8"
         },
         {
           "number": 9,
           "prompt": "The new policy is expected to __________ economic growth.",
           "answer": "boost",
-          "explanation": "语法上，is expected to 后接动词原形。语义上，新政策预计会“促进”经济增长。常见搭配：boost growth / confidence / sales。"
+          "explanation": "语法上，is expected to 后接动词原形。语义上，新政策预计会“促进”经济增长。常见搭配：boost growth / confidence / sales。",
+          "questionKey": "2531-2540:9"
         },
         {
           "number": 10,
           "prompt": "The dog wagged its __________ when it saw its owner.",
           "answer": "tail",
-          "explanation": "语法上，所有格 its 后接名词。语义上，狗见到主人时摇“尾巴”。常见搭配：wag its tail。"
+          "explanation": "语法上，所有格 its 后接名词。语义上，狗见到主人时摇“尾巴”。常见搭配：wag its tail。",
+          "questionKey": "2531-2540:10"
         }
       ]
     },
@@ -1174,61 +1215,71 @@
           "number": 1,
           "prompt": "The police found stolen goods in his __________.",
           "answer": "possession",
-          "explanation": "语法上，介词 in 后接名词。语义上，警方在他“拥有/持有”中发现赃物。常见搭配：in someone’s possession。"
+          "explanation": "语法上，介词 in 后接名词。语义上，警方在他“拥有/持有”中发现赃物。常见搭配：in someone’s possession。",
+          "questionKey": "2541-2550:1"
         },
         {
           "number": 2,
           "prompt": "The law on __________ remains controversial in many countries.",
           "answer": "abortion",
-          "explanation": "语法上，介词 on 后接名词。语义上，关于“堕胎”的法律在很多国家仍有争议。"
+          "explanation": "语法上，介词 on 后接名词。语义上，关于“堕胎”的法律在很多国家仍有争议。",
+          "questionKey": "2541-2550:2"
         },
         {
           "number": 3,
           "prompt": "Young children are naturally __________ about the world around them.",
           "answer": "curious",
-          "explanation": "语法上，are naturally 后接形容词。语义上，小孩天生对世界“好奇”。常见搭配：be curious about something。"
+          "explanation": "语法上，are naturally 后接形容词。语义上，小孩天生对世界“好奇”。常见搭配：be curious about something。",
+          "questionKey": "2541-2550:3"
         },
         {
           "number": 4,
           "prompt": "They sat around a __________ table in the old kitchen.",
           "answer": "wooden",
-          "explanation": "语法上，空格修饰名词 table，需要形容词。语义上，他们坐在一张“木制的”桌子旁。"
+          "explanation": "语法上，空格修饰名词 table，需要形容词。语义上，他们坐在一张“木制的”桌子旁。",
+          "questionKey": "2541-2550:4"
         },
         {
           "number": 5,
           "prompt": "The city experienced an economic __________ after the new airport opened.",
           "answer": "boom",
-          "explanation": "语法上，形容词 economic 后接名词。语义上，新机场开放后，城市经历经济“繁荣”。常见搭配：economic boom。"
+          "explanation": "语法上，形容词 economic 后接名词。语义上，新机场开放后，城市经历经济“繁荣”。常见搭配：economic boom。",
+          "questionKey": "2541-2550:5"
         },
         {
           "number": 6,
           "prompt": "My grandfather told us a strange __________ about a mountain spirit.",
           "answer": "tale",
-          "explanation": "语法上，冠词 a 和形容词 strange 后接名词。语义上，祖父讲了一个关于山神的奇怪“故事/传说”。"
+          "explanation": "语法上，冠词 a 和形容词 strange 后接名词。语义上，祖父讲了一个关于山神的奇怪“故事/传说”。",
+          "questionKey": "2541-2550:6"
         },
         {
           "number": 7,
           "prompt": "Citizens in a __________ society should have the right to vote.",
           "answer": "democratic",
-          "explanation": "语法上，空格修饰名词 society，需要形容词。语义上，在“民主的”社会中，公民应有投票权。"
+          "explanation": "语法上，空格修饰名词 society，需要形容词。语义上，在“民主的”社会中，公民应有投票权。",
+          "questionKey": "2541-2550:7"
         },
         {
           "number": 8,
           "prompt": "Regular __________ can prevent machines from breaking down.",
           "answer": "maintenance",
-          "explanation": "语法上，形容词 Regular 后接名词。语义上，定期“维护”可以防止机器故障。常见搭配：regular maintenance。"
+          "explanation": "语法上，形容词 Regular 后接名词。语义上，定期“维护”可以防止机器故障。常见搭配：regular maintenance。",
+          "questionKey": "2541-2550:8"
         },
         {
           "number": 9,
           "prompt": "The roads were icy; __________, many flights were delayed.",
           "answer": "consequently",
-          "explanation": "语法上，空格作句子副词，连接前后因果。语义上，道路结冰，因此许多航班延误。常见搭配：consequently, …。"
+          "explanation": "语法上，空格作句子副词，连接前后因果。语义上，道路结冰，因此许多航班延误。常见搭配：consequently, …。",
+          "questionKey": "2541-2550:9"
         },
         {
           "number": 10,
           "prompt": "She boiled some water in a large __________.",
           "answer": "pot",
-          "explanation": "语法上，形容词 large 后接名词。语义上，她用大“锅”烧水。"
+          "explanation": "语法上，形容词 large 后接名词。语义上，她用大“锅”烧水。",
+          "questionKey": "2541-2550:10"
         }
       ]
     },
@@ -1254,61 +1305,71 @@
           "number": 1,
           "prompt": "The farmer milked the __________ early in the morning.",
           "answer": "cow",
-          "explanation": "语法上，冠词 the 后接名词。语义上，农民早上给“奶牛”挤奶。"
+          "explanation": "语法上，冠词 the 后接名词。语义上，农民早上给“奶牛”挤奶。",
+          "questionKey": "2551-2560:1"
         },
         {
           "number": 2,
           "prompt": "Exercise can help __________ your muscles and bones.",
           "answer": "strengthen",
-          "explanation": "语法上，help 后接动词原形。语义上，运动可以帮助“增强”肌肉和骨骼。常见搭配：strengthen muscles / relationships / arguments。"
+          "explanation": "语法上，help 后接动词原形。语义上，运动可以帮助“增强”肌肉和骨骼。常见搭配：strengthen muscles / relationships / arguments。",
+          "questionKey": "2551-2560:2"
         },
         {
           "number": 3,
           "prompt": "He read a book __________ waiting for the train.",
           "answer": "whilst",
-          "explanation": "语法上，空格连接两个动作，作连词。语义上，他“在”等火车的时候读书。whilst 比 while 更正式。"
+          "explanation": "语法上，空格连接两个动作，作连词。语义上，他“在”等火车的时候读书。whilst 比 while 更正式。",
+          "questionKey": "2551-2560:3"
         },
         {
           "number": 4,
           "prompt": "Lack of time is the biggest __________ on our research project.",
           "answer": "constraint",
-          "explanation": "语法上，形容词最高级 biggest 后接名词。语义上，缺少时间是研究项目最大的“限制”。常见搭配：a constraint on something。"
+          "explanation": "语法上，形容词最高级 biggest 后接名词。语义上，缺少时间是研究项目最大的“限制”。常见搭配：a constraint on something。",
+          "questionKey": "2551-2560:4"
         },
         {
           "number": 5,
           "prompt": "Please __________ the letter before putting it into the envelope.",
           "answer": "fold",
-          "explanation": "语法上，祈使句用动词原形。语义上，把信放进信封前需要“折叠”。常见搭配：fold a letter / fold clothes。"
+          "explanation": "语法上，祈使句用动词原形。语义上，把信放进信封前需要“折叠”。常见搭配：fold a letter / fold clothes。",
+          "questionKey": "2551-2560:5"
         },
         {
           "number": 6,
           "prompt": "Throw the empty bottle into the recycling __________.",
           "answer": "bin",
-          "explanation": "语法上，名词短语 recycling bin。语义上，空瓶应扔进回收“垃圾箱”。常见搭配：rubbish bin / recycling bin。"
+          "explanation": "语法上，名词短语 recycling bin。语义上，空瓶应扔进回收“垃圾箱”。常见搭配：rubbish bin / recycling bin。",
+          "questionKey": "2551-2560:6"
         },
         {
           "number": 7,
           "prompt": "The patient will __________ surgery next week.",
           "answer": "undergo",
-          "explanation": "语法上，will 后接动词原形。语义上，病人下周将“接受/经历”手术。常见搭配：undergo surgery / treatment / training。"
+          "explanation": "语法上，will 后接动词原形。语义上，病人下周将“接受/经历”手术。常见搭配：undergo surgery / treatment / training。",
+          "questionKey": "2551-2560:7"
         },
         {
           "number": 8,
           "prompt": "This mistake could __________ damage the company’s reputation.",
           "answer": "potentially",
-          "explanation": "语法上，空格修饰动词 damage，需要副词。语义上，这个错误可能会损害公司声誉。常见搭配：potentially dangerous / potentially harmful。"
+          "explanation": "语法上，空格修饰动词 damage，需要副词。语义上，这个错误可能会损害公司声誉。常见搭配：potentially dangerous / potentially harmful。",
+          "questionKey": "2551-2560:8"
         },
         {
           "number": 9,
           "prompt": "The study is limited in __________ and only covers three cities.",
           "answer": "scope",
-          "explanation": "语法上，介词 in 后接名词。语义上，这项研究“范围”有限，只覆盖三个城市。常见搭配：limited in scope / the scope of a study。"
+          "explanation": "语法上，介词 in 后接名词。语义上，这项研究“范围”有限，只覆盖三个城市。常见搭配：limited in scope / the scope of a study。",
+          "questionKey": "2551-2560:9"
         },
         {
           "number": 10,
           "prompt": "Children sometimes __________ to be doctors, teachers, or superheroes.",
           "answer": "pretend",
-          "explanation": "语法上，sometimes 后接动词原形作谓语。语义上，孩子有时“假装”成医生、老师或超级英雄。常见搭配：pretend to be someone。"
+          "explanation": "语法上，sometimes 后接动词原形作谓语。语义上，孩子有时“假装”成医生、老师或超级英雄。常见搭配：pretend to be someone。",
+          "questionKey": "2551-2560:10"
         }
       ]
     },
@@ -1334,61 +1395,71 @@
           "number": 1,
           "prompt": "Cultural __________ makes the city more open and interesting.",
           "answer": "diversity",
-          "explanation": "语法上，形容词 Cultural 后接名词。语义上，文化“多样性”让城市更开放有趣。常见搭配：cultural diversity。"
+          "explanation": "语法上，形容词 Cultural 后接名词。语义上，文化“多样性”让城市更开放有趣。常见搭配：cultural diversity。",
+          "questionKey": "2561-2570:1"
         },
         {
           "number": 2,
           "prompt": "Several newspapers __________ that the minister accepted illegal payments.",
           "answer": "allege",
-          "explanation": "语法上，主语 Several newspapers 后接动词原形作谓语。语义上，报纸“声称”部长收受非法款项。常见搭配：allege that…。"
+          "explanation": "语法上，主语 Several newspapers 后接动词原形作谓语。语义上，报纸“声称”部长收受非法款项。常见搭配：allege that…。",
+          "questionKey": "2561-2570:2"
         },
         {
           "number": 3,
           "prompt": "She felt great __________ after completing the marathon.",
           "answer": "pride",
-          "explanation": "语法上，形容词 great 后接名词。语义上，完成马拉松后她感到强烈“自豪”。常见搭配：feel pride / take pride in something。"
+          "explanation": "语法上，形容词 great 后接名词。语义上，完成马拉松后她感到强烈“自豪”。常见搭配：feel pride / take pride in something。",
+          "questionKey": "2561-2570:3"
         },
         {
           "number": 4,
           "prompt": "The athletes trained under __________ pressure before the final.",
           "answer": "intense",
-          "explanation": "语法上，空格修饰名词 pressure，需要形容词。语义上，决赛前运动员承受“强烈的”压力。常见搭配：intense pressure / intense competition。"
+          "explanation": "语法上，空格修饰名词 pressure，需要形容词。语义上，决赛前运动员承受“强烈的”压力。常见搭配：intense pressure / intense competition。",
+          "questionKey": "2561-2570:4"
         },
         {
           "number": 5,
           "prompt": "The police launched an __________ into the missing documents.",
           "answer": "inquiry",
-          "explanation": "语法上，冠词 an 后接名词。语义上，警方对丢失文件展开“调查”。常见搭配：launch an inquiry into something。"
+          "explanation": "语法上，冠词 an 后接名词。语义上，警方对丢失文件展开“调查”。常见搭配：launch an inquiry into something。",
+          "questionKey": "2561-2570:5"
         },
         {
           "number": 6,
           "prompt": "The manager decided to __________ after the scandal became public.",
           "answer": "resign",
-          "explanation": "语法上，decided to 后接动词原形。语义上，丑闻曝光后经理决定“辞职”。常见搭配：resign from a job / resign as manager。"
+          "explanation": "语法上，decided to 后接动词原形。语义上，丑闻曝光后经理决定“辞职”。常见搭配：resign from a job / resign as manager。",
+          "questionKey": "2561-2570:6"
         },
         {
           "number": 7,
           "prompt": "It takes years to master the __________ of writing good fiction.",
           "answer": "craft",
-          "explanation": "语法上，冠词 the 后接名词。语义上，写好小说的“技艺/手艺”需要多年掌握。常见搭配：master the craft of writing。"
+          "explanation": "语法上，冠词 the 后接名词。语义上，写好小说的“技艺/手艺”需要多年掌握。常见搭配：master the craft of writing。",
+          "questionKey": "2561-2570:7"
         },
         {
           "number": 8,
           "prompt": "The school has __________ rules about mobile phone use.",
           "answer": "strict",
-          "explanation": "语法上，空格修饰名词 rules，需要形容词。语义上，学校对手机使用有“严格的”规定。常见搭配：strict rules / strict discipline。"
+          "explanation": "语法上，空格修饰名词 rules，需要形容词。语义上，学校对手机使用有“严格的”规定。常见搭配：strict rules / strict discipline。",
+          "questionKey": "2561-2570:8"
         },
         {
           "number": 9,
           "prompt": "We need __________ evidence, not just guesses or feelings.",
           "answer": "concrete",
-          "explanation": "语法上，空格修饰名词 evidence，需要形容词。语义上，需要“具体的/确凿的”证据，而不是猜测和感觉。常见搭配：concrete evidence / concrete examples。"
+          "explanation": "语法上，空格修饰名词 evidence，需要形容词。语义上，需要“具体的/确凿的”证据，而不是猜测和感觉。常见搭配：concrete evidence / concrete examples。",
+          "questionKey": "2561-2570:9"
         },
         {
           "number": 10,
           "prompt": "The child picked up a beautiful __________ on the beach.",
           "answer": "shell",
-          "explanation": "语法上，冠词 a 和形容词 beautiful 后接名词。语义上，孩子在海滩捡到一个漂亮“贝壳”。"
+          "explanation": "语法上，冠词 a 和形容词 beautiful 后接名词。语义上，孩子在海滩捡到一个漂亮“贝壳”。",
+          "questionKey": "2561-2570:10"
         }
       ]
     },
@@ -1414,61 +1485,71 @@
           "number": 1,
           "prompt": "It would be __________ to save some money before leaving your job.",
           "answer": "wise",
-          "explanation": "语法上，It would be 后接形容词。语义上，辞职前存一些钱是“明智的”。常见搭配：be wise to do something。"
+          "explanation": "语法上，It would be 后接形容词。语义上，辞职前存一些钱是“明智的”。常见搭配：be wise to do something。",
+          "questionKey": "2571-2580:1"
         },
         {
           "number": 2,
           "prompt": "The two products look similar, but there are several __________ differences.",
           "answer": "distinct",
-          "explanation": "语法上，空格修饰名词 differences，需要形容词。语义上，两个产品相似，但有几个“明显的/不同的”差异。常见搭配：distinct differences / distinct features。"
+          "explanation": "语法上，空格修饰名词 differences，需要形容词。语义上，两个产品相似，但有几个“明显的/不同的”差异。常见搭配：distinct differences / distinct features。",
+          "questionKey": "2571-2580:2"
         },
         {
           "number": 3,
           "prompt": "A good sense of __________ can make difficult situations easier to handle.",
           "answer": "humor",
-          "explanation": "语法上，介词 of 后接名词。语义上，良好的“幽默感”能让困难情况更容易处理。常见搭配：a sense of humor。"
+          "explanation": "语法上，介词 of 后接名词。语义上，良好的“幽默感”能让困难情况更容易处理。常见搭配：a sense of humor。",
+          "questionKey": "2571-2580:3"
         },
         {
           "number": 4,
           "prompt": "The main __________ of this method is that it takes too much time.",
           "answer": "limitation",
-          "explanation": "语法上，形容词 main 后接名词。语义上，这种方法主要“局限”是耗时太多。常见搭配：the limitation of a method。"
+          "explanation": "语法上，形容词 main 后接名词。语义上，这种方法主要“局限”是耗时太多。常见搭配：the limitation of a method。",
+          "questionKey": "2571-2580:4"
         },
         {
           "number": 5,
           "prompt": "Dark clouds are usually an __________ of possible rain.",
           "answer": "indication",
-          "explanation": "语法上，冠词 an 后接名词。语义上，乌云通常是可能下雨的“迹象”。常见搭配：an indication of something。"
+          "explanation": "语法上，冠词 an 后接名词。语义上，乌云通常是可能下雨的“迹象”。常见搭配：an indication of something。",
+          "questionKey": "2571-2580:5"
         },
         {
           "number": 6,
           "prompt": "Political __________ is important for long-term economic development.",
           "answer": "stability",
-          "explanation": "语法上，形容词 Political 后接名词。语义上，政治“稳定”对长期经济发展重要。常见搭配：political stability / economic stability。"
+          "explanation": "语法上，形容词 Political 后接名词。语义上，政治“稳定”对长期经济发展重要。常见搭配：political stability / economic stability。",
+          "questionKey": "2571-2580:6"
         },
         {
           "number": 7,
           "prompt": "Parents should not __________ their children’s emotional needs.",
           "answer": "neglect",
-          "explanation": "语法上，should not 后接动词原形。语义上，父母不应“忽视”孩子的情感需求。常见搭配：neglect someone’s needs / duties。"
+          "explanation": "语法上，should not 后接动词原形。语义上，父母不应“忽视”孩子的情感需求。常见搭配：neglect someone’s needs / duties。",
+          "questionKey": "2571-2580:7"
         },
         {
           "number": 8,
           "prompt": "Mozart began to __________ music when he was very young.",
           "answer": "compose",
-          "explanation": "语法上，began to 后接动词原形。语义上，莫扎特很小就开始“创作”音乐。常见搭配：compose music / compose a song。"
+          "explanation": "语法上，began to 后接动词原形。语义上，莫扎特很小就开始“创作”音乐。常见搭配：compose music / compose a song。",
+          "questionKey": "2571-2580:8"
         },
         {
           "number": 9,
           "prompt": "The criminal was sent to __________ for five years.",
           "answer": "jail",
-          "explanation": "语法上，介词 to 后接地点名词。语义上，罪犯被送进“监狱”五年。常见搭配：send someone to jail。"
+          "explanation": "语法上，介词 to 后接地点名词。语义上，罪犯被送进“监狱”五年。常见搭配：send someone to jail。",
+          "questionKey": "2571-2580:9"
         },
         {
           "number": 10,
           "prompt": "Many critics __________ the decision as irresponsible and unfair.",
           "answer": "damn",
-          "explanation": "语法上，主语 Many critics 后接动词原形作谓语。语义上，批评者“谴责”该决定不负责任且不公平。这里 damn 是较强烈用词，正式写作中一般可替换为 condemn。"
+          "explanation": "语法上，主语 Many critics 后接动词原形作谓语。语义上，批评者“谴责”该决定不负责任且不公平。这里 damn 是较强烈用词，正式写作中一般可替换为 condemn。",
+          "questionKey": "2571-2580:10"
         }
       ]
     },
@@ -1494,61 +1575,71 @@
           "number": 1,
           "prompt": "The charity provides food and __________ for homeless people.",
           "answer": "shelter",
-          "explanation": "语法上，food and 后接并列名词。语义上，慈善机构为无家可归者提供食物和“庇护所”。常见搭配：provide shelter for someone。"
+          "explanation": "语法上，food and 后接并列名词。语义上，慈善机构为无家可归者提供食物和“庇护所”。常见搭配：provide shelter for someone。",
+          "questionKey": "2581-2590:1"
         },
         {
           "number": 2,
           "prompt": "A __________ apology is not enough if no real change follows.",
           "answer": "mere",
-          "explanation": "语法上，空格修饰名词 apology，需要形容词。语义上，“仅仅”道歉不够，还需要真正改变。常见搭配：a mere apology / a mere child。"
+          "explanation": "语法上，空格修饰名词 apology，需要形容词。语义上，“仅仅”道歉不够，还需要真正改变。常见搭配：a mere apology / a mere child。",
+          "questionKey": "2581-2590:2"
         },
         {
           "number": 3,
           "prompt": "Trees absorb __________ dioxide from the air.",
           "answer": "carbon",
-          "explanation": "语法上，名词短语 carbon dioxide。语义上，树木吸收空气中的“二氧化碳”。常见搭配：carbon dioxide / carbon emissions。"
+          "explanation": "语法上，名词短语 carbon dioxide。语义上，树木吸收空气中的“二氧化碳”。常见搭配：carbon dioxide / carbon emissions。",
+          "questionKey": "2581-2590:3"
         },
         {
           "number": 4,
           "prompt": "The government should __________ the sale of dangerous chemicals.",
           "answer": "regulate",
-          "explanation": "语法上，should 后接动词原形。语义上，政府应该“监管”危险化学品销售。常见搭配：regulate the sale/use/industry。"
+          "explanation": "语法上，should 后接动词原形。语义上，政府应该“监管”危险化学品销售。常见搭配：regulate the sale/use/industry。",
+          "questionKey": "2581-2590:4"
         },
         {
           "number": 5,
           "prompt": "Would you like extra __________ on your sandwich?",
           "answer": "cheese",
-          "explanation": "语法上，形容词 extra 后接名词。语义上，三明治里加额外“奶酪”。"
+          "explanation": "语法上，形容词 extra 后接名词。语义上，三明治里加额外“奶酪”。",
+          "questionKey": "2581-2590:5"
         },
         {
           "number": 6,
           "prompt": "Loud noises can __________ anxiety in some animals.",
           "answer": "trigger",
-          "explanation": "语法上，can 后接动词原形。语义上，巨大噪音会“引发”一些动物的焦虑。常见搭配：trigger anxiety / trigger a reaction。"
+          "explanation": "语法上，can 后接动词原形。语义上，巨大噪音会“引发”一些动物的焦虑。常见搭配：trigger anxiety / trigger a reaction。",
+          "questionKey": "2581-2590:6"
         },
         {
           "number": 7,
           "prompt": "Water flows through a long metal __________ under the street.",
           "answer": "pipe",
-          "explanation": "语法上，形容词 metal 后接名词。语义上，水通过街道下的金属“管道”流动。"
+          "explanation": "语法上，形容词 metal 后接名词。语义上，水通过街道下的金属“管道”流动。",
+          "questionKey": "2581-2590:7"
         },
         {
           "number": 8,
           "prompt": "The earthquake caused widespread __________ across the city.",
           "answer": "destruction",
-          "explanation": "语法上，形容词 widespread 后接名词。语义上，地震造成大范围“破坏”。常见搭配：cause destruction / widespread destruction。"
+          "explanation": "语法上，形容词 widespread 后接名词。语义上，地震造成大范围“破坏”。常见搭配：cause destruction / widespread destruction。",
+          "questionKey": "2581-2590:8"
         },
         {
           "number": 9,
           "prompt": "He learned to play the __________ by watching online videos.",
           "answer": "guitar",
-          "explanation": "语法上，play the 后接乐器名词。语义上，他通过在线视频学会弹“吉他”。常见搭配：play the guitar。"
+          "explanation": "语法上，play the 后接乐器名词。语义上，他通过在线视频学会弹“吉他”。常见搭配：play the guitar。",
+          "questionKey": "2581-2590:9"
         },
         {
           "number": 10,
           "prompt": "Each country’s __________ was raised during the opening ceremony.",
           "answer": "flag",
-          "explanation": "语法上，所有格 country’s 后接名词。语义上，开幕式上升起每个国家的“旗帜”。"
+          "explanation": "语法上，所有格 country’s 后接名词。语义上，开幕式上升起每个国家的“旗帜”。",
+          "questionKey": "2581-2590:10"
         }
       ]
     },
@@ -1574,61 +1665,71 @@
           "number": 1,
           "prompt": "She practises the __________ for an hour every evening.",
           "answer": "piano",
-          "explanation": "语法上，practises the 后接乐器名词。语义上，她每天练一小时“钢琴”。常见搭配：play/practise the piano。"
+          "explanation": "语法上，practises the 后接乐器名词。语义上，她每天练一小时“钢琴”。常见搭配：play/practise the piano。",
+          "questionKey": "2591-2600:1"
         },
         {
           "number": 2,
           "prompt": "The children watched the __________ show with great excitement.",
           "answer": "magic",
-          "explanation": "语法上，空格修饰名词 show，形成名词短语。语义上，孩子们兴奋地观看“魔术表演”。常见搭配：magic show / magic trick。"
+          "explanation": "语法上，空格修饰名词 show，形成名词短语。语义上，孩子们兴奋地观看“魔术表演”。常见搭配：magic show / magic trick。",
+          "questionKey": "2591-2600:2"
         },
         {
           "number": 3,
           "prompt": "The cause of the accident remains a __________.",
           "answer": "mystery",
-          "explanation": "语法上，冠词 a 后接名词。语义上，事故原因仍是一个“谜”。常见搭配：remain a mystery。"
+          "explanation": "语法上，冠词 a 后接名词。语义上，事故原因仍是一个“谜”。常见搭配：remain a mystery。",
+          "questionKey": "2591-2600:3"
         },
         {
           "number": 4,
           "prompt": "We plan to __________ in the mountains during the winter holiday.",
           "answer": "ski",
-          "explanation": "语法上，plan to 后接动词原形。语义上，他们计划寒假去山里“滑雪”。"
+          "explanation": "语法上，plan to 后接动词原形。语义上，他们计划寒假去山里“滑雪”。",
+          "questionKey": "2591-2600:4"
         },
         {
           "number": 5,
           "prompt": "Please do not __________ during the test.",
           "answer": "whisper",
-          "explanation": "语法上，祈使否定句 do not 后接动词原形。语义上，考试期间不要“低语”。"
+          "explanation": "语法上，祈使否定句 do not 后接动词原形。语义上，考试期间不要“低语”。",
+          "questionKey": "2591-2600:5"
         },
         {
           "number": 6,
           "prompt": "Passengers should leave the bus through the __________ door.",
           "answer": "rear",
-          "explanation": "语法上，空格修饰名词 door，需要形容词。语义上，乘客应从“后面的”门下车。常见搭配：rear door / rear window。"
+          "explanation": "语法上，空格修饰名词 door，需要形容词。语义上，乘客应从“后面的”门下车。常见搭配：rear door / rear window。",
+          "questionKey": "2591-2600:6"
         },
         {
           "number": 7,
           "prompt": "The restaurant has added several vegetarian dishes to the __________.",
           "answer": "menu",
-          "explanation": "语法上，介词 to 后接名词。语义上，餐厅在“菜单”上增加了几道素食菜品。"
+          "explanation": "语法上，介词 to 后接名词。语义上，餐厅在“菜单”上增加了几道素食菜品。",
+          "questionKey": "2591-2600:7"
         },
         {
           "number": 8,
           "prompt": "Many animal __________ are disappearing because of habitat loss.",
           "answer": "species",
-          "explanation": "语法上，形容词 animal 后接名词。语义上，由于栖息地丧失，许多动物“物种”正在消失。注意 species 单复数同形。"
+          "explanation": "语法上，形容词 animal 后接名词。语义上，由于栖息地丧失，许多动物“物种”正在消失。注意 species 单复数同形。",
+          "questionKey": "2591-2600:8"
         },
         {
           "number": 9,
           "prompt": "The __________ looked especially bright above the sea.",
           "answer": "moon",
-          "explanation": "语法上，冠词 The 后接名词作主语。语义上，海面上方的“月亮”特别明亮。"
+          "explanation": "语法上，冠词 The 后接名词作主语。语义上，海面上方的“月亮”特别明亮。",
+          "questionKey": "2591-2600:9"
         },
         {
           "number": 10,
           "prompt": "He is late again, __________ because the traffic is heavy.",
           "answer": "presumably",
-          "explanation": "语法上，空格作句子副词，表示推测。语义上，他又迟到了，大概是因为交通拥堵。常见搭配：presumably because…。"
+          "explanation": "语法上，空格作句子副词，表示推测。语义上，他又迟到了，大概是因为交通拥堵。常见搭配：presumably because…。",
+          "questionKey": "2591-2600:10"
         }
       ]
     }

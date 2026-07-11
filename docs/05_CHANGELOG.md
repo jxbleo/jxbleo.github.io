@@ -7,6 +7,15 @@
 
 ### Changed
 
+- Added Vocabulary content/grading version handshakes and server-side answer
+  snapshots for countable tests. Stale pages are rejected before grading,
+  active tests retain their start-time grading rules, drafts are isolated by
+  content version, and release checks now validate all Vocabulary JSON/JS,
+  Word Bank, and question-key structure.
+- Added a teacher-only, dry-run-first historical repair for Vocabulary
+  content-version mismatches. It identifies whole attempts from multiple legacy
+  answer signatures and regrades only upward while preserving original history.
+
 - Changed the student Dashboard progress board so the completion meter centers
   its `Finished / total` value, week labels open weekly completion summaries,
   blank selections stay visually quiet, and loading states reserve the meter and

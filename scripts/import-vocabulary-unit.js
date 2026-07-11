@@ -150,6 +150,9 @@ function buildUnit(content, sourceFile) {
 
   return {
     id: unitId,
+    contentVersion: fs.existsSync(outputPath)
+      ? String(JSON.parse(fs.readFileSync(outputPath, "utf8")).contentVersion || "1")
+      : "1",
     sectionId: "vocabulary",
     title: unitId,
     href: `vocabulary.html?set=${unitId}`,

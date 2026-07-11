@@ -172,6 +172,13 @@ function extractVocabulary(source, privateSource) {
   const privateAnswers = privateSource && privateSource.answers ? privateSource.answers : null;
   const privateExplanations = privateSource && privateSource.explanations ? privateSource.explanations : null;
   const missingAnswers = [];
+  const publicVersion = String(source.contentVersion == null ? "" : source.contentVersion).trim();
+  const privateVersion = String(privateSource && privateSource.grading_version || "1").trim();
+
+  if (!publicVersion || publicVersion !== privateVersion) {
+    throw new Error(`Vocabulary ${source.id} contentVersion ${publicVersion || "(missing)"} does not match private grading version ${privateVersion}`);
+  }
+  publicData.contentVersion = publicVersion;
 
   function hasAnswerValue(value) {
     if (Array.isArray(value)) return value.length > 0 && value.some(hasAnswerValue);
@@ -211,7 +218,7 @@ function extractVocabulary(source, privateSource) {
     publicData,
     gradingKey: {
       set_id: source.id,
-      grading_version: privateSource && privateSource.grading_version ? privateSource.grading_version : "1",
+      grading_version: privateVersion,
       answers,
       explanations,
       scoring_rules: privateSource && privateSource.scoring_rules ? privateSource.scoring_rules : {

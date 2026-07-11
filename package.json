@@ -6,6 +6,7 @@
   "scripts": {
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
+    "test:vocabulary": "node scripts/test-vocabulary-versioning.js",
     "package:functions": "node scripts/package-cloudfunctions.js",
     "package:functions:all": "node scripts/package-cloudfunctions.js --all",
     "release:plan": "node scripts/generate-deploy-plan.js",

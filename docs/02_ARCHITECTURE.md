@@ -161,13 +161,17 @@ Rules:
 
 1. `vocabulary.html` creates a `vocabulary_test_sessions` record before a
    countable 5+ group Vocabulary Test starts.
-2. The session stores selected group IDs, graded question IDs, server start and
-   expiry times based on 90 seconds per selected group, an in-memory
-   page-instance ID generated on each page load, and heartbeat state.
-3. The page heartbeats every 10 seconds while visible and active.
-4. `submitAttempt` validates `test_session_id` and grades the session's
-   recorded question IDs, treating missing answers as blanks.
-5. Switching apps/tabs, leaving the page, heartbeat timeout, or time expiry
+2. The browser sends the public unit `contentVersion`; the function verifies it
+   against private `grading_keys.grading_version` before creating the session.
+3. The session stores selected group IDs, graded question IDs, the grading
+   version, private answer/explanation snapshots, server start and expiry times
+   based on 90 seconds per selected group, an in-memory page-instance ID
+   generated on each page load, and heartbeat state.
+4. The page heartbeats every 10 seconds while visible and active.
+5. `submitAttempt` validates `test_session_id` and grades from the session's
+   locked snapshots, treating missing answers as blanks. A grading-key update
+   during the test therefore cannot change that test's result.
+6. Switching apps/tabs, leaving the page, heartbeat timeout, or time expiry
    closes the session as `abandoned` without creating an attempt or changing
    assignment status.
 

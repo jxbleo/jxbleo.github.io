@@ -344,6 +344,9 @@ Core fields:
 | `selected_group_count` | number | official group count |
 | `selected_group_ids` | array | official selected groups |
 | `question_ids` | array | official submitted/graded question set |
+| `grading_version` | string | public content/private grading version locked at test start |
+| `grading_answers_snapshot` | object | private answer snapshot for the session question IDs |
+| `grading_explanations_snapshot` | object | private explanation snapshot for the session question IDs |
 | `client_device_id` | string/null | browser/device identifier for diagnostics |
 | `client_instance_id` | string | per-page-load in-memory identifier used for ownership checks |
 | `started_at` | Date | server start time |
@@ -361,7 +364,11 @@ Rules:
 - Vocabulary Test `due_at` is based on 90 seconds, or 1.5 minutes, per selected
   group.
 - `submitAttempt` grades countable Vocabulary Tests from the session's
-  `question_ids`, not from a browser-provided question list.
+  `question_ids` and private grading snapshots, not from a browser-provided
+  question list or a grading key that changed after the test started.
+- The browser must send the public unit `contentVersion` when starting,
+  resuming, heartbeating, and submitting. A missing or mismatched version is
+  rejected with `VOCABULARY_CONTENT_OUTDATED` before grading.
 - Missing submitted answers for session questions count as blank answers.
 - A different `client_instance_id` is blocked from student cloud-function
   surfaces while a session is active. The browser must generate this ID in

@@ -156,6 +156,58 @@ function checkBbcPlaceholders() {
   }
 }
 
+function checkVocabularyContent() {
+  const vocabularyDir = path.join(root, "content", "vocabulary");
+  if (!fs.existsSync(vocabularyDir)) return;
+
+  for (const fileName of fs.readdirSync(vocabularyDir).filter((name) => name.endsWith(".json"))) {
+    const jsonPath = path.join(vocabularyDir, fileName);
+    const unit = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    const version = String(unit.contentVersion == null ? "" : unit.contentVersion).trim();
+    if (!version) addFailure(`Vocabulary contentVersion is missing: ${rel(jsonPath)}`);
+
+    const groups = Array.isArray(unit.quizGroups) ? unit.quizGroups : [];
+    const seenKeys = new Set();
+    groups.forEach((group) => {
+      const words = Array.isArray(group.wordList) ? group.wordList : [];
+      const questions = Array.isArray(group.questions) ? group.questions : [];
+      if (words.length !== questions.length) {
+        addFailure(`Vocabulary Word Bank/question count mismatch in ${rel(jsonPath)} group ${group.id}`);
+      }
+      questions.forEach((question) => {
+        const expectedKey = `${group.id}:${question.number}`;
+        if (question.questionKey !== expectedKey) {
+          addFailure(`Vocabulary questionKey mismatch in ${rel(jsonPath)}: expected ${expectedKey}`);
+        }
+        if (seenKeys.has(expectedKey)) {
+          addFailure(`Duplicate Vocabulary questionKey in ${rel(jsonPath)}: ${expectedKey}`);
+        }
+        seenKeys.add(expectedKey);
+      });
+    });
+
+    const jsPath = jsonPath.replace(/\.json$/i, ".js");
+    if (!fs.existsSync(jsPath)) {
+      addFailure(`Vocabulary JS fallback is missing: ${rel(jsPath)}`);
+      continue;
+    }
+    const jsText = fs.readFileSync(jsPath, "utf8");
+    const match = jsText.match(/=\s*(\{[\s\S]*\});\s*$/);
+    if (!match) {
+      addFailure(`Vocabulary JS fallback cannot be parsed: ${rel(jsPath)}`);
+      continue;
+    }
+    try {
+      const fallback = JSON.parse(match[1]);
+      if (JSON.stringify(fallback) !== JSON.stringify(unit)) {
+        addFailure(`Vocabulary JSON/JS fallback mismatch: ${rel(jsonPath)}`);
+      }
+    } catch (error) {
+      addFailure(`Vocabulary JS fallback is invalid: ${rel(jsPath)}\n${error.message}`);
+    }
+  }
+}
+
 function main() {
   checkRequiredDocs();
   checkCloudFunctionSyntax();
@@ -163,6 +215,7 @@ function main() {
   checkTrackedSecrets();
   checkWorkingTreeAwareness();
   checkBbcPlaceholders();
+  checkVocabularyContent();
 
   for (const warning of warnings) {
     console.warn(`WARN: ${warning}`);

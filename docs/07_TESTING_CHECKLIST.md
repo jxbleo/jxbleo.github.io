@@ -258,6 +258,35 @@ Check:
 
 Check:
 
+- every vocabulary JSON has a non-empty string `contentVersion`, and its JS
+  fallback is structurally identical;
+- every group has equal Word Bank/question counts, unique canonical
+  `questionKey` values, and keys shaped as `<group.id>:<question.number>`;
+- `prepare-cloudbase-data.js` fails when public `contentVersion` differs from
+  private `grading_version`;
+- a stale public unit is rejected with `VOCABULARY_CONTENT_OUTDATED` before a
+  countable test session starts and before an uncounted practice is graded;
+- a countable test session stores only the selected questions' private answer
+  and explanation snapshots, never returns those snapshots in `sessionView`,
+  and grades against the snapshots after the live grading key changes;
+- resume, heartbeat, and submit reject a page whose `content_version` differs
+  from the session's locked `grading_version`;
+- draft storage keys include `contentVersion`, so answers from an older prompt
+  revision cannot prefill a newer revision;
+- normalized matching still accepts case and surrounding-space differences,
+  while a genuinely different answer remains wrong;
+- run `npm run test:vocabulary` for version/snapshot rule tests and
+  `npm run verify:release` for all-unit schema, key, Word Bank, and JSON/JS
+  parity checks;
+- before deployment, smoke test an old-version start request, a current-version
+  start and submit, a grading-key update during an active session, and a 1-4
+  group self-test. The stale request must fail, the active session must retain
+  its original result, and the self-test must never write an attempt.
+- for a historical version-mismatch repair, dry-run
+  `backfillVocabularyContentVersionMismatch`, require multiple legacy-answer
+  signatures in every candidate attempt, confirm every percentage moves only
+  upward, then apply and rerun the dry run to verify it returns zero candidates.
+
 - Learn/Spell/Cloze modes render
 - Vocabulary Learn numbered capsules stay in the sticky learning bar, while the
   word bank appears only after `Go to Practice`, expands and collapses slowly,

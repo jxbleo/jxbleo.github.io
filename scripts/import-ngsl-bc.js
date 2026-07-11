@@ -331,6 +331,7 @@ function buildUnit(config) {
   const quizGroups = parseAnswerBlocks(content, parseGroupBlocks(content));
   return {
     id: config.id,
+    contentVersion: "2",
     sectionId: "vocabulary",
     title: config.id,
     href: `vocabulary.html?set=${config.id}`,

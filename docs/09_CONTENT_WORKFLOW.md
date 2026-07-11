@@ -223,6 +223,15 @@ Vocabulary content may come from structured lists, units, or generated groups.
 
 Rules to preserve:
 
+- Every committed vocabulary JSON/JS unit must include a string
+  `contentVersion`. It must equal the corresponding private
+  `grading_keys.grading_version`; version values themselves are public, but
+  answers and explanations remain private.
+- Increase `contentVersion` whenever prompts, question-to-key mappings, answer
+  forms, accepted answers, or explanations change. Deploy public content and
+  private grading together. Old clients are rejected before a test starts, and
+  already-started countable tests continue against their server-side snapshot.
+
 - Practice Mode does not write attempts.
 - Test Mode with 1-4 selected groups is self-test only and does not write
   attempts.
@@ -323,7 +332,9 @@ When the owner reports a content correction:
 3. Update private grading material if answers, accepted variants, or
    explanations changed.
 4. Rebuild catalog or CloudBase import files when required.
-5. Avoid overwriting teacher-approved `grading_keys` changes made through Argue.
+5. Increase the Vocabulary `contentVersion`/`grading_version` pair when the
+   correction changes any prompt or grading behavior.
+6. Avoid overwriting teacher-approved `grading_keys` changes made through Argue.
 
 Never fix only the visible text while leaving grading inconsistent.
 
