@@ -112,6 +112,10 @@ Frontend rule:
 - The teacher notification bell groups attempts by student assignment thread,
   or by student and set for self-study. Each row shows the latest result and
   total attempt count, and its detail dialog shows the complete thread history.
+- In the teacher header, the notification bell sits immediately to the left of
+  the Argue review button. Argue uses the same raised-hand outline as exercise
+  pages, but inherits the teacher header's quiet gray icon treatment; unread
+  review requests remain indicated by the red count badge.
 - Opening the bell alone does not clear the top-right badge or red row state.
   Opening a grouped attempt row marks that thread's current attempts reviewed;
   a later attempt makes the same thread red again.
