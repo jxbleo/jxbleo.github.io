@@ -166,6 +166,25 @@ await window.MrCatCloud.callFunction("teacherAdmin", {
 If the result includes a non-null `next_cursor`, repeat with that value until
 `done` is `true`. Add `set_id: "BBC-YYMMDD"` to limit the repair to one set.
 
+For a reviewed Vocabulary public/private version mismatch, use the dedicated
+teacher-only action. It reconstructs the legacy answer map from immutable
+historical answer snapshots, requires at least three wrong answers in one
+attempt to match the legacy map by default, and only marks additional answers
+correct. Always inspect the dry run before applying:
+
+```js
+await window.MrCatCloud.callFunction("teacherAdmin", {
+  action: "backfillVocabularyContentVersionMismatch",
+  set_id: "NGSL-J",
+  legacy_grading_version: "1",
+  current_grading_version: "2"
+});
+```
+
+Add `apply: true` only after candidate counts, question counts, and percentage
+changes have been reviewed. The action writes adjusted fields, updates linked
+assignment summaries, repairs eligible STAR records, and is idempotent.
+
 ## 6. Owner-Gated Release Automation
 
 The project uses semi-automated deployment helpers. They prepare release

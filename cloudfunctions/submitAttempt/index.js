@@ -1,4 +1,9 @@
 const cloudbase = require("@cloudbase/node-sdk");
+const {
+  assertVocabularyContentVersion,
+  buildVocabularyGradingSnapshot,
+  gradingKeyFromSessionSnapshot,
+} = require("./vocabulary-versioning");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -226,6 +231,7 @@ function sessionView(session) {
     selected_group_count: Number(session.selected_group_count || 0),
     selected_group_ids: session.selected_group_ids || [],
     question_ids: session.question_ids || [],
+    grading_version: session.grading_version || null,
     started_at: session.started_at || null,
     due_at: session.due_at || null,
     expires_at: session.expires_at || null,
@@ -646,7 +652,9 @@ async function startVocabularyTestSession(student, event) {
   if (!isVocabularySet(set)) throw new Error("VOCABULARY_SET_REQUIRED");
   const gradingKey = await getOne("grading_keys", { set_id: setId });
   if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+  const gradingVersion = assertVocabularyContentVersion(event.content_version, gradingKey);
   validateVocabularyQuestionIds(gradingKey, questionIds);
+  const gradingSnapshot = buildVocabularyGradingSnapshot(gradingKey, questionIds);
   const { assignment, assignmentId } = await resolveAssignment(student, setId, event.assignment_id ? String(event.assignment_id) : null);
 
   const active = await activeVocabularySessions(student.auth_uid);
@@ -671,6 +679,9 @@ async function startVocabularyTestSession(student, event) {
     selected_group_count: selectedGroupCount,
     selected_group_ids: selectedGroupIds,
     question_ids: questionIds,
+    grading_version: gradingVersion,
+    grading_answers_snapshot: gradingSnapshot.answers,
+    grading_explanations_snapshot: gradingSnapshot.explanations,
     client_device_id: ids.deviceId || null,
     client_instance_id: ids.instanceId,
     started_at: now,
@@ -707,6 +718,9 @@ async function ensureActiveOwnedVocabularySession(student, event) {
   const session = await getOwnedVocabularySession(student, event);
   if (!isSessionOwner(session, ids)) throw new Error("VOCABULARY_TEST_DEVICE_BLOCKED");
   if ((session.status || "") !== "active") throw new Error("VOCABULARY_TEST_SESSION_CLOSED");
+  if (String(event.content_version || "") !== String(session.grading_version || "")) {
+    throw new Error("VOCABULARY_CONTENT_OUTDATED");
+  }
   const now = new Date();
   if (sessionTimeExpired(session, now)) {
     await markVocabularySessionEnded(session, "abandoned", "time_expired");
@@ -793,6 +807,7 @@ async function validateVocabularyTestSessionForSubmit(student, event, setId, ass
     selectedGroupCount: Number(session.selected_group_count || sessionGroupIds.length),
     questionIds: sessionQuestionIds,
     answers: constrainedAnswers,
+    gradingKey: gradingKeyFromSessionSnapshot(session),
   };
 }
 
@@ -816,6 +831,7 @@ exports.main = async (event = {}) => {
     let selectedGroupIdsForAttempt = uniqueStrings(event.selected_group_ids || [], 80);
     let vocabularyTestSession = null;
     let vocabularyTestQuestionIds = null;
+    let vocabularyTestGradingKey = null;
 
     if (!setId) throw new Error("SET_REQUIRED");
     const set = await getOne("sets", { set_id: setId, visible: true });
@@ -832,12 +848,14 @@ exports.main = async (event = {}) => {
     const isVocabularySelfCheck = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && submittedGroupCount < VOCABULARY_TEST_MIN_GROUPS);
     if (isVocabularySelfCheck) {
+      assertVocabularyContentVersion(event.content_version, gradingKey);
       await assertNoActiveVocabularySelfTestLeak(student, event, setId);
     }
     if (isCountedVocabularyTest) {
       const validatedSession = await validateVocabularyTestSessionForSubmit(student, event, setId, assignmentId, answers);
       vocabularyTestSession = validatedSession.session;
       vocabularyTestQuestionIds = validatedSession.questionIds;
+      vocabularyTestGradingKey = validatedSession.gradingKey;
       answers = validatedSession.answers;
       selectedGroupCountForAttempt = validatedSession.selectedGroupCount;
       selectedGroupIdsForAttempt = validatedSession.selectedGroupIds;
@@ -855,7 +873,8 @@ exports.main = async (event = {}) => {
       answers = { ...answers, ...bbcMcLockedAnswers };
     }
 
-    const grading = gradeAnswers(answers, gradingKey, mode, vocabularyTestQuestionIds);
+    const effectiveGradingKey = vocabularyTestGradingKey || gradingKey;
+    const grading = gradeAnswers(answers, effectiveGradingKey, mode, vocabularyTestQuestionIds);
     if (!grading.questionCount) throw new Error("NO_GRADED_QUESTIONS");
     const passingPercentage = passingPercentageForAssignment(assignment, set);
     const masteryPercentage = masteryPercentageForAssignment(assignment, set);
@@ -956,7 +975,7 @@ exports.main = async (event = {}) => {
       audio_started_at: event.audio_started_at || null,
       audio_to_submit_seconds: event.audio_to_submit_seconds == null ? null : Number(event.audio_to_submit_seconds),
       practice_context: assignmentId ? "assignment" : "resource",
-      grading_version: gradingKey.grading_version || "1",
+      grading_version: effectiveGradingKey.grading_version || "1",
       selected_group_count: selectedGroupCountForAttempt,
       selected_group_ids: selectedGroupIdsForAttempt,
       group_results: groupResults,

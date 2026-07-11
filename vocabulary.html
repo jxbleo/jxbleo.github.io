@@ -1848,7 +1848,7 @@
     </div>
 
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
-    <script src="assets/js/config.public.js?v=20260709-3"></script>
+    <script src="assets/js/config.public.js?v=20260711-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/practice-session.js?v=20260709-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260701-1"></script>
@@ -1929,8 +1929,13 @@
             return window.MRCAT_CONFIG && window.MRCAT_CONFIG.appVersion || '1';
         }
 
+        function vocabularyContentVersion() {
+            return String(unitData && unitData.contentVersion || '');
+        }
+
         function testDraftKey() {
-            return 'vocab-test-' + setId + '-' + (assignmentId || currentUserId() || 'visitor');
+            return 'vocab-test-' + setId + '-v' + vocabularyContentVersion() + '-' +
+                (assignmentId || currentUserId() || 'visitor');
         }
 
         function saveTestDraft() {
@@ -2003,6 +2008,9 @@
             if (/VOCABULARY_TEST_SESSION_EXPIRED|VOCABULARY_TEST_SESSION_CLOSED/i.test(message)) {
                 return new Error('This vocabulary test has ended because the page was left or the heartbeat expired. Please start again when you are ready.');
             }
+            if (/VOCABULARY_CONTENT_OUTDATED/i.test(message)) {
+                return new Error('This exercise has been updated. Reload the page before starting or submitting the test.');
+            }
             return error instanceof Error ? error : new Error(message || fallback || 'Unable to manage this vocabulary test session.');
         }
 
@@ -2013,7 +2021,8 @@
             return window.MrCatCloud.callFunction('submitAttempt', Object.assign({
                 action: action,
                 set_id: setId,
-                assignment_id: assignmentId || null
+                assignment_id: assignmentId || null,
+                content_version: vocabularyContentVersion()
             }, payload || {})).then(function(response) {
                 if (!response || !response.success) {
                     var error = new Error(response && response.message || response && response.code || 'VOCABULARY_TEST_SESSION_ERROR');
@@ -3243,6 +3252,7 @@
                     return window.MrCatCloud.callFunction('submitAttempt', {
                         set_id: setId,
                         mode: 'vocabulary_practice',
+                        content_version: vocabularyContentVersion(),
                         answers: answers,
                         selected_group_count: 1,
                         selected_group_ids: [groupId]
@@ -3283,6 +3293,9 @@
 
         function practiceCheckError(error) {
             var message = error && (error.message || error.code || String(error)) || '';
+            if (/VOCABULARY_CONTENT_OUTDATED/i.test(message)) {
+                return new Error('This exercise has been updated. Reload the page before checking answers.');
+            }
             if (/t\.scope|null is not an object|AUTH_REQUIRED|LOGIN_REQUIRED|INVALID_LOGIN_STATE/i.test(message)) {
                 return new Error('Login session is not active. Please log in again, then reopen this vocabulary practice.');
             }
@@ -3379,6 +3392,7 @@
                     return window.MrCatCloud.callFunction('submitAttempt', {
                         set_id: setId,
                         mode: 'vocabulary_practice',
+                        content_version: vocabularyContentVersion(),
                         answers: answers,
                         selected_group_count: 1,
                         selected_group_ids: [groupId]
@@ -4133,6 +4147,7 @@
                 set_id: setId,
                 assignment_id: assignmentId || null,
                 mode: 'vocabulary_test',
+                content_version: vocabularyContentVersion(),
                 test_session_id: activeTestSessionId || null,
                 answers: answers,
                 selected_group_count: activeTestGroupCount,
@@ -4199,7 +4214,7 @@
                     startTimer(options.remaining_seconds);
                     startTestHeartbeat();
                 }
-                alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
+                alert(sessionError(error, 'Unable to submit. Please try again.').message);
             });
         }
 

@@ -1,6 +1,7 @@
 window.__VOCABULARY_UNITS__ = window.__VOCABULARY_UNITS__ || {};
 window.__VOCABULARY_UNITS__["THINK2-U3"] = {
   "id": "THINK2-U3",
+  "contentVersion": "1",
   "sectionId": "vocabulary",
   "title": "THINK2-U3",
   "href": "vocabulary.html?set=THINK2-U3",

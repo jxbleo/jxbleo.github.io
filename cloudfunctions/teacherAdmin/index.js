@@ -1791,6 +1791,139 @@ async function backfillAcceptedAnswerRegrades(event, teacher) {
   };
 }
 
+function legacyVocabularyAnswerMap(attempts, legacyVersion) {
+  const votes = new Map();
+  attempts
+    .filter((attempt) => String(attempt.grading_version || "1") === legacyVersion)
+    .forEach((attempt) => {
+      (attempt.question_results || []).forEach((item) => {
+        const questionId = String(item.question_id || "");
+        const answer = item.correct_answer;
+        if (!questionId || answer == null || Array.isArray(answer)) return;
+        const normalizedAnswer = normalized(answer);
+        if (!normalizedAnswer) return;
+        if (!votes.has(questionId)) votes.set(questionId, new Map());
+        const questionVotes = votes.get(questionId);
+        const current = questionVotes.get(normalizedAnswer) || { answer, count: 0 };
+        current.count += 1;
+        questionVotes.set(normalizedAnswer, current);
+      });
+    });
+
+  const answers = new Map();
+  for (const [questionId, questionVotes] of votes.entries()) {
+    const ranked = [...questionVotes.values()].sort((left, right) => right.count - left.count);
+    if (ranked.length) answers.set(questionId, ranked[0].answer);
+  }
+  return answers;
+}
+
+function vocabularyVersionMismatchAdjustment(attempt, legacyAnswers, currentVersion, minimumMatches, legacyVersion) {
+  if (String(attempt.grading_version || "1") !== currentVersion) return null;
+  const currentResults = effectiveQuestionResults(attempt).map((item) => ({ ...item }));
+  let signatureMatchCount = 0;
+  const adjustable = [];
+
+  currentResults.forEach((item) => {
+    if (item.correct === true) return;
+    const questionId = String(item.question_id || "");
+    const legacyAnswer = legacyAnswers.get(questionId);
+    if (legacyAnswer == null) return;
+    if (normalized(item.submitted_answer) !== normalized(legacyAnswer)) return;
+    if (normalized(item.correct_answer) === normalized(legacyAnswer)) return;
+    signatureMatchCount += 1;
+    adjustable.push({ item, legacyAnswer });
+  });
+
+  if (signatureMatchCount < minimumMatches) return null;
+  adjustable.forEach(({ item, legacyAnswer }) => {
+    item.correct = true;
+    item.correct_answer = legacyAnswer;
+    item.backfill_adjusted = true;
+    item.bulk_regrade_source = "vocabulary_content_version_mismatch";
+    item.legacy_grading_version = legacyVersion;
+  });
+  return { currentResults, signatureMatchCount, adjustedQuestionCount: adjustable.length };
+}
+
+async function backfillVocabularyContentVersionMismatch(event, teacher) {
+  const apply = event.apply === true || ["1", "true", "yes"].includes(text(event.apply).toLowerCase());
+  const setId = text(event.set_id);
+  const legacyVersion = text(event.legacy_grading_version) || "1";
+  const currentVersion = text(event.current_grading_version) || "2";
+  const minimumMatches = Math.min(Math.max(Number.parseInt(text(event.minimum_matches) || "3", 10) || 3, 2), 20);
+  if (!setId) throw new Error("SET_REQUIRED");
+  if (legacyVersion === currentVersion) throw new Error("GRADING_VERSION_RANGE_REQUIRED");
+
+  const attempts = await getAll("attempts", { where: { set_id: setId } });
+  const legacyAnswers = legacyVocabularyAnswerMap(attempts, legacyVersion);
+  if (!legacyAnswers.size) throw new Error("LEGACY_GRADING_SNAPSHOT_NOT_FOUND");
+
+  const now = new Date();
+  let matchingAttemptCount = 0;
+  let matchingQuestionCount = 0;
+  const candidates = [];
+  for (const attempt of attempts) {
+    const candidate = vocabularyVersionMismatchAdjustment(
+      attempt,
+      legacyAnswers,
+      currentVersion,
+      minimumMatches,
+      legacyVersion
+    );
+    if (!candidate) continue;
+    matchingAttemptCount += 1;
+    matchingQuestionCount += candidate.adjustedQuestionCount;
+    const adjustment = buildAttemptAdjustmentUpdate(
+      attempt,
+      candidate.currentResults,
+      teacher,
+      now,
+      legacyVersion,
+      { source: "vocabulary_content_version_mismatch" }
+    );
+    candidates.push({
+      attempt_id: attempt.attempt_id || attempt._id,
+      signature_match_count: candidate.signatureMatchCount,
+      adjusted_question_count: candidate.adjustedQuestionCount,
+      original_percentage: Number(attempt.adjusted_percentage == null ? attempt.percentage || 0 : attempt.adjusted_percentage),
+      adjusted_percentage: adjustment.percentage,
+    });
+    if (!apply) continue;
+
+    await db.collection("attempts").doc(attempt._id).update(adjustment.update);
+    const adjustedAttempt = { ...attempt, ...adjustment.update };
+    await applyAdjustedAttemptEffects(
+      attempt,
+      adjustedAttempt,
+      adjustment.correctCount,
+      adjustment.questionCount,
+      adjustment.percentage,
+      adjustment.passed,
+      adjustment.mastered,
+      now
+    );
+  }
+
+  return {
+    success: true,
+    action: "backfillVocabularyContentVersionMismatch",
+    dry_run: !apply,
+    apply,
+    set_id: setId,
+    legacy_grading_version: legacyVersion,
+    current_grading_version: currentVersion,
+    minimum_signature_matches: minimumMatches,
+    legacy_question_count: legacyAnswers.size,
+    scanned_attempt_count: attempts.length,
+    matching_attempt_count: matchingAttemptCount,
+    matching_question_count: matchingQuestionCount,
+    adjusted_attempt_count: apply ? matchingAttemptCount : 0,
+    adjusted_question_count: apply ? matchingQuestionCount : 0,
+    candidates,
+  };
+}
+
 async function resolveDispute(event, teacher) {
   const disputeId = text(event.dispute_id);
   const decision = text(event.decision);
@@ -1907,6 +2040,9 @@ exports.main = async (event) => {
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);
     if (action === "backfillAcceptedAnswerRegrades") return await backfillAcceptedAnswerRegrades(event, teacher);
+    if (action === "backfillVocabularyContentVersionMismatch") {
+      return await backfillVocabularyContentVersionMismatch(event, teacher);
+    }
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     console.error("teacherAdmin failed", error);
