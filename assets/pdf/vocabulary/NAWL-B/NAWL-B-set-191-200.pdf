@@ -1,86 +1,149 @@
 %PDF-1.4
-%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<<
-/F1 2 0 R /F2 3 0 R /F3 4 0 R /F4 5 0 R
->>
+<< /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<<
-/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
->>
+<< /Type /Pages /Kids [8 0 R] /Count 1 >>
 endobj
 3 0 obj
-<<
-/BaseFont /Times-Roman /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
 endobj
 4 0 obj
-<<
-/BaseFont /Times-Bold /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>
 endobj
 5 0 obj
-<<
-/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F4 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
 endobj
 6 0 obj
-<<
-/Contents 10 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 9 0 R /Resources <<
-/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
->> /Rotate 0 /Trans <<
-
->> 
-  /Type /Page
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 7 0 obj
-<<
-/PageMode /UseNone /Pages 9 0 R /Type /Catalog
->>
+<< /Length 5342 >>
+stream
+q 0 G 0 g 0.75 w
+42.52 39.69 510.24 762.52 re S
+BT /F1 8.4 Tf 51.02 25.51 Td (Answers written in the margins will not be marked.) Tj ET
+BT /F1 8.4 Tf 296.59 24.09 Td (1) Tj ET
+BT /F1 8.4 Tf 480.66 25.51 Td (Mr. Cat Academy) Tj ET
+Q
+BT /F2 12 Tf 65.2 771.02 Td (NAWL-B) Tj ET
+q 0 G 0 g 0.55 w
+253.42 747.5 m 331.09 747.5 l 333.9 747.5 336.19 749.78 336.19 752.6 c 336.19 774.99 l 336.19 777.81 333.9 780.09 331.09 780.09 c 253.42 780.09 l 250.6 780.09 248.31 777.81 248.31 774.99 c 248.31 752.6 l 248.31 749.78 250.6 747.5 253.42 747.5 c h S
+BT /F2 5.8 Tf 254.55 769.61 Td (Name) Tj ET
+0.35 w
+254.55 756.57 m 329.95 756.57 l S
+0.55 w
+350.36 747.5 m 428.03 747.5 l 430.85 747.5 433.13 749.78 433.13 752.6 c 433.13 774.99 l 433.13 777.81 430.85 780.09 428.03 780.09 c 350.36 780.09 l 347.54 780.09 345.26 777.81 345.26 774.99 c 345.26 752.6 l 345.26 749.78 347.54 747.5 350.36 747.5 c h S
+BT /F2 5.8 Tf 351.5 769.61 Td (Date) Tj ET
+0.35 w
+351.5 756.57 m 426.9 756.57 l S
+0.55 w
+447.31 747.5 m 524.98 747.5 l 527.79 747.5 530.08 749.78 530.08 752.6 c 530.08 774.99 l 530.08 777.81 527.79 780.09 524.98 780.09 c 447.31 780.09 l 444.49 780.09 442.2 777.81 442.2 774.99 c 442.2 752.6 l 442.2 749.78 444.49 747.5 447.31 747.5 c h S
+BT /F2 5.8 Tf 448.44 769.61 Td (Score) Tj ET
+0.35 w
+448.44 756.57 m 523.84 756.57 l S
+0.55 w
+Q
+q 0 G 0 g 0.55 w
+65.2 750.61 m 229.61 750.61 l S
+Q
+q 0 G 0 g 0.45 w
+106.3 640.06 423.78 48.76 re S
+191.06 688.82 m 191.06 640.06 l S
+275.81 688.82 m 275.81 640.06 l S
+360.57 688.82 m 360.57 640.06 l S
+445.32 688.82 m 445.32 640.06 l S
+106.3 664.44 m 530.08 664.44 l S
+BT /F1 10.8 Tf 123.03 673.03 Td (separation) Tj ET
+BT /F1 10.8 Tf 203.73 673.03 Td (convergence) Tj ET
+BT /F1 10.8 Tf 296.59 673.03 Td (radiation) Tj ET
+BT /F1 10.8 Tf 386.74 673.03 Td (defect) Tj ET
+BT /F1 10.8 Tf 476.9 673.03 Td (valid) Tj ET
+BT /F1 10.8 Tf 132.48 648.65 Td (syntax) Tj ET
+BT /F1 10.8 Tf 210.48 648.65 Td (interface) Tj ET
+BT /F1 10.8 Tf 289.84 648.65 Td (sufficiently) Tj ET
+BT /F1 10.8 Tf 384.04 648.65 Td (thereby) Tj ET
+BT /F1 10.8 Tf 468.8 648.65 Td (vertical) Tj ET
+Q
+q 0 g 65.2 640.06 41.1 48.76 re f Q
+q 1 g
+BT /F2 7.2 Tf 79.27 676.91 Td (SET) Tj ET
+BT /F4 20 Tf 78.25 651.69 Td (10) Tj ET
+Q
+q 0 G 0 g 0.55 w
+65.2 591.87 31.18 25.51 re S
+96.38 591.87 433.7 25.51 re S
+BT /F2 10.8 Tf 73.5 600.38 Td (No.) Tj ET
+BT /F2 10.8 Tf 291.09 600.38 Td (Sentence) Tj ET
+65.2 546.43 31.18 45.44 re S
+96.38 546.43 433.7 45.44 re S
+BT /F1 10.4 Tf 79.49 565.75 Td (1) Tj ET
+BT /F1 10.4 Tf 107.72 574.87 Td (The new policy reduced unnecessary paperwork, ___________ allowing staff to spend) Tj ET
+BT /F1 10.4 Tf 107.72 562.07 Td (more time with students and clients.) Tj ET
+65.2 500.99 31.18 45.44 re S
+96.38 500.99 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 520.31 Td (2) Tj ET
+BT /F1 10.4 Tf 107.72 529.42 Td (Computer scientists study ___________ to understand how words and symbols must be) Tj ET
+BT /F1 10.4 Tf 107.72 516.62 Td (arranged for a program to run correctly.) Tj ET
+65.2 455.55 31.18 45.44 re S
+96.38 455.55 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 474.87 Td (3) Tj ET
+BT /F1 10.4 Tf 107.72 483.98 Td (A hidden manufacturing ___________ caused the device to overheat after several hours) Tj ET
+BT /F1 10.4 Tf 107.72 471.18 Td (of continuous use.) Tj ET
+65.2 410.1 31.18 45.44 re S
+96.38 410.1 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 429.43 Td (4) Tj ET
+BT /F1 10.4 Tf 107.72 438.54 Td (The physical ___________ of the two departments created communication problems) Tj ET
+BT /F1 10.4 Tf 107.72 425.74 Td (because staff rarely met in the same workspace.) Tj ET
+65.2 364.66 31.18 45.44 re S
+96.38 364.66 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 383.98 Td (5) Tj ET
+BT /F1 10.4 Tf 107.72 393.1 Td (The ___________ of several technologies made smartphones possible, combining) Tj ET
+BT /F1 10.4 Tf 107.72 380.3 Td (computing, communication, photography, and navigation.) Tj ET
+65.2 319.22 31.18 45.44 re S
+96.38 319.22 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 338.54 Td (6) Tj ET
+BT /F1 10.4 Tf 107.72 347.65 Td (The evidence was not ___________ because the witness had changed his story several) Tj ET
+BT /F1 10.4 Tf 107.72 334.85 Td (times during the investigation.) Tj ET
+65.2 273.78 31.18 45.44 re S
+96.38 273.78 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 293.1 Td (7) Tj ET
+BT /F1 10.4 Tf 107.72 302.21 Td (The website's ___________ confused older users because important buttons were hidden) Tj ET
+BT /F1 10.4 Tf 107.72 289.41 Td (behind unfamiliar icons and menus.) Tj ET
+65.2 228.33 31.18 45.44 re S
+96.38 228.33 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 247.66 Td (8) Tj ET
+BT /F1 10.4 Tf 107.72 256.77 Td (The sample was not ___________ large to support such a strong conclusion about the) Tj ET
+BT /F1 10.4 Tf 107.72 243.97 Td (whole population.) Tj ET
+65.2 182.89 31.18 45.44 re S
+96.38 182.89 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 202.21 Td (9) Tj ET
+BT /F1 10.4 Tf 107.72 211.33 Td (Doctors carefully measured the patient's exposure to ___________ before deciding) Tj ET
+BT /F1 10.4 Tf 107.72 198.53 Td (whether additional tests were necessary.) Tj ET
+65.2 137.45 31.18 45.44 re S
+96.38 137.45 433.7 45.44 re S
+BT /F1 10.4 Tf 76.89 156.77 Td (10) Tj ET
+BT /F1 10.4 Tf 107.72 165.88 Td (The building's ___________ structure allowed the company to fit more offices into a) Tj ET
+BT /F1 10.4 Tf 107.72 153.08 Td (narrow city-centre site.) Tj ET
+Q
+endstream
 endobj
 8 0 obj
-<<
-/Author (anonymous) /CreationDate (D:20260709235402+08'00') /Creator (anonymous) /Keywords () /ModDate (D:20260709235402+08'00') /Producer (ReportLab PDF Library - \(opensource\)) 
-  /Subject (unspecified) /Title (untitled) /Trapped /False
->>
-endobj
-9 0 obj
-<<
-/Count 1 /Kids [ 6 0 R ] /Type /Pages
->>
-endobj
-10 0 obj
-<<
-/Filter [ /ASCII85Decode /FlateDecode ] /Length 2630
->>
-stream
-Gatm<gQL;L&q/A5i6e#4,K,l*UV07m-+-`ZX"#c,[=t<I&N@?N]NES=mf=gLjGZS!AgX[<a$#CdqOGRi"rU#%LP>ck'd93YjMtUE@@V0.KLmZ8p/ghVG4Wa$#sSCca5r*MBgYff:7I\C:)1ro7RT_R;2HQU-'Se^8ZK\s;URVsFVB@J@]0X]iNn?caN*ffrZL'_?&g7bTJBN9I,kXNQsjN0OUn)Lmc<)^SD'_+>tp3FoERl9gHH?0bXGZt]'7=HYl4!5oP\:;?aBXHDtjK?L=6FF(`egZ/lT3"MMktX7?OBC,Y].NOBjib5<o,?lc7>0aB*pj!N6H/fRp#PUb\c%du76F+V;n3*GsoXB:L7sO#A.<AL<$QUM60cBM\[g1Qpggfp#*tAUFnCR8Rc::J$L]&t3?/OgtF%aVX-1CaEm(2UZ<HEG;@Z.L(rgb5i/g1/5e?UM3=H7\6o6M,V,KCq`Z'.;CtRRV)E5f7G?P,iE:KoMCO((*cP^EXS&/(b7O+.nu9u$!0OaN+Rs:BIcrk'86LC7:Gd6Kp!CDN%*!c8s)rFJAH&cJ=[(Pi%S=YM:!)A>hCZ"a640SnI1Q"Gh,E\^i>TL$bD$kP[jGVO[RAdA@+cPUM[0V3Vm!j0C\ge.YV?lOqj6Hg&;nTd5b)R\Y^]HolV`1:*c!e/ZD\h)5gXjWDl!VBsoEc"n\#.UbV=OM+gBCA9)+j?p+aek_LUB7)kE[,,KrP)ndA!6AKh1(VpoRRE0'"6q5p9RWJ,3Hs`Q>rBs7_Gq"qn:#sp=Bs06/]d&_u$Ygqgf9lIK(&(&^6E<t4RRrMNS6tu]D*Gnn#WTZ(6Q]]89mu:*Dm+u1*7)D59fYHd>(Rm`/!32fAg#6hF/k1Y9bEs7,T&:)ZnW]Kpk5F0ZFUII49a)JjZ/f2N^>*<:(,B]>Id@2A&0=5$eK&r\]1/H*'($.mE`3r[e_MQ/a@pRZngm`V%A"W%X$10UMXjT2"dS&Q3s6pP_BR5X7E.ek1V1akO/1%OYFpS6*""fh%_lW&n$8Ho5)h"m9SRU?Qi?8=d#0FMJopSG1RNahkG,HJ92"8q$=gImd6XMUsCmJ'"<4uTW!4hmd4f#o1Xd3[GGEGmu+htF^L_IaWC,JA@C>$1KNf_?WeP7Zq)mN/Q[Ig^;t0eD#B_Tb^>*[pNF8,i%3)Ub<,=kLCNjr>m<,=5Nt/F)'JOVbYheZ1(iFIqS\%,jlbgo3f+r.Of0iRL0k<4WTM2*6)3s?oJ'Hg25r+4?VCo#:m4M'\Vp913tJ_82=OQKR@"tBqbMW3XZ`TP24U%>\Qtm/Z!Jek_9hg.#;u.]$B\:qVj7!X'Z[Nf[7g]CF$F\=R@oJ20Z!UD9IA(GQ*op/(@iXb&>!Yg8qD)K`f/m>ZTu<@nt,;LJu6];]hgGJH!e34rjY#>-XlH;Z.:9.(%>Xi#=\#TjOf\cI`>f?6gf,.W,%a3Y-[M`*:;.]Vl'FkJc$np7r2<dVkSVa?#TIadPms`\p?jroK:P<Q,<^#5>8!Td.P9d@!BQ+-SPG#m+1Wj0.Z7[_[8_Y+8LiT])_:I'AUS-4MLt\6qVa^^BjbpS*DsudRY/gWosGBa6:/;)5n&<%ZeE^_ff]g"@VTG&A*#VfT[DUL+^+>D;3e@$0:KCQIm)MA(s,R[dp-GTdCUJ>%i8.^&bsd:E6]a7%[=bPS#RqT04Fs/(ae/IVCcr=Znrt`GPArAjR8F[+F:"Y@7Hf*/Yc:&^TTc5YpX"eedliptQ?"T_.^?SblIKcK!MAkRYu4`9m_K%f`s`BGp;3Dt^s^7+O^]F9JX_!R*9d@T9sHhQuBle2LP6227)2>M]B_E6QAlI=naD&*M74`>,\oaeRR^)BaquW3:e(j=Plcid"I&6]G)pAg&SZa3ms.l8p\?&Y%@[XuqojbqmLtbK#ajHJsEWF[sX_2^f4d*l5S@gneEPHk-QPB$_s3YsGGF'F9n"j*ffM_)(/MP3lP(W11)<.NAT0mJpJq.ZT:]L>gd,>li_&4<'>Mm4UsNoEmfGb`K$,H2u\on"g5i56QP;mC2((r:1U6!gAWDp3!!_an&e_:s+9N)6\Y+_ZSbJiToA?G^tP8r1H>N[L42EQGcJ9m0ab*',5QL?uZtmUS&\9h]!L+igE%'f8f2eh86J:2>H=Fr]][t)U^s"8,:K&mfGT21fJFB*iF3i:].+@pq?e&PC)YRhYipbhQ?IaWV8^;RhG,=bB4amVPoMLMiN_(3qRj\^U<&m0K"h[G:72j,405IP_Es!ppp.lV%69>DN-USq]D.R^Y`I4chHY-4AG<A\-t@Z2Z-fIWT<FIkLC'S*MrO5?8)*%iZ/t-`o6-T`o$TC=;6&8"KeZpEp.lQY`I&UNu-j'+PO(\%cuO+AdR#eCX;t=Siko*\@I+UoC8l,FpD9D:^,Ic=P>ts3TL07'7FgaPbAiGDJ1[:b7O`JWK(!Ire-dPD1Hsb3dX)jmp'2c]S`3hcG+a`h<bQ1Ds.h$9'>ILG@5k8gjl$]b^WR4mMGWaq530&2"@b?B)LDMR@!Bn.g.ONYqs#fDRs!,O$ccjgg3S\MKnV8V&Q$t(J]AX[.W+YYV5kCQ.5Tt'@?9DL=N#*[Oij(]]dZ`F79DF04)terj!]:rrHoS<gs~>endstream
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 7 0 R >>
 endobj
 xref
-0 11
+0 9
 0000000000 65535 f 
-0000000061 00000 n 
-0000000122 00000 n 
-0000000229 00000 n 
-0000000338 00000 n 
-0000000446 00000 n 
-0000000558 00000 n 
-0000000762 00000 n 
-0000000830 00000 n 
-0000001091 00000 n 
-0000001150 00000 n 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000214 00000 n 
+0000000312 00000 n 
+0000000412 00000 n 
+0000000514 00000 n 
+0000005908 00000 n 
 trailer
-<<
-/ID 
-[<b2ae3db2a41fc3f5d6198baad9ff271e><b2ae3db2a41fc3f5d6198baad9ff271e>]
-% ReportLab generated PDF document -- digest (opensource)
-
-/Info 8 0 R
-/Root 7 0 R
-/Size 11
->>
+<< /Size 9 /Root 1 0 R >>
 startxref
-3872
+6070
 %%EOF
