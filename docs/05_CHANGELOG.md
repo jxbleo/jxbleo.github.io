@@ -18,6 +18,10 @@
 
 ### Changed
 
+- Simplified IELTS Reading set headers and paragraph-matching choices, made
+  typed blanks follow answer length, and persisted both passage and question
+  highlights in browser storage with per-highlight and clear-all controls.
+
 - Added Vocabulary content/grading version handshakes and server-side answer
   snapshots for countable tests. Stale pages are rejected before grading,
   active tests retain their start-time grading rules, drafts are isolated by
