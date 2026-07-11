@@ -1,5 +1,8 @@
 # Changelog
 
+- Removed the lower student Assignments and My Words navigation entries. The
+  lower capsule now exposes only Library, assignments remain in the top-right
+  bell, and a matching notebook icon beside the bell opens My Words.
 - Grouped teacher bell attempt notifications by student assignment/self-study
   thread. Each entry now opens the full attempt history and stays red until the
   teacher opens that entry; opening the bell alone no longer clears unread

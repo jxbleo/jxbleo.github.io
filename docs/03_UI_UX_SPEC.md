@@ -38,15 +38,15 @@ Visitor`, and a short visitor-mode note.
 
 Navigation:
 
-- `Assignments`
-- `My Words`
-- `Library`
+- the lower navigation exposes only `Library`
+- assignments and finished work open from the top-right notification bell
+- My Words opens from a notebook icon immediately beside the bell
+- account/profile actions remain in the top-right identity chip
 
-Assignments display:
+Assignment access and progress display:
 
-- open `TO DO` assignments directly
-- completed work is reachable from the top-right notification bell, not from a
-  bottom `Finished` capsule inside the Assignments page
+- both `TO DO` and completed assignments are reachable from the top-right
+  notification bell; there is no lower Assignments page entry
 - the top student billboard is a progress board rather than a pure welcome
   panel. It keeps one short randomly selected English greeting that includes
   the student's English name; the greeting should stay on one line unless the
@@ -69,7 +69,7 @@ Assignments display:
   reserved detail area but do not show an empty-state text field. While dashboard
   data is loading, the progress meter and four-week board reserve their final
   space with a lightweight loading skeleton.
-- the main `Assignments` / `My Words` / `Library` capsule and the student
+- the lower `Library` capsule, top-right My Words notebook icon, and student
   Library `Practice` / `Exam` capsule use a soft translucent glass treatment
   with subtle rainbow active states
 
@@ -84,9 +84,8 @@ Frontend rule:
 - `passed` and `mastered` both appear in the top-right notification bell's
   `Finished` section.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The Assignments page should not show a separate `TO DO` / `FINISHED` filter
-  capsule or bottom finished capsule. It lists open assignments directly; the
-  bell is the single place for assignment reminders and finished-review entry.
+- The bell is the single place for assignment reminders and finished-review
+  entry; do not restore a lower Assignments page or filter capsule.
 - Finished Vocabulary assignment cards open the same Learn entry used by
   Library Vocabulary cards, without automatically restoring Test/History mode.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.

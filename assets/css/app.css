@@ -325,6 +325,22 @@ button { cursor: pointer; }
     border-radius: 999px;
     background: currentColor;
 }
+.student-words-button svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-words-button.active {
+    border-color: rgba(19, 118, 109, 0.32);
+    background:
+        radial-gradient(circle at 24% 12%, rgba(255,255,255,0.94), transparent 38%),
+        linear-gradient(135deg, rgba(255, 244, 176, 0.76), rgba(184, 238, 220, 0.8) 48%, rgba(187, 222, 255, 0.76));
+    box-shadow: 0 10px 24px rgba(19, 118, 109, 0.16);
+}
 .teacher-header-actions {
     display: flex;
     align-items: center;
@@ -956,6 +972,10 @@ button.progress-dot.active {
     background: rgba(255,255,255,0.78);
     box-shadow: 0 12px 34px rgba(25, 68, 61, 0.1);
     backdrop-filter: blur(18px);
+}
+.student-library-tabs {
+    grid-template-columns: 1fr;
+    width: min(300px, 100%);
 }
 .teacher-page .dashboard-tabs { grid-template-columns: repeat(3, 1fr); }
 .teacher-create-capsule {
