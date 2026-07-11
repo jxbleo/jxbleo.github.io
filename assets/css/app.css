@@ -1060,7 +1060,6 @@ body:not(.teacher-page) .tab-button.active {
 .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-.assignment-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .summary-card {
     position: relative;
     width: 100%;
@@ -1073,119 +1072,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .summary-value { display: block; font-size: 1.8rem; font-weight: 900; letter-spacing: -0.05em; }
 .summary-label { color: var(--muted); font-size: 0.76rem; font-weight: 800; }
-.assignment-filter { cursor: pointer; transition: transform 160ms ease, border-color 160ms ease, background 160ms ease; }
-.assignment-filter:hover { transform: translateY(-2px); border-color: rgba(19, 118, 109, 0.35); }
-.assignment-filter.active { color: white; border-color: var(--accent); background: var(--accent); }
-.assignment-filter.active .summary-label { color: rgba(255,255,255,0.78); }
-.assignment-filter .filter-reply-count { position: absolute; top: -8px; right: -7px; }
 .assignment-list-tools { display: flex; justify-content: flex-end; margin: -10px 0 14px; }
-.finished-drawer {
-    display: grid;
-    justify-items: center;
-    gap: 12px;
-    margin-top: auto;
-    padding-top: clamp(30px, 8vh, 84px);
-    padding-bottom: 22px;
-    align-items: start;
-}
-.finished-drawer:not(.expanded) {
-    position: sticky;
-    bottom: 18px;
-    z-index: 40;
-    pointer-events: none;
-}
-.finished-drawer.expanded {
-    position: relative;
-    bottom: auto;
-    justify-items: stretch;
-}
-.finished-drawer-toggle {
-    position: sticky;
-    top: 12px;
-    z-index: 20;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-width: 0;
-    min-height: 42px;
-    padding: 8px 16px 8px 13px;
-    border: 1px solid rgba(216, 149, 40, 0.34);
-    border-radius: 999px;
-    color: #80510a;
-    background:
-        radial-gradient(circle at 22% 18%, rgba(255,255,255,0.95), transparent 34%),
-        linear-gradient(135deg, #fff9d7, #ffe27a 52%, #ffc93d);
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,0.76) inset,
-        0 0 22px rgba(255, 207, 73, 0.42),
-        0 12px 28px rgba(216, 149, 40, 0.18);
-    cursor: pointer;
-    pointer-events: auto;
-    transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
-}
-.finished-drawer-toggle:hover {
-    background:
-        radial-gradient(circle at 22% 18%, rgba(255,255,255,0.98), transparent 34%),
-        linear-gradient(135deg, #fffbe0, #ffe889 52%, #ffc340);
-    transform: translateY(-1px);
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,0.82) inset,
-        0 0 30px rgba(255, 207, 73, 0.56),
-        0 16px 34px rgba(216, 149, 40, 0.22);
-}
-.finished-mini-icon {
-    width: 20px;
-    height: 20px;
-    color: currentColor;
-    fill: rgba(255, 255, 255, 0.56);
-    stroke: currentColor;
-    stroke-width: 2.2;
-}
-.finished-mini-icon path {
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.finished-mini-label {
-    font-size: 0.76rem;
-    font-weight: 950;
-    letter-spacing: 0;
-}
-.finished-drawer-body {
-    display: grid;
-    width: 100%;
-    gap: 12px;
-    border-left: 3px solid rgba(255, 201, 61, 0.72);
-    padding-left: 12px;
-    animation: finishedRibbonOpen 460ms cubic-bezier(.2,.85,.22,1) both;
-}
-.finished-list {
-    padding-top: 2px;
-}
-.finished-drawer.expanded .finished-drawer-toggle {
-    justify-self: center;
-    animation: finishedGoldenWink 500ms ease both;
-}
-
-@keyframes finishedRibbonOpen {
-    from { opacity: 0; clip-path: inset(0 0 100% 0); }
-    to { opacity: 1; clip-path: inset(0 0 0 0); }
-}
-@keyframes finishedGoldenWink {
-    0%, 100% {
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.76) inset,
-            0 0 22px rgba(255, 207, 73, 0.42),
-            0 12px 28px rgba(216, 149, 40, 0.18);
-    }
-    45% {
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.9) inset,
-            0 0 44px rgba(255, 207, 73, 0.72),
-            0 18px 40px rgba(216, 149, 40, 0.24);
-    }
-}
 
 .task-list, .resource-list { display: grid; gap: 12px; }
 .task-card, .resource-card, .profile-card, .empty-card {
@@ -1883,6 +1770,154 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-replies-dialog h2 {
     margin: 10px 0 0;
     font-size: 1.45rem;
+}
+.student-message-dialog {
+    width: min(720px, 100%);
+}
+.student-message-dialog-head {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+.student-message-dialog-head h2 {
+    margin: 0;
+}
+.student-message-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.student-message-summary span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 5px 11px;
+    border: 1px solid rgba(19, 118, 109, 0.14);
+    border-radius: 999px;
+    color: var(--muted);
+    background: #f4f8f5;
+    font-size: 0.78rem;
+    font-weight: 850;
+}
+.student-message-summary b {
+    margin-right: 4px;
+    color: var(--accent-dark);
+    font-size: 0.9rem;
+}
+.student-message-sections {
+    display: grid;
+    gap: 14px;
+}
+.student-message-section {
+    display: grid;
+    gap: 9px;
+}
+.student-message-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.student-message-section-head h3 {
+    margin: 0;
+    color: #101918;
+    font-size: 0.96rem;
+    font-weight: 950;
+    letter-spacing: 0;
+}
+.student-message-section-head span {
+    display: inline-flex;
+    min-width: 26px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--accent-dark);
+    background: #e7f4ef;
+    font-size: 0.76rem;
+    font-weight: 950;
+}
+.student-message-list {
+    display: grid;
+    gap: 8px;
+}
+.student-message-task {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #f8fbfa;
+}
+.student-message-task.todo {
+    border-color: rgba(225, 29, 72, 0.18);
+    background: linear-gradient(135deg, #fff7f7, #f8fbfa);
+}
+.student-message-task.finished {
+    border-color: rgba(19, 118, 109, 0.16);
+    background: linear-gradient(135deg, #f4fbf7, #fff);
+}
+.student-message-task-main {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+.student-message-kicker,
+.student-message-score {
+    color: var(--muted);
+    font-size: 0.74rem;
+    font-weight: 850;
+}
+.student-message-task strong {
+    overflow-wrap: anywhere;
+    color: #101918;
+    font-size: 0.96rem;
+    font-weight: 950;
+    line-height: 1.25;
+}
+.student-message-task-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.student-message-state,
+.student-message-go {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    border-radius: 999px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.student-message-state.todo {
+    color: #b4233a;
+    background: #fff0f2;
+}
+.student-message-state.finished {
+    color: var(--success);
+    background: var(--success-soft);
+}
+.student-message-go {
+    color: #fff;
+    background: var(--accent);
+}
+.student-message-empty {
+    padding: 13px;
+    border: 1px dashed rgba(19, 118, 109, 0.22);
+    border-radius: 14px;
+    color: var(--muted);
+    background: #f8fbfa;
+    font-size: 0.86rem;
+    font-weight: 750;
 }
 .teacher-replies-list {
     display: grid;
@@ -5990,7 +6025,6 @@ body:not(.teacher-page) .tab-button.active {
         justify-self: end;
     }
     .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .assignment-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .revise-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
     .revise-tabs .summary-card { padding: 12px 6px; }
     .revise-tabs .summary-label { font-size: 0.68rem; }
@@ -6003,7 +6037,6 @@ body:not(.teacher-page) .tab-button.active {
     .account-quiet-actions {
         justify-content: flex-end;
     }
-    .finished-drawer-toggle { max-width: 100%; }
     .resource-card { grid-template-columns: 1fr; }
     .card-button { width: 100%; }
     .task-card .task-go-button {
@@ -6045,6 +6078,12 @@ body:not(.teacher-page) .tab-button.active {
     .teacher-replies-card { grid-template-columns: 1fr; }
     .teacher-replies-card .primary-button { width: auto; }
     .teacher-replies-dialog { padding: 22px 18px; }
+    .student-message-task {
+        grid-template-columns: 1fr;
+    }
+    .student-message-task-actions {
+        justify-content: flex-start;
+    }
     .teacher-reply-head {
         flex-direction: column;
         align-items: center;
