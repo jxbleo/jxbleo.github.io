@@ -175,6 +175,11 @@ My Words:
 - each word card can show phonetic spelling, part of speech, Chinese meaning,
   a short English definition, dictionary source, and a browser pronunciation
   action. Search includes these dictionary fields.
+- the collapsed first level is deliberately minimal: word, part of speech,
+  Chinese meaning, and pronunciation only. English definition, phonetic detail,
+  source/context, learning state, and management actions appear after expansion.
+- filters cover All, Today, New, Learning, and Mastered. Review mode initially
+  hides meanings, then offers Forgot, A little, and Know after reveal.
 - saving is immediate. A cache miss shows `Finding definition and part of
   speech...` while backend enrichment continues; a confirmed miss offers a
   quiet Retry action. Lookup failure never removes the saved word.

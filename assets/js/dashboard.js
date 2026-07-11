@@ -13,6 +13,10 @@
         teacherReplies: [],
         vocabItems: [],
         vocabSearch: '',
+        vocabFilter: 'all',
+        vocabReviewMode: false,
+        vocabReviewRevealed: false,
+        vocabReviewWordId: '',
         progressSelectedDay: '',
         accountPanelOpen: false,
         wordsPanelOpen: false,
@@ -1800,26 +1804,77 @@
         return formatShortDate(word.last_added_at || word.updated_at || word.created_at);
     }
 
-    function wordDictionaryHtml(word) {
+    function wordLearningStatus(word) {
+        return word && word.learning_status || 'new';
+    }
+
+    function wordIsDue(word) {
+        if (!word || (word.status || 'active') !== 'active') return false;
+        var due = new Date(word.review_due_at || word.created_at || 0).getTime();
+        return !due || due <= Date.now();
+    }
+
+    function wordPrimaryHtml(word) {
         var dictionary = word && word.dictionary;
         if (!dictionary) {
             var status = word && word.lookup_status || 'pending';
-            return '<div class="my-word-dictionary pending">' +
-                '<span>' + (status === 'not_found' ? 'Dictionary entry not found yet.' : 'Finding definition and part of speech...') + '</span>' +
-                (status === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id || '') + '">Retry</button>' : '') +
+            return '<div class="my-word-primary-copy">' +
+                '<span class="my-word-pos">—</span>' +
+                '<span class="my-word-chinese">' + (status === 'not_found' ? '暂未找到中文释义' : '正在查找释义…') + '</span>' +
             '</div>';
         }
-        var meta = [dictionary.phonetic, dictionary.part_of_speech].filter(Boolean).join(' · ');
+        return '<div class="my-word-primary-copy">' +
+            '<span class="my-word-pos">' + escapeHtml(dictionary.part_of_speech || '—') + '</span>' +
+            '<span class="my-word-chinese">' + escapeHtml(dictionary.chinese_meaning || '暂无中文释义') + '</span>' +
+        '</div>';
+    }
+
+    function wordDetailHtml(word) {
+        var dictionary = word && word.dictionary;
+        var status = wordLearningStatus(word);
+        var statusLabel = status === 'mastered' ? 'Mastered' : (status === 'learning' ? 'Learning' : 'New');
+        var source = wordSourceLabel(word);
+        var date = wordTimeLabel(word);
+        if (!dictionary) {
+            var lookupStatus = word && word.lookup_status || 'pending';
+            return '<div class="my-word-detail-copy muted">' +
+                '<p>' + (lookupStatus === 'not_found' ? 'Dictionary entry not found yet.' : 'Finding dictionary details...') + '</p>' +
+                (lookupStatus === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id || '') + '">Retry</button>' : '') +
+                (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '') +
+                '<p class="my-word-detail-meta">' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</p>' +
+                '<div class="my-word-detail-actions"><span class="my-word-learning-status ' + escapeHtml(status) + '">' + statusLabel + '</span>' +
+                    (status !== 'mastered' ? '<button class="outline-button" type="button" data-master-word="' + escapeHtml(word.vocab_id || '') + '">Mark mastered</button>' : '<button class="outline-button" type="button" data-learn-word="' + escapeHtml(word.vocab_id || '') + '">Review again</button>') +
+                    '<button class="outline-button" type="button" data-archive-word="' + escapeHtml(word.vocab_id || '') + '">Archive</button></div>' +
+            '</div>';
+        }
+        return '<div class="my-word-detail-copy">' +
+            (dictionary.phonetic ? '<p class="my-word-phonetic">' + escapeHtml(dictionary.phonetic) + '</p>' : '') +
+            (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
+            (dictionary.word_forms ? '<p><strong>Forms:</strong> ' + escapeHtml(dictionary.word_forms) + '</p>' : '') +
+            (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '') +
+            '<p class="my-word-detail-meta">' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</p>' +
+            '<div class="my-word-detail-actions">' +
+                '<span class="my-word-learning-status ' + escapeHtml(status) + '">' + statusLabel + '</span>' +
+                (status !== 'mastered' ? '<button class="outline-button" type="button" data-master-word="' + escapeHtml(word.vocab_id || '') + '">Mark mastered</button>' : '<button class="outline-button" type="button" data-learn-word="' + escapeHtml(word.vocab_id || '') + '">Review again</button>') +
+                '<button class="outline-button" type="button" data-archive-word="' + escapeHtml(word.vocab_id || '') + '">Archive</button>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function wordCardHtml(word) {
+        var dictionary = word && word.dictionary || {};
         var spokenWord = dictionary.word || word.text || '';
-        return '<div class="my-word-dictionary ready">' +
-            '<div class="my-word-dictionary-head">' +
-                '<span>' + escapeHtml(meta || 'Dictionary') + '</span>' +
+        var detailId = 'my-word-detail-' + escapeHtml(word.vocab_id || 'word');
+        return '<article class="my-word-item">' +
+            '<div class="my-word-summary">' +
+                '<button class="my-word-toggle" type="button" data-toggle-word="' + escapeHtml(word.vocab_id || '') + '" aria-expanded="false" aria-controls="' + detailId + '">' +
+                    '<strong>' + escapeHtml(word.text || '') + '</strong>' +
+                    wordPrimaryHtml(word) +
+                '</button>' +
                 '<button class="my-word-speak" type="button" data-speak-word="' + escapeHtml(spokenWord) + '" aria-label="Pronounce ' + escapeHtml(spokenWord) + '">🔊</button>' +
             '</div>' +
-            (dictionary.chinese_meaning ? '<p class="my-word-chinese">' + escapeHtml(dictionary.chinese_meaning) + '</p>' : '') +
-            (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
-            (dictionary.source_name ? '<small>Source: ' + escapeHtml(dictionary.source_name) + '</small>' : '') +
-        '</div>';
+            '<div class="my-word-detail" id="' + detailId + '" hidden>' + wordDetailHtml(word) + '</div>' +
+        '</article>';
     }
 
     function sortedVocabItems(items) {
@@ -1833,6 +1888,9 @@
         var query = String(state.vocabSearch || '').trim().toLowerCase();
         return sortedVocabItems(state.vocabItems || []).filter(function(word) {
             if ((word.status || 'active') !== 'active') return false;
+            var learningStatus = wordLearningStatus(word);
+            if (state.vocabFilter === 'today' && !wordIsDue(word)) return false;
+            if (['new', 'learning', 'mastered'].indexOf(state.vocabFilter) !== -1 && learningStatus !== state.vocabFilter) return false;
             if (!query) return true;
             return [
                 word.text,
@@ -1851,29 +1909,10 @@
         var words = filteredVocabItems();
         if (!words.length) {
             return '<div class="my-words-empty">' +
-                (state.vocabSearch ? 'No saved words match this search.' : 'Select a word or short phrase anywhere in the site to save it here.') +
+                (state.vocabSearch ? 'No saved words match this search.' : (state.vocabFilter !== 'all' ? 'No saved words in this view.' : 'Select a word or short phrase anywhere in the site to save it here.')) +
             '</div>';
         }
-        return '<div class="my-words-table" role="table" aria-label="Saved words">' +
-            '<div class="my-words-table-row my-words-table-head" role="row">' +
-                '<span role="columnheader">Word</span><span role="columnheader">Source / Context</span><span role="columnheader">Saved</span><span role="columnheader">Action</span>' +
-            '</div>' +
-            words.map(function(word) {
-            var source = wordSourceLabel(word);
-            var date = wordTimeLabel(word);
-            return '<article class="my-word-item my-words-table-row" role="row">' +
-                '<div class="my-word-main">' +
-                    '<strong>' + escapeHtml(word.text || '') + '</strong>' +
-                    wordDictionaryHtml(word) +
-                '</div>' +
-                '<div class="my-word-source">' +
-                    '<span>' + escapeHtml(source) + '</span>' +
-                    (word.context ? '<p>' + escapeHtml(word.context) + '</p>' : '') +
-                '</div>' +
-                '<span class="my-word-date">' + escapeHtml(date || '') + '</span>' +
-                '<button class="outline-button my-word-action" type="button" data-archive-word="' + escapeHtml(word.vocab_id || '') + '">Archive</button>' +
-            '</article>';
-        }).join('') + '</div>';
+        return '<div class="my-words-table" aria-label="Saved words">' + words.map(wordCardHtml).join('') + '</div>';
     }
 
     function upsertVocabItem(word) {
@@ -1952,6 +1991,15 @@
     }
 
     function bindMyWordActions() {
+        document.querySelectorAll('[data-toggle-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var detail = document.getElementById(button.getAttribute('aria-controls'));
+                if (!detail) return;
+                var open = detail.hidden;
+                detail.hidden = !open;
+                button.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        });
         document.querySelectorAll('[data-archive-word]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var vocabId = button.dataset.archiveWord;
@@ -1971,6 +2019,26 @@
                     button.disabled = false;
                     button.textContent = 'Archive';
                     alert(error.message || 'Unable to archive this word.');
+                });
+            });
+        });
+        document.querySelectorAll('[data-master-word], [data-learn-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var vocabId = button.dataset.masterWord || button.dataset.learnWord;
+                var learningStatus = button.dataset.masterWord ? 'mastered' : 'learning';
+                if (!vocabId) return;
+                button.disabled = true;
+                window.MrCatCloud.callFunction('studentVocabulary', {
+                    action: 'setLearningStatus',
+                    vocab_id: vocabId,
+                    learning_status: learningStatus
+                }).then(function(result) {
+                    if (!result || !result.success || !result.word) throw new Error('Unable to update learning status.');
+                    upsertVocabItem(result.word);
+                    renderMyWordsList();
+                }).catch(function(error) {
+                    button.disabled = false;
+                    alert(error.message || 'Unable to update learning status.');
                 });
             });
         });
@@ -2006,6 +2074,89 @@
         });
     }
 
+    function dueVocabItems() {
+        return sortedVocabItems(state.vocabItems || []).filter(wordIsDue);
+    }
+
+    function currentReviewWord() {
+        var due = dueVocabItems();
+        var selected = due.find(function(word) { return word.vocab_id === state.vocabReviewWordId; });
+        if (selected) return selected;
+        state.vocabReviewWordId = due[0] && due[0].vocab_id || '';
+        return due[0] || null;
+    }
+
+    function reviewWordHtml() {
+        var due = dueVocabItems();
+        var word = currentReviewWord();
+        if (!word) {
+            return '<section class="my-words-review complete">' +
+                '<p class="eyebrow accent">Review complete</p><h2>You are caught up.</h2>' +
+                '<p class="muted">Come back when the next words are due.</p>' +
+                '<button class="primary-button" type="button" data-review-exit>Back to My Words</button>' +
+            '</section>';
+        }
+        var dictionary = word.dictionary || {};
+        var spokenWord = dictionary.word || word.text || '';
+        return '<section class="my-words-review">' +
+            '<div class="my-words-review-head"><span>' + due.length + ' due</span><button class="outline-button" type="button" data-review-exit>Exit review</button></div>' +
+            '<div class="my-words-review-card">' +
+                '<div class="my-words-review-word"><h2>' + escapeHtml(word.text || '') + '</h2>' +
+                    '<button class="my-word-speak" type="button" data-speak-word="' + escapeHtml(spokenWord) + '" aria-label="Pronounce ' + escapeHtml(spokenWord) + '">🔊</button>' +
+                '</div>' +
+                (state.vocabReviewRevealed ? '<div class="my-words-review-answer">' +
+                    '<p><strong>' + escapeHtml(dictionary.part_of_speech || '—') + '</strong></p>' +
+                    '<p class="my-word-chinese">' + escapeHtml(dictionary.chinese_meaning || '暂无中文释义') + '</p>' +
+                    (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
+                    (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '') +
+                '</div>' : '<button class="primary-button my-words-reveal" type="button" data-review-reveal>Reveal meaning</button>') +
+                (state.vocabReviewRevealed ? '<div class="my-words-review-ratings">' +
+                    '<button type="button" data-review-rating="forgot">Forgot</button>' +
+                    '<button type="button" data-review-rating="fuzzy">A little</button>' +
+                    '<button type="button" data-review-rating="know">Know</button>' +
+                '</div>' : '') +
+            '</div>' +
+        '</section>';
+    }
+
+    function bindReviewActions() {
+        document.querySelectorAll('[data-review-exit]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.vocabReviewMode = false;
+                state.vocabReviewRevealed = false;
+                state.vocabReviewWordId = '';
+                renderMyWordsView();
+            });
+        });
+        var reveal = document.querySelector('[data-review-reveal]');
+        if (reveal) reveal.addEventListener('click', function() {
+            state.vocabReviewRevealed = true;
+            renderMyWordsView();
+        });
+        document.querySelectorAll('[data-review-rating]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var word = currentReviewWord();
+                if (!word) return;
+                document.querySelectorAll('[data-review-rating]').forEach(function(item) { item.disabled = true; });
+                window.MrCatCloud.callFunction('studentVocabulary', {
+                    action: 'review',
+                    vocab_id: word.vocab_id,
+                    rating: button.dataset.reviewRating
+                }).then(function(result) {
+                    if (!result || !result.success || !result.word) throw new Error('Unable to save review.');
+                    upsertVocabItem(result.word);
+                    state.vocabReviewRevealed = false;
+                    state.vocabReviewWordId = '';
+                    renderMyWordsView();
+                }).catch(function(error) {
+                    alert(error.message || 'Unable to save review.');
+                    renderMyWordsView();
+                });
+            });
+        });
+        bindMyWordActions();
+    }
+
     function enrichPendingVocabItems(items) {
         if (!window.MrCatPersonalVocab || !window.MrCatPersonalVocab.enrichWord) return;
         (items || []).filter(function(word) {
@@ -2032,6 +2183,19 @@
     }
 
     function bindMyWordsCard() {
+        document.querySelectorAll('[data-vocab-filter]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.vocabFilter = button.dataset.vocabFilter || 'all';
+                renderMyWordsView();
+            });
+        });
+        var reviewStart = document.getElementById('my-words-review-start');
+        if (reviewStart) reviewStart.addEventListener('click', function() {
+            state.vocabReviewMode = true;
+            state.vocabReviewRevealed = false;
+            state.vocabReviewWordId = '';
+            renderMyWordsView();
+        });
         var search = document.getElementById('my-words-search');
         if (search) {
             search.value = state.vocabSearch;
@@ -2070,6 +2234,14 @@
         var activeCount = (state.vocabItems || []).filter(function(word) {
             return (word.status || 'active') === 'active';
         }).length;
+        var dueCount = dueVocabItems().length;
+        var filters = [
+            { id: 'all', label: 'All' },
+            { id: 'today', label: 'Today' },
+            { id: 'new', label: 'New' },
+            { id: 'learning', label: 'Learning' },
+            { id: 'mastered', label: 'Mastered' }
+        ];
         return '<section class="profile-card my-words-card">' +
             '<div class="my-words-head">' +
                 '<div>' +
@@ -2088,6 +2260,12 @@
                 '<input id="my-words-search" class="resource-search" type="search" placeholder="Search saved words...">' +
                 '<button class="outline-button my-word-refresh" id="my-words-refresh" type="button">Refresh</button>' +
             '</div>' +
+            '<div class="my-words-learning-tools">' +
+                '<div class="my-words-filters" aria-label="Filter saved words">' + filters.map(function(filter) {
+                    return '<button class="' + (state.vocabFilter === filter.id ? 'active' : '') + '" type="button" data-vocab-filter="' + filter.id + '">' + filter.label + '</button>';
+                }).join('') + '</div>' +
+                '<button class="primary-button my-words-review-start" id="my-words-review-start" type="button"' + (dueCount ? '' : ' disabled') + '>Review due (' + dueCount + ')</button>' +
+            '</div>' +
             '<div class="my-words-list" id="my-words-list">' + myWordsListHtml() + '</div>' +
         '</section>';
     }
@@ -2105,6 +2283,11 @@
             document.getElementById('words-login').addEventListener('click', function() {
                 window.location.href = 'index.html';
             });
+            return;
+        }
+        if (state.vocabReviewMode) {
+            myWordsContent.innerHTML = reviewWordHtml();
+            bindReviewActions();
             return;
         }
         myWordsContent.innerHTML = renderMyWordsCard();

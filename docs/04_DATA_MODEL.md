@@ -429,6 +429,11 @@ Core fields:
 | `lookup_error` | string | bounded last lookup note |
 | `lookup_retry_after` | Date/null | retry throttle |
 | `dictionary` | response-only object | joined shared lexicon view; not required in stored item |
+| `learning_status` | string | `new`, `learning`, or `mastered` |
+| `review_due_at` | Date | next scheduled review |
+| `review_interval_days` | number | current rule-based interval |
+| `review_streak` | number | consecutive Know count |
+| `last_reviewed_at` | Date/null | most recent review response |
 
 Rules:
 
@@ -437,6 +442,8 @@ Rules:
 - Browser must call `studentVocabulary`, not write database directly.
 - Words may be saved either from selected page text, including answer and
   explanation content, or from the manual My Words add form.
+- Forgot schedules one day, A little schedules three days, and Know advances
+  through 7, 14, and 30 days. Three consecutive Know responses mark Mastered.
 
 ## 13. Browser Local Storage
 

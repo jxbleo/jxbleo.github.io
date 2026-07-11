@@ -189,6 +189,11 @@ function itemView(item, lexiconItem) {
     lookup_status: dictionary ? "ready" : (item.lookup_status || "pending"),
     lookup_error: item.lookup_error || "",
     lookup_retry_after: item.lookup_retry_after || null,
+    learning_status: item.learning_status || "new",
+    review_due_at: item.review_due_at || item.created_at || null,
+    review_interval_days: Math.max(0, Number(item.review_interval_days || 0)),
+    review_streak: Math.max(0, Number(item.review_streak || 0)),
+    last_reviewed_at: item.last_reviewed_at || null,
     dictionary,
   };
 }
@@ -280,6 +285,10 @@ async function addWord(student, event) {
     times_added: 1,
     created_at: now,
     lookup_status: "pending",
+    learning_status: "new",
+    review_due_at: now,
+    review_interval_days: 0,
+    review_streak: 0,
     ...update,
   };
   await db.collection(COLLECTION).add(record);
@@ -459,6 +468,68 @@ async function setStatus(student, event, status) {
   };
 }
 
+function reviewUpdate(item, rating) {
+  const now = new Date();
+  const currentStreak = Math.max(0, Number(item.review_streak || 0));
+  let intervalDays;
+  let reviewStreak;
+  let learningStatus;
+  if (rating === "forgot") {
+    intervalDays = 1;
+    reviewStreak = 0;
+    learningStatus = "learning";
+  } else if (rating === "fuzzy") {
+    intervalDays = 3;
+    reviewStreak = 0;
+    learningStatus = "learning";
+  } else if (rating === "know") {
+    reviewStreak = currentStreak + 1;
+    intervalDays = reviewStreak >= 3 ? 30 : (reviewStreak === 2 ? 14 : 7);
+    learningStatus = reviewStreak >= 3 ? "mastered" : "learning";
+  } else {
+    throw new Error("REVIEW_RATING_INVALID");
+  }
+  return {
+    learning_status: learningStatus,
+    review_interval_days: intervalDays,
+    review_streak: reviewStreak,
+    last_reviewed_at: now,
+    review_due_at: new Date(now.getTime() + intervalDays * 24 * 60 * 60 * 1000),
+    updated_at: now,
+  };
+}
+
+async function reviewWord(student, event) {
+  const vocabId = compactText(event.vocab_id, 80);
+  if (!vocabId) throw new Error("VOCAB_ID_REQUIRED");
+  const item = await getOwnedItem(student, vocabId);
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const update = reviewUpdate(item, compactText(event.rating, 20));
+  await db.collection(COLLECTION).doc(item._id).update(update);
+  const lexiconItem = await getLexiconItemOrNull(item.normalized_text);
+  return { success: true, word: itemView({ ...item, ...update }, lexiconItem) };
+}
+
+async function setLearningStatus(student, event) {
+  const vocabId = compactText(event.vocab_id, 80);
+  if (!vocabId) throw new Error("VOCAB_ID_REQUIRED");
+  const learningStatus = compactText(event.learning_status, 20);
+  if (!["new", "learning", "mastered"].includes(learningStatus)) throw new Error("LEARNING_STATUS_INVALID");
+  const item = await getOwnedItem(student, vocabId);
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const now = new Date();
+  const update = {
+    learning_status: learningStatus,
+    review_due_at: learningStatus === "mastered" ? new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) : now,
+    review_interval_days: learningStatus === "mastered" ? 30 : 0,
+    review_streak: learningStatus === "mastered" ? Math.max(3, Number(item.review_streak || 0)) : 0,
+    updated_at: now,
+  };
+  await db.collection(COLLECTION).doc(item._id).update(update);
+  const lexiconItem = await getLexiconItemOrNull(item.normalized_text);
+  return { success: true, word: itemView({ ...item, ...update }, lexiconItem) };
+}
+
 async function deleteWord(student, event) {
   const vocabId = compactText(event.vocab_id, 80);
   if (!vocabId) throw new Error("VOCAB_ID_REQUIRED");
@@ -478,6 +549,8 @@ function errorMessage(code) {
   if (code === "TEXT_INVALID") return "Select a word or phrase with letters or numbers.";
   if (code === "VOCAB_ID_REQUIRED") return "Word ID is required.";
   if (code === "VOCAB_NOT_FOUND") return "This word was not found in your list.";
+  if (code === "REVIEW_RATING_INVALID") return "Choose Forgot, A little, or Know.";
+  if (code === "LEARNING_STATUS_INVALID") return "Choose a valid learning status.";
   return `Unable to update your word list (${code || "VOCAB_ERROR"}).`;
 }
 
@@ -492,6 +565,8 @@ exports.main = async (event = {}) => {
     if (action === "restore") return await setStatus(student, event, "active");
     if (action === "delete") return await deleteWord(student, event);
     if (action === "enrich") return await enrichWord(student, event);
+    if (action === "review") return await reviewWord(student, event);
+    if (action === "setLearningStatus") return await setLearningStatus(student, event);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     const code = String(error && error.message || "VOCAB_ERROR");

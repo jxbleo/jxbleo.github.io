@@ -401,6 +401,10 @@ Check:
   external provider again for another student
 - My Words search matches Chinese meaning, English definition, and part of speech
 - pronunciation uses browser speech without exposing a provider key
+- collapsed cards show only word, part of speech, Chinese meaning, and speaker;
+  expansion reveals English definition, source/context, status, and actions
+- Today/New/Learning/Mastered filters work, review hides meanings until Reveal,
+  and Forgot/A little/Know schedules 1/3/7-to-30 day intervals respectively
 - BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt
   Review load the same cache-versioned My Words selection script
 

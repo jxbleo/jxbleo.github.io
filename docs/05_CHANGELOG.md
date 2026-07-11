@@ -30,6 +30,10 @@
 
 ### Changed
 
+- Simplified collapsed My Words cards to word, part of speech, Chinese meaning,
+  and pronunciation, with details on expansion; added New/Learning/Mastered
+  states and rule-based daily reveal-and-rate review without AI calls.
+
 - Changed shared practice `Back` navigation to use one verified browser-history
   step when the previous same-origin page matches the safe return target. This
   restores the existing Library/Dashboard instance through back-forward cache,

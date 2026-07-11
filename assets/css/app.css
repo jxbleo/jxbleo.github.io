@@ -1619,62 +1619,110 @@ body:not(.teacher-page) .tab-button.active {
 }
 .my-words-table {
     display: grid;
+    gap: 8px;
+    overflow: hidden;
+    border-radius: 16px;
+}
+.my-word-item {
     overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: rgba(255,255,255,0.82);
-}
-.my-words-table-row {
-    display: grid;
-    grid-template-columns: minmax(190px, 1.25fr) minmax(0, 1.3fr) minmax(84px, 0.5fr) auto;
-    gap: 12px;
-    align-items: center;
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--line);
-}
-.my-words-table-row:last-child { border-bottom: 0; }
-.my-words-table-head {
-    min-height: 38px;
-    color: var(--muted);
-    background: #f5faf8;
-    font-size: 0.72rem;
-    font-weight: 900;
-    text-transform: uppercase;
-}
-.my-word-item {
     background: #fff;
 }
-.my-word-main { min-width: 0; }
-.my-word-main strong {
-    display: block;
-    color: var(--ink);
-    font-size: 1rem;
-    line-height: 1.25;
-}
-.my-word-dictionary {
+.my-word-summary {
     display: grid;
-    gap: 5px;
-    margin-top: 8px;
-    font-size: 0.78rem;
-    line-height: 1.4;
-}
-.my-word-dictionary.pending {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    color: var(--muted);
+    gap: 10px;
+    min-height: 64px;
+    padding: 10px 12px 10px 14px;
 }
-.my-word-dictionary-head {
-    display: flex;
+.my-word-toggle {
+    display: grid;
+    grid-template-columns: minmax(100px, 0.65fr) minmax(0, 1.35fr);
     align-items: center;
-    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.my-word-toggle strong {
+    display: block;
+    min-width: 0;
+    color: var(--ink);
+    font-size: 1.04rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+.my-word-primary-copy {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.my-word-pos {
+    color: #13766d;
+    font-size: 0.74rem;
+    font-weight: 950;
+    white-space: nowrap;
+}
+.my-word-chinese {
+    min-width: 0;
+    color: #23463e;
+    font-size: 0.86rem;
+    font-weight: 850;
+    overflow-wrap: anywhere;
+}
+.my-word-detail {
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--line);
+    background: #f8fbfa;
+}
+.my-word-detail-copy {
+    display: grid;
     gap: 8px;
+    padding-top: 12px;
+    color: #49645e;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+.my-word-detail-copy p { margin: 0; }
+.my-word-detail-copy blockquote,
+.my-words-review-answer blockquote {
+    margin: 2px 0;
+    padding: 10px 12px;
+    border-left: 3px solid #8fcdb9;
+    border-radius: 0 10px 10px 0;
+    background: #fff;
+}
+.my-word-phonetic {
     color: #13766d;
     font-weight: 900;
 }
-.my-word-dictionary p { margin: 0; }
-.my-word-chinese { color: #23463e; font-weight: 850; }
 .my-word-definition { color: #49645e; }
-.my-word-dictionary small { color: var(--muted); font-size: 0.68rem; }
+.my-word-detail-meta { color: var(--muted); font-size: 0.72rem; }
+.my-word-detail-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 3px;
+}
+.my-word-detail-actions button { min-height: 34px; padding: 6px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 850; }
+.my-word-learning-status {
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 950;
+}
+.my-word-learning-status.new { color: #725615; background: #fff3c8; }
+.my-word-learning-status.learning { color: #1a5f78; background: #e1f4fb; }
+.my-word-learning-status.mastered { color: #166044; background: #dff5e9; }
 .my-word-speak,
 .my-word-lookup {
     border: 1px solid rgba(19,118,109,0.16);
@@ -1685,23 +1733,47 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 900;
     cursor: pointer;
 }
-.my-word-speak { width: 28px; height: 28px; padding: 0; }
+.my-word-speak { width: 36px; height: 36px; padding: 0; font-size: 1rem; }
 .my-word-lookup { padding: 4px 9px; }
-.my-word-source span,
-.my-word-date {
-    display: block;
+.my-words-learning-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.my-words-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.my-words-filters button {
+    min-height: 32px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
     color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.35;
-    font-weight: 800;
+    background: #fff;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 900;
+    cursor: pointer;
 }
-.my-word-source p {
-    margin: 7px 0 0;
-    color: #49645e;
-    font-size: 0.84rem;
-    line-height: 1.45;
+.my-words-filters button.active { color: #fff; border-color: #13766d; background: #13766d; }
+.my-words-review-start { min-height: 38px; padding: 7px 13px; border-radius: 12px; white-space: nowrap; }
+.my-words-review { display: grid; gap: 16px; }
+.my-words-review.complete { justify-items: center; padding: 40px 20px; text-align: center; }
+.my-words-review-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-weight: 900; }
+.my-words-review-card {
+    display: grid;
+    gap: 20px;
+    min-height: 330px;
+    padding: clamp(22px, 5vw, 42px);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 16px 40px rgba(24, 65, 57, 0.08);
 }
-.my-word-date { white-space: nowrap; }
+.my-words-review-word { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.my-words-review-word h2 { margin: 0; font-size: clamp(2rem, 7vw, 3.6rem); letter-spacing: -0.04em; }
+.my-words-reveal { align-self: center; justify-self: center; min-width: 180px; }
+.my-words-review-answer { display: grid; gap: 10px; text-align: center; }
+.my-words-review-answer p { margin: 0; }
+.my-words-review-ratings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-self: end; }
+.my-words-review-ratings button { min-height: 46px; border: 0; border-radius: 12px; font: inherit; font-weight: 900; cursor: pointer; }
+.my-words-review-ratings button:nth-child(1) { color: #8f392e; background: #fde9e6; }
+.my-words-review-ratings button:nth-child(2) { color: #785716; background: #fff2c8; }
+.my-words-review-ratings button:nth-child(3) { color: #176044; background: #dff5e9; }
 .my-words-empty {
     padding: 18px 0 4px;
     color: var(--muted);
@@ -6207,12 +6279,13 @@ body:not(.teacher-page) .tab-button.active {
     .my-words-manual { grid-template-columns: 1fr; }
     .my-word-add { width: 100%; }
     .my-words-tools { grid-template-columns: 1fr; }
-    .my-words-table-head { display: none; }
-    .my-words-table-row {
-        grid-template-columns: 1fr;
-        gap: 7px;
-    }
-    .my-word-action { width: 100%; }
+    .my-words-learning-tools { align-items: stretch; flex-direction: column; }
+    .my-words-review-start { width: 100%; }
+    .my-word-toggle { grid-template-columns: minmax(80px, 0.55fr) minmax(0, 1.45fr); gap: 8px; }
+    .my-word-primary-copy { grid-template-columns: 1fr; gap: 2px; }
+    .my-word-chinese { font-size: 0.8rem; }
+    .my-words-review-card { min-height: 300px; padding: 22px 16px; }
+    .my-words-review-ratings { grid-template-columns: 1fr; }
     .password-dialog { padding: 22px 18px; }
     .practice-entry-overlay { padding: 18px; }
     .practice-entry-card {
