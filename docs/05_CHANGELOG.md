@@ -11,6 +11,10 @@
   its `Finished / total` value, week labels open weekly completion summaries,
   blank selections stay visually quiet, and loading states reserve the meter and
   board layout before dashboard data arrives.
+- Changed student Dashboard assignment reminders to live in the top-right bell:
+  the bell now opens a message center with open assignments, finished
+  assignments, and teacher replies, while open-assignment counts only clear when
+  assignments are completed.
 
 ## 2026-07-10
 

@@ -45,7 +45,8 @@ Navigation:
 Assignments display:
 
 - open `TO DO` assignments directly
-- a small bottom `Finished` completion button for completed work
+- completed work is reachable from the top-right notification bell, not from a
+  bottom `Finished` capsule inside the Assignments page
 - the top student billboard is a progress board rather than a pure welcome
   panel. It keeps one short randomly selected English greeting that includes
   the student's English name; the greeting should stay on one line unless the
@@ -80,24 +81,20 @@ Backend statuses:
 
 Frontend rule:
 
-- `passed` and `mastered` both appear inside the collapsed `Finished` completion button.
+- `passed` and `mastered` both appear in the top-right notification bell's
+  `Finished` section.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The finished control is a compact sticky gold capsule, visually aligned with
-  the Library gold badge style but with a brighter golden glow. When collapsed,
-  it stays docked at the bottom of the Assignments view. After it is opened, it
-  becomes part of the page content, reveals the finished list with a subtle
-  golden ribbon effect, and the capsule can still stick to the top while
-  scrolling. It reads `Show Finished` when collapsed and `Hide Finished` when
-  expanded, and keeps the visible control to a check icon plus that label. Do
-  not put counts or extra action text inside the capsule.
+- The Assignments page should not show a separate `TO DO` / `FINISHED` filter
+  capsule or bottom finished capsule. It lists open assignments directly; the
+  bell is the single place for assignment reminders and finished-review entry.
 - Finished Vocabulary assignment cards open the same Learn entry used by
   Library Vocabulary cards, without automatically restoring Test/History mode.
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Message and unread-count reminders use red dots/badges consistently, including
-  student replies, assignment-tab notices, teacher notification counts, and
-  unread activity rows. On the student main navigation, the assignment count
-  floats just outside the glass capsule so the rounded active tab is not
-  clipped.
+  student replies, assignment notifications, teacher notification counts, and
+  unread activity rows. Student assignment reminders are counted on the
+  top-right bell. Viewing the bell must not clear open-assignment reminders;
+  the count decreases only when assignments leave `to_do`.
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
@@ -116,6 +113,9 @@ Frontend rule:
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
+- The student bell dialog should always open, even when there are no new teacher
+  replies. It shows open assignments, finished assignments, and teacher replies
+  in one message center.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.
@@ -166,7 +166,8 @@ Student account menu:
 - shows profile/account information, password change, and logout.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
-- teacher replies remain a message-center dialog opened from the top-right message indicator.
+- assignment reminders, finished work, and teacher replies share the
+  message-center dialog opened from the top-right message indicator.
 
 ## 4. Teacher Interface
 

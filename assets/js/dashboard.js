@@ -5,7 +5,6 @@
         session: null,
         assignments: [],
         resources: [],
-        assignmentFilter: 'todo',
         resourceFilter: 'vocabulary',
         resourceBookFilters: {},
         starCount: 0,
@@ -14,7 +13,6 @@
         teacherReplies: [],
         vocabItems: [],
         vocabSearch: '',
-        finishedExpanded: false,
         progressSelectedDay: '',
         accountPanelOpen: false
     };
@@ -340,10 +338,6 @@
         return normalized === 'passed' || normalized === 'mastered';
     }
 
-    function assignmentBucket(status) {
-        return isFinishedStatus(status) ? 'finished' : 'todo';
-    }
-
     function teacherReplyCount(item) {
         if (!item) return 0;
         if (item.teacher_reply_count != null) return Number(item.teacher_reply_count || 0);
@@ -475,28 +469,6 @@
         return String(value);
     }
 
-    function renderAssignmentFilters(assignments) {
-        var counts = { todo: 0, finished: 0 };
-        var replies = { todo: 0, finished: 0 };
-        assignments.forEach(function(item) {
-            var bucket = assignmentBucket(item.status);
-            counts[bucket] = (counts[bucket] || 0) + 1;
-            replies[bucket] += teacherReplyCount(item);
-        });
-        var todoNotice = replies.todo
-            ? '<span class="reply-count-badge filter-reply-count">' + replies.todo + '</span>'
-            : '';
-        var finishedNotice = replies.finished
-            ? '<span class="reply-count-badge filter-reply-count">' + replies.finished + '</span>'
-            : '';
-        return '<div class="summary-grid assignment-filters" role="tablist" aria-label="Assignment status">' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'todo' || state.assignmentFilter === 'all' ? ' active' : '') + '" type="button" data-assignment-filter="todo">' +
-                todoNotice + '<span class="summary-value">' + counts.todo + '</span><span class="summary-label">TO DO</span></button>' +
-            '<button class="summary-card assignment-filter' + (state.assignmentFilter === 'finished' ? ' active' : '') + '" type="button" data-assignment-filter="finished">' +
-                finishedNotice + '<span class="summary-value">' + counts.finished + '</span><span class="summary-label">FINISHED</span></button>' +
-        '</div>';
-    }
-
     function isStarCollected(item) {
         return item.star_claimed === true;
     }
@@ -569,6 +541,48 @@
         return (state.assignments || [])
             .filter(function(item) { return normalizedStatus(item.status) === 'to_do'; })
             .sort(newestFirst);
+    }
+
+    function finishedAssignments() {
+        return (state.assignments || [])
+            .filter(function(item) { return isFinishedStatus(item.status); })
+            .sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
+    }
+
+    function assignmentSet(item) {
+        return item && (item.set || item) || {};
+    }
+
+    function assignmentSetId(item) {
+        var set = assignmentSet(item);
+        return set.set_id || set.id || set.title || '';
+    }
+
+    function assignmentTitle(item) {
+        var set = assignmentSet(item);
+        return set.title || assignmentSetId(item) || 'Practice';
+    }
+
+    function assignmentKind(item) {
+        var set = assignmentSet(item);
+        var sectionId = set.sectionId || set.section_id || '';
+        return vocabularySourceLabel(set) ||
+            (sectionId ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment') : (set.course || set.type || 'Assignment'));
+    }
+
+    function assignmentOpenHref(item) {
+        var set = assignmentSet(item);
+        var status = normalizedStatus(item.status);
+        var finished = isFinishedStatus(status);
+        var assignmentHref = practiceHref(Object.assign({}, set, {
+            prefill_attempt_id: item.prefill_attempt_id,
+            history_attempt_id: item.history_attempt_id,
+            best_percentage: item.best_percentage
+        }), item.assignment_id);
+        var setHref = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
+        return finished && isVocabularyHref(setHref)
+            ? vocabularyLearningHref(set, 'assignments')
+            : assignmentHref;
     }
 
     function passwordValidationMessage(password) {
@@ -677,31 +691,19 @@
     }
 
     function taskCard(item) {
-        var set = item.set || item;
+        var set = assignmentSet(item);
         var status = normalizedStatus(item.status);
         var finished = isFinishedStatus(status);
         var replyCount = teacherReplyCount(item);
         var replyKey = replyKeyForItem(item);
-        var assignmentHref = practiceHref(Object.assign({}, set, {
-            prefill_attempt_id: item.prefill_attempt_id,
-            history_attempt_id: item.history_attempt_id,
-            best_percentage: item.best_percentage
-        }), item.assignment_id);
-        var setId = set.set_id || set.id || set.title || '';
-        var setHref = set.link || set.href || defaultPracticeLink(set.set_id || set.id || '');
-        var href = finished && isVocabularyHref(setHref)
-            ? vocabularyLearningHref(set, 'assignments')
-            : assignmentHref;
+        var setId = assignmentSetId(item);
+        var href = assignmentOpenHref(item);
         var collected = isStarCollected(item);
         var replyButton = replyCount
             ? '<button class="card-button reply-button" type="button" data-teacher-replies-key="' + escapeHtml(replyKey) + '">' +
                 'Teacher replies <span class="reply-count-badge">' + escapeHtml(replyCount) + '</span></button>'
             : '';
-        var sectionId = set.sectionId || set.section_id || '';
-        var vocabLabel = vocabularySourceLabel(set);
-        var eyebrow = vocabLabel || (sectionId
-            ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment')
-            : (set.course || set.type || 'Assignment'));
+        var eyebrow = assignmentKind(item);
         var entryStatus = finished ? status : 'not-passed';
         var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="resource-card library-task-card assignment-task-card' +
@@ -861,26 +863,24 @@
         return (state.teacherReplies || []).length;
     }
 
+    function studentMessageTotal() {
+        return todoAssignments().length + teacherReplyTotal();
+    }
+
     function updateDashboardTabNotices() {
-        var todoCount = todoAssignments().length;
-        var replyCount = teacherReplyTotal();
+        var messageTotal = studentMessageTotal();
         var button = document.querySelector('.tab-button[data-view="assignments"]');
         if (button) {
             var existing = button.querySelector('.notice-dot');
             if (existing) existing.remove();
-            if (todoCount) {
-                var dot = document.createElement('span');
-                dot.className = 'notice-dot todo';
-                dot.textContent = todoCount > 9 ? '9+' : String(todoCount);
-                button.appendChild(dot);
-            }
         }
         if (messageCount) {
-            messageCount.textContent = replyCount ? (replyCount > 9 ? '9+' : String(replyCount)) : '';
-            messageCount.hidden = replyCount <= 0;
+            messageCount.textContent = messageTotal ? (messageTotal > 9 ? '9+' : String(messageTotal)) : '';
+            messageCount.hidden = messageTotal <= 0;
         }
         if (messageButton) {
-            messageButton.classList.toggle('has-updates', replyCount > 0);
+            messageButton.classList.toggle('has-updates', messageTotal > 0);
+            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' notifications' : 'Notifications');
             messageButton.setAttribute('aria-expanded', 'false');
         }
     }
@@ -901,6 +901,19 @@
         updateDashboardTabNotices();
     }
 
+    function markTeacherRepliesSeen(replies) {
+        var ids = replyIds(replies);
+        if (!ids.length) return Promise.resolve();
+        clearTeacherReplies(ids);
+        renderAssignments();
+        updateDashboardTabNotices();
+        if (!window.MrCatCloud) return Promise.resolve();
+        return window.MrCatCloud.callFunction('getDashboard', {
+            action: 'markTeacherRepliesSeen',
+            dispute_ids: ids
+        }).catch(function() {});
+    }
+
     function replyStatusClass(reply) {
         if (reply.status === 'approved') return 'approved';
         if (reply.status === 'rejected') return 'rejected';
@@ -919,6 +932,145 @@
         '</section>';
     }
 
+    function renderTeacherReplyItem(reply) {
+        var statusClass = replyStatusClass(reply);
+        var statusLabel = replyStatusLabel(reply);
+        var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
+        var title = reply.set_title || reply.set_id || 'Practice';
+        var before = answerText(reply.answer_snapshot, 'Not shown');
+        var yours = answerText(reply.submitted_answer, 'Not shown');
+        var href = hrefForTeacherReply(reply);
+        return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
+            '<div class="teacher-reply-head">' +
+                '<div class="teacher-reply-question">' +
+                    '<strong>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</strong>' +
+                    '<small>' + escapeHtml(title) + '</small>' +
+                '</div>' +
+                '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
+            '</div>' +
+            '<div class="teacher-reply-flow">' +
+                '<div class="teacher-reply-answer"><b>Before</b><span>' + escapeHtml(before) + '</span></div>' +
+                '<div class="teacher-reply-arrow" aria-hidden="true">&rarr;</div>' +
+                '<div class="teacher-reply-answer yours"><b>Yours</b><span>' + escapeHtml(yours) + '</span></div>' +
+            '</div>' +
+            (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
+            '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question</a></div>' +
+        '</article>';
+    }
+
+    function renderStudentMessageTask(item, type) {
+        var status = normalizedStatus(item.status);
+        var finished = isFinishedStatus(status);
+        var href = assignmentOpenHref(item);
+        var score = finished && item.best_percentage != null
+            ? '<small class="student-message-score">Score ' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</small>'
+            : '';
+        var stateLabel = type === 'todo' ? 'To do' : (status === 'mastered' ? 'Mastered' : 'Finished');
+        return '<article class="student-message-task ' + escapeHtml(type) + '">' +
+            '<div class="student-message-task-main">' +
+                '<span class="student-message-kicker">' + escapeHtml(assignmentKind(item)) + '</span>' +
+                '<strong>' + escapeHtml(assignmentTitle(item)) + '</strong>' +
+                score +
+            '</div>' +
+            '<div class="student-message-task-actions">' +
+                '<span class="student-message-state ' + escapeHtml(type) + '">' + escapeHtml(stateLabel) + '</span>' +
+                '<a class="student-message-go" href="' + escapeHtml(href) + '">' + (type === 'todo' ? 'Start' : 'Open') + '</a>' +
+            '</div>' +
+        '</article>';
+    }
+
+    function renderStudentMessageSection(title, count, body, emptyText, extraClass) {
+        return '<section class="student-message-section ' + escapeHtml(extraClass || '') + '">' +
+            '<div class="student-message-section-head">' +
+                '<h3>' + escapeHtml(title) + '</h3>' +
+                '<span>' + escapeHtml(count) + '</span>' +
+            '</div>' +
+            (body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>') +
+        '</section>';
+    }
+
+    function openStudentMessageCenter() {
+        var existing = document.querySelector('.student-message-overlay');
+        if (existing) existing.remove();
+
+        var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
+        var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
+        var replies = state.teacherReplies || [];
+        var overlay = document.createElement('div');
+        overlay.className = 'teacher-replies-overlay student-message-overlay';
+        overlay.innerHTML =
+            '<div class="teacher-replies-dialog student-message-dialog" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
+                '<button class="dialog-close-button" type="button" aria-label="Close notifications">×</button>' +
+                '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
+                    '<h2 id="student-message-title">Notifications</h2>' +
+                    '<div class="student-message-summary">' +
+                        '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
+                        '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
+                        '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="student-message-sections">' +
+                    renderStudentMessageSection(
+                        'To do',
+                        todos.length,
+                        todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                        'No unfinished assignments.',
+                        'todo'
+                    ) +
+                    renderStudentMessageSection(
+                        'Finished',
+                        finished.length,
+                        finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                        'Finished assignments will appear here.',
+                        'finished'
+                    ) +
+                    renderStudentMessageSection(
+                        'Teacher replies',
+                        replies.length,
+                        replies.map(renderTeacherReplyItem).join(''),
+                        'No new teacher replies.',
+                        'replies'
+                    ) +
+                '</div>' +
+                '<div class="dialog-actions">' +
+                    '<button class="primary-button" id="student-message-done" type="button">Close</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
+
+        var didMarkSeen = false;
+        function close(markSeen) {
+            document.removeEventListener('keydown', onKeydown);
+            overlay.remove();
+            if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
+            if (!markSeen || didMarkSeen) return Promise.resolve();
+            didMarkSeen = true;
+            return markTeacherRepliesSeen(replies);
+        }
+
+        function onKeydown(event) {
+            if (event.key === 'Escape') close(true);
+        }
+
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) close(true);
+        });
+        overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
+        overlay.querySelector('#student-message-done').addEventListener('click', function() { close(true); });
+        overlay.querySelectorAll('.student-message-go, .teacher-reply-go').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                var href = link.getAttribute('href');
+                if (!href || href === '#') return;
+                event.preventDefault();
+                Promise.resolve(close(true)).then(function() {
+                    window.location.href = href;
+                });
+            });
+        });
+        document.addEventListener('keydown', onKeydown);
+    }
+
     function openTeacherRepliesDialog(replyItems) {
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
         if (!replies.length) return;
@@ -930,50 +1082,20 @@
                 '<div class="teacher-replies-dialog-head">' +
                     '<h2 id="teacher-replies-title">' + replies.length + ' repl' + (replies.length === 1 ? 'y is' : 'ies are') + ' ready.</h2>' +
                 '</div>' +
-                '<div class="teacher-replies-list">' + replies.map(function(reply) {
-                    var statusClass = replyStatusClass(reply);
-                    var statusLabel = replyStatusLabel(reply);
-                    var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
-                    var title = reply.set_title || reply.set_id || 'Practice';
-                    var before = answerText(reply.answer_snapshot, 'Not shown');
-                    var yours = answerText(reply.submitted_answer, 'Not shown');
-                    var href = hrefForTeacherReply(reply);
-                    return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
-                        '<div class="teacher-reply-head">' +
-                            '<div class="teacher-reply-question">' +
-                                '<strong>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</strong>' +
-                                '<small>' + escapeHtml(title) + '</small>' +
-                            '</div>' +
-                            '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
-                        '</div>' +
-                        '<div class="teacher-reply-flow">' +
-                            '<div class="teacher-reply-answer"><b>Before</b><span>' + escapeHtml(before) + '</span></div>' +
-                            '<div class="teacher-reply-arrow" aria-hidden="true">&rarr;</div>' +
-                            '<div class="teacher-reply-answer yours"><b>Yours</b><span>' + escapeHtml(yours) + '</span></div>' +
-                        '</div>' +
-                        (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
-                        '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question</a></div>' +
-                    '</article>';
-                }).join('') + '</div>' +
+                '<div class="teacher-replies-list">' + replies.map(renderTeacherReplyItem).join('') + '</div>' +
                 '<div class="dialog-actions">' +
                     '<button class="primary-button" id="teacher-replies-done" type="button">Close</button>' +
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
 
+        var didMarkSeen = false;
         function close(markSeen) {
             document.removeEventListener('keydown', onKeydown);
             overlay.remove();
-            if (!markSeen) return Promise.resolve();
-            var ids = replyIds(replies);
-            clearTeacherReplies(ids);
-            renderAssignments();
-            updateDashboardTabNotices();
-            if (!ids.length || !window.MrCatCloud) return Promise.resolve();
-            return window.MrCatCloud.callFunction('getDashboard', {
-                action: 'markTeacherRepliesSeen',
-                dispute_ids: ids
-            }).catch(function() {});
+            if (!markSeen || didMarkSeen) return Promise.resolve();
+            didMarkSeen = true;
+            return markTeacherRepliesSeen(replies);
         }
 
         function onKeydown(event) {
@@ -1216,65 +1338,26 @@
             renderProgressDetail(model.selected);
     }
 
-    function finishedIconSvg() {
-        return '<svg class="finished-mini-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-            '<circle cx="12" cy="12" r="9"></circle>' +
-            '<path d="M8 12.5l2.4 2.4L16.5 8.8"></path>' +
-        '</svg>';
-    }
-
-    function renderFinishedPanel(finished) {
-        var expanded = state.finishedExpanded === true;
-        var label = expanded ? 'Hide Finished' : 'Show Finished';
-        var finishedList = finished.length
-            ? '<div class="task-list finished-list">' + finished.map(taskCard).join('') + '</div>'
-            : '<div class="empty-card">Finished work will collect here after you pass an assignment.</div>';
-        return '<section class="finished-drawer' + (expanded ? ' expanded' : '') + '">' +
-            '<button class="finished-drawer-toggle" id="finished-drawer-toggle" type="button" aria-expanded="' + expanded + '">' +
-                finishedIconSvg() +
-                '<span class="finished-mini-label">' + label + '</span>' +
-            '</button>' +
-            (expanded ? '<div class="finished-drawer-body">' +
-                finishedList +
-            '</div>' : '') +
-        '</section>';
-    }
-
     function renderAssignments() {
         if (state.session.mode === 'visitor') {
             assignmentContent.innerHTML =
-                '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>' +
-                renderFinishedPanel([]);
+                '<div class="empty-card"><strong>No visitor assignments</strong>Log in to receive assignments, submit work, and save progress.</div>';
             updateDashboardTabNotices();
             return;
         }
 
         var assignments = state.assignments || [];
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
-        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); }).sort(function(left, right) {
-            var byReply = teacherReplyCount(right) - teacherReplyCount(left);
-            if (byReply) return byReply;
-            return new Date(right.mastered_at || right.completed_at || right.updated_at || 0).getTime() -
-                new Date(left.mastered_at || left.completed_at || left.updated_at || 0).getTime();
-        });
-        finished = finished.sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
 
         var html = '';
         if (todo.length) html += '<div class="task-list">' + todo.map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!todo.length) {
-            html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open your finished wins below or explore the Library.</div>';
+            html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open the bell to review finished work, or explore the Library.</div>';
         }
-        html += renderFinishedPanel(finished);
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
-
-        var drawerToggle = document.getElementById('finished-drawer-toggle');
-        if (drawerToggle) drawerToggle.addEventListener('click', function() {
-            state.finishedExpanded = state.finishedExpanded !== true;
-            renderAssignments();
-        });
 
         document.querySelectorAll('[data-teacher-replies-key]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -2102,7 +2185,7 @@
     }
     if (messageButton) {
         messageButton.addEventListener('click', function() {
-            openTeacherRepliesDialog(state.teacherReplies || []);
+            openStudentMessageCenter();
         });
     }
     resourceSearch.addEventListener('input', function() {
