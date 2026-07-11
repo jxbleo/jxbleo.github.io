@@ -4,8 +4,10 @@ const cloudbase = require("@cloudbase/node-sdk");
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const COLLECTION = "student_vocabulary_items";
+const LEXICON_COLLECTION = "vocabulary_lexicon";
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
+const DICTIONARY_LOOKUP_TIMEOUT_MS = 4000;
 
 function compactText(value, limit) {
   return String(value == null ? "" : value)
@@ -15,7 +17,7 @@ function compactText(value, limit) {
 }
 
 function normalizeVocabularyText(value) {
-  return compactText(value, 160).toLowerCase();
+  return compactText(value, 160).normalize("NFKC").toLowerCase();
 }
 
 function hasWordCharacter(value) {
@@ -39,6 +41,11 @@ function vocabularyId(studentUid, normalizedText) {
     .digest("hex")
     .slice(0, 32);
   return `vocab_${hash}`;
+}
+
+function lexiconId(normalizedText) {
+  const hash = crypto.createHash("sha256").update(normalizedText).digest("hex").slice(0, 32);
+  return `lex_${hash}`;
 }
 
 async function getAuthenticatedStudent() {
@@ -143,7 +150,29 @@ async function getOwnedItem(student, vocabId) {
   return result.data && result.data[0];
 }
 
-function itemView(item) {
+function lexiconView(item) {
+  if (!item) return null;
+  return {
+    lexicon_id: item.lexicon_id || "",
+    word: item.word || "",
+    normalized_word: item.normalized_word || "",
+    phonetic: item.phonetic || "",
+    audio_url: item.audio_url || "",
+    part_of_speech: item.part_of_speech || "",
+    english_definition: item.english_definition || "",
+    chinese_meaning: item.chinese_meaning || "",
+    word_forms: item.word_forms || "",
+    emoji: item.emoji || "",
+    senses: Array.isArray(item.senses) ? item.senses.slice(0, 8) : [],
+    source_type: item.source_type || "",
+    source_name: item.source_name || (Array.isArray(item.sources) ? item.sources.join(" / ") : ""),
+    source_url: item.source_url || "",
+    verified: item.verified === true,
+  };
+}
+
+function itemView(item, lexiconItem) {
+  const dictionary = lexiconView(lexiconItem);
   return {
     vocab_id: item.vocab_id,
     text: item.text || "",
@@ -157,7 +186,50 @@ function itemView(item) {
     created_at: item.created_at || null,
     updated_at: item.updated_at || null,
     last_added_at: item.last_added_at || null,
+    lookup_status: dictionary ? "ready" : (item.lookup_status || "pending"),
+    lookup_error: item.lookup_error || "",
+    lookup_retry_after: item.lookup_retry_after || null,
+    dictionary,
   };
+}
+
+async function getLexiconItem(normalizedWord) {
+  if (!normalizedWord) return null;
+  try {
+    const result = await db.collection(LEXICON_COLLECTION).where({
+      normalized_word: normalizedWord,
+    }).limit(1).get();
+    return result.data && result.data[0] || null;
+  } catch (error) {
+    if (isMissingCollectionError(error)) return null;
+    throw error;
+  }
+}
+
+async function getLexiconItemOrNull(normalizedWord) {
+  try {
+    return await getLexiconItem(normalizedWord);
+  } catch (_error) {
+    return null;
+  }
+}
+
+async function lexiconMapForItems(items) {
+  const values = Array.from(new Set((items || []).map((item) => item.normalized_text).filter(Boolean)));
+  const map = {};
+  const command = db.command;
+  for (let index = 0; index < values.length; index += 50) {
+    const batch = values.slice(index, index + 50);
+    try {
+      const result = await db.collection(LEXICON_COLLECTION).where({
+        normalized_word: command.in(batch),
+      }).limit(100).get();
+      (result.data || []).forEach((item) => { map[item.normalized_word] = item; });
+    } catch (_error) {
+      return map;
+    }
+  }
+  return map;
 }
 
 async function addWord(student, event) {
@@ -187,14 +259,17 @@ async function addWord(student, event) {
       ...update,
       times_added: Number(existing.times_added || 1) + 1,
     });
+    const nextItem = {
+      ...existing,
+      ...update,
+      lookup_status: existing.lookup_status || "pending",
+      times_added: Number(existing.times_added || 1) + 1,
+    };
+    const lexiconItem = await getLexiconItemOrNull(normalizedText);
     return {
       success: true,
       created: false,
-      word: itemView({
-        ...existing,
-        ...update,
-        times_added: Number(existing.times_added || 1) + 1,
-      }),
+      word: itemView(nextItem, lexiconItem),
     };
   }
 
@@ -204,13 +279,15 @@ async function addWord(student, event) {
     student_id_snapshot: student.student_id,
     times_added: 1,
     created_at: now,
+    lookup_status: "pending",
     ...update,
   };
   await db.collection(COLLECTION).add(record);
+  const lexiconItem = await getLexiconItemOrNull(normalizedText);
   return {
     success: true,
     created: true,
-    word: itemView(record),
+    word: itemView(record, lexiconItem),
   };
 }
 
@@ -227,10 +304,139 @@ async function listWords(student, event) {
     });
   }
   const result = await query.orderBy("updated_at", "desc").limit(limit).get();
+  const lexicon = await lexiconMapForItems(result.data || []);
   return {
     success: true,
-    words: (result.data || []).map(itemView),
+    words: (result.data || []).map((item) => itemView(item, lexicon[item.normalized_text])),
   };
+}
+
+function compactDefinitions(definitions) {
+  return (definitions || []).map((item) => compactText(item, 500)).filter(Boolean).slice(0, 3);
+}
+
+async function requestFreeDictionary(normalizedWord) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DICTIONARY_LOOKUP_TIMEOUT_MS);
+  try {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(normalizedWord)}`, {
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+    if (response.status === 404) return { status: "not_found" };
+    if (!response.ok) throw new Error(`DICTIONARY_HTTP_${response.status}`);
+    const payload = await response.json();
+    const entries = Array.isArray(payload) ? payload : [];
+    const senses = [];
+    entries.forEach((entry) => {
+      (entry.meanings || []).forEach((meaning) => {
+        const definitions = compactDefinitions((meaning.definitions || []).map((item) => item.definition));
+        if (!definitions.length) return;
+        const exampleItem = (meaning.definitions || []).find((item) => item && item.example);
+        senses.push({
+          part_of_speech: compactText(meaning.partOfSpeech, 80),
+          definitions,
+          example: compactText(exampleItem && exampleItem.example, 320),
+        });
+      });
+    });
+    if (!senses.length) return { status: "not_found" };
+    const firstEntry = entries[0] || {};
+    const phoneticItem = (firstEntry.phonetics || []).find((item) => item && (item.text || item.audio)) || {};
+    const audioUrl = String(phoneticItem.audio || "").trim();
+    const record = {
+      lexicon_id: lexiconId(normalizedWord),
+      normalized_word: normalizedWord,
+      word: compactText(firstEntry.word || normalizedWord, 120),
+      phonetic: compactText(firstEntry.phonetic || phoneticItem.text, 120),
+      audio_url: /^https:\/\//i.test(audioUrl) ? audioUrl : (/^\/\//.test(audioUrl) ? `https:${audioUrl}` : ""),
+      part_of_speech: Array.from(new Set(senses.map((item) => item.part_of_speech).filter(Boolean))).join(" / "),
+      english_definition: senses[0].definitions[0],
+      chinese_meaning: "",
+      word_forms: "",
+      emoji: "",
+      senses: senses.slice(0, 8),
+      sources: ["Free Dictionary API"],
+      source_name: "Free Dictionary API",
+      source_type: "dictionaryapi.dev",
+      source_url: `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(normalizedWord)}`,
+      verified: false,
+      lexicon_version: "dictionaryapi.dev-v2",
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    return { status: "ready", record };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function cacheLexiconRecord(record) {
+  const existing = await getLexiconItem(record.normalized_word);
+  if (existing) return existing;
+  try {
+    await db.collection(LEXICON_COLLECTION).add(record);
+    return record;
+  } catch (error) {
+    const raced = await getLexiconItem(record.normalized_word);
+    if (raced) return raced;
+    throw error;
+  }
+}
+
+async function enrichWord(student, event) {
+  const vocabId = compactText(event.vocab_id, 80);
+  if (!vocabId) throw new Error("VOCAB_ID_REQUIRED");
+  const item = await getOwnedItem(student, vocabId);
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  let lexiconItem = await getLexiconItem(item.normalized_text);
+  if (lexiconItem) {
+    await db.collection(COLLECTION).doc(item._id).update({
+      lookup_status: "ready",
+      lookup_error: "",
+      lookup_retry_after: null,
+      updated_at: new Date(),
+    });
+    return { success: true, lookup_status: "ready", word: itemView({ ...item, lookup_status: "ready" }, lexiconItem) };
+  }
+
+  const retryAt = dateValue(item.lookup_retry_after);
+  if (!event.force && retryAt && retryAt > Date.now()) {
+    return { success: true, lookup_status: item.lookup_status || "pending", word: itemView(item, null) };
+  }
+
+  try {
+    const lookup = await requestFreeDictionary(item.normalized_text);
+    if (lookup.status === "ready") {
+      lexiconItem = await cacheLexiconRecord(lookup.record);
+      await db.collection(COLLECTION).doc(item._id).update({
+        lookup_status: "ready",
+        lookup_error: "",
+        lookup_retry_after: null,
+        updated_at: new Date(),
+      });
+      return { success: true, lookup_status: "ready", word: itemView({ ...item, lookup_status: "ready" }, lexiconItem) };
+    }
+    const retryAfter = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    await db.collection(COLLECTION).doc(item._id).update({
+      lookup_status: "not_found",
+      lookup_error: "No dictionary entry found",
+      lookup_retry_after: retryAfter,
+      updated_at: new Date(),
+    });
+    const next = { ...item, lookup_status: "not_found", lookup_error: "No dictionary entry found", lookup_retry_after: retryAfter };
+    return { success: true, lookup_status: "not_found", word: itemView(next, null) };
+  } catch (error) {
+    const retryAfter = new Date(Date.now() + 6 * 60 * 60 * 1000);
+    await db.collection(COLLECTION).doc(item._id).update({
+      lookup_status: "pending",
+      lookup_error: String(error && error.message || "Dictionary lookup unavailable").slice(0, 160),
+      lookup_retry_after: retryAfter,
+      updated_at: new Date(),
+    });
+    const next = { ...item, lookup_status: "pending", lookup_error: "Dictionary lookup will retry later", lookup_retry_after: retryAfter };
+    return { success: true, lookup_status: "pending", word: itemView(next, null) };
+  }
 }
 
 async function setStatus(student, event, status) {
@@ -285,6 +491,7 @@ exports.main = async (event = {}) => {
     if (action === "archive") return await setStatus(student, event, "archived");
     if (action === "restore") return await setStatus(student, event, "active");
     if (action === "delete") return await deleteWord(student, event);
+    if (action === "enrich") return await enrichWord(student, event);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     const code = String(error && error.message || "VOCAB_ERROR");

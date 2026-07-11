@@ -1800,6 +1800,28 @@
         return formatShortDate(word.last_added_at || word.updated_at || word.created_at);
     }
 
+    function wordDictionaryHtml(word) {
+        var dictionary = word && word.dictionary;
+        if (!dictionary) {
+            var status = word && word.lookup_status || 'pending';
+            return '<div class="my-word-dictionary pending">' +
+                '<span>' + (status === 'not_found' ? 'Dictionary entry not found yet.' : 'Finding definition and part of speech...') + '</span>' +
+                (status === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id || '') + '">Retry</button>' : '') +
+            '</div>';
+        }
+        var meta = [dictionary.phonetic, dictionary.part_of_speech].filter(Boolean).join(' · ');
+        var spokenWord = dictionary.word || word.text || '';
+        return '<div class="my-word-dictionary ready">' +
+            '<div class="my-word-dictionary-head">' +
+                '<span>' + escapeHtml(meta || 'Dictionary') + '</span>' +
+                '<button class="my-word-speak" type="button" data-speak-word="' + escapeHtml(spokenWord) + '" aria-label="Pronounce ' + escapeHtml(spokenWord) + '">🔊</button>' +
+            '</div>' +
+            (dictionary.chinese_meaning ? '<p class="my-word-chinese">' + escapeHtml(dictionary.chinese_meaning) + '</p>' : '') +
+            (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
+            (dictionary.source_name ? '<small>Source: ' + escapeHtml(dictionary.source_name) + '</small>' : '') +
+        '</div>';
+    }
+
     function sortedVocabItems(items) {
         return (items || []).slice().sort(function(left, right) {
             return new Date(right.updated_at || right.last_added_at || right.created_at || 0).getTime() -
@@ -1817,7 +1839,10 @@
                 word.normalized_text,
                 word.source_title,
                 word.source_set_id,
-                word.context
+                word.context,
+                word.dictionary && word.dictionary.chinese_meaning,
+                word.dictionary && word.dictionary.english_definition,
+                word.dictionary && word.dictionary.part_of_speech
             ].join(' ').toLowerCase().indexOf(query) !== -1;
         });
     }
@@ -1839,6 +1864,7 @@
             return '<article class="my-word-item my-words-table-row" role="row">' +
                 '<div class="my-word-main">' +
                     '<strong>' + escapeHtml(word.text || '') + '</strong>' +
+                    wordDictionaryHtml(word) +
                 '</div>' +
                 '<div class="my-word-source">' +
                     '<span>' + escapeHtml(source) + '</span>' +
@@ -1907,8 +1933,13 @@
                 upsertVocabItem(result.word);
                 if (textInput) textInput.value = '';
                 if (contextInput) contextInput.value = '';
-                if (status) status.textContent = result.created ? 'Added to My Words.' : 'Already saved. Updated in My Words.';
+                if (status) status.textContent = result.word && result.word.dictionary
+                    ? (result.created ? 'Added with dictionary details.' : 'Already saved. Dictionary details are ready.')
+                    : (result.created ? 'Added. Finding dictionary details...' : 'Already saved. Checking dictionary details...');
                 renderMyWordsList();
+                if (window.MrCatPersonalVocab && window.MrCatPersonalVocab.enrichWord) {
+                    window.MrCatPersonalVocab.enrichWord(result.word, false);
+                }
             }).catch(function(error) {
                 if (status) status.textContent = error.message || 'Unable to add this word.';
             }).finally(function() {
@@ -1942,6 +1973,47 @@
                     alert(error.message || 'Unable to archive this word.');
                 });
             });
+        });
+        document.querySelectorAll('[data-speak-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var value = button.dataset.speakWord || '';
+                if (!value || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+                window.speechSynthesis.cancel();
+                var utterance = new SpeechSynthesisUtterance(value);
+                utterance.lang = 'en-GB';
+                window.speechSynthesis.speak(utterance);
+            });
+        });
+        document.querySelectorAll('[data-lookup-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var vocabId = button.dataset.lookupWord;
+                if (!vocabId) return;
+                button.disabled = true;
+                button.textContent = 'Looking up...';
+                window.MrCatCloud.callFunction('studentVocabulary', {
+                    action: 'enrich',
+                    vocab_id: vocabId,
+                    force: true
+                }).then(function(result) {
+                    if (!result || !result.success || !result.word) throw new Error('Dictionary lookup unavailable.');
+                    upsertVocabItem(result.word);
+                    renderMyWordsList();
+                }).catch(function() {
+                    button.disabled = false;
+                    button.textContent = 'Retry';
+                });
+            });
+        });
+    }
+
+    function enrichPendingVocabItems(items) {
+        if (!window.MrCatPersonalVocab || !window.MrCatPersonalVocab.enrichWord) return;
+        (items || []).filter(function(word) {
+            return word && !word.dictionary && (word.lookup_status || 'pending') === 'pending';
+        }).slice(0, 8).forEach(function(word, index) {
+            window.setTimeout(function() {
+                window.MrCatPersonalVocab.enrichWord(word, false);
+            }, index * 180);
         });
     }
 
@@ -1981,6 +2053,7 @@
                     if (!result || !result.success) throw new Error(result && result.message || 'Unable to load My Words.');
                     state.vocabItems = result.words || [];
                     renderMyWordsList();
+                    enrichPendingVocabItems(state.vocabItems);
                 }).catch(function(error) {
                     alert(error.message || 'Unable to load My Words.');
                 }).finally(function() {
@@ -2190,6 +2263,7 @@
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
             state.vocabItems = results[2] && results[2].words || [];
+            enrichPendingVocabItems(state.vocabItems);
             if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
             return loadPublicCatalogSections();
         });

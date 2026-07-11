@@ -11,4 +11,6 @@ cloudbase-secret.json
 .cloudbase-private/
 deploy-packages/
 node_modules/
+__pycache__/
+*.py[cod]
 .DS_Store

@@ -21,6 +21,10 @@ const COLLECTIONS = {
     file: ".cloudbase-private/import/system-config-cloudbase.json",
     keyField: "config_key",
   },
+  vocabulary_lexicon: {
+    file: ".cloudbase-private/import/vocabulary-lexicon-cloudbase.json",
+    keyField: "lexicon_id",
+  },
 };
 
 function usage() {
@@ -31,7 +35,7 @@ Default mode is a dry run. Add --apply to write to CloudBase.
 
 Options:
   --apply                    Execute CloudBase writes
-  --only <list>              Comma-separated collections: sets,grading_keys,system_config
+  --only <list>              Comma-separated collections: sets,grading_keys,system_config,vocabulary_lexicon
   --ids <list>               Comma-separated keys to import, matched against each collection key field
   --overwrite-existing       Update existing records instead of insert-missing only
   --env-id <envId>           CloudBase environment ID
@@ -45,6 +49,7 @@ Examples:
   npm run cloudbase:import:content -- --apply
   npm run cloudbase:import:content -- --apply --only sets,grading_keys
   npm run cloudbase:import:content -- --apply --only grading_keys --ids NGSL-C --overwrite-existing
+  npm run cloudbase:import:content -- --only vocabulary_lexicon
 `);
 }
 

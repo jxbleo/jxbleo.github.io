@@ -307,3 +307,33 @@ Review condition:
 
 Revisit if custom worksheet PDFs need CJK wordlist text, richer typography, or
 server-side archival.
+
+## 2026-07-12: Dictionary-First My Words Enrichment
+
+Decision:
+
+Enrich personal saved words with a shared `vocabulary_lexicon`: project-curated
+Vocabulary entries first, an optional frequency-bounded ECDICT import second,
+and Free Dictionary API only for remaining cache misses. Personal saves return
+before the browser requests enrichment.
+
+Reason:
+
+Students need dependable parts of speech and definitions without paying for a
+large-language-model call on every saved word. The project already contains
+thousands of bilingual curated entries, while shared caching makes repeated
+unknown words a single provider lookup across all students.
+
+Trade-offs:
+
+- Good: no model cost and near-immediate curated/ECDICT results.
+- Good: external outages never block or remove a saved personal word.
+- Good: fixed backend-only provider access avoids exposed keys and arbitrary URLs.
+- Cost: ECDICT data must be prepared and owner-imported separately.
+- Cost: Free Dictionary API provides English data but generally no Chinese meaning.
+- Cost: provider results require attribution and do not have a paid SLA.
+
+Review condition:
+
+Revisit the provider only if lookup reliability or licensing no longer fits the
+product, or if contextual sense selection later justifies a bounded AI fallback.

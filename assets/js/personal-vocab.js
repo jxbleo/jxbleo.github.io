@@ -280,7 +280,10 @@
             window.dispatchEvent(new CustomEvent('mrcat:vocab-saved', {
                 detail: result.word
             }));
-            showToast(result.created ? 'Saved to My Words.' : 'Already saved. Updated in My Words.');
+            showToast(result.word && result.word.dictionary
+                ? (result.created ? 'Saved with dictionary details.' : 'Already saved. Dictionary details are ready.')
+                : (result.created ? 'Saved. Finding dictionary details...' : 'Already saved. Checking dictionary details...'));
+            enrichWord(result.word, true);
             hideButton();
         }).catch(function(error) {
             showToast(error.message || 'Unable to save this word.');
@@ -288,6 +291,22 @@
             if (!button) return;
             button.disabled = false;
             button.textContent = 'Add to My Words';
+        });
+    }
+
+    function enrichWord(word, announce) {
+        if (!word || !word.vocab_id || word.dictionary) return Promise.resolve(word || null);
+        if (!window.MrCatCloud || typeof window.MrCatCloud.callFunction !== 'function') return Promise.resolve(word);
+        return window.MrCatCloud.callFunction('studentVocabulary', {
+            action: 'enrich',
+            vocab_id: word.vocab_id
+        }).then(function(result) {
+            if (!result || !result.success || !result.word) return word;
+            window.dispatchEvent(new CustomEvent('mrcat:vocab-saved', { detail: result.word }));
+            if (announce && result.word.dictionary) showToast('Dictionary details are ready in My Words.');
+            return result.word;
+        }).catch(function() {
+            return word;
         });
     }
 
@@ -307,6 +326,7 @@
     window.addEventListener('resize', hideButton);
 
     window.MrCatPersonalVocab = {
-        showToast: showToast
+        showToast: showToast,
+        enrichWord: enrichWord
     };
 })(window, document);

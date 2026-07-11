@@ -30,10 +30,20 @@
 
 ### Changed
 
+- Changed shared practice `Back` navigation to use one verified browser-history
+  step when the previous same-origin page matches the safe return target. This
+  restores the existing Library/Dashboard instance through back-forward cache,
+  while direct links and uncertain history still use the safe URL fallback.
+
 - Unified student and Teacher View `By student` monthly-progress task details
   with the teacher matrix visual hierarchy: full wrapping task titles now take
   priority, with compact task-type and best-score metadata aligned together on
   the right for iPad and smaller layouts.
+
+- Upgraded My Words with immediate-save dictionary enrichment, a shared curated
+  and optional ECDICT lexicon, cached external English dictionary fallback,
+  phonetic/POS/definition display, pronunciation, retry throttling, and import
+  tooling for the shared lexicon.
 
 - Made Teacher View matrix task headers open their corresponding teacher
   practice preview and return to Teacher View.

@@ -254,6 +254,7 @@ All collections use `ADMINONLY`:
 - `answer_disputes`: student single-question Argue requests
 - `grading_key_history`: immutable teacher grading-rule revisions
 - `student_vocabulary_items`: student-owned saved words and phrases
+- `vocabulary_lexicon`: shared curated/ECDICT/external dictionary cache
 
 Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
 fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
@@ -701,6 +702,13 @@ The browser must call the `studentVocabulary` cloud function; it must never
 write this collection directly or trust a browser-provided Student ID for
 ownership. Visitor mode and teacher preview must not save personal student
 words.
+
+My Words saves must complete before optional dictionary enrichment. Lookup the
+shared `vocabulary_lexicon` first; only a cache miss may call the fixed backend
+English dictionary provider. Curated entries take precedence, provider results
+are shared across students, and lookup failure must leave the personal word in
+`pending` or `not_found` state rather than failing or deleting the save. Never
+call the provider directly from browser code.
 
 `Teacher Replies` may appear above Assignments only when the student has
 unread resolved Argue replies. It is a transient prompt, not a permanent inbox;

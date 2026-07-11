@@ -156,13 +156,14 @@ Student cards should show:
   not be restored by browser Back/bfcache; returning from a practice page should
   show the page behind the dialog
 - practice pages expose both `Back` and `Home` controls. `Back` first shows a
-  leave-page confirmation, then returns to the page that opened the practice
-  using a safe same-origin `return` URL when available. If no safe return target
-  exists, it falls back to the appropriate home surface. `Home` goes directly to
-  the student's dashboard, or to Teacher Library for `teacher=1` preview pages.
-  Do not rely on raw `window.history.back()` for the primary practice return
-  control, because a browser tab may contain older login or navigation history
-  that is not the previous learning surface.
+  leave-page confirmation, then returns exactly one browser-history step when
+  the same-origin referrer path matches the validated `return` target. This
+  preserves the previous Library filters, scroll position, and back-forward
+  cache instead of creating a new Dashboard page. If that match cannot be
+  verified, `Back` navigates to the safe `return` URL or the appropriate home
+  fallback rather than risking older login or unrelated tab history. `Home`
+  always goes directly to the student's dashboard, or to Teacher Library for
+  `teacher=1` preview pages.
 
 My Words:
 
@@ -171,6 +172,12 @@ My Words:
 - uses a vocabulary-list/table layout with word, source/context, saved date, and archive action.
 - includes a manual add form where students can type a word or short phrase
   plus optional context directly into My Words.
+- each word card can show phonetic spelling, part of speech, Chinese meaning,
+  a short English definition, dictionary source, and a browser pronunciation
+  action. Search includes these dictionary fields.
+- saving is immediate. A cache miss shows `Finding definition and part of
+  speech...` while backend enrichment continues; a confirmed miss offers a
+  quiet Retry action. Lookup failure never removes the saved word.
 - is available across student learning and attempt-review pages. Single-letter
   words such as `a` and `I` are valid vocabulary items.
 - visitors see a login prompt instead of personal data.
