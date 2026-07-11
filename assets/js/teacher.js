@@ -310,25 +310,10 @@
         }).length;
     }
 
-    function attemptsSeenDate() {
-        if (state.attemptsSeenAt) {
-            var stored = new Date(state.attemptsSeenAt);
-            if (!isNaN(stored.getTime())) return stored;
-        }
-        var fallback = new Date();
-        fallback.setHours(fallback.getHours() - 24);
-        return fallback;
-    }
-
     function sortedAttempts() {
         return (state.attempts || []).slice().sort(function(a, b) {
             return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
         });
-    }
-
-    function isAttemptUnread(attempt) {
-        var submitted = new Date(attempt.submitted_at || 0);
-        return !isNaN(submitted.getTime()) && submitted > attemptsSeenDate();
     }
 
     function reviewedAttemptIdMap() {
@@ -344,10 +329,39 @@
         return reviewedAttemptIdMap()[String(attemptId)] !== true;
     }
 
+    function attemptThreadKey(attempt) {
+        var studentKey = attempt.student_uid || attempt.student_id || 'unknown-student';
+        if (attempt.assignment_id) {
+            return studentKey + '::assignment::' + String(attempt.assignment_id);
+        }
+        return studentKey + '::self-study::' + String(attempt.set_id || 'unknown-set');
+    }
+
+    function groupedAttemptThreads() {
+        var byKey = {};
+        var groups = [];
+        sortedAttempts().forEach(function(attempt) {
+            var key = attemptThreadKey(attempt);
+            var group = byKey[key];
+            if (!group) {
+                group = {
+                    key: key,
+                    attempts: [],
+                    unread: false
+                };
+                byKey[key] = group;
+                groups.push(group);
+            }
+            group.attempts.push(attempt);
+            if (isAttemptReviewUnread(attempt)) group.unread = true;
+        });
+        return groups;
+    }
+
     function activityAttemptCounts() {
-        return sortedAttempts().reduce(function(counts, attempt) {
+        return groupedAttemptThreads().reduce(function(counts, group) {
             counts.total += 1;
-            if (isAttemptUnread(attempt)) counts.unread += 1;
+            if (group.unread) counts.unread += 1;
             else counts.read += 1;
             return counts;
         }, { total: 0, unread: 0, read: 0 });
@@ -4041,13 +4055,19 @@
     }
 
     function activityItems() {
-        var attempts = sortedAttempts().map(attemptActivityItem);
-        var unread = attempts.filter(function(item) { return item.unread; });
-        return (unread.length ? unread : attempts)
+        return groupedAttemptThreads().map(function(group) {
+            var latest = group.attempts[0];
+            var target = group.attempts.find(isAttemptReviewUnread) || latest;
+            var item = attemptActivityItem(latest);
+            item.unread = group.unread;
+            item.attempt_id = target.attempt_id || latest.attempt_id || '';
+            item.meta = formatPercent(latest.percentage) + ' · ' + group.attempts.length +
+                ' attempt' + (group.attempts.length === 1 ? '' : 's');
+            return item;
+        })
             .sort(function(a, b) {
                 return new Date(activityDateValue(b) || 0) - new Date(activityDateValue(a) || 0);
-            })
-            .slice(0, unread.length ? 16 : 24);
+            });
     }
 
     function renderActivityFeedRow(item) {
@@ -4069,15 +4089,6 @@
             (items.length ? items.map(renderActivityFeedRow).join('') :
                 '<div class="empty-card compact-empty"><strong>No attempts</strong>Student attempt activity will appear here.</div>') +
             '</div>';
-    }
-
-    function markAttemptsSeenSilently() {
-        state.attemptsSeenAt = new Date().toISOString();
-        updateActivityBadges();
-        teacherCall('markAttemptsRead').then(function(result) {
-            state.attemptsSeenAt = result.attempts_seen_at || new Date().toISOString();
-            updateActivityBadges();
-        }).catch(function() {});
     }
 
     function relatedAttemptIdsForAttempt(attempt) {
@@ -4115,8 +4126,19 @@
         var ids = relatedAttemptIdsForAttempt(attempt);
         if (!ids.length) return;
         setReviewedAttemptIds(ids);
-        teacherCall('markActivityAttemptsReviewed', { attempt_ids: ids }).then(function(result) {
-            state.activityReviewedAttemptIds = result.reviewed_attempt_ids || state.activityReviewedAttemptIds || [];
+        var batches = [];
+        for (var index = 0; index < ids.length; index += 100) {
+            batches.push(ids.slice(index, index + 100));
+        }
+        var persist = Promise.resolve();
+        batches.forEach(function(batch) {
+            persist = persist.then(function() {
+                return teacherCall('markActivityAttemptsReviewed', { attempt_ids: batch });
+            }).then(function(result) {
+                state.activityReviewedAttemptIds = result.reviewed_attempt_ids || state.activityReviewedAttemptIds || [];
+            });
+        });
+        persist.then(function() {
             renderUpdatesPanel();
         }).catch(function() {});
     }
@@ -4848,7 +4870,6 @@
         if (!state.updatesOpen) state.notificationAttemptId = '';
         if (state.updatesOpen) {
             setReviewPanel(false);
-            markAttemptsSeenSilently();
         }
         renderUpdatesPanel();
     });

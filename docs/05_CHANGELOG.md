@@ -1,5 +1,9 @@
 # Changelog
 
+- Grouped teacher bell attempt notifications by student assignment/self-study
+  thread. Each entry now opens the full attempt history and stays red until the
+  teacher opens that entry; opening the bell alone no longer clears unread
+  state, and a later attempt makes the thread unread again.
 - Expanded My Words selection across all current student learning and attempt-
   review pages, allowed single-letter vocabulary such as `a` and `I`, and
   allowed selection from disabled answer-feedback buttons while keeping active
