@@ -203,8 +203,8 @@ class WorksheetPdf:
         self.question_style = ParagraphStyle(
             "Question",
             fontName="Times-Roman",
-            fontSize=9.4,
-            leading=11.4,
+            fontSize=10.4,
+            leading=12.8,
             textColor=RULE,
         )
 
@@ -240,7 +240,7 @@ class WorksheetPdf:
 
     def word_bank_layout(self, words: list[str], width: float) -> tuple[int, int, float]:
         if not words:
-            return 1, 1, 9.6
+            return 1, 1, 10.8
 
         c = self.canvas
         columns = 5
@@ -248,21 +248,21 @@ class WorksheetPdf:
             columns = len(words)
         else:
             c.saveState()
-            c.setFont("Times-Roman", 9.6)
-            max_word_width = max(c.stringWidth(str(word), "Times-Roman", 9.6) for word in words)
+            c.setFont("Times-Roman", 10.8)
+            max_word_width = max(c.stringWidth(str(word), "Times-Roman", 10.8) for word in words)
             c.restoreState()
             if max_word_width > width / 5 - 8 * mm:
                 columns = 4
 
         cell_width = width / columns
         c.saveState()
-        c.setFont("Times-Roman", 9.6)
-        max_word_width = max(c.stringWidth(str(word), "Times-Roman", 9.6) for word in words)
+        c.setFont("Times-Roman", 10.8)
+        max_word_width = max(c.stringWidth(str(word), "Times-Roman", 10.8) for word in words)
         c.restoreState()
-        font_size = 9.6
+        font_size = 10.8
         available_width = cell_width - 5 * mm
         if max_word_width > available_width:
-            font_size = max(7.2, 9.6 * available_width / max_word_width)
+            font_size = max(8.2, 10.8 * available_width / max_word_width)
         rows = max(2 if len(words) <= 5 else 1, math.ceil(len(words) / columns))
         return columns, rows, font_size
 
@@ -321,7 +321,7 @@ class WorksheetPdf:
             prompt = normalize_prompt(question.get("prompt") or "")
             para = paragraph_markup(html.escape(prompt), self.question_style)
             para_height = para.wrap(sentence_width - 8 * mm, 500)[1]
-            row_height = max(14.6 * mm, para_height + 7 * mm)
+            row_height = max(15.2 * mm, para_height + 7 * mm)
             rows.append({
                 "number": str(number),
                 "paragraph": para,
@@ -336,17 +336,17 @@ class WorksheetPdf:
             return
 
         overflow = total_height - available_height
-        adjustable = [row for row in rows if row["row_height"] > 12.8 * mm]
+        adjustable = [row for row in rows if row["row_height"] > 13.5 * mm]
         while overflow > 0 and adjustable:
             share = overflow / len(adjustable)
             next_adjustable = []
             reduced = 0
             for row in adjustable:
-                room = row["row_height"] - 12.8 * mm
+                room = row["row_height"] - 13.5 * mm
                 change = min(room, share)
                 row["row_height"] -= change
                 reduced += change
-                if row["row_height"] > 12.8 * mm:
+                if row["row_height"] > 13.5 * mm:
                     next_adjustable.append(row)
             if reduced <= 0.1:
                 break
@@ -368,7 +368,7 @@ class WorksheetPdf:
 
         c.rect(x, y - header_height, number_width, header_height)
         c.rect(x + number_width, y - header_height, sentence_width, header_height)
-        c.setFont("Times-Bold", 10)
+        c.setFont("Times-Bold", 10.8)
         c.drawCentredString(x + number_width / 2, y - 6 * mm, "No.")
         c.drawCentredString(x + number_width + sentence_width / 2, y - 6 * mm, "Sentence")
         y -= header_height
@@ -380,8 +380,8 @@ class WorksheetPdf:
             c.rect(x, y - row_height, number_width, row_height)
             c.rect(x + number_width, y - row_height, sentence_width, row_height)
 
-            c.setFont("Times-Roman", 9.4)
-            c.drawCentredString(x + number_width / 2, y - row_height / 2 - 3, row["number"])
+            c.setFont("Times-Roman", 10.4)
+            c.drawCentredString(x + number_width / 2, y - row_height / 2 - 3.4, row["number"])
 
             # Center the sentence paragraph vertically inside the table cell.
             paragraph_y = y - row_height + (row_height - para_height) / 2
@@ -399,7 +399,7 @@ class WorksheetPdf:
         width = CONTENT_WIDTH
 
         c.saveState()
-        c.setFont("Times-Bold", 11.2)
+        c.setFont("Times-Bold", 12)
         c.setFillColor(RULE)
         c.drawString(x, y, self.unit.get("id", "Vocabulary"))
         self.draw_info_tags(x, y, width)

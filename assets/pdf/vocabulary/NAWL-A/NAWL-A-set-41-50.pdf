@@ -1,86 +1,149 @@
 %PDF-1.4
-%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<<
-/F1 2 0 R /F2 3 0 R /F3 4 0 R /F4 5 0 R
->>
+<< /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<<
-/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
->>
+<< /Type /Pages /Kids [8 0 R] /Count 1 >>
 endobj
 3 0 obj
-<<
-/BaseFont /Times-Roman /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
 endobj
 4 0 obj
-<<
-/BaseFont /Times-Bold /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>
 endobj
 5 0 obj
-<<
-/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F4 /Subtype /Type1 /Type /Font
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
 endobj
 6 0 obj
-<<
-/Contents 10 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 9 0 R /Resources <<
-/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
->> /Rotate 0 /Trans <<
-
->> 
-  /Type /Page
->>
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 7 0 obj
-<<
-/PageMode /UseNone /Pages 9 0 R /Type /Catalog
->>
+<< /Length 5382 >>
+stream
+q 0 G 0 g 0.75 w
+42.52 39.69 510.24 762.52 re S
+BT /F1 8.4 Tf 51.02 25.51 Td (Answers written in the margins will not be marked.) Tj ET
+BT /F1 8.4 Tf 296.59 24.09 Td (1) Tj ET
+BT /F1 8.4 Tf 480.66 25.51 Td (Mr. Cat Academy) Tj ET
+Q
+BT /F2 12 Tf 65.2 771.02 Td (NAWL-A) Tj ET
+q 0 G 0 g 0.55 w
+253.42 747.5 m 331.09 747.5 l 333.9 747.5 336.19 749.78 336.19 752.6 c 336.19 774.99 l 336.19 777.81 333.9 780.09 331.09 780.09 c 253.42 780.09 l 250.6 780.09 248.31 777.81 248.31 774.99 c 248.31 752.6 l 248.31 749.78 250.6 747.5 253.42 747.5 c h S
+BT /F2 5.8 Tf 254.55 769.61 Td (Name) Tj ET
+0.35 w
+254.55 756.57 m 329.95 756.57 l S
+0.55 w
+350.36 747.5 m 428.03 747.5 l 430.85 747.5 433.13 749.78 433.13 752.6 c 433.13 774.99 l 433.13 777.81 430.85 780.09 428.03 780.09 c 350.36 780.09 l 347.54 780.09 345.26 777.81 345.26 774.99 c 345.26 752.6 l 345.26 749.78 347.54 747.5 350.36 747.5 c h S
+BT /F2 5.8 Tf 351.5 769.61 Td (Date) Tj ET
+0.35 w
+351.5 756.57 m 426.9 756.57 l S
+0.55 w
+447.31 747.5 m 524.98 747.5 l 527.79 747.5 530.08 749.78 530.08 752.6 c 530.08 774.99 l 530.08 777.81 527.79 780.09 524.98 780.09 c 447.31 780.09 l 444.49 780.09 442.2 777.81 442.2 774.99 c 442.2 752.6 l 442.2 749.78 444.49 747.5 447.31 747.5 c h S
+BT /F2 5.8 Tf 448.44 769.61 Td (Score) Tj ET
+0.35 w
+448.44 756.57 m 523.84 756.57 l S
+0.55 w
+Q
+q 0 G 0 g 0.55 w
+65.2 750.61 m 229.61 750.61 l S
+Q
+q 0 G 0 g 0.45 w
+106.3 640.06 423.78 48.76 re S
+191.06 688.82 m 191.06 640.06 l S
+275.81 688.82 m 275.81 640.06 l S
+360.57 688.82 m 360.57 640.06 l S
+445.32 688.82 m 445.32 640.06 l S
+106.3 664.44 m 530.08 664.44 l S
+BT /F1 10.8 Tf 126.92 673.03 Td (empirical) Tj ET
+BT /F1 10.8 Tf 217.23 673.03 Td (neuron) Tj ET
+BT /F1 10.8 Tf 303.34 673.03 Td (lexical) Tj ET
+BT /F1 10.8 Tf 385.23 673.03 Td (marker) Tj ET
+BT /F1 10.8 Tf 463.24 673.03 Td (simulation) Tj ET
+BT /F1 10.8 Tf 135.18 648.65 Td (robot) Tj ET
+BT /F1 10.8 Tf 208.81 648.65 Td (membrane) Tj ET
+BT /F1 10.8 Tf 297.78 648.65 Td (molecule) Tj ET
+BT /F1 10.8 Tf 382.69 648.65 Td (variance) Tj ET
+BT /F1 10.8 Tf 471.34 648.65 Td (regime) Tj ET
+Q
+q 0 g 65.2 640.06 41.1 48.76 re f Q
+q 1 g
+BT /F2 7.2 Tf 79.27 676.91 Td (SET) Tj ET
+BT /F4 20 Tf 80.75 651.69 Td (5) Tj ET
+Q
+q 0 G 0 g 0.55 w
+65.2 591.87 31.18 25.51 re S
+96.38 591.87 433.7 25.51 re S
+BT /F2 10.8 Tf 73.5 600.38 Td (No.) Tj ET
+BT /F2 10.8 Tf 291.09 600.38 Td (Sentence) Tj ET
+65.2 546.43 31.18 45.44 re S
+96.38 546.43 433.7 45.44 re S
+BT /F1 10.4 Tf 79.49 565.75 Td (1) Tj ET
+BT /F1 10.4 Tf 107.72 574.87 Td (The cell ___________ controls which substances can enter or leave, helping maintain a) Tj ET
+BT /F1 10.4 Tf 107.72 562.07 Td (stable internal environment.) Tj ET
+65.2 500.99 31.18 45.44 re S
+96.38 500.99 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 520.31 Td (2) Tj ET
+BT /F1 10.4 Tf 107.72 529.42 Td (A single ___________ can transmit electrical signals to thousands of other cells through) Tj ET
+BT /F1 10.4 Tf 107.72 516.62 Td (complex networks in the brain.) Tj ET
+65.2 455.55 31.18 45.44 re S
+96.38 455.55 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 474.87 Td (3) Tj ET
+BT /F1 10.4 Tf 107.72 483.98 Td (The flight ___________ allowed trainee pilots to practise emergency procedures without) Tj ET
+BT /F1 10.4 Tf 107.72 471.18 Td (exposing passengers to real danger.) Tj ET
+65.2 410.1 31.18 45.44 re S
+96.38 410.1 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 429.43 Td (4) Tj ET
+BT /F1 10.4 Tf 107.72 438.54 Td (In second-language research, ___________ knowledge includes not only word meaning but) Tj ET
+BT /F1 10.4 Tf 107.72 425.74 Td (also collocation and appropriate usage.) Tj ET
+65.2 364.66 31.18 45.44 re S
+96.38 364.66 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 383.98 Td (5) Tj ET
+BT /F1 10.4 Tf 107.72 393.1 Td (The authoritarian ___________ restricted independent media and punished journalists) Tj ET
+BT /F1 10.4 Tf 107.72 380.3 Td (who questioned official economic statistics.) Tj ET
+65.2 319.22 31.18 45.44 re S
+96.38 319.22 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 338.54 Td (6) Tj ET
+BT /F1 10.4 Tf 107.72 347.65 Td (High ___________ in test scores suggested that students differed widely in their) Tj ET
+BT /F1 10.4 Tf 107.72 334.85 Td (preparation, even within the same class.) Tj ET
+65.2 273.78 31.18 45.44 re S
+96.38 273.78 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 293.1 Td (7) Tj ET
+BT /F1 10.4 Tf 107.72 302.21 Td (Water is a simple ___________, but its unusual properties make it essential for biological) Tj ET
+BT /F1 10.4 Tf 107.72 289.41 Td (systems and climate processes.) Tj ET
+65.2 228.33 31.18 45.44 re S
+96.38 228.33 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 247.66 Td (8) Tj ET
+BT /F1 10.4 Tf 107.72 256.77 Td (The blood test identified a biological ___________ that may help doctors detect the) Tj ET
+BT /F1 10.4 Tf 107.72 243.97 Td (disease at an earlier stage.) Tj ET
+65.2 182.89 31.18 45.44 re S
+96.38 182.89 433.7 45.44 re S
+BT /F1 10.4 Tf 78.19 202.21 Td (9) Tj ET
+BT /F1 10.4 Tf 107.72 211.33 Td (The claim sounded persuasive, but it lacked ___________ support from controlled studies) Tj ET
+BT /F1 10.4 Tf 107.72 198.53 Td (or reliable field observations.) Tj ET
+65.2 137.45 31.18 45.44 re S
+96.38 137.45 433.7 45.44 re S
+BT /F1 10.4 Tf 76.89 156.77 Td (10) Tj ET
+BT /F1 10.4 Tf 107.72 165.88 Td (The factory introduced a ___________ to handle repetitive welding tasks that were) Tj ET
+BT /F1 10.4 Tf 107.72 153.08 Td (dangerous and physically exhausting for workers.) Tj ET
+Q
+endstream
 endobj
 8 0 obj
-<<
-/Author (anonymous) /CreationDate (D:20260709235402+08'00') /Creator (anonymous) /Keywords () /ModDate (D:20260709235402+08'00') /Producer (ReportLab PDF Library - \(opensource\)) 
-  /Subject (unspecified) /Title (untitled) /Trapped /False
->>
-endobj
-9 0 obj
-<<
-/Count 1 /Kids [ 6 0 R ] /Type /Pages
->>
-endobj
-10 0 obj
-<<
-/Filter [ /ASCII85Decode /FlateDecode ] /Length 2670
->>
-stream
-Gatm<gMYb:&q/A5oOE'+oWU"8DE_[:1V4#'(<FM24:Z&)-2!WAKbliMq`RA?CiV)M7dL74i_oHGcD`j)/\r(t($!W7@dKF#p@E3S$-@(.9PCT^c0t#NS'AE:1A^q;?`3q2q[L"`He?hA9:h$bA5$Ri\2;Sa'a^5L87p-AR:WL5?T7$-Ou]+o]>J9d]3q8.CX>Mk<Lg4hPiCDoL4,462A8iiRu2Xh>^$^mmFXcFqVKgTe>tlZ<or^4e1cZ`A9HA-gX13-\,7?7jtCoL'-6iO7uk&U9F*fcMc7pKc64gC@8`+.?-95`4@+)L/cPYCO5E0M?L3%OW,r/W,?(*UXC>47Xtq;)[8@:C3Feecgebpl@V)nqA[l[s$lQP*\nFV8E98u-2RCM?Sn2rrk\RQ[$#*Ptfd/c&FNWV=B1oM>kLinQQJ`lqUJ5LDPt9rtd;ZYsFul,<f.<]]*(o#^*:6[pMToT$oupO\*>)n.Akm_*BTf>!gk&E7fpEU6d?I^]5n[6tk!nO`nC/S7/#HjsZW+ML/!7DU$5G1O`0O%'[<+O!6CK@Q.cDu`#.%#+HD/i?_e=lP7U'DC@65VQG<_9'mgs2lGE"F/>US'26+>8kQT0DU,ge@\)/YMXBUc>KhL//S-[<=r8sP9Jabn5jk5?SUUN<5/9>b%Ic"/@^DPRmqQ;j^o&R2#s<2S)aRk<&E"o='u2T?ahOi_9p9J1-/XQRjSFMo+d,3)BBO]k,BSQQN,Tu/Y5Mp3'(RE0'"6q5q$Re,rgqE@42ogEPZ][fZ_-Lts"[$R/=hN>oZ.djZ;0/<8K.di/IKiTGsN6i2A89m7C[a>k3,EN<UO*s:_o\>d>rq(fplfem'0jFd%Ai'e1\Jd2)Rt2uCcC&9RC5VN)+Mj-_At/sCNWP6Le*:sqPnlWCQ02se3@^4d3%[7fD<7cp`_&Se(9Z&nEfDdk4`OH?gn/FpD"ST@>NCLRdSuu*NJ6;#j"W37FUW+8noBj397`E9(C>+n[A`ddgXMQkW!'qId%JpHdXQcG&EP[CUJU8&iuHHQ?D.hN6=KRjXlr)/P^+@B]:)P5L/;^%3<S/Z>gt[@:&doVQr8U&C?8gulF+rQs'53G?7Ga4P,@lj:d2A,)%:P/IEHupL:f.1=e_TDb)5j@Xl"n6hi/A'6CCJZ;6P&C#]NHnf!8>*q.V&ZZdW;OZ=Bfcc#KMNVO)Ef6UDEBcm>CX,WictX@)dY2pGl"gW0bl5[B(bZj@WZ?'4hO0?/*BjGT-D#4AR)(q0X5lTE@^6m+;$O4<.T86t+"M>Ne*H"n?Q/1qXeR!r.U^q52_O5j$RT?3u>[,IgGpK(^3TO'@d$j6]+RP`<PTQqAFZ[<\5flIX7m5f$95%t/ljq<MS+e08>Q-rc(2\`<DHS2/u]i:Y=+^ql'?T]UJ>o`!jESRJ*ei+EZi56#\&V\:&iQq:S'i!Mn9o54U+VY14%C]V=p!BrfY8KXWZDM30cgUg&G4=TJe9a;@6J^ZDb8K)R9949(4R4CX++/JYTNr;@=?fZsXC-hUVU4Il;*R(T$g9F+TFaW?jU7^hS4gR\#l82b!AFM\!ZfY]d'g(a4nI%%Id@J^h#kNSoaMsjc-YSF[U[RB20]22,BrqLco/f@!91"'`1GMnIq[QJD?g+4@YAoZq?lfIi6A(B.h[=)Hk5SO_basH*O/\tZ.CCM8%rn4pg"d2LOOr+?C&igh\$$bp7<9lg%6NQa#5UId!=b(hsMX'O"`GFh[Zcd[l9EN_S.*2,'?BQR!5+)p[i:B-ERN:gRN`-#/:ih4Okr;J+e7+q!#s1H"pmd"o*'p8\RCps*ne7H0EHF;[G:8I.)(6cKB%app_O/Y&5:Q^YP*2']lP&f(9\I;jWOR\\2R>cYJ]7>G.&RBTW/MYZOUB+&FL>5D$'`3dU64b%L1H0S$mQ%4:5()43SEK)p[C1FMRRNdH<XL!_b(h_u674s4Xqd#W7n$?hLs]$mDg6G<%^NurKTYdYcgK][9Q6[->dIl.=BHg#e@'+Ogs?n&>SgDTs%[gPVijqHcL'ae[aW22Zlh),h0iJDeR".27/KnPZpKMr+009C]S6`,@G"8j)>[)/@:)YgRt?A]b,mXC4(8WXEBXSkC@FDMn>45[pQ&@NXF0^3ms+\D[#[q"uYAH(H;UG>Occ[9h[Kl16aRBE291BhmF.nX4CHl)GF\Y1Z1#^uROqME)D%)+r^rZ=-p0VP75,uDWe;Xna+PQ7qCHKYQD0?JufqZ's&r!n;]\L2Cc.CF@:KPj.U2Z'IX5D$;CUJdLg0?R+Rpl'%l$a6:c(V<\NB`YR'H_<#d2SHp5I<Q][M79l9h_thfD:pc#.H:MAG1ZsDFhU7a=WLua<;GQ6CU.eUoF:Z^f(YPp`kc8F#+_MZ_i6"m]IcKu]mbLs>ZH3?31f'YoErskT'l`l1gCDKV0qt<kQ2!Qmp"rP1(P,cRK8ie+ie7OjB\DjI`cn9k/A?)=X)`4a(*TlCtCSqq-ANZ4=UsY"L>f8AJiI9E*+a2s0hOdrMW9=&g"l/XdseVqq:R8fV;m%P>aI;L+8T(?6n.=(H05QOuHtM/uPKk`<M"MTbu7,Q/`<85W).PLlT1[4d]Xg5a7"n54@pNW=0i@s//^,YCWZ#+!*MDRIW)H[([XQ!K@k18YP?*!5AKY_j:her#ZJ!C(L~>endstream
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents 7 0 R >>
 endobj
 xref
-0 11
+0 9
 0000000000 65535 f 
-0000000061 00000 n 
-0000000122 00000 n 
-0000000229 00000 n 
-0000000338 00000 n 
-0000000446 00000 n 
-0000000558 00000 n 
-0000000762 00000 n 
-0000000830 00000 n 
-0000001091 00000 n 
-0000001150 00000 n 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000214 00000 n 
+0000000312 00000 n 
+0000000412 00000 n 
+0000000514 00000 n 
+0000005948 00000 n 
 trailer
-<<
-/ID 
-[<2d4c54ecd771f56adc745575ad2a94a5><2d4c54ecd771f56adc745575ad2a94a5>]
-% ReportLab generated PDF document -- digest (opensource)
-
-/Info 8 0 R
-/Root 7 0 R
-/Size 11
->>
+<< /Size 9 /Root 1 0 R >>
 startxref
-3912
+6110
 %%EOF

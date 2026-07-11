@@ -259,7 +259,7 @@
     function wordBankLayout(words, width) {
         var list = words && words.length ? words : [''];
         var columns = 5;
-        var fontSize = 9.6;
+        var fontSize = 10.8;
         if (words.length <= 5) {
             columns = Math.max(1, words.length);
         } else {
@@ -275,7 +275,7 @@
         }, 0);
         var available = cellWidth - 5 * MM;
         if (maxWordWidth > available) {
-            fontSize = Math.max(7.2, fontSize * available / maxWordWidth);
+            fontSize = Math.max(8.2, fontSize * available / maxWordWidth);
         }
         return {
             columns: columns,
@@ -332,34 +332,34 @@
         var questions = group.questions || [];
         var sentenceTextWidth = sentenceWidth - 8 * MM;
         var rows = questions.map(function(question, index) {
-            var lines = wrapText(normalizePrompt(question.prompt || ''), sentenceTextWidth, 9.2);
+            var lines = wrapText(normalizePrompt(question.prompt || ''), sentenceTextWidth, 10.4);
             return {
                 number: String(question._worksheetNumber || question.number || index + 1),
                 lines: lines,
-                height: Math.max(14.6 * MM, lines.length * 11.2 + 7 * MM)
+                height: Math.max(15.2 * MM, lines.length * 12.8 + 7 * MM)
             };
         });
         var available = topY - BOTTOM_Y - headerHeight;
         var total = rows.reduce(function(sum, row) { return sum + row.height; }, 0);
         if (total > available && rows.length) {
-            var reduced = Math.max(12.8 * MM, available / rows.length);
+            var reduced = Math.max(13.5 * MM, available / rows.length);
             rows.forEach(function(row) { row.height = Math.min(row.height, reduced); });
         }
 
         commands.push('q 0 G 0 g 0.55 w');
         commands.push(rectCommand(x, topY - headerHeight, numberWidth, headerHeight));
         commands.push(rectCommand(x + numberWidth, topY - headerHeight, sentenceWidth, headerHeight));
-        commands.push(textCommand(x + numberWidth / 2, topY - 6 * MM, 'No.', { font: 'F2', size: 10, align: 'center' }));
-        commands.push(textCommand(x + numberWidth + sentenceWidth / 2, topY - 6 * MM, 'Sentence', { font: 'F2', size: 10, align: 'center' }));
+        commands.push(textCommand(x + numberWidth / 2, topY - 6 * MM, 'No.', { font: 'F2', size: 10.8, align: 'center' }));
+        commands.push(textCommand(x + numberWidth + sentenceWidth / 2, topY - 6 * MM, 'Sentence', { font: 'F2', size: 10.8, align: 'center' }));
 
         var y = topY - headerHeight;
         rows.forEach(function(row) {
             commands.push(rectCommand(x, y - row.height, numberWidth, row.height));
             commands.push(rectCommand(x + numberWidth, y - row.height, sentenceWidth, row.height));
-            commands.push(textCommand(x + numberWidth / 2, y - row.height / 2 - 3, row.number, { size: 9.2, align: 'center' }));
+            commands.push(textCommand(x + numberWidth / 2, y - row.height / 2 - 3.4, row.number, { size: 10.4, align: 'center' }));
             var textTop = y - 6 * MM;
             row.lines.forEach(function(line, lineIndex) {
-                commands.push(textCommand(x + numberWidth + 4 * MM, textTop - lineIndex * 11.2, line, { size: 9.2 }));
+                commands.push(textCommand(x + numberWidth + 4 * MM, textTop - lineIndex * 12.8, line, { size: 10.4 }));
             });
             y -= row.height;
         });
@@ -373,7 +373,7 @@
         var width = CONTENT_WIDTH;
         drawFrame(commands, pageNumber, 'Mr. Cat Academy');
 
-        commands.push(textCommand(x, y, cleanText(unit.id || 'Vocabulary'), { font: 'F2', size: 11.2 }));
+        commands.push(textCommand(x, y, cleanText(unit.id || 'Vocabulary'), { font: 'F2', size: 12 }));
         drawInfoTags(commands, x, y, width);
         commands.push('q 0 G 0 g 0.55 w');
         commands.push(lineCommand(x, y - 7.2 * MM, x + width - 106 * MM, y - 7.2 * MM));

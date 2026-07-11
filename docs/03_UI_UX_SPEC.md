@@ -604,7 +604,10 @@ Shared rules:
   that unchecks when any group is removed and rechecks when every group is
   selected again. The `Shuffle` control keeps group numbers and group order in
   place, but randomises each selected group's word bank and question order with
-  a visible randomiser seed; shuffled questions are renumbered from `1`.
+  a visible randomiser seed; shuffled questions are renumbered from `1`. Static
+  and browser-generated Practice worksheets use enlarged print typography:
+  roughly `10.8pt` for word banks and `10.4pt` for question sentences, with
+  matching larger line spacing and row height.
 - Vocabulary inline practice uses each study group's own `Check` button. Each
   question card shows a compact blue-green `?` button at the top right before
   and after checking; clicking it opens the correct answer and explanation in a

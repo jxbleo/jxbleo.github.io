@@ -351,6 +351,8 @@ Check:
   group numbers stable, randomises each selected group's word bank and question
   order from the visible randomiser seed, and renumbers shuffled questions from
   `1`
+- static and browser-generated Vocabulary Practice worksheets render enlarged
+  word-bank and question text without clipping, overlap, or table overflow
 - JSON and JS fallback both work
 - Test start shows the timed-test warning before questions appear
 - Cloze/Test timing gives each selected group 90 seconds

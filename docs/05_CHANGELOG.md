@@ -1,5 +1,8 @@
 # Changelog
 
+- Enlarged word-bank and question typography in both static and
+  browser-generated Vocabulary Practice worksheets, with adjusted line spacing
+  and table row heights for print legibility.
 - Moved the student My Words notebook icon to the right of the bell, matched the
   student bell to the teacher SVG design, and changed My Words into an
   independent modal that restores its internal scroll position after closing.
