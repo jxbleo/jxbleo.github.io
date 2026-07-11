@@ -1,5 +1,12 @@
 # Changelog
 
+- Expanded My Words selection across all current student learning and attempt-
+  review pages, allowed single-letter vocabulary such as `a` and `I`, and
+  allowed selection from disabled answer-feedback buttons while keeping active
+  controls and teacher-only surfaces protected.
+- Rebuilt `studentVocabulary` as a bundled deployment artifact so the CloudBase
+  function can be redeployed independently without resolving runtime packages.
+
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 

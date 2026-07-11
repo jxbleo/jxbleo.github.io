@@ -59,6 +59,7 @@
     function isBlockedNode(node) {
         var element = elementForNode(node);
         if (!element || !element.closest) return true;
+        if (element.closest('button:disabled')) return false;
         return Boolean(element.closest(BLOCKED_SELECTOR));
     }
 
@@ -84,7 +85,6 @@
 
     function selectedTextError(text) {
         if (!text) return 'Select a word or short phrase first.';
-        if (text.length < 2) return 'Select a longer word or phrase.';
         if (!hasWordCharacter(text)) return 'Select a word or phrase with letters or numbers.';
         if (text.length > 120 || text.split(/\s+/).filter(Boolean).length > 16) {
             return 'Save one word or short phrase at a time.';
@@ -208,7 +208,10 @@
     }
 
     function handleButtonClick(event) {
-        if (event) event.preventDefault();
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         if (Date.now() - lastTouchSaveAt < 700) return;
         saveSelection();
     }
