@@ -53,7 +53,7 @@ Core fields:
 | `deleted_by_teacher_uid` | string/null | teacher who deleted the profile |
 | `deleted_student_id_snapshot` | string | Login ID snapshot kept for audit/history |
 | `deleted_name_snapshot` | string | display-name snapshot kept for audit/history |
-| `teacher_activity_attempts_seen_at` | Date/null | teacher notification badge seen timestamp |
+| `teacher_activity_attempts_seen_at` | Date/null | legacy bell-open timestamp; no longer clears attempt-thread unread state |
 | `teacher_activity_attempt_reviewed_ids` | array | attempt IDs opened from the teacher notification panel |
 | `teacher_activity_attempt_reviewed_at` | Date/null | latest attempt-review marker update |
 | `created_at` | Date | created time |
@@ -70,11 +70,12 @@ Rules:
   student lists, Assign candidates, View progress, activity attempts, and Argue
   lists. Historical attempts, assignments, STAR records, and disputes are not
   hard-deleted.
-- For teacher notification activity, the top-right bell badge is cleared by
-  updating `teacher_activity_attempts_seen_at` when the bell is opened. Row-level
-  red unread styling is cleared only for attempt IDs saved in
-  `teacher_activity_attempt_reviewed_ids`; opening one attempt from an assignment
-  marks the related attempts for that same student assignment as reviewed.
+- Teacher notification activity is grouped by student assignment thread, or by
+  student and set for self-study. Both the top-right badge and row-level red
+  styling are derived from attempt IDs absent from
+  `teacher_activity_attempt_reviewed_ids`; opening the bell alone changes
+  neither. Opening one grouped row marks its current related attempts reviewed,
+  while any later attempt makes the thread unread again.
 
 ## 4. `sets`
 

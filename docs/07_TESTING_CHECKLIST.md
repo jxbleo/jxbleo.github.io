@@ -149,9 +149,14 @@ Check:
 - Teacher Assign filters, Teacher View matrix type filters, and student
   assignment cards show Vocabulary sets as `NGSL`, `NAWL`, `TK2`, or
   `Oxford5000`
-- opening the teacher notification bell clears the header badge immediately
-- clicking an attempt notification clears red unread styling for attempts tied
-  to the same student assignment, while unclicked attempt rows remain red
+- teacher notifications merge multiple attempts from the same student
+  assignment thread, or the same student/set self-study thread, into one row
+- a grouped notification shows its attempt count and opens the complete attempt
+  history for that thread
+- opening the teacher notification bell alone does not clear the header badge
+  or red unread row styling
+- opening a grouped attempt notification clears its red state; a later attempt
+  in the same thread makes it red again while unopened threads remain red
 - in-progress assignment cannot be duplicated
 - completed/mastered/STAR work can be reassigned
 - reassignment creates a new `assignment_id`

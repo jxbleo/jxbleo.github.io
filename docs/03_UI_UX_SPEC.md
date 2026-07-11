@@ -106,10 +106,12 @@ Frontend rule:
   the top-right metadata. Teacher Assign type filters, Teacher View matrix type
   filters, and student assignment cards still identify vocabulary sets by
   source (`NGSL`, `NAWL`, `TK2`, or `Oxford5000`).
-- Opening the teacher notification bell immediately clears the top-right badge.
-  Individual attempt rows stay red until the teacher opens one related attempt;
-  opening any attempt for the same student assignment clears the red state for
-  that assignment's related attempts.
+- The teacher notification bell groups attempts by student assignment thread,
+  or by student and set for self-study. Each row shows the latest result and
+  total attempt count, and its detail dialog shows the complete thread history.
+- Opening the bell alone does not clear the top-right badge or red row state.
+  Opening a grouped attempt row marks that thread's current attempts reviewed;
+  a later attempt makes the same thread red again.
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
