@@ -65,7 +65,9 @@ Assignment access and progress display:
   grid above the details, and the grid should adapt to nearly the full screen
   width. Clicking a day square changes the detail pane to show only completed
   assignment/self-study task items for that date; clicking a `Wxx` label shows
-  all completed task items for that week. Blank days or blank weeks keep the
+  all completed task items for that week. Each completed-task capsule in the
+  selected day/week detail opens the shared practice-entry confirmation and can
+  re-enter that task. Blank days or blank weeks keep the
   reserved detail area but do not show an empty-state text field. While dashboard
   data is loading, the progress meter and four-week board reserve their final
   space with a lightweight loading skeleton.

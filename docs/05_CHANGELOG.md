@@ -21,6 +21,9 @@
 
 ### Changed
 
+- Made completed-task capsules in the student Dashboard four-week progress
+  board reopen their task through the shared practice-entry confirmation.
+
 - Simplified IELTS Reading set headers and paragraph-matching choices, made
   typed blanks follow answer length, and persisted both passage and question
   highlights in browser storage with per-highlight and clear-all controls.
