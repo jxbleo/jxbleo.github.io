@@ -1,5 +1,8 @@
 # Changelog
 
+- Changed Teacher View matrix student-name clicks to open the same selectable
+  four-week completion board used on the student Dashboard, including weekly
+  and daily details for assigned work and self-study.
 - Enlarged word-bank and question typography in both static and
   browser-generated Vocabulary Practice worksheets, with adjusted line spacing
   and table row heights for print legibility.

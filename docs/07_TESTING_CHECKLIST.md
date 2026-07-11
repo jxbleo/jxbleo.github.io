@@ -238,9 +238,10 @@ Check:
   including repeated assignments in the same week
 - View matrix includes every student matching the current filters, including
   students beyond the first dozen sorted rows
-- Clicking the matrix left student-name column opens an independent student
-  timeline modal with that student's Total, Done, Avg, and assigned-task
-  history
+- Clicking the matrix left student-name column opens an independent four-week
+  progress modal with that student's Total, Done, and Avg summary; its Wxx
+  labels, Mon-Sun squares, completion-density/STAR states, and selected day or
+  week detail match the student Dashboard and include completed self-study
 - Clicking a matrix cell opens the independent page-level detail modal instead
   of rendering the detail inline under the matrix
 - Opening a teacher notification attempt for the first time shows the full

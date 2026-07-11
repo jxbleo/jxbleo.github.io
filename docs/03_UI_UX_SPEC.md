@@ -362,8 +362,10 @@ It should include:
   STAR. If STAR earning is disabled for that assignment, the completed cell
   uses the green check instead of a star.
 - clicking the left student-name column in the matrix opens an independent
-  student timeline modal summarizing that student's assigned-work history,
-  using the same overall student data represented by `By student`.
+  four-week progress modal matching the student's Dashboard progress board.
+  Week labels and day squares are selectable, completed-work density and STAR
+  states use the same visual rules, and the detail pane includes both assigned
+  work and self-study completed by that student.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.
