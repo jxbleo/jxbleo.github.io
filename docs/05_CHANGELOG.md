@@ -20,6 +20,13 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-12
+
+### Changed
+
+- Made Teacher View matrix task headers open their corresponding teacher
+  practice preview and return to Teacher View.
+
 ## 2026-07-11
 
 ### Changed

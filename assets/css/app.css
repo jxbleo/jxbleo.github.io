@@ -2893,7 +2893,8 @@ body:not(.teacher-page) .tab-button.active {
     width: max(100%, var(--matrix-min, 630px));
     min-width: var(--matrix-min, 630px);
 }
-.progress-matrix-row > span {
+.progress-matrix-row > span,
+.progress-matrix-row > a {
     min-height: 44px;
     padding: 9px 10px;
     border-top: 1px solid rgba(124,58,237,0.10);
@@ -2931,7 +2932,8 @@ body:not(.teacher-page) .tab-button.active {
 .progress-matrix-student-button.selected {
     background: #def8ec;
 }
-.progress-matrix-head > span {
+.progress-matrix-head > span,
+.progress-matrix-head > a {
     border-top: 0;
     color: var(--muted);
     background: rgba(124,58,237,0.07);
@@ -2946,6 +2948,20 @@ body:not(.teacher-page) .tab-button.active {
     color: var(--ink);
     font-size: 0.72rem;
     line-height: 1.1;
+}
+.progress-matrix-task-head[href] {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 150ms ease, box-shadow 150ms ease;
+}
+.progress-matrix-task-head[href]:hover,
+.progress-matrix-task-head[href]:focus-visible {
+    position: relative;
+    z-index: 1;
+    filter: saturate(1.2) brightness(0.98);
+    box-shadow: inset 0 0 0 2px rgba(124,58,237,0.2);
+    outline: none;
 }
 .progress-matrix-week-label {
     margin: 2px 0;
@@ -4259,10 +4275,12 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(239, 71, 111, 0.14);
 }
 .teacher-page .progress-matrix-row > span,
+.teacher-page .progress-matrix-row > a,
 .teacher-page .progress-matrix-cell {
     border-color: rgba(31,45,38,0.08);
 }
-.teacher-page .progress-matrix-head > span {
+.teacher-page .progress-matrix-head > span,
+.teacher-page .progress-matrix-head > a {
     color: rgba(23,32,27,0.74);
     background:
         var(--teacher-rainbow-soft),
@@ -6258,6 +6276,7 @@ body:not(.teacher-page) .tab-button.active {
         min-width: var(--matrix-min-mobile, 560px);
     }
     .progress-matrix-row > span,
+    .progress-matrix-row > a,
     .progress-matrix-row > .progress-matrix-student-button,
     .progress-matrix-cell {
         min-height: 40px;

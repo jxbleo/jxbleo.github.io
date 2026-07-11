@@ -209,6 +209,8 @@ Check:
   `By task` summaries show Total plus Avg with unfinished assignments excluded
 - Teacher View expands to the desktop workspace width and does not stay capped
   at the narrower student dashboard shell width
+- clicking a linked task header at the top of the Teacher View matrix opens its
+  `teacher=1` practice preview, and `Back` returns to `teacher.html?view=view`
 - First successful matrix render transitions in with a soft fade/lift instead
   of abruptly replacing the loading state
 - Teacher rainbow theme animates slowly on hero, active controls, matrix

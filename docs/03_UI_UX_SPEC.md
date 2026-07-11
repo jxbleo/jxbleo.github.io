@@ -316,6 +316,9 @@ It should include:
   `W03`, and the task name underneath. Week labels are calculated from
   assignment `assigned_at` in Beijing time: dates before that year's first
   Monday show `W00`, and the first Monday-Sunday range is `W01`.
+- clicking a matrix task header opens that task directly in teacher preview;
+  the practice `Back` control returns to Teacher `View`. Headers without a
+  published practice link remain non-interactive.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. `Column` uses `All type`, `Date` uses `All time`, and date filtering

@@ -1944,14 +1944,15 @@
         renderAssignParameterTable();
     }
 
-    function teacherPracticeHref(set) {
-        var href = set.link || '#';
+    function teacherPracticeHref(set, returnUrl) {
+        var href = set.link || set.href || '#';
+        if (!href || href === '#') return '#';
         var params = ['teacher=1'];
         if (appVersion()) {
             params.push('app=' + encodeURIComponent(appVersion()));
         }
         href = href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
-        return withReturnParam(href, 'teacher.html?view=library');
+        return withReturnParam(href, returnUrl || 'teacher.html?view=library');
     }
 
     function renderLibrary() {
@@ -3698,11 +3699,17 @@
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var weekLabel = set.week_label || '';
-                return '<span class="progress-matrix-task-head" title="' + escapeHtml(title) + '">' +
+                var sourceSet = state.sets.find(function(item) {
+                    return String(item.set_id || item.id || '') === String(set.set_id || '');
+                }) || set;
+                var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
+                var tag = href && href !== '#' ? 'a' : 'span';
+                return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
+                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" aria-label="Open teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
                     '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
                     (weekLabel ? '<small class="progress-matrix-week-label">' + escapeHtml(weekLabel) + '</small>' : '') +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
-                '</span>';
+                '</' + tag + '>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {
