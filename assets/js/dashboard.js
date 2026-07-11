@@ -16,7 +16,7 @@
         progressSelectedDay: '',
         accountPanelOpen: false
     };
-    var dashboardViews = ['assignments', 'words', 'resources'];
+    var dashboardViews = ['words', 'resources'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
         'Your effort today is building your confidence tomorrow.',
@@ -103,6 +103,7 @@
     var myWordsContent = document.getElementById('my-words-content');
     var resourceSearch = document.getElementById('resource-search');
     var accountPanel = document.getElementById('student-account-panel');
+    var wordsButton = document.getElementById('student-words-button');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
 
@@ -2141,22 +2142,26 @@
 
     function initialDashboardView() {
         var view = new URLSearchParams(window.location.search).get('view') || '';
-        return dashboardViews.indexOf(view) === -1 ? 'assignments' : view;
+        return dashboardViews.indexOf(view) === -1 ? 'resources' : view;
     }
 
     function rememberDashboardView(viewName) {
         if (dashboardViews.indexOf(viewName) === -1 || !window.history || !window.history.replaceState) return;
         var url = new URL(window.location.href);
-        if (viewName === 'assignments') url.searchParams.delete('view');
+        if (viewName === 'resources') url.searchParams.delete('view');
         else url.searchParams.set('view', viewName);
         window.history.replaceState({}, '', url);
     }
 
     function activateView(viewName, skipUrlUpdate) {
-        if (dashboardViews.indexOf(viewName) === -1) viewName = 'assignments';
+        if (dashboardViews.indexOf(viewName) === -1) viewName = 'resources';
         document.querySelectorAll('.tab-button').forEach(function(button) {
             button.classList.toggle('active', button.dataset.view === viewName);
         });
+        if (wordsButton) {
+            wordsButton.classList.toggle('active', viewName === 'words');
+            wordsButton.setAttribute('aria-pressed', viewName === 'words' ? 'true' : 'false');
+        }
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
@@ -2185,6 +2190,12 @@
     if (messageButton) {
         messageButton.addEventListener('click', function() {
             openStudentMessageCenter();
+        });
+    }
+    if (wordsButton) {
+        wordsButton.addEventListener('click', function() {
+            activateView('words');
+            setAccountPanel(false);
         });
     }
     resourceSearch.addEventListener('input', function() {

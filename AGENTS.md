@@ -683,14 +683,14 @@ approves production. Follow `docs/10_DEPLOYMENT.md`.
 
 Student dashboard navigation:
 
-- `Assignments`
-- `Explore`
-- `Profile`
+- The lower main navigation exposes only `Library`.
+- Assignments and finished work live in the top-right notification bell.
+- My Words opens from the notebook icon beside the notification bell.
+- Profile/account actions open from the top-right identity chip.
 
-Assignments has two selectable cards: `TO DO` and `FINISHED`. Do not split the
-student dashboard back into separate `PASSED` and `MASTERED` cards unless the
-owner explicitly asks, and do not add separate Failed/Done explanation sections
-below them.
+Do not restore a lower Assignments or My Words navigation capsule unless the
+owner explicitly asks. Do not split completed work into separate `PASSED` and
+`MASTERED` navigation entries.
 
 Students may select a word or short phrase on student-facing pages and save it
 to their personal My Words list. This data belongs in

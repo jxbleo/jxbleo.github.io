@@ -8,13 +8,19 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260711-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260711-4">
 </head>
 <body class="app-page">
     <main class="app-shell">
         <header class="app-header">
             <p class="app-brand">Mr. Cat Academy</p>
             <div class="identity-cluster">
+                <button class="icon-pill-button student-words-button" id="student-words-button" type="button" aria-label="My Words" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 3.5h10.5A1.5 1.5 0 0 1 18 5v14.5H7.5A2.5 2.5 0 0 1 5 17V5.5a2 2 0 0 1 1-2Z"></path>
+                        <path d="M8 3.5v16M10.5 8h4.5M10.5 11.5h4.5"></path>
+                    </svg>
+                </button>
                 <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Notifications" aria-expanded="false">
                     <span aria-hidden="true">!</span>
                     <span class="notice-dot danger" id="student-message-count" hidden>0</span>
@@ -70,19 +76,17 @@
             </div>
         </section>
 
-        <nav class="dashboard-tabs" aria-label="Dashboard sections">
-            <button class="tab-button active" type="button" data-view="assignments">Assignments</button>
-            <button class="tab-button" type="button" data-view="words">My Words</button>
-            <button class="tab-button" type="button" data-view="resources">Library</button>
+        <nav class="dashboard-tabs student-library-tabs" aria-label="Dashboard sections">
+            <button class="tab-button active" type="button" data-view="resources">Library</button>
         </nav>
 
-        <section class="dashboard-view" id="view-assignments">
+        <section class="dashboard-view" id="view-assignments" hidden>
             <div id="assignment-content">
                 <div class="empty-card loading-card">Loading assignments...</div>
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-resources" hidden>
+        <section class="dashboard-view" id="view-resources">
             <div class="resource-tools">
                 <input class="resource-search" id="resource-search" type="search" placeholder="Search title, course or type...">
             </div>
@@ -113,6 +117,6 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260711-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260711-4"></script>
+    <script src="assets/js/dashboard.js?v=20260711-5"></script>
 </body>
 </html>

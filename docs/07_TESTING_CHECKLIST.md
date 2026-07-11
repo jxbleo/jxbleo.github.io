@@ -92,7 +92,10 @@ Check:
 - opening `Change password` from the account panel shows the password dialog
   above the account panel
 - forced password change appears when expected
-- Assignments shows `TO DO` and `FINISHED`
+- the lower dashboard navigation shows only `Library`
+- the top-right bell opens `TO DO` and finished assignment messages
+- the notebook icon beside the bell opens My Words and gains an active state
+- neither Assignments nor My Words appears as a lower navigation entry
 - student opens assigned work
 - opening a finished Vocabulary assignment from `Show Finished` lands on
   Vocabulary Learn like Library entry, not automatic Test/History mode
