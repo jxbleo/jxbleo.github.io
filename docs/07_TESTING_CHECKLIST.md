@@ -67,6 +67,10 @@ Practice navigation checks:
   Reading and IELTS Listening show both controls in the exam top bar
 - static practice data requests use the public app-version query, not
   timestamp cache busting such as `?_=` + `Date.now()`
+- IELTS Reading shows the set code only in the black exam bar, reduces paragraph
+  matching choices to letters, resizes typed blanks with their content, and
+  restores passage/question highlights after submission or reload; `Clear` and
+  `Clear All` remove the expected saved highlight records
 - Vocabulary 5+ group countable Test still abandons the active server session
   on page hide/leave and must not be restored as an ordinary draft
 

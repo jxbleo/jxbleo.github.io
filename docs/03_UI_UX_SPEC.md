@@ -465,6 +465,19 @@ Shared rules:
 - Submission feedback should use page UI, not native `alert()` where avoidable.
 - Try Again clears visible answers and feedback but preserves CloudBase attempts.
 
+### IELTS Reading
+
+- The black exam bar is the single place for the set code; do not repeat the
+  code beside or below the reading title.
+- Paragraph-matching answer controls show only the paragraph letters (`A`,
+  `B`, `C`, etc.), without redundant labels such as `A. Paragraph A`.
+- Highlights in both the passage and question text persist in browser storage
+  for the current set and identity, including after submission and reload.
+  Students can clear one selected highlight or clear every highlight for the
+  reading.
+- Typed summary-completion blanks expand and contract with the answer length,
+  within a practical minimum and maximum width.
+
 ### IELTS Listening
 
 - A sticky lesson header at the top of the workspace shows the lesson title and source, above the questions.

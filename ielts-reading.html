@@ -262,14 +262,6 @@
             padding-left: 10px;
             color: var(--primary);
         }
-        .panel-title .set-id {
-            display: inline-block;
-            margin-left: 10px;
-            color: var(--text-light);
-            font-size: 0.82em;
-            font-weight: 700;
-            white-space: nowrap;
-        }
         .panel-scroll {
             flex: 1 1 auto;
             min-height: 0;
@@ -287,7 +279,6 @@
         @media (max-width: 768px) {
             .panel-header { align-items: flex-start; gap: 8px; margin-bottom: 4px; }
             .panel-title h2 { font-size: 0.98em; }
-            .panel-title .set-id { display: block; margin: 2px 0 0 10px; font-size: 0.76em; }
             .panel-scroll { padding: 12px 12px 14px; }
         }
 
@@ -398,10 +389,10 @@
         .summary-text .blank-input {
             border: none; border-bottom: 2px solid var(--primary);
             background: transparent; text-align: center; color: var(--primary);
-            font-size: 0.95em; font-weight: bold; width: 90px; outline: none;
+            font-size: 0.95em; font-weight: bold; width: 7ch; min-width: 7ch; max-width: 28ch; outline: none;
             transition: border-color 0.2s, width 0.3s ease;
         }
-        .summary-text .blank-input:focus { border-bottom-color: var(--accent); width: 130px; }
+        .summary-text .blank-input:focus { border-bottom-color: var(--accent); }
         .summary-text .blank-input:disabled { color: #7f8c8d; border-bottom-color: #bdc3c7; cursor: not-allowed; }
         .summary-text .blank-input.correct { border-bottom-color: #27ae60 !important; }
         .summary-text .blank-input.wrong { border-bottom-color: #e67e22 !important; }
@@ -755,7 +746,7 @@
             <div class="passage-panel" id="passage-panel">
                 <div class="panel-header">
                     <div class="panel-title">
-                        <h2><span id="passage-title">Reading Passage</span><span class="set-id" id="passage-set-id"></span></h2>
+                        <h2><span id="passage-title">Reading Passage</span></h2>
                     </div>
                     <div class="font-controls">
                         <button class="font-btn font-minus" type="button" title="Decrease font size">−</button>
@@ -792,6 +783,7 @@
 <div class="highlight-toolbar" id="highlight-toolbar">
     <button class="primary" id="highlight-add-btn" type="button">Highlight</button>
     <button id="highlight-clear-btn" type="button">Clear</button>
+    <button id="highlight-clear-all-btn" type="button">Clear All</button>
 </div>
 <nav class="exam-bottom-nav" aria-label="Question navigation">
     <label class="exam-review"><input id="exam-review-checkbox" type="checkbox"> Review</label>
@@ -857,6 +849,91 @@
 
     function getHighlightStorageKey() {
         return 'ielts-highlight-' + setId + '-' + (userId || 'VISITOR');
+    }
+
+    var highlightBlockSelector = 'p, li, label, .section-label, .section-instruction, .tfng-text, .ynng-text, .mcq-text, .summary-text, .heading-item';
+
+    function readHighlightState() {
+        var raw = '';
+        try { raw = localStorage.getItem(getHighlightStorageKey()) || ''; } catch (e) {}
+        if (!raw) return null;
+        try {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.version === 2) return parsed;
+        } catch (e) {}
+        return { version: 1, passageMarkup: raw };
+    }
+
+    function textLengthBeforeNode(block, node) {
+        var range = document.createRange();
+        range.selectNodeContents(block);
+        range.setEndBefore(node);
+        return range.toString().length;
+    }
+
+    function serializeRootHighlights(root) {
+        if (!root) return [];
+        var blocks = Array.prototype.slice.call(root.querySelectorAll(highlightBlockSelector));
+        return Array.prototype.map.call(root.querySelectorAll('mark.user-highlight'), function(mark) {
+            var block = mark.closest(highlightBlockSelector);
+            var blockIndex = blocks.indexOf(block);
+            if (blockIndex < 0) return null;
+            var start = textLengthBeforeNode(block, mark);
+            return { block: blockIndex, start: start, end: start + mark.textContent.length };
+        }).filter(Boolean);
+    }
+
+    function saveHighlightState() {
+        if (!setId) return;
+        var state = {
+            version: 2,
+            passage: serializeRootHighlights(getPassageEl()),
+            questions: serializeRootHighlights(getQuestionsEl())
+        };
+        try { localStorage.setItem(getHighlightStorageKey(), JSON.stringify(state)); } catch (e) {}
+    }
+
+    function textPositionAtOffset(block, offset) {
+        var walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+        var remaining = Math.max(0, offset);
+        var node;
+        while ((node = walker.nextNode())) {
+            if (remaining <= node.nodeValue.length) return { node: node, offset: remaining };
+            remaining -= node.nodeValue.length;
+        }
+        return null;
+    }
+
+    function restoreRootHighlights(root, entries) {
+        if (!root || !entries || !entries.length) return;
+        var blocks = Array.prototype.slice.call(root.querySelectorAll(highlightBlockSelector));
+        entries.slice().sort(function(a, b) {
+            return a.block === b.block ? b.start - a.start : b.block - a.block;
+        }).forEach(function(entry) {
+            var block = blocks[entry.block];
+            if (!block || entry.end <= entry.start) return;
+            var start = textPositionAtOffset(block, entry.start);
+            var end = textPositionAtOffset(block, entry.end);
+            if (!start || !end) return;
+            var range = document.createRange();
+            range.setStart(start.node, start.offset);
+            range.setEnd(end.node, end.offset);
+            var mark = document.createElement('mark');
+            mark.className = 'user-highlight';
+            try { range.surroundContents(mark); } catch (e) {}
+        });
+        normalizeHighlightMarkup(root);
+    }
+
+    function restoreSavedHighlights() {
+        var state = readHighlightState();
+        if (!state) return;
+        if (state.version === 2) {
+            restoreRootHighlights(getPassageEl(), state.passage);
+            restoreRootHighlights(getQuestionsEl(), state.questions);
+        } else {
+            saveHighlightState();
+        }
     }
 
     function getSplitStorageKey() {
@@ -951,6 +1028,7 @@
                 }
             });
         });
+        resizeAllBlankInputs();
     }
 
     function fetchPrefillAnswersIfNeeded() {
@@ -972,6 +1050,7 @@
                     else el.value = val;
                 });
             });
+            resizeAllBlankInputs();
             storeAnswers();
             return true;
         }).catch(function() { return false; });
@@ -1007,7 +1086,19 @@
                 else el.value = val;
             });
         });
+        resizeAllBlankInputs();
         storeAnswers();
+    }
+
+    function resizeBlankInput(input) {
+        if (!input || !input.classList || !input.classList.contains('blank-input')) return;
+        var sample = input.value || input.placeholder || '';
+        var characterCount = Array.from(String(sample)).length + 1;
+        input.style.width = Math.max(7, Math.min(28, characterCount)) + 'ch';
+    }
+
+    function resizeAllBlankInputs() {
+        document.querySelectorAll('.blank-input').forEach(resizeBlankInput);
     }
 
     function clearAllAnswers() {
@@ -1021,6 +1112,7 @@
             var label = el.closest('label');
             if (label) label.classList.remove('correct', 'wrong');
         });
+        resizeAllBlankInputs();
         document.querySelectorAll('.history-disputed,.history-dispute-pending,.history-dispute-approved,.history-dispute-rejected').forEach(function(el) {
             el.classList.remove('history-disputed', 'history-dispute-pending', 'history-dispute-approved', 'history-dispute-rejected');
         });
@@ -1684,15 +1776,10 @@
 
     function renderPassage() {
         var passageEl = getPassageEl();
-        var saved = '';
-        try { saved = localStorage.getItem(getHighlightStorageKey()) || ''; } catch (e) {}
-        passageEl.innerHTML = saved || lessonData.passage;
-    }
-
-    function savePassageMarkup() {
-        var passageEl = getPassageEl();
-        if (!passageEl || !setId || !userId) return;
-        try { localStorage.setItem(getHighlightStorageKey(), passageEl.innerHTML); } catch (e) {}
+        var state = readHighlightState();
+        passageEl.innerHTML = state && state.version === 1 && state.passageMarkup
+            ? state.passageMarkup
+            : lessonData.passage;
     }
 
     function clearHighlightToolbar() {
@@ -1773,7 +1860,7 @@
             range.insertNode(mark);
         }
         normalizeHighlightMarkup(root);
-        if (root === getPassageEl()) savePassageMarkup();
+        saveHighlightState();
         var selection = window.getSelection();
         if (selection) selection.removeAllRanges();
         clearHighlightToolbar();
@@ -1788,7 +1875,23 @@
         parent.removeChild(mark);
         var root = getPassageEl() && getPassageEl().contains(parent) ? getPassageEl() : getQuestionsEl();
         normalizeHighlightMarkup(root);
-        if (root === getPassageEl()) savePassageMarkup();
+        saveHighlightState();
+        if (selection) selection.removeAllRanges();
+        clearHighlightToolbar();
+    }
+
+    function clearAllHighlights() {
+        [getPassageEl(), getQuestionsEl()].forEach(function(root) {
+            if (!root) return;
+            root.querySelectorAll('mark.user-highlight').forEach(function(mark) {
+                var parent = mark.parentNode;
+                while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+                parent.removeChild(mark);
+            });
+            normalizeHighlightMarkup(root);
+        });
+        try { localStorage.removeItem(getHighlightStorageKey()); } catch (e) {}
+        var selection = window.getSelection();
         if (selection) selection.removeAllRanges();
         clearHighlightToolbar();
     }
@@ -1979,7 +2082,9 @@
                 if (qSet.choices && qSet.choices.length) {
                     choiceMarkup = '<select name="__NAME__" class="blank-select" data-question="__NAME__" required><option value="" disabled selected>Select</option>' +
                         qSet.choices.map(function(choice) {
-                            return '<option value="' + choice.value + '">' + choice.value + '. ' + choice.text + '</option>';
+                            var paragraphLabel = String(choice.text || '').trim();
+                            var isParagraphChoice = paragraphLabel.toLowerCase() === ('paragraph ' + choice.value).toLowerCase();
+                            return '<option value="' + choice.value + '">' + (isParagraphChoice ? choice.value : choice.value + '. ' + choice.text) + '</option>';
                         }).join('') +
                         '</select>';
                 }
@@ -2020,7 +2125,9 @@
 
                     var answerField = textDiv.querySelector('input, select');
                     if (answerField) {
+                        resizeBlankInput(answerField);
                         answerField.addEventListener(answerField.tagName === 'SELECT' ? 'change' : 'input', function() {
+                            resizeBlankInput(answerField);
                             var now = Date.now();
                             logEvent(userId, setId, 'answer_change', now, { question: item.id, value: answerField.value });
                             storeAnswers();
@@ -2503,10 +2610,9 @@
                     document.getElementById('title').textContent = lessonData.title;
                     document.getElementById('subtitle').textContent = lessonData.source || '';
                     document.getElementById('passage-title').textContent = lessonData.title || 'Reading Passage';
-                    document.getElementById('passage-set-id').textContent = setId;
-
                     renderPassage();
                     renderQuestions();
+                    restoreSavedHighlights();
                     renderExamQuestionNav();
                     if (teacherMode) {
                         renderTeacherAnswerToolbar();
@@ -2641,6 +2747,10 @@
 
         document.getElementById('highlight-add-btn').addEventListener('click', applyHighlight);
         document.getElementById('highlight-clear-btn').addEventListener('click', clearHighlight);
+        document.getElementById('highlight-clear-all-btn').addEventListener('click', function() {
+            if (!confirm('Clear all highlights for this reading?')) return;
+            clearAllHighlights();
+        });
         document.addEventListener('change', function(event) {
             var questionId = event.target && event.target.getAttribute && event.target.getAttribute('data-question');
             if (!questionId) return;
