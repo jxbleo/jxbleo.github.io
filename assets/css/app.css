@@ -305,32 +305,13 @@ button { cursor: pointer; }
     top: -7px;
     right: -6px;
 }
-.student-message-button span[aria-hidden="true"] {
-    display: inline-grid;
-    place-items: center;
-    width: 17px;
-    height: 17px;
-    border: 2px solid currentColor;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    font-size: 0;
-}
-.student-message-button span[aria-hidden="true"]::after {
-    content: "";
-    width: 5px;
-    height: 2px;
-    margin-top: 16px;
-    border-radius: 999px;
-    background: currentColor;
-}
+.student-message-button svg,
 .student-words-button svg {
     width: 19px;
     height: 19px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.9;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
@@ -341,6 +322,47 @@ button { cursor: pointer; }
         linear-gradient(135deg, rgba(255, 244, 176, 0.76), rgba(184, 238, 220, 0.8) 48%, rgba(187, 222, 255, 0.76));
     box-shadow: 0 10px 24px rgba(19, 118, 109, 0.16);
 }
+.student-words-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2150;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(20, 43, 39, 0.42);
+    backdrop-filter: blur(10px);
+}
+.student-words-overlay[hidden] { display: none; }
+.student-words-dialog {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    width: min(760px, 100%);
+    max-height: min(820px, calc(100vh - 40px));
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.86);
+    border-radius: 24px;
+    background: #f7faf8;
+    box-shadow: 0 30px 90px rgba(13, 41, 36, 0.28);
+}
+.student-words-dialog-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,0.94);
+}
+.student-words-dialog-head .eyebrow { margin: 0; }
+.student-words-dialog-head h2 { margin: 5px 0 0; font-size: 1.35rem; }
+.student-words-dialog-scroll {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 18px;
+    scroll-behavior: auto;
+}
+.student-words-dialog-scroll .my-words-card { margin: 0; }
 .teacher-header-actions {
     display: flex;
     align-items: center;
@@ -5960,6 +5982,13 @@ body:not(.teacher-page) .tab-button.active {
 @keyframes pulse { 50% { opacity: 0.55; } }
 
 @media (max-width: 760px) {
+    .student-words-overlay { padding: 10px; }
+    .student-words-dialog {
+        max-height: calc(100vh - 20px);
+        border-radius: 20px;
+    }
+    .student-words-dialog-head { padding: 16px; }
+    .student-words-dialog-scroll { padding: 12px; }
     .auth-page { padding: 12px; }
     .auth-shell { grid-template-columns: 1fr; min-height: auto; border-radius: 25px; }
     .brand-panel { min-height: 430px; padding: 28px 22px; }

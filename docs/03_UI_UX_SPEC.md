@@ -40,7 +40,9 @@ Navigation:
 
 - the lower navigation exposes only `Library`
 - assignments and finished work open from the top-right notification bell
-- My Words opens from a notebook icon immediately beside the bell
+- My Words opens in an independent modal from a notebook icon immediately to
+  the right of the bell; closing and reopening restores the modal's previous
+  internal scroll position
 - account/profile actions remain in the top-right identity chip
 
 Assignment access and progress display:
@@ -164,6 +166,8 @@ My Words:
 - is available across student learning and attempt-review pages. Single-letter
   words such as `a` and `I` are valid vocabulary items.
 - visitors see a login prompt instead of personal data.
+- its header notebook icon follows the same circular SVG treatment as the bell;
+  the student bell uses the same bell SVG as the teacher notification button.
 
 Student account menu:
 
