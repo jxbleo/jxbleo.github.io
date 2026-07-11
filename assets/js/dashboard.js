@@ -1149,9 +1149,18 @@
     }
 
     function renderProgressTask(item) {
-        return '<article class="progress-detail-task">' +
-            '<strong>' + escapeHtml(progressItemTitle(item)) + '</strong>' +
-            '<span class="progress-task-type">' + escapeHtml(progressItemKind(item) || 'Practice') + '</span>' +
+        var status = normalizedStatus(item.status);
+        var title = progressItemTitle(item);
+        var kind = progressItemKind(item) || 'Practice';
+        var href = assignmentOpenHref(item);
+        var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
+        return '<article class="progress-detail-task" data-open-href="' + escapeHtml(href) + '"' +
+            ' data-entry-kind="' + escapeHtml(kind) + '" data-entry-title="' + escapeHtml(title) + '"' +
+            ' data-entry-status="' + escapeHtml(status) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '" role="link" tabindex="0"' +
+            ' aria-label="Open completed task ' + escapeHtml(title) + '">' +
+            '<strong>' + escapeHtml(title) + '</strong>' +
+            '<span class="progress-task-type">' + escapeHtml(kind) + '</span>' +
             '<span class="progress-task-score">' + escapeHtml(progressItemScoreLabel(item)) + '</span>' +
         '</article>';
     }
