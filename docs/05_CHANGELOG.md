@@ -15,6 +15,10 @@
 - Added a teacher-only, dry-run-first historical repair for Vocabulary
   content-version mismatches. It identifies whole attempts from multiple legacy
   answer signatures and regrades only upward while preserving original history.
+- Locked CloudBase SDK versions and changed cloud-function ZIP generation to
+  bundle reachable runtime dependencies. Deployments no longer drift with npm
+  range resolution or exceed the CloudBase code-unzip limit because an online
+  installer expanded the full SDK dependency tree.
 
 - Changed the student Dashboard progress board so the completion meter centers
   its `Finished / total` value, week labels open weekly completion summaries,

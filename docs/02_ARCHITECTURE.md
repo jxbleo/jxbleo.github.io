@@ -95,7 +95,10 @@ Active or relevant functions:
 - `changePassword`: authenticated student password change
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
-Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git but still required for CloudBase upload.
+Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git
+but still required for CloudBase upload. `package:functions` uses locked
+dependencies and esbuild to include only reachable runtime code, so deployed
+functions do not depend on CloudBase resolving npm ranges during an update.
 
 ## 6. Database and Storage
 
