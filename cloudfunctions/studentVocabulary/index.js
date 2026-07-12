@@ -223,15 +223,22 @@ async function lexiconMapForItems(items) {
   const values = Array.from(new Set((items || []).map((item) => item.normalized_text).filter(Boolean)));
   const map = {};
   const command = db.command;
-  for (let index = 0; index < values.length; index += 50) {
-    const batch = values.slice(index, index + 50);
+  for (let index = 0; index < values.length; index += 10) {
+    const batch = values.slice(index, index + 10);
     try {
       const result = await db.collection(LEXICON_COLLECTION).where({
         normalized_word: command.in(batch),
       }).limit(100).get();
       (result.data || []).forEach((item) => { map[item.normalized_word] = item; });
-    } catch (_error) {
-      return map;
+    } catch (error) {
+      console.error("VOCABULARY_LEXICON_BATCH_LOOKUP_FAILED", {
+        words: batch,
+        message: String(error && error.message || error || "unknown error").slice(0, 240),
+      });
+      for (const normalizedWord of batch) {
+        const item = await getLexiconItemOrNull(normalizedWord);
+        if (item) map[normalizedWord] = item;
+      }
     }
   }
   return map;
