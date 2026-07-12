@@ -971,19 +971,25 @@
         var status = normalizedStatus(item.status);
         var finished = isFinishedStatus(status);
         var href = assignmentOpenHref(item);
+        var title = assignmentTitle(item);
+        var kind = assignmentKind(item);
         var score = finished && item.best_percentage != null
-            ? '<small class="student-message-score">Score ' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</small>'
+            ? '<span class="student-message-score">' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</span>'
             : '';
-        var stateLabel = type === 'todo' ? 'To do' : (status === 'mastered' ? 'Mastered' : 'Finished');
-        return '<article class="student-message-task ' + escapeHtml(type) + '">' +
+        var entryStatus = finished ? status : 'not-passed';
+        var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
+        return '<article class="student-message-task ' + escapeHtml(type) + '"' +
+            ' data-entry-kind="' + escapeHtml(kind) + '" data-entry-title="' + escapeHtml(title) + '"' +
+            ' data-entry-status="' + escapeHtml(entryStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '" data-open-href="' + escapeHtml(href) + '"' +
+            ' role="link" tabindex="0" aria-label="Review before opening ' + escapeHtml(title) + '">' +
             '<div class="student-message-task-main">' +
-                '<span class="student-message-kicker">' + escapeHtml(assignmentKind(item)) + '</span>' +
-                '<strong>' + escapeHtml(assignmentTitle(item)) + '</strong>' +
-                score +
+                '<span class="student-message-kicker">' + escapeHtml(kind) + '</span>' +
+                '<strong>' + escapeHtml(title) + '</strong>' +
             '</div>' +
-            '<div class="student-message-task-actions">' +
-                '<span class="student-message-state ' + escapeHtml(type) + '">' + escapeHtml(stateLabel) + '</span>' +
-                '<a class="student-message-go" href="' + escapeHtml(href) + '">' + (type === 'todo' ? 'Start' : 'Open') + '</a>' +
+            '<div class="student-message-task-meta" aria-hidden="true">' +
+                score +
+                '<svg viewBox="0 0 24 24" focusable="false"><path d="m9 5 7 7-7 7"></path></svg>' +
             '</div>' +
         '</article>';
     }
@@ -1067,7 +1073,19 @@
         });
         overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
         overlay.querySelector('#student-message-done').addEventListener('click', function() { close(true); });
-        overlay.querySelectorAll('.student-message-go, .teacher-reply-go').forEach(function(link) {
+        overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
+            function openTask(event) {
+                if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                event.stopPropagation();
+                var href = card.dataset.openHref;
+                close(true);
+                if (href) showPracticeEntryDialog(card, href);
+            }
+            card.addEventListener('click', openTask);
+            card.addEventListener('keydown', openTask);
+        });
+        overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
             link.addEventListener('click', function(event) {
                 var href = link.getAttribute('href');
                 if (!href || href === '#') return;
