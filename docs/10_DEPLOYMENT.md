@@ -142,6 +142,8 @@ Function runtime expectation:
 
 - Node.js 18
 - deployment ZIPs are bundled with the runtime code they use;
+- bundled code is minified so direct ZIP uploads remain below CloudBase's
+  expanded-file limit and do not depend on slower COS uploads;
 - CloudBase automatic dependency installation is not required and should stay
   disabled for bundled functions;
 - root and function-level lockfiles pin the SDK and bundler versions, so a

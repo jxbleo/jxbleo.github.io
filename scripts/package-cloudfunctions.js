@@ -97,6 +97,7 @@ function packageFunction(functionName) {
       platform: "node",
       target: "node18",
       format: "cjs",
+      minify: true,
       external: ["@aws-sdk/client-s3"],
       logLevel: "silent"
     });
