@@ -1,5 +1,17 @@
 # Changelog
 
+- Made student-bell assignment rows shorter and fully clickable. The rows now
+  keep a compact type label, a one-or-two-line title, an optional finished score,
+  and a directional cue instead of separate `Start` / `Open` buttons; opening a
+  row uses the shared Library practice-entry confirmation before navigation.
+- Unified the teacher header bell, Argue hand, and student-card controls as
+  matching 40px circular icon buttons. All three now share the same surface,
+  hover/focus treatment, 20px icon size, and 2.2px non-scaling line weight;
+  the hand and student-card artwork were adjusted for equal visual weight.
+- Refined the student Dashboard monthly-progress loading state: the four-week
+  grid now advances through a staggered diagonal cell wave, and the detail side
+  uses one large loading capsule with `Loading progress` inside instead of two
+  stacked capsules plus separate text.
 - Reworked teacher notification rows with a fixed right-side latest-score
   capsule matching By student, single-line ellipsized task labels, and colored
   attempt-count capsules placed immediately before the date/time.

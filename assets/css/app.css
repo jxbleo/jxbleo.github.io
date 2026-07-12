@@ -369,31 +369,48 @@ button { cursor: pointer; }
     justify-content: flex-end;
     gap: 8px;
 }
+.teacher-header-icon-button,
 .teacher-updates-button,
 .teacher-review-button {
     position: relative;
     display: inline-grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
     padding: 0;
     border: 1px solid rgba(124, 58, 237, 0.22);
-    border-radius: 999px;
+    border-radius: 50%;
     color: var(--accent-dark);
     background: rgba(255,255,255,0.78);
     font-size: 0.78rem;
     font-weight: 900;
     box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
+    transition: transform 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
 }
+.teacher-header-icon,
 .teacher-updates-button svg,
 .teacher-review-button svg {
-    width: 19px;
-    height: 19px;
+    width: 20px;
+    height: 20px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
+}
+.teacher-header-icon path,
+.teacher-header-icon rect,
+.teacher-header-icon circle {
+    vector-effect: non-scaling-stroke;
+}
+.teacher-header-icon-button:hover,
+.teacher-header-icon-button:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(124,58,237,0.34);
+    background: rgba(247,243,255,0.96);
+    outline: 3px solid rgba(124,58,237,0.12);
+    outline-offset: 2px;
 }
 .review-question-mark {
     display: inline-grid;
@@ -964,25 +981,42 @@ button.progress-dot.active {
     background: rgba(255,255,255,0.56);
     line-height: 1.55;
 }
-.progress-dot-map-loading i,
+.progress-dot-map-loading i {
+    --progress-column-delay: 0s;
+    --progress-row-delay: 0s;
+    background: linear-gradient(135deg, rgba(255,255,255,0.52), rgba(138,214,170,0.58));
+    animation: progressGridWave 1.65s ease-in-out infinite;
+    animation-delay: calc(var(--progress-column-delay) + var(--progress-row-delay));
+}
+.progress-dot-map-loading i:nth-of-type(7n + 2) { --progress-column-delay: 0.06s; }
+.progress-dot-map-loading i:nth-of-type(7n + 3) { --progress-column-delay: 0.12s; }
+.progress-dot-map-loading i:nth-of-type(7n + 4) { --progress-column-delay: 0.18s; }
+.progress-dot-map-loading i:nth-of-type(7n + 5) { --progress-column-delay: 0.24s; }
+.progress-dot-map-loading i:nth-of-type(7n + 6) { --progress-column-delay: 0.30s; }
+.progress-dot-map-loading i:nth-of-type(7n) { --progress-column-delay: 0.36s; }
+.progress-dot-map-loading i:nth-of-type(n + 8):nth-of-type(-n + 14) { --progress-row-delay: 0.10s; }
+.progress-dot-map-loading i:nth-of-type(n + 15):nth-of-type(-n + 21) { --progress-row-delay: 0.20s; }
+.progress-dot-map-loading i:nth-of-type(n + 22):nth-of-type(-n + 28) { --progress-row-delay: 0.30s; }
 .progress-detail-loading {
     background: linear-gradient(90deg, rgba(255,255,255,0.42), rgba(255,255,255,0.82), rgba(255,255,255,0.42));
     background-size: 220% 100%;
     animation: progressSkeletonSweep 1.4s ease-in-out infinite;
 }
 .progress-detail-loading {
-    height: 54px;
+    display: grid;
+    min-height: 72px;
+    place-items: center;
+    padding: 14px 18px;
     border-radius: 999px;
     box-shadow: inset 0 0 0 1px rgba(19,118,109,0.07);
 }
-.progress-detail-loading.short {
-    width: 72%;
-}
 .progress-loading-copy {
-    justify-self: center;
+    position: relative;
+    z-index: 1;
     color: rgba(24, 53, 47, 0.5);
     font-size: 0.76rem;
     font-weight: 900;
+    letter-spacing: 0.02em;
 }
 
 @keyframes heroAuroraTurn {
@@ -993,6 +1027,11 @@ button.progress-dot.active {
 @keyframes progressSkeletonSweep {
     0% { background-position: 120% 0; }
     100% { background-position: -120% 0; }
+}
+
+@keyframes progressGridWave {
+    0%, 100% { opacity: 0.45; transform: scale(0.88); }
+    45% { opacity: 1; transform: scale(1); background: rgba(138,214,170,0.72); }
 }
 
 @keyframes progressLoadingPulse {
@@ -1040,23 +1079,23 @@ button.progress-dot.active {
     background: rgba(247, 243, 255, 0.96);
 }
 .header-create-student {
-    width: 38px;
-    min-width: 38px;
-    height: 38px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
     display: inline-grid;
     place-items: center;
     padding: 0;
-    border-radius: 999px;
+    border-radius: 50%;
     font-size: 0;
     box-shadow: 0 10px 24px rgba(83, 45, 145, 0.10);
     overflow: visible;
 }
 .header-student-icon {
-    width: 19px;
-    height: 19px;
+    width: 20px;
+    height: 20px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
@@ -2016,12 +2055,15 @@ body:not(.teacher-page) .tab-button.active {
 .student-message-task {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
-    padding: 12px;
+    min-height: 52px;
+    padding: 8px 10px;
     border: 1px solid var(--line);
     border-radius: 14px;
     background: #f8fbfa;
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 .student-message-task.todo {
     border-color: rgba(225, 29, 72, 0.18);
@@ -2031,55 +2073,78 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(19, 118, 109, 0.16);
     background: linear-gradient(135deg, #f4fbf7, #fff);
 }
-.student-message-task-main {
-    display: grid;
-    min-width: 0;
-    gap: 4px;
+.student-message-task:hover,
+.student-message-task:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(19, 118, 109, 0.34);
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(25, 68, 61, 0.08);
 }
-.student-message-kicker,
-.student-message-score {
-    color: var(--muted);
-    font-size: 0.74rem;
-    font-weight: 850;
+.student-message-task:focus-visible {
+    outline: 3px solid rgba(19, 118, 109, 0.2);
+    outline-offset: 2px;
+}
+.student-message-task-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 9px;
+}
+.student-message-kicker {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    min-height: 25px;
+    max-width: 96px;
+    padding: 0 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    color: var(--accent-dark);
+    background: rgba(19, 118, 109, 0.09);
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .student-message-task strong {
+    display: -webkit-box;
+    min-width: 0;
+    overflow: hidden;
     overflow-wrap: anywhere;
     color: #101918;
-    font-size: 0.96rem;
-    font-weight: 950;
-    line-height: 1.25;
+    font-size: 0.9rem;
+    font-weight: 900;
+    line-height: 1.2;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
-.student-message-task-actions {
+.student-message-task-meta {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
+    gap: 5px;
+    color: var(--muted);
 }
-.student-message-state,
-.student-message-go {
+.student-message-score {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 34px;
+    min-height: 27px;
     border-radius: 999px;
-    padding: 0 12px;
-    font-size: 0.8rem;
-    font-weight: 900;
-    text-decoration: none;
-    white-space: nowrap;
-}
-.student-message-state.todo {
-    color: #b4233a;
-    background: #fff0f2;
-}
-.student-message-state.finished {
+    padding: 0 8px;
     color: var(--success);
     background: var(--success-soft);
+    font-size: 0.72rem;
+    font-weight: 900;
+    white-space: nowrap;
 }
-.student-message-go {
-    color: #fff;
-    background: var(--accent);
+.student-message-task-meta svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 .student-message-empty {
     padding: 13px;
@@ -6432,12 +6497,8 @@ body:not(.teacher-page) .tab-button.active {
     .teacher-replies-card { grid-template-columns: 1fr; }
     .teacher-replies-card .primary-button { width: auto; }
     .teacher-replies-dialog { padding: 22px 18px; }
-    .student-message-task {
-        grid-template-columns: 1fr;
-    }
-    .student-message-task-actions {
-        justify-content: flex-start;
-    }
+    .student-message-task { min-height: 50px; }
+    .student-message-kicker { max-width: 72px; }
     .teacher-reply-head {
         flex-direction: column;
         align-items: center;

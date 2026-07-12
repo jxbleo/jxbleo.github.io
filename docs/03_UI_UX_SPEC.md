@@ -76,7 +76,11 @@ Assignment access and progress display:
   practice-entry confirmation and can re-enter that task. Blank days or blank weeks keep the
   reserved detail area but do not show an empty-state text field. While dashboard
   data is loading, the progress meter and four-week board reserve their final
-  space with a lightweight loading skeleton.
+  space with a lightweight loading skeleton. The four-week grid uses a gentle
+  diagonal day-cell wave to communicate progress without changing its final
+  dimensions. The detail side shows exactly one large capsule, with `Loading
+  progress` centered inside it; it must not render two stacked loading capsules
+  or place the loading copy outside the capsule.
 - the lower `Library` capsule, top-right My Words notebook icon, and student
   Library `Practice` / `Exam` capsule use a soft translucent glass treatment
   with subtle rainbow active states
@@ -125,6 +129,11 @@ Frontend rule:
   the Argue review button. Argue uses the same raised-hand outline as exercise
   pages, but inherits the teacher header's quiet gray icon treatment; unread
   review requests remain indicated by the red count badge.
+- The teacher header Notifications, Argue, and Student lookup controls use one
+  shared icon-button system: all three are 40px circles with the same border,
+  translucent background, shadow, hover/focus movement, 20px icon box, round
+  line caps/joins, and visually consistent 2.2px non-scaling strokes. The hand
+  must not appear thinner than the bell or student-card outline.
 - Opening the bell alone does not clear the top-right badge or red row state.
   Opening a grouped attempt row marks that thread's current attempts reviewed;
   a later attempt makes the same thread red again.
@@ -143,7 +152,12 @@ Frontend rule:
   `Assignments`, `My Words`, and `Library` must never show through it.
 - The student bell dialog should always open, even when there are no new teacher
   replies. It shows open assignments, finished assignments, and teacher replies
-  in one message center.
+  in one message center. Assignment rows in the bell are compact whole-row
+  targets: the short type label and title share the main line, long titles may
+  wrap to a second line, and finished rows may show a small score at the right.
+  Do not render separate `Start` or `Open` buttons. Clicking or keyboard-opening
+  the row closes the bell and shows the same shared practice-entry confirmation
+  used by Library before navigation.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.
