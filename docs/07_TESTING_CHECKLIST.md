@@ -235,12 +235,13 @@ Check:
   `mastery_enabled` is false
 - View matrix date filtering uses assignment `assigned_at` in Beijing-time
   natural weeks: `This week` is Monday-Sunday of the current Beijing week,
-  `Last week` is the previous Beijing Monday-Sunday range, and `Self study`
-  shows records without an assignment separately
-- View matrix task headers show separate Assigned and Due at rows with
-  zero-padded Wxx labels and a compact due date; no/mixed due dates have clear
-  fallback labels. Week numbering starts at the first Monday of the assignment
-  year, and dates before that Monday show `W00`
+  `Next week` is the following Beijing Monday-Sunday range, `Last week` is the
+  previous Beijing Monday-Sunday range, and `Self study` shows records without
+  an assignment separately
+- View matrix keeps its original task-header row and adds exactly one Due row
+  below it and above student scores; the sticky first cell reads `Due`, each
+  task cell shows only a zero-padded Wxx label, and missing/mixed due dates show
+  `—` / `Mixed`. Week numbering starts at the first Monday of the relevant year
 - Clicking a matrix assigned-task header opens one parameter editor for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
