@@ -55,6 +55,9 @@ Open:
 
 Practice navigation checks:
 
+- Student Dashboard loading reserves the final monthly-board dimensions; its
+  28 day cells animate in a staggered diagonal wave and the detail side contains
+  exactly one large capsule with `Loading progress` centered inside
 - clicking a completed-task capsule in the Dashboard four-week board opens the
   shared entry confirmation, and `Enter` opens that completed task with a safe
   Dashboard return target
@@ -103,6 +106,9 @@ Check:
 - forced password change appears when expected
 - the lower dashboard navigation shows only `Library`
 - the top-right bell opens `TO DO` and finished assignment messages
+- bell assignment rows have no separate `Start` / `Open` buttons; the whole
+  compact row is keyboard/click accessible, keeps long titles to at most two
+  lines, and opens the shared Library-style entry confirmation before navigation
 - the student bell uses the same SVG bell design as the teacher bell
 - the notebook icon sits immediately to the right of the bell and opens My
   Words in an independent modal
@@ -230,6 +236,9 @@ Check:
   stat pills
 - Top-right teacher icon buttons show compact spinner states while loading and
   header capsules do not show separate rainbow underline accents
+- Teacher header bell, Argue hand, and Student lookup buttons have identical
+  40px circular bounds, matching surface/hover/focus styles, 20px icon boxes,
+  and equal-looking 2.2px strokes; the hand is not visibly thinner
 - Progress still reflects assignment attempts after attempts/assignments exceed
   one CloudBase read page
 - View matrix shows completed status from linked attempts even if assignment
