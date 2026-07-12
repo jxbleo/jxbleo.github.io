@@ -30,6 +30,10 @@
 
 ### Changed
 
+- Made shared My Words lexicon joins resilient: dictionary lookups now use
+  CloudBase-safe batches of ten and fall back to per-word reads instead of
+  silently leaving every card in a pending state when one batch fails.
+
 - Simplified collapsed My Words cards to word, part of speech, Chinese meaning,
   and pronunciation, with details on expansion; added New/Learning/Mastered
   states and rule-based daily reveal-and-rate review without AI calls.

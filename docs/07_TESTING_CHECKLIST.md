@@ -401,6 +401,8 @@ Check:
   external provider again for another student
 - My Words search matches Chinese meaning, English definition, and part of speech
 - pronunciation uses browser speech without exposing a provider key
+- a failed multi-word lexicon query falls back to individual reads, so known
+  entries such as `expense`, `details`, and `widespread` still show dictionary data
 - collapsed cards show only word, part of speech, Chinese meaning, and speaker;
   expansion reveals English definition, source/context, status, and actions
 - Today/New/Learning/Mastered filters work, review hides meanings until Reveal,
