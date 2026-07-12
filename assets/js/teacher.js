@@ -2925,7 +2925,7 @@
                     '<input type="number" name="passing_percentage" min="0" max="100" step="0.01" placeholder="' + (commonPassing === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonPassing) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
                     '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>STAR</span></label>' +
+                    '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>Earn STAR</span></label>' +
                     '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
                     '<p class="assignment-edit-note">Assign week changes which Wxx column and week filter contains the selected work. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
                     '<div class="dialog-actions">' +
@@ -3511,6 +3511,43 @@
         return key;
     }
 
+    function matrixColumnEditScopeKey(set) {
+        return 'matrix-column::' + String(set && set.id || 'unknown');
+    }
+
+    function registerMatrixColumnEditScope(set) {
+        var items = editableAssignments(set && set.items || []);
+        if (!items.length) return '';
+        var key = matrixColumnEditScopeKey(set);
+        var sample = items[0] || {};
+        var scopeLabel = state.matrixClassFilter
+            ? (String(state.matrixClassFilter).indexOf('individual:') === 0
+                ? (sample.student_name || sample.student_id || 'Individual')
+                : state.matrixClassFilter)
+            : 'All visible students';
+        state.assignmentEditScopes[key] = {
+            key: key,
+            mode: 'task',
+            title: set.title || set.set_id || 'Task',
+            subtitle: scopeLabel + ' · ' + (set.set_id || ''),
+            items: items
+        };
+        return key;
+    }
+
+    function matrixHeaderDueInfo(items) {
+        var dueAt = commonFieldValue(items, 'due_at');
+        if (!dueAt) {
+            var hasAnyDue = (items || []).some(function(item) { return Boolean(item && item.due_at); });
+            return { week: hasAnyDue ? 'Mixed' : '—', date: hasAnyDue ? 'Multiple dates' : 'No due date' };
+        }
+        var weekInfo = shanghaiCalendarWeekInfo(dueAt);
+        return {
+            week: weekInfo ? weekInfo.label : '—',
+            date: formatDate(dueAt, 'No due date', 'compact')
+        };
+    }
+
     function renderMatrixCellDetail(item) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
@@ -3873,11 +3910,13 @@
                     set_id: item.set_id || setKey,
                     title: item.set_title || setTitleFor(item.set_id),
                     date: new Date(matrixDateValue(item) || 0).getTime(),
-                    week_label: weekInfo && weekInfo.label || ''
+                    week_label: weekInfo && weekInfo.label || '',
+                    items: []
                 };
             } else {
                 setMap[setKey].date = Math.max(setMap[setKey].date, new Date(matrixDateValue(item) || 0).getTime());
             }
+            setMap[setKey].items.push(item);
             var studentKey = matrixStudentKey(item);
             if (!studentMap[studentKey]) {
                 studentMap[studentKey] = {
@@ -3905,22 +3944,25 @@
         var studentColCh = Math.max(7, Math.min(18, maxStudentNameLength + 2));
         var matrixStyle = '--matrix-cols:' + sets.length +
             ';--matrix-student-col:' + studentColCh + 'ch' +
-            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * 112) + 'px)' +
-            ';--matrix-min-mobile:calc(var(--matrix-student-col) + ' + (sets.length * 96) + 'px)';
+            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * 132) + 'px)' +
+            ';--matrix-min-mobile:calc(var(--matrix-student-col) + ' + (sets.length * 112) + 'px)';
         var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
             '<span class="progress-matrix-student-cell">Student</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var weekLabel = set.week_label || '';
-                var sourceSet = state.sets.find(function(item) {
-                    return String(item.set_id || item.id || '') === String(set.set_id || '');
-                }) || set;
-                var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
-                var tag = href && href !== '#' ? 'a' : 'span';
-                return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
-                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" aria-label="Open teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
+                var dueInfo = matrixHeaderDueInfo(set.items || []);
+                var editScope = registerMatrixColumnEditScope(set);
+                var tag = editScope ? 'button' : 'span';
+                return '<' + tag + ' class="progress-matrix-task-head" title="' +
+                    escapeHtml(editScope ? 'Edit parameters for ' + title : title) + '"' +
+                    (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
+                        '" aria-label="Edit parameters for ' + escapeHtml(title) + '"' : '') + '>' +
                     '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
-                    (weekLabel ? '<small class="progress-matrix-week-label">' + escapeHtml(weekLabel) + '</small>' : '') +
+                    '<small class="progress-matrix-schedule-line progress-matrix-week-label"><span>Assigned</span><b>' +
+                        escapeHtml(weekLabel || '—') + '</b></small>' +
+                    '<small class="progress-matrix-schedule-line progress-matrix-due-label"><span>Due at</span><b>' +
+                        escapeHtml(dueInfo.week) + '</b><em>' + escapeHtml(dueInfo.date) + '</em></small>' +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</' + tag + '>';
             }).join('') +

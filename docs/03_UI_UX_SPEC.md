@@ -336,13 +336,19 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
-- matrix task headers show the stable task ID, a zero-padded week label such as
-  `W03`, and the task name underneath. Week labels are calculated from
-  assignment `assigned_at` in Beijing time: dates before that year's first
-  Monday show `W00`, and the first Monday-Sunday range is `W01`.
-- clicking a matrix task header opens that task directly in teacher preview;
-  the practice `Back` control returns to Teacher `View`. Headers without a
-  published practice link remain non-interactive.
+- matrix task headers show the stable task ID, a separate `Assigned` row with a
+  zero-padded week label such as `W03`, a separate `Due at` row with its Wxx
+  label and compact date, and the task name underneath. Assigned week labels
+  are calculated from assignment `assigned_at` in Beijing time: dates before
+  that year's first Monday show `W00`, and the first Monday-Sunday range is
+  `W01`. Columns with no due date show `No due date`; inconsistent due dates in
+  one visible column show `Mixed` / `Multiple dates`.
+- clicking an assigned-task matrix header opens assignment management for all
+  records represented by that visible column. A class/individual filter limits
+  the edit scope to that class/student; no class filter means all currently
+  visible students in the column. One save can update assign week, due date,
+  passing percentage, mastery percentage, and Earn STAR for the complete scope.
+  Teacher practice preview remains available from Library.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. `Column` uses `All type`, `Date` uses `All time`, and date filtering

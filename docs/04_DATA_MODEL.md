@@ -175,6 +175,10 @@ not automatically regrade historical attempts or downgrade completed
 assignments and protected STAR records. When `mastery_enabled` is false, future
 submissions can pass but cannot automatically move that assignment to
 `mastered` or create a new STAR.
+The matrix task-header bulk editor does not introduce a shared mutable class
+standard record. It resolves the visible column to explicit `assignment_id`
+values and updates those assignment documents individually, preserving the
+assignment-level ownership and audit model.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled

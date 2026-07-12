@@ -203,6 +203,9 @@ linked attempts as a display fallback when an assignment summary is stale.
    for assigned week (`assigned_at`), due date, passing percentage, and mastery
    percentage. Assigned-week edits immediately drive the Teacher View Wxx
    grouping and date filters.
+   The View matrix task header builds this explicit ID list from the currently
+   filtered column, so one save can update every matching student in the
+   selected class/scope without affecting hidden classes.
 7. Open assignments can be soft-cancelled through `teacherAdmin`; cancellation
    sets `status: "cancelled"` with audit fields, hides the item from the
    student dashboard, and prevents old assignment links from recording new
