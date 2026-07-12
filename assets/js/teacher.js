@@ -28,6 +28,7 @@
         activityReadAllAt: null,
         activityReviewedAttemptIds: [],
         activityReadAllPending: false,
+        activityReadAllSuccess: false,
         notificationAttemptId: '',
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
@@ -4322,13 +4323,15 @@
             unread: isAttemptReviewUnread(attempt),
             attempt: attempt,
             label: name + ' ' + action + ' ' + (setTitleFor(attempt.set_id) || attempt.set_id),
-            meta: formatPercent(attempt.percentage) + ' · #' + (attempt.attempt_number || 1),
+            score: attempt.percentage,
             time: formatDateTime(attempt.submitted_at),
             attempt_id: attempt.attempt_id || '',
             student_uid: attempt.student_uid || '',
             assignment_id: attempt.assignment_id || '',
             set_id: attempt.set_id || '',
-            finished: attempt.passed || attempt.mastered
+            finished: attempt.passed || attempt.mastered,
+            mastered: attempt.mastered === true,
+            attempt_count: 1
         };
     }
 
@@ -4339,8 +4342,7 @@
             var item = attemptActivityItem(latest);
             item.unread = group.unread;
             item.attempt_id = target.attempt_id || latest.attempt_id || '';
-            item.meta = formatPercent(latest.percentage) + ' · ' + group.attempts.length +
-                ' attempt' + (group.attempts.length === 1 ? '' : 's');
+            item.attempt_count = group.attempts.length;
             return item;
         })
             .sort(function(a, b) {
@@ -4349,15 +4351,20 @@
     }
 
     function renderActivityFeedRow(item) {
+        var attemptCount = Math.max(1, Number(item.attempt_count || 1));
+        var attemptClass = attemptCount >= 3 ? ' many' : attemptCount === 2 ? ' repeat' : ' single';
+        var scoreClass = item.mastered ? ' mastered' : item.finished ? '' : ' low';
         return '<button class="activity-row compact-activity-row' + (item.unread ? ' unread' : '') +
             '" type="button" data-open-attempt-id="' + escapeHtml(item.attempt_id) +
             '" data-open-attempt-student="' + escapeHtml(item.student_uid) +
             '" data-open-attempt-assignment="' + escapeHtml(item.assignment_id) +
             '" data-open-attempt-set="' + escapeHtml(item.set_id) + '">' +
             '<span class="activity-unread-dot"></span>' +
-            '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong><small>' +
-                escapeHtml(item.meta) + '</small></span>' +
-            '<span class="activity-date">' + escapeHtml(item.time) + '</span>' +
+            '<span class="activity-line"><strong>' + escapeHtml(item.label) + '</strong></span>' +
+            '<span class="activity-timing"><span class="activity-attempt-count' + attemptClass + '">' +
+                escapeHtml(attemptCount + ' attempt' + (attemptCount === 1 ? '' : 's')) + '</span>' +
+                '<span class="activity-date">' + escapeHtml(item.time) + '</span></span>' +
+            '<span class="activity-score' + scoreClass + '">' + escapeHtml(formatPercent(item.score)) + '</span>' +
         '</button>';
     }
 
@@ -4534,7 +4541,11 @@
         if (readAllButton) {
             var unreadCount = activityAttemptCounts().unread;
             readAllButton.disabled = state.activityReadAllPending || unreadCount <= 0;
-            readAllButton.textContent = state.activityReadAllPending ? 'Reading...' : 'Read all';
+            readAllButton.classList.toggle('has-unread', unreadCount > 0);
+            readAllButton.classList.toggle('is-pending', state.activityReadAllPending);
+            readAllButton.classList.toggle('is-success', state.activityReadAllSuccess);
+            readAllButton.setAttribute('aria-busy', state.activityReadAllPending ? 'true' : 'false');
+            readAllButton.title = state.activityReadAllPending ? 'Marking all as read...' : 'Read all';
         }
         if (!state.updatesOpen) {
             if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = '';
@@ -5171,12 +5182,19 @@
             teacherCall('markActivityAttemptsReadAll').then(function(result) {
                 state.activityReadAllAt = result.read_all_at || new Date().toISOString();
                 state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
+                state.activityReadAllSuccess = true;
                 showMessage('All student attempt notifications marked as read.', 'success');
             }).catch(function(error) {
                 showMessage(error.message, 'error');
             }).then(function() {
                 state.activityReadAllPending = false;
                 renderUpdatesPanel();
+                if (state.activityReadAllSuccess) {
+                    window.setTimeout(function() {
+                        state.activityReadAllSuccess = false;
+                        renderUpdatesPanel();
+                    }, 900);
+                }
             });
         });
     }

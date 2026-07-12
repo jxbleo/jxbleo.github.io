@@ -1,5 +1,12 @@
 # Changelog
 
+- Reworked teacher notification rows with a fixed right-side latest-score
+  capsule matching By student, single-line ellipsized task labels, and colored
+  attempt-count capsules placed immediately before the date/time.
+- Replaced the teacher notification modal's text heading with an action toolbar.
+  `Read all` is now a left-aligned accessible double-check icon with pending,
+  success, unread, and disabled states; Close remains on the right and the
+  middle space is available for future controls.
 - Added `Next week - Wxx` to the Teacher View Date filter, using the next
   Beijing-time Monday-to-Sunday range from assignment `assigned_at`.
 - Added a full-width Due row immediately below the original Teacher View task

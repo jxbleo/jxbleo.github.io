@@ -2279,11 +2279,7 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(14px);
 }
-.updates-panel-head h2 {
-    margin: 2px 0 0;
-    font-size: 1.15rem;
-}
-.updates-panel-head .eyebrow { margin: 0; }
+.updates-panel-primary-actions,
 .updates-panel-actions {
     display: flex;
     align-items: center;
@@ -2423,18 +2419,62 @@ body:not(.teacher-page) .tab-button.active {
     flex-wrap: wrap;
 }
 .activity-mark-read {
-    min-height: 34px;
-    padding: 0 12px;
+    position: relative;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    padding: 0;
     border: 1px solid rgba(124,58,237,0.22);
-    border-radius: 999px;
-    color: var(--accent-dark);
+    border-radius: 50%;
+    color: var(--muted);
     background: rgba(255,255,255,0.74);
-    font-size: 0.72rem;
-    font-weight: 900;
+    transition: color 150ms ease, border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+.activity-mark-read svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.activity-mark-read.has-unread {
+    border-color: rgba(124,58,237,0.34);
+    color: var(--accent-dark);
+    background: rgba(245,241,255,0.92);
+}
+.activity-mark-read.has-unread:hover,
+.activity-mark-read.has-unread:focus-visible {
+    transform: translateY(-1px);
+    outline: 3px solid rgba(124,58,237,0.14);
+    outline-offset: 2px;
+}
+.activity-mark-read.is-success {
+    border-color: rgba(21,127,85,0.30);
+    color: var(--success);
+    background: rgba(232,247,239,0.94);
+}
+.activity-mark-read.is-pending svg {
+    opacity: 0;
+}
+.activity-mark-read.is-pending::before {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(124,58,237,0.22);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    content: "";
+    animation: teacherHeaderLoadingSpin 0.8s linear infinite;
 }
 .activity-mark-read:disabled {
     cursor: default;
     opacity: 0.45;
+}
+.activity-mark-read.is-success:disabled {
+    opacity: 1;
 }
 .activity-list {
     display: grid;
@@ -2443,8 +2483,11 @@ body:not(.teacher-page) .tab-button.active {
 .activity-row {
     width: 100%;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 10px;
+    grid-template-areas:
+        "dot title score"
+        ". timing score";
+    grid-template-columns: auto minmax(0, 1fr) max-content;
+    gap: 4px 10px;
     align-items: center;
     min-height: 46px;
     padding: 9px 11px;
@@ -2460,31 +2503,85 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(247,243,255,0.90);
 }
 .activity-unread-dot {
+    grid-area: dot;
     width: 8px;
     height: 8px;
     border-radius: 999px;
     background: transparent;
 }
 .activity-row.unread .activity-unread-dot { background: var(--danger); }
-.activity-row strong,
-.activity-row small { display: block; }
-.activity-row small {
-    margin-top: 2px;
-    color: var(--muted);
-    font-size: 0.72rem;
+.activity-line {
+    grid-area: title;
+    min-width: 0;
 }
-.activity-line { min-width: 0; }
 .activity-line strong {
+    display: block;
     overflow: hidden;
     font-size: 0.82rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.activity-timing {
+    grid-area: timing;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+.activity-attempt-count {
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 950;
+    white-space: nowrap;
+}
+.activity-attempt-count.single {
+    color: #245a86;
+    background: #e7f2ff;
+}
+.activity-attempt-count.repeat {
+    color: #8b5a08;
+    background: #fff1c7;
+}
+.activity-attempt-count.many {
+    color: #9f2948;
+    background: #ffe2ea;
+}
 .activity-date {
+    min-width: 0;
+    overflow: hidden;
     color: var(--muted);
     font-size: 0.72rem;
     font-weight: 850;
+    text-overflow: ellipsis;
     white-space: nowrap;
+}
+.activity-score {
+    grid-area: score;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    min-width: 58px;
+    min-height: 34px;
+    padding: 0 11px;
+    border-radius: 999px;
+    color: #0d6f58;
+    background: #def8ec;
+    font-size: 0.82rem;
+    font-weight: 1000;
+    white-space: nowrap;
+}
+.activity-score.mastered {
+    color: #fff;
+    background: linear-gradient(135deg, #159b72, #31c58e);
+    box-shadow: 0 0 14px rgba(30,176,125,0.24);
+}
+.activity-score.low {
+    color: #64736f;
+    border: 1px solid rgba(100,115,111,0.18);
+    background: rgba(255,255,255,0.9);
 }
 .teacher-grid {
     display: grid;
@@ -6200,13 +6297,10 @@ body:not(.teacher-page) .tab-button.active {
     }
     .updates-panel-head { align-items: center; }
     .activity-row {
-        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-columns: auto minmax(0, 1fr) max-content;
         gap: 6px 9px;
     }
-    .activity-date {
-        grid-column: 2;
-        white-space: normal;
-    }
+    .activity-score { min-width: 52px; padding: 0 9px; }
     .hero-card { border-radius: 24px; }
     .student-progress-hero {
         margin-right: -12px;
