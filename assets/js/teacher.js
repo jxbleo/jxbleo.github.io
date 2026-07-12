@@ -25,7 +25,9 @@
         reviewOpen: false,
         studentLookupOpen: false,
         attemptsSeenAt: null,
+        activityReadAllAt: null,
         activityReviewedAttemptIds: [],
+        activityReadAllPending: false,
         notificationAttemptId: '',
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
@@ -327,7 +329,13 @@
     function isAttemptReviewUnread(attempt) {
         var attemptId = attempt && attempt.attempt_id;
         if (!attemptId) return false;
-        return reviewedAttemptIdMap()[String(attemptId)] !== true;
+        if (reviewedAttemptIdMap()[String(attemptId)] === true) return false;
+        var readAllAt = state.activityReadAllAt ? new Date(state.activityReadAllAt) : null;
+        var submittedAt = attempt.submitted_at ? new Date(attempt.submitted_at) : null;
+        if (readAllAt && !isNaN(readAllAt.getTime()) && submittedAt && !isNaN(submittedAt.getTime())) {
+            return submittedAt.getTime() > readAllAt.getTime();
+        }
+        return true;
     }
 
     function attemptThreadKey(attempt) {
@@ -654,7 +662,7 @@
 
     function loadActivityState() {
         return teacherCall('getActivityState').catch(function() {
-            return { attempts_seen_at: null, reviewed_attempt_ids: [] };
+            return { attempts_seen_at: null, read_all_at: null, reviewed_attempt_ids: [] };
         });
     }
 
@@ -1625,6 +1633,34 @@
                 escapeHtml(weekOptionLabel(startParts)) + '</option>');
         }
         return options.join('');
+    }
+
+    function assignmentWeekStartValue(value) {
+        var parts = shanghaiDateParts(value);
+        if (!parts) return '';
+        var mondayOffset = -((shanghaiWeekday(parts) + 6) % 7);
+        return shanghaiDateInputValueFromParts(addShanghaiDays(parts, mondayOffset));
+    }
+
+    function assignmentEditWeekOptionsHtml(selectedValue) {
+        var options = [];
+        var included = {};
+        for (var offset = -52; offset <= 52; offset += 1) {
+            var startParts = currentShanghaiMondayParts(offset);
+            if (!startParts) continue;
+            var value = shanghaiDateInputValueFromParts(startParts);
+            included[value] = true;
+            options.push({ value: value, label: weekOptionLabel(startParts) });
+        }
+        if (selectedValue && !included[selectedValue]) {
+            var selectedParts = shanghaiDatePartsFromInput(selectedValue);
+            if (selectedParts) options.push({ value: selectedValue, label: weekOptionLabel(selectedParts) });
+        }
+        options.sort(function(a, b) { return String(a.value).localeCompare(String(b.value)); });
+        return options.map(function(option) {
+            return '<option value="' + escapeHtml(option.value) + '"' +
+                (option.value === selectedValue ? ' selected' : '') + '>' + escapeHtml(option.label) + '</option>';
+        }).join('');
     }
 
     function defaultPassingForSet(set) {
@@ -2862,6 +2898,8 @@
             return;
         }
         var cancelableItems = items.filter(isOpenAssignmentItem);
+        var commonAssigned = commonFieldValue(items, 'assigned_at');
+        var assignedWeek = assignmentWeekStartValue(commonAssigned) || assignDefaultDateValue(0);
         var commonDue = commonFieldValue(items, 'due_at');
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
@@ -2879,6 +2917,8 @@
                     '<p>' + escapeHtml(scopeSubtitle) + escapeHtml(items.length) + ' selected assignment' + (items.length === 1 ? '' : 's') + '.</p>' +
                 '</div>' +
                 '<form class="assignment-edit-form">' +
+                    '<label class="assignment-edit-check"><input type="checkbox" name="change_assigned"><span>Assign week</span></label>' +
+                    '<select name="assigned_week" aria-label="Assign week">' + assignmentEditWeekOptionsHtml(assignedWeek) + '</select>' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_due"' + (commonDue ? ' checked' : '') + '><span>Due date</span></label>' +
                     '<input type="date" name="due_at" value="' + escapeHtml(formatDateInputValue(commonDue)) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_passing"' + (commonPassing !== '' ? ' checked' : '') + '><span>Passing %</span></label>' +
@@ -2887,7 +2927,7 @@
                     '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>STAR</span></label>' +
                     '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
-                    '<p class="assignment-edit-note">This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
+                    '<p class="assignment-edit-note">Assign week changes which Wxx column and week filter contains the selected work. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
                     '<div class="dialog-actions">' +
                         '<button class="outline-button" type="button" data-cancel-edit>Cancel</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
@@ -2929,6 +2969,9 @@
             var payload = {
                 assignment_ids: items.map(function(item) { return item.assignment_id; })
             };
+            if (form.elements.change_assigned.checked) {
+                payload.assigned_at = form.elements.assigned_week.value ? form.elements.assigned_week.value + 'T00:00:00+08:00' : null;
+            }
             if (form.elements.change_due.checked) {
                 payload.due_at = form.elements.due_at.value ? form.elements.due_at.value + 'T23:59:59+08:00' : null;
             }
@@ -2941,7 +2984,8 @@
             if (form.elements.change_mastery_enabled.checked) {
                 payload.mastery_enabled = form.elements.mastery_enabled.checked;
             }
-            if (!Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
+            if (!Object.prototype.hasOwnProperty.call(payload, 'assigned_at') &&
+                !Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'passing_percentage') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'mastery_percentage') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'mastery_enabled')) {
@@ -3039,7 +3083,11 @@
             return 'self-study::' + String(item.progress_id || item.set_id || 'unknown');
         }
         if (item && item.assignment_batch_id) {
-            return 'batch::' + String(item.assignment_batch_id);
+            var weekInfo = matrixWeekInfo(item);
+            var weekKey = weekInfo && weekInfo.year != null && weekInfo.week != null
+                ? String(weekInfo.year) + '-W' + String(weekInfo.week).padStart(2, '0')
+                : 'unassigned';
+            return 'batch::' + String(item.assignment_batch_id) + '::' + weekKey;
         }
         return [
             'legacy',
@@ -4435,7 +4483,13 @@
         if (!updatesPanel || !updatesBody) return;
         updatesPanel.hidden = !state.updatesOpen;
         var button = document.getElementById('teacher-updates-button');
+        var readAllButton = document.getElementById('teacher-updates-read-all');
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
+        if (readAllButton) {
+            var unreadCount = activityAttemptCounts().unread;
+            readAllButton.disabled = state.activityReadAllPending || unreadCount <= 0;
+            readAllButton.textContent = state.activityReadAllPending ? 'Reading...' : 'Read all';
+        }
         if (!state.updatesOpen) {
             if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = '';
             return;
@@ -4972,6 +5026,7 @@
             state.attempts = results[4].attempts || [];
             state.progressItems = results[5].progress || [];
             state.attemptsSeenAt = results[6].attempts_seen_at || null;
+            state.activityReadAllAt = results[6].read_all_at || null;
             state.activityReviewedAttemptIds = results[6].reviewed_attempt_ids || [];
             return loadPublicCatalog().catch(function() {
                 teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
@@ -5061,6 +5116,24 @@
         state.notificationAttemptId = '';
         renderUpdatesPanel();
     });
+    var teacherUpdatesReadAll = document.getElementById('teacher-updates-read-all');
+    if (teacherUpdatesReadAll) {
+        teacherUpdatesReadAll.addEventListener('click', function() {
+            if (state.activityReadAllPending || activityAttemptCounts().unread <= 0) return;
+            state.activityReadAllPending = true;
+            renderUpdatesPanel();
+            teacherCall('markActivityAttemptsReadAll').then(function(result) {
+                state.activityReadAllAt = result.read_all_at || new Date().toISOString();
+                state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
+                showMessage('All student attempt notifications marked as read.', 'success');
+            }).catch(function(error) {
+                showMessage(error.message, 'error');
+            }).then(function() {
+                state.activityReadAllPending = false;
+                renderUpdatesPanel();
+            });
+        });
+    }
     if (updatesPanel) {
         updatesPanel.addEventListener('click', function(event) {
             if (event.target === updatesPanel) {

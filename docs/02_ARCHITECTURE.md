@@ -200,11 +200,22 @@ linked attempts as a display fallback when an assignment summary is stale.
    Assignments created for the same set in one teacher Assign action also share
    an `assignment_batch_id` for teacher matrix grouping.
 6. Existing assignments can be edited by explicit `assignment_id` selections
-   for due date, passing percentage, and mastery percentage.
+   for assigned week (`assigned_at`), due date, passing percentage, and mastery
+   percentage. Assigned-week edits immediately drive the Teacher View Wxx
+   grouping and date filters.
 7. Open assignments can be soft-cancelled through `teacherAdmin`; cancellation
    sets `status: "cancelled"` with audit fields, hides the item from the
    student dashboard, and prevents old assignment links from recording new
    submissions against that assignment.
+
+### Teacher Attempt Notifications
+
+The teacher notification bell derives unread state from two server-owned
+markers on the authenticated teacher profile. Individually opened threads add
+their attempt IDs to `teacher_activity_attempt_reviewed_ids`; `Read all` writes
+`teacher_activity_attempts_read_all_at`. Attempts at or before that timestamp
+are read, while later submissions become unread without growing an unbounded
+list of historical IDs.
 
 ### Argue
 

@@ -1,5 +1,11 @@
 # Changelog
 
+- Added `Read all` to the teacher attempt-notification bell. It persists a
+  teacher-level cutoff so all current threads become read while later attempts
+  still surface as unread.
+- Added `Assign week` to Teacher View assignment management. Teachers can now
+  correct selected assignments' `assigned_at` value and move them directly to
+  the intended Wxx matrix week without recreating the assignment.
 - Changed Teacher View matrix student-name clicks to open the same selectable
   four-week completion board used on the student Dashboard, including weekly
   and daily details for assigned work and self-study.

@@ -70,7 +70,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 给一个学生、多个学生或一个班级布置练习
 - 查看学生完成情况和最近提交
 - 在铃铛中按学生作业/自学线程查看合并的 attempt 通知；未打开的线程
-  持续显示红色，打开后可查看该线程全部 attempt 历史
+  持续显示红色，打开后可查看该线程全部 attempt 历史；铃铛内的
+  `Read all` 可以一次把当前所有 attempt 线程标记为已读，之后的新提交仍会变成未读
 - 在 Library 中预览练习和查看答案
 - 处理学生 Argue 请求
 - 修改答案接受规则
@@ -306,7 +307,8 @@ flowchart TD
 - `answer_revealed`
 - `mastery_locked`
 - `assigned_at`：老师在 Assign 参数中选择的计划日期或周，教师 View 的 Wxx
-  矩阵列和日期筛选使用这个时间；默认是当前上海时区周
+  矩阵列和日期筛选使用这个时间；默认是当前上海时区周，也可以从 View 的
+  assignment 编辑弹窗通过 `Assign week` 修正
 - `completed_at`
 - `mastered_at`
 
@@ -828,8 +830,9 @@ flowchart TD
 - 哪个答案规则需要改？
 
 老师可以在 View 中按学生、班级或任务范围批量修改已布置 assignment 的
-due date、passing percentage 和 mastery percentage。修改后的标准用于之后
-提交和老师端显示，不自动降低已完成状态或受保护 STAR。
+assign week、due date、passing percentage 和 mastery percentage。修改
+assign week 会更新 `assigned_at` 并立即改变 View 的 Wxx 周归类；修改后的
+评分标准用于之后提交和老师端显示，不自动降低已完成状态或受保护 STAR。
 
 ### 10.3 访客模式
 
