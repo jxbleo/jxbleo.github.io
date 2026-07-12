@@ -336,13 +336,13 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
-- matrix task headers show the stable task ID, a separate `Assigned` row with a
-  zero-padded week label such as `W03`, a separate `Due at` row with its Wxx
-  label and compact date, and the task name underneath. Assigned week labels
-  are calculated from assignment `assigned_at` in Beijing time: dates before
-  that year's first Monday show `W00`, and the first Monday-Sunday range is
-  `W01`. Columns with no due date show `No due date`; inconsistent due dates in
-  one visible column show `Mixed` / `Multiple dates`.
+- matrix task headers retain the stable task ID, assigned-week Wxx label, and
+  task name. Immediately below that header row and above all student score rows,
+  the matrix adds one full `Due` row: its sticky first-column cell reads `Due`,
+  and each task column shows only the due week's zero-padded label such as
+  `W28`. Assigned labels use `assigned_at`; Due labels use `due_at`, both in
+  Beijing time. A missing due date shows `—`, while inconsistent dates in one
+  visible column show `Mixed`.
 - clicking an assigned-task matrix header opens assignment management for all
   records represented by that visible column. A class/individual filter limits
   the edit scope to that class/student; no class filter means all currently
@@ -352,7 +352,8 @@ It should include:
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. `Column` uses `All type`, `Date` uses `All time`, and date filtering
-  offers `This week - Wxx`, `Last week - Wxx`, `All time`, and `Self study`.
+  offers `This week - Wxx`, `Next week - Wxx`, `Last week - Wxx`, `All time`,
+  and `Self study`.
   Week filters use the assignment `assigned_at` timestamp, not student
   completion time, and calculate fixed Monday-to-Sunday natural weeks in
   Beijing time. Self-study records without an assignment are shown only by the

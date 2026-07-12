@@ -1,9 +1,12 @@
 # Changelog
 
-- Expanded Teacher View matrix task headers with separate Assigned Wxx and Due
-  at Wxx/date rows. Clicking a task header now opens one bulk parameter editor
-  for the current class/visible column, covering assign week, due date, passing,
-  mastery, and Earn STAR across all represented students.
+- Added `Next week - Wxx` to the Teacher View Date filter, using the next
+  Beijing-time Monday-to-Sunday range from assignment `assigned_at`.
+- Added a full-width Due row immediately below the original Teacher View task
+  header: its first cell reads Due and each task cell shows only Wxx. Clicking a
+  task header now opens one bulk parameter editor for the current class/visible
+  column, covering assign week, due date, passing, mastery, and Earn STAR across
+  all represented students.
 - Added `Read all` to the teacher attempt-notification bell. It persists a
   teacher-level cutoff so all current threads become read while later attempts
   still surface as unread.

@@ -2369,6 +2369,9 @@
         if (mode === 'week') {
             return shanghaiWeekRange(0);
         }
+        if (mode === 'next_week') {
+            return shanghaiWeekRange(1);
+        }
         if (mode === 'last_week') {
             return shanghaiWeekRange(-1);
         }
@@ -3194,6 +3197,7 @@
         var options = [
             { value: 'all', label: 'All time' },
             { value: 'week', label: 'This week - ' + shanghaiCurrentWeekLabel(0) },
+            { value: 'next_week', label: 'Next week - ' + shanghaiCurrentWeekLabel(7) },
             { value: 'last_week', label: 'Last week - ' + shanghaiCurrentWeekLabel(-7) },
             { value: 'self_study', label: 'Self study' }
         ];
@@ -3539,13 +3543,10 @@
         var dueAt = commonFieldValue(items, 'due_at');
         if (!dueAt) {
             var hasAnyDue = (items || []).some(function(item) { return Boolean(item && item.due_at); });
-            return { week: hasAnyDue ? 'Mixed' : '—', date: hasAnyDue ? 'Multiple dates' : 'No due date' };
+            return hasAnyDue ? 'Mixed' : '—';
         }
         var weekInfo = shanghaiCalendarWeekInfo(dueAt);
-        return {
-            week: weekInfo ? weekInfo.label : '—',
-            date: formatDate(dueAt, 'No due date', 'compact')
-        };
+        return weekInfo ? weekInfo.label : '—';
     }
 
     function renderMatrixCellDetail(item) {
@@ -3951,7 +3952,6 @@
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var weekLabel = set.week_label || '';
-                var dueInfo = matrixHeaderDueInfo(set.items || []);
                 var editScope = registerMatrixColumnEditScope(set);
                 var tag = editScope ? 'button' : 'span';
                 return '<' + tag + ' class="progress-matrix-task-head" title="' +
@@ -3959,12 +3959,16 @@
                     (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
                         '" aria-label="Edit parameters for ' + escapeHtml(title) + '"' : '') + '>' +
                     '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
-                    '<small class="progress-matrix-schedule-line progress-matrix-week-label"><span>Assigned</span><b>' +
-                        escapeHtml(weekLabel || '—') + '</b></small>' +
-                    '<small class="progress-matrix-schedule-line progress-matrix-due-label"><span>Due at</span><b>' +
-                        escapeHtml(dueInfo.week) + '</b><em>' + escapeHtml(dueInfo.date) + '</em></small>' +
+                    (weekLabel ? '<small class="progress-matrix-week-label">' + escapeHtml(weekLabel) + '</small>' : '') +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</' + tag + '>';
+            }).join('') +
+        '</div>';
+        var dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
+            '<span class="progress-matrix-student-cell">Due</span>' +
+            sets.map(function(set) {
+                return '<span class="progress-matrix-due-cell">' +
+                    escapeHtml(matrixHeaderDueInfo(set.items || [])) + '</span>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {
@@ -3997,7 +4001,7 @@
             : renderMatrixStudentModal(state.selectedMatrixStudentKey, items);
         return '<section class="progress-matrix-card">' +
             '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '</div></div>' +
-            '<div class="progress-matrix-scroll">' + header + rows + '</div>' +
+            '<div class="progress-matrix-scroll">' + header + dueRow + rows + '</div>' +
         '</section>' +
         detailHtml;
     }

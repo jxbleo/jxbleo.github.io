@@ -3081,7 +3081,7 @@ body:not(.teacher-page) .tab-button.active {
     display: grid;
     align-content: center;
     justify-items: stretch;
-    gap: 3px;
+    gap: 2px;
     border: 0;
     border-left: 1px solid rgba(124,58,237,0.10);
     color: inherit;
@@ -3102,36 +3102,26 @@ body:not(.teacher-page) .tab-button.active {
     outline: none;
 }
 .progress-matrix-week-label {
+    margin: 2px 0;
     color: #0d6f58;
-    letter-spacing: 0;
-}
-.progress-matrix-row .progress-matrix-schedule-line {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 5px;
-    color: var(--muted);
-    font-size: 0.6rem;
-    font-weight: 850;
-    letter-spacing: 0;
-    text-align: left;
-    text-transform: none;
-}
-.progress-matrix-schedule-line b {
-    color: #0d6f58;
-    font-size: 0.69rem;
+    font-size: 0.68rem;
     font-weight: 950;
+    letter-spacing: 0;
 }
-.progress-matrix-schedule-line em {
-    grid-column: 1 / -1;
+.progress-matrix-due-row > span {
+    min-height: 30px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: #0d6f58;
+    background: rgba(222,248,236,0.55);
+    font-size: 0.68rem;
+    font-weight: 950;
+    text-align: center;
+}
+.progress-matrix-due-row > .progress-matrix-student-cell {
     color: var(--muted);
-    font-size: 0.58rem;
-    font-style: normal;
-    text-align: right;
-}
-.progress-matrix-due-label {
-    padding-top: 3px;
-    border-top: 1px solid rgba(124,58,237,0.10);
+    text-align: left;
+    text-transform: uppercase;
 }
 .progress-matrix-task-name {
     display: -webkit-box !important;
