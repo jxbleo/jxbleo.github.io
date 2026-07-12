@@ -833,6 +833,10 @@ flowchart TD
 assign week、due date、passing percentage 和 mastery percentage。修改
 assign week 会更新 `assigned_at` 并立即改变 View 的 Wxx 周归类；修改后的
 评分标准用于之后提交和老师端显示，不自动降低已完成状态或受保护 STAR。
+View 矩阵任务列头应分别显示 Assigned Wxx 和 Due at Wxx/日期。点击任务
+列头会打开当前矩阵筛选范围的整列参数编辑，一次把 due date、passing、
+mastery 和 Earn STAR 设置应用到该班/该范围内的所有对应 assignment，避免
+逐个学生修改。
 
 ### 10.3 访客模式
 

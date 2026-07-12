@@ -3020,7 +3020,8 @@ body:not(.teacher-page) .tab-button.active {
     min-width: var(--matrix-min, 630px);
 }
 .progress-matrix-row > span,
-.progress-matrix-row > a {
+.progress-matrix-row > a,
+.progress-matrix-row > button.progress-matrix-task-head {
     min-height: 44px;
     padding: 9px 10px;
     border-top: 1px solid rgba(124,58,237,0.10);
@@ -3059,7 +3060,8 @@ body:not(.teacher-page) .tab-button.active {
     background: #def8ec;
 }
 .progress-matrix-head > span,
-.progress-matrix-head > a {
+.progress-matrix-head > a,
+.progress-matrix-head > button {
     border-top: 0;
     color: var(--muted);
     background: rgba(124,58,237,0.07);
@@ -3075,14 +3077,24 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.72rem;
     line-height: 1.1;
 }
-.progress-matrix-task-head[href] {
+.progress-matrix-task-head {
+    display: grid;
+    align-content: center;
+    justify-items: stretch;
+    gap: 3px;
+    border: 0;
+    border-left: 1px solid rgba(124,58,237,0.10);
     color: inherit;
+    font: inherit;
+    text-align: center;
     text-decoration: none;
+}
+.progress-matrix-task-head[data-edit-assignment-scope] {
     cursor: pointer;
     transition: filter 150ms ease, box-shadow 150ms ease;
 }
-.progress-matrix-task-head[href]:hover,
-.progress-matrix-task-head[href]:focus-visible {
+.progress-matrix-task-head[data-edit-assignment-scope]:hover,
+.progress-matrix-task-head[data-edit-assignment-scope]:focus-visible {
     position: relative;
     z-index: 1;
     filter: saturate(1.2) brightness(0.98);
@@ -3090,11 +3102,36 @@ body:not(.teacher-page) .tab-button.active {
     outline: none;
 }
 .progress-matrix-week-label {
-    margin: 2px 0;
     color: #0d6f58;
-    font-size: 0.68rem;
-    font-weight: 950;
     letter-spacing: 0;
+}
+.progress-matrix-row .progress-matrix-schedule-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 5px;
+    color: var(--muted);
+    font-size: 0.6rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+}
+.progress-matrix-schedule-line b {
+    color: #0d6f58;
+    font-size: 0.69rem;
+    font-weight: 950;
+}
+.progress-matrix-schedule-line em {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 0.58rem;
+    font-style: normal;
+    text-align: right;
+}
+.progress-matrix-due-label {
+    padding-top: 3px;
+    border-top: 1px solid rgba(124,58,237,0.10);
 }
 .progress-matrix-task-name {
     display: -webkit-box !important;
