@@ -173,6 +173,9 @@ Check:
   assignment thread, or the same student/set self-study thread, into one row
 - a grouped notification shows its attempt count and opens the complete attempt
   history for that thread
+- teacher notification task labels stay on one line with ellipsis overflow;
+  latest score remains fixed at the far right, while the attempt-count capsule
+  sits before date/time and changes blue/amber/rose for 1/2/3+ attempts
 - opening the teacher notification bell alone does not clear the header badge
   or red unread row styling
 - opening a grouped attempt notification clears its red state; a later attempt
@@ -262,6 +265,10 @@ Check:
 - Teacher notification `Read all` clears every current unread thread and bell
   badge, persists after reload, stays disabled when everything is read, and a
   later attempt becomes unread
+- Teacher notification modal has no `NOTIFICATIONS` / `Student attempts` text;
+  the left double-check icon exposes a `Read all` tooltip and accessible name,
+  spins while saving, briefly turns green on success, and leaves Close aligned
+  on the right
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels

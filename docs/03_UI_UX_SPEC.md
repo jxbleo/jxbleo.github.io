@@ -116,6 +116,11 @@ Frontend rule:
 - The teacher notification bell groups attempts by student assignment thread,
   or by student and set for self-study. Each row shows the latest result and
   total attempt count, and its detail dialog shows the complete thread history.
+- Teacher notification rows keep the student/action/task name on one line and
+  truncate overflow with an ellipsis. A By-student-style latest-score capsule
+  stays fixed on the far right. Below the title, the colored attempt-count
+  capsule sits immediately left of the date/time: one attempt is blue, two are
+  amber, and three or more are rose to make repeated work easier to scan.
 - In the teacher header, the notification bell sits immediately to the left of
   the Argue review button. Argue uses the same raised-hand outline as exercise
   pages, but inherits the teacher header's quiet gray icon treatment; unread
@@ -127,6 +132,12 @@ Frontend rule:
   attempt thread read, clears the bell badge/red row treatment, and remains
   disabled when no unread thread exists. Attempts submitted afterward are new
   unread activity.
+- The teacher notification modal header does not show `NOTIFICATIONS` or
+  `Student attempts`. It is reserved as an action toolbar: a circular double-
+  check `Read all` icon sits on the left, future action buttons may occupy the
+  remaining space, and Close stays on the right. The icon keeps an accessible
+  label/tooltip, shows a spinner while saving, and briefly turns green after a
+  successful read-all action.
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
