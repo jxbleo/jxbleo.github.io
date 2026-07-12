@@ -897,10 +897,11 @@ async function updateAssignments(event, teacher) {
   if (assignmentIds.length > 500) throw new Error("TOO_MANY_ASSIGNMENTS");
 
   const canUpdateDue = hasOwn(event, "due_at");
+  const canUpdateAssigned = hasOwn(event, "assigned_at");
   const canUpdatePassing = hasOwn(event, "passing_percentage");
   const canUpdateMastery = hasOwn(event, "mastery_percentage");
   const canUpdateMasteryEnabled = hasOwn(event, "mastery_enabled");
-  if (!canUpdateDue && !canUpdatePassing && !canUpdateMastery && !canUpdateMasteryEnabled) {
+  if (!canUpdateAssigned && !canUpdateDue && !canUpdatePassing && !canUpdateMastery && !canUpdateMasteryEnabled) {
     throw new Error("NO_ASSIGNMENT_UPDATES");
   }
 
@@ -936,15 +937,22 @@ async function updateAssignments(event, teacher) {
       : assignmentMasteryEnabled(assignment);
     if (passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
 
-    const update = {
-      updated_at: now,
-      standards_updated_at: now,
-      standards_updated_by_teacher_uid: teacher.auth_uid,
-    };
+    const update = { updated_at: now };
+    if (canUpdateAssigned) {
+      const assignedAt = safeDate(event.assigned_at);
+      if (!assignedAt) throw new Error("INVALID_ASSIGNED_AT");
+      update.assigned_at = assignedAt;
+      update.schedule_updated_at = now;
+      update.schedule_updated_by_teacher_uid = teacher.auth_uid;
+    }
     if (canUpdateDue) update.due_at = safeDate(event.due_at);
     if (canUpdatePassing) update.passing_percentage = passing;
     if (canUpdateMastery) update.mastery_percentage = mastery;
     if (canUpdateMasteryEnabled) update.mastery_enabled = masteryEnabled;
+    if (canUpdateDue || canUpdatePassing || canUpdateMastery || canUpdateMasteryEnabled) {
+      update.standards_updated_at = now;
+      update.standards_updated_by_teacher_uid = teacher.auth_uid;
+    }
 
     await db.collection("assignments").doc(assignment._id).update(update);
     updated.push({
@@ -1345,9 +1353,26 @@ async function getActivityState(teacher) {
   return {
     success: true,
     attempts_seen_at: teacher.teacher_activity_attempts_seen_at || null,
+    read_all_at: teacher.teacher_activity_attempts_read_all_at || null,
     reviewed_attempt_ids: Array.isArray(teacher.teacher_activity_attempt_reviewed_ids)
       ? teacher.teacher_activity_attempt_reviewed_ids.map(text).filter(Boolean)
       : [],
+  };
+}
+
+async function markActivityAttemptsReadAll(teacher) {
+  const now = new Date();
+  if (!teacher._id) throw new Error("TEACHER_PROFILE_ID_MISSING");
+  await db.collection("students").doc(teacher._id).update({
+    teacher_activity_attempts_read_all_at: now,
+    teacher_activity_attempt_reviewed_ids: [],
+    teacher_activity_attempt_reviewed_at: now,
+    updated_at: now,
+  });
+  return {
+    success: true,
+    read_all_at: now,
+    reviewed_attempt_ids: [],
   };
 }
 
@@ -2036,6 +2061,7 @@ exports.main = async (event) => {
     if (action === "getActivityState") return await getActivityState(teacher);
     if (action === "markAttemptsRead") return await markAttemptsRead(teacher);
     if (action === "markActivityAttemptsReviewed") return await markActivityAttemptsReviewed(event, teacher);
+    if (action === "markActivityAttemptsReadAll") return await markActivityAttemptsReadAll(teacher);
     if (action === "listDisputes") return await listDisputes();
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);

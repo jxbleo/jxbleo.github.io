@@ -55,6 +55,7 @@ Core fields:
 | `deleted_student_id_snapshot` | string | Login ID snapshot kept for audit/history |
 | `deleted_name_snapshot` | string | display-name snapshot kept for audit/history |
 | `teacher_activity_attempts_seen_at` | Date/null | legacy bell-open timestamp; no longer clears attempt-thread unread state |
+| `teacher_activity_attempts_read_all_at` | Date/null | latest teacher `Read all` cutoff; attempts submitted at or before it are read |
 | `teacher_activity_attempt_reviewed_ids` | array | attempt IDs opened from the teacher notification panel |
 | `teacher_activity_attempt_reviewed_at` | Date/null | latest attempt-review marker update |
 | `created_at` | Date | created time |
@@ -72,11 +73,13 @@ Rules:
   lists. Historical attempts, assignments, STAR records, and disputes are not
   hard-deleted.
 - Teacher notification activity is grouped by student assignment thread, or by
-  student and set for self-study. Both the top-right badge and row-level red
-  styling are derived from attempt IDs absent from
-  `teacher_activity_attempt_reviewed_ids`; opening the bell alone changes
-  neither. Opening one grouped row marks its current related attempts reviewed,
-  while any later attempt makes the thread unread again.
+  student and set for self-study. A thread is read when all its attempts were
+  individually recorded in `teacher_activity_attempt_reviewed_ids`, or their
+  submission times are at/before `teacher_activity_attempts_read_all_at`.
+  Opening the bell alone changes neither marker. Opening one grouped row marks
+  its current related attempts reviewed; `Read all` advances the cutoff and
+  clears the now-redundant reviewed-ID list; any later attempt makes the thread
+  unread again.
 
 ## 4. `sets`
 
@@ -121,6 +124,8 @@ Core fields:
 | `mastery_enabled` | boolean | whether this assignment can become mastered / earn STAR; new Assign-created records default to false unless the teacher selects `Earn STAR` |
 | `standards_updated_at` | Date/null | last teacher standards edit time |
 | `standards_updated_by_teacher_uid` | string/null | teacher who last edited due/threshold standards |
+| `schedule_updated_at` | Date/null | last Teacher View assigned-week correction time |
+| `schedule_updated_by_teacher_uid` | string/null | teacher who last corrected `assigned_at` |
 | `latest_attempt_id` | string/null | latest submission |
 | `attempt_count` | number | countable attempts |
 | `latest_percentage` | number/null | latest display percentage |
@@ -159,8 +164,10 @@ filters, while `created_at` remains the creation audit timestamp. Assign accepts
 per-task row parameters, so different selected `set_id` values in one teacher
 operation may create assignments with different `assigned_at`,
 `passing_percentage`, `mastery_percentage`, and `mastery_enabled` values.
-Teachers may edit an existing assignment's `due_at`, `passing_percentage`,
-`mastery_percentage`, and `mastery_enabled` from the View surface. New
+Teachers may edit an existing assignment's `assigned_at` week, `due_at`,
+`passing_percentage`, `mastery_percentage`, and `mastery_enabled` from the View
+surface. Changing `assigned_at` moves that assignment to the chosen Wxx matrix
+group/date filter but does not change `created_at` or attempt timestamps. New
 Assign-created records default to `mastery_enabled: false`; `mastery_percentage`
 is required during Assign only when the teacher selects `Earn STAR` for that
 task row. Those edits affect future submissions and display standards, but do
@@ -184,8 +191,10 @@ Reassignment rule:
 - Reassignment creates a new `assignment_id`.
 - New assignments also receive an `assignment_batch_id` shared by the records
   created for the same set in one teacher Assign action. Teacher View may use
-  this to render repeated assignments of the same set as separate matrix
-  columns without splitting one class assignment into per-student columns.
+  this together with the current `assigned_at` week to render repeated
+  assignments of the same set as separate matrix columns without splitting one
+  class assignment into per-student columns. If a teacher later moves only part
+  of a batch to a different week, that week becomes a separate matrix column.
 - If the student already has a completed self-study attempt for the same
   `set_id`, the new assignment is initialized from that best self-study attempt:
   `passed` when it meets the assignment passing percentage, `mastered` when it

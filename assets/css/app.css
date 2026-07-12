@@ -2284,6 +2284,11 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 1.15rem;
 }
 .updates-panel-head .eyebrow { margin: 0; }
+.updates-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
 .teacher-updates-body {
     display: grid;
     align-content: start;
@@ -2426,6 +2431,10 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255,255,255,0.74);
     font-size: 0.72rem;
     font-weight: 900;
+}
+.activity-mark-read:disabled {
+    cursor: default;
+    opacity: 0.45;
 }
 .activity-list {
     display: grid;
@@ -4575,7 +4584,8 @@ body:not(.teacher-page) .tab-button.active {
     accent-color: var(--accent);
 }
 .assignment-edit-form input[type="date"],
-.assignment-edit-form input[type="number"] {
+.assignment-edit-form input[type="number"],
+.assignment-edit-form select {
     min-height: 42px;
     border: 1px solid var(--line);
     border-radius: 12px;

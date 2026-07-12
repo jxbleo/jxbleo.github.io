@@ -253,12 +253,18 @@ Check:
 - Opening a teacher notification attempt for the first time shows the full
   attempt-detail dialog height; closing and reopening should not be required
   to get the normal modal size
+- Teacher notification `Read all` clears every current unread thread and bell
+  badge, persists after reload, stays disabled when everything is read, and a
+  later attempt becomes unread
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open the same
   independent detail modal as matrix cells
-- editing due/pass/mastery in View updates only the selected assignment records
+- editing assign week/due/pass/mastery in View updates only the selected
+  assignment records; assign week changes their `assigned_at` and moves them to
+  the chosen Wxx matrix group/filter without changing attempts; moving one
+  record from a shared batch splits only that record into the new week column
 - Argue list loads and groups disputes
 - Argue list does not show student disputes linked to cancelled assignments
 - cancelling open selected assignments in View hides them from teacher View

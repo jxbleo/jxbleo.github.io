@@ -123,6 +123,10 @@ Frontend rule:
 - Opening the bell alone does not clear the top-right badge or red row state.
   Opening a grouped attempt row marks that thread's current attempts reviewed;
   a later attempt makes the same thread red again.
+- The teacher bell header includes `Read all`. It marks every currently loaded
+  attempt thread read, clears the bell badge/red row treatment, and remains
+  disabled when no unread thread exists. Attempts submitted afterward are new
+  unread activity.
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
@@ -404,8 +408,12 @@ It should include:
   assignment records directly. A single matrix cell edits one student's one
   assignment; grouped tools edit the assignment records currently represented
   by that student, class, or task group.
-- assignment management can edit due date, passing percentage, and mastery
-  percentage, or soft-cancel open selected assignments. Cancelled assignments
+- assignment management can edit assign week, due date, passing percentage,
+  and mastery percentage, or soft-cancel open selected assignments. `Assign
+  week` updates `assigned_at`, so the selected work moves to the chosen Wxx
+  matrix column and week filter without changing immutable attempts. If only
+  part of an original assignment batch moves, View splits that part into the
+  new week while keeping same-batch/same-week records together. Cancelled assignments
   are hidden from teacher View progress and from the student's To Do without
   deleting attempts or completed history.
 - student selection and student detail panels
