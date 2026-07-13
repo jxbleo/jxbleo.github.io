@@ -3183,7 +3183,8 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-row > span,
 .progress-matrix-row > a,
-.progress-matrix-row > button.progress-matrix-task-head {
+.progress-matrix-row > button.progress-matrix-task-head,
+.progress-matrix-row > button.progress-matrix-due-cell {
     min-height: 44px;
     padding: 9px 10px;
     border-top: 1px solid rgba(124,58,237,0.10);
@@ -3251,26 +3252,8 @@ body:not(.teacher-page) .tab-button.active {
     text-align: center;
     text-decoration: none;
 }
-.progress-matrix-task-head[data-edit-assignment-scope] {
-    cursor: pointer;
-    transition: filter 150ms ease, box-shadow 150ms ease;
-}
-.progress-matrix-task-head[data-edit-assignment-scope]:hover,
-.progress-matrix-task-head[data-edit-assignment-scope]:focus-visible {
-    position: relative;
-    z-index: 1;
-    filter: saturate(1.2) brightness(0.98);
-    box-shadow: inset 0 0 0 2px rgba(124,58,237,0.2);
-    outline: none;
-}
-.progress-matrix-week-label {
-    margin: 2px 0;
-    color: #0d6f58;
-    font-size: 0.68rem;
-    font-weight: 950;
-    letter-spacing: 0;
-}
-.progress-matrix-due-row > span {
+.progress-matrix-due-row > span,
+.progress-matrix-due-row > button {
     min-height: 30px;
     padding-top: 6px;
     padding-bottom: 6px;
@@ -3279,6 +3262,22 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.68rem;
     font-weight: 950;
     text-align: center;
+}
+.progress-matrix-due-row > button {
+    border: 0;
+    border-top: 1px solid rgba(124,58,237,0.10);
+    border-left: 1px solid rgba(124,58,237,0.10);
+    font: inherit;
+    cursor: pointer;
+    transition: filter 150ms ease, box-shadow 150ms ease;
+}
+.progress-matrix-due-row > button:hover,
+.progress-matrix-due-row > button:focus-visible {
+    position: relative;
+    z-index: 1;
+    filter: saturate(1.2) brightness(0.98);
+    box-shadow: inset 0 0 0 2px rgba(13,111,88,0.2);
+    outline: none;
 }
 .progress-matrix-due-row > .progress-matrix-student-cell {
     color: var(--muted);
@@ -4608,6 +4607,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-page .progress-matrix-row > span,
 .teacher-page .progress-matrix-row > a,
+.teacher-page .progress-matrix-row > button.progress-matrix-due-cell,
 .teacher-page .progress-matrix-cell {
     border-color: rgba(31,45,38,0.08);
 }

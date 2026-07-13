@@ -250,11 +250,13 @@ Check:
   `Next week` is the following Beijing Monday-Sunday range, `Last week` is the
   previous Beijing Monday-Sunday range, and `Self study` shows records without
   an assignment separately
-- View matrix keeps its original task-header row and adds exactly one Due row
-  below it and above student scores; the sticky first cell reads `Due`, each
-  task cell shows only a zero-padded Wxx label, and missing/mixed due dates show
-  `—` / `Mixed`. Week numbering starts at the first Monday of the relevant year
-- Clicking a matrix assigned-task header opens one parameter editor for every
+- View matrix task headers show only task ID and task name, with no Wxx label;
+  clicking a header opens that task's teacher preview. Exactly one Due row
+  appears below the headers and above student scores, its sticky first cell
+  reads `Due`, and each task cell contains only its due week's zero-padded Wxx
+  label; missing/mixed due dates show `—` / `Mixed`. Week numbering starts at
+  the first Monday of the relevant year
+- Clicking a matrix task's Due/Wxx cell opens one parameter editor for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
   students without changing assignments hidden by the filter

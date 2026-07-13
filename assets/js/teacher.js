@@ -3952,15 +3952,14 @@
             '<span class="progress-matrix-student-cell">Student</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
-                var weekLabel = set.week_label || '';
-                var editScope = registerMatrixColumnEditScope(set);
-                var tag = editScope ? 'button' : 'span';
-                return '<' + tag + ' class="progress-matrix-task-head" title="' +
-                    escapeHtml(editScope ? 'Edit parameters for ' + title : title) + '"' +
-                    (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
-                        '" aria-label="Edit parameters for ' + escapeHtml(title) + '"' : '') + '>' +
+                var sourceSet = state.sets.find(function(item) {
+                    return String(item.set_id || item.id || '') === String(set.set_id || '');
+                }) || set;
+                var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
+                var tag = href && href !== '#' ? 'a' : 'span';
+                return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
+                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" aria-label="Open teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
                     '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
-                    (weekLabel ? '<small class="progress-matrix-week-label">' + escapeHtml(weekLabel) + '</small>' : '') +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</' + tag + '>';
             }).join('') +
@@ -3968,8 +3967,15 @@
         var dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
             '<span class="progress-matrix-student-cell">Due</span>' +
             sets.map(function(set) {
-                return '<span class="progress-matrix-due-cell">' +
-                    escapeHtml(matrixHeaderDueInfo(set.items || [])) + '</span>';
+                var title = set.title || set.id || 'Task';
+                var dueLabel = matrixHeaderDueInfo(set.items || []);
+                var editScope = registerMatrixColumnEditScope(set);
+                var tag = editScope ? 'button' : 'span';
+                return '<' + tag + ' class="progress-matrix-due-cell"' +
+                    (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
+                        '" title="Edit class parameters for ' + escapeHtml(title) +
+                        '" aria-label="Edit class parameters for ' + escapeHtml(title) + ', due ' + escapeHtml(dueLabel) + '"' : '') + '>' +
+                    escapeHtml(dueLabel) + '</' + tag + '>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {

@@ -361,19 +361,18 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
-- matrix task headers retain the stable task ID, assigned-week Wxx label, and
-  task name. Immediately below that header row and above all student score rows,
-  the matrix adds one full `Due` row: its sticky first-column cell reads `Due`,
-  and each task column shows only the due week's zero-padded label such as
-  `W28`. Assigned labels use `assigned_at`; Due labels use `due_at`, both in
-  Beijing time. A missing due date shows `—`, while inconsistent dates in one
-  visible column show `Mixed`.
-- clicking an assigned-task matrix header opens assignment management for all
-  records represented by that visible column. A class/individual filter limits
-  the edit scope to that class/student; no class filter means all currently
-  visible students in the column. One save can update assign week, due date,
-  passing percentage, mastery percentage, and Earn STAR for the complete scope.
-  Teacher practice preview remains available from Library.
+- matrix task headers retain only the stable task ID and task name. The
+  week label must not also appear in this first row. Clicking the task header
+  opens that task in teacher preview. Immediately below the task header and
+  above all student score rows, the matrix adds one full `Due` row: its sticky
+  first-column cell reads `Due`, and each task column contains only the due
+  week's zero-padded `Wxx` label in Beijing time. A missing due date shows `—`,
+  while inconsistent due dates in one visible column show `Mixed`.
+- clicking a task's `Due / Wxx` cell opens assignment management for all records
+  represented by that visible column. A class/individual filter limits the edit
+  scope to that class/student; no class filter means all currently visible
+  students in the column. One save can update assign week, due date, passing
+  percentage, mastery percentage, and Earn STAR for the complete scope.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. `Column` uses `All type`, `Date` uses `All time`, and date filtering

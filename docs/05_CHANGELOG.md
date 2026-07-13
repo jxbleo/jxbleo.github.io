@@ -1,5 +1,9 @@
 # Changelog
 
+- Removed `Wxx` from the first Teacher View header row so it contains only the
+  task ID and set name, and restored header clicks as direct task-preview links.
+  The separate `Due / Wxx` cells now open the class-wide parameter editor for
+  due date, passing, mastery, Earn STAR, and the other assignment settings.
 - Made student-bell assignment rows shorter and fully clickable. The rows now
   keep a compact type label, a one-or-two-line title, an optional finished score,
   and a directional cue instead of separate `Start` / `Open` buttons; opening a
@@ -23,9 +27,9 @@
   Beijing-time Monday-to-Sunday range from assignment `assigned_at`.
 - Added a full-width Due row immediately below the original Teacher View task
   header: its first cell reads Due and each task cell shows only Wxx. Clicking a
-  task header now opens one bulk parameter editor for the current class/visible
+  Due/Wxx cell opens one bulk parameter editor for the current class/visible
   column, covering assign week, due date, passing, mastery, and Earn STAR across
-  all represented students.
+  all represented students; task-header clicks open the task itself.
 - Added `Read all` to the teacher attempt-notification bell. It persists a
   teacher-level cutoff so all current threads become read while later attempts
   still surface as unread.
