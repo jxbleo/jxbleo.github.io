@@ -3540,16 +3540,6 @@
         return key;
     }
 
-    function matrixHeaderDueInfo(items) {
-        var dueAt = commonFieldValue(items, 'due_at');
-        if (!dueAt) {
-            var hasAnyDue = (items || []).some(function(item) { return Boolean(item && item.due_at); });
-            return hasAnyDue ? 'Mixed' : '—';
-        }
-        var weekInfo = shanghaiCalendarWeekInfo(dueAt);
-        return weekInfo ? weekInfo.label : '—';
-    }
-
     function renderMatrixCellDetail(item) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
@@ -3968,7 +3958,7 @@
             '<span class="progress-matrix-student-cell">Due</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
-                var dueLabel = matrixHeaderDueInfo(set.items || []);
+                var dueLabel = set.week_label || '—';
                 var editScope = registerMatrixColumnEditScope(set);
                 var tag = editScope ? 'button' : 'span';
                 return '<' + tag + ' class="progress-matrix-due-cell"' +

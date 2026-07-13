@@ -1,5 +1,8 @@
 # Changelog
 
+- Fixed Teacher View's `Due` row so every assigned task displays the `Wxx`
+  grouping label moved from the old header position, including legacy tasks
+  without a `due_at` value.
 - Removed `Wxx` from the first Teacher View header row so it contains only the
   task ID and set name, and restored header clicks as direct task-preview links.
   The separate `Due / Wxx` cells now open the class-wide parameter editor for

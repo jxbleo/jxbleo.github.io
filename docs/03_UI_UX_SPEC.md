@@ -365,9 +365,10 @@ It should include:
   week label must not also appear in this first row. Clicking the task header
   opens that task in teacher preview. Immediately below the task header and
   above all student score rows, the matrix adds one full `Due` row: its sticky
-  first-column cell reads `Due`, and each task column contains only the due
-  week's zero-padded `Wxx` label in Beijing time. A missing due date shows `—`,
-  while inconsistent due dates in one visible column show `Mixed`.
+  first-column cell reads `Due`, and each task column always contains the
+  zero-padded Beijing-time `Wxx` grouping label moved from the former task
+  header. This label uses `assigned_at`, so legacy tasks without `due_at` still
+  display their week and stay aligned with Assign week and the Date filter.
 - clicking a task's `Due / Wxx` cell opens assignment management for all records
   represented by that visible column. A class/individual filter limits the edit
   scope to that class/student; no class filter means all currently visible
