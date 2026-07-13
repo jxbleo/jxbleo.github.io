@@ -4955,7 +4955,8 @@
     }
 
     function initialTeacherView() {
-        return 'view';
+        var view = new URLSearchParams(window.location.search).get('view') || '';
+        return teacherViews.indexOf(view) === -1 ? 'view' : view;
     }
 
     function rememberTeacherView(viewName) {
@@ -4966,7 +4967,7 @@
         window.history.replaceState({}, '', url);
     }
 
-    function activateView(viewName, skipUrlUpdate) {
+    function applyTeacherViewShell(viewName) {
         if (teacherViews.indexOf(viewName) === -1) viewName = 'view';
         document.querySelectorAll('.tab-button').forEach(function(button) {
             button.classList.toggle('active', button.dataset.view === viewName);
@@ -4974,6 +4975,21 @@
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
+        var workspaceTitle = document.getElementById('teacher-workspace-title');
+        if (workspaceTitle) {
+            workspaceTitle.textContent = {
+                view: 'View',
+                tasks: 'Assign',
+                library: 'Library'
+            }[viewName];
+        }
+        var newAssignmentButton = document.getElementById('teacher-new-assignment');
+        if (newAssignmentButton) newAssignmentButton.hidden = viewName !== 'view';
+        return viewName;
+    }
+
+    function activateView(viewName, skipUrlUpdate) {
+        viewName = applyTeacherViewShell(viewName);
         if (!skipUrlUpdate) rememberTeacherView(viewName);
         setTeacherAccountPanel(false);
         if (viewName === 'tasks') updateAssignView();
@@ -5136,6 +5152,12 @@
             activateView(button.dataset.view);
         });
     });
+    var newAssignmentButton = document.getElementById('teacher-new-assignment');
+    if (newAssignmentButton) {
+        newAssignmentButton.addEventListener('click', function() {
+            activateView('tasks');
+        });
+    }
     document.querySelectorAll('[data-task-view]').forEach(function(button) {
         button.addEventListener('click', function() {
             state.taskView = button.dataset.taskView;
@@ -5542,6 +5564,7 @@
             button.disabled = false;
         });
     });
+    applyTeacherViewShell(initialTeacherView());
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
             window.location.replace('index.html');
@@ -5552,10 +5575,8 @@
             return null;
         }
         state.profile = session.profile;
-        var preferredName = englishName(session.profile);
         document.getElementById('teacher-chip').textContent = session.profile.student_id;
-        document.getElementById('teacher-greeting').textContent = greetingFor(preferredName);
-        document.getElementById('teacher-hero-copy').textContent = randomItem(motivationalQuotes);
+        applyTeacherViewShell(initialTeacherView());
         return loadData();
     }).then(function(result) {
         if (result === null) return;

@@ -10,17 +10,12 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/app.css?v=20260714-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260714-1">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
         <header class="app-header">
-            <div class="app-brand student-greeting-marquee" id="student-greeting-marquee" role="status" aria-live="polite" aria-atomic="true">
-                <span class="sr-only" id="student-greeting-accessible">Hello. Your next step starts here.</span>
-                <span class="student-greeting-track" id="student-greeting-track" aria-hidden="true">
-                    <span class="student-greeting-copy" id="student-greeting-primary">Hello. Your next step starts here.</span>
-                    <span class="student-greeting-copy" id="student-greeting-repeat">Hello. Your next step starts here.</span>
-                </span>
-            </div>
+            <p class="app-brand">Mr. Cat Academy</p>
             <div class="identity-cluster">
                 <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Notifications" aria-expanded="false">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
@@ -50,7 +45,13 @@
         </section>
 
         <section class="hero-card student-progress-hero">
-            <div class="hero-progress-head">
+            <section class="student-welcome-panel" aria-labelledby="student-greeting-primary">
+                <div class="student-welcome-copy">
+                    <p class="eyebrow accent">STUDENT WORKSPACE</p>
+                    <h1 id="student-greeting-primary">Hello.</h1>
+                    <p class="student-motivation" id="student-greeting-motivation">Your next step starts here.</p>
+                    <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
+                </div>
                 <div class="hero-progress-stats is-loading" id="hero-progress-stats" aria-label="Assignment summary">
                     <div class="hero-meter-row">
                         <strong class="progress-skeleton-text">-- / --</strong>
@@ -61,7 +62,7 @@
                         <span><b>--</b> to do</span>
                     </div>
                 </div>
-            </div>
+            </section>
             <div class="progress-board is-loading" id="progress-board" aria-label="Four week assignment progress">
                 <section class="progress-map-panel">
                     <div class="progress-dot-map progress-dot-map-loading" aria-hidden="true">
@@ -82,34 +83,39 @@
             </div>
         </section>
 
-        <nav class="student-library-dock" id="student-library-dock" aria-label="Library tools">
-            <button class="student-library-search-trigger" id="resource-search-toggle" type="button" aria-label="Search Library" aria-controls="resource-search" aria-expanded="false">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <circle cx="11" cy="11" r="6.5"></circle>
-                    <path d="m16 16 4 4"></path>
-                </svg>
-            </button>
-            <div class="dashboard-tabs student-library-tabs">
-                <button class="tab-button active student-library-label" id="student-library-label" type="button" data-view="resources">Library</button>
-                <div class="student-library-search-panel" id="student-library-search-panel" aria-hidden="true">
-                    <label class="sr-only" for="resource-search">Search Library</label>
-                    <input class="resource-search" id="resource-search" type="search" placeholder="Search title, set or course..." autocomplete="off" disabled>
-                    <button class="student-library-search-close" id="resource-search-close" type="button" aria-label="Close Library search" disabled>&times;</button>
-                </div>
-            </div>
-        </nav>
-
         <section class="dashboard-view" id="view-assignments" hidden>
             <div id="assignment-content">
                 <div class="empty-card loading-card">Loading assignments...</div>
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-resources">
-            <div class="library-tab-bar" id="student-library-tab-bar">
-                <button class="library-tab-btn active" data-tab="general">Practice</button>
-                <button class="library-tab-btn" data-tab="exam">Exam</button>
-            </div>
+        <section class="dashboard-view student-library-workspace" id="view-resources">
+            <header class="student-library-heading">
+                <div>
+                    <p class="eyebrow accent">EXPLORE</p>
+                    <h2>Library</h2>
+                </div>
+                <div class="student-library-toolbar">
+                    <nav class="student-library-dock" id="student-library-dock" aria-label="Library search">
+                        <button class="student-library-search-trigger" id="resource-search-toggle" type="button" aria-label="Search Library" aria-controls="resource-search" aria-expanded="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <circle cx="11" cy="11" r="6.5"></circle>
+                                <path d="m16 16 4 4"></path>
+                            </svg>
+                        </button>
+                        <span class="sr-only" id="student-library-label">Library</span>
+                        <div class="student-library-search-panel" id="student-library-search-panel" aria-hidden="true">
+                            <label class="sr-only" for="resource-search">Search Library</label>
+                            <input class="resource-search" id="resource-search" type="search" placeholder="Search title, set or course..." autocomplete="off" disabled>
+                            <button class="student-library-search-close" id="resource-search-close" type="button" aria-label="Close Library search" disabled>&times;</button>
+                        </div>
+                    </nav>
+                    <div class="library-tab-bar" id="student-library-tab-bar">
+                        <button class="library-tab-btn active" data-tab="general">Practice</button>
+                        <button class="library-tab-btn" data-tab="exam">Exam</button>
+                    </div>
+                </div>
+            </header>
             <div class="sub-tab-bar" id="student-sub-tab-bar"></div>
             <div class="library-year-bar" id="student-year-bar"></div>
             <div id="student-library-content">
@@ -138,7 +144,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260714-1"></script>
+    <script src="assets/js/dashboard.js?v=20260714-2"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

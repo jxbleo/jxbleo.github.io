@@ -28,12 +28,14 @@
 ### Shared System Shell
 
 The login page, public Library, student Dashboard, and Teacher desk share a
-neutral Liquid Glass system shell. This is a presentation layer only: it must
-not move existing controls, alter the page information architecture, replace
-JavaScript hooks, or change business behavior. Practice runtimes (`bbc.html`,
-`ielts-reading.html`, `ielts-listening.html`, and `vocabulary.html`) are
-intentionally outside this shared shell so each exercise can keep its own
-learning-specific design.
+neutral Liquid Glass system shell. On login and public Library this remains a
+presentation layer only and must not move existing controls or alter page
+information architecture. The authenticated Student Dashboard and Teacher desk
+may arrange their existing controls into the approved spatial workspace
+layouts, but must preserve JavaScript hooks, navigation targets, modal behavior,
+and all business rules. Practice runtimes (`bbc.html`, `ielts-reading.html`,
+`ielts-listening.html`, and `vocabulary.html`) are intentionally outside this
+shared shell so each exercise can keep its own learning-specific design.
 
 Use translucent glass for functional layers such as navigation, headers,
 search, account surfaces, and dialogs. Repeated content cards and dense teacher
@@ -63,7 +65,8 @@ retaining the former fixed 430px minimum height and a large empty lower half.
 
 Navigation:
 
-- the lower navigation exposes only `Library`
+- the main content opens directly on `Library`; do not restore lower
+  Assignments or My Words navigation
 - assignments and finished work open from the top-right notification bell
 - My Words opens in an independent modal from a notebook icon immediately to
   the right of the bell; closing and reopening restores the modal's previous
@@ -74,25 +77,22 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the top-right
   notification bell; there is no lower Assignments page entry
-- the student header's top-left brand position displays the student's randomized
-  English greeting followed by the randomized motivational sentence as one
-  unbroken line. The combined message continuously travels to the right inside
-  its clipped header lane without overlapping the notification, My Words, or
-  identity controls. Reduced-motion mode keeps one static, readable copy.
-- the top student billboard is a progress board rather than a pure welcome
-  panel. Its former greeting and motivational-copy fields are removed so the
-  top row contains only one completion progress bar with the `Finished / total` value
-  centered above the bar, and `Finished` on the lower-left plus To do on the
-  lower-right as compact supporting metadata. The board shows the current
+- the student header keeps the quiet `Mr. Cat Academy` brand at top left. A
+  restrained, static English greeting and one randomized motivational sentence
+  appear in the left side of the top workspace. The greeting is time-aware in
+  China Standard Time and does not marquee, loop, or continuously animate.
+- the top student workspace uses a two-pane desktop composition: a welcome and
+  completion-meter surface on the left, and the four-week progress board on the
+  right. The meter keeps the `Finished / total` value centered above the bar,
+  with `Finished` on the lower-left and `To do` on the lower-right as compact
+  supporting metadata. The right board shows the current
   week plus the previous three weeks as a compact GitHub-style grid with weekday
   labels across the top and clickable `Wxx` week labels on the left. The visual
-  treatment should match the login/home page's neutral luminous glass style,
-  not a dark cockpit panel. On desktop and tablet, the grid sits on the left
-  half of the same progress panel and uses the available width generously so it
-  does not feel like a small inset widget; the selected day's or week's
-  completion details sit on the right half. On mobile the same panel stacks the
-  grid above the details, and the grid should adapt to nearly the full screen
-  width. Clicking a day square changes the detail pane to show only completed
+  treatment matches the login/home page's neutral luminous glass style, not a
+  dark cockpit panel. Inside the right board the grid stacks above the selected
+  day's or week's completion details. At tablet/mobile widths the two main panes
+  stack into one column, and the grid adapts to nearly the full available width.
+  Clicking a day square changes the detail pane to show only completed
   assignment/self-study task items for that date; clicking a `Wxx` label shows
   all completed task items for that week. Each completed-task capsule in the
   student board and the Teacher View `By student` monthly board uses the same
@@ -108,14 +108,17 @@ Assignment access and progress display:
   dimensions. The detail side shows exactly one large capsule, with `Loading
   progress` centered inside it; it must not render two stacked loading capsules
   or place the loading copy outside the capsule.
-- the lower `Library` capsule, top-right My Words notebook icon, and student
-  Library `Practice` / `Exam` capsule use a soft translucent glass treatment;
-  active and primary states use restrained system blue
-- Library search is a compact circular magnifying-glass button immediately to
-  the left of the lower `Library` capsule. The full-width search field must not
-  remain as a separate row below that capsule. Activating search transforms the
-  `Library` capsule in place into the input; Close or Escape clears the query
-  and restores the capsule.
+- the Library content starts with a large `Library` heading. Its compact search
+  control and `Practice` / `Exam` segmented control sit together at the right
+  side of that heading on desktop and remain adjacent when stacked on mobile.
+  They use a soft translucent glass treatment; active and primary states use
+  restrained system blue
+- activating the circular Library search button expands the search input from
+  that source control. Close or Escape clears the query, collapses it back to
+  the button, and returns focus to the button.
+- Library task cards use two columns on desktop and one column on narrow mobile
+  widths. Existing content filters, card actions, navigation targets, and
+  confirmation behavior are unchanged.
 - Student Library search is global across every visible task, independent of
   the currently selected `Practice` / `Exam` and content-filter capsules. If the
   current capsule has no match, the interface automatically selects the capsule
@@ -270,11 +273,18 @@ Student account menu:
 
 ## 4. Teacher Interface
 
-Teacher page has three main capsules:
+The teacher page uses one spatial workspace with a quiet left sidebar on
+desktop and a horizontal segmented sidebar on mobile. Its three destinations,
+in order, are:
 
-- `Assign`
 - `View`
+- `Assign`
 - `Library`
+
+The content heading must display exactly `View`, `Assign`, or `Library` for the
+active destination. There is no separate teacher greeting/quotation hero. On
+`View`, a `New assignment` action switches to `Assign` without clearing current
+Work/Student selections and without sending a backend request.
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
@@ -303,16 +313,19 @@ action fixed at the bottom of the modal while the attempt history scrolls above
 it. The detail modal should render outside the notification list's scroll body
 so the first open uses the same full dialog height as later opens.
 
-The teacher page defaults to `View` on entry. While assignment matrix data is
+The teacher page defaults to `View` on entry. `View` keeps the current progress
+matrix and its three filters (`Class`, `Column`, and `Date`) exactly as designed;
+do not add KPI cards above it. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
 subtle neutral light movement, and no centered spinner. On the first successful
 matrix render, the real matrix content should softly fade and lift into place
 instead of replacing the loading state abruptly.
 
 Teacher visual style uses the same neutral Liquid Glass system shell as the
-login, public Library, and student Dashboard. Header controls, top navigation,
-and dialogs may use functional glass; the matrix, grouped progress cards, and
-other dense data surfaces stay on quiet standard material for legibility.
+login, public Library, and student Dashboard. Header controls, sidebar,
+workspace frame, and dialogs may use functional glass; the matrix, grouped
+progress cards, and other dense data surfaces stay on quiet standard material
+for legibility.
 Selected tabs and primary actions use system blue without continuous rainbow
 animation. Completion states remain functionally colored: passed/mastered stay
 green, low scores stay red, and empty/not-yet cells stay neutral.
@@ -350,9 +363,11 @@ Teacher can:
 - assign the selected work to the selected students
 
 The Assign surface should stay visually minimal: the default Assign tab shows
-selected work and selected student chips, a compact task-parameters area, and
-the Assign action. Search, filters, and candidate lists live in the standalone
-picker dialogs. There are no visible multi-step accordions or legend. Empty
+the `Work` and `Students` summary surfaces side by side on desktop and stacked
+on mobile, followed by the existing task-parameters matrix and the Assign
+action. This is the hybrid layout: search, filters, and candidate lists remain
+in their existing standalone picker dialogs, whose design and behavior are
+preserved. There are no visible multi-step accordions or legend. Empty
 Work/Students summaries and picker footers should not show `None selected` or
 `Nothing selected` placeholder text.
 Selected Work and Students render as one item per row in their summary cards,

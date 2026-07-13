@@ -1,0 +1,540 @@
+/*
+ * Spatial workspace layout
+ *
+ * This layer is intentionally loaded only by the authenticated student and
+ * teacher workspaces. Login, public Library, and practice runtimes keep their
+ * existing layout and visual contracts.
+ */
+
+/* Student workspace ------------------------------------------------------ */
+
+.liquid-glass-dashboard .student-progress-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(390px, 0.82fr);
+    gap: clamp(14px, 2vw, 24px);
+    padding: clamp(14px, 2vw, 22px);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.liquid-glass-dashboard .student-progress-hero::after {
+    opacity: 0.42;
+    pointer-events: none;
+}
+
+.liquid-glass-dashboard .student-welcome-panel,
+.liquid-glass-dashboard .progress-board {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    min-height: 430px;
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 18px 46px rgba(32, 52, 63, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.74);
+    -webkit-backdrop-filter: blur(24px) saturate(145%);
+    backdrop-filter: blur(24px) saturate(145%);
+}
+
+.liquid-glass-dashboard .student-welcome-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 48px;
+    padding: clamp(28px, 4vw, 48px);
+}
+
+.liquid-glass-dashboard .student-welcome-copy {
+    max-width: 620px;
+}
+
+.liquid-glass-dashboard .student-welcome-copy .eyebrow {
+    margin-bottom: 18px;
+    color: rgba(27, 37, 43, 0.48);
+}
+
+.liquid-glass-dashboard .student-welcome-copy h1 {
+    max-width: 12ch;
+    color: #1b252b;
+    font-size: clamp(3.2rem, 7.2vw, 6.4rem);
+    font-weight: 730;
+    letter-spacing: -0.07em;
+    line-height: 0.94;
+}
+
+.liquid-glass-dashboard .student-welcome-copy .student-motivation {
+    max-width: 30rem;
+    margin-top: 22px;
+    color: rgba(27, 37, 43, 0.60);
+    font-size: clamp(0.96rem, 1.35vw, 1.1rem);
+    font-weight: 610;
+    letter-spacing: -0.012em;
+    line-height: 1.5;
+}
+
+.liquid-glass-dashboard .student-welcome-panel .hero-progress-stats {
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: rgba(250, 252, 252, 0.57);
+}
+
+.liquid-glass-dashboard .progress-board {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-content: stretch;
+    overflow: hidden;
+}
+
+.liquid-glass-dashboard .progress-map-panel,
+.liquid-glass-dashboard .progress-detail-panel {
+    min-height: 0;
+    padding: clamp(16px, 2vw, 22px);
+}
+
+.liquid-glass-dashboard .progress-map-panel {
+    align-content: center;
+}
+
+.liquid-glass-dashboard .progress-dot-map {
+    grid-template-columns: 46px repeat(7, minmax(25px, 1fr));
+    gap: 9px 7px;
+}
+
+.liquid-glass-dashboard .progress-dot,
+.liquid-glass-dashboard .progress-dot-map i {
+    width: 23px;
+    height: 23px;
+}
+
+.liquid-glass-dashboard .progress-detail-panel {
+    align-content: start;
+    border-top: 1px solid rgba(82, 104, 114, 0.10);
+    border-left: 0;
+}
+
+.liquid-glass-dashboard .student-library-workspace {
+    margin-top: clamp(34px, 5vw, 58px);
+}
+
+.liquid-glass-dashboard .student-library-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+
+.liquid-glass-dashboard .student-library-heading .eyebrow {
+    margin-bottom: 7px;
+    color: rgba(27, 37, 43, 0.47);
+}
+
+.liquid-glass-dashboard .student-library-heading h2 {
+    margin: 0;
+    color: #1b252b;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 720;
+    letter-spacing: -0.055em;
+    line-height: 1;
+}
+
+.liquid-glass-dashboard .student-library-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 0;
+}
+
+.liquid-glass-dashboard .student-library-dock {
+    position: relative;
+    top: auto;
+    z-index: 20;
+    display: block;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    transition: width 260ms cubic-bezier(.2, .78, .2, 1);
+}
+
+.liquid-glass-dashboard .student-library-dock.is-searching {
+    width: min(360px, 42vw);
+}
+
+.liquid-glass-dashboard .student-library-search-trigger {
+    position: relative;
+    z-index: 2;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+}
+
+.liquid-glass-dashboard .student-library-search-panel {
+    inset: 0;
+    width: 100%;
+    height: 44px;
+    padding: 0 5px 0 52px;
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.36);
+    box-shadow: 0 12px 30px rgba(32, 52, 63, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    -webkit-backdrop-filter: blur(24px) saturate(155%);
+    backdrop-filter: blur(24px) saturate(155%);
+}
+
+.liquid-glass-dashboard #student-library-tab-bar.library-tab-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(88px, 1fr));
+    width: auto;
+    margin: 0;
+    padding: 4px;
+}
+
+.liquid-glass-dashboard #student-library-tab-bar .library-tab-btn {
+    min-height: 36px;
+    padding: 0 15px;
+}
+
+.liquid-glass-dashboard .library-task-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.liquid-glass-dashboard .library-task-card {
+    min-height: 104px;
+}
+
+/* Teacher workspace ------------------------------------------------------ */
+
+.liquid-glass-teacher .app-shell {
+    width: min(1540px, calc(100% - 28px));
+}
+
+.liquid-glass-teacher .teacher-workspace-frame {
+    position: relative;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    min-height: calc(100vh - 126px);
+    min-height: calc(100dvh - 126px);
+    overflow: clip;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at 6% 2%, rgba(255, 255, 255, 0.62), transparent 30%),
+        rgba(246, 249, 249, 0.34);
+    box-shadow: 0 28px 78px rgba(27, 45, 56, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.76);
+    -webkit-backdrop-filter: blur(30px) saturate(155%);
+    backdrop-filter: blur(30px) saturate(155%);
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar.dashboard-tabs {
+    position: relative;
+    top: auto;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 24px 16px;
+    border: 0;
+    border-right: 1px solid rgba(85, 108, 119, 0.10);
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.20);
+    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.38);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 11px;
+    min-height: 46px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    color: rgba(27, 37, 43, 0.60);
+    font-size: 0.88rem;
+    font-weight: 680;
+    text-align: left;
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button > span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    color: rgba(27, 37, 43, 0.46);
+    background: rgba(255, 255, 255, 0.30);
+    font-size: 0.70rem;
+    font-weight: 780;
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button:hover {
+    border-color: rgba(255, 255, 255, 0.42);
+    color: #1b252b;
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button.active,
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button.active:hover {
+    border-color: rgba(255, 255, 255, 0.70);
+    color: #075da7;
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 10px 25px rgba(32, 52, 63, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+}
+
+.liquid-glass-teacher .teacher-workspace-sidebar .tab-button.active > span {
+    color: #0768bd;
+    background: rgba(10, 132, 255, 0.10);
+}
+
+.liquid-glass-teacher .teacher-workspace-content {
+    min-width: 0;
+    padding: clamp(22px, 3vw, 42px);
+}
+
+.liquid-glass-teacher .teacher-workspace-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 26px;
+}
+
+.liquid-glass-teacher .teacher-workspace-heading .eyebrow {
+    margin-bottom: 7px;
+    color: rgba(27, 37, 43, 0.44);
+}
+
+.liquid-glass-teacher .teacher-workspace-heading h1 {
+    margin: 0;
+    color: #1b252b;
+    font-size: clamp(2.5rem, 4.2vw, 4.4rem);
+    font-weight: 720;
+    letter-spacing: -0.06em;
+    line-height: 0.96;
+}
+
+.liquid-glass-teacher .teacher-new-assignment {
+    width: auto;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+}
+
+.liquid-glass-teacher .teacher-new-assignment[hidden] {
+    display: none;
+}
+
+.liquid-glass-teacher .teacher-message {
+    min-height: 0;
+    margin: -12px 0 14px;
+}
+
+.liquid-glass-teacher .teacher-message:empty {
+    display: none;
+}
+
+.liquid-glass-teacher .teacher-workspace-content > .dashboard-view {
+    min-width: 0;
+}
+
+.liquid-glass-teacher .assign-minimal-grid {
+    gap: 16px;
+}
+
+.liquid-glass-teacher .assign-summary-card {
+    min-height: 172px;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.liquid-glass-teacher .assign-picker-head h2,
+.liquid-glass-teacher .assign-params-head h2 {
+    color: #1b252b;
+    font-size: 1.18rem;
+    font-weight: 720;
+    letter-spacing: -0.025em;
+}
+
+.liquid-glass-teacher .assign-params-panel {
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.liquid-glass-teacher .assign-submit-bar {
+    border-radius: 18px;
+    background: rgba(250, 252, 252, 0.66);
+    -webkit-backdrop-filter: blur(28px) saturate(155%);
+    backdrop-filter: blur(28px) saturate(155%);
+}
+
+.liquid-glass-teacher #view-library .assign-toolbar,
+.liquid-glass-teacher #teacher-library-tab-bar,
+.liquid-glass-teacher #teacher-sub-tab-bar,
+.liquid-glass-teacher #teacher-year-bar {
+    max-width: 100%;
+}
+
+@media (max-width: 1050px) {
+    .liquid-glass-dashboard .student-progress-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .liquid-glass-dashboard .student-welcome-panel,
+    .liquid-glass-dashboard .progress-board {
+        min-height: 0;
+    }
+
+    .liquid-glass-dashboard .student-welcome-panel {
+        min-height: 380px;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-frame {
+        grid-template-columns: 170px minmax(0, 1fr);
+    }
+
+    .liquid-glass-teacher .teacher-workspace-sidebar.dashboard-tabs {
+        padding: 20px 12px;
+    }
+}
+
+@media (max-width: 760px) {
+    .liquid-glass-dashboard .student-progress-hero {
+        gap: 10px;
+        margin-right: 0;
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .liquid-glass-dashboard .student-welcome-panel {
+        min-height: 330px;
+        gap: 36px;
+        padding: 26px 22px 22px;
+        border-radius: 20px;
+    }
+
+    .liquid-glass-dashboard .student-welcome-copy h1 {
+        font-size: clamp(2.75rem, 15vw, 4.4rem);
+    }
+
+    .liquid-glass-dashboard .progress-board {
+        border-radius: 20px;
+    }
+
+    .liquid-glass-dashboard .student-library-heading {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .liquid-glass-dashboard .student-library-toolbar {
+        justify-content: space-between;
+    }
+
+    .liquid-glass-dashboard .student-library-dock.is-searching {
+        width: min(100%, calc(100vw - 210px));
+    }
+
+    .liquid-glass-dashboard #student-library-tab-bar.library-tab-bar {
+        grid-template-columns: repeat(2, minmax(74px, 1fr));
+    }
+
+    .liquid-glass-dashboard #student-library-tab-bar .library-tab-btn {
+        padding: 0 11px;
+    }
+
+    .liquid-glass-dashboard .library-task-list {
+        grid-template-columns: 1fr;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-frame {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        overflow: visible;
+        border-radius: 22px;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-sidebar.dashboard-tabs {
+        position: sticky;
+        top: 8px;
+        z-index: 90;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        min-height: 0;
+        padding: 7px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(85, 108, 119, 0.10);
+        border-radius: 21px 21px 0 0;
+        background: rgba(245, 249, 250, 0.68);
+    }
+
+    .liquid-glass-teacher .teacher-workspace-sidebar .tab-button {
+        justify-content: center;
+        min-width: 0;
+        padding: 0 8px;
+        font-size: 0.78rem;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-sidebar .tab-button > span {
+        display: none;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-content {
+        padding: 24px 14px 18px;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .liquid-glass-teacher .teacher-workspace-heading h1 {
+        font-size: clamp(2.5rem, 14vw, 3.8rem);
+    }
+
+    .liquid-glass-teacher .assign-minimal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .liquid-glass-teacher .assign-summary-card {
+        min-height: 132px;
+    }
+
+    .liquid-glass-teacher .assign-params-panel {
+        padding: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .liquid-glass-dashboard .student-library-dock,
+    .liquid-glass-dashboard .student-library-search-panel,
+    .liquid-glass-dashboard .student-library-search-trigger,
+    .liquid-glass-teacher .teacher-workspace-sidebar .tab-button {
+        transition-duration: 1ms !important;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .liquid-glass-dashboard .student-welcome-panel,
+    .liquid-glass-dashboard .progress-board,
+    .liquid-glass-dashboard .student-library-search-panel,
+    .liquid-glass-teacher .teacher-workspace-frame,
+    .liquid-glass-teacher .teacher-workspace-sidebar.dashboard-tabs {
+        background: rgba(247, 250, 250, 0.96);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}

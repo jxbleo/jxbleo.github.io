@@ -99,9 +99,8 @@
     var identityChip = document.getElementById('identity-chip');
     var starCounter = null;
     var selfStudyStarCounter = null;
-    var studentGreetingTrack = document.getElementById('student-greeting-track');
     var studentGreetingPrimary = document.getElementById('student-greeting-primary');
-    var studentGreetingRepeat = document.getElementById('student-greeting-repeat');
+    var studentGreetingMotivation = document.getElementById('student-greeting-motivation');
     var studentGreetingAccessible = document.getElementById('student-greeting-accessible');
     var heroProgressStats = document.getElementById('hero-progress-stats');
     var progressBoard = document.getElementById('progress-board');
@@ -113,7 +112,6 @@
     var resourceSearchToggle = document.getElementById('resource-search-toggle');
     var resourceSearchClose = document.getElementById('resource-search-close');
     var studentLibraryDock = document.getElementById('student-library-dock');
-    var studentLibraryLabel = document.getElementById('student-library-label');
     var studentLibrarySearchPanel = document.getElementById('student-library-search-panel');
     var accountPanel = document.getElementById('student-account-panel');
     var wordsButton = document.getElementById('student-words-button');
@@ -323,37 +321,33 @@
             : fullName;
     }
 
+    function shanghaiHour() {
+        var hourPart = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            hourCycle: 'h23'
+        }).formatToParts(new Date()).find(function(part) {
+            return part.type === 'hour';
+        });
+        return Number(hourPart ? hourPart.value : 12);
+    }
+
     function greetingFor(name) {
-        var greetings = [
-            'Hi, {name}.',
-            'Hello, {name}.',
-            'Welcome back, {name}.',
-            'Good to see you, {name}.',
-            'Nice to see you, {name}.',
-            'Glad you are here, {name}.',
-            'Here you are, {name}.',
-            'Welcome, {name}.',
-            'Let us begin, {name}.',
-            'Keep going, {name}.',
-            'Start here, {name}.',
-            'One step at a time, {name}.',
-            'Back to learning, {name}.',
-            'Your next step, {name}.'
-        ];
+        var hour = shanghaiHour();
+        var greetings = hour < 12
+            ? ['Good morning, {name}.', 'Morning, {name}.']
+            : hour < 18
+                ? ['Good afternoon, {name}.', 'Welcome back, {name}.']
+                : ['Good evening, {name}.', 'Welcome back, {name}.'];
         return randomItem(greetings).replace('{name}', name);
     }
 
     function setStudentGreeting(greetingText) {
-        var message = [greetingText, randomItem(motivationalQuotes)].filter(Boolean).join(' ');
-        studentGreetingPrimary.textContent = message;
-        studentGreetingRepeat.textContent = message;
-        studentGreetingAccessible.textContent = message;
-
-        if (studentGreetingTrack) {
-            studentGreetingTrack.classList.remove('is-scrolling');
-            void studentGreetingTrack.offsetWidth;
-            studentGreetingTrack.classList.add('is-scrolling');
-        }
+        var motivation = randomItem(motivationalQuotes);
+        var message = [greetingText, motivation].filter(Boolean).join(' ');
+        if (studentGreetingPrimary) studentGreetingPrimary.textContent = greetingText;
+        if (studentGreetingMotivation) studentGreetingMotivation.textContent = motivation;
+        if (studentGreetingAccessible) studentGreetingAccessible.textContent = message;
     }
 
     function normalizedStatus(status) {
@@ -1847,7 +1841,6 @@
         resourceSearch.disabled = !shouldOpen;
         if (resourceSearchClose) resourceSearchClose.disabled = !shouldOpen;
         if (studentLibrarySearchPanel) studentLibrarySearchPanel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
-        if (studentLibraryLabel) studentLibraryLabel.tabIndex = shouldOpen ? -1 : 0;
         document.removeEventListener('keydown', handleLibrarySearchKeydown);
         if (shouldOpen) {
             document.addEventListener('keydown', handleLibrarySearchKeydown);
