@@ -84,6 +84,16 @@ Assignment access and progress display:
 - the lower `Library` capsule, top-right My Words notebook icon, and student
   Library `Practice` / `Exam` capsule use a soft translucent glass treatment
   with subtle rainbow active states
+- Library search is a compact circular magnifying-glass button immediately to
+  the left of the lower `Library` capsule. The full-width search field must not
+  remain as a separate row below that capsule. Activating search transforms the
+  `Library` capsule in place into the input; Close or Escape clears the query
+  and restores the capsule.
+- Student Library search is global across every visible task, independent of
+  the currently selected `Practice` / `Exam` and content-filter capsules. If the
+  current capsule has no match, the interface automatically selects the capsule
+  containing the best match; an exact Set ID match takes priority over general
+  title or metadata matches.
 
 Backend statuses:
 
