@@ -1,0 +1,774 @@
+/*
+ * Mr. Cat Academy system shell — Liquid Glass visual layer.
+ * Loaded only by login, public Library, student Dashboard, and Teacher.
+ * Practice runtimes intentionally do not include this stylesheet.
+ */
+
+.liquid-glass-shell {
+    --lg-ink: #1b252b;
+    --lg-muted: #617078;
+    --lg-blue: #0a78f0;
+    --lg-blue-dark: #0062c7;
+    --lg-blue-soft: rgba(10, 120, 240, 0.11);
+    --lg-edge: rgba(255, 255, 255, 0.68);
+    --lg-edge-soft: rgba(255, 255, 255, 0.46);
+    --lg-content: rgba(249, 251, 251, 0.76);
+    --lg-content-strong: rgba(250, 252, 252, 0.88);
+    --lg-shadow: 0 22px 58px rgba(32, 52, 63, 0.13), 0 4px 14px rgba(32, 52, 63, 0.06);
+    --lg-shadow-light: 0 12px 34px rgba(32, 52, 63, 0.10), 0 2px 8px rgba(32, 52, 63, 0.04);
+    --lg-x: 18%;
+    --lg-y: 10%;
+    color: var(--lg-ink);
+    background:
+        radial-gradient(circle at 7% 8%, rgba(101, 198, 240, 0.28), transparent 27%),
+        radial-gradient(circle at 91% 14%, rgba(255, 181, 145, 0.27), transparent 25%),
+        radial-gradient(circle at 48% 96%, rgba(107, 218, 178, 0.20), transparent 31%),
+        linear-gradient(145deg, #edf4f5 0%, #f7f5f1 52%, #edf3f1 100%);
+    background-attachment: fixed;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-optical-sizing: auto;
+}
+
+.liquid-glass-shell button,
+.liquid-glass-shell a,
+.liquid-glass-shell input,
+.liquid-glass-shell select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.liquid-glass-shell button,
+.liquid-glass-shell [role="button"] {
+    transition: transform 120ms ease-out, color 180ms ease, background 180ms ease,
+        border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.liquid-glass-shell button:active,
+.liquid-glass-shell [role="button"]:active {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+}
+
+.liquid-glass-shell :focus-visible {
+    outline: 3px solid rgba(10, 120, 240, 0.24);
+    outline-offset: 3px;
+}
+
+/* Login keeps the existing two-column anatomy and replaces only its material. */
+.liquid-glass-auth {
+    background:
+        radial-gradient(circle at 2% 6%, rgba(58, 181, 235, 0.38), transparent 34%),
+        radial-gradient(circle at 96% 24%, rgba(255, 154, 139, 0.34), transparent 31%),
+        radial-gradient(circle at 52% 110%, rgba(73, 212, 164, 0.28), transparent 38%),
+        linear-gradient(145deg, #e9f3f4 0%, #f7f5f1 56%, #edf2ef 100%);
+}
+
+.liquid-glass-auth .auth-shell {
+    border-color: var(--lg-edge);
+    background:
+        radial-gradient(circle 260px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.66), transparent 72%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.15));
+    box-shadow: 0 34px 90px rgba(32, 52, 63, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -1px 0 rgba(103, 124, 134, 0.12);
+    -webkit-backdrop-filter: blur(34px) saturate(175%);
+    backdrop-filter: blur(34px) saturate(175%);
+}
+
+.liquid-glass-auth .brand-panel {
+    color: var(--lg-ink);
+    border-right: 1px solid rgba(255, 255, 255, 0.52);
+    background:
+        radial-gradient(circle at 78% 18%, rgba(255, 213, 139, 0.22), transparent 29%),
+        radial-gradient(circle at 15% 90%, rgba(91, 210, 177, 0.18), transparent 34%),
+        transparent;
+}
+
+.liquid-glass-auth .paper-scene {
+    display: none;
+}
+
+.liquid-glass-auth .paper-brand {
+    color: rgba(27, 37, 43, 0.72);
+    letter-spacing: 0.01em;
+}
+
+.liquid-glass-auth .brand-quote p {
+    color: var(--lg-ink);
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+}
+
+.liquid-glass-auth .login-card {
+    border-left: 1px solid rgba(255, 255, 255, 0.50);
+    background:
+        radial-gradient(circle 190px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.42), transparent 74%),
+        rgba(255, 255, 255, 0.18);
+}
+
+.liquid-glass-auth .login-card label {
+    color: rgba(27, 37, 43, 0.72);
+    font-size: 0.78rem;
+    letter-spacing: 0.015em;
+}
+
+.liquid-glass-auth .login-card input {
+    border-color: rgba(255, 255, 255, 0.64);
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.46);
+    box-shadow: inset 0 1px 2px rgba(51, 70, 80, 0.08), 0 1px 0 rgba(255, 255, 255, 0.64);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    backdrop-filter: blur(14px) saturate(135%);
+}
+
+.liquid-glass-auth .login-card input:focus {
+    border-color: rgba(10, 120, 240, 0.50);
+    box-shadow: 0 0 0 4px rgba(10, 120, 240, 0.12), inset 0 1px 2px rgba(51, 70, 80, 0.06);
+}
+
+.liquid-glass-auth .primary-button,
+.liquid-glass-library .global-search-btn,
+.liquid-glass-library .custom-login button {
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    color: #fff;
+    background:
+        radial-gradient(circle 130px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.30), transparent 72%),
+        linear-gradient(135deg, rgba(10, 132, 255, 0.92), rgba(0, 99, 218, 0.78));
+    box-shadow: 0 14px 32px rgba(0, 104, 220, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.46);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+}
+
+.liquid-glass-auth .primary-button:hover,
+.liquid-glass-library .global-search-btn:hover,
+.liquid-glass-library .custom-login button:hover {
+    color: #fff;
+    background:
+        radial-gradient(circle 130px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.38), transparent 72%),
+        linear-gradient(135deg, rgba(18, 139, 255, 0.96), rgba(0, 91, 207, 0.84));
+}
+
+.liquid-glass-auth .secondary-button {
+    border-color: var(--lg-edge);
+    color: var(--lg-ink);
+    background:
+        radial-gradient(circle 130px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.58), transparent 72%),
+        rgba(255, 255, 255, 0.30);
+    box-shadow: var(--lg-shadow-light), inset 0 1px 0 rgba(255, 255, 255, 0.66);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+}
+
+.liquid-glass-auth .secondary-button:hover {
+    border-color: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.48);
+}
+
+.liquid-glass-auth .divider::before,
+.liquid-glass-auth .divider::after {
+    background: rgba(96, 113, 122, 0.16);
+}
+
+/* Shared app chrome: keep header contents in place, put glass behind them. */
+.liquid-glass-dashboard .app-header,
+.liquid-glass-teacher .app-header {
+    position: relative;
+    isolation: isolate;
+}
+
+.liquid-glass-dashboard .app-header::before,
+.liquid-glass-teacher .app-header::before {
+    content: "";
+    position: absolute;
+    inset: 16px -14px 6px;
+    z-index: -1;
+    border: 1px solid var(--lg-edge);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle 220px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.70), transparent 72%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.15));
+    box-shadow: var(--lg-shadow-light), inset 0 1px 0 rgba(255, 255, 255, 0.74),
+        inset 0 -1px 0 rgba(96, 117, 127, 0.12);
+    -webkit-backdrop-filter: blur(30px) saturate(170%);
+    backdrop-filter: blur(30px) saturate(170%);
+}
+
+.liquid-glass-shell .app-brand {
+    color: var(--lg-ink);
+    letter-spacing: -0.025em;
+}
+
+.liquid-glass-dashboard :is(.icon-pill-button, .student-chip),
+.liquid-glass-teacher :is(.teacher-header-icon-button, .teacher-create-capsule, .student-chip) {
+    border-color: var(--lg-edge);
+    color: rgba(27, 37, 43, 0.72);
+    background:
+        radial-gradient(circle 92px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.72), transparent 72%),
+        rgba(255, 255, 255, 0.24);
+    box-shadow: 0 8px 22px rgba(32, 52, 63, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+    backdrop-filter: blur(18px) saturate(165%);
+}
+
+.liquid-glass-dashboard :is(.icon-pill-button, .student-chip):hover,
+.liquid-glass-teacher :is(.teacher-header-icon-button, .teacher-create-capsule, .student-chip):hover {
+    color: var(--lg-ink);
+    border-color: rgba(255, 255, 255, 0.84);
+    background: rgba(255, 255, 255, 0.46);
+}
+
+.liquid-glass-dashboard :is(.icon-pill-button, .student-chip)::after,
+.liquid-glass-teacher :is(.teacher-header-icon-button, .teacher-create-capsule, .student-chip)::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+}
+
+/* Dashboard content remains a stable content layer below the glass chrome. */
+.liquid-glass-dashboard .student-progress-hero {
+    color: var(--lg-ink);
+    border-color: rgba(255, 255, 255, 0.74);
+    background:
+        radial-gradient(circle at 82% 12%, rgba(255, 202, 129, 0.24), transparent 27%),
+        radial-gradient(circle at 13% 112%, rgba(90, 210, 171, 0.22), transparent 35%),
+        linear-gradient(145deg, rgba(251, 252, 249, 0.87), rgba(242, 248, 246, 0.70));
+    box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+    backdrop-filter: blur(18px) saturate(125%);
+}
+
+.liquid-glass-dashboard .student-progress-hero::before {
+    opacity: 0.30;
+    animation: none;
+}
+
+.liquid-glass-dashboard .hero-progress-stats,
+.liquid-glass-dashboard .progress-board {
+    border-color: rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.40);
+    box-shadow: 0 14px 34px rgba(32, 52, 63, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.70);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+}
+
+.liquid-glass-dashboard .progress-detail-panel {
+    border-left-color: rgba(82, 104, 114, 0.10);
+}
+
+.liquid-glass-dashboard :is(.progress-detail-task, .progress-detail-empty) {
+    border-color: rgba(255, 255, 255, 0.64);
+    background: rgba(255, 255, 255, 0.50);
+    box-shadow: 0 8px 22px rgba(32, 52, 63, 0.055);
+}
+
+.liquid-glass-dashboard .student-library-dock .dashboard-tabs,
+.liquid-glass-dashboard .student-library-search-trigger,
+.liquid-glass-teacher .dashboard-tabs {
+    border-color: var(--lg-edge);
+    background:
+        radial-gradient(circle 180px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.72), transparent 72%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.14));
+    box-shadow: var(--lg-shadow-light), inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 -1px 0 rgba(89, 110, 121, 0.10);
+    -webkit-backdrop-filter: blur(28px) saturate(175%);
+    backdrop-filter: blur(28px) saturate(175%);
+}
+
+.liquid-glass-dashboard .student-library-search-panel {
+    background: transparent;
+}
+
+.liquid-glass-dashboard .student-library-search-close {
+    color: rgba(27, 37, 43, 0.62);
+    background: rgba(255, 255, 255, 0.32);
+}
+
+.liquid-glass-dashboard .student-library-dock .tab-button.active,
+.liquid-glass-dashboard .library-tab-btn.active,
+.liquid-glass-dashboard .library-book-tab.active,
+.liquid-glass-dashboard .year-tab.active {
+    color: #fff;
+    background:
+        radial-gradient(circle 110px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.27), transparent 72%),
+        linear-gradient(135deg, rgba(10, 132, 255, 0.90), rgba(0, 102, 218, 0.76));
+    box-shadow: 0 10px 24px rgba(0, 104, 220, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.liquid-glass-dashboard :is(.library-tab-bar, .sub-tab-bar, .library-year-bar .year-tabs) {
+    border-color: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+}
+
+.liquid-glass-dashboard :is(.task-card, .resource-card, .profile-card, .empty-card, .summary-card, .library-task-card) {
+    border-color: rgba(255, 255, 255, 0.70);
+    background: var(--lg-content);
+    box-shadow: 0 13px 34px rgba(32, 52, 63, 0.075), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.liquid-glass-dashboard :is(.task-card, .resource-card, .library-task-card):hover {
+    border-color: rgba(255, 255, 255, 0.86);
+    background: rgba(252, 253, 253, 0.88);
+    box-shadow: 0 20px 46px rgba(32, 52, 63, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+/* Account, notification, and notebook surfaces are the thickest glass layer. */
+.liquid-glass-dashboard :is(.account-panel, .student-words-dialog, .student-message-dialog, .teacher-replies-dialog),
+.liquid-glass-teacher :is(.account-panel, .teacher-updates-dialog, .teacher-review-dialog, .student-lookup-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog) {
+    border-color: rgba(255, 255, 255, 0.72);
+    background:
+        radial-gradient(circle 260px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.67), transparent 73%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(245, 249, 249, 0.25));
+    box-shadow: 0 32px 86px rgba(27, 45, 56, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.80),
+        inset 0 -1px 0 rgba(85, 108, 119, 0.12);
+    -webkit-backdrop-filter: blur(38px) saturate(175%);
+    backdrop-filter: blur(38px) saturate(175%);
+    transform-origin: 88% 0;
+}
+
+.liquid-glass-dashboard :is(.student-words-overlay, .student-message-overlay, .teacher-replies-overlay),
+.liquid-glass-teacher :is(.teacher-review-modal, .student-lookup-modal, .create-student-modal, .create-student-success-modal, .assign-picker-modal, .assignment-edit-overlay) {
+    background: rgba(36, 50, 58, 0.18);
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    backdrop-filter: blur(7px) saturate(115%);
+}
+
+.liquid-glass-dashboard .student-words-dialog-head,
+.liquid-glass-dashboard .student-message-dialog-head,
+.liquid-glass-teacher :is(.teacher-review-head, .student-lookup-head) {
+    border-color: rgba(79, 101, 111, 0.11);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.04));
+}
+
+.liquid-glass-shell :is(.create-student-close, .modal-close, .progress-matrix-modal-close) {
+    border-color: rgba(255, 255, 255, 0.58);
+    color: rgba(27, 37, 43, 0.68);
+    background: rgba(255, 255, 255, 0.30);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64);
+    -webkit-backdrop-filter: blur(14px) saturate(145%);
+    backdrop-filter: blur(14px) saturate(145%);
+}
+
+.liquid-glass-dashboard :is(.student-message-task, .teacher-reply-item, .my-word-item),
+.liquid-glass-teacher :is(.activity-thread, .dispute-item) {
+    border-color: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.43);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+/* Teacher keeps its dense layout; the previous moving rainbow becomes neutral glass. */
+.liquid-glass-teacher {
+    --accent: var(--lg-blue);
+    --accent-dark: var(--lg-blue-dark);
+    --accent-soft: var(--lg-blue-soft);
+    --line: rgba(83, 104, 114, 0.14);
+    --page: transparent;
+    --shadow: var(--lg-shadow);
+    background:
+        radial-gradient(circle at 6% 8%, rgba(92, 190, 232, 0.27), transparent 27%),
+        radial-gradient(circle at 92% 12%, rgba(255, 184, 145, 0.26), transparent 26%),
+        radial-gradient(circle at 50% 104%, rgba(111, 215, 181, 0.18), transparent 34%),
+        linear-gradient(145deg, #edf3f4 0%, #f7f4ef 54%, #eef2ef 100%);
+    background-attachment: fixed;
+    animation: none;
+}
+
+.liquid-glass-teacher .teacher-hero {
+    color: var(--lg-ink);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background:
+        radial-gradient(circle at 86% 10%, rgba(255, 200, 132, 0.25), transparent 25%),
+        radial-gradient(circle at 8% 118%, rgba(84, 205, 172, 0.20), transparent 32%),
+        linear-gradient(145deg, rgba(251, 252, 250, 0.86), rgba(242, 247, 246, 0.69));
+    box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+    backdrop-filter: blur(18px) saturate(125%);
+    animation: none;
+}
+
+.liquid-glass-teacher .teacher-hero::before {
+    display: block;
+    opacity: 0.22;
+    filter: blur(28px);
+    animation: none;
+}
+
+.liquid-glass-teacher .teacher-hero::after {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.64), transparent 69%);
+}
+
+.liquid-glass-teacher .teacher-hero p {
+    color: rgba(27, 37, 43, 0.62);
+}
+
+.liquid-glass-teacher .dashboard-tabs {
+    animation: none;
+}
+
+.liquid-glass-teacher .tab-button {
+    color: rgba(27, 37, 43, 0.62);
+}
+
+.liquid-glass-teacher .tab-button:hover {
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.liquid-glass-teacher .tab-button.active,
+.liquid-glass-teacher .primary-button,
+.liquid-glass-teacher .assignment-edit-button {
+    border-color: rgba(255, 255, 255, 0.46);
+    color: #fff;
+    background:
+        radial-gradient(circle 140px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.28), transparent 72%),
+        linear-gradient(135deg, rgba(10, 132, 255, 0.91), rgba(0, 99, 216, 0.77));
+    background-size: auto;
+    box-shadow: 0 12px 28px rgba(0, 104, 220, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    -webkit-backdrop-filter: blur(18px) saturate(155%);
+    backdrop-filter: blur(18px) saturate(155%);
+    animation: none;
+}
+
+.liquid-glass-teacher .primary-button:hover,
+.liquid-glass-teacher .tab-button.active:hover {
+    color: #fff;
+    background:
+        radial-gradient(circle 140px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.34), transparent 72%),
+        linear-gradient(135deg, rgba(18, 139, 255, 0.95), rgba(0, 91, 207, 0.83));
+    background-size: auto;
+}
+
+.liquid-glass-teacher :is(.teacher-updates-button, .teacher-review-button).has-updates {
+    border-color: rgba(255, 90, 98, 0.28);
+    background: rgba(255, 244, 245, 0.46);
+}
+
+.liquid-glass-teacher :is(.profile-card, .empty-card, .assignment-progress-group, .assignment-progress-mode-tabs, .student-select-card, .progress-matrix-card, .assign-params-panel, .assign-submit-bar, .teacher-view-board) {
+    border-color: rgba(255, 255, 255, 0.68);
+    background: var(--lg-content);
+    box-shadow: 0 14px 36px rgba(32, 52, 63, 0.075), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.liquid-glass-teacher :is(.progress-matrix-card, .assignment-progress-group, .student-select-card)::before {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.82), rgba(10, 120, 240, 0.18), rgba(255, 255, 255, 0.72));
+    background-size: auto;
+    animation: none;
+}
+
+.liquid-glass-teacher :is(.matrix-class-filter, .matrix-column-filter, .matrix-date-filter, .matrix-date-bound input, .assignment-group-tools, .task-score-chart) {
+    border-color: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.38);
+    background-size: auto;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+    animation: none;
+}
+
+.liquid-glass-teacher .assignment-progress-mode-tabs {
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.liquid-glass-teacher .assignment-progress-mode-tab.active,
+.liquid-glass-teacher :is(.student-mode-button.active, .student-mode-button:hover, .selected-student-pill:not(.empty)) {
+    border-color: rgba(10, 120, 240, 0.20);
+    color: var(--lg-blue-dark);
+    background: rgba(10, 120, 240, 0.10);
+    background-size: auto;
+    box-shadow: none;
+    animation: none;
+}
+
+.liquid-glass-teacher .progress-matrix-head > span,
+.liquid-glass-teacher .progress-matrix-head > a,
+.liquid-glass-teacher .progress-matrix-due-row > .progress-matrix-student-cell {
+    color: rgba(27, 37, 43, 0.72);
+    background: rgba(238, 244, 246, 0.78);
+    background-size: auto;
+    animation: none;
+}
+
+.liquid-glass-teacher .matrix-loading-card {
+    border-color: rgba(255, 255, 255, 0.66);
+    background:
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.56), transparent),
+        linear-gradient(rgba(91, 112, 121, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91, 112, 121, 0.08) 1px, transparent 1px),
+        rgba(250, 252, 252, 0.76);
+    background-size: 320px 100%, 42px 42px, 42px 42px, auto;
+    box-shadow: 0 12px 30px rgba(32, 52, 63, 0.08);
+}
+
+.liquid-glass-teacher .matrix-loading-card::after {
+    background: linear-gradient(90deg, transparent, rgba(10, 120, 240, 0.08), transparent);
+    background-size: 320px 100%;
+}
+
+.liquid-glass-teacher .assignment-edit-overlay,
+.liquid-glass-teacher .teacher-updates-panel {
+    background: rgba(36, 50, 58, 0.18);
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    backdrop-filter: blur(7px) saturate(115%);
+}
+
+/* Legacy public Library receives the same shell without changing its catalog layout. */
+.liquid-glass-library {
+    --text-primary: var(--lg-ink);
+    --text-secondary: #56666e;
+    --text-muted: #74828a;
+    --border: rgba(83, 104, 114, 0.14);
+    --bg-hover: rgba(255, 255, 255, 0.50);
+    --bg-card: var(--lg-content);
+    --bg-page: transparent;
+    --accent: var(--lg-blue);
+    --accent-bright: #49a2ff;
+    --glass-border: rgba(255, 255, 255, 0.68);
+    --shadow-soft: var(--lg-shadow);
+    background:
+        radial-gradient(circle at 6% 8%, rgba(92, 190, 232, 0.28), transparent 28%),
+        radial-gradient(circle at 92% 11%, rgba(255, 182, 142, 0.27), transparent 26%),
+        radial-gradient(circle at 50% 100%, rgba(105, 216, 179, 0.18), transparent 34%),
+        linear-gradient(145deg, #edf3f4 0%, #f7f4ef 54%, #eef2ef 100%);
+    background-attachment: fixed;
+}
+
+.liquid-glass-library::before {
+    background: none;
+    mask-image: none;
+}
+
+.liquid-glass-library .header {
+    color: var(--lg-ink);
+    border-color: rgba(255, 255, 255, 0.72);
+    background:
+        radial-gradient(circle 250px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.68), transparent 72%),
+        radial-gradient(circle at 88% 9%, rgba(255, 202, 132, 0.25), transparent 25%),
+        radial-gradient(circle at 8% 118%, rgba(84, 205, 172, 0.20), transparent 32%),
+        linear-gradient(145deg, rgba(251, 252, 250, 0.82), rgba(242, 247, 246, 0.65));
+    box-shadow: var(--lg-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+    backdrop-filter: blur(24px) saturate(135%);
+}
+
+.liquid-glass-library .header::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.56), transparent 67%);
+}
+
+.liquid-glass-library .header::after {
+    background: radial-gradient(circle, rgba(92, 190, 232, 0.16), transparent 68%);
+}
+
+.liquid-glass-library .header h1 {
+    color: var(--lg-ink);
+}
+
+.liquid-glass-library .header p {
+    color: rgba(27, 37, 43, 0.62);
+}
+
+.liquid-glass-library .login-status :is(.user-btn, .user-name) {
+    color: rgba(27, 37, 43, 0.76);
+}
+
+.liquid-glass-library .login-status .user-btn {
+    border-color: var(--lg-edge);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 8px 22px rgba(32, 52, 63, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.64);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+}
+
+.liquid-glass-library .login-status .user-btn:hover {
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.46);
+}
+
+.liquid-glass-library .login-status .logout-btn {
+    color: rgba(27, 37, 43, 0.60);
+}
+
+.liquid-glass-library .global-search-card,
+.liquid-glass-library :is(.tab-bar, .sub-tab-bar, .year-tabs) {
+    border-color: var(--lg-edge);
+    background:
+        radial-gradient(circle 200px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.70), transparent 72%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0.15));
+    box-shadow: var(--lg-shadow-light), inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 -1px 0 rgba(89, 110, 121, 0.10);
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    backdrop-filter: blur(28px) saturate(170%);
+}
+
+.liquid-glass-library :is(.global-search-input, .search-input, .custom-login input) {
+    border-color: rgba(255, 255, 255, 0.62);
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.43);
+    box-shadow: inset 0 1px 2px rgba(51, 70, 80, 0.08), 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.liquid-glass-library :is(.global-search-input, .search-input, .custom-login input):focus {
+    border-color: rgba(10, 120, 240, 0.46);
+    box-shadow: 0 0 0 4px rgba(10, 120, 240, 0.11), inset 0 1px 2px rgba(51, 70, 80, 0.06);
+}
+
+.liquid-glass-library :is(.tab-btn.active, .year-tab.active) {
+    color: #fff;
+    background:
+        radial-gradient(circle 110px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.28), transparent 72%),
+        linear-gradient(135deg, rgba(10, 132, 255, 0.90), rgba(0, 102, 218, 0.76));
+    box-shadow: 0 9px 22px rgba(0, 104, 220, 0.19), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.liquid-glass-library .sub-tab-btn.active {
+    color: var(--lg-blue-dark);
+    background: rgba(255, 255, 255, 0.46);
+    box-shadow: 0 5px 14px rgba(32, 52, 63, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.54);
+}
+
+.liquid-glass-library :is(.section, .path-card, .menu-card) {
+    border-color: rgba(255, 255, 255, 0.68);
+    background: var(--lg-content);
+    box-shadow: 0 14px 36px rgba(32, 52, 63, 0.075), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.liquid-glass-library .menu-card:hover {
+    border-color: rgba(255, 255, 255, 0.86);
+    background: rgba(252, 253, 253, 0.88);
+    box-shadow: 0 20px 46px rgba(32, 52, 63, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.liquid-glass-library .section-title {
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.liquid-glass-library .section.is-open .section-title {
+    background: rgba(248, 251, 251, 0.76);
+    box-shadow: 0 10px 28px rgba(32, 52, 63, 0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(145%);
+    backdrop-filter: blur(24px) saturate(145%);
+}
+
+.liquid-glass-library .arrow-box {
+    color: var(--lg-blue-dark);
+    background: rgba(10, 120, 240, 0.10);
+}
+
+.liquid-glass-library .menu-card:hover .arrow-box {
+    color: #fff;
+    background: var(--lg-blue);
+}
+
+.liquid-glass-library :is(.modal-box, .dropdown-menu) {
+    border-color: rgba(255, 255, 255, 0.72);
+    background:
+        radial-gradient(circle 220px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.68), transparent 72%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.50), rgba(245, 249, 249, 0.25));
+    box-shadow: 0 30px 84px rgba(27, 45, 56, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(36px) saturate(175%);
+    backdrop-filter: blur(36px) saturate(175%);
+}
+
+.liquid-glass-library .modal-overlay {
+    background: rgba(36, 50, 58, 0.18);
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    backdrop-filter: blur(7px) saturate(115%);
+}
+
+.liquid-glass-library .visitor-btn {
+    border-color: var(--lg-edge);
+    color: var(--lg-ink);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56);
+}
+
+/* System accessibility settings change material without changing anatomy. */
+@media (prefers-reduced-transparency: reduce) {
+    .liquid-glass-shell {
+        background: #f1f4f3;
+    }
+
+    .liquid-glass-auth .auth-shell,
+    .liquid-glass-dashboard .app-header::before,
+    .liquid-glass-teacher .app-header::before,
+    .liquid-glass-dashboard .student-library-dock .dashboard-tabs,
+    .liquid-glass-dashboard .student-library-search-trigger,
+    .liquid-glass-teacher .dashboard-tabs,
+    .liquid-glass-library .global-search-card,
+    .liquid-glass-library :is(.tab-bar, .sub-tab-bar, .year-tabs),
+    .liquid-glass-dashboard :is(.account-panel, .student-words-dialog, .student-message-dialog, .teacher-replies-dialog),
+    .liquid-glass-teacher :is(.account-panel, .teacher-updates-dialog, .teacher-review-dialog, .student-lookup-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog),
+    .liquid-glass-library :is(.modal-box, .dropdown-menu) {
+        background: #f8faf9;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .liquid-glass-shell {
+        --lg-edge: rgba(27, 37, 43, 0.52);
+        --lg-muted: #3f4d54;
+        --lg-content: rgba(255, 255, 255, 0.94);
+    }
+
+    .liquid-glass-dashboard .app-header::before,
+    .liquid-glass-teacher .app-header::before,
+    .liquid-glass-library .global-search-card,
+    .liquid-glass-shell :is(.account-panel, .student-words-dialog, .student-message-dialog, .teacher-updates-dialog, .teacher-review-dialog, .modal-box) {
+        background: rgba(255, 255, 255, 0.90);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .liquid-glass-shell *,
+    .liquid-glass-shell *::before,
+    .liquid-glass-shell *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .liquid-glass-dashboard .app-header::before,
+    .liquid-glass-teacher .app-header::before {
+        inset: 7px -5px 3px;
+        border-radius: 21px;
+    }
+
+    .liquid-glass-auth .brand-panel {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.52);
+    }
+
+    .liquid-glass-auth .login-card {
+        border-left: 0;
+    }
+
+    .liquid-glass-dashboard :is(.account-panel, .student-words-dialog, .student-message-dialog, .teacher-replies-dialog),
+    .liquid-glass-teacher :is(.teacher-review-dialog, .student-lookup-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog),
+    .liquid-glass-library .modal-box {
+        border-radius: 26px;
+    }
+
+    .liquid-glass-library .tab-btn,
+    .liquid-glass-library .sub-tab-btn {
+        min-width: 0;
+        padding-inline: 8px;
+    }
+
+    .liquid-glass-library .menu-card a,
+    .liquid-glass-library .card-content {
+        min-width: 0;
+    }
+}

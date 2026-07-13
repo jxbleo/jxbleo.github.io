@@ -53,6 +53,26 @@ Open:
 - at least one IELTS Listening page
 - at least one Vocabulary page
 
+Shared shell visual checks:
+
+- `index.html`, `library.html`, `dashboard.html`, and `teacher.html` load the
+  versioned `liquid-glass-shell.css` and `liquid-glass-shell.js` assets
+- BBC, IELTS Reading, IELTS Listening, and Vocabulary practice runtimes do not
+  load the shared shell assets and retain their own exercise presentation
+- the shell keeps the existing control order, card layout, navigation targets,
+  form IDs, and modal behavior; the change is visual only
+- neutral transparent materials are used for functional navigation/dialog
+  layers, while repeated content cards and teacher matrix panels remain quiet
+  standard materials without stacked live blur
+- system blue appears on selected/primary controls rather than tinting the
+  entire page; semantic category and result colors remain recognizable
+- at 390px viewport width, login, public Library, and visitor Dashboard do not
+  introduce horizontal page scrolling
+- My Words, assignment/notification, account, login, and teacher management
+  dialogs remain top-layer, readable, closable surfaces
+- verify reduced transparency, increased contrast, and reduced motion media
+  preferences keep text and focus states legible
+
 Practice navigation checks:
 
 - Student Dashboard loading reserves the final monthly-board dimensions; its
@@ -249,9 +269,9 @@ Check:
   `teacher=1` practice preview, and `Back` returns to `teacher.html?view=view`
 - First successful matrix render transitions in with a soft fade/lift instead
   of abruptly replacing the loading state
-- Teacher rainbow theme animates slowly on hero, active controls, matrix
-  headers, and group-card top borders without overriding passed/mastered
-  green states or low-score red states
+- Teacher shell uses neutral glass for functional layers and system blue for
+  selected/primary controls, without continuous rainbow movement or overriding
+  passed/mastered green states and low-score red states
 - Grouped progress items below the matrix keep quiet neutral/green status
   styling instead of repeated rainbow-filled mode tabs, student capsules, or
   stat pills
