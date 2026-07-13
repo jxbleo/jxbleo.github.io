@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260713-6">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260713-8">
 </head>
 <body class="app-page teacher-page">
     <main class="app-shell">
@@ -69,24 +69,24 @@
         <p class="teacher-message" id="teacher-message" role="status"></p>
 
         <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
-            <div class="teacher-updates-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
-                <div class="updates-panel-head">
-                    <div class="updates-panel-primary-actions">
-                        <button class="activity-mark-read" id="teacher-updates-read-all" type="button" aria-label="Mark all notifications as read" title="Read all">
-                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                                <path d="m2.5 12.5 4 4 8.5-9"></path>
-                                <path d="m10.5 16.5 2 2 9-10"></path>
-                            </svg>
-                            <span class="sr-only">Read all</span>
-                        </button>
+            <div class="teacher-updates-shell">
+                <div class="teacher-updates-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
+                    <div class="updates-panel-head">
+                        <div class="updates-panel-primary-actions">
+                            <button class="activity-mark-read" id="teacher-updates-read-all" type="button" aria-label="Mark all notifications as read" title="Read all">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                    <path d="m2.5 12.5 4 4 8.5-9"></path>
+                                    <path d="m10.5 16.5 2 2 9-10"></path>
+                                </svg>
+                                <span class="sr-only">Read all</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="updates-panel-actions">
-                        <button class="create-student-close" id="teacher-updates-close" type="button" aria-label="Close updates">x</button>
+                    <div class="teacher-updates-body" id="teacher-updates-body">
+                        <div class="empty-card loading-card">Loading updates...</div>
                     </div>
                 </div>
-                <div class="teacher-updates-body" id="teacher-updates-body">
-                    <div class="empty-card loading-card">Loading updates...</div>
-                </div>
+                <button class="progress-matrix-modal-close teacher-updates-external-close" id="teacher-updates-close" type="button" aria-label="Close notifications">Close</button>
             </div>
             <div id="teacher-notification-attempt-root"></div>
         </section>

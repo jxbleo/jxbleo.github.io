@@ -2313,16 +2313,24 @@ body:not(.teacher-page) .tab-button.active {
     position: fixed;
     inset: 0;
     z-index: 150;
-    align-items: start;
-    justify-items: center;
-    padding: min(7vh, 56px) 16px 28px;
+    place-items: center;
+    padding: 20px 16px;
     background: rgba(24, 18, 43, 0.28);
     backdrop-filter: blur(10px);
 }
 .teacher-updates-panel[hidden] { display: none; }
-.teacher-updates-dialog {
+#teacher-notification-attempt-root { display: contents; }
+.teacher-updates-shell {
+    display: grid;
+    gap: 12px;
     width: min(760px, 100%);
-    max-height: min(760px, calc(100vh - 64px));
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+}
+.teacher-updates-dialog {
+    width: 100%;
+    max-height: min(760px, 75vh);
+    max-height: min(760px, 75dvh);
     overflow: auto;
     padding: 18px;
     border: 1px solid rgba(255,255,255,0.82);
@@ -2336,7 +2344,7 @@ body:not(.teacher-page) .tab-button.active {
     z-index: 2;
     display: flex;
     align-items: start;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 14px;
     margin: -18px -18px 14px;
     padding: 18px;
@@ -2344,11 +2352,13 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(14px);
 }
-.updates-panel-primary-actions,
-.updates-panel-actions {
+.updates-panel-primary-actions {
     display: flex;
     align-items: center;
     gap: 9px;
+}
+.teacher-updates-external-close {
+    justify-self: center;
 }
 .teacher-updates-body {
     display: grid;
@@ -3253,7 +3263,10 @@ body:not(.teacher-page) .tab-button.active {
     text-decoration: none;
 }
 .progress-matrix-due-row > span,
-.progress-matrix-due-row > button {
+.progress-matrix-due-row > button.progress-matrix-due-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 30px;
     padding-top: 6px;
     padding-bottom: 6px;
@@ -3263,16 +3276,18 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 950;
     text-align: center;
 }
-.progress-matrix-due-row > button {
+.progress-matrix-due-row > button.progress-matrix-due-cell {
     border: 0;
     border-top: 1px solid rgba(124,58,237,0.10);
     border-left: 1px solid rgba(124,58,237,0.10);
-    font: inherit;
+    font-family: inherit;
+    line-height: 1;
+    appearance: none;
     cursor: pointer;
     transition: filter 150ms ease, box-shadow 150ms ease;
 }
-.progress-matrix-due-row > button:hover,
-.progress-matrix-due-row > button:focus-visible {
+.progress-matrix-due-row > button.progress-matrix-due-cell:hover,
+.progress-matrix-due-row > button.progress-matrix-due-cell:focus-visible {
     position: relative;
     z-index: 1;
     filter: saturate(1.2) brightness(0.98);
@@ -3281,7 +3296,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-due-row > .progress-matrix-student-cell {
     color: var(--muted);
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
 }
 .progress-matrix-task-name {
@@ -4612,7 +4627,8 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(31,45,38,0.08);
 }
 .teacher-page .progress-matrix-head > span,
-.teacher-page .progress-matrix-head > a {
+.teacher-page .progress-matrix-head > a,
+.teacher-page .progress-matrix-due-row > .progress-matrix-student-cell {
     color: rgba(23,32,27,0.74);
     background:
         var(--teacher-rainbow-soft),
@@ -6358,7 +6374,10 @@ body:not(.teacher-page) .tab-button.active {
     .teacher-header-actions { flex-wrap: wrap; }
     .teacher-updates-panel {
         padding: 12px;
-        border-radius: 18px;
+    }
+    .teacher-updates-shell {
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
     }
     .updates-panel-head { align-items: center; }
     .activity-row {

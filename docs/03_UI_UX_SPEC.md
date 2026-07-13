@@ -143,10 +143,12 @@ Frontend rule:
   unread activity.
 - The teacher notification modal header does not show `NOTIFICATIONS` or
   `Student attempts`. It is reserved as an action toolbar: a circular double-
-  check `Read all` icon sits on the left, future action buttons may occupy the
-  remaining space, and Close stays on the right. The icon keeps an accessible
-  label/tooltip, shows a spinner while saving, and briefly turns green after a
-  successful read-all action.
+  check `Read all` icon sits on the left and future action buttons may occupy
+  the remaining space. The notification card is capped at roughly three-
+  quarters of the viewport height and scrolls internally. It has no top-right
+  `x`; a centered `Close` capsule sits outside and immediately below the card.
+  The Read all icon keeps an accessible label/tooltip, shows a spinner while
+  saving, and briefly turns green after a successful read-all action.
 - The student message/replies dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
@@ -368,7 +370,11 @@ It should include:
   first-column cell reads `Due`, and each task column always contains the
   zero-padded Beijing-time `Wxx` grouping label moved from the former task
   header. This label uses `assigned_at`, so legacy tasks without `due_at` still
-  display their week and stay aligned with Assign week and the Date filter.
+  display their week and stay aligned with Assign week and the Date filter. The
+  sticky `Due` first cell uses the same animated colorful header surface as the
+  `Student` and task-name row, while the Wxx cells retain their green action
+  treatment. Every cell in the Due row shares one centered height, padding,
+  border, and baseline so the row remains visually aligned.
 - clicking a task's `Due / Wxx` cell opens assignment management for all records
   represented by that visible column. A class/individual filter limits the edit
   scope to that class/student; no class filter means all currently visible
