@@ -601,6 +601,11 @@ Shared rules:
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
+- After a BBC answer is checked, correct blanks, matching fields, MC question
+  cards, and the selected correct MC option use the same green result family as
+  Vocabulary (`#f0fdf4` surface). Incorrect results use the same light-red
+  family (`#fef2f2`). The yellow MC locked-answer reminder must never override
+  a known correct or wrong result.
 - History should refill the saved attempt answers into editable fields for not-passed, passed, and mastered attempts.
 - History may show Explain and Argue controls only when backend review data marks feedback as available.
 - BBC multiple-choice answers lock after the first submitted attempt. Reopening
