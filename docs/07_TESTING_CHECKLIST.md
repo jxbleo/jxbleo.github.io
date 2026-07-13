@@ -119,6 +119,15 @@ Check:
 - the student bell uses the same SVG bell design as the teacher bell
 - the notebook icon sits immediately to the right of the bell and opens My
   Words in an independent modal
+- Library shows a compact search button immediately left of the `Library`
+  capsule and does not reserve a separate full-width search row; clicking the
+  button transforms the capsule into the input, while Close and Escape clear it
+- after selecting `NGSL`, searching for a BBC Set ID such as `BBC-250102`
+  automatically activates the matching BBC year capsule and shows that task;
+  searching for `C7-T1-S1` from Practice similarly activates `Exam` and
+  `IELTS Listening`
+- a Library query with no matches shows one global no-results message instead
+  of a placeholder card from the previously selected capsule
 - scrolling the My Words modal, closing it, and reopening it restores the prior
   internal scroll position
 - neither Assignments nor My Words appears as a lower navigation entry

@@ -108,6 +108,11 @@
     var profileContent = document.getElementById('profile-content');
     var myWordsContent = document.getElementById('my-words-content');
     var resourceSearch = document.getElementById('resource-search');
+    var resourceSearchToggle = document.getElementById('resource-search-toggle');
+    var resourceSearchClose = document.getElementById('resource-search-close');
+    var studentLibraryDock = document.getElementById('student-library-dock');
+    var studentLibraryLabel = document.getElementById('student-library-label');
+    var studentLibrarySearchPanel = document.getElementById('student-library-search-panel');
     var accountPanel = document.getElementById('student-account-panel');
     var wordsButton = document.getElementById('student-words-button');
     var wordsOverlay = document.getElementById('student-words-overlay');
@@ -1692,6 +1697,155 @@
         return result;
     }
 
+    function librarySectionById(sectionId) {
+        var sections = libraryCatalog && libraryCatalog.sections || [];
+        for (var i = 0; i < sections.length; i++) {
+            if (sections[i].id === sectionId) return sections[i];
+        }
+        return null;
+    }
+
+    function librarySearchHaystack(item) {
+        var section = librarySectionById(item && (item.sectionId || item.section_id));
+        return [
+            item && item.title,
+            item && item.id,
+            item && item.set_id,
+            item && item.topic,
+            item && item.displayValue,
+            item && item.course,
+            item && item.type,
+            item && item.sourceName,
+            item && item.source_name,
+            item && item.note,
+            section && section.id,
+            section && section.title,
+            (item && item.tags || []).join(' ')
+        ].join(' ').toLowerCase();
+    }
+
+    function libraryItemMatchesSearch(item, searchText) {
+        return !searchText || librarySearchHaystack(item).indexOf(searchText) !== -1;
+    }
+
+    function librarySubTabConfig(tabId, subTabId) {
+        var configs = LIBRARY_SUB_TABS[tabId] || [];
+        if (!configs.length) return null;
+        if (!subTabId) return configs[0];
+        for (var i = 0; i < configs.length; i++) {
+            if (configs[i].id === subTabId) return configs[i];
+        }
+        return configs[0];
+    }
+
+    function libraryTabForSection(section) {
+        if (!section) return '';
+        var tabIds = Object.keys(LIBRARY_GROUP_IDS);
+        for (var i = 0; i < tabIds.length; i++) {
+            if ((LIBRARY_GROUP_IDS[tabIds[i]] || []).indexOf(section.groupId || 'general') !== -1) {
+                return tabIds[i];
+            }
+        }
+        return '';
+    }
+
+    function libraryDestinationForItem(item) {
+        var section = librarySectionById(item && (item.sectionId || item.section_id));
+        var tabId = libraryTabForSection(section);
+        if (!tabId) return null;
+        var configs = LIBRARY_SUB_TABS[tabId] || [];
+        var fallback = null;
+        for (var i = 0; i < configs.length; i++) {
+            if (!librarySubTabMatchesSection(configs[i], section) || !librarySubTabMatchesItem(configs[i], item)) continue;
+            if (configs[i].id) {
+                return { tabId: tabId, subTabId: configs[i].id };
+            }
+            fallback = configs[i];
+        }
+        return fallback ? { tabId: tabId, subTabId: fallback.id } : null;
+    }
+
+    function librarySearchRank(item, searchText) {
+        var identity = libraryItemIdentity(item).toLowerCase();
+        var title = String(item && item.title || '').toLowerCase();
+        if (identity === searchText) return 0;
+        if (title === searchText) return 1;
+        if (identity.indexOf(searchText) === 0) return 2;
+        if (title.indexOf(searchText) === 0) return 3;
+        return 4;
+    }
+
+    function librarySelectionContainsItem(item) {
+        var section = librarySectionById(item && (item.sectionId || item.section_id));
+        var config = librarySubTabConfig(libraryActiveTab, libraryActiveSubTab);
+        if (!section || !config) return false;
+        if ((LIBRARY_GROUP_IDS[libraryActiveTab] || []).indexOf(section.groupId || 'general') === -1) return false;
+        return librarySubTabMatchesSection(config, section) && librarySubTabMatchesItem(config, item);
+    }
+
+    function librarySyncTabButtons() {
+        var bar = document.getElementById('student-library-tab-bar');
+        if (!bar) return;
+        var tabs = bar.querySelectorAll('.library-tab-btn');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === libraryActiveTab);
+        }
+    }
+
+    function libraryApplyGlobalSearchDestination(searchText) {
+        if (!searchText) return false;
+        var matches = (state.resources || []).filter(function(item) {
+            return item.visible !== false && libraryItemMatchesSearch(item, searchText);
+        });
+        if (!matches.length) return false;
+        for (var i = 0; i < matches.length; i++) {
+            if (librarySelectionContainsItem(matches[i])) return false;
+        }
+        matches = matches.map(function(item, index) {
+            return { item: item, index: index, rank: librarySearchRank(item, searchText) };
+        }).sort(function(left, right) {
+            return left.rank - right.rank || left.index - right.index;
+        });
+        for (var i = 0; i < matches.length; i++) {
+            var destination = libraryDestinationForItem(matches[i].item);
+            if (!destination) continue;
+            var changed = libraryActiveTab !== destination.tabId || libraryActiveSubTab !== destination.subTabId;
+            libraryActiveTab = destination.tabId;
+            libraryActiveSubTab = destination.subTabId;
+            librarySyncTabButtons();
+            return changed;
+        }
+        return false;
+    }
+
+    function handleLibrarySearchKeydown(event) {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        setLibrarySearchOpen(false);
+    }
+
+    function setLibrarySearchOpen(open) {
+        if (!studentLibraryDock || !resourceSearch || !resourceSearchToggle) return;
+        var shouldOpen = open === true;
+        studentLibraryDock.classList.toggle('is-searching', shouldOpen);
+        resourceSearchToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        resourceSearch.disabled = !shouldOpen;
+        if (resourceSearchClose) resourceSearchClose.disabled = !shouldOpen;
+        if (studentLibrarySearchPanel) studentLibrarySearchPanel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        if (studentLibraryLabel) studentLibraryLabel.tabIndex = shouldOpen ? -1 : 0;
+        document.removeEventListener('keydown', handleLibrarySearchKeydown);
+        if (shouldOpen) {
+            document.addEventListener('keydown', handleLibrarySearchKeydown);
+            window.requestAnimationFrame(function() {
+                resourceSearch.focus({ preventScroll: true });
+            });
+            return;
+        }
+        resourceSearch.value = '';
+        libraryLoadTabContent(libraryActiveTab);
+        resourceSearchToggle.focus({ preventScroll: true });
+    }
+
     function libraryLoadTabContent(tabId) {
         tabId = tabId || libraryActiveTab;
         var root = document.getElementById('student-library-content');
@@ -1786,14 +1940,10 @@
 
             var sectionItems = (itemsBySection[section.id] || []).filter(function(item) {
                 if (!librarySubTabMatchesItem(activeSubTabConfig, item)) return false;
-                if (!searchText) return true;
-                return [
-                    item.title, item.id, item.set_id, item.topic, item.displayValue,
-                    (item.tags || []).join(' ')
-                ].join(' ').toLowerCase().indexOf(searchText) !== -1;
+                return libraryItemMatchesSearch(item, searchText);
             });
 
-            if (section.id === yearSectionId && !sectionItems.length) {
+            if (!searchText && section.id === yearSectionId && !sectionItems.length) {
                 cardsHtml += libraryBuildPlaceholderCard(section);
                 continue;
             }
@@ -1806,12 +1956,12 @@
                     var hidden = activeYear && itemYear !== activeYear;
                     cardsHtml += libraryBuildCard(item, section, hidden ? 'year-hidden' : '', itemYear);
                 }
-            } else if (!targetSectionId && !section.yearFilter) {
+            } else if (!searchText && !targetSectionId && !section.yearFilter) {
                 cardsHtml += libraryBuildPlaceholderCard(section);
             }
         }
 
-        if (targetSectionId && !cardsHtml && !activeSubTabConfig.vocabularySource) {
+        if (!searchText && targetSectionId && !cardsHtml && !activeSubTabConfig.vocabularySource) {
             for (var i = 0; i < libraryCatalog.sections.length; i++) {
                 if (libraryCatalog.sections[i].id === targetSectionId) {
                     cardsHtml = libraryBuildPlaceholderCard(libraryCatalog.sections[i]);
@@ -1821,7 +1971,9 @@
         }
 
         if (!cardsHtml) {
-            cardsHtml = '<p class="section-description">No content yet.</p>';
+            cardsHtml = searchText
+                ? '<p class="section-description">No Library tasks match &ldquo;' + escapeHtml(resourceSearch.value.trim()) + '&rdquo;.</p>'
+                : '<p class="section-description">No content yet.</p>';
         }
 
         root.innerHTML = '<div class="resource-list library-task-list student-library-list">' + cardsHtml + '</div>';
@@ -1831,13 +1983,7 @@
         if (tabId === libraryActiveTab) return;
         libraryActiveTab = tabId;
         libraryActiveSubTab = '';
-        var bar = document.getElementById('student-library-tab-bar');
-        if (bar) {
-            var tabs = bar.querySelectorAll('.library-tab-btn');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tabId);
-            }
-        }
+        librarySyncTabButtons();
         libraryLoadTabContent(tabId);
     }
 
@@ -2560,7 +2706,17 @@
             if (event.target === wordsOverlay) setWordsPanel(false);
         });
     }
+    resourceSearchToggle.addEventListener('click', function() {
+        setLibrarySearchOpen(!studentLibraryDock.classList.contains('is-searching'));
+    });
+    if (resourceSearchClose) {
+        resourceSearchClose.addEventListener('click', function() {
+            setLibrarySearchOpen(false);
+        });
+    }
     resourceSearch.addEventListener('input', function() {
+        var searchText = String(resourceSearch.value || '').trim().toLowerCase();
+        libraryApplyGlobalSearchDestination(searchText);
         libraryLoadTabContent(libraryActiveTab);
     });
 
