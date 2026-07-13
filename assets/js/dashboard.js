@@ -819,35 +819,45 @@
         overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
             var href = overlay.dataset.href;
             if (href) {
-                closePracticeEntryDialog();
+                var onCommit = overlay.practiceEntryOnCommit;
+                closePracticeEntryDialog({ restoreSource: false });
+                if (typeof onCommit === 'function') onCommit();
                 window.location.href = href;
             }
         });
         return overlay;
     }
 
-    function closePracticeEntryDialog() {
+    function closePracticeEntryDialog(options) {
         var overlay = document.getElementById('practice-entry-overlay');
         if (!overlay) return;
+        var restoreSource = !options || options.restoreSource !== false;
+        var onDismiss = restoreSource ? overlay.practiceEntryOnDismiss : null;
         overlay.hidden = true;
         delete overlay.dataset.href;
+        overlay.practiceEntryOnDismiss = null;
+        overlay.practiceEntryOnCommit = null;
         document.removeEventListener('keydown', handlePracticeEntryKeydown);
+        if (typeof onDismiss === 'function') onDismiss();
     }
 
     window.addEventListener('pageshow', function() {
-        closePracticeEntryDialog();
+        closePracticeEntryDialog({ restoreSource: false });
     });
 
     function handlePracticeEntryKeydown(event) {
         if (event.key === 'Escape') closePracticeEntryDialog();
     }
 
-    function showPracticeEntryDialog(element, href) {
+    function showPracticeEntryDialog(element, href, options) {
         var overlay = ensurePracticeEntryDialog();
         var status = practiceEntryStatus(element);
         var best = element && element.dataset && element.dataset.entryBest;
         var locked = practiceEntryLocked(element);
+        options = options || {};
         overlay.dataset.href = href || '';
+        overlay.practiceEntryOnDismiss = typeof options.onDismiss === 'function' ? options.onDismiss : null;
+        overlay.practiceEntryOnCommit = typeof options.onCommit === 'function' ? options.onCommit : null;
         overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
         overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
         overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
@@ -1064,6 +1074,19 @@
             return markTeacherRepliesSeen(replies);
         }
 
+        function suspend() {
+            document.removeEventListener('keydown', onKeydown);
+            overlay.hidden = true;
+            if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
+        }
+
+        function resume(card) {
+            overlay.hidden = false;
+            if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
+            document.addEventListener('keydown', onKeydown);
+            if (card && card.isConnected) card.focus();
+        }
+
         function onKeydown(event) {
             if (event.key === 'Escape') close(true);
         }
@@ -1079,8 +1102,12 @@
                 event.preventDefault();
                 event.stopPropagation();
                 var href = card.dataset.openHref;
-                close(true);
-                if (href) showPracticeEntryDialog(card, href);
+                if (!href) return;
+                suspend();
+                showPracticeEntryDialog(card, href, {
+                    onDismiss: function() { resume(card); },
+                    onCommit: function() { close(true); }
+                });
             }
             card.addEventListener('click', openTask);
             card.addEventListener('keydown', openTask);
