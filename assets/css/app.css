@@ -3296,7 +3296,12 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-due-row > .progress-matrix-student-cell {
     color: var(--muted);
-    text-align: center;
+    justify-content: flex-start;
+    padding-right: 10px;
+    padding-left: 10px;
+    font-size: 0.75rem;
+    font-weight: 850;
+    text-align: left;
     text-transform: uppercase;
 }
 .progress-matrix-task-name {

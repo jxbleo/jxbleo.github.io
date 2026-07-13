@@ -1,5 +1,8 @@
 # Changelog
 
+- Renamed the Teacher View matrix's sticky `Due` label to `DUE AT` and matched
+  its text edge, padding, font size, and weight to the `Student` header above;
+  the shared grid already provides identical column boundaries.
 - Matched the Teacher View matrix's sticky `Due` cell to the colorful
   Student/task header surface, and normalized the full Due/Wxx row's font,
   centering, height, padding, and borders to keep every column aligned.

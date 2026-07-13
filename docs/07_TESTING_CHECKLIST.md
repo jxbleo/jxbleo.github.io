@@ -251,14 +251,16 @@ Check:
   previous Beijing Monday-Sunday range, and `Self study` shows records without
   an assignment separately
 - View matrix task headers show only task ID and task name, with no Wxx label;
-  clicking a header opens that task's teacher preview. Exactly one Due row
+  clicking a header opens that task's teacher preview. Exactly one DUE AT row
   appears below the headers and above student scores, its sticky first cell
-  reads `Due`, and every assigned task cell contains its zero-padded Wxx
+  reads `DUE AT`, and every assigned task cell contains its zero-padded Wxx
   assignment-grouping label even when `due_at` is missing. Week numbering starts
-  at the first Monday of the relevant year. The Due first cell matches the
-  colorful Student/task header surface, and all Due/Wxx cells have equal height,
-  centered text, continuous borders, and exact column alignment
-- Clicking a matrix task's Due/Wxx cell opens one parameter editor for every
+  at the first Monday of the relevant year. The DUE AT first cell matches the
+  colorful Student/task header surface and the Student cell's left text edge,
+  while all row cells have equal height, continuous borders, and exact column
+  alignment
+- Clicking a matrix task's Wxx cell in the DUE AT row opens one parameter editor
+  for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
   students without changing assignments hidden by the filter
