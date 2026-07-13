@@ -51,7 +51,9 @@ than a feature billboard. The current direction keeps the established
 two-column welcome/form composition inside one neutral, translucent glass
 surface, with no decorative object movement. Keep the visible text minimal:
 `Mr. Cat Academy`, one central quote, the Student ID/password fields, `Sign
-in`, `Continue as Visitor`, and a short visitor-mode note.
+in`, `Continue as Visitor`, and a short visitor-mode note. The left welcome
+column keeps the quote close below the brand instead of distributing both items
+to opposite vertical edges and leaving a large blank region above the quote.
 
 ## 3. Student Dashboard
 
@@ -68,12 +70,14 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the top-right
   notification bell; there is no lower Assignments page entry
+- the student header's top-left brand position displays the student's randomized
+  English greeting followed by the randomized motivational sentence as one
+  unbroken line. The combined message continuously travels to the right inside
+  its clipped header lane without overlapping the notification, My Words, or
+  identity controls. Reduced-motion mode keeps one static, readable copy.
 - the top student billboard is a progress board rather than a pure welcome
-  panel. It keeps one short randomly selected English greeting that includes
-  the student's English name; the greeting should stay on one line unless the
-  viewport is too narrow. A smaller randomly selected motivational sentence
-  appears below it. The old three summary cards are
-  replaced by one completion progress bar with the `Finished / total` value
+  panel. Its former greeting and motivational-copy fields are removed so the
+  top row contains only one completion progress bar with the `Finished / total` value
   centered above the bar, and `Finished` on the lower-left plus To do on the
   lower-right as compact supporting metadata. The board shows the current
   week plus the previous three weeks as a compact GitHub-style grid with weekday

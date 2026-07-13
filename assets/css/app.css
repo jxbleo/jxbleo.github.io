@@ -91,7 +91,8 @@ button { cursor: pointer; }
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: clamp(28px, 4vw, 48px);
     padding: clamp(38px, 7vw, 80px);
     color: var(--ink);
     background:
@@ -260,6 +261,34 @@ button { cursor: pointer; }
     padding: 30px 0 20px;
 }
 .app-brand { margin: 0; font-size: 1rem; font-weight: 900; letter-spacing: -0.02em; }
+.student-greeting-marquee {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.student-greeting-marquee + .identity-cluster {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+}
+.student-greeting-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+}
+.student-greeting-track.is-scrolling {
+    animation: studentGreetingScrollRight 24s linear infinite;
+}
+.student-greeting-copy {
+    flex: none;
+    padding-right: 3rem;
+}
+@keyframes studentGreetingScrollRight {
+    from { transform: translate3d(-50%, 0, 0); }
+    to { transform: translate3d(0, 0, 0); }
+}
 .student-chip {
     padding: 9px 13px;
     border: 1px solid rgba(19, 118, 109, 0.15);
@@ -695,32 +724,9 @@ button { cursor: pointer; }
 .student-progress-hero::after {
     background: radial-gradient(circle, rgba(255, 255, 255, 0.68), transparent 70%);
 }
-.student-progress-hero h1 {
-    color: var(--ink);
-    max-width: 760px;
-    font-size: clamp(1.95rem, 4.8vw, 3.7rem);
-    line-height: 1.02;
-    letter-spacing: 0;
-    overflow-wrap: break-word;
-}
-.student-progress-hero p {
-    max-width: 760px;
-    color: rgba(24, 53, 47, 0.68);
-    font-size: clamp(0.98rem, 1.8vw, 1.12rem);
-    font-weight: 760;
-    line-height: 1.45;
-    overflow-wrap: break-word;
-}
-.hero-copy-stack {
-    min-width: 0;
-}
 .hero-progress-head {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
-    gap: 20px;
-    align-items: end;
     margin-bottom: 22px;
 }
 .hero-progress-stats {
@@ -1407,6 +1413,11 @@ body:not(.teacher-page) .tab-button.active {
 @media (prefers-reduced-motion: reduce) {
     .star-flyer { animation-duration: 1ms; }
     .star-counter.pop { animation-duration: 1ms; }
+    .student-greeting-track.is-scrolling {
+        transform: none;
+        animation: none;
+    }
+    .student-greeting-copy:last-child { display: none; }
     .student-library-search-trigger,
     .student-library-dock .student-library-label,
     .student-library-search-panel { transition-duration: 1ms; }
@@ -6540,17 +6551,7 @@ body:not(.teacher-page) .tab-button.active {
         padding: 12px;
         border-radius: 22px;
     }
-    .hero-progress-head {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        margin-bottom: 16px;
-    }
-    .student-progress-hero h1 {
-        font-size: clamp(1.76rem, 9vw, 2.7rem);
-    }
-    .student-progress-hero p {
-        font-size: 0.96rem;
-    }
+    .hero-progress-head { margin-bottom: 16px; }
     .hero-progress-stats {
         padding: 12px;
     }

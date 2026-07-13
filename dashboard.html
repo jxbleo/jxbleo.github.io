@@ -8,13 +8,19 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260713-7">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260714-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
         <header class="app-header">
-            <p class="app-brand">Mr. Cat Academy</p>
+            <div class="app-brand student-greeting-marquee" id="student-greeting-marquee" role="status" aria-live="polite" aria-atomic="true">
+                <span class="sr-only" id="student-greeting-accessible">Hello. Your next step starts here.</span>
+                <span class="student-greeting-track" id="student-greeting-track" aria-hidden="true">
+                    <span class="student-greeting-copy" id="student-greeting-primary">Hello. Your next step starts here.</span>
+                    <span class="student-greeting-copy" id="student-greeting-repeat">Hello. Your next step starts here.</span>
+                </span>
+            </div>
             <div class="identity-cluster">
                 <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Notifications" aria-expanded="false">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
@@ -45,10 +51,6 @@
 
         <section class="hero-card student-progress-hero">
             <div class="hero-progress-head">
-                <div class="hero-copy-stack">
-                    <h1 id="greeting">Hello.</h1>
-                    <p id="hero-copy">Your assignments and learning resources live here.</p>
-                </div>
                 <div class="hero-progress-stats is-loading" id="hero-progress-stats" aria-label="Assignment summary">
                     <div class="hero-meter-row">
                         <strong class="progress-skeleton-text">-- / --</strong>
@@ -136,7 +138,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260713-6"></script>
+    <script src="assets/js/dashboard.js?v=20260714-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>
