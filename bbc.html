@@ -1984,73 +1984,114 @@
         body.bbc-theme-classroom-worksheet .mc-options {
             grid-column: 1 / -1;
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 5px 12px;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 5px;
             margin-top: 4px;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li {
             margin: 0;
-            border: 2px solid #1f2937;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.72);
-            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+            border: 0;
+            border-radius: 12px;
+            background: transparent;
+            box-shadow: none;
+            transition: background 0.15s ease, box-shadow 0.15s ease;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li:hover:not(.disabled) {
-            border-color: #0f766e;
-            background: rgba(255,255,255,0.86);
+            background: rgba(255,255,255,0.56);
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:checked) {
-            padding-right: 30px;
-            border-color: #0f766e;
-            background: rgba(232, 247, 243, 0.92);
-            box-shadow: inset 4px 0 0 #0f766e;
+            padding-right: 0;
+            background: #e8f7f3;
+            box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.14), 0 6px 14px rgba(15, 118, 110, 0.07);
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:checked)::after {
-            right: 10px;
-            color: #0f766e;
+            display: none;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:focus-visible) {
+            outline: 3px solid rgba(20, 184, 166, 0.24);
+            outline-offset: 2px;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li.correct {
             background: #f0fdf4 !important;
-            border-color: #4ade80 !important;
-            box-shadow: inset 4px 0 0 #22c55e;
+            border: 0 !important;
+            box-shadow: inset 3px 0 0 #22c55e, inset 0 0 0 1px rgba(34, 197, 94, 0.2) !important;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li.wrong {
             background: #fef2f2 !important;
-            border-color: #fca5a5 !important;
-            box-shadow: inset 4px 0 0 #ef4444;
+            border: 0 !important;
+            box-shadow: inset 3px 0 0 #ef4444, inset 0 0 0 1px rgba(239, 68, 68, 0.18) !important;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li.mc-locked-answer:not(.correct):not(.wrong) {
             background: #fff8df !important;
-            border-color: #efc45f !important;
-            box-shadow: inset 4px 0 0 #d99a21;
+            border: 0 !important;
+            box-shadow: inset 3px 0 0 #d99a21, inset 0 0 0 1px rgba(217, 154, 33, 0.2) !important;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options label {
             display: grid;
-            grid-template-columns: auto minmax(0, 1fr);
-            gap: 7px;
+            grid-template-columns: 25px minmax(0, 1fr);
+            gap: 9px;
             align-items: start;
-            padding: 8px 10px;
+            min-height: 44px;
+            padding: 8px 9px;
             color: #2f3d50;
             font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
             font-size: 0.91em;
             font-weight: 620;
             line-height: 1.38;
+            transition: transform 0.1s ease-out;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:not(.disabled) label:active {
+            transform: scale(0.992);
         }
 
         body.bbc-theme-classroom-worksheet .option-label {
-            color: #0f766e;
-            font-size: 0.78em;
-            font-weight: 900;
+            display: grid;
+            place-items: center;
+            width: 25px;
+            height: 25px;
+            margin-top: 1px;
+            border: 1.5px solid rgba(64, 80, 102, 0.5);
+            border-radius: 50%;
+            color: #405066;
+            font-size: 0.69em;
+            font-weight: 950;
             margin-right: 0;
-            line-height: 1.55;
+            line-height: 1;
+            transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li:has(input[type="radio"]:checked) .option-label {
+            border-color: #0f766e;
+            color: #ffffff;
+            background: #0f766e;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.correct .option-label {
+            border-color: #22c55e !important;
+            color: #ffffff !important;
+            background: #22c55e !important;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.wrong .option-label {
+            border-color: #ef4444 !important;
+            color: #ffffff !important;
+            background: #ef4444 !important;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.mc-locked-answer:not(.correct):not(.wrong) .option-label {
+            border-color: #d99a21 !important;
+            color: #ffffff !important;
+            background: #d99a21 !important;
         }
 
         body.bbc-theme-classroom-worksheet .option-text {
@@ -2607,6 +2648,18 @@
             }
             body.bbc-theme-classroom-worksheet .mc-options {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body.bbc-theme-classroom-worksheet .mc-options li,
+            body.bbc-theme-classroom-worksheet .mc-options label,
+            body.bbc-theme-classroom-worksheet .option-label {
+                transition: none;
+            }
+
+            body.bbc-theme-classroom-worksheet .mc-options li:not(.disabled) label:active {
+                transform: none;
             }
         }
     </style>

@@ -604,12 +604,14 @@ Shared rules:
   `Notes`. Multiple-choice question numbers in this theme should omit trailing
   punctuation, matching the fill-in number treatment, and options should use a
   quieter worksheet-body text style rather than heavy card text. Multiple-choice
-  options should render as rounded worksheet boxes; if an option wraps, the
-  continuation line should align with the option sentence rather than the option
-  letter. The student identity should remain in the audio bar as the English
-  name only rather than the title row, `Visitor` should not be shown there,
-  selected multiple-choice options should keep a visible green left-edge line,
-  and the floating History toolbar should not include `Clear`.
+  options should use one full-width column with open, borderless rows and circular
+  A-D markers. Only hover and selection add a surface: selection uses a soft teal
+  background and fills the chosen letter marker, without the right-side `✦` used
+  by other BBC themes. If an option wraps, the continuation line should align
+  with the option sentence rather than the option letter. The student identity
+  should remain in the audio bar as the English name only rather than the title
+  row, `Visitor` should not be shown there, and the floating History toolbar
+  should not include `Clear`.
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
@@ -625,9 +627,10 @@ Shared rules:
   keep those radio groups disabled.
 - Clear removes visible answers, feedback, Explain, Argue, and local blank
   locks, but it must not unlock submitted BBC multiple-choice answers.
-- BBC MC option selection may add only lightweight sound and a right-side
-  `✦` selection symbol. Do not add extra selected-state text; the blue render
-  theme should show the symbol in blue.
+- BBC MC option selection may add only lightweight sound and visual state; do
+  not add extra selected-state text. The blue render theme may show a right-side
+  `✦` in blue, while the `classroom-worksheet` theme uses its filled circular
+  letter marker and soft teal row surface instead.
 - In the BBC blue render theme, the top lesson tools show `Worksheet` only,
   the exercise body does not show separate `Part 1` / `Part 2` headings, and
   the main submission button reads `Submit`.
