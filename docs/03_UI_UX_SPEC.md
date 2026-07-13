@@ -405,6 +405,10 @@ It should include:
   left alignment, horizontal padding, typography, and column width as the
   `Student` cell above, while the Wxx cells retain their centered green action
   treatment. Every cell in the row shares one height and continuous borders.
+  At the phone portrait breakpoint, `Student`, `DUE AT`, and the Wxx cells use
+  the same compact padding and type scale, and the sticky first-column cells
+  fill the shared grid track instead of deriving their rendered width from
+  their own font size.
 - clicking a task's `Wxx` cell in the `DUE AT` row opens assignment management
   for all records
   represented by that visible column. A class/individual filter limits the edit

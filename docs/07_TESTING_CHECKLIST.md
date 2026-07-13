@@ -299,7 +299,9 @@ Check:
   at the first Monday of the relevant year. The DUE AT first cell matches the
   colorful Student/task header surface and the Student cell's left text edge,
   while all row cells have equal height, continuous borders, and exact column
-  alignment
+  alignment. Verify this at phone portrait width (below 760px) as well as phone
+  landscape/desktop width; rotating the device must not shift the DUE AT first
+  cell or the Wxx column boundaries
 - Clicking a matrix task's Wxx cell in the DUE AT row opens one parameter editor
   for every
   assignment in that visible column; a class/individual filter limits the IDs
