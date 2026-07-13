@@ -140,6 +140,10 @@ Rules:
 
 - Student ownership checks use authenticated `auth_uid`.
 - `student_id` is a human-facing Login ID, not an authorization key.
+- A completed teacher deletion archives the old profile's `student_id`, keeps
+  the original value in `deleted_student_id_snapshot`, and releases that Login
+  ID for a new auth user/profile. The new `auth_uid` does not inherit records
+  owned by the deleted UID.
 - Teacher authority comes from a `students` document with `role: "teacher"` and `active: true`.
 - Frontend role flags are never trusted.
 - Visitors are frontend-only browsing state and cannot write CloudBase data.

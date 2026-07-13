@@ -112,6 +112,23 @@ function visibleStudentRecords(rows) {
   return (rows || []).map(recordData).filter((student) => !isDeletedStudent(student));
 }
 
+function archivedStudentId(student) {
+  const source = recordData(student) || {};
+  return `__deleted__:${text(source._id || source.auth_uid)}`;
+}
+
+async function releaseDeletedStudentId(student, releasedAt = new Date()) {
+  const source = recordData(student);
+  if (!source || !source._id || !isDeletedStudent(source)) throw new Error("STUDENT_DELETE_ARCHIVE_INVALID");
+  const originalStudentId = text(source.deleted_student_id_snapshot || source.student_id);
+  await db.collection("students").doc(source._id).update({
+    student_id: archivedStudentId(source),
+    deleted_student_id_snapshot: originalStudentId,
+    deleted_student_id_released_at: releasedAt,
+    updated_at: releasedAt,
+  });
+}
+
 function normalizedAssignmentStatus(status) {
   if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "mastered") return "mastered";
@@ -455,8 +472,13 @@ async function createStudent(event) {
   const curriculumTrack = text(event.curriculum_track);
 
   if (!studentId || !name) throw new Error("STUDENT_FIELDS_REQUIRED");
-  if (await getOne("students", { student_id: studentId })) throw new Error("STUDENT_ID_EXISTS");
+  const matchingProfiles = (await getAll("students", { where: { student_id: studentId } })).map(recordData);
+  if (matchingProfiles.some((student) => !isDeletedStudent(student))) throw new Error("STUDENT_ID_EXISTS");
   if (await findEndUserByUsername(studentId)) throw new Error("STUDENT_ID_EXISTS");
+
+  for (const deletedStudent of matchingProfiles) {
+    await releaseDeletedStudentId(deletedStudent);
+  }
 
   const password = initialPassword();
   let authUid = "";
@@ -519,7 +541,10 @@ async function updateStudent(event) {
   if (!student || student.role === "teacher" || isDeletedStudent(student)) throw new Error("STUDENT_NOT_FOUND");
 
   const update = { updated_at: new Date() };
-  if (Object.prototype.hasOwnProperty.call(event, "name")) update.name = text(event.name);
+  if (Object.prototype.hasOwnProperty.call(event, "name")) {
+    update.name = text(event.name);
+    if (!update.name) throw new Error("STUDENT_NAME_REQUIRED");
+  }
   if (Object.prototype.hasOwnProperty.call(event, "class_group")) update.class_group = text(event.class_group);
   if (Object.prototype.hasOwnProperty.call(event, "curriculum_track")) update.curriculum_track = text(event.curriculum_track);
   if (Object.prototype.hasOwnProperty.call(event, "active")) {
@@ -598,6 +623,8 @@ async function deleteStudentAccount(event, teacher) {
     deleted_by_teacher_uid: teacher.auth_uid,
     deleted_student_id_snapshot: student.student_id || "",
     deleted_name_snapshot: student.name || "",
+    student_id: archivedStudentId(student),
+    deleted_student_id_released_at: now,
     updated_at: now,
   });
   return { success: true };
@@ -2079,6 +2106,8 @@ exports.main = async (event) => {
         ? "Teacher access is required."
         : error.message === "STUDENT_ID_EXISTS"
           ? "This Login ID already exists. Please use a different ID."
+          : error.message === "STUDENT_NAME_REQUIRED"
+            ? "Student name is required."
           : error.message === "MASTERY_REQUIRED"
             ? "Mastery percentage is required when Earn STAR is enabled."
             : error.message === "PASSING_ABOVE_MASTERY"

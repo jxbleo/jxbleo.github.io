@@ -41,7 +41,7 @@ Core fields:
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `auth_uid` | string | CloudBase Auth user ID |
-| `student_id` | string | human-facing Login ID |
+| `student_id` | string | human-facing Login ID for current profiles; internal `__deleted__:<profile-id>` archive key after deletion |
 | `name` | string | display name |
 | `class_group` | string | class/group |
 | `curriculum_track` | string | DSE, IELTS, etc. |
@@ -54,6 +54,7 @@ Core fields:
 | `deleted_by_teacher_uid` | string/null | teacher who deleted the profile |
 | `deleted_student_id_snapshot` | string | Login ID snapshot kept for audit/history |
 | `deleted_name_snapshot` | string | display-name snapshot kept for audit/history |
+| `deleted_student_id_released_at` | Date/null | time the deleted profile released its former Login ID for reuse |
 | `teacher_activity_attempts_seen_at` | Date/null | legacy bell-open timestamp; no longer clears attempt-thread unread state |
 | `teacher_activity_attempts_read_all_at` | Date/null | latest teacher `Read all` cutoff; attempts submitted at or before it are read |
 | `teacher_activity_attempt_reviewed_ids` | array | attempt IDs opened from the teacher notification panel |
@@ -64,14 +65,17 @@ Core fields:
 Rules:
 
 - `auth_uid` is the ownership key.
-- `student_id` is unique but not used for authorization.
+- `student_id` is unique among non-deleted profiles but is not used for
+  authorization.
 - Teacher actions require `role: "teacher"` and `active: true`.
 - Student-facing functions should require `role: "student"`.
 - Teacher deletion removes the CloudBase Auth end user, sets `active:false`
-  plus deletion audit fields on the profile, and hides the student from teacher
-  student lists, Assign candidates, View progress, activity attempts, and Argue
-  lists. Historical attempts, assignments, STAR records, and disputes are not
-  hard-deleted.
+  plus deletion audit fields on the profile, archives `student_id` as
+  `__deleted__:<profile-id>`, and hides the student from teacher student lists,
+  Assign candidates, View progress, activity attempts, and Argue lists. The
+  original Login ID remains in `deleted_student_id_snapshot` and can be used by
+  a newly created account. Historical attempts, assignments, STAR records, and
+  disputes are not hard-deleted or transferred to the new `auth_uid`.
 - Teacher notification activity is grouped by student assignment thread, or by
   student and set for self-study. A thread is read when all its attempts were
   individually recorded in `teacher_activity_attempt_reviewed_ids`, or their

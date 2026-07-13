@@ -182,16 +182,22 @@ The same direct-add rule applies to `assignments` and `attempts`.
 
 ### Login ID uniqueness
 
-`student_id` is unique; student names may repeat.
+`student_id` is unique among current, non-deleted profiles; student names may
+repeat. A deleted profile keeps its original Login ID only in
+`deleted_student_id_snapshot` and replaces `student_id` with an internal
+`__deleted__:<profile-id>` archive key so the teacher can deliberately create a
+new account with the former Login ID.
 
 Before creating an account, check both:
 
-- `students.student_id`
+- non-deleted `students.student_id`
 - CloudBase Authentication end-user username
 
 If either exists, return `STUDENT_ID_EXISTS`. Do not auto-merge, auto-delete,
-or silently repair duplicate accounts. The owner chose prevention at account
-creation instead of migration complexity.
+or silently repair current duplicate accounts. Reusing a Login ID after a
+completed teacher deletion creates a new auth user and a new profile; it never
+reattaches the deleted account's assignments, attempts, STAR records, or Argue
+history to the new `auth_uid`.
 
 ### Creating a student
 
@@ -230,6 +236,8 @@ profile. Never trust a role, UID, or Student ID sent by browser code.
 ### Password and account state
 
 - Passwords are not stored in the database and cannot be shown to teachers.
+- Correct a misspelled student name through the teacher profile editor; a name
+  correction does not require deleting or recreating the login account.
 - Reset changes the CloudBase auth password to the configured initial password,
   enables the auth user, and sets `must_change_password: true`.
 - Disabling/enabling a student updates both CloudBase Authentication status and
@@ -261,7 +269,9 @@ fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
 the numbered docs are the current handoff entry point.
 Preserve these stable identifiers:
 
-- `student_id`: unique Login ID
+- `student_id`: unique Login ID during a current account lifecycle; a completed
+  deletion releases it while retaining the original value in the deleted
+  profile's audit snapshot
 - `auth_uid`: authoritative authentication link
 - `set_id`: stable content/exercise ID
 - `assignment_id`: unique assignment instance

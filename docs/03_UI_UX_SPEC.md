@@ -510,7 +510,11 @@ Student detail should show:
 - recent attempts
 - reset password
 - delete account
-- class/system editing
+- name/class/system editing
+
+Use name editing for spelling corrections. Account deletion is for ending the
+account lifecycle; after deletion the same Login ID may be used to create a new
+account, but the new account does not inherit the deleted account's history.
 
 ### Review
 
