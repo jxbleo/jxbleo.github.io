@@ -66,6 +66,16 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-07-13
+
+- Replaced the yellow BBC `classroom-worksheet` theme's boxed, two-column MC
+  options with the owner-selected open-row design: one full-width column,
+  circular A-D markers, and a soft teal surface only on hover/selection. Kept
+  fill-in styling, other BBC themes, grading, answer locks, and result states
+  unchanged. Verified inline script syntax, CSS scope, desktop/mobile layout,
+  option selection, and zero browser console errors. CloudBase: no deployment
+  or data import required; static publish is required.
+
 ### 2026-06-24
 
 - Implemented the selected teacher View `By student` expanded layout: a
