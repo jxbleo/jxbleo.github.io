@@ -25,14 +25,33 @@
 | `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
 
+### Shared System Shell
+
+The login page, public Library, student Dashboard, and Teacher desk share a
+neutral Liquid Glass system shell. This is a presentation layer only: it must
+not move existing controls, alter the page information architecture, replace
+JavaScript hooks, or change business behavior. Practice runtimes (`bbc.html`,
+`ielts-reading.html`, `ielts-listening.html`, and `vocabulary.html`) are
+intentionally outside this shared shell so each exercise can keep its own
+learning-specific design.
+
+Use translucent glass for functional layers such as navigation, headers,
+search, account surfaces, and dialogs. Repeated content cards and dense teacher
+data panels use a quieter, lightly translucent standard material rather than
+stacking blur on blur. The ambient palette stays neutral and softly luminous;
+system blue is reserved for the primary action, focus, and selected state.
+Existing semantic/category colors and green/red learning-result colors remain
+unchanged. The shell must provide reduced-transparency, increased-contrast, and
+reduced-motion fallbacks.
+
 ### Login
 
 The student login page should feel like a lightweight welcome ritual rather
-than a feature billboard. The current direction uses a bright green floating
-paper scene with listening, vocabulary, writing, and speaking symbols drifting
-across the welcome panel. Keep the visible text minimal: `Mr. Cat Academy`, one
-central quote, the Student ID/password fields, `Sign in`, `Continue as
-Visitor`, and a short visitor-mode note.
+than a feature billboard. The current direction keeps the established
+two-column welcome/form composition inside one neutral, translucent glass
+surface, with no decorative object movement. Keep the visible text minimal:
+`Mr. Cat Academy`, one central quote, the Student ID/password fields, `Sign
+in`, `Continue as Visitor`, and a short visitor-mode note.
 
 ## 3. Student Dashboard
 
@@ -59,7 +78,7 @@ Assignment access and progress display:
   lower-right as compact supporting metadata. The board shows the current
   week plus the previous three weeks as a compact GitHub-style grid with weekday
   labels across the top and clickable `Wxx` week labels on the left. The visual
-  treatment should match the login/home page's pale green paper-and-glass style,
+  treatment should match the login/home page's neutral luminous glass style,
   not a dark cockpit panel. On desktop and tablet, the grid sits on the left
   half of the same progress panel and uses the available width generously so it
   does not feel like a small inset widget; the selected day's or week's
@@ -82,8 +101,8 @@ Assignment access and progress display:
   progress` centered inside it; it must not render two stacked loading capsules
   or place the loading copy outside the capsule.
 - the lower `Library` capsule, top-right My Words notebook icon, and student
-  Library `Practice` / `Exam` capsule use a soft translucent glass treatment
-  with subtle rainbow active states
+  Library `Practice` / `Exam` capsule use a soft translucent glass treatment;
+  active and primary states use restrained system blue
 - Library search is a compact circular magnifying-glass button immediately to
   the left of the lower `Library` capsule. The full-width search field must not
   remain as a separate row below that capsule. Activating search transforms the
@@ -278,18 +297,17 @@ so the first open uses the same full dialog height as later opens.
 
 The teacher page defaults to `View` on entry. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
-subtle rainbow color movement, and no centered spinner. On the first successful
+subtle neutral light movement, and no centered spinner. On the first successful
 matrix render, the real matrix content should softly fade and lift into place
 instead of replacing the loading state abruptly.
 
-Teacher visual style uses a warm, animated rainbow theme. Rainbow gradients
-appear on the hero, active tabs, primary actions, matrix headers, group-card
-top borders, and selected control borders. These rainbow
-elements should move slowly and continuously. Completion states remain
-functionally colored: passed/mastered stay green, low scores stay red, and
-empty/not-yet cells stay neutral. The grouped progress area below the matrix
-should not use rainbow fills on repeated student capsules, mode tabs, mini
-cells, score bars, or stats because repeated color blocks make the view noisy.
+Teacher visual style uses the same neutral Liquid Glass system shell as the
+login, public Library, and student Dashboard. Header controls, top navigation,
+and dialogs may use functional glass; the matrix, grouped progress cards, and
+other dense data surfaces stay on quiet standard material for legibility.
+Selected tabs and primary actions use system blue without continuous rainbow
+animation. Completion states remain functionally colored: passed/mastered stay
+green, low scores stay red, and empty/not-yet cells stay neutral.
 
 The top-right Review and Notifications icon buttons show compact spinner loading states
 while the teacher desk is initializing. The create-student and account capsules
@@ -818,12 +836,16 @@ New UI should not introduce new persistent backend status words without updating
 
 Important mobile rules:
 
+- Shared shell pages must not introduce horizontal page scrolling at phone
+  widths; internal teacher matrices may retain their intentional scroll region.
 - Assignment action buttons should not wrap awkwardly.
 - Listening controls should stay reachable while scrolling.
 - Candidate popups should not cover question text.
 - Text must not overflow buttons/cards.
 - Teacher views should remain scannable on laptop screens during class.
 - Teacher progress matrices may scroll horizontally on small screens instead of compressing text.
+- Glass surfaces must remain readable when reduced transparency, increased
+  contrast, or reduced motion is requested by the operating system.
 
 ## 8. Known UI Risks
 

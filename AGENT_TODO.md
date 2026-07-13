@@ -68,6 +68,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-13
 
+- Applied the approved neutral Liquid Glass system shell to login, public
+  Library, student Dashboard, and Teacher surfaces without moving existing
+  controls or changing business logic. Practice runtimes remain excluded.
+  Verified asset scope, JavaScript syntax, diff whitespace, desktop login,
+  visitor Dashboard and My Words behavior, 390px login/Library/Dashboard width,
+  and zero page console errors. Authenticated Teacher visual smoke remains for
+  the next publish check; no CloudBase deployment or data import is required.
 - Replaced the yellow BBC `classroom-worksheet` theme's boxed, two-column MC
   options with the owner-selected open-row design: one full-width column,
   circular A-D markers, and a soft teal surface only on hover/selection. Kept
