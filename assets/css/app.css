@@ -3383,7 +3383,8 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-head > span:first-child { z-index: 3; }
 .progress-matrix-student-cell {
-    width: var(--matrix-student-col, 10ch);
+    min-width: 0;
+    width: auto;
     white-space: nowrap;
 }
 .progress-matrix-task-head strong {
@@ -6779,10 +6780,16 @@ body:not(.teacher-page) .tab-button.active {
     }
     .progress-matrix-row > span,
     .progress-matrix-row > a,
+    .progress-matrix-row > button.progress-matrix-due-cell,
     .progress-matrix-row > .progress-matrix-student-button,
     .progress-matrix-cell {
         min-height: 40px;
         padding: 8px 7px;
+        font-size: 0.68rem;
+    }
+    .progress-matrix-due-row > .progress-matrix-student-cell {
+        padding-right: 7px;
+        padding-left: 7px;
         font-size: 0.68rem;
     }
     .progress-matrix-modal-backdrop {

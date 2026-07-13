@@ -1,5 +1,9 @@
 # Changelog
 
+- Fixed the Teacher View matrix's phone-portrait `DUE AT` row alignment by
+  making sticky first-column cells fill the shared grid track and applying the
+  same compact padding, font size, and row height to `Student`, `DUE AT`, and
+  Wxx cells below the 760px breakpoint.
 - Fixed BBC post-submit result colors so correct answers remain green and wrong
   answers use the Vocabulary-style light red; the yellow MC lock reminder no
   longer overrides known correct/wrong feedback.
