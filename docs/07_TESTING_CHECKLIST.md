@@ -156,10 +156,15 @@ Check:
 - create student checks duplicate Login ID
 - create student uses the vertical modal form and shows the checkmark success
   dialog with the Login ID after creation
+- editing a student's Name saves the corrected display name without changing
+  Login ID, auth UID, assignments, or attempts
 - reset password enables auth user and sets `must_change_password`
 - deleting a student account removes the CloudBase Auth end user, hides the
   student from Students, Assign candidates, View progress, activity attempts,
   and Argue lists, while preserving historical attempts/assignments in storage
+- after deletion completes, creating a new student with the same Login ID
+  succeeds with a new `auth_uid`; the deleted profile retains the old Login ID
+  snapshot and its historical records are not attached to the new account
 - Assign shows available students
 - Assign keeps the main tab surface to selected work/student chips and opens
   standalone picker dialogs for work and student search/filter selection

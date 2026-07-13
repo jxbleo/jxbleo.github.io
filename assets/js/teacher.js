@@ -4202,6 +4202,7 @@
             return item.student_uid === student.auth_uid;
         });
         var progressHtml = renderAssignmentProgress(assignments);
+        var nameEditing = state.studentInfoEdit === 'name';
         var classEditing = state.studentInfoEdit === 'class';
         var systemEditing = state.studentInfoEdit === 'system';
         var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
@@ -4214,6 +4215,13 @@
                     '<span></span>' +
                 '</div>' +
                 '<div class="student-info-grid">' +
+                    '<div class="student-info-item">' +
+                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Name</span><strong>' + escapeHtml(student.name || 'Not set') + '</strong></button>' +
+                        (nameEditing ? '<form class="student-info-editor" data-student-info-editor="name">' +
+                            '<input type="text" name="name" value="' + escapeHtml(student.name || '') + '" placeholder="Student name" required>' +
+                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                        '</form>' : '') +
+                    '</div>' +
                     '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
                     '<div class="student-info-item">' +
                         '<button class="student-info-edit" type="button" data-info-action="' + (student.class_group ? 'Edit' : 'Assign') + '" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></button>' +
@@ -4279,6 +4287,16 @@
                 event.preventDefault();
                 var field = form.dataset.studentInfoEditor;
                 state.studentInfoEdit = '';
+                if (field === 'name') {
+                    var nextName = form.elements.name.value.trim();
+                    if (!nextName) {
+                        showMessage('Student name is required.', 'error');
+                        renderStudentDetail();
+                        return;
+                    }
+                    updateStudent(student.auth_uid, { name: nextName });
+                    return;
+                }
                 if (field === 'class') {
                     updateStudent(student.auth_uid, { class_group: form.elements.class_group.value.trim() });
                     return;

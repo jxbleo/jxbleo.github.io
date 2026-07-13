@@ -25,6 +25,7 @@
 | 教师 Library / Assign 看不到刚新增的静态内容 | 静态站点未发布/缓存旧 `teacher.js`、CloudBase `sets` 未导入、Library/Assign fallback 没合并静态 catalog，或 CloudBase 重复导入后记录数超过云函数读取上限 | 先查 `data/home-catalog.json` 和 `teacher.html` cache version，再查 CloudBase `sets` / `grading_keys`。如果记录存在但 Assign 仍显示 import-required，查 `teacherAdmin.listSets` 读取 limit 和线上函数版本；部署最新 `teacherAdmin.zip` |
 | CloudBase 导入显示成功但系统读不到 | 上传了数组 JSON，而不是 JSON Lines | 使用 `.cloudbase-private/import/*-cloudbase.json` |
 | 学生账号在 Authentication 里有，但登录后 profile incomplete | Auth user 和 `students.auth_uid` 没正确链接，或写成嵌套 `data` | `students` 文档是否顶层字段；`auth_uid` 是否匹配 |
+| 学生删除后用相同 Login ID 重建仍报 `STUDENT_ID_EXISTS` | 线上 `teacherAdmin` 仍是旧版，已删除 profile 的 `student_id` 尚未归档释放；或 Authentication 中同名 end user 仍存在 | 部署最新版 `teacherAdmin`；检查 deleted profile 的 `deleted_student_id_snapshot` 与归档 `student_id`；再查 Authentication username |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |

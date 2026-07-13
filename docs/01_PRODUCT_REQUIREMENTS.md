@@ -252,15 +252,19 @@ flowchart TD
 
 规则：
 
-- `student_id` 必须唯一
+- `student_id` 在未删除账号中必须唯一；删除完成后可供新账号再次使用
 - `auth_uid` 必须唯一
 - 学生姓名可以重复
+- 姓名拼写错误应直接在老师端学生资料中编辑，不需要删除账号
 - 浏览器不能传一个 `student_id` 来冒充身份
 - 老师权限也来自 `students` 中的 active teacher profile
 - 老师删除学生账号时，CloudBase Auth end user 应被删除，学生 profile 标记
   `active:false` 和 `deleted_at`，教师端学生列表、Assign 候选、View 进度、
   attempt activity 和 Argue 列表都应隐藏该学生。历史 attempts、
   assignments、STAR 和 Argue 记录不硬删。
+- 删除完成时，原 Login ID 保存到 `deleted_student_id_snapshot`，profile 的
+  `student_id` 改为内部归档键，从而允许老师用原 Login ID 创建全新的账号。
+  新账号使用新的 `auth_uid`，不得自动继承或重新关联旧账号历史。
 
 ### 7.2 sets
 
@@ -590,7 +594,7 @@ flowchart TD
 
 - 验证 teacher profile
 - 创建学生 auth user + students profile
-- 更新学生信息
+- 更新学生姓名、班级和课程体系
 - reset password
 - delete student auth user and hide the student profile from teacher views
 - list sets

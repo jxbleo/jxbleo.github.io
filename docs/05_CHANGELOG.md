@@ -1,5 +1,11 @@
 # Changelog
 
+- Allowed Login IDs to be reused after a completed student account deletion.
+  Deleted profiles now keep the original ID in an audit snapshot and use an
+  internal archive key, while recreated accounts receive a new `auth_uid` and
+  do not inherit the deleted account's history.
+- Added direct student-name editing to Teacher Student Detail so spelling
+  corrections no longer require deleting an account.
 - Renamed the Teacher View matrix's sticky `Due` label to `DUE AT` and matched
   its text edge, padding, font size, and weight to the `Student` header above;
   the shared grid already provides identical column boundaries.
