@@ -14,8 +14,8 @@
             --text-main: #1f2937;
             --text-light: #64748b;
             --border-color: rgba(15, 118, 110, 0.16);
-            --correct-bg: #e8f8f5;
-            --wrong-bg: #fdf2e9;
+            --correct-bg: #f0fdf4;
+            --wrong-bg: #fef2f2;
             --warm: #f97316;
             --warm-soft: #fff2df;
             --ink: #18352f;
@@ -475,12 +475,14 @@
 
         .blank-input.correct {
             background: var(--correct-bg) !important;
-            border-bottom-color: var(--accent) !important;
+            border-bottom-color: #22c55e !important;
+            color: #15803d !important;
         }
 
         .blank-input.wrong {
             background: var(--wrong-bg) !important;
-            border-bottom-color: #e74c3c !important;
+            border-bottom-color: #ef4444 !important;
+            color: #dc2626 !important;
         }
 
         .mc-question {
@@ -493,14 +495,18 @@
         }
 
         .mc-question.wrong {
-            border-left: 4px solid #e74c3c;
+            border-color: #fca5a5;
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
         }
 
         .mc-question.correct {
-            border-left: 4px solid var(--accent);
+            border-color: #4ade80;
+            border-left: 4px solid #22c55e;
+            background: #f0fdf4;
         }
 
-        .mc-question.mc-locked-reminder {
+        .mc-question.mc-locked-reminder:not(.correct):not(.wrong) {
             border-color: #efc45f;
             border-left: 4px solid #d99a21;
             background: #fffaf0;
@@ -560,22 +566,26 @@
         }
 
         .mc-options li.wrong {
-            border-left-color: #e74c3c !important;
-            background: #fff5f5 !important;
-            border-color: #f5c6c6 !important;
+            background: #fef2f2 !important;
+            border-color: #fca5a5 !important;
+            border-left-color: #ef4444 !important;
         }
 
         .mc-options li.wrong label {
-            color: #c0392b;
+            color: #dc2626 !important;
         }
 
         .mc-options li.correct {
-            border-left-color: var(--accent) !important;
-            background: #f0fff4 !important;
-            border-color: #b8e6c8 !important;
+            background: #f0fdf4 !important;
+            border-color: #4ade80 !important;
+            border-left-color: #22c55e !important;
         }
 
-        .mc-options li.mc-locked-answer {
+        .mc-options li.correct label {
+            color: #15803d !important;
+        }
+
+        .mc-options li.mc-locked-answer:not(.correct):not(.wrong) {
             border-left-color: #d99a21 !important;
             background: #fff8df !important;
             border-color: #efc45f !important;
@@ -683,13 +693,15 @@
         }
 
         .matching-table select.correct {
-            border-color: var(--accent);
+            border-color: #4ade80;
             background: var(--correct-bg);
+            color: #15803d;
         }
 
         .matching-table select.wrong {
-            border-color: #e74c3c;
+            border-color: #fca5a5;
             background: var(--wrong-bg);
+            color: #dc2626;
         }
 
         .right-label {
@@ -1393,8 +1405,8 @@
             --text-main: #20352f;
             --text-light: #64756f;
             --border-color: rgba(43, 76, 128, 0.14);
-            --correct-bg: #e9f9f3;
-            --wrong-bg: #fff1ef;
+            --correct-bg: #f0fdf4;
+            --wrong-bg: #fef2f2;
             --ink: #1c302b;
             --muted: #64756f;
             --line: rgba(43, 76, 128, 0.14);
@@ -1543,6 +1555,14 @@
         body.bbc-theme-blue-studio .mc-question {
             border-radius: 12px;
             background: #f9fbff;
+        }
+
+        body.bbc-theme-blue-studio .mc-question.correct {
+            background: #f0fdf4;
+        }
+
+        body.bbc-theme-blue-studio .mc-question.wrong {
+            background: #fef2f2;
         }
 
         body.bbc-theme-blue-studio .mc-options li {
@@ -1875,14 +1895,20 @@
         }
 
         body.bbc-theme-classroom-worksheet .blank-input.correct {
-            background: rgba(232, 247, 243, 0.92) !important;
-            border-color: #0f766e !important;
+            background: #f0fdf4 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
         }
 
-        body.bbc-theme-classroom-worksheet .blank-input.wrong,
-        body.bbc-theme-classroom-worksheet .blank-input.attempt-locked {
-            background: rgba(255, 240, 237, 0.92) !important;
-            border-color: #b42318 !important;
+        body.bbc-theme-classroom-worksheet .blank-input.wrong {
+            background: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #dc2626 !important;
+        }
+
+        body.bbc-theme-classroom-worksheet .blank-input.attempt-locked:not(.correct):not(.wrong) {
+            background: #fff1e8 !important;
+            border-color: #d66b4d !important;
         }
 
         body.bbc-theme-classroom-worksheet hr {
@@ -1908,6 +1934,14 @@
         body.bbc-theme-classroom-worksheet .mc-question.mc-locked-reminder {
             padding-left: 0;
             border-left: 0;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-question.correct {
+            background: rgba(240, 253, 244, 0.72);
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-question.wrong {
+            background: rgba(254, 242, 242, 0.72);
         }
 
         body.bbc-theme-classroom-worksheet .mc-title {
@@ -1981,16 +2015,21 @@
         }
 
         body.bbc-theme-classroom-worksheet .mc-options li.correct {
-            background: rgba(232, 247, 243, 0.92) !important;
-            border-color: #0f766e !important;
-            box-shadow: inset 4px 0 0 #0f766e;
+            background: #f0fdf4 !important;
+            border-color: #4ade80 !important;
+            box-shadow: inset 4px 0 0 #22c55e;
         }
 
-        body.bbc-theme-classroom-worksheet .mc-options li.wrong,
-        body.bbc-theme-classroom-worksheet .mc-options li.mc-locked-answer {
-            background: rgba(255, 240, 237, 0.92) !important;
-            border-color: #b42318 !important;
-            box-shadow: inset 4px 0 0 #b42318;
+        body.bbc-theme-classroom-worksheet .mc-options li.wrong {
+            background: #fef2f2 !important;
+            border-color: #fca5a5 !important;
+            box-shadow: inset 4px 0 0 #ef4444;
+        }
+
+        body.bbc-theme-classroom-worksheet .mc-options li.mc-locked-answer:not(.correct):not(.wrong) {
+            background: #fff8df !important;
+            border-color: #efc45f !important;
+            box-shadow: inset 4px 0 0 #d99a21;
         }
 
         body.bbc-theme-classroom-worksheet .mc-options label {
@@ -2177,17 +2216,17 @@
         }
 
         .inline-explanation.wrong {
-            background: #fff5f5;
-            border: 1px solid #f5c6c6;
-            border-left: 4px solid #e74c3c;
-            color: #c0392b;
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-left: 4px solid #ef4444;
+            color: #dc2626;
         }
 
         .inline-explanation.correct {
-            background: #f0fff4;
-            border: 1px solid #b8e6c8;
-            border-left: 4px solid var(--accent);
-            color: #1e7e34;
+            background: #f0fdf4;
+            border: 1px solid #4ade80;
+            border-left: 4px solid #22c55e;
+            color: #15803d;
         }
 
         .correct-answer-check {
@@ -3531,7 +3570,8 @@
             var mcDiv = document.querySelector('[data-id="' + CSS.escape(questionId) + '"]');
             if (!mcDiv) return;
             mcDiv.setAttribute('data-mc-locked', '1');
-            mcDiv.classList.add('mc-locked-reminder');
+            var hasResult = mcDiv.classList.contains('correct') || mcDiv.classList.contains('wrong');
+            if (!hasResult) mcDiv.classList.add('mc-locked-reminder');
             var lockedRadio = mcDiv.querySelector('input[value="' + CSS.escape(String(value)) + '"]');
             if (lockedRadio) lockedRadio.checked = true;
             mcDiv.querySelectorAll('input[type="radio"]').forEach(function(input) {
@@ -3542,7 +3582,9 @@
                 li.classList.add('disabled');
             });
             var lockedLi = lockedRadio && lockedRadio.closest('li');
-            if (lockedLi) lockedLi.classList.add('mc-locked-answer');
+            if (lockedLi && !lockedLi.classList.contains('correct') && !lockedLi.classList.contains('wrong')) {
+                lockedLi.classList.add('mc-locked-answer');
+            }
         });
     }
 

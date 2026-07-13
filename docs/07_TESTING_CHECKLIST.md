@@ -91,6 +91,10 @@ link returns HTTP 200 for the current set's PDF, and render at least one
 representative generated PDF page to confirm it contains no answer key or
 explanation text.
 
+After submitting a representative BBC lesson with both correct and incorrect
+answers, verify correct blanks/matching/MC cards are green, incorrect ones are
+light red, and the yellow MC locked-answer state does not cover either result.
+
 Stop the server after testing.
 
 ## 4. Student Flow Checklist
@@ -374,7 +378,7 @@ Check:
 - each blank's choice panel opens as a floating overlay that does not push
   questions down, has no `Clear` button, and ends with a blank underline chip
 - checking Vocabulary inline practice turns correct cards green, wrong cards
-  orange-yellow without pulsing, and writes correct or wrong-to-correct
+  light red without pulsing, and writes correct or wrong-to-correct
   feedback in the answer blank
 - unanswered wrong Vocabulary inline practice blanks show `X` on the
   submitted-answer side, not `No answer`

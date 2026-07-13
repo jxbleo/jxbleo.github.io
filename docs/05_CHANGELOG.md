@@ -1,5 +1,8 @@
 # Changelog
 
+- Fixed BBC post-submit result colors so correct answers remain green and wrong
+  answers use the Vocabulary-style light red; the yellow MC lock reminder no
+  longer overrides known correct/wrong feedback.
 - Allowed Login IDs to be reused after a completed student account deletion.
   Deleted profiles now keep the original ID in an audit snapshot and use an
   internal archive key, while recreated accounts receive a new `auth_uid` and
