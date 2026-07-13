@@ -253,9 +253,9 @@ Check:
 - View matrix task headers show only task ID and task name, with no Wxx label;
   clicking a header opens that task's teacher preview. Exactly one Due row
   appears below the headers and above student scores, its sticky first cell
-  reads `Due`, and each task cell contains only its due week's zero-padded Wxx
-  label; missing/mixed due dates show `—` / `Mixed`. Week numbering starts at
-  the first Monday of the relevant year
+  reads `Due`, and every assigned task cell contains its zero-padded Wxx
+  assignment-grouping label even when `due_at` is missing. Week numbering starts
+  at the first Monday of the relevant year
 - Clicking a matrix task's Due/Wxx cell opens one parameter editor for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
