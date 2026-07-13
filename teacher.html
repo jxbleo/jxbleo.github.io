@@ -7,6 +7,7 @@
     <title>Teacher | Mr. Cat Academy</title>
     <link rel="stylesheet" href="assets/css/app.css?v=20260714-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260714-1">
 </head>
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
@@ -56,18 +57,23 @@
             </div>
         </section>
 
-        <section class="hero-card teacher-hero">
-            <h1 id="teacher-greeting">Hello.</h1>
-            <p id="teacher-hero-copy">Small steps every day create remarkable progress.</p>
-        </section>
+        <div class="teacher-workspace-frame">
+            <nav class="dashboard-tabs teacher-workspace-sidebar" aria-label="Teacher sections">
+                <button class="tab-button active" type="button" data-view="view"><span aria-hidden="true">V</span>View</button>
+                <button class="tab-button" type="button" data-view="tasks"><span aria-hidden="true">A</span>Assign</button>
+                <button class="tab-button" type="button" data-view="library"><span aria-hidden="true">L</span>Library</button>
+            </nav>
 
-        <nav class="dashboard-tabs" aria-label="Teacher sections">
-            <button class="tab-button" type="button" data-view="tasks">Assign</button>
-            <button class="tab-button active" type="button" data-view="view">View</button>
-            <button class="tab-button" type="button" data-view="library">Library</button>
-        </nav>
+            <div class="teacher-workspace-content">
+                <header class="teacher-workspace-heading">
+                    <div>
+                        <p class="eyebrow accent">TEACHER</p>
+                        <h1 id="teacher-workspace-title">View</h1>
+                    </div>
+                    <button class="primary-button teacher-new-assignment" id="teacher-new-assignment" type="button">New assignment</button>
+                </header>
 
-        <p class="teacher-message" id="teacher-message" role="status"></p>
+                <p class="teacher-message" id="teacher-message" role="status"></p>
 
         <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
             <div class="teacher-updates-shell">
@@ -315,13 +321,15 @@
             </div>
         </section>
 
-        <section class="dashboard-view" id="view-view">
-            <section class="teacher-view-board" id="teacher-view-board">
-                <div class="assignment-overview" id="assignment-overview">
-                    <div class="matrix-loading-card" role="status" aria-label="Loading assignment progress"></div>
-                </div>
-            </section>
-        </section>
+                <section class="dashboard-view" id="view-view">
+                    <section class="teacher-view-board" id="teacher-view-board">
+                        <div class="assignment-overview" id="assignment-overview">
+                            <div class="matrix-loading-card" role="status" aria-label="Loading assignment progress"></div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </div>
 
     </main>
 
@@ -329,7 +337,7 @@
     <script src="assets/js/config.public.js?v=20260711-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260713-8"></script>
+    <script src="assets/js/teacher.js?v=20260714-4"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

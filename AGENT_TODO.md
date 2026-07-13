@@ -66,6 +66,28 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-07-14
+
+- Implemented the owner-approved authenticated spatial workspace layout while
+  leaving login, public Library, and every practice runtime unchanged. Student
+  Dashboard now keeps the brand in the header, uses one static China-time-aware
+  greeting, presents welcome/progress as a responsive two-pane workspace, and
+  places Library search plus `Practice` / `Exam` beside the Library heading with
+  a two-column desktop card grid. Teacher now uses the `View` / `Assign` /
+  `Library` sidebar and exact workspace headings, removes the standalone greeting
+  hero, preserves the existing View matrix and its `Class` / `Column` / `Date`
+  filters, and keeps the approved hybrid Assign summaries, task-parameter matrix,
+  and all existing picker/management dialogs. `New assignment` switches views
+  without a write or selection reset, and `?view=tasks|library` now survives a
+  reload. Updated the UI/UX specification and testing checklist. Verified
+  JavaScript syntax, CSS brace balance, diff whitespace, release verification,
+  visitor and authenticated student/teacher desktop layouts, 390px responsive
+  layouts, search focus restoration, URL/view restoration, and zero page console
+  errors. A controlled dev-account test created one non-STAR assignment, confirmed
+  it in the student's To Do list, then soft-cancelled it and confirmed the student
+  totals returned to their original values. No CloudBase function deployment or
+  content import is required; the changed static files still need normal publish.
+
 ### 2026-07-13
 
 - Applied the approved neutral Liquid Glass system shell to login, public

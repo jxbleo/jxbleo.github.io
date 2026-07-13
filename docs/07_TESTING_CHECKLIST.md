@@ -65,8 +65,9 @@ Shared shell visual checks:
   versioned `liquid-glass-shell.css` and `liquid-glass-shell.js` assets
 - BBC, IELTS Reading, IELTS Listening, and Vocabulary practice runtimes do not
   load the shared shell assets and retain their own exercise presentation
-- the shell keeps the existing control order, card layout, navigation targets,
-  form IDs, and modal behavior; the change is visual only
+- login and public Library keep their existing control order and layout;
+  Dashboard and Teacher use the approved spatial workspace layouts while
+  preserving navigation targets, form IDs, modal behavior, and business logic
 - neutral transparent materials are used for functional navigation/dialog
   layers, while repeated content cards and teacher matrix panels remain quiet
   standard materials without stacked live blur
@@ -81,13 +82,12 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
-- Student Dashboard replaces the top-left `Mr. Cat Academy` label with one
-  single-line greeting plus motivational message that loops continuously to the
-  right without covering the three account controls; reduced-motion mode shows
-  one static copy instead.
-- the Dashboard progress billboard no longer repeats greeting or motivational
-  text above the meter; its top row contains only the full-width completion
-  meter before the four-week board
+- Student Dashboard keeps `Mr. Cat Academy` at top left and shows one static,
+  China-time-aware greeting plus one motivational sentence in the welcome pane;
+  there is no marquee or continuously looping copy
+- at desktop width the Dashboard welcome/meter and four-week progress board are
+  two side-by-side panes; at tablet/mobile width they stack without page-level
+  horizontal overflow
 - Student Dashboard loading reserves the final monthly-board dimensions; its
   28 day cells animate in a staggered diagonal wave and the detail side contains
   exactly one large capsule with `Loading progress` centered inside
@@ -141,7 +141,8 @@ Check:
 - opening `Change password` from the account panel shows the password dialog
   above the account panel
 - forced password change appears when expected
-- the lower dashboard navigation shows only `Library`
+- Dashboard opens directly on the `Library` workspace and has no lower
+  Assignments or My Words navigation
 - the top-right bell opens `TO DO` and finished assignment messages
 - bell assignment rows have no separate `Start` / `Open` buttons; the whole
   compact row is keyboard/click accessible, keeps long titles to at most two
@@ -152,9 +153,10 @@ Check:
 - the student bell uses the same SVG bell design as the teacher bell
 - the notebook icon sits immediately to the right of the bell and opens My
   Words in an independent modal
-- Library shows a compact search button immediately left of the `Library`
-  capsule and does not reserve a separate full-width search row; clicking the
-  button transforms the capsule into the input, while Close and Escape clear it
+- Library shows a large heading with the search button and `Practice` / `Exam`
+  control grouped beside it; clicking the button expands an anchored search
+  input, while Close and Escape clear/collapse it and restore focus to the button
+- Library task cards render as two columns on desktop and one column at 390px
 - after selecting `NGSL`, searching for a BBC Set ID such as `BBC-250102`
   automatically activates the matching BBC year capsule and shows that task;
   searching for `C7-T1-S1` from Practice similarly activates `Exam` and
@@ -266,6 +268,18 @@ Check:
 - Teacher page opens to View by default, and the initial matrix loading state
   shows only the animated grid/radar wash without visible loading copy or a
   centered spinner
+- Teacher workspace uses the desktop left sidebar in the order `View`, `Assign`,
+  `Library`, changes the main heading to the same exact label, and becomes a
+  horizontal segmented sidebar on mobile
+- loading or refreshing `teacher.html?view=tasks` and `?view=library` restores
+  the matching sidebar, heading, and content surface before remote data finishes
+- Teacher has no standalone greeting hero; View has no new KPI cards and keeps
+  the existing `Class`, `Column`, and `Date` filter controls and option designs
+- `New assignment` appears on View and switches to Assign without a server call
+  and without clearing any current Work/Student selection
+- Assign shows side-by-side Work and Students summaries on desktop, keeps all
+  current picker modal designs and behaviors, and retains the per-task parameter
+  matrix below; the summaries stack at 390px
 - top-right circular student ID icon opens the standalone student lookup
   modal; Choose/Search expands a scrollable student list inside the modal, the
   modal's internal `+` opens create-student, and View no longer shows student
