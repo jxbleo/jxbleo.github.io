@@ -51,9 +51,13 @@ than a feature billboard. The current direction keeps the established
 two-column welcome/form composition inside one neutral, translucent glass
 surface, with no decorative object movement. Keep the visible text minimal:
 `Mr. Cat Academy`, one central quote, the Student ID/password fields, `Sign
-in`, `Continue as Visitor`, and a short visitor-mode note. The left welcome
+in`, `Continue as Visitor`, and a short visitor-mode note. The central quote is
+randomly selected on each page load from the same existing motivational-sentence
+collection used by the student Dashboard. The left welcome
 column keeps the quote close below the brand instead of distributing both items
 to opposite vertical edges and leaving a large blank region above the quote.
+On mobile, the welcome panel shrink-wraps the brand and quote instead of
+retaining the former fixed 430px minimum height and a large empty lower half.
 
 ## 3. Student Dashboard
 
