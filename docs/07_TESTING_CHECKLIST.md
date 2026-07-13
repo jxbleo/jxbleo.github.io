@@ -55,6 +55,9 @@ Open:
 
 Shared shell visual checks:
 
+- the login welcome quote sits in the upper portion of the left panel with a
+  compact gap below `Mr. Cat Academy`, without the previous large empty region
+  above the quote on desktop or mobile
 - `index.html`, `library.html`, `dashboard.html`, and `teacher.html` load the
   versioned `liquid-glass-shell.css` and `liquid-glass-shell.js` assets
 - BBC, IELTS Reading, IELTS Listening, and Vocabulary practice runtimes do not
@@ -75,6 +78,13 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
+- Student Dashboard replaces the top-left `Mr. Cat Academy` label with one
+  single-line greeting plus motivational message that loops continuously to the
+  right without covering the three account controls; reduced-motion mode shows
+  one static copy instead.
+- the Dashboard progress billboard no longer repeats greeting or motivational
+  text above the meter; its top row contains only the full-width completion
+  meter before the four-week board
 - Student Dashboard loading reserves the final monthly-board dimensions; its
   28 day cells animate in a staggered diagonal wave and the detail side contains
   exactly one large capsule with `Loading progress` centered inside

@@ -99,8 +99,10 @@
     var identityChip = document.getElementById('identity-chip');
     var starCounter = null;
     var selfStudyStarCounter = null;
-    var greeting = document.getElementById('greeting');
-    var heroCopy = document.getElementById('hero-copy');
+    var studentGreetingTrack = document.getElementById('student-greeting-track');
+    var studentGreetingPrimary = document.getElementById('student-greeting-primary');
+    var studentGreetingRepeat = document.getElementById('student-greeting-repeat');
+    var studentGreetingAccessible = document.getElementById('student-greeting-accessible');
     var heroProgressStats = document.getElementById('hero-progress-stats');
     var progressBoard = document.getElementById('progress-board');
     var assignmentContent = document.getElementById('assignment-content');
@@ -339,6 +341,19 @@
             'Your next step, {name}.'
         ];
         return randomItem(greetings).replace('{name}', name);
+    }
+
+    function setStudentGreeting(greetingText) {
+        var message = [greetingText, randomItem(motivationalQuotes)].filter(Boolean).join(' ');
+        studentGreetingPrimary.textContent = message;
+        studentGreetingRepeat.textContent = message;
+        studentGreetingAccessible.textContent = message;
+
+        if (studentGreetingTrack) {
+            studentGreetingTrack.classList.remove('is-scrolling');
+            void studentGreetingTrack.offsetWidth;
+            studentGreetingTrack.classList.add('is-scrolling');
+        }
     }
 
     function normalizedStatus(status) {
@@ -2819,8 +2834,7 @@
                 identityChip.textContent = 'Visitor';
                 state.starCount = 0;
                 updateStarCounter(false);
-                greeting.textContent = 'Welcome, Visitor.';
-                heroCopy.textContent = randomItem(motivationalQuotes);
+                setStudentGreeting('Welcome, Visitor.');
                 return loadPublicCatalog().then(function(items) {
                     state.resources = items;
                 });
@@ -2829,8 +2843,7 @@
             var preferredName = englishName(session.profile);
             updateAppIconForSystem(session.profile && session.profile.curriculum_track);
             identityChip.textContent = preferredName;
-            greeting.textContent = greetingFor(preferredName);
-            heroCopy.textContent = randomItem(motivationalQuotes);
+            setStudentGreeting(greetingFor(preferredName));
             return loadStudentData();
         })
         .then(function() {
