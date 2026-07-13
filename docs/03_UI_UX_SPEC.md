@@ -158,8 +158,10 @@ Frontend rule:
   targets: the short type label and title share the main line, long titles may
   wrap to a second line, and finished rows may show a small score at the right.
   Do not render separate `Start` or `Open` buttons. Clicking or keyboard-opening
-  the row closes the bell and shows the same shared practice-entry confirmation
-  used by Library before navigation.
+  the row temporarily hides the bell and shows the same shared practice-entry
+  confirmation used by Library before navigation. Dismissing that confirmation
+  with `Close`, Escape, or the backdrop restores the same bell dialog and returns
+  focus to the selected assignment row; `Enter` closes both layers and navigates.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it.

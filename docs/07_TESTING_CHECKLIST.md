@@ -113,6 +113,9 @@ Check:
 - bell assignment rows have no separate `Start` / `Open` buttons; the whole
   compact row is keyboard/click accessible, keeps long titles to at most two
   lines, and opens the shared Library-style entry confirmation before navigation
+- closing that entry confirmation with `Close`, Escape, or its backdrop returns
+  to the same bell dialog and selected assignment row; choosing `Enter` closes
+  both modal layers and opens the task
 - the student bell uses the same SVG bell design as the teacher bell
 - the notebook icon sits immediately to the right of the bell and opens My
   Words in an independent modal

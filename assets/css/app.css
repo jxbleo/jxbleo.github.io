@@ -1962,6 +1962,7 @@ body:not(.teacher-page) .tab-button.active {
     padding: 20px;
     background: #f4f8f5;
 }
+.student-message-overlay[hidden] { display: none; }
 .teacher-replies-dialog {
     position: relative;
     width: min(560px, 100%);
