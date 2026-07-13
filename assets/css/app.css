@@ -6516,7 +6516,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-dialog-scroll { padding: 12px; }
     .auth-page { padding: 12px; }
     .auth-shell { grid-template-columns: 1fr; min-height: auto; border-radius: 25px; }
-    .brand-panel { min-height: 430px; padding: 28px 22px; }
+    .brand-panel { min-height: 0; padding: 28px 22px 30px; }
     .brand-quote { max-width: 330px; }
     .brand-quote p { font-size: 2.25rem; }
     .paper-brand { font-size: 0.86rem; }

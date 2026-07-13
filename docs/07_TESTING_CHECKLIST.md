@@ -57,7 +57,10 @@ Shared shell visual checks:
 
 - the login welcome quote sits in the upper portion of the left panel with a
   compact gap below `Mr. Cat Academy`, without the previous large empty region
-  above the quote on desktop or mobile
+  above the quote on desktop or mobile; at 390px the welcome panel also ends
+  shortly below the quote rather than retaining a 430px empty box
+- reloading the login page selects a sentence from the Dashboard's existing
+  motivational quote set, and repeated reloads can display different sentences
 - `index.html`, `library.html`, `dashboard.html`, and `teacher.html` load the
   versioned `liquid-glass-shell.css` and `liquid-glass-shell.js` assets
 - BBC, IELTS Reading, IELTS Listening, and Vocabulary practice runtimes do not
