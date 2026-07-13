@@ -366,16 +366,17 @@ It should include:
 - matrix task headers retain only the stable task ID and task name. The
   week label must not also appear in this first row. Clicking the task header
   opens that task in teacher preview. Immediately below the task header and
-  above all student score rows, the matrix adds one full `Due` row: its sticky
-  first-column cell reads `Due`, and each task column always contains the
+  above all student score rows, the matrix adds one full `DUE AT` row: its sticky
+  first-column cell reads `DUE AT`, and each task column always contains the
   zero-padded Beijing-time `Wxx` grouping label moved from the former task
   header. This label uses `assigned_at`, so legacy tasks without `due_at` still
   display their week and stay aligned with Assign week and the Date filter. The
-  sticky `Due` first cell uses the same animated colorful header surface as the
-  `Student` and task-name row, while the Wxx cells retain their green action
-  treatment. Every cell in the Due row shares one centered height, padding,
-  border, and baseline so the row remains visually aligned.
-- clicking a task's `Due / Wxx` cell opens assignment management for all records
+  sticky `DUE AT` first cell uses the same animated colorful header surface,
+  left alignment, horizontal padding, typography, and column width as the
+  `Student` cell above, while the Wxx cells retain their centered green action
+  treatment. Every cell in the row shares one height and continuous borders.
+- clicking a task's `Wxx` cell in the `DUE AT` row opens assignment management
+  for all records
   represented by that visible column. A class/individual filter limits the edit
   scope to that class/student; no class filter means all currently visible
   students in the column. One save can update assign week, due date, passing

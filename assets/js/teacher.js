@@ -3955,7 +3955,7 @@
             }).join('') +
         '</div>';
         var dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span class="progress-matrix-student-cell">Due</span>' +
+            '<span class="progress-matrix-student-cell">DUE AT</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var dueLabel = set.week_label || '—';
