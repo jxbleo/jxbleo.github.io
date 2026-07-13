@@ -1,5 +1,11 @@
 # Changelog
 
+- Matched the Teacher View matrix's sticky `Due` cell to the colorful
+  Student/task header surface, and normalized the full Due/Wxx row's font,
+  centering, height, padding, and borders to keep every column aligned.
+- Limited the Teacher notification card to roughly three-quarters of the
+  viewport height with internal scrolling, and replaced its top-right `x` with
+  a centered external `Close` capsule below the card.
 - Fixed Teacher View's `Due` row so every assigned task displays the `Wxx`
   grouping label moved from the old header position, including legacy tasks
   without a `due_at` value.

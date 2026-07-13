@@ -255,7 +255,9 @@ Check:
   appears below the headers and above student scores, its sticky first cell
   reads `Due`, and every assigned task cell contains its zero-padded Wxx
   assignment-grouping label even when `due_at` is missing. Week numbering starts
-  at the first Monday of the relevant year
+  at the first Monday of the relevant year. The Due first cell matches the
+  colorful Student/task header surface, and all Due/Wxx cells have equal height,
+  centered text, continuous borders, and exact column alignment
 - Clicking a matrix task's Due/Wxx cell opens one parameter editor for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
@@ -278,8 +280,10 @@ Check:
   later attempt becomes unread
 - Teacher notification modal has no `NOTIFICATIONS` / `Student attempts` text;
   the left double-check icon exposes a `Read all` tooltip and accessible name,
-  spins while saving, briefly turns green on success, and leaves Close aligned
-  on the right
+  spins while saving, and briefly turns green on success. The notification card
+  uses at most about three-quarters of the viewport height with internal
+  scrolling; it has no top-right `x`, and its centered `Close` capsule sits
+  outside immediately below the card on desktop and mobile
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
