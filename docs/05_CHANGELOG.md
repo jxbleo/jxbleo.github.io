@@ -1,5 +1,8 @@
 # Changelog
 
+- Moved the shared black full-body cat logo from the far right to the far left
+  of both authenticated Student and Teacher headers, leaving all utility and
+  account controls grouped on the right.
 - Replaced the Student Dashboard's top-left line-art cat with the solid black
   full-body leaping-cat logo and placed the same mark at the far right of both
   authenticated Student and Teacher headers. The logo has a restrained idle
