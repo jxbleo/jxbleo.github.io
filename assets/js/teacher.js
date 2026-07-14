@@ -84,6 +84,31 @@
         'Give this moment your attention and let progress follow.',
         'There is always something valuable in another attempt.'
     ];
+    var teacherModalRoot = document.getElementById('teacher-modal-root');
+
+    function mountStaticTeacherModals() {
+        if (!teacherModalRoot) return;
+        document.querySelectorAll('[data-teacher-modal]').forEach(function(modal) {
+            if (modal.parentElement !== teacherModalRoot) teacherModalRoot.appendChild(modal);
+        });
+    }
+
+    function clearTeacherMatrixModals() {
+        if (!teacherModalRoot) return;
+        teacherModalRoot.querySelectorAll('.progress-matrix-modal-backdrop[data-matrix-close]').forEach(function(modal) {
+            modal.remove();
+        });
+    }
+
+    function mountTeacherMatrixModals(container) {
+        if (!teacherModalRoot || !container) return;
+        container.querySelectorAll('.progress-matrix-modal-backdrop[data-matrix-close]').forEach(function(modal) {
+            teacherModalRoot.appendChild(modal);
+        });
+    }
+
+    mountStaticTeacherModals();
+
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
     var studentDetail = document.getElementById('student-detail');
@@ -3835,10 +3860,8 @@
         state.selectedMatrixStudentKey = '';
         state.selectedProgressDetailKey = '';
         state.targetMatrixAttemptId = '';
+        clearTeacherMatrixModals();
         if (!container) return;
-        container.querySelectorAll('.progress-matrix-modal-backdrop').forEach(function(modal) {
-            modal.remove();
-        });
         container.querySelectorAll('.progress-matrix-cell.selected').forEach(function(cell) {
             cell.classList.remove('selected');
         });
@@ -4006,6 +4029,7 @@
     function renderAssignmentOverview() {
         var container = document.getElementById('assignment-overview');
         if (!container) return;
+        clearTeacherMatrixModals();
         var items = sortAssignmentOverviewItems(assignedProgressItems());
         state.assignmentEditScopes = {};
         var shouldRevealMatrix = state.matrixInitialRevealPending && items.length;
@@ -4148,7 +4172,8 @@
         });
         if (state.targetMatrixAttemptId) {
             window.setTimeout(function() {
-                var target = container.querySelector('.matrix-attempt-card.highlight');
+                var targetRoot = teacherModalRoot || container;
+                var target = targetRoot.querySelector('.matrix-attempt-card.highlight');
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 80);
         }
@@ -4184,6 +4209,7 @@
                 renderAssignmentOverview();
             });
         });
+        mountTeacherMatrixModals(container);
     }
 
     function renderStudentDetail() {

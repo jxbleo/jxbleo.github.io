@@ -328,6 +328,15 @@ position is resolved against the tall workspace frame. Opening it must place the
 message card immediately in the current viewport without requiring any page
 scroll.
 
+All other Teacher modal surfaces follow the same page-level rule, including
+Review, Student lookup, Create student, assignment success, Assign Work and
+Student pickers, matrix/student progress details, assignment editing, and
+practice-entry confirmation. A modal must open inside the current viewport at
+every page scroll position; long content scrolls inside the dialog rather than
+placing the dialog farther down the document. Top-level modal surfaces must not
+remain descendants of the backdrop-filtered workspace frame because that frame
+would become their fixed-position containing block.
+
 Teacher notification rows open standalone attempt detail dialogs inside the
 notification surface. They must not switch to `View`, select matrix cells,
 change matrix filters, or redraw the matrix, whether the attempt came from an

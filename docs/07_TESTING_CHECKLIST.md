@@ -304,6 +304,15 @@ Check:
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all
   current picker modal designs and behaviors, and retains the per-task parameter
   matrix below; the summaries stack at 390px
+- Open the Assign Work and Student pickers before and after the Assign page has
+  become taller than the viewport; both dialogs must remain centered in the
+  current viewport with an internally scrolling list and no blank page area
+- At both page scroll 0 and a deep View/Assign scroll position, open every
+  Teacher top-level surface (Review, Student lookup, Create student, success,
+  Work picker, Student picker, matrix/student detail, assignment editor,
+  notification and practice-entry confirmation). Each must be mounted outside
+  the backdrop-filtered workspace, appear immediately in the current viewport,
+  and require no page scrolling to reach its content or Close action
 - top-right circular student ID icon opens the standalone student lookup
   modal; Choose/Search expands a scrollable student list inside the modal, the
   modal's internal `+` opens create-student, and View no longer shows student
