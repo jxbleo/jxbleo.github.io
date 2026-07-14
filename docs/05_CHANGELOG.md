@@ -1,5 +1,9 @@
 # Changelog
 
+- Replaced the Student Library's always-visible gold sub-filter row with a
+  title-inline `Library / current category⌄` control. Its anchored neutral
+  popover closes after selection, outside click, or Escape and stays synchronized
+  with category changes triggered by search or the Practice/Exam switch.
 - Replaced the Student Dashboard's separate completion and four-week progress
   cards with one compact weekly-focus surface. It preserves the greeting and
   motivation, conditionally shows a muted-red overdue share, always shows

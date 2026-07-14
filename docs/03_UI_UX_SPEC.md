@@ -118,6 +118,13 @@ Assignment access and progress display:
   side of that heading on desktop and remain adjacent when stacked on mobile.
   They use a soft translucent glass treatment; active and primary states use
   restrained system blue
+- the current Library sub-filter appears inline with the title as
+  `Library / BBC2026⌄` (or the currently selected category). The former
+  always-visible gold sub-filter row is hidden. Activating the title control
+  opens a neutral, anchored category popover without pushing the task cards
+  downward; choosing a category closes the popover and updates the title.
+  Clicking outside or pressing Escape also closes it, and global search-driven
+  category changes must update the visible title label.
 - activating the circular Library search button expands the search input from
   that source control. Close or Escape clears the query, collapses it back to
   the button, and returns focus to the button.
@@ -571,13 +578,16 @@ but should merge in visible static `home-catalog` items that are missing from
 CloudBase so new public lessons can still be previewed while content import is
 being checked.
 BBC entries in Student and Teacher Library are split into `BBC2024`, `BBC2025`,
-and `BBC2026` sub-filter buttons. BBC task cards should not show a year badge
-inside each task capsule; the year belongs in the sub-filter layer. IELTS task
+and `BBC2026` sub-filters. Student Library exposes these through the title-inline
+category popover; Teacher Library keeps its existing visible sub-filter row.
+BBC task cards should not show a year badge inside each task capsule; the year
+belongs in the sub-filter layer. IELTS task
 cards should not show the Cambridge book badge inside each task capsule.
-IELTS book/filter labels belong in the yellow capsule tab layer above the task
-list. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
-and `DSE Speaking` without visible Paper numbers. Keep this capsule shape when
-changing Library grouping, tabs, or filters.
+IELTS book/filter labels belong in the Library filter layer rather than inside
+task cards. DSE labels should read `DSE Reading`, `DSE Writing`, `DSE Integrated`,
+and `DSE Speaking` without visible Paper numbers. Student popover choices and
+the Teacher Library's visible row keep the compact capsule shape when grouping,
+tabs, or filters change.
 IELTS Library task capsules should label their course surface as lowercase
 slugs, `ielts-reading` or `ielts-listening`, in the card eyebrow.
 

@@ -180,6 +180,11 @@ Check:
 - Library shows a large heading with the search button and `Practice` / `Exam`
   control grouped beside it; clicking the button expands an anchored search
   input, while Close and Escape clear/collapse it and restore focus to the button
+- the current Library category is shown inside the title as
+  `Library / current category⌄`; the old always-visible gold category row is not
+  rendered. Clicking the category opens an anchored popover without moving the
+  cards, and selection, outside click, and Escape close it with correct focus
+  and `aria-expanded` state
 - Library task cards render as two columns on desktop and one column at 390px
 - after selecting `NGSL`, searching for a BBC Set ID such as `BBC-250102`
   automatically activates the matching BBC year capsule and shows that task;
@@ -249,9 +254,12 @@ Check:
   collection has more than 200 visible records
 - Student and Teacher Library expose only `Practice` and `Exam` top-level
   filters; lesson sections appear under Practice
-- Practice Library sub-filters show `BBC`, `NGSL`, `NAWL`, `TK2`,
-  `Oxford5000`, `DSE`, and `IELTS`, with no generic `Vocabulary`, `Grammar`, `Writing`, or
-  `Grammar Lessons` sub-filter
+- Student Practice Library title-popover choices show `BBC2024`, `BBC2025`,
+  `BBC2026`, `NGSL`, `NAWL`, `TK2`, `Oxford5000`, `DSE`, and `IELTS`, with no
+  generic `Vocabulary`, `Grammar`, `Writing`, or `Grammar Lessons` choice;
+  Teacher Library keeps its existing visible sub-filter row
+- switching Practice/Exam or using global Library search keeps the inline
+  category title synchronized with the active category
 - Teacher Assign filters, Teacher View matrix type filters, and student
   assignment cards show Vocabulary sets as `NGSL`, `NAWL`, `TK2`, or
   `Oxford5000`

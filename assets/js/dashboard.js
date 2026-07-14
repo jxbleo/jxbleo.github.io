@@ -113,6 +113,10 @@
     var resourceSearchClose = document.getElementById('resource-search-close');
     var studentLibraryDock = document.getElementById('student-library-dock');
     var studentLibrarySearchPanel = document.getElementById('student-library-search-panel');
+    var studentLibraryCategoryMenu = document.getElementById('student-library-category-menu');
+    var studentLibraryCategoryTrigger = document.getElementById('student-library-category-trigger');
+    var studentLibraryCategoryLabel = document.getElementById('student-library-category-label');
+    var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
     var wordsButton = document.getElementById('student-words-button');
     var wordsOverlay = document.getElementById('student-words-overlay');
@@ -1497,6 +1501,7 @@
 
     var libraryActiveTab = 'general';
     var libraryActiveSubTab = '';
+    var libraryCategoryMenuOpen = false;
     var libraryCatalog = null;
 
     var LIBRARY_GROUP_IDS = {
@@ -1750,6 +1755,26 @@
         return configs[0];
     }
 
+    function librarySyncCategoryMenu() {
+        if (!studentLibraryCategoryTrigger || !studentLibraryCategoryLabel || !studentLibraryCategoryPopover) return;
+        var config = librarySubTabConfig(libraryActiveTab, libraryActiveSubTab);
+        var label = config && config.label || 'Categories';
+        studentLibraryCategoryLabel.textContent = label;
+        studentLibraryCategoryTrigger.setAttribute('aria-label', 'Choose Library category. Current category: ' + label);
+        studentLibraryCategoryTrigger.setAttribute('aria-expanded', libraryCategoryMenuOpen ? 'true' : 'false');
+        studentLibraryCategoryPopover.hidden = !libraryCategoryMenuOpen;
+        studentLibraryCategoryPopover.setAttribute('aria-hidden', libraryCategoryMenuOpen ? 'false' : 'true');
+        if (studentLibraryCategoryMenu) studentLibraryCategoryMenu.classList.toggle('is-open', libraryCategoryMenuOpen);
+    }
+
+    function setLibraryCategoryMenuOpen(open, restoreFocus) {
+        libraryCategoryMenuOpen = open === true;
+        librarySyncCategoryMenu();
+        if (!libraryCategoryMenuOpen && restoreFocus && studentLibraryCategoryTrigger) {
+            studentLibraryCategoryTrigger.focus({ preventScroll: true });
+        }
+    }
+
     function libraryTabForSection(section) {
         if (!section) return '';
         var tabIds = Object.keys(LIBRARY_GROUP_IDS);
@@ -1839,6 +1864,7 @@
     function setLibrarySearchOpen(open) {
         if (!studentLibraryDock || !resourceSearch || !resourceSearchToggle) return;
         var shouldOpen = open === true;
+        if (shouldOpen) setLibraryCategoryMenuOpen(false, false);
         studentLibraryDock.classList.toggle('is-searching', shouldOpen);
         resourceSearchToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
         resourceSearch.disabled = !shouldOpen;
@@ -1880,10 +1906,10 @@
         var subTabHtml = '';
         for (var si = 0; si < subTabs.length; si++) {
             var isActive = (!libraryActiveSubTab && si === 0) || subTabs[si].id === libraryActiveSubTab;
-            subTabHtml += '<button class="sub-tab-btn' + (isActive ? ' active' : '') + '" data-subtab="' + escapeHtml(subTabs[si].id) + '">' + escapeHtml(subTabs[si].label) + '</button>';
+            subTabHtml += '<button class="sub-tab-btn' + (isActive ? ' active' : '') + '" type="button" data-subtab="' + escapeHtml(subTabs[si].id) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' + escapeHtml(subTabs[si].label) + '</button>';
         }
         subTabBar.innerHTML = subTabHtml;
-        subTabBar.style.display = 'flex';
+        librarySyncCategoryMenu();
 
         var activeSubTabConfig = subTabs[0];
         for (var si = 0; si < subTabs.length; si++) {
@@ -1994,6 +2020,7 @@
         if (tabId === libraryActiveTab) return;
         libraryActiveTab = tabId;
         libraryActiveSubTab = '';
+        setLibraryCategoryMenuOpen(false, false);
         librarySyncTabButtons();
         libraryLoadTabContent(tabId);
     }
@@ -2735,6 +2762,14 @@
         if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) && !e.target.closest('#identity-chip')) {
             setAccountPanel(false);
         }
+        var categoryTrigger = e.target.closest('#student-library-category-trigger');
+        if (categoryTrigger) {
+            setLibraryCategoryMenuOpen(!libraryCategoryMenuOpen, false);
+            return;
+        }
+        if (libraryCategoryMenuOpen && !e.target.closest('#student-library-category-menu')) {
+            setLibraryCategoryMenuOpen(false, false);
+        }
         var openCard = e.target.closest('[data-open-href]');
         if (openCard) {
             openHrefCard(openCard, e);
@@ -2753,9 +2788,11 @@
         var subTabBtn = e.target.closest('#student-sub-tab-bar .sub-tab-btn');
         if (subTabBtn) {
             var subTab = subTabBtn.getAttribute('data-subtab');
-            if (subTab === libraryActiveSubTab) return;
-            libraryActiveSubTab = subTab;
-            libraryLoadTabContent(libraryActiveTab);
+            if (subTab !== libraryActiveSubTab) {
+                libraryActiveSubTab = subTab;
+                libraryLoadTabContent(libraryActiveTab);
+            }
+            setLibraryCategoryMenuOpen(false, true);
             return;
         }
         var yearTab = e.target.closest('#student-year-bar .year-tab');
@@ -2787,6 +2824,11 @@
         if (e.key === 'Escape' && state.wordsPanelOpen) {
             setWordsPanel(false);
             if (wordsButton) wordsButton.focus();
+            return;
+        }
+        if (e.key === 'Escape' && libraryCategoryMenuOpen) {
+            e.preventDefault();
+            setLibraryCategoryMenuOpen(false, true);
             return;
         }
         if (e.key !== 'Enter' && e.key !== ' ') return;
