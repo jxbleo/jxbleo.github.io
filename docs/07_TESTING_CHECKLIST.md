@@ -295,8 +295,10 @@ Check:
   and account controls remain aligned to the right. The top utility glass aligns
   exactly with the workspace frame below, and View begins directly with the
   matrix while keeping the existing `Class`, `Column`, and `Date` controls
-- the workspace and matrix top corners stay continuously rounded, with no
-  contrasting square/accent tip visible inside the curve
+- the workspace and matrix top corners stay continuously rounded; inspect both
+  top corners of the View matrix while horizontally scrolled and confirm sticky
+  or colored header cells cannot expose a contrasting square tip inside the
+  curve
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all
   current picker modal designs and behaviors, and retains the per-task parameter
   matrix below; the summaries stack at 390px

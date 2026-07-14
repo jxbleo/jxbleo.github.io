@@ -353,9 +353,10 @@ login, public Library, and student Dashboard. Header controls, sidebar,
 workspace frame, and dialogs may use functional glass; the matrix, grouped
 progress cards, and other dense data surfaces stay on quiet standard material
 for legibility.
-The workspace frame and matrix keep clean continuous rounded top corners. Inner
-sidebar or accent layers must not show a square contrasting tip inside those
-curves.
+The workspace frame and matrix keep clean continuous rounded top corners. The
+matrix scroll viewport clips its sticky and colored header cells to the same
+rounded outline, so inner sidebar, header, or accent layers cannot show a
+square contrasting tip inside those curves.
 Selected tabs and primary actions use system blue without continuous rainbow
 animation. Completion states remain functionally colored: passed/mastered stay
 green, low scores stay red, and empty/not-yet cells stay neutral.
