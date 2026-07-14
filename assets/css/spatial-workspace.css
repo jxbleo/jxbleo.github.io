@@ -230,6 +230,20 @@
     width: min(1540px, calc(100% - 28px));
 }
 
+.liquid-glass-teacher .app-header {
+    padding-right: clamp(14px, 2vw, 20px);
+    padding-left: clamp(14px, 2vw, 20px);
+}
+
+.liquid-glass-teacher .app-header::before {
+    right: 0;
+    left: 0;
+}
+
+.liquid-glass-teacher .teacher-header-actions {
+    margin-left: auto;
+}
+
 .liquid-glass-teacher .teacher-workspace-frame {
     position: relative;
     display: grid;
@@ -261,8 +275,9 @@
     padding: 24px 16px;
     border: 0;
     border-right: 1px solid rgba(85, 108, 119, 0.10);
-    border-radius: 0;
+    border-radius: 27px 0 0 27px;
     background: rgba(255, 255, 255, 0.20);
+    background-clip: padding-box;
     box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.38);
     -webkit-backdrop-filter: blur(24px) saturate(140%);
     backdrop-filter: blur(24px) saturate(140%);
@@ -321,43 +336,9 @@
     padding: clamp(22px, 3vw, 42px);
 }
 
-.liquid-glass-teacher .teacher-workspace-heading {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 22px;
-    margin-bottom: 26px;
-}
-
-.liquid-glass-teacher .teacher-workspace-heading .eyebrow {
-    margin-bottom: 7px;
-    color: rgba(27, 37, 43, 0.44);
-}
-
-.liquid-glass-teacher .teacher-workspace-heading h1 {
-    margin: 0;
-    color: #1b252b;
-    font-size: clamp(2.5rem, 4.2vw, 4.4rem);
-    font-weight: 720;
-    letter-spacing: -0.06em;
-    line-height: 0.96;
-}
-
-.liquid-glass-teacher .teacher-new-assignment {
-    width: auto;
-    min-height: 42px;
-    padding: 0 18px;
-    border-radius: 999px;
-    font-size: 0.82rem;
-}
-
-.liquid-glass-teacher .teacher-new-assignment[hidden] {
-    display: none;
-}
-
 .liquid-glass-teacher .teacher-message {
     min-height: 0;
-    margin: -12px 0 14px;
+    margin: 0 0 14px;
 }
 
 .liquid-glass-teacher .teacher-message:empty {
@@ -366,6 +347,14 @@
 
 .liquid-glass-teacher .teacher-workspace-content > .dashboard-view {
     min-width: 0;
+}
+
+.liquid-glass-teacher .progress-matrix-card {
+    background-clip: padding-box;
+}
+
+.liquid-glass-teacher .progress-matrix-card::before {
+    content: none;
 }
 
 .liquid-glass-teacher .assign-minimal-grid {
@@ -511,17 +500,6 @@
 
     .liquid-glass-teacher .teacher-workspace-content {
         padding: 24px 14px 18px;
-    }
-
-    .liquid-glass-teacher .teacher-workspace-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 22px;
-    }
-
-    .liquid-glass-teacher .teacher-workspace-heading h1 {
-        font-size: clamp(2.5rem, 14vw, 3.8rem);
     }
 
     .liquid-glass-teacher .assign-minimal-grid {

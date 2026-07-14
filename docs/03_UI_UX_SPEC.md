@@ -285,10 +285,13 @@ in order, are:
 - `Assign`
 - `Library`
 
-The content heading must display exactly `View`, `Assign`, or `Library` for the
-active destination. There is no separate teacher greeting/quotation hero. On
-`View`, a `New assignment` action switches to `Assign` without clearing current
-Work/Student selections and without sending a backend request.
+There is no separate teacher greeting/quotation hero or repeated content
+heading. The `View` destination begins directly with the progress matrix; do
+not place `TEACHER`, `View`, or a `New assignment` shortcut above it. Teachers
+switch to assignment creation through the persistent `Assign` sidebar item.
+The top-left `Mr. Cat Academy` wordmark is omitted on this authenticated teacher
+surface, leaving the utility controls aligned to the right. The header glass
+capsule and the workspace frame below share the same left and right edges.
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
@@ -330,6 +333,9 @@ login, public Library, and student Dashboard. Header controls, sidebar,
 workspace frame, and dialogs may use functional glass; the matrix, grouped
 progress cards, and other dense data surfaces stay on quiet standard material
 for legibility.
+The workspace frame and matrix keep clean continuous rounded top corners. Inner
+sidebar or accent layers must not show a square contrasting tip inside those
+curves.
 Selected tabs and primary actions use system blue without continuous rainbow
 animation. Completion states remain functionally colored: passed/mastered stay
 green, low scores stay red, and empty/not-yet cells stay neutral.
