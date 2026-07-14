@@ -321,11 +321,18 @@ as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The top-right circular student ID icon opens a standalone Student
 lookup modal. That modal contains the student search/selection surface,
 selected student info and progress, and an internal `+` action for creating a
-student. The Choose/Search student list expands inside the modal and remains
-scrollable there.
+student. On desktop the lookup card is approximately three-quarters of its
+former width and height, and its only close action is a centered `Close` capsule
+outside and immediately below the card. The picker initially shows `Choose`
+beside a magnifying-glass search action. Activating search replaces `Choose` in
+place with the live search field; matching students update immediately and a
+student row is selected directly without a separate Confirm action. The student
+list expands inside the modal and remains scrollable there.
 The create-student modal uses a vertical field stack and, after success, shows
 a standalone checkmark confirmation dialog with the new Login ID and initial
-password. Review requests open from a separate top-right question-mark icon
+password. Closing or cancelling Create student restores its parent Student
+lookup modal instead of dismissing both layers. Review requests open from a
+separate top-right question-mark icon
 button with a pending-count badge and display in a standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own

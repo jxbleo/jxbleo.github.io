@@ -2882,10 +2882,18 @@ body:not(.teacher-page) .tab-button.active {
     backdrop-filter: blur(10px);
 }
 .student-lookup-modal[hidden] { display: none; }
+.student-lookup-stage {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    width: min(840px, 100%);
+    max-height: calc(100vh - 56px);
+    max-height: calc(100dvh - 56px);
+}
 .student-lookup-dialog {
-    width: min(1120px, 100%);
-    max-height: min(840px, calc(100vh - 64px));
-    max-height: min(840px, calc(100dvh - 64px));
+    width: 100%;
+    max-height: min(630px, calc(100vh - 148px));
+    max-height: min(630px, calc(100dvh - 148px));
     overflow: auto;
     display: grid;
     gap: 14px;
@@ -2918,7 +2926,6 @@ body:not(.teacher-page) .tab-button.active {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-right: 44px;
 }
 .student-lookup-create {
     width: 34px;
@@ -2949,6 +2956,9 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-lookup-dialog .student-select-card.picker-search .student-picker {
     max-height: min(430px, calc(100vh - 390px));
+}
+.student-lookup-external-close {
+    justify-self: center;
 }
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
@@ -5928,14 +5938,14 @@ body:not(.teacher-page) .tab-button.active {
 .student-select-card > .eyebrow { margin: 0 0 12px; }
 .student-search-actions {
     display: grid;
-    grid-template-columns: auto minmax(150px, 1fr) auto;
+    grid-template-columns: minmax(220px, 0.9fr) minmax(150px, 1.1fr);
     gap: 8px;
     align-items: center;
     width: min(760px, 100%);
 }
 .student-mode-buttons {
     display: inline-grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px;
     padding: 4px;
     border: 1px solid rgba(124, 58, 237, 0.18);
@@ -5959,6 +5969,47 @@ body:not(.teacher-page) .tab-button.active {
     background: var(--accent);
     box-shadow: 0 8px 18px rgba(124, 58, 237, 0.14);
 }
+.student-search-button {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    color: var(--accent-dark);
+    background: transparent;
+}
+.student-search-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.student-search-button:hover,
+.student-search-button.active {
+    color: white;
+    background: var(--accent);
+    box-shadow: 0 8px 18px rgba(124, 58, 237, 0.14);
+}
+.student-mode-buttons .student-picker-searchbar {
+    position: static;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+}
+.student-mode-buttons .student-picker-searchbar input {
+    width: 100%;
+    min-height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    box-shadow: none;
+    font-size: 0.75rem;
+}
 .selected-student-pill {
     display: flex;
     align-items: center;
@@ -5978,13 +6029,6 @@ body:not(.teacher-page) .tab-button.active {
 .selected-student-pill.empty {
     color: var(--muted);
     font-weight: 800;
-}
-.student-confirm-button {
-    min-width: 46px;
-    min-height: 42px;
-    padding: 0 14px;
-    border-radius: 12px;
-    font-weight: 900;
 }
 .student-select-card .student-picker-shell {
     position: absolute;
@@ -7069,9 +7113,23 @@ body:not(.teacher-page) .tab-button.active {
         padding: 24px 18px 18px;
         border-radius: 18px;
     }
-    .student-search-actions { grid-template-columns: 1fr auto; }
+    .student-lookup-modal {
+        align-items: end;
+        padding: 12px;
+    }
+    .student-lookup-stage {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
+        gap: 8px;
+    }
+    .student-lookup-dialog {
+        max-height: calc(100vh - 76px);
+        max-height: calc(100dvh - 76px);
+        border-radius: 18px;
+    }
+    .student-search-actions { grid-template-columns: 1fr; }
     .student-mode-buttons {
-        grid-column: 1 / -1;
         width: 100%;
     }
     .selected-student-pill { min-width: 0; }

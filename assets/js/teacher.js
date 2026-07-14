@@ -24,6 +24,7 @@
         updatesOpen: false,
         reviewOpen: false,
         studentLookupOpen: false,
+        createStudentReturnToLookup: false,
         attemptsSeenAt: null,
         activityReadAllAt: null,
         activityReviewedAttemptIds: [],
@@ -511,17 +512,24 @@
         }
     }
 
-    function setCreateStudentModal(open) {
+    function restoreStudentLookupAfterCreate() {
+        if (!state.createStudentReturnToLookup) return;
+        state.createStudentReturnToLookup = false;
+        setStudentLookupPanel(true);
+        window.setTimeout(function() {
+            var createButton = document.getElementById('student-lookup-create');
+            if (createButton) createButton.focus();
+        }, 0);
+    }
+
+    function setCreateStudentModal(open, returnToLookup) {
         var panel = document.getElementById('create-student-panel');
         if (!panel) return;
         panel.hidden = open !== true;
         if (open) {
+            state.createStudentReturnToLookup = state.studentLookupOpen === true;
             setCreateStudentSuccessModal(false);
-            state.studentLookupOpen = false;
-            var lookupPanel = document.getElementById('student-lookup-panel');
-            var lookupButton = document.getElementById('toggle-create-student');
-            if (lookupPanel) lookupPanel.hidden = true;
-            if (lookupButton) lookupButton.setAttribute('aria-expanded', 'false');
+            setStudentLookupPanel(false);
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
             state.notificationAttemptId = '';
@@ -531,6 +539,8 @@
                 var input = document.getElementById('student-id');
                 if (input) input.focus();
             }, 0);
+        } else if (returnToLookup === true) {
+            restoreStudentLookupAfterCreate();
         }
     }
 
@@ -551,6 +561,11 @@
                 if (closeButton) closeButton.focus();
             }, 0);
         }
+    }
+
+    function closeCreateStudentSuccessModal() {
+        setCreateStudentSuccessModal(false);
+        restoreStudentLookupAfterCreate();
     }
 
     function setAssignSuccessModal(open, result) {
@@ -2147,17 +2162,25 @@
         var searchbar = document.getElementById('student-picker-searchbar');
         var chooseButton = document.getElementById('choose-student');
         var searchButton = document.getElementById('search-student');
+        var searching = open === true && state.studentPickerMode === 'search';
         if (card) card.classList.toggle('picker-open', open === true);
         if (card) {
             card.classList.toggle('picker-choose', open === true && state.studentPickerMode === 'choose');
             card.classList.toggle('picker-search', open === true && state.studentPickerMode === 'search');
         }
-        if (searchbar) searchbar.hidden = !(open === true && state.studentPickerMode === 'search');
+        if (searchbar) searchbar.hidden = !searching;
+        if (chooseButton) chooseButton.hidden = searching;
         if (chooseButton) chooseButton.classList.toggle('active', open === true && state.studentPickerMode === 'choose');
-        if (searchButton) searchButton.classList.toggle('active', open === true && state.studentPickerMode === 'search');
-        if (input) {
-            if (open === true && state.studentPickerMode === 'choose') input.value = '';
+        if (searchButton) {
+            searchButton.classList.toggle('active', searching);
+            searchButton.setAttribute('aria-pressed', searching ? 'true' : 'false');
+            searchButton.setAttribute('aria-label', searching ? 'Close student search' : 'Search students');
+            searchButton.title = searching ? 'Close search' : 'Search students';
         }
+        if (input) {
+            if (!searching) input.value = '';
+        }
+        if (open !== true) state.studentPickerMode = 'choose';
         updateSelectedStudentLabel();
     }
 
@@ -2190,24 +2213,6 @@
         setStudentPickerOpen(false);
         renderStudentList();
         renderStudentDetail();
-    }
-
-    function confirmStudentSearch() {
-        var card = document.querySelector('.student-select-card');
-        if (state.selectedStudentProfileId && (!card || !card.classList.contains('picker-open'))) {
-            renderStudentDetail();
-            return;
-        }
-        var firstMatch = filteredStudents().find(function(student) {
-            return student.profile_complete;
-        });
-        if (!firstMatch) {
-            showMessage('No matching student found.', 'error');
-            setStudentPickerOpen(true, state.studentPickerMode);
-            renderStudentList();
-            return;
-        }
-        selectStudent(firstMatch.profile_id);
     }
 
     function renderStudentList() {
@@ -5401,29 +5406,24 @@
         openStudentSelector('choose');
     });
     document.getElementById('search-student').addEventListener('click', function() {
-        openStudentSelector('search');
+        var card = document.querySelector('.student-select-card');
+        var searchIsOpen = card && card.classList.contains('picker-open') && state.studentPickerMode === 'search';
+        openStudentSelector(searchIsOpen ? 'choose' : 'search');
     });
     document.getElementById('student-search').addEventListener('input', function() {
         setStudentPickerOpen(true, 'search');
         renderStudentList();
     });
-    document.getElementById('student-search').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            confirmStudentSearch();
-        }
-    });
-    document.getElementById('confirm-student-search').addEventListener('click', confirmStudentSearch);
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
         var createPanel = document.getElementById('create-student-panel');
         if (createPanel && !createPanel.hidden && event.target === createPanel) {
-            setCreateStudentModal(false);
+            setCreateStudentModal(false, true);
             return;
         }
         var createSuccessPanel = document.getElementById('create-student-success-panel');
         if (createSuccessPanel && !createSuccessPanel.hidden && event.target === createSuccessPanel) {
-            setCreateStudentSuccessModal(false);
+            closeCreateStudentSuccessModal();
             return;
         }
         var assignSuccessPanel = document.getElementById('assign-success-panel');
@@ -5484,12 +5484,12 @@
         if (event.key === 'Escape') {
             var createPanel = document.getElementById('create-student-panel');
             if (createPanel && !createPanel.hidden) {
-                setCreateStudentModal(false);
+                setCreateStudentModal(false, true);
                 return;
             }
             var createSuccessPanel = document.getElementById('create-student-success-panel');
             if (createSuccessPanel && !createSuccessPanel.hidden) {
-                setCreateStudentSuccessModal(false);
+                closeCreateStudentSuccessModal();
                 return;
             }
             var assignSuccessPanel = document.getElementById('assign-success-panel');
@@ -5523,19 +5523,18 @@
         setStudentLookupPanel(state.studentLookupOpen !== true);
     });
     document.getElementById('student-lookup-create').addEventListener('click', function() {
-        setStudentLookupPanel(false);
         setCreateStudentModal(true);
     });
     document.getElementById('student-lookup-close').addEventListener('click', function() {
         setStudentLookupPanel(false);
     });
     document.getElementById('close-create-student').addEventListener('click', function() {
-        setCreateStudentModal(false);
+        setCreateStudentModal(false, true);
     });
     var createSuccessClose = document.getElementById('create-student-success-close');
     if (createSuccessClose) {
         createSuccessClose.addEventListener('click', function() {
-            setCreateStudentSuccessModal(false);
+            closeCreateStudentSuccessModal();
         });
     }
     var assignSuccessClose = document.getElementById('assign-success-close');
