@@ -82,10 +82,11 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
-- Student Dashboard shows a small unframed line-art cat SVG instead of the
-  `Mr. Cat Academy` text at top left; its subtle tail/blink motion stops when
-  reduced motion is enabled, and the header/workspace left and right edges stay
-  aligned. The welcome pane has no `STUDENT WORKSPACE` label. Its smaller,
+- Student Dashboard shows the unframed solid black full-body leaping-cat mark
+  at the far right of the utility controls instead of a top-left wordmark or
+  line-art cat; its restrained readying motion stops when reduced motion is
+  enabled, and the header/workspace left and right edges stay aligned. The
+  welcome pane has no `STUDENT WORKSPACE` label. Its smaller,
   China-time-aware greeting stays on one line; short greetings remain still,
   only overflowing greetings reveal horizontally, and reduced motion falls
   back to a static ellipsis. The motivational sentence remains below it
@@ -289,9 +290,11 @@ Check:
   `View`; the explicit `?view=library` practice-return URL still restores
   Library before remote data finishes
 - Teacher has no standalone greeting hero, top-left `Mr. Cat Academy` wordmark,
-  or `TEACHER` / `View` / `New assignment` block. The top utility glass aligns
-  exactly with the workspace frame below, and View begins directly with the
-  matrix while keeping the existing `Class`, `Column`, and `Date` controls
+  or `TEACHER` / `View` / `New assignment` block. The shared black full-body cat
+  logo appears at the far right after the account chip without displacing the
+  notification, Review, or student-lookup controls. The top utility glass
+  aligns exactly with the workspace frame below, and View begins directly with
+  the matrix while keeping the existing `Class`, `Column`, and `Date` controls
 - the workspace and matrix top corners stay continuously rounded, with no
   contrasting square/accent tip visible inside the curve
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all

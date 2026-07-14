@@ -85,10 +85,11 @@ Assignment access and progress display:
   and shows the best failed percentage after an unsuccessful submission.
   Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
   `FINISHED`, where the score pill remains green.
-- the student header uses a small line-art cat SVG at top left instead of the
+- the student header uses the solid black full-body leaping-cat mark at the far
+  right of the utility controls instead of the former top-left line-art cat or
   `Mr. Cat Academy` text. It has no enclosing circular badge, keeps an
-  accessible brand label, and uses only a restrained tail movement and blink;
-  both stop under reduced-motion preferences. The header glass capsule shares
+  accessible brand label, and uses only a restrained occasional readying motion
+  that stops under reduced-motion preferences. The header glass capsule shares
   the exact left and right edges of the workspace card below it. The welcome
   pane has no `STUDENT WORKSPACE` label. Its smaller China-time-aware English
   greeting remains on one line; only genuine overflow receives a slow,
@@ -300,9 +301,11 @@ There is no separate teacher greeting/quotation hero or repeated content
 heading. The `View` destination begins directly with the progress matrix; do
 not place `TEACHER`, `View`, or a `New assignment` shortcut above it. Teachers
 switch to assignment creation through the persistent `Assign` sidebar item.
-The top-left `Mr. Cat Academy` wordmark is omitted on this authenticated teacher
-surface, leaving the utility controls aligned to the right. The header glass
-capsule and the workspace frame below share the same left and right edges.
+The top-left `Mr. Cat Academy` wordmark remains omitted on this authenticated
+teacher surface. The solid black full-body leaping-cat mark sits at the far
+right of the utility controls as the shared authenticated-workspace logo. The
+header glass capsule and the workspace frame below share the same left and
+right edges.
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account

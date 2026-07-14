@@ -1,5 +1,10 @@
 # Changelog
 
+- Replaced the Student Dashboard's top-left line-art cat with the solid black
+  full-body leaping-cat logo and placed the same mark at the far right of both
+  authenticated Student and Teacher headers. The logo has a restrained idle
+  motion, a reduced-motion fallback, and does not change existing header
+  control hooks or behavior.
 - Fixed the Teacher View matrix's phone-portrait `DUE AT` row alignment by
   making sticky first-column cells fill the shared grid track and applying the
   same compact padding, font size, and row height to `Student`, `DUE AT`, and
