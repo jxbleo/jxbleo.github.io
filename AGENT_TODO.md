@@ -68,6 +68,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-14
 
+- Simplified the Teacher View entry so it begins directly with the progress
+  matrix: removed the top-left wordmark and the repeated `TEACHER` / `View` /
+  `New assignment` block and shortcut behavior. Aligned the header glass with
+  the workspace frame, matched the sidebar's inner corner to the outer curve,
+  and removed the matrix's contrasting top accent tip. Verified JavaScript
+  syntax, static structure, CSS balance/diff whitespace, release verification,
+  exact header/workspace edge measurements, rounded-corner rendering, and zero
+  page overflow at desktop and 390px widths. No backend, CloudBase deployment,
+  or content import is required.
 - Refined the student Dashboard header and bell message rows without changing
   assignment state or practice navigation. The header brand is quieter, its
   glass capsule now aligns exactly with the workspace card, bell task labels

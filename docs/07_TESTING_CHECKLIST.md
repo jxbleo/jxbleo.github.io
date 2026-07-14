@@ -273,14 +273,16 @@ Check:
   shows only the animated grid/radar wash without visible loading copy or a
   centered spinner
 - Teacher workspace uses the desktop left sidebar in the order `View`, `Assign`,
-  `Library`, changes the main heading to the same exact label, and becomes a
-  horizontal segmented sidebar on mobile
+  `Library`, has no repeated destination heading, and becomes a horizontal
+  segmented sidebar on mobile
 - loading or refreshing `teacher.html?view=tasks` and `?view=library` restores
-  the matching sidebar, heading, and content surface before remote data finishes
-- Teacher has no standalone greeting hero; View has no new KPI cards and keeps
-  the existing `Class`, `Column`, and `Date` filter controls and option designs
-- `New assignment` appears on View and switches to Assign without a server call
-  and without clearing any current Work/Student selection
+  the matching sidebar and content surface before remote data finishes
+- Teacher has no standalone greeting hero, top-left `Mr. Cat Academy` wordmark,
+  or `TEACHER` / `View` / `New assignment` block. The top utility glass aligns
+  exactly with the workspace frame below, and View begins directly with the
+  matrix while keeping the existing `Class`, `Column`, and `Date` controls
+- the workspace and matrix top corners stay continuously rounded, with no
+  contrasting square/accent tip visible inside the curve
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all
   current picker modal designs and behaviors, and retains the per-task parameter
   matrix below; the summaries stack at 390px

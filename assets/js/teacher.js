@@ -4975,16 +4975,6 @@
         document.querySelectorAll('.dashboard-view').forEach(function(view) {
             view.hidden = view.id !== 'view-' + viewName;
         });
-        var workspaceTitle = document.getElementById('teacher-workspace-title');
-        if (workspaceTitle) {
-            workspaceTitle.textContent = {
-                view: 'View',
-                tasks: 'Assign',
-                library: 'Library'
-            }[viewName];
-        }
-        var newAssignmentButton = document.getElementById('teacher-new-assignment');
-        if (newAssignmentButton) newAssignmentButton.hidden = viewName !== 'view';
         return viewName;
     }
 
@@ -5152,12 +5142,6 @@
             activateView(button.dataset.view);
         });
     });
-    var newAssignmentButton = document.getElementById('teacher-new-assignment');
-    if (newAssignmentButton) {
-        newAssignmentButton.addEventListener('click', function() {
-            activateView('tasks');
-        });
-    }
     document.querySelectorAll('[data-task-view]').forEach(function(button) {
         button.addEventListener('click', function() {
             state.taskView = button.dataset.taskView;
