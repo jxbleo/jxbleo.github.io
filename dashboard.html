@@ -10,7 +10,7 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/app.css?v=20260714-3">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-7">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
@@ -53,34 +53,16 @@
                     <p class="student-motivation" id="student-greeting-motivation">Your next step starts here.</p>
                     <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
                 </div>
-                <div class="hero-progress-stats is-loading" id="hero-progress-stats" aria-label="Assignment summary">
-                    <div class="hero-meter-row">
-                        <strong class="progress-skeleton-text">-- / --</strong>
-                    </div>
-                    <div class="hero-meter-track loading-track" aria-hidden="true"><i></i></div>
-                    <div class="hero-meter-legend">
-                        <span><b>--</b> finished</span>
-                        <span><b>--</b> to do</span>
-                    </div>
-                </div>
             </section>
-            <div class="progress-board is-loading" id="progress-board" aria-label="Four week assignment progress">
-                <section class="progress-map-panel">
-                    <div class="progress-dot-map progress-dot-map-loading" aria-hidden="true">
-                        <span></span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-                        <span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <div class="weekly-focus-progress is-loading" id="weekly-focus-progress" aria-label="Weekly assignment progress" aria-busy="true">
+                <div class="weekly-progress-row weekly-progress-skeleton" aria-hidden="true">
+                    <div class="weekly-progress-copy">
+                        <span class="weekly-progress-label">THIS WEEK</span>
+                        <strong>Loading progress</strong>
                     </div>
-                </section>
-                <section class="progress-detail-panel">
-                    <div class="progress-detail-list">
-                        <div class="progress-detail-loading" role="status">
-                            <span class="progress-loading-copy">Loading progress</span>
-                        </div>
-                    </div>
-                </section>
+                    <span class="weekly-progress-track"><i></i></span>
+                </div>
+                <span class="sr-only" role="status">Loading weekly assignment progress.</span>
             </div>
         </section>
 
@@ -145,7 +127,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260714-5"></script>
+    <script src="assets/js/dashboard.js?v=20260715-3"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

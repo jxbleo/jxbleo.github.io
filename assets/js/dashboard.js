@@ -17,7 +17,6 @@
         vocabReviewMode: false,
         vocabReviewRevealed: false,
         vocabReviewWordId: '',
-        progressSelectedDay: '',
         accountPanelOpen: false,
         wordsPanelOpen: false,
         myWordsScrollTop: 0
@@ -104,8 +103,7 @@
     var studentGreetingPrimary = document.getElementById('student-greeting-primary');
     var studentGreetingMotivation = document.getElementById('student-greeting-motivation');
     var studentGreetingAccessible = document.getElementById('student-greeting-accessible');
-    var heroProgressStats = document.getElementById('hero-progress-stats');
-    var progressBoard = document.getElementById('progress-board');
+    var weeklyFocusProgress = document.getElementById('weekly-focus-progress');
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
@@ -299,16 +297,6 @@
         var parts = shanghaiDateParts(new Date());
         var today = utcDateFromShanghaiParts(parts);
         return addUtcDays(today, -mondayIndexFromUtcDate(today));
-    }
-
-    function isoWeekNumber(date) {
-        var target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-        var dayNumber = (target.getUTCDay() + 6) % 7;
-        target.setUTCDate(target.getUTCDate() - dayNumber + 3);
-        var firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
-        var firstDayNumber = (firstThursday.getUTCDay() + 6) % 7;
-        firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNumber + 3);
-        return 1 + Math.round((target.getTime() - firstThursday.getTime()) / 604800000);
     }
 
     function randomItem(items) {
@@ -1108,48 +1096,100 @@
         return observer;
     }
 
-    function openStudentMessageCenter() {
+    function openStudentMessageCenter(scope) {
         var existing = document.querySelector('.student-message-overlay');
         if (existing) existing.remove();
 
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
         var replies = state.teacherReplies || [];
+        var dialogTitle = 'Assignments';
+        var summaryHtml = '';
+        var sectionsHtml = '';
+
+        if (scope === 'overdue' || scope === 'week') {
+            var focusModel = weeklyFocusModel();
+            replies = [];
+            if (scope === 'overdue') {
+                dialogTitle = 'Overdue assignments';
+                todos = focusModel.overdue;
+                finished = [];
+                summaryHtml = '<span><b>' + escapeHtml(todos.length) + '</b> overdue</span>';
+                sectionsHtml = renderStudentMessageSection(
+                    'Overdue',
+                    todos.length,
+                    todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                    'No overdue assignments.',
+                    'todo overdue'
+                );
+            } else {
+                dialogTitle = 'This week';
+                todos = focusModel.thisWeek.filter(function(item) {
+                    return normalizedStatus(item.status) === 'to_do';
+                }).sort(newestFirst);
+                finished = focusModel.thisWeek.filter(function(item) {
+                    return isFinishedStatus(item.status);
+                }).sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
+                summaryHtml =
+                    '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
+                    '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>';
+                sectionsHtml =
+                    renderStudentMessageSection(
+                        'To do',
+                        todos.length,
+                        todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                        'No unfinished assignments this week.',
+                        'todo'
+                    ) +
+                    renderStudentMessageSection(
+                        'Finished',
+                        finished.length,
+                        finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                        'No finished assignments this week yet.',
+                        'finished'
+                    );
+            }
+        } else {
+            summaryHtml =
+                '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
+                '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
+                '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>';
+            sectionsHtml =
+                renderStudentMessageSection(
+                    'To do',
+                    todos.length,
+                    todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                    'No unfinished assignments.',
+                    'todo'
+                ) +
+                renderStudentMessageSection(
+                    'Finished',
+                    finished.length,
+                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                    'Finished assignments will appear here.',
+                    'finished'
+                ) +
+                renderStudentMessageSection(
+                    'Teacher replies',
+                    replies.length,
+                    replies.map(renderTeacherReplyItem).join(''),
+                    'No new teacher replies.',
+                    'replies'
+                );
+        }
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay student-message-overlay';
         overlay.innerHTML =
             '<div class="student-message-shell" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
                 '<div class="teacher-replies-dialog student-message-dialog">' +
                     '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
-                        '<h2 id="student-message-title">Assignments</h2>' +
+                        '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
                         '<div class="student-message-summary">' +
-                            '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
-                            '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
-                            '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>' +
+                            summaryHtml +
                         '</div>' +
                     '</div>' +
                     '<div class="student-message-sections">' +
-                        renderStudentMessageSection(
-                            'To do',
-                            todos.length,
-                            todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
-                            'No unfinished assignments.',
-                            'todo'
-                        ) +
-                        renderStudentMessageSection(
-                            'Finished',
-                            finished.length,
-                            finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
-                            'Finished assignments will appear here.',
-                            'finished'
-                        ) +
-                        renderStudentMessageSection(
-                            'Teacher replies',
-                            replies.length,
-                            replies.map(renderTeacherReplyItem).join(''),
-                            'No new teacher replies.',
-                            'replies'
-                        ) +
+                        sectionsHtml +
                     '</div>' +
                 '</div>' +
                 '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close assignments">Close</button>' +
@@ -1272,229 +1312,112 @@
         return new Date(item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || 0).getTime();
     }
 
-    function progressItemDateValue(item) {
-        if (!item || !isFinishedStatus(item.status)) return null;
-        var value = item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
-        var date = value ? new Date(value) : null;
-        return date && !isNaN(date.getTime()) ? date : null;
+    function isRealAssignment(item) {
+        return Boolean(item && item.assignment_id && normalizedStatus(item.status) !== 'cancelled');
     }
 
-    function progressItemKind(item) {
-        var set = item && (item.set || item) || {};
-        var sectionId = set.sectionId || set.section_id || '';
-        return vocabularySourceLabel(set) ||
-            librarySectionLabel(sectionId, set.course || set.type || 'Practice');
-    }
-
-    function progressItemTitle(item) {
-        var set = item && (item.set || item) || {};
-        return set.title || set.set_id || set.id || 'Practice';
-    }
-
-    function progressItemScoreLabel(item) {
-        return item && item.best_percentage != null ? formatEntryPercent(item.best_percentage) : '--';
-    }
-
-    function renderProgressTask(item) {
-        var status = normalizedStatus(item.status);
-        var title = progressItemTitle(item);
-        var kind = progressItemKind(item) || 'Practice';
-        var href = assignmentOpenHref(item);
-        var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
-        return '<article class="progress-detail-task" data-open-href="' + escapeHtml(href) + '"' +
-            ' data-entry-kind="' + escapeHtml(kind) + '" data-entry-title="' + escapeHtml(title) + '"' +
-            ' data-entry-status="' + escapeHtml(status) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
-            ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '" role="link" tabindex="0"' +
-            ' aria-label="Open completed task ' + escapeHtml(title) + '">' +
-            '<strong>' + escapeHtml(title) + '</strong>' +
-            '<span class="progress-task-meta">' +
-                '<span class="progress-task-type">' + escapeHtml(kind) + '</span>' +
-                '<span class="progress-task-score">' + escapeHtml(progressItemScoreLabel(item)) + '</span>' +
-            '</span>' +
-        '</article>';
-    }
-
-    function progressDayModel() {
+    function weeklyFocusModel() {
+        var now = new Date();
         var weekStart = currentShanghaiWeekStart();
-        var firstWeekStart = addUtcDays(weekStart, -21);
-        var todayParts = shanghaiDateParts(new Date());
-        var todayKey = todayParts && todayParts.key;
-        var days = [];
-        var daysByKey = {};
-        var weeks = [];
-        var weeksByKey = {};
-        var weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-        for (var weekIndex = 0; weekIndex < 4; weekIndex++) {
-            var weekDate = addUtcDays(firstWeekStart, weekIndex * 7);
-            var weekKey = 'week:' + keyFromUtcDate(weekDate);
-            var week = {
-                key: weekKey,
-                startKey: keyFromUtcDate(weekDate),
-                weekLabel: 'W' + isoWeekNumber(weekDate),
-                type: 'week',
-                days: [],
-                items: []
-            };
-            weeks.push(week);
-            weeksByKey[weekKey] = week;
-            for (var dayIndex = 0; dayIndex < 7; dayIndex++) {
-                var date = addUtcDays(weekDate, dayIndex);
-                var key = keyFromUtcDate(date);
-                var day = {
-                    key: key,
-                    weekKey: weekKey,
-                    date: date,
-                    weekLabel: week.weekLabel,
-                    dayLabel: weekdayLabels[dayIndex],
-                    type: 'day',
-                    items: [],
-                    isFuture: todayKey ? key > todayKey : false
-                };
-                days.push(day);
-                week.days.push(day);
-                daysByKey[key] = day;
-            }
-        }
-
-        (state.assignments || []).forEach(function(item) {
-            var date = progressItemDateValue(item);
-            if (!date) return;
-            var parts = shanghaiDateParts(date);
-            if (!parts || !daysByKey[parts.key]) return;
-            daysByKey[parts.key].items.push(item);
+        var weekStartKey = keyFromUtcDate(weekStart);
+        var weekEndKey = keyFromUtcDate(addUtcDays(weekStart, 6));
+        var assignments = (state.assignments || []).filter(isRealAssignment);
+        var open = assignments.filter(function(item) {
+            return normalizedStatus(item.status) === 'to_do';
         });
-
-        days.forEach(function(day) {
-            day.items.sort(function(left, right) {
-                return progressItemDateValue(right).getTime() - progressItemDateValue(left).getTime();
-            });
-            day.hasStar = day.items.some(function(item) {
-                return normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
-            });
-            day.level = Math.min(4, day.items.length);
+        var overdue = open.filter(function(item) {
+            if (!item.due_at) return false;
+            var dueDate = new Date(item.due_at);
+            return !isNaN(dueDate.getTime()) && dueDate.getTime() < now.getTime();
+        }).sort(function(left, right) {
+            return new Date(left.due_at).getTime() - new Date(right.due_at).getTime();
         });
-
-        weeks.forEach(function(week) {
-            week.items = week.days.reduce(function(items, day) {
-                return items.concat(day.items);
-            }, []).sort(function(left, right) {
-                return progressItemDateValue(right).getTime() - progressItemDateValue(left).getTime();
-            });
+        var thisWeek = assignments.filter(function(item) {
+            if (!item.assigned_at) return false;
+            var parts = shanghaiDateParts(item.assigned_at);
+            return parts && parts.key >= weekStartKey && parts.key <= weekEndKey;
         });
-
-        var selected = null;
-        if (state.progressSelectedDay) {
-            selected = weeksByKey[state.progressSelectedDay] || daysByKey[state.progressSelectedDay] || null;
-        }
-        if (!selected) selected = daysByKey[todayKey];
-        if (!selected) {
-            for (var i = days.length - 1; i >= 0; i--) {
-                if (days[i].items.length) {
-                    selected = days[i];
-                    break;
-                }
-            }
-        }
-        if (!selected) selected = days[days.length - 1];
-        state.progressSelectedDay = selected ? selected.key : '';
+        var weekFinished = thisWeek.filter(function(item) {
+            return isFinishedStatus(item.status);
+        });
 
         return {
-            days: days,
-            weeks: weeks,
-            selected: selected,
-            todayKey: todayKey,
-            weekdayLabels: weekdayLabels
+            open: open,
+            overdue: overdue,
+            thisWeek: thisWeek,
+            weekFinished: weekFinished
         };
     }
 
-    function renderHeroProgressMeter(finishedCount, todoCount) {
-        var total = finishedCount + todoCount;
-        var percent = total ? Math.round((finishedCount / total) * 100) : 0;
-        var label = total ? finishedCount + ' / ' + total : '0 / 0';
-        return '<div class="hero-meter-row">' +
-                '<strong>' + escapeHtml(label) + '</strong>' +
-            '</div>' +
-            '<div class="hero-meter-track" role="progressbar" aria-label="Assignment completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(percent) + '">' +
-                '<i style="width: ' + escapeHtml(percent) + '%"></i>' +
-            '</div>' +
-            '<div class="hero-meter-legend">' +
-                '<span><b>' + escapeHtml(finishedCount) + '</b> finished</span>' +
-                '<span><b>' + escapeHtml(todoCount) + '</b> to do</span>' +
-            '</div>';
+    function renderWeeklyProgressRow(options) {
+        var value = Math.max(0, Math.min(100, Number(options.percent || 0)));
+        var disabled = options.disabled === true;
+        return '<button class="weekly-progress-row ' + escapeHtml(options.kind || '') + '" type="button"' +
+            (disabled ? ' disabled' : ' data-progress-scope="' + escapeHtml(options.scope || '') + '"') +
+            ' aria-label="' + escapeHtml(options.ariaLabel || options.valueLabel || '') + '">' +
+                '<span class="weekly-progress-copy">' +
+                    '<span class="weekly-progress-label">' + escapeHtml(options.label || '') + '</span>' +
+                    '<strong>' + escapeHtml(options.valueLabel || '') + '</strong>' +
+                '</span>' +
+                '<span class="weekly-progress-track" aria-hidden="true">' +
+                    '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
+                '</span>' +
+            '</button>';
     }
 
-    function renderProgressStats() {
-        if (!heroProgressStats) return;
-        heroProgressStats.classList.remove('is-loading');
+    function renderWeeklyFocusProgress() {
+        if (!weeklyFocusProgress) return;
+        weeklyFocusProgress.classList.remove('is-loading');
+        weeklyFocusProgress.setAttribute('aria-busy', 'false');
+
         if (!state.session || state.session.mode !== 'student') {
-            heroProgressStats.innerHTML = renderHeroProgressMeter(0, 0);
-            return;
-        }
-        var assignments = state.assignments || [];
-        var finished = assignments.filter(function(item) { return isFinishedStatus(item.status); });
-        var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; });
-        heroProgressStats.innerHTML = renderHeroProgressMeter(finished.length, todo.length);
-    }
-
-    function renderProgressDetail(day) {
-        if (!day) return '';
-        var count = day.items.length;
-        var body = count
-            ? day.items.map(renderProgressTask).join('')
-            : '';
-        return '<section class="progress-detail-panel" aria-live="polite">' +
-            '<div class="progress-detail-list">' + body + '</div>' +
-        '</section>';
-    }
-
-    function renderProgressBoard() {
-        if (!progressBoard) return;
-        progressBoard.classList.remove('is-loading');
-        renderProgressStats();
-        if (!state.session || state.session.mode !== 'student') {
-            progressBoard.innerHTML =
-                '<section class="progress-map-panel visitor">' +
-                    '<div class="progress-dot-map" aria-hidden="true">' +
-                        '<span></span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>' +
-                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
-                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
-                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
-                        '<span>W--</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' +
-                    '</div>' +
-                '</section>' +
-                '<section class="progress-detail-panel"><div class="progress-detail-list"><div class="progress-detail-empty">Log in to keep assignment history and STAR records.</div></div></section>';
+            weeklyFocusProgress.innerHTML = renderWeeklyProgressRow({
+                kind: 'this-week is-static',
+                label: 'THIS WEEK',
+                valueLabel: 'Sign in to track progress',
+                ariaLabel: 'Sign in to track weekly assignment progress.',
+                percent: 0,
+                disabled: true
+            });
             return;
         }
 
-        var model = progressDayModel();
-        var cells = '';
-        model.days.forEach(function(day, index) {
-            if (index % 7 === 0) {
-                var week = model.weeks[index / 7];
-                var weekClasses = ['progress-week-label', 'progress-week-button'];
-                if (week && week.key === state.progressSelectedDay) weekClasses.push('active');
-                var weekLabel = week ? week.weekLabel : day.weekLabel;
-                var weekItemCount = week ? week.items.length : 0;
-                cells += '<button class="' + weekClasses.join(' ') + '" type="button" data-progress-week="' + escapeHtml(week ? week.key : '') + '" aria-label="' + escapeHtml(weekLabel + ', ' + weekItemCount + ' finished this week') + '">' + escapeHtml(weekLabel) + '</button>';
-            }
-            var classes = ['progress-dot'];
-            if (day.level) classes.push('l' + day.level);
-            if (day.hasStar) classes.push('star');
-            if (day.isFuture) classes.push('future');
-            if (day.key === state.progressSelectedDay) classes.push('active');
-            var label = day.weekLabel + ' ' + day.dayLabel + ', ' + day.items.length + ' finished';
-            cells += '<button class="' + classes.join(' ') + '" type="button" data-progress-day="' + escapeHtml(day.key) + '" aria-label="' + escapeHtml(label) + '"></button>';
+        var model = weeklyFocusModel();
+        var html = '';
+        if (model.overdue.length) {
+            var overduePercent = model.open.length
+                ? Math.round((model.overdue.length / model.open.length) * 100)
+                : 0;
+            html += renderWeeklyProgressRow({
+                kind: 'overdue',
+                scope: 'overdue',
+                label: 'OVERDUE',
+                valueLabel: model.overdue.length + ' of ' + model.open.length + ' open',
+                ariaLabel: 'Open overdue assignments. ' + model.overdue.length + ' of ' + model.open.length + ' open assignments are overdue.',
+                percent: overduePercent
+            });
+        }
+
+        var weekTotal = model.thisWeek.length;
+        var weekFinished = model.weekFinished.length;
+        var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
+        var weekLabel = !weekTotal
+            ? 'No assignments this week'
+            : weekFinished === weekTotal
+                ? 'All done · ' + weekFinished + ' / ' + weekTotal
+                : weekFinished + ' / ' + weekTotal + ' finished';
+        html += renderWeeklyProgressRow({
+            kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : ''),
+            scope: 'week',
+            label: 'THIS WEEK',
+            valueLabel: weekLabel,
+            ariaLabel: weekTotal
+                ? 'Open this week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished.'
+                : 'No assignments are scheduled for this week.',
+            percent: weekPercent,
+            disabled: weekTotal === 0
         });
-        progressBoard.innerHTML =
-            '<section class="progress-map-panel">' +
-                '<div class="progress-dot-map" aria-label="Recent assignment progress">' +
-                    '<span></span>' +
-                    model.weekdayLabels.map(function(label) { return '<span class="progress-day-label">' + escapeHtml(label) + '</span>'; }).join('') +
-                    cells +
-                '</div>' +
-            '</section>' +
-            renderProgressDetail(model.selected);
+        weeklyFocusProgress.innerHTML = html;
     }
 
     function renderAssignments() {
@@ -1545,7 +1468,7 @@
                     state.selfStudyStarCount = Number(result.self_study_star_count == null ? state.selfStudyStarCount : result.self_study_star_count);
                     playStarSound();
                     animateStarToCounter(button);
-                    renderProgressBoard();
+                    renderWeeklyFocusProgress();
                     button.classList.add('collected');
                     window.setTimeout(function() { button.remove(); }, 120);
                 }).catch(function(error) {
@@ -2817,16 +2740,9 @@
             openHrefCard(openCard, e);
             return;
         }
-        var progressDay = e.target.closest('[data-progress-day]');
-        if (progressDay) {
-            state.progressSelectedDay = progressDay.dataset.progressDay || '';
-            renderProgressBoard();
-            return;
-        }
-        var progressWeek = e.target.closest('[data-progress-week]');
-        if (progressWeek) {
-            state.progressSelectedDay = progressWeek.dataset.progressWeek || '';
-            renderProgressBoard();
+        var progressScope = e.target.closest('[data-progress-scope]');
+        if (progressScope) {
+            openStudentMessageCenter(progressScope.dataset.progressScope || '');
             return;
         }
         var tabBtn = e.target.closest('.library-tab-btn');
@@ -2921,7 +2837,7 @@
         })
         .then(function() {
             if (!state.session) return;
-            renderProgressBoard();
+            renderWeeklyFocusProgress();
             renderAssignments();
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();

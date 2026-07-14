@@ -93,15 +93,21 @@ Practice navigation checks:
   China-time-aware greeting stays on one line; short greetings remain still,
   only overflowing greetings reveal horizontally, and reduced motion falls
   back to a static ellipsis. The motivational sentence remains below it
-- at desktop width the Dashboard welcome/meter and four-week progress board are
-  two side-by-side panes; at tablet/mobile width they stack without page-level
-  horizontal overflow
-- Student Dashboard loading reserves the final monthly-board dimensions; its
-  28 day cells animate in a staggered diagonal wave and the detail side contains
-  exactly one large capsule with `Loading progress` centered inside
-- clicking a completed-task capsule in the Dashboard four-week board opens the
-  shared entry confirmation, and `Enter` opens that completed task with a safe
-  Dashboard return target
+- at desktop width the Dashboard greeting and weekly progress rows share one
+  surface in two columns; below 900px they stack without page-level horizontal
+  overflow or nested glass cards
+- the loading state shows one quiet `THIS WEEK` skeleton row; after load,
+  `OVERDUE` appears first only when a real `to_do` assignment is past `due_at`,
+  while `THIS WEEK` always reflects real assignments scheduled by `assigned_at`
+  in the current China-standard-time week and excludes self-study STAR records
+- completing the final overdue item removes the red row; a week with no
+  assignments reads `No assignments this week`, and a fully completed week
+  reads `All done`
+- clicking a populated `OVERDUE` or `THIS WEEK` row opens the existing
+  Assignments dialog filtered to that scope; keyboard activation works, while
+  an empty or visitor weekly row is disabled
+- reduced motion shows final progress values without the reveal animation, and
+  increased contrast/reduced transparency keep both tracks and labels legible
 - opening a task from Dashboard Assignments appends a safe `return` target and
   the practice `Back` control returns to Dashboard Assignments
 - opening a task from Dashboard Library appends a safe `return` target and
