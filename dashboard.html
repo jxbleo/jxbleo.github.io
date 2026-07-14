@@ -8,16 +8,28 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260714-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260714-3">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260714-2">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260714-3">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
         <header class="app-header">
-            <p class="app-brand">Mr. Cat Academy</p>
+            <div class="app-brand student-cat-brand" role="img" aria-label="Mr. Cat Academy">
+                <svg class="student-cat-mark" viewBox="0 0 64 56" aria-hidden="true" focusable="false">
+                    <g class="student-cat-tail">
+                        <path d="M44.5 43.5c9.5 2.4 13.8-3.4 10.8-8.7-2.2-3.8-7.4-3.1-9.4.5"></path>
+                    </g>
+                    <path d="M22.5 34.5c-3.2 4.6-4.1 10.2-3 16.5h25c1.1-6.3.2-11.9-3-16.5"></path>
+                    <path d="M18.5 24.5 17 10l9.7 6a18.6 18.6 0 0 1 10.6 0L47 10l-1.5 14.5C45 32.2 39.9 37 32 37s-13-4.8-13.5-12.5Z"></path>
+                    <g class="student-cat-eyes">
+                        <path d="M24.7 24.7h.1M39.2 24.7h.1"></path>
+                    </g>
+                    <path d="m29.7 29.2 2.3 1.6 2.3-1.6M32 30.8v2.6m0 0c-1.8 2-3.8 2.1-5.2.4m5.2-.4c1.8 2 3.8 2.1 5.2.4M20.5 29.4l-7.2-1.2m7.4 4.4-7.1 1.1m29.9-4.3 7.2-1.2m-7.4 4.4 7.1 1.1M25.5 45.5V51m13-5.5V51M17.5 51h29"></path>
+                </svg>
+            </div>
             <div class="identity-cluster">
-                <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Notifications" aria-expanded="false">
+                <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Assignments" aria-expanded="false">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
                         <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
@@ -47,8 +59,7 @@
         <section class="hero-card student-progress-hero">
             <section class="student-welcome-panel" aria-labelledby="student-greeting-primary">
                 <div class="student-welcome-copy">
-                    <p class="eyebrow accent">STUDENT WORKSPACE</p>
-                    <h1 id="student-greeting-primary">Hello.</h1>
+                    <h1 class="student-greeting-line" id="student-greeting-line"><span id="student-greeting-primary">Hello.</span></h1>
                     <p class="student-motivation" id="student-greeting-motivation">Your next step starts here.</p>
                     <span class="sr-only" id="student-greeting-accessible" role="status" aria-live="polite" aria-atomic="true">Hello. Your next step starts here.</span>
                 </div>
@@ -144,7 +155,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260714-3"></script>
+    <script src="assets/js/dashboard.js?v=20260714-5"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

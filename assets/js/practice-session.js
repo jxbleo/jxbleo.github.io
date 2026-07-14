@@ -112,8 +112,29 @@
         window.location.href = url;
     }
 
+    function canReturnThroughHistory(targetUrl) {
+        if (!window.history || typeof window.history.back !== 'function' || window.history.length <= 1) return false;
+        var referrer = safeLocalUrl(document.referrer);
+        if (!referrer || samePage(referrer)) return false;
+        try {
+            var expected = new URL(targetUrl, window.location.href);
+            var previous = new URL(referrer, window.location.href);
+            return previous.origin === expected.origin && previous.pathname === expected.pathname;
+        } catch (error) {
+            return false;
+        }
+    }
+
     function goBack() {
-        goTo(returnUrl());
+        var target = returnUrl();
+        document.querySelectorAll('.mrcat-back-modal.show').forEach(function(modal) {
+            modal.classList.remove('show');
+        });
+        if (canReturnThroughHistory(target)) {
+            window.history.back();
+            return;
+        }
+        window.location.href = target;
     }
 
     function goHome() {

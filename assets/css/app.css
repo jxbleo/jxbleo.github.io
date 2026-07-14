@@ -2114,6 +2114,14 @@ body:not(.teacher-page) .tab-button.active {
     background: #f4f8f5;
 }
 .student-message-overlay[hidden] { display: none; }
+.student-message-shell {
+    display: grid;
+    width: min(720px, 100%);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    gap: 14px;
+    justify-items: center;
+}
 .teacher-replies-dialog {
     position: relative;
     width: min(560px, 100%);
@@ -2134,7 +2142,51 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 1.45rem;
 }
 .student-message-dialog {
-    width: min(720px, 100%);
+    width: 100%;
+    max-height: min(510px, calc(75vh - 30px));
+    max-height: min(510px, calc(75dvh - 30px));
+    overscroll-behavior: contain;
+}
+.student-message-close {
+    min-width: 132px;
+    min-height: 44px;
+    padding: 0 22px;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+    color: #26343b;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 12px 30px rgba(27, 45, 56, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(20px) saturate(155%);
+    backdrop-filter: blur(20px) saturate(155%);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+.student-message-close:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 15px 34px rgba(27, 45, 56, 0.2), inset 0 1px 0 #fff;
+}
+.student-message-close:active { transform: scale(0.97); }
+.student-message-close:focus-visible {
+    outline: 3px solid rgba(19, 118, 109, 0.24);
+    outline-offset: 3px;
+}
+@media (prefers-reduced-transparency: reduce) {
+    .student-message-close {
+        border-color: rgba(38, 52, 59, 0.18);
+        background: #f8faf9;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+@media (prefers-contrast: more) {
+    .student-message-close {
+        border-color: #26343b;
+        background: #fff;
+    }
 }
 .student-message-dialog-head {
     display: grid;
@@ -2318,6 +2370,10 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.72rem;
     font-weight: 900;
     white-space: nowrap;
+}
+.student-message-score.is-todo {
+    color: var(--danger);
+    background: var(--danger-soft);
 }
 .student-message-task-meta svg {
     width: 17px;
