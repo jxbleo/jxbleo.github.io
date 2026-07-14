@@ -68,6 +68,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-14
 
+- Refined the student Dashboard header and bell message rows without changing
+  assignment state or practice navigation. The header brand is quieter, its
+  glass capsule now aligns exactly with the workspace card, bell task labels
+  normalize to `BBC` / `IELTS`, and only overflowing task titles use a gentle
+  one-line scroll with a reduced-motion ellipsis fallback. Updated the UI and
+  testing specifications. Verified JavaScript syntax, diff whitespace, release
+  verification, an authenticated dev-student bell at desktop and 390px widths,
+  confirmation-dialog return behavior, zero page overflow, and zero console
+  errors. No CloudBase deployment or content import is needed.
 - Implemented the owner-approved authenticated spatial workspace layout while
   leaving login, public Library, and every practice runtime unchanged. Student
   Dashboard now keeps the brand in the header, uses one static China-time-aware

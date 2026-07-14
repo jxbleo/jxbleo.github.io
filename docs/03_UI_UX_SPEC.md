@@ -77,7 +77,9 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the top-right
   notification bell; there is no lower Assignments page entry
-- the student header keeps the quiet `Mr. Cat Academy` brand at top left. A
+- the student header keeps a small, quiet `Mr. Cat Academy` brand at top left;
+  its glass capsule shares the exact left and right edges of the workspace card
+  below it. A
   restrained, static English greeting and one randomized motivational sentence
   appear in the left side of the top workspace. The greeting is time-aware in
   China Standard Time and does not marquee, loop, or continuously animate.
@@ -195,8 +197,10 @@ Frontend rule:
 - The student bell dialog should always open, even when there are no new teacher
   replies. It shows open assignments, finished assignments, and teacher replies
   in one message center. Assignment rows in the bell are compact whole-row
-  targets: the short type label and title share the main line, long titles may
-  wrap to a second line, and finished rows may show a small score at the right.
+  targets: the short type label and title share the main line, with BBC tasks
+  labelled `BBC` and all IELTS tasks labelled `IELTS`. Long titles stay on one
+  line and scroll gently only when they overflow; reduced-motion mode uses a
+  static ellipsis. Finished rows may show a small score at the right.
   Do not render separate `Start` or `Open` buttons. Clicking or keyboard-opening
   the row temporarily hides the bell and shows the same shared practice-entry
   confirmation used by Library before navigation. Dismissing that confirmation

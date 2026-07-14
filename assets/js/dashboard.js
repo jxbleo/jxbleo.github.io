@@ -593,6 +593,16 @@
             (sectionId ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment') : (set.course || set.type || 'Assignment'));
     }
 
+    function studentMessageKind(item) {
+        var set = assignmentSet(item);
+        var sectionId = String(set.sectionId || set.section_id || '').toLowerCase();
+        var setId = String(set.set_id || set.id || '');
+        var kind = assignmentKind(item);
+        if (sectionId === 'bbc-six-minute-english' || /^BBC-/i.test(setId) || /\bBBC\b/i.test(kind)) return 'BBC';
+        if (sectionId === 'ielts-reading' || sectionId === 'ielts-listening' || /^C\d+-T\d+-(?:P|S)\d+/i.test(setId) || /\bIELTS\b/i.test(kind)) return 'IELTS';
+        return kind;
+    }
+
     function assignmentOpenHref(item) {
         var set = assignmentSet(item);
         var status = normalizedStatus(item.status);
@@ -996,7 +1006,8 @@
         var finished = isFinishedStatus(status);
         var href = assignmentOpenHref(item);
         var title = assignmentTitle(item);
-        var kind = assignmentKind(item);
+        var kind = studentMessageKind(item);
+        var safeTitle = escapeHtml(title);
         var score = finished && item.best_percentage != null
             ? '<span class="student-message-score">' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</span>'
             : '';
@@ -1006,10 +1017,12 @@
             ' data-entry-kind="' + escapeHtml(kind) + '" data-entry-title="' + escapeHtml(title) + '"' +
             ' data-entry-status="' + escapeHtml(entryStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-entry-locked="' + (entryLocked ? 'true' : 'false') + '" data-open-href="' + escapeHtml(href) + '"' +
-            ' role="link" tabindex="0" aria-label="Review before opening ' + escapeHtml(title) + '">' +
+            ' role="link" tabindex="0" aria-label="Review before opening ' + safeTitle + '">' +
             '<div class="student-message-task-main">' +
                 '<span class="student-message-kicker">' + escapeHtml(kind) + '</span>' +
-                '<strong>' + escapeHtml(title) + '</strong>' +
+                '<span class="student-message-title-window">' +
+                    '<strong class="student-message-title-track"><span>' + safeTitle + '</span></strong>' +
+                '</span>' +
             '</div>' +
             '<div class="student-message-task-meta" aria-hidden="true">' +
                 score +
@@ -1026,6 +1039,34 @@
             '</div>' +
             (body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>') +
         '</section>';
+    }
+
+    function setupStudentMessageTitleTracks(overlay) {
+        var windows = Array.prototype.slice.call(overlay.querySelectorAll('.student-message-title-window'));
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function updateTitleWindow(titleWindow) {
+            var track = titleWindow.querySelector('.student-message-title-track');
+            if (!track) return;
+            var overflow = Math.ceil(track.scrollWidth - titleWindow.clientWidth);
+            var shouldScroll = !reduceMotion && titleWindow.clientWidth > 0 && overflow > 2;
+            titleWindow.classList.toggle('is-overflowing', shouldScroll);
+            if (!shouldScroll) {
+                titleWindow.style.removeProperty('--student-message-title-shift');
+                titleWindow.style.removeProperty('--student-message-title-duration');
+                return;
+            }
+            titleWindow.style.setProperty('--student-message-title-shift', (-overflow) + 'px');
+            titleWindow.style.setProperty('--student-message-title-duration', Math.max(7, Math.min(14, 6 + (overflow / 28))) + 's');
+        }
+
+        windows.forEach(updateTitleWindow);
+        if (!window.ResizeObserver) return null;
+        var observer = new ResizeObserver(function(entries) {
+            entries.forEach(function(entry) { updateTitleWindow(entry.target); });
+        });
+        windows.forEach(function(titleWindow) { observer.observe(titleWindow); });
+        return observer;
     }
 
     function openStudentMessageCenter() {
@@ -1076,11 +1117,13 @@
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
+        var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
         if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
 
         var didMarkSeen = false;
         function close(markSeen) {
             document.removeEventListener('keydown', onKeydown);
+            if (messageTitleObserver) messageTitleObserver.disconnect();
             overlay.remove();
             if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
             if (!markSeen || didMarkSeen) return Promise.resolve();
