@@ -8,6 +8,25 @@
 
 /* Student workspace ------------------------------------------------------ */
 
+.liquid-glass-dashboard .app-header {
+    padding-right: clamp(14px, 2vw, 20px);
+    padding-left: clamp(14px, 2vw, 20px);
+}
+
+.liquid-glass-dashboard .app-header::before {
+    right: 0;
+    left: 0;
+}
+
+.liquid-glass-dashboard .app-brand {
+    flex: 0 1 auto;
+    font-size: clamp(0.72rem, 1vw, 0.8rem);
+    font-weight: 690;
+    letter-spacing: -0.012em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
 .liquid-glass-dashboard .student-progress-hero {
     display: grid;
     grid-template-columns: minmax(0, 1.18fr) minmax(390px, 0.82fr);

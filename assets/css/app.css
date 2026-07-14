@@ -2258,17 +2258,47 @@ body:not(.teacher-page) .tab-button.active {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.student-message-task strong {
-    display: -webkit-box;
+.student-message-title-window {
+    display: block;
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+}
+.student-message-title-track {
+    display: block;
+    width: max-content;
+    max-width: none;
     color: #101918;
     font-size: 0.9rem;
     font-weight: 900;
     line-height: 1.2;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    white-space: nowrap;
+    will-change: transform;
+}
+.student-message-title-window.is-overflowing {
+    mask-image: linear-gradient(90deg, #000 0%, #000 93%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 93%, transparent 100%);
+}
+.student-message-title-window.is-overflowing .student-message-title-track {
+    animation: studentMessageTitleScroll var(--student-message-title-duration, 9s) ease-in-out infinite alternate;
+}
+@keyframes studentMessageTitleScroll {
+    0%, 16% { transform: translate3d(0, 0, 0); }
+    84%, 100% { transform: translate3d(var(--student-message-title-shift, 0), 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .student-message-title-window,
+    .student-message-title-track {
+        width: 100%;
+        max-width: 100%;
+    }
+    .student-message-title-track {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        animation: none;
+        transform: none;
+    }
 }
 .student-message-task-meta {
     display: flex;

@@ -82,9 +82,10 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
-- Student Dashboard keeps `Mr. Cat Academy` at top left and shows one static,
-  China-time-aware greeting plus one motivational sentence in the welcome pane;
-  there is no marquee or continuously looping copy
+- Student Dashboard keeps a small, quiet `Mr. Cat Academy` at top left; the
+  header glass capsule and workspace card below share the same left/right edges.
+  It shows one static, China-time-aware greeting plus one motivational sentence
+  in the welcome pane; there is no marquee or continuously looping greeting copy
 - at desktop width the Dashboard welcome/meter and four-week progress board are
   two side-by-side panes; at tablet/mobile width they stack without page-level
   horizontal overflow
@@ -145,8 +146,11 @@ Check:
   Assignments or My Words navigation
 - the top-right bell opens `TO DO` and finished assignment messages
 - bell assignment rows have no separate `Start` / `Open` buttons; the whole
-  compact row is keyboard/click accessible, keeps long titles to at most two
-  lines, and opens the shared Library-style entry confirmation before navigation
+  compact row is keyboard/click accessible, labels BBC work as `BBC` and every
+  IELTS Reading/Listening task as `IELTS`, and keeps titles on one line. Only an
+  overflowing title scrolls to reveal its full text; reduced-motion mode keeps
+  it static with an ellipsis. The row opens the shared Library-style entry
+  confirmation before navigation
 - closing that entry confirmation with `Close`, Escape, or its backdrop returns
   to the same bell dialog and selected assignment row; choosing `Enter` closes
   both modal layers and opens the task
