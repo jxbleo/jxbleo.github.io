@@ -271,6 +271,8 @@
 }
 
 .liquid-glass-dashboard .student-library-heading {
+    position: relative;
+    z-index: 50;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -290,6 +292,141 @@
     font-weight: 720;
     letter-spacing: -0.055em;
     line-height: 1;
+}
+
+.liquid-glass-dashboard .student-library-title-line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+}
+
+.liquid-glass-dashboard .student-library-category-menu {
+    position: relative;
+    min-width: 0;
+}
+
+.liquid-glass-dashboard .student-library-category-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 42px;
+    max-width: min(44vw, 320px);
+    padding: 5px 9px;
+    border: 0;
+    border-radius: 14px;
+    color: rgba(27, 37, 43, 0.56);
+    background: transparent;
+    font-size: clamp(1rem, 1.9vw, 1.34rem);
+    font-weight: 680;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    cursor: pointer;
+    transition: color 170ms ease, background 170ms ease, transform 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.liquid-glass-dashboard .student-library-category-trigger:hover,
+.liquid-glass-dashboard .student-library-category-trigger:focus-visible,
+.liquid-glass-dashboard .student-library-category-menu.is-open .student-library-category-trigger {
+    color: #116d66;
+    background: rgba(255, 255, 255, 0.48);
+}
+
+.liquid-glass-dashboard .student-library-category-trigger:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.24);
+    outline-offset: 2px;
+}
+
+.liquid-glass-dashboard .student-library-category-trigger:active {
+    transform: scale(0.97);
+}
+
+.liquid-glass-dashboard .student-library-category-trigger > span:not(.student-library-category-separator) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.liquid-glass-dashboard .student-library-category-separator {
+    color: rgba(27, 37, 43, 0.25);
+    font-weight: 520;
+}
+
+.liquid-glass-dashboard .student-library-category-trigger svg {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 220ms cubic-bezier(.2, .78, .2, 1);
+}
+
+.liquid-glass-dashboard .student-library-category-menu.is-open .student-library-category-trigger svg {
+    transform: rotate(180deg);
+}
+
+.liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {
+    position: absolute;
+    z-index: 70;
+    top: calc(100% + 9px);
+    left: 0;
+    display: flex;
+    width: min(620px, calc(100vw - 36px));
+    margin: 0;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 22px;
+    background: rgba(247, 250, 250, 0.86);
+    box-shadow: 0 24px 64px rgba(32, 52, 63, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    backdrop-filter: blur(28px) saturate(160%);
+    transform-origin: top left;
+    animation: studentLibraryCategoryMaterialize 220ms cubic-bezier(.2, .78, .2, 1) both;
+}
+
+.liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover[hidden] {
+    display: none;
+}
+
+.liquid-glass-dashboard #student-sub-tab-bar .sub-tab-btn {
+    min-height: 38px;
+    padding: 7px 14px;
+    border-color: rgba(82, 104, 114, 0.14);
+    color: rgba(27, 37, 43, 0.72);
+    background: rgba(255, 255, 255, 0.64);
+    box-shadow: none;
+}
+
+.liquid-glass-dashboard #student-sub-tab-bar .sub-tab-btn:hover {
+    color: #116d66;
+    border-color: rgba(17, 109, 102, 0.24);
+    background: rgba(229, 244, 241, 0.84);
+    box-shadow: none;
+}
+
+.liquid-glass-dashboard #student-sub-tab-bar .sub-tab-btn.active {
+    color: #0d5d56;
+    border-color: rgba(59, 130, 246, 0.22);
+    background: linear-gradient(135deg, rgba(229, 242, 255, 0.98), rgba(222, 246, 239, 0.96));
+    box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.08);
+}
+
+@keyframes studentLibraryCategoryMaterialize {
+    from {
+        opacity: 0;
+        transform: translateY(-7px) scale(0.98);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
 }
 
 .liquid-glass-dashboard .student-library-toolbar {
@@ -594,6 +731,22 @@
         gap: 16px;
     }
 
+    .liquid-glass-dashboard .student-library-title-line {
+        position: relative;
+    }
+
+    .liquid-glass-dashboard .student-library-category-menu {
+        position: static;
+    }
+
+    .liquid-glass-dashboard .student-library-category-trigger {
+        max-width: calc(100vw - 190px);
+    }
+
+    .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {
+        width: min(620px, calc(100vw - 44px));
+    }
+
     .liquid-glass-dashboard .student-library-toolbar {
         justify-content: space-between;
     }
@@ -686,6 +839,8 @@
     .liquid-glass-dashboard .student-library-dock,
     .liquid-glass-dashboard .student-library-search-panel,
     .liquid-glass-dashboard .student-library-search-trigger,
+    .liquid-glass-dashboard .student-library-category-trigger,
+    .liquid-glass-dashboard .student-library-category-trigger svg,
     .liquid-glass-teacher .teacher-workspace-sidebar .tab-button {
         transition-duration: 1ms !important;
     }
@@ -694,11 +849,16 @@
         animation: none !important;
         transform: scaleX(var(--weekly-progress-scale, 0));
     }
+
+    .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {
+        animation: none;
+    }
 }
 
 @media (prefers-reduced-transparency: reduce) {
     .liquid-glass-dashboard .student-progress-hero,
     .liquid-glass-dashboard .student-library-search-panel,
+    .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover,
     .liquid-glass-teacher .teacher-workspace-frame,
     .liquid-glass-teacher .teacher-workspace-sidebar.dashboard-tabs {
         background: rgba(247, 250, 250, 0.96);
@@ -708,6 +868,15 @@
 }
 
 @media (prefers-contrast: more) {
+    .liquid-glass-dashboard .student-library-category-trigger {
+        color: #1b252b;
+    }
+
+    .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {
+        border-color: rgba(27, 37, 43, 0.46);
+        background: rgba(255, 255, 255, 0.96);
+    }
+
     .liquid-glass-dashboard .student-progress-hero {
         border-color: rgba(27, 37, 43, 0.48);
         background: rgba(255, 255, 255, 0.94);
