@@ -1,5 +1,7 @@
 # Changelog
 
+- Removed the visible `STUDENT ENTRY` eyebrow from the login form while
+  retaining its screen-reader heading and all existing authentication controls.
 - Added an explicit rounded clip to the Teacher View matrix scroll viewport so
   sticky and colored header layers cannot leave small square tips inside its
   top-left or top-right corners.

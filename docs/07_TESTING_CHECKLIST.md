@@ -55,6 +55,8 @@ Open:
 
 Shared shell visual checks:
 
+- the login form does not show a `STUDENT ENTRY` eyebrow, while the Student ID,
+  password, sign-in, visitor controls, and accessible form heading remain present
 - the login welcome quote sits in the upper portion of the left panel with a
   compact gap below `Mr. Cat Academy`, without the previous large empty region
   above the quote on desktop or mobile; at 390px the welcome panel also ends
