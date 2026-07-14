@@ -89,7 +89,8 @@ Assignment access and progress display:
   `FINISHED`, where the score pill remains green.
 - the student header uses the solid black full-body leaping-cat mark at the far
   left instead of the former line-art cat or `Mr. Cat Academy` text. It has no
-  enclosing circular badge, keeps an
+  enclosing circular badge, matches the `38px` footprint of the adjacent
+  circular utility buttons, keeps an
   accessible brand label, and uses only a restrained occasional readying motion
   that stops under reduced-motion preferences. The header glass capsule shares
   the exact left and right edges of the workspace card below it. The welcome
@@ -305,7 +306,8 @@ not place `TEACHER`, `View`, or a `New assignment` shortcut above it. Teachers
 switch to assignment creation through the persistent `Assign` sidebar item.
 The top-left `Mr. Cat Academy` wordmark remains omitted on this authenticated
 teacher surface. The solid black full-body leaping-cat mark sits at the far
-left as the shared authenticated-workspace logo, while the utility controls
+left as the shared authenticated-workspace logo and matches the `40px`
+footprint of the adjacent circular utility buttons, while the utility controls
 remain aligned to the right. The header glass capsule and the workspace frame
 below share the same left and right edges.
 
