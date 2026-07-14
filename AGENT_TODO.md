@@ -68,6 +68,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-14
 
+- Moved the Teacher notification surface out of the backdrop-filtered workspace
+  so the bell opens its message card in the current viewport instead of far down
+  a tall page. Teacher entry now treats stale `?view=tasks` as `View`, while the
+  explicit `?view=library` practice-return route remains supported. Verified
+  JavaScript syntax, static routing/overlay structure, release verification,
+  viewport-fixed placement at page scroll 0 and 1100, and desktop/390px layouts
+  without horizontal overflow. No backend, CloudBase deployment, or content
+  import is required.
 - Simplified the Teacher View entry so it begins directly with the progress
   matrix: removed the top-left wordmark and the repeated `TEACHER` / `View` /
   `New assignment` block and shortcut behavior. Aligned the header glass with
