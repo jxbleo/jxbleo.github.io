@@ -98,33 +98,21 @@ Assignment access and progress display:
   greeting remains on one line; only genuine overflow receives a slow,
   reversible horizontal reveal, while reduced motion uses a static ellipsis.
   One randomized motivational sentence remains below it.
-- the top student workspace uses a two-pane desktop composition: a welcome and
-  completion-meter surface on the left, and the four-week progress board on the
-  right. The meter keeps the `Finished / total` value centered above the bar,
-  with `Finished` on the lower-left and `To do` on the lower-right as compact
-  supporting metadata. The right board shows the current
-  week plus the previous three weeks as a compact GitHub-style grid with weekday
-  labels across the top and clickable `Wxx` week labels on the left. The visual
-  treatment matches the login/home page's neutral luminous glass style, not a
-  dark cockpit panel. Inside the right board the grid stacks above the selected
-  day's or week's completion details. At tablet/mobile widths the two main panes
-  stack into one column, and the grid adapts to nearly the full available width.
-  Clicking a day square changes the detail pane to show only completed
-  assignment/self-study task items for that date; clicking a `Wxx` label shows
-  all completed task items for that week. Each completed-task capsule in the
-  student board and the Teacher View `By student` monthly board uses the same
-  task-detail hierarchy as the teacher matrix: the full wrapping task title is
-  the largest element, while task type and best percentage share one compact
-  right-aligned metadata group. Tablet layouts must not truncate the title.
-  Each completed-task capsule in the selected day/week detail opens the shared
-  practice-entry confirmation and can re-enter that task. Blank days or blank weeks keep the
-  reserved detail area but do not show an empty-state text field. While dashboard
-  data is loading, the progress meter and four-week board reserve their final
-  space with a lightweight loading skeleton. The four-week grid uses a gentle
-  diagonal day-cell wave to communicate progress without changing its final
-  dimensions. The detail side shows exactly one large capsule, with `Loading
-  progress` centered inside it; it must not render two stacked loading capsules
-  or place the loading copy outside the capsule.
+- the top student workspace is one unified luminous surface rather than two
+  nested cards. On desktop the greeting and randomized motivation sit on the
+  left and two compact progress rows sit on the right; below 900px they stack
+  without changing their reading order. `OVERDUE` is the first row and appears
+  only when a real assignment remains `to_do` after its `due_at`; its muted red
+  fill represents overdue tasks as a share of all open assignments. `THIS WEEK`
+  is always the second row and shows finished assignments as a share of real
+  assignments whose teacher-planned `assigned_at` falls in the current
+  China-standard-time Monday-to-Sunday week. Self-study STAR records are not
+  counted in either row. A completed week reads `All done`; an empty week keeps
+  a quiet zero-value track and reads `No assignments this week`. Selecting a
+  populated row opens the existing Assignments dialog filtered to that scope.
+  The progress fill reveals once after loading without bounce, and reduced
+  motion renders the final value immediately. Color is always accompanied by
+  labels and counts.
 - the Library content starts with a large `Library` heading. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
   side of that heading on desktop and remain adjacent when stacked on mobile.

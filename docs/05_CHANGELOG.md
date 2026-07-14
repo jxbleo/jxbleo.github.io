@@ -1,5 +1,10 @@
 # Changelog
 
+- Replaced the Student Dashboard's separate completion and four-week progress
+  cards with one compact weekly-focus surface. It preserves the greeting and
+  motivation, conditionally shows a muted-red overdue share, always shows
+  China-time weekly completion from teacher-planned assignments, excludes
+  self-study STAR records, and opens scope-filtered Assignment lists.
 - Removed the visible `STUDENT ENTRY` eyebrow from the login form while
   retaining its screen-reader heading and all existing authentication controls.
 - Added an explicit rounded clip to the Teacher View matrix scroll viewport so
