@@ -68,6 +68,17 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-14
 
+- Unified all Teacher top-level dialogs on a page-level modal root so Review,
+  Student lookup/create/success, Assign Work/Student pickers, and dynamic View
+  matrix details stay fixed to the current viewport instead of centering within
+  the backdrop-filtered workspace. Added dynamic-viewport height limits and
+  internal scrolling for tall dialogs. Verified Work, Student, Review, Student
+  lookup, Create student, notification, matrix/student progress, assignment
+  editor, and practice-entry dialogs through the authenticated local Teacher
+  page at desktop and 390px widths; a matrix detail also stayed viewport-fixed
+  at page scroll 900. JavaScript syntax, whitespace checks, runtime console, and
+  release verification pass. No backend, CloudBase deployment, or content
+  import is required.
 - Moved the Teacher notification surface out of the backdrop-filtered workspace
   so the bell opens its message card in the current viewport instead of far down
   a tall page. Teacher entry now treats stale `?view=tasks` as `View`, while the
