@@ -400,6 +400,12 @@
     content: none;
 }
 
+.liquid-glass-teacher .progress-matrix-scroll {
+    isolation: isolate;
+    -webkit-clip-path: inset(0 round 14px);
+    clip-path: inset(0 round 14px);
+}
+
 .liquid-glass-teacher .assign-minimal-grid {
     gap: 16px;
 }

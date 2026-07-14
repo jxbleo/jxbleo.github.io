@@ -1,5 +1,8 @@
 # Changelog
 
+- Added an explicit rounded clip to the Teacher View matrix scroll viewport so
+  sticky and colored header layers cannot leave small square tips inside its
+  top-left or top-right corners.
 - Moved the shared black full-body cat logo from the far right to the far left
   of both authenticated Student and Teacher headers, leaving all utility and
   account controls grouped on the right.
