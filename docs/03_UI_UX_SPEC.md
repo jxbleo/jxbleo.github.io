@@ -184,8 +184,10 @@ Frontend rule:
   amber, and three or more are rose to make repeated work easier to scan.
 - In the teacher header, the notification bell sits immediately to the left of
   the Argue review button. Argue uses the same raised-hand outline as exercise
-  pages, but inherits the teacher header's quiet gray icon treatment; unread
-  review requests remain indicated by the red count badge.
+  pages and inherits the teacher header's quiet gray icon treatment. Its finger
+  segments render as one compound stroke so shared edges cannot become darker
+  than the rest of the hand; unread review requests remain indicated by the red
+  count badge.
 - The teacher header Notifications, Argue, and Student lookup controls use one
   shared icon-button system: all three are 40px circles with the same border,
   translucent background, shadow, hover/focus movement, 20px icon box, round
