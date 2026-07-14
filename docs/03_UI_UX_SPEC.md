@@ -77,12 +77,23 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the top-right
   notification bell; there is no lower Assignments page entry
-- the student header keeps a small, quiet `Mr. Cat Academy` brand at top left;
-  its glass capsule shares the exact left and right edges of the workspace card
-  below it. A
-  restrained, static English greeting and one randomized motivational sentence
-  appear in the left side of the top workspace. The greeting is time-aware in
-  China Standard Time and does not marquee, loop, or continuously animate.
+- the bell modal is titled `Assignments`. Its assignment card is approximately
+  three quarters of the previous maximum height and scrolls internally. It has
+  no top-right `×` or in-card footer action; one pill-shaped `Close` control
+  sits directly below the card. Every `TO DO` row has a red right-side pill in
+  the same position as a finished score: it reads `TO DO` before any attempt
+  and shows the best failed percentage after an unsuccessful submission.
+  Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
+  `FINISHED`, where the score pill remains green.
+- the student header uses a small line-art cat SVG at top left instead of the
+  `Mr. Cat Academy` text. It has no enclosing circular badge, keeps an
+  accessible brand label, and uses only a restrained tail movement and blink;
+  both stop under reduced-motion preferences. The header glass capsule shares
+  the exact left and right edges of the workspace card below it. The welcome
+  pane has no `STUDENT WORKSPACE` label. Its smaller China-time-aware English
+  greeting remains on one line; only genuine overflow receives a slow,
+  reversible horizontal reveal, while reduced motion uses a static ellipsis.
+  One randomized motivational sentence remains below it.
 - the top student workspace uses a two-pane desktop composition: a welcome and
   completion-meter surface on the left, and the four-week progress board on the
   right. The meter keeps the `Finished / total` value centered above the bar,

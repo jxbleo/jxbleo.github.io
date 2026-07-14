@@ -82,10 +82,13 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
-- Student Dashboard keeps a small, quiet `Mr. Cat Academy` at top left; the
-  header glass capsule and workspace card below share the same left/right edges.
-  It shows one static, China-time-aware greeting plus one motivational sentence
-  in the welcome pane; there is no marquee or continuously looping greeting copy
+- Student Dashboard shows a small unframed line-art cat SVG instead of the
+  `Mr. Cat Academy` text at top left; its subtle tail/blink motion stops when
+  reduced motion is enabled, and the header/workspace left and right edges stay
+  aligned. The welcome pane has no `STUDENT WORKSPACE` label. Its smaller,
+  China-time-aware greeting stays on one line; short greetings remain still,
+  only overflowing greetings reveal horizontally, and reduced motion falls
+  back to a static ellipsis. The motivational sentence remains below it
 - at desktop width the Dashboard welcome/meter and four-week progress board are
   two side-by-side panes; at tablet/mobile width they stack without page-level
   horizontal overflow
@@ -144,7 +147,14 @@ Check:
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
-- the top-right bell opens `TO DO` and finished assignment messages
+- the top-right bell opens a modal titled `Assignments` with `TO DO` and
+  finished assignment messages. Its shorter, internally scrolling card has no
+  top-right `×` or in-card footer button; a single `Close` pill sits below and
+  outside the card, while Escape and the backdrop also dismiss the modal
+- every untouched assignment has a red `TO DO` pill aligned with the finished
+  score position. A failed submission stays in `TO DO` and replaces that label
+  with its red best-percentage pill; only `passed` / `mastered` assignments move
+  to `FINISHED` and use the green score pill
 - bell assignment rows have no separate `Start` / `Open` buttons; the whole
   compact row is keyboard/click accessible, labels BBC work as `BBC` and every
   IELTS Reading/Listening task as `IELTS`, and keeps titles on one line. Only an

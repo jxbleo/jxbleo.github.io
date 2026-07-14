@@ -18,13 +18,50 @@
     left: 0;
 }
 
-.liquid-glass-dashboard .app-brand {
-    flex: 0 1 auto;
-    font-size: clamp(0.72rem, 1vw, 0.8rem);
-    font-weight: 690;
-    letter-spacing: -0.012em;
-    line-height: 1;
-    white-space: nowrap;
+.liquid-glass-dashboard .student-cat-brand {
+    display: grid;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    color: rgba(27, 37, 43, 0.72);
+}
+
+.liquid-glass-dashboard .student-cat-mark {
+    width: 44px;
+    height: 40px;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.liquid-glass-dashboard .student-cat-mark path {
+    vector-effect: non-scaling-stroke;
+}
+
+.liquid-glass-dashboard .student-cat-tail {
+    transform-box: view-box;
+    transform-origin: 45px 43px;
+    animation: studentCatTail 1.8s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+}
+
+.liquid-glass-dashboard .student-cat-eyes {
+    transform-box: view-box;
+    transform-origin: 32px 25px;
+    animation: studentCatBlink 6.4s linear infinite;
+}
+
+@keyframes studentCatTail {
+    from { transform: rotate(-2.5deg); }
+    to { transform: rotate(5deg); }
+}
+
+@keyframes studentCatBlink {
+    0%, 43%, 46%, 100% { transform: scaleY(1); }
+    44.5% { transform: scaleY(0.08); }
 }
 
 .liquid-glass-dashboard .student-progress-hero {
@@ -64,21 +101,42 @@
 }
 
 .liquid-glass-dashboard .student-welcome-copy {
-    max-width: 620px;
+    width: 100%;
+    max-width: none;
 }
 
-.liquid-glass-dashboard .student-welcome-copy .eyebrow {
-    margin-bottom: 18px;
-    color: rgba(27, 37, 43, 0.48);
-}
-
-.liquid-glass-dashboard .student-welcome-copy h1 {
-    max-width: 12ch;
+.liquid-glass-dashboard .student-welcome-copy .student-greeting-line {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    margin: 0;
     color: #1b252b;
-    font-size: clamp(3.2rem, 7.2vw, 6.4rem);
-    font-weight: 730;
-    letter-spacing: -0.07em;
-    line-height: 0.94;
+    font-size: clamp(2.15rem, 4.2vw, 3.8rem);
+    font-weight: 720;
+    letter-spacing: -0.055em;
+    line-height: 1.04;
+    white-space: nowrap;
+}
+
+.liquid-glass-dashboard #student-greeting-primary {
+    display: inline-block;
+    width: max-content;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.liquid-glass-dashboard .student-greeting-line.is-overflowing {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.liquid-glass-dashboard .student-greeting-line.is-overflowing #student-greeting-primary {
+    animation: studentGreetingOverflow var(--student-greeting-duration, 9s) ease-in-out infinite alternate;
+}
+
+@keyframes studentGreetingOverflow {
+    0%, 12% { transform: translate3d(0, 0, 0); }
+    88%, 100% { transform: translate3d(var(--student-greeting-shift, 0), 0, 0); }
 }
 
 .liquid-glass-dashboard .student-welcome-copy .student-motivation {
@@ -432,8 +490,8 @@
         border-radius: 20px;
     }
 
-    .liquid-glass-dashboard .student-welcome-copy h1 {
-        font-size: clamp(2.75rem, 15vw, 4.4rem);
+    .liquid-glass-dashboard .student-welcome-copy .student-greeting-line {
+        font-size: clamp(1.8rem, 8.5vw, 2.65rem);
     }
 
     .liquid-glass-dashboard .progress-board {
@@ -516,6 +574,25 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .liquid-glass-dashboard .student-cat-tail,
+    .liquid-glass-dashboard .student-cat-eyes,
+    .liquid-glass-dashboard .student-greeting-line.is-overflowing #student-greeting-primary {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    .liquid-glass-dashboard .student-greeting-line.is-overflowing {
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+
+    .liquid-glass-dashboard .student-greeting-line.is-overflowing #student-greeting-primary {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .liquid-glass-dashboard .student-library-dock,
     .liquid-glass-dashboard .student-library-search-panel,
     .liquid-glass-dashboard .student-library-search-trigger,

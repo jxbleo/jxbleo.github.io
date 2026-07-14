@@ -77,6 +77,19 @@ cp .qa-secrets.example .qa-secrets.local
   exact header/workspace edge measurements, rounded-corner rendering, and zero
   page overflow at desktop and 390px widths. No backend, CloudBase deployment,
   or content import is required.
+- Refined the student bell modal into a shorter `Assignments` card with one
+  external lower `Close` pill, removed both former in-card close controls, and
+  added red right-side `TO DO` / failed-score pills while keeping only passed
+  or mastered assignments in `FINISHED`. Updated UI and test specifications;
+  no backend, CloudBase deployment, or content import is required.
+- Replaced the student Dashboard's top-left wordmark with an unframed animated
+  line-art cat SVG, removed the `STUDENT WORKSPACE` eyebrow, and made the
+  smaller time-aware greeting a single line with overflow-only movement and a
+  reduced-motion ellipsis fallback. Updated the UI and test specifications.
+  Verified JavaScript syntax, CSS brace balance, diff whitespace, release
+  verification, authenticated desktop and 390px browser layouts, zero mobile
+  page overflow, correct accessible branding, and zero console errors. No
+  backend, CloudBase deployment, or content import is required.
 - Refined the student Dashboard header and bell message rows without changing
   assignment state or practice navigation. The header brand is quieter, its
   glass capsule now aligns exactly with the workspace card, bell task labels

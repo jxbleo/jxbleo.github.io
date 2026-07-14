@@ -99,6 +99,8 @@
     var identityChip = document.getElementById('identity-chip');
     var starCounter = null;
     var selfStudyStarCounter = null;
+    var studentGreetingResizeObserver = null;
+    var studentGreetingLine = document.getElementById('student-greeting-line');
     var studentGreetingPrimary = document.getElementById('student-greeting-primary');
     var studentGreetingMotivation = document.getElementById('student-greeting-motivation');
     var studentGreetingAccessible = document.getElementById('student-greeting-accessible');
@@ -348,6 +350,40 @@
         if (studentGreetingPrimary) studentGreetingPrimary.textContent = greetingText;
         if (studentGreetingMotivation) studentGreetingMotivation.textContent = motivation;
         if (studentGreetingAccessible) studentGreetingAccessible.textContent = message;
+        scheduleStudentGreetingOverflow();
+    }
+
+    function updateStudentGreetingOverflow() {
+        if (!studentGreetingLine || !studentGreetingPrimary) return;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var overflow = Math.ceil(studentGreetingPrimary.scrollWidth - studentGreetingLine.clientWidth);
+        var shouldScroll = !reduceMotion && studentGreetingLine.clientWidth > 0 && overflow > 2;
+        studentGreetingLine.classList.toggle('is-overflowing', shouldScroll || (reduceMotion && overflow > 2));
+        if (!shouldScroll) {
+            studentGreetingLine.style.removeProperty('--student-greeting-shift');
+            studentGreetingLine.style.removeProperty('--student-greeting-duration');
+            return;
+        }
+        studentGreetingLine.style.setProperty('--student-greeting-shift', (-overflow) + 'px');
+        studentGreetingLine.style.setProperty('--student-greeting-duration', Math.max(7, Math.min(12, 6 + (overflow / 30))) + 's');
+    }
+
+    function scheduleStudentGreetingOverflow() {
+        window.requestAnimationFrame(updateStudentGreetingOverflow);
+    }
+
+    if (studentGreetingLine && window.ResizeObserver) {
+        studentGreetingResizeObserver = new ResizeObserver(scheduleStudentGreetingOverflow);
+        studentGreetingResizeObserver.observe(studentGreetingLine);
+    } else {
+        window.addEventListener('resize', scheduleStudentGreetingOverflow);
+    }
+
+    if (window.matchMedia) {
+        var studentGreetingMotionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (studentGreetingMotionPreference.addEventListener) {
+            studentGreetingMotionPreference.addEventListener('change', scheduleStudentGreetingOverflow);
+        }
     }
 
     function normalizedStatus(status) {
@@ -923,7 +959,7 @@
         }
         if (messageButton) {
             messageButton.classList.toggle('has-updates', messageTotal > 0);
-            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' notifications' : 'Notifications');
+            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' assignment updates' : 'Assignments');
             messageButton.setAttribute('aria-expanded', 'false');
         }
     }
@@ -1008,9 +1044,12 @@
         var title = assignmentTitle(item);
         var kind = studentMessageKind(item);
         var safeTitle = escapeHtml(title);
-        var score = finished && item.best_percentage != null
-            ? '<span class="student-message-score">' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</span>'
-            : '';
+        var bestPercentage = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
+        var score = finished && bestPercentage != null
+            ? '<span class="student-message-score">' + escapeHtml(formatEntryPercent(bestPercentage)) + '</span>'
+            : !finished && bestPercentage != null
+                ? '<span class="student-message-score is-todo">' + escapeHtml(formatEntryPercent(bestPercentage)) + '</span>'
+                : '<span class="student-message-score is-todo">TO DO</span>';
         var entryStatus = finished ? status : 'not-passed';
         var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="student-message-task ' + escapeHtml(type) + '"' +
@@ -1079,42 +1118,41 @@
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay student-message-overlay';
         overlay.innerHTML =
-            '<div class="teacher-replies-dialog student-message-dialog" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
-                '<button class="dialog-close-button" type="button" aria-label="Close notifications">×</button>' +
-                '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
-                    '<h2 id="student-message-title">Notifications</h2>' +
-                    '<div class="student-message-summary">' +
-                        '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
-                        '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
-                        '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>' +
+            '<div class="student-message-shell" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
+                '<div class="teacher-replies-dialog student-message-dialog">' +
+                    '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
+                        '<h2 id="student-message-title">Assignments</h2>' +
+                        '<div class="student-message-summary">' +
+                            '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
+                            '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
+                            '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="student-message-sections">' +
+                        renderStudentMessageSection(
+                            'To do',
+                            todos.length,
+                            todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                            'No unfinished assignments.',
+                            'todo'
+                        ) +
+                        renderStudentMessageSection(
+                            'Finished',
+                            finished.length,
+                            finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                            'Finished assignments will appear here.',
+                            'finished'
+                        ) +
+                        renderStudentMessageSection(
+                            'Teacher replies',
+                            replies.length,
+                            replies.map(renderTeacherReplyItem).join(''),
+                            'No new teacher replies.',
+                            'replies'
+                        ) +
                     '</div>' +
                 '</div>' +
-                '<div class="student-message-sections">' +
-                    renderStudentMessageSection(
-                        'To do',
-                        todos.length,
-                        todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
-                        'No unfinished assignments.',
-                        'todo'
-                    ) +
-                    renderStudentMessageSection(
-                        'Finished',
-                        finished.length,
-                        finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
-                        'Finished assignments will appear here.',
-                        'finished'
-                    ) +
-                    renderStudentMessageSection(
-                        'Teacher replies',
-                        replies.length,
-                        replies.map(renderTeacherReplyItem).join(''),
-                        'No new teacher replies.',
-                        'replies'
-                    ) +
-                '</div>' +
-                '<div class="dialog-actions">' +
-                    '<button class="primary-button" id="student-message-done" type="button">Close</button>' +
-                '</div>' +
+                '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close assignments">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
         var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
@@ -1151,8 +1189,7 @@
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close(true);
         });
-        overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
-        overlay.querySelector('#student-message-done').addEventListener('click', function() { close(true); });
+        overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
             function openTask(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
