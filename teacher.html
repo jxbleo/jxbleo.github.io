@@ -66,29 +66,6 @@
             <div class="teacher-workspace-content">
                 <p class="teacher-message" id="teacher-message" role="status"></p>
 
-        <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
-            <div class="teacher-updates-shell">
-                <div class="teacher-updates-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
-                    <div class="updates-panel-head">
-                        <div class="updates-panel-primary-actions">
-                            <button class="activity-mark-read" id="teacher-updates-read-all" type="button" aria-label="Mark all notifications as read" title="Read all">
-                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                                    <path d="m2.5 12.5 4 4 8.5-9"></path>
-                                    <path d="m10.5 16.5 2 2 9-10"></path>
-                                </svg>
-                                <span class="sr-only">Read all</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="teacher-updates-body" id="teacher-updates-body">
-                        <div class="empty-card loading-card">Loading updates...</div>
-                    </div>
-                </div>
-                <button class="progress-matrix-modal-close teacher-updates-external-close" id="teacher-updates-close" type="button" aria-label="Close notifications">Close</button>
-            </div>
-            <div id="teacher-notification-attempt-root"></div>
-        </section>
-
         <section class="teacher-review-modal" id="teacher-review-panel" hidden>
             <div class="teacher-review-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-review-title">
                 <div class="teacher-review-head">
@@ -324,11 +301,34 @@
 
     </main>
 
+    <section class="teacher-updates-panel" id="teacher-updates-panel" hidden>
+        <div class="teacher-updates-shell">
+            <div class="teacher-updates-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
+                <div class="updates-panel-head">
+                    <div class="updates-panel-primary-actions">
+                        <button class="activity-mark-read" id="teacher-updates-read-all" type="button" aria-label="Mark all notifications as read" title="Read all">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                <path d="m2.5 12.5 4 4 8.5-9"></path>
+                                <path d="m10.5 16.5 2 2 9-10"></path>
+                            </svg>
+                            <span class="sr-only">Read all</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="teacher-updates-body" id="teacher-updates-body">
+                    <div class="empty-card loading-card">Loading updates...</div>
+                </div>
+            </div>
+            <button class="progress-matrix-modal-close teacher-updates-external-close" id="teacher-updates-close" type="button" aria-label="Close notifications">Close</button>
+        </div>
+        <div id="teacher-notification-attempt-root"></div>
+    </section>
+
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260714-2"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260714-5"></script>
+    <script src="assets/js/teacher.js?v=20260714-6"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

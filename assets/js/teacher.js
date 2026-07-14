@@ -4956,14 +4956,14 @@
 
     function initialTeacherView() {
         var view = new URLSearchParams(window.location.search).get('view') || '';
-        return teacherViews.indexOf(view) === -1 ? 'view' : view;
+        return view === 'library' ? 'library' : 'view';
     }
 
     function rememberTeacherView(viewName) {
         if (teacherViews.indexOf(viewName) === -1 || !window.history || !window.history.replaceState) return;
         var url = new URL(window.location.href);
-        if (viewName === 'view') url.searchParams.delete('view');
-        else url.searchParams.set('view', viewName);
+        if (viewName === 'library') url.searchParams.set('view', viewName);
+        else url.searchParams.delete('view');
         window.history.replaceState({}, '', url);
     }
 

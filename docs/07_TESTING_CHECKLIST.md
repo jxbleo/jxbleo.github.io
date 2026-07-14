@@ -285,8 +285,9 @@ Check:
 - Teacher workspace uses the desktop left sidebar in the order `View`, `Assign`,
   `Library`, has no repeated destination heading, and becomes a horizontal
   segmented sidebar on mobile
-- loading or refreshing `teacher.html?view=tasks` and `?view=library` restores
-  the matching sidebar and content surface before remote data finishes
+- loading or refreshing `teacher.html` or a stale `?view=tasks` URL opens
+  `View`; the explicit `?view=library` practice-return URL still restores
+  Library before remote data finishes
 - Teacher has no standalone greeting hero, top-left `Mr. Cat Academy` wordmark,
   or `TEACHER` / `View` / `New assignment` block. The top utility glass aligns
   exactly with the workspace frame below, and View begins directly with the
@@ -371,7 +372,9 @@ Check:
   spins while saving, and briefly turns green on success. The notification card
   uses at most about three-quarters of the viewport height with internal
   scrolling; it has no top-right `x`, and its centered `Close` capsule sits
-  outside immediately below the card on desktop and mobile
+  outside immediately below the card on desktop and mobile. Opening the bell at
+  any page scroll position places the card in the current viewport immediately;
+  no blank overlay or downward page scroll is required
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels

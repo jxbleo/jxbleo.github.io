@@ -318,6 +318,10 @@ button with a pending-count badge and display in a standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
 top-right Review entry.
+The notification surface is a page-level fixed overlay, not a descendant whose
+position is resolved against the tall workspace frame. Opening it must place the
+message card immediately in the current viewport without requiring any page
+scroll.
 
 Teacher notification rows open standalone attempt detail dialogs inside the
 notification surface. They must not switch to `View`, select matrix cells,
@@ -331,8 +335,10 @@ action fixed at the bottom of the modal while the attempt history scrolls above
 it. The detail modal should render outside the notification list's scroll body
 so the first open uses the same full dialog height as later opens.
 
-The teacher page defaults to `View` on entry. `View` keeps the current progress
-matrix and its three filters (`Class`, `Column`, and `Date`) exactly as designed;
+The teacher page defaults to `View` on entry, including when a stale
+`?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains
+supported for returning from a teacher practice preview. `View` keeps the
+current progress matrix and its three filters (`Class`, `Column`, and `Date`) exactly as designed;
 do not add KPI cards above it. While assignment matrix data is
 loading, the matrix area uses a textless loading state with visible grid lines,
 subtle neutral light movement, and no centered spinner. On the first successful
