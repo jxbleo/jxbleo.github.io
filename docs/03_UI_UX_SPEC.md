@@ -58,6 +58,8 @@ randomly selected on each page load from the same existing motivational-sentence
 collection used by the student Dashboard. The left welcome
 column keeps the quote close below the brand instead of distributing both items
 to opposite vertical edges and leaving a large blank region above the quote.
+The form has no visible `STUDENT ENTRY` eyebrow; its accessible `Student sign
+in` heading remains available to assistive technology.
 On mobile, the welcome panel shrink-wraps the brand and quote instead of
 retaining the former fixed 430px minimum height and a large empty lower half.
 
