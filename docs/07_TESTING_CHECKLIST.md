@@ -286,9 +286,9 @@ Check:
 - Teacher page opens to View by default, and the initial matrix loading state
   shows only the animated grid/radar wash without visible loading copy or a
   centered spinner
-- Teacher workspace uses the desktop left sidebar in the order `View`, `Assign`,
-  `Library`, has no repeated destination heading, and becomes a horizontal
-  segmented sidebar on mobile
+- Teacher workspace keeps `View`, `Assign`, and `Library` in one horizontal
+  segmented navigation row above the content on desktop, iPad/tablet, and
+  mobile, with no left-sidebar breakpoint or repeated destination heading
 - loading or refreshing `teacher.html` or a stale `?view=tasks` URL opens
   `View`; the explicit `?view=library` practice-return URL still restores
   Library before remote data finishes
