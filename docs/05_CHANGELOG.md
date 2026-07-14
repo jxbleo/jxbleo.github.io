@@ -1,5 +1,11 @@
 # Changelog
 
+- Replaced the oversized student My Words surface with the approved compact,
+  vertically centered modal. Search and Add now share matching top-right icon
+  controls, Close sits outside below the card, manual entry is one Enter-to-save
+  field, and review states/filters were removed. Word rows now use centered
+  equal English/Chinese halves with a vertical divider, while pronunciation
+  appears beside the phonetic only after expansion.
 - Replaced the Student Library's always-visible gold sub-filter row with a
   title-inline `Library / current category⌄` control. Its anchored neutral
   popover closes after selection, outside click, or Escape and stays synchronized

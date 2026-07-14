@@ -699,6 +699,13 @@ Student dashboard navigation:
 - My Words opens in an independent modal from the notebook icon immediately to
   the right of the notification bell. Closing and reopening that modal restores
   its previous internal scroll position.
+- Keep the My Words modal compact and vertically centered on desktop and mobile,
+  with its `Close` capsule outside below the card. Search and Add are matching
+  top-right circular icon buttons; Add exposes one Enter-to-save word field.
+  Collapsed rows split English and POS/Chinese into equal, vertically centered
+  halves with a center divider. Pronunciation appears beside the phonetic only
+  after expansion. Do not restore student review states, due filters, or
+  reveal-and-rate review controls unless the owner explicitly asks.
 - Profile/account actions open from the top-right identity chip.
 
 Do not restore a lower Assignments or My Words navigation capsule unless the
