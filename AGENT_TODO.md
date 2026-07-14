@@ -66,6 +66,20 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-07-15
+
+- Reduced the Teacher Student lookup dialog to three-quarters of its former
+  desktop width/height, replaced the internal top-right `x` with an external
+  lower `Close`, and simplified student finding to `Choose` plus a magnifying
+  glass that swaps Choose in place for live search. Removed Confirm because a
+  student row now completes selection directly. Closing Create student by its
+  close control, backdrop, or Escape restores the parent lookup with the prior
+  selection intact. Verified JavaScript syntax, diff whitespace, authenticated
+  desktop and 390px browser layouts, live filtering/direct selection, all
+  create-modal return paths, no horizontal overflow, zero console errors, and
+  release verification. No backend, CloudBase deployment, or content import is
+  required.
+
 ### 2026-07-14
 
 - Unified all Teacher top-level dialogs on a page-level modal root so Review,
