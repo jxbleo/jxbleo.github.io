@@ -194,6 +194,12 @@ Check:
   of a placeholder card from the previously selected capsule
 - scrolling the My Words modal, closing it, and reopening it restores the prior
   internal scroll position
+- My Words remains vertically centered and compact on desktop and phone; the
+  card plus its external `Close` capsule stays within roughly 74%/72% of the
+  viewport rather than filling the screen
+- top-right Search and Add use matching green circular icon controls; Search
+  expands below the header, Add exposes only one Enter-to-save word field, and
+  Escape closes an open tool before it closes the modal
 - neither Assignments nor My Words appears as a lower navigation entry
 - student opens assigned work
 - opening a finished Vocabulary assignment from `Show Finished` lands on
@@ -560,10 +566,13 @@ Check:
 - pronunciation uses browser speech without exposing a provider key
 - a failed multi-word lexicon query falls back to individual reads, so known
   entries such as `expense`, `details`, and `widespread` still show dictionary data
-- collapsed cards show only word, part of speech, Chinese meaning, and speaker;
-  expansion reveals English definition, source/context, status, and actions
-- Today/New/Learning/Mastered filters work, review hides meanings until Reveal,
-  and Forgot/A little/Know schedules 1/3/7-to-30 day intervals respectively
+- each collapsed row is split into equal English and POS/Chinese halves with a
+  visible center divider, and both sides remain vertically centered for short
+  and wrapped content
+- collapsed rows do not show a speaker; expansion reveals the phonetic with its
+  adjacent speaker plus English definition, source/context, retry, and removal
+- the student My Words interface contains no Today/New/Learning/Mastered
+  filters, due review, Reveal, Forgot, A little, or Know controls
 - BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt
   Review load the same cache-versioned My Words selection script
 

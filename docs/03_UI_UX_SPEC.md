@@ -256,19 +256,25 @@ Student cards should show:
 
 My Words:
 
-- has its own main navigation entry.
-- shows saved student-owned words and phrases from `studentVocabulary`.
-- uses a vocabulary-list/table layout with word, source/context, saved date, and archive action.
-- includes a manual add form where students can type a word or short phrase
-  plus optional context directly into My Words.
-- each word card can show phonetic spelling, part of speech, Chinese meaning,
-  a short English definition, dictionary source, and a browser pronunciation
-  action. Search includes these dictionary fields.
-- the collapsed first level is deliberately minimal: word, part of speech,
-  Chinese meaning, and pronunciation only. English definition, phonetic detail,
-  source/context, learning state, and management actions appear after expansion.
-- filters cover All, Today, New, Learning, and Mastered. Review mode initially
-  hides meanings, then offers Forgot, A little, and Know after reveal.
+- opens as a compact, vertically centered independent modal from the notebook
+  icon beside the bell. The dialog plus its external `Close` capsule is capped
+  at about 74% of the desktop viewport and 72% of the mobile viewport, so it
+  never becomes a full-screen phone sheet.
+- places matching green circular Search and Add icon buttons in the top-right.
+  Search expands in place below the header. Add expands one word/short-phrase
+  field only; Enter saves it, with no optional context field or visible Add
+  text button.
+- shows saved student-owned words and phrases from `studentVocabulary` in a
+  simple two-column list. Every collapsed row uses two equal halves with a
+  centered vertical divider: the English word is centered in the left half,
+  while part of speech plus Chinese meaning are centered horizontally and
+  vertically in the right half.
+- expands a row to show phonetic spelling, browser pronunciation, English
+  definition, source/context, saved date, retry when applicable, and removal.
+  The speaker is not shown in the collapsed row; it sits beside the phonetic
+  only after expansion. Search includes the dictionary fields.
+- does not expose New/Learning/Mastered states, due filters, reveal-and-rate
+  review, or any other review controls in the student interface.
 - saving is immediate. A cache miss shows `Finding definition and part of
   speech...` while backend enrichment continues; a confirmed miss offers a
   quiet Retry action. Lookup failure never removes the saved word.
@@ -277,6 +283,8 @@ My Words:
 - visitors see a login prompt instead of personal data.
 - its header notebook icon follows the same circular SVG treatment as the bell;
   the student bell uses the same bell SVG as the teacher notification button.
+- closing and reopening restores the modal's previous internal list scroll
+  position; closing Search or Add does not close the modal.
 
 Student account menu:
 

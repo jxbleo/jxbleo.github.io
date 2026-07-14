@@ -8,7 +8,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260714-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260713-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-8">
 </head>
@@ -118,17 +118,66 @@
         </section>
 
         <section class="student-words-overlay" id="student-words-overlay" hidden>
-            <div class="student-words-dialog" role="dialog" aria-modal="true" aria-labelledby="student-words-title">
-                <header class="student-words-dialog-head">
-                    <div>
-                        <p class="eyebrow accent">PERSONAL NOTEBOOK</p>
-                        <h2 id="student-words-title">My Words</h2>
+            <div class="student-words-stack" role="dialog" aria-modal="true" aria-labelledby="student-words-title" aria-describedby="student-words-subtitle">
+                <section class="student-words-dialog">
+                    <header class="student-words-dialog-head">
+                        <div class="student-words-title-block">
+                            <div class="student-words-title-line">
+                                <h2 id="student-words-title">My Words</h2>
+                                <span class="student-words-count" id="my-words-count">0 words</span>
+                            </div>
+                            <p id="student-words-subtitle">Your saved words and phrases</p>
+                        </div>
+                        <div class="student-words-dialog-actions">
+                            <button class="student-words-dialog-icon" id="my-words-search-trigger" type="button" aria-label="Search words" aria-expanded="false" aria-controls="my-words-search-panel">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <circle cx="10.5" cy="10.5" r="5.5"></circle>
+                                    <path d="m15 15 4.5 4.5"></path>
+                                </svg>
+                            </button>
+                            <button class="student-words-dialog-icon" id="my-words-add-trigger" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M12 5v14M5 12h14"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="student-words-tool-panel" id="my-words-add-panel" aria-hidden="true" inert>
+                        <div class="student-words-tool-panel-inner">
+                            <form class="my-words-manual" id="my-words-manual-form">
+                                <label class="my-words-input-shell" for="my-words-manual-text">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <path d="M12 5v14M5 12h14"></path>
+                                    </svg>
+                                    <input id="my-words-manual-text" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
+                                    <span>Press Enter</span>
+                                </label>
+                                <button class="sr-only" id="my-words-manual-submit" type="submit">Add word</button>
+                                <p class="my-words-manual-status" id="my-words-manual-status" role="status" aria-live="polite"></p>
+                            </form>
+                        </div>
                     </div>
-                    <button class="create-student-close" id="student-words-close" type="button" aria-label="Close My Words">×</button>
-                </header>
-                <div class="student-words-dialog-scroll" id="student-words-dialog-scroll">
-                    <div id="my-words-content"></div>
-                </div>
+
+                    <div class="student-words-tool-panel" id="my-words-search-panel" aria-hidden="true" inert>
+                        <div class="student-words-tool-panel-inner">
+                            <div class="my-words-search-wrap">
+                                <label class="my-words-search-box" for="my-words-search">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <circle cx="11" cy="11" r="6.5"></circle>
+                                        <path d="m16 16 4 4"></path>
+                                    </svg>
+                                    <input id="my-words-search" type="search" autocomplete="off" placeholder="Search words">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-words-dialog-scroll" id="student-words-dialog-scroll" tabindex="0" aria-label="Saved words">
+                        <div id="my-words-content"></div>
+                    </div>
+                </section>
+                <button class="student-words-outside-close" id="student-words-close" type="button">Close</button>
             </div>
         </section>
     </main>
@@ -138,7 +187,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260715-4"></script>
+    <script src="assets/js/dashboard.js?v=20260715-5"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>
