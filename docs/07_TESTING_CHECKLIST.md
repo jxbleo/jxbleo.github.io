@@ -85,7 +85,8 @@ Shared shell visual checks:
 Practice navigation checks:
 
 - Student Dashboard shows the unframed solid black full-body leaping-cat mark
-  at the far left instead of a wordmark or line-art cat; its restrained
+  at the far left instead of a wordmark or line-art cat; its `38px` footprint
+  matches the adjacent circular utility buttons, and its restrained
   readying motion stops when reduced motion is
   enabled, and the header/workspace left and right edges stay aligned. The
   welcome pane has no `STUDENT WORKSPACE` label. Its smaller,
@@ -293,8 +294,9 @@ Check:
   Library before remote data finishes
 - Teacher has no standalone greeting hero, top-left `Mr. Cat Academy` wordmark,
   or `TEACHER` / `View` / `New assignment` block. The shared black full-body cat
-  logo appears at the far left, while the notification, Review, student lookup,
-  and account controls remain aligned to the right. The top utility glass aligns
+  logo appears at the far left with the same `40px` footprint as the adjacent
+  circular utility buttons, while the notification, Review, student lookup, and
+  account controls remain aligned to the right. The top utility glass aligns
   exactly with the workspace frame below, and View begins directly with the
   matrix while keeping the existing `Class`, `Column`, and `Date` controls
 - the workspace and matrix top corners stay continuously rounded; inspect both

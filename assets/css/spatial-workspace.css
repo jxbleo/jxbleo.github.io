@@ -8,12 +8,20 @@
 
 /* Student workspace ------------------------------------------------------ */
 
+.liquid-glass-dashboard .workspace-cat-logo {
+    --workspace-logo-size: 38px;
+}
+
+.liquid-glass-teacher .workspace-cat-logo {
+    --workspace-logo-size: 40px;
+}
+
 .liquid-glass-dashboard .workspace-cat-logo,
 .liquid-glass-teacher .workspace-cat-logo {
     display: grid;
-    flex: 0 0 58px;
-    width: 58px;
-    height: 46px;
+    flex: 0 0 var(--workspace-logo-size);
+    width: var(--workspace-logo-size);
+    height: var(--workspace-logo-size);
     margin: 0;
     place-items: center;
 }
