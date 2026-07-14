@@ -292,9 +292,9 @@ Student account menu:
 
 ## 4. Teacher Interface
 
-The teacher page uses one spatial workspace with a quiet left sidebar on
-desktop and a horizontal segmented sidebar on mobile. Its three destinations,
-in order, are:
+The teacher page uses one spatial workspace with a horizontal segmented
+navigation row at the top on desktop, iPad/tablet, and mobile. It must not move
+to a left sidebar at wider breakpoints. Its three destinations, in order, are:
 
 - `View`
 - `Assign`
@@ -303,7 +303,7 @@ in order, are:
 There is no separate teacher greeting/quotation hero or repeated content
 heading. The `View` destination begins directly with the progress matrix; do
 not place `TEACHER`, `View`, or a `New assignment` shortcut above it. Teachers
-switch to assignment creation through the persistent `Assign` sidebar item.
+switch to assignment creation through the persistent `Assign` navigation item.
 The top-left `Mr. Cat Academy` wordmark remains omitted on this authenticated
 teacher surface. The solid black full-body leaping-cat mark sits at the far
 left as the shared authenticated-workspace logo and matches the `40px`
