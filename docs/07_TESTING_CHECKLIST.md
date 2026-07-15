@@ -363,6 +363,23 @@ Check:
   `Close`, Escape, and backdrop dismissal preserve the unchanged matrix, while
   `Enter` opens its `teacher=1` practice preview and `Back` returns to
   `teacher.html?view=view`
+- before entering a Teacher View preview, select non-default Class/Column/Date
+  filters, change matrix density, horizontally scroll the matrix, scroll the
+  page into grouped progress, switch By student/By task, and expand a group.
+  Application Back must restore every one of those states and the same visible
+  matrix/group anchor; the practice-entry confirmation and detail modals must
+  remain closed. Repeat once with bfcache disabled/evicted to exercise the
+  history/session fallback. IELTS Reading and Listening Back controls remain in
+  their existing top exam bars.
+- after one successful live Teacher load, reload or reopen Teacher on the same
+  private device and confirm the redacted IndexedDB matrix snapshot paints
+  before the authoritative refresh. Inspect stored data to confirm it has no
+  attempts, submitted/correct answers, explanations, grading keys, credentials,
+  or auth tokens; explicit logout removes the account cache.
+- while Teacher View is open and scrolled, create a newer student submission.
+  The periodic/visibility refresh must update the relevant progress and
+  notification data automatically without resetting filters, collapsing groups,
+  moving page/matrix scroll, or changing the first visible task column.
 - First successful matrix render transitions in with a soft fade/lift instead
   of abruptly replacing the loading state
 - Teacher shell uses neutral glass for functional layers and system blue for

@@ -3,6 +3,21 @@
 
     var MATRIX_DENSITY_STORAGE_KEY = 'mrcat.teacher.matrix-density.v1';
     var MATRIX_DENSITY_TASK_WIDTHS = [31, 56, 72, 92, 112, 132];
+    var TEACHER_HISTORY_STATE_KEY = 'mrcatTeacherWorkspace';
+    var TEACHER_HISTORY_STATE_VERSION = 1;
+    var TEACHER_SESSION_RETURN_KEY = 'mrcat.teacher.return-state.v1';
+    var TEACHER_CACHE_DB_NAME = 'mrcat-private-cache';
+    var TEACHER_CACHE_STORE_NAME = 'teacher-workspaces';
+    var TEACHER_CACHE_SCHEMA_VERSION = 1;
+    var TEACHER_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+    var TEACHER_PROGRESS_REFRESH_MS = 2 * 60 * 1000;
+    var TEACHER_RETURN_REFRESH_AGE_MS = 30 * 1000;
+    var teacherCacheDbPromise = null;
+    var teacherLiveRefreshPromise = null;
+    var teacherLiveDataLoadedAt = 0;
+    var teacherRefreshTimer = 0;
+    var pendingTeacherViewportSnapshot = null;
+    var restoredTeacherWorkspaceView = '';
 
     function readMatrixDensityPreference() {
         try {
@@ -77,6 +92,162 @@
         assignmentEditScopes: {},
         expandedDisputeMerges: {}
     };
+
+    function teacherCacheIdentity(profile) {
+        return String(profile && profile.student_id || '').trim();
+    }
+
+    function teacherCacheRecordId(profile) {
+        var identity = teacherCacheIdentity(profile);
+        return identity ? 'teacher:' + identity : '';
+    }
+
+    function openTeacherCacheDb() {
+        if (teacherCacheDbPromise) return teacherCacheDbPromise;
+        teacherCacheDbPromise = new Promise(function(resolve) {
+            if (!window.indexedDB) {
+                resolve(null);
+                return;
+            }
+            var request;
+            try {
+                request = window.indexedDB.open(TEACHER_CACHE_DB_NAME, 1);
+            } catch (error) {
+                resolve(null);
+                return;
+            }
+            request.onupgradeneeded = function() {
+                var db = request.result;
+                if (!db.objectStoreNames.contains(TEACHER_CACHE_STORE_NAME)) {
+                    db.createObjectStore(TEACHER_CACHE_STORE_NAME, { keyPath: 'id' });
+                }
+            };
+            request.onsuccess = function() { resolve(request.result); };
+            request.onerror = function() { resolve(null); };
+            request.onblocked = function() { resolve(null); };
+        });
+        return teacherCacheDbPromise;
+    }
+
+    function readTeacherWorkspaceCache(profile) {
+        var id = teacherCacheRecordId(profile);
+        if (!id) return Promise.resolve(null);
+        return openTeacherCacheDb().then(function(db) {
+            if (!db) return null;
+            return new Promise(function(resolve) {
+                var transaction;
+                try {
+                    transaction = db.transaction(TEACHER_CACHE_STORE_NAME, 'readonly');
+                } catch (error) {
+                    resolve(null);
+                    return;
+                }
+                var request = transaction.objectStore(TEACHER_CACHE_STORE_NAME).get(id);
+                request.onsuccess = function() {
+                    var record = request.result || null;
+                    if (!record || record.schema_version !== TEACHER_CACHE_SCHEMA_VERSION) {
+                        resolve(null);
+                        return;
+                    }
+                    if (!record.saved_at || Date.now() - Number(record.saved_at) > TEACHER_CACHE_MAX_AGE_MS) {
+                        resolve(null);
+                        return;
+                    }
+                    resolve(record);
+                };
+                request.onerror = function() { resolve(null); };
+            });
+        });
+    }
+
+    function redactedTeacherCacheValue(value) {
+        var blockedFields = {
+            password: true,
+            initial_password: true,
+            token: true,
+            access_token: true,
+            refresh_token: true,
+            attempts: true,
+            answers: true,
+            answer: true,
+            submitted_answer: true,
+            correct_answer: true,
+            accepted_answers: true,
+            accepted_variants: true,
+            answer_snapshot: true,
+            explanation: true,
+            explanation_snapshot: true,
+            grading_key: true,
+            grading_keys: true,
+            question_results: true
+        };
+        if (Array.isArray(value)) return value.map(redactedTeacherCacheValue);
+        if (!value || typeof value !== 'object' || value instanceof Date) return value;
+        return Object.keys(value).reduce(function(result, key) {
+            if (!blockedFields[String(key).toLowerCase()]) {
+                result[key] = redactedTeacherCacheValue(value[key]);
+            }
+            return result;
+        }, {});
+    }
+
+    function sanitizedProgressForTeacherCache(item) {
+        var cached = redactedTeacherCacheValue(item || {});
+        cached.attempts = [];
+        return cached;
+    }
+
+    function writeTeacherWorkspaceCache() {
+        var id = teacherCacheRecordId(state.profile);
+        if (!id || !teacherLiveDataLoadedAt) return Promise.resolve(false);
+        var record = {
+            id: id,
+            schema_version: TEACHER_CACHE_SCHEMA_VERSION,
+            saved_at: Date.now(),
+            students: (state.students || []).map(redactedTeacherCacheValue),
+            sets: (state.sets || []).map(redactedTeacherCacheValue),
+            assignments: (state.assignments || []).map(redactedTeacherCacheValue),
+            progress: (state.progressItems || []).map(sanitizedProgressForTeacherCache)
+        };
+        return openTeacherCacheDb().then(function(db) {
+            if (!db) return false;
+            return new Promise(function(resolve) {
+                var transaction;
+                try {
+                    transaction = db.transaction(TEACHER_CACHE_STORE_NAME, 'readwrite');
+                    transaction.objectStore(TEACHER_CACHE_STORE_NAME).put(record);
+                } catch (error) {
+                    resolve(false);
+                    return;
+                }
+                transaction.oncomplete = function() { resolve(true); };
+                transaction.onerror = function() { resolve(false); };
+                transaction.onabort = function() { resolve(false); };
+            });
+        });
+    }
+
+    function clearTeacherWorkspaceCache(profile) {
+        var id = teacherCacheRecordId(profile || state.profile);
+        try { window.sessionStorage.removeItem(TEACHER_SESSION_RETURN_KEY); } catch (error) {}
+        if (!id) return Promise.resolve(false);
+        return openTeacherCacheDb().then(function(db) {
+            if (!db) return false;
+            return new Promise(function(resolve) {
+                var transaction;
+                try {
+                    transaction = db.transaction(TEACHER_CACHE_STORE_NAME, 'readwrite');
+                    transaction.objectStore(TEACHER_CACHE_STORE_NAME).delete(id);
+                } catch (error) {
+                    resolve(false);
+                    return;
+                }
+                transaction.oncomplete = function() { resolve(true); };
+                transaction.onerror = function() { resolve(false); };
+                transaction.onabort = function() { resolve(false); };
+            });
+        });
+    }
     var teacherViews = ['tasks', 'view', 'library'];
     var motivationalQuotes = [
         'Small steps every day create remarkable progress.',
@@ -475,7 +646,14 @@
                 '</section>' +
             '</div>';
         var logout = document.getElementById('teacher-logout');
-        if (logout) logout.addEventListener('click', window.MrCatAuth.logout);
+        if (logout) {
+            logout.addEventListener('click', function() {
+                logout.disabled = true;
+                clearTeacherWorkspaceCache(state.profile).then(function() {
+                    return window.MrCatAuth.logout();
+                });
+            });
+        }
     }
 
     function setTeacherAccountPanel(open) {
@@ -722,13 +900,13 @@
 
     function loadProgressData() {
         return teacherCall('listProgress').catch(function() {
-            return { progress: [] };
+            return { progress: [], unavailable: true };
         });
     }
 
     function loadActivityState() {
         return teacherCall('getActivityState').catch(function() {
-            return { attempts_seen_at: null, read_all_at: null, reviewed_attempt_ids: [] };
+            return { attempts_seen_at: null, read_all_at: null, reviewed_attempt_ids: [], unavailable: true };
         });
     }
 
@@ -863,6 +1041,119 @@
     var teacherLibraryActiveTab = 'general';
     var teacherLibraryActiveSubTab = '';
     var teacherLibraryCatalog = null;
+
+    function activeTeacherViewName() {
+        var active = document.querySelector('.tab-button.active');
+        var view = active && active.dataset && active.dataset.view || '';
+        return teacherViews.indexOf(view) === -1 ? 'view' : view;
+    }
+
+    function trueStateKeys(source) {
+        return Object.keys(source || {}).filter(function(key) { return source[key] === true; });
+    }
+
+    function trueStateMap(keys) {
+        return (Array.isArray(keys) ? keys : []).reduce(function(result, key) {
+            if (key) result[String(key)] = true;
+            return result;
+        }, {});
+    }
+
+    function readTeacherWorkspaceHistoryState() {
+        var historyState = window.history && window.history.state;
+        var snapshot = historyState && historyState[TEACHER_HISTORY_STATE_KEY];
+        if ((!snapshot || snapshot.version !== TEACHER_HISTORY_STATE_VERSION)
+            && new URLSearchParams(window.location.search).get('restore') === '1') {
+            try {
+                snapshot = JSON.parse(window.sessionStorage.getItem(TEACHER_SESSION_RETURN_KEY) || 'null');
+            } catch (error) {
+                snapshot = null;
+            }
+        }
+        if (!snapshot || snapshot.version !== TEACHER_HISTORY_STATE_VERSION) return null;
+        return snapshot;
+    }
+
+    function applyTeacherWorkspaceHistoryState() {
+        var snapshot = readTeacherWorkspaceHistoryState();
+        if (!snapshot) return null;
+        var matrix = snapshot.matrix || {};
+        state.matrixClassFilter = String(matrix.class_filter || '');
+        state.matrixColumnFilter = String(matrix.column_filter || '');
+        state.matrixDateFilter = String(matrix.date_filter || 'all');
+        if (Number.isInteger(matrix.density_step)
+            && matrix.density_step >= 0
+            && matrix.density_step < MATRIX_DENSITY_TASK_WIDTHS.length) {
+            state.matrixDensityStep = matrix.density_step;
+        }
+        state.assignProgressMode = snapshot.progress_mode === 'task' ? 'task' : 'student';
+        state.expandedAssignProgressGroups = trueStateMap(snapshot.expanded_progress_groups);
+        state.expandedAssignProgress = trueStateMap(snapshot.expanded_progress_rows);
+        state.libraryBookFilters = Object.assign({}, snapshot.library_book_filters || {});
+        teacherLibraryActiveTab = snapshot.library_tab === 'exam' ? 'exam' : 'general';
+        teacherLibraryActiveSubTab = String(snapshot.library_sub_tab || '');
+        var libraryTabBar = document.getElementById('teacher-library-tab-bar');
+        if (libraryTabBar) {
+            libraryTabBar.querySelectorAll('.library-tab-btn').forEach(function(button) {
+                button.classList.toggle('active', button.getAttribute('data-tab') === teacherLibraryActiveTab);
+            });
+        }
+        restoredTeacherWorkspaceView = teacherViews.indexOf(snapshot.view) === -1 ? '' : snapshot.view;
+        pendingTeacherViewportSnapshot = snapshot.viewport || null;
+        state.selectedMatrixCell = '';
+        state.selectedMatrixStudentKey = '';
+        state.selectedProgressDetailKey = '';
+        state.selectedMatrixReviewAttemptId = '';
+        state.matrixInitialRevealPending = false;
+        var librarySearch = document.getElementById('library-search');
+        if (librarySearch) librarySearch.value = String(snapshot.library_search || '');
+        if (window.history && window.history.replaceState) {
+            var installedState = Object.assign({}, window.history.state || {});
+            installedState[TEACHER_HISTORY_STATE_KEY] = snapshot;
+            var installedUrl = new URL(window.location.href);
+            installedUrl.searchParams.delete('restore');
+            window.history.replaceState(installedState, '', installedUrl);
+        }
+        return snapshot;
+    }
+
+    function captureTeacherWorkspaceHistoryState() {
+        if (!window.history || !window.history.replaceState) return null;
+        var container = document.getElementById('assignment-overview');
+        var snapshot = {
+            version: TEACHER_HISTORY_STATE_VERSION,
+            saved_at: Date.now(),
+            view: activeTeacherViewName(),
+            matrix: {
+                class_filter: state.matrixClassFilter || '',
+                column_filter: state.matrixColumnFilter || '',
+                date_filter: state.matrixDateFilter || 'all',
+                density_step: resolvedMatrixDensityStep()
+            },
+            progress_mode: state.assignProgressMode === 'task' ? 'task' : 'student',
+            expanded_progress_groups: trueStateKeys(state.expandedAssignProgressGroups),
+            expanded_progress_rows: trueStateKeys(state.expandedAssignProgress),
+            library_tab: teacherLibraryActiveTab,
+            library_sub_tab: teacherLibraryActiveSubTab,
+            library_search: String(document.getElementById('library-search') && document.getElementById('library-search').value || ''),
+            library_book_filters: Object.assign({}, state.libraryBookFilters || {}),
+            viewport: matrixScrollSnapshot(container)
+        };
+        var nextState = Object.assign({}, window.history.state || {});
+        nextState[TEACHER_HISTORY_STATE_KEY] = snapshot;
+        window.history.replaceState(nextState, '', window.location.href);
+        try {
+            window.sessionStorage.setItem(TEACHER_SESSION_RETURN_KEY, JSON.stringify(snapshot));
+        } catch (error) {}
+        return snapshot;
+    }
+
+    function restorePendingTeacherViewport(finalize) {
+        if (!pendingTeacherViewportSnapshot) return;
+        var snapshot = pendingTeacherViewportSnapshot;
+        if (finalize === true) pendingTeacherViewportSnapshot = null;
+        restoreMatrixScroll(snapshot);
+    }
 
     var TEACHER_LIBRARY_GROUP_IDS = {
         general: ['basics', 'lessons'],
@@ -1036,6 +1327,7 @@
         overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
             var href = overlay.dataset.href;
             if (href) {
+                captureTeacherWorkspaceHistoryState();
                 closePracticeEntryDialog();
                 window.location.href = href;
             }
@@ -1051,8 +1343,19 @@
         document.removeEventListener('keydown', handlePracticeEntryKeydown);
     }
 
-    window.addEventListener('pageshow', function() {
+    window.addEventListener('pageshow', function(event) {
         closePracticeEntryDialog();
+        if (event.persisted) {
+            window.setTimeout(function() {
+                if (Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {
+                    refreshTeacherLiveProgress();
+                }
+            }, 0);
+        }
+    });
+
+    window.addEventListener('pagehide', function() {
+        if (state.profile) captureTeacherWorkspaceHistoryState();
     });
 
     function handlePracticeEntryKeydown(event) {
@@ -2059,7 +2362,8 @@
             params.push('app=' + encodeURIComponent(appVersion()));
         }
         href = href + (href.indexOf('?') === -1 ? '?' : '&') + params.join('&');
-        return withReturnParam(href, returnUrl || 'teacher.html?view=library');
+        var fallbackReturn = appendQueryParam(returnUrl || 'teacher.html?view=library', 'restore', '1');
+        return withReturnParam(href, fallbackReturn);
     }
 
     function renderLibrary() {
@@ -3968,23 +4272,77 @@
 
     function matrixScrollSnapshot(container) {
         var scroll = container && container.querySelector('.progress-matrix-scroll');
-        return {
+        var snapshot = {
             left: scroll ? scroll.scrollLeft : 0,
             top: scroll ? scroll.scrollTop : 0,
             windowX: window.pageXOffset || document.documentElement.scrollLeft || 0,
             windowY: window.pageYOffset || document.documentElement.scrollTop || 0
         };
+        if (scroll) {
+            var scrollRect = scroll.getBoundingClientRect();
+            var stickyCell = scroll.querySelector('.progress-matrix-head .progress-matrix-student-cell');
+            var visibleLeft = stickyCell ? stickyCell.getBoundingClientRect().right : scrollRect.left;
+            var headers = Array.prototype.slice.call(scroll.querySelectorAll('[data-matrix-column-key]'));
+            var anchor = headers.find(function(header) {
+                return header.getBoundingClientRect().right > visibleLeft + 1;
+            });
+            if (anchor) {
+                snapshot.column_anchor_key = anchor.dataset.matrixColumnKey || '';
+                snapshot.column_anchor_offset = anchor.getBoundingClientRect().left - visibleLeft;
+            }
+        }
+        if (container) {
+            var groupButtons = Array.prototype.slice.call(container.querySelectorAll('[data-assign-progress-group]'));
+            var pageAnchor = groupButtons.find(function(button) {
+                var rect = button.getBoundingClientRect();
+                return rect.bottom > 0 && rect.top < window.innerHeight;
+            });
+            if (pageAnchor) {
+                snapshot.page_anchor_key = pageAnchor.dataset.assignProgressGroup || '';
+                snapshot.page_anchor_offset = pageAnchor.getBoundingClientRect().top;
+            }
+        }
+        return snapshot;
     }
 
     function restoreMatrixScroll(snapshot) {
         if (!snapshot) return;
-        var container = document.getElementById('assignment-overview');
-        var scroll = container && container.querySelector('.progress-matrix-scroll');
-        if (scroll) {
-            scroll.scrollLeft = snapshot.left || 0;
-            scroll.scrollTop = snapshot.top || 0;
+        function restore() {
+            var container = document.getElementById('assignment-overview');
+            var scroll = container && container.querySelector('.progress-matrix-scroll');
+            if (scroll) {
+                scroll.scrollLeft = snapshot.left || 0;
+                scroll.scrollTop = snapshot.top || 0;
+                if (snapshot.column_anchor_key) {
+                    var headers = Array.prototype.slice.call(scroll.querySelectorAll('[data-matrix-column-key]'));
+                    var anchor = headers.find(function(header) {
+                        return header.dataset.matrixColumnKey === snapshot.column_anchor_key;
+                    });
+                    if (anchor) {
+                        var scrollRect = scroll.getBoundingClientRect();
+                        var stickyCell = scroll.querySelector('.progress-matrix-head .progress-matrix-student-cell');
+                        var visibleLeft = stickyCell ? stickyCell.getBoundingClientRect().right : scrollRect.left;
+                        var currentOffset = anchor.getBoundingClientRect().left - visibleLeft;
+                        scroll.scrollLeft += currentOffset - Number(snapshot.column_anchor_offset || 0);
+                    }
+                }
+            }
+            window.scrollTo(snapshot.windowX || 0, snapshot.windowY || 0);
+            if (container && snapshot.page_anchor_key) {
+                var groupButtons = Array.prototype.slice.call(container.querySelectorAll('[data-assign-progress-group]'));
+                var pageAnchor = groupButtons.find(function(button) {
+                    return button.dataset.assignProgressGroup === snapshot.page_anchor_key;
+                });
+                if (pageAnchor) {
+                    var pageOffset = pageAnchor.getBoundingClientRect().top - Number(snapshot.page_anchor_offset || 0);
+                    if (Math.abs(pageOffset) > 0.5) window.scrollBy(0, pageOffset);
+                }
+            }
         }
-        window.scrollTo(snapshot.windowX || 0, snapshot.windowY || 0);
+        restore();
+        window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(restore);
+        });
     }
 
     function renderAssignmentMatrix(items) {
@@ -4075,6 +4433,7 @@
                 var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
                 var tag = href && href !== '#' ? 'a' : 'span';
                 return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
+                    ' data-matrix-column-key="' + escapeHtml(set.id) + '"' +
                     (tag === 'a' ? ' href="' + escapeHtml(href) + '" data-open-href="' + escapeHtml(href) +
                         '" data-entry-kind="Teacher preview" data-entry-title="' + escapeHtml(title) +
                         '" aria-haspopup="dialog" aria-label="Confirm teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
@@ -4305,10 +4664,12 @@
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgressGroup;
+                var scrollSnapshot = matrixScrollSnapshot(container);
                 state.expandedAssignProgressGroups[key] = state.expandedAssignProgressGroups[key] !== true;
                 state.selectedMatrixStudentKey = '';
                 state.selectedProgressDetailKey = '';
                 renderAssignmentOverview();
+                restoreMatrixScroll(scrollSnapshot);
             });
         });
         container.querySelectorAll('[data-edit-assignment-scope]').forEach(function(button) {
@@ -4321,8 +4682,10 @@
         container.querySelectorAll('[data-assign-progress]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgress;
+                var scrollSnapshot = matrixScrollSnapshot(container);
                 state.expandedAssignProgress[key] = state.expandedAssignProgress[key] !== true;
                 renderAssignmentOverview();
+                restoreMatrixScroll(scrollSnapshot);
             });
         });
         container.querySelectorAll('[data-student-history-progress]').forEach(function(button) {
@@ -5109,6 +5472,7 @@
     }
 
     function initialTeacherView() {
+        if (restoredTeacherWorkspaceView) return restoredTeacherWorkspaceView;
         var view = new URLSearchParams(window.location.search).get('view') || '';
         return view === 'library' ? 'library' : 'view';
     }
@@ -5118,7 +5482,14 @@
         var url = new URL(window.location.href);
         if (viewName === 'library') url.searchParams.set('view', viewName);
         else url.searchParams.delete('view');
-        window.history.replaceState({}, '', url);
+        var nextState = Object.assign({}, window.history.state || {});
+        if (nextState[TEACHER_HISTORY_STATE_KEY]) {
+            nextState[TEACHER_HISTORY_STATE_KEY] = Object.assign({}, nextState[TEACHER_HISTORY_STATE_KEY], {
+                view: viewName,
+                saved_at: Date.now()
+            });
+        }
+        window.history.replaceState(nextState, '', url);
     }
 
     function applyTeacherViewShell(viewName) {
@@ -5139,6 +5510,10 @@
         if (viewName === 'tasks') updateAssignView();
         if (viewName === 'view') renderAssignmentOverview();
         if (viewName === 'library') renderTeacherLibrary(teacherLibraryActiveTab);
+        if (viewName === 'view' && teacherLiveDataLoadedAt
+            && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {
+            refreshTeacherLiveProgress();
+        }
     }
 
     function loadPublicCatalog() {
@@ -5240,32 +5615,126 @@
         return items;
     }
 
+    function renderCachedTeacherWorkspace() {
+        fillClassFilters();
+        fillSetSectionFilters();
+        renderSetOptions();
+        loadCandidates();
+        renderLibrary();
+        renderStudentList();
+        renderStudentDetail();
+        renderAssignmentOverview();
+        updateAssignView();
+        restorePendingTeacherViewport();
+    }
+
+    function hydrateTeacherWorkspaceCache(profile) {
+        return readTeacherWorkspaceCache(profile).then(function(record) {
+            if (!record) return false;
+            state.students = Array.isArray(record.students) ? record.students : [];
+            state.sets = Array.isArray(record.sets) ? record.sets : [];
+            state.assignments = Array.isArray(record.assignments) ? record.assignments : [];
+            state.progressItems = Array.isArray(record.progress) ? record.progress : [];
+            state.matrixInitialRevealPending = false;
+            renderCachedTeacherWorkspace();
+            return true;
+        });
+    }
+
     function loadData() {
+        var studentsPromise = teacherCall('listStudents');
+        var setsPromise = teacherCall('listSets').catch(function() { return { sets: [], unavailable: true }; });
+        var assignmentsPromise = teacherCall('listAssignments');
+        var disputesPromise = teacherCall('listDisputes');
+        var attemptsPromise = teacherCall('listAttempts');
+        var progressPromise = loadProgressData();
+        var activityPromise = loadActivityState();
+        var catalogPromise = loadPublicCatalog().catch(function() {
+            teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
+        });
+
+        Promise.all([setsPromise, progressPromise, catalogPromise]).then(function(results) {
+            var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
+            var setResult = results[0] || {};
+            var progressResult = results[1] || {};
+            if (!setResult.unavailable) state.sets = mergeCloudAndPublicSets(setResult.sets || []);
+            if (!progressResult.unavailable) state.progressItems = progressResult.progress || [];
+            renderAssignmentOverview();
+            restoreMatrixScroll(viewport);
+            restorePendingTeacherViewport();
+        }).catch(function() {});
+
         return Promise.all([
-            teacherCall('listStudents'),
-            teacherCall('listSets').catch(function() { return { sets: [] }; }),
-            teacherCall('listAssignments'),
-            teacherCall('listDisputes'),
-            teacherCall('listAttempts'),
-            loadProgressData(),
-            loadActivityState()
+            studentsPromise,
+            setsPromise,
+            assignmentsPromise,
+            disputesPromise,
+            attemptsPromise,
+            progressPromise,
+            activityPromise,
+            catalogPromise
         ]).then(function(results) {
+            var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
             state.students = results[0].students || [];
-            state.sets = results[1].sets || [];
+            if (!results[1].unavailable) state.sets = mergeCloudAndPublicSets(results[1].sets || []);
             state.assignments = results[2].assignments || [];
             state.disputes = results[3].disputes || [];
             state.attempts = results[4].attempts || [];
-            state.progressItems = results[5].progress || [];
-            state.attemptsSeenAt = results[6].attempts_seen_at || null;
-            state.activityReadAllAt = results[6].read_all_at || null;
-            state.activityReviewedAttemptIds = results[6].reviewed_attempt_ids || [];
-            return loadPublicCatalog().catch(function() {
-                teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
-            }).then(function() {
-                state.sets = mergeCloudAndPublicSets(results[1].sets || []);
-                afterDataLoaded();
-            });
+            if (!results[5].unavailable) state.progressItems = results[5].progress || [];
+            if (!results[6].unavailable) {
+                state.attemptsSeenAt = results[6].attempts_seen_at || null;
+                state.activityReadAllAt = results[6].read_all_at || null;
+                state.activityReviewedAttemptIds = results[6].reviewed_attempt_ids || [];
+            }
+            teacherLiveDataLoadedAt = Date.now();
+            afterDataLoaded();
+            restoreMatrixScroll(viewport);
+            restorePendingTeacherViewport(true);
+            writeTeacherWorkspaceCache();
+            scheduleTeacherProgressRefresh();
         });
+    }
+
+    function refreshTeacherLiveProgress() {
+        if (teacherLiveRefreshPromise || !state.profile || document.hidden || activeTeacherViewName() !== 'view') {
+            return teacherLiveRefreshPromise || Promise.resolve(false);
+        }
+        teacherLiveRefreshPromise = Promise.all([
+            teacherCall('listAssignments').catch(function() { return { assignments: [], unavailable: true }; }),
+            teacherCall('listAttempts').catch(function() { return { attempts: [], unavailable: true }; }),
+            loadProgressData(),
+            loadActivityState()
+        ]).then(function(results) {
+            var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
+            if (!results[0].unavailable) state.assignments = results[0].assignments || [];
+            if (!results[1].unavailable) state.attempts = results[1].attempts || [];
+            if (!results[2].unavailable) state.progressItems = results[2].progress || [];
+            if (!results[3].unavailable) {
+                state.attemptsSeenAt = results[3].attempts_seen_at || null;
+                state.activityReadAllAt = results[3].read_all_at || null;
+                state.activityReviewedAttemptIds = results[3].reviewed_attempt_ids || [];
+            }
+            teacherLiveDataLoadedAt = Date.now();
+            renderAssignmentOverview();
+            if (state.updatesOpen) updateTopBadges();
+            else renderUpdatesPanel();
+            restoreMatrixScroll(viewport);
+            writeTeacherWorkspaceCache();
+            return true;
+        }).catch(function() {
+            return false;
+        }).then(function(result) {
+            teacherLiveRefreshPromise = null;
+            return result;
+        });
+        return teacherLiveRefreshPromise;
+    }
+
+    function scheduleTeacherProgressRefresh() {
+        if (teacherRefreshTimer) window.clearInterval(teacherRefreshTimer);
+        teacherRefreshTimer = window.setInterval(function() {
+            refreshTeacherLiveProgress();
+        }, TEACHER_PROGRESS_REFRESH_MS);
     }
 
     function afterDataLoaded() {
@@ -5721,6 +6190,13 @@
         var overview = document.getElementById('assignment-overview');
         if (overview && overview.querySelector('.progress-matrix-scroll')) renderAssignmentOverview();
     }, { passive: true });
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && teacherLiveDataLoadedAt
+            && Date.now() - teacherLiveDataLoadedAt >= TEACHER_RETURN_REFRESH_AGE_MS) {
+            refreshTeacherLiveProgress();
+        }
+    });
+    applyTeacherWorkspaceHistoryState();
     applyTeacherViewShell(initialTeacherView());
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
@@ -5734,7 +6210,9 @@
         state.profile = session.profile;
         document.getElementById('teacher-chip').textContent = session.profile.student_id;
         applyTeacherViewShell(initialTeacherView());
-        return loadData();
+        return hydrateTeacherWorkspaceCache(session.profile).then(function() {
+            return loadData();
+        });
     }).then(function(result) {
         if (result === null) return;
         activateView(initialTeacherView(), true);

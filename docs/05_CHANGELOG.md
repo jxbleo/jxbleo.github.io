@@ -7,6 +7,15 @@
 
 ### Changed
 
+- Made Teacher practice Back context-preserving: returning from a View matrix
+  preview now restores the same filters, matrix density, grouped-progress
+  expansions, page position, and internal matrix scroll/visible-column anchor,
+  without restoring the entry confirmation dialog. IELTS exam Back controls
+  remain in their existing top bars.
+- Added an account-scoped, answer-stripped IndexedDB snapshot for faster Teacher
+  workspace paint, followed by authoritative CloudBase revalidation. Visible
+  Teacher View progress now refreshes automatically while preserving the
+  current spatial context, and explicit logout removes the private cache.
 - Added the My Words-style browser pronunciation button to every Vocabulary
   Learn word card and Spell row. Both use local `en-GB` speech synthesis; Spell
   playback does not reveal or fill the hidden answer, and no backend or audio

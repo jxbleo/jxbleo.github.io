@@ -91,6 +91,28 @@ Current frontend philosophy:
   unlinked from production navigation and free of real student/backend data.
 - Preserve cache query strings on changed scripts.
 
+### Teacher Workspace Return and Local Cache
+
+Teacher practice entry remains a normal same-origin history navigation. Before
+opening a practice runtime, `teacher.js` stores a compact workspace snapshot in
+the current `history.state` entry and a tab-scoped `sessionStorage` fallback.
+The snapshot contains only UI state: active destination, View filters, matrix
+density, grouped-progress expansion, Library filters/search, document scroll,
+matrix scroll, and stable visible anchors. Practice `Back` uses the shared
+validated history return, so bfcache can restore the live page. If bfcache is
+unavailable, the history/session snapshot is applied after asynchronous matrix
+rendering. Practice-entry confirmation and teacher detail modals are excluded.
+
+After teacher authentication, `teacher.js` may render a private-device
+IndexedDB snapshot while live CloudBase reads continue. The cache is scoped by
+teacher Login ID, expires after 24 hours, and stores only student display
+profiles, public set metadata, assignment summaries, and progress summaries
+with nested attempts/answers removed. It never stores credentials, auth tokens,
+correct answers, explanations, or grading keys, and explicit logout deletes the
+account cache. Live CloudBase results replace the snapshot, remain authoritative,
+and are refreshed periodically while View is visible. Re-rendering preserves
+the current matrix column anchor, grouped-progress anchor, and scroll offsets.
+
 ## 5. Backend Structure
 
 Cloud function source lives in `cloudfunctions/<function>/`.

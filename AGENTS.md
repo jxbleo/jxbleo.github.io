@@ -743,6 +743,19 @@ Visitor mode uses the same learning interface but has no assignments, cannot
 fill/select answers, cannot submit, and sees a login prompt on interaction.
 Entry offers Login and `Continue as Visitor`.
 
+Practice application `Back` is contextual and is not the same as `Home`.
+Teacher View preview Back must restore the same View filters, matrix density,
+By student/By task mode, expanded groups, document position, and matrix scroll
+anchor; the practice-entry confirmation and detail modals stay closed. IELTS
+Reading/Listening keep Back in their top exam bars. Prefer browser history and
+bfcache, with a history/session snapshot fallback when the page must reload.
+
+On the owner's private teacher device, IndexedDB may hold a maximum-24-hour
+answer-stripped Teacher workspace snapshot for fast paint. CloudBase remains
+authoritative and refreshes automatically. Never cache passwords, auth tokens,
+nested attempts, submitted/correct answers, explanations, or grading keys;
+explicit logout must delete the account cache.
+
 Teacher preview pages opened from `teacher.html` must not call `teacherAdmin`
 directly from `Show Answers` or teacher-originated Argue buttons. First verify
 `window.MrCatCloud.getLoginState()` and wrap CloudBase SDK failures such as

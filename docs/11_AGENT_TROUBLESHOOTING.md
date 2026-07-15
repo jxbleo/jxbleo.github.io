@@ -464,6 +464,33 @@
 - teacher answer reveal 和 student answer reveal 是两条路径。
 - teacher preview 不能调用 student reveal 或锁 mastery。
 
+### 2026-07-15：Teacher View Back 与私人设备缓存
+
+已做：
+
+- Teacher View / Library 进入练习前把筛选、展开分组和嵌套滚动锚点写入
+  `history.state`，并保留同标签页 fallback；返回不再新建一个空白 Teacher
+  现场。
+- IndexedDB 只缓存去除 attempts/答案后的教师工作区摘要，live CloudBase
+  自动刷新后覆盖缓存，登出删除该账号缓存。
+
+重复问题：
+
+- 如果 Back 回到正确 View 但位置仍跳动，先区分 bfcache 命中与普通历史
+  reload，再检查 `history.state.mrcatTeacherWorkspace`、矩阵列的稳定 anchor 和
+  分组 anchor 是否仍存在。
+- 普通 reload 会依次经历缓存渲染、分阶段 live 渲染和完整 live 渲染；不要在
+  第一次缓存渲染后就清除待恢复的 viewport snapshot。应在完整 live 渲染恢复
+  之后才 finalize，否则后续渲染可能把 fallback 的矩阵横向位置重置为 0。
+- 如果缓存首屏有答案或解析，立即检查 `sanitizedProgressForTeacherCache`；
+  IndexedDB 不得保存 nested attempts、submitted/correct answers 或 grading key。
+- 如果静态发布后仍运行旧返回逻辑，先检查 `teacher.html` 的 `teacher.js`
+  cache-version query。
+
+部署/数据：
+
+- 这是静态前端改动；不需要部署 CloudBase 函数或导入数据。
+
 ## 4. 技术规则最终版备忘
 
 ### 4.1 当前后端状态词
