@@ -127,6 +127,8 @@
     var wordsAddStatus = document.getElementById('my-words-manual-status');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
+    var studentMessageScrollLock = null;
+    var weeklyEmptyCelebrationTimer = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -135,6 +137,62 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    function lockStudentMessageBackground() {
+        if (studentMessageScrollLock || !document.body || !document.documentElement) return;
+        var body = document.body;
+        var root = document.documentElement;
+        var scrollX = window.scrollX || window.pageXOffset || 0;
+        var scrollY = window.scrollY || window.pageYOffset || 0;
+        var scrollbarGap = Math.max(0, window.innerWidth - root.clientWidth);
+        var computedPaddingRight = parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+
+        studentMessageScrollLock = {
+            scrollX: scrollX,
+            scrollY: scrollY,
+            bodyPosition: body.style.position,
+            bodyTop: body.style.top,
+            bodyLeft: body.style.left,
+            bodyRight: body.style.right,
+            bodyWidth: body.style.width,
+            bodyOverflow: body.style.overflow,
+            bodyPaddingRight: body.style.paddingRight,
+            rootOverflow: root.style.overflow,
+            rootOverscrollBehavior: root.style.overscrollBehavior,
+            rootScrollBehavior: root.style.scrollBehavior
+        };
+
+        root.style.overflow = 'hidden';
+        root.style.overscrollBehavior = 'none';
+        root.style.scrollBehavior = 'auto';
+        body.style.position = 'fixed';
+        body.style.top = (-scrollY) + 'px';
+        body.style.left = '0';
+        body.style.right = '0';
+        body.style.width = '100%';
+        body.style.overflow = 'hidden';
+        if (scrollbarGap) body.style.paddingRight = (computedPaddingRight + scrollbarGap) + 'px';
+    }
+
+    function unlockStudentMessageBackground() {
+        if (!studentMessageScrollLock || !document.body || !document.documentElement) return;
+        var lock = studentMessageScrollLock;
+        var body = document.body;
+        var root = document.documentElement;
+        studentMessageScrollLock = null;
+
+        body.style.position = lock.bodyPosition;
+        body.style.top = lock.bodyTop;
+        body.style.left = lock.bodyLeft;
+        body.style.right = lock.bodyRight;
+        body.style.width = lock.bodyWidth;
+        body.style.overflow = lock.bodyOverflow;
+        body.style.paddingRight = lock.bodyPaddingRight;
+        root.style.overflow = lock.rootOverflow;
+        root.style.overscrollBehavior = lock.rootOverscrollBehavior;
+        window.scrollTo(lock.scrollX, lock.scrollY);
+        root.style.scrollBehavior = lock.rootScrollBehavior;
     }
 
     function vocabularySourceKey(item) {
@@ -1106,7 +1164,12 @@
 
     function openStudentMessageCenter(scope) {
         var existing = document.querySelector('.student-message-overlay');
-        if (existing) existing.remove();
+        if (existing && typeof existing.studentMessageClose === 'function') {
+            existing.studentMessageClose(false);
+        } else if (existing) {
+            existing.remove();
+            unlockStudentMessageBackground();
+        }
 
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
@@ -1203,19 +1266,25 @@
                 '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close assignments">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
+        lockStudentMessageBackground();
         var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
         if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
 
         var didMarkSeen = false;
+        var closed = false;
         function close(markSeen) {
+            if (closed) return Promise.resolve();
+            closed = true;
             document.removeEventListener('keydown', onKeydown);
             if (messageTitleObserver) messageTitleObserver.disconnect();
             overlay.remove();
+            unlockStudentMessageBackground();
             if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
             if (!markSeen || didMarkSeen) return Promise.resolve();
             didMarkSeen = true;
             return markTeacherRepliesSeen(replies);
         }
+        overlay.studentMessageClose = close;
 
         function suspend() {
             document.removeEventListener('keydown', onKeydown);
@@ -1373,6 +1442,39 @@
             '</button>';
     }
 
+    function showWeeklyEmptyCelebration() {
+        var existing = document.querySelector('.weekly-empty-celebration');
+        if (existing) existing.remove();
+        if (weeklyEmptyCelebrationTimer) window.clearTimeout(weeklyEmptyCelebrationTimer);
+
+        var celebration = document.createElement('div');
+        celebration.className = 'weekly-empty-celebration';
+        celebration.setAttribute('role', 'status');
+        celebration.setAttribute('aria-live', 'polite');
+        celebration.setAttribute('aria-atomic', 'true');
+        celebration.innerHTML =
+            '<span class="weekly-empty-celebration-badge" aria-hidden="true">' +
+                '<svg viewBox="0 0 24 24" focusable="false">' +
+                    '<path d="M7 10v11H3V10h4Zm4-7-1 7h9.7a2 2 0 0 1 2 2.35l-1.25 7A2 2 0 0 1 18.48 21H7V10l4-7Z"></path>' +
+                '</svg>' +
+            '</span>' +
+            '<span class="sr-only">You are all caught up for this week.</span>';
+        document.body.appendChild(celebration);
+
+        function removeCelebration() {
+            if (celebration.isConnected) celebration.remove();
+            if (weeklyEmptyCelebrationTimer) window.clearTimeout(weeklyEmptyCelebrationTimer);
+            weeklyEmptyCelebrationTimer = null;
+        }
+
+        celebration.querySelector('.weekly-empty-celebration-badge').addEventListener('animationend', function(event) {
+            if (event.animationName === 'weeklyEmptyThumb' || event.animationName === 'weeklyEmptyThumbReduced') {
+                removeCelebration();
+            }
+        });
+        weeklyEmptyCelebrationTimer = window.setTimeout(removeCelebration, 1600);
+    }
+
     function renderWeeklyFocusProgress() {
         if (!weeklyFocusProgress) return;
         weeklyFocusProgress.classList.remove('is-loading');
@@ -1415,15 +1517,14 @@
                 ? 'All done · ' + weekFinished + ' / ' + weekTotal
                 : weekFinished + ' / ' + weekTotal + ' finished';
         html += renderWeeklyProgressRow({
-            kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : ''),
-            scope: 'week',
+            kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
+            scope: weekTotal ? 'week' : 'week-empty',
             label: 'THIS WEEK',
             valueLabel: weekLabel,
             ariaLabel: weekTotal
                 ? 'Open this week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished.'
-                : 'No assignments are scheduled for this week.',
-            percent: weekPercent,
-            disabled: weekTotal === 0
+                : 'No assignments are scheduled for this week. Activate for an all-caught-up confirmation.',
+            percent: weekPercent
         });
         weeklyFocusProgress.innerHTML = html;
     }
@@ -2650,7 +2751,11 @@
         }
         var progressScope = e.target.closest('[data-progress-scope]');
         if (progressScope) {
-            openStudentMessageCenter(progressScope.dataset.progressScope || '');
+            if (progressScope.dataset.progressScope === 'week-empty') {
+                showWeeklyEmptyCelebration();
+            } else {
+                openStudentMessageCenter(progressScope.dataset.progressScope || '');
+            }
             return;
         }
         var tabBtn = e.target.closest('.library-tab-btn');

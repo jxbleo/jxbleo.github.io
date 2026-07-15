@@ -266,6 +266,73 @@
     50% { opacity: 0.82; transform: scaleX(0.58); }
 }
 
+.weekly-empty-celebration {
+    position: fixed;
+    inset: 0;
+    z-index: 2200;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.weekly-empty-celebration-badge {
+    position: relative;
+    display: grid;
+    width: 112px;
+    height: 112px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(145deg, #55cfaa, #13766d 72%);
+    box-shadow: 0 24px 58px rgba(19, 118, 109, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.46);
+    will-change: transform, opacity;
+    animation: weeklyEmptyThumb 1300ms cubic-bezier(.22, .72, .28, 1) both;
+}
+
+.weekly-empty-celebration-badge::before {
+    content: "";
+    position: absolute;
+    inset: -13px;
+    border: 2px solid rgba(85, 207, 170, 0.42);
+    border-radius: inherit;
+    animation: weeklyEmptyThumbRing 1300ms ease-out both;
+}
+
+.weekly-empty-celebration-badge::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: -91px 20px 0 -1px rgba(255, 255, 255, 0.72), -13px 91px 0 -2px rgba(255, 255, 255, 0.62);
+}
+
+.weekly-empty-celebration-badge svg {
+    width: 56px;
+    height: 56px;
+    fill: rgba(255, 255, 255, 0.12);
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes weeklyEmptyThumb {
+    0% { opacity: 0; transform: translateY(8px) scale(0.82); }
+    22%, 72% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-7px) scale(0.96); }
+}
+
+@keyframes weeklyEmptyThumbRing {
+    0% { opacity: 0; transform: scale(0.72); }
+    24% { opacity: 1; }
+    82%, 100% { opacity: 0; transform: scale(1.13); }
+}
+
 .liquid-glass-dashboard .student-library-workspace {
     margin-top: clamp(34px, 5vw, 58px);
 }
@@ -850,9 +917,23 @@
         transform: scaleX(var(--weekly-progress-scale, 0));
     }
 
+    .weekly-empty-celebration-badge {
+        animation: weeklyEmptyThumbReduced 900ms ease-out both;
+    }
+
+    .weekly-empty-celebration-badge::before {
+        animation: none;
+        opacity: 0;
+    }
+
     .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {
         animation: none;
     }
+}
+
+@keyframes weeklyEmptyThumbReduced {
+    0%, 100% { opacity: 0; transform: none; }
+    20%, 72% { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-transparency: reduce) {

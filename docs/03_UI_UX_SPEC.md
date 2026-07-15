@@ -108,11 +108,16 @@ Assignment access and progress display:
   assignments whose teacher-planned `assigned_at` falls in the current
   China-standard-time Monday-to-Sunday week. Self-study STAR records are not
   counted in either row. A completed week reads `All done`; an empty week keeps
-  a quiet zero-value track and reads `No assignments this week`. Selecting a
-  populated row opens the existing Assignments dialog filtered to that scope.
+  a quiet zero-value track and reads `No assignments this week`. Selecting an
+  empty `THIS WEEK` row shows one brief centered thumbs-up confirmation and
+  removes it automatically without opening an empty dialog. Selecting a
+  populated row opens the existing Assignments dialog filtered to that scope;
+  while the dialog is open, its list may scroll but the Dashboard behind it
+  must remain fixed at its original position.
   The progress fill reveals once after loading without bounce, and reduced
-  motion renders the final value immediately. Color is always accompanied by
-  labels and counts.
+  motion renders the final value immediately and replaces the thumbs-up scale
+  motion with a short cross-fade. Color is always accompanied by labels and
+  counts.
 - the Library content starts with a large `Library` heading. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
   side of that heading on desktop and remain adjacent when stacked on mobile.
