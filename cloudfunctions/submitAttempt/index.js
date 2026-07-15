@@ -312,7 +312,7 @@ async function findOpenAssignmentForSet(studentUid, setId) {
     .map(normalizeRecord)
     .filter(isOpenAssignment)
     .sort((left, right) =>
-      dateValue(right.assigned_at || right.created_at) - dateValue(left.assigned_at || left.created_at)
+      dateValue(right.due_at || right.assigned_at || right.created_at) - dateValue(left.due_at || left.assigned_at || left.created_at)
     );
   return openAssignments[0] || null;
 }

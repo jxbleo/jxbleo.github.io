@@ -56,6 +56,7 @@ audio, or JS fallback data.
 
 ```bash
 npm run verify:release
+npm run test:assignment-schedule
 npm run package:functions:all
 npm run release:plan
 node scripts/build-home-catalog.js

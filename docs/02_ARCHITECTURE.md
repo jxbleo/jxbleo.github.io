@@ -237,10 +237,13 @@ linked attempts as a display fallback when an assignment summary is stale.
 5. Completed/passed/mastered history can be reassigned with a new `assignment_id`.
    Assignments created for the same set in one teacher Assign action also share
    an `assignment_batch_id` for teacher matrix grouping.
-6. Existing assignments can be edited by explicit `assignment_id` selections
-   for assigned week (`assigned_at`), due date, passing percentage, and mastery
-   percentage. Assigned-week edits immediately drive the Teacher View Wxx
-   grouping and date filters.
+6. Every new assignment requires a due week. The browser sends `due_at`, and
+   `teacherAdmin` normalizes it to that Shanghai-time week's Sunday 23:59:59.
+   Existing assignments can be edited by explicit `assignment_id` selections
+   for due week, passing percentage, and mastery percentage. Due-week edits
+   immediately drive Teacher View Wxx grouping/date filters and the student
+   Overdue / This Week / Upcoming model. `assigned_at` remains only as a legacy
+   compatibility mirror; `created_at` is the creation audit timestamp.
    The View matrix task header builds this explicit ID list from the currently
    filtered column, so one save can update every matching student in the
    selected class/scope without affecting hidden classes.

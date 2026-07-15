@@ -102,13 +102,15 @@ Assignment access and progress display:
   nested cards. On desktop the greeting and randomized motivation sit on the
   left and two compact progress rows sit on the right; below 900px they stack
   without changing their reading order. `OVERDUE` is the first row and appears
-  only when a real assignment remains `to_do` after its `due_at`; its muted red
-  fill represents overdue tasks as a share of all open assignments. `THIS WEEK`
-  is always the second row and shows finished assignments as a share of real
-  assignments whose teacher-planned `assigned_at` falls in the current
-  China-standard-time Monday-to-Sunday week. Self-study STAR records are not
-  counted in either row. A completed week reads `All done`; an empty week keeps
-  a quiet zero-value track and reads `No assignments this week`. Selecting an
+  only when a real assignment remains `to_do` after its required `due_at`; its
+  muted red fill represents overdue tasks as a share of currently actionable
+  open assignments. The second row uses required due weeks. It shows
+  `THIS WEEK` while any assignment due in the current China-standard-time
+  Monday-to-Sunday week remains unfinished. Once all current-week work is
+  finished—or when no work is due this week—the same row becomes a blue
+  `UPCOMING` row when next week has assignments. If neither week has work, it
+  keeps the quiet empty `THIS WEEK` state. Self-study STAR records are not
+  counted in these rows. Selecting an
   empty `THIS WEEK` row shows one brief centered thumbs-up confirmation and
   removes it automatically without opening an empty dialog. Selecting a
   populated row opens the existing Assignments dialog filtered to that scope;
@@ -161,8 +163,11 @@ Frontend rule:
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment notifications, teacher notification counts, and
   unread activity rows. Student assignment reminders are counted on the
-  top-right bell. Viewing the bell must not clear open-assignment reminders;
-  the count decreases only when assignments leave `to_do`.
+  top-right bell. The bell keeps future assignments visible in a separate
+  `Upcoming` section even while current-week work remains unfinished, but
+  future work never contributes to the red count. The red count includes only
+  overdue/current-week unfinished assignments and unseen teacher replies.
+  Viewing the bell must not clear assignment reminders.
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
@@ -429,7 +434,7 @@ Teacher can:
   pairs are colored and disabled; completed/mastered history is colored but
   remains selectable for reassignment
 - set task parameters in a bottom Assign matrix, one selected Work item per row:
-  assignment date/week, passing percentage, and whether that task can earn STAR
+  required due week, passing percentage, and whether that task can earn STAR
 - assign the selected work to the selected students
 
 The Assign surface should stay visually minimal: the default Assign tab shows
@@ -446,11 +451,11 @@ the picker. The student picker should not include a `Select filtered` bulk
 selection button.
 Assignment creation continues to use server-side validation.
 The task-parameters area renders like a compact matrix with columns for the
-selected task, date, passing percentage, and STAR. Each selected Work item has
-its own row. Date defaults to `This week`, with only `This week`, `Next week`,
-and `Customize` in the first date selector. Choosing `Customize` reveals a
-Week/Date choice; Week shows a week-number selector and labels the current
-Beijing-time Wxx week clearly, while Date shows a calendar date input. Passing
+selected task, due week, passing percentage, and STAR. Each selected Work item
+has its own row. Due week is mandatory and defaults to `This week`, with only
+`This week`, `Next week`, and `Customize` in the first selector. Choosing
+`Customize` reveals a week-number selector and labels the current Beijing-time
+Wxx week clearly. Passing
 percentage is filled from that selected work's default when possible. `Earn
 STAR` is unchecked by default; only when checked does `Mastery %` appear and
 become required for that row.
@@ -506,8 +511,9 @@ It should include:
   above all student score rows, the matrix adds one full `DUE AT` row: its sticky
   first-column cell reads `DUE AT`, and each task column always contains the
   zero-padded Beijing-time `Wxx` grouping label moved from the former task
-  header. This label uses `assigned_at`, so legacy tasks without `due_at` still
-  display their week and stay aligned with Assign week and the Date filter. The
+  header. This label uses required `due_at`; legacy tasks temporarily fall back
+  to the week derived from `assigned_at` until the due-week backfill is applied.
+  It stays aligned with Assign Due week and the Date filter. The
   sticky `DUE AT` first cell uses the same animated colorful header surface,
   left alignment, horizontal padding, typography, and column width as the
   `Student` cell above, while the Wxx cells retain their centered green action
@@ -520,7 +526,7 @@ It should include:
   for all records
   represented by that visible column. A class/individual filter limits the edit
   scope to that class/student; no class filter means all currently visible
-  students in the column. One save can update assign week, due date, passing
+  students in the column. One save can update due week, passing
   percentage, mastery percentage, and Earn STAR for the complete scope.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
@@ -530,7 +536,7 @@ It should include:
   offers `This week - Wxx`, `Next week - Wxx`, `Last week - Wxx`, `All time`,
   and `Self study`; the three week labels shorten to `This Wxx`, `Next Wxx`,
   and `Last Wxx` at phone width so the selected value stays readable.
-  Week filters use the assignment `assigned_at` timestamp, not student
+  Week filters use the assignment `due_at` timestamp, not student
   completion time, and calculate fixed Monday-to-Sunday natural weeks in
   Beijing time. Self-study records without an assignment are shown only by the
   `Self study` date option. Repeated assignments of the same set should render
@@ -593,9 +599,9 @@ It should include:
   assignment records directly. A single matrix cell edits one student's one
   assignment; grouped tools edit the assignment records currently represented
   by that student, class, or task group.
-- assignment management can edit assign week, due date, passing percentage,
-  and mastery percentage, or soft-cancel open selected assignments. `Assign
-  week` updates `assigned_at`, so the selected work moves to the chosen Wxx
+- assignment management can edit due week, passing percentage,
+  and mastery percentage, or soft-cancel open selected assignments. `Due week`
+  updates `due_at`, so the selected work moves to the chosen Wxx
   matrix column and week filter without changing immutable attempts. If only
   part of an original assignment batch moves, View splits that part into the
   new week while keeping same-batch/same-week records together. Cancelled assignments

@@ -2501,6 +2501,10 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(19, 118, 109, 0.16);
     background: linear-gradient(135deg, #f4fbf7, #fff);
 }
+.student-message-task.upcoming {
+    border-color: rgba(63, 123, 174, 0.18);
+    background: linear-gradient(135deg, #f3f8fd, #fff);
+}
 .student-message-task:hover,
 .student-message-task:focus-visible {
     transform: translateY(-1px);
@@ -2598,6 +2602,10 @@ body:not(.teacher-page) .tab-button.active {
 .student-message-score.is-todo {
     color: var(--danger);
     background: var(--danger-soft);
+}
+.student-message-score.is-upcoming {
+    color: #376f9f;
+    background: rgba(63, 123, 174, 0.12);
 }
 .student-message-task-meta svg {
     width: 17px;

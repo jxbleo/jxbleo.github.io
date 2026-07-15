@@ -3,6 +3,34 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-07-15: Use Required Due Weeks as the One Assignment Schedule
+
+Decision:
+
+Every assignment requires a `due_at` week normalized to Shanghai-time Sunday
+23:59:59. Student Overdue / This Week / Upcoming behavior, red reminder counts,
+and Teacher View Wxx grouping all use that field. `created_at` remains the
+creation audit time, while `assigned_at` is only a rolling-deployment/legacy
+compatibility mirror and fallback source.
+
+Reason:
+
+Separate optional assigned-week and due-date concepts allowed unfinished work
+to remain in the bell while appearing in neither This Week nor Overdue. One
+required schedule makes teacher intent and student reminders consistent.
+
+Trade-offs:
+
+- Good: no open assignment can be created without a clear deadline week.
+- Good: future work can remain visible without inflating the red reminder.
+- Cost: legacy assignments need a reviewed, bounded due-week backfill.
+- Cost: the model supports weekly deadlines rather than arbitrary due times.
+
+Review condition:
+
+Revisit only if the product later needs separate release dates and deadlines;
+that would require two explicitly named fields and distinct visibility rules.
+
 ## 2026-07-15: Layer the Shared Visual System Over the Static Frontend
 
 Decision:

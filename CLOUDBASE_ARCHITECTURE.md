@@ -274,8 +274,9 @@ assignment_id: string
 student_uid: string
 set_id: string
 status: "to_do" | "passed" | "mastered"
-assigned_at: server timestamp
-due_at: timestamp | null
+due_at: required Shanghai-time due-week Sunday 23:59:59
+assigned_at: deprecated compatibility mirror of due_at
+created_at: server creation timestamp
 passing_percentage: number
 mastery_percentage: number
 completed_at: timestamp | null

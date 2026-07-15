@@ -2051,9 +2051,7 @@
     function defaultAssignParamsForSet(set) {
         return {
             datePreset: 'this_week',
-            customMode: 'week',
             week: assignDefaultDateValue(0),
-            date: shanghaiDateInputValue(new Date()),
             passingPercentage: formatPercentInput(defaultPassingForSet(set)),
             masteryEnabled: false,
             masteryPercentage: ''
@@ -2068,8 +2066,6 @@
         }
         var params = state.assignSetParams[setId];
         if (!params.week) params.week = assignDefaultDateValue(0);
-        if (!params.date) params.date = shanghaiDateInputValue(new Date());
-        if (!params.customMode) params.customMode = 'week';
         if (!params.datePreset) params.datePreset = 'this_week';
         if (!params.passingPercentage) params.passingPercentage = formatPercentInput(defaultPassingForSet(set));
         return params;
@@ -2090,29 +2086,33 @@
             return 'Next week ' + weekLabelFromDateInput(assignDefaultDateValue(1));
         }
         if (params.datePreset === 'custom') {
-            if (params.customMode === 'date') return params.date || 'Date';
-            return 'Week ' + weekLabelFromDateInput(params.week || assignDefaultDateValue(0));
+            return 'Due ' + weekLabelFromDateInput(params.week || assignDefaultDateValue(0));
         }
         return 'This week ' + weekLabelFromDateInput(assignDefaultDateValue(0));
     }
 
-    function assignScheduledAtIso(params) {
+    function dueAtIsoForWeekStart(value) {
+        var startParts = shanghaiDatePartsFromInput(value);
+        if (!startParts) return null;
+        var sunday = addShanghaiDays(startParts, 6);
+        return shanghaiDateInputValueFromParts(sunday) + 'T23:59:59+08:00';
+    }
+
+    function assignDueAtIso(params) {
         var value = '';
         if (params.datePreset === 'next_week') {
             value = assignDefaultDateValue(1);
         } else if (params.datePreset === 'custom') {
-            value = params.customMode === 'date'
-                ? params.date
-                : params.week;
+            value = params.week;
         } else {
             value = assignDefaultDateValue(0);
         }
-        return value ? value + 'T00:00:00+08:00' : null;
+        return dueAtIsoForWeekStart(value);
     }
 
     function renderAssignDateControls(setId, params) {
         var preset = params.datePreset || 'this_week';
-        var html = '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="datePreset" aria-label="Assignment date">' +
+        var html = '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="datePreset" aria-label="Due week">' +
             '<option value="this_week"' + (preset === 'this_week' ? ' selected' : '') + '>This week</option>' +
             '<option value="next_week"' + (preset === 'next_week' ? ' selected' : '') + '>Next week</option>' +
             '<option value="custom"' + (preset === 'custom' ? ' selected' : '') + '>Customize</option>' +
@@ -2120,18 +2120,10 @@
         '<small>' + escapeHtml(assignDateLabel(params)) + '</small>';
         if (preset !== 'custom') return html;
         html += '<div class="assign-custom-date-controls">' +
-            '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="customMode" aria-label="Customize by week or date">' +
-                '<option value="week"' + (params.customMode === 'week' ? ' selected' : '') + '>Week</option>' +
-                '<option value="date"' + (params.customMode === 'date' ? ' selected' : '') + '>Date</option>' +
+            '<small class="assign-week-current-label">This week is ' + escapeHtml(shanghaiCurrentWeekLabel(0)) + '</small>' +
+            '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="week" aria-label="Due week">' +
+                assignWeekOptionsHtml(params.week || assignDefaultDateValue(0)) +
             '</select>';
-        if (params.customMode === 'date') {
-            html += '<input type="date" value="' + escapeHtml(params.date || '') + '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="date" aria-label="Assignment date">';
-        } else {
-            html += '<small class="assign-week-current-label">This week is ' + escapeHtml(shanghaiCurrentWeekLabel(0)) + '</small>' +
-                '<select data-set-id="' + escapeHtml(setId) + '" data-assign-param="week" aria-label="Assignment week">' +
-                    assignWeekOptionsHtml(params.week || assignDefaultDateValue(0)) +
-                '</select>';
-        }
         return html + '</div>';
     }
 
@@ -2184,8 +2176,7 @@
             return;
         }
         params[key] = control.value;
-        if (key === 'datePreset' || key === 'customMode') {
-            if (params.datePreset === 'custom' && !params.customMode) params.customMode = 'week';
+        if (key === 'datePreset') {
             renderAssignParameterTable();
             return;
         }
@@ -2215,7 +2206,7 @@
         }
         table.innerHTML = '<div class="assign-params-row assign-params-header" role="row">' +
             '<div role="columnheader">Task</div>' +
-            '<div role="columnheader">Date</div>' +
+            '<div role="columnheader">Due week</div>' +
             '<div role="columnheader">Passing %</div>' +
             '<div role="columnheader">STAR</div>' +
         '</div>' + sets.map(renderAssignParamRow).join('');
@@ -2253,11 +2244,11 @@
             if (masteryEnabled && Number(mastery) < Number(passing)) {
                 throw new Error(label + ' Mastery % must be at least the Passing %.');
             }
-            var assignedAt = assignScheduledAtIso(params);
-            if (!assignedAt) throw new Error('Choose an assignment week or date for ' + label + '.');
+            var dueAt = assignDueAtIso(params);
+            if (!dueAt) throw new Error('Choose a due week for ' + label + '.');
             var option = {
                 set_id: set.set_id,
-                assigned_at: assignedAt,
+                due_at: dueAt,
                 passing_percentage: passing,
                 mastery_enabled: masteryEnabled
             };
@@ -2287,7 +2278,7 @@
         }).length;
         summary.textContent = [
             sets.length + ' task' + (sets.length === 1 ? '' : 's'),
-            dateLabels.length === 1 ? dateLabels[0] : 'Mixed dates',
+            dateLabels.length === 1 ? dateLabels[0] : 'Mixed due weeks',
             starCount ? starCount + ' STAR' : 'No STAR'
         ].join(' · ');
     }
@@ -2609,11 +2600,22 @@
     }
 
     function assignmentSortDate(assignment) {
-        return assignment.latest_submitted_at || assignment.completed_at || assignment.updated_at || assignment.assigned_at || assignment.due_at || null;
+        return assignment.latest_submitted_at || assignment.completed_at || assignment.updated_at || assignment.due_at || assignment.assigned_at || null;
     }
 
-    function assignmentAssignedDate(assignment) {
-        return assignment && assignment.assigned_at || null;
+    function legacyAssignmentDueDate(assignment) {
+        var source = assignment && (assignment.assigned_at || assignment.created_at);
+        var parts = shanghaiDateParts(source);
+        if (!parts) return null;
+        var mondayOffset = -((shanghaiWeekday(parts) + 6) % 7);
+        var sunday = addShanghaiDays(parts, mondayOffset + 6);
+        return shanghaiDateTime(sunday, 23, 59, 59, 0);
+    }
+
+    function assignmentDueDate(assignment) {
+        var dueDate = assignment && assignment.due_at ? new Date(assignment.due_at) : null;
+        if (dueDate && !isNaN(dueDate.getTime())) return dueDate;
+        return legacyAssignmentDueDate(assignment);
     }
 
     function isSelfStudyMatrixItem(item) {
@@ -2621,7 +2623,7 @@
     }
 
     function matrixFilterDateValue(item) {
-        return isSelfStudyMatrixItem(item) ? null : assignmentAssignedDate(item);
+        return isSelfStudyMatrixItem(item) ? null : assignmentDueDate(item);
     }
 
     function matrixDateValue(item) {
@@ -2717,12 +2719,12 @@
         if (isSelfStudyMatrixItem(item)) {
             return { year: null, week: null, label: 'Self study' };
         }
-        return shanghaiCalendarWeekInfo(assignmentAssignedDate(item));
+        return shanghaiCalendarWeekInfo(assignmentDueDate(item));
     }
 
     function legacyMatrixAssignedBucket(item) {
-        var assigned = assignmentAssignedDate(item);
-        var date = assigned ? new Date(assigned) : null;
+        var source = item && item.assigned_at || assignmentDueDate(item);
+        var date = source ? new Date(source) : null;
         if (!date || isNaN(date.getTime())) return 'unassigned';
         return String(Math.floor(date.getTime() / (5 * 60 * 1000)));
     }
@@ -2990,8 +2992,7 @@
         return '<div class="attempt-detail-list">' +
             '<section class="attempt-detail-row">' +
                 '<div class="attempt-detail-head"><div><strong>Attempt History</strong>' +
-                '<small>' + escapeHtml(sourceLabel) + (assignment.assigned_at ? ' · Assigned: ' + escapeHtml(formatDateTime(assignment.assigned_at)) : '') +
-                (assignment.due_at ? ' · Due: ' + escapeHtml(formatDateTime(assignment.due_at)) : '') + '</small></div>' +
+                '<small>' + escapeHtml(sourceLabel) + (assignmentDueDate(assignment) ? ' · Due: ' + escapeHtml(formatDateTime(assignmentDueDate(assignment))) : '') + '</small></div>' +
                 '<div class="attempt-detail-actions">' + answerRevealBadge(assignment) +
                 '<span>' + escapeHtml(formatPercent(assignment.best_percentage)) + ' best</span></div></div>' +
                 renderLatestAnswerComparison(latestAttempt) +
@@ -3049,7 +3050,7 @@
         var attempts = progressAttemptsForAssignment(item);
         var attemptCount = Math.max(Number(item.attempt_count || 0), attempts.length);
         var best = item.best_percentage == null ? null : Number(item.best_percentage);
-        var dueDate = item.due_at ? new Date(item.due_at) : null;
+        var dueDate = assignmentDueDate(item);
         var overdue = dueDate && !isNaN(dueDate.getTime()) && dueDate < new Date() && status === 'to_do';
         if (overdue) return { label: 'Overdue', css: 'danger', rank: 0 };
         if (status === 'to_do' && attemptCount >= 2) return { label: 'Stuck', css: 'danger', rank: 1 };
@@ -3265,9 +3266,9 @@
             return;
         }
         var cancelableItems = items.filter(isOpenAssignmentItem);
-        var commonAssigned = commonFieldValue(items, 'assigned_at');
-        var assignedWeek = assignmentWeekStartValue(commonAssigned) || assignDefaultDateValue(0);
         var commonDue = commonFieldValue(items, 'due_at');
+        var commonDueSource = commonDue || (items.length === 1 ? assignmentDueDate(items[0]) : null);
+        var dueWeek = assignmentWeekStartValue(commonDueSource) || assignDefaultDateValue(0);
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
         var commonMasteryEnabled = commonFieldValue(items, 'mastery_enabled');
@@ -3284,17 +3285,15 @@
                     '<p>' + escapeHtml(scopeSubtitle) + escapeHtml(items.length) + ' selected assignment' + (items.length === 1 ? '' : 's') + '.</p>' +
                 '</div>' +
                 '<form class="assignment-edit-form">' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_assigned"><span>Assign week</span></label>' +
-                    '<select name="assigned_week" aria-label="Assign week">' + assignmentEditWeekOptionsHtml(assignedWeek) + '</select>' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_due"' + (commonDue ? ' checked' : '') + '><span>Due date</span></label>' +
-                    '<input type="date" name="due_at" value="' + escapeHtml(formatDateInputValue(commonDue)) + '">' +
+                    '<label class="assignment-edit-check"><input type="checkbox" name="change_due"><span>Due week</span></label>' +
+                    '<select name="due_week" aria-label="Due week">' + assignmentEditWeekOptionsHtml(dueWeek) + '</select>' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_passing"' + (commonPassing !== '' ? ' checked' : '') + '><span>Passing %</span></label>' +
                     '<input type="number" name="passing_percentage" min="0" max="100" step="0.01" placeholder="' + (commonPassing === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonPassing) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
                     '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>Earn STAR</span></label>' +
                     '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
-                    '<p class="assignment-edit-note">Assign week changes which Wxx column and week filter contains the selected work. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
+                    '<p class="assignment-edit-note">Due week controls the Wxx column, student This Week / Upcoming display, and the Sunday 23:59 deadline. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
                     '<div class="dialog-actions">' +
                         '<button class="outline-button" type="button" data-cancel-edit>Cancel</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
@@ -3336,11 +3335,8 @@
             var payload = {
                 assignment_ids: items.map(function(item) { return item.assignment_id; })
             };
-            if (form.elements.change_assigned.checked) {
-                payload.assigned_at = form.elements.assigned_week.value ? form.elements.assigned_week.value + 'T00:00:00+08:00' : null;
-            }
             if (form.elements.change_due.checked) {
-                payload.due_at = form.elements.due_at.value ? form.elements.due_at.value + 'T23:59:59+08:00' : null;
+                payload.due_at = dueAtIsoForWeekStart(form.elements.due_week.value);
             }
             if (form.elements.change_passing.checked) {
                 payload.passing_percentage = form.elements.passing_percentage.value;
@@ -3351,8 +3347,7 @@
             if (form.elements.change_mastery_enabled.checked) {
                 payload.mastery_enabled = form.elements.mastery_enabled.checked;
             }
-            if (!Object.prototype.hasOwnProperty.call(payload, 'assigned_at') &&
-                !Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
+            if (!Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'passing_percentage') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'mastery_percentage') &&
                 !Object.prototype.hasOwnProperty.call(payload, 'mastery_enabled')) {
@@ -3566,7 +3561,7 @@
             { value: 'last_week', label: (phoneLayout ? 'Last ' : 'Last week - ') + shanghaiCurrentWeekLabel(-7) },
             { value: 'self_study', label: 'Self study' }
         ];
-        return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Date">' +
+        return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Due week">' +
             options.map(function(option) {
                 return '<option value="' + escapeHtml(option.value) + '"' + (option.value === value ? ' selected' : '') + '>' +
                     escapeHtml(option.label) + '</option>';

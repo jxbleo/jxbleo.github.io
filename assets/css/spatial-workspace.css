@@ -239,6 +239,19 @@
     background: linear-gradient(90deg, #ef8a91, #c34452);
 }
 
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-label,
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-copy strong {
+    color: #376f9f;
+}
+
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-track {
+    background: rgba(63, 123, 174, 0.12);
+}
+
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-track i {
+    background: linear-gradient(90deg, #82b9e5, #3f7fb5);
+}
+
 .liquid-glass-dashboard .weekly-progress-row.is-complete .weekly-progress-copy strong {
     color: #187263;
 }

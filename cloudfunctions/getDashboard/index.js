@@ -126,6 +126,36 @@ function dateValue(value) {
   return Number.isFinite(time) ? time : 0;
 }
 
+function shanghaiDateParts(value) {
+  const date = value instanceof Date ? value : new Date(value || 0);
+  if (!Number.isFinite(date.getTime())) return null;
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const output = {};
+  parts.forEach((part) => {
+    if (part.type !== "literal") output[part.type] = Number(part.value);
+  });
+  return output.year && output.month && output.day ? output : null;
+}
+
+function dueWeekEnd(value) {
+  const parts = shanghaiDateParts(value);
+  if (!parts) return null;
+  const day = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+  const mondayIndex = (day.getUTCDay() + 6) % 7;
+  return new Date(Date.UTC(parts.year, parts.month - 1, parts.day + (6 - mondayIndex), 15, 59, 59));
+}
+
+function effectiveAssignmentDueAt(assignment) {
+  const explicit = assignment && assignment.due_at ? new Date(assignment.due_at) : null;
+  if (explicit && Number.isFinite(explicit.getTime())) return explicit;
+  return dueWeekEnd(assignment && (assignment.assigned_at || assignment.created_at));
+}
+
 function clientInstanceId(event) {
   return String(event && event._client_instance_id || "").trim().slice(0, 128);
 }
@@ -719,10 +749,11 @@ exports.main = async (event = {}) => {
     if (action === "getLatestAttemptForSet") return await getLatestAttemptForSet(student, event);
     if (action === "claimStar") return await claimStar(student, event);
 
-    const assignments = await getAll("assignments", {
+    const assignments = (await getAll("assignments", {
       where: { student_uid: student.auth_uid },
-      orderBy: { field: "assigned_at", direction: "desc" },
-    });
+    })).sort((left, right) =>
+      dateValue(effectiveAssignmentDueAt(right)) - dateValue(effectiveAssignmentDueAt(left))
+    );
     const attempts = await getAll("attempts", {
       where: { student_uid: student.auth_uid },
     });
@@ -867,11 +898,13 @@ exports.main = async (event = {}) => {
       }
       const teacherReplies = (teacherRepliesByAssignment.get(String(assignmentId)) || [])
         .map((item) => disputeReplyView(item, set));
+      const dueAt = effectiveAssignmentDueAt(assignment);
       assignmentViews.push({
         assignment_id: assignmentId,
         status,
         assigned_at: assignment.assigned_at || null,
-        due_at: assignment.due_at || null,
+        due_at: dueAt,
+        created_at: assignment.created_at || null,
         completed_at: completedAt,
         mastered_at: masteredAt,
         updated_at: assignment.updated_at || (computedLatestAttempt && computedLatestAttempt.submitted_at) || null,

@@ -295,8 +295,11 @@ The separate `teacher.html` interface has four capsules:
 The teacher can choose a visible set or filter by column/keyword to assign
 multiple sets, search students, filter by `class_group`, select one or multiple
 students, and set assignment parameters. Assignment parameters are configured
-per selected task row and include a planned assignment date/week stored as
-`assigned_at`, a passing percentage, and an explicit `Earn STAR` choice. New
+per selected task row and require an explicit due week stored as `due_at` at
+that Shanghai-time week's Sunday 23:59:59, plus a passing percentage and an
+explicit `Earn STAR` choice. `created_at` remains the assignment-creation audit
+time. `assigned_at` is a deprecated compatibility mirror and must not drive new
+week grouping or reminder behavior. New
 assignments do not earn STAR by default; only when `Earn STAR` is selected for
 that task row is `mastery_percentage` required and used for future
 mastery/STAR upgrades.
@@ -315,8 +318,9 @@ and preserves the old one.
 
 Teachers can edit selected assignment records after assignment by explicit
 `assignment_id` selections. This is assignment-level editing, not a separate
-class-standard layer. Editing may change `due_at`, `passing_percentage`, and
-`mastery_percentage`.
+class-standard layer. Editing may change the required due week (`due_at`),
+`passing_percentage`, and `mastery_percentage`. Teacher View Wxx grouping and
+week filters use `due_at`.
 
 Teachers can soft-cancel selected open assignments. Cancellation sets
 `status: "cancelled"` plus audit fields such as `cancelled_at` and
@@ -696,6 +700,13 @@ Student dashboard navigation:
 
 - The lower main navigation exposes only `Library`.
 - Assignments and finished work live in the top-right notification bell.
+- Student assignment timing uses required `due_at` weeks. `OVERDUE` contains
+  unfinished work past its due week. `THIS WEEK` contains work due in the
+  current Shanghai-time week. When this week has no work or all its work is
+  finished, next week's work replaces that row as `UPCOMING`; otherwise it
+  remains visible only in the bell's Upcoming section. Upcoming work never
+  contributes to the red bell count, which still includes actionable
+  overdue/current-week work and unseen teacher replies.
 - My Words opens in an independent modal from the notebook icon immediately to
   the right of the notification bell. Closing and reopening that modal restores
   its previous internal scroll position.
