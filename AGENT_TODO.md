@@ -68,6 +68,11 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-15
 
+- Added My Words-style browser pronunciation to Vocabulary Learn cards and
+  Spell rows. The Spell control speaks without revealing/filling the answer and
+  uses a neutral accessible label. Static syntax, structure, desktop, and phone
+  checks passed. No CloudBase deployment or content import is required; publish
+  the static site.
 - Made the Teacher View matrix responsive and user-resizable with `−`, `Fit`,
   and `+`. Phone portrait now fits the normal six-to-seven-task overview using
   compact task IDs and score cells, while desktop keeps comfortable columns;

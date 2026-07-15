@@ -710,6 +710,50 @@
             line-height: 1.05;
         }
 
+        .word-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .vocabulary-speak {
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            color: #13766d;
+            background: #eaf6f2;
+            cursor: pointer;
+        }
+
+        .vocabulary-speak svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .vocabulary-speak:hover {
+            background: #d9eee7;
+        }
+
+        .vocabulary-speak:active {
+            transform: scale(0.92);
+        }
+
+        .vocabulary-speak:focus-visible {
+            outline: 3px solid rgba(19, 118, 109, 0.25);
+            outline-offset: 2px;
+        }
+
         .word-card-emoji {
             font-size: 1.55rem;
             line-height: 1;
@@ -1153,6 +1197,14 @@
             gap: 8px;
             margin-bottom: 12px;
             flex-wrap: wrap;
+        }
+
+        .dictation-spell-head .vocabulary-speak {
+            margin-left: 2px;
+        }
+
+        .dictation-spell-head .part-of-speech {
+            margin-left: 0;
         }
 
         .dictation-number {
@@ -1698,6 +1750,18 @@
             th, td {
                 padding: 12px 10px;
                 font-size: 0.9rem;
+            }
+
+            .dictation-spell-head {
+                gap: 4px;
+            }
+
+            .dictation-spell-head .part-of-speech {
+                padding: 3px 5px;
+            }
+
+            .dictation-spell-head .vocabulary-speak {
+                margin-left: 0;
             }
 
             .group-head,
@@ -2808,6 +2872,34 @@
             return min + ':' + String(sec).padStart(2, '0');
         }
 
+        function pronunciationButtonHtml(word, showWordInLabel) {
+            var spokenWord = String(word || '').trim();
+            if (!spokenWord) return '';
+            var label = showWordInLabel ? 'Pronounce ' + spokenWord : 'Play pronunciation';
+            return '<button class="vocabulary-speak" type="button" data-vocabulary-speak="' + escapeHtml(spokenWord) + '" aria-label="' + escapeHtml(label) + '">' +
+                '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                    '<path d="M5 10v4h3l4 3V7l-4 3H5Z"></path>' +
+                    '<path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path>' +
+                '</svg>' +
+            '</button>';
+        }
+
+        function speakVocabularyWord(value) {
+            var word = String(value || '').trim();
+            if (!word || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+            window.speechSynthesis.cancel();
+            var utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-GB';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleVocabularyPronunciation(event) {
+            var button = event.target.closest('[data-vocabulary-speak]');
+            if (!button || !event.currentTarget.contains(button)) return;
+            event.preventDefault();
+            speakVocabularyWord(button.getAttribute('data-vocabulary-speak'));
+        }
+
         function renderWords(words) {
             var root = document.getElementById('word-list-grid');
             if (!words.length) {
@@ -2817,8 +2909,9 @@
             root.innerHTML = words.map(function(word) {
                 return '<article class="word-card">' +
                     '<div class="word-card-top">' +
-                        '<div>' +
+                        '<div class="word-card-title">' +
                             '<h3 class="word-card-word">' + escapeHtml(word.word) + '</h3>' +
+                            pronunciationButtonHtml(word.word, true) +
                         '</div>' +
                         '<div class="word-card-emoji">' + escapeHtml(word.emoji) + '</div>' +
                     '</div>' +
@@ -3473,6 +3566,7 @@
                             '<div class="dictation-spell-head">' +
                                 '<span class="dictation-number">' + word.number + '</span>' +
                                 '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span>' +
+                                pronunciationButtonHtml(word.word, false) +
                             '</div>' +
                             '<div class="dictation-input" style="--letter-count:' + word.word.length + '" data-answer="' + word.word + '">' + letters + '</div>' +
                             '<div class="reveal"></div>' +
@@ -4274,6 +4368,8 @@
                 if (action === 'redo-practice') clearGroupAnswers(groupId);
             });
 
+            document.getElementById('word-list-grid').addEventListener('click', handleVocabularyPronunciation);
+            document.getElementById('dictation-list').addEventListener('click', handleVocabularyPronunciation);
             document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
             document.getElementById('start-test-btn').addEventListener('click', requestStartTest);

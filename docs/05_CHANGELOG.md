@@ -1,5 +1,9 @@
 # Changelog
 
+- Added the My Words-style browser pronunciation button to every Vocabulary
+  Learn word card and Spell row. Both use local `en-GB` speech synthesis; Spell
+  playback does not reveal or fill the hidden answer, and no backend or audio
+  asset is required.
 - Replaced the oversized student My Words surface with the approved compact,
   vertically centered modal. Search and Add now share matching top-right icon
   controls, Close sits outside below the card, manual entry is one Enter-to-save
