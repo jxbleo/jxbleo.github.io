@@ -29,6 +29,9 @@
 ## Low Priority
 
 - Improve consistency of modals across practice pages.
+- Decide whether browser-generated pronunciation is sufficient long term;
+  device voices vary, and a fixed recorded accent would require an explicit
+  audio-asset or trusted-provider plan.
 - Add clearer teacher-side activity/read state.
 - Add better empty/developing states for future sections.
 - Reduce duplicated inline practice-page logic over time.

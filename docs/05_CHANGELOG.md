@@ -1,5 +1,12 @@
 # Changelog
 
+> Product-level and architecture-level changes only.
+> Do not record every tiny CSS tweak or variable rename here.
+
+## 2026-07-15
+
+### Changed
+
 - Added the My Words-style browser pronunciation button to every Vocabulary
   Learn word card and Spell row. Both use local `en-GB` speech synthesis; Spell
   playback does not reveal or fill the hidden answer, and no backend or audio
@@ -19,6 +26,35 @@
   motivation, conditionally shows a muted-red overdue share, always shows
   China-time weekly completion from teacher-planned assignments, excludes
   self-study STAR records, and opens scope-filtered Assignment lists.
+- Unified Teacher page-level modal behavior so notifications, attempt details,
+  Student lookup/create, Review/Argue, assignment pickers/editors, matrix
+  details, and practice-entry confirmation stay centered in the current
+  viewport, use internal scrolling, and return to their parent surface on
+  Close, Escape, or backdrop dismissal.
+- Simplified Teacher Student lookup to direct row selection with an in-place
+  search control, corrected the student-picker overlay stacking, kept Teacher
+  navigation above workspace content, and normalized the raised-hand icon and
+  header-logo sizing.
+- Added practice-entry confirmation before Teacher View matrix task-header
+  navigation and made the matrix responsive/user-resizable with `−`, `Fit`, and
+  `+`; phone portrait can fit the normal six-to-seven-task overview while wider
+  modes retain horizontal scrolling and full labels.
+- Fixed Student assignment modal return/focus behavior when practice-entry
+  confirmation is dismissed, while confirmed navigation still opens the
+  selected assignment.
+- Added `my-words-modal-preview.html` as an isolated, unlinked static design
+  reference for the compact My Words modal. It contains sample-only data and
+  does not call CloudBase.
+
+Audit scope: commits `1f3fbec` through `4fcaa3d`, plus the static My Words
+preview artifact committed with this documentation pass. All changes are
+static frontend/documentation changes; no CloudBase function deployment or
+data import is required.
+
+## 2026-07-14
+
+### Changed
+
 - Removed the visible `STUDENT ENTRY` eyebrow from the login form while
   retaining its screen-reader heading and all existing authentication controls.
 - Added an explicit rounded clip to the Teacher View matrix scroll viewport so
@@ -36,6 +72,25 @@
   making sticky first-column cells fill the shared grid track and applying the
   same compact padding, font size, and row height to `Student`, `DUE AT`, and
   Wxx cells below the 760px breakpoint.
+- Applied the shared Liquid Glass presentation shell to login, public Library,
+  Student Dashboard, and Teacher, then added spatial workspace layouts for the
+  authenticated Student and Teacher surfaces without changing backend state or
+  practice-runtime designs.
+- Tightened desktop/mobile login and Dashboard spacing, kept the login page's
+  randomized motivational quote, and refined Student notification, assignment,
+  progress-loading, and practice-entry interactions.
+- Refined Teacher View layout, Due/Wxx alignment, default View restoration, and
+  grouped notification behavior while preserving the existing assignment,
+  attempt, and unread-state rules.
+
+Audit scope: commits `9f0b9b6` through `bd5c85d`. These changes are static
+frontend/documentation updates only; no CloudBase deployment or data import is
+required.
+
+## 2026-07-13
+
+### Changed
+
 - Fixed BBC post-submit result colors so correct answers remain green and wrong
   answers use the Vocabulary-style light red; the yellow MC lock reminder no
   longer overrides known correct/wrong feedback.
@@ -87,37 +142,6 @@
   Due/Wxx cell opens one bulk parameter editor for the current class/visible
   column, covering assign week, due date, passing, mastery, and Earn STAR across
   all represented students; task-header clicks open the task itself.
-- Added `Read all` to the teacher attempt-notification bell. It persists a
-  teacher-level cutoff so all current threads become read while later attempts
-  still surface as unread.
-- Added `Assign week` to Teacher View assignment management. Teachers can now
-  correct selected assignments' `assigned_at` value and move them directly to
-  the intended Wxx matrix week without recreating the assignment.
-- Changed Teacher View matrix student-name clicks to open the same selectable
-  four-week completion board used on the student Dashboard, including weekly
-  and daily details for assigned work and self-study.
-- Enlarged word-bank and question typography in both static and
-  browser-generated Vocabulary Practice worksheets, with adjusted line spacing
-  and table row heights for print legibility.
-- Moved the student My Words notebook icon to the right of the bell, matched the
-  student bell to the teacher SVG design, and changed My Words into an
-  independent modal that restores its internal scroll position after closing.
-- Removed the lower student Assignments and My Words navigation entries. The
-  lower capsule now exposes only Library, assignments remain in the top-right
-  bell, and a matching notebook icon beside the bell opens My Words.
-- Grouped teacher bell attempt notifications by student assignment/self-study
-  thread. Each entry now opens the full attempt history and stays red until the
-  teacher opens that entry; opening the bell alone no longer clears unread
-  state, and a later attempt makes the thread unread again.
-- Expanded My Words selection across all current student learning and attempt-
-  review pages, allowed single-letter vocabulary such as `a` and `I`, and
-  allowed selection from disabled answer-feedback buttons while keeping active
-  controls and teacher-only surfaces protected.
-- Rebuilt `studentVocabulary` as a bundled deployment artifact so the CloudBase
-  function can be redeployed independently without resolving runtime packages.
-
-> Product-level and architecture-level changes only.
-> Do not record every tiny CSS tweak or variable rename here.
 
 ## 2026-07-12
 

@@ -64,19 +64,31 @@ Important pages:
 Shared frontend assets:
 
 - `assets/css/app.css`
+- `assets/css/liquid-glass-shell.css`
+- `assets/css/spatial-workspace.css`
 - `assets/js/config.public.js`
 - `assets/js/cloudbase-client.js`
 - `assets/js/auth.js`
 - `assets/js/dashboard.js`
+- `assets/js/liquid-glass-shell.js`
 - `assets/js/teacher.js`
 - `assets/js/practice-session.js`
 - `assets/js/personal-vocab.js`
+
+The shared Liquid Glass layer is presentation-only on login and public Library.
+The authenticated Student Dashboard and Teacher desk additionally use the
+spatial workspace layer for their current header, navigation, matrix, progress,
+and page-level modal layouts. These layers remain ordinary static CSS and
+vanilla JavaScript; they do not introduce a frontend framework or move trusted
+state out of CloudBase functions.
 
 Current frontend philosophy:
 
 - Reuse shared practice pages.
 - Do not create a permanent standalone HTML page for each exercise.
 - Temporary classroom pages may remain standalone.
+- Keep isolated design previews, such as `my-words-modal-preview.html`, clearly
+  unlinked from production navigation and free of real student/backend data.
 - Preserve cache query strings on changed scripts.
 
 ## 5. Backend Structure
