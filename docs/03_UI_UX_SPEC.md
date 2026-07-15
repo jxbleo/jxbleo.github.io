@@ -321,9 +321,10 @@ as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The top-right circular student ID icon opens a standalone Student
 lookup modal. That modal contains the student search/selection surface,
 selected student info and progress, and an internal `+` action for creating a
-student. On desktop the lookup card is approximately three-quarters of its
-former width and height, and its only close action is a centered `Close` capsule
-outside and immediately below the card. The picker initially shows `Choose`
+student. The Student lookup, raised-hand Argue, and notification surfaces share
+the notification card's width, viewport-centered position, height cap, and
+centered external `Close` capsule immediately below the card. The picker
+initially shows `Choose`
 beside a magnifying-glass search action. Activating search replaces `Choose` in
 place with the live search field; matching students update immediately and a
 student row is selected directly without a separate Confirm action. The student
@@ -334,8 +335,8 @@ The create-student modal uses a vertical field stack and, after success, shows
 a standalone checkmark confirmation dialog with the new Login ID and initial
 password. Closing or cancelling Create student restores its parent Student
 lookup modal instead of dismissing both layers. Review requests open from a
-separate top-right question-mark icon
-button with a pending-count badge and display in a standalone modal.
+separate top-right raised-hand button with a pending-count badge and display in
+the shared-size standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
 top-right Review entry.
@@ -360,10 +361,13 @@ assigned task or self study. The attempt detail dialog must use the same
 detail layout as a `View` matrix cell, showing every attempt for the relevant
 assignment or self-study thread at a glance. When opened from a specific
 notification attempt, the dialog highlights that attempt and automatically
-scrolls to its card. The attempt detail dialog must keep a visible `Close`
-action fixed at the bottom of the modal while the attempt history scrolls above
-it. The detail modal should render outside the notification list's scroll body
-so the first open uses the same full dialog height as later opens.
+scrolls to its card. The attempt detail dialog exactly covers the notification
+card footprint and uses its same centered external `Close` position. Closing
+the detail layer by that action, Escape, or its backdrop restores the unchanged
+notification list instead of dismissing the notification surface. The detail
+modal renders outside the notification list's scroll body, and attempt history
+scrolls inside the fixed-size detail card. The notification header keeps its
+double-check `Read all` control in a compact toolbar without a tall empty strip.
 
 The teacher page defaults to `View` on entry, including when a stale
 `?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains

@@ -416,12 +416,20 @@ Check:
   later attempt becomes unread
 - Teacher notification modal has no `NOTIFICATIONS` / `Student attempts` text;
   the left double-check icon exposes a `Read all` tooltip and accessible name,
-  spins while saving, and briefly turns green on success. The notification card
+  spins while saving, briefly turns green on success, and sits in a compact
+  toolbar without a tall empty header strip. The notification card
   uses at most about three-quarters of the viewport height with internal
   scrolling; it has no top-right `x`, and its centered `Close` capsule sits
   outside immediately below the card on desktop and mobile. Opening the bell at
   any page scroll position places the card in the current viewport immediately;
   no blank overlay or downward page scroll is required
+- Opening a task from the teacher notification list replaces the list with an
+  attempt-detail card at the exact same width, height, centered position, and
+  external `Close` position. Closing by `Close`, Escape, or detail backdrop
+  restores the notification list instead of closing the bell surface
+- The top-right raised-hand Argue dialog and Student lookup dialog use the same
+  card bounds, centered position, internal scrolling, and external `Close`
+  capsule design as the teacher notification dialog at desktop and phone widths
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
