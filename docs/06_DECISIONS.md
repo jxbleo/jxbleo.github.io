@@ -30,6 +30,41 @@ Review condition:
 Revisit only if the static pages become unmaintainable or a framework migration
 is separately approved.
 
+## 2026-07-15: Preserve Teacher Context With History State and a Redacted Local Snapshot
+
+Decision:
+
+Keep practice navigation as normal same-origin page navigation, use bfcache plus
+`history.state` for exact contextual Back, and use a tab-scoped recovery copy
+when a safe fallback URL must reload Teacher. On private teacher devices, keep a
+maximum-24-hour IndexedDB snapshot of the Teacher workspace with attempts and
+answer material removed, then revalidate automatically against CloudBase.
+
+Reason:
+
+Returning from a Teacher View preview should feel spatially continuous even
+when the browser evicts bfcache, while cold Teacher progress loads should not
+wait for every unrelated Students, Review, notification, and Library request.
+The snapshot improves first paint without making browser storage authoritative.
+
+Trade-offs:
+
+- Good: normal Back can restore the same filters, expanded groups, and nested
+  scroll positions without converting the site to a single-page framework.
+- Good: a redacted cached matrix appears quickly and live progress replaces it
+  automatically without moving the teacher's current view.
+- Good: no new library, framework, backend field, or CloudBase deployment.
+- Cost: IndexedDB lifecycle, cache schema versioning, anchor restoration, and
+  background refresh behavior require explicit browser tests.
+- Cost: a private device may briefly show a stale progress summary until the
+  authoritative refresh finishes.
+
+Review condition:
+
+Revisit if teacher devices become shared, if multiple teachers share one Login
+ID, if the cached payload grows materially, or if CloudBase adds a supported
+server revision/conditional-fetch mechanism.
+
 ## 2026-07-15: Use Browser Speech for Lightweight Vocabulary Pronunciation
 
 Decision:

@@ -860,6 +860,25 @@ Earn STAR 设置应用到该班/该范围内的所有对应 assignment，避免�
 - 不调用学生 reveal answer
 - 不锁学生 mastery
 
+### 10.5 应用内 Back、教师 View 恢复与本地快照
+
+练习页面中的应用内 `Back` 与 `Home` 是两个不同动作。`Back` 应返回进入
+练习前的来源现场；`Home` 才直接前往学生 Dashboard 或 Teacher Library。
+IELTS Reading / Listening 的 Back 保留在考试页顶部，其他练习页沿用各自
+已有位置，不把这项规则误解为要求用户点击浏览器工具栏的后退按钮。
+
+老师从 View 矩阵任务列进入 teacher preview 后，应用内 Back 必须恢复同一
+View 历史项，包括 Class / Column / Date 筛选、矩阵尺寸、By student / By
+task 模式、展开分组、页面纵向位置及矩阵内部横向/纵向位置。进入练习前的
+确认弹窗不属于返回现场，不得被恢复。正常路径优先复用浏览器历史和
+bfcache；bfcache 不可用时，浏览器历史状态和同标签页恢复快照负责重建现场。
+
+教师私人设备可使用账号隔离的 IndexedDB 快照即时显示上一次教师工作区
+摘要，但 CloudBase 仍是唯一事实来源。缓存不得包含密码、认证令牌、正确
+答案、解析或 grading keys；登出时必须删除该账号的教师缓存。教师停留在
+View 时系统定期后台检查最新作业、attempt 和进度，自动更新界面，同时保留
+筛选、展开分组、页面位置和矩阵可见列锚点。
+
 ## 11. 目前已确认的后端问题和架构待办
 
 这些是当前最适合早期修正的地方。

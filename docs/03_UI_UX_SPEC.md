@@ -606,6 +606,18 @@ It should include:
   deleting a student account, and account creation. Deleting a student account
   should remove that student from teacher-visible lists and View progress after
   confirmation.
+- opening a practice from a View task header records the current View context.
+  The practice page's application Back returns to the same Class/Column/Date
+  filters, matrix density, By student/By task mode, expanded groups, document
+  position, and matrix horizontal/vertical position. The entry confirmation
+  dialog and matrix/detail modals are not restored. IELTS Reading and Listening
+  keep their application Back controls in the exam bar rather than moving them
+  to the lower-left practice navigation.
+- a private-device, answer-stripped teacher snapshot may paint the prior matrix
+  while CloudBase refreshes in the background. New progress updates
+  automatically without resetting filters, collapsing groups, moving the page,
+  or changing the first visible matrix task. Cached UI never overrides live
+  CloudBase progress.
 
 ### Library
 

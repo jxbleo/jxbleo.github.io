@@ -11,7 +11,8 @@ The project uses several data layers:
 - Private generated import files: `.cloudbase-private/import/`
 - CloudBase Authentication users
 - CloudBase database collections
-- Browser localStorage for non-authoritative UI state
+- Browser history/session/local storage and redacted IndexedDB snapshots for
+  non-authoritative UI state
 
 Only CloudBase cloud functions should read or write private collections.
 
@@ -462,7 +463,7 @@ Rules:
 - Forgot schedules one day, A little schedules three days, and Know advances
   through 7, 14, and 30 days. Three consecutive Know responses mark Mastered.
 
-## 13. Browser Local Storage
+## 13. Browser Storage
 
 LocalStorage may hold:
 
@@ -471,6 +472,22 @@ LocalStorage may hold:
 - page preferences
 - highlights
 - identity hints
+
+Teacher workspace navigation state may also use:
+
+- `history.state` for the current history entry's View/Library filters,
+  expanded groups, matrix density, stable scroll anchors, and scroll offsets
+- tab-scoped `sessionStorage` as a validated Back fallback when the original
+  history entry cannot be reused
+- account-scoped IndexedDB for a maximum-24-hour teacher workspace snapshot on
+  the owner's private device
+
+The IndexedDB snapshot may contain student display profiles, public set
+metadata, assignment summaries, and progress summary fields. Nested attempts,
+submitted answers, correct answers, explanations, grading keys, passwords, and
+auth tokens must not be cached there. Explicit teacher logout deletes the
+account snapshot. Cache hydration is presentation-only and must immediately
+revalidate against CloudBase.
 
 It must not be the source of truth for:
 
