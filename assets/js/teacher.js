@@ -4486,16 +4486,14 @@
         });
         if (!attempt) return '';
         var detailItem = notificationDetailItemForAttempt(attempt);
-        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal" data-notification-attempt-close="backdrop">' +
-            '<div class="progress-matrix-modal-shell">' +
-                '<section class="progress-matrix-modal" role="dialog" aria-modal="true" aria-label="Attempt details">' +
+        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal teacher-utility-modal" data-notification-attempt-close="backdrop">' +
+            '<div class="progress-matrix-modal-shell notification-attempt-shell teacher-utility-shell">' +
+                '<section class="progress-matrix-modal notification-attempt-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Attempt details">' +
                     '<div class="progress-matrix-modal-scroll">' +
                         renderMatrixCellDetail(detailItem) +
                     '</div>' +
-                    '<div class="notification-attempt-actions">' +
-                        '<button class="progress-matrix-modal-close" type="button" data-notification-attempt-close="button" aria-label="Close">Close</button>' +
-                    '</div>' +
                 '</section>' +
+                '<button class="progress-matrix-modal-close notification-attempt-external-close" type="button" data-notification-attempt-close="button" aria-label="Close attempt details">Close</button>' +
             '</div>' +
         '</div>';
     }
@@ -4597,6 +4595,11 @@
             readAllButton.classList.toggle('is-success', state.activityReadAllSuccess);
             readAllButton.setAttribute('aria-busy', state.activityReadAllPending ? 'true' : 'false');
             readAllButton.title = state.activityReadAllPending ? 'Marking all as read...' : 'Read all';
+        }
+        var updatesDialog = updatesPanel.querySelector('.teacher-updates-dialog');
+        if (updatesDialog) {
+            if (state.notificationAttemptId) updatesDialog.setAttribute('aria-hidden', 'true');
+            else updatesDialog.removeAttribute('aria-hidden');
         }
         if (!state.updatesOpen) {
             if (notificationAttemptRoot) notificationAttemptRoot.innerHTML = '';
@@ -5501,6 +5504,22 @@
             var assignSuccessPanel = document.getElementById('assign-success-panel');
             if (assignSuccessPanel && !assignSuccessPanel.hidden) {
                 setAssignSuccessModal(false);
+                return;
+            }
+            if (state.updatesOpen && state.notificationAttemptId) {
+                state.notificationAttemptId = '';
+                state.targetMatrixAttemptId = '';
+                state.selectedMatrixReviewAttemptId = '';
+                renderUpdatesPanel();
+                return;
+            }
+            if (state.updatesOpen) {
+                state.updatesOpen = false;
+                renderUpdatesPanel();
+                return;
+            }
+            if (state.reviewOpen) {
+                setReviewPanel(false);
                 return;
             }
             if (state.studentLookupOpen) {

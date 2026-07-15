@@ -2809,8 +2809,8 @@ body:not(.teacher-page) .tab-button.active {
     align-items: start;
     justify-content: flex-start;
     gap: 14px;
-    margin: -18px -18px 14px;
-    padding: 18px;
+    margin: -18px -18px 10px;
+    padding: 10px 14px;
     border-bottom: 1px solid rgba(124,58,237,0.12);
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(14px);
@@ -2967,6 +2967,24 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-lookup-external-close {
     justify-self: center;
+}
+.teacher-utility-modal {
+    place-items: center;
+    padding: 20px 16px;
+}
+.teacher-utility-shell {
+    display: grid;
+    width: min(760px, 100%);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    gap: 12px;
+}
+.teacher-utility-dialog {
+    width: 100%;
+    height: min(760px, 75vh, calc(100vh - 92px));
+    height: min(760px, 75dvh, calc(100dvh - 92px));
+    max-height: min(760px, 75vh, calc(100vh - 92px));
+    max-height: min(760px, 75dvh, calc(100dvh - 92px));
 }
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
@@ -3922,10 +3940,17 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(22, 30, 38, 0.28);
     backdrop-filter: blur(7px);
 }
+.notification-attempt-modal {
+    background: rgba(36, 50, 58, 0.18);
+    backdrop-filter: blur(7px) saturate(115%);
+}
 .progress-matrix-modal-shell {
     display: grid;
     gap: 12px;
     width: min(980px, 100%);
+}
+.notification-attempt-modal .notification-attempt-shell {
+    width: min(760px, 100%);
 }
 .progress-matrix-modal {
     display: flex;
@@ -3951,6 +3976,12 @@ body:not(.teacher-page) .tab-button.active {
     padding: 0;
     border: 0;
     background: transparent;
+}
+.notification-attempt-dialog {
+    height: min(760px, 75vh, calc(100vh - 92px));
+    height: min(760px, 75dvh, calc(100dvh - 92px));
+    max-height: min(760px, 75vh, calc(100vh - 92px));
+    max-height: min(760px, 75dvh, calc(100dvh - 92px));
 }
 .matrix-student-modal {
     display: grid;
@@ -7194,6 +7225,26 @@ body:not(.teacher-page) .tab-button.active {
         max-height: calc(100vh - 82px);
         padding: 16px;
         border-radius: 18px;
+    }
+    .teacher-utility-modal,
+    .notification-attempt-modal {
+        place-items: center;
+        padding: 20px 16px;
+    }
+    .teacher-utility-shell,
+    .notification-attempt-modal .teacher-utility-shell {
+        width: min(760px, 100%);
+        max-height: calc(100vh - 40px);
+        max-height: calc(100dvh - 40px);
+        gap: 12px;
+    }
+    .teacher-utility-dialog,
+    .notification-attempt-modal .notification-attempt-dialog {
+        height: min(760px, 75vh, calc(100vh - 92px));
+        height: min(760px, 75dvh, calc(100dvh - 92px));
+        max-height: min(760px, 75vh, calc(100vh - 92px));
+        max-height: min(760px, 75dvh, calc(100dvh - 92px));
+        border-radius: 22px;
     }
     .matrix-modal-actions,
     .notification-attempt-actions {
