@@ -104,8 +104,13 @@ Practice navigation checks:
   assignments reads `No assignments this week`, and a fully completed week
   reads `All done`
 - clicking a populated `OVERDUE` or `THIS WEEK` row opens the existing
-  Assignments dialog filtered to that scope; keyboard activation works, while
-  an empty or visitor weekly row is disabled
+  Assignments dialog filtered to that scope; scrolling the dialog does not move
+  the Dashboard behind it, and closing by button, backdrop, or Escape restores
+  the exact original page position
+- clicking or keyboard-activating an empty student `THIS WEEK` row shows one
+  centered thumbs-up confirmation that removes itself without opening the
+  Assignments dialog; reduced motion uses a short cross-fade, while the visitor
+  weekly row remains disabled
 - reduced motion shows final progress values without the reveal animation, and
   increased contrast/reduced transparency keep both tracks and labels legible
 - opening a task from Dashboard Assignments appends a safe `return` target and
