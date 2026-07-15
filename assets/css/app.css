@@ -3613,7 +3613,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-title {
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
@@ -3676,6 +3676,45 @@ body:not(.teacher-page) .tab-button.active {
 .matrix-date-bound input {
     width: 142px;
 }
+.matrix-density-controls {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid rgba(124,58,237,0.14);
+    border-radius: 11px;
+    background: rgba(255,255,255,0.82);
+    box-shadow: 0 6px 16px rgba(83,45,145,0.06);
+}
+.matrix-density-button,
+.matrix-density-fit-button {
+    display: inline-grid;
+    place-items: center;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 8px;
+    color: rgba(35,48,42,0.72);
+    background: transparent;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+    transition: transform 100ms ease-out, color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+.matrix-density-button { font-size: 1rem; }
+.matrix-density-button:active,
+.matrix-density-fit-button:active { transform: scale(0.94); }
+.matrix-density-fit-button.active {
+    color: #fff;
+    background: #2563eb;
+    box-shadow: 0 5px 12px rgba(37,99,235,0.22);
+}
+.matrix-density-button:disabled {
+    cursor: default;
+    opacity: 0.28;
+}
 .progress-matrix-scroll {
     width: 100%;
     min-width: 0;
@@ -3689,9 +3728,14 @@ body:not(.teacher-page) .tab-button.active {
 }
 .progress-matrix-row {
     display: grid;
-    grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(78px, .7fr));
+    grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(var(--matrix-task-col, 78px), 1fr));
     width: max(100%, var(--matrix-min, 630px));
     min-width: var(--matrix-min, 630px);
+}
+.matrix-density-fit .progress-matrix-row {
+    grid-template-columns: var(--matrix-student-col-fit, 64px) repeat(var(--matrix-cols, 6), minmax(31px, 1fr));
+    width: max(100%, var(--matrix-fit-min, 340px));
+    min-width: var(--matrix-fit-min, 340px);
 }
 .progress-matrix-row > span,
 .progress-matrix-row > a,
@@ -3753,6 +3797,7 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.72rem;
     line-height: 1.1;
 }
+.progress-matrix-task-id-compact { display: none !important; }
 .progress-matrix-task-head {
     display: grid;
     align-content: center;
@@ -3853,6 +3898,70 @@ body:not(.teacher-page) .tab-button.active {
     min-width: 2.8em;
     font-weight: 930;
     line-height: 1;
+}
+.progress-matrix-status-score-compact { display: none; }
+.matrix-density-condensed .progress-matrix-task-id-full,
+.matrix-density-condensed .progress-matrix-task-name {
+    display: none !important;
+}
+.matrix-density-condensed .progress-matrix-task-id-compact {
+    display: grid !important;
+    align-content: center;
+    gap: 1px;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.6rem;
+    letter-spacing: -0.01em;
+}
+.matrix-density-condensed .progress-matrix-task-id-compact span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.matrix-density-tight .progress-matrix-row > span,
+.matrix-density-tight .progress-matrix-row > a,
+.matrix-density-tight .progress-matrix-row > button.progress-matrix-due-cell,
+.matrix-density-tight .progress-matrix-row > .progress-matrix-student-button,
+.matrix-density-tight .progress-matrix-cell {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-size: 0.62rem;
+}
+.matrix-density-tight .progress-matrix-head > span,
+.matrix-density-tight .progress-matrix-head > a {
+    min-height: 52px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.matrix-density-tight .progress-matrix-due-row > span,
+.matrix-density-tight .progress-matrix-due-row > button.progress-matrix-due-cell {
+    min-height: 28px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.matrix-density-tight .progress-matrix-student-cell,
+.matrix-density-tight .progress-matrix-student-button strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.matrix-density-tight .progress-matrix-cell {
+    flex-direction: column;
+    gap: 2px;
+}
+.matrix-density-tight .progress-matrix-status-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 0.66rem;
+}
+.matrix-density-tight .progress-matrix-status-score-full { display: none; }
+.matrix-density-tight .progress-matrix-status-score-compact {
+    display: inline;
+    min-width: 0;
+    font-size: 0.58rem;
 }
 .progress-matrix-cell:hover {
     transform: translateY(-1px);
@@ -7182,23 +7291,31 @@ body:not(.teacher-page) .tab-button.active {
     .student-info-head { grid-template-columns: 1fr; text-align: center; }
     .student-info-head .eyebrow { justify-self: center; }
     .student-info-editor { grid-template-columns: 1fr; }
-    .progress-matrix-card { padding: 12px; }
+    .progress-matrix-card { padding: 9px; }
     .progress-matrix-title { align-items: start; flex-direction: column; }
     .progress-matrix-tools {
-        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
         width: 100%;
+        overflow: visible;
     }
     .matrix-class-filter,
     .matrix-column-filter,
     .matrix-date-filter {
-        flex-basis: 132px;
-        width: 132px;
+        min-width: 0;
+        width: 100%;
+        max-width: none;
+        padding-right: 3px;
+        padding-left: 3px;
+        font-size: 0.64rem;
     }
     .matrix-date-bound,
     .matrix-date-bound input { max-width: 140px; }
+    .matrix-density-controls { align-self: flex-end; }
     .progress-matrix-row {
-        grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(96px, .65fr));
-        min-width: var(--matrix-min-mobile, 560px);
+        grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(var(--matrix-task-col, 96px), 1fr));
+        min-width: var(--matrix-min, 560px);
     }
     .progress-matrix-row > span,
     .progress-matrix-row > a,

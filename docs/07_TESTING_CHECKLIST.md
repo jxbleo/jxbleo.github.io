@@ -398,6 +398,23 @@ Check:
   alignment. Verify this at phone portrait width (below 760px) as well as phone
   landscape/desktop width; rotating the device must not shift the DUE AT first
   cell or the Wxx column boundaries
+- At a 390px portrait viewport, clear the saved matrix-density preference and
+  verify the default `Fit` state shows all columns for six or seven visible
+  tasks without horizontal matrix scrolling. Compact headers stack the stable
+  task ID, task names are hidden, status icons sit above scores without `%`,
+  all four-to-six student rows remain aligned, and student names truncate
+  rather than widening the sticky first column
+- Matrix `−`, `Fit`, and `+` controls respond immediately: `+` increases the
+  real task-column width and eventually restores full task names and horizontal
+  scrolling, `−` steps back down, and `Fit` returns to the complete-width
+  overview. Reload preserves an explicit choice on that device; with no saved
+  choice, crossing the 760px breakpoint switches between phone Fit and desktop
+  comfortable sizing
+- At phone width, the Class, Column, and Date filters share one equal-width row
+  and do not create their own horizontal scroller. Changing any filter keeps
+  the density controls working and recalculates Fit for the resulting column
+  count; phone week labels read `This Wxx`, `Next Wxx`, and `Last Wxx` without
+  clipping
 - Clicking a matrix task's Wxx cell in the DUE AT row opens one parameter editor
   for every
   assignment in that visible column; a class/individual filter limits the IDs

@@ -483,11 +483,23 @@ It should include:
   View width, and wide task sets must scroll horizontally inside the matrix
   area instead of widening the whole page. On touch devices, horizontal matrix
   scrolling must not block normal vertical page scrolling.
+- matrix size controls sit beside/below the filters as `−`, `Fit`, and `+`.
+  Phone portrait defaults to `Fit`, which uses real responsive grid tracks (not
+  a transformed screenshot) to keep the complete set of visible columns on
+  screen for the normal six-to-seven-task teaching view. `+` progressively
+  restores wider columns and internal horizontal scrolling; `−` reduces them,
+  and `Fit` returns to the full-width overview. Desktop defaults to the current
+  comfortable width. An explicit size choice is remembered locally on that
+  device, while an untouched responsive default switches between phone Fit and
+  desktop comfortable sizing when the breakpoint changes.
 - matrix task headers retain only the stable task ID and task name. The
   week label must not also appear in this first row. Clicking the task header
   first opens the shared practice-entry confirmation dialog; only `Enter`
   opens that task in teacher preview, while `Close`, Escape, or the backdrop
-  returns to the unchanged View matrix. Immediately below the task header and
+  returns to the unchanged View matrix. In Fit and the tightest size, the
+  stable ID is stacked into compact components and the task name is visually hidden;
+  wider sizes restore the full ID and name without changing the link or its
+  accessible label. Immediately below the task header and
   above all student score rows, the matrix adds one full `DUE AT` row: its sticky
   first-column cell reads `DUE AT`, and each task column always contains the
   zero-padded Beijing-time `Wxx` grouping label moved from the former task
@@ -509,9 +521,12 @@ It should include:
   percentage, mastery percentage, and Earn STAR for the complete scope.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
-  records. `Column` uses `All type`, `Date` uses `All time`, and date filtering
+  records. At phone width they divide the available row into three equal tracks
+  instead of creating a separate horizontal filter scroller. `Column` uses
+  `All type`, `Date` uses `All time`, and date filtering
   offers `This week - Wxx`, `Next week - Wxx`, `Last week - Wxx`, `All time`,
-  and `Self study`.
+  and `Self study`; the three week labels shorten to `This Wxx`, `Next Wxx`,
+  and `Last Wxx` at phone width so the selected value stays readable.
   Week filters use the assignment `assigned_at` timestamp, not student
   completion time, and calculate fixed Monday-to-Sunday natural weeks in
   Beijing time. Self-study records without an assignment are shown only by the
@@ -549,7 +564,9 @@ It should include:
   green cell background; `Passed` uses a green check circle and `Mastered` uses
   a solid green circle with a white star only when the assignment can earn
   STAR. If STAR earning is disabled for that assignment, the completed cell
-  uses the green check instead of a star.
+  uses the green check instead of a star. The two tightest matrix sizes stack a
+  smaller status icon above the numeric score and omit only the `%` glyph; the
+  full score remains in the cell's accessible label and detail dialog.
 - clicking the left student-name column in the matrix opens an independent
   four-week progress modal matching the student's Dashboard progress board.
   Week labels and day squares are selectable, completed-work density and STAR
