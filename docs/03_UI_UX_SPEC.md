@@ -327,7 +327,9 @@ outside and immediately below the card. The picker initially shows `Choose`
 beside a magnifying-glass search action. Activating search replaces `Choose` in
 place with the live search field; matching students update immediately and a
 student row is selected directly without a separate Confirm action. The student
-list expands inside the modal and remains scrollable there.
+list opens as a floating layer above the student detail/progress cards instead
+of being squeezed into the first card. The floating list uses the available
+dialog height and scrolls internally on pointer and touch input.
 The create-student modal uses a vertical field stack and, after success, shows
 a standalone checkmark confirmation dialog with the new Login ID and initial
 password. Closing or cancelling Create student restores its parent Student

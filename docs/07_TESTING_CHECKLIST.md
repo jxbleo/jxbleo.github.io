@@ -337,12 +337,14 @@ Check:
   and require no page scrolling to reach its content or Close action
 - top-right circular student ID icon opens the standalone student lookup
   modal at roughly three-quarters of its former desktop size; its centered
-  `Close` capsule sits outside below the card, Choose expands a scrollable list,
-  and the magnifying-glass action replaces Choose in place with a live search
-  field. Search filters immediately, clicking a row selects it without Confirm,
-  and closing Create student by its close control, backdrop, or Escape restores
-  the same Student lookup modal. The modal's internal `+` opens create-student,
-  and View no longer shows student info/progress below the matrix
+  `Close` capsule sits outside below the card, and Choose expands a floating
+  scrollable list above the student detail/progress cards instead of clipping
+  the list to the first card. The magnifying-glass action replaces Choose in
+  place with a live search field; both modes keep pointer/touch scrolling inside
+  the list. Search filters immediately, clicking a row selects it without
+  Confirm, and closing Create student by its close control, backdrop, or Escape
+  restores the same Student lookup modal. The modal's internal `+` opens
+  create-student, and View no longer shows student info/progress below the matrix
 - Teacher View `By student` expands a student into a history list with best
   percentage fixed on the far right, and clicking a task opens the same
   independent detail modal as the top matrix

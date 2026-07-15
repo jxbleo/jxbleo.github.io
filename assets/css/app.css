@@ -2933,29 +2933,37 @@ body:not(.teacher-page) .tab-button.active {
     min-height: 34px;
     padding: 0;
 }
-.student-lookup-dialog .student-select-card {
+.teacher-page .student-lookup-dialog .student-select-card {
     z-index: 3;
-}
-.student-lookup-dialog .student-select-card .student-picker-shell {
-    position: static;
-    left: auto;
-    right: auto;
-    top: auto;
-    margin-top: 12px;
-    width: 100%;
     overflow: visible;
 }
-.student-lookup-dialog .student-select-card.picker-choose .student-picker-shell,
-.student-lookup-dialog .student-select-card.picker-search .student-picker-shell {
-    left: auto;
-    right: auto;
-    max-height: none;
+.teacher-page .student-lookup-dialog .student-select-card .student-picker-shell {
+    position: absolute;
+    top: calc(100% - 10px);
+    right: 14px;
+    left: 14px;
+    z-index: 40;
+    width: auto;
+    max-height: min(430px, 45vh);
+    max-height: min(430px, 45dvh);
+    margin-top: 0;
+    overflow: hidden;
 }
-.student-lookup-dialog .student-select-card.picker-choose .student-picker {
-    max-height: min(520px, calc(100vh - 340px));
+.teacher-page .student-lookup-dialog .student-select-card.picker-choose .student-picker-shell,
+.teacher-page .student-lookup-dialog .student-select-card.picker-search .student-picker-shell {
+    right: 14px;
+    left: 14px;
+    max-height: min(430px, 45vh);
+    max-height: min(430px, 45dvh);
 }
-.student-lookup-dialog .student-select-card.picker-search .student-picker {
-    max-height: min(430px, calc(100vh - 390px));
+.teacher-page .student-lookup-dialog .student-select-card.picker-choose .student-picker,
+.teacher-page .student-lookup-dialog .student-select-card.picker-search .student-picker {
+    max-height: calc(min(430px, 45vh) - 22px);
+    max-height: calc(min(430px, 45dvh) - 22px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
 }
 .student-lookup-external-close {
     justify-self: center;
