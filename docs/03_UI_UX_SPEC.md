@@ -474,7 +474,9 @@ It should include:
   scrolling must not block normal vertical page scrolling.
 - matrix task headers retain only the stable task ID and task name. The
   week label must not also appear in this first row. Clicking the task header
-  opens that task in teacher preview. Immediately below the task header and
+  first opens the shared practice-entry confirmation dialog; only `Enter`
+  opens that task in teacher preview, while `Close`, Escape, or the backdrop
+  returns to the unchanged View matrix. Immediately below the task header and
   above all student score rows, the matrix adds one full `DUE AT` row: its sticky
   first-column cell reads `DUE AT`, and each task column always contains the
   zero-padded Beijing-time `Wxx` grouping label moved from the former task
