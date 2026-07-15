@@ -809,7 +809,12 @@ Shared rules:
   earlier capsule row scrolls away instead of showing as a second layer
   underneath. Selecting a group does not show the word bank by itself.
 - Learn word cards show the word, emoji, definition, and Chinese meaning
-  without repeating each word's source number.
+  without repeating each word's source number. A green circular speaker beside
+  the visible word uses browser `en-GB` speech so students can hear it without
+  loading a separate audio asset.
+- Spell rows show the same speaker beside the number and part of speech. Its
+  accessible label must not contain the hidden answer, and playing it must not
+  reveal or fill any spelling letters.
 - When a numbered Study Set is selected, the bottom of Learn shows a
   `Go to Practice` button. Clicking it opens that same group's practice card
   inline below the word cards, using the former Learn-mode questions and word

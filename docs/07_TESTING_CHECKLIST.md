@@ -518,6 +518,12 @@ Check:
   upward, then apply and rerun the dry run to verify it returns zero candidates.
 
 - Learn/Spell/Cloze modes render
+- every Learn word card shows a circular speaker beside the visible word; a
+  click speaks that word in browser `en-GB` speech without navigating or
+  changing the selected Study Set
+- every generated Spell row shows the same speaker beside its number and part
+  of speech; it speaks the hidden target without filling/revealing letters, and
+  its accessible label does not expose the answer
 - Vocabulary Learn numbered capsules stay in the sticky learning bar, while the
   word bank appears only after `Go to Practice`, expands and collapses slowly,
   has no `Word Bank` label or `Hide` button, and collapses when scrolling back
