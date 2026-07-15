@@ -68,6 +68,12 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-15
 
+- Made the Teacher View matrix responsive and user-resizable with `−`, `Fit`,
+  and `+`. Phone portrait now fits the normal six-to-seven-task overview using
+  compact task IDs and score cells, while desktop keeps comfortable columns;
+  explicit size choices persist locally. Updated UI/test documentation and
+  cache versions. No backend, CloudBase deployment, or content import is
+  required.
 - Routed Teacher View matrix task headers through the shared practice-entry
   confirmation so an accidental click no longer leaves the matrix. Confirming
   opens the existing `teacher=1` preview; Close, Escape, or backdrop dismissal

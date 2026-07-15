@@ -1,6 +1,30 @@
 (function() {
     'use strict';
 
+    var MATRIX_DENSITY_STORAGE_KEY = 'mrcat.teacher.matrix-density.v1';
+    var MATRIX_DENSITY_TASK_WIDTHS = [31, 56, 72, 92, 112, 132];
+
+    function readMatrixDensityPreference() {
+        try {
+            var stored = window.localStorage.getItem(MATRIX_DENSITY_STORAGE_KEY);
+            if (stored == null || stored === '') return null;
+            var value = Number(stored);
+            return Number.isInteger(value) && value >= 0 && value < MATRIX_DENSITY_TASK_WIDTHS.length
+                ? value
+                : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function saveMatrixDensityPreference(value) {
+        try {
+            window.localStorage.setItem(MATRIX_DENSITY_STORAGE_KEY, String(value));
+        } catch (error) {
+            // The matrix still resizes for this session when storage is unavailable.
+        }
+    }
+
     var state = {
         profile: null,
         students: [],
@@ -43,6 +67,7 @@
         matrixClassFilter: '',
         matrixColumnFilter: '',
         matrixDateFilter: 'all',
+        matrixDensityStep: readMatrixDensityPreference(),
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
         matrixStudentProgressSelections: {},
@@ -3229,11 +3254,12 @@
 
     function renderMatrixDateSelect() {
         var value = state.matrixDateFilter || 'all';
+        var phoneLayout = matrixUsesPhoneLayout();
         var options = [
             { value: 'all', label: 'All time' },
-            { value: 'week', label: 'This week - ' + shanghaiCurrentWeekLabel(0) },
-            { value: 'next_week', label: 'Next week - ' + shanghaiCurrentWeekLabel(7) },
-            { value: 'last_week', label: 'Last week - ' + shanghaiCurrentWeekLabel(-7) },
+            { value: 'week', label: (phoneLayout ? 'This ' : 'This week - ') + shanghaiCurrentWeekLabel(0) },
+            { value: 'next_week', label: (phoneLayout ? 'Next ' : 'Next week - ') + shanghaiCurrentWeekLabel(7) },
+            { value: 'last_week', label: (phoneLayout ? 'Last ' : 'Last week - ') + shanghaiCurrentWeekLabel(-7) },
             { value: 'self_study', label: 'Self study' }
         ];
         return '<select class="matrix-date-filter" id="matrix-date-filter" aria-label="Date">' +
@@ -3316,6 +3342,70 @@
                     escapeHtml(column.label) + '</option>';
             }).join('') +
         '</select>';
+    }
+
+    function matrixUsesPhoneLayout() {
+        return window.matchMedia
+            ? window.matchMedia('(max-width: 760px)').matches
+            : window.innerWidth <= 760;
+    }
+
+    function resolvedMatrixDensityStep() {
+        if (state.matrixDensityStep != null) return state.matrixDensityStep;
+        return matrixUsesPhoneLayout() ? 0 : MATRIX_DENSITY_TASK_WIDTHS.length - 1;
+    }
+
+    function matrixDensityClass(step) {
+        var classes = [];
+        if (step === 0) classes.push('matrix-density-fit');
+        if (step <= 1) classes.push('matrix-density-tight');
+        if (step <= 2) classes.push('matrix-density-condensed');
+        return classes.join(' ');
+    }
+
+    function renderMatrixDensityControls() {
+        var step = resolvedMatrixDensityStep();
+        var lastStep = MATRIX_DENSITY_TASK_WIDTHS.length - 1;
+        return '<div class="matrix-density-controls" role="group" aria-label="Matrix size">' +
+            '<button class="matrix-density-button" type="button" data-matrix-density-action="smaller"' +
+                (step === 0 ? ' disabled' : '') + ' aria-label="Make matrix smaller" title="Smaller">−</button>' +
+            '<button class="matrix-density-fit-button' + (step === 0 ? ' active' : '') + '" type="button" ' +
+                'data-matrix-density-action="fit" aria-pressed="' + (step === 0 ? 'true' : 'false') +
+                '" aria-label="Fit the complete matrix to this screen" title="Fit to screen">Fit</button>' +
+            '<button class="matrix-density-button" type="button" data-matrix-density-action="larger"' +
+                (step === lastStep ? ' disabled' : '') + ' aria-label="Make matrix larger" title="Larger">+</button>' +
+        '</div>';
+    }
+
+    function compactMatrixSetId(value) {
+        var id = String(value || 'Task').trim();
+        var match = id.match(/^([^-]+)-(.+)$/);
+        if (!match) {
+            return {
+                lead: id.length > 5 ? id.slice(0, Math.ceil(id.length / 2)) : id,
+                tail: id.length > 5 ? id.slice(Math.ceil(id.length / 2)) : ''
+            };
+        }
+        var lead = match[1];
+        if (/^OXFORD5000$/i.test(lead)) lead = 'OX5K';
+        return { lead: lead, tail: match[2] };
+    }
+
+    function compactMatrixPercent(value) {
+        var number = numericPercent(value);
+        if (number == null) return '—';
+        return (Math.round(number * 10) / 10).toString().replace(/\.0$/, '');
+    }
+
+    function setMatrixDensityStep(nextStep) {
+        var step = Math.max(0, Math.min(MATRIX_DENSITY_TASK_WIDTHS.length - 1, Number(nextStep) || 0));
+        if (step === resolvedMatrixDensityStep()) return;
+        var container = document.getElementById('assignment-overview');
+        var snapshot = matrixScrollSnapshot(container);
+        state.matrixDensityStep = step;
+        saveMatrixDensityPreference(step);
+        renderAssignmentOverview();
+        restoreMatrixScroll(snapshot);
     }
 
     function matrixAttemptsForItem(item) {
@@ -3966,14 +4056,19 @@
             return Math.max(max, String(student.name || 'Student').length);
         }, 7);
         var studentColCh = Math.max(7, Math.min(18, maxStudentNameLength + 2));
+        var densityStep = resolvedMatrixDensityStep();
+        var taskColumnWidth = MATRIX_DENSITY_TASK_WIDTHS[densityStep];
         var matrixStyle = '--matrix-cols:' + sets.length +
             ';--matrix-student-col:' + studentColCh + 'ch' +
-            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * 132) + 'px)' +
-            ';--matrix-min-mobile:calc(var(--matrix-student-col) + ' + (sets.length * 112) + 'px)';
+            ';--matrix-task-col:' + taskColumnWidth + 'px' +
+            ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * taskColumnWidth) + 'px)' +
+            ';--matrix-student-col-fit:clamp(62px, 16vw, 68px)' +
+            ';--matrix-fit-min:calc(var(--matrix-student-col-fit) + ' + (sets.length * MATRIX_DENSITY_TASK_WIDTHS[0]) + 'px)';
         var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
             '<span class="progress-matrix-student-cell">Student</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
+                var compactId = compactMatrixSetId(set.set_id || set.id);
                 var sourceSet = state.sets.find(function(item) {
                     return String(item.set_id || item.id || '') === String(set.set_id || '');
                 }) || set;
@@ -3983,7 +4078,10 @@
                     (tag === 'a' ? ' href="' + escapeHtml(href) + '" data-open-href="' + escapeHtml(href) +
                         '" data-entry-kind="Teacher preview" data-entry-title="' + escapeHtml(title) +
                         '" aria-haspopup="dialog" aria-label="Confirm teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
-                    '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
+                    '<strong class="progress-matrix-task-id-full">' + escapeHtml(set.set_id || set.id) + '</strong>' +
+                    '<strong class="progress-matrix-task-id-compact" aria-hidden="true"><span>' +
+                        escapeHtml(compactId.lead) + '</span>' +
+                        (compactId.tail ? '<span>' + escapeHtml(compactId.tail) + '</span>' : '') + '</strong>' +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</' + tag + '>';
             }).join('') +
@@ -4006,23 +4104,29 @@
             return '<div class="progress-matrix-row" style="' + escapeHtml(matrixStyle) + '">' +
                 '<button class="progress-matrix-student-cell progress-matrix-student-button' +
                     (student.key === state.selectedMatrixStudentKey ? ' selected' : '') +
-                    '" type="button" data-matrix-student="' + escapeHtml(student.key) + '">' +
+                    '" type="button" data-matrix-student="' + escapeHtml(student.key) + '" title="' +
+                    escapeHtml(student.name) + '" aria-label="Open progress for ' + escapeHtml(student.name) + '">' +
                     '<strong>' + escapeHtml(student.name) + '</strong></button>' +
                 sets.map(function(set) {
                     var item = student.items[set.id];
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
+                    var title = set.title || set.set_id || set.id || 'Task';
                     var status = normalizedAssignmentStatus(item.status);
                     var score = numericPercent(item.best_percentage);
                     var statusIcon = matrixStatusIcon(item, status);
                     var label = status === 'cancelled' ? 'Cancelled' : score == null ? '—' : formatPercent(score);
+                    var compactLabel = status === 'cancelled' ? '—' : compactMatrixPercent(score);
                     var cellKey = matrixCellKey(item);
                     if (cellKey === state.selectedMatrixCell) selectedItem = item;
                     return '<button class="progress-matrix-cell ' + escapeHtml(status) +
                         (cellKey === state.selectedMatrixCell ? ' selected' : '') +
-                        '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" title="' +
+                        '" type="button" data-matrix-cell="' + escapeHtml(cellKey) + '" aria-label="' +
+                        escapeHtml(student.name + ', ' + title + ', ' + label + ' best') + '" title="' +
                         escapeHtml(formatPercent(item.best_percentage) + ' best · click for answers') + '">' +
                         '<span class="progress-matrix-status-icon" aria-hidden="true">' + escapeHtml(statusIcon) + '</span>' +
-                        '<span class="progress-matrix-status-score">' + escapeHtml(label) + '</span>' +
+                        '<span class="progress-matrix-status-score progress-matrix-status-score-full">' + escapeHtml(label) + '</span>' +
+                        '<span class="progress-matrix-status-score progress-matrix-status-score-compact" aria-hidden="true">' +
+                            escapeHtml(compactLabel) + '</span>' +
                         '</button>';
                 }).join('') +
             '</div>';
@@ -4031,8 +4135,9 @@
             ? renderMatrixCellModal(selectedItem)
             : renderMatrixStudentModal(state.selectedMatrixStudentKey, items);
         return '<section class="progress-matrix-card">' +
-            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '</div></div>' +
-            '<div class="progress-matrix-scroll">' + header + dueRow + rows + '</div>' +
+            '<div class="progress-matrix-title"><div class="progress-matrix-tools">' + classSelect + columnSelect + dateSelect + '</div>' +
+                renderMatrixDensityControls() + '</div>' +
+            '<div class="progress-matrix-scroll ' + escapeHtml(matrixDensityClass(densityStep)) + '">' + header + dueRow + rows + '</div>' +
         '</section>' +
         detailHtml;
     }
@@ -4104,6 +4209,15 @@
                 renderAssignmentOverview();
             });
         }
+        container.querySelectorAll('[data-matrix-density-action]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var action = button.dataset.matrixDensityAction;
+                var step = resolvedMatrixDensityStep();
+                if (action === 'fit') setMatrixDensityStep(0);
+                if (action === 'smaller') setMatrixDensityStep(step - 1);
+                if (action === 'larger') setMatrixDensityStep(step + 1);
+            });
+        });
         container.querySelectorAll('[data-matrix-student]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixStudent || '';
@@ -5598,6 +5712,15 @@
             button.disabled = false;
         });
     });
+    var matrixAutoPhoneLayout = matrixUsesPhoneLayout();
+    window.addEventListener('resize', function() {
+        var nextPhoneLayout = matrixUsesPhoneLayout();
+        if (nextPhoneLayout === matrixAutoPhoneLayout) return;
+        matrixAutoPhoneLayout = nextPhoneLayout;
+        if (state.matrixDensityStep != null) return;
+        var overview = document.getElementById('assignment-overview');
+        if (overview && overview.querySelector('.progress-matrix-scroll')) renderAssignmentOverview();
+    }, { passive: true });
     applyTeacherViewShell(initialTeacherView());
     window.MrCatAuth.getSession().then(function(session) {
         if (session.mode === 'none') {
