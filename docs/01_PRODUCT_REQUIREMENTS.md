@@ -314,9 +314,10 @@ flowchart TD
 - `best_percentage`
 - `answer_revealed`
 - `mastery_locked`
-- `assigned_at`：老师在 Assign 参数中选择的计划日期或周，教师 View 的 Wxx
-  矩阵列和日期筛选使用这个时间；默认是当前上海时区周，也可以从 View 的
-  assignment 编辑弹窗通过 `Assign week` 修正
+- `due_at`：必填 due week 的周日 23:59:59（上海时区）；学生 Dashboard、
+  红色提醒、Teacher View 的 Wxx 矩阵列和日期筛选都使用这个时间
+- `assigned_at`：弃用的兼容镜像；新业务逻辑不得再用它和 `due_at` 表达两套周
+- `created_at`：实际创建 assignment 的审计时间，不参与 due-week 归类
 - `completed_at`
 - `mastered_at`
 
@@ -327,9 +328,9 @@ flowchart TD
 - 同一次老师 Assign 操作中，同一个 set 给多个学生创建的作业应共享
   `assignment_batch_id`，供教师 View 矩阵按布置批次显示；同一个 set 即使在
   同一周重复布置，也应显示为不同 column
-- Assign 参数按选中的 task 逐行设置。每个 task row 都有自己的计划日期/周、
+- Assign 参数按选中的 task 逐行设置。每个 task row 都必须有自己的 due week、
   passing percentage 和 `Earn STAR`/mastery percentage，因此同一次 Assign
-  可以把不同 task 布置到不同周或不同日期。
+  可以把不同 task 设置到不同截止周；缺少 due week 时服务器拒绝创建。
 - 旧作业和旧提交不能被覆盖
 - 已完成或已 STAR 的历史记录不应阻止未来重新布置
 - 只应阻止同一学生同一 set 同时存在未完成开放作业
@@ -604,7 +605,7 @@ flowchart TD
 - list sets
 - assignment candidates
 - create assignments
-- update existing assignment due dates and passing/mastery standards
+- update existing assignment due weeks and passing/mastery standards
 - teacher preview answer key
 - list assignments / attempts / progress
 - list / submit / resolve disputes
@@ -819,6 +820,12 @@ flowchart TD
 
 前端把 `passed` 和 `mastered` 合并到 `FINISHED`。不要重新拆成 `PASSED` / `MASTERED` 三卡，除非产品明确改回。
 
+学生端周进度按 `due_at` 计算：未完成且超过 due week 的任务进入
+`OVERDUE`，本周到期任务进入 `THIS WEEK`。本周没有任务或本周任务全部完成
+时，如果下周有任务，同一位置改为 `UPCOMING`；本周尚未完成时，下周任务
+仍可在铃铛的 Upcoming 分区查看，但不计入红色数字。红色数字只计算逾期、
+本周未完成任务和未读 Teacher Replies。
+
 ### 10.2 老师端
 
 老师端重点不是漂亮，而是高效：
@@ -838,12 +845,12 @@ flowchart TD
 - 哪个答案规则需要改？
 
 老师可以在 View 中按学生、班级或任务范围批量修改已布置 assignment 的
-assign week、due date、passing percentage 和 mastery percentage。修改
-assign week 会更新 `assigned_at` 并立即改变 View 的 Wxx 周归类；修改后的
+due week、passing percentage 和 mastery percentage。修改 due week 会更新
+`due_at` 并立即改变 View 的 Wxx 周归类、学生端周进度和截止状态；修改后的
 评分标准用于之后提交和老师端显示，不自动降低已完成状态或受保护 STAR。
 View 矩阵保留原任务列头，并在列头下、学生成绩行上增加一整条 Due 行：
 第一格显示 `Due`，后续每个任务格只显示对应截止周 `Wxx`。点击任务列头会
-打开当前矩阵筛选范围的整列参数编辑，一次把 due date、passing、mastery 和
+打开当前矩阵筛选范围的整列参数编辑，一次把 due week、passing、mastery 和
 Earn STAR 设置应用到该班/该范围内的所有对应 assignment，避免逐个学生修改。
 
 ### 10.3 访客模式

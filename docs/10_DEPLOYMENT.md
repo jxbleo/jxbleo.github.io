@@ -159,6 +159,40 @@ INITIAL_STUDENT_PASSWORD=<configured in CloudBase only>
 Never write this value into Git, frontend code, docs, screenshots, or command
 logs.
 
+### Assignment Due-Week Backfill
+
+The required Due-week rollout needs updated `teacherAdmin`, `getDashboard`,
+and `submitAttempt` functions plus the static Teacher/Student files. Deploying
+the functions does not mutate assignment records. Reads temporarily derive a
+Sunday-end due week from legacy `assigned_at`/creation timestamps.
+
+After deploying `teacherAdmin`, an authenticated teacher should inspect the
+bounded dry run from `teacher.html` in the browser console:
+
+```js
+await window.MrCatCloud.callFunction("teacherAdmin", {
+  action: "backfillAssignmentDueWeeks",
+  limit: 100
+});
+```
+
+After checking `candidate_count`, `missing_source_count`, and the candidate
+dates, apply one batch:
+
+```js
+await window.MrCatCloud.callFunction("teacherAdmin", {
+  action: "backfillAssignmentDueWeeks",
+  apply: true,
+  limit: 100
+});
+```
+
+If `next_cursor` is non-null, pass that exact string as `cursor` on the next
+dry-run/apply request and continue until `done` is `true`. The action
+normalizes each candidate to Shanghai-time Sunday 23:59:59 and keeps the
+original legacy `assigned_at` value for audit/group identity. Records without
+any usable date source are reported and left unchanged.
+
 ### TeacherAdmin Historical Regrade Backfill
 
 Deploying `teacherAdmin.zip` does not automatically mutate historical data.

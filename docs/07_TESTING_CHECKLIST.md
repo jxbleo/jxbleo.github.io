@@ -24,6 +24,7 @@ find cloudfunctions -name index.js -exec node --check {} \;
 node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
 node --check assets/js/practice-session.js
+npm run test:assignment-schedule
 ```
 
 Run after catalog/content changes:
@@ -97,13 +98,16 @@ Practice navigation checks:
   surface in two columns; below 900px they stack without page-level horizontal
   overflow or nested glass cards
 - the loading state shows one quiet `THIS WEEK` skeleton row; after load,
-  `OVERDUE` appears first only when a real `to_do` assignment is past `due_at`,
-  while `THIS WEEK` always reflects real assignments scheduled by `assigned_at`
-  in the current China-standard-time week and excludes self-study STAR records
-- completing the final overdue item removes the red row; a week with no
-  assignments reads `No assignments this week`, and a fully completed week
-  reads `All done`
-- clicking a populated `OVERDUE` or `THIS WEEK` row opens the existing
+  `OVERDUE` appears first only when a real `to_do` assignment is past required
+  `due_at`, while `THIS WEEK` reflects assignments due in the current
+  China-standard-time week and excludes self-study STAR records
+- while current-week work is unfinished, future assignments remain visible in
+  the bell's Upcoming section but do not contribute to the red bell count
+- when current-week work is all finished—or there is no current-week work—a
+  next-week assignment replaces `THIS WEEK` with the blue `UPCOMING` row; with
+  no next-week work the existing All done/empty state remains
+- completing the final overdue item removes the red row
+- clicking a populated `OVERDUE`, `THIS WEEK`, or `UPCOMING` row opens the existing
   Assignments dialog filtered to that scope; scrolling the dialog does not move
   the Dashboard behind it, and closing by button, backdrop, or Escape restores
   the exact original page position
@@ -331,6 +335,14 @@ Check:
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all
   current picker modal designs and behaviors, and retains the per-task parameter
   matrix below; the summaries stack at 390px
+- every selected Assign task row has a mandatory Due week selector; submitting
+  without a valid due week is rejected by `teacherAdmin`, while This week,
+  Next week, and custom Wxx choices persist as Shanghai-time Sunday 23:59:59
+- `npm run test:assignment-schedule` verifies required due-week enforcement,
+  Sunday normalization, backward-compatible `assigned_at` alias handling, and
+  dry-run/apply legacy backfill behavior; it also exercises the exact Dashboard
+  model so Upcoming stays out of the red count and replaces This Week only when
+  the current week is empty or complete
 - Open the Assign Work and Student pickers before and after the Assign page has
   become taller than the viewport; both dialogs must remain centered in the
   current viewport with an internally scrolling list and no blank page area
@@ -399,7 +411,7 @@ Check:
   summary fields are stale
 - View matrix shows a green check, not a star, for completed assignments whose
   `mastery_enabled` is false
-- View matrix date filtering uses assignment `assigned_at` in Beijing-time
+- View matrix date filtering uses required assignment `due_at` in Beijing-time
   natural weeks: `This week` is Monday-Sunday of the current Beijing week,
   `Next week` is the following Beijing Monday-Sunday range, `Last week` is the
   previous Beijing Monday-Sunday range, and `Self study` shows records without
@@ -408,7 +420,8 @@ Check:
   clicking a header opens that task's teacher preview. Exactly one DUE AT row
   appears below the headers and above student scores, its sticky first cell
   reads `DUE AT`, and every assigned task cell contains its zero-padded Wxx
-  assignment-grouping label even when `due_at` is missing. Week numbering starts
+  due-week grouping label; legacy missing `due_at` records use their derived
+  fallback only until migration. Week numbering starts
   at the first Monday of the relevant year. The DUE AT first cell matches the
   colorful Student/task header surface and the Student cell's left text edge,
   while all row cells have equal height, continuous borders, and exact column
@@ -474,8 +487,8 @@ Check:
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open the same
   independent detail modal as matrix cells
-- editing assign week/due/pass/mastery in View updates only the selected
-  assignment records; assign week changes their `assigned_at` and moves them to
+- editing due week/pass/mastery in View updates only the selected assignment
+  records; due week changes `due_at` and moves them to
   the chosen Wxx matrix group/filter without changing attempts; moving one
   record from a shared batch splits only that record into the new week column
 - Argue list loads and groups disputes

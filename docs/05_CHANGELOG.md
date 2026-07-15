@@ -7,6 +7,13 @@
 
 ### Changed
 
+- Unified assignment scheduling around a required Due week. New assignments
+  normalize `due_at` to Shanghai-time Sunday 23:59:59; Student Overdue, This
+  Week, Upcoming, bell counts, and Teacher View Wxx grouping now use that one
+  field. Future work stays visible in the bell but is excluded from its red
+  count, and next week's progress replaces This Week only after the current
+  week is complete or empty. Added a dry-run-first teacher backfill for legacy
+  `assigned_at` records.
 - Made Teacher practice Back context-preserving: returning from a View matrix
   preview now restores the same filters, matrix density, grouped-progress
   expansions, page position, and internal matrix scroll/visible-column anchor,

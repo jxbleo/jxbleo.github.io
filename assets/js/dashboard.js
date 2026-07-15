@@ -365,6 +365,40 @@
         return addUtcDays(today, -mondayIndexFromUtcDate(today));
     }
 
+    function shanghaiWeekKeys(offset) {
+        var start = addUtcDays(currentShanghaiWeekStart(), Number(offset || 0) * 7);
+        return {
+            start: keyFromUtcDate(start),
+            end: keyFromUtcDate(addUtcDays(start, 6))
+        };
+    }
+
+    function legacyAssignmentDueDate(item) {
+        var source = item && (item.assigned_at || item.created_at);
+        var parts = shanghaiDateParts(source);
+        if (!parts) return null;
+        var sourceDay = utcDateFromShanghaiParts(parts);
+        var sunday = addUtcDays(sourceDay, 6 - mondayIndexFromUtcDate(sourceDay));
+        return new Date(keyFromUtcDate(sunday) + 'T23:59:59+08:00');
+    }
+
+    function assignmentDueDate(item) {
+        var dueDate = item && item.due_at ? new Date(item.due_at) : null;
+        if (dueDate && !isNaN(dueDate.getTime())) return dueDate;
+        return legacyAssignmentDueDate(item);
+    }
+
+    function assignmentDueParts(item) {
+        var dueDate = assignmentDueDate(item);
+        return dueDate ? shanghaiDateParts(dueDate) : null;
+    }
+
+    function isUpcomingAssignment(item) {
+        if (!isRealAssignment(item)) return false;
+        var parts = assignmentDueParts(item);
+        return Boolean(parts && parts.key > shanghaiWeekKeys(0).end);
+    }
+
     function randomItem(items) {
         return items[Math.floor(Math.random() * items.length)];
     }
@@ -652,13 +686,25 @@
 
     function todoAssignments() {
         return (state.assignments || [])
-            .filter(function(item) { return normalizedStatus(item.status) === 'to_do'; })
+            .filter(function(item) {
+                return normalizedStatus(item.status) === 'to_do' && !isUpcomingAssignment(item);
+            })
             .sort(newestFirst);
+    }
+
+    function upcomingAssignments() {
+        return (state.assignments || [])
+            .filter(isUpcomingAssignment)
+            .sort(function(left, right) {
+                return assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
+            });
     }
 
     function finishedAssignments() {
         return (state.assignments || [])
-            .filter(function(item) { return isFinishedStatus(item.status); })
+            .filter(function(item) {
+                return isFinishedStatus(item.status) && !isUpcomingAssignment(item);
+            })
             .sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
     }
 
@@ -854,7 +900,8 @@
     }
 
     function assignmentTime(item) {
-        return new Date(item.assigned_at || item.updated_at || 0).getTime();
+        var dueDate = assignmentDueDate(item);
+        return dueDate ? dueDate.getTime() : new Date(item.updated_at || 0).getTime();
     }
 
     function practiceEntryTitle(element) {
@@ -1013,7 +1060,7 @@
         }
         if (messageButton) {
             messageButton.classList.toggle('has-updates', messageTotal > 0);
-            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' assignment updates' : 'Assignments');
+            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' current updates' : 'Assignments');
             messageButton.setAttribute('aria-expanded', 'false');
         }
     }
@@ -1099,8 +1146,11 @@
         var kind = studentMessageKind(item);
         var safeTitle = escapeHtml(title);
         var bestPercentage = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
+        var dueDate = assignmentDueDate(item);
         var score = finished && bestPercentage != null
             ? '<span class="student-message-score">' + escapeHtml(formatEntryPercent(bestPercentage)) + '</span>'
+            : type === 'upcoming' && dueDate
+                ? '<span class="student-message-score is-upcoming">DUE ' + escapeHtml(formatShortDate(dueDate).toUpperCase()) + '</span>'
             : !finished && bestPercentage != null
                 ? '<span class="student-message-score is-todo">' + escapeHtml(formatEntryPercent(bestPercentage)) + '</span>'
                 : '<span class="student-message-score is-todo">TO DO</span>';
@@ -1172,13 +1222,14 @@
         }
 
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
+        var upcoming = state.session && state.session.mode === 'student' ? upcomingAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
         var replies = state.teacherReplies || [];
         var dialogTitle = 'Assignments';
         var summaryHtml = '';
         var sectionsHtml = '';
 
-        if (scope === 'overdue' || scope === 'week') {
+        if (scope === 'overdue' || scope === 'week' || scope === 'upcoming') {
             var focusModel = weeklyFocusModel();
             replies = [];
             if (scope === 'overdue') {
@@ -1193,7 +1244,7 @@
                     'No overdue assignments.',
                     'todo overdue'
                 );
-            } else {
+            } else if (scope === 'week') {
                 dialogTitle = 'This week';
                 todos = focusModel.thisWeek.filter(function(item) {
                     return normalizedStatus(item.status) === 'to_do';
@@ -1219,10 +1270,26 @@
                         'No finished assignments this week yet.',
                         'finished'
                     );
+            } else {
+                dialogTitle = 'Upcoming';
+                upcoming = focusModel.nextWeek.slice().sort(function(left, right) {
+                    var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
+                    var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
+                    return leftFinished - rightFinished || newestFirst(left, right);
+                });
+                summaryHtml = '<span><b>' + escapeHtml(upcoming.length) + '</b> next week</span>';
+                sectionsHtml = renderStudentMessageSection(
+                    'Upcoming',
+                    upcoming.length,
+                    upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
+                    'No assignments are due next week.',
+                    'upcoming'
+                );
             }
         } else {
             summaryHtml =
                 '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
+                '<span><b>' + escapeHtml(upcoming.length) + '</b> upcoming</span>' +
                 '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
                 '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>';
             sectionsHtml =
@@ -1233,6 +1300,13 @@
                     'No unfinished assignments.',
                     'todo'
                 ) +
+                (upcoming.length ? renderStudentMessageSection(
+                    'Upcoming',
+                    upcoming.length,
+                    upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
+                    '',
+                    'upcoming'
+                ) : '') +
                 renderStudentMessageSection(
                     'Finished',
                     finished.length,
@@ -1395,26 +1469,31 @@
 
     function weeklyFocusModel() {
         var now = new Date();
-        var weekStart = currentShanghaiWeekStart();
-        var weekStartKey = keyFromUtcDate(weekStart);
-        var weekEndKey = keyFromUtcDate(addUtcDays(weekStart, 6));
+        var currentWeek = shanghaiWeekKeys(0);
+        var nextWeek = shanghaiWeekKeys(1);
         var assignments = (state.assignments || []).filter(isRealAssignment);
         var open = assignments.filter(function(item) {
-            return normalizedStatus(item.status) === 'to_do';
+            return normalizedStatus(item.status) === 'to_do' && !isUpcomingAssignment(item);
         });
         var overdue = open.filter(function(item) {
-            if (!item.due_at) return false;
-            var dueDate = new Date(item.due_at);
+            var dueDate = assignmentDueDate(item);
+            if (!dueDate) return false;
             return !isNaN(dueDate.getTime()) && dueDate.getTime() < now.getTime();
         }).sort(function(left, right) {
-            return new Date(left.due_at).getTime() - new Date(right.due_at).getTime();
+            return assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
         });
         var thisWeek = assignments.filter(function(item) {
-            if (!item.assigned_at) return false;
-            var parts = shanghaiDateParts(item.assigned_at);
-            return parts && parts.key >= weekStartKey && parts.key <= weekEndKey;
+            var parts = assignmentDueParts(item);
+            return parts && parts.key >= currentWeek.start && parts.key <= currentWeek.end;
+        });
+        var nextWeekAssignments = assignments.filter(function(item) {
+            var parts = assignmentDueParts(item);
+            return parts && parts.key >= nextWeek.start && parts.key <= nextWeek.end;
         });
         var weekFinished = thisWeek.filter(function(item) {
+            return isFinishedStatus(item.status);
+        });
+        var nextWeekFinished = nextWeekAssignments.filter(function(item) {
             return isFinishedStatus(item.status);
         });
 
@@ -1422,7 +1501,9 @@
             open: open,
             overdue: overdue,
             thisWeek: thisWeek,
-            weekFinished: weekFinished
+            weekFinished: weekFinished,
+            nextWeek: nextWeekAssignments,
+            nextWeekFinished: nextWeekFinished
         };
     }
 
@@ -1510,6 +1591,27 @@
 
         var weekTotal = model.thisWeek.length;
         var weekFinished = model.weekFinished.length;
+        var weekComplete = !weekTotal || weekFinished === weekTotal;
+        var nextWeekTotal = model.nextWeek.length;
+        var nextWeekFinished = model.nextWeekFinished.length;
+        if (weekComplete && nextWeekTotal) {
+            var upcomingPercent = Math.round((nextWeekFinished / nextWeekTotal) * 100);
+            var upcomingLabel = nextWeekFinished === nextWeekTotal
+                ? 'Next week · All done · ' + nextWeekFinished + ' / ' + nextWeekTotal
+                : nextWeekFinished
+                    ? 'Next week · ' + nextWeekFinished + ' / ' + nextWeekTotal + ' finished'
+                    : 'Next week · ' + nextWeekTotal + ' task' + (nextWeekTotal === 1 ? '' : 's');
+            html += renderWeeklyProgressRow({
+                kind: 'upcoming' + (nextWeekFinished === nextWeekTotal ? ' is-complete' : ''),
+                scope: 'upcoming',
+                label: 'UPCOMING',
+                valueLabel: upcomingLabel,
+                ariaLabel: 'Open next week assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished.',
+                percent: upcomingPercent
+            });
+            weeklyFocusProgress.innerHTML = html;
+            return;
+        }
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
         var weekLabel = !weekTotal
             ? 'No assignments this week'

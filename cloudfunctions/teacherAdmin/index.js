@@ -342,6 +342,35 @@ function safeDate(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function shanghaiDateParts(value) {
+  const date = safeDate(value);
+  if (!date) return null;
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const output = {};
+  parts.forEach((part) => {
+    if (part.type !== "literal") output[part.type] = Number(part.value);
+  });
+  return output.year && output.month && output.day ? output : null;
+}
+
+function dueWeekEnd(value) {
+  const parts = shanghaiDateParts(value);
+  if (!parts) return null;
+  const day = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+  const mondayIndex = (day.getUTCDay() + 6) % 7;
+  return new Date(Date.UTC(parts.year, parts.month - 1, parts.day + (6 - mondayIndex), 15, 59, 59));
+}
+
+function effectiveAssignmentDueAt(assignment) {
+  return safeDate(assignment && assignment.due_at)
+    || dueWeekEnd(assignment && (assignment.assigned_at || assignment.created_at));
+}
+
 function safePercentage(value, fallback) {
   if (value == null || value === "") return Number(fallback);
   const number = Number(value);
@@ -730,7 +759,7 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
-async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId, assignedAt) {
+async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -778,7 +807,8 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     student_uid: student.auth_uid,
     set_id: setId,
     status: convertsSelfStudy ? selfStudyStatus : "to_do",
-    assigned_at: assignedAt || now,
+    // Legacy mirror for older static clients. New scheduling logic reads due_at only.
+    assigned_at: dueAt,
     due_at: dueAt,
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
@@ -859,8 +889,10 @@ async function createAssignments(event) {
       continue;
     }
     const setOptions = optionsBySet.get(setId) || {};
-    const dueAt = safeDate(optionOrEventValue(setOptions, event, "due_at"));
-    const assignedAt = safeDate(optionOrEventValue(setOptions, event, "assigned_at")) || new Date();
+    const dueInput = optionOrEventValue(setOptions, event, "due_at")
+      || optionOrEventValue(setOptions, event, "assigned_at");
+    const dueAt = dueWeekEnd(dueInput);
+    if (!dueAt) throw new Error("DUE_WEEK_REQUIRED");
     const passingPercentage = safePercentage(
       optionOrEventValue(setOptions, event, "passing_percentage"),
       passingPercentageForSet(set)
@@ -902,7 +934,7 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId, assignedAt);
+      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId);
       created.push({
         student_uid: studentUid,
         student_id: student.student_id,
@@ -923,12 +955,11 @@ async function updateAssignments(event, teacher) {
   if (!assignmentIds.length) throw new Error("ASSIGNMENT_REQUIRED");
   if (assignmentIds.length > 500) throw new Error("TOO_MANY_ASSIGNMENTS");
 
-  const canUpdateDue = hasOwn(event, "due_at");
-  const canUpdateAssigned = hasOwn(event, "assigned_at");
+  const canUpdateDue = hasOwn(event, "due_at") || hasOwn(event, "assigned_at");
   const canUpdatePassing = hasOwn(event, "passing_percentage");
   const canUpdateMastery = hasOwn(event, "mastery_percentage");
   const canUpdateMasteryEnabled = hasOwn(event, "mastery_enabled");
-  if (!canUpdateAssigned && !canUpdateDue && !canUpdatePassing && !canUpdateMastery && !canUpdateMasteryEnabled) {
+  if (!canUpdateDue && !canUpdatePassing && !canUpdateMastery && !canUpdateMasteryEnabled) {
     throw new Error("NO_ASSIGNMENT_UPDATES");
   }
 
@@ -965,14 +996,17 @@ async function updateAssignments(event, teacher) {
     if (passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
 
     const update = { updated_at: now };
-    if (canUpdateAssigned) {
-      const assignedAt = safeDate(event.assigned_at);
-      if (!assignedAt) throw new Error("INVALID_ASSIGNED_AT");
-      update.assigned_at = assignedAt;
+    if (canUpdateDue) {
+      const dueInput = hasOwn(event, "due_at") ? event.due_at : event.assigned_at;
+      const dueAt = dueWeekEnd(dueInput);
+      if (!dueAt) throw new Error("DUE_WEEK_REQUIRED");
+      update.due_at = dueAt;
+      if (assignment.assignment_batch_id || !assignment.assigned_at) {
+        update.assigned_at = dueAt;
+      }
       update.schedule_updated_at = now;
       update.schedule_updated_by_teacher_uid = teacher.auth_uid;
     }
-    if (canUpdateDue) update.due_at = safeDate(event.due_at);
     if (canUpdatePassing) update.passing_percentage = passing;
     if (canUpdateMastery) update.mastery_percentage = mastery;
     if (canUpdateMasteryEnabled) update.mastery_enabled = masteryEnabled;
@@ -1077,6 +1111,7 @@ async function listAssignments() {
       const assignment = recordData(record);
       const student = studentMap.get(assignment.student_uid) || {};
       const set = setMap.get(assignment.set_id) || {};
+      const dueAt = effectiveAssignmentDueAt(assignment);
       return {
         assignment_id: assignment.assignment_id || assignment._id,
         assignment_batch_id: assignment.assignment_batch_id || null,
@@ -1092,7 +1127,8 @@ async function listAssignments() {
         latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
         best_percentage: assignment.best_percentage == null ? null : assignment.best_percentage,
         assigned_at: assignment.assigned_at || null,
-        due_at: assignment.due_at || null,
+        due_at: dueAt,
+        created_at: assignment.created_at || null,
         passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
         mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
         mastery_enabled: assignmentMasteryEnabled(assignment),
@@ -1106,7 +1142,7 @@ async function listAssignments() {
         previous_status: assignment.previous_status || null,
         updated_at: assignment.updated_at || null,
       };
-    }).sort((a, b) => new Date(b.assigned_at || 0) - new Date(a.assigned_at || 0)),
+    }).sort((a, b) => new Date(b.due_at || 0) - new Date(a.due_at || 0)),
   };
 }
 
@@ -1225,7 +1261,8 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
       : assignment.latest_percentage,
     best_percentage: bestPercentage,
     assigned_at: assignment.assigned_at || null,
-    due_at: assignment.due_at || null,
+    due_at: effectiveAssignmentDueAt(assignment),
+    created_at: assignment.created_at || null,
     passing_percentage: passingPercentageForAssignment(assignment, set),
     mastery_percentage: masteryPercentageForAssignment(assignment, set),
     mastery_enabled: assignmentMasteryEnabled(assignment),
@@ -1348,8 +1385,8 @@ async function listProgress() {
   return {
     success: true,
     progress: progress.sort((a, b) => {
-      const dateA = a.completed_at || a.latest_submitted_at || a.updated_at || a.assigned_at || 0;
-      const dateB = b.completed_at || b.latest_submitted_at || b.updated_at || b.assigned_at || 0;
+      const dateA = a.completed_at || a.latest_submitted_at || a.updated_at || a.due_at || a.assigned_at || 0;
+      const dateB = b.completed_at || b.latest_submitted_at || b.updated_at || b.due_at || b.assigned_at || 0;
       return new Date(dateB || 0) - new Date(dateA || 0);
     }),
   };
@@ -1976,6 +2013,71 @@ async function backfillVocabularyContentVersionMismatch(event, teacher) {
   };
 }
 
+async function backfillAssignmentDueWeeks(event, teacher) {
+  const apply = event.apply === true;
+  const limit = Math.min(Math.max(Number(event.limit || 100), 1), 500);
+  const cursor = text(event.cursor);
+  const rows = (await getAll("assignments"))
+    .map(recordData)
+    .sort((left, right) => text(left.assignment_id || left._id).localeCompare(text(right.assignment_id || right._id)));
+  const missingSource = rows.filter((assignment) =>
+    !effectiveAssignmentDueAt(assignment)
+  ).length;
+  const pending = rows.filter((assignment) => {
+    const assignmentId = text(assignment.assignment_id || assignment._id);
+    if (cursor && assignmentId <= cursor) return false;
+    const source = assignment.due_at || assignment.assigned_at || assignment.created_at;
+    const normalizedDueAt = dueWeekEnd(source);
+    if (!normalizedDueAt) return false;
+    const currentDueAt = safeDate(assignment.due_at);
+    return !currentDueAt || currentDueAt.getTime() !== normalizedDueAt.getTime();
+  });
+  const batch = pending.slice(0, limit);
+  const now = new Date();
+  const candidates = [];
+  for (const assignment of batch) {
+    const assignmentId = text(assignment.assignment_id || assignment._id);
+    const sourceField = assignment.due_at
+      ? "due_at"
+      : assignment.assigned_at
+        ? "assigned_at"
+        : "created_at";
+    const normalizedDueAt = dueWeekEnd(assignment[sourceField]);
+    candidates.push({
+      assignment_id: assignmentId,
+      student_uid: assignment.student_uid || null,
+      set_id: assignment.set_id || null,
+      source_field: sourceField,
+      previous_due_at: assignment.due_at || null,
+      normalized_due_at: normalizedDueAt,
+    });
+    if (!apply) continue;
+    await db.collection("assignments").doc(assignment._id).update({
+      due_at: normalizedDueAt,
+      due_week_migrated_at: now,
+      due_week_migrated_by_teacher_uid: teacher.auth_uid,
+      updated_at: now,
+    });
+  }
+  const nextCursor = pending.length > batch.length && batch.length
+    ? text(batch[batch.length - 1].assignment_id || batch[batch.length - 1]._id)
+    : null;
+  return {
+    success: true,
+    action: "backfillAssignmentDueWeeks",
+    dry_run: !apply,
+    apply,
+    scanned_assignment_count: rows.length,
+    candidate_count: batch.length,
+    updated_count: apply ? batch.length : 0,
+    missing_source_count: missingSource,
+    cursor: cursor || null,
+    next_cursor: nextCursor,
+    done: nextCursor == null,
+    candidates,
+  };
+}
+
 async function resolveDispute(event, teacher) {
   const disputeId = text(event.dispute_id);
   const decision = text(event.decision);
@@ -2096,6 +2198,9 @@ exports.main = async (event) => {
     if (action === "backfillVocabularyContentVersionMismatch") {
       return await backfillVocabularyContentVersionMismatch(event, teacher);
     }
+    if (action === "backfillAssignmentDueWeeks") {
+      return await backfillAssignmentDueWeeks(event, teacher);
+    }
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     console.error("teacherAdmin failed", error);
@@ -2110,6 +2215,8 @@ exports.main = async (event) => {
             ? "Student name is required."
           : error.message === "MASTERY_REQUIRED"
             ? "Mastery percentage is required when Earn STAR is enabled."
+            : error.message === "DUE_WEEK_REQUIRED"
+              ? "Choose a due week before assigning or updating work."
             : error.message === "PASSING_ABOVE_MASTERY"
               ? "Passing percentage cannot be higher than mastery percentage."
               : `Unable to complete this teacher action (${error.message || "TEACHER_ADMIN_ERROR"}).`,

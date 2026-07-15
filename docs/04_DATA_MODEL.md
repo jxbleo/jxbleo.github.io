@@ -122,15 +122,18 @@ Core fields:
 | `student_uid` | string | owner `students.auth_uid` |
 | `set_id` | string | assigned set |
 | `status` | string | `to_do`, `passed`, `mastered`, `cancelled` |
-| `assigned_at` | Date | teacher-selected assignment date/week used for View week grouping; defaults to creation time/current week |
-| `due_at` | Date/null | due time |
+| `due_at` | Date | required due week stored as that Shanghai-time week's Sunday 23:59:59; canonical source for student reminders and Teacher View Wxx grouping |
+| `assigned_at` | Date/null | deprecated compatibility mirror of `due_at`; legacy reads may use it only to derive a missing due week |
+| `created_at` | Date | actual assignment creation audit time; not a schedule field |
 | `passing_percentage` | number | assignment passing threshold |
 | `mastery_percentage` | number | assignment mastery threshold |
 | `mastery_enabled` | boolean | whether this assignment can become mastered / earn STAR; new Assign-created records default to false unless the teacher selects `Earn STAR` |
 | `standards_updated_at` | Date/null | last teacher standards edit time |
 | `standards_updated_by_teacher_uid` | string/null | teacher who last edited due/threshold standards |
 | `schedule_updated_at` | Date/null | last Teacher View assigned-week correction time |
-| `schedule_updated_by_teacher_uid` | string/null | teacher who last corrected `assigned_at` |
+| `schedule_updated_by_teacher_uid` | string/null | teacher who last corrected `due_at` |
+| `due_week_migrated_at` | Date/null | historical due-week normalization time |
+| `due_week_migrated_by_teacher_uid` | string/null | authenticated teacher who applied the historical due-week backfill |
 | `latest_attempt_id` | string/null | latest submission |
 | `attempt_count` | number | countable attempts |
 | `latest_percentage` | number/null | latest display percentage |
@@ -163,15 +166,18 @@ the linked assignment attempts after recording a countable assignment attempt.
 Teacher progress views may use linked attempts as a fallback if stored summary
 fields are missing or stale.
 
-Teachers may choose a planned assignment date or week during Assign. That value
-is stored in `assigned_at` and drives Teacher View Wxx matrix grouping and date
-filters, while `created_at` remains the creation audit timestamp. Assign accepts
-per-task row parameters, so different selected `set_id` values in one teacher
-operation may create assignments with different `assigned_at`,
-`passing_percentage`, `mastery_percentage`, and `mastery_enabled` values.
-Teachers may edit an existing assignment's `assigned_at` week, `due_at`,
+Teachers must choose a due week during Assign. `teacherAdmin` normalizes it to
+that Shanghai-time week's Sunday 23:59:59 and stores it in `due_at`, which
+drives student Overdue / This Week / Upcoming behavior and Teacher View Wxx
+matrix grouping/date filters. `created_at` remains the creation audit timestamp.
+For rolling deployment compatibility, new and updated records may mirror the
+same normalized value into deprecated `assigned_at`; new business logic must
+not treat it as a second schedule. Assign accepts per-task row parameters, so
+different selected `set_id` values in one teacher operation may use different
+`due_at`, `passing_percentage`, `mastery_percentage`, and `mastery_enabled`
+values. Teachers may edit an existing assignment's `due_at`,
 `passing_percentage`, `mastery_percentage`, and `mastery_enabled` from the View
-surface. Changing `assigned_at` moves that assignment to the chosen Wxx matrix
+surface. Changing `due_at` moves that assignment to the chosen Wxx matrix
 group/date filter but does not change `created_at` or attempt timestamps. New
 Assign-created records default to `mastery_enabled: false`; `mastery_percentage`
 is required during Assign only when the teacher selects `Earn STAR` for that
@@ -184,6 +190,13 @@ The matrix task-header bulk editor does not introduce a shared mutable class
 standard record. It resolves the visible column to explicit `assignment_id`
 values and updates those assignment documents individually, preserving the
 assignment-level ownership and audit model.
+
+During migration, `getDashboard` and `teacherAdmin` derive an effective
+Sunday-end `due_at` from legacy `assigned_at`, then `created_at`, when the
+canonical field is missing. The authenticated teacher-only
+`backfillAssignmentDueWeeks` action is dry-run by default and can persist those
+normalized weeks in bounded batches. Records with none of those date sources
+are reported and never silently assigned an invented week.
 
 Teachers may cancel selected open assignments by `assignment_id`. Cancellation
 is a soft state change to `status: "cancelled"`, never a delete. Cancelled
@@ -200,7 +213,7 @@ Reassignment rule:
 - Reassignment creates a new `assignment_id`.
 - New assignments also receive an `assignment_batch_id` shared by the records
   created for the same set in one teacher Assign action. Teacher View may use
-  this together with the current `assigned_at` week to render repeated
+  this together with the current `due_at` week to render repeated
   assignments of the same set as separate matrix columns without splitting one
   class assignment into per-student columns. If a teacher later moves only part
   of a batch to a different week, that week becomes a separate matrix column.
