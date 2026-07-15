@@ -1051,9 +1051,13 @@
 
     function openHrefCard(card, event) {
         if (!card) return;
-        if (event && event.target && event.target.closest('button, a')) return;
+        var interactiveTarget = event && event.target && event.target.closest('button, a');
+        if (interactiveTarget && interactiveTarget !== card) return;
         var href = card.dataset.openHref;
-        if (href) showPracticeEntryDialog(card, href);
+        if (href) {
+            if (event) event.preventDefault();
+            showPracticeEntryDialog(card, href);
+        }
     }
 
     function teacherLibraryItemIdentity(item) {
@@ -3976,7 +3980,9 @@
                 var href = teacherPracticeHref(sourceSet, 'teacher.html?view=view');
                 var tag = href && href !== '#' ? 'a' : 'span';
                 return '<' + tag + ' class="progress-matrix-task-head" title="' + escapeHtml(title) + '"' +
-                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" aria-label="Open teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
+                    (tag === 'a' ? ' href="' + escapeHtml(href) + '" data-open-href="' + escapeHtml(href) +
+                        '" data-entry-kind="Teacher preview" data-entry-title="' + escapeHtml(title) +
+                        '" aria-haspopup="dialog" aria-label="Confirm teacher preview for ' + escapeHtml(title) + '"' : '') + '>' +
                     '<strong>' + escapeHtml(set.set_id || set.id) + '</strong>' +
                     '<small class="progress-matrix-task-name">' + escapeHtml(title) + '</small>' +
                 '</' + tag + '>';

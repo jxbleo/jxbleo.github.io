@@ -68,6 +68,15 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-15
 
+- Routed Teacher View matrix task headers through the shared practice-entry
+  confirmation so an accidental click no longer leaves the matrix. Confirming
+  opens the existing `teacher=1` preview; Close, Escape, or backdrop dismissal
+  stays in View. Updated the UI/test specifications and bumped the Teacher JS
+  cache version. Verified JavaScript syntax, diff whitespace, release checks,
+  and the authenticated local Teacher View: the matrix stayed on its original
+  URL when the dialog opened or closed, and Enter issued the expected
+  `teacher=1` practice URL with the View return target. No backend, CloudBase
+  deployment, or content import is required.
 - Reduced the Teacher Student lookup dialog to three-quarters of its former
   desktop width/height, replaced the internal top-right `x` with an external
   lower `Close`, and simplified student finding to `Choose` plus a magnifying
