@@ -3,6 +3,59 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-07-15: Layer the Shared Visual System Over the Static Frontend
+
+Decision:
+
+Keep the existing static pages and add the shared visual system as modular
+`liquid-glass-shell` and `spatial-workspace` CSS/JavaScript layers. Login and
+public Library use presentation-only shell styling; authenticated Student and
+Teacher pages may use the spatial layout and one page-level modal root while
+preserving existing DOM hooks and backend boundaries.
+
+Reason:
+
+The owner wants a coherent, responsive interface without replacing the current
+vanilla JavaScript application or risking CloudBase grading/account behavior.
+
+Trade-offs:
+
+- Good: visual and responsive changes remain statically deployable.
+- Good: modal and workspace behavior can be shared without a framework.
+- Cost: CSS precedence and page-level stacking require disciplined tests.
+- Cost: practice runtimes deliberately remain visually separate.
+
+Review condition:
+
+Revisit only if the static pages become unmaintainable or a framework migration
+is separately approved.
+
+## 2026-07-15: Use Browser Speech for Lightweight Vocabulary Pronunciation
+
+Decision:
+
+Use `SpeechSynthesisUtterance` with `en-GB` for My Words and Vocabulary
+Learn/Spell pronunciation controls instead of adding a new audio service or one
+audio asset per vocabulary item.
+
+Reason:
+
+The words are already present in public runtime data, pronunciation is
+non-countable practice feedback, and browser speech avoids provider keys,
+CloudBase changes, and large audio libraries.
+
+Trade-offs:
+
+- Good: no backend deployment, content migration, or new dependency.
+- Good: direct user clicks satisfy normal mobile browser playback rules.
+- Cost: voice quality and availability vary by device/browser.
+- Cost: homographs may use the device voice's default pronunciation.
+
+Review condition:
+
+Revisit if the owner requires one fixed recorded accent, offline audio, or
+pronunciation-specific handling for homographs.
+
 ## 2026-06-16: Use Static Frontend With CloudBase Backend
 
 Decision:

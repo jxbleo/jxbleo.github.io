@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#eef4ef">
+    <title>My Words Compact Modal Preview | Mr. Cat Academy</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font: 100%/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+            --ink: #17332d;
+            --muted: #70817c;
+            --line: rgba(37, 76, 67, 0.12);
+            --accent: #14766d;
+            --accent-soft: #eaf6f2;
+            --paper: #f8fbf9;
+            --white: #ffffff;
+            --shadow: 0 24px 80px rgba(20, 54, 47, 0.24), 0 3px 12px rgba(20, 54, 47, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { min-height: 100%; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 8%, rgba(181, 224, 208, 0.54), transparent 28rem),
+                radial-gradient(circle at 88% 2%, rgba(215, 231, 255, 0.65), transparent 25rem),
+                #edf3ee;
+        }
+
+        button, input { font: inherit; }
+        button { -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, input:focus-visible {
+            outline: 3px solid rgba(20, 118, 109, 0.25);
+            outline-offset: 2px;
+        }
+
+        .prototype-note {
+            position: fixed;
+            z-index: 2;
+            left: 50%;
+            top: max(10px, env(safe-area-inset-top));
+            transform: translateX(-50%);
+            padding: 6px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 999px;
+            color: #527068;
+            background: rgba(255, 255, 255, 0.72);
+            box-shadow: 0 5px 20px rgba(31, 66, 58, 0.08);
+            backdrop-filter: blur(18px) saturate(160%);
+            font-size: 0.69rem;
+            font-weight: 750;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .page-shell {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 56px 0 72px;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 64px;
+            padding: 10px 14px 10px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.62);
+            box-shadow: 0 12px 40px rgba(38, 72, 64, 0.08);
+            backdrop-filter: blur(24px) saturate(160%);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .brand img {
+            width: 43px;
+            height: 38px;
+            object-fit: contain;
+            filter: brightness(0) saturate(100%);
+        }
+
+        .brand strong {
+            overflow: hidden;
+            font-size: 0.88rem;
+            letter-spacing: -0.01em;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+
+        .circle-button {
+            display: inline-grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid rgba(20, 118, 109, 0.16);
+            border-radius: 50%;
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 6px 18px rgba(31, 73, 64, 0.08);
+            cursor: pointer;
+            transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+        }
+
+        .circle-button svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .circle-button:hover { border-color: rgba(20, 118, 109, 0.34); background: #fff; }
+        .circle-button:active { transform: scale(0.94); transition-duration: 80ms; }
+
+        .student-chip {
+            min-height: 40px;
+            padding: 0 15px;
+            border: 1px solid rgba(20, 118, 109, 0.14);
+            border-radius: 999px;
+            color: #2e5149;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .dashboard-stage {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .welcome, .library-preview {
+            min-height: 230px;
+            padding: clamp(22px, 4vw, 40px);
+            border: 1px solid rgba(255, 255, 255, 0.76);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 18px 52px rgba(37, 75, 66, 0.08);
+            backdrop-filter: blur(18px) saturate(145%);
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #528077;
+            font-size: 0.69rem;
+            font-weight: 850;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        .welcome h1 { margin: 0; font-size: clamp(2rem, 5vw, 4.3rem); line-height: 1.02; letter-spacing: -0.045em; }
+        .welcome p:last-child { max-width: 32rem; margin: 16px 0 0; color: #5d746e; }
+        .library-preview h2 { margin: 0 0 18px; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.03em; }
+        .ghost-row { height: 58px; margin-top: 9px; border: 1px solid rgba(31, 75, 65, 0.08); border-radius: 16px; background: rgba(255, 255, 255, 0.58); }
+
+        .words-overlay {
+            position: fixed;
+            z-index: 10;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+            background: rgba(17, 38, 34, 0.3);
+            backdrop-filter: blur(8px) saturate(118%);
+            opacity: 1;
+            transition: opacity 180ms ease;
+        }
+
+        .words-overlay[hidden] { display: none; }
+
+        .dialog-stack {
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto;
+            gap: 11px;
+            width: min(540px, 100%);
+            height: min(620px, 74dvh);
+            min-height: min(470px, 74dvh);
+            transform-origin: 78% 0;
+        }
+
+        .words-dialog {
+            display: grid;
+            grid-template-rows: auto auto auto minmax(0, 1fr);
+            width: 100%;
+            min-height: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            border-radius: 26px;
+            background: rgba(248, 251, 249, 0.96);
+            box-shadow: var(--shadow);
+        }
+
+        .outside-close {
+            justify-self: center;
+            min-width: 116px;
+            min-height: 43px;
+            padding: 0 22px;
+            border: 1px solid rgba(255, 255, 255, 0.84);
+            border-radius: 999px;
+            color: #36574f;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 28px rgba(20, 54, 47, 0.16);
+            backdrop-filter: blur(18px) saturate(150%);
+            font-size: 0.78rem;
+            font-weight: 820;
+            cursor: pointer;
+            transition: transform 120ms ease, background 140ms ease;
+        }
+
+        .outside-close:hover { background: #fff; }
+        .outside-close:active { transform: scale(0.96); transition-duration: 70ms; }
+
+        .dialog-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 17px 18px 13px 20px;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(18px) saturate(150%);
+        }
+
+        .title-block { min-width: 0; }
+        .title-line { display: flex; align-items: baseline; gap: 9px; }
+        .title-line h2 { margin: 0; font-size: 1.2rem; line-height: 1.15; letter-spacing: -0.025em; }
+        .word-count { color: var(--muted); font-size: 0.76rem; font-weight: 700; white-space: nowrap; }
+        .dialog-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 0.78rem; }
+        .dialog-actions { display: flex; align-items: center; gap: 7px; }
+
+        .dialog-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            color: #46625b;
+            background: rgba(232, 240, 236, 0.78);
+            cursor: pointer;
+            transition: transform 140ms ease, background 140ms ease, color 140ms ease;
+        }
+
+        .dialog-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .dialog-icon:hover { color: var(--ink); background: #e6efea; }
+        .dialog-icon:active { transform: scale(0.92); transition-duration: 80ms; }
+
+        .add-trigger,
+        .search-trigger { color: #fff; background: var(--accent); box-shadow: 0 7px 18px rgba(20, 118, 109, 0.23); }
+        .add-trigger:hover,
+        .search-trigger:hover { color: #fff; background: #0e675f; }
+        .add-trigger svg { transition: transform 180ms ease; }
+        .add-trigger[aria-expanded="true"] svg { transform: rotate(45deg); }
+        .add-trigger[aria-expanded="true"],
+        .search-trigger[aria-expanded="true"] { color: #fff; background: #0e675f; }
+
+        .add-panel,
+        .search-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid transparent;
+            transition: grid-template-rows 220ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 180ms ease;
+        }
+
+        .add-panel.open,
+        .search-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
+        .add-panel-inner,
+        .search-panel-inner { min-height: 0; overflow: hidden; }
+        .add-form { padding: 3px 20px 14px; }
+
+        .add-input-shell {
+            display: grid;
+            grid-template-columns: 20px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 8px;
+            min-height: 46px;
+            padding: 0 13px;
+            border: 1px solid rgba(20, 118, 109, 0.24);
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(20, 118, 109, 0.06);
+        }
+
+        .add-input-shell svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; }
+        .add-input-shell input { width: 100%; min-width: 0; padding: 10px 0; border: 0; outline: 0; color: var(--ink); background: transparent; }
+        .add-input-shell input::placeholder { color: #96a49f; }
+        .enter-hint { color: #82938e; font-size: 0.68rem; font-weight: 750; white-space: nowrap; }
+        .add-status { min-height: 1em; margin: 6px 3px 0; color: var(--accent); font-size: 0.73rem; font-weight: 700; }
+
+        .words-main {
+            display: grid;
+            grid-template-rows: minmax(0, 1fr);
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .search-wrap { padding: 3px 20px 14px; }
+        .search-box { position: relative; }
+        .search-box svg { position: absolute; left: 13px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); fill: none; stroke: #78908a; stroke-width: 2; stroke-linecap: round; }
+        .search-box input { width: 100%; min-height: 42px; padding: 9px 13px 9px 39px; border: 1px solid rgba(35, 71, 63, 0.09); border-radius: 14px; color: var(--ink); background: rgba(232, 239, 235, 0.76); outline: 0; }
+        .search-box input:focus { border-color: rgba(20, 118, 109, 0.27); background: #fff; box-shadow: 0 0 0 3px rgba(20, 118, 109, 0.07); }
+
+        .word-list {
+            min-height: 0;
+            margin: 0;
+            padding: 2px 14px max(18px, env(safe-area-inset-bottom));
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-gutter: stable;
+        }
+
+        .word-list::-webkit-scrollbar { width: 8px; }
+        .word-list::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: 99px; background: rgba(78, 108, 100, 0.25); background-clip: content-box; }
+
+        .word-row { border-bottom: 1px solid var(--line); background: transparent; }
+        .word-row:last-child { border-bottom: 0; }
+        .word-summary { display: flex; align-items: stretch; min-height: 67px; }
+        .word-toggle { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; flex: 1; gap: 0; width: 100%; min-width: 0; min-height: 67px; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; cursor: pointer; }
+        .word-toggle::after { content: ""; position: absolute; top: 14px; bottom: 14px; left: 50%; width: 1px; background: var(--line); transform: translateX(-0.5px); }
+        .word-toggle:active { opacity: 0.68; }
+        .word-name { min-width: 0; padding: 0 13px; font-size: 1rem; font-weight: 790; line-height: 1.22; letter-spacing: -0.012em; text-align: center; overflow-wrap: anywhere; }
+        .word-meaning { display: flex; align-items: center; align-self: stretch; justify-content: center; gap: 8px; min-width: 0; padding: 0 13px; }
+        .word-pos { padding: 2px 6px; border-radius: 6px; color: var(--accent); background: var(--accent-soft); font-size: 0.63rem; font-weight: 850; text-transform: lowercase; }
+        .word-chinese { min-width: 0; color: #49635d; font-size: 0.8rem; font-weight: 680; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .speak-button {
+            display: inline-grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            color: var(--accent);
+            background: var(--accent-soft);
+            cursor: pointer;
+        }
+
+        .speak-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .speak-button:active { transform: scale(0.92); }
+        .phonetic-row .speak-button { width: 32px; height: 32px; }
+
+        .word-details { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 190ms ease; }
+        .word-row.expanded .word-details { grid-template-rows: 1fr; }
+        .word-details-inner { min-height: 0; overflow: hidden; }
+        .details-content { position: relative; display: grid; gap: 7px; padding: 0 44px 14px 0; color: #637871; font-size: 0.78rem; line-height: 1.48; }
+        .details-content p { margin: 0; }
+        .phonetic-row { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+        .phonetic { color: var(--accent); font-weight: 760; }
+        .source { color: #8a9994; font-size: 0.7rem; }
+        .remove-button { position: absolute; right: 0; bottom: 12px; display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; color: #8c9b96; background: transparent; cursor: pointer; }
+        .remove-button:hover { color: #a8483f; background: #fff0ee; }
+        .remove-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+        .empty-state { display: none; padding: 50px 20px; color: var(--muted); text-align: center; }
+        .empty-state.visible { display: block; }
+
+        .toast {
+            position: fixed;
+            z-index: 20;
+            left: 50%;
+            bottom: max(76px, calc(env(safe-area-inset-bottom) + 66px));
+            max-width: calc(100% - 32px);
+            padding: 10px 15px;
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(20, 51, 44, 0.92);
+            box-shadow: 0 10px 30px rgba(20, 51, 44, 0.2);
+            font-size: 0.78rem;
+            font-weight: 750;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 10px);
+            transition: opacity 160ms ease, transform 180ms ease;
+        }
+
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        @media (max-width: 700px) {
+            .page-shell { width: min(100% - 20px, 1120px); padding-top: 52px; }
+            .brand strong { display: none; }
+            .student-chip { display: none; }
+            .dashboard-stage { grid-template-columns: 1fr; }
+            .library-preview { display: none; }
+            .welcome { min-height: 250px; border-radius: 24px; }
+
+            .words-overlay {
+                place-items: center;
+                padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
+                background: rgba(17, 38, 34, 0.27);
+            }
+
+            .dialog-stack {
+                width: 100%;
+                height: min(590px, 72dvh);
+                min-height: min(450px, 72dvh);
+                transform-origin: 80% 100%;
+            }
+
+            .words-dialog {
+                width: 100%;
+                border-radius: 25px;
+            }
+
+            .dialog-header { padding: 15px 14px 12px 17px; }
+            .dialog-subtitle { display: none; }
+            .dialog-icon { width: 40px; height: 40px; }
+            .add-form { padding-inline: 14px; }
+            .search-wrap { padding-inline: 12px; }
+            .word-list { padding-inline: 14px; }
+            .word-toggle { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; }
+            .word-chinese { font-size: 0.77rem; }
+            .enter-hint { display: none; }
+        }
+
+        @media (max-width: 380px) {
+            .title-line h2 { font-size: 1.1rem; }
+            .word-count { font-size: 0.7rem; }
+            .word-meaning { gap: 5px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+        }
+
+        @media (prefers-reduced-transparency: reduce) {
+            .app-header, .welcome, .library-preview, .words-dialog, .dialog-header { background: #f9fbfa; backdrop-filter: none; }
+            .words-overlay { background: rgba(17, 38, 34, 0.52); backdrop-filter: none; }
+        }
+
+        @media (prefers-contrast: more) {
+            .words-dialog { border-color: #56746c; background: #fff; }
+            .word-row, .search-box input { border-color: #82978f; }
+        }
+    </style>
+</head>
+<body>
+    <span class="prototype-note">Temporary UI prototype</span>
+
+    <main class="page-shell" aria-hidden="true">
+        <header class="app-header">
+            <div class="brand">
+                <img src="assets/logos/mrcat-leaping-cat.png" alt="">
+                <strong>Mr. Cat Academy</strong>
+            </div>
+            <div class="header-actions">
+                <button class="circle-button" type="button" aria-label="Assignments" tabindex="-1">
+                    <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+                </button>
+                <button class="circle-button" id="notebook-button" type="button" aria-label="Open My Words" tabindex="-1">
+                    <svg viewBox="0 0 24 24"><path d="M6 3.5h10.5A1.5 1.5 0 0 1 18 5v14.5H7.5A2.5 2.5 0 0 1 5 17V5.5a2 2 0 0 1 1-2Z"></path><path d="M8 3.5v16M10.5 8h4.5M10.5 11.5h4.5"></path></svg>
+                </button>
+                <button class="student-chip" type="button" tabindex="-1">Amy · DSE</button>
+            </div>
+        </header>
+
+        <section class="dashboard-stage">
+            <article class="welcome">
+                <p class="eyebrow">Student workspace</p>
+                <h1>Good afternoon.</h1>
+                <p>Small steps make strong readers. Pick up where you left off.</p>
+            </article>
+            <article class="library-preview">
+                <p class="eyebrow">Explore</p>
+                <h2>Library</h2>
+                <div class="ghost-row"></div>
+                <div class="ghost-row"></div>
+            </article>
+        </section>
+    </main>
+
+    <section class="words-overlay" id="words-overlay">
+        <div class="dialog-stack" role="dialog" aria-modal="true" aria-labelledby="words-title" aria-describedby="words-subtitle">
+            <section class="words-dialog">
+            <header class="dialog-header">
+                <div class="title-block">
+                    <div class="title-line">
+                        <h2 id="words-title">My Words</h2>
+                        <span class="word-count" id="word-count">8 words</span>
+                    </div>
+                    <p class="dialog-subtitle" id="words-subtitle">Your saved words and phrases</p>
+                </div>
+                <div class="dialog-actions">
+                    <button class="dialog-icon search-trigger" id="search-trigger" type="button" aria-label="Search words" aria-expanded="false" aria-controls="search-panel">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="m15 15 4.5 4.5"></path></svg>
+                    </button>
+                    <button class="dialog-icon add-trigger" id="add-trigger" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="add-panel">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                    </button>
+                </div>
+            </header>
+
+            <div class="add-panel" id="add-panel" aria-hidden="true" inert>
+                <div class="add-panel-inner">
+                    <form class="add-form" id="add-form">
+                        <label class="add-input-shell" for="word-input">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                            <input id="word-input" type="text" maxlength="80" autocomplete="off" placeholder="Type a word or short phrase">
+                            <span class="enter-hint">Press Enter</span>
+                        </label>
+                        <p class="add-status" id="add-status" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="search-panel" id="search-panel" aria-hidden="true" inert>
+                <div class="search-panel-inner">
+                    <div class="search-wrap">
+                        <label class="search-box">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                            <input id="word-search" type="search" autocomplete="off" placeholder="Search words">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="words-main">
+                <div class="word-list" id="word-list" tabindex="0" aria-label="Saved words">
+                    <article class="word-row" data-search="perspective 观点 角度 noun a particular attitude toward or way of regarding something">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false">
+                                <span class="word-name">perspective</span>
+                                <span class="word-meaning"><span class="word-pos">noun</span><span class="word-chinese">观点；思考方式</span></span>
+                            </button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content">
+                            <div class="phonetic-row"><p class="phonetic">/pəˈspek.tɪv/</p><button class="speak-button" type="button" data-speak="perspective" aria-label="Pronounce perspective"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div>
+                            <p>A particular way of thinking about something.</p>
+                            <p class="source">BBC · The psychology of greed</p>
+                            <button class="remove-button" type="button" aria-label="Remove perspective"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>
+                        </div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="sustainable 可持续的 adjective able to continue over time without harming the environment">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false">
+                                <span class="word-name">sustainable</span>
+                                <span class="word-meaning"><span class="word-pos">adj.</span><span class="word-chinese">可持续的</span></span>
+                            </button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/səˈsteɪ.nə.bəl/</p><button class="speak-button" type="button" data-speak="sustainable" aria-label="Pronounce sustainable"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>Able to continue without causing damage to the environment.</p><p class="source">IELTS Reading · Urban planning</p><button class="remove-button" type="button" aria-label="Remove sustainable"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="come across 偶然遇见 phrase find or meet by chance">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false">
+                                <span class="word-name">come across</span>
+                                <span class="word-meaning"><span class="word-pos">phrase</span><span class="word-chinese">偶然遇见；发现</span></span>
+                            </button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/ˌkʌm əˈkrɒs/</p><button class="speak-button" type="button" data-speak="come across" aria-label="Pronounce come across"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>To find or meet someone or something by chance.</p><p class="source">Saved from BBC listening</p><button class="remove-button" type="button" aria-label="Remove come across"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="inevitable 不可避免的 adjective certain to happen">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false">
+                                <span class="word-name">inevitable</span>
+                                <span class="word-meaning"><span class="word-pos">adj.</span><span class="word-chinese">不可避免的</span></span>
+                            </button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/ɪˈnev.ɪ.tə.bəl/</p><button class="speak-button" type="button" data-speak="inevitable" aria-label="Pronounce inevitable"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>Certain to happen and unable to be avoided.</p><p class="source">IELTS Reading · Passage 2</p><button class="remove-button" type="button" aria-label="Remove inevitable"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="adapt 适应 调整 verb change to suit new conditions">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false">
+                                <span class="word-name">adapt</span>
+                                <span class="word-meaning"><span class="word-pos">verb</span><span class="word-chinese">适应；调整</span></span>
+                            </button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/əˈdæpt/</p><button class="speak-button" type="button" data-speak="adapt" aria-label="Pronounce adapt"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>To change your behaviour so it is suitable for a new situation.</p><p class="source">Vocabulary · Oxford5000</p><button class="remove-button" type="button" aria-label="Remove adapt"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="subtle 不明显的 微妙的 adjective not obvious and therefore difficult to notice">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false"><span class="word-name">subtle</span><span class="word-meaning"><span class="word-pos">adj.</span><span class="word-chinese">微妙的；不明显的</span></span></button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/ˈsʌt.əl/</p><button class="speak-button" type="button" data-speak="subtle" aria-label="Pronounce subtle"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>Not loud, bright, noticeable, or obvious.</p><p class="source">BBC · How colour affects us</p><button class="remove-button" type="button" aria-label="Remove subtle"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="allocate 分配 verb give something to someone as a share">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false"><span class="word-name">allocate</span><span class="word-meaning"><span class="word-pos">verb</span><span class="word-chinese">分配；拨出</span></span></button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/ˈæl.ə.keɪt/</p><button class="speak-button" type="button" data-speak="allocate" aria-label="Pronounce allocate"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>To give something to someone as their share.</p><p class="source">IELTS Reading · Passage 3</p><button class="remove-button" type="button" aria-label="Remove allocate"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <article class="word-row" data-search="resilient 有韧性的 adjective able to recover quickly after difficulties">
+                        <div class="word-summary">
+                            <button class="word-toggle" type="button" aria-expanded="false"><span class="word-name">resilient</span><span class="word-meaning"><span class="word-pos">adj.</span><span class="word-chinese">有韧性的；适应力强的</span></span></button>
+                        </div>
+                        <div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">/rɪˈzɪl.i.ənt/</p><button class="speak-button" type="button" data-speak="resilient" aria-label="Pronounce resilient"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>Able to become strong or successful again after difficulties.</p><p class="source">Vocabulary · NAWL</p><button class="remove-button" type="button" aria-label="Remove resilient"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>
+                    </article>
+
+                    <div class="empty-state" id="empty-state">No words match your search.</div>
+                </div>
+            </div>
+            </section>
+            <button class="outside-close" id="close-button" type="button">Close</button>
+        </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        (function () {
+            var overlay = document.getElementById('words-overlay');
+            var notebookButton = document.getElementById('notebook-button');
+            var closeButton = document.getElementById('close-button');
+            var searchTrigger = document.getElementById('search-trigger');
+            var searchPanel = document.getElementById('search-panel');
+            var addTrigger = document.getElementById('add-trigger');
+            var addPanel = document.getElementById('add-panel');
+            var addForm = document.getElementById('add-form');
+            var wordInput = document.getElementById('word-input');
+            var addStatus = document.getElementById('add-status');
+            var searchInput = document.getElementById('word-search');
+            var wordList = document.getElementById('word-list');
+            var wordCount = document.getElementById('word-count');
+            var emptyState = document.getElementById('empty-state');
+            var toast = document.getElementById('toast');
+            var rememberedScrollTop = 0;
+            var toastTimer = 0;
+
+            function wordRows() {
+                return Array.prototype.slice.call(wordList.querySelectorAll('.word-row'));
+            }
+
+            function updateCount() {
+                var count = wordRows().length;
+                wordCount.textContent = count + (count === 1 ? ' word' : ' words');
+            }
+
+            function showToast(message) {
+                window.clearTimeout(toastTimer);
+                toast.textContent = message;
+                toast.classList.add('show');
+                toastTimer = window.setTimeout(function () { toast.classList.remove('show'); }, 1700);
+            }
+
+            function setAddOpen(open) {
+                if (open && searchTrigger.getAttribute('aria-expanded') === 'true') setSearchOpen(false);
+                addPanel.classList.toggle('open', open);
+                addPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+                if (open) addPanel.removeAttribute('inert');
+                else addPanel.setAttribute('inert', '');
+                addTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                addTrigger.setAttribute('aria-label', open ? 'Cancel adding a word' : 'Add a word');
+                if (open) window.setTimeout(function () { wordInput.focus(); }, 170);
+                else {
+                    wordInput.value = '';
+                    addStatus.textContent = '';
+                }
+            }
+
+            function setSearchOpen(open) {
+                if (open && addTrigger.getAttribute('aria-expanded') === 'true') setAddOpen(false);
+                searchPanel.classList.toggle('open', open);
+                searchPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+                if (open) searchPanel.removeAttribute('inert');
+                else searchPanel.setAttribute('inert', '');
+                searchTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                searchTrigger.setAttribute('aria-label', open ? 'Close search' : 'Search words');
+                if (open) window.setTimeout(function () { searchInput.focus(); }, 170);
+                else {
+                    searchInput.value = '';
+                    filterRows();
+                }
+            }
+
+            function openDialog() {
+                overlay.hidden = false;
+                document.body.style.overflow = 'hidden';
+                document.querySelector('.page-shell').setAttribute('aria-hidden', 'true');
+                window.requestAnimationFrame(function () {
+                    wordList.scrollTop = rememberedScrollTop;
+                    closeButton.focus({ preventScroll: true });
+                });
+            }
+
+            function closeDialog() {
+                rememberedScrollTop = wordList.scrollTop;
+                setAddOpen(false);
+                setSearchOpen(false);
+                overlay.hidden = true;
+                document.body.style.overflow = '';
+                document.querySelector('.page-shell').setAttribute('aria-hidden', 'false');
+                notebookButton.removeAttribute('tabindex');
+                notebookButton.focus({ preventScroll: true });
+            }
+
+            function filterRows() {
+                var query = searchInput.value.trim().toLowerCase();
+                var visible = 0;
+                wordRows().forEach(function (row) {
+                    var matches = !query || (row.dataset.search || '').toLowerCase().indexOf(query) !== -1;
+                    row.hidden = !matches;
+                    if (matches) visible += 1;
+                });
+                emptyState.classList.toggle('visible', visible === 0);
+            }
+
+            function rowMarkup(text) {
+                var safe = text.replace(/[&<>"']/g, function (char) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char];
+                });
+                return '<article class="word-row" data-search="' + safe.toLowerCase() + '">' +
+                    '<div class="word-summary">' +
+                        '<button class="word-toggle" type="button" aria-expanded="false"><span class="word-name">' + safe + '</span><span class="word-meaning"><span class="word-pos">—</span><span class="word-chinese">Finding a definition…</span></span></button>' +
+                    '</div>' +
+                    '<div class="word-details" inert><div class="word-details-inner"><div class="details-content"><div class="phonetic-row"><p class="phonetic">Pronunciation pending</p><button class="speak-button" type="button" data-speak="' + safe + '" aria-label="Pronounce ' + safe + '"><svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button></div><p>Saved. Dictionary details will appear here when ready.</p><p class="source">Added manually just now</p><button class="remove-button" type="button" aria-label="Remove ' + safe + '"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button></div></div></div>' +
+                '</article>';
+            }
+
+            addTrigger.addEventListener('click', function () {
+                setAddOpen(addTrigger.getAttribute('aria-expanded') !== 'true');
+            });
+
+            searchTrigger.addEventListener('click', function () {
+                setSearchOpen(searchTrigger.getAttribute('aria-expanded') !== 'true');
+            });
+
+            addForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var value = wordInput.value.trim().replace(/\s+/g, ' ');
+                if (!value) {
+                    addStatus.textContent = 'Type a word or short phrase first.';
+                    wordInput.focus();
+                    return;
+                }
+                wordList.insertAdjacentHTML('afterbegin', rowMarkup(value));
+                updateCount();
+                searchInput.value = '';
+                filterRows();
+                setAddOpen(false);
+                wordList.scrollTop = 0;
+                showToast('“' + value + '” saved');
+            });
+
+            wordInput.addEventListener('keydown', function (event) {
+                if (event.key !== 'Enter') return;
+                event.preventDefault();
+                addForm.requestSubmit();
+            });
+
+            searchInput.addEventListener('input', filterRows);
+
+            wordList.addEventListener('click', function (event) {
+                var speak = event.target.closest('.speak-button');
+                if (speak) {
+                    var value = speak.dataset.speak || '';
+                    if (value && window.speechSynthesis && window.SpeechSynthesisUtterance) {
+                        window.speechSynthesis.cancel();
+                        var utterance = new SpeechSynthesisUtterance(value);
+                        utterance.lang = 'en-GB';
+                        window.speechSynthesis.speak(utterance);
+                    } else showToast('Pronunciation is unavailable in this browser');
+                    return;
+                }
+
+                var remove = event.target.closest('.remove-button');
+                if (remove) {
+                    var removedRow = remove.closest('.word-row');
+                    var removedName = removedRow.querySelector('.word-name').textContent;
+                    removedRow.remove();
+                    updateCount();
+                    filterRows();
+                    showToast('“' + removedName + '” removed');
+                    return;
+                }
+
+                var toggle = event.target.closest('.word-toggle');
+                if (toggle) {
+                    var row = toggle.closest('.word-row');
+                    var expanded = row.classList.toggle('expanded');
+                    var details = row.querySelector('.word-details');
+                    if (expanded) details.removeAttribute('inert');
+                    else details.setAttribute('inert', '');
+                    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                }
+            });
+
+            closeButton.addEventListener('click', closeDialog);
+            notebookButton.addEventListener('click', openDialog);
+            overlay.addEventListener('click', function (event) { if (event.target === overlay) closeDialog(); });
+
+            document.addEventListener('keydown', function (event) {
+                if (overlay.hidden) return;
+                if (event.key === 'Escape' && searchTrigger.getAttribute('aria-expanded') === 'true') {
+                    setSearchOpen(false);
+                    searchTrigger.focus();
+                } else if (event.key === 'Escape' && addTrigger.getAttribute('aria-expanded') === 'true') {
+                    setAddOpen(false);
+                    addTrigger.focus();
+                } else if (event.key === 'Escape') closeDialog();
+            });
+
+            document.body.style.overflow = 'hidden';
+            updateCount();
+        }());
+    </script>
+</body>
+</html>

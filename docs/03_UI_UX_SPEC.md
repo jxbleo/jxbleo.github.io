@@ -290,6 +290,9 @@ My Words:
   the student bell uses the same bell SVG as the teacher notification button.
 - closing and reopening restores the modal's previous internal list scroll
   position; closing Search or Add does not close the modal.
+- `my-words-modal-preview.html` is an isolated static design reference for this
+  compact modal. It is not linked from production navigation, must not call
+  CloudBase or contain real student data, and is not a second My Words runtime.
 
 Student account menu:
 

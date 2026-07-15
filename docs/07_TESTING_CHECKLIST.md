@@ -616,6 +616,9 @@ Check:
   and wrapped content
 - collapsed rows do not show a speaker; expansion reveals the phonetic with its
   adjacent speaker plus English definition, source/context, retry, and removal
+- `my-words-modal-preview.html` loads as a standalone sample-only design
+  reference, has no CloudBase/network data calls, and is not linked from the
+  production Dashboard or Library navigation
 - the student My Words interface contains no Today/New/Learning/Mastered
   filters, due review, Reveal, Forgot, A little, or Know controls
 - BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt

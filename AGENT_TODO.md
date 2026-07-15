@@ -68,6 +68,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-15
 
+- Audited all 27 commits from 2026-07-14 through 2026-07-15 and consolidated
+  their current behavior into dated changelog sections, frontend architecture,
+  UI, technical decisions, testing, and backlog documentation. Reconciled the
+  stale Student Library note with the shipped title-inline category popover and
+  documented `my-words-modal-preview.html` as an unlinked sample-only design
+  reference. Verified the prototype's inline JavaScript, search interaction,
+  desktop/390px layout, horizontal overflow, console, secret/network scan, and
+  release checks. No CloudBase deployment or data import is required.
 - Added My Words-style browser pronunciation to Vocabulary Learn cards and
   Spell rows. The Spell control speaks without revealing/filling the answer and
   uses a neutral accessible label. Static syntax, structure, desktop, and phone
