@@ -893,6 +893,16 @@ Shared rules:
 
 ### Vocabulary Test
 
+- The top mode switcher label remains `Cloze`. Inside Cloze, the setup area has
+  two stacked task bars: a Practice bar on top and a Test bar below. The
+  Practice bar uses numbered group chips so students can choose specific groups,
+  with the right-side action labeled `Practice`. The Test bar keeps the current
+  selected-set-count dropdown, with the right-side action labeled `Test`.
+- Cloze Practice uses the same 90-second-per-selected-group timer, sticky set
+  navigation, word bank, shuffled in-group question order, submission feedback,
+  and teacher notification visibility as Cloze Test. Its recorded attempts are
+  practice-only and do not update assignments, STAR, student progress, or the
+  Teacher View matrix.
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
 - Cloze-mode timing gives each selected group 90 seconds, or 1.5 minutes.
@@ -981,6 +991,8 @@ New UI should not introduce new persistent backend status words without updating
 
 Important mobile rules:
 
+- Double-tapping must not zoom the page on touch devices. Normal single-finger
+  scrolling and two-finger pinch-to-zoom remain available for accessibility.
 - Shared shell pages must not introduce horizontal page scrolling at phone
   widths; internal teacher matrices may retain their intentional scroll region.
 - Assignment action buttons should not wrap awkwardly.

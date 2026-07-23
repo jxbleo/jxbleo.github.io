@@ -325,7 +325,7 @@ function gradeAnswers(submittedAnswers, gradingKey, mode, allowedQuestionIds) {
     : null;
   const questionIds = constrainedQuestionIds
     ? constrainedQuestionIds.filter((questionId) => Object.prototype.hasOwnProperty.call(answers, questionId))
-    : mode === "vocabulary_test" || mode === "vocabulary_practice"
+    : mode === "vocabulary_test" || mode === "vocabulary_practice" || mode === "vocabulary_practice_timed"
     ? Object.keys(submittedAnswers).filter((questionId) => Object.prototype.hasOwnProperty.call(answers, questionId))
     : Object.keys(answers);
   const results = questionIds.map((questionId) => {
@@ -839,15 +839,19 @@ exports.main = async (event = {}) => {
     const gradingKey = await getOne("grading_keys", { set_id: setId });
     if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
 
-    const resolvedAssignment = await resolveAssignment(student, setId, assignmentId);
-    const assignment = resolvedAssignment.assignment;
-    assignmentId = resolvedAssignment.assignmentId;
-
     const submittedGroupCount = Number(event.selected_group_count || 0);
+    const isVocabularyTimedPractice = mode === "vocabulary_practice_timed";
     const isCountedVocabularyTest = mode === "vocabulary_test" && submittedGroupCount >= VOCABULARY_TEST_MIN_GROUPS;
     const isVocabularySelfCheck = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && submittedGroupCount < VOCABULARY_TEST_MIN_GROUPS);
-    if (isVocabularySelfCheck) {
+
+    const resolvedAssignment = isVocabularyTimedPractice
+      ? { assignment: null, assignmentId: null }
+      : await resolveAssignment(student, setId, assignmentId);
+    const assignment = resolvedAssignment.assignment;
+    assignmentId = resolvedAssignment.assignmentId;
+
+    if (isVocabularySelfCheck || isVocabularyTimedPractice) {
       assertVocabularyContentVersion(event.content_version, gradingKey);
       await assertNoActiveVocabularySelfTestLeak(student, event, setId);
     }
@@ -888,7 +892,7 @@ exports.main = async (event = {}) => {
     const isUnrecordedPractice = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && Number(event.selected_group_count || 0) < 5);
     const feedbackPolicy = set.feedback_policy || "always";
-    const mayShowFeedback = mode === "vocabulary_test"
+    const mayShowFeedback = mode === "vocabulary_test" || isVocabularyTimedPractice
       ? true
       : isUnrecordedPractice
       ? feedbackPolicy === "always" || passed
@@ -930,7 +934,7 @@ exports.main = async (event = {}) => {
       Math.random().toString(36).slice(2, 8),
     ].join("-");
     const submittedAt = new Date();
-    const groupResults = mode === "vocabulary_test"
+    const groupResults = mode === "vocabulary_test" || isVocabularyTimedPractice
       ? (selectedGroupIdsForAttempt || []).map((groupId) => {
           const groupQuestions = grading.results.filter((item) => item.question_id.indexOf(`${groupId}:`) === 0);
           const groupCorrect = groupQuestions.filter((item) => item.correct).length;
@@ -974,7 +978,7 @@ exports.main = async (event = {}) => {
       duration_seconds: event.duration_seconds == null ? null : Number(event.duration_seconds),
       audio_started_at: event.audio_started_at || null,
       audio_to_submit_seconds: event.audio_to_submit_seconds == null ? null : Number(event.audio_to_submit_seconds),
-      practice_context: assignmentId ? "assignment" : "resource",
+      practice_context: isVocabularyTimedPractice ? "practice" : assignmentId ? "assignment" : "resource",
       grading_version: effectiveGradingKey.grading_version || "1",
       selected_group_count: selectedGroupCountForAttempt,
       selected_group_ids: selectedGroupIdsForAttempt,
@@ -1003,7 +1007,7 @@ exports.main = async (event = {}) => {
         throw new Error("ASSIGNMENT_UPDATE_FAILED");
       }
       if (summary.status === "mastered") await protectAssignmentStar(student, verified, summary.best || attempt, submittedAt);
-    } else if (mastered) {
+    } else if (mastered && !isVocabularyTimedPractice) {
       await protectSelfStudyStar(student, attempt, submittedAt);
     }
 

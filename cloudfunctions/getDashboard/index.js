@@ -58,6 +58,10 @@ function effectiveQuestionResults(attempt) {
   return attempt.adjusted_question_results || attempt.question_results || [];
 }
 
+function countsTowardStudentProgress(attempt) {
+  return !attempt || attempt.mode !== "vocabulary_practice_timed";
+}
+
 function isVocabularySet(set) {
   if (!set) return false;
   return [
@@ -716,7 +720,8 @@ async function getLatestAttemptForSet(student, event) {
       set_id: setId,
     },
   });
-  const best = attempts.sort((left, right) => {
+  const progressAttempts = attempts.filter(countsTowardStudentProgress);
+  const best = progressAttempts.sort((left, right) => {
     const byScore = effectivePercentage(right) - effectivePercentage(left);
     if (byScore) return byScore;
     return dateValue(right.submitted_at) - dateValue(left.submitted_at);
@@ -757,6 +762,7 @@ exports.main = async (event = {}) => {
     const attempts = await getAll("attempts", {
       where: { student_uid: student.auth_uid },
     });
+    const progressAttempts = attempts.filter(countsTowardStudentProgress);
     const setMap = new Map();
     const disputeRows = await getAll("answer_disputes", { where: {
       student_uid: student.auth_uid,
@@ -770,7 +776,7 @@ exports.main = async (event = {}) => {
       .map((item) => item.assignment_id)
       .filter(Boolean));
     let selfStudyStars = starBuckets.selfStudyStars;
-    const resourceAttempts = attempts.filter((item) => !item.assignment_id && item.set_id);
+    const resourceAttempts = progressAttempts.filter((item) => !item.assignment_id && item.set_id);
     const setIds = [...new Set(
       assignments.map((item) => item.set_id)
         .concat(selfStudyStars.map((item) => item.set_id))
@@ -817,7 +823,7 @@ exports.main = async (event = {}) => {
     }
 
     const attemptsByAssignment = new Map();
-    attempts.forEach((attempt) => {
+    progressAttempts.forEach((attempt) => {
       if (!attempt.assignment_id) return;
       const items = attemptsByAssignment.get(attempt.assignment_id) || [];
       items.push(attempt);

@@ -4845,6 +4845,7 @@
     }
 
     function attemptStatusLabel(attempt) {
+        if (attempt && attempt.mode === 'vocabulary_practice_timed') return 'practiced';
         if (attempt.mastered) return 'mastered';
         if (attempt.passed) return 'finished';
         return 'tried';
