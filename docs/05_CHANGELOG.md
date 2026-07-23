@@ -3,6 +3,17 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-23
+
+### Changed
+
+- Fixed Teacher notification attempt details so opening a grouped attempt row
+  positions the internal modal directly on the target attempt card, instead of
+  first showing the top attempt chart and then delayed-scrolling downward.
+
+Audit scope: static frontend/documentation change only; no CloudBase function
+deployment or data import is required.
+
 ## 2026-07-15
 
 ### Changed

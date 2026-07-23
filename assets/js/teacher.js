@@ -3993,6 +3993,28 @@
         '</div>';
     }
 
+    function scrollMatrixAttemptCardIntoView(root, options) {
+        if (!root) return;
+        var target = root.querySelector('.matrix-attempt-card.highlight');
+        if (!target) return;
+        var scroller = target.closest('.progress-matrix-modal-scroll') || target.closest('.progress-matrix-modal-shell');
+        if (!scroller) return;
+        var block = options && options.block || 'start';
+        var behavior = options && options.behavior || 'auto';
+        var scrollerRect = scroller.getBoundingClientRect();
+        var targetRect = target.getBoundingClientRect();
+        var nextTop = scroller.scrollTop + targetRect.top - scrollerRect.top;
+        if (block === 'center') {
+            nextTop -= Math.max(0, (scroller.clientHeight - target.offsetHeight) / 2);
+        }
+        nextTop = Math.max(0, nextTop);
+        if (typeof scroller.scrollTo === 'function') {
+            scroller.scrollTo({ top: nextTop, behavior: behavior });
+        } else {
+            scroller.scrollTop = nextTop;
+        }
+    }
+
     function renderMatrixCellModal(item) {
         if (!item) return '';
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
@@ -4645,16 +4667,12 @@
                         card.classList.remove('highlight');
                     });
                     target.classList.add('highlight');
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    scrollMatrixAttemptCardIntoView(modal, { behavior: 'smooth', block: 'start' });
                 }
             });
         });
         if (state.targetMatrixAttemptId) {
-            window.setTimeout(function() {
-                var targetRoot = teacherModalRoot || container;
-                var target = targetRoot.querySelector('.matrix-attempt-card.highlight');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 80);
+            scrollMatrixAttemptCardIntoView(teacherModalRoot || container, { behavior: 'auto', block: 'center' });
         }
         container.querySelectorAll('[data-assign-progress-group]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -5117,15 +5135,20 @@
                 }
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (target) {
+                    modal.querySelectorAll('.matrix-attempt-card.highlight').forEach(function(card) {
+                        card.classList.remove('highlight');
+                    });
+                    target.classList.add('highlight');
+                    scrollMatrixAttemptCardIntoView(modal, { behavior: 'smooth', block: 'start' });
+                }
             });
         });
         if (state.notificationAttemptId && state.targetMatrixAttemptId) {
-            window.setTimeout(function() {
-                var modal = modalRoot.querySelector('.notification-attempt-modal .progress-matrix-modal-shell');
-                var target = modal && modal.querySelector('.matrix-attempt-card.highlight');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 80);
+            scrollMatrixAttemptCardIntoView(
+                modalRoot.querySelector('.notification-attempt-modal .progress-matrix-modal-shell'),
+                { behavior: 'auto', block: 'center' }
+            );
         }
     }
 
