@@ -1192,6 +1192,10 @@ function attemptView(record, gradingKey) {
   };
 }
 
+function countsTowardTeacherProgress(attempt) {
+  return !attempt || attempt.mode !== "vocabulary_practice_timed";
+}
+
 function sortAttemptsAscending(attempts) {
   return attempts.slice().sort((a, b) => new Date(a.submitted_at || 0) - new Date(b.submitted_at || 0));
 }
@@ -1332,6 +1336,7 @@ async function listProgress() {
     const attempt = recordData(record);
     return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
   });
+  const progressAttempts = attempts.filter(countsTowardTeacherProgress);
   const setMap = new Map(setRows.map((record) => {
     const set = recordData(record);
     return [set.set_id, set];
@@ -1340,7 +1345,7 @@ async function listProgress() {
   const attemptsById = new Map();
   const selfStudyGroups = new Map();
 
-  attempts.forEach((attempt) => {
+  progressAttempts.forEach((attempt) => {
     if (attempt.attempt_id) attemptsById.set(attempt.attempt_id, attempt);
     if (attempt.assignment_id) {
       if (!attemptsByAssignment.has(attempt.assignment_id)) attemptsByAssignment.set(attempt.assignment_id, []);

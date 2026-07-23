@@ -7,12 +7,19 @@
 
 ### Changed
 
+- Split Vocabulary Cloze setup into stacked Practice and Test rows. Cloze
+  Practice now lets students choose specific groups, runs the same timed
+  shuffled-question flow, records practice-only attempts for teacher
+  notifications, and stays out of assignment progress, STAR, and Teacher View
+  matrix scoring.
 - Fixed Teacher notification attempt details so opening a grouped attempt row
   positions the internal modal directly on the target attempt card, instead of
   first showing the top attempt chart and then delayed-scrolling downward.
 
-Audit scope: static frontend/documentation change only; no CloudBase function
-deployment or data import is required.
+Audit scope: static frontend plus `submitAttempt`, `getDashboard`, and
+`teacherAdmin` cloud-function source changes; CloudBase function deployment is
+required before the new saved Practice behavior works in production. No content
+data import is required.
 
 ## 2026-07-15
 

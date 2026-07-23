@@ -253,7 +253,7 @@ Core fields:
 | `duration_seconds` | number/null | existing page/test-start-to-submit duration |
 | `audio_started_at` | Date/null | first successful audio play time for audio-based practice |
 | `audio_to_submit_seconds` | number/null | first-audio-play-to-submit duration for audio-based practice |
-| `practice_context` | string | `assignment` or `resource` |
+| `practice_context` | string | `assignment`, `resource`, or `practice` |
 
 Rules:
 
@@ -262,6 +262,13 @@ Rules:
 - Failed attempts are still stored.
 - Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.
 - If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
+- Vocabulary Cloze timed Practice attempts use
+  `mode: "vocabulary_practice_timed"` and `practice_context: "practice"`.
+  They are stored with `assignment_id: null` even when the student has an open
+  assignment for the same `set_id`, so teacher notifications can show that the
+  student practiced. They do not update assignment summaries, student dashboard
+  progress, Teacher View matrix progress, self-study STAR records, or future
+  assignment initialization from self-study history.
 - Student historical review may return correct answers and explanations for
   attempts that are already passed/mastered, or when the linked assignment has
   `answer_revealed: true`. Attempts below the passing threshold still return

@@ -78,6 +78,8 @@ Shared shell visual checks:
   entire page; semantic category and result colors remain recognizable
 - at 390px viewport width, login, public Library, and visitor Dashboard do not
   introduce horizontal page scrolling
+- on a touch phone or iPad, two quick taps do not zoom the page; single-finger
+  scrolling and two-finger pinch zoom continue to work
 - My Words, assignment/notification, account, login, and teacher management
   dialogs remain top-layer, readable, closable surfaces
 - verify reduced transparency, increased contrast, and reduced motion media
@@ -603,6 +605,15 @@ Check:
 - Cloze/Test timing gives each selected group 90 seconds
 - running Test mode disables other Vocabulary mode tabs and warns on
   browser-level leave/back attempts
+- Cloze setup keeps the top-level `Cloze` tab, then shows a Practice row above
+  a Test row. Practice uses selectable numbered group chips and a `Practice`
+  action; Test uses the selected-set-count dropdown and a `Test` action.
+- Cloze Practice starts a timer using 90 seconds per selected group, shuffles
+  question order inside each selected group, records a
+  `vocabulary_practice_timed` attempt with `assignment_id: null`, and appears in
+  the teacher notification bell.
+- Cloze Practice attempts do not update assignment status, student progress,
+  self-study STAR records, or Teacher View matrix scores.
 - running Test mode shows a sticky top bar with numbered test-set capsules and
   the timer centered in the same row; clicking a number jumps to that set
 - Test set headings show numbers only, without `Test Set` text

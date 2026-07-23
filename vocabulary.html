@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <title>Vocabulary Unit</title>
     <style>
         :root {
@@ -1343,15 +1344,76 @@
         }
 
         .test-setup {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .cloze-mode-row {
             display: flex;
             align-items: center;
             gap: 12px;
             justify-content: space-between;
-            padding: 16px;
+            padding: 14px;
             border: 1px solid var(--border);
             border-radius: 16px;
             background: #f8fbfc;
-            margin-bottom: 18px;
+        }
+
+        .cloze-mode-row.practice-row {
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
+        }
+
+        .cloze-mode-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .cloze-mode-label {
+            flex: 0 0 auto;
+            min-width: 74px;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 950;
+            text-transform: uppercase;
+        }
+
+        .cloze-practice-grid {
+            display: flex;
+            gap: 8px;
+            min-width: 0;
+            padding: 2px 2px 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cloze-practice-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cloze-practice-chip {
+            flex: 0 0 auto;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 11px;
+            border: 1px solid rgba(15, 118, 110, 0.20);
+            border-radius: 999px;
+            color: #0f5f57;
+            background: #fff;
+            font-size: 0.84rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .cloze-practice-chip.active {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.18);
         }
 
         .test-setup select {
@@ -1772,7 +1834,7 @@
             }
 
             .range-picker,
-            .test-setup {
+            .cloze-mode-row {
                 gap: 8px;
             }
 
@@ -1780,6 +1842,20 @@
             .test-setup select {
                 min-width: 0;
                 padding: 9px 9px;
+            }
+
+            .cloze-mode-row {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .cloze-mode-main {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .cloze-mode-row .btn {
+                width: 100%;
             }
 
             .learn-sticky,
@@ -1884,8 +1960,20 @@
 
                 <div class="view" id="test-view">
                     <div class="test-setup" id="test-setup">
-                        <select id="test-group-count"></select>
-                        <button class="btn btn-primary" id="start-test-btn" type="button">Start</button>
+                        <div class="cloze-mode-row practice-row">
+                            <div class="cloze-mode-main">
+                                <span class="cloze-mode-label">Practice</span>
+                                <div id="practice-group-picker" class="cloze-practice-grid" aria-label="Practice set picker"></div>
+                            </div>
+                            <button class="btn btn-primary" id="start-practice-btn" type="button">Practice</button>
+                        </div>
+                        <div class="cloze-mode-row test-row">
+                            <div class="cloze-mode-main">
+                                <span class="cloze-mode-label">Test</span>
+                                <select id="test-group-count"></select>
+                            </div>
+                            <button class="btn btn-primary" id="start-test-btn" type="button">Test</button>
+                        </div>
                     </div>
                     <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
                     <div class="test-sticky" id="test-sticky" hidden>
@@ -1943,6 +2031,8 @@
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var activeTestSetIndex = 0;
+        var activeTestMode = 'test';
+        var selectedClozePracticeGroupIds = [];
         var activeWordGroupId = '';
         var activePracticeGroupId = '';
         var learnWordBankScrollTicking = false;
@@ -2003,6 +2093,7 @@
         }
 
         function saveTestDraft() {
+            if (activeTestMode !== 'test') return;
             if (!activeTestGroups.length || !testStartedAt) return;
             var answers = {};
             document.querySelectorAll('.test-question').forEach(function(card) {
@@ -2188,6 +2279,7 @@
                 var isTest = button.getAttribute('data-view-target') === 'test-view';
                 button.disabled = testLocked && !isTest;
             });
+            updateClozePracticeButton();
             if (testLocked && !testHistoryArmed && window.history && window.history.pushState) {
                 try {
                     window.history.pushState({ vocabTestLocked: true }, '', window.location.href);
@@ -2245,18 +2337,31 @@
             showTestDialog({
                 title: 'Start timed test?',
                 copy: 'Before you start, turn on Do Not Disturb if you can. Once the test begins, switching windows, tabs, or apps will interrupt and end the test.',
-                primary: 'Start Test',
+                primary: 'Test',
                 secondary: 'Cancel'
             }).then(function(confirmed) {
                 if (confirmed) startTest();
             });
         }
 
+        function requestStartPractice() {
+            if (testLocked) return;
+            showTestDialog({
+                title: 'Start timed practice?',
+                copy: 'Practice uses the same timer and shuffled questions, but it will not change your assigned work or STAR progress.',
+                primary: 'Practice',
+                secondary: 'Cancel'
+            }).then(function(confirmed) {
+                if (confirmed) startClozePractice();
+            });
+        }
+
         function requestSubmitTest() {
             if (testSubmitting) return;
+            var label = activeTestMode === 'practice' ? 'practice' : 'test';
             showTestDialog({
                 title: 'Submit early?',
-                copy: 'This will end the current timed test and submit your answers now.',
+                copy: 'This will end the current timed ' + label + ' and submit your answers now.',
                 primary: 'Submit Now',
                 secondary: 'Keep Working'
             }).then(function(confirmed) {
@@ -2266,9 +2371,10 @@
 
         function requestRedoTest() {
             if (testLocked || testSubmitting) return;
+            var label = activeTestMode === 'practice' ? 'practice' : 'test';
             showTestDialog({
-                title: 'Redo this test?',
-                copy: 'This will clear the current review. After clearing, the answers on this screen will not be recorded unless you start and submit a new timed test.',
+                title: 'Redo this ' + label + '?',
+                copy: 'This will clear the current review. After clearing, the answers on this screen will not be recorded unless you start and submit a new timed ' + label + '.',
                 primary: 'Clear and Redo',
                 secondary: 'Cancel'
             }).then(function(confirmed) {
@@ -3748,6 +3854,40 @@
             updateTestCountNote();
         }
 
+        function renderClozePracticeOptions(groups) {
+            var root = document.getElementById('practice-group-picker');
+            if (!root) return;
+            selectedClozePracticeGroupIds = (groups || []).slice(0, Math.min(3, (groups || []).length)).map(function(group) {
+                return group.id;
+            });
+            root.innerHTML = (groups || []).map(function(group, index) {
+                var active = selectedClozePracticeGroupIds.indexOf(group.id) !== -1;
+                return '<button class="cloze-practice-chip' + (active ? ' active' : '') +
+                    '" type="button" data-cloze-practice-group="' + escapeHtml(group.id) +
+                    '" aria-pressed="' + (active ? 'true' : 'false') + '">' + (index + 1) + '</button>';
+            }).join('');
+            updateClozePracticeButton();
+        }
+
+        function updateClozePracticeButton() {
+            var button = document.getElementById('start-practice-btn');
+            if (!button) return;
+            button.disabled = selectedClozePracticeGroupIds.length === 0 || testLocked;
+        }
+
+        function toggleClozePracticeGroup(groupId) {
+            if (!groupId || testLocked) return;
+            var index = selectedClozePracticeGroupIds.indexOf(groupId);
+            if (index === -1) selectedClozePracticeGroupIds.push(groupId);
+            else selectedClozePracticeGroupIds.splice(index, 1);
+            document.querySelectorAll('[data-cloze-practice-group]').forEach(function(button) {
+                var active = selectedClozePracticeGroupIds.indexOf(button.getAttribute('data-cloze-practice-group')) !== -1;
+                button.classList.toggle('active', active);
+                button.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+            updateClozePracticeButton();
+        }
+
         function updateTestCountNote() {
             var count = Number(document.getElementById('test-group-count').value || 1);
             var note = document.getElementById('test-count-note');
@@ -3937,8 +4077,9 @@
             }, 1000);
         }
 
-        function renderStartedTest(selected, answers, seconds, scrollToRoot) {
+        function renderStartedTest(selected, answers, seconds, scrollToRoot, mode) {
             if (!selected || !selected.length) return false;
+            activeTestMode = mode === 'practice' ? 'practice' : 'test';
             activeTestGroups = selected;
             activeTestGroupCount = selected.length;
             activeTestSetIndex = 0;
@@ -3972,7 +4113,7 @@
             });
             var submitButton = document.getElementById('submit-test-btn');
             submitButton.disabled = false;
-            submitButton.textContent = 'Submit';
+            submitButton.textContent = activeTestMode === 'practice' ? 'Submit Practice' : 'Submit';
             submitButton.style.display = 'inline-flex';
             document.getElementById('redo-test-btn').style.display = 'none';
             testRedoAvailable = false;
@@ -4019,7 +4160,7 @@
                 activeTestSessionId = draft.test_session_id;
                 return resumeVocabularyTestSession(draft.test_session_id).then(function(response) {
                     var seconds = response.remaining_seconds == null ? remaining : Math.max(1, Number(response.remaining_seconds || 0));
-                    return renderStartedTest(selected, draft.answers || {}, seconds, false);
+                    return renderStartedTest(selected, draft.answers || {}, seconds, false, 'test');
                 }).catch(function() {
                     activeTestSessionId = '';
                     clearTestDraft();
@@ -4027,13 +4168,13 @@
                 });
             }
             activeTestSessionId = '';
-            return Promise.resolve(renderStartedTest(selected, draft.answers || {}, remaining, false));
+            return Promise.resolve(renderStartedTest(selected, draft.answers || {}, remaining, false, 'test'));
         }
 
         function startTestWithGroups(selected, answers) {
             if (!selected || !selected.length) return Promise.resolve(false);
             return startVocabularyTestSession(selected).then(function() {
-                return renderStartedTest(selected, answers || {}, testDurationSecondsForGroupCount(selected.length), false);
+                return renderStartedTest(selected, answers || {}, testDurationSecondsForGroupCount(selected.length), false, 'test');
             }).catch(function(error) {
                 alert(sessionError(error).message);
                 return false;
@@ -4108,7 +4249,14 @@
             var startButton = document.getElementById('start-test-btn');
             if (!startButton) return;
             startButton.disabled = starting === true;
-            startButton.textContent = starting === true ? 'Starting...' : 'Start';
+            startButton.textContent = starting === true ? 'Starting...' : 'Test';
+        }
+
+        function setStartPracticeButtonStarting(starting) {
+            var startButton = document.getElementById('start-practice-btn');
+            if (!startButton) return;
+            startButton.disabled = starting === true || testLocked || selectedClozePracticeGroupIds.length === 0;
+            startButton.textContent = starting === true ? 'Starting...' : 'Practice';
         }
 
         function startTest() {
@@ -4121,12 +4269,31 @@
             });
             setStartTestButtonStarting(true);
             startVocabularyTestSession(selected).then(function() {
-                renderStartedTest(selected, {}, testDurationSecondsForGroupCount(count), true);
+                renderStartedTest(selected, {}, testDurationSecondsForGroupCount(count), true, 'test');
             }).catch(function(error) {
                 alert(sessionError(error).message);
             }).then(function() {
                 if (!testLocked) setStartTestButtonStarting(false);
             });
+        }
+
+        function startClozePractice() {
+            var groups = unitData.quizGroups || [];
+            var selectedIds = selectedClozePracticeGroupIds.slice();
+            if (!selectedIds.length) return;
+            var selected = selectedIds.map(function(id) {
+                return groups.find(function(group) { return group.id === id; });
+            }).filter(Boolean).map(function(group) {
+                return Object.assign({}, group, {
+                    questions: shuffleList(group.questions || [])
+                });
+            });
+            if (!selected.length) return;
+            testStartedAt = new Date().toISOString();
+            activeTestSessionId = '';
+            setStartPracticeButtonStarting(true);
+            renderStartedTest(selected, {}, testDurationSecondsForGroupCount(selected.length), true, 'practice');
+            setStartPracticeButtonStarting(false);
         }
 
         function resetTestSelection() {
@@ -4138,6 +4305,7 @@
             activeTestGroups = [];
             activeTestGroupCount = 0;
             activeTestSetIndex = 0;
+            activeTestMode = 'test';
             testWordBankManualState = null;
             testReviewMode = false;
             testStartedAt = null;
@@ -4199,6 +4367,7 @@
                 submitButton.style.display = 'none';
             }
             setStartTestButtonStarting(false);
+            setStartPracticeButtonStarting(false);
             if (redoButton) redoButton.style.display = 'none';
             updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -4239,10 +4408,10 @@
 
             window.MrCatCloud.callFunction('submitAttempt', {
                 set_id: setId,
-                assignment_id: assignmentId || null,
-                mode: 'vocabulary_test',
+                assignment_id: activeTestMode === 'practice' ? null : assignmentId || null,
+                mode: activeTestMode === 'practice' ? 'vocabulary_practice_timed' : 'vocabulary_test',
                 content_version: vocabularyContentVersion(),
-                test_session_id: activeTestSessionId || null,
+                test_session_id: activeTestMode === 'practice' ? null : activeTestSessionId || null,
                 answers: answers,
                 selected_group_count: activeTestGroupCount,
                 selected_group_ids: activeTestGroups.map(function(group) { return group.id; }),
@@ -4254,9 +4423,11 @@
                 if (!response || !response.success) {
                     throw new Error(response && response.message || 'Unable to submit this test.');
                 }
-                updateHistoryFromResponse(response);
-                assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
-                answerRevealAvailable = response.passed && !response.feedback_locked;
+                if (activeTestMode !== 'practice') {
+                    updateHistoryFromResponse(response);
+                    assignmentStatus = response.mastered ? 'mastered' : response.passed ? 'passed' : assignmentStatus;
+                    answerRevealAvailable = response.passed && !response.feedback_locked;
+                }
                 updateHistoryToolbar();
                 var resultMap = {};
                 (response.question_results || []).forEach(function(item) {
@@ -4303,7 +4474,7 @@
             }).catch(function(error) {
                 testSubmitting = false;
                 submitButton.disabled = false;
-                submitButton.textContent = 'Submit';
+                submitButton.textContent = activeTestMode === 'practice' ? 'Submit Practice' : 'Submit';
                 if (testLocked && options.remaining_seconds > 0) {
                     startTimer(options.remaining_seconds);
                     startTestHeartbeat();
@@ -4372,6 +4543,12 @@
             document.getElementById('dictation-list').addEventListener('click', handleVocabularyPronunciation);
             document.getElementById('dictation-build-btn').addEventListener('click', buildDictationFromSelection);
             document.getElementById('dictation-check-btn').addEventListener('click', checkDictation);
+            document.getElementById('practice-group-picker').addEventListener('click', function(e) {
+                var button = e.target.closest('[data-cloze-practice-group]');
+                if (!button) return;
+                toggleClozePracticeGroup(button.getAttribute('data-cloze-practice-group'));
+            });
+            document.getElementById('start-practice-btn').addEventListener('click', requestStartPractice);
             document.getElementById('start-test-btn').addEventListener('click', requestStartTest);
             document.getElementById('submit-test-btn').addEventListener('click', requestSubmitTest);
             document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
@@ -4480,6 +4657,7 @@
             renderFilteredWords();
             renderWordPracticePanel();
             renderDictationRangeOptions(data.words || []);
+            renderClozePracticeOptions(data.quizGroups || []);
             renderTestOptions(data.quizGroups || []);
             wireEvents();
             document.getElementById('loading').style.display = 'none';
