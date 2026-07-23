@@ -1,0 +1,4 @@
+/* Prevent accidental double-tap zoom without disabling pinch-to-zoom. */
+html {
+    touch-action: manipulation;
+}
