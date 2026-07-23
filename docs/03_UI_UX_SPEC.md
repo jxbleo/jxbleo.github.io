@@ -201,6 +201,9 @@ Frontend rule:
 - Opening the bell alone does not clear the top-right badge or red row state.
   Opening a grouped attempt row marks that thread's current attempts reviewed;
   a later attempt makes the same thread red again.
+- Opening a grouped attempt row should display the thread detail already
+  positioned on the target attempt card. It must not first reveal the top
+  attempt chart and then perform a delayed second scroll.
 - The teacher bell header includes `Read all`. It marks every currently loaded
   attempt thread read, clears the bell badge/red row treatment, and remains
   disabled when no unread thread exists. Attempts submitted afterward are new
