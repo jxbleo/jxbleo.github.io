@@ -1383,8 +1383,10 @@
 
         .cloze-practice-grid {
             display: flex;
+            flex: 1 1 0;
             gap: 8px;
             min-width: 0;
+            max-width: 100%;
             padding: 2px 2px 6px;
             overflow-x: auto;
             scrollbar-width: none;
@@ -1566,6 +1568,32 @@
             color: #3f2600;
             background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
             box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.22), 0 0 22px var(--use-gold-glow);
+        }
+
+        #test-view.practice-mode .test-set-btn {
+            border-color: rgba(15, 118, 110, 0.30);
+            color: #0f5f57;
+            background: linear-gradient(180deg, #ffffff, #d1fae5);
+            box-shadow: 0 5px 14px rgba(15, 118, 110, 0.10), 0 0 0 1px rgba(255,255,255,0.84);
+        }
+
+        #test-view.practice-mode .test-set-btn:hover,
+        #test-view.practice-mode .test-set-btn:focus-visible {
+            box-shadow: 0 9px 20px rgba(15, 118, 110, 0.20), 0 0 0 1px rgba(15, 118, 110, 0.16);
+        }
+
+        #test-view.practice-mode .test-set-btn.active {
+            border-color: #0f766e;
+            color: #ffffff;
+            background: linear-gradient(180deg, #34d399, #0f766e);
+            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.18), 0 0 22px rgba(15, 118, 110, 0.24);
+        }
+
+        #test-view.practice-mode .test-set-card .set-badge.test-set {
+            border-color: rgba(15, 118, 110, 0.38);
+            color: #ffffff;
+            background: linear-gradient(180deg, #34d399, #0f766e);
+            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.14), 0 0 22px rgba(15, 118, 110, 0.22);
         }
 
         .test-sticky .word-bank-toggle {
@@ -1847,11 +1875,24 @@
             .cloze-mode-row {
                 align-items: stretch;
                 flex-direction: column;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .cloze-mode-main {
                 align-items: flex-start;
                 flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .cloze-practice-grid,
+            .cloze-mode-row select {
+                width: 100%;
+                max-width: 100%;
             }
 
             .cloze-mode-row .btn {
@@ -3846,10 +3887,9 @@
 
         function renderTestOptions(groups) {
             var select = document.getElementById('test-group-count');
-            select.innerHTML = groups.map(function(group, index) {
-                var count = index + 1;
-                var status = count < 5 ? ' · Self-test only' : ' · Counts toward results';
-                return '<option value="' + count + '">' + count + ' set' + (count > 1 ? 's' : '') + ' · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + status + '</option>';
+            select.innerHTML = groups.slice(4).map(function(group, index) {
+                var count = index + 5;
+                return '<option value="' + count + '">' + count + ' sets · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + ' · Counts toward results</option>';
             }).join('');
             updateTestCountNote();
         }
@@ -3857,14 +3897,11 @@
         function renderClozePracticeOptions(groups) {
             var root = document.getElementById('practice-group-picker');
             if (!root) return;
-            selectedClozePracticeGroupIds = (groups || []).slice(0, Math.min(3, (groups || []).length)).map(function(group) {
-                return group.id;
-            });
+            selectedClozePracticeGroupIds = [];
             root.innerHTML = (groups || []).map(function(group, index) {
-                var active = selectedClozePracticeGroupIds.indexOf(group.id) !== -1;
-                return '<button class="cloze-practice-chip' + (active ? ' active' : '') +
+                return '<button class="cloze-practice-chip' +
                     '" type="button" data-cloze-practice-group="' + escapeHtml(group.id) +
-                    '" aria-pressed="' + (active ? 'true' : 'false') + '">' + (index + 1) + '</button>';
+                    '" aria-pressed="false">' + (index + 1) + '</button>';
             }).join('');
             updateClozePracticeButton();
         }
@@ -3889,13 +3926,8 @@
         }
 
         function updateTestCountNote() {
-            var count = Number(document.getElementById('test-group-count').value || 1);
             var note = document.getElementById('test-count-note');
-            if (count < 5) {
-                note.textContent = 'Tests with 4 groups or fewer are for self-study only. They are not saved and do not affect assignments.';
-            } else {
-                note.textContent = 'This is a counted test. Your answers, group accuracy, and overall result will be saved.';
-            }
+            note.textContent = 'This is a counted test. Your answers, group accuracy, and overall result will be saved.';
         }
 
         function renderTestQuestion(group, question, index) {
@@ -4080,6 +4112,7 @@
         function renderStartedTest(selected, answers, seconds, scrollToRoot, mode) {
             if (!selected || !selected.length) return false;
             activeTestMode = mode === 'practice' ? 'practice' : 'test';
+            document.getElementById('test-view').classList.toggle('practice-mode', activeTestMode === 'practice');
             activeTestGroups = selected;
             activeTestGroupCount = selected.length;
             activeTestSetIndex = 0;
@@ -4306,6 +4339,7 @@
             activeTestGroupCount = 0;
             activeTestSetIndex = 0;
             activeTestMode = 'test';
+            document.getElementById('test-view').classList.remove('practice-mode');
             testWordBankManualState = null;
             testReviewMode = false;
             testStartedAt = null;
