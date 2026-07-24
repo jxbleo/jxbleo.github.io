@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-24
+
+### Changed
+
+- Refined Vocabulary Cloze setup for mobile: Practice now starts with no group
+  selected, Test exposes only countable 5+ group choices, and timed Practice
+  uses green set numbers while Test retains the gold treatment.
+
 ## 2026-07-23
 
 ### Changed

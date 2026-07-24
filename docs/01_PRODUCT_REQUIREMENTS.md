@@ -584,6 +584,8 @@ flowchart TD
 - 状态不能因为后续低分而向下回退
 - Vocabulary 1-4 组选 Test Mode 不记录 attempt
 - Vocabulary 5 组及以上才记录
+- Vocabulary Cloze 的学生 Test 选择器只显示 5 组及以上选项；1-4 组继续作为
+  后端兼容规则保留，但不再从当前界面开放
 - Vocabulary 5 组及以上提交必须带有效 `vocabulary_test_sessions.test_session_id`
 - Vocabulary 5 组及以上的题目范围以后端 session 中的 `question_ids` 为准
 - Vocabulary Learn 中的 inline practice 不记录 attempt；学生在 inline practice 中

@@ -608,6 +608,10 @@ Check:
 - Cloze setup keeps the top-level `Cloze` tab, then shows a Practice row above
   a Test row. Practice uses selectable numbered group chips and a `Practice`
   action; Test uses the selected-set-count dropdown and a `Test` action.
+- Practice opens with no group selected and its action disabled; Test offers
+  only 5-or-more set counts, with no 1-4 self-study options.
+- On mobile widths, both Cloze setup rows, the Practice chip scroller, the Test
+  selector, and both actions remain inside the outer panel.
 - Cloze Practice starts a timer using 90 seconds per selected group, shuffles
   question order inside each selected group, records a
   `vocabulary_practice_timed` attempt with `assignment_id: null`, and appears in
@@ -616,6 +620,8 @@ Check:
   self-study STAR records, or Teacher View matrix scores.
 - running Test mode shows a sticky top bar with numbered test-set capsules and
   the timer centered in the same row; clicking a number jumps to that set
+- Test set numbers remain gold, while Practice set numbers and set badges are
+  green during the timed question flow
 - Test set headings show numbers only, without `Test Set` text
 - manual Test submit asks for early-submit confirmation, while time-up submits
   automatically

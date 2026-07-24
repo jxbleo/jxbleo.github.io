@@ -898,6 +898,10 @@ Shared rules:
   Practice bar uses numbered group chips so students can choose specific groups,
   with the right-side action labeled `Practice`. The Test bar keeps the current
   selected-set-count dropdown, with the right-side action labeled `Test`.
+  Practice starts with no groups selected and its action disabled. The Test
+  dropdown starts at five groups and does not expose the legacy 1-4 group
+  self-study choices. On mobile, both bars and their horizontally scrollable
+  controls must remain inside the Cloze panel width.
 - Cloze Practice uses the same 90-second-per-selected-group timer, sticky set
   navigation, word bank, shuffled in-group question order, submission feedback,
   and teacher notification visibility as Cloze Test. Its recorded attempts are
@@ -911,8 +915,8 @@ Shared rules:
   horizontal row; when there are more than six selected sets, the row scrolls
   horizontally instead of wrapping into multiple lines. The countdown timer
   remains a fixed red capsule at the far right of the sticky row. Cloze-mode
-  numbered capsules and the word-bank triangle toggle use a gold glowing visual
-  treatment to distinguish them from Learn groups.
+  numbered capsules use a gold glowing visual treatment in Test and a green
+  treatment in Practice; the Test word-bank triangle toggle remains gold.
   The test-set labels show only numbers, not `Test Set 1` text, and clicking a
   number jumps to that test set. The current test set's word bank appears
   directly below the numbered capsules in the same sticky surface; when the
