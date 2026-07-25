@@ -537,9 +537,9 @@ button { cursor: pointer; }
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     gap: 11px;
-    width: min(620px, 100%);
-    max-height: min(760px, 86vh);
-    max-height: min(760px, 86dvh);
+    width: min(720px, 100%);
+    max-height: min(720px, 86vh);
+    max-height: min(720px, 86dvh);
 }
 .student-calendar-dialog {
     display: grid;
@@ -548,13 +548,14 @@ button { cursor: pointer; }
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.88);
     border-radius: 26px;
-    background: rgba(248,251,249,0.97);
+    background: rgba(248,251,249,0.76);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
     box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
 }
 .student-calendar-dialog-head {
     padding: 18px 20px 14px;
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(18px) saturate(150%);
+    background: transparent;
 }
 .student-calendar-dialog-head h2 {
     margin: 0;
@@ -707,43 +708,7 @@ button { cursor: pointer; }
     font-size: 0.7rem;
     font-weight: 720;
 }
-.student-calendar-task-list { display: grid; gap: 7px; }
-.student-calendar-task {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    padding: 11px 12px;
-    border: 1px solid rgba(78,108,100,0.13);
-    border-radius: 14px;
-    background: rgba(255,255,255,0.8);
-}
-.student-calendar-task-copy { min-width: 0; }
-.student-calendar-task strong {
-    display: block;
-    overflow: hidden;
-    color: var(--ink);
-    font-size: 0.8rem;
-    line-height: 1.3;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.student-calendar-task small {
-    display: block;
-    margin-top: 3px;
-    color: var(--muted);
-    font-size: 0.67rem;
-    font-weight: 690;
-}
-.student-calendar-task-result {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--accent-dark);
-    font-size: 0.78rem;
-    font-weight: 860;
-}
-.student-calendar-task-result .star { color: #d79a24; }
+.student-calendar-task-list { display: grid; gap: 8px; }
 .student-calendar-empty {
     margin: 0;
     padding: 18px 10px;
@@ -2436,7 +2401,9 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-outside-close,
     .student-calendar-month-button,
     .student-calendar-day,
-    .student-calendar-outside-close { transition-duration: 1ms; }
+    .student-calendar-outside-close,
+    .student-message-section-toggle,
+    .student-message-task { transition-duration: 1ms; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -2445,24 +2412,29 @@ body:not(.teacher-page) .tab-button.active {
     .student-words-outside-close,
     .student-calendar-dialog,
     .student-calendar-dialog-head,
-    .student-calendar-outside-close {
+    .student-calendar-outside-close,
+    .student-message-dialog {
         background: #f9fbfa;
+        -webkit-backdrop-filter: none;
         backdrop-filter: none;
     }
     .student-words-overlay,
-    .student-calendar-overlay {
+    .student-calendar-overlay,
+    .student-message-overlay {
         background: rgba(17,38,34,0.52);
+        -webkit-backdrop-filter: none;
         backdrop-filter: none;
     }
 }
 
 @media (prefers-contrast: more) {
     .student-words-dialog,
-    .student-calendar-dialog { border-color: #56746c; background: #fff; }
+    .student-calendar-dialog,
+    .student-message-dialog { border-color: #56746c; background: #fff; }
     .my-word-item,
     .my-words-search-box input,
     .student-calendar-day,
-    .student-calendar-task { border-color: #82978f; }
+    .student-message-task { border-color: #82978f; }
 }
 
 .password-dialog-overlay {
@@ -2607,6 +2579,11 @@ body:not(.teacher-page) .tab-button.active {
     padding: 20px;
     background: #f4f8f5;
 }
+.student-message-overlay {
+    background: rgba(17, 38, 34, 0.3);
+    -webkit-backdrop-filter: blur(8px) saturate(118%);
+    backdrop-filter: blur(8px) saturate(118%);
+}
 .student-message-overlay[hidden] { display: none; }
 .student-message-shell {
     display: grid;
@@ -2646,8 +2623,15 @@ body:not(.teacher-page) .tab-button.active {
     max-height: min(510px, calc(75vh - 30px));
     max-height: min(510px, calc(75dvh - 30px));
     overscroll-behavior: contain;
+    border-color: rgba(255, 255, 255, 0.84);
+    border-radius: 26px;
+    background: rgba(248, 251, 249, 0.76);
+    box-shadow: 0 28px 82px rgba(20, 54, 47, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
 }
-.student-message-close {
+.student-message-close,
+.student-calendar-outside-close {
     min-width: 132px;
     min-height: 44px;
     padding: 0 22px;
@@ -2664,18 +2648,22 @@ body:not(.teacher-page) .tab-button.active {
     cursor: pointer;
     transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
 }
-.student-message-close:hover {
+.student-message-close:hover,
+.student-calendar-outside-close:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 15px 34px rgba(27, 45, 56, 0.2), inset 0 1px 0 #fff;
 }
-.student-message-close:active { transform: scale(0.97); }
-.student-message-close:focus-visible {
+.student-message-close:active,
+.student-calendar-outside-close:active { transform: scale(0.97); }
+.student-message-close:focus-visible,
+.student-calendar-outside-close:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
 @media (prefers-reduced-transparency: reduce) {
-    .student-message-close {
+    .student-message-close,
+    .student-calendar-outside-close {
         border-color: rgba(38, 52, 59, 0.18);
         background: #f8faf9;
         -webkit-backdrop-filter: none;
@@ -2683,7 +2671,8 @@ body:not(.teacher-page) .tab-button.active {
     }
 }
 @media (prefers-contrast: more) {
-    .student-message-close {
+    .student-message-close,
+    .student-calendar-outside-close {
         border-color: #26343b;
         background: #fff;
     }
@@ -2696,6 +2685,15 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-dialog-head h2 {
     margin: 0;
+}
+.student-message-dialog.is-focused-scope .student-message-dialog-head {
+    justify-items: center;
+    margin-bottom: 14px;
+    text-align: center;
+}
+.student-message-dialog.is-focused-scope .student-message-dialog-head h2 {
+    width: 100%;
+    text-align: center;
 }
 .student-message-summary {
     display: flex;
@@ -2723,6 +2721,7 @@ body:not(.teacher-page) .tab-button.active {
     display: grid;
     gap: 14px;
 }
+.student-message-flat-list { min-width: 0; }
 .student-message-section {
     display: grid;
     gap: 9px;
@@ -2733,6 +2732,26 @@ body:not(.teacher-page) .tab-button.active {
     justify-content: space-between;
     gap: 12px;
 }
+.student-message-section.is-collapsible {
+    display: block;
+}
+.student-message-section.is-collapsible > summary {
+    min-height: 44px;
+    padding: 6px 4px;
+    border-radius: 12px;
+    cursor: pointer;
+    list-style: none;
+    transition: background 140ms ease;
+}
+.student-message-section.is-collapsible > summary::-webkit-details-marker { display: none; }
+.student-message-section.is-collapsible > summary:hover { background: rgba(19, 118, 109, 0.06); }
+.student-message-section.is-collapsible > summary:active { background: rgba(19, 118, 109, 0.1); }
+.student-message-section.is-collapsible > summary:focus-visible {
+    outline: 3px solid rgba(19, 118, 109, 0.2);
+    outline-offset: 2px;
+}
+.student-message-section.is-collapsible[open] > .student-message-list,
+.student-message-section.is-collapsible[open] > .student-message-empty { margin-top: 9px; }
 .student-message-section-head h3 {
     margin: 0;
     color: #101918;
@@ -2740,7 +2759,12 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 950;
     letter-spacing: 0;
 }
-.student-message-section-head span {
+.student-message-section-head-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+.student-message-section-count {
     display: inline-flex;
     min-width: 26px;
     height: 26px;
@@ -2752,6 +2776,17 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 0.76rem;
     font-weight: 950;
 }
+.student-message-section-toggle {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.student-message-section.is-collapsible[open] .student-message-section-toggle { transform: rotate(180deg); }
 .student-message-list {
     display: grid;
     gap: 8px;
@@ -2787,6 +2822,10 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(19, 118, 109, 0.34);
     background: #fff;
     box-shadow: 0 10px 24px rgba(25, 68, 61, 0.08);
+}
+.student-message-task:active {
+    transform: scale(0.985);
+    transition-duration: 80ms;
 }
 .student-message-task:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.2);
@@ -4677,14 +4716,8 @@ body:not(.teacher-page) .tab-button.active {
 }
 .matrix-attempt-bars {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(var(--attempt-count), 48px);
-    justify-content: safe center;
-    align-items: start;
-    gap: 6px;
     min-height: 158px;
     margin-bottom: 16px;
-    padding: 10px 12px 12px;
     border: 1px solid var(--line);
     border-radius: 16px;
     background:
@@ -4693,6 +4726,19 @@ body:not(.teacher-page) .tab-button.active {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: thin;
+}
+.matrix-attempt-bars-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--attempt-count), 48px);
+    justify-content: safe center;
+    align-items: start;
+    gap: 6px;
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+    min-height: 158px;
+    padding: 10px 12px 12px;
 }
 .matrix-attempt-bar {
     position: relative;
@@ -7612,7 +7658,8 @@ body:not(.teacher-page) .tab-button.active {
 
 @media (max-width: 760px) {
     .student-words-overlay,
-    .student-calendar-overlay {
+    .student-calendar-overlay,
+    .student-message-overlay {
         place-items: center;
         padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
         background: rgba(17,38,34,0.27);

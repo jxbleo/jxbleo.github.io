@@ -702,11 +702,23 @@ Student dashboard navigation:
 
 - The lower main navigation exposes only `Library`.
 - Assignments and finished work live in the top-right notification bell.
+- The default Assignments bell modal has no top summary capsules. Its first
+  open-work section is labelled `This Week`; the final `Finished` section is a
+  closed disclosure by default and expands only when selected.
+- Opening `Overdue`, `This Week`, or `Upcoming` from the hero progress card
+  produces a focused modal with one centered title and one direct task list.
+  These focused views have no summary capsules, repeated section labels, or
+  section counts. `This Week` merges unfinished and finished work, with every
+  unfinished row before every finished row.
 - A calendar icon immediately to the left of the notification bell opens the
   authenticated student's own completion history as a Monday-first monthly
   calendar. Date cells summarize completed assignments and self-study STAR
   work; selecting a date reveals that day's tasks. This student surface uses
-  calendar months and dates, never the Teacher View `Wxx` week grid.
+  calendar months and dates, never the Teacher View `Wxx` week grid. Its modal
+  uses the same translucent glass material as Assignments, and its completed
+  task rows reuse the Assignments row contract: category at left, one-line
+  overflow-scrolling title in the middle, score and chevron at right, with the
+  same entry confirmation before opening the practice runtime.
 - Student assignment timing uses required `due_at` weeks. `OVERDUE` contains
   unfinished work past its due week. `THIS WEEK` contains work due in the
   current Shanghai-time week. When this week has no work or all its work is

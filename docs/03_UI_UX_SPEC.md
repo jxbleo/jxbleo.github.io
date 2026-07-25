@@ -77,7 +77,12 @@ Navigation:
   adds a small gold STAR when applicable, outlines today and the selected day,
   and reveals that date's task names, type, score, and STAR state below the
   month grid. Previous/next controls stay within the student's recorded range
-  and never navigate beyond the current month.
+  and never navigate beyond the current month. The modal and external Close
+  capsule share the Assignments glass material. Completed task rows are the
+  same component used by Assignments: category capsule on the left, a
+  single-line overflow-scrolling title in the center, and score plus chevron on
+  the right. Activating a row opens the same entry confirmation and practice
+  destination; closing the confirmation restores the calendar and row focus.
 - My Words opens in an independent modal from a notebook icon immediately to
   the right of the bell; closing and reopening restores the modal's previous
   internal scroll position
@@ -87,10 +92,19 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the top-right
   notification bell; there is no lower Assignments page entry
+- selecting `Overdue`, `This Week`, or `Upcoming` from the hero progress card
+  opens a focused Assignments modal with one centered title and one task list.
+  It does not repeat the title as a section label, show a summary capsule, or
+  show section counts. The `This Week` list merges both statuses and orders all
+  unfinished rows before all finished rows without visible To Do/Finished
+  subheadings.
 - the bell modal is titled `Assignments`. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
-  sits directly below the card. Every `TO DO` row has a red right-side pill in
+  sits directly below the card. The former three top summary capsules are not
+  rendered. The first open-work section is labelled `THIS WEEK`, while the
+  bottom `FINISHED` disclosure is closed by default and expands on selection.
+  Every unfinished row has a red right-side pill in
   the same position as a finished score: it reads `TO DO` before any attempt
   and shows the best failed percentage after an unsuccessful submission.
   Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
@@ -210,9 +224,9 @@ Frontend rule:
 - Opening the bell alone does not clear the top-right badge or red row state.
   Opening a grouped attempt row marks that thread's current attempts reviewed;
   a later attempt makes the same thread red again.
-- Opening a grouped attempt row should display the thread detail already
-  positioned on the target attempt card. It must not first reveal the top
-  attempt chart and then perform a delayed second scroll.
+- Opening a grouped attempt row displays the thread detail at its top with the
+  attempt chart visible and no attempt preselected. Selecting a chart bar is
+  the only action that scrolls to its matching attempt card below.
 - The teacher bell header includes `Read all`. It marks every currently loaded
   attempt thread read, clears the bell badge/red row treatment, and remains
   disabled when no unread thread exists. Attempts submitted afterward are new
@@ -386,10 +400,11 @@ notification surface. They must not switch to `View`, select matrix cells,
 change matrix filters, or redraw the matrix, whether the attempt came from an
 assigned task or self study. The attempt detail dialog must use the same
 detail layout as a `View` matrix cell, showing every attempt for the relevant
-assignment or self-study thread at a glance. When opened from a specific
-notification attempt, the dialog highlights that attempt and automatically
-scrolls to its card. The attempt detail dialog exactly covers the notification
-card footprint and uses its same centered external `Close` position. Closing
+assignment or self-study thread at a glance. It opens at the top with the full
+attempt bar chart visible and with no attempt preselected. Only clicking a bar
+highlights that attempt and scrolls to its matching detail card below. The
+attempt detail dialog exactly covers the notification card footprint and uses
+its same centered external `Close` position. Closing
 the detail layer by that action, Escape, or its backdrop restores the unchanged
 notification list instead of dismissing the notification surface. The detail
 modal renders outside the notification list's scroll body, and attempt history
@@ -586,7 +601,10 @@ It should include:
   omits the A row. Subtle Passing and enabled STAR reference lines span the
   chart; not-passed bars are muted coral, passed bars are teal, mastered bars
   are restrained gold, and the best score has only a small gold dot. A selected
-  bar gains a quiet outline and remains linked to its attempt card below.
+  bar gains a quiet outline and remains linked to its attempt card below. When
+  attempts overflow horizontally, the Passing and enabled STAR reference lines
+  span the full scrollable chart track through the final bar rather than ending
+  at the initial viewport edge.
 - every attempt card in matrix and notification detail dialogs includes a
   compact paper icon button in the top-right action area. The button opens that
   attempt's full-work review inside the same dialog without changing attempt

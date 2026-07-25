@@ -20,6 +20,23 @@
 
 ### Changed
 
+- Changed Teacher notification thread opening to show the attempt bar chart
+  first, without preselecting or scrolling to the notification's latest
+  attempt. Clicking a chart bar remains the explicit action that highlights and
+  scrolls to the corresponding answer detail below.
+- Extended Teacher attempt-chart Passing and STAR reference lines across the
+  complete horizontally scrollable attempt track, including the final bar when
+  a student has many attempts.
+- Simplified the student Assignments modal by removing its three top summary
+  capsules, renaming the default open-work section to `This Week`, and making
+  `Finished` a closed-by-default native disclosure. Restyled the Progress
+  calendar with the same Apple-style thick glass material and unified its task
+  rows with Assignments, including overflow title motion, score placement,
+  keyboard access, entry confirmation, and practice navigation.
+- Flattened the hero-card `Overdue`, `This Week`, and `Upcoming` drill-downs to
+  one centered title and one direct list, removing duplicate headings, summary
+  capsules, subsection labels, and counts. `This Week` now places all unfinished
+  rows first and all finished rows afterward in the same list.
 - Changed `getDashboard` to return all resolved student Argue replies with
   their `student_seen` state. Marking replies seen now clears only the unread
   badge and preserves the history; a `getDashboard` CloudBase deployment is

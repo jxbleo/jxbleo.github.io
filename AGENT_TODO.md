@@ -68,6 +68,13 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-26
 
+- Removed the Assignments modal's redundant top summary capsules, renamed its
+  default open section to This Week, and collapsed Finished by default. Unified
+  the Progress calendar with the Assignments glass and task-row system so its
+  rows scroll long titles and open the same practice entry confirmation.
+- Flattened hero-card Overdue, This Week, and Upcoming drill-downs to a centered
+  title plus one task list. Removed their duplicate labels, summary/count
+  capsules, and merged This Week with unfinished rows before finished rows.
 - Added the Student Dashboard Progress calendar left of the bell. It renders
   existing finished assignments and self-study STAR records in a Monday-first
   month grid with compact activity levels and per-day details. Automated model
