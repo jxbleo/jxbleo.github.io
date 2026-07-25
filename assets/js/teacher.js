@@ -1946,6 +1946,29 @@
         return Number(window.MRCAT_CONFIG && window.MRCAT_CONFIG.defaultPassingPercentage || 50);
     }
 
+    function setMatchesFamily(set, family) {
+        if (!set) return false;
+        if (family === 'bbc' && /^BBC-/i.test(String(set.set_id || ''))) return true;
+        var fields = [set.section_id, set.section, set.type, set.course, set.category];
+        return fields.some(function(value) {
+            var normalized = String(value || '').toLowerCase();
+            if (family === 'vocabulary') return normalized === 'vocabulary';
+            return normalized === 'bbc' || normalized === 'bbc-six-minute-english';
+        });
+    }
+
+    function familyDefaultPassingForSet(set) {
+        if (setMatchesFamily(set, 'vocabulary')) return 90;
+        if (setMatchesFamily(set, 'bbc')) return 80;
+        return configuredDefaultPassing();
+    }
+
+    function familyDefaultMasteryForSet(set) {
+        if (setMatchesFamily(set, 'vocabulary')) return 100;
+        if (setMatchesFamily(set, 'bbc')) return 95;
+        return 90;
+    }
+
     function shanghaiDateInputValueFromParts(parts) {
         if (!parts) return '';
         return [
@@ -2038,14 +2061,187 @@
 
     function defaultPassingForSet(set) {
         var raw = set && set.passing_percentage;
-        var number = Number(raw == null || raw === '' ? configuredDefaultPassing() : raw);
-        return isFinite(number) ? number : configuredDefaultPassing();
+        var fallback = familyDefaultPassingForSet(set);
+        var number = Number(raw == null || raw === '' ? fallback : raw);
+        return isFinite(number) ? number : fallback;
     }
 
     function defaultMasteryForSet(set) {
         var raw = set && set.mastery_percentage;
-        var number = Number(raw == null || raw === '' ? 90 : raw);
-        return isFinite(number) ? number : 90;
+        var fallback = familyDefaultMasteryForSet(set);
+        var number = Number(raw == null || raw === '' ? fallback : raw);
+        return isFinite(number) ? number : fallback;
+    }
+
+    function normalizedPickerPercentage(value, fallback) {
+        var number = Number(value);
+        if (!isFinite(number)) number = Number(fallback);
+        if (!isFinite(number)) number = 50;
+        return Math.max(0, Math.min(100, Math.round(number)));
+    }
+
+    function percentagePickerTriggerHtml(value, label, extraAttributes, placeholder, fallback) {
+        var raw = String(value == null ? '' : value).trim();
+        var hasValue = raw !== '' && isFinite(Number(raw));
+        var normalized = hasValue ? normalizedPickerPercentage(raw, fallback) : '';
+        var display = hasValue ? normalized + '%' : (placeholder || 'Choose');
+        var ariaValue = hasValue ? normalized + ' percent' : display;
+        return '<button class="percentage-picker-trigger" type="button" data-percent-picker ' +
+            'data-percent-title="' + escapeHtml(label) + '" data-percent-default="' +
+            escapeHtml(normalizedPickerPercentage(fallback, 50)) + '" value="' +
+            escapeHtml(normalized) + '" aria-haspopup="dialog" aria-label="' +
+            escapeHtml(label + ', ' + ariaValue) + '" ' + (extraAttributes || '') + '>' +
+                '<span data-percent-picker-value>' + escapeHtml(display) + '</span>' +
+                '<span class="percentage-picker-glyph" aria-hidden="true">↕</span>' +
+            '</button>';
+    }
+
+    function setPercentagePickerTriggerValue(trigger, value) {
+        if (!trigger) return;
+        var normalized = normalizedPickerPercentage(value, trigger.getAttribute('data-percent-default'));
+        trigger.value = String(normalized);
+        trigger.setAttribute('value', String(normalized));
+        var output = trigger.querySelector('[data-percent-picker-value]');
+        if (output) output.textContent = normalized + '%';
+        var title = trigger.getAttribute('data-percent-title') || 'Percentage';
+        trigger.setAttribute('aria-label', title + ', ' + normalized + ' percent');
+    }
+
+    function openPercentagePicker(trigger, onCommit) {
+        if (!trigger || document.querySelector('.percentage-picker-overlay')) return;
+        var title = trigger.getAttribute('data-percent-title') || 'Percentage';
+        var selected = normalizedPickerPercentage(trigger.value, trigger.getAttribute('data-percent-default'));
+        var options = [];
+        for (var value = 0; value <= 100; value += 1) {
+            options.push('<button class="percentage-wheel-option" type="button" role="option" tabindex="-1" ' +
+                'data-percent-option="' + value + '" aria-selected="' + (value === selected ? 'true' : 'false') + '">' +
+                value + '<span aria-hidden="true">%</span></button>');
+        }
+        var overlay = document.createElement('div');
+        overlay.className = 'percentage-picker-overlay';
+        overlay.innerHTML =
+            '<section class="percentage-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="percentage-picker-title">' +
+                '<header class="percentage-picker-head">' +
+                    '<button class="percentage-picker-action cancel" type="button" data-percent-cancel>Cancel</button>' +
+                    '<div><p>SELECT</p><h2 id="percentage-picker-title">' + escapeHtml(title) + '</h2></div>' +
+                    '<button class="percentage-picker-action done" type="button" data-percent-done>Done</button>' +
+                '</header>' +
+                '<div class="percentage-wheel-frame">' +
+                    '<div class="percentage-wheel-highlight" aria-hidden="true"></div>' +
+                    '<div class="percentage-wheel-fade top" aria-hidden="true"></div>' +
+                    '<div class="percentage-wheel-fade bottom" aria-hidden="true"></div>' +
+                    '<div class="percentage-wheel" role="listbox" tabindex="0" aria-label="' + escapeHtml(title) + '">' +
+                        options.join('') +
+                    '</div>' +
+                '</div>' +
+                '<output class="percentage-picker-output" aria-live="polite">' + selected + '%</output>' +
+            '</section>';
+        document.body.appendChild(overlay);
+
+        var wheel = overlay.querySelector('.percentage-wheel');
+        var output = overlay.querySelector('.percentage-picker-output');
+        var scrollFrame = 0;
+        var previousBodyOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        function syncSelection(nextValue) {
+            selected = normalizedPickerPercentage(nextValue, selected);
+            output.textContent = selected + '%';
+            wheel.querySelectorAll('[data-percent-option]').forEach(function(option) {
+                var active = Number(option.getAttribute('data-percent-option')) === selected;
+                option.classList.toggle('active', active);
+                option.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+        }
+
+        function scrollToSelection(nextValue, behavior) {
+            selected = normalizedPickerPercentage(nextValue, selected);
+            wheel.scrollTo({
+                top: selected * 44,
+                behavior: behavior || (
+                    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                        ? 'auto'
+                        : 'smooth'
+                )
+            });
+            syncSelection(selected);
+        }
+
+        function closePicker(commit) {
+            document.removeEventListener('keydown', handlePickerKeydown);
+            if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+            if (commit) syncSelection(Math.round(wheel.scrollTop / 44));
+            document.body.style.overflow = previousBodyOverflow;
+            if (commit && typeof onCommit === 'function') onCommit(selected);
+            overlay.remove();
+            trigger.focus();
+        }
+
+        function handlePickerKeydown(event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closePicker(false);
+                return;
+            }
+            if (event.key === 'Tab') {
+                var focusable = Array.from(overlay.querySelectorAll('button, [tabindex]:not([tabindex="-1"])'));
+                var first = focusable[0];
+                var last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+
+        wheel.addEventListener('scroll', function() {
+            if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+            scrollFrame = window.requestAnimationFrame(function() {
+                scrollFrame = 0;
+                syncSelection(Math.round(wheel.scrollTop / 44));
+            });
+        }, { passive: true });
+        wheel.addEventListener('keydown', function(event) {
+            var next = selected;
+            if (event.key === 'ArrowUp') next -= 1;
+            else if (event.key === 'ArrowDown') next += 1;
+            else if (event.key === 'PageUp') next -= 5;
+            else if (event.key === 'PageDown') next += 5;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = 100;
+            else if (event.key === 'Enter') {
+                event.preventDefault();
+                closePicker(true);
+                return;
+            } else {
+                return;
+            }
+            event.preventDefault();
+            scrollToSelection(next);
+        });
+        wheel.addEventListener('click', function(event) {
+            var option = event.target.closest('[data-percent-option]');
+            if (!option) return;
+            scrollToSelection(option.getAttribute('data-percent-option'));
+        });
+        overlay.querySelector('[data-percent-cancel]').addEventListener('click', function() {
+            closePicker(false);
+        });
+        overlay.querySelector('[data-percent-done]').addEventListener('click', function() {
+            closePicker(true);
+        });
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) closePicker(false);
+        });
+        document.addEventListener('keydown', handlePickerKeydown);
+        window.requestAnimationFrame(function() {
+            wheel.scrollTop = selected * 44;
+            syncSelection(selected);
+            wheel.focus();
+        });
     }
 
     function defaultAssignParamsForSet(set) {
@@ -2137,10 +2333,13 @@
         if (checked) {
             html += '<label class="assign-mastery-inline">' +
                 '<span>Mastery %</span>' +
-                '<input type="number" min="0" max="100" step="0.01" value="' +
-                    escapeHtml(params.masteryPercentage || '') +
-                    '" placeholder="' + escapeHtml(masteryDefault) +
-                    '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="masteryPercentage">' +
+                percentagePickerTriggerHtml(
+                    params.masteryPercentage || masteryDefault,
+                    'Mastery percentage',
+                    'data-set-id="' + escapeHtml(setId) + '" data-assign-param="masteryPercentage"',
+                    'Choose',
+                    masteryDefault
+                ) +
             '</label>';
         }
         return html;
@@ -2156,9 +2355,13 @@
             '</div>' +
             '<div class="assign-params-cell date" role="cell">' + renderAssignDateControls(setId, params) + '</div>' +
             '<div class="assign-params-cell passing" role="cell">' +
-                '<input type="number" min="0" max="100" step="0.01" value="' +
-                    escapeHtml(params.passingPercentage || '') +
-                    '" data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage" aria-label="Passing percentage">' +
+                percentagePickerTriggerHtml(
+                    params.passingPercentage,
+                    'Passing percentage',
+                    'data-set-id="' + escapeHtml(setId) + '" data-assign-param="passingPercentage"',
+                    'Choose',
+                    defaultPassingForSet(set)
+                ) +
             '</div>' +
             '<div class="assign-params-cell star" role="cell">' + renderAssignStarControls(setId, params, set) + '</div>' +
         '</div>';
@@ -2171,7 +2374,9 @@
         var params = assignParamForSet(set);
         if (key === 'masteryEnabled') {
             params.masteryEnabled = control.checked === true;
-            if (!params.masteryEnabled) params.masteryPercentage = '';
+            params.masteryPercentage = params.masteryEnabled
+                ? formatPercentInput(defaultMasteryForSet(set))
+                : '';
             renderAssignParameterTable();
             return;
         }
@@ -2187,6 +2392,15 @@
         var table = document.getElementById('assign-params-table');
         if (!table) return;
         table.querySelectorAll('[data-assign-param]').forEach(function(control) {
+            if (control.hasAttribute('data-percent-picker')) {
+                control.addEventListener('click', function() {
+                    openPercentagePicker(control, function(value) {
+                        setPercentagePickerTriggerValue(control, value);
+                        handleAssignParamChange(control);
+                    });
+                });
+                return;
+            }
             var eventName = control.tagName === 'SELECT' || control.type === 'checkbox' || control.type === 'date' ? 'change' : 'input';
             control.addEventListener(eventName, function() {
                 handleAssignParamChange(control);
@@ -3288,9 +3502,27 @@
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_due"><span>Due week</span></label>' +
                     '<select name="due_week" aria-label="Due week">' + assignmentEditWeekOptionsHtml(dueWeek) + '</select>' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_passing"' + (commonPassing !== '' ? ' checked' : '') + '><span>Passing %</span></label>' +
-                    '<input type="number" name="passing_percentage" min="0" max="100" step="0.01" placeholder="' + (commonPassing === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonPassing) + '">' +
+                    '<div class="assignment-edit-percentage">' +
+                        percentagePickerTriggerHtml(
+                            commonPassing,
+                            'Passing percentage',
+                            'data-percent-input="passing_percentage" data-percent-change="change_passing"',
+                            'Mixed / choose',
+                            50
+                        ) +
+                        '<input type="hidden" name="passing_percentage" value="' + escapeHtml(commonPassing) + '">' +
+                    '</div>' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
-                    '<input type="number" name="mastery_percentage" min="0" max="100" step="0.01" placeholder="' + (commonMastery === '' ? 'Mixed / unchanged' : '') + '" value="' + escapeHtml(commonMastery) + '">' +
+                    '<div class="assignment-edit-percentage">' +
+                        percentagePickerTriggerHtml(
+                            commonMastery,
+                            'Mastery percentage',
+                            'data-percent-input="mastery_percentage" data-percent-change="change_mastery"',
+                            'Mixed / choose',
+                            90
+                        ) +
+                        '<input type="hidden" name="mastery_percentage" value="' + escapeHtml(commonMastery) + '">' +
+                    '</div>' +
                     '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>Earn STAR</span></label>' +
                     '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
                     '<p class="assignment-edit-note">Due week controls the Wxx column, student This Week / Upcoming display, and the Sunday 23:59 deadline. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
@@ -3326,6 +3558,22 @@
 
         overlay.querySelector('.dialog-close-button').addEventListener('click', close);
         overlay.querySelector('[data-cancel-edit]').addEventListener('click', close);
+        overlay.querySelectorAll('[data-percent-picker]').forEach(function(trigger) {
+            trigger.addEventListener('click', function() {
+                openPercentagePicker(trigger, function(value) {
+                    setPercentagePickerTriggerValue(trigger, value);
+                    var form = trigger.closest('form');
+                    var inputName = trigger.getAttribute('data-percent-input');
+                    var changeName = trigger.getAttribute('data-percent-change');
+                    if (form && inputName && form.elements[inputName]) {
+                        form.elements[inputName].value = String(value);
+                    }
+                    if (form && changeName && form.elements[changeName]) {
+                        form.elements[changeName].checked = true;
+                    }
+                });
+            });
+        });
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close();
         });
@@ -3339,9 +3587,17 @@
                 payload.due_at = dueAtIsoForWeekStart(form.elements.due_week.value);
             }
             if (form.elements.change_passing.checked) {
+                if (!form.elements.passing_percentage.value) {
+                    showMessage('Choose a Passing percentage.', 'error');
+                    return;
+                }
                 payload.passing_percentage = form.elements.passing_percentage.value;
             }
             if (form.elements.change_mastery.checked) {
+                if (!form.elements.mastery_percentage.value) {
+                    showMessage('Choose a Mastery percentage.', 'error');
+                    return;
+                }
                 payload.mastery_percentage = form.elements.mastery_percentage.value;
             }
             if (form.elements.change_mastery_enabled.checked) {

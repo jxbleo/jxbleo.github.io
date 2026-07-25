@@ -37,6 +37,20 @@ const collections = {
       passing_percentage: 50,
       mastery_percentage: 90,
     },
+    {
+      _id: "vocabulary-default-set",
+      set_id: "NGSL-DEFAULT",
+      title: "Vocabulary default set",
+      section_id: "vocabulary",
+      visible: true,
+    },
+    {
+      _id: "bbc-default-set",
+      set_id: "BBC-DEFAULT",
+      title: "BBC default set",
+      section_id: "bbc-six-minute-english",
+      visible: true,
+    },
   ],
   assignments: [
     {
@@ -259,6 +273,15 @@ function testDashboardScheduleModel() {
 
 async function main() {
   testDashboardScheduleModel();
+  const setsResult = await call("listSets");
+  assert.equal(setsResult.success, true);
+  const vocabularyDefaults = setsResult.sets.find((set) => set.set_id === "NGSL-DEFAULT");
+  const bbcDefaults = setsResult.sets.find((set) => set.set_id === "BBC-DEFAULT");
+  assert.equal(vocabularyDefaults.passing_percentage, 90);
+  assert.equal(vocabularyDefaults.mastery_percentage, 100);
+  assert.equal(bbcDefaults.passing_percentage, 80);
+  assert.equal(bbcDefaults.mastery_percentage, 95);
+
   const originalConsoleError = console.error;
   console.error = () => {};
   const missingDue = await call("createAssignments", {

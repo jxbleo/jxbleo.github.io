@@ -5446,6 +5446,212 @@ body:not(.teacher-page) .tab-button.active {
 .assignment-edit-form .dialog-actions {
     grid-column: 1 / -1;
 }
+.assignment-edit-percentage {
+    min-width: 0;
+}
+.assignment-edit-percentage .percentage-picker-trigger {
+    width: 100%;
+}
+.percentage-picker-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--line, rgba(72, 86, 78, 0.16));
+    border-radius: 12px;
+    color: var(--ink, #18332f);
+    background: #fff;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 860;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 140ms ease, box-shadow 140ms ease, transform 100ms ease;
+}
+.percentage-picker-trigger:hover,
+.percentage-picker-trigger:focus-visible {
+    border-color: rgba(19, 118, 109, 0.38);
+    box-shadow: 0 0 0 3px rgba(19, 118, 109, 0.09);
+}
+.percentage-picker-trigger:active {
+    transform: scale(0.985);
+}
+.percentage-picker-glyph {
+    flex: 0 0 auto;
+    color: var(--accent, #13766d);
+    font-size: 1rem;
+    line-height: 1;
+}
+.percentage-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 360;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(18, 29, 27, 0.34);
+    backdrop-filter: blur(12px) saturate(1.1);
+}
+.percentage-picker-dialog {
+    width: min(360px, 100%);
+    padding: 16px;
+    border: 1px solid rgba(19, 118, 109, 0.16);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 28px 80px rgba(10, 52, 47, 0.24);
+}
+.percentage-picker-head {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+.percentage-picker-head p {
+    margin: 0 0 2px;
+    color: var(--accent, #13766d);
+    font-size: 0.64rem;
+    font-weight: 920;
+    letter-spacing: 0.12em;
+}
+.percentage-picker-head h2 {
+    margin: 0;
+    color: var(--ink, #18332f);
+    font-size: 1rem;
+    line-height: 1.2;
+}
+.percentage-picker-action {
+    min-height: 44px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 12px;
+    color: var(--accent, #13766d);
+    background: transparent;
+    font-size: 0.84rem;
+    font-weight: 880;
+    cursor: pointer;
+}
+.percentage-picker-action:hover,
+.percentage-picker-action:focus-visible {
+    background: rgba(19, 118, 109, 0.08);
+    outline: none;
+}
+.percentage-picker-action.done {
+    color: #fff;
+    background: var(--accent, #13766d);
+}
+.percentage-wheel-frame {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #f6faf9;
+}
+.percentage-wheel {
+    position: relative;
+    z-index: 1;
+    height: 220px;
+    padding: 88px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    outline: none;
+}
+.percentage-wheel::-webkit-scrollbar {
+    display: none;
+}
+.percentage-wheel-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    color: rgba(24, 51, 47, 0.46);
+    background: transparent;
+    font: inherit;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 760;
+    cursor: pointer;
+    transition: color 120ms ease, font-size 120ms ease, font-weight 120ms ease;
+}
+.percentage-wheel-option span {
+    margin-left: 2px;
+    font-size: 0.72em;
+}
+.percentage-wheel-option.active {
+    color: var(--ink, #18332f);
+    font-size: 1.34rem;
+    font-weight: 950;
+}
+.percentage-wheel-highlight {
+    position: absolute;
+    z-index: 0;
+    top: 88px;
+    right: 10px;
+    left: 10px;
+    height: 44px;
+    border-top: 1px solid rgba(19, 118, 109, 0.18);
+    border-bottom: 1px solid rgba(19, 118, 109, 0.18);
+    border-radius: 12px;
+    background: rgba(19, 118, 109, 0.075);
+    pointer-events: none;
+}
+.percentage-wheel-fade {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    left: 0;
+    height: 88px;
+    pointer-events: none;
+}
+.percentage-wheel-fade.top {
+    top: 0;
+    background: linear-gradient(180deg, #f6faf9 14%, rgba(246, 250, 249, 0));
+}
+.percentage-wheel-fade.bottom {
+    bottom: 0;
+    background: linear-gradient(0deg, #f6faf9 14%, rgba(246, 250, 249, 0));
+}
+.percentage-picker-output {
+    display: block;
+    margin-top: 10px;
+    color: var(--muted, #58716c);
+    font-size: 0.76rem;
+    font-weight: 850;
+    text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+    .percentage-picker-trigger,
+    .percentage-wheel-option {
+        transition: none;
+    }
+    .percentage-wheel {
+        scroll-behavior: auto;
+    }
+}
+@media (prefers-reduced-transparency: reduce) {
+    .percentage-picker-overlay {
+        background: rgba(18, 29, 27, 0.72);
+        backdrop-filter: none;
+    }
+    .percentage-picker-dialog {
+        background: #fff;
+    }
+}
 .assignment-danger-zone {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -5747,7 +5953,8 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 820;
 }
 .assign-params-cell select,
-.assign-params-cell input {
+.assign-params-cell input,
+.assign-params-cell .percentage-picker-trigger {
     width: 100%;
     min-height: 40px;
     padding: 0 11px;
@@ -5760,7 +5967,8 @@ body:not(.teacher-page) .tab-button.active {
     outline: none;
 }
 .assign-params-cell select:focus,
-.assign-params-cell input:focus {
+.assign-params-cell input:focus,
+.assign-params-cell .percentage-picker-trigger:focus-visible {
     border-color: rgba(19, 118, 109, 0.34);
     box-shadow: 0 0 0 3px rgba(19, 118, 109, 0.08);
 }

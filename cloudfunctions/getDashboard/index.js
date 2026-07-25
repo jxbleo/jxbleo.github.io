@@ -73,12 +73,31 @@ function isVocabularySet(set) {
   ].some((value) => String(value || "").toLowerCase() === "vocabulary");
 }
 
+function isBbcSet(set) {
+  if (!set) return false;
+  if (/^BBC-/i.test(String(set.set_id || ""))) return true;
+  return [
+    set.section_id,
+    set.section,
+    set.type,
+    set.course,
+    set.category,
+  ].some((value) => {
+    const normalized = String(value || "").toLowerCase();
+    return normalized === "bbc" || normalized === "bbc-six-minute-english";
+  });
+}
+
 function defaultPassingPercentageForSet(set) {
-  return isVocabularySet(set) ? 80 : 50;
+  if (isVocabularySet(set)) return 90;
+  if (isBbcSet(set)) return 80;
+  return 50;
 }
 
 function defaultMasteryPercentageForSet(set) {
-  return isVocabularySet(set) ? 100 : 90;
+  if (isVocabularySet(set)) return 100;
+  if (isBbcSet(set)) return 95;
+  return 90;
 }
 
 function masteryPercentageForSet(set) {

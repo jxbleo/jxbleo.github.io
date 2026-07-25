@@ -3,6 +3,36 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-25
+
+### Changed
+
+- Changed family grading defaults to Vocabulary `90%` passing / `100%` STAR
+  and BBC `80%` / `95%`, with matching fallbacks in assignment creation,
+  grading, dashboard repair, and generated CloudBase set/config data. Existing
+  assignments retain their stored thresholds.
+- Replaced Teacher Assign and assignment-edit percentage number fields with a
+  shared Apple-style vertical wheel: five visible rows, native inertial
+  scrolling, integer snapping, explicit Cancel/Done, background scroll lock,
+  reduced-motion handling, and keyboard controls.
+- Renamed Vocabulary Cloze post-completion actions from `Redo` to `Retry` in
+  both timed Practice/Quiz review and inline practice, including confirmation
+  copy; internal action identifiers and behavior remain unchanged.
+
+### Fixed
+
+- Restored native iPhone/iPad text-selection highlighting and handles for My
+  Words by removing the delayed `Selection.removeAllRanges()` call while
+  retaining the protected single-tap save flow on the custom button.
+- Bumped the shared My Words script cache version on BBC, IELTS Reading, IELTS
+  Listening, Vocabulary, Dashboard, and Attempt Review pages.
+- Removed the redundant `Counts toward results` suffix from Vocabulary Cloze
+  Test dropdown options and fixed the phone layout so the horizontally
+  scrollable Practice number capsules retain their full height and touch area.
+- Renamed the student-facing counted Vocabulary Cloze choice from `Test` to the
+  lighter `Quiz`, with a `Start Quiz` action and consistent quiz wording across
+  its confirmation, progress, interruption, submission, and retry dialogs.
+
 ## 2026-07-24
 
 ### Changed

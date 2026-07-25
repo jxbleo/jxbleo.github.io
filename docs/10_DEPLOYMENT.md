@@ -272,6 +272,24 @@ environment variable changes.
 The generated deploy plan is local and ignored by Git. It is a checklist, not
 an authorization grant.
 
+### Threshold-default rollout
+
+When Vocabulary/BBC family defaults change, deploy the rebuilt
+`teacherAdmin`, `submitAttempt`, and `getDashboard` ZIPs. Regenerate private
+content data, then review and apply an overwrite limited to `sets` and
+`system_config` so existing set records receive the new values without
+touching teacher-approved `grading_keys`:
+
+```bash
+node scripts/prepare-cloudbase-data.js
+npm run cloudbase:import:content -- --only sets,system_config --overwrite-existing
+npm run cloudbase:import:content -- --apply --only sets,system_config --overwrite-existing
+```
+
+The first import command is a dry run. This changes defaults for new
+assignments and independent practice; it does not rewrite threshold snapshots
+already stored on existing assignments.
+
 Do not configure automatic CloudBase deployment on every Git push. If CI/CD is
 added later, it should use a manually triggered workflow and owner approval
 before secrets are released.
