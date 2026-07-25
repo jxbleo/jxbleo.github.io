@@ -172,7 +172,8 @@ Check:
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
 - the top-right bell opens a modal titled `Assignments` with `TO DO` and
-  finished assignment messages. Its shorter, internally scrolling card has no
+  finished assignment messages and no Teacher Replies section. Its shorter,
+  internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
 - every untouched assignment has a red `TO DO` pill aligned with the finished
@@ -189,8 +190,26 @@ Check:
   to the same bell dialog and selected assignment row; choosing `Enter` closes
   both modal layers and opens the task
 - the student bell uses the same SVG bell design as the teacher bell
+- a separate speech-bubble SVG button beside the bell opens `Teacher Replies`
+  even when the history is empty; all resolved replies appear newest-first,
+  previously read replies remain after closing/reopening, and only unread
+  replies contribute to the bubble button's red badge
+- opening and closing Teacher Replies marks its currently unseen items read,
+  clears the bubble badge without changing the bell badge, and keeps each
+  `Go to question` link working
 - the notebook icon sits immediately to the right of the bell and opens My
   Words in an independent modal
+- the calendar icon sits immediately to the left of the bell and opens a
+  student-only, Monday-first monthly completion calendar; it contains no `Wxx`
+  labels, cannot navigate beyond the current month, and includes both finished
+  assignments and self-study STAR records
+- selecting an active calendar date shows every task completed that day with
+  its type, score, and STAR state; empty dates show a quiet empty state, today
+  and the selected day remain distinguishable without relying on color alone,
+  and future dates are disabled
+- at 390px phone, iPad, and desktop widths, all seven date columns remain fully
+  visible with no horizontal page overflow; Close, Escape, and backdrop dismiss
+  the modal and restore focus to the calendar button
 - Library shows a large heading with the search button and `Practice` / `Exam`
   control grouped beside it; clicking the button expands an anchored search
   input, while Close and Escape clear/collapse it and restore focus to the button

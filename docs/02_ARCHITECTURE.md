@@ -121,7 +121,8 @@ Active or relevant functions:
 
 - `getCurrentStudent`: authenticated profile lookup
 - `getResources`: visible set catalog for authenticated surfaces
-- `getDashboard`: student assignments, history, latest attempt lookup, replies, reveal, STAR fallback
+- `getDashboard`: student assignments, history, latest attempt lookup, all
+  resolved teacher replies plus their read state, reveal, STAR fallback
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
   progress, disputes, answer-key access
@@ -160,6 +161,11 @@ Main collections:
 - `vocabulary_test_sessions`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
+
+The student Dashboard renders teacher replies as a standalone header inbox.
+`getDashboard` returns resolved `answer_disputes` regardless of
+`student_seen`; the browser derives the unread badge from that read state and
+`markTeacherRepliesSeen` updates the state without deleting reply history.
 
 ## 7. Auth and Permissions
 

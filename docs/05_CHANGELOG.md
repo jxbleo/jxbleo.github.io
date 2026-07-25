@@ -3,6 +3,28 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-26
+
+### Added
+
+- Added a student-only Progress calendar beside the Dashboard bell. The
+  Monday-first monthly view combines finished assignments and self-study STAR
+  records, uses compact daily activity intensity and STAR markers, and shows
+  the selected day's task/score details without exposing Teacher View `Wxx`
+  grouping. The existing `getDashboard` response supplies all required data,
+  so no CloudBase deployment or data migration is required.
+- Added a standalone speech-bubble Teacher Replies button to the student
+  Dashboard header. It opens a permanent newest-first reply history and keeps
+  unread replies on its own red badge instead of mixing them into the
+  assignment bell.
+
+### Changed
+
+- Changed `getDashboard` to return all resolved student Argue replies with
+  their `student_seen` state. Marking replies seen now clears only the unread
+  badge and preserves the history; a `getDashboard` CloudBase deployment is
+  required, with no data migration.
+
 ## 2026-07-25
 
 ### Changed
