@@ -110,6 +110,11 @@ Rules:
 
 - `sets` controls authenticated Explore/Library visibility.
 - Static catalog visibility and CloudBase visibility can drift; check both.
+- When a set does not store an explicit threshold, the server family fallback
+  is Vocabulary `90` passing / `100` mastery, BBC `80` / `95`, and general
+  content `50` / `90`.
+- Existing assignments keep their stored threshold snapshot even if a later
+  family default changes.
 
 ## 5. `assignments`
 

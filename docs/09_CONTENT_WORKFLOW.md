@@ -236,9 +236,9 @@ Rules to preserve:
 - Test Mode with 1-4 selected groups is self-test only and does not write
   attempts.
 - Test Mode with 5 or more selected groups is countable.
-- Vocabulary sets default to `passing_percentage: 80` and
-  `mastery_percentage: 100`; other current content families keep the default
-  `50` / `90` thresholds unless a set or assignment overrides them.
+- Vocabulary sets default to `passing_percentage: 90` and
+  `mastery_percentage: 100`; BBC sets default to `80` / `95`; other current
+  content families keep `50` / `90` unless a set or assignment overrides them.
 - Countable vocabulary attempts must retain selected group count, selected
   group IDs, overall score, and per-group results.
 - NGSL, NAWL, and Oxford5000 are independent source sequences. Do not continue

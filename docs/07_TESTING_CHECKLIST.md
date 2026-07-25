@@ -233,8 +233,8 @@ Check:
 - mastered work creates backend STAR
 - assignment with `mastery_enabled: false` can pass but does not become
   mastered or create a new STAR on later submissions
-- Vocabulary countable tests use `80%` passing and `100%` mastery by default
-  unless the set or assignment explicitly overrides thresholds
+- Vocabulary countable tests use `90%` passing and `100%` mastery by default;
+  BBC uses `80%` and `95%`; both remain overridable by the set or assignment
 - new Assign-created assignments default to `mastery_enabled: false`; after the
   teacher selects `Earn STAR` during Assign or turns `Can earn STAR` on from
   View, a later qualifying submission can become mastered / STAR
@@ -307,6 +307,13 @@ Check:
   reveals Week/Date controls, and Week clearly labels the current Wxx week
 - Assign supports different dates/weeks, passing percentages, and STAR settings
   for different selected Work rows in the same submit
+- Passing % and Mastery % open a complete five-row wheel on phone, iPad, and
+  desktop; touch/trackpad scrolling snaps to whole percentages and does not
+  scroll the page behind the modal
+- Wheel Cancel, backdrop, and Escape preserve the old value; Done commits it;
+  arrow/Page/Home/End keys and Enter work without a pointer
+- Assignment editing uses the same wheel and checks the matching change toggle
+  after a committed value
 - Assign rejects an `Earn STAR` row until `Mastery %` is filled, and stores
   checked STAR assignments with `mastery_enabled: true`
 - Assign-created work for a future Week appears in Teacher View under that Wxx
@@ -566,10 +573,10 @@ Check:
   plus/minus font controls
 - selecting a numbered Vocabulary Learn group shows `Go to Practice`, opens
   that group's inline practice, shows only `Check` before checking, then
-  replaces it with a centered correct/total score pill plus inline `Redo` after
+  replaces it with a centered correct/total score pill plus inline `Retry` after
   checking
 - Vocabulary inline practice has no `Clear All`, no `Hide Answer`, and no
-  floating `Redo` button
+  floating `Retry` button
 - each blank's choice panel opens as a floating overlay that does not push
   questions down, has no `Clear` button, and ends with a blank underline chip
 - checking Vocabulary inline practice turns correct cards green, wrong cards
@@ -601,17 +608,21 @@ Check:
 - static and browser-generated Vocabulary Practice worksheets render enlarged
   word-bank and question text without clipping, overlap, or table overflow
 - JSON and JS fallback both work
-- Test start shows the timed-test warning before questions appear
+- `Start Quiz` shows the timed-quiz warning before questions appear
 - Cloze/Test timing gives each selected group 90 seconds
 - running Test mode disables other Vocabulary mode tabs and warns on
   browser-level leave/back attempts
 - Cloze setup keeps the top-level `Cloze` tab, then shows a Practice row above
-  a Test row. Practice uses selectable numbered group chips and a `Practice`
-  action; Test uses the selected-set-count dropdown and a `Test` action.
-- Practice opens with no group selected and its action disabled; Test offers
-  only 5-or-more set counts, with no 1-4 self-study options.
+  a Quiz row. Practice uses selectable numbered group chips and a `Practice`
+  action; Quiz uses the selected-set-count dropdown and a `Start Quiz` action.
+- Practice opens with no group selected and its action disabled; Quiz offers
+  only 5-or-more set counts, with no 1-4 self-study options and no `Counts
+  toward results` suffix in its dropdown labels.
 - On mobile widths, both Cloze setup rows, the Practice chip scroller, the Test
-  selector, and both actions remain inside the outer panel.
+  selector, and both actions remain inside the outer panel; every numbered
+  Practice capsule is fully visible rather than vertically clipped.
+- counted-flow confirmation, in-progress, interruption, submit, and redo copy
+  consistently says `Quiz`, while stored test/session identifiers are unchanged
 - Cloze Practice starts a timer using 90 seconds per selected group, shuffles
   question order inside each selected group, records a
   `vocabulary_practice_timed` attempt with `assignment_id: null`, and appears in
@@ -629,9 +640,9 @@ Check:
 - the result modal has only one `Close` action
 - after Test submission, answer feedback appears inside each question blank
   using the same treatment as Vocabulary Learn
-- the Test result summary and `Redo` button appear below the test questions,
+- the Test result summary and `Retry` button appear below the test questions,
   not above them
-- student Vocabulary views do not show a bottom-right floating `Redo` capsule
+- student Vocabulary views do not show a bottom-right floating `Retry` capsule
 - student Vocabulary views do not show a bottom-right `Show Answers` capsule
 - 1-4 selected Test groups do not create CloudBase attempt
 - 5+ selected Test groups create attempt
@@ -648,6 +659,10 @@ Check:
 - group metadata is stored
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons
+- long-pressing selectable lesson text on iPhone and iPad keeps the native
+  selection highlight and handles visible while `Add to My Words` is offered
+- tapping `Add to My Words` on a touch device saves the captured text once,
+  without a duplicate touch/click submission
 - My Words accepts single-letter words such as `a` and `I`
 - a curated/shared-lexicon word displays dictionary details immediately after
   save/list, while an unknown word saves first and then enriches automatically

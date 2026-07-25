@@ -281,8 +281,8 @@ flowchart TD
 - `title`：标题
 - `type` / `course`：类型或课程
 - `link`：打开哪个练习页面
-- `passing_percentage`：通过线，默认 50；Vocabulary 默认 80
-- `mastery_percentage`：掌握线，默认 90；Vocabulary 默认 100
+- `passing_percentage`：通过线；通用默认 50，Vocabulary 默认 90，BBC 默认 80
+- `mastery_percentage`：STAR 掌握线；通用默认 90，Vocabulary 默认 100，BBC 默认 95
 - `feedback_policy`：反馈策略
 - `visible`：是否显示
 

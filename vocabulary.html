@@ -1895,6 +1895,19 @@
                 max-width: 100%;
             }
 
+            .cloze-practice-grid {
+                flex: 0 0 auto;
+                min-height: 48px;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+
+            .cloze-practice-chip {
+                min-width: 40px;
+                height: 40px;
+                padding: 0 12px;
+            }
+
             .cloze-mode-row .btn {
                 width: 100%;
             }
@@ -2010,10 +2023,10 @@
                         </div>
                         <div class="cloze-mode-row test-row">
                             <div class="cloze-mode-main">
-                                <span class="cloze-mode-label">Test</span>
+                                <span class="cloze-mode-label">Quiz</span>
                                 <select id="test-group-count"></select>
                             </div>
-                            <button class="btn btn-primary" id="start-test-btn" type="button">Test</button>
+                            <button class="btn btn-primary" id="start-test-btn" type="button">Start Quiz</button>
                         </div>
                     </div>
                     <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
@@ -2023,7 +2036,7 @@
                             <div id="test-set-filter" class="test-set-filter"></div>
                             <div class="test-timer-slot">
                                 <div class="timer" id="test-timer"></div>
-                                <button class="word-bank-redo test-sticky-redo" id="test-sticky-redo-btn" type="button" data-test-sticky-redo hidden>Redo</button>
+                                <button class="word-bank-redo test-sticky-redo" id="test-sticky-redo-btn" type="button" data-test-sticky-redo hidden>Retry</button>
                             </div>
                         </div>
                         <div id="test-sticky-score" class="test-sticky-score" hidden aria-live="polite"></div>
@@ -2032,7 +2045,7 @@
                     <div id="test-groups" class="group-grid"></div>
                     <div id="test-summary" class="test-summary"></div>
                     <div class="group-actions">
-                        <button class="btn btn-secondary" id="redo-test-btn" type="button" style="display:none;">Redo</button>
+                        <button class="btn btn-secondary" id="redo-test-btn" type="button" style="display:none;">Retry</button>
                         <button class="btn btn-primary" id="submit-test-btn" type="button" style="display:none;">Submit</button>
                     </div>
                 </div>
@@ -2044,7 +2057,7 @@
     <script src="assets/js/config.public.js?v=20260711-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/practice-session.js?v=20260712-1"></script>
-    <script src="assets/js/personal-vocab.js?v=20260712-1"></script>
+    <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/vocabulary-worksheet-pdf.js?v=20260712-1"></script>
     <script>
         var params = new URLSearchParams(window.location.search);
@@ -2294,8 +2307,8 @@
         function showIntegrityNotice(message) {
             pendingIntegrityNotice = '';
             showTestDialog({
-                title: 'Test interrupted',
-                copy: message || 'You left this page or switched windows. This vocabulary test was interrupted. Please start again when you are ready.',
+                title: 'Quiz interrupted',
+                copy: message || 'You left this page or switched windows. This vocabulary quiz was interrupted. Please start again when you are ready.',
                 primary: 'Close'
             });
         }
@@ -2303,7 +2316,7 @@
         function endTestForIntegrity(reason, message) {
             if (!isActiveCountedTest() || testIntegrityEnded) return;
             testIntegrityEnded = true;
-            pendingIntegrityNotice = message || 'You left this page or switched windows. This vocabulary test was interrupted. Please start again when you are ready.';
+            pendingIntegrityNotice = message || 'You left this page or switched windows. This vocabulary quiz was interrupted. Please start again when you are ready.';
             stopTestHeartbeat();
             clearInterval(testTimerId);
             abandonVocabularyTestSession(reason || 'page_hidden');
@@ -2367,8 +2380,8 @@
 
         function showTestLockNotice() {
             showTestDialog({
-                title: 'Test in progress',
-                copy: 'The timer is running. Submit this test before leaving the Test screen.',
+                title: 'Quiz in progress',
+                copy: 'The timer is running. Submit this quiz before leaving this screen.',
                 primary: 'Keep Working'
             });
         }
@@ -2376,9 +2389,9 @@
         function requestStartTest() {
             if (testLocked) return;
             showTestDialog({
-                title: 'Start timed test?',
-                copy: 'Before you start, turn on Do Not Disturb if you can. Once the test begins, switching windows, tabs, or apps will interrupt and end the test.',
-                primary: 'Test',
+                title: 'Start timed quiz?',
+                copy: 'Before you start, turn on Do Not Disturb if you can. Once the quiz begins, switching windows, tabs, or apps will interrupt and end the quiz.',
+                primary: 'Start Quiz',
                 secondary: 'Cancel'
             }).then(function(confirmed) {
                 if (confirmed) startTest();
@@ -2399,7 +2412,7 @@
 
         function requestSubmitTest() {
             if (testSubmitting) return;
-            var label = activeTestMode === 'practice' ? 'practice' : 'test';
+            var label = activeTestMode === 'practice' ? 'practice' : 'quiz';
             showTestDialog({
                 title: 'Submit early?',
                 copy: 'This will end the current timed ' + label + ' and submit your answers now.',
@@ -2412,11 +2425,11 @@
 
         function requestRedoTest() {
             if (testLocked || testSubmitting) return;
-            var label = activeTestMode === 'practice' ? 'practice' : 'test';
+            var label = activeTestMode === 'practice' ? 'practice' : 'quiz';
             showTestDialog({
-                title: 'Redo this ' + label + '?',
+                title: 'Retry this ' + label + '?',
                 copy: 'This will clear the current review. After clearing, the answers on this screen will not be recorded unless you start and submit a new timed ' + label + '.',
-                primary: 'Clear and Redo',
+                primary: 'Clear and Retry',
                 secondary: 'Cancel'
             }).then(function(confirmed) {
                 if (confirmed) resetTestSelection();
@@ -3690,7 +3703,7 @@
                 '<div class="question-list">' + questions + '</div>' +
                 '<div class="group-actions">' +
                     '<span class="practice-score" data-practice-score="' + escapeHtml(group.id) + '" aria-live="polite"></span>' +
-                    '<button class="btn btn-secondary practice-redo-btn" type="button" data-action="redo-practice" data-group="' + escapeHtml(group.id) + '" hidden>Redo</button>' +
+                    '<button class="btn btn-secondary practice-redo-btn" type="button" data-action="redo-practice" data-group="' + escapeHtml(group.id) + '" hidden>Retry</button>' +
                     '<button class="btn btn-primary" type="button" data-action="check" data-group="' + escapeHtml(group.id) + '">Check</button>' +
                 '</div>' +
             '</div>';
@@ -3889,7 +3902,7 @@
             var select = document.getElementById('test-group-count');
             select.innerHTML = groups.slice(4).map(function(group, index) {
                 var count = index + 5;
-                return '<option value="' + count + '">' + count + ' sets · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + ' · Counts toward results</option>';
+                return '<option value="' + count + '">' + count + ' sets · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + '</option>';
             }).join('');
             updateTestCountNote();
         }
@@ -3927,7 +3940,7 @@
 
         function updateTestCountNote() {
             var note = document.getElementById('test-count-note');
-            note.textContent = 'This is a counted test. Your answers, group accuracy, and overall result will be saved.';
+            note.textContent = 'This is a counted quiz. Your answers, group accuracy, and overall result will be saved.';
         }
 
         function renderTestQuestion(group, question, index) {
@@ -4282,7 +4295,7 @@
             var startButton = document.getElementById('start-test-btn');
             if (!startButton) return;
             startButton.disabled = starting === true;
-            startButton.textContent = starting === true ? 'Starting...' : 'Test';
+            startButton.textContent = starting === true ? 'Starting...' : 'Start Quiz';
         }
 
         function setStartPracticeButtonStarting(starting) {

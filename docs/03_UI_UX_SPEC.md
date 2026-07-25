@@ -458,10 +458,20 @@ selected task, due week, passing percentage, and STAR. Each selected Work item
 has its own row. Due week is mandatory and defaults to `This week`, with only
 `This week`, `Next week`, and `Customize` in the first selector. Choosing
 `Customize` reveals a week-number selector and labels the current Beijing-time
-Wxx week clearly. Passing
-percentage is filled from that selected work's default when possible. `Earn
-STAR` is unchecked by default; only when checked does `Mastery %` appear and
-become required for that row.
+Wxx week clearly. Passing percentage is filled from that selected work's
+default when possible. `Earn STAR` is unchecked by default; only when checked
+does `Mastery %` appear and become required for that row. Passing and Mastery
+values open the same compact vertical percentage wheel instead of a
+number/text input. The wheel exposes five rows with a centered selected band,
+uses native touch momentum and one-point snapping from `0` through `100`, and
+commits only through `Done`; backdrop, `Cancel`, and Escape discard changes.
+Keyboard users can adjust by one with arrow keys, by five with Page Up/Down,
+or jump to the endpoints with Home/End. The same wheel is used when editing
+selected assignments.
+
+Family defaults shown when a set has no explicit override are Vocabulary
+`90%` passing / `100%` mastery, BBC `80%` / `95%`, and general content
+`50%` / `90%`.
 After successful assignment creation, Assign should show a standalone
 checkmark success dialog using the same confirmation style as student account
 creation. It should not write the success result into the small page message
@@ -878,9 +888,9 @@ Shared rules:
   in red followed by an arrow and the correct answer in green. If the
   student left a blank unanswered, the submitted-answer side shows `X` instead
   of `No answer`. The `Check` button is replaced by a centered score pill such
-  as `Score: 7 / 10` and an inline `Redo` button; `Redo` clears all practice
+  as `Score: 7 / 10` and an inline `Retry` button; `Retry` clears all practice
   answers and restores the group to an unchecked state. Inline practice does
-  not show `Clear All`, `Hide Answer`, or a floating `Redo` control. The
+  not show `Clear All`, `Hide Answer`, or a floating `Retry` control. The
   per-blank choice panel opens as a floating overlay so the question layout
   does not shift; its word choices are shuffled per question so they do not
   reveal the answer order, it has no `Clear` button, and its final chip is a
@@ -891,17 +901,23 @@ Shared rules:
 - Vocabulary practice does not expose Argue buttons in inline practice, Test,
   History, or teacher preview surfaces.
 
-### Vocabulary Test
+### Vocabulary Quiz
 
 - The top mode switcher label remains `Cloze`. Inside Cloze, the setup area has
-  two stacked task bars: a Practice bar on top and a Test bar below. The
+  two stacked task bars: a `Practice` bar on top and a `Quiz` bar below. The
   Practice bar uses numbered group chips so students can choose specific groups,
-  with the right-side action labeled `Practice`. The Test bar keeps the current
-  selected-set-count dropdown, with the right-side action labeled `Test`.
-  Practice starts with no groups selected and its action disabled. The Test
+  with the right-side action labeled `Practice`. The Quiz bar keeps the current
+  selected-set-count dropdown, with the right-side action labeled `Start Quiz`.
+  Practice starts with no groups selected and its action disabled. The Quiz
   dropdown starts at five groups and does not expose the legacy 1-4 group
-  self-study choices. On mobile, both bars and their horizontally scrollable
-  controls must remain inside the Cloze panel width.
+  self-study choices; each dropdown option shows only the set count and test
+  duration, without a `Counts toward results` suffix. On mobile, both bars and
+  their horizontally scrollable controls must remain inside the Cloze panel
+  width. The Practice chip scroller must reserve its full content height so
+  every numbered capsule is completely visible and touchable.
+- All student-facing dialogs and status messages in the counted flow use
+  `Quiz`; internal code, session actions, and stored attempt modes retain their
+  existing `Test` identifiers for compatibility.
 - Cloze Practice uses the same 90-second-per-selected-group timer, sticky set
   navigation, word bank, shuffled in-group question order, submission feedback,
   and teacher notification visibility as Cloze Test. Its recorded attempts are
@@ -946,7 +962,7 @@ Shared rules:
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
   Learn. The countdown timer disappears completely and its right-side position
-  changes into a compact `Redo` capsule, while the direct result count such as
+  changes into a compact `Retry` capsule, while the direct result count such as
   `7 / 10` appears centered on the next row below the numbered capsule row; the
   bottom of the Test view should not repeat a score block.
   After submission, the sticky word bank collapses by default and the far-left
@@ -958,8 +974,8 @@ Shared rules:
   space for the `?` button after review state is available.
 - Test set cards show their set number as a centered gold glowing capsule above
   the questions, not as a left-aligned Learn-style group marker.
-- Student Vocabulary pages should not show a bottom-right floating `Redo`
-  capsule. Redo actions belong inside the relevant task surface.
+- Student Vocabulary pages should not show a bottom-right floating `Retry`
+  capsule. Retry actions belong inside the relevant task surface.
 - Student Vocabulary views should not show a standalone bottom-right
   `Show Answers` capsule.
 
@@ -1017,9 +1033,9 @@ Important mobile rules:
   content regions, including text inside disabled answer-feedback buttons, but
   should still avoid active form controls, buttons, login dialogs, and
   teacher-only controls.
-- On touch devices, My Words should preserve the captured word or phrase while
-  dismissing the browser's native selection callout so the site save button is
-  the primary action.
+- On touch devices, My Words must preserve the browser's native selection
+  highlight and selection handles after a long press. Tapping the site save
+  button must not clear the captured word or phrase before it is saved.
 
 ## 9. Future UI Improvements
 

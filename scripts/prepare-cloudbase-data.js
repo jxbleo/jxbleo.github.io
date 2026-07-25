@@ -316,6 +316,11 @@ function buildSet(meta, overrides = {}) {
   const type = overrides.type || meta.sectionId;
   const course = overrides.course || meta.sectionId;
   const isVocabulary = type === "vocabulary" || meta.sectionId === "vocabulary";
+  const isBbc = type === "bbc-six-minute-english" ||
+    meta.sectionId === "bbc-six-minute-english" ||
+    /^BBC-/i.test(String(meta.id || ""));
+  const defaultPassingPercentage = isVocabulary ? 90 : (isBbc ? 80 : 50);
+  const defaultMasteryPercentage = isVocabulary ? 100 : (isBbc ? 95 : 90);
   const set = {
     set_id: meta.id,
     section_id: meta.sectionId,
@@ -325,8 +330,12 @@ function buildSet(meta, overrides = {}) {
     link: meta.href,
     difficulty: overrides.difficulty || "",
     estimated_minutes: overrides.estimatedMinutes || null,
-    passing_percentage: overrides.passingPercentage || (isVocabulary ? 80 : 50),
-    mastery_percentage: overrides.masteryPercentage || (isVocabulary ? 100 : 90),
+    passing_percentage: overrides.passingPercentage == null
+      ? defaultPassingPercentage
+      : overrides.passingPercentage,
+    mastery_percentage: overrides.masteryPercentage == null
+      ? defaultMasteryPercentage
+      : overrides.masteryPercentage,
     feedback_policy: "always",
     visible: meta.visible !== false,
   };
@@ -402,8 +411,10 @@ function main() {
     value: {
       default_passing_percentage: 50,
       default_mastery_percentage: 90,
-      vocabulary_default_passing_percentage: 80,
+      vocabulary_default_passing_percentage: 90,
       vocabulary_default_mastery_percentage: 100,
+      bbc_default_passing_percentage: 80,
+      bbc_default_mastery_percentage: 95,
       default_feedback_policy: "always",
       vocabulary_minimum_countable_groups: 5,
     },

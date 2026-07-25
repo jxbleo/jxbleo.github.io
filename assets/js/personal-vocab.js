@@ -6,7 +6,6 @@
     var selectedText = '';
     var selectedContext = '';
     var hideTimer = null;
-    var suppressSelectionHideUntil = 0;
     var lastTouchSaveAt = 0;
     var BLOCKED_SELECTOR = [
         'input',
@@ -128,11 +127,6 @@
         return set ? name + '?set=' + encodeURIComponent(set) : name;
     }
 
-    function isTouchLikeDevice() {
-        return (window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches)
-            || navigator.maxTouchPoints > 0;
-    }
-
     function ensureStyles() {
         if (document.getElementById('mrcat-vocab-style')) return;
         var style = document.createElement('style');
@@ -144,17 +138,6 @@
             '.mrcat-vocab-toast{position:fixed;z-index:10021;left:50%;bottom:24px;max-width:min(420px,calc(100% - 32px));padding:12px 15px;border:1px solid rgba(19,118,109,.16);border-radius:14px;color:#18332f;background:rgba(255,255,255,.97);box-shadow:0 18px 52px rgba(10,52,47,.18);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;opacity:0;transform:translate(-50%,12px);transition:opacity 160ms ease,transform 160ms ease;pointer-events:none}' +
             '.mrcat-vocab-toast.show{opacity:1;transform:translate(-50%,0)}';
         document.head.appendChild(style);
-    }
-
-    function holdCapturedSelection() {
-        if (!isTouchLikeDevice()) return;
-        suppressSelectionHideUntil = Date.now() + 500;
-        window.setTimeout(function() {
-            var selection = window.getSelection && window.getSelection();
-            if (!selection || selection.isCollapsed) return;
-            suppressSelectionHideUntil = Date.now() + 500;
-            selection.removeAllRanges();
-        }, 40);
     }
 
     function ensureButton() {
@@ -220,7 +203,6 @@
         if (isTeacherMode()) return;
         var range = selectedRange();
         if (!range) {
-            if (Date.now() < suppressSelectionHideUntil) return;
             hideButton();
             return;
         }
@@ -245,7 +227,6 @@
         popover.style.top = top + 'px';
         popover.style.transform = 'translateX(-50%)';
         popover.classList.add('show');
-        holdCapturedSelection();
     }
 
     function saveSelection() {

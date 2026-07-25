@@ -66,6 +66,31 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-07-25
+
+- Renamed all student-visible Vocabulary Cloze completion actions from `Redo`
+  to `Retry`, including the top sticky action, inline practice action, and
+  confirmation copy. Internal selectors and reset behavior are unchanged.
+- Updated grading defaults to Vocabulary `90/100` and BBC `80/95` across
+  Teacher, backend grading/dashboard fallbacks, and generated CloudBase data.
+  Replaced Assign/edit number inputs with a shared touch-inertial percentage
+  wheel. Owner action after static publish: deploy `teacherAdmin`,
+  `submitAttempt`, and `getDashboard`, then review/apply the documented
+  `sets,system_config` overwrite import. Existing assignments remain unchanged.
+- Restored native iPhone/iPad long-press selection highlighting for My Words.
+  The shared selection script no longer clears the browser range after capture,
+  while the save button still protects the captured text and suppresses the
+  duplicate synthetic click. Bumped all shared script references; JavaScript
+  syntax and release checks passed. Physical iPhone/iPad smoke testing remains
+  useful before publish; no CloudBase deployment or content import is required.
+- Removed the redundant counted-result suffix from Vocabulary Cloze Test
+  options and repaired the phone-only Practice chip scroller collapse. Mobile
+  numbered chips now retain a complete 40px capsule inside a 48px horizontal
+  scroll area; tablet and desktop sizing remains unchanged.
+- Renamed the student-facing counted Cloze path from `Test` to `Quiz` and its
+  action to `Start Quiz`, then aligned the visible dialogs and status copy.
+  Backend session actions and stored `vocabulary_test` modes remain unchanged.
+
 ### 2026-07-15
 
 - Audited all 27 commits from 2026-07-14 through 2026-07-15 and consolidated
@@ -602,7 +627,9 @@ cp .qa-secrets.example .qa-secrets.local
   vocabulary sets are 80/100 while non-vocabulary sets remain 50/90, rebuilt the
   affected function ZIPs, and ran release verification. CloudBase: deploy
   `getDashboard`, `submitAttempt`, and `teacherAdmin`; update existing
-  Vocabulary `sets` records if they already contain old 50/90 values.
+  Vocabulary `sets` records if they already contain old 50/90 values. Historical
+  note: this 2026-06-18 rule was superseded on 2026-07-25 by Vocabulary 90/100
+  and BBC 80/95.
 - Added a failed Vocabulary Test `Choose Again` action that clears the current
   questions, local draft, timer, and summary, then returns the student to group
   selection for a fresh start. Verified the `vocabulary.html` inline script

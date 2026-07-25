@@ -356,10 +356,10 @@ The server derives the student from authentication, loads the visible `set`
 and private `grading_keys`, grades normalized answers, calculates a percentage,
 records every countable attempt, and updates the linked assignment.
 
-The default passing percentage is `50`, except Vocabulary sets default to `80`.
-The default mastery percentage is `90`, except Vocabulary sets default to
-`100`. Set-specific `passing_percentage` and `mastery_percentage` values
-override these defaults. Passing means:
+The general default passing/mastery percentages are `50` / `90`. Vocabulary
+sets default to `90` / `100`, while BBC sets default to `80` / `95`.
+Set-specific `passing_percentage` and `mastery_percentage` values override
+these family defaults. Passing means:
 
 ```text
 percentage >= passing_percentage
@@ -894,7 +894,8 @@ tested.
 
 - Assignment statuses are now `to_do`, `passed`, and `mastered`.
 - Default passing threshold is `50%`; default mastery threshold is `90%`.
-  Vocabulary sets now default to `80%` passing and `100%` mastery.
+  The current family defaults supersede the original 2026-06-12 values:
+  Vocabulary uses `90%` / `100%`, and BBC uses `80%` / `95%`.
 - Sets may later override these with `passing_percentage` and `mastery_percentage`.
 - Assignments may override both thresholds with `passing_percentage` and
   `mastery_percentage`; `submitAttempt` reads assignment values first, then set

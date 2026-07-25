@@ -3,6 +3,34 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-07-25: Use One Native-Scroll Percentage Wheel for Teacher Thresholds
+
+Decision:
+
+Teacher Assign and assignment editing use one shared vertical `0–100` picker
+for Passing and Mastery percentages. It is built from native overflow scrolling
+plus CSS scroll snap, with five visible rows, a fixed center selection band,
+explicit Cancel/Done, and equivalent keyboard commands.
+
+Reason:
+
+Thresholds are bounded integer choices rather than free-form text. A compact
+wheel is easier to target on phones and feels consistent across iPhone, iPad,
+trackpad, mouse, and keyboard without adding a UI dependency.
+
+Trade-offs:
+
+- Good: native touch momentum remains responsive and interruptible.
+- Good: one picker keeps create/edit behavior and validation consistent.
+- Cost: choosing a distant value may take more scrolling than typing.
+- Cost: the component must preserve focus, reduced-motion behavior, and
+  background scroll locking itself.
+
+Review condition:
+
+Revisit if thresholds require decimals, values outside `0–100`, or a smaller
+fixed option set better served by a segmented control.
+
 ## 2026-07-15: Use Required Due Weeks as the One Assignment Schedule
 
 Decision:
