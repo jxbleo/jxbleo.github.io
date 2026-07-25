@@ -18,6 +18,10 @@
 - Renamed Vocabulary Cloze post-completion actions from `Redo` to `Retry` in
   both timed Practice/Quiz review and inline practice, including confirmation
   copy; internal action identifiers and behavior remain unchanged.
+- Reworked Teacher matrix/notification Attempt charts into compact 14px
+  capsule bars inside 48px touch columns, with score, attempt number,
+  `P18m42s` / `A12m08s` timing, Passing/STAR reference lines, restrained status
+  colors, best/selected indicators, and reduced-motion support.
 
 ### Fixed
 

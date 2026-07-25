@@ -3975,29 +3975,6 @@
         ].join('::');
     }
 
-    function formatAttemptChartDate(value) {
-        if (!value) return '—';
-        var date = new Date(value);
-        if (isNaN(date.getTime())) return '—';
-        return new Intl.DateTimeFormat('en-US', {
-            timeZone: 'Asia/Shanghai',
-            month: 'short',
-            day: 'numeric'
-        }).format(date);
-    }
-
-    function formatAttemptClock(value) {
-        if (!value) return '—';
-        var date = new Date(value);
-        if (isNaN(date.getTime())) return '—';
-        return date.toLocaleTimeString('en-GB', {
-            timeZone: 'Asia/Shanghai',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        });
-    }
-
     function attemptDurationLabel(attempt) {
         if (!attempt) return '';
         var parts = [];
@@ -4006,6 +3983,37 @@
         if (pageDuration) parts.push('Page ' + pageDuration);
         if (audioDuration) parts.push('Audio ' + audioDuration);
         return parts.join(' · ');
+    }
+
+    function compactAttemptDuration(value) {
+        var seconds = Math.max(0, Math.round(Number(value)));
+        if (!isFinite(seconds)) return '';
+        if (seconds >= 3600) {
+            return Math.floor(seconds / 3600) + 'h' +
+                String(Math.floor((seconds % 3600) / 60)).padStart(2, '0') + 'm';
+        }
+        if (seconds >= 60) {
+            return Math.floor(seconds / 60) + 'm' + String(seconds % 60).padStart(2, '0') + 's';
+        }
+        return seconds + 's';
+    }
+
+    function compactAttemptTimes(attempt) {
+        if (!attempt) return '';
+        var page = attempt.duration_seconds == null ? '' : compactAttemptDuration(attempt.duration_seconds);
+        var audio = attempt.audio_to_submit_seconds == null ? '' : compactAttemptDuration(attempt.audio_to_submit_seconds);
+        return (page ? '<small class="page-time">P' + escapeHtml(page) + '</small>' : '') +
+            (audio ? '<small class="audio-time">A' + escapeHtml(audio) + '</small>' : '');
+    }
+
+    function attemptChartAriaLabel(attempt, number, percent) {
+        var parts = ['Attempt ' + number, formatPercent(percent)];
+        var pageDuration = formatDuration(attempt && attempt.duration_seconds);
+        var audioDuration = formatDuration(attempt && attempt.audio_to_submit_seconds);
+        if (pageDuration) parts.push('Page time ' + pageDuration);
+        if (audioDuration) parts.push('Audio time ' + audioDuration);
+        if (attempt && attempt.submitted_at) parts.push('Submitted ' + formatDateTime(attempt.submitted_at));
+        return parts.join(', ');
     }
 
     function attemptDisplayNumber(attempt, index) {
@@ -4045,23 +4053,38 @@
 
     function renderMatrixAttemptChart(entries, assignment) {
         if (!entries.length) return '<div class="matrix-attempt-empty">No attempt records yet.</div>';
-        return '<div class="matrix-attempt-bars" aria-label="Attempt score history">' +
+        var passingValue = Number(assignment && assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
+        var masteryValue = Number(assignment && assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
+        var passing = isFinite(passingValue) ? Math.max(0, Math.min(100, passingValue)) : 50;
+        var mastery = isFinite(masteryValue) ? Math.max(0, Math.min(100, masteryValue)) : 90;
+        var masteryEnabled = !assignment || assignment.mastery_enabled !== false;
+        var best = numericPercent(assignment && assignment.best_percentage);
+        function thresholdLine(label, value, className) {
+            var top = 31 + ((100 - value) / 100 * 82);
+            return '<span class="matrix-attempt-threshold ' + className + '" style="top:' + escapeHtml(top.toFixed(2)) + 'px" aria-hidden="true">' +
+                '<small>' + escapeHtml(label) + '</small></span>';
+        }
+        return '<div class="matrix-attempt-bars" style="--attempt-count:' + escapeHtml(entries.length) + '" aria-label="Attempt score history">' +
+            thresholdLine('PASS ' + formatPercent(passing), passing, 'passing') +
+            (masteryEnabled ? thresholdLine('STAR ' + formatPercent(mastery), mastery, 'mastery') : '') +
             entries.map(function(entry) {
                 var attempt = entry.attempt;
                 var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
                 var scoreClass = ' ' + matrixAttemptStatus(attempt, assignment);
-                var duration = attemptDurationLabel(attempt);
                 var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
-                return '<button class="matrix-attempt-bar' + (highlighted ? ' highlight' : '') +
+                var isBest = best != null && Math.abs(percent - best) < 0.01;
+                var ariaLabel = attemptChartAriaLabel(attempt, entry.number, percent) + (isBest ? ', best score' : '');
+                return '<button class="matrix-attempt-bar' + (highlighted ? ' highlight' : '') + (isBest ? ' best' : '') +
                     '" type="button" data-matrix-attempt-target="' + escapeHtml(entry.index) +
                     '" data-matrix-attempt-id="' + escapeHtml(attempt.attempt_id || '') +
-                    '" data-matrix-review-set="' + escapeHtml(attemptSetId(attempt, assignment)) + '">' +
+                    '" data-matrix-review-set="' + escapeHtml(attemptSetId(attempt, assignment)) +
+                    '" aria-label="' + escapeHtml(ariaLabel) + '" title="' + escapeHtml(ariaLabel) + '">' +
+                    '<span class="matrix-attempt-score">' + escapeHtml(formatPercent(percent)) + '</span>' +
                     '<span class="matrix-attempt-track"><span class="matrix-attempt-fill' + scoreClass +
-                    '" style="height:' + escapeHtml(Math.max(percent, 6)) + '%">' + escapeHtml(formatPercent(percent)) + '</span></span>' +
-                    '<span class="matrix-attempt-caption"><small>' + escapeHtml(formatAttemptChartDate(attempt.submitted_at)) + '</small>' +
-                    '<small class="bar-time">' + escapeHtml(formatAttemptClock(attempt.submitted_at)) + '</small>' +
-                    (duration ? '<small class="bar-spent">' + escapeHtml(duration) + '</small>' : '') +
-                    '</span></button>';
+                    '" style="height:' + escapeHtml(Math.max(percent, 6)) + '%"></span></span>' +
+                    '<span class="matrix-attempt-number">#' + escapeHtml(entry.number) + '</span>' +
+                    '<span class="matrix-attempt-caption">' + compactAttemptTimes(attempt) + '</span>' +
+                    '</button>';
             }).join('') +
         '</div>';
     }
@@ -4919,6 +4942,10 @@
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
                 if (target) {
+                    modal.querySelectorAll('.matrix-attempt-bar.highlight').forEach(function(bar) {
+                        bar.classList.remove('highlight');
+                    });
+                    button.classList.add('highlight');
                     modal.querySelectorAll('.matrix-attempt-card.highlight').forEach(function(card) {
                         card.classList.remove('highlight');
                     });
@@ -5393,6 +5420,10 @@
                 var modal = button.closest('.progress-matrix-modal-shell');
                 var target = modal && modal.querySelector('[data-matrix-attempt-index="' + button.dataset.matrixAttemptTarget + '"]');
                 if (target) {
+                    modal.querySelectorAll('.matrix-attempt-bar.highlight').forEach(function(bar) {
+                        bar.classList.remove('highlight');
+                    });
+                    button.classList.add('highlight');
                     modal.querySelectorAll('.matrix-attempt-card.highlight').forEach(function(card) {
                         card.classList.remove('highlight');
                     });

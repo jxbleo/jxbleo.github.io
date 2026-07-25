@@ -566,10 +566,16 @@ It should include:
   be clipped by the matrix card or rendered inline beneath the matrix. The
   overlay must sit above page-level progress controls such as the
   `By student` / `By task` capsule.
-- matrix detail close buttons are centered at the bottom inside the dialog card. Attempt score
-  bars use fixed-width columns rather than stretching a single attempt across
-  the whole dialog; not-passed bars are pale red, passed bars are green, and
-  mastered bars are glowing gold.
+- matrix detail close buttons are centered at the bottom inside the dialog
+  card. Attempt history uses compact 48px columns with a 14px Apple
+  Health-style capsule bar rather than stretching one attempt across a wide
+  track. The bar top shows the score, followed by `#N`, `P18m42s`, and
+  `A12m08s` with tabular numerals and no internal spaces. Durations under one
+  minute use `P42s`; durations over one hour use `P1h08m`. Missing Audio timing
+  omits the A row. Subtle Passing and enabled STAR reference lines span the
+  chart; not-passed bars are muted coral, passed bars are teal, mastered bars
+  are restrained gold, and the best score has only a small gold dot. A selected
+  bar gains a quiet outline and remains linked to its attempt card below.
 - every attempt card in matrix and notification detail dialogs includes a
   compact paper icon button in the top-right action area. The button opens that
   attempt's full-work review inside the same dialog without changing attempt

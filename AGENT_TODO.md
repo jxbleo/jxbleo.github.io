@@ -68,6 +68,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-25
 
+- Replaced the wide Teacher matrix/notification Attempt tracks with compact
+  Apple Health-style capsule bars. Each attempt retains a 48px touch column and
+  shows score, `#N`, and no-space Page/Audio timing down to seconds; reference
+  lines, selected/best states, overflow, and reduced motion are covered.
 - Fixed the BBC yellow `classroom-worksheet` grid so Show Answers,
   History/Explain, dispute status, and action controls span both columns rather
   than collapsing into the narrow number column on phone/iPad.
