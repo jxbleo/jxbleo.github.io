@@ -68,6 +68,9 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-07-25
 
+- Fixed the BBC yellow `classroom-worksheet` grid so Show Answers,
+  History/Explain, dispute status, and action controls span both columns rather
+  than collapsing into the narrow number column on phone/iPad.
 - Renamed all student-visible Vocabulary Cloze completion actions from `Redo`
   to `Retry`, including the top sticky action, inline practice action, and
   confirmation copy. Internal selectors and reset behavior are unchanged.

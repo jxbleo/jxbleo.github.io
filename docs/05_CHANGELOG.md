@@ -21,6 +21,9 @@
 
 ### Fixed
 
+- Fixed BBC yellow `classroom-worksheet` answer and explanation blocks being
+  auto-placed into the narrow multiple-choice number column. Dynamic feedback
+  and action areas now span the full card at phone, iPad, and desktop widths.
 - Restored native iPhone/iPad text-selection highlighting and handles for My
   Words by removing the delayed `Selection.removeAllRanges()` call while
   retaining the protected single-tap save flow on the custom button.

@@ -804,6 +804,10 @@ Shared rules:
   the main submission button reads `Submit`.
 - The BBC Argue sent/thanks dialog must include a visible Close button in both
   student mode and teacher preview mode.
+- In the `classroom-worksheet` theme, multiple-choice answer, explanation,
+  dispute-status, and question-action blocks must span the full question-card
+  grid on phone, iPad, and desktop. They must never fall into the narrow
+  question-number column or wrap into a vertical word strip.
 - BBC Explain and Argue entry points use compact icon buttons at the far right
   of the final text line inside the relevant question box, in both the green
   and blue render themes. Explain uses a blue-green `?`; Argue uses an orange
