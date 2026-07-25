@@ -135,11 +135,9 @@
     var wordsAddStatus = document.getElementById('my-words-manual-status');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
-    var repliesButton = document.getElementById('student-replies-button');
-    var repliesCount = document.getElementById('student-replies-count');
     var studentCalendarTitleObserver = null;
+    var weeklyFocusTitleObserver = null;
     var studentMessageScrollLock = null;
-    var weeklyEmptyCelebrationTimer = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -1300,6 +1298,27 @@
         return todoAssignments().length;
     }
 
+    function teacherRepliesBubbleSvg() {
+        return '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">' +
+            '<path d="M21 11.5c0 4.4-4 8-9 8-1.4 0-2.8-.3-4-.8l-5 1.8 1.8-4.1A7.4 7.4 0 0 1 3 11.5c0-4.4 4-8 9-8s9 3.6 9 8Z"></path>' +
+            '<path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"></path>' +
+        '</svg>';
+    }
+
+    function syncTeacherRepliesButton(button) {
+        if (!button) return;
+        var unreadReplies = teacherReplyUnreadTotal();
+        var count = button.querySelector('.notice-dot');
+        if (count) {
+            count.textContent = unreadReplies ? (unreadReplies > 9 ? '9+' : String(unreadReplies)) : '';
+            count.hidden = unreadReplies <= 0;
+        }
+        button.classList.toggle('has-updates', unreadReplies > 0);
+        button.setAttribute('aria-label', unreadReplies
+            ? unreadReplies + ' unread teacher ' + (unreadReplies === 1 ? 'reply' : 'replies')
+            : 'Teacher replies');
+    }
+
     function updateDashboardTabNotices() {
         var messageTotal = studentMessageTotal();
         var button = document.querySelector('.tab-button[data-view="assignments"]');
@@ -1313,20 +1332,12 @@
         }
         if (messageButton) {
             messageButton.classList.toggle('has-updates', messageTotal > 0);
-            messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' current updates' : 'Assignments');
+            messageButton.setAttribute('aria-label', messageTotal
+                ? messageTotal + ' item' + (messageTotal === 1 ? '' : 's') + ' in To Do List'
+                : 'To Do List');
             messageButton.setAttribute('aria-expanded', 'false');
         }
-        var unreadReplies = teacherReplyUnreadTotal();
-        if (repliesCount) {
-            repliesCount.textContent = unreadReplies ? (unreadReplies > 9 ? '9+' : String(unreadReplies)) : '';
-            repliesCount.hidden = unreadReplies <= 0;
-        }
-        if (repliesButton) {
-            repliesButton.classList.toggle('has-updates', unreadReplies > 0);
-            repliesButton.setAttribute('aria-label', unreadReplies
-                ? unreadReplies + ' unread teacher ' + (unreadReplies === 1 ? 'reply' : 'replies')
-                : 'Teacher replies');
-        }
+        syncTeacherRepliesButton(document.getElementById('student-message-replies-button'));
     }
 
     function setTeacherRepliesSeen(seenIds) {
@@ -1502,7 +1513,7 @@
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
         var upcoming = state.session && state.session.mode === 'student' ? upcomingAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
-        var dialogTitle = 'Assignments';
+        var dialogTitle = 'To Do List';
         var summaryHtml = '';
         var sectionsHtml = '';
 
@@ -1576,16 +1587,24 @@
             '<div class="student-message-shell" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
                 '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + '">' +
                     '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
-                        '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
+                        '<div class="student-message-dialog-title-row">' +
+                            '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
+                            '<button class="icon-pill-button student-replies-button student-message-replies-button" id="student-message-replies-button" type="button" aria-label="Teacher replies" aria-expanded="false">' +
+                                teacherRepliesBubbleSvg() +
+                                '<span class="notice-dot danger" hidden>0</span>' +
+                            '</button>' +
+                        '</div>' +
                         (summaryHtml ? '<div class="student-message-summary">' + summaryHtml + '</div>' : '') +
                     '</div>' +
                     '<div class="student-message-sections">' +
                         sectionsHtml +
                     '</div>' +
                 '</div>' +
-                '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close assignments">Close</button>' +
+                '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close To Do List">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
+        var messageRepliesButton = overlay.querySelector('#student-message-replies-button');
+        syncTeacherRepliesButton(messageRepliesButton);
         lockStudentMessageBackground();
         var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
         if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
@@ -1625,6 +1644,16 @@
             if (event.target === overlay) close(true);
         });
         overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
+        if (messageRepliesButton) {
+            messageRepliesButton.addEventListener('click', function() {
+                suspend();
+                openTeacherRepliesDialog(undefined, {
+                    opener: messageRepliesButton,
+                    manageScrollLock: false,
+                    onClose: function() { resume(messageRepliesButton); }
+                });
+            });
+        }
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
             function openTask(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
@@ -1644,9 +1673,12 @@
         document.addEventListener('keydown', onKeydown);
     }
 
-    function openTeacherRepliesDialog(replyItems) {
+    function openTeacherRepliesDialog(replyItems, options) {
+        options = options || {};
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
         var unreadCount = replies.filter(function(reply) { return reply.student_seen !== true; }).length;
+        var opener = options.opener || document.getElementById('student-message-replies-button');
+        var manageScrollLock = options.manageScrollLock !== false;
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay';
         overlay.innerHTML =
@@ -1666,18 +1698,26 @@
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
-        lockStudentMessageBackground();
-        if (repliesButton) repliesButton.setAttribute('aria-expanded', 'true');
+        if (manageScrollLock) lockStudentMessageBackground();
+        if (opener) opener.setAttribute('aria-expanded', 'true');
 
         var didMarkSeen = false;
+        var closed = false;
         function close(markSeen) {
+            if (closed) return Promise.resolve();
+            closed = true;
             document.removeEventListener('keydown', onKeydown);
             overlay.remove();
-            unlockStudentMessageBackground();
-            if (repliesButton) repliesButton.setAttribute('aria-expanded', 'false');
-            if (!markSeen || didMarkSeen) return Promise.resolve();
-            didMarkSeen = true;
-            return markTeacherRepliesSeen(replies);
+            if (manageScrollLock) unlockStudentMessageBackground();
+            if (opener) opener.setAttribute('aria-expanded', 'false');
+            var seenPromise = Promise.resolve();
+            if (markSeen && !didMarkSeen) {
+                didMarkSeen = true;
+                seenPromise = markTeacherRepliesSeen(replies);
+            }
+            return seenPromise.then(function() {
+                if (typeof options.onClose === 'function') options.onClose();
+            });
         }
 
         function onKeydown(event) {
@@ -1752,51 +1792,30 @@
 
     function renderWeeklyProgressRow(options) {
         var value = Math.max(0, Math.min(100, Number(options.percent || 0)));
-        var disabled = options.disabled === true;
-        return '<button class="weekly-progress-row ' + escapeHtml(options.kind || '') + '" type="button"' +
-            (disabled ? ' disabled' : ' data-progress-scope="' + escapeHtml(options.scope || '') + '"') +
-            ' aria-label="' + escapeHtml(options.ariaLabel || options.valueLabel || '') + '">' +
-                '<span class="weekly-progress-copy">' +
+        var items = Array.isArray(options.items) ? options.items : [];
+        var taskType = options.taskType || 'todo';
+        var tasks = items.map(function(item) {
+            var type = taskType === 'week'
+                ? (isFinishedStatus(item.status) ? 'finished' : 'todo')
+                : taskType;
+            return renderStudentMessageTask(item, type);
+        }).join('');
+        return '<section class="weekly-progress-row ' + escapeHtml(options.kind || '') + '"' +
+            ' aria-label="' + escapeHtml(options.ariaLabel || options.label || '') + '">' +
+                '<div class="weekly-progress-heading">' +
                     '<span class="weekly-progress-label">' + escapeHtml(options.label || '') + '</span>' +
-                    '<strong>' + escapeHtml(options.valueLabel || '') + '</strong>' +
-                '</span>' +
-                '<span class="weekly-progress-track" aria-hidden="true">' +
+                    '<span class="weekly-progress-track" role="progressbar" aria-label="' + escapeHtml(options.progressLabel || options.label || '') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(value) + '">' +
                     '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
-                '</span>' +
-            '</button>';
+                    '</span>' +
+                '</div>' +
+                (tasks ? '<div class="student-message-list weekly-progress-list">' + tasks + '</div>' : '') +
+            '</section>';
     }
 
-    function showWeeklyEmptyCelebration() {
-        var existing = document.querySelector('.weekly-empty-celebration');
-        if (existing) existing.remove();
-        if (weeklyEmptyCelebrationTimer) window.clearTimeout(weeklyEmptyCelebrationTimer);
-
-        var celebration = document.createElement('div');
-        celebration.className = 'weekly-empty-celebration';
-        celebration.setAttribute('role', 'status');
-        celebration.setAttribute('aria-live', 'polite');
-        celebration.setAttribute('aria-atomic', 'true');
-        celebration.innerHTML =
-            '<span class="weekly-empty-celebration-badge" aria-hidden="true">' +
-                '<svg viewBox="0 0 24 24" focusable="false">' +
-                    '<path d="M7 10v11H3V10h4Zm4-7-1 7h9.7a2 2 0 0 1 2 2.35l-1.25 7A2 2 0 0 1 18.48 21H7V10l4-7Z"></path>' +
-                '</svg>' +
-            '</span>' +
-            '<span class="sr-only">You are all caught up for this week.</span>';
-        document.body.appendChild(celebration);
-
-        function removeCelebration() {
-            if (celebration.isConnected) celebration.remove();
-            if (weeklyEmptyCelebrationTimer) window.clearTimeout(weeklyEmptyCelebrationTimer);
-            weeklyEmptyCelebrationTimer = null;
-        }
-
-        celebration.querySelector('.weekly-empty-celebration-badge').addEventListener('animationend', function(event) {
-            if (event.animationName === 'weeklyEmptyThumb' || event.animationName === 'weeklyEmptyThumbReduced') {
-                removeCelebration();
-            }
-        });
-        weeklyEmptyCelebrationTimer = window.setTimeout(removeCelebration, 1600);
+    function setWeeklyFocusHtml(html) {
+        if (weeklyFocusTitleObserver) weeklyFocusTitleObserver.disconnect();
+        weeklyFocusProgress.innerHTML = html;
+        weeklyFocusTitleObserver = setupStudentMessageTitleTracks(weeklyFocusProgress);
     }
 
     function renderWeeklyFocusProgress() {
@@ -1805,14 +1824,14 @@
         weeklyFocusProgress.setAttribute('aria-busy', 'false');
 
         if (!state.session || state.session.mode !== 'student') {
-            weeklyFocusProgress.innerHTML = renderWeeklyProgressRow({
+            setWeeklyFocusHtml(renderWeeklyProgressRow({
                 kind: 'this-week is-static',
                 label: 'THIS WEEK',
-                valueLabel: 'Sign in to track progress',
                 ariaLabel: 'Sign in to track weekly assignment progress.',
+                progressLabel: 'Weekly assignment progress',
                 percent: 0,
-                disabled: true
-            });
+                items: []
+            }));
             return;
         }
 
@@ -1824,11 +1843,12 @@
                 : 0;
             html += renderWeeklyProgressRow({
                 kind: 'overdue',
-                scope: 'overdue',
                 label: 'OVERDUE',
-                valueLabel: model.overdue.length + ' of ' + model.open.length + ' open',
-                ariaLabel: 'Open overdue assignments. ' + model.overdue.length + ' of ' + model.open.length + ' open assignments are overdue.',
-                percent: overduePercent
+                ariaLabel: 'Overdue assignments. ' + model.overdue.length + ' of ' + model.open.length + ' open assignments are overdue.',
+                progressLabel: 'Overdue share of open assignments',
+                percent: overduePercent,
+                items: model.overdue,
+                taskType: 'todo'
             });
         }
 
@@ -1839,39 +1859,39 @@
         var nextWeekFinished = model.nextWeekFinished.length;
         if (weekComplete && nextWeekTotal) {
             var upcomingPercent = Math.round((nextWeekFinished / nextWeekTotal) * 100);
-            var upcomingLabel = nextWeekFinished === nextWeekTotal
-                ? 'Next week · All done · ' + nextWeekFinished + ' / ' + nextWeekTotal
-                : nextWeekFinished
-                    ? 'Next week · ' + nextWeekFinished + ' / ' + nextWeekTotal + ' finished'
-                    : 'Next week · ' + nextWeekTotal + ' task' + (nextWeekTotal === 1 ? '' : 's');
             html += renderWeeklyProgressRow({
                 kind: 'upcoming' + (nextWeekFinished === nextWeekTotal ? ' is-complete' : ''),
-                scope: 'upcoming',
                 label: 'UPCOMING',
-                valueLabel: upcomingLabel,
-                ariaLabel: 'Open next week assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished.',
-                percent: upcomingPercent
+                ariaLabel: 'Next week assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished.',
+                progressLabel: 'Next week assignment completion',
+                percent: upcomingPercent,
+                items: model.nextWeek.slice().sort(function(left, right) {
+                    var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
+                    var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
+                    return leftFinished - rightFinished || newestFirst(left, right);
+                }),
+                taskType: 'upcoming'
             });
-            weeklyFocusProgress.innerHTML = html;
+            setWeeklyFocusHtml(html);
             return;
         }
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
-        var weekLabel = !weekTotal
-            ? 'No assignments this week'
-            : weekFinished === weekTotal
-                ? 'All done · ' + weekFinished + ' / ' + weekTotal
-                : weekFinished + ' / ' + weekTotal + ' finished';
         html += renderWeeklyProgressRow({
             kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
-            scope: weekTotal ? 'week' : 'week-empty',
             label: 'THIS WEEK',
-            valueLabel: weekLabel,
             ariaLabel: weekTotal
-                ? 'Open this week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished.'
-                : 'No assignments are scheduled for this week. Activate for an all-caught-up confirmation.',
-            percent: weekPercent
+                ? 'This week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished.'
+                : 'No assignments are scheduled for this week.',
+            progressLabel: 'This week assignment completion',
+            percent: weekPercent,
+            items: model.thisWeek.slice().sort(function(left, right) {
+                var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
+                var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
+                return leftFinished - rightFinished || newestFirst(left, right);
+            }),
+            taskType: 'week'
         });
-        weeklyFocusProgress.innerHTML = html;
+        setWeeklyFocusHtml(html);
     }
 
     function renderAssignments() {
@@ -1890,7 +1910,7 @@
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!todo.length) {
-            html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open the bell to review finished work, or explore the Library.</div>';
+            html += '<div class="empty-card"><strong>No new work is waiting.</strong>Open To Do List to review finished work, or explore the Library.</div>';
         }
         assignmentContent.innerHTML = html;
         updateDashboardTabNotices();
@@ -3043,11 +3063,6 @@
             openStudentMessageCenter();
         });
     }
-    if (repliesButton) {
-        repliesButton.addEventListener('click', function() {
-            openTeacherRepliesDialog();
-        });
-    }
     if (calendarButton) {
         calendarButton.addEventListener('click', function() {
             setStudentCalendarPanel(true);
@@ -3156,15 +3171,6 @@
         var openCard = e.target.closest('[data-open-href]');
         if (openCard) {
             openHrefCard(openCard, e);
-            return;
-        }
-        var progressScope = e.target.closest('[data-progress-scope]');
-        if (progressScope) {
-            if (progressScope.dataset.progressScope === 'week-empty') {
-                showWeeklyEmptyCelebration();
-            } else {
-                openStudentMessageCenter(progressScope.dataset.progressScope || '');
-            }
             return;
         }
         var tabBtn = e.target.closest('.library-tab-btn');

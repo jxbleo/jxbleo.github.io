@@ -162,8 +162,9 @@ Main collections:
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
 
-The student Dashboard renders teacher replies as a standalone header inbox.
-`getDashboard` returns resolved `answer_disputes` regardless of
+The student Dashboard renders teacher replies as a dedicated inbox opened from
+the speech-bubble control in the To Do List modal header. `getDashboard`
+returns resolved `answer_disputes` regardless of
 `student_seen`; the browser derives the unread badge from that read state and
 `markTeacherRepliesSeen` updates the state without deleting reply history.
 

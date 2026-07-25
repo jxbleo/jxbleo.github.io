@@ -99,24 +99,22 @@ Practice navigation checks:
 - at desktop width the Dashboard greeting and weekly progress rows share one
   surface in two columns; below 900px they stack without page-level horizontal
   overflow or nested glass cards
-- the loading state shows one quiet `THIS WEEK` skeleton row; after load,
+- the loading state shows one quiet `THIS WEEK` label and inline skeleton track; after load,
   `OVERDUE` appears first only when a real `to_do` assignment is past required
   `due_at`, while `THIS WEEK` reflects assignments due in the current
   China-standard-time week and excludes self-study STAR records
 - while current-week work is unfinished, future assignments remain visible in
-  the bell's Upcoming section but do not contribute to the red bell count
+  the To Do List's Upcoming section but do not contribute to its red badge
 - when current-week work is all finished—or there is no current-week work—a
   next-week assignment replaces `THIS WEEK` with the blue `UPCOMING` row; with
   no next-week work the existing All done/empty state remains
 - completing the final overdue item removes the red row
-- clicking a populated `OVERDUE`, `THIS WEEK`, or `UPCOMING` row opens the existing
-  Assignments dialog filtered to that scope; scrolling the dialog does not move
-  the Dashboard behind it, and closing by button, backdrop, or Escape restores
-  the exact original page position
-- clicking or keyboard-activating an empty student `THIS WEEK` row shows one
-  centered thumbs-up confirmation that removes itself without opening the
-  Assignments dialog; reduced motion uses a short cross-fade, while the visitor
-  weekly row remains disabled
+- `OVERDUE`, `THIS WEEK`, and replacement `UPCOMING` expose their concrete task
+  rows immediately, using the same category/title/score/chevron layout as To Do
+  List; activating a task opens the standard entry confirmation
+- each progress bar is inline to the right of its section label; no right-side
+  count or empty-state copy such as `6 of 6 open` or `No assignments this week`
+  remains, and an empty week renders no fake task row
 - reduced motion shows final progress values without the reveal animation, and
   increased contrast/reduced transparency keep both tracks and labels legible
 - opening a task from Dashboard Assignments appends a safe `return` target and
@@ -171,7 +169,8 @@ Check:
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
-- the top-right bell opens a modal titled `Assignments` with `TO DO` and
+- the far-left checklist button is visually separated from the right-side
+  utility controls and opens a modal titled `To Do List` with `TO DO` and
   finished assignment messages and no Teacher Replies section. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
@@ -180,34 +179,36 @@ Check:
   capsules above its sections; its first section reads `THIS WEEK`, and its
   bottom `FINISHED` section is initially closed, expands from its full 44px
   disclosure header, and remains keyboard operable
-- opening Overdue, This Week, or Upcoming from the hero card shows exactly one
-  centered title and one direct task list, with no summary capsule, duplicate
-  section heading, or section count. This Week contains no To Do/Finished
+- the hero's Overdue, This Week, or replacement Upcoming section shows its task
+  rows without an intermediate modal; This Week has no To Do/Finished
   subheadings and places every unfinished task before every finished task
 - every untouched assignment has a red `TO DO` pill aligned with the finished
   score position. A failed submission stays in `TO DO` and replaces that label
   with its red best-percentage pill; only `passed` / `mastered` assignments move
   to `FINISHED` and use the green score pill
-- bell assignment rows have no separate `Start` / `Open` buttons; the whole
+- To Do List assignment rows have no separate `Start` / `Open` buttons; the whole
   compact row is keyboard/click accessible, labels BBC work as `BBC` and every
   IELTS Reading/Listening task as `IELTS`, and keeps titles on one line. Only an
   overflowing title scrolls to reveal its full text; reduced-motion mode keeps
   it static with an ellipsis. The row opens the shared Library-style entry
   confirmation before navigation
 - closing that entry confirmation with `Close`, Escape, or its backdrop returns
-  to the same bell dialog and selected assignment row; choosing `Enter` closes
+  to the same To Do List dialog and selected assignment row; choosing `Enter` closes
   both modal layers and opens the task
-- the student bell uses the same SVG bell design as the teacher bell
-- a separate speech-bubble SVG button beside the bell opens `Teacher Replies`
+- the student assignment entry uses a checklist SVG rather than a bell or a
+  single completion checkmark
+- the To Do List modal has a plain speech-bubble SVG button in its top-right
+  corner; it has no embedded checkmark and opens `Teacher Replies`
   even when the history is empty; all resolved replies appear newest-first,
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
 - opening and closing Teacher Replies marks its currently unseen items read,
-  clears the bubble badge without changing the bell badge, and keeps each
-  `Go to question` link working
-- the notebook icon sits immediately to the right of the bell and opens My
+  clears the bubble badge without changing the To Do List badge, and keeps each
+  `Go to question` link working; closing reply history restores the same To Do
+  List and returns focus to its bubble button
+- the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
-- the calendar icon sits immediately to the left of the bell and opens a
+- the calendar icon remains in the right-side utility group and opens a
   student-only, Monday-first monthly completion calendar; it contains no `Wxx`
   labels, cannot navigate beyond the current month, and includes both finished
   assignments and self-study STAR records
