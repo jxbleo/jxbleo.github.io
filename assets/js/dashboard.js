@@ -137,6 +137,7 @@
     var messageCount = document.getElementById('student-message-count');
     var repliesButton = document.getElementById('student-replies-button');
     var repliesCount = document.getElementById('student-replies-count');
+    var studentCalendarTitleObserver = null;
     var studentMessageScrollLock = null;
     var weeklyEmptyCelebrationTimer = null;
 
@@ -858,18 +859,7 @@
     }
 
     function renderStudentCalendarTask(item) {
-        var score = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
-        var hasStar = normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
-        return '<article class="student-calendar-task">' +
-            '<div class="student-calendar-task-copy">' +
-                '<strong>' + escapeHtml(assignmentTitle(item)) + '</strong>' +
-                '<small>' + escapeHtml(studentMessageKind(item)) + (item.source === 'self_study' ? ' · Self-study' : '') + '</small>' +
-            '</div>' +
-            '<span class="student-calendar-task-result">' +
-                (hasStar ? '<span class="star" aria-label="STAR earned">★</span>' : '') +
-                '<span>' + (score == null ? 'Done' : escapeHtml(Math.round(Number(score))) + '%') + '</span>' +
-            '</span>' +
-        '</article>';
+        return renderStudentMessageTask(item, 'finished');
     }
 
     function renderStudentCalendar() {
@@ -918,6 +908,8 @@
                 '<div class="student-calendar-detail-head"><h3>' + escapeHtml(detailTitle) + '</h3><span>' + escapeHtml(detailCount) + '</span></div>' +
                 (selectedItems.length ? '<div class="student-calendar-task-list">' + selectedItems.map(renderStudentCalendarTask).join('') + '</div>' : '<p class="student-calendar-empty">No completed work on this day.</p>') +
             '</section>';
+        if (studentCalendarTitleObserver) studentCalendarTitleObserver.disconnect();
+        studentCalendarTitleObserver = setupStudentMessageTitleTracks(calendarContent);
     }
 
     function shiftStudentCalendarMonth(offset) {
@@ -938,6 +930,10 @@
             calendarButton.setAttribute('aria-expanded', state.calendarPanelOpen ? 'true' : 'false');
         }
         if (!state.calendarPanelOpen) {
+            if (studentCalendarTitleObserver) {
+                studentCalendarTitleObserver.disconnect();
+                studentCalendarTitleObserver = null;
+            }
             unlockStudentMessageBackground();
             return;
         }
@@ -949,6 +945,35 @@
             var close = document.getElementById('student-calendar-close');
             if (close) close.focus({ preventScroll: true });
         });
+    }
+
+    function suspendStudentCalendarForEntry() {
+        state.calendarPanelOpen = false;
+        if (calendarOverlay) calendarOverlay.hidden = true;
+        if (calendarButton) {
+            calendarButton.classList.remove('active');
+            calendarButton.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    function resumeStudentCalendarAfterEntry(card) {
+        state.calendarPanelOpen = true;
+        if (calendarOverlay) calendarOverlay.hidden = false;
+        if (calendarButton) {
+            calendarButton.classList.add('active');
+            calendarButton.setAttribute('aria-expanded', 'true');
+        }
+        if (card && card.isConnected) card.focus();
+    }
+
+    function closeStudentCalendarForEntry() {
+        state.calendarPanelOpen = false;
+        if (calendarOverlay) calendarOverlay.hidden = true;
+        if (calendarButton) {
+            calendarButton.classList.remove('active');
+            calendarButton.setAttribute('aria-expanded', 'false');
+        }
+        unlockStudentMessageBackground();
     }
 
     function studentMessageKind(item) {
@@ -1413,12 +1438,26 @@
         '</article>';
     }
 
-    function renderStudentMessageSection(title, count, body, emptyText, extraClass) {
+    function renderStudentMessageSection(title, count, body, emptyText, extraClass, collapsed) {
+        var content = body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>';
+        var head = '<h3>' + escapeHtml(title) + '</h3>' +
+            '<span class="student-message-section-head-meta">' +
+                '<span class="student-message-section-count">' + escapeHtml(count) + '</span>' +
+                (collapsed ? '<svg class="student-message-section-toggle" viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg>' : '') +
+            '</span>';
+        if (collapsed) {
+            return '<details class="student-message-section is-collapsible ' + escapeHtml(extraClass || '') + '">' +
+                '<summary class="student-message-section-head">' + head + '</summary>' +
+                content +
+            '</details>';
+        }
         return '<section class="student-message-section ' + escapeHtml(extraClass || '') + '">' +
-            '<div class="student-message-section-head">' +
-                '<h3>' + escapeHtml(title) + '</h3>' +
-                '<span>' + escapeHtml(count) + '</span>' +
-            '</div>' +
+            '<div class="student-message-section-head">' + head + '</div>' + content +
+        '</section>';
+    }
+
+    function renderStudentMessageFlatList(body, emptyText) {
+        return '<section class="student-message-flat-list">' +
             (body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>') +
         '</section>';
     }
@@ -1470,43 +1509,28 @@
         if (scope === 'overdue' || scope === 'week' || scope === 'upcoming') {
             var focusModel = weeklyFocusModel();
             if (scope === 'overdue') {
-                dialogTitle = 'Overdue assignments';
+                dialogTitle = 'Overdue';
                 todos = focusModel.overdue;
                 finished = [];
-                summaryHtml = '<span><b>' + escapeHtml(todos.length) + '</b> overdue</span>';
-                sectionsHtml = renderStudentMessageSection(
-                    'Overdue',
-                    todos.length,
+                summaryHtml = '';
+                sectionsHtml = renderStudentMessageFlatList(
                     todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
-                    'No overdue assignments.',
-                    'todo overdue'
+                    'No overdue assignments.'
                 );
             } else if (scope === 'week') {
-                dialogTitle = 'This week';
+                dialogTitle = 'This Week';
                 todos = focusModel.thisWeek.filter(function(item) {
                     return normalizedStatus(item.status) === 'to_do';
                 }).sort(newestFirst);
                 finished = focusModel.thisWeek.filter(function(item) {
                     return isFinishedStatus(item.status);
                 }).sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
-                summaryHtml =
-                    '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
-                    '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>';
-                sectionsHtml =
-                    renderStudentMessageSection(
-                        'To do',
-                        todos.length,
-                        todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
-                        'No unfinished assignments this week.',
-                        'todo'
-                    ) +
-                    renderStudentMessageSection(
-                        'Finished',
-                        finished.length,
-                        finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
-                        'No finished assignments this week yet.',
-                        'finished'
-                    );
+                summaryHtml = '';
+                sectionsHtml = renderStudentMessageFlatList(
+                    todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join('') +
+                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                    'No assignments this week.'
+                );
             } else {
                 dialogTitle = 'Upcoming';
                 upcoming = focusModel.nextWeek.slice().sort(function(left, right) {
@@ -1514,23 +1538,17 @@
                     var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
                     return leftFinished - rightFinished || newestFirst(left, right);
                 });
-                summaryHtml = '<span><b>' + escapeHtml(upcoming.length) + '</b> next week</span>';
-                sectionsHtml = renderStudentMessageSection(
-                    'Upcoming',
-                    upcoming.length,
+                summaryHtml = '';
+                sectionsHtml = renderStudentMessageFlatList(
                     upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
-                    'No assignments are due next week.',
-                    'upcoming'
+                    'No assignments are due next week.'
                 );
             }
         } else {
-            summaryHtml =
-                '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
-                '<span><b>' + escapeHtml(upcoming.length) + '</b> upcoming</span>' +
-                '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>';
+            summaryHtml = '';
             sectionsHtml =
                 renderStudentMessageSection(
-                    'To do',
+                    'This Week',
                     todos.length,
                     todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
                     'No unfinished assignments.',
@@ -1548,19 +1566,18 @@
                     finished.length,
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.',
-                    'finished'
+                    'finished',
+                    true
                 );
         }
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay student-message-overlay';
         overlay.innerHTML =
             '<div class="student-message-shell" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
-                '<div class="teacher-replies-dialog student-message-dialog">' +
+                '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + '">' +
                     '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
                         '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
-                        '<div class="student-message-summary">' +
-                            summaryHtml +
-                        '</div>' +
+                        (summaryHtml ? '<div class="student-message-summary">' + summaryHtml + '</div>' : '') +
                     '</div>' +
                     '<div class="student-message-sections">' +
                         sectionsHtml +
@@ -3052,6 +3069,19 @@
     }
     if (calendarContent) {
         calendarContent.addEventListener('click', function(event) {
+            var taskCard = event.target.closest('.student-message-task[data-open-href]');
+            if (taskCard) {
+                event.preventDefault();
+                event.stopPropagation();
+                var href = taskCard.dataset.openHref;
+                if (!href) return;
+                suspendStudentCalendarForEntry();
+                showPracticeEntryDialog(taskCard, href, {
+                    onDismiss: function() { resumeStudentCalendarAfterEntry(taskCard); },
+                    onCommit: closeStudentCalendarForEntry
+                });
+                return;
+            }
             var monthButton = event.target.closest('[data-calendar-month]');
             if (monthButton && !monthButton.disabled) {
                 shiftStudentCalendarMonth(monthButton.dataset.calendarMonth === 'next' ? 1 : -1);
@@ -3061,6 +3091,20 @@
             if (!dayButton || dayButton.disabled) return;
             state.calendarSelectedDay = dayButton.dataset.calendarDate || '';
             renderStudentCalendar();
+        });
+        calendarContent.addEventListener('keydown', function(event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            var taskCard = event.target.closest('.student-message-task[data-open-href]');
+            if (!taskCard) return;
+            event.preventDefault();
+            event.stopPropagation();
+            var href = taskCard.dataset.openHref;
+            if (!href) return;
+            suspendStudentCalendarForEntry();
+            showPracticeEntryDialog(taskCard, href, {
+                onDismiss: function() { resumeStudentCalendarAfterEntry(taskCard); },
+                onCommit: closeStudentCalendarForEntry
+            });
         });
     }
     bindMyWordsToolbar();

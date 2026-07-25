@@ -4064,10 +4064,11 @@
             return '<span class="matrix-attempt-threshold ' + className + '" style="top:' + escapeHtml(top.toFixed(2)) + 'px" aria-hidden="true">' +
                 '<small>' + escapeHtml(label) + '</small></span>';
         }
-        return '<div class="matrix-attempt-bars" style="--attempt-count:' + escapeHtml(entries.length) + '" aria-label="Attempt score history">' +
-            thresholdLine('PASS ' + formatPercent(passing), passing, 'passing') +
-            (masteryEnabled ? thresholdLine('STAR ' + formatPercent(mastery), mastery, 'mastery') : '') +
-            entries.map(function(entry) {
+        return '<div class="matrix-attempt-bars" aria-label="Attempt score history">' +
+            '<div class="matrix-attempt-bars-track" style="--attempt-count:' + escapeHtml(entries.length) + '">' +
+                thresholdLine('PASS ' + formatPercent(passing), passing, 'passing') +
+                (masteryEnabled ? thresholdLine('STAR ' + formatPercent(mastery), mastery, 'mastery') : '') +
+                entries.map(function(entry) {
                 var attempt = entry.attempt;
                 var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
                 var scoreClass = ' ' + matrixAttemptStatus(attempt, assignment);
@@ -4085,7 +4086,8 @@
                     '<span class="matrix-attempt-number">#' + escapeHtml(entry.number) + '</span>' +
                     '<span class="matrix-attempt-caption">' + compactAttemptTimes(attempt) + '</span>' +
                     '</button>';
-            }).join('') +
+                }).join('') +
+            '</div>' +
         '</div>';
     }
 
@@ -5348,7 +5350,7 @@
             return item.attempt_id === attemptId;
         });
         state.notificationAttemptId = attemptId;
-        state.targetMatrixAttemptId = attemptId;
+        state.targetMatrixAttemptId = '';
         state.selectedMatrixReviewAttemptId = '';
         markAttemptGroupReviewed(attempt);
         renderUpdatesPanel();

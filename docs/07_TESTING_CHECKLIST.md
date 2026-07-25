@@ -176,6 +176,14 @@ Check:
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
+- the default Assignments modal has no To Do / Upcoming / Finished summary
+  capsules above its sections; its first section reads `THIS WEEK`, and its
+  bottom `FINISHED` section is initially closed, expands from its full 44px
+  disclosure header, and remains keyboard operable
+- opening Overdue, This Week, or Upcoming from the hero card shows exactly one
+  centered title and one direct task list, with no summary capsule, duplicate
+  section heading, or section count. This Week contains no To Do/Finished
+  subheadings and places every unfinished task before every finished task
 - every untouched assignment has a red `TO DO` pill aligned with the finished
   score position. A failed submission stays in `TO DO` and replaces that label
   with its red best-percentage pill; only `passed` / `mastered` assignments move
@@ -207,6 +215,11 @@ Check:
   its type, score, and STAR state; empty dates show a quiet empty state, today
   and the selected day remain distinguishable without relying on color alone,
   and future dates are disabled
+- the Progress calendar uses the same translucent glass card and external Close
+  capsule as Assignments. Each completed task row matches Assignments with a
+  left category capsule, scrolling one-line middle title, right score and
+  chevron; click/Enter/Space opens the shared entry confirmation, closing it
+  restores the same calendar row, and Enter opens the correct practice URL
 - at 390px phone, iPad, and desktop widths, all seven date columns remain fully
   visible with no horizontal page overflow; Close, Escape, and backdrop dismiss
   the modal and restore focus to the calendar button
@@ -510,6 +523,9 @@ Check:
   attempt-detail card at the exact same width, height, centered position, and
   external `Close` position. Closing by `Close`, Escape, or detail backdrop
   restores the notification list instead of closing the bell surface
+- On first opening a teacher notification thread, the detail scroll position is
+  at the top with the complete attempt chart visible, no bar/card is preselected,
+  and the page does not jump to the latest answer card
 - The top-right raised-hand Argue dialog and Student lookup dialog use the same
   card bounds, centered position, internal scrolling, and external `Close`
   capsule design as the teacher notification dialog at desktop and phone widths
@@ -523,6 +539,9 @@ Check:
   correct score heights; tapping a bar adds the selected outline and still
   scrolls to the matching attempt card below. Reduced motion removes press and
   width transitions without removing selection feedback
+- With enough attempts to require horizontal scrolling, the Passing and enabled
+  STAR dashed lines remain visible continuously through the rightmost bar at
+  phone, iPad, and desktop widths
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open the same
   independent detail modal as matrix cells

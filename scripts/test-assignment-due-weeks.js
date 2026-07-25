@@ -179,6 +179,10 @@ function dashboardScheduleHooks() {
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
       studentCalendarModel: studentCalendarModel,
       studentCalendarCompletionDate: studentCalendarCompletionDate,
+      renderStudentCalendarTask: renderStudentCalendarTask,
+      renderStudentMessageTask: renderStudentMessageTask,
+      renderStudentMessageSection: renderStudentMessageSection,
+      renderStudentMessageFlatList: renderStudentMessageFlatList,
       setWeeklyFocusProgress: function(target) { weeklyFocusProgress = target; }
     };
 })();`;
@@ -253,6 +257,47 @@ function testStudentCalendarModel() {
   const firstDay = model.days.find((day) => day);
   const expectedMondayIndex = (new Date(Date.UTC(values.year, values.month - 1, 1)).getUTCDay() + 6) % 7;
   assert.equal(model.days.indexOf(firstDay), expectedMondayIndex);
+
+  const finishedSection = hooks.renderStudentMessageSection(
+    "Finished",
+    3,
+    "<article>Finished task</article>",
+    "No finished work.",
+    "finished",
+    true
+  );
+  assert(finishedSection.startsWith('<details class="student-message-section is-collapsible'));
+  assert(finishedSection.includes('<summary class="student-message-section-head">'));
+  assert(!finishedSection.includes('<details open'));
+
+  const calendarTask = hooks.renderStudentCalendarTask({
+    assignment_id: "calendar-task",
+    status: "passed",
+    completed_at: completedAt,
+    best_percentage: 88,
+    set: { set_id: "BBC-CALENDAR", title: "A long calendar task title", link: "bbc.html?set=BBC-CALENDAR" },
+  });
+  assert(calendarTask.includes('class="student-message-task finished"'));
+  assert(calendarTask.includes('class="student-message-title-window"'));
+  assert(calendarTask.includes('data-open-href='));
+  assert(calendarTask.includes('88%'));
+
+  const thisWeekTodo = hooks.renderStudentMessageTask({
+    assignment_id: "week-todo",
+    status: "to_do",
+    set: { set_id: "WEEK-TODO", title: "Unfinished first", link: "vocabulary.html?set=WEEK-TODO" },
+  }, "todo");
+  const thisWeekFinished = hooks.renderStudentMessageTask({
+    assignment_id: "week-finished",
+    status: "passed",
+    completed_at: completedAt,
+    best_percentage: 92,
+    set: { set_id: "WEEK-FINISHED", title: "Finished second", link: "bbc.html?set=WEEK-FINISHED" },
+  }, "finished");
+  const focusedWeekList = hooks.renderStudentMessageFlatList(thisWeekTodo + thisWeekFinished, "No assignments this week.");
+  assert(!focusedWeekList.includes("student-message-section-head"));
+  assert(!focusedWeekList.includes("student-message-section-count"));
+  assert(focusedWeekList.indexOf("Unfinished first") < focusedWeekList.indexOf("Finished second"));
 }
 
 function relativeDueWeekEnd(weekOffset) {
