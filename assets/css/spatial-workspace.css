@@ -137,7 +137,7 @@
 .liquid-glass-dashboard .weekly-focus-progress {
     display: grid;
     gap: 14px;
-    align-content: center;
+    align-content: start;
     min-height: 166px;
     padding: 4px 0 4px clamp(30px, 4vw, 54px);
     border-left: 1px solid rgba(65, 87, 96, 0.12);
@@ -145,43 +145,19 @@
 
 .liquid-glass-dashboard .weekly-progress-row {
     display: grid;
-    gap: 12px;
+    gap: 9px;
     width: 100%;
     min-width: 0;
-    min-height: 78px;
-    padding: 11px 14px;
-    border: 1px solid transparent;
-    border-radius: 18px;
-    appearance: none;
+    padding: 8px 0;
     color: #1b252b;
     background: transparent;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
 }
 
-.liquid-glass-dashboard .weekly-progress-row:hover,
-.liquid-glass-dashboard .weekly-progress-row:focus-visible {
-    border-color: rgba(255, 255, 255, 0.64);
-    background: rgba(255, 255, 255, 0.36);
-    box-shadow: 0 12px 28px rgba(32, 52, 63, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.58);
-}
-
-.liquid-glass-dashboard .weekly-progress-row:disabled {
-    cursor: default;
-}
-
-.liquid-glass-dashboard .weekly-progress-row:disabled:hover {
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
-}
-
-.liquid-glass-dashboard .weekly-progress-copy {
+.liquid-glass-dashboard .weekly-progress-heading {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 14px;
     min-width: 0;
 }
 
@@ -194,22 +170,14 @@
     line-height: 1;
 }
 
-.liquid-glass-dashboard .weekly-progress-copy strong {
-    min-width: 0;
-    color: rgba(27, 37, 43, 0.78);
-    font-size: clamp(0.88rem, 1.3vw, 1rem);
-    font-weight: 690;
-    letter-spacing: -0.014em;
-    line-height: 1.2;
-    text-align: right;
-}
-
 .liquid-glass-dashboard .weekly-progress-track {
     position: relative;
     display: block;
+    flex: 1 1 150px;
     overflow: hidden;
-    width: 100%;
-    height: 12px;
+    width: min(58%, 220px);
+    max-width: 220px;
+    height: 10px;
     border-radius: 999px;
     background: rgba(42, 92, 77, 0.095);
     box-shadow: inset 0 1px 2px rgba(31, 56, 49, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.46);
@@ -226,8 +194,7 @@
     animation: weeklyProgressReveal 380ms cubic-bezier(.22, .72, .28, 1) both;
 }
 
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-label,
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-copy strong {
+.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-label {
     color: #b84755;
 }
 
@@ -239,8 +206,7 @@
     background: linear-gradient(90deg, #ef8a91, #c34452);
 }
 
-.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-label,
-.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-copy strong {
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-label {
     color: #376f9f;
 }
 
@@ -252,16 +218,13 @@
     background: linear-gradient(90deg, #82b9e5, #3f7fb5);
 }
 
-.liquid-glass-dashboard .weekly-progress-row.is-complete .weekly-progress-copy strong {
-    color: #187263;
+.liquid-glass-dashboard .weekly-progress-list {
+    gap: 8px;
 }
 
 .liquid-glass-dashboard .weekly-progress-skeleton {
     pointer-events: none;
-}
-
-.liquid-glass-dashboard .weekly-progress-skeleton .weekly-progress-copy strong {
-    color: rgba(27, 37, 43, 0.38);
+    min-height: 46px;
 }
 
 .liquid-glass-dashboard .weekly-progress-skeleton .weekly-progress-track i {
@@ -277,73 +240,6 @@
 @keyframes weeklyProgressLoading {
     0%, 100% { opacity: 0.46; transform: scaleX(0.22); }
     50% { opacity: 0.82; transform: scaleX(0.58); }
-}
-
-.weekly-empty-celebration {
-    position: fixed;
-    inset: 0;
-    z-index: 2200;
-    display: grid;
-    place-items: center;
-    pointer-events: none;
-}
-
-.weekly-empty-celebration-badge {
-    position: relative;
-    display: grid;
-    width: 112px;
-    height: 112px;
-    place-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.74);
-    border-radius: 50%;
-    color: #fff;
-    background: linear-gradient(145deg, #55cfaa, #13766d 72%);
-    box-shadow: 0 24px 58px rgba(19, 118, 109, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.46);
-    will-change: transform, opacity;
-    animation: weeklyEmptyThumb 1300ms cubic-bezier(.22, .72, .28, 1) both;
-}
-
-.weekly-empty-celebration-badge::before {
-    content: "";
-    position: absolute;
-    inset: -13px;
-    border: 2px solid rgba(85, 207, 170, 0.42);
-    border-radius: inherit;
-    animation: weeklyEmptyThumbRing 1300ms ease-out both;
-}
-
-.weekly-empty-celebration-badge::after {
-    content: "";
-    position: absolute;
-    top: 7px;
-    right: 7px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: -91px 20px 0 -1px rgba(255, 255, 255, 0.72), -13px 91px 0 -2px rgba(255, 255, 255, 0.62);
-}
-
-.weekly-empty-celebration-badge svg {
-    width: 56px;
-    height: 56px;
-    fill: rgba(255, 255, 255, 0.12);
-    stroke: currentColor;
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-@keyframes weeklyEmptyThumb {
-    0% { opacity: 0; transform: translateY(8px) scale(0.82); }
-    22%, 72% { opacity: 1; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(-7px) scale(0.96); }
-}
-
-@keyframes weeklyEmptyThumbRing {
-    0% { opacity: 0; transform: scale(0.72); }
-    24% { opacity: 1; }
-    82%, 100% { opacity: 0; transform: scale(1.13); }
 }
 
 .liquid-glass-dashboard .student-library-workspace {
@@ -792,17 +688,15 @@
     }
 
     .liquid-glass-dashboard .weekly-progress-row {
-        min-height: 72px;
-        padding: 10px 4px;
-        border-radius: 14px;
+        padding: 8px 0;
     }
 
-    .liquid-glass-dashboard .weekly-progress-copy {
+    .liquid-glass-dashboard .weekly-progress-heading {
         gap: 10px;
     }
 
     .liquid-glass-dashboard .weekly-progress-track {
-        height: 10px;
+        width: min(54%, 160px);
     }
 
     .liquid-glass-dashboard .student-library-heading {
@@ -928,15 +822,6 @@
     .liquid-glass-dashboard .weekly-progress-track i {
         animation: none !important;
         transform: scaleX(var(--weekly-progress-scale, 0));
-    }
-
-    .weekly-empty-celebration-badge {
-        animation: weeklyEmptyThumbReduced 900ms ease-out both;
-    }
-
-    .weekly-empty-celebration-badge::before {
-        animation: none;
-        opacity: 0;
     }
 
     .liquid-glass-dashboard #student-sub-tab-bar.student-library-category-popover {

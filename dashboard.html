@@ -9,36 +9,30 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260726-4">
-    <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260726-1">
-    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-10">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260726-6">
+    <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260726-2">
+    <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-1">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
         <header class="app-header">
-            <span class="workspace-cat-logo" role="img" aria-label="Mr. Cat Academy">
-                <img src="assets/logos/mrcat-leaping-cat.png" alt="" aria-hidden="true" width="942" height="844">
-            </span>
+            <div class="student-primary-cluster">
+                <button class="icon-pill-button student-message-button student-todo-button" id="student-message-button" type="button" aria-label="To Do List" aria-expanded="false">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="m3.5 6 1.7 1.7L8.5 4.5M11 6h9M3.5 12l1.7 1.7 3.3-3.2M11 12h9M3.5 18l1.7 1.7 3.3-3.2M11 18h9"></path>
+                    </svg>
+                    <span class="notice-dot danger" id="student-message-count" hidden>0</span>
+                </button>
+                <span class="workspace-cat-logo" role="img" aria-label="Mr. Cat Academy">
+                    <img src="assets/logos/mrcat-leaping-cat.png" alt="" aria-hidden="true" width="942" height="844">
+                </span>
+            </div>
             <div class="identity-cluster">
                 <button class="icon-pill-button student-calendar-button" id="student-calendar-button" type="button" aria-label="Progress calendar" aria-expanded="false" aria-controls="student-calendar-overlay">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect>
                         <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
                     </svg>
-                </button>
-                <button class="icon-pill-button student-message-button" id="student-message-button" type="button" aria-label="Assignments" aria-expanded="false">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-                        <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
-                    </svg>
-                    <span class="notice-dot danger" id="student-message-count" hidden>0</span>
-                </button>
-                <button class="icon-pill-button student-replies-button" id="student-replies-button" type="button" aria-label="Teacher replies" aria-expanded="false">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                        <path d="M20.5 11.5a7.5 7.5 0 0 1-8 7.5 9 9 0 0 1-3.6-.8L4 20l1.7-4.2A7.4 7.4 0 0 1 3.5 10.5a7.5 7.5 0 0 1 8-7.5 8.7 8.7 0 0 1 6.3 2.5"></path>
-                        <path d="m15.5 8 1.6 1.6L21 5.7"></path>
-                    </svg>
-                    <span class="notice-dot danger" id="student-replies-count" hidden>0</span>
                 </button>
                 <button class="icon-pill-button student-words-button" id="student-words-button" type="button" aria-label="My Words" aria-expanded="false">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -70,11 +64,10 @@
             </section>
             <div class="weekly-focus-progress is-loading" id="weekly-focus-progress" aria-label="Weekly assignment progress" aria-busy="true">
                 <div class="weekly-progress-row weekly-progress-skeleton" aria-hidden="true">
-                    <div class="weekly-progress-copy">
+                    <div class="weekly-progress-heading">
                         <span class="weekly-progress-label">THIS WEEK</span>
-                        <strong>Loading progress</strong>
+                        <span class="weekly-progress-track"><i></i></span>
                     </div>
-                    <span class="weekly-progress-track"><i></i></span>
                 </div>
                 <span class="sr-only" role="status">Loading weekly assignment progress.</span>
             </div>
@@ -218,7 +211,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260726-4"></script>
+    <script src="assets/js/dashboard.js?v=20260726-7"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

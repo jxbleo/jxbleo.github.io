@@ -85,14 +85,16 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 
 - 用老师给的 Login ID 和密码登录
 - 第一次或重置后修改密码
-- 从右上角铃铛查看待完成和已完成练习
-- 铃铛默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；首栏命名为
+- 从页面最左侧、与右侧工具按钮分开的清单图标打开 `To Do List`，查看待完成和已完成练习
+- `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；首栏命名为
   `THIS WEEK`，底部 `FINISHED` 默认收起，学生点击后才展开
-- 从首页大卡片进入 `OVERDUE`、`THIS WEEK` 或 `UPCOMING` 时，弹窗只保留一个
-  居中标题和一列任务，不显示统计胶囊、重复的 To Do/Finished 栏名或右侧数量；
+- 首页大卡片的 `OVERDUE`、`THIS WEEK` 或替代显示的 `UPCOMING` 默认直接
+  展开具体任务，任务行复用 To Do List 样式并进入同一练习确认流程；每个标题
+  右侧只放进度条，不显示 `6 of 6 open`、`No assignments this week` 等数量或空态文案；
   This Week 中未完成任务统一在前，已完成任务统一在后
-- 从铃铛旁的独立对话气泡图标查看全部历史老师回复；红点只提示未读回复
-- 从铃铛左边的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
+- `To Do List` 弹窗右上角放置纯对话气泡图标；点击查看全部历史老师回复，
+  图标内部不带勾，红点只提示未读回复，关闭回复历史后返回同一个 To Do List
+- 从右侧工具区的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
   完成的 assignment 和自主练习 STAR，点击日期查看当天任务，不显示教师端的
   `Wxx` 周编号；弹窗使用与 Assignments 一致的透明玻璃材质，任务行也复用
   Assignments 的“左侧栏目—中间滚动标题—右侧分数”样式并可进入习题
@@ -816,7 +818,8 @@ flowchart TD
   mastery lock 规则
 - 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
-- 学生端 Dashboard 的独立 Teacher Replies 气泡入口保留全部已解决回复；
+- 学生端 Dashboard 的 To Do List 弹窗右上角提供独立 Teacher Replies 气泡入口，
+  并保留全部已解决回复；
   `student_seen` 只控制未读红点，原题 Argue 状态仍是另一处永久查看入口
 
 ## 10. 前端产品原则
@@ -842,8 +845,9 @@ flowchart TD
 `OVERDUE`，本周到期任务进入 `THIS WEEK`。本周没有任务或本周任务全部完成
 时，如果下周有任务，同一位置改为 `UPCOMING`；本周尚未完成时，下周任务
 仍可在铃铛的 Upcoming 分区查看，但不计入红色数字。红色数字只计算逾期、
-本周未完成任务。未读 Teacher Replies 使用独立对话气泡图标自己的红点，
-不计入铃铛数字。
+本周未完成任务。未读 Teacher Replies 使用 To Do List 弹窗右上角气泡图标
+自己的红点，不计入 To Do List 外部数字。首页这些周进度分区默认直接显示
+对应任务行，标题右侧只保留进度条，不显示数量或空任务说明。
 
 ### 10.2 老师端
 

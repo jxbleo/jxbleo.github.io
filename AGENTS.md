@@ -460,15 +460,16 @@ their `grading_version` and `grading_key_history` first.
 Student Argue replies have two student-facing surfaces:
 
 - the original question's Argue dialog is the permanent status/reply view
-- the Dashboard header's standalone speech-bubble `Teacher Replies` control is
-  a permanent inbox of all resolved replies
+- the To Do List modal's top-right speech-bubble `Teacher Replies` control is a
+  permanent inbox of all resolved replies
 
 When a teacher resolves a student Argue request, set `student_seen: false` and
 `student_seen_at: null`. The speech-bubble badge counts only unseen replies.
 Opening and closing the replies inbox calls
 `getDashboard.markTeacherRepliesSeen`, which clears that badge without removing
-the replies from history. Teacher replies must not appear inside the assignment
-bell. Historical answer views may show Argue status and teacher notes. When a
+the replies from history. Teacher replies must not be mixed into assignment
+sections; they open from the bubble in the To Do List header. Historical answer
+views may show Argue status and teacher notes. When a
 student reopens completed work and clicks `History`, each historically wrong
 question must still render the student Argue entry point against that historical
 `attempt_id`; if the assignment has already recorded `answer_revealed: true`,
@@ -701,16 +702,18 @@ approves production. Follow `docs/10_DEPLOYMENT.md`.
 Student dashboard navigation:
 
 - The lower main navigation exposes only `Library`.
-- Assignments and finished work live in the top-right notification bell.
-- The default Assignments bell modal has no top summary capsules. Its first
+- Assignments and finished work live in the standalone far-left `To Do List`
+  checklist button, visually separated from the right-side utility controls.
+- The default `To Do List` modal has no top summary capsules. Its first
   open-work section is labelled `This Week`; the final `Finished` section is a
   closed disclosure by default and expands only when selected.
-- Opening `Overdue`, `This Week`, or `Upcoming` from the hero progress card
-  produces a focused modal with one centered title and one direct task list.
-  These focused views have no summary capsules, repeated section labels, or
-  section counts. `This Week` merges unfinished and finished work, with every
-  unfinished row before every finished row.
-- A calendar icon immediately to the left of the notification bell opens the
+- The hero progress card renders the concrete `Overdue`, `This Week`, or
+  replacement `Upcoming` task rows in place by default. Each section header
+  contains only its label and an inline progress bar; do not restore right-side
+  count/empty copy or require a section click before the tasks are visible.
+  Rows reuse the To Do List task-row contract and open the same practice-entry
+  confirmation. `This Week` places unfinished work before finished work.
+- A calendar icon in the right-side utility group opens the
   authenticated student's own completion history as a Monday-first monthly
   calendar. Date cells summarize completed assignments and self-study STAR
   work; selecting a date reveals that day's tasks. This student surface uses
@@ -723,14 +726,15 @@ Student dashboard navigation:
   unfinished work past its due week. `THIS WEEK` contains work due in the
   current Shanghai-time week. When this week has no work or all its work is
   finished, next week's work replaces that row as `UPCOMING`; otherwise it
-  remains visible only in the bell's Upcoming section. Upcoming work never
-  contributes to the red bell count, which includes only actionable
+  remains visible only in the To Do List's Upcoming section. Upcoming work never
+  contributes to the To Do List badge, which includes only actionable
   overdue/current-week work.
-- Teacher Replies opens from its own speech-bubble SVG button beside the bell.
+- Teacher Replies opens from a plain speech-bubble SVG button in the top-right
+  of the To Do List modal; the icon has no embedded checkmark.
   Its red badge counts unseen resolved replies, while its modal retains every
   resolved teacher reply after the student has read it.
-- My Words opens in an independent modal from the notebook icon immediately to
-  the right of the notification bell. Closing and reopening that modal restores
+- My Words opens in an independent modal from the notebook icon in the
+  right-side utility group. Closing and reopening that modal restores
   its previous internal scroll position.
 - Keep the My Words modal compact and vertically centered on desktop and mobile,
   with its `Close` capsule outside below the card. Search and Add are matching
@@ -761,8 +765,9 @@ are shared across students, and lookup failure must leave the personal word in
 call the provider directly from browser code.
 
 `Teacher Replies` is a permanent, student-owned history surface opened from the
-Dashboard header speech-bubble button. Reading replies marks them seen and
-clears only the button badge; it never removes resolved replies from the inbox.
+speech-bubble button in the To Do List modal header. Reading replies marks them
+seen and clears only the bubble badge; it never removes resolved replies from
+the inbox. Closing reply history restores the same To Do List modal.
 The original exercise question remains another durable place to review that
 Argue status and teacher note.
 
@@ -770,7 +775,10 @@ The hero has no `STUDENT DASHBOARD` label. It shows a varied English greeting
 and a randomly selected motivational sentence. Use China Standard Time for
 time-aware greetings. Student records keep the owner's simple `Chinese Name +
 English Name` format; the UI extracts the final English word for the greeting
-and top-right identity chip without adding another database field.
+and top-right identity chip without adding another database field. Its progress
+section exposes task rows directly; the progress bar sits immediately to the
+right of each `OVERDUE`, `THIS WEEK`, or `UPCOMING` label, and an empty week
+does not render explanatory copy such as `No assignments this week`.
 
 Visitor mode uses the same learning interface but has no assignments, cannot
 fill/select answers, cannot submit, and sees a login prompt on interaction.

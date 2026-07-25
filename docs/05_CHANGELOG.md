@@ -7,19 +7,25 @@
 
 ### Added
 
-- Added a student-only Progress calendar beside the Dashboard bell. The
+- Added a student-only Progress calendar in the Dashboard's right-side utility
+  group. The
   Monday-first monthly view combines finished assignments and self-study STAR
   records, uses compact daily activity intensity and STAR markers, and shows
   the selected day's task/score details without exposing Teacher View `Wxx`
   grouping. The existing `getDashboard` response supplies all required data,
   so no CloudBase deployment or data migration is required.
-- Added a standalone speech-bubble Teacher Replies button to the student
-  Dashboard header. It opens a permanent newest-first reply history and keeps
-  unread replies on its own red badge instead of mixing them into the
-  assignment bell.
+- Added a speech-bubble Teacher Replies button to the top-right of the student
+  To Do List modal. It opens a permanent newest-first reply history and keeps
+  unread replies on its own red badge instead of mixing them into assignment
+  sections.
 
 ### Changed
 
+- Replaced the student assignment bell with a checklist-style `To Do List`
+  button at the far left of the Dashboard header, separated from the right-side
+  utilities. Renamed the default assignment modal accordingly, moved Teacher
+  Replies into that modal's top-right corner, and simplified it to a plain
+  speech-bubble SVG without an embedded checkmark.
 - Changed Teacher notification thread opening to show the attempt bar chart
   first, without preselecting or scrolling to the notification's latest
   attempt. Clicking a chart bar remains the explicit action that highlights and
@@ -33,10 +39,11 @@
   calendar with the same Apple-style thick glass material and unified its task
   rows with Assignments, including overflow title motion, score placement,
   keyboard access, entry confirmation, and practice navigation.
-- Flattened the hero-card `Overdue`, `This Week`, and `Upcoming` drill-downs to
-  one centered title and one direct list, removing duplicate headings, summary
-  capsules, subsection labels, and counts. `This Week` now places all unfinished
-  rows first and all finished rows afterward in the same list.
+- Expanded the hero-card `Overdue`, `This Week`, and replacement `Upcoming`
+  sections in place by default using the same compact task rows as To Do List.
+  Moved each progress bar beside its section label and removed right-side count
+  and empty-state copy such as `6 of 6 open` and `No assignments this week`.
+  `This Week` places unfinished rows before finished rows.
 - Changed `getDashboard` to return all resolved student Argue replies with
   their `student_seen` state. Marking replies seen now clears only the unread
   badge and preserves the history; a `getDashboard` CloudBase deployment is

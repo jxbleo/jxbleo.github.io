@@ -69,8 +69,9 @@ Navigation:
 
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
-- assignments and finished work open from the top-right notification bell
-- a calendar icon immediately to the left of the bell opens the signed-in
+- assignments and finished work open from a standalone far-left `To Do List`
+  checklist button, separated from the right-side utility controls
+- a calendar icon in the right-side utility group opens the signed-in
   student's own completion history in an independent modal. It uses a
   Monday-first natural-month grid rather than Teacher View's `Wxx` columns.
   Each date cell uses restrained green intensity for 1/2/3+ completed items,
@@ -83,22 +84,25 @@ Navigation:
   single-line overflow-scrolling title in the center, and score plus chevron on
   the right. Activating a row opens the same entry confirmation and practice
   destination; closing the confirmation restores the calendar and row focus.
-- My Words opens in an independent modal from a notebook icon immediately to
-  the right of the bell; closing and reopening restores the modal's previous
+- The To Do List modal places Teacher Replies in its top-right corner as a plain
+  speech-bubble SVG with three quiet dots and no embedded checkmark. Its badge
+  counts unread replies; closing reply history restores the same To Do List.
+- My Words opens in an independent modal from a notebook icon in the right-side
+  utility group; closing and reopening restores the modal's previous
   internal scroll position
 - account/profile actions remain in the top-right identity chip
 
 Assignment access and progress display:
 
-- both `TO DO` and completed assignments are reachable from the top-right
-  notification bell; there is no lower Assignments page entry
-- selecting `Overdue`, `This Week`, or `Upcoming` from the hero progress card
-  opens a focused Assignments modal with one centered title and one task list.
-  It does not repeat the title as a section label, show a summary capsule, or
-  show section counts. The `This Week` list merges both statuses and orders all
-  unfinished rows before all finished rows without visible To Do/Finished
-  subheadings.
-- the bell modal is titled `Assignments`. Its assignment card is approximately
+- both `TO DO` and completed assignments are reachable from the far-left
+  `To Do List` button; there is no lower Assignments page entry
+- `Overdue`, `This Week`, or the replacement `Upcoming` section in the hero
+  exposes its concrete tasks in place by default. Rows reuse the To Do List
+  category/title/score/chevron contract and the same practice-entry
+  confirmation. The section header contains only its label and an inline
+  progress bar; no right-side count or empty-state sentence is rendered. The
+  `This Week` list orders unfinished rows before finished rows.
+- the default modal is titled `To Do List`. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
   sits directly below the card. The former three top summary capsules are not
@@ -132,16 +136,12 @@ Assignment access and progress display:
   finished—or when no work is due this week—the same row becomes a blue
   `UPCOMING` row when next week has assignments. If neither week has work, it
   keeps the quiet empty `THIS WEEK` state. Self-study STAR records are not
-  counted in these rows. Selecting an
-  empty `THIS WEEK` row shows one brief centered thumbs-up confirmation and
-  removes it automatically without opening an empty dialog. Selecting a
-  populated row opens the existing Assignments dialog filtered to that scope;
-  while the dialog is open, its list may scroll but the Dashboard behind it
-  must remain fixed at its original position.
-  The progress fill reveals once after loading without bounce, and reduced
-  motion renders the final value immediately and replaces the thumbs-up scale
-  motion with a short cross-fade. Color is always accompanied by labels and
-  counts.
+  counted in these rows. Each visible section lists its tasks immediately;
+  activating a task opens the standard practice-entry confirmation. An empty
+  `THIS WEEK` section keeps its label and zero progress track without adding
+  `No assignments this week` or another empty-state sentence. The progress fill
+  reveals once after loading without bounce, and reduced motion renders the
+  final value immediately. Color is always accompanied by a text label.
 - the Library content starts with a large `Library` heading. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
   side of that heading on desktop and remain adjacent when stacked on mobile.
@@ -174,23 +174,24 @@ Backend statuses:
 
 Frontend rule:
 
-- `passed` and `mastered` both appear in the top-right notification bell's
+- `passed` and `mastered` both appear in the far-left To Do List's
   `Finished` section.
 - Do not split the student dashboard back into `PASSED` and `MASTERED` tabs unless the owner explicitly changes the product rule.
-- The bell is the single place for assignment reminders and finished-review
+- To Do List is the single place for assignment reminders and finished-review
   entry; do not restore a lower Assignments page or filter capsule.
 - Finished Vocabulary assignment cards open the same Learn entry used by
   Library Vocabulary cards, without automatically restoring Test/History mode.
-- Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
+- Student assignment messages live in the far-left To Do List; account and
+  utility actions remain on the right, not as main navigation tabs.
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment notifications, teacher notification counts, and
   unread activity rows. Student assignment reminders are counted only on the
-  top-right bell. The bell keeps future assignments visible in a separate
+  far-left To Do List. It keeps future assignments visible in a separate
   `Upcoming` section even while current-week work remains unfinished, but
-  future work never contributes to the red count. The bell's red count includes
+  future work never contributes to the red count. The To Do List badge includes
   only overdue/current-week unfinished assignments. Unseen teacher replies use
-  the standalone speech-bubble button's own red badge.
-  Viewing the bell must not clear assignment reminders.
+  the To Do List header bubble's own red badge.
+  Viewing To Do List must not clear assignment reminders.
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
   sub-filters rather than as a separate top-level `Lessons` button.
@@ -239,11 +240,11 @@ Frontend rule:
   `x`; a centered `Close` capsule sits outside and immediately below the card.
   The Read all icon keeps an accessible label/tooltip, shows a spinner while
   saving, and briefly turns green after a successful read-all action.
-- The student assignment dialog opened from the top-right bell must be a
+- The student assignment dialog opened from the far-left To Do List must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
-- The student bell dialog should always open. It shows open and finished
-  assignments only. Assignment rows in the bell are compact whole-row
+- The To Do List dialog should always open. It shows open and finished
+  assignments only. Assignment rows are compact whole-row
   targets: the short type label and title share the main line, with BBC tasks
   labelled `BBC` and all IELTS tasks labelled `IELTS`. Long titles stay on one
   line and scroll gently only when they overflow; reduced-motion mode uses a
@@ -251,7 +252,7 @@ Frontend rule:
   Do not render separate `Start` or `Open` buttons. Clicking or keyboard-opening
   the row temporarily hides the bell and shows the same shared practice-entry
   confirmation used by Library before navigation. Dismissing that confirmation
-  with `Close`, Escape, or the backdrop restores the same bell dialog and returns
+  with `Close`, Escape, or the backdrop restores the same To Do List dialog and returns
   focus to the selected assignment row; `Enter` closes both layers and navigates.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
@@ -316,8 +317,8 @@ My Words:
 - is available across student learning and attempt-review pages. Single-letter
   words such as `a` and `I` are valid vocabulary items.
 - visitors see a login prompt instead of personal data.
-- its header notebook icon follows the same circular SVG treatment as the bell;
-  the student bell uses the same bell SVG as the teacher notification button.
+- its header notebook icon follows the same circular SVG treatment as the other
+  right-side utility buttons; the standalone assignment button uses a checklist SVG.
 - closing and reopening restores the modal's previous internal list scroll
   position; closing Search or Add does not close the modal.
 - `my-words-modal-preview.html` is an isolated static design reference for this
@@ -330,8 +331,9 @@ Student account menu:
 - shows profile/account information, password change, and logout.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
-- assignment reminders and finished work share the bell dialog.
-- Teacher Replies uses a separate speech-bubble SVG button beside the bell.
+- assignment reminders and finished work share the To Do List dialog.
+- Teacher Replies uses a separate plain speech-bubble SVG button at the
+  top-right of the To Do List dialog.
   Its modal lists all resolved replies newest-first, including previously read
   history. Opening the modal marks unseen items read when it closes, clearing
   the bubble badge without removing history.
