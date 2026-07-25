@@ -496,6 +496,14 @@ Check:
   capsule design as the teacher notification dialog at desktop and phone widths
 - Matrix attempt cards show `Page ... · Audio ...` timing for audio attempts
   and keep older/non-audio attempts readable when audio timing is absent
+- Matrix/notification attempt charts use 48px attempt columns and 14px capsule
+  bars at phone, iPad, and desktop widths. Each shows score, `#N`, compact
+  no-space timing such as `P18m42s` / `A12m08s`, omits A when unavailable, and
+  horizontally scrolls without widening the visible bars when attempts overflow
+- Attempt charts place muted Passing and enabled STAR reference lines at the
+  correct score heights; tapping a bar adds the selected outline and still
+  scrolls to the matching attempt card below. Reduced motion removes press and
+  width transitions without removing selection feedback
 - View shows only `By student` and `By task` groupings without Open/Watch status labels
 - `By task` bars sort student completion from low to high and open the same
   independent detail modal as matrix cells
