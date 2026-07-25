@@ -70,6 +70,14 @@ Navigation:
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
 - assignments and finished work open from the top-right notification bell
+- a calendar icon immediately to the left of the bell opens the signed-in
+  student's own completion history in an independent modal. It uses a
+  Monday-first natural-month grid rather than Teacher View's `Wxx` columns.
+  Each date cell uses restrained green intensity for 1/2/3+ completed items,
+  adds a small gold STAR when applicable, outlines today and the selected day,
+  and reveals that date's task names, type, score, and STAR state below the
+  month grid. Previous/next controls stay within the student's recorded range
+  and never navigate beyond the current month.
 - My Words opens in an independent modal from a notebook icon immediately to
   the right of the bell; closing and reopening restores the modal's previous
   internal scroll position
@@ -162,11 +170,12 @@ Frontend rule:
 - Student messages and account actions live in the top-right chip/bell area, not as a main navigation tab.
 - Message and unread-count reminders use red dots/badges consistently, including
   student replies, assignment notifications, teacher notification counts, and
-  unread activity rows. Student assignment reminders are counted on the
+  unread activity rows. Student assignment reminders are counted only on the
   top-right bell. The bell keeps future assignments visible in a separate
   `Upcoming` section even while current-week work remains unfinished, but
-  future work never contributes to the red count. The red count includes only
-  overdue/current-week unfinished assignments and unseen teacher replies.
+  future work never contributes to the red count. The bell's red count includes
+  only overdue/current-week unfinished assignments. Unseen teacher replies use
+  the standalone speech-bubble button's own red badge.
   Viewing the bell must not clear assignment reminders.
 - Teacher Library and Student Library show only two top-level filters:
   `Practice` and `Exam`. Lesson catalog sections are surfaced under Practice
@@ -216,12 +225,11 @@ Frontend rule:
   `x`; a centered `Close` capsule sits outside and immediately below the card.
   The Read all icon keeps an accessible label/tooltip, shows a spinner while
   saving, and briefly turns green after a successful read-all action.
-- The student message/replies dialog opened from the top-right bell must be a
+- The student assignment dialog opened from the top-right bell must be a
   fully opaque top-layer modal. Dashboard navigation capsules such as
   `Assignments`, `My Words`, and `Library` must never show through it.
-- The student bell dialog should always open, even when there are no new teacher
-  replies. It shows open assignments, finished assignments, and teacher replies
-  in one message center. Assignment rows in the bell are compact whole-row
+- The student bell dialog should always open. It shows open and finished
+  assignments only. Assignment rows in the bell are compact whole-row
   targets: the short type label and title share the main line, with BBC tasks
   labelled `BBC` and all IELTS tasks labelled `IELTS`. Long titles stay on one
   line and scroll gently only when they overflow; reduced-motion mode uses a
@@ -308,8 +316,11 @@ Student account menu:
 - shows profile/account information, password change, and logout.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
-- assignment reminders, finished work, and teacher replies share the
-  message-center dialog opened from the top-right message indicator.
+- assignment reminders and finished work share the bell dialog.
+- Teacher Replies uses a separate speech-bubble SVG button beside the bell.
+  Its modal lists all resolved replies newest-first, including previously read
+  history. Opening the modal marks unseen items read when it closes, clearing
+  the bubble badge without removing history.
 
 ## 4. Teacher Interface
 

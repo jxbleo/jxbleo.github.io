@@ -84,6 +84,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 用老师给的 Login ID 和密码登录
 - 第一次或重置后修改密码
 - 从右上角铃铛查看待完成和已完成练习
+- 从铃铛旁的独立对话气泡图标查看全部历史老师回复；红点只提示未读回复
+- 从铃铛左边的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
+  完成的 assignment 和自主练习 STAR，点击日期查看当天任务，不显示教师端的
+  `Wxx` 周编号
 - 打开作业并提交答案
 - 不及格时继续 Try Again
 - 通过后可以选择继续挑战更高分，或查看答案
@@ -804,7 +808,8 @@ flowchart TD
   mastery lock 规则
 - 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
-- 学生端 Dashboard reply 是临时提醒，原题 Argue 状态才是永久查看入口
+- 学生端 Dashboard 的独立 Teacher Replies 气泡入口保留全部已解决回复；
+  `student_seen` 只控制未读红点，原题 Argue 状态仍是另一处永久查看入口
 
 ## 10. 前端产品原则
 
@@ -829,7 +834,8 @@ flowchart TD
 `OVERDUE`，本周到期任务进入 `THIS WEEK`。本周没有任务或本周任务全部完成
 时，如果下周有任务，同一位置改为 `UPCOMING`；本周尚未完成时，下周任务
 仍可在铃铛的 Upcoming 分区查看，但不计入红色数字。红色数字只计算逾期、
-本周未完成任务和未读 Teacher Replies。
+本周未完成任务。未读 Teacher Replies 使用独立对话气泡图标自己的红点，
+不计入铃铛数字。
 
 ### 10.2 老师端
 

@@ -317,7 +317,7 @@ function disputeReplyView(item, set) {
 
 function resolvedTeacherReplyItems(items, student) {
   return filterDisputesForStudent(items, student).filter((item) =>
-    item && item.status !== "pending" && !disputeSeen(item)
+    item && item.status !== "pending"
   ).sort((left, right) =>
     dateValue(right.resolved_at || right.updated_at) - dateValue(left.resolved_at || left.updated_at)
   );
@@ -457,7 +457,7 @@ async function listTeacherReplies(student) {
     const set = await getOne("sets", { set_id: setId });
     if (set) setMap.set(setId, set);
   }));
-  return resolved.slice(0, 50).map((item) => disputeReplyView(item, setMap.get(item.set_id)));
+  return resolved.map((item) => disputeReplyView(item, setMap.get(item.set_id)));
 }
 
 async function markTeacherRepliesSeen(student, event) {
@@ -1006,7 +1006,7 @@ exports.main = async (event = {}) => {
     return {
       success: true,
       assignments: assignmentViews.concat(selfStudyViews),
-      teacher_replies: teacherReplyItems.slice(0, 50).map((item) => disputeReplyView(item, setMap.get(item.set_id))),
+      teacher_replies: teacherReplyItems.map((item) => disputeReplyView(item, setMap.get(item.set_id))),
       ...splitStarCounts(achievements),
     };
   } catch (error) {

@@ -66,6 +66,14 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-07-26
+
+- Added the Student Dashboard Progress calendar left of the bell. It renders
+  existing finished assignments and self-study STAR records in a Monday-first
+  month grid with compact activity levels and per-day details. Automated model
+  coverage verifies month alignment, filtering, count levels, and STAR state;
+  no CloudBase deployment or content import is required.
+
 ### 2026-07-25
 
 - Replaced the wide Teacher matrix/notification Attempt tracks with compact

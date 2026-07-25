@@ -14,6 +14,10 @@
         vocabItems: [],
         vocabSearch: '',
         accountPanelOpen: false,
+        calendarPanelOpen: false,
+        calendarYear: null,
+        calendarMonth: null,
+        calendarSelectedDay: '',
         wordsPanelOpen: false,
         myWordsScrollTop: 0
     };
@@ -114,6 +118,10 @@
     var studentLibraryCategoryLabel = document.getElementById('student-library-category-label');
     var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
+    var calendarButton = document.getElementById('student-calendar-button');
+    var calendarOverlay = document.getElementById('student-calendar-overlay');
+    var calendarContent = document.getElementById('student-calendar-content');
+    var calendarScroll = document.getElementById('student-calendar-scroll');
     var wordsButton = document.getElementById('student-words-button');
     var wordsOverlay = document.getElementById('student-words-overlay');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
@@ -127,6 +135,8 @@
     var wordsAddStatus = document.getElementById('my-words-manual-status');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
+    var repliesButton = document.getElementById('student-replies-button');
+    var repliesCount = document.getElementById('student-replies-count');
     var studentMessageScrollLock = null;
     var weeklyEmptyCelebrationTimer = null;
 
@@ -729,6 +739,218 @@
             (sectionId ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment') : (set.course || set.type || 'Assignment'));
     }
 
+    function studentCalendarCompletionDate(item) {
+        if (!item || !isFinishedStatus(item.status) || normalizedStatus(item.status) === 'cancelled') return null;
+        var value = item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
+        var date = value ? new Date(value) : null;
+        return date && !isNaN(date.getTime()) ? date : null;
+    }
+
+    function studentCalendarMonthSerial(year, month) {
+        return (Number(year) * 12) + Number(month) - 1;
+    }
+
+    function studentCalendarMonthParts(serial) {
+        var year = Math.floor(serial / 12);
+        return { year: year, month: serial - (year * 12) + 1 };
+    }
+
+    function studentCalendarDateKey(year, month, day) {
+        return year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    }
+
+    function studentCalendarFinishedItems() {
+        return (state.assignments || []).filter(function(item) {
+            return Boolean(studentCalendarCompletionDate(item));
+        });
+    }
+
+    function studentCalendarBounds(nowValue) {
+        var today = shanghaiDateParts(nowValue || new Date());
+        var currentSerial = studentCalendarMonthSerial(today.year, today.month);
+        var earliestSerial = currentSerial;
+        studentCalendarFinishedItems().forEach(function(item) {
+            var parts = shanghaiDateParts(studentCalendarCompletionDate(item));
+            if (!parts) return;
+            earliestSerial = Math.min(earliestSerial, studentCalendarMonthSerial(parts.year, parts.month));
+        });
+        return { earliest: earliestSerial, current: currentSerial, today: today };
+    }
+
+    function studentCalendarModel(year, month, selectedKey, nowValue) {
+        var bounds = studentCalendarBounds(nowValue);
+        var monthSerial = Math.max(bounds.earliest, Math.min(bounds.current, studentCalendarMonthSerial(year, month)));
+        var monthParts = studentCalendarMonthParts(monthSerial);
+        var firstDate = new Date(Date.UTC(monthParts.year, monthParts.month - 1, 1));
+        var firstWeekday = mondayIndexFromUtcDate(firstDate);
+        var dayCount = new Date(Date.UTC(monthParts.year, monthParts.month, 0)).getUTCDate();
+        var itemsByKey = {};
+
+        studentCalendarFinishedItems().forEach(function(item) {
+            var completionDate = studentCalendarCompletionDate(item);
+            var parts = completionDate && shanghaiDateParts(completionDate);
+            if (!parts || parts.year !== monthParts.year || parts.month !== monthParts.month) return;
+            var key = studentCalendarDateKey(parts.year, parts.month, parts.day);
+            if (!itemsByKey[key]) itemsByKey[key] = [];
+            itemsByKey[key].push(item);
+        });
+
+        Object.keys(itemsByKey).forEach(function(key) {
+            itemsByKey[key].sort(function(left, right) {
+                return studentCalendarCompletionDate(right).getTime() - studentCalendarCompletionDate(left).getTime();
+            });
+        });
+
+        var days = [];
+        for (var blankIndex = 0; blankIndex < firstWeekday; blankIndex++) days.push(null);
+        for (var dayNumber = 1; dayNumber <= dayCount; dayNumber++) {
+            var dayKey = studentCalendarDateKey(monthParts.year, monthParts.month, dayNumber);
+            var dayItems = itemsByKey[dayKey] || [];
+            days.push({
+                key: dayKey,
+                day: dayNumber,
+                items: dayItems,
+                level: Math.min(4, dayItems.length),
+                hasStar: dayItems.some(function(item) {
+                    return normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
+                }),
+                isToday: dayKey === bounds.today.key,
+                isFuture: dayKey > bounds.today.key
+            });
+        }
+        while (days.length % 7) days.push(null);
+
+        var selected = selectedKey ? days.find(function(day) {
+            return day && !day.isFuture && day.key === selectedKey;
+        }) : null;
+        if (!selected) {
+            var activeDays = days.filter(function(day) { return day && day.items.length; });
+            selected = activeDays.length ? activeDays[activeDays.length - 1] : days.find(function(day) { return day && day.isToday; }) || days.find(Boolean);
+        }
+
+        return {
+            year: monthParts.year,
+            month: monthParts.month,
+            days: days,
+            selected: selected,
+            completedCount: Object.keys(itemsByKey).reduce(function(total, key) { return total + itemsByKey[key].length; }, 0),
+            activeDayCount: Object.keys(itemsByKey).length,
+            canGoPrevious: monthSerial > bounds.earliest,
+            canGoNext: monthSerial < bounds.current
+        };
+    }
+
+    function studentCalendarMonthLabel(model) {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'UTC',
+            year: 'numeric',
+            month: 'long'
+        }).format(new Date(Date.UTC(model.year, model.month - 1, 1)));
+    }
+
+    function studentCalendarDayLabel(day) {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'UTC',
+            month: 'short',
+            day: 'numeric',
+            weekday: 'short'
+        }).format(new Date(day.key + 'T12:00:00Z'));
+    }
+
+    function renderStudentCalendarTask(item) {
+        var score = item.best_percentage == null ? item.latest_percentage : item.best_percentage;
+        var hasStar = normalizedStatus(item.status) === 'mastered' || item.star_claimed === true;
+        return '<article class="student-calendar-task">' +
+            '<div class="student-calendar-task-copy">' +
+                '<strong>' + escapeHtml(assignmentTitle(item)) + '</strong>' +
+                '<small>' + escapeHtml(studentMessageKind(item)) + (item.source === 'self_study' ? ' · Self-study' : '') + '</small>' +
+            '</div>' +
+            '<span class="student-calendar-task-result">' +
+                (hasStar ? '<span class="star" aria-label="STAR earned">★</span>' : '') +
+                '<span>' + (score == null ? 'Done' : escapeHtml(Math.round(Number(score))) + '%') + '</span>' +
+            '</span>' +
+        '</article>';
+    }
+
+    function renderStudentCalendar() {
+        if (!calendarContent) return;
+        var bounds = studentCalendarBounds();
+        if (state.calendarYear == null || state.calendarMonth == null) {
+            var current = studentCalendarMonthParts(bounds.current);
+            state.calendarYear = current.year;
+            state.calendarMonth = current.month;
+        }
+        var model = studentCalendarModel(state.calendarYear, state.calendarMonth, state.calendarSelectedDay);
+        state.calendarYear = model.year;
+        state.calendarMonth = model.month;
+        state.calendarSelectedDay = model.selected ? model.selected.key : '';
+        var selectedItems = model.selected ? model.selected.items : [];
+        var dayButtons = model.days.map(function(day) {
+            if (!day) return '<span class="student-calendar-day-empty" aria-hidden="true"></span>';
+            var aria = studentCalendarDayLabel(day) + ', ' + day.items.length + ' completed';
+            return '<button class="student-calendar-day' +
+                (day.isToday ? ' is-today' : '') +
+                (model.selected && day.key === model.selected.key ? ' is-selected' : '') +
+                '" type="button" data-calendar-date="' + escapeHtml(day.key) + '" data-level="' + day.level + '"' +
+                (day.isFuture ? ' disabled' : '') + ' aria-label="' + escapeHtml(aria) + '"' +
+                (model.selected && day.key === model.selected.key ? ' aria-pressed="true"' : ' aria-pressed="false"') + '>' +
+                '<span>' + day.day + '</span>' +
+                (day.hasStar ? '<span class="student-calendar-day-star" aria-hidden="true">★</span>' : '') +
+            '</button>';
+        }).join('');
+        var detailTitle = model.selected ? studentCalendarDayLabel(model.selected) : 'Completed work';
+        var detailCount = selectedItems.length + ' task' + (selectedItems.length === 1 ? '' : 's');
+
+        calendarContent.innerHTML =
+            '<div class="student-calendar-toolbar">' +
+                '<button class="student-calendar-month-button" type="button" data-calendar-month="previous" aria-label="Previous month"' + (model.canGoPrevious ? '' : ' disabled') + '>' +
+                    '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.5 4.5-5 5.5 5 5.5"></path></svg>' +
+                '</button>' +
+                '<h3 class="student-calendar-month-title">' + escapeHtml(studentCalendarMonthLabel(model)) + '</h3>' +
+                '<button class="student-calendar-month-button" type="button" data-calendar-month="next" aria-label="Next month"' + (model.canGoNext ? '' : ' disabled') + '>' +
+                    '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5 5.5-5 5.5"></path></svg>' +
+                '</button>' +
+            '</div>' +
+            '<div class="student-calendar-summary"><span>' + model.completedCount + ' completed</span><span>' + model.activeDayCount + ' active day' + (model.activeDayCount === 1 ? '' : 's') + '</span></div>' +
+            '<div class="student-calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>' +
+            '<div class="student-calendar-grid" role="grid" aria-label="' + escapeHtml(studentCalendarMonthLabel(model)) + '">' + dayButtons + '</div>' +
+            '<section class="student-calendar-detail" aria-live="polite">' +
+                '<div class="student-calendar-detail-head"><h3>' + escapeHtml(detailTitle) + '</h3><span>' + escapeHtml(detailCount) + '</span></div>' +
+                (selectedItems.length ? '<div class="student-calendar-task-list">' + selectedItems.map(renderStudentCalendarTask).join('') + '</div>' : '<p class="student-calendar-empty">No completed work on this day.</p>') +
+            '</section>';
+    }
+
+    function shiftStudentCalendarMonth(offset) {
+        var next = studentCalendarMonthParts(studentCalendarMonthSerial(state.calendarYear, state.calendarMonth) + offset);
+        state.calendarYear = next.year;
+        state.calendarMonth = next.month;
+        state.calendarSelectedDay = '';
+        renderStudentCalendar();
+        if (calendarScroll) calendarScroll.scrollTop = 0;
+    }
+
+    function setStudentCalendarPanel(open) {
+        state.calendarPanelOpen = open === true;
+        if (!calendarOverlay) return;
+        calendarOverlay.hidden = !state.calendarPanelOpen;
+        if (calendarButton) {
+            calendarButton.classList.toggle('active', state.calendarPanelOpen);
+            calendarButton.setAttribute('aria-expanded', state.calendarPanelOpen ? 'true' : 'false');
+        }
+        if (!state.calendarPanelOpen) {
+            unlockStudentMessageBackground();
+            return;
+        }
+        setWordsPanel(false);
+        setAccountPanel(false);
+        renderStudentCalendar();
+        lockStudentMessageBackground();
+        window.requestAnimationFrame(function() {
+            var close = document.getElementById('student-calendar-close');
+            if (close) close.focus({ preventScroll: true });
+        });
+    }
+
     function studentMessageKind(item) {
         var set = assignmentSet(item);
         var sectionId = String(set.sectionId || set.section_id || '').toLowerCase();
@@ -1043,8 +1265,14 @@
         return (state.teacherReplies || []).length;
     }
 
+    function teacherReplyUnreadTotal() {
+        return (state.teacherReplies || []).filter(function(reply) {
+            return reply && reply.student_seen !== true;
+        }).length;
+    }
+
     function studentMessageTotal() {
-        return todoAssignments().length + teacherReplyTotal();
+        return todoAssignments().length;
     }
 
     function updateDashboardTabNotices() {
@@ -1063,29 +1291,40 @@
             messageButton.setAttribute('aria-label', messageTotal ? messageTotal + ' current updates' : 'Assignments');
             messageButton.setAttribute('aria-expanded', 'false');
         }
+        var unreadReplies = teacherReplyUnreadTotal();
+        if (repliesCount) {
+            repliesCount.textContent = unreadReplies ? (unreadReplies > 9 ? '9+' : String(unreadReplies)) : '';
+            repliesCount.hidden = unreadReplies <= 0;
+        }
+        if (repliesButton) {
+            repliesButton.classList.toggle('has-updates', unreadReplies > 0);
+            repliesButton.setAttribute('aria-label', unreadReplies
+                ? unreadReplies + ' unread teacher ' + (unreadReplies === 1 ? 'reply' : 'replies')
+                : 'Teacher replies');
+        }
     }
 
-    function clearTeacherReplies(seenIds) {
+    function setTeacherRepliesSeen(seenIds) {
         var idSet = new Set(seenIds || []);
         if (!idSet.size) return;
-        state.teacherReplies = (state.teacherReplies || []).filter(function(reply) {
-            return !idSet.has(reply.dispute_id);
+        (state.teacherReplies || []).forEach(function(reply) {
+            if (idSet.has(reply.dispute_id)) reply.student_seen = true;
         });
         (state.assignments || []).forEach(function(item) {
             if (!Array.isArray(item.teacher_replies)) return;
-            item.teacher_replies = item.teacher_replies.filter(function(reply) {
-                return !idSet.has(reply.dispute_id);
+            item.teacher_replies.forEach(function(reply) {
+                if (idSet.has(reply.dispute_id)) reply.student_seen = true;
             });
-            item.teacher_reply_count = item.teacher_replies.length;
         });
         updateDashboardTabNotices();
     }
 
     function markTeacherRepliesSeen(replies) {
-        var ids = replyIds(replies);
+        var ids = replyIds((replies || []).filter(function(reply) {
+            return reply && reply.student_seen !== true;
+        }));
         if (!ids.length) return Promise.resolve();
-        clearTeacherReplies(ids);
-        renderAssignments();
+        setTeacherRepliesSeen(ids);
         updateDashboardTabNotices();
         if (!window.MrCatCloud) return Promise.resolve();
         return window.MrCatCloud.callFunction('getDashboard', {
@@ -1224,14 +1463,12 @@
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
         var upcoming = state.session && state.session.mode === 'student' ? upcomingAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
-        var replies = state.teacherReplies || [];
         var dialogTitle = 'Assignments';
         var summaryHtml = '';
         var sectionsHtml = '';
 
         if (scope === 'overdue' || scope === 'week' || scope === 'upcoming') {
             var focusModel = weeklyFocusModel();
-            replies = [];
             if (scope === 'overdue') {
                 dialogTitle = 'Overdue assignments';
                 todos = focusModel.overdue;
@@ -1290,8 +1527,7 @@
             summaryHtml =
                 '<span><b>' + escapeHtml(todos.length) + '</b> to do</span>' +
                 '<span><b>' + escapeHtml(upcoming.length) + '</b> upcoming</span>' +
-                '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>' +
-                '<span><b>' + escapeHtml(replies.length) + '</b> replies</span>';
+                '<span><b>' + escapeHtml(finished.length) + '</b> finished</span>';
             sectionsHtml =
                 renderStudentMessageSection(
                     'To do',
@@ -1313,13 +1549,6 @@
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.',
                     'finished'
-                ) +
-                renderStudentMessageSection(
-                    'Teacher replies',
-                    replies.length,
-                    replies.map(renderTeacherReplyItem).join(''),
-                    'No new teacher replies.',
-                    'replies'
                 );
         }
         var overlay = document.createElement('div');
@@ -1354,9 +1583,7 @@
             overlay.remove();
             unlockStudentMessageBackground();
             if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
-            if (!markSeen || didMarkSeen) return Promise.resolve();
-            didMarkSeen = true;
-            return markTeacherRepliesSeen(replies);
+            return Promise.resolve();
         }
         overlay.studentMessageClose = close;
 
@@ -1397,41 +1624,40 @@
             card.addEventListener('click', openTask);
             card.addEventListener('keydown', openTask);
         });
-        overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
-            link.addEventListener('click', function(event) {
-                var href = link.getAttribute('href');
-                if (!href || href === '#') return;
-                event.preventDefault();
-                Promise.resolve(close(true)).then(function() {
-                    window.location.href = href;
-                });
-            });
-        });
         document.addEventListener('keydown', onKeydown);
     }
 
     function openTeacherRepliesDialog(replyItems) {
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
-        if (!replies.length) return;
+        var unreadCount = replies.filter(function(reply) { return reply.student_seen !== true; }).length;
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay';
         overlay.innerHTML =
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
                 '<button class="dialog-close-button" type="button" aria-label="Close teacher replies">×</button>' +
                 '<div class="teacher-replies-dialog-head">' +
-                    '<h2 id="teacher-replies-title">' + replies.length + ' repl' + (replies.length === 1 ? 'y is' : 'ies are') + ' ready.</h2>' +
+                    '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+                    '<p>' + (replies.length
+                        ? replies.length + ' repl' + (replies.length === 1 ? 'y' : 'ies') + ' in your history' + (unreadCount ? ' · ' + unreadCount + ' new' : '')
+                        : 'Your teacher replies will appear here.') + '</p>' +
                 '</div>' +
-                '<div class="teacher-replies-list">' + replies.map(renderTeacherReplyItem).join('') + '</div>' +
+                '<div class="teacher-replies-list">' + (replies.length
+                    ? replies.map(renderTeacherReplyItem).join('')
+                    : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
                 '<div class="dialog-actions">' +
                     '<button class="primary-button" id="teacher-replies-done" type="button">Close</button>' +
                 '</div>' +
             '</div>';
         document.body.appendChild(overlay);
+        lockStudentMessageBackground();
+        if (repliesButton) repliesButton.setAttribute('aria-expanded', 'true');
 
         var didMarkSeen = false;
         function close(markSeen) {
             document.removeEventListener('keydown', onKeydown);
             overlay.remove();
+            unlockStudentMessageBackground();
+            if (repliesButton) repliesButton.setAttribute('aria-expanded', 'false');
             if (!markSeen || didMarkSeen) return Promise.resolve();
             didMarkSeen = true;
             return markTeacherRepliesSeen(replies);
@@ -2800,6 +3026,43 @@
             openStudentMessageCenter();
         });
     }
+    if (repliesButton) {
+        repliesButton.addEventListener('click', function() {
+            openTeacherRepliesDialog();
+        });
+    }
+    if (calendarButton) {
+        calendarButton.addEventListener('click', function() {
+            setStudentCalendarPanel(true);
+        });
+    }
+    var calendarClose = document.getElementById('student-calendar-close');
+    if (calendarClose) {
+        calendarClose.addEventListener('click', function() {
+            setStudentCalendarPanel(false);
+            if (calendarButton) calendarButton.focus();
+        });
+    }
+    if (calendarOverlay) {
+        calendarOverlay.addEventListener('click', function(event) {
+            if (event.target !== calendarOverlay) return;
+            setStudentCalendarPanel(false);
+            if (calendarButton) calendarButton.focus();
+        });
+    }
+    if (calendarContent) {
+        calendarContent.addEventListener('click', function(event) {
+            var monthButton = event.target.closest('[data-calendar-month]');
+            if (monthButton && !monthButton.disabled) {
+                shiftStudentCalendarMonth(monthButton.dataset.calendarMonth === 'next' ? 1 : -1);
+                return;
+            }
+            var dayButton = event.target.closest('[data-calendar-date]');
+            if (!dayButton || dayButton.disabled) return;
+            state.calendarSelectedDay = dayButton.dataset.calendarDate || '';
+            renderStudentCalendar();
+        });
+    }
     bindMyWordsToolbar();
     if (wordsButton) {
         wordsButton.addEventListener('click', function() {
@@ -2901,6 +3164,11 @@
     });
 
     document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && state.calendarPanelOpen) {
+            setStudentCalendarPanel(false);
+            if (calendarButton) calendarButton.focus();
+            return;
+        }
         if (e.key === 'Escape' && state.wordsPanelOpen) {
             if (wordsAddTrigger && wordsAddTrigger.getAttribute('aria-expanded') === 'true') {
                 setMyWordsToolOpen('add', false);

@@ -460,17 +460,19 @@ their `grading_version` and `grading_key_history` first.
 Student Argue replies have two student-facing surfaces:
 
 - the original question's Argue dialog is the permanent status/reply view
-- Dashboard `Teacher Replies` is only a temporary unread prompt
+- the Dashboard header's standalone speech-bubble `Teacher Replies` control is
+  a permanent inbox of all resolved replies
 
 When a teacher resolves a student Argue request, set `student_seen: false` and
-`student_seen_at: null`. Once the student opens the Dashboard replies prompt,
-`getDashboard.markTeacherRepliesSeen` marks those disputes seen so the prompt
-disappears until a new teacher reply arrives. Historical answer views may show
-Argue status and teacher notes. When a student reopens completed work and clicks
-`History`, each historically wrong question must still render the student Argue
-entry point against that historical `attempt_id`; if the assignment has already
-recorded `answer_revealed: true`, history may also show a collapsed per-question
-`Explain` action.
+`student_seen_at: null`. The speech-bubble badge counts only unseen replies.
+Opening and closing the replies inbox calls
+`getDashboard.markTeacherRepliesSeen`, which clears that badge without removing
+the replies from history. Teacher replies must not appear inside the assignment
+bell. Historical answer views may show Argue status and teacher notes. When a
+student reopens completed work and clicks `History`, each historically wrong
+question must still render the student Argue entry point against that historical
+`attempt_id`; if the assignment has already recorded `answer_revealed: true`,
+history may also show a collapsed per-question `Explain` action.
 
 ### Vocabulary
 
@@ -700,13 +702,21 @@ Student dashboard navigation:
 
 - The lower main navigation exposes only `Library`.
 - Assignments and finished work live in the top-right notification bell.
+- A calendar icon immediately to the left of the notification bell opens the
+  authenticated student's own completion history as a Monday-first monthly
+  calendar. Date cells summarize completed assignments and self-study STAR
+  work; selecting a date reveals that day's tasks. This student surface uses
+  calendar months and dates, never the Teacher View `Wxx` week grid.
 - Student assignment timing uses required `due_at` weeks. `OVERDUE` contains
   unfinished work past its due week. `THIS WEEK` contains work due in the
   current Shanghai-time week. When this week has no work or all its work is
   finished, next week's work replaces that row as `UPCOMING`; otherwise it
   remains visible only in the bell's Upcoming section. Upcoming work never
-  contributes to the red bell count, which still includes actionable
-  overdue/current-week work and unseen teacher replies.
+  contributes to the red bell count, which includes only actionable
+  overdue/current-week work.
+- Teacher Replies opens from its own speech-bubble SVG button beside the bell.
+  Its red badge counts unseen resolved replies, while its modal retains every
+  resolved teacher reply after the student has read it.
 - My Words opens in an independent modal from the notebook icon immediately to
   the right of the notification bell. Closing and reopening that modal restores
   its previous internal scroll position.
@@ -738,11 +748,11 @@ are shared across students, and lookup failure must leave the personal word in
 `pending` or `not_found` state rather than failing or deleting the save. Never
 call the provider directly from browser code.
 
-`Teacher Replies` may appear above Assignments only when the student has
-unread resolved Argue replies. It is a transient prompt, not a permanent inbox;
-after the student views it, the prompt should be marked seen and hidden. The
-original exercise question remains the durable place to review that Argue
-status and teacher note.
+`Teacher Replies` is a permanent, student-owned history surface opened from the
+Dashboard header speech-bubble button. Reading replies marks them seen and
+clears only the button badge; it never removes resolved replies from the inbox.
+The original exercise question remains another durable place to review that
+Argue status and teacher note.
 
 The hero has no `STUDENT DASHBOARD` label. It shows a varied English greeting
 and a randomly selected motivational sentence. Use China Standard Time for

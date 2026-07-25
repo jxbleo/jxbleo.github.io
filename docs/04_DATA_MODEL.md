@@ -352,6 +352,8 @@ Core fields:
 | `status` | string | `pending`, `approved`, `rejected` |
 | `decision` | string/null | `keep`, `add`, `replace` |
 | `teacher_note` | string | teacher reply |
+| `student_seen` | boolean | whether the student has opened this resolved reply |
+| `student_seen_at` | Date/null | when the resolved reply was marked seen |
 | `auto_regrade_scanned_attempt_count` | number | attempts scanned after `add`/`replace` |
 | `auto_regrade_adjusted_attempt_count` | number | attempts improved after `add`/`replace` |
 
@@ -360,6 +362,9 @@ Rules:
 - One student dispute per `attempt_id + question_id`.
 - Only wrong recorded questions can be disputed by students.
 - Teacher-originated disputes may have no `attempt_id`.
+- Resolved student-originated disputes remain in the student's permanent
+  Teacher Replies history after `student_seen` becomes true; that flag controls
+  only the standalone reply button's unread badge.
 - Teacher dispute lists hide student disputes linked to assignments whose
   current status is `cancelled`.
 - `add` and `replace` update future grading and also trigger automatic upward

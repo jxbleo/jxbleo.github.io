@@ -177,6 +177,8 @@ function dashboardScheduleHooks() {
       studentMessageTotal: studentMessageTotal,
       weeklyFocusModel: weeklyFocusModel,
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
+      studentCalendarModel: studentCalendarModel,
+      studentCalendarCompletionDate: studentCalendarCompletionDate,
       setWeeklyFocusProgress: function(target) { weeklyFocusProgress = target; }
     };
 })();`;
@@ -210,6 +212,47 @@ function dashboardScheduleHooks() {
     clearTimeout,
   });
   return window.__scheduleTestHooks;
+}
+
+function testStudentCalendarModel() {
+  const hooks = dashboardScheduleHooks();
+  const now = new Date();
+  const values = {};
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now).forEach((part) => {
+    if (part.type !== "literal") values[part.type] = Number(part.value);
+  });
+  const activityDay = Math.max(1, Math.min(values.day, 12));
+  const dayKey = `${values.year}-${String(values.month).padStart(2, "0")}-${String(activityDay).padStart(2, "0")}`;
+  const completedAt = new Date(`${dayKey}T09:30:00+08:00`).toISOString();
+  hooks.state.assignments = [
+    { assignment_id: "passed", status: "passed", completed_at: completedAt, best_percentage: 84 },
+    { assignment_id: "mastered", status: "mastered", mastered_at: completedAt, best_percentage: 100, star_claimed: true },
+    { assignment_id: null, achievement_id: "self-study", source: "self_study", status: "mastered", mastered_at: completedAt, best_percentage: 96, star_claimed: true },
+    { assignment_id: "unfinished", status: "to_do", updated_at: completedAt },
+    { assignment_id: "cancelled", status: "cancelled", completed_at: completedAt },
+  ];
+
+  const model = hooks.studentCalendarModel(values.year, values.month, dayKey, now);
+  assert(model.days.length === 35 || model.days.length === 42);
+  assert.equal(model.days.length % 7, 0);
+  assert.equal(model.completedCount, 3);
+  assert.equal(model.activeDayCount, 1);
+  assert.equal(model.canGoNext, false);
+  const activity = model.days.find((day) => day && day.key === dayKey);
+  assert(activity);
+  assert.equal(activity.level, 3);
+  assert.equal(activity.hasStar, true);
+  assert.equal(activity.items.length, 3);
+  assert.equal(model.selected.key, dayKey);
+
+  const firstDay = model.days.find((day) => day);
+  const expectedMondayIndex = (new Date(Date.UTC(values.year, values.month - 1, 1)).getUTCDay() + 6) % 7;
+  assert.equal(model.days.indexOf(firstDay), expectedMondayIndex);
 }
 
 function relativeDueWeekEnd(weekOffset) {
@@ -273,6 +316,7 @@ function testDashboardScheduleModel() {
 
 async function main() {
   testDashboardScheduleModel();
+  testStudentCalendarModel();
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);
   const vocabularyDefaults = setsResult.sets.find((set) => set.set_id === "NGSL-DEFAULT");
