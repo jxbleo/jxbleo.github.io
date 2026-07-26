@@ -117,8 +117,9 @@ Assignment access and progress display:
   count pills: This Week starts open, while Finished starts closed. Finished
   tasks are sorted newest-completed first.
   Every unfinished row has a red right-side pill in
-  the same position as a finished score: it reads `TO DO` before any attempt
-  and shows the best failed percentage after an unsuccessful submission.
+  the same position as a finished score: it reads `0%` before any attempt and
+  shows the best failed percentage after an unsuccessful submission. The task
+  list never uses `TO DO` text as a row score.
   Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
   `FINISHED`, where the score pill remains green.
 - the student header omits the cat logo so it does not consume horizontal
@@ -350,7 +351,9 @@ Student account menu:
   typography as Personal Center.
   Its modal lists all resolved replies newest-first, including previously read
   history. Its top-left `Back` marks unseen items read when returning, clearing
-  the bubble badge without removing history.
+  the bubble badge without removing history. Back is a clearly interactive
+  glass capsule with a left arrow, visible border and shadow, plus hover, focus,
+  and press feedback; it must not read as plain text.
 
 ## 4. Teacher Interface
 

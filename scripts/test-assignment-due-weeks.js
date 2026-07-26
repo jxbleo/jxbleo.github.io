@@ -300,6 +300,8 @@ function testStudentCalendarModel() {
     status: "to_do",
     set: { set_id: "WEEK-TODO", title: "Unfinished first", link: "vocabulary.html?set=WEEK-TODO" },
   }, "todo");
+  assert(thisWeekTodo.includes('<span class="student-message-score is-todo">0%</span>'));
+  assert(!thisWeekTodo.includes(">TO DO<"));
   const thisWeekFinished = hooks.renderStudentMessageTask({
     assignment_id: "week-finished",
     status: "passed",

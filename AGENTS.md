@@ -730,7 +730,9 @@ Student dashboard navigation:
   disclosure; the final `Finished` section is a closed disclosure by default.
   Neither header shows a numeric count pill, and Finished tasks sort by newest
   completion first. The `ASSIGNMENTS` title uses the same small green accent
-  typography as `PERSONAL CENTER`.
+  typography as `PERSONAL CENTER`. Untouched unfinished rows show a red `0%`;
+  attempted failures show their red historical-best percentage. Do not render
+  `TO DO` text as the right-side row score.
 - The hero progress card always renders `This Week` and `Upcoming` as two compact
   summary rows. This Week shows completed/total progress and uses a slow red
   breathing track whenever its total includes overdue unfinished work; reduced
@@ -765,6 +767,8 @@ Student dashboard navigation:
   resolved teacher reply after the student has read it. The reply modal has no
   close icon or bottom Close action; a top-left `Back` control marks current
   replies seen and restores the same Assignments modal and bubble focus.
+  Back must appear as a clear arrowed glass capsule with a visible border,
+  depth, keyboard focus, and press feedback rather than plain text.
 - My Words opens in an independent modal from the notebook icon in the
   right-side utility group. Closing and reopening that modal restores
   its previous internal scroll position.
