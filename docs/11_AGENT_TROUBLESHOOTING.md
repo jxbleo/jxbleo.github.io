@@ -31,6 +31,7 @@
 | 学生有大量历史记录，但 Calendar 和 Finished 同时为空 | `getDashboard` 超过 CloudBase 执行时限；旧前端又把失败响应吞成空 assignments | 先查 `getDashboard` 日志是否为 `调用失败(433)` / `Invoking task timed out`；部署批量 set 查询版本，将执行超时设为至少 10 秒（建议 15 秒），并发布带 Retry 状态的 Dashboard 静态文件 |
 | Personal Center 星星数量正确，但点开来源清单为空 | 静态 Dashboard 已更新但云端 `getDashboard` 仍是未返回 `star_achievements` 的旧版 | 重建并部署 `getDashboard`，发布带最新 cache query 的 `dashboard.html` / `dashboard.js`；不需要迁移 `student_set_achievements` |
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
+| 手机 Teacher View 姓名已缩短但首列仍很宽 | 桌面矩阵 density 存在同一个 localStorage 键中并优先于手机自动 Fit；旧 history 也可能跨断点恢复 density | 发布最新版 `teacher.js` 和 `app.css`；确认手机首次载入 `resolvedMatrixDensityStep()` 为 0，且移动端 Fit 网格使用 `--matrix-student-col-fit` |
 | 学生铃铛有红色数字但 `THIS WEEK` / `OVERDUE` 都为空 | 旧静态代码仍把所有 `to_do`（包括未来作业）计入红点，或旧 assignment 尚未补齐 `due_at` | 发布最新 Dashboard/Teacher 静态文件与 `getDashboard`/`teacherAdmin`；dry-run `backfillAssignmentDueWeeks`，确认未来任务只在 Upcoming 且不计红点 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |

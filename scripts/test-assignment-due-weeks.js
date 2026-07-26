@@ -240,6 +240,19 @@ function testTeacherAssignmentEditDelegation() {
   assert(!source.includes("container.querySelectorAll('[data-edit-assignment-scope]')"));
 }
 
+function testTeacherPhoneMatrixDensityIsolation() {
+  const teacherPath = path.resolve(__dirname, "../assets/js/teacher.js");
+  const teacherSource = fs.readFileSync(teacherPath, "utf8");
+  const cssPath = path.resolve(__dirname, "../assets/css/app.css");
+  const cssSource = fs.readFileSync(cssPath, "utf8");
+  assert(teacherSource.includes("if (matrixUsesPhoneLayout()) return null;"));
+  assert(teacherSource.includes("phone_layout: matrixUsesPhoneLayout()"));
+  assert(teacherSource.includes("matrix.phone_layout === matrixUsesPhoneLayout()"));
+  assert(teacherSource.includes("state.matrixDensityStep = nextPhoneLayout ? null : readMatrixDensityPreference();"));
+  assert(cssSource.includes(".matrix-density-fit .progress-matrix-row"));
+  assert(cssSource.includes("minmax(0, var(--matrix-student-col-fit, 5ch))"));
+}
+
 function testStudentCalendarModel() {
   const hooks = dashboardScheduleHooks();
   const now = new Date();
@@ -468,6 +481,7 @@ function testAccountStarHistoryModel() {
 
 async function main() {
   testTeacherAssignmentEditDelegation();
+  testTeacherPhoneMatrixDensityIsolation();
   testDashboardScheduleModel();
   testStudentCalendarModel();
   testAccountStarHistoryModel();

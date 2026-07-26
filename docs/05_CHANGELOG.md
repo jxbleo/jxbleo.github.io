@@ -7,6 +7,11 @@
 
 ### Fixed
 
+- Fixed the Teacher View matrix retaining a desktop density preference on
+  phones, which shortened the displayed student name without reliably
+  compacting the sticky name column. Phone loads now start in automatic Fit,
+  the mobile Fit grid explicitly honors the calculated compact name track, and
+  phone/desktop history restoration no longer crosses viewport modes.
 - Fixed Teacher View assignment-parameter editing for legacy assignment records
   that have no explicit `assignment_id`. Matrix cell Edit and Wxx column edits
   now resolve both canonical `assignment_id` values and database document `_id`
