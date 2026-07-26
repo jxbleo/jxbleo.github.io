@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260726-5">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260726-8">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
 </head>
@@ -189,6 +189,20 @@
             </div>
         </section>
 
+        <section class="create-student-success-modal" id="password-reset-success-panel" data-teacher-modal hidden>
+            <div class="create-student-success-card" role="dialog" aria-modal="true" aria-labelledby="password-reset-success-title">
+                <span class="success-checkmark" aria-hidden="true">
+                    <svg viewBox="0 0 44 44" focusable="false">
+                        <circle class="success-checkmark-ring" cx="22" cy="22" r="19"></circle>
+                        <path class="success-checkmark-tick" d="M13 22.6 19.3 29 31.6 16"></path>
+                    </svg>
+                </span>
+                <h2 id="password-reset-success-title">Password reset</h2>
+                <p id="password-reset-success-copy">The student password has been reset.</p>
+                <button class="primary-button" id="password-reset-success-close" type="button">Done</button>
+            </div>
+        </section>
+
         <section class="dashboard-view" id="view-tasks" hidden>
             <section class="assign-flow simple-assign-flow task-view-panel" id="task-assign-panel">
                 <div class="assign-minimal-grid">
@@ -312,7 +326,7 @@
 
     <div id="teacher-modal-root"></div>
 
-    <section class="teacher-updates-panel teacher-utility-modal" id="teacher-updates-panel" hidden>
+    <section class="teacher-updates-panel teacher-utility-modal" id="teacher-updates-panel" data-teacher-modal hidden>
         <div class="teacher-updates-shell teacher-utility-shell">
             <div class="teacher-updates-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Student attempt notifications">
                 <div class="updates-panel-head">
@@ -339,7 +353,7 @@
     <script src="assets/js/config.public.js?v=20260715-3"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260726-2"></script>
+    <script src="assets/js/teacher.js?v=20260726-7"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

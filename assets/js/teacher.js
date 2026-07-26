@@ -306,6 +306,89 @@
 
     mountStaticTeacherModals();
 
+    var teacherModalScrollState = null;
+
+    function teacherModalDialogIsVisible(dialog) {
+        var node = dialog;
+        while (node && node !== document.documentElement) {
+            if (node.hidden || node.getAttribute('aria-hidden') === 'true') return false;
+            node = node.parentElement;
+        }
+        return true;
+    }
+
+    function teacherHasOpenModal() {
+        return Array.prototype.some.call(
+            document.querySelectorAll('[role="dialog"][aria-modal="true"]'),
+            teacherModalDialogIsVisible
+        );
+    }
+
+    function lockTeacherModalBackground() {
+        if (teacherModalScrollState) return;
+        var body = document.body;
+        var root = document.documentElement;
+        teacherModalScrollState = {
+            x: window.scrollX || 0,
+            y: window.scrollY || 0,
+            bodyPosition: body.style.position,
+            bodyTop: body.style.top,
+            bodyLeft: body.style.left,
+            bodyRight: body.style.right,
+            bodyWidth: body.style.width,
+            bodyOverflow: body.style.overflow,
+            rootOverflow: root.style.overflow,
+            rootOverscrollBehavior: root.style.overscrollBehavior
+        };
+        root.classList.add('teacher-modal-scroll-locked');
+        root.style.overflow = 'hidden';
+        root.style.overscrollBehavior = 'none';
+        body.style.position = 'fixed';
+        body.style.top = (-teacherModalScrollState.y) + 'px';
+        body.style.left = (-teacherModalScrollState.x) + 'px';
+        body.style.right = '0';
+        body.style.width = '100%';
+        body.style.overflow = 'hidden';
+    }
+
+    function unlockTeacherModalBackground(restorePosition) {
+        if (!teacherModalScrollState) return;
+        var stateToRestore = teacherModalScrollState;
+        var body = document.body;
+        var root = document.documentElement;
+        teacherModalScrollState = null;
+        root.classList.remove('teacher-modal-scroll-locked');
+        root.style.overflow = stateToRestore.rootOverflow;
+        root.style.overscrollBehavior = stateToRestore.rootOverscrollBehavior;
+        body.style.position = stateToRestore.bodyPosition;
+        body.style.top = stateToRestore.bodyTop;
+        body.style.left = stateToRestore.bodyLeft;
+        body.style.right = stateToRestore.bodyRight;
+        body.style.width = stateToRestore.bodyWidth;
+        body.style.overflow = stateToRestore.bodyOverflow;
+        if (restorePosition !== false) window.scrollTo(stateToRestore.x, stateToRestore.y);
+    }
+
+    function syncTeacherModalBackgroundLock() {
+        if (teacherHasOpenModal()) lockTeacherModalBackground();
+        else unlockTeacherModalBackground(true);
+    }
+
+    var teacherModalScrollObserver = new MutationObserver(syncTeacherModalBackgroundLock);
+    teacherModalScrollObserver.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['hidden', 'aria-hidden']
+    });
+    syncTeacherModalBackgroundLock();
+    window.addEventListener('pagehide', function() {
+        unlockTeacherModalBackground(false);
+    });
+    window.addEventListener('pageshow', function() {
+        syncTeacherModalBackgroundLock();
+    });
+
     var message = document.getElementById('teacher-message');
     var studentList = document.getElementById('student-list');
     var studentDetail = document.getElementById('student-detail');
@@ -795,6 +878,31 @@
         }
     }
 
+    function setPasswordResetSuccessModal(open, student, result) {
+        var panel = document.getElementById('password-reset-success-panel');
+        if (!panel) return;
+        if (open) {
+            var copy = document.getElementById('password-reset-success-copy');
+            if (copy) {
+                var loginId = student && student.student_id ? 'Login ID: ' + student.student_id : 'The student password has been reset.';
+                var passwordCopy = result && result.initial_password ? ' · Initial password: ' + result.initial_password : '';
+                copy.textContent = loginId + passwordCopy;
+            }
+        }
+        panel.hidden = open !== true;
+        if (open) {
+            window.setTimeout(function() {
+                var closeButton = document.getElementById('password-reset-success-close');
+                if (closeButton) closeButton.focus();
+            }, 0);
+        } else {
+            window.setTimeout(function() {
+                var resetButton = document.getElementById('reset-password');
+                if (resetButton) resetButton.focus();
+            }, 0);
+        }
+    }
+
     function setHeaderIconLoading(isLoading) {
         ['teacher-review-button', 'teacher-updates-button'].forEach(function(id) {
             var button = document.getElementById(id);
@@ -848,6 +956,36 @@
         return englishParts && englishParts.length
             ? englishParts[englishParts.length - 1]
             : textValue;
+    }
+
+    function matrixEnglishStudentName(value) {
+        var fullName = String(value || '').trim();
+        if (!fullName) return 'Student';
+        var englishParts = fullName.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        if (!englishParts || !englishParts.length) return fullName;
+        return englishParts[0];
+    }
+
+    function matrixStudentSurname(value) {
+        var fullName = String(value || '').trim();
+        if (!fullName) return 'S';
+        var chineseSurname = fullName.match(/[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/);
+        if (chineseSurname) return chineseSurname[0];
+        var englishParts = fullName.match(/[A-Za-z]+(?:['-][A-Za-z]+)*/g);
+        if (englishParts && englishParts.length > 1) return englishParts[englishParts.length - 1];
+        return englishParts && englishParts.length ? englishParts[0] : Array.from(fullName)[0];
+    }
+
+    function matrixStudentDisplayName(value, densityStep) {
+        if (densityStep === 0) return matrixStudentSurname(value);
+        if (densityStep === 1) return matrixEnglishStudentName(value);
+        return String(value || '').trim() || 'Student';
+    }
+
+    function matrixTextWidthCh(value) {
+        return Array.from(String(value || '')).reduce(function(width, character) {
+            return width + (/[^\x00-\xFF]/.test(character) ? 2 : 1);
+        }, 0);
     }
 
     function shanghaiHour() {
@@ -3491,8 +3629,8 @@
         var overlay = document.createElement('div');
         overlay.className = 'assignment-edit-overlay';
         overlay.innerHTML =
+            '<div class="assignment-edit-shell">' +
             '<section class="assignment-edit-dialog" role="dialog" aria-modal="true">' +
-                '<button class="dialog-close-button" type="button" aria-label="Close">x</button>' +
                 '<div class="assignment-edit-head">' +
                     '<p class="eyebrow accent">MANAGE ASSIGNMENTS</p>' +
                     '<h2>' + escapeHtml(group.title || 'Assignments') + '</h2>' +
@@ -3538,7 +3676,10 @@
                         'Cancel ' + escapeHtml(cancelableItems.length) + ' open' +
                     '</button>' +
                 '</div>' +
-            '</section>';
+            '</section>' +
+            '<button class="progress-matrix-modal-close assignment-edit-external-close" type="button" ' +
+                'data-assignment-edit-close aria-label="Close assignment parameters">Close</button>' +
+            '</div>';
         document.body.appendChild(overlay);
 
         function close() {
@@ -3556,7 +3697,7 @@
             });
         }
 
-        overlay.querySelector('.dialog-close-button').addEventListener('click', close);
+        overlay.querySelector('[data-assignment-edit-close]').addEventListener('click', close);
         overlay.querySelector('[data-cancel-edit]').addEventListener('click', close);
         overlay.querySelectorAll('[data-percent-picker]').forEach(function(trigger) {
             trigger.addEventListener('click', function() {
@@ -4304,10 +4445,9 @@
                     '<div class="progress-matrix-modal-scroll">' +
                         renderMatrixCellDetail(item) +
                     '</div>' +
-                    '<div class="matrix-modal-actions">' +
-                        '<button class="progress-matrix-modal-close" type="button" data-matrix-close="button" aria-label="Close">Close</button>' +
-                    '</div>' +
                 '</section>' +
+                '<button class="progress-matrix-modal-close matrix-cell-external-close" type="button" ' +
+                    'data-matrix-close="button" aria-label="Close assignment details">Close</button>' +
             '</div>' +
         '</div>';
     }
@@ -4707,21 +4847,26 @@
             .sort(function(a, b) { return a.name.localeCompare(b.name); });
         var students = allStudents;
         if (!sets.length || !students.length) return '';
-        var selectedItem = null;
-        var maxStudentNameLength = students.reduce(function(max, student) {
-            return Math.max(max, String(student.name || 'Student').length);
-        }, 7);
-        var studentColCh = Math.max(7, Math.min(18, maxStudentNameLength + 2));
         var densityStep = resolvedMatrixDensityStep();
+        var studentHeaderLabel = '';
+        var dueHeaderLabel = densityStep <= 1 ? 'Due' : 'DUE AT';
+        students.forEach(function(student) {
+            student.displayName = matrixStudentDisplayName(student.name, densityStep);
+        });
+        var selectedItem = null;
+        var maxStudentNameWidth = students.reduce(function(max, student) {
+            return Math.max(max, matrixTextWidthCh(student.displayName));
+        }, Math.max(matrixTextWidthCh(studentHeaderLabel), matrixTextWidthCh(dueHeaderLabel)));
+        var studentColCh = Math.max(densityStep === 0 ? 3 : 5, Math.min(20, maxStudentNameWidth + 2));
         var taskColumnWidth = MATRIX_DENSITY_TASK_WIDTHS[densityStep];
         var matrixStyle = '--matrix-cols:' + sets.length +
             ';--matrix-student-col:' + studentColCh + 'ch' +
             ';--matrix-task-col:' + taskColumnWidth + 'px' +
             ';--matrix-min:calc(var(--matrix-student-col) + ' + (sets.length * taskColumnWidth) + 'px)' +
-            ';--matrix-student-col-fit:clamp(62px, 16vw, 68px)' +
+            ';--matrix-student-col-fit:var(--matrix-student-col)' +
             ';--matrix-fit-min:calc(var(--matrix-student-col-fit) + ' + (sets.length * MATRIX_DENSITY_TASK_WIDTHS[0]) + 'px)';
         var header = '<div class="progress-matrix-row progress-matrix-head" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span class="progress-matrix-student-cell">Student</span>' +
+            '<span class="progress-matrix-student-cell" aria-label="Students"></span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var compactId = compactMatrixSetId(set.set_id || set.id);
@@ -4744,7 +4889,13 @@
             }).join('') +
         '</div>';
         var dueRow = '<div class="progress-matrix-row progress-matrix-due-row" style="' + escapeHtml(matrixStyle) + '">' +
-            '<span class="progress-matrix-student-cell">DUE AT</span>' +
+            '<span class="progress-matrix-student-cell" title="Editable assignment parameters" aria-label="Due at parameters">' +
+                '<span class="matrix-due-parameter-label">' +
+                    '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+                        '<path d="M3 6h14M3 14h14"></path><circle cx="8" cy="6" r="2"></circle><circle cx="13" cy="14" r="2"></circle>' +
+                    '</svg><span>' + escapeHtml(dueHeaderLabel) + '</span>' +
+                '</span>' +
+            '</span>' +
             sets.map(function(set) {
                 var title = set.title || set.id || 'Task';
                 var dueLabel = set.week_label || '—';
@@ -4754,7 +4905,7 @@
                     (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
                         '" title="Edit class parameters for ' + escapeHtml(title) +
                         '" aria-label="Edit class parameters for ' + escapeHtml(title) + ', due ' + escapeHtml(dueLabel) + '"' : '') + '>' +
-                    escapeHtml(dueLabel) + '</' + tag + '>';
+                    '<span class="matrix-due-parameter-pill">' + escapeHtml(dueLabel) + '</span></' + tag + '>';
             }).join('') +
         '</div>';
         var rows = students.map(function(student) {
@@ -4763,7 +4914,7 @@
                     (student.key === state.selectedMatrixStudentKey ? ' selected' : '') +
                     '" type="button" data-matrix-student="' + escapeHtml(student.key) + '" title="' +
                     escapeHtml(student.name) + '" aria-label="Open progress for ' + escapeHtml(student.name) + '">' +
-                    '<strong>' + escapeHtml(student.name) + '</strong></button>' +
+                    '<strong>' + escapeHtml(student.displayName) + '</strong></button>' +
                 sets.map(function(set) {
                     var item = student.items[set.id];
                     if (!item) return '<span class="progress-matrix-cell empty">-</span>';
@@ -5070,8 +5221,10 @@
         document.getElementById('reset-password').addEventListener('click', function() {
             if (!confirm('Reset the password for ' + student.student_id + '?')) return;
             teacherCall('resetStudentPassword', { auth_uid: student.auth_uid }).then(function(result) {
-                showMessage('Password reset. Initial password: ' + result.initial_password, 'success');
-                return refreshStudents();
+                showMessage('', '');
+                return refreshStudents().then(function() {
+                    setPasswordResetSuccessModal(true, student, result);
+                });
             }).catch(function(error) {
                 showMessage(error.message, 'error');
             });
@@ -6331,6 +6484,11 @@
             setAssignSuccessModal(false);
             return;
         }
+        var passwordResetSuccessPanel = document.getElementById('password-reset-success-panel');
+        if (passwordResetSuccessPanel && !passwordResetSuccessPanel.hidden && event.target === passwordResetSuccessPanel) {
+            setPasswordResetSuccessModal(false);
+            return;
+        }
         var studentLookupPanel = document.getElementById('student-lookup-panel');
         if (studentLookupPanel && !studentLookupPanel.hidden && event.target === studentLookupPanel) {
             setStudentLookupPanel(false);
@@ -6397,6 +6555,11 @@
                 setAssignSuccessModal(false);
                 return;
             }
+            var passwordResetSuccessPanel = document.getElementById('password-reset-success-panel');
+            if (passwordResetSuccessPanel && !passwordResetSuccessPanel.hidden) {
+                setPasswordResetSuccessModal(false);
+                return;
+            }
             if (state.updatesOpen && state.notificationAttemptId) {
                 state.notificationAttemptId = '';
                 state.targetMatrixAttemptId = '';
@@ -6457,6 +6620,12 @@
     if (assignSuccessClose) {
         assignSuccessClose.addEventListener('click', function() {
             setAssignSuccessModal(false);
+        });
+    }
+    var passwordResetSuccessClose = document.getElementById('password-reset-success-close');
+    if (passwordResetSuccessClose) {
+        passwordResetSuccessClose.addEventListener('click', function() {
+            setPasswordResetSuccessModal(false);
         });
     }
     studentForm.addEventListener('submit', function(event) {

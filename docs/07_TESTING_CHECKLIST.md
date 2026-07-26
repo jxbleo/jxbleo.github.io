@@ -82,6 +82,12 @@ Shared shell visual checks:
   scrolling and two-finger pinch zoom continue to work
 - My Words, assignment/notification, account, login, and teacher management
   dialogs remain top-layer, readable, closable surfaces
+- opening any independent Teacher modal from Notifications, Argue, Student
+  lookup/cards, assignment tools, practice entry, or success feedback freezes
+  the background for mouse wheel, trackpad, and touch gestures while its own
+  scroll container remains usable
+- stacked Teacher modals remain background-locked until the last modal closes;
+  closing it restores the exact pre-modal document position without a jump
 - verify reduced transparency, increased contrast, and reduced motion media
   preferences keep text and focus states legible
 
@@ -290,7 +296,9 @@ Check:
   dialog with the Login ID after creation
 - editing a student's Name saves the corrected display name without changing
   Login ID, auth UID, assignments, or attempts
-- reset password enables auth user and sets `must_change_password`
+- reset password enables the auth user, sets `must_change_password`, and then
+  opens the compact checkmark confirmation with the Login ID and initial
+  password; Done, backdrop, and Escape close it and restore reset-button focus
 - deleting a student account removes the CloudBase Auth end user, hides the
   student from Students, Assign candidates, View progress, activity attempts,
   and Argue lists, while preserving historical attempts/assignments in storage
@@ -466,12 +474,13 @@ Check:
   reads `DUE AT`, and every assigned task cell contains its zero-padded Wxx
   due-week grouping label; legacy missing `due_at` records use their derived
   fallback only until migration. Week numbering starts
-  at the first Monday of the relevant year. The DUE AT first cell matches the
-  colorful Student/task header surface and the Student cell's left text edge,
-  while all row cells have equal height, continuous borders, and exact column
-  alignment. Verify this at phone portrait width (below 760px) as well as phone
-  landscape/desktop width; rotating the device must not shift the DUE AT first
-  cell or the Wxx column boundaries
+  at the first Monday of the relevant year. The top-left matrix header is
+  visually empty. The DUE AT row uses a lavender-grey parameter surface, a
+  sliders icon, and purple-outline Wxx capsules rather than passed-state green;
+  hover/focus/press makes editable Wxx cells more prominent. All row cells keep
+  equal height, continuous borders, and exact column alignment. Verify this at
+  phone portrait width (below 760px) as well as phone landscape/desktop width;
+  rotating the device must not shift the DUE AT first cell or Wxx boundaries
 - At a 390px portrait viewport, clear the saved matrix-density preference and
   verify the default `Fit` state shows all columns for six or seven visible
   tasks without horizontal matrix scrolling. Compact headers stack the stable
@@ -484,6 +493,12 @@ Check:
   overview. Reload preserves an explicit choice on that device; with no saved
   choice, crossing the 760px breakpoint switches between phone Fit and desktop
   comfortable sizing
+- Verify the sticky student column follows the same density changes: comfortable
+  levels show full names and size to the longest visible one, the tightest
+  non-Fit level shows an extracted English name when available, and Fit shows
+  the Chinese surname or English-only final name. Short names must result in a
+  genuinely narrower first column, while hover text, accessible labels, and the
+  student-detail action continue to use the full saved name
 - At phone width, the Class, Column, and Date filters share one equal-width row
   and do not create their own horizontal scroller. Changing any filter keeps
   the density controls working and recalculates Fit for the resulting column
@@ -493,7 +508,9 @@ Check:
   for every
   assignment in that visible column; a class/individual filter limits the IDs
   to that scope, and saving due/pass/mastery/Earn STAR updates all represented
-  students without changing assignments hidden by the filter
+  students without changing assignments hidden by the filter. Confirm its old
+  top-right close icon is absent and the standalone `Close` capsule sits outside
+  and directly below the editor card on phone and desktop widths
 - View matrix renders repeated assignments of the same set as separate columns,
   including repeated assignments in the same week
 - View matrix includes every student matching the current filters, including
@@ -503,7 +520,8 @@ Check:
   labels, Mon-Sun squares, completion-density/STAR states, and selected day or
   week detail match the student Dashboard and include completed self-study
 - Clicking a matrix cell opens the independent page-level detail modal instead
-  of rendering the detail inline under the matrix
+  of rendering the detail inline under the matrix; its `Close` capsule is
+  centered outside and directly below the scrollable detail card
 - Opening a teacher notification attempt for the first time shows the full
   attempt-detail dialog height; closing and reopening should not be required
   to get the normal modal size

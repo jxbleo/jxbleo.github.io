@@ -7,6 +7,8 @@
 
 ### Added
 
+- Added a compact assignment-style success confirmation after a teacher resets
+  a student password, including the Login ID and configured initial password.
 - Added a student-only Progress calendar in the Dashboard's right-side utility
   group. The
   Monday-first monthly view combines finished assignments and self-study STAR
@@ -21,6 +23,21 @@
 
 ### Changed
 
+- Unified background scroll locking across every independent Teacher modal,
+  including Notifications, Argue, Student lookup/details, assignment tools,
+  entry confirmations, and success dialogs. Nested modals retain the lock until
+  the final layer closes and then restore the prior document position.
+- Refined the Teacher View matrix student column so it sizes to the names
+  actually shown at each `−` / `Fit` / `+` density. Wider levels retain the
+  full name, the tightest non-Fit level uses the English name when available,
+  and Fit uses the Chinese or English surname while preserving the full name
+  for tooltips, accessibility, and student-detail actions.
+- Moved the Teacher matrix assignment-parameter and task-detail `Close`
+  controls into standalone capsules below their dialog cards, removing the
+  parameter editor's top-right close icon while retaining its form actions.
+- Removed the visible `Student` label from the matrix's top-left header and
+  restyled the DUE AT row as a lavender-grey parameter band with a sliders icon
+  and outlined Wxx controls, reserving green for passed student task cells.
 - Removed the cat logo from the Student Dashboard header so the standalone
   far-left To Do List control uses less horizontal space. The Teacher header
   logo is unchanged.
