@@ -190,7 +190,10 @@ task row. Those edits affect future submissions and display standards, but do
 not automatically regrade historical attempts or downgrade completed
 assignments and protected STAR records. When `mastery_enabled` is false, future
 submissions can pass but cannot automatically move that assignment to
-`mastered` or create a new STAR.
+`mastered` or create a new STAR. In that disabled state, `mastery_percentage`
+is inactive: it is not required by the View editor and does not constrain a
+new `passing_percentage`. Re-enabling Earn STAR requires an explicit usable
+mastery percentage at or above Passing %.
 The matrix task-header bulk editor does not introduce a shared mutable class
 standard record. It resolves the visible column to explicit `assignment_id`
 values and updates those assignment documents individually, preserving the

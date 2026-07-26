@@ -86,7 +86,9 @@ Navigation:
   destination; closing the confirmation restores the calendar and row focus.
 - The To Do List modal places Teacher Replies in its top-right corner as a plain
   speech-bubble SVG with three quiet dots and no embedded checkmark. Its badge
-  counts unread replies; closing reply history restores the same To Do List.
+  counts unread replies. Teacher Replies has no close icon or bottom Close
+  action; a top-left `Back` control marks current replies seen and restores the
+  same Assignments modal and bubble focus.
 - My Words opens in an independent modal from a notebook icon in the right-side
   utility group; closing and reopening restores the modal's previous
   internal scroll position
@@ -96,13 +98,16 @@ Assignment access and progress display:
 
 - both `TO DO` and completed assignments are reachable from the far-left
   `To Do List` button; there is no lower Assignments page entry
-- `Overdue`, `This Week`, or the replacement `Upcoming` section in the hero
-  exposes its concrete tasks in place by default. Rows reuse the To Do List
-  category/title/score/chevron contract and the same practice-entry
-  confirmation. The section header contains only its label and an inline
-  progress bar; no right-side count or empty-state sentence is rendered. The
-  `This Week` list orders unfinished rows before finished rows.
-- the default modal is titled `To Do List`. Its assignment card is approximately
+- the hero always shows three compact summary rows: `Overdue`, `This Week`, and
+  `Upcoming`. Each uses completed assignments divided by all assignments in
+  that due-date group for both the filled track and an explicit numeric percent
+  label. The complete row is a keyboard/click target that opens a focused
+  Assignments modal containing only that group's task list. Task rows no longer
+  expand directly inside the hero; focused lists place unfinished work before
+  finished work.
+- the default modal opened from `To Do List` is titled `ASSIGNMENTS`, centered
+  at the top in small purple accent type. The title has no translucent
+  rectangular header plate behind it. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
   sits directly below the card. The former three top summary capsules are not
@@ -326,13 +331,16 @@ Student account menu:
 
 - opens from the top-right identity chip.
 - shows profile/account information, password change, and logout.
+- has no top-right close icon; one centered external `Close` capsule sits
+  immediately below the Personal Center card and restores focus to the identity
+  chip.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
 - assignment reminders and finished work share the To Do List dialog.
 - Teacher Replies uses a separate plain speech-bubble SVG button at the
   top-right of the To Do List dialog.
   Its modal lists all resolved replies newest-first, including previously read
-  history. Opening the modal marks unseen items read when it closes, clearing
+  history. Its top-left `Back` marks unseen items read when returning, clearing
   the bubble badge without removing history.
 
 ## 4. Teacher Interface
@@ -578,6 +586,13 @@ It should include:
   percentage, mastery percentage, and Earn STAR for the complete scope. This
   parameter editor has no top-right close icon; its `Close` control is a
   standalone capsule centered outside and immediately below the dialog card.
+  Its form contains exactly three direct rows: Due week, Passing %, and
+  Mastery %. There are no per-field change checkboxes or explanatory footer
+  paragraph. Due week uses a select; both percentages open the draggable
+  scroll-wheel picker. The only checkbox is `Earn STAR` beside Mastery %;
+  unchecked disables that picker. The footer contains a red `Cancel open
+  assignments` button and `Save changes`. The red action opens a second
+  confirmation modal with Keep/Cancel choices before calling the backend.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. At phone width they divide the available row into three equal tracks
@@ -674,6 +689,9 @@ It should include:
   new week while keeping same-batch/same-week records together. Cancelled assignments
   are hidden from teacher View progress and from the student's To Do without
   deleting attempts or completed history.
+- task-column editing resolves every assignment in the visible filtered column;
+  student-detail editing resolves one student's assignment only. When Earn STAR
+  is off, Mastery % is disabled and does not constrain Passing %.
 - student selection and student detail panels
 - student account management actions such as class/system edit, password reset,
   deleting a student account, and account creation. Deleting a student account

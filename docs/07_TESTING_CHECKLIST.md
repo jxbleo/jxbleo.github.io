@@ -104,20 +104,19 @@ Practice navigation checks:
 - at desktop width the Dashboard greeting and weekly progress rows share one
   surface in two columns; below 900px they stack without page-level horizontal
   overflow or nested glass cards
-- the loading state shows one quiet `THIS WEEK` label and inline skeleton track; after load,
-  `OVERDUE` appears first only when a real `to_do` assignment is past required
-  `due_at`, while `THIS WEEK` reflects assignments due in the current
-  China-standard-time week and excludes self-study STAR records
+- the loading state shows one quiet `THIS WEEK` label and inline skeleton track;
+  after load, `OVERDUE`, `THIS WEEK`, and `UPCOMING` always appear in that
+  order. Each track and visible percent label equals finished assignments divided
+  by total assignments in that due-date group and excludes self-study STAR records
 - while current-week work is unfinished, future assignments remain visible in
   the To Do List's Upcoming section but do not contribute to its red badge
-- when current-week work is all finished—or there is no current-week work—a
-  next-week assignment replaces `THIS WEEK` with the blue `UPCOMING` row; with
-  no next-week work the existing All done/empty state remains
-- completing the final overdue item removes the red row
-- `OVERDUE`, `THIS WEEK`, and replacement `UPCOMING` expose their concrete task
-  rows immediately, using the same category/title/score/chevron layout as To Do
-  List; activating a task opens the standard entry confirmation
-- each progress bar is inline to the right of its section label; no right-side
+- completing assignments updates the matching fill and numeric percentage
+  without replacing or hiding any of the three summary rows
+- clicking or keyboard-activating `OVERDUE`, `THIS WEEK`, or `UPCOMING` opens a
+  focused Assignments modal containing only that due-date group's task rows;
+  tasks are not expanded directly in the hero, and task activation still opens
+  the standard entry confirmation
+- each progress bar and numeric percentage are inline to the right of its section label; no right-side
   count or empty-state copy such as `6 of 6 open` or `No assignments this week`
   remains, and an empty week renders no fake task row
 - reduced motion shows final progress values without the reveal animation, and
@@ -171,12 +170,16 @@ Check:
 - profile loads
 - opening `Change password` from the account panel shows the password dialog
   above the account panel
+- opening Personal Center from the identity chip shows no top-right `×`; its
+  only `Close` capsule is centered outside directly below the card and returns
+  focus to the identity chip
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
-  utility controls and opens a modal titled `To Do List` with `TO DO` and
-  finished assignment messages and no Teacher Replies section. Its shorter,
+  utility controls and opens a modal titled `ASSIGNMENTS` in small centered
+  purple type, with no translucent rectangular plate behind the title. It shows
+  To Do and finished assignment messages and no Teacher Replies section. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
@@ -184,9 +187,9 @@ Check:
   capsules above its sections; its first section reads `THIS WEEK`, and its
   bottom `FINISHED` section is initially closed, expands from its full 44px
   disclosure header, and remains keyboard operable
-- the hero's Overdue, This Week, or replacement Upcoming section shows its task
-  rows without an intermediate modal; This Week has no To Do/Finished
-  subheadings and places every unfinished task before every finished task
+- the hero shows all three Overdue, This Week, and Upcoming completion summaries
+  without inline task rows; activating one opens its focused task-list modal,
+  with unfinished work before finished work
 - every untouched assignment has a red `TO DO` pill aligned with the finished
   score position. A failed submission stays in `TO DO` and replaces that label
   with its red best-percentage pill; only `passed` / `mastered` assignments move
@@ -207,10 +210,10 @@ Check:
   even when the history is empty; all resolved replies appear newest-first,
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
-- opening and closing Teacher Replies marks its currently unseen items read,
-  clears the bubble badge without changing the To Do List badge, and keeps each
-  `Go to question` link working; closing reply history restores the same To Do
-  List and returns focus to its bubble button
+- Teacher Replies has no top-right close icon or bottom Close/Done action. Its
+  top-left `Back` marks currently unseen items read, clears the bubble badge
+  without changing the To Do List badge, restores the same Assignments modal
+  and bubble focus, and keeps each `Go to question` link working
 - the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
 - the calendar icon remains in the right-side utility group and opens a
@@ -393,8 +396,8 @@ Check:
 - `npm run test:assignment-schedule` verifies required due-week enforcement,
   Sunday normalization, backward-compatible `assigned_at` alias handling, and
   dry-run/apply legacy backfill behavior; it also exercises the exact Dashboard
-  model so Upcoming stays out of the red count and replaces This Week only when
-  the current week is empty or complete
+  model so Upcoming stays out of the red count while all three homepage progress
+  summaries remain visible
 - Open the Assign Work and Student pickers before and after the Assign page has
   become taller than the viewport; both dialogs must remain centered in the
   current viewport with an internally scrolling list and no blank page area
@@ -511,6 +514,18 @@ Check:
   students without changing assignments hidden by the filter. Confirm its old
   top-right close icon is absent and the standalone `Close` capsule sits outside
   and directly below the editor card on phone and desktop widths
+- the parameter editor has exactly three rows and no explanatory footer or
+  per-field change checkboxes: Due week selects directly, Passing % and Mastery
+  % use the draggable scroll wheel, and only Earn STAR has a checkbox
+- with Earn STAR off, Mastery % is visibly disabled and may be lower than a new
+  Passing % without blocking save; turning Earn STAR on requires Mastery % at
+  or above Passing %
+- the footer's red Cancel open assignments button opens a second confirmation
+  modal; Keep assignments, backdrop, or Escape return safely to the editor,
+  while the destructive confirmation affects only currently open assignment IDs
+- opening Edit from one student's assignment detail submits only that student's
+  assignment ID, while a task-column Wxx edit submits every visible filtered
+  student assignment in that column
 - View matrix renders repeated assignments of the same set as separate columns,
   including repeated assignments in the same week
 - View matrix includes every student matching the current filters, including

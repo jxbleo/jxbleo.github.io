@@ -140,8 +140,30 @@
     width: 100%;
     min-width: 0;
     padding: 8px 0;
+    border: 0;
+    border-radius: 12px;
     color: #1b252b;
     background: transparent;
+    font: inherit;
+    text-align: left;
+}
+
+.liquid-glass-dashboard button.weekly-progress-row {
+    cursor: pointer;
+    transition: background 150ms ease, transform 100ms ease;
+}
+
+.liquid-glass-dashboard button.weekly-progress-row:hover {
+    background: rgba(255,255,255,0.34);
+}
+
+.liquid-glass-dashboard button.weekly-progress-row:active {
+    transform: scale(0.992);
+}
+
+.liquid-glass-dashboard button.weekly-progress-row:focus-visible {
+    outline: 3px solid rgba(77, 91, 169, 0.2);
+    outline-offset: 3px;
 }
 
 .liquid-glass-dashboard .weekly-progress-heading {
@@ -185,7 +207,21 @@
     animation: weeklyProgressReveal 380ms cubic-bezier(.22, .72, .28, 1) both;
 }
 
+.liquid-glass-dashboard .weekly-progress-percent {
+    flex: 0 0 3.4em;
+    color: #187969;
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 860;
+    line-height: 1;
+    text-align: right;
+}
+
 .liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-label {
+    color: #b84755;
+}
+
+.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-percent {
     color: #b84755;
 }
 
@@ -198,6 +234,10 @@
 }
 
 .liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-label {
+    color: #376f9f;
+}
+
+.liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-percent {
     color: #376f9f;
 }
 

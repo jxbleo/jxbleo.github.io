@@ -359,6 +359,11 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.04));
 }
 
+.liquid-glass-dashboard .student-message-dialog-head {
+    border: 0;
+    background: transparent;
+}
+
 .liquid-glass-shell :is(.create-student-close, .modal-close, .progress-matrix-modal-close) {
     border-color: rgba(255, 255, 255, 0.58);
     color: rgba(27, 37, 43, 0.68);

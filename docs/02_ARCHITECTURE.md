@@ -253,7 +253,11 @@ linked attempts as a display fallback when an assignment summary is stale.
    compatibility mirror; `created_at` is the creation audit timestamp.
    The View matrix task header builds this explicit ID list from the currently
    filtered column, so one save can update every matching student in the
-   selected class/scope without affecting hidden classes.
+   selected class/scope without affecting hidden classes; a student-detail edit
+   sends only that student's assignment ID. The UI submits Due week and Passing
+   % directly on every save. Mastery % is submitted only when `mastery_enabled`
+   is true, and server validation applies `passing <= mastery` only in that
+   enabled state.
 7. Open assignments can be soft-cancelled through `teacherAdmin`; cancellation
    sets `status: "cancelled"` with audit fields, hides the item from the
    student dashboard, and prevents old assignment links from recording new

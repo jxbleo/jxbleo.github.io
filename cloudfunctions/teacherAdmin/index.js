@@ -1012,7 +1012,7 @@ async function updateAssignments(event, teacher) {
     const masteryEnabled = canUpdateMasteryEnabled
       ? safeBoolean(event.mastery_enabled, assignmentMasteryEnabled(assignment))
       : assignmentMasteryEnabled(assignment);
-    if (passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
+    if (masteryEnabled && passing > mastery) throw new Error("PASSING_ABOVE_MASTERY");
 
     const update = { updated_at: now };
     if (canUpdateDue) {
