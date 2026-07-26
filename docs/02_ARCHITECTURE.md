@@ -122,7 +122,11 @@ Active or relevant functions:
 - `getCurrentStudent`: authenticated profile lookup
 - `getResources`: visible set catalog for authenticated surfaces
 - `getDashboard`: student assignments, history, latest attempt lookup, all
-  resolved teacher replies plus their read state, reveal, STAR fallback
+  resolved teacher replies plus their read state, reveal, STAR fallback, and
+  newest-first assignment/self-study STAR provenance views for Personal Center. Its
+  independent student collections are read concurrently, and visible `sets`
+  metadata is fetched in bounded `set_id` batches rather than one query per
+  historical task so large student histories remain inside the function limit.
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
   progress, disputes, answer-key access
@@ -161,6 +165,12 @@ Main collections:
 - `vocabulary_test_sessions`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
+
+`student_set_achievements` remains the permanent, protected source of STAR
+provenance. Personal Center reads a redacted view through `getDashboard` rather
+than querying the collection directly. A future reward wallet must be a
+separate append-only transaction boundary that references achievements; reward
+redemption must not mutate achievement history.
 
 The student Dashboard renders teacher replies as a dedicated inbox opened from
 the speech-bubble control in the To Do List modal header. `getDashboard`

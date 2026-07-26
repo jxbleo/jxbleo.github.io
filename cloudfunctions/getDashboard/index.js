@@ -2,7 +2,9 @@ const cloudbase = require("@cloudbase/node-sdk");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
+const _ = db.command;
 const READ_PAGE_LIMIT = 500;
+const SET_LOOKUP_CHUNK_SIZE = 100;
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
 
@@ -42,6 +44,23 @@ async function getAll(collection, options = {}) {
     offset += pageSize;
   }
   return output;
+}
+
+async function getVisibleSetsByIds(setIds) {
+  const ids = [...new Set((setIds || []).filter(Boolean))];
+  if (!ids.length) return [];
+  const chunks = [];
+  for (let index = 0; index < ids.length; index += SET_LOOKUP_CHUNK_SIZE) {
+    chunks.push(ids.slice(index, index + SET_LOOKUP_CHUNK_SIZE));
+  }
+  const pages = await Promise.all(chunks.map((chunk) => getAll("sets", {
+    where: {
+      set_id: _.in(chunk),
+      visible: true,
+    },
+    pageSize: SET_LOOKUP_CHUNK_SIZE,
+  })));
+  return pages.flat();
 }
 
 function effectivePercentage(attempt) {
@@ -563,6 +582,32 @@ function splitStarCounts(achievements) {
   };
 }
 
+function starAchievementView(achievement, set, attempt) {
+  const assignmentId = achievement.assignment_id || null;
+  const earnedAt = achievement.first_earned_at
+    || achievement.claimed_at
+    || achievement.created_at
+    || null;
+  const percentage = achievement.best_percentage == null
+    ? (attempt ? effectivePercentage(attempt) : null)
+    : Number(achievement.best_percentage);
+  return {
+    achievement_id: achievement.achievement_id || achievement._id,
+    star_type: assignmentId ? "assignment" : "self_study",
+    source: achievement.source || (assignmentId ? "assignment_claim" : "self_study"),
+    set_id: achievement.set_id,
+    assignment_id: assignmentId,
+    earned_at: earnedAt,
+    best_percentage: percentage,
+    best_attempt_id: achievement.best_attempt_id || null,
+    set: set || {
+      set_id: achievement.set_id,
+      title: achievement.set_id,
+      link: "#",
+    },
+  };
+}
+
 async function protectAssignmentStar(student, assignment, bestAttemptId, bestPercentage, earnedAt) {
   const assignmentId = assignment.assignment_id || assignment._id;
   if (!assignmentId) return null;
@@ -699,7 +744,7 @@ async function claimStar(student, event) {
   if (assignment.status !== "mastered") throw new Error("ASSIGNMENT_NOT_MASTERED");
 
   const now = new Date();
-  await protectAssignmentStar(
+  const protectedStar = await protectAssignmentStar(
     student,
     assignment,
     assignment.best_attempt_id || assignment.latest_attempt_id || null,
@@ -709,7 +754,11 @@ async function claimStar(student, event) {
   const achievements = await getAll("student_set_achievements", { where: {
     student_uid: student.auth_uid,
   } });
-  return { success: true, ...splitStarCounts(achievements) };
+  return {
+    success: true,
+    star_achievement: protectedStar ? starAchievementView(protectedStar, null, null) : null,
+    ...splitStarCounts(achievements),
+  };
 }
 
 async function getAttemptForRetry(student, event) {
@@ -773,23 +822,18 @@ exports.main = async (event = {}) => {
     if (action === "getLatestAttemptForSet") return await getLatestAttemptForSet(student, event);
     if (action === "claimStar") return await claimStar(student, event);
 
-    const assignments = (await getAll("assignments", {
-      where: { student_uid: student.auth_uid },
-    })).sort((left, right) =>
+    const [assignmentRows, attempts, disputeRows, achievements] = await Promise.all([
+      getAll("assignments", { where: { student_uid: student.auth_uid } }),
+      getAll("attempts", { where: { student_uid: student.auth_uid } }),
+      getAll("answer_disputes", { where: { student_uid: student.auth_uid } }),
+      getAll("student_set_achievements", { where: { student_uid: student.auth_uid } }),
+    ]);
+    const assignments = assignmentRows.sort((left, right) =>
       dateValue(effectiveAssignmentDueAt(right)) - dateValue(effectiveAssignmentDueAt(left))
     );
-    const attempts = await getAll("attempts", {
-      where: { student_uid: student.auth_uid },
-    });
     const progressAttempts = attempts.filter(countsTowardStudentProgress);
     const setMap = new Map();
-    const disputeRows = await getAll("answer_disputes", { where: {
-      student_uid: student.auth_uid,
-    } });
     const teacherReplyItems = resolvedTeacherReplyItems(disputeRows, student);
-    const achievements = await getAll("student_set_achievements", { where: {
-      student_uid: student.auth_uid,
-    } });
     const starBuckets = normalizedStarBuckets(achievements);
     const claimedAssignmentIds = new Set(starBuckets.assignmentStars
       .map((item) => item.assignment_id)
@@ -804,13 +848,8 @@ exports.main = async (event = {}) => {
         .filter(Boolean)
     )];
 
-    for (const setId of setIds) {
-      const setResult = await db.collection("sets").where({
-        set_id: setId,
-        visible: true,
-      }).limit(1).get();
-      if (setResult.data && setResult.data[0]) setMap.set(setId, setResult.data[0]);
-    }
+    const visibleSets = await getVisibleSetsByIds(setIds);
+    visibleSets.forEach((set) => setMap.set(set.set_id, set));
 
     const assignmentStarSetIds = new Set(starBuckets.assignmentStars
       .map((item) => item.set_id)
@@ -1002,10 +1041,23 @@ exports.main = async (event = {}) => {
         },
       };
     });
+    const finalStarBuckets = normalizedStarBuckets(achievements);
+    const attemptMap = new Map(attempts
+      .filter((attempt) => attempt && attempt.attempt_id)
+      .map((attempt) => [attempt.attempt_id, attempt]));
+    const starAchievements = finalStarBuckets.assignmentStars
+      .concat(finalStarBuckets.selfStudyStars)
+      .map((achievement) => starAchievementView(
+        achievement,
+        setMap.get(achievement.set_id),
+        attemptMap.get(achievement.best_attempt_id) || null
+      ))
+      .sort((left, right) => dateValue(right.earned_at) - dateValue(left.earned_at));
 
     return {
       success: true,
       assignments: assignmentViews.concat(selfStudyViews),
+      star_achievements: starAchievements,
       teacher_replies: teacherReplyItems.map((item) => disputeReplyView(item, setMap.get(item.set_id))),
       ...splitStarCounts(achievements),
     };

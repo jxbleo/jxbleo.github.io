@@ -98,6 +98,11 @@ Navigation:
 
 Assignment access and progress display:
 
+- if the authenticated Dashboard aggregate fails, replace the assignment
+  loading state with an explicit `Unable to load the dashboard` card and
+  `Retry` button, show `UNAVAILABLE` in weekly progress, and temporarily disable
+  the To Do List and Calendar controls. A backend failure must never render the
+  normal no-assignments empty state.
 - both `TO DO` and completed assignments are reachable from the far-left
   `To Do List` button; there is no lower Assignments page entry
 - the hero always shows three compact summary rows: `Overdue`, `This Week`, and
@@ -263,7 +268,12 @@ Frontend rule:
   focus to the selected assignment row; `Enter` closes both layers and navigates.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
-  as the blue counter beside it.
+  as the blue counter beside it. Both counters are keyboard-accessible buttons.
+  Activating one replaces the account summary inside the same card with a
+  newest-first STAR history for that color. Each compact row shows task type,
+  title, earned date, and best score and opens the linked best historical
+  attempt. The circular Back control returns to the summary and restores focus
+  to the originating counter; the external Close behavior remains unchanged.
 - The student account panel should be quiet: no separate achievement card, no
   large account action buttons. Stars sit on the same row as the student's
   display name, not in a separate `Stars` field. Student ID, Class, System, and

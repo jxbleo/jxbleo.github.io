@@ -149,6 +149,9 @@ Function runtime expectation:
 - root and function-level lockfiles pin the SDK and bundler versions, so a
   package rebuild cannot silently pick a newer dependency tree.
 - development environment unless owner approves otherwise
+- `getDashboard` execution timeout must be at least 10 seconds; 15 seconds is
+  recommended. The batched implementation should normally finish well below
+  that limit, while the higher ceiling protects cold starts and large histories.
 
 `teacherAdmin` additionally requires the environment variable:
 
@@ -158,6 +161,38 @@ INITIAL_STUDENT_PASSWORD=<configured in CloudBase only>
 
 Never write this value into Git, frontend code, docs, screenshots, or command
 logs.
+
+### Dashboard Large-History Fix
+
+The large-history fix requires both tracks below:
+
+1. Publish the versioned `dashboard.html` / `assets/js/dashboard.js` static
+   files so request failures show Retry instead of a false empty state.
+2. Rebuild and deploy `deploy-packages/getDashboard.zip`, then set the CloudBase
+   function execution timeout to at least 10 seconds (15 recommended).
+
+No database migration or content import is required. After deployment, sign in
+with a student that has at least 40 distinct historical sets and reload several
+times. In CloudBase logs, every `getDashboard` invocation should succeed; a
+`433` row whose detail says `Invoking task timed out` means either the old
+function is still deployed or the timeout configuration was not updated.
+
+### Personal Center STAR History
+
+The STAR-source list requires both the versioned Dashboard static files and the
+rebuilt `getDashboard` function:
+
+```bash
+npm run package:functions -- getDashboard
+MRCAT_GET_DASHBOARD_DIR="$(mktemp -d /private/tmp/mrcat-getDashboard.XXXXXX)"
+unzip -q deploy-packages/getDashboard.zip -d "$MRCAT_GET_DASHBOARD_DIR"
+(cd "$MRCAT_GET_DASHBOARD_DIR" && tcb -e mrcat-dev-d9gwy2v1icdfdf597 -r ap-shanghai fn code update getDashboard --deployMode zip)
+```
+
+The second command changes the development CloudBase environment and remains
+owner-gated. No collection, data migration, or content import is required.
+After deployment, verify one student with both STAR colors and confirm each
+list item opens that student's linked historical attempt.
 
 ### Assignment Due-Week Backfill
 
