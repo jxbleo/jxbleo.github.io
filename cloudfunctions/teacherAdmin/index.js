@@ -967,6 +967,14 @@ async function createAssignments(event) {
   return { success: true, created, skipped };
 }
 
+async function getAssignmentByStableId(assignmentId) {
+  const stableId = text(assignmentId);
+  if (!stableId) return null;
+  const assignment = await getOne("assignments", { assignment_id: stableId });
+  if (assignment) return assignment;
+  return await getOne("assignments", { _id: stableId });
+}
+
 async function updateAssignments(event, teacher) {
   const assignmentIds = Array.isArray(event.assignment_ids)
     ? [...new Set(event.assignment_ids.map(text).filter(Boolean))]
@@ -985,7 +993,7 @@ async function updateAssignments(event, teacher) {
   const now = new Date();
   const assignments = [];
   for (const assignmentId of assignmentIds) {
-    const assignment = await getOne("assignments", { assignment_id: assignmentId });
+    const assignment = await getAssignmentByStableId(assignmentId);
     if (assignment) assignments.push(recordData(assignment));
   }
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
@@ -1056,7 +1064,7 @@ async function cancelAssignments(event, teacher) {
   const reason = text(event.reason).slice(0, 500);
   const assignments = [];
   for (const assignmentId of assignmentIds) {
-    const assignment = await getOne("assignments", { assignment_id: assignmentId });
+    const assignment = await getAssignmentByStableId(assignmentId);
     if (assignment) assignments.push(recordData(assignment));
   }
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));

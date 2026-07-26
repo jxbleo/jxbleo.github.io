@@ -36,6 +36,7 @@
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |
 | BBC History 分数已按 Argue 修正但题目仍显示黄色/错误 | 历史渲染时旧的 `wrong`、blank lock、MC lock class 覆盖了服务器返回的 adjusted correct 状态 | 发布最新版静态 `bbc.html`；查 `markHistoryReview` 是否先清理相反状态再加 `correct/wrong` |
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
+| 教师矩阵单格 Edit 或 Wxx 批量无法打开编辑器，或保存后参数不变并提示更新 0 条 | 动态矩阵/独立 modal root 中的按钮失去原容器监听；或旧 assignment 的 stable ID 是文档 `_id`，旧后端却只按 `assignment_id` 字段查询 | 发布使用 delegated edit handler 的静态 `teacher.js`，并部署兼容 stable ID 的最新版 `teacherAdmin`；无需迁移 assignments |
 | 已通过作业后来低分后状态异常 | assignment 状态没有单调保护 | `submitAttempt.statusForPercentage` 和 assignment update |
 | 学生重复点击提交后 attempts 有多条但 assignment summary 不准 | 旧版 `submitAttempt` 用旧 assignment 快照递增更新 | 部署最新版 `submitAttempt`，它会从 linked attempts 重算 summary |
 | Argue 批准后历史匹配答案没有补分或 STAR 没出现 | 批量向上重算没有扫描到同 set/question/submitted answer，或改判流程没有调用 STAR 保护逻辑 | `teacherAdmin.applyAcceptedAnswerToHistoricalAttempts`、`teacherAdmin.improveAttemptForAcceptedAnswer` |

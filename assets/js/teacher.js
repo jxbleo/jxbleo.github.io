@@ -3760,8 +3760,18 @@
             submit.disabled = true;
             submit.textContent = 'Saving...';
             teacherCall('updateAssignments', payload).then(function(result) {
+                var updated = (result.updated || []).length;
+                var missing = (result.missing || []).length;
                 var skipped = (result.skipped || []).length;
-                showMessage((result.updated || []).length + ' assignment(s) updated' + (skipped ? '; ' + skipped + ' skipped.' : '.'), 'success');
+                if (!updated) {
+                    throw new Error(missing
+                        ? 'The selected assignment records could not be found. Refresh Teacher View and try again.'
+                        : 'No assignment parameters were updated.');
+                }
+                showMessage(updated + ' assignment(s) updated' +
+                    (missing ? '; ' + missing + ' missing' : '') +
+                    (skipped ? '; ' + skipped + ' skipped' : '') + '.',
+                    missing || skipped ? 'error' : 'success');
                 close();
                 return refreshAssignmentViews();
             }).catch(function(error) {
@@ -5180,13 +5190,6 @@
                 restoreMatrixScroll(scrollSnapshot);
             });
         });
-        container.querySelectorAll('[data-edit-assignment-scope]').forEach(function(button) {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                openAssignmentEditDialog(button.dataset.editAssignmentScope);
-            });
-        });
         container.querySelectorAll('[data-assign-progress]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.assignProgress;
@@ -6528,6 +6531,13 @@
     });
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
+        var assignmentEditButton = event.target.closest('[data-edit-assignment-scope]');
+        if (assignmentEditButton) {
+            event.preventDefault();
+            event.stopPropagation();
+            openAssignmentEditDialog(assignmentEditButton.dataset.editAssignmentScope);
+            return;
+        }
         var createPanel = document.getElementById('create-student-panel');
         if (createPanel && !createPanel.hidden && event.target === createPanel) {
             setCreateStudentModal(false, true);
