@@ -233,6 +233,13 @@ function dashboardScheduleHooks() {
   return window.__scheduleTestHooks;
 }
 
+function testTeacherAssignmentEditDelegation() {
+  const teacherPath = path.resolve(__dirname, "../assets/js/teacher.js");
+  const source = fs.readFileSync(teacherPath, "utf8");
+  assert(source.includes("event.target.closest('[data-edit-assignment-scope]')"));
+  assert(!source.includes("container.querySelectorAll('[data-edit-assignment-scope]')"));
+}
+
 function testStudentCalendarModel() {
   const hooks = dashboardScheduleHooks();
   const now = new Date();
@@ -460,6 +467,7 @@ function testAccountStarHistoryModel() {
 }
 
 async function main() {
+  testTeacherAssignmentEditDelegation();
   testDashboardScheduleModel();
   testStudentCalendarModel();
   testAccountStarHistoryModel();
@@ -514,6 +522,44 @@ async function main() {
   assert.equal(disabledMasteryUpdate.success, true);
   assert.equal(created.passing_percentage, 95);
   assert.equal(created.mastery_enabled, false);
+
+  const legacyDocumentIdAssignment = {
+    _id: "legacy-document-id-only",
+    student_uid: "student-uid",
+    set_id: "TEST-SET",
+    status: "to_do",
+    due_at: new Date("2026-07-19T15:59:59.000Z"),
+    assigned_at: new Date("2026-07-19T15:59:59.000Z"),
+    passing_percentage: 50,
+    mastery_percentage: 90,
+    mastery_enabled: false,
+    created_at: new Date("2026-07-13T10:00:00.000Z"),
+  };
+  collections.assignments.push(legacyDocumentIdAssignment);
+  const legacyStableIdUpdate = await call("updateAssignments", {
+    assignment_ids: [legacyDocumentIdAssignment._id],
+    due_at: "2026-07-27T00:00:00+08:00",
+    passing_percentage: 72,
+    mastery_enabled: false,
+  });
+  assert.equal(legacyStableIdUpdate.success, true);
+  assert.equal(legacyStableIdUpdate.updated.length, 1);
+  assert.equal(legacyStableIdUpdate.missing.length, 0);
+  assert.equal(legacyDocumentIdAssignment.due_at.toISOString(), "2026-08-02T15:59:59.000Z");
+  assert.equal(legacyDocumentIdAssignment.passing_percentage, 72);
+
+  const mixedStableIdBatchUpdate = await call("updateAssignments", {
+    assignment_ids: [created.assignment_id, legacyDocumentIdAssignment._id],
+    due_at: "2026-08-03T00:00:00+08:00",
+    passing_percentage: 75,
+    mastery_enabled: false,
+  });
+  assert.equal(mixedStableIdBatchUpdate.success, true);
+  assert.equal(mixedStableIdBatchUpdate.updated.length, 2);
+  assert.equal(created.passing_percentage, 75);
+  assert.equal(legacyDocumentIdAssignment.passing_percentage, 75);
+  assert.equal(created.due_at.toISOString(), "2026-08-09T15:59:59.000Z");
+  assert.equal(legacyDocumentIdAssignment.due_at.toISOString(), "2026-08-09T15:59:59.000Z");
 
   console.error = () => {};
   const invalidEnabledMasteryUpdate = await call("updateAssignments", {

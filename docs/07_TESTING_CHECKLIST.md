@@ -617,6 +617,14 @@ Check:
   records; due week changes `due_at` and moves them to
   the chosen Wxx matrix group/filter without changing attempts; moving one
   record from a shared batch splits only that record into the new week column
+- an assignment whose frontend stable ID is its document `_id` (legacy records
+  without `assignment_id`) updates successfully from a task-cell Edit, and a
+  mixed batch containing canonical IDs plus `_id` fallbacks updates every row
+- when an edit resolves zero records, the editor stays open and reports a
+  refresh/retry error instead of closing with `0 assignment(s) updated`
+- after matrix re-rendering and after a task-detail modal is moved into the
+  shared modal root, its Edit button and the visible Wxx parameter button each
+  still open exactly one assignment editor
 - Argue list loads and groups disputes
 - Argue list does not show student disputes linked to cancelled assignments
 - cancelling open selected assignments in View hides them from teacher View

@@ -194,6 +194,22 @@ owner-gated. No collection, data migration, or content import is required.
 After deployment, verify one student with both STAR colors and confirm each
 list item opens that student's linked historical attempt.
 
+### Teacher Matrix Assignment-Parameter Compatibility Fix
+
+Matrix cell Edit and Wxx batch editing require the versioned `teacher.html` /
+`assets/js/teacher.js` static files and a rebuilt `teacherAdmin` function. The
+backend now accepts either the canonical `assignment_id` or the document `_id`
+used as the stable ID by legacy assignment records. No database migration is
+required.
+
+```bash
+npm run package:functions -- teacherAdmin
+```
+
+Upload `deploy-packages/teacherAdmin.zip` to the development `teacherAdmin`
+function, preserving its existing Node.js 18 runtime, timeout settings, and
+CloudBase-only environment variables.
+
 ### Assignment Due-Week Backfill
 
 The required Due-week rollout needs updated `teacherAdmin`, `getDashboard`,
