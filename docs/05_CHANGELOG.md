@@ -7,6 +7,9 @@
 
 ### Fixed
 
+- Fixed iPad Safari occasionally placing calendar date numbers near the top of
+  their square on first modal open. Date buttons now reset native appearance
+  and use explicit two-axis Flex centering with a stable line height.
 - Fixed the Teacher View matrix retaining a desktop density preference on
   phones, which shortened the displayed student name without reliably
   compacting the sticky name column. Phone loads now start in automatic Fit,
@@ -54,6 +57,11 @@
 
 ### Changed
 
+- Moved the student Teacher Replies bubble from the To Do List dialog to the
+  main header immediately beside the To Do List button. Removed the default
+  dialog's `ASSIGNMENTS` heading and made centered This Week, Upcoming, and
+  Finished disclosures all expandable and initially open, with sequential
+  sticky headers that replace one another as the dialog scrolls.
 - Matched the student My Words modal's outer width, height, centered screen
   position, mobile breakpoint sizing, and external Close spacing to the
   Calendar modal while retaining independent internal list scrolling.

@@ -137,6 +137,7 @@
     var wordsAddStatus = document.getElementById('my-words-manual-status');
     var messageButton = document.getElementById('student-message-button');
     var messageCount = document.getElementById('student-message-count');
+    var repliesButton = document.getElementById('student-replies-button');
     var studentCalendarTitleObserver = null;
     var weeklyFocusTitleObserver = null;
     var studentMessageScrollLock = null;
@@ -1313,21 +1314,6 @@
         return todoAssignments().length;
     }
 
-    function teacherRepliesBubbleSvg() {
-        return '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">' +
-            '<path d="M21 11.5c0 4.4-4 8-9 8-1.4 0-2.8-.3-4-.8l-5 1.8 1.8-4.1A7.4 7.4 0 0 1 3 11.5c0-4.4 4-8 9-8s9 3.6 9 8Z"></path>' +
-            '<path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"></path>' +
-        '</svg>';
-    }
-
-    function studentMessageRepliesControl(scope) {
-        if (scope) return '<span class="student-message-title-spacer" aria-hidden="true"></span>';
-        return '<button class="icon-pill-button student-replies-button student-message-replies-button" id="student-message-replies-button" type="button" aria-label="Teacher replies" aria-expanded="false">' +
-            teacherRepliesBubbleSvg() +
-            '<span class="notice-dot danger" hidden>0</span>' +
-        '</button>';
-    }
-
     function syncTeacherRepliesButton(button) {
         if (!button) return;
         var unreadReplies = teacherReplyUnreadTotal();
@@ -1360,7 +1346,7 @@
                 : 'To Do List');
             messageButton.setAttribute('aria-expanded', 'false');
         }
-        syncTeacherRepliesButton(document.getElementById('student-message-replies-button'));
+        syncTeacherRepliesButton(repliesButton);
     }
 
     function setTeacherRepliesSeen(seenIds) {
@@ -1496,6 +1482,36 @@
         '</section>';
     }
 
+    function renderDefaultStudentMessageSections(todos, upcoming, finished) {
+        return renderStudentMessageSection(
+            'This Week',
+            null,
+            todos.map(function(item) {
+                return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
+            }).join(''),
+            'No unfinished assignments.',
+            'todo',
+            true,
+            true
+        ) + renderStudentMessageSection(
+            'Upcoming',
+            null,
+            upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
+            'No upcoming assignments.',
+            'upcoming',
+            true,
+            true
+        ) + renderStudentMessageSection(
+            'Finished',
+            null,
+            finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+            'Finished assignments will appear here.',
+            'finished',
+            true,
+            true
+        );
+    }
+
     function setupStudentMessageTitleTracks(overlay) {
         var windows = Array.prototype.slice.call(overlay.querySelectorAll('.student-message-title-window'));
         var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1572,46 +1588,20 @@
             }
         } else {
             summaryHtml = '';
-            sectionsHtml =
-                renderStudentMessageSection(
-                    'This Week',
-                    null,
-                    todos.map(function(item) {
-                        return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
-                    }).join(''),
-                    'No unfinished assignments.',
-                    'todo',
-                    true,
-                    true
-                ) +
-                (upcoming.length ? renderStudentMessageSection(
-                    'Upcoming',
-                    upcoming.length,
-                    upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
-                    '',
-                    'upcoming'
-                ) : '') +
-                renderStudentMessageSection(
-                    'Finished',
-                    null,
-                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
-                    'Finished assignments will appear here.',
-                    'finished',
-                    true
-                );
+            sectionsHtml = renderDefaultStudentMessageSections(todos, upcoming, finished);
         }
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay student-message-overlay';
         overlay.innerHTML =
-            '<div class="student-message-shell" role="dialog" aria-modal="true" aria-labelledby="student-message-title">' +
+            '<div class="student-message-shell" role="dialog" aria-modal="true"' +
+                (scope ? ' aria-labelledby="student-message-title"' : ' aria-label="Assignments"') + '>' +
                 '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + '">' +
-                    '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
+                    (scope ? '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
                         '<div class="student-message-dialog-title-row">' +
                             '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
-                            studentMessageRepliesControl(scope) +
                         '</div>' +
                         (summaryHtml ? '<div class="student-message-summary">' + summaryHtml + '</div>' : '') +
-                    '</div>' +
+                    '</div>' : '') +
                     '<div class="student-message-sections">' +
                         sectionsHtml +
                     '</div>' +
@@ -1619,8 +1609,6 @@
                 '<button class="student-message-close" id="student-message-close" type="button" aria-label="Close To Do List">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
-        var messageRepliesButton = overlay.querySelector('#student-message-replies-button');
-        syncTeacherRepliesButton(messageRepliesButton);
         lockStudentMessageBackground();
         var messageTitleObserver = setupStudentMessageTitleTracks(overlay);
         if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
@@ -1660,16 +1648,6 @@
             if (event.target === overlay) close(true);
         });
         overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
-        if (messageRepliesButton) {
-            messageRepliesButton.addEventListener('click', function() {
-                suspend();
-                openTeacherRepliesDialog(undefined, {
-                    opener: messageRepliesButton,
-                    manageScrollLock: false,
-                    onClose: function() { resume(messageRepliesButton); }
-                });
-            });
-        }
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
             function openTask(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
@@ -1693,7 +1671,7 @@
         options = options || {};
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
         var unreadCount = replies.filter(function(reply) { return reply.student_seen !== true; }).length;
-        var opener = options.opener || document.getElementById('student-message-replies-button');
+        var opener = options.opener || repliesButton;
         var manageScrollLock = options.manageScrollLock !== false;
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay';
@@ -1701,7 +1679,7 @@
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
                 '<div class="teacher-replies-dialog-head">' +
                     '<div class="teacher-replies-title-row">' +
-                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back to Assignments">' +
+                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back">' +
                             '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m11.5 4.5-5 5.5 5 5.5"></path></svg>' +
                             '<span>Back</span>' +
                         '</button>' +
@@ -1735,6 +1713,7 @@
             }
             return seenPromise.then(function() {
                 if (typeof options.onClose === 'function') options.onClose();
+                else if (opener && opener.isConnected) opener.focus();
             });
         }
 
@@ -1907,7 +1886,7 @@
                 var item = assignments.find(function(candidate) {
                     return replyKeyForItem(candidate) === key;
                 });
-                openTeacherRepliesDialog(item && item.teacher_replies || []);
+                openTeacherRepliesDialog(item && item.teacher_replies || [], { opener: button });
             });
         });
 
@@ -3176,6 +3155,11 @@
     if (messageButton) {
         messageButton.addEventListener('click', function() {
             openStudentMessageCenter();
+        });
+    }
+    if (repliesButton) {
+        repliesButton.addEventListener('click', function() {
+            openTeacherRepliesDialog(undefined, { opener: repliesButton });
         });
     }
     if (calendarButton) {

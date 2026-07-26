@@ -187,7 +187,6 @@ function dashboardScheduleHooks() {
       upcomingAssignments: upcomingAssignments,
       finishedAssignments: finishedAssignments,
       studentMessageTotal: studentMessageTotal,
-      studentMessageRepliesControl: studentMessageRepliesControl,
       weeklyFocusModel: weeklyFocusModel,
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
       studentCalendarModel: studentCalendarModel,
@@ -195,6 +194,7 @@ function dashboardScheduleHooks() {
       renderStudentCalendarTask: renderStudentCalendarTask,
       renderStudentMessageTask: renderStudentMessageTask,
       renderStudentMessageSection: renderStudentMessageSection,
+      renderDefaultStudentMessageSections: renderDefaultStudentMessageSections,
       renderStudentMessageFlatList: renderStudentMessageFlatList,
       accountStarItems: accountStarItems,
       accountStarHistoryRow: accountStarHistoryRow,
@@ -327,6 +327,18 @@ function testStudentCalendarModel() {
   assert(thisWeekSection.startsWith('<details class="student-message-section is-collapsible todo" open>'));
   assert(!thisWeekSection.includes('student-message-section-count'));
 
+  const defaultSections = hooks.renderDefaultStudentMessageSections(
+    [{ assignment_id: "current", status: "to_do" }],
+    [],
+    [{ assignment_id: "finished", status: "passed", best_percentage: 90 }]
+  );
+  assert.equal((defaultSections.match(/<details /g) || []).length, 3);
+  assert.equal((defaultSections.match(/ open>/g) || []).length, 3);
+  assert(defaultSections.indexOf("This Week") < defaultSections.indexOf("Upcoming"));
+  assert(defaultSections.indexOf("Upcoming") < defaultSections.indexOf("Finished"));
+  assert(defaultSections.includes("No upcoming assignments."));
+  assert(!defaultSections.includes("student-message-section-count"));
+
   const calendarTask = hooks.renderStudentCalendarTask({
     assignment_id: "calendar-task",
     status: "passed",
@@ -366,6 +378,12 @@ function testStudentModalShellMarkup() {
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
   assert(dashboardHtml.includes('class="student-account-dialog"'));
   assert(dashboardHtml.includes('id="student-account-close"'));
+  assert(dashboardHtml.includes('id="student-replies-button"'));
+  assert(dashboardHtml.indexOf('id="student-message-button"') < dashboardHtml.indexOf('id="student-replies-button"'));
+  assert(appCss.includes("position: sticky;\n    top: 0;\n    z-index: 3;"));
+  assert(appCss.includes(".student-calendar-day {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;"));
+  assert(appCss.includes("-webkit-appearance: none;\n    appearance: none;"));
+  assert(appCss.includes("font-weight: 820;\n    line-height: 1;"));
   assert(appCss.includes(".student-words-stack,\n.student-calendar-stack"));
   assert(appCss.includes("width: min(720px, 100%);\n    height: min(720px, 86vh);"));
   assert(appCss.includes(".student-words-stack,\n    .student-calendar-stack"));
@@ -406,10 +424,6 @@ function testDashboardScheduleModel() {
   hooks.state.session = { mode: "student" };
   hooks.state.teacherReplies = [];
   hooks.state.assignments = [overdue, current, upcoming];
-
-  assert(hooks.studentMessageRepliesControl("").includes('id="student-message-replies-button"'));
-  assert(!hooks.studentMessageRepliesControl("week").includes("student-message-replies-button"));
-  assert(!hooks.studentMessageRepliesControl("upcoming").includes("student-message-replies-button"));
 
   assert.equal(hooks.todoAssignments().length, 2);
   assert.equal(hooks.todoAssignments()[0].assignment_id, "overdue");
