@@ -275,9 +275,10 @@ Check:
   of a placeholder card from the previously selected capsule
 - scrolling the My Words modal, closing it, and reopening it restores the prior
   internal scroll position
-- My Words remains vertically centered and compact on desktop and phone; the
-  card plus its external `Close` capsule stays within roughly 74%/72% of the
-  viewport rather than filling the screen
+- Open My Words and Calendar in turn at desktop, tablet, and 390px phone widths.
+  Their card plus external `Close` capsule must occupy the exact same centered
+  screen rectangle at each breakpoint; long word lists and calendar details
+  scroll inside that shared-size shell without moving it
 - top-right Search and Add use matching green circular icon controls; Search
   expands below the header, Add exposes only one Enter-to-save word field, and
   Escape closes an open tool before it closes the modal

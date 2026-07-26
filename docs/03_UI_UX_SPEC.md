@@ -309,10 +309,10 @@ Student cards should show:
 
 My Words:
 
-- opens as a compact, vertically centered independent modal from the notebook
-  icon beside the bell. The dialog plus its external `Close` capsule is capped
-  at about 74% of the desktop viewport and 72% of the mobile viewport, so it
-  never becomes a full-screen phone sheet.
+- opens as a vertically centered independent modal from the notebook icon
+  beside the calendar. Its outer stack uses exactly the same width, height,
+  viewport position, responsive breakpoints, and external `Close` spacing as
+  the Calendar modal; only the content and internal scrolling differ.
 - places matching green circular Search and Add icon buttons in the top-right.
   Search expands in place below the header. Add expands one word/short-phrase
   field only; Enter saves it, with no optional context field or visible Add

@@ -54,6 +54,9 @@
 
 ### Changed
 
+- Matched the student My Words modal's outer width, height, centered screen
+  position, mobile breakpoint sizing, and external Close spacing to the
+  Calendar modal while retaining independent internal list scrolling.
 - Centered the checkmark inside the empty Upcoming calendar icon instead of
   positioning it in the calendar's lower-right corner.
 - Standardized untouched student assignment rows on a red `0%` score instead of
