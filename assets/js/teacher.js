@@ -3510,9 +3510,17 @@
         });
     }
 
+    function assignmentStableId(item) {
+        if (!item) return '';
+        if (item.assignment_id) return String(item.assignment_id);
+        if (item._id) return String(item._id);
+        var progressId = String(item.progress_id || '');
+        return progressId.indexOf('assigned::') === 0 ? progressId.slice('assigned::'.length) : '';
+    }
+
     function editableAssignments(items) {
         return (items || []).filter(function(item) {
-            return item.source !== 'self_study' && item.assignment_id && normalizedAssignmentStatus(item.status) !== 'cancelled';
+            return item.source !== 'self_study' && assignmentStableId(item) && normalizedAssignmentStatus(item.status) !== 'cancelled';
         });
     }
 
@@ -3739,7 +3747,7 @@
             event.preventDefault();
             var form = event.currentTarget;
             var payload = {
-                assignment_ids: items.map(function(item) { return item.assignment_id; }),
+                assignment_ids: items.map(assignmentStableId),
                 mastery_enabled: form.elements.mastery_enabled.checked
             };
             if (!form.elements.due_week.value) {
@@ -3850,7 +3858,7 @@
                 confirmButton.disabled = true;
                 confirmButton.textContent = 'Cancelling...';
                 teacherCall('cancelAssignments', {
-                    assignment_ids: cancelableItems.map(function(item) { return item.assignment_id; })
+                    assignment_ids: cancelableItems.map(assignmentStableId)
                 }).then(function(result) {
                     var cancelled = (result.cancelled || []).length;
                     var skipped = (result.skipped || []).length;
@@ -4473,7 +4481,7 @@
         var title = item.set_title || setTitleFor(item.set_id) || item.set_id || 'Set';
         var status = normalizedAssignmentStatus(item.status);
         var editButton = '';
-        if (item.source !== 'self_study' && item.assignment_id && status !== 'cancelled') {
+        if (item.source !== 'self_study' && assignmentStableId(item) && status !== 'cancelled') {
             editButton = '<button class="matrix-edit-pill" type="button" data-edit-assignment-scope="' +
                 escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '">Edit</button>';
         }

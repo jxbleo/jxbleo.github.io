@@ -14,11 +14,13 @@
   phone/desktop history restoration no longer crosses viewport modes.
 - Fixed Teacher View assignment-parameter editing for legacy assignment records
   that have no explicit `assignment_id`. Matrix cell Edit and Wxx column edits
-  now resolve both canonical `assignment_id` values and database document `_id`
-  fallbacks. The editor no longer closes with a false success when the backend
-  updates zero records. Edit activation now uses one delegated handler so both
-  Wxx cells and task-detail modals remain operable after matrix re-rendering or
-  relocation into the shared modal root.
+  now resolve canonical `assignment_id` values, database document `_id`
+  fallbacks, and cached `assigned::<id>` progress keys consistently in the
+  eligibility check, editor scope, update payload, and cancellation payload.
+  The editor no longer closes with a false success when the backend updates zero
+  records. Edit activation uses one delegated handler so both Wxx cells and
+  task-detail modals remain operable after matrix re-rendering or relocation
+  into the shared modal root.
 - Fixed student Dashboard histories intermittently appearing empty when
   `getDashboard` exceeded its former three-second CloudBase execution window.
   The function now reads the student's assignments, attempts, achievements,
