@@ -704,6 +704,9 @@ Student dashboard navigation:
 - The lower main navigation exposes only `Library`.
 - Assignments and finished work live in the standalone far-left `To Do List`
   checklist button, visually separated from the right-side utility controls.
+- The Student Dashboard header does not render a cat logo; the far-left To Do
+  List button stands alone so the header keeps maximum usable space. This does
+  not change the Teacher header's existing brand mark.
 - The default `To Do List` modal has no top summary capsules. Its first
   open-work section is labelled `This Week`; the final `Finished` section is a
   closed disclosure by default and expands only when selected.

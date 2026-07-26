@@ -8,16 +8,8 @@
 
 /* Student workspace ------------------------------------------------------ */
 
-.liquid-glass-dashboard .workspace-cat-logo {
-    --workspace-logo-size: 38px;
-}
-
 .liquid-glass-teacher .workspace-cat-logo {
     --workspace-logo-size: 40px;
-}
-
-.liquid-glass-dashboard .workspace-cat-logo,
-.liquid-glass-teacher .workspace-cat-logo {
     display: grid;
     flex: 0 0 var(--workspace-logo-size);
     width: var(--workspace-logo-size);
@@ -26,7 +18,6 @@
     place-items: center;
 }
 
-.liquid-glass-dashboard .workspace-cat-logo img,
 .liquid-glass-teacher .workspace-cat-logo img {
     display: block;
     width: 100%;
@@ -791,7 +782,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .liquid-glass-dashboard .workspace-cat-logo img,
     .liquid-glass-teacher .workspace-cat-logo img,
     .liquid-glass-dashboard .student-greeting-line.is-overflowing #student-greeting-primary {
         animation: none !important;

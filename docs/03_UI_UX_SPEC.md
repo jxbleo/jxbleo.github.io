@@ -113,14 +113,11 @@ Assignment access and progress display:
   and shows the best failed percentage after an unsuccessful submission.
   Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
   `FINISHED`, where the score pill remains green.
-- the student header uses the solid black full-body leaping-cat mark at the far
-  left instead of the former line-art cat or `Mr. Cat Academy` text. It has no
-  enclosing circular badge, matches the `38px` footprint of the adjacent
-  circular utility buttons, keeps an
-  accessible brand label, and uses only a restrained occasional readying motion
-  that stops under reduced-motion preferences. The header glass capsule shares
-  the exact left and right edges of the workspace card below it. The welcome
-  pane has no `STUDENT WORKSPACE` label. Its smaller China-time-aware English
+- the student header omits the cat logo so it does not consume horizontal
+  space. The far-left To Do List control stands alone opposite the right-side
+  utilities. The header glass capsule shares the exact left and right edges of
+  the workspace card below it. The welcome pane has no `STUDENT WORKSPACE`
+  label. Its smaller China-time-aware English
   greeting remains on one line; only genuine overflow receives a slow,
   reversible horizontal reveal, while reduced motion uses a static ellipsis.
   One randomized motivational sentence remains below it.

@@ -86,6 +86,7 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 用老师给的 Login ID 和密码登录
 - 第一次或重置后修改密码
 - 从页面最左侧、与右侧工具按钮分开的清单图标打开 `To Do List`，查看待完成和已完成练习
+- 学生首页头部不显示猫 Logo，左上角只保留清单入口，避免占用横向空间
 - `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；首栏命名为
   `THIS WEEK`，底部 `FINISHED` 默认收起，学生点击后才展开
 - 首页大卡片的 `OVERDUE`、`THIS WEEK` 或替代显示的 `UPCOMING` 默认直接

@@ -21,6 +21,9 @@
 
 ### Changed
 
+- Removed the cat logo from the Student Dashboard header so the standalone
+  far-left To Do List control uses less horizontal space. The Teacher header
+  logo is unchanged.
 - Replaced the student assignment bell with a checklist-style `To Do List`
   button at the far left of the Dashboard header, separated from the right-side
   utilities. Renamed the default assignment modal accordingly, moved Teacher
