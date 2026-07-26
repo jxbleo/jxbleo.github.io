@@ -1513,7 +1513,7 @@
         var todos = state.session && state.session.mode === 'student' ? todoAssignments() : [];
         var upcoming = state.session && state.session.mode === 'student' ? upcomingAssignments() : [];
         var finished = state.session && state.session.mode === 'student' ? finishedAssignments() : [];
-        var dialogTitle = 'To Do List';
+        var dialogTitle = 'Assignments';
         var summaryHtml = '';
         var sectionsHtml = '';
 
@@ -1522,10 +1522,12 @@
             if (scope === 'overdue') {
                 dialogTitle = 'Overdue';
                 todos = focusModel.overdue;
-                finished = [];
+                finished = focusModel.overdueFinished;
                 summaryHtml = '';
                 sectionsHtml = renderStudentMessageFlatList(
-                    todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                    focusModel.overdueAll.map(function(item) {
+                        return renderStudentMessageTask(item, isFinishedStatus(item.status) ? 'finished' : 'todo');
+                    }).join(''),
                     'No overdue assignments.'
                 );
             } else if (scope === 'week') {
@@ -1683,9 +1685,11 @@
         overlay.className = 'teacher-replies-overlay';
         overlay.innerHTML =
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
-                '<button class="dialog-close-button" type="button" aria-label="Close teacher replies">×</button>' +
                 '<div class="teacher-replies-dialog-head">' +
-                    '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+                    '<div class="teacher-replies-title-row">' +
+                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back to Assignments">Back</button>' +
+                        '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+                    '</div>' +
                     '<p>' + (replies.length
                         ? replies.length + ' repl' + (replies.length === 1 ? 'y' : 'ies') + ' in your history' + (unreadCount ? ' · ' + unreadCount + ' new' : '')
                         : 'Your teacher replies will appear here.') + '</p>' +
@@ -1693,9 +1697,6 @@
                 '<div class="teacher-replies-list">' + (replies.length
                     ? replies.map(renderTeacherReplyItem).join('')
                     : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
-                '<div class="dialog-actions">' +
-                    '<button class="primary-button" id="teacher-replies-done" type="button">Close</button>' +
-                '</div>' +
             '</div>';
         document.body.appendChild(overlay);
         if (manageScrollLock) lockStudentMessageBackground();
@@ -1727,8 +1728,9 @@
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close(true);
         });
-        overlay.querySelector('.dialog-close-button').addEventListener('click', function() { close(true); });
-        overlay.querySelector('#teacher-replies-done').addEventListener('click', function() { close(true); });
+        var backButton = overlay.querySelector('#teacher-replies-back');
+        backButton.addEventListener('click', function() { close(true); });
+        window.setTimeout(function() { backButton.focus(); }, 0);
         overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
             link.addEventListener('click', function(event) {
                 var href = link.getAttribute('href');
@@ -1758,12 +1760,20 @@
         var open = assignments.filter(function(item) {
             return normalizedStatus(item.status) === 'to_do' && !isUpcomingAssignment(item);
         });
-        var overdue = open.filter(function(item) {
+        var overdueAll = assignments.filter(function(item) {
             var dueDate = assignmentDueDate(item);
             if (!dueDate) return false;
             return !isNaN(dueDate.getTime()) && dueDate.getTime() < now.getTime();
         }).sort(function(left, right) {
-            return assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
+            var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
+            var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
+            return leftFinished - rightFinished || assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
+        });
+        var overdue = overdueAll.filter(function(item) {
+            return normalizedStatus(item.status) === 'to_do';
+        });
+        var overdueFinished = overdueAll.filter(function(item) {
+            return isFinishedStatus(item.status);
         });
         var thisWeek = assignments.filter(function(item) {
             var parts = assignmentDueParts(item);
@@ -1782,7 +1792,9 @@
 
         return {
             open: open,
+            overdueAll: overdueAll,
             overdue: overdue,
+            overdueFinished: overdueFinished,
             thisWeek: thisWeek,
             weekFinished: weekFinished,
             nextWeek: nextWeekAssignments,
@@ -1792,30 +1804,30 @@
 
     function renderWeeklyProgressRow(options) {
         var value = Math.max(0, Math.min(100, Number(options.percent || 0)));
-        var items = Array.isArray(options.items) ? options.items : [];
-        var taskType = options.taskType || 'todo';
-        var tasks = items.map(function(item) {
-            var type = taskType === 'week'
-                ? (isFinishedStatus(item.status) ? 'finished' : 'todo')
-                : taskType;
-            return renderStudentMessageTask(item, type);
-        }).join('');
-        return '<section class="weekly-progress-row ' + escapeHtml(options.kind || '') + '"' +
+        var scope = String(options.scope || '');
+        var tag = scope ? 'button' : 'section';
+        return '<' + tag + ' class="weekly-progress-row ' + escapeHtml(options.kind || '') + '"' +
+            (scope ? ' type="button" data-weekly-focus-scope="' + escapeHtml(scope) + '"' : '') +
             ' aria-label="' + escapeHtml(options.ariaLabel || options.label || '') + '">' +
                 '<div class="weekly-progress-heading">' +
                     '<span class="weekly-progress-label">' + escapeHtml(options.label || '') + '</span>' +
                     '<span class="weekly-progress-track" role="progressbar" aria-label="' + escapeHtml(options.progressLabel || options.label || '') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(value) + '">' +
                     '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
                     '</span>' +
+                    '<span class="weekly-progress-percent" aria-hidden="true">' + escapeHtml(value) + '%</span>' +
                 '</div>' +
-                (tasks ? '<div class="student-message-list weekly-progress-list">' + tasks + '</div>' : '') +
-            '</section>';
+            '</' + tag + '>';
     }
 
     function setWeeklyFocusHtml(html) {
         if (weeklyFocusTitleObserver) weeklyFocusTitleObserver.disconnect();
         weeklyFocusProgress.innerHTML = html;
         weeklyFocusTitleObserver = setupStudentMessageTitleTracks(weeklyFocusProgress);
+        weeklyFocusProgress.querySelectorAll('[data-weekly-focus-scope]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                openStudentMessageCenter(button.dataset.weeklyFocusScope || '');
+            });
+        });
     }
 
     function renderWeeklyFocusProgress() {
@@ -1837,59 +1849,44 @@
 
         var model = weeklyFocusModel();
         var html = '';
-        if (model.overdue.length) {
-            var overduePercent = model.open.length
-                ? Math.round((model.overdue.length / model.open.length) * 100)
-                : 0;
-            html += renderWeeklyProgressRow({
-                kind: 'overdue',
-                label: 'OVERDUE',
-                ariaLabel: 'Overdue assignments. ' + model.overdue.length + ' of ' + model.open.length + ' open assignments are overdue.',
-                progressLabel: 'Overdue share of open assignments',
-                percent: overduePercent,
-                items: model.overdue,
-                taskType: 'todo'
-            });
-        }
-
+        var overdueTotal = model.overdueAll.length;
+        var overdueFinished = model.overdueFinished.length;
+        var overduePercent = overdueTotal ? Math.round((overdueFinished / overdueTotal) * 100) : 0;
+        html += renderWeeklyProgressRow({
+            kind: 'overdue' + (!overdueTotal ? ' is-empty' : '') + (overdueTotal && overdueFinished === overdueTotal ? ' is-complete' : ''),
+            label: 'OVERDUE',
+            scope: 'overdue',
+            ariaLabel: overdueTotal
+                ? 'Overdue assignments. ' + overdueFinished + ' of ' + overdueTotal + ' assignments are finished. Open the overdue task list.'
+                : 'No overdue assignments. Open the overdue task list.',
+            progressLabel: 'Overdue assignment completion',
+            percent: overduePercent
+        });
         var weekTotal = model.thisWeek.length;
         var weekFinished = model.weekFinished.length;
-        var weekComplete = !weekTotal || weekFinished === weekTotal;
-        var nextWeekTotal = model.nextWeek.length;
-        var nextWeekFinished = model.nextWeekFinished.length;
-        if (weekComplete && nextWeekTotal) {
-            var upcomingPercent = Math.round((nextWeekFinished / nextWeekTotal) * 100);
-            html += renderWeeklyProgressRow({
-                kind: 'upcoming' + (nextWeekFinished === nextWeekTotal ? ' is-complete' : ''),
-                label: 'UPCOMING',
-                ariaLabel: 'Next week assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished.',
-                progressLabel: 'Next week assignment completion',
-                percent: upcomingPercent,
-                items: model.nextWeek.slice().sort(function(left, right) {
-                    var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
-                    var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
-                    return leftFinished - rightFinished || newestFirst(left, right);
-                }),
-                taskType: 'upcoming'
-            });
-            setWeeklyFocusHtml(html);
-            return;
-        }
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
             kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
             label: 'THIS WEEK',
+            scope: 'week',
             ariaLabel: weekTotal
-                ? 'This week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished.'
-                : 'No assignments are scheduled for this week.',
+                ? 'This week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished. Open this week task list.'
+                : 'No assignments are scheduled for this week. Open this week task list.',
             progressLabel: 'This week assignment completion',
-            percent: weekPercent,
-            items: model.thisWeek.slice().sort(function(left, right) {
-                var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
-                var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
-                return leftFinished - rightFinished || newestFirst(left, right);
-            }),
-            taskType: 'week'
+            percent: weekPercent
+        });
+        var nextWeekTotal = model.nextWeek.length;
+        var nextWeekFinished = model.nextWeekFinished.length;
+        var upcomingPercent = nextWeekTotal ? Math.round((nextWeekFinished / nextWeekTotal) * 100) : 0;
+        html += renderWeeklyProgressRow({
+            kind: 'upcoming' + (nextWeekTotal && nextWeekFinished === nextWeekTotal ? ' is-complete' : '') + (!nextWeekTotal ? ' is-empty' : ''),
+            label: 'UPCOMING',
+            scope: 'upcoming',
+            ariaLabel: nextWeekTotal
+                ? 'Upcoming assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished. Open the upcoming task list.'
+                : 'No upcoming assignments. Open the upcoming task list.',
+            progressLabel: 'Upcoming assignment completion',
+            percent: upcomingPercent
         });
         setWeeklyFocusHtml(html);
     }
@@ -3056,6 +3053,7 @@
     if (accountClose) {
         accountClose.addEventListener('click', function() {
             setAccountPanel(false);
+            if (identityChip) identityChip.focus();
         });
     }
     if (messageButton) {

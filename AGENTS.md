@@ -329,7 +329,14 @@ Teachers can edit selected assignment records after assignment by explicit
 `assignment_id` selections. This is assignment-level editing, not a separate
 class-standard layer. Editing may change the required due week (`due_at`),
 `passing_percentage`, and `mastery_percentage`. Teacher View Wxx grouping and
-week filters use `due_at`.
+week filters use `due_at`. The View parameter editor has exactly three direct
+rows: Due week, Passing %, and Mastery %. Due week is a normal select; both
+percentages use the scroll-wheel picker. `Earn STAR` is the only checkbox and
+controls whether Mastery % is enabled. Saving a matrix task-column scope
+updates every explicit assignment represented by the current class/individual
+filter; saving from one student's detail updates only that assignment. The
+footer pairs a red `Cancel open assignments` action with `Save changes`;
+cancellation always requires a second dedicated confirmation modal.
 
 Teachers can soft-cancel selected open assignments. Cancellation sets
 `status: "cancelled"` plus audit fields such as `cancelled_at` and
@@ -338,6 +345,8 @@ assignments are hidden from the student dashboard, rejected by `submitAttempt`
 when an old assignment URL is used, and do not block future reassignment.
 Completed `passed` / `mastered` assignments and protected STAR records must not
 be revoked by normal cancellation.
+When `mastery_enabled` is false, Mastery % is not required and the stored
+mastery threshold must not block a higher Passing % update.
 
 `failed` remains the same open assignment. `Try Again` creates another attempt,
 not another assignment.
@@ -719,12 +728,12 @@ Student dashboard navigation:
 - The default `To Do List` modal has no top summary capsules. Its first
   open-work section is labelled `This Week`; the final `Finished` section is a
   closed disclosure by default and expands only when selected.
-- The hero progress card renders the concrete `Overdue`, `This Week`, or
-  replacement `Upcoming` task rows in place by default. Each section header
-  contains only its label and an inline progress bar; do not restore right-side
-  count/empty copy or require a section click before the tasks are visible.
-  Rows reuse the To Do List task-row contract and open the same practice-entry
-  confirmation. `This Week` places unfinished work before finished work.
+- The hero progress card always renders `Overdue`, `This Week`, and `Upcoming`
+  as three compact summary rows. Each row shows its true completed/total
+  percentage in both an inline progress bar and a numeric percent label.
+  Selecting any row opens a focused Assignments modal containing only that
+  group's task list; concrete task rows are not rendered directly in the hero.
+  The To Do List badge still excludes future Upcoming work.
 - A calendar icon in the right-side utility group opens the
   authenticated student's own completion history as a Monday-first monthly
   calendar. Date cells summarize completed assignments and self-study STAR
@@ -734,17 +743,17 @@ Student dashboard navigation:
   task rows reuse the Assignments row contract: category at left, one-line
   overflow-scrolling title in the middle, score and chevron at right, with the
   same entry confirmation before opening the practice runtime.
-- Student assignment timing uses required `due_at` weeks. `OVERDUE` contains
-  unfinished work past its due week. `THIS WEEK` contains work due in the
-  current Shanghai-time week. When this week has no work or all its work is
-  finished, next week's work replaces that row as `UPCOMING`; otherwise it
-  remains visible only in the To Do List's Upcoming section. Upcoming work never
-  contributes to the To Do List badge, which includes only actionable
-  overdue/current-week work.
+- Student assignment timing uses required `due_at` weeks. The hero always shows
+  `OVERDUE`, `THIS WEEK`, and `UPCOMING`, each with completed/total progress and
+  an explicit percentage. Selecting a row opens that due-date group's focused
+  task list. Upcoming work never contributes to the To Do List badge, which
+  includes only actionable overdue/current-week work.
 - Teacher Replies opens from a plain speech-bubble SVG button in the top-right
   of the To Do List modal; the icon has no embedded checkmark.
   Its red badge counts unseen resolved replies, while its modal retains every
-  resolved teacher reply after the student has read it.
+  resolved teacher reply after the student has read it. The reply modal has no
+  close icon or bottom Close action; a top-left `Back` control marks current
+  replies seen and restores the same Assignments modal and bubble focus.
 - My Words opens in an independent modal from the notebook icon in the
   right-side utility group. Closing and reopening that modal restores
   its previous internal scroll position.
@@ -755,7 +764,9 @@ Student dashboard navigation:
   halves with a center divider. Pronunciation appears beside the phonetic only
   after expansion. Do not restore student review states, due filters, or
   reveal-and-rate review controls unless the owner explicitly asks.
-- Profile/account actions open from the top-right identity chip.
+- Profile/account actions open from the top-right identity chip. Student
+  Personal Center has no top-right close icon; its single `Close` capsule is
+  centered outside immediately below the account card.
 
 Do not restore a lower Assignments or My Words navigation capsule unless the
 owner explicitly asks. Do not split completed work into separate `PASSED` and
@@ -779,7 +790,8 @@ call the provider directly from browser code.
 `Teacher Replies` is a permanent, student-owned history surface opened from the
 speech-bubble button in the To Do List modal header. Reading replies marks them
 seen and clears only the bubble badge; it never removes resolved replies from
-the inbox. Closing reply history restores the same To Do List modal.
+the inbox. Its top-left `Back` control restores the same To Do List modal; no
+separate Close icon or bottom Close button is rendered.
 The original exercise question remains another durable place to review that
 Argue status and teacher note.
 

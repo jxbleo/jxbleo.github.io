@@ -23,6 +23,22 @@
 
 ### Changed
 
+- Moved Student Personal Center dismissal to one external `Close` capsule below
+  the card, and replaced Teacher Replies close controls with a top-left `Back`
+  action that returns to the originating Assignments modal.
+- Changed the student hero to always show clickable Overdue, This Week, and
+  Upcoming summaries with true completion bars and numeric percentages. Each
+  summary now opens its focused Assignments list instead of expanding tasks in
+  the homepage card.
+- Retitled the student To Do List modal to a smaller centered purple
+  `ASSIGNMENTS` label and removed the translucent rectangular title backing.
+- Simplified the Teacher View assignment-parameter editor to three direct rows:
+  Due week, scroll-wheel Passing %, and scroll-wheel Mastery %. Removed the
+  per-field change checkboxes and explanatory footer; Earn STAR is now the only
+  checkbox and exclusively enables Mastery %. Moved the red Cancel open
+  assignments action beside Save changes and added a dedicated second-step
+  confirmation modal. Column edits still target the full visible filtered
+  scope, while student-detail edits remain individual.
 - Unified background scroll locking across every independent Teacher modal,
   including Notifications, Argue, Student lookup/details, assignment tools,
   entry confirmations, and success dialogs. Nested modals retain the lock until

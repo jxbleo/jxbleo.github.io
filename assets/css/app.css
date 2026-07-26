@@ -864,9 +864,12 @@ html.teacher-modal-scroll-locked {
 }
 .account-panel-head .eyebrow { margin: 0; }
 .account-panel-head h2 { margin: 2px 0 0; font-size: 1.15rem; }
-#student-account-close {
-    top: -3px;
-    right: -3px;
+.student-account-outside-close {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
 }
 .account-panel-actions {
     position: absolute;
@@ -2588,14 +2591,6 @@ body:not(.teacher-page) .tab-button.active {
     border-radius: 12px;
     font-weight: 850;
 }
-.teacher-replies-dialog .dialog-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 18px;
-}
-.teacher-replies-dialog .dialog-actions button {
-    min-width: 120px;
-}
 .teacher-replies-overlay {
     position: fixed;
     inset: 0;
@@ -2634,6 +2629,39 @@ body:not(.teacher-page) .tab-button.active {
     margin-bottom: 18px;
     text-align: center;
 }
+.teacher-replies-title-row {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    align-items: center;
+    gap: 8px;
+}
+.teacher-replies-title-row::after {
+    content: "";
+}
+.teacher-replies-back {
+    justify-self: start;
+    min-height: 34px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 9px;
+    color: #13766d;
+    background: transparent;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: color 140ms ease, background 140ms ease, transform 100ms ease;
+}
+.teacher-replies-back:hover,
+.teacher-replies-back:focus-visible {
+    color: #0d5b54;
+    background: rgba(19,118,109,0.08);
+}
+.teacher-replies-back:focus-visible {
+    outline: 3px solid rgba(19,118,109,0.18);
+    outline-offset: 2px;
+}
+.teacher-replies-back:active { transform: scale(0.95); }
 .teacher-replies-dialog-head p {
     margin: 6px 0 0;
     color: var(--muted);
@@ -2641,7 +2669,7 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 700;
 }
 .teacher-replies-dialog h2 {
-    margin: 10px 0 0;
+    margin: 0;
     font-size: 1.45rem;
 }
 .student-message-dialog {
@@ -2687,6 +2715,15 @@ body:not(.teacher-page) .tab-button.active {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
+.student-account-outside-close:hover {
+    transform: translate(-50%, -1px);
+}
+.student-account-outside-close:active {
+    transform: translateX(-50%) scale(0.97);
+}
+.student-account-outside-close:focus-visible {
+    transform: translateX(-50%);
+}
 @media (prefers-reduced-transparency: reduce) {
     .student-message-close,
     .student-calendar-outside-close {
@@ -2711,9 +2748,13 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-dialog-title-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
     align-items: center;
     gap: 12px;
+    width: 100%;
+}
+.student-message-dialog-title-row::before {
+    content: "";
 }
 .student-message-replies-button {
     width: 38px;
@@ -2724,7 +2765,15 @@ body:not(.teacher-page) .tab-button.active {
     right: -6px;
 }
 .student-message-dialog-head h2 {
+    width: 100%;
     margin: 0;
+    color: #6d4bb8;
+    font-size: 0.8rem;
+    font-weight: 950;
+    letter-spacing: 0.09em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
 }
 .student-message-dialog.is-focused-scope .student-message-dialog-head {
     justify-items: center;
@@ -2738,9 +2787,6 @@ body:not(.teacher-page) .tab-button.active {
 .student-message-dialog.is-focused-scope .student-message-dialog-title-row {
     grid-template-columns: 38px minmax(0, 1fr) 38px;
     width: 100%;
-}
-.student-message-dialog.is-focused-scope .student-message-dialog-title-row::before {
-    content: "";
 }
 .student-message-summary {
     display: flex;
@@ -5924,36 +5970,40 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .assignment-edit-form {
     display: grid;
-    grid-template-columns: minmax(120px, .65fr) minmax(0, 1fr);
-    gap: 10px;
-    align-items: center;
+    gap: 12px;
 }
-.assignment-edit-check {
-    display: flex;
+.assignment-edit-field {
+    display: grid;
+    grid-template-columns: minmax(120px, .65fr) minmax(0, 1fr);
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+}
+.assignment-edit-field > label,
+.assignment-edit-field-label {
     color: var(--ink);
     font-size: 0.84rem;
     font-weight: 850;
 }
-.assignment-edit-toggle {
+.assignment-edit-field-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    min-height: 42px;
-    padding: 0 12px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    color: var(--ink);
-    background: #fff;
-    font-size: 0.84rem;
-    font-weight: 850;
+    gap: 10px;
 }
-.assignment-edit-toggle input {
+.assignment-edit-earn-star {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #8c6517;
+    font-size: 0.76rem;
+    font-weight: 900;
+    white-space: nowrap;
+}
+.assignment-edit-earn-star input {
     width: 18px;
     height: 18px;
-    accent-color: var(--accent);
+    margin: 0;
+    accent-color: #d19a2b;
 }
 .assignment-edit-form input[type="date"],
 .assignment-edit-form input[type="number"],
@@ -5965,18 +6015,15 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     color: var(--ink);
     background: #fff;
 }
-.assignment-edit-note {
-    grid-column: 1 / -1;
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 0.8rem;
-    line-height: 1.45;
-}
 .assignment-edit-form .dialog-actions {
-    grid-column: 1 / -1;
+    margin-top: 6px;
 }
 .assignment-edit-percentage {
     min-width: 0;
+    transition: opacity 150ms ease;
+}
+.assignment-edit-percentage.is-disabled {
+    opacity: 0.42;
 }
 .assignment-edit-percentage .percentage-picker-trigger {
     width: 100%;
@@ -6008,6 +6055,11 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .percentage-picker-trigger:active {
     transform: scale(0.985);
+}
+.percentage-picker-trigger:disabled {
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 .percentage-picker-glyph {
     flex: 0 0 auto;
@@ -6181,29 +6233,72 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         background: #fff;
     }
 }
-.assignment-danger-zone {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding: 13px;
-    border: 1px solid rgba(220,38,38,0.16);
-    border-radius: 14px;
-    background: rgba(254,242,242,0.82);
+.danger-button.assignment-cancel-open-button,
+.assignment-cancel-confirm-actions .danger-button {
+    color: #fff;
+    background: #c93645;
 }
-.assignment-danger-zone strong {
-    display: block;
-    color: var(--danger);
-    font-size: 0.84rem;
+.danger-button.assignment-cancel-open-button:hover,
+.danger-button.assignment-cancel-open-button:focus-visible,
+.assignment-cancel-confirm-actions .danger-button:hover,
+.assignment-cancel-confirm-actions .danger-button:focus-visible {
+    color: #fff;
+    background: #ad2736;
+}
+.assignment-cancel-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 380;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(43, 16, 23, 0.42);
+    backdrop-filter: blur(12px) saturate(1.08);
+}
+.assignment-cancel-confirm-dialog {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    width: min(390px, 100%);
+    padding: 26px 22px 22px;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 28px 80px rgba(55, 16, 24, 0.28);
+    text-align: center;
+}
+.assignment-cancel-confirm-icon {
+    display: grid;
+    width: 54px;
+    height: 54px;
+    place-items: center;
+    border-radius: 999px;
+    color: #b42332;
+    background: #feecef;
+    font-size: 1.45rem;
     font-weight: 950;
 }
-.assignment-danger-zone p {
-    margin: 4px 0 0;
-    color: #8a4b4b;
-    font-size: 0.76rem;
+.assignment-cancel-confirm-dialog h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+.assignment-cancel-confirm-dialog p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.84rem;
     font-weight: 750;
-    line-height: 1.4;
+    line-height: 1.5;
+}
+.assignment-cancel-confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
+}
+.assignment-cancel-confirm-actions button {
+    min-height: 44px;
+    border-radius: 12px;
 }
 .danger-button {
     border-color: rgba(220,38,38,0.24);
@@ -8193,8 +8288,8 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     }
     .assignment-edit-button { width: 100%; }
     .assignment-edit-dialog { padding: 22px 18px; }
-    .assignment-edit-form { grid-template-columns: 1fr; }
-    .assignment-danger-zone { grid-template-columns: 1fr; }
+    .assignment-edit-field { grid-template-columns: 1fr; }
+    .assignment-cancel-confirm-actions { grid-template-columns: 1fr; }
     .attempt-detail-head,
     .latest-answer-head {
         flex-direction: column;

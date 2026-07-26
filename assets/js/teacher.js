@@ -2191,7 +2191,7 @@
             if (selectedParts) options.push({ value: selectedValue, label: weekOptionLabel(selectedParts) });
         }
         options.sort(function(a, b) { return String(a.value).localeCompare(String(b.value)); });
-        return options.map(function(option) {
+        return (!selectedValue ? '<option value="" selected disabled>Mixed / choose</option>' : '') + options.map(function(option) {
             return '<option value="' + escapeHtml(option.value) + '"' +
                 (option.value === selectedValue ? ' selected' : '') + '>' + escapeHtml(option.label) + '</option>';
         }).join('');
@@ -3620,62 +3620,59 @@
         var cancelableItems = items.filter(isOpenAssignmentItem);
         var commonDue = commonFieldValue(items, 'due_at');
         var commonDueSource = commonDue || (items.length === 1 ? assignmentDueDate(items[0]) : null);
-        var dueWeek = assignmentWeekStartValue(commonDueSource) || assignDefaultDateValue(0);
+        var dueWeek = assignmentWeekStartValue(commonDueSource);
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
-        var commonMasteryEnabled = commonFieldValue(items, 'mastery_enabled');
-        var masteryEnabledChecked = commonMasteryEnabled !== 'false';
+        var masteryEnabledChecked = items.every(assignmentMasteryEnabled);
         var scopeSubtitle = group.subtitle ? group.subtitle + ' · ' : '';
         var overlay = document.createElement('div');
         overlay.className = 'assignment-edit-overlay';
         overlay.innerHTML =
             '<div class="assignment-edit-shell">' +
-            '<section class="assignment-edit-dialog" role="dialog" aria-modal="true">' +
+            '<section class="assignment-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="assignment-edit-title">' +
                 '<div class="assignment-edit-head">' +
                     '<p class="eyebrow accent">MANAGE ASSIGNMENTS</p>' +
-                    '<h2>' + escapeHtml(group.title || 'Assignments') + '</h2>' +
+                    '<h2 id="assignment-edit-title">' + escapeHtml(group.title || 'Assignments') + '</h2>' +
                     '<p>' + escapeHtml(scopeSubtitle) + escapeHtml(items.length) + ' selected assignment' + (items.length === 1 ? '' : 's') + '.</p>' +
                 '</div>' +
                 '<form class="assignment-edit-form">' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_due"><span>Due week</span></label>' +
-                    '<select name="due_week" aria-label="Due week">' + assignmentEditWeekOptionsHtml(dueWeek) + '</select>' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_passing"' + (commonPassing !== '' ? ' checked' : '') + '><span>Passing %</span></label>' +
-                    '<div class="assignment-edit-percentage">' +
+                    '<div class="assignment-edit-field">' +
+                        '<label for="assignment-edit-due-week">Due week</label>' +
+                        '<select id="assignment-edit-due-week" name="due_week">' + assignmentEditWeekOptionsHtml(dueWeek) + '</select>' +
+                    '</div>' +
+                    '<div class="assignment-edit-field">' +
+                        '<span class="assignment-edit-field-label">Passing %</span>' +
+                        '<div class="assignment-edit-percentage">' +
                         percentagePickerTriggerHtml(
                             commonPassing,
                             'Passing percentage',
-                            'data-percent-input="passing_percentage" data-percent-change="change_passing"',
+                            'data-percent-input="passing_percentage"',
                             'Mixed / choose',
                             50
                         ) +
                         '<input type="hidden" name="passing_percentage" value="' + escapeHtml(commonPassing) + '">' +
+                        '</div>' +
                     '</div>' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery"' + (commonMastery !== '' ? ' checked' : '') + '><span>Mastery %</span></label>' +
-                    '<div class="assignment-edit-percentage">' +
+                    '<div class="assignment-edit-field mastery-field">' +
+                        '<span class="assignment-edit-field-label">Mastery %' +
+                            '<label class="assignment-edit-earn-star"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Earn STAR</span></label>' +
+                        '</span>' +
+                        '<div class="assignment-edit-percentage' + (masteryEnabledChecked ? '' : ' is-disabled') + '">' +
                         percentagePickerTriggerHtml(
                             commonMastery,
                             'Mastery percentage',
-                            'data-percent-input="mastery_percentage" data-percent-change="change_mastery"',
+                            'data-percent-input="mastery_percentage"' + (masteryEnabledChecked ? '' : ' disabled aria-disabled="true"'),
                             'Mixed / choose',
                             90
                         ) +
                         '<input type="hidden" name="mastery_percentage" value="' + escapeHtml(commonMastery) + '">' +
+                        '</div>' +
                     '</div>' +
-                    '<label class="assignment-edit-check"><input type="checkbox" name="change_mastery_enabled"' + (commonMasteryEnabled !== '' ? ' checked' : '') + '><span>Earn STAR</span></label>' +
-                    '<label class="assignment-edit-toggle"><input type="checkbox" name="mastery_enabled"' + (masteryEnabledChecked ? ' checked' : '') + '><span>Can earn STAR</span></label>' +
-                    '<p class="assignment-edit-note">Due week controls the Wxx column, student This Week / Upcoming display, and the Sunday 23:59 deadline. This updates only the selected assignment records. Completed work and protected STAR records are not downgraded; new submissions use the updated standards. When STAR is off, work can finish as passed but will not become mastered.</p>' +
                     '<div class="dialog-actions">' +
-                        '<button class="outline-button" type="button" data-cancel-edit>Cancel</button>' +
+                        '<button class="danger-button assignment-cancel-open-button" type="button" data-cancel-assignments' + (cancelableItems.length ? '' : ' disabled') + '>Cancel open assignments</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
                     '</div>' +
                 '</form>' +
-                '<div class="assignment-danger-zone">' +
-                    '<div><strong>Cancel open assignments</strong>' +
-                    '<p>Removes open selected assignments from student To Do lists. Attempts, completed work, and STAR records stay saved.</p></div>' +
-                    '<button class="outline-button danger-button" type="button" data-cancel-assignments' + (cancelableItems.length ? '' : ' disabled') + '>' +
-                        'Cancel ' + escapeHtml(cancelableItems.length) + ' open' +
-                    '</button>' +
-                '</div>' +
             '</section>' +
             '<button class="progress-matrix-modal-close assignment-edit-external-close" type="button" ' +
                 'data-assignment-edit-close aria-label="Close assignment parameters">Close</button>' +
@@ -3698,23 +3695,36 @@
         }
 
         overlay.querySelector('[data-assignment-edit-close]').addEventListener('click', close);
-        overlay.querySelector('[data-cancel-edit]').addEventListener('click', close);
         overlay.querySelectorAll('[data-percent-picker]').forEach(function(trigger) {
             trigger.addEventListener('click', function() {
                 openPercentagePicker(trigger, function(value) {
                     setPercentagePickerTriggerValue(trigger, value);
                     var form = trigger.closest('form');
                     var inputName = trigger.getAttribute('data-percent-input');
-                    var changeName = trigger.getAttribute('data-percent-change');
                     if (form && inputName && form.elements[inputName]) {
                         form.elements[inputName].value = String(value);
-                    }
-                    if (form && changeName && form.elements[changeName]) {
-                        form.elements[changeName].checked = true;
                     }
                 });
             });
         });
+        var masteryEnabledInput = overlay.querySelector('input[name="mastery_enabled"]');
+        var masteryPicker = overlay.querySelector('[data-percent-input="mastery_percentage"]');
+        var masteryPickerShell = masteryPicker && masteryPicker.closest('.assignment-edit-percentage');
+        function syncMasteryPicker() {
+            var enabled = masteryEnabledInput && masteryEnabledInput.checked;
+            if (masteryPicker) {
+                masteryPicker.disabled = !enabled;
+                masteryPicker.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            }
+            if (masteryPickerShell) masteryPickerShell.classList.toggle('is-disabled', !enabled);
+        }
+        if (masteryEnabledInput) {
+            masteryEnabledInput.addEventListener('change', function() {
+                syncMasteryPicker();
+                if (masteryEnabledInput.checked && masteryPicker) masteryPicker.focus();
+            });
+        }
+        syncMasteryPicker();
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close();
         });
@@ -3722,34 +3732,29 @@
             event.preventDefault();
             var form = event.currentTarget;
             var payload = {
-                assignment_ids: items.map(function(item) { return item.assignment_id; })
+                assignment_ids: items.map(function(item) { return item.assignment_id; }),
+                mastery_enabled: form.elements.mastery_enabled.checked
             };
-            if (form.elements.change_due.checked) {
-                payload.due_at = dueAtIsoForWeekStart(form.elements.due_week.value);
+            if (!form.elements.due_week.value) {
+                showMessage('Choose a Due week.', 'error');
+                return;
             }
-            if (form.elements.change_passing.checked) {
-                if (!form.elements.passing_percentage.value) {
-                    showMessage('Choose a Passing percentage.', 'error');
-                    return;
-                }
-                payload.passing_percentage = form.elements.passing_percentage.value;
+            payload.due_at = dueAtIsoForWeekStart(form.elements.due_week.value);
+            if (!form.elements.passing_percentage.value) {
+                showMessage('Choose a Passing percentage.', 'error');
+                return;
             }
-            if (form.elements.change_mastery.checked) {
+            payload.passing_percentage = form.elements.passing_percentage.value;
+            if (payload.mastery_enabled) {
                 if (!form.elements.mastery_percentage.value) {
                     showMessage('Choose a Mastery percentage.', 'error');
                     return;
                 }
                 payload.mastery_percentage = form.elements.mastery_percentage.value;
-            }
-            if (form.elements.change_mastery_enabled.checked) {
-                payload.mastery_enabled = form.elements.mastery_enabled.checked;
-            }
-            if (!Object.prototype.hasOwnProperty.call(payload, 'due_at') &&
-                !Object.prototype.hasOwnProperty.call(payload, 'passing_percentage') &&
-                !Object.prototype.hasOwnProperty.call(payload, 'mastery_percentage') &&
-                !Object.prototype.hasOwnProperty.call(payload, 'mastery_enabled')) {
-                showMessage('Choose at least one field to update.', 'error');
-                return;
+                if (Number(payload.mastery_percentage) < Number(payload.passing_percentage)) {
+                    showMessage('Mastery percentage must be at least the Passing percentage.', 'error');
+                    return;
+                }
             }
             var submit = form.querySelector('button[type="submit"]');
             submit.disabled = true;
@@ -3772,10 +3777,61 @@
                     showMessage('No open assignment can be cancelled in this selection.', 'error');
                     return;
                 }
-                var ok = window.confirm('Cancel ' + cancelableItems.length + ' open assignment' + (cancelableItems.length === 1 ? '' : 's') + '? Existing attempts and completed work will stay saved.');
-                if (!ok) return;
-                cancelAssignmentsButton.disabled = true;
-                cancelAssignmentsButton.textContent = 'Cancelling...';
+                openCancelAssignmentsConfirmation();
+            });
+        }
+
+        function openCancelAssignmentsConfirmation() {
+            if (document.querySelector('.assignment-cancel-confirm-overlay')) return;
+            var confirmOverlay = document.createElement('div');
+            confirmOverlay.className = 'assignment-cancel-confirm-overlay';
+            confirmOverlay.innerHTML =
+                '<section class="assignment-cancel-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="assignment-cancel-confirm-title">' +
+                    '<span class="assignment-cancel-confirm-icon" aria-hidden="true">!</span>' +
+                    '<h2 id="assignment-cancel-confirm-title">Cancel open assignments?</h2>' +
+                    '<p>This will cancel ' + escapeHtml(cancelableItems.length) + ' open assignment' + (cancelableItems.length === 1 ? '' : 's') +
+                        ' for this selection. Existing attempts and completed work will stay saved.</p>' +
+                    '<div class="assignment-cancel-confirm-actions">' +
+                        '<button class="outline-button" type="button" data-keep-assignments>Keep assignments</button>' +
+                        '<button class="danger-button" type="button" data-confirm-cancel-assignments>Cancel assignments</button>' +
+                    '</div>' +
+                '</section>';
+            document.body.appendChild(confirmOverlay);
+            var confirmButton = confirmOverlay.querySelector('[data-confirm-cancel-assignments]');
+            var keepButton = confirmOverlay.querySelector('[data-keep-assignments]');
+
+            function closeConfirmation() {
+                document.removeEventListener('keydown', handleConfirmationKeydown, true);
+                confirmOverlay.remove();
+                if (cancelAssignmentsButton.isConnected) cancelAssignmentsButton.focus();
+            }
+
+            function handleConfirmationKeydown(event) {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    closeConfirmation();
+                    return;
+                }
+                if (event.key !== 'Tab') return;
+                var first = keepButton;
+                var last = confirmButton;
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+
+            keepButton.addEventListener('click', closeConfirmation);
+            confirmOverlay.addEventListener('click', function(event) {
+                if (event.target === confirmOverlay) closeConfirmation();
+            });
+            confirmButton.addEventListener('click', function() {
+                confirmButton.disabled = true;
+                confirmButton.textContent = 'Cancelling...';
                 teacherCall('cancelAssignments', {
                     assignment_ids: cancelableItems.map(function(item) { return item.assignment_id; })
                 }).then(function(result) {
@@ -3783,14 +3839,17 @@
                     var skipped = (result.skipped || []).length;
                     state.selectedMatrixCell = '';
                     showMessage(cancelled + ' assignment(s) cancelled' + (skipped ? '; ' + skipped + ' skipped.' : '.'), 'success');
+                    closeConfirmation();
                     close();
                     return refreshAssignmentViews();
                 }).catch(function(error) {
                     showMessage(error.message, 'error');
-                    cancelAssignmentsButton.disabled = false;
-                    cancelAssignmentsButton.textContent = 'Cancel ' + cancelableItems.length + ' open';
+                    confirmButton.disabled = false;
+                    confirmButton.textContent = 'Cancel assignments';
                 });
             });
+            document.addEventListener('keydown', handleConfirmationKeydown, true);
+            confirmButton.focus();
         }
     }
 

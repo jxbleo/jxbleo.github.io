@@ -326,16 +326,19 @@ function relativeDueWeekEnd(weekOffset) {
 function testDashboardScheduleModel() {
   const hooks = dashboardScheduleHooks();
   const overdue = { assignment_id: "overdue", status: "to_do", due_at: relativeDueWeekEnd(-1) };
+  const overdueFinished = { assignment_id: "overdue-finished", status: "passed", due_at: relativeDueWeekEnd(-1), best_percentage: 85 };
   const current = { assignment_id: "current", status: "to_do", due_at: relativeDueWeekEnd(0) };
   const upcoming = { assignment_id: "upcoming", status: "to_do", due_at: relativeDueWeekEnd(1) };
   hooks.state.session = { mode: "student" };
   hooks.state.teacherReplies = [];
-  hooks.state.assignments = [overdue, current, upcoming];
+  hooks.state.assignments = [overdue, overdueFinished, current, upcoming];
 
   assert.equal(hooks.todoAssignments().length, 2);
   assert.equal(hooks.upcomingAssignments().length, 1);
   assert.equal(hooks.studentMessageTotal(), 2);
   assert.equal(hooks.weeklyFocusModel().overdue.length, 1);
+  assert.equal(hooks.weeklyFocusModel().overdueAll.length, 2);
+  assert.equal(hooks.weeklyFocusModel().overdueFinished.length, 1);
   assert.equal(hooks.weeklyFocusModel().thisWeek.length, 1);
   assert.equal(hooks.weeklyFocusModel().nextWeek.length, 1);
 
@@ -343,16 +346,22 @@ function testDashboardScheduleModel() {
     innerHTML: "",
     classList: { remove() {} },
     setAttribute() {},
+    querySelectorAll() { return []; },
   };
   hooks.setWeeklyFocusProgress(target);
   hooks.renderWeeklyFocusProgress();
+  assert(target.innerHTML.includes("OVERDUE"));
   assert(target.innerHTML.includes("THIS WEEK"));
-  assert(!target.innerHTML.includes("UPCOMING"));
+  assert(target.innerHTML.includes("UPCOMING"));
+  assert(target.innerHTML.includes("50%"));
+  assert(target.innerHTML.includes('data-weekly-focus-scope="overdue"'));
+  assert(target.innerHTML.includes('data-weekly-focus-scope="week"'));
+  assert(target.innerHTML.includes('data-weekly-focus-scope="upcoming"'));
 
   current.status = "passed";
   hooks.renderWeeklyFocusProgress();
   assert(target.innerHTML.includes("UPCOMING"));
-  assert(!target.innerHTML.includes("THIS WEEK"));
+  assert(target.innerHTML.includes("THIS WEEK"));
 
   hooks.state.assignments = [overdue, upcoming];
   hooks.renderWeeklyFocusProgress();
@@ -403,6 +412,26 @@ async function main() {
   });
   assert.equal(updateResult.success, true);
   assert.equal(created.due_at.toISOString(), "2026-07-26T15:59:59.000Z");
+
+  const disabledMasteryUpdate = await call("updateAssignments", {
+    assignment_ids: [created.assignment_id],
+    passing_percentage: 95,
+    mastery_enabled: false,
+  });
+  assert.equal(disabledMasteryUpdate.success, true);
+  assert.equal(created.passing_percentage, 95);
+  assert.equal(created.mastery_enabled, false);
+
+  console.error = () => {};
+  const invalidEnabledMasteryUpdate = await call("updateAssignments", {
+    assignment_ids: [created.assignment_id],
+    passing_percentage: 95,
+    mastery_percentage: 90,
+    mastery_enabled: true,
+  });
+  console.error = originalConsoleError;
+  assert.equal(invalidEnabledMasteryUpdate.success, false);
+  assert.equal(invalidEnabledMasteryUpdate.code, "PASSING_ABOVE_MASTERY");
 
   currentUid = "student-uid";
   const dashboardResult = await getDashboard.main({});
