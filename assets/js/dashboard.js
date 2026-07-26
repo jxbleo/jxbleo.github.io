@@ -121,6 +121,7 @@
     var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
     var calendarButton = document.getElementById('student-calendar-button');
+    var calendarDateLabel = document.getElementById('student-calendar-date');
     var calendarOverlay = document.getElementById('student-calendar-overlay');
     var calendarContent = document.getElementById('student-calendar-content');
     var calendarScroll = document.getElementById('student-calendar-scroll');
@@ -139,6 +140,7 @@
     var messageCount = document.getElementById('student-message-count');
     var repliesButton = document.getElementById('student-replies-button');
     var studentCalendarTitleObserver = null;
+    var calendarDateRefreshTimer = null;
     var weeklyFocusTitleObserver = null;
     var studentMessageScrollLock = null;
 
@@ -349,6 +351,44 @@
             day: day,
             key: year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0')
         };
+    }
+
+    function calendarButtonDateModel(value) {
+        var date = value instanceof Date ? value : new Date(value || Date.now());
+        var parts = shanghaiDateParts(date);
+        if (!parts) return null;
+        var spokenDate = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+        return {
+            day: parts.day,
+            isDoubleDigit: parts.day >= 10,
+            ariaLabel: 'Progress calendar, ' + spokenDate
+        };
+    }
+
+    function millisecondsUntilNextShanghaiDay(value) {
+        var now = value instanceof Date ? value.getTime() : Number(value || Date.now());
+        var dayMs = 24 * 60 * 60 * 1000;
+        var shanghaiOffsetMs = 8 * 60 * 60 * 1000;
+        var nextMidnight = Math.floor((now + shanghaiOffsetMs) / dayMs + 1) * dayMs - shanghaiOffsetMs;
+        return Math.max(1000, nextMidnight - now + 1000);
+    }
+
+    function syncCalendarButtonDate() {
+        if (!calendarButton && !calendarDateLabel) return;
+        var now = new Date();
+        var model = calendarButtonDateModel(now);
+        if (!model) return;
+        if (calendarDateLabel) {
+            calendarDateLabel.textContent = String(model.day);
+            calendarDateLabel.classList.toggle('is-double-digit', model.isDoubleDigit);
+        }
+        if (calendarButton) calendarButton.setAttribute('aria-label', model.ariaLabel);
+        if (calendarDateRefreshTimer) window.clearTimeout(calendarDateRefreshTimer);
+        calendarDateRefreshTimer = window.setTimeout(syncCalendarButtonDate, millisecondsUntilNextShanghaiDay(now));
     }
 
     function utcDateFromShanghaiParts(parts) {
@@ -3126,6 +3166,10 @@
             activateView(button.dataset.view);
             setAccountPanel(false);
         });
+    });
+    syncCalendarButtonDate();
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') syncCalendarButtonDate();
     });
     if (identityChip) {
         identityChip.addEventListener('click', function(event) {
