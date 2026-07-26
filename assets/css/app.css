@@ -902,6 +902,9 @@ html.teacher-modal-scroll-locked {
     backdrop-filter: none;
 }
 .star-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 9px 13px;
     border: 1px solid rgba(216, 149, 40, 0.24);
     border-radius: 999px;
@@ -909,7 +912,19 @@ html.teacher-modal-scroll-locked {
     background: rgba(255, 248, 224, 0.86);
     font-size: 0.8rem;
     font-weight: 900;
+    font-family: inherit;
+    line-height: 1;
+    cursor: pointer;
     box-shadow: 0 8px 22px rgba(216, 149, 40, 0.12);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.star-counter:hover { transform: translateY(-1px); }
+.star-counter:active { transform: scale(0.96); }
+.star-counter:focus-visible,
+.account-star-back:focus-visible,
+.account-star-history-row:focus-visible {
+    outline: 3px solid rgba(31, 111, 135, 0.28);
+    outline-offset: 3px;
 }
 .assignment-star-counter {
     border-color: rgba(216, 149, 40, 0.24);
@@ -958,6 +973,115 @@ html.teacher-modal-scroll-locked {
     gap: 7px;
     flex-wrap: wrap;
 }
+.account-star-history {
+    display: grid;
+    gap: 12px;
+}
+.account-star-history-head {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+}
+.account-star-history-head h2,
+.account-star-history-head p { margin: 0; }
+.account-star-history-head h2 { margin-top: 2px; font-size: 1.02rem; }
+.account-star-back {
+    width: 38px;
+    height: 38px;
+    padding: 0 1px 2px 0;
+    border: 1px solid rgba(24, 53, 47, 0.1);
+    border-radius: 50%;
+    color: var(--ink);
+    background: rgba(255,255,255,0.8);
+    font-family: inherit;
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease;
+}
+.account-star-back:hover { background: #fff; transform: translateX(-1px); }
+.account-star-back:active { transform: scale(0.94); }
+.account-star-history-count { min-width: 56px; cursor: default; }
+.account-star-history-count:hover { transform: none; }
+.account-star-history-description { margin: -2px 0 2px; font-size: 0.82rem; }
+.account-star-history-list {
+    display: grid;
+    gap: 9px;
+}
+.account-star-history-row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    padding: 11px 12px;
+    border: 1px solid rgba(24, 53, 47, 0.09);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.78);
+    box-shadow: 0 8px 22px rgba(25, 68, 61, 0.055);
+    cursor: pointer;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.account-star-history-row:hover {
+    transform: translateY(-1px);
+    border-color: rgba(19, 118, 109, 0.2);
+    box-shadow: 0 12px 26px rgba(25, 68, 61, 0.09);
+}
+.account-star-history-row:active { transform: scale(0.985); }
+.account-star-history-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 11px;
+    color: #9a6717;
+    background: rgba(255, 248, 224, 0.9);
+    font-size: 1.05rem;
+}
+.account-star-history-row.is-self-study .account-star-history-icon {
+    color: #1f6f87;
+    background: #e3f4fb;
+}
+.account-star-history-copy { display: grid; min-width: 0; gap: 3px; }
+.account-star-history-copy strong {
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 0.88rem;
+    line-height: 1.28;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.account-star-history-kind {
+    color: var(--muted);
+    font-size: 0.63rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.account-star-history-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 750;
+}
+.account-star-history-chevron { color: #8ba09b; font-size: 1.45rem; line-height: 1; }
+.account-star-history-empty {
+    display: grid;
+    justify-items: center;
+    gap: 5px;
+    padding: 30px 16px;
+    border: 1px dashed rgba(24, 53, 47, 0.14);
+    border-radius: 18px;
+    color: var(--muted);
+    text-align: center;
+}
+.account-star-history-empty > span { color: #b58a3c; font-size: 1.8rem; }
+.account-star-history-empty strong { color: var(--ink); }
+.account-star-history-empty p { margin: 0; font-size: 0.78rem; }
 .account-quiet-footer {
     display: flex;
     align-items: center;
@@ -1799,6 +1923,9 @@ body:not(.teacher-page) .tab-button.active {
 @media (prefers-reduced-motion: reduce) {
     .star-flyer { animation-duration: 1ms; }
     .star-counter.pop { animation-duration: 1ms; }
+    .star-counter,
+    .account-star-back,
+    .account-star-history-row { transition-duration: 1ms; }
     .student-greeting-track.is-scrolling {
         transform: none;
         animation: none;

@@ -333,6 +333,16 @@ Rules:
 - STAR is monotonic and protected.
 - Assignment STAR is keyed by `assignment_id`.
 - Self-study STAR has `assignment_id: null`.
+- `getDashboard.star_achievements` is a redacted, newest-first presentation
+  view with `achievement_id`, `star_type`, `source`, `set_id`, `assignment_id`,
+  `earned_at`, `best_percentage`, `best_attempt_id`, and visible `set` metadata.
+  It does not expose ownership internals or grading keys.
+- The idempotent `claimStar` fallback returns the affected redacted
+  `star_achievement` so Personal Center can update immediately without waiting
+  for a full Dashboard reload.
+- Future reward redemption must not update or delete this collection. Store
+  credits/debits in a separate append-only ledger referencing
+  `achievement_id`; the ledger schema and exchange policy remain future work.
 
 ## 9. `answer_disputes`
 

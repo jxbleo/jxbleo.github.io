@@ -184,6 +184,14 @@ Check:
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
   centered outside directly below the card; Close, Escape, and backdrop all
   dismiss it, restore focus to the identity chip, and restore background scroll
+- the yellow assignment STAR and blue self-study STAR counters are clickable
+  and keyboard operable; each opens only its own newest-first source list in
+  the same card, showing task title/type, earned date, and best score
+- a STAR history row opens the linked best historical attempt; Back returns to
+  the account summary and restores focus to the exact yellow/blue counter that
+  opened the list; an empty category shows a quiet empty state
+- the displayed category counts and list lengths match the protected
+  `student_set_achievements` records after assignment/self-study deduplication
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
@@ -415,7 +423,16 @@ Check:
   Sunday normalization, backward-compatible `assigned_at` alias handling, and
   dry-run/apply legacy backfill behavior; it also exercises the exact Dashboard
   model so Upcoming stays out of the red count while the two homepage progress
-  summaries remain visible and overdue work contributes to This Week progress
+  summaries remain visible and overdue work contributes to This Week progress.
+  Its large-history fixture includes 60 distinct historical sets and must load
+  all assignments with one batched `sets` read rather than one read per set
+- with a student that has at least 40 distinct historical assignments, reload
+  Dashboard several times and confirm CloudBase `getDashboard` logs remain
+  successful, Finished and Calendar retain history, and no invocation ends with
+  status `433` or `Invoking task timed out`
+- if `getDashboard` is unavailable, the student page shows `Unable to load the
+  dashboard` with a `Retry` button and `UNAVAILABLE` weekly status; it must not
+  claim that the account has no assignments
 - Open the Assign Work and Student pickers before and after the Assign page has
   become taller than the viewport; both dialogs must remain centered in the
   current viewport with an internally scrolling list and no blank page area

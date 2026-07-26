@@ -785,6 +785,12 @@ Student dashboard navigation:
   background scroll. It has no top-right close icon; its single `Close` capsule
   is centered outside immediately below the account card. Close, Escape, and
   backdrop dismissal restore focus to the identity chip.
+- The yellow assignment-STAR and blue self-study-STAR counters in Personal
+  Center are buttons. Each opens a same-card, newest-first provenance list from
+  backend `student_set_achievements`; Back restores focus to the counter that
+  opened it, and each row may open the linked best historical attempt. Future
+  reward redemption must use a separate append-only transaction ledger and
+  must never delete, decrement, or repurpose protected achievement records.
 
 Do not restore a lower Assignments or My Words navigation capsule unless the
 owner explicitly asks. Do not split completed work into separate `PASSED` and

@@ -70,9 +70,19 @@ const collections = {
 
 let nextId = 1;
 let currentUid = "teacher-uid";
+const collectionReadCounts = {};
+
+const command = {
+  in(values) {
+    return { __testOperator: "in", values };
+  },
+};
 
 function matches(record, where) {
-  return Object.entries(where || {}).every(([key, value]) => record[key] === value);
+  return Object.entries(where || {}).every(([key, value]) => {
+    if (value && value.__testOperator === "in") return value.values.includes(record[key]);
+    return record[key] === value;
+  });
 }
 
 function collection(name) {
@@ -96,6 +106,7 @@ function collection(name) {
       return query;
     },
     async get() {
+      collectionReadCounts[name] = Number(collectionReadCounts[name] || 0) + 1;
       let result = rows.filter((record) => matches(record, state.where));
       if (state.order) {
         const multiplier = state.order.direction === "desc" ? -1 : 1;
@@ -129,7 +140,7 @@ function collection(name) {
 
 const app = {
   database() {
-    return { collection };
+    return { collection, command };
   },
   auth() {
     return {
@@ -185,6 +196,8 @@ function dashboardScheduleHooks() {
       renderStudentMessageTask: renderStudentMessageTask,
       renderStudentMessageSection: renderStudentMessageSection,
       renderStudentMessageFlatList: renderStudentMessageFlatList,
+      accountStarItems: accountStarItems,
+      accountStarHistoryRow: accountStarHistoryRow,
       setWeeklyFocusProgress: function(target) { weeklyFocusProgress = target; }
     };
 })();`;
@@ -411,9 +424,45 @@ function testDashboardScheduleModel() {
   assert.equal(hooks.finishedAssignments()[0].assignment_id, "finished-new");
 }
 
+function testAccountStarHistoryModel() {
+  const hooks = dashboardScheduleHooks();
+  hooks.state.session = { mode: "student" };
+  hooks.state.starAchievements = [
+    {
+      achievement_id: "star-blue",
+      star_type: "self_study",
+      set_id: "BBC-260101",
+      assignment_id: null,
+      earned_at: "2026-07-26T04:00:00.000Z",
+      best_percentage: 96,
+      best_attempt_id: "attempt-blue",
+      set: { set_id: "BBC-260101", title: "Blue source", link: "bbc.html?set=BBC-260101" },
+    },
+    {
+      achievement_id: "star-yellow",
+      star_type: "assignment",
+      set_id: "NGSL-A",
+      assignment_id: "assignment-yellow",
+      earned_at: "2026-07-25T04:00:00.000Z",
+      best_percentage: 100,
+      best_attempt_id: "attempt-yellow",
+      set: { set_id: "NGSL-A", title: "Yellow source", link: "vocabulary.html?set=NGSL-A" },
+    },
+  ];
+
+  assert.equal(hooks.accountStarItems("self_study").length, 1);
+  assert.equal(hooks.accountStarItems("assignment")[0].assignment_id, "assignment-yellow");
+  const blueRow = hooks.accountStarHistoryRow(hooks.state.starAchievements[0]);
+  assert(blueRow.includes("Blue source"));
+  assert(blueRow.includes("history=attempt-blue"));
+  assert(blueRow.includes("Best 96%"));
+  assert(blueRow.includes("is-self-study"));
+}
+
 async function main() {
   testDashboardScheduleModel();
   testStudentCalendarModel();
+  testAccountStarHistoryModel();
   testStudentModalShellMarkup();
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);
@@ -478,9 +527,72 @@ async function main() {
   assert.equal(invalidEnabledMasteryUpdate.code, "PASSING_ABOVE_MASTERY");
 
   currentUid = "student-uid";
+  const expectedDashboardAssignmentCount = collections.assignments.length + 61;
+  for (let index = 0; index < 60; index += 1) {
+    const setId = `HISTORY-${String(index + 1).padStart(2, "0")}`;
+    collections.sets.push({
+      _id: `history-set-${index}`,
+      set_id: setId,
+      title: `History set ${index + 1}`,
+      visible: true,
+      passing_percentage: 50,
+      mastery_percentage: 90,
+    });
+    collections.assignments.push({
+      _id: `history-assignment-record-${index}`,
+      assignment_id: `history-assignment-${index}`,
+      student_uid: "student-uid",
+      set_id: setId,
+      status: "passed",
+      best_percentage: 80,
+      completed_at: new Date(`2026-05-${String(index % 28 + 1).padStart(2, "0")}T10:00:00.000Z`),
+      assigned_at: new Date("2026-05-01T10:00:00.000Z"),
+      due_at: new Date("2026-05-03T15:59:59.000Z"),
+      created_at: new Date("2026-05-01T10:00:00.000Z"),
+    });
+  }
+  collections.sets.push({
+    _id: "self-study-history-set",
+    set_id: "SELF-STUDY-HISTORY",
+    title: "Self-study history set",
+    section_id: "vocabulary",
+    visible: true,
+  });
+  collections.student_set_achievements.push(
+    {
+      _id: "assignment-star-record",
+      achievement_id: "student-uid::history-assignment-0",
+      student_uid: "student-uid",
+      set_id: "HISTORY-01",
+      assignment_id: "history-assignment-0",
+      source: "assignment_claim",
+      first_earned_at: new Date("2026-05-20T10:00:00.000Z"),
+      best_percentage: 100,
+      best_attempt_id: "assignment-star-attempt",
+    },
+    {
+      _id: "self-study-star-record",
+      achievement_id: "student-uid::SELF-STUDY-HISTORY::self",
+      student_uid: "student-uid",
+      set_id: "SELF-STUDY-HISTORY",
+      assignment_id: null,
+      source: "self_study",
+      first_earned_at: new Date("2026-05-21T10:00:00.000Z"),
+      best_percentage: 100,
+      best_attempt_id: "self-study-star-attempt",
+    }
+  );
+  const setReadsBeforeDashboard = Number(collectionReadCounts.sets || 0);
   const dashboardResult = await getDashboard.main({});
   currentUid = "teacher-uid";
   assert.equal(dashboardResult.success, true);
+  assert.equal(dashboardResult.assignments.length, expectedDashboardAssignmentCount);
+  assert.equal(Number(collectionReadCounts.sets || 0) - setReadsBeforeDashboard, 1);
+  assert.equal(dashboardResult.star_achievements.length, 2);
+  assert.equal(dashboardResult.star_achievements[0].star_type, "self_study");
+  assert.equal(dashboardResult.star_achievements[0].set.title, "Self-study history set");
+  assert.equal(dashboardResult.star_achievements[1].star_type, "assignment");
+  assert.equal(dashboardResult.star_achievements[1].assignment_id, "history-assignment-0");
   const legacyDashboardAssignment = dashboardResult.assignments.find((item) => item.assignment_id === "legacy-assignment");
   assert.equal(new Date(legacyDashboardAssignment.due_at).toISOString(), "2026-06-21T15:59:59.000Z");
 

@@ -10,6 +10,8 @@
         starCount: 0,
         assignmentStarCount: 0,
         selfStudyStarCount: 0,
+        starAchievements: [],
+        accountStarView: '',
         teacherReplies: [],
         vocabItems: [],
         vocabSearch: '',
@@ -1286,7 +1288,11 @@
         if (!card) return;
         if (event && event.target && event.target.closest('button, a')) return;
         var href = card.dataset.openHref;
-        if (href) showPracticeEntryDialog(card, href);
+        if (href) showPracticeEntryDialog(card, href, {
+            onDismiss: function() {
+                if (card.isConnected) card.focus({ preventScroll: true });
+            }
+        });
     }
 
     function newestFirst(left, right) {
@@ -1920,6 +1926,15 @@
                     state.starCount = Number(result.star_count || state.starCount + 1);
                     state.assignmentStarCount = Number(result.assignment_star_count == null ? state.assignmentStarCount + 1 : result.assignment_star_count);
                     state.selfStudyStarCount = Number(result.self_study_star_count == null ? state.selfStudyStarCount : result.self_study_star_count);
+                    if (result.star_achievement) {
+                        var claimedAchievement = Object.assign({}, result.star_achievement, {
+                            set: item && item.set || result.star_achievement.set
+                        });
+                        state.starAchievements = (state.starAchievements || []).filter(function(achievement) {
+                            return achievement.achievement_id !== claimedAchievement.achievement_id;
+                        });
+                        state.starAchievements.push(claimedAchievement);
+                    }
                     playStarSound();
                     animateStarToCounter(button);
                     renderWeeklyFocusProgress();
@@ -2886,6 +2901,11 @@
             return;
         }
 
+        if (state.accountStarView) {
+            renderAccountStarHistory(state.accountStarView);
+            return;
+        }
+
         var profile = state.session.profile || {};
         var finishedCount = (state.assignments || []).filter(function(item) {
             return isFinishedStatus(item.status);
@@ -2896,8 +2916,8 @@
                     '<div class="account-name-row">' +
                         '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
                         '<strong class="account-star-pair">' +
-                            '<span class="star-counter assignment-star-counter account-row-star" id="star-counter">★ ' + escapeHtml(state.assignmentStarCount) + '</span>' +
-                            '<span class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
+                            '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="View ' + escapeHtml(state.assignmentStarCount) + ' assignment STAR sources">★ ' + escapeHtml(state.assignmentStarCount) + '</button>' +
+                            '<button class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter" type="button" aria-label="View ' + escapeHtml(state.selfStudyStarCount) + ' self-study STAR sources">★ ' + escapeHtml(state.selfStudyStarCount) + '</button>' +
                         '</strong>' +
                     '</div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
@@ -2915,9 +2935,94 @@
         starCounter = document.getElementById('star-counter');
         selfStudyStarCounter = document.getElementById('self-study-star-counter');
         updateStarCounter(false);
+        starCounter.addEventListener('click', function() {
+            openAccountStarHistory('assignment');
+        });
+        selfStudyStarCounter.addEventListener('click', function() {
+            openAccountStarHistory('self_study');
+        });
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
             openChangePasswordDialog();
+        });
+    }
+
+    function accountStarItems(starType) {
+        return (state.starAchievements || []).filter(function(item) {
+            return item && item.star_type === starType;
+        }).sort(function(left, right) {
+            return new Date(right.earned_at || 0).getTime() - new Date(left.earned_at || 0).getTime();
+        });
+    }
+
+    function accountStarHistoryHref(item) {
+        var set = assignmentSet(item);
+        return practiceHref(Object.assign({}, set, {
+            history_attempt_id: item.best_attempt_id || null,
+            best_percentage: item.best_percentage
+        }), item.assignment_id || null, item.assignment_id ? 'assignments' : 'resources');
+    }
+
+    function accountStarHistoryRow(item) {
+        var set = assignmentSet(item);
+        var title = set.title || set.set_id || item.set_id || 'Practice';
+        var kind = studentMessageKind({ set: set });
+        var href = accountStarHistoryHref(item);
+        var earned = formatShortDate(item.earned_at);
+        var isSelfStudy = item.star_type === 'self_study';
+        return '<article class="account-star-history-row ' + (isSelfStudy ? 'is-self-study' : 'is-assignment') + '"' +
+            ' data-open-href="' + escapeHtml(href) + '" data-entry-kind="' + escapeHtml(kind) + '"' +
+            ' data-entry-title="' + escapeHtml(title) + '" data-entry-status="mastered"' +
+            ' data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
+            ' data-entry-locked="false" role="link" tabindex="0" aria-label="Open STAR history for ' + escapeHtml(title) + '">' +
+                '<span class="account-star-history-icon" aria-hidden="true">★</span>' +
+                '<span class="account-star-history-copy">' +
+                    '<span class="account-star-history-kind">' + escapeHtml(kind) + '</span>' +
+                    '<strong>' + escapeHtml(title) + '</strong>' +
+                    '<span class="account-star-history-meta">' +
+                        (earned ? '<span>Earned ' + escapeHtml(earned) + '</span>' : '<span>Earned STAR</span>') +
+                        '<span>Best ' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</span>' +
+                    '</span>' +
+                '</span>' +
+                '<span class="account-star-history-chevron" aria-hidden="true">›</span>' +
+            '</article>';
+    }
+
+    function renderAccountStarHistory(starType) {
+        var isSelfStudy = starType === 'self_study';
+        var items = accountStarItems(starType);
+        var title = isSelfStudy ? 'Self-study STARs' : 'Assignment STARs';
+        var description = isSelfStudy ? 'Earned by mastering work you chose yourself.' : 'Earned by mastering assigned work.';
+        profileContent.innerHTML =
+            '<section class="profile-card account-star-history">' +
+                '<div class="account-star-history-head">' +
+                    '<button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
+                    '<div><p class="eyebrow accent">STAR HISTORY</p><h2>' + escapeHtml(title) + '</h2></div>' +
+                    '<span class="star-counter account-star-history-count ' + (isSelfStudy ? 'self-study-star-counter' : 'assignment-star-counter') + '">★ ' + escapeHtml(items.length) + '</span>' +
+                '</div>' +
+                '<p class="muted account-star-history-description">' + escapeHtml(description) + '</p>' +
+                '<div class="account-star-history-list">' +
+                    (items.length ? items.map(accountStarHistoryRow).join('') : '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>No STARs here yet</strong><p>Master a task to add it to this history.</p></div>') +
+                '</div>' +
+            '</section>';
+        var backButton = document.getElementById('account-star-back');
+        if (backButton) backButton.addEventListener('click', function() {
+            var returnId = isSelfStudy ? 'self-study-star-counter' : 'star-counter';
+            state.accountStarView = '';
+            renderProfile();
+            window.requestAnimationFrame(function() {
+                var returnButton = document.getElementById(returnId);
+                if (returnButton) returnButton.focus({ preventScroll: true });
+            });
+        });
+    }
+
+    function openAccountStarHistory(starType) {
+        state.accountStarView = starType;
+        renderProfile();
+        window.requestAnimationFrame(function() {
+            var backButton = document.getElementById('account-star-back');
+            if (backButton) backButton.focus({ preventScroll: true });
         });
     }
 
@@ -2928,6 +3033,7 @@
         if (accountPanel) accountPanel.hidden = !state.accountPanelOpen;
         if (identityChip) identityChip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
         if (!state.accountPanelOpen) {
+            state.accountStarView = '';
             if (wasOpen) unlockStudentMessageBackground();
             return;
         }
@@ -2978,8 +3084,12 @@
 
     function loadStudentData() {
         return Promise.all([
-            window.MrCatCloud.callFunction('getDashboard').catch(function() {
-                return { success: false, assignments: [] };
+            window.MrCatCloud.callFunction('getDashboard').catch(function(error) {
+                return {
+                    success: false,
+                    code: error && error.code || 'DASHBOARD_REQUEST_FAILED',
+                    message: error && error.message || 'Unable to load assignments.'
+                };
             }),
             window.MrCatCloud.callFunction('getResources').catch(function() {
                 return { success: false, resources: [] };
@@ -2993,10 +3103,16 @@
             })
         ]).then(function(results) {
             var dashboard = results[0] || {};
+            if (dashboard.success === false) {
+                var dashboardError = new Error(dashboard.message || 'Unable to load assignments.');
+                dashboardError.code = dashboard.code || 'DASHBOARD_LOAD_FAILED';
+                throw dashboardError;
+            }
             state.assignments = dashboard.assignments || [];
             state.starCount = Number(dashboard.star_count || 0);
             state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
             state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
+            state.starAchievements = dashboard.star_achievements || [];
             state.teacherReplies = dashboard.teacher_replies || [];
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
@@ -3156,7 +3272,8 @@
     });
 
     document.addEventListener('click', function(e) {
-        if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) && !e.target.closest('#identity-chip')) {
+        if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) &&
+            !e.target.closest('#identity-chip') && !e.target.closest('#practice-entry-overlay')) {
             setAccountPanel(false);
         }
         var categoryTrigger = e.target.closest('#student-library-category-trigger');
@@ -3213,6 +3330,8 @@
     });
 
     document.addEventListener('keydown', function(e) {
+        var practiceOverlay = document.getElementById('practice-entry-overlay');
+        if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
         if (e.key === 'Escape' && state.accountPanelOpen) {
             setAccountPanel(false);
             if (identityChip) identityChip.focus();
@@ -3301,6 +3420,23 @@
             }
         })
         .catch(function(error) {
-            assignmentContent.innerHTML = '<div class="empty-card"><strong>Unable to load the dashboard</strong>' + escapeHtml(error.message || 'Please sign in again.') + '</div>';
+            var message = error && error.message || 'Please refresh and try again.';
+            assignmentContent.innerHTML = '<div class="empty-card"><strong>Unable to load the dashboard</strong>' +
+                escapeHtml(message) +
+                '<button class="btn btn-secondary" id="dashboard-retry-button" type="button">Retry</button></div>';
+            if (weeklyFocusProgress) {
+                weeklyFocusProgress.classList.remove('is-loading');
+                weeklyFocusProgress.setAttribute('aria-busy', 'false');
+                setWeeklyFocusHtml(renderWeeklyProgressRow({
+                    kind: 'this-week is-empty has-empty-status',
+                    label: 'THIS WEEK',
+                    emptyStatus: 'UNAVAILABLE',
+                    ariaLabel: 'Weekly assignment progress is unavailable. Refresh to retry.'
+                }));
+            }
+            if (calendarButton) calendarButton.disabled = true;
+            if (messageButton) messageButton.disabled = true;
+            var retryButton = document.getElementById('dashboard-retry-button');
+            if (retryButton) retryButton.addEventListener('click', function() { window.location.reload(); });
         });
 })();

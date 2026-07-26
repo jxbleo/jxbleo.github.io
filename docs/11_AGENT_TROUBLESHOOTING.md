@@ -28,6 +28,8 @@
 | 学生删除后用相同 Login ID 重建仍报 `STUDENT_ID_EXISTS` | 线上 `teacherAdmin` 仍是旧版，已删除 profile 的 `student_id` 尚未归档释放；或 Authentication 中同名 end user 仍存在 | 部署最新版 `teacherAdmin`；检查 deleted profile 的 `deleted_student_id_snapshot` 与归档 `student_id`；再查 Authentication username |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
+| 学生有大量历史记录，但 Calendar 和 Finished 同时为空 | `getDashboard` 超过 CloudBase 执行时限；旧前端又把失败响应吞成空 assignments | 先查 `getDashboard` 日志是否为 `调用失败(433)` / `Invoking task timed out`；部署批量 set 查询版本，将执行超时设为至少 10 秒（建议 15 秒），并发布带 Retry 状态的 Dashboard 静态文件 |
+| Personal Center 星星数量正确，但点开来源清单为空 | 静态 Dashboard 已更新但云端 `getDashboard` 仍是未返回 `star_achievements` 的旧版 | 重建并部署 `getDashboard`，发布带最新 cache query 的 `dashboard.html` / `dashboard.js`；不需要迁移 `student_set_achievements` |
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
 | 学生铃铛有红色数字但 `THIS WEEK` / `OVERDUE` 都为空 | 旧静态代码仍把所有 `to_do`（包括未来作业）计入红点，或旧 assignment 尚未补齐 `due_at` | 发布最新 Dashboard/Teacher 静态文件与 `getDashboard`/`teacherAdmin`；dry-run `backfillAssignmentDueWeeks`，确认未来任务只在 Upcoming 且不计红点 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
@@ -120,6 +122,36 @@
 - 至少覆盖状态单调、reassign、STAR、Argue、Vocabulary 计分边界。
 
 ## 3. 按日期整理的技术变更记录
+
+### 2026-07-26：学生大量历史记录导致 Dashboard 假空白
+
+现象：
+
+- 数据库中 assignments、attempts 和 STAR 都存在，但学生 Calendar 与
+  Finished 同时为空。
+- CloudBase 日志间歇出现 `调用失败(433)`，详情为
+  `Invoking task timed out after 3 seconds`。
+
+原因：
+
+- `getDashboard` 原来先串行读取学生集合，再对每个历史 `set_id` 单独查询
+  `sets`。历史 set 较多时，冷启动或数据库延迟会越过三秒限制。
+- `dashboard.js` 捕获调用失败后返回空 `assignments`，把后端错误伪装成
+  “账号没有记录”。
+
+修复：
+
+- assignments、attempts、answer disputes 和 achievements 改为并行读取。
+- visible set metadata 改为按最多 100 个 `set_id` 分块批量读取。
+- 学生端失败时显示 `Unable to load the dashboard`、`UNAVAILABLE` 和 Retry。
+- `npm run test:assignment-schedule` 用 60 个 distinct historical sets 验证
+  全部记录返回且只执行一次批量 sets 读取。
+
+部署：
+
+- 发布 Dashboard 静态文件并部署新版 `getDashboard.zip`。
+- CloudBase `getDashboard` 执行超时至少设为 10 秒，建议 15 秒。
+- 不需要数据库迁移或内容导入。
 
 ### 2026-06-20：BBC Assign 显示 Import to CloudBase
 

@@ -3,6 +3,33 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-07-26: Keep STAR Provenance Separate From Future Reward Spending
+
+Decision:
+
+Personal Center STAR histories are projections of permanent
+`student_set_achievements` records. Assignment and self-study STARs retain
+their distinct types and link to the best historical attempt. A future reward
+system will record credits and redemptions in a separate append-only ledger
+that references `achievement_id`; it will not mark achievement rows as spent
+or reduce their count.
+
+Reason:
+
+An earned STAR is both a student-facing achievement and an audit trail for the
+task that produced it. Keeping reward transactions separate preserves that
+history, supports reversals and policy changes, and prevents a redemption bug
+from erasing learning evidence.
+
+Trade-offs:
+
+- Good: Personal Center always explains where every displayed STAR came from.
+- Good: future balances and redemptions can be audited independently.
+- Cost: the later reward feature needs a ledger, idempotency rules, and an
+  explicit policy for the value of yellow versus blue STARs.
+- Deferred: no reward collection, balance calculation, or exchange rate is
+  introduced by the STAR-history feature.
+
 ## 2026-07-25: Use One Native-Scroll Percentage Wheel for Teacher Thresholds
 
 Decision:

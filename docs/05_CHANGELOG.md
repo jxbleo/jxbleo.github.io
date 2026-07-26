@@ -5,8 +5,25 @@
 
 ## 2026-07-26
 
+### Fixed
+
+- Fixed student Dashboard histories intermittently appearing empty when
+  `getDashboard` exceeded its former three-second CloudBase execution window.
+  The function now reads the student's assignments, attempts, achievements,
+  and disputes concurrently and resolves visible set metadata in bounded batch
+  queries instead of one serial query per set. Dashboard request failures now
+  show an explicit Retry state instead of being presented as an account with no
+  assignments. Deploy the rebuilt `getDashboard` function and set its execution
+  timeout to at least 10 seconds; 15 seconds is recommended as headroom.
+
 ### Added
 
+- Added clickable yellow assignment and blue self-study STAR counters in the
+  student Personal Center. Each opens a same-card, newest-first task provenance
+  list backed by `student_set_achievements`, including earned date, best score,
+  and a link to the best historical attempt. The response is designed so a
+  future reward ledger can reference permanent achievements without consuming
+  or rewriting them.
 - Added a compact assignment-style success confirmation after a teacher resets
   a student password, including the Login ID and configured initial password.
 - Added a student-only Progress calendar in the Dashboard's right-side utility

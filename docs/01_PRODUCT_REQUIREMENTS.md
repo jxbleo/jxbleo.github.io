@@ -90,6 +90,9 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 点击右上角姓名打开居中的独立 Personal Center；它使用与 To Do List、日历、
   生词本一致的苹果式厚玻璃卡片和柔和暗化背景。卡片不显示右上角叉号，唯一的
   `Close` 胶囊独立位于卡片外部正下方；背景点击和 Escape 也可关闭并恢复焦点
+- Personal Center 姓名右侧的黄色 assignment STAR 和蓝色 self-study STAR 均可
+  点击；在同一张卡片内按最新获得时间显示对应任务、获得日期和历史最高分，
+  每条记录可进入关联的最佳历史 attempt。Back 返回账户摘要并把焦点还给原星星
 - `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；
   `ASSIGNMENTS` 标题使用与 `PERSONAL CENTER` 一致的绿色字体。首栏 `THIS WEEK`
   默认展开并可收起，底部 `FINISHED` 默认收起并可展开，两栏标题右侧不显示数字
@@ -454,6 +457,10 @@ flowchart TD
 - 后续低分、改答案、改通过线都不能取消已有 STAR
 - assignment STAR 应按 `assignment_id` 记录
 - self-study STAR 用 `assignment_id: null`
+- Personal Center 的来源清单直接读取这些永久记录，不从 assignments 或
+  localStorage 临时推导
+- 后续奖励兑换不得消耗或修改这些成就记录；兑换余额与支出必须使用独立的
+  append-only 交易流水，并通过 `achievement_id` 保留审计关系
 
 ### 7.7 answer_disputes
 
@@ -575,6 +582,8 @@ flowchart TD
 - 当前学生 assignments
 - assignment 状态和 best attempt
 - self-study STAR
+- newest-first `star_achievements` 来源明细；每项包含 STAR 类型、set、
+  assignment、首次获得时间、最佳 attempt 和最高分
 - teacher replies
 - answer reveal
 - historical attempt review
@@ -586,6 +595,9 @@ flowchart TD
 - 只返回当前 authenticated student 的数据
 - 不允许看别人的作业或 attempt
 - 如果该学生正在另一设备或页签进行 active 词汇正式 Test，应拒绝学生功能请求
+- 大量历史 assignments / attempts / STAR 也必须完整返回；独立集合应并行读取，
+  `sets` 元数据应按 `set_id` 批量读取，不得随历史 set 数量执行逐条串行查询
+- Dashboard 聚合失败必须显示可重试错误，不能把失败响应伪装成“没有作业”
 - 历史 review 默认不返回正确答案和解析
 - reveal answers 后才允许历史 review 返回 explanation
 
