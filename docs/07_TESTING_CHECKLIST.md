@@ -205,10 +205,10 @@ Check:
   overdue unfinished work first, followed by current unfinished and finished
   work. Both focused modals use green Personal Center title typography and do
   not render the Teacher Replies icon or unread badge
-- every untouched assignment has a red `TO DO` pill aligned with the finished
-  score position. A failed submission stays in `TO DO` and replaces that label
-  with its red best-percentage pill; only `passed` / `mastered` assignments move
-  to `FINISHED` and use the green score pill
+- every untouched assignment has a red `0%` pill aligned with the finished score
+  position; no task row displays `TO DO` text. A failed submission remains open
+  and replaces `0%` with its red historical-best percentage; only `passed` /
+  `mastered` assignments move to `FINISHED` and use the green score pill
 - To Do List assignment rows have no separate `Start` / `Open` buttons; the whole
   compact row is keyboard/click accessible, labels BBC work as `BBC` and every
   IELTS Reading/Listening task as `IELTS`, and keeps titles on one line. Only an
@@ -226,7 +226,8 @@ Check:
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
 - Teacher Replies has no top-right close icon or bottom Close/Done action. Its
-  top-left `Back` marks currently unseen items read, clears the bubble badge
+  top-left `Back` is visibly button-like with a left arrow, glass fill, border,
+  shadow, and hover/focus/press feedback. It marks currently unseen items read, clears the bubble badge
   without changing the To Do List badge, restores the same Assignments modal
   and bubble focus, and keeps each `Go to question` link working
 - the notebook icon remains in the right-side utility group and opens My

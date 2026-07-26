@@ -1445,7 +1445,7 @@
                 ? '<span class="student-message-score is-upcoming">DUE ' + escapeHtml(formatShortDate(dueDate).toUpperCase()) + '</span>'
             : !finished && bestPercentage != null
                 ? '<span class="student-message-score is-todo">' + escapeHtml(formatEntryPercent(bestPercentage)) + '</span>'
-                : '<span class="student-message-score is-todo">TO DO</span>';
+                : '<span class="student-message-score is-todo">0%</span>';
         var entryStatus = finished ? status : 'not-passed';
         var entryLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="student-message-task ' + escapeHtml(type) + '"' +
@@ -1695,7 +1695,10 @@
             '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
                 '<div class="teacher-replies-dialog-head">' +
                     '<div class="teacher-replies-title-row">' +
-                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back to Assignments">Back</button>' +
+                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back to Assignments">' +
+                            '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m11.5 4.5-5 5.5 5 5.5"></path></svg>' +
+                            '<span>Back</span>' +
+                        '</button>' +
                         '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
                     '</div>' +
                     '<p>' + (replies.length

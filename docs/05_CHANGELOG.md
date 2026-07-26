@@ -23,6 +23,10 @@
 
 ### Changed
 
+- Standardized untouched student assignment rows on a red `0%` score instead of
+  `TO DO`, while attempted failures continue to show their red historical best.
+  Strengthened Teacher Replies `Back` into an arrowed glass capsule with visible
+  border, depth, hover/focus, and press feedback.
 - Added a red breathing state to the This Week progress track whenever overdue
   work is included. Empty Upcoming now removes its misleading `0%` track and
   becomes a non-interactive calendar-check `NO TASKS` state, while populated

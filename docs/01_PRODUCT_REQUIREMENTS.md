@@ -93,7 +93,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；
   `ASSIGNMENTS` 标题使用与 `PERSONAL CENTER` 一致的绿色字体。首栏 `THIS WEEK`
   默认展开并可收起，底部 `FINISHED` 默认收起并可展开，两栏标题右侧不显示数字
-  计数；Finished 任务按完成时间倒序，最新完成的置顶
+  计数；Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示
+  红色 `0%`，尝试但未通过时显示红色历史最高分，不再显示 `TO DO` 文字
 - 首页大卡片固定显示 `THIS WEEK`、`UPCOMING` 两条摘要。`THIS WEEK` 合并
   本周任务与全部逾期未完成任务，并把逾期任务计入总数；点击后逾期任务排在
   列表最前并使用红色脉冲提示；只要存在逾期任务，This Week 进度轨道也使用
@@ -104,7 +105,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   图标内部不带勾，红点只提示未读回复。回复弹窗没有关闭叉号或底部 Close，
   左上角 `Back` 标记当前回复已读并返回同一个 Assignments 弹窗。点击首页
   `THIS WEEK` 或 `UPCOMING` 打开的聚焦任务弹窗不显示 Teacher Replies 图标，
-  两者标题使用与 `PERSONAL CENTER` 一致的绿色字体
+  两者标题使用与 `PERSONAL CENTER` 一致的绿色字体。Teacher Replies 左上角
+  Back 必须呈现为带返回箭头、边框、玻璃底色和按压反馈的明确胶囊按钮
 - 从右侧工具区的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
   完成的 assignment 和自主练习 STAR，点击日期查看当天任务，不显示教师端的
   `Wxx` 周编号；弹窗使用与 Assignments 一致的透明玻璃材质，任务行也复用

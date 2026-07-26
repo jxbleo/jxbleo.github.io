@@ -2647,7 +2647,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-replies-title-row {
     display: grid;
-    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    grid-template-columns: 88px minmax(0, 1fr) 88px;
     align-items: center;
     gap: 8px;
 }
@@ -2655,29 +2655,50 @@ body:not(.teacher-page) .tab-button.active {
     content: "";
 }
 .teacher-replies-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     justify-self: start;
-    min-height: 34px;
-    padding: 0 8px;
-    border: 0;
-    border-radius: 9px;
+    min-width: 76px;
+    min-height: 38px;
+    padding: 0 11px 0 9px;
+    border: 1px solid rgba(19,118,109,0.2);
+    border-radius: 999px;
     color: #13766d;
-    background: transparent;
+    background: rgba(255,255,255,0.58);
+    box-shadow: 0 7px 18px rgba(20,54,47,0.08), inset 0 1px 0 rgba(255,255,255,0.82);
     font: inherit;
     font-size: 0.78rem;
     font-weight: 900;
     cursor: pointer;
-    transition: color 140ms ease, background 140ms ease, transform 100ms ease;
+    transition: color 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 100ms ease;
+}
+.teacher-replies-back svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 .teacher-replies-back:hover,
 .teacher-replies-back:focus-visible {
     color: #0d5b54;
-    background: rgba(19,118,109,0.08);
+    border-color: rgba(19,118,109,0.34);
+    background: rgba(255,255,255,0.82);
+    box-shadow: 0 10px 24px rgba(20,54,47,0.13), inset 0 1px 0 #fff;
+    transform: translateY(-1px);
 }
 .teacher-replies-back:focus-visible {
     outline: 3px solid rgba(19,118,109,0.18);
     outline-offset: 2px;
 }
-.teacher-replies-back:active { transform: scale(0.95); }
+.teacher-replies-back:active {
+    transform: scale(0.96);
+    box-shadow: 0 3px 9px rgba(20,54,47,0.1), inset 0 1px 0 rgba(255,255,255,0.7);
+}
 .teacher-replies-dialog-head p {
     margin: 6px 0 0;
     color: var(--muted);
