@@ -87,12 +87,11 @@ Shared shell visual checks:
 
 Practice navigation checks:
 
-- Student Dashboard shows the unframed solid black full-body leaping-cat mark
-  at the far left instead of a wordmark or line-art cat; its `38px` footprint
-  matches the adjacent circular utility buttons, and its restrained
-  readying motion stops when reduced motion is
-  enabled, and the header/workspace left and right edges stay aligned. The
-  welcome pane has no `STUDENT WORKSPACE` label. Its smaller,
+- Student Dashboard does not render a cat logo in its header; the standalone
+  To Do List button occupies the far-left position without extra brand width,
+  while the header/workspace left and right edges stay aligned. The Teacher
+  header logo remains unchanged. The welcome pane has no `STUDENT WORKSPACE`
+  label. Its smaller,
   China-time-aware greeting stays on one line; short greetings remain still,
   only overflowing greetings reveal horizontally, and reduced motion falls
   back to a static ellipsis. The motivational sentence remains below it
