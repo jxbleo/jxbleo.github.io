@@ -20,6 +20,10 @@
     var restoredTeacherWorkspaceView = '';
 
     function readMatrixDensityPreference() {
+        // A desktop density can make the sticky student column consume most of
+        // a phone viewport. Phones always enter the automatic Fit layout; a
+        // manual phone adjustment still lives in state/history for that visit.
+        if (matrixUsesPhoneLayout()) return null;
         try {
             var stored = window.localStorage.getItem(MATRIX_DENSITY_STORAGE_KEY);
             if (stored == null || stored === '') return null;
@@ -33,6 +37,7 @@
     }
 
     function saveMatrixDensityPreference(value) {
+        if (matrixUsesPhoneLayout()) return;
         try {
             window.localStorage.setItem(MATRIX_DENSITY_STORAGE_KEY, String(value));
         } catch (error) {
@@ -1219,7 +1224,8 @@
         state.matrixClassFilter = String(matrix.class_filter || '');
         state.matrixColumnFilter = String(matrix.column_filter || '');
         state.matrixDateFilter = String(matrix.date_filter || 'all');
-        if (Number.isInteger(matrix.density_step)
+        if (matrix.phone_layout === matrixUsesPhoneLayout()
+            && Number.isInteger(matrix.density_step)
             && matrix.density_step >= 0
             && matrix.density_step < MATRIX_DENSITY_TASK_WIDTHS.length) {
             state.matrixDensityStep = matrix.density_step;
@@ -1266,6 +1272,7 @@
                 class_filter: state.matrixClassFilter || '',
                 column_filter: state.matrixColumnFilter || '',
                 date_filter: state.matrixDateFilter || 'all',
+                phone_layout: matrixUsesPhoneLayout(),
                 density_step: resolvedMatrixDensityStep()
             },
             progress_mode: state.assignProgressMode === 'task' ? 'task' : 'student',
@@ -6732,7 +6739,7 @@
         var nextPhoneLayout = matrixUsesPhoneLayout();
         if (nextPhoneLayout === matrixAutoPhoneLayout) return;
         matrixAutoPhoneLayout = nextPhoneLayout;
-        if (state.matrixDensityStep != null) return;
+        state.matrixDensityStep = nextPhoneLayout ? null : readMatrixDensityPreference();
         var overview = document.getElementById('assignment-overview');
         if (overview && overview.querySelector('.progress-matrix-scroll')) renderAssignmentOverview();
     }, { passive: true });

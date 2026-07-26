@@ -458,6 +458,13 @@ subtle neutral light movement, and no centered spinner. On the first successful
 matrix render, the real matrix content should softly fade and lift into place
 instead of replacing the loading state abruptly.
 
+On phone-width viewports, the matrix always enters its automatic `Fit` density
+instead of inheriting a density saved on desktop. The sticky student column's
+actual grid track must follow the compact displayed name (surname at `Fit`),
+not merely shorten the text inside a desktop-width track. A manual phone
+`−`/`Fit`/`+` adjustment may survive practice-preview Back navigation for that
+visit, but it is not persisted as the next phone-load default.
+
 Teacher visual style uses the same neutral Liquid Glass system shell as the
 login, public Library, and student Dashboard. Header controls, sidebar,
 workspace frame, and dialogs may use functional glass; the matrix, grouped

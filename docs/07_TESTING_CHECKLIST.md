@@ -473,6 +473,11 @@ Check:
   remain closed. Repeat once with bfcache disabled/evicted to exercise the
   history/session fallback. IELTS Reading and Listening Back controls remain in
   their existing top exam bars.
+- Save a wide Teacher View density on desktop, then load the same site on a
+  phone-width viewport. The matrix must start in Fit, show the surname in the
+  sticky first column, and make the actual first grid track compact with no
+  desktop-width blank area. A manual phone density change may survive preview
+  Back navigation, but a fresh phone load must return to Fit.
 - after one successful live Teacher load, reload or reopen Teacher on the same
   private device and confirm the redacted IndexedDB matrix snapshot paints
   before the authoritative refresh. Inspect stored data to confirm it has no

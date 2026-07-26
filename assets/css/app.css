@@ -8359,6 +8359,10 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         grid-template-columns: var(--matrix-student-col, max-content) repeat(var(--matrix-cols, 6), minmax(var(--matrix-task-col, 96px), 1fr));
         min-width: var(--matrix-min, 560px);
     }
+    .matrix-density-fit .progress-matrix-row {
+        grid-template-columns: minmax(0, var(--matrix-student-col-fit, 5ch)) repeat(var(--matrix-cols, 6), minmax(31px, 1fr));
+        min-width: var(--matrix-fit-min, 340px);
+    }
     .progress-matrix-row > span,
     .progress-matrix-row > a,
     .progress-matrix-row > button.progress-matrix-due-cell,
