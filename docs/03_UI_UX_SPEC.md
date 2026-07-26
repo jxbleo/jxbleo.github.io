@@ -86,11 +86,12 @@ Navigation:
   single-line overflow-scrolling title in the center, and score plus chevron on
   the right. Activating a row opens the same entry confirmation and practice
   destination; closing the confirmation restores the calendar and row focus.
-- The To Do List modal places Teacher Replies in its top-right corner as a plain
-  speech-bubble SVG with three quiet dots and no embedded checkmark. Its badge
-  counts unread replies. Teacher Replies has no close icon or bottom Close
-  action; a top-left `Back` control marks current replies seen and restores the
-  same Assignments modal and bubble focus.
+- The main header places a plain Teacher Replies speech-bubble button directly
+  to the right of the far-left To Do List button. Its three quiet dots contain
+  no embedded checkmark, and its badge counts unread replies. Teacher Replies
+  has no close icon or bottom Close action; its top-left `Back` control marks
+  current replies seen, returns to the main Dashboard, and restores bubble
+  focus.
 - My Words opens in an independent modal from a notebook icon in the right-side
   utility group; closing and reopening restores the modal's previous
   internal scroll position
@@ -112,15 +113,16 @@ Assignment access and progress display:
   Assignments modal containing only that group's task list. Task rows no longer
   expand directly inside the hero; focused lists place unfinished work before
   finished work.
-- the default modal opened from `To Do List` is titled `ASSIGNMENTS`, centered
-  at the top in the same small green accent type as `PERSONAL CENTER`. The title has no translucent
-  rectangular header plate behind it. Its assignment card is approximately
+- the default modal opened from `To Do List` has no separate `ASSIGNMENTS`
+  heading; `THIS WEEK` is its first visible row. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
   sits directly below the card. The former three top summary capsules are not
-  rendered. `THIS WEEK` and `FINISHED` are both disclosures without numeric
-  count pills: This Week starts open, while Finished starts closed. Finished
-  tasks are sorted newest-completed first.
+  rendered. `THIS WEEK`, `UPCOMING`, and `FINISHED` are centered disclosures
+  without numeric count pills and all start open while remaining independently
+  collapsible. Their headings are sticky inside the dialog: This Week first
+  occupies the top position, Upcoming pushes it away and replaces it, then
+  Finished replaces Upcoming. Finished tasks are sorted newest-completed first.
   Every unfinished row has a red right-side pill in
   the same position as a finished score: it reads `0%` before any attempt and
   shows the best failed percentage after an unsuccessful submission. The task
@@ -356,10 +358,9 @@ Student account menu:
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
 - assignment reminders and finished work share the To Do List dialog.
-- Teacher Replies uses a separate plain speech-bubble SVG button at the
-  top-right of the default To Do List dialog. Focused This Week and Upcoming
-  task-list modals omit this control and use the same green accent title
-  typography as Personal Center.
+- Teacher Replies uses a separate plain speech-bubble SVG button immediately to
+  the right of the main Dashboard's To Do List button. The default To Do List
+  dialog and focused This Week/Upcoming task-list dialogs omit this control.
   Its modal lists all resolved replies newest-first, including previously read
   history. Its top-left `Back` marks unseen items read when returning, clearing
   the bubble badge without removing history. Back is a clearly interactive

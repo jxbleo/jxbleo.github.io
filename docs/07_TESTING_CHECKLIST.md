@@ -196,18 +196,18 @@ Check:
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
-  utility controls and opens a modal titled `ASSIGNMENTS` in small centered
-  green Personal Center type, with no translucent rectangular plate behind the title. It shows
-  To Do and finished assignment messages and no Teacher Replies section. Its shorter,
+  utility controls, with the Teacher Replies bubble immediately to its right.
+  It opens a modal whose first visible row is `THIS WEEK`, with no separate
+  `ASSIGNMENTS` heading or Teacher Replies control. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
-- the default Assignments modal has no To Do / Upcoming / Finished summary
-  capsules above its sections; its centered `ASSIGNMENTS` title matches the
-  green `PERSONAL CENTER` typography. `THIS WEEK` starts expanded and can be
-  collapsed, while `FINISHED` starts collapsed and can be expanded. Neither
-  disclosure header shows a numeric count pill, and Finished rows are ordered
-  by completion time with the newest first; both remain keyboard operable
+- the default Assignments modal has no summary capsules above its sections.
+  `THIS WEEK`, `UPCOMING`, and `FINISHED` are centered, keyboard-operable
+  disclosures without count pills; all start expanded and each can collapse.
+  Scroll the internal task list: This Week sticks first, Upcoming pushes it off
+  and occupies the same top position, then Finished does the same. Finished rows
+  remain ordered by completion time with the newest first
 - the hero shows This Week and Upcoming completion summaries without inline task
   rows; activating one opens its focused task-list modal. This Week includes
   overdue unfinished work first, followed by current unfinished and finished
@@ -228,16 +228,16 @@ Check:
   both modal layers and opens the task
 - the student assignment entry uses a checklist SVG rather than a bell or a
   single completion checkmark
-- the To Do List modal has a plain speech-bubble SVG button in its top-right
-  corner; it has no embedded checkmark and opens `Teacher Replies`
+- the main header has a plain speech-bubble SVG immediately to the right of To
+  Do List; it has no embedded checkmark and opens `Teacher Replies`
   even when the history is empty; all resolved replies appear newest-first,
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
 - Teacher Replies has no top-right close icon or bottom Close/Done action. Its
   top-left `Back` is visibly button-like with a left arrow, glass fill, border,
   shadow, and hover/focus/press feedback. It marks currently unseen items read, clears the bubble badge
-  without changing the To Do List badge, restores the same Assignments modal
-  and bubble focus, and keeps each `Go to question` link working
+  without changing the To Do List badge, restores the main Dashboard and bubble
+  focus, and keeps each `Go to question` link working
 - the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
 - the calendar icon remains in the right-side utility group and opens a
@@ -258,6 +258,10 @@ Check:
 - at 390px phone, iPad, and desktop widths, all seven date columns remain fully
   visible with no horizontal page overflow; Close, Escape, and backdrop dismiss
   the modal and restore focus to the calendar button
+- On iPad Safari, cold-load the Dashboard and open Calendar for the first time.
+  Every date number must be vertically and horizontally centered in its square
+  before and after changing months, selecting a day, rotating, and reopening
+  the modal; STAR markers remain independently anchored at bottom-right
 - Library shows a large heading with the search button and `Practice` / `Exam`
   control grouped beside it; clicking the button expands an anchored search
   input, while Close and Escape clear/collapse it and restore focus to the button

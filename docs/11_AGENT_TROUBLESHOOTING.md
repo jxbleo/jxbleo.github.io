@@ -32,6 +32,7 @@
 | Personal Center 星星数量正确，但点开来源清单为空 | 静态 Dashboard 已更新但云端 `getDashboard` 仍是未返回 `star_achievements` 的旧版 | 重建并部署 `getDashboard`，发布带最新 cache query 的 `dashboard.html` / `dashboard.js`；不需要迁移 `student_set_achievements` |
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
 | 手机 Teacher View 姓名已缩短但首列仍很宽 | 桌面矩阵 density 存在同一个 localStorage 键中并优先于手机自动 Fit；旧 history 也可能跨断点恢复 density | 发布最新版 `teacher.js` 和 `app.css`；确认手机首次载入 `resolvedMatrixDensityStep()` 为 0，且移动端 Fit 网格使用 `--matrix-student-col-fit` |
+| iPad 第一次打开学生 Calendar 时日期数字靠方格上方 | Safari 首次解析 `aspect-ratio` 时仍可能沿用原生 button 行盒/基线，单靠 Grid `place-items` 不稳定 | 发布最新版 `app.css`；确认 `.student-calendar-day` 重置 `appearance`，使用 Flex 双轴居中和 `line-height: 1` |
 | Teacher View 点击 `Wxx` 没反应，或任务详情的 Edit 不打开参数弹窗 | 静态页面可能已更新，但前端编辑资格仍只认 `assignment_id`；旧缓存/旧记录可能只有 `_id` 或 `progress_id: assigned::<id>` | 发布最新版 `teacher.js`；确认 `assignmentStableId` 同时用于编辑资格、scope、Save 与 Cancel payload；只有保存阶段找不到记录才需要再检查 `teacherAdmin` 部署 |
 | 学生铃铛有红色数字但 `THIS WEEK` / `OVERDUE` 都为空 | 旧静态代码仍把所有 `to_do`（包括未来作业）计入红点，或旧 assignment 尚未补齐 `due_at` | 发布最新 Dashboard/Teacher 静态文件与 `getDashboard`/`teacherAdmin`；dry-run `backfillAssignmentDueWeeks`，确认未来任务只在 Upcoming 且不计红点 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
