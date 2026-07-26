@@ -400,6 +400,7 @@ function testDashboardScheduleModel() {
   const upcomingMarkup = target.innerHTML.slice(target.innerHTML.indexOf("UPCOMING"));
   assert(upcomingMarkup.includes("NO TASKS"));
   assert(upcomingMarkup.includes("weekly-progress-empty-status"));
+  assert(upcomingMarkup.includes('d="m8.8 15.4 2.1 2.1 4.5-4.5"'));
   assert(!upcomingMarkup.includes("weekly-progress-percent"));
   assert(!upcomingMarkup.includes('data-weekly-focus-scope="upcoming"'));
 

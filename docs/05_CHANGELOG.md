@@ -23,6 +23,8 @@
 
 ### Changed
 
+- Centered the checkmark inside the empty Upcoming calendar icon instead of
+  positioning it in the calendar's lower-right corner.
 - Standardized untouched student assignment rows on a red `0%` score instead of
   `TO DO`, while attempted failures continue to show their red historical best.
   Strengthened Teacher Replies `Back` into an arrowed glass capsule with visible

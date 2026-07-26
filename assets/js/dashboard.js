@@ -1805,7 +1805,7 @@
                 '<div class="weekly-progress-heading">' +
                     '<span class="weekly-progress-label">' + escapeHtml(options.label || '') + '</span>' +
                     (emptyStatus
-                        ? '<span class="weekly-progress-empty-status"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path><path d="m13.8 16.2 1.8 1.8 4-4"></path></svg><span>' + escapeHtml(emptyStatus) + '</span></span>'
+                        ? '<span class="weekly-progress-empty-status"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path><path d="m8.8 15.4 2.1 2.1 4.5-4.5"></path></svg><span>' + escapeHtml(emptyStatus) + '</span></span>'
                         : '<span class="weekly-progress-track" role="progressbar" aria-label="' + escapeHtml(options.progressLabel || options.label || '') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(value) + '">' +
                             '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
                         '</span>' +
