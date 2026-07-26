@@ -361,10 +361,18 @@ function testStudentCalendarModel() {
 
 function testStudentModalShellMarkup() {
   const dashboardHtml = fs.readFileSync(path.resolve(__dirname, "../dashboard.html"), "utf8");
+  const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
   assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
   assert(dashboardHtml.includes('class="student-account-dialog"'));
   assert(dashboardHtml.includes('id="student-account-close"'));
+  assert(appCss.includes(".student-words-stack,\n.student-calendar-stack"));
+  assert(appCss.includes("width: min(720px, 100%);\n    height: min(720px, 86vh);"));
+  assert(appCss.includes(".student-words-stack,\n    .student-calendar-stack"));
+  assert(appCss.includes("height: min(700px, 84vh);"));
+  assert(appCss.includes(".student-message-close,\n.student-words-outside-close,\n.student-calendar-outside-close"));
+  assert(!appCss.includes("height: min(620px, 74vh);"));
+  assert(!appCss.includes("height: min(590px, 72vh);"));
 }
 
 function relativeDueWeekEnd(weekOffset) {

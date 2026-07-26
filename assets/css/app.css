@@ -399,15 +399,15 @@ html.teacher-modal-scroll-locked {
     backdrop-filter: blur(8px) saturate(118%);
 }
 .student-words-overlay[hidden] { display: none; }
-.student-words-stack {
+.student-words-stack,
+.student-calendar-stack {
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     gap: 11px;
-    width: min(540px, 100%);
-    height: min(620px, 74vh);
-    height: min(620px, 74dvh);
-    min-height: min(470px, 74vh);
-    min-height: min(470px, 74dvh);
+    width: min(720px, 100%);
+    height: min(720px, 86vh);
+    height: min(720px, 86dvh);
+    min-height: 0;
 }
 .student-words-dialog {
     display: grid;
@@ -559,14 +559,6 @@ html.teacher-modal-scroll-locked {
     backdrop-filter: blur(8px) saturate(118%);
 }
 .student-calendar-overlay[hidden] { display: none; }
-.student-calendar-stack {
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 11px;
-    width: min(720px, 100%);
-    max-height: min(720px, 86vh);
-    max-height: min(720px, 86dvh);
-}
 .student-calendar-dialog {
     display: grid;
     grid-template-rows: minmax(0, 1fr);
@@ -2849,6 +2841,7 @@ body:not(.teacher-page) .tab-button.active {
     backdrop-filter: blur(30px) saturate(160%);
 }
 .student-message-close,
+.student-words-outside-close,
 .student-calendar-outside-close {
     min-width: 132px;
     min-height: 44px;
@@ -2867,20 +2860,24 @@ body:not(.teacher-page) .tab-button.active {
     transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
 }
 .student-message-close:hover,
+.student-words-outside-close:hover,
 .student-calendar-outside-close:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 15px 34px rgba(27, 45, 56, 0.2), inset 0 1px 0 #fff;
 }
 .student-message-close:active,
+.student-words-outside-close:active,
 .student-calendar-outside-close:active { transform: scale(0.97); }
 .student-message-close:focus-visible,
+.student-words-outside-close:focus-visible,
 .student-calendar-outside-close:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
 @media (prefers-reduced-transparency: reduce) {
     .student-message-close,
+    .student-words-outside-close,
     .student-calendar-outside-close {
         border-color: rgba(38, 52, 59, 0.18);
         background: #f8faf9;
@@ -2890,6 +2887,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 @media (prefers-contrast: more) {
     .student-message-close,
+    .student-words-outside-close,
     .student-calendar-outside-close {
         border-color: #26343b;
         background: #fff;
@@ -8043,12 +8041,12 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
         background: rgba(17,38,34,0.27);
     }
-    .student-words-stack {
+    .student-words-stack,
+    .student-calendar-stack {
         width: 100%;
-        height: min(590px, 72vh);
-        height: min(590px, 72dvh);
-        min-height: min(450px, 72vh);
-        min-height: min(450px, 72dvh);
+        height: min(700px, 84vh);
+        height: min(700px, 84dvh);
+        min-height: 0;
     }
     .student-words-dialog {
         width: 100%;
@@ -8060,11 +8058,6 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .my-words-manual { padding-inline: 14px; }
     .my-words-search-wrap { padding-inline: 12px; }
     .student-words-dialog-scroll { padding-inline: 14px; }
-    .student-calendar-stack {
-        width: 100%;
-        max-height: min(700px, 84vh);
-        max-height: min(700px, 84dvh);
-    }
     .student-calendar-dialog { border-radius: 25px; }
     .student-calendar-scroll { padding: 12px 12px 17px; }
     .student-calendar-weekdays,
