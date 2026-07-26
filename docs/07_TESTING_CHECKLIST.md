@@ -105,17 +105,20 @@ Practice navigation checks:
   surface in two columns; below 900px they stack without page-level horizontal
   overflow or nested glass cards
 - the loading state shows one quiet `THIS WEEK` label and inline skeleton track;
-  after load, `OVERDUE`, `THIS WEEK`, and `UPCOMING` always appear in that
-  order. Each track and visible percent label equals finished assignments divided
-  by total assignments in that due-date group and excludes self-study STAR records
+  after load, `THIS WEEK` and `UPCOMING` always appear in that order. This Week's
+  denominator combines current-week assignments with every overdue unfinished
+  assignment; its numerator is current-week finished work. Upcoming uses next
+  week's completed/total values, and both exclude self-study STAR records
 - while current-week work is unfinished, future assignments remain visible in
   the To Do List's Upcoming section but do not contribute to its red badge
 - completing assignments updates the matching fill and numeric percentage
-  without replacing or hiding any of the three summary rows
-- clicking or keyboard-activating `OVERDUE`, `THIS WEEK`, or `UPCOMING` opens a
+  without replacing or hiding either summary row
+- clicking or keyboard-activating `THIS WEEK` or `UPCOMING` opens a
   focused Assignments modal containing only that due-date group's task rows;
+  This Week places overdue unfinished work first with a restrained red pulse,
   tasks are not expanded directly in the hero, and task activation still opens
-  the standard entry confirmation
+  the standard entry confirmation. Reduced motion replaces the pulse with a
+  static red emphasis
 - each progress bar and numeric percentage are inline to the right of its section label; no right-side
   count or empty-state copy such as `6 of 6 open` or `No assignments this week`
   remains, and an empty week renders no fake task row
@@ -187,9 +190,9 @@ Check:
   capsules above its sections; its first section reads `THIS WEEK`, and its
   bottom `FINISHED` section is initially closed, expands from its full 44px
   disclosure header, and remains keyboard operable
-- the hero shows all three Overdue, This Week, and Upcoming completion summaries
-  without inline task rows; activating one opens its focused task-list modal,
-  with unfinished work before finished work
+- the hero shows This Week and Upcoming completion summaries without inline task
+  rows; activating one opens its focused task-list modal. This Week includes
+  overdue unfinished work first, followed by current unfinished and finished work
 - every untouched assignment has a red `TO DO` pill aligned with the finished
   score position. A failed submission stays in `TO DO` and replaces that label
   with its red best-percentage pill; only `passed` / `mastered` assignments move
@@ -396,8 +399,8 @@ Check:
 - `npm run test:assignment-schedule` verifies required due-week enforcement,
   Sunday normalization, backward-compatible `assigned_at` alias handling, and
   dry-run/apply legacy backfill behavior; it also exercises the exact Dashboard
-  model so Upcoming stays out of the red count while all three homepage progress
-  summaries remain visible
+  model so Upcoming stays out of the red count while the two homepage progress
+  summaries remain visible and overdue work contributes to This Week progress
 - Open the Assign Work and Student pickers before and after the Assign page has
   become taller than the viewport; both dialogs must remain centered in the
   current viewport with an internally scrolling list and no blank page area

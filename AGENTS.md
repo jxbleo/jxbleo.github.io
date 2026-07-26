@@ -744,10 +744,12 @@ Student dashboard navigation:
   overflow-scrolling title in the middle, score and chevron at right, with the
   same entry confirmation before opening the practice runtime.
 - Student assignment timing uses required `due_at` weeks. The hero always shows
-  `OVERDUE`, `THIS WEEK`, and `UPCOMING`, each with completed/total progress and
-  an explicit percentage. Selecting a row opens that due-date group's focused
-  task list. Upcoming work never contributes to the To Do List badge, which
-  includes only actionable overdue/current-week work.
+  `THIS WEEK` and `UPCOMING`, each with completed/total progress and an explicit
+  percentage. This Week combines the current due week with every overdue
+  unfinished assignment; those overdue rows count in its denominator, appear
+  first in the focused task list, and use a restrained red pulse (or static red
+  emphasis under reduced motion). Upcoming work never contributes to the To Do
+  List badge, which includes only actionable overdue/current-week work.
 - Teacher Replies opens from a plain speech-bubble SVG button in the top-right
   of the To Do List modal; the icon has no embedded checkmark.
   Its red badge counts unseen resolved replies, while its modal retains every
@@ -800,8 +802,8 @@ and a randomly selected motivational sentence. Use China Standard Time for
 time-aware greetings. Student records keep the owner's simple `Chinese Name +
 English Name` format; the UI extracts the final English word for the greeting
 and top-right identity chip without adding another database field. Its progress
-section exposes task rows directly; the progress bar sits immediately to the
-right of each `OVERDUE`, `THIS WEEK`, or `UPCOMING` label, and an empty week
+bars sit immediately to the right of the fixed `THIS WEEK` and `UPCOMING`
+labels; selecting either opens its focused Assignments list, and an empty week
 does not render explanatory copy such as `No assignments this week`.
 
 Visitor mode uses the same learning interface but has no assignments, cannot

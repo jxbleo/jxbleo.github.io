@@ -326,19 +326,17 @@ function relativeDueWeekEnd(weekOffset) {
 function testDashboardScheduleModel() {
   const hooks = dashboardScheduleHooks();
   const overdue = { assignment_id: "overdue", status: "to_do", due_at: relativeDueWeekEnd(-1) };
-  const overdueFinished = { assignment_id: "overdue-finished", status: "passed", due_at: relativeDueWeekEnd(-1), best_percentage: 85 };
   const current = { assignment_id: "current", status: "to_do", due_at: relativeDueWeekEnd(0) };
   const upcoming = { assignment_id: "upcoming", status: "to_do", due_at: relativeDueWeekEnd(1) };
   hooks.state.session = { mode: "student" };
   hooks.state.teacherReplies = [];
-  hooks.state.assignments = [overdue, overdueFinished, current, upcoming];
+  hooks.state.assignments = [overdue, current, upcoming];
 
   assert.equal(hooks.todoAssignments().length, 2);
+  assert.equal(hooks.todoAssignments()[0].assignment_id, "overdue");
   assert.equal(hooks.upcomingAssignments().length, 1);
   assert.equal(hooks.studentMessageTotal(), 2);
   assert.equal(hooks.weeklyFocusModel().overdue.length, 1);
-  assert.equal(hooks.weeklyFocusModel().overdueAll.length, 2);
-  assert.equal(hooks.weeklyFocusModel().overdueFinished.length, 1);
   assert.equal(hooks.weeklyFocusModel().thisWeek.length, 1);
   assert.equal(hooks.weeklyFocusModel().nextWeek.length, 1);
 
@@ -350,16 +348,18 @@ function testDashboardScheduleModel() {
   };
   hooks.setWeeklyFocusProgress(target);
   hooks.renderWeeklyFocusProgress();
-  assert(target.innerHTML.includes("OVERDUE"));
+  assert(!target.innerHTML.includes("OVERDUE"));
   assert(target.innerHTML.includes("THIS WEEK"));
   assert(target.innerHTML.includes("UPCOMING"));
-  assert(target.innerHTML.includes("50%"));
-  assert(target.innerHTML.includes('data-weekly-focus-scope="overdue"'));
+  assert(target.innerHTML.includes("0 of 2 assignments are finished"));
+  assert(target.innerHTML.includes("include 1 overdue"));
+  assert(!target.innerHTML.includes('data-weekly-focus-scope="overdue"'));
   assert(target.innerHTML.includes('data-weekly-focus-scope="week"'));
   assert(target.innerHTML.includes('data-weekly-focus-scope="upcoming"'));
 
   current.status = "passed";
   hooks.renderWeeklyFocusProgress();
+  assert(target.innerHTML.includes("50%"));
   assert(target.innerHTML.includes("UPCOMING"));
   assert(target.innerHTML.includes("THIS WEEK"));
 
