@@ -1401,21 +1401,23 @@
         var statusLabel = replyStatusLabel(reply);
         var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
         var title = reply.set_title || reply.set_id || 'Practice';
-        var before = answerText(reply.answer_snapshot, 'Not shown');
-        var yours = answerText(reply.submitted_answer, 'Not shown');
+        var questionText = String(reply.question_text || '').trim() || 'Question text unavailable. Open the exercise to review it.';
+        var expected = answerText(reply.answer_snapshot, 'Not shown');
+        var submitted = answerText(reply.submitted_answer, 'Not shown');
         var href = hrefForTeacherReply(reply);
         return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
             '<div class="teacher-reply-head">' +
                 '<div class="teacher-reply-question">' +
-                    '<strong>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</strong>' +
-                    '<small>' + escapeHtml(title) + '</small>' +
+                    '<strong>' + escapeHtml(title) + '</strong>' +
+                    '<small>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</small>' +
+                    '<p>' + escapeHtml(questionText) + '</p>' +
                 '</div>' +
                 '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
             '</div>' +
             '<div class="teacher-reply-flow">' +
-                '<div class="teacher-reply-answer"><b>Before</b><span>' + escapeHtml(before) + '</span></div>' +
+                '<div class="teacher-reply-answer"><b>Expected</b><span>' + escapeHtml(expected) + '</span></div>' +
                 '<div class="teacher-reply-arrow" aria-hidden="true">&rarr;</div>' +
-                '<div class="teacher-reply-answer yours"><b>Yours</b><span>' + escapeHtml(yours) + '</span></div>' +
+                '<div class="teacher-reply-answer submitted"><b>Submitted</b><span>' + escapeHtml(submitted) + '</span></div>' +
             '</div>' +
             (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
             '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question</a></div>' +
@@ -1670,28 +1672,21 @@
     function openTeacherRepliesDialog(replyItems, options) {
         options = options || {};
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
-        var unreadCount = replies.filter(function(reply) { return reply.student_seen !== true; }).length;
         var opener = options.opener || repliesButton;
         var manageScrollLock = options.manageScrollLock !== false;
         var overlay = document.createElement('div');
         overlay.className = 'teacher-replies-overlay';
         overlay.innerHTML =
-            '<div class="teacher-replies-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
-                '<div class="teacher-replies-dialog-head">' +
-                    '<div class="teacher-replies-title-row">' +
-                        '<button class="teacher-replies-back" id="teacher-replies-back" type="button" aria-label="Back">' +
-                            '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m11.5 4.5-5 5.5 5 5.5"></path></svg>' +
-                            '<span>Back</span>' +
-                        '</button>' +
-                        '<h2 id="teacher-replies-title">Teacher Replies</h2>' +
+            '<div class="teacher-replies-stack" role="dialog" aria-modal="true" aria-labelledby="teacher-replies-title">' +
+                '<section class="teacher-replies-dialog">' +
+                    '<div class="teacher-replies-dialog-head">' +
+                        '<h2 class="eyebrow accent" id="teacher-replies-title">Teacher Replies</h2>' +
                     '</div>' +
-                    '<p>' + (replies.length
-                        ? replies.length + ' repl' + (replies.length === 1 ? 'y' : 'ies') + ' in your history' + (unreadCount ? ' · ' + unreadCount + ' new' : '')
-                        : 'Your teacher replies will appear here.') + '</p>' +
-                '</div>' +
-                '<div class="teacher-replies-list">' + (replies.length
-                    ? replies.map(renderTeacherReplyItem).join('')
-                    : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
+                    '<div class="teacher-replies-list">' + (replies.length
+                        ? replies.map(renderTeacherReplyItem).join('')
+                        : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
+                '</section>' +
+                '<button class="student-message-close teacher-replies-outside-close" id="teacher-replies-close" type="button" aria-label="Close Teacher Replies">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
         if (manageScrollLock) lockStudentMessageBackground();
@@ -1724,9 +1719,9 @@
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close(true);
         });
-        var backButton = overlay.querySelector('#teacher-replies-back');
-        backButton.addEventListener('click', function() { close(true); });
-        window.setTimeout(function() { backButton.focus(); }, 0);
+        var closeButton = overlay.querySelector('#teacher-replies-close');
+        closeButton.addEventListener('click', function() { close(true); });
+        window.setTimeout(function() { closeButton.focus(); }, 0);
         overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
             link.addEventListener('click', function(event) {
                 var href = link.getAttribute('href');

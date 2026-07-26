@@ -57,6 +57,12 @@
 
 ### Changed
 
+- Reordered each student Teacher Replies card to show the task title, question
+  number, and saved original question text before its decision details. Renamed
+  the answer comparison labels from `Before` / `Yours` to `Expected` /
+  `Submitted` for clearer student-facing meaning. The dialog now removes its
+  Back control and history-count subtitle, uses the same green eyebrow heading
+  as Personal Center, and closes from the standard external `Close` capsule.
 - Moved the student Teacher Replies bubble from the To Do List dialog to the
   main header immediately beside the To Do List button. Removed the default
   dialog's `ASSIGNMENTS` heading and made centered This Week, Upcoming, and

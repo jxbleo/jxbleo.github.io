@@ -89,9 +89,9 @@ Navigation:
 - The main header places a plain Teacher Replies speech-bubble button directly
   to the right of the far-left To Do List button. Its three quiet dots contain
   no embedded checkmark, and its badge counts unread replies. Teacher Replies
-  has no close icon or bottom Close action; its top-left `Back` control marks
-  current replies seen, returns to the main Dashboard, and restores bubble
-  focus.
+  has no top-left Back or in-card close icon. A matching external `Close`
+  capsule sits below the dialog, marks current replies seen, returns to the main
+  Dashboard, and restores bubble focus.
 - My Words opens in an independent modal from a notebook icon in the right-side
   utility group; closing and reopening restores the modal's previous
   internal scroll position
@@ -362,10 +362,15 @@ Student account menu:
   the right of the main Dashboard's To Do List button. The default To Do List
   dialog and focused This Week/Upcoming task-list dialogs omit this control.
   Its modal lists all resolved replies newest-first, including previously read
-  history. Its top-left `Back` marks unseen items read when returning, clearing
-  the bubble badge without removing history. Back is a clearly interactive
-  glass capsule with a left arrow, visible border and shadow, plus hover, focus,
-  and press feedback; it must not read as plain text.
+  history. The header contains only `TEACHER REPLIES` in the same green eyebrow
+  typography as `PERSONAL CENTER`; it omits the reply-history count and subtitle.
+  A centered external `Close` capsule below the card marks unseen items read,
+  clears the bubble badge without removing history, closes the dialog, and
+  restores focus to its opener. Each reply card presents
+  the task title first, then its `Qxx` identifier and saved original question
+  text so the student can identify the disputed item without opening it. The
+  answer comparison labels are `Expected` and `Submitted`; older records with
+  no saved question text show an unavailable message and retain `Go to question`.
 
 ## 4. Teacher Interface
 

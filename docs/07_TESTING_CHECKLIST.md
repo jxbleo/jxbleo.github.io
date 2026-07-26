@@ -233,11 +233,19 @@ Check:
   even when the history is empty; all resolved replies appear newest-first,
   previously read replies remain after closing/reopening, and only unread
   replies contribute to the bubble button's red badge
-- Teacher Replies has no top-right close icon or bottom Close/Done action. Its
-  top-left `Back` is visibly button-like with a left arrow, glass fill, border,
-  shadow, and hover/focus/press feedback. It marks currently unseen items read, clears the bubble badge
-  without changing the To Do List badge, restores the main Dashboard and bubble
-  focus, and keeps each `Go to question` link working
+- Teacher Replies has no top-left Back or in-card close icon. Its header shows
+  only `TEACHER REPLIES` in the same green eyebrow typography as Personal Center,
+  with no `xx replies in your history` line. A centered `Close` capsule sits
+  outside and directly below the card in the same style as other independent
+  student dialogs. Close, Escape, and backdrop dismissal mark currently unseen
+  items read, clear the bubble badge without changing the To Do List badge,
+  restore the main Dashboard and bubble focus, and keep each `Go to question`
+  link working
+- each Teacher Replies card shows its task title first, followed by `Qxx` and
+  the saved original question text. The two answer fields read `Expected` and
+  `Submitted`; verify long question text wraps cleanly on phone and iPad. An old
+  reply without a question snapshot shows an unavailable message while its
+  `Go to question` link remains usable
 - the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
 - the calendar icon remains in the right-side utility group and opens a

@@ -93,10 +93,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - Personal Center 姓名右侧的黄色 assignment STAR 和蓝色 self-study STAR 均可
   点击；在同一张卡片内按最新获得时间显示对应任务、获得日期和历史最高分，
   每条记录可进入关联的最佳历史 attempt。Back 返回账户摘要并把焦点还给原星星
-- `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊；
-  `ASSIGNMENTS` 标题使用与 `PERSONAL CENTER` 一致的绿色字体。首栏 `THIS WEEK`
-  默认展开并可收起，底部 `FINISHED` 默认收起并可展开，两栏标题右侧不显示数字
-  计数；Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示
+- `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊或
+  `ASSIGNMENTS` 标题。`THIS WEEK`、`UPCOMING`、`FINISHED` 三栏标题居中、默认
+  展开并可分别收起，向下滚动时依次吸顶并替换前一栏；标题右侧不显示数字计数。
+  Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示
   红色 `0%`，尝试但未通过时显示红色历史最高分，不再显示 `TO DO` 文字
 - 首页大卡片固定显示 `THIS WEEK`、`UPCOMING` 两条摘要。`THIS WEEK` 合并
   本周任务与全部逾期未完成任务，并把逾期任务计入总数；点击后逾期任务排在
@@ -104,12 +104,15 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   红色呼吸式提醒，减少动态效果时改为静态红色强调。有 Upcoming 任务时继续
   显示蓝色进度条和百分比；没有时不显示 `0%` 或进度条，改为不可点击的日历
   勾图标加 `NO TASKS` 空状态。首页本身不直接展开任务行
-- `To Do List` 弹窗右上角放置纯对话气泡图标；点击查看全部历史老师回复，
-  图标内部不带勾，红点只提示未读回复。回复弹窗没有关闭叉号或底部 Close，
-  左上角 `Back` 标记当前回复已读并返回同一个 Assignments 弹窗。点击首页
+- 首页 `To Do List` 按钮右侧放置独立纯对话气泡图标；点击查看全部历史老师回复，
+  图标内部不带勾，红点只提示未读回复。回复弹窗没有左上角 Back 或卡片内关闭
+  图标，卡片外正下方使用与其他学生独立弹窗一致的 `Close` 胶囊；关闭时标记
+  当前回复已读并返回 Dashboard。顶部仅保留与 `PERSONAL CENTER` 同字体、同
+  绿色的 `TEACHER REPLIES` 标题，不显示历史回复数量说明。每条回复按任务名称、题号、
+  原始题目排列，再以 `Expected` 和 `Submitted` 展示标准答案与学生提交答案；
+  点击首页
   `THIS WEEK` 或 `UPCOMING` 打开的聚焦任务弹窗不显示 Teacher Replies 图标，
-  两者标题使用与 `PERSONAL CENTER` 一致的绿色字体。Teacher Replies 左上角
-  Back 必须呈现为带返回箭头、边框、玻璃底色和按压反馈的明确胶囊按钮
+  两者标题使用与 `PERSONAL CENTER` 一致的绿色字体
 - 从右侧工具区的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
   完成的 assignment 和自主练习 STAR，点击日期查看当天任务，不显示教师端的
   `Wxx` 周编号；弹窗使用与 Assignments 一致的透明玻璃材质，任务行也复用
@@ -847,7 +850,7 @@ flowchart TD
   mastery lock 规则
 - 历史旧数据可通过 `teacherAdmin.backfillAcceptedAnswerRegrades` 手动分页补算；该动作默认 dry run，必须由登录教师触发
 - 老师批准后的 grading key 是未来评分权威
-- 学生端 Dashboard 的 To Do List 弹窗右上角提供独立 Teacher Replies 气泡入口，
+- 学生端 Dashboard 的 To Do List 按钮右侧提供独立 Teacher Replies 气泡入口，
   并保留全部已解决回复；
   `student_seen` 只控制未读红点，原题 Argue 状态仍是另一处永久查看入口
 
@@ -874,7 +877,7 @@ flowchart TD
 `THIS WEEK` 的总任务数包含本周任务和全部逾期未完成任务，完成数为本周已
 完成任务；点击后逾期任务排在最前，并以红色脉冲和文字状态提示，减少动态
 效果时改用静态红色强调。点击任一分组打开对应任务列表；下周任务不计入红色
-数字。红色数字只计算逾期、本周未完成任务。未读 Teacher Replies 使用 To Do List 弹窗右上角气泡图标
+数字。红色数字只计算逾期、本周未完成任务。未读 Teacher Replies 使用 To Do List 按钮右侧气泡图标
 自己的红点，不计入 To Do List 外部数字。首页这些周进度分区默认直接显示
 摘要而不展开任务行。
 
