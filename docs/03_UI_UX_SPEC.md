@@ -78,8 +78,10 @@ Navigation:
   adds a small gold STAR when applicable, outlines today and the selected day,
   and reveals that date's task names, type, score, and STAR state below the
   month grid. Previous/next controls stay within the student's recorded range
-  and never navigate beyond the current month. The modal and external Close
-  capsule share the Assignments glass material. Completed task rows are the
+  and never navigate beyond the current month. The modal omits a separate
+  `Progress` heading, subtitle, completed total, and active-days total, so the
+  month/year toolbar sits directly at the top of the content area. The modal
+  and external Close capsule share the Assignments glass material. Completed task rows are the
   same component used by Assignments: category capsule on the left, a
   single-line overflow-scrolling title in the center, and score plus chevron on
   the right. Activating a row opens the same entry confirmation and practice
@@ -106,13 +108,14 @@ Assignment access and progress display:
   expand directly inside the hero; focused lists place unfinished work before
   finished work.
 - the default modal opened from `To Do List` is titled `ASSIGNMENTS`, centered
-  at the top in small purple accent type. The title has no translucent
+  at the top in the same small green accent type as `PERSONAL CENTER`. The title has no translucent
   rectangular header plate behind it. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
   sits directly below the card. The former three top summary capsules are not
-  rendered. The first open-work section is labelled `THIS WEEK`, while the
-  bottom `FINISHED` disclosure is closed by default and expands on selection.
+  rendered. `THIS WEEK` and `FINISHED` are both disclosures without numeric
+  count pills: This Week starts open, while Finished starts closed. Finished
+  tasks are sorted newest-completed first.
   Every unfinished row has a red right-side pill in
   the same position as a finished score: it reads `TO DO` before any attempt
   and shows the best failed percentage after an unsuccessful submission.
@@ -133,8 +136,12 @@ Assignment access and progress display:
   combines assignments due in the current China-standard-time Monday-to-Sunday
   week with every earlier unfinished assignment. Those overdue tasks count in
   its denominator, appear first in the focused Assignments list, and receive a
-  restrained red pulse; reduced motion uses a static red border instead.
-  `UPCOMING` represents next week's assignments and remains separate. Self-study
+  restrained red pulse. While any overdue task exists, the This Week progress
+  track also uses a slow red breathing halo that remains visible at zero
+  percent; reduced motion uses a static red border instead. `UPCOMING`
+  represents next week's assignments and remains separate. With tasks it keeps
+  its blue track and percentage; without tasks it renders no track or `0%`, but
+  becomes a non-interactive calendar-check plus `NO TASKS` state. Self-study
   STAR records are not counted. Activating either summary opens its focused task
   list and tasks do not expand inside the hero. Empty rows retain zero progress
   without explanatory copy. The progress fill reveals once after loading
@@ -327,14 +334,20 @@ Student account menu:
 
 - opens from the top-right identity chip.
 - shows profile/account information, password change, and logout.
+- is a centered independent modal using the same thick translucent glass card,
+  softly dimmed/blurred backdrop, corner radius, and depth hierarchy as To Do
+  List, Calendar, and My Words rather than an anchored dropdown.
 - has no top-right close icon; one centered external `Close` capsule sits
   immediately below the Personal Center card and restores focus to the identity
-  chip.
+  chip. Escape and backdrop dismissal behave the same way and background scroll
+  remains locked while the modal is open.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
 - assignment reminders and finished work share the To Do List dialog.
 - Teacher Replies uses a separate plain speech-bubble SVG button at the
-  top-right of the To Do List dialog.
+  top-right of the default To Do List dialog. Focused This Week and Upcoming
+  task-list modals omit this control and use the same green accent title
+  typography as Personal Center.
   Its modal lists all resolved replies newest-first, including previously read
   history. Its top-left `Back` marks unseen items read when returning, clearing
   the bubble badge without removing history.

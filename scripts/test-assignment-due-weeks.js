@@ -174,7 +174,9 @@ function dashboardScheduleHooks() {
       state: state,
       todoAssignments: todoAssignments,
       upcomingAssignments: upcomingAssignments,
+      finishedAssignments: finishedAssignments,
       studentMessageTotal: studentMessageTotal,
+      studentMessageRepliesControl: studentMessageRepliesControl,
       weeklyFocusModel: weeklyFocusModel,
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
       studentCalendarModel: studentCalendarModel,
@@ -244,8 +246,6 @@ function testStudentCalendarModel() {
   const model = hooks.studentCalendarModel(values.year, values.month, dayKey, now);
   assert(model.days.length === 35 || model.days.length === 42);
   assert.equal(model.days.length % 7, 0);
-  assert.equal(model.completedCount, 3);
-  assert.equal(model.activeDayCount, 1);
   assert.equal(model.canGoNext, false);
   const activity = model.days.find((day) => day && day.key === dayKey);
   assert(activity);
@@ -260,7 +260,7 @@ function testStudentCalendarModel() {
 
   const finishedSection = hooks.renderStudentMessageSection(
     "Finished",
-    3,
+    null,
     "<article>Finished task</article>",
     "No finished work.",
     "finished",
@@ -269,6 +269,19 @@ function testStudentCalendarModel() {
   assert(finishedSection.startsWith('<details class="student-message-section is-collapsible'));
   assert(finishedSection.includes('<summary class="student-message-section-head">'));
   assert(!finishedSection.includes('<details open'));
+  assert(!finishedSection.includes('student-message-section-count'));
+
+  const thisWeekSection = hooks.renderStudentMessageSection(
+    "This Week",
+    null,
+    "<article>Current task</article>",
+    "No unfinished work.",
+    "todo",
+    true,
+    true
+  );
+  assert(thisWeekSection.startsWith('<details class="student-message-section is-collapsible todo" open>'));
+  assert(!thisWeekSection.includes('student-message-section-count'));
 
   const calendarTask = hooks.renderStudentCalendarTask({
     assignment_id: "calendar-task",
@@ -298,6 +311,14 @@ function testStudentCalendarModel() {
   assert(!focusedWeekList.includes("student-message-section-head"));
   assert(!focusedWeekList.includes("student-message-section-count"));
   assert(focusedWeekList.indexOf("Unfinished first") < focusedWeekList.indexOf("Finished second"));
+}
+
+function testStudentModalShellMarkup() {
+  const dashboardHtml = fs.readFileSync(path.resolve(__dirname, "../dashboard.html"), "utf8");
+  assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
+  assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
+  assert(dashboardHtml.includes('class="student-account-dialog"'));
+  assert(dashboardHtml.includes('id="student-account-close"'));
 }
 
 function relativeDueWeekEnd(weekOffset) {
@@ -332,6 +353,10 @@ function testDashboardScheduleModel() {
   hooks.state.teacherReplies = [];
   hooks.state.assignments = [overdue, current, upcoming];
 
+  assert(hooks.studentMessageRepliesControl("").includes('id="student-message-replies-button"'));
+  assert(!hooks.studentMessageRepliesControl("week").includes("student-message-replies-button"));
+  assert(!hooks.studentMessageRepliesControl("upcoming").includes("student-message-replies-button"));
+
   assert.equal(hooks.todoAssignments().length, 2);
   assert.equal(hooks.todoAssignments()[0].assignment_id, "overdue");
   assert.equal(hooks.upcomingAssignments().length, 1);
@@ -353,6 +378,7 @@ function testDashboardScheduleModel() {
   assert(target.innerHTML.includes("UPCOMING"));
   assert(target.innerHTML.includes("0 of 2 assignments are finished"));
   assert(target.innerHTML.includes("include 1 overdue"));
+  assert(target.innerHTML.includes("this-week has-overdue"));
   assert(!target.innerHTML.includes('data-weekly-focus-scope="overdue"'));
   assert(target.innerHTML.includes('data-weekly-focus-scope="week"'));
   assert(target.innerHTML.includes('data-weekly-focus-scope="upcoming"'));
@@ -366,11 +392,26 @@ function testDashboardScheduleModel() {
   hooks.state.assignments = [overdue, upcoming];
   hooks.renderWeeklyFocusProgress();
   assert(target.innerHTML.includes("UPCOMING"));
+
+  hooks.state.assignments = [overdue];
+  hooks.renderWeeklyFocusProgress();
+  const upcomingMarkup = target.innerHTML.slice(target.innerHTML.indexOf("UPCOMING"));
+  assert(upcomingMarkup.includes("NO TASKS"));
+  assert(upcomingMarkup.includes("weekly-progress-empty-status"));
+  assert(!upcomingMarkup.includes("weekly-progress-percent"));
+  assert(!upcomingMarkup.includes('data-weekly-focus-scope="upcoming"'));
+
+  hooks.state.assignments = [
+    { assignment_id: "finished-old", status: "passed", completed_at: "2026-01-01T10:00:00.000Z" },
+    { assignment_id: "finished-new", status: "mastered", mastered_at: "2026-02-01T10:00:00.000Z" },
+  ];
+  assert.equal(hooks.finishedAssignments()[0].assignment_id, "finished-new");
 }
 
 async function main() {
   testDashboardScheduleModel();
   testStudentCalendarModel();
+  testStudentModalShellMarkup();
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);
   const vocabularyDefaults = setsResult.sets.find((set) => set.set_id === "NGSL-DEFAULT");

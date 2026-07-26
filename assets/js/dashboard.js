@@ -844,8 +844,6 @@
             month: monthParts.month,
             days: days,
             selected: selected,
-            completedCount: Object.keys(itemsByKey).reduce(function(total, key) { return total + itemsByKey[key].length; }, 0),
-            activeDayCount: Object.keys(itemsByKey).length,
             canGoPrevious: monthSerial > bounds.earliest,
             canGoNext: monthSerial < bounds.current
         };
@@ -911,7 +909,6 @@
                     '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5 5.5-5 5.5"></path></svg>' +
                 '</button>' +
             '</div>' +
-            '<div class="student-calendar-summary"><span>' + model.completedCount + ' completed</span><span>' + model.activeDayCount + ' active day' + (model.activeDayCount === 1 ? '' : 's') + '</span></div>' +
             '<div class="student-calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>' +
             '<div class="student-calendar-grid" role="grid" aria-label="' + escapeHtml(studentCalendarMonthLabel(model)) + '">' + dayButtons + '</div>' +
             '<section class="student-calendar-detail" aria-live="polite">' +
@@ -1317,6 +1314,14 @@
         '</svg>';
     }
 
+    function studentMessageRepliesControl(scope) {
+        if (scope) return '<span class="student-message-title-spacer" aria-hidden="true"></span>';
+        return '<button class="icon-pill-button student-replies-button student-message-replies-button" id="student-message-replies-button" type="button" aria-label="Teacher replies" aria-expanded="false">' +
+            teacherRepliesBubbleSvg() +
+            '<span class="notice-dot danger" hidden>0</span>' +
+        '</button>';
+    }
+
     function syncTeacherRepliesButton(button) {
         if (!button) return;
         var unreadReplies = teacherReplyUnreadTotal();
@@ -1461,15 +1466,15 @@
         '</article>';
     }
 
-    function renderStudentMessageSection(title, count, body, emptyText, extraClass, collapsed) {
+    function renderStudentMessageSection(title, count, body, emptyText, extraClass, collapsible, openByDefault) {
         var content = body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>';
         var head = '<h3>' + escapeHtml(title) + '</h3>' +
             '<span class="student-message-section-head-meta">' +
-                '<span class="student-message-section-count">' + escapeHtml(count) + '</span>' +
-                (collapsed ? '<svg class="student-message-section-toggle" viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg>' : '') +
+                (count == null ? '' : '<span class="student-message-section-count">' + escapeHtml(count) + '</span>') +
+                (collapsible ? '<svg class="student-message-section-toggle" viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 4.5 4.5-4.5"></path></svg>' : '') +
             '</span>';
-        if (collapsed) {
-            return '<details class="student-message-section is-collapsible ' + escapeHtml(extraClass || '') + '">' +
+        if (collapsible) {
+            return '<details class="student-message-section is-collapsible ' + escapeHtml(extraClass || '') + '"' + (openByDefault ? ' open' : '') + '>' +
                 '<summary class="student-message-section-head">' + head + '</summary>' +
                 content +
             '</details>';
@@ -1564,12 +1569,14 @@
             sectionsHtml =
                 renderStudentMessageSection(
                     'This Week',
-                    todos.length,
+                    null,
                     todos.map(function(item) {
                         return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
                     }).join(''),
                     'No unfinished assignments.',
-                    'todo'
+                    'todo',
+                    true,
+                    true
                 ) +
                 (upcoming.length ? renderStudentMessageSection(
                     'Upcoming',
@@ -1580,7 +1587,7 @@
                 ) : '') +
                 renderStudentMessageSection(
                     'Finished',
-                    finished.length,
+                    null,
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.',
                     'finished',
@@ -1595,10 +1602,7 @@
                     '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
                         '<div class="student-message-dialog-title-row">' +
                             '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
-                            '<button class="icon-pill-button student-replies-button student-message-replies-button" id="student-message-replies-button" type="button" aria-label="Teacher replies" aria-expanded="false">' +
-                                teacherRepliesBubbleSvg() +
-                                '<span class="notice-dot danger" hidden>0</span>' +
-                            '</button>' +
+                            studentMessageRepliesControl(scope) +
                         '</div>' +
                         (summaryHtml ? '<div class="student-message-summary">' + summaryHtml + '</div>' : '') +
                     '</div>' +
@@ -1790,16 +1794,19 @@
     function renderWeeklyProgressRow(options) {
         var value = Math.max(0, Math.min(100, Number(options.percent || 0)));
         var scope = String(options.scope || '');
+        var emptyStatus = String(options.emptyStatus || '');
         var tag = scope ? 'button' : 'section';
         return '<' + tag + ' class="weekly-progress-row ' + escapeHtml(options.kind || '') + '"' +
             (scope ? ' type="button" data-weekly-focus-scope="' + escapeHtml(scope) + '"' : '') +
             ' aria-label="' + escapeHtml(options.ariaLabel || options.label || '') + '">' +
                 '<div class="weekly-progress-heading">' +
                     '<span class="weekly-progress-label">' + escapeHtml(options.label || '') + '</span>' +
-                    '<span class="weekly-progress-track" role="progressbar" aria-label="' + escapeHtml(options.progressLabel || options.label || '') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(value) + '">' +
-                    '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
-                    '</span>' +
-                    '<span class="weekly-progress-percent" aria-hidden="true">' + escapeHtml(value) + '%</span>' +
+                    (emptyStatus
+                        ? '<span class="weekly-progress-empty-status"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path><path d="m13.8 16.2 1.8 1.8 4-4"></path></svg><span>' + escapeHtml(emptyStatus) + '</span></span>'
+                        : '<span class="weekly-progress-track" role="progressbar" aria-label="' + escapeHtml(options.progressLabel || options.label || '') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + escapeHtml(value) + '">' +
+                            '<i style="--weekly-progress-scale:' + escapeHtml(value / 100) + '"></i>' +
+                        '</span>' +
+                        '<span class="weekly-progress-percent" aria-hidden="true">' + escapeHtml(value) + '%</span>') +
                 '</div>' +
             '</' + tag + '>';
     }
@@ -1838,7 +1845,7 @@
         var weekFinished = model.weekFinished.length;
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
-            kind: 'this-week' + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
+            kind: 'this-week' + (model.overdue.length ? ' has-overdue' : '') + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
             label: 'THIS WEEK',
             scope: 'week',
             ariaLabel: weekTotal
@@ -1851,14 +1858,15 @@
         var nextWeekFinished = model.nextWeekFinished.length;
         var upcomingPercent = nextWeekTotal ? Math.round((nextWeekFinished / nextWeekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
-            kind: 'upcoming' + (nextWeekTotal && nextWeekFinished === nextWeekTotal ? ' is-complete' : '') + (!nextWeekTotal ? ' is-empty' : ''),
+            kind: 'upcoming' + (nextWeekTotal && nextWeekFinished === nextWeekTotal ? ' is-complete' : '') + (!nextWeekTotal ? ' is-empty has-empty-status' : ''),
             label: 'UPCOMING',
-            scope: 'upcoming',
+            scope: nextWeekTotal ? 'upcoming' : '',
             ariaLabel: nextWeekTotal
                 ? 'Upcoming assignments. ' + nextWeekFinished + ' of ' + nextWeekTotal + ' assignments are finished. Open the upcoming task list.'
-                : 'No upcoming assignments. Open the upcoming task list.',
+                : 'No upcoming assignments.',
             progressLabel: 'Upcoming assignment completion',
-            percent: upcomingPercent
+            percent: upcomingPercent,
+            emptyStatus: nextWeekTotal ? '' : 'NO TASKS'
         });
         setWeeklyFocusHtml(html);
     }
@@ -2911,10 +2919,21 @@
     }
 
     function setAccountPanel(open) {
+        var wasOpen = state.accountPanelOpen;
+        if (open === true) setWordsPanel(false);
         state.accountPanelOpen = open === true;
         if (accountPanel) accountPanel.hidden = !state.accountPanelOpen;
         if (identityChip) identityChip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
-        if (state.accountPanelOpen) renderProfile();
+        if (!state.accountPanelOpen) {
+            if (wasOpen) unlockStudentMessageBackground();
+            return;
+        }
+        renderProfile();
+        lockStudentMessageBackground();
+        window.requestAnimationFrame(function() {
+            var close = document.getElementById('student-account-close');
+            if (close) close.focus({ preventScroll: true });
+        });
     }
 
     function loadPublicCatalog() {
@@ -3024,6 +3043,13 @@
     var accountClose = document.getElementById('student-account-close');
     if (accountClose) {
         accountClose.addEventListener('click', function() {
+            setAccountPanel(false);
+            if (identityChip) identityChip.focus();
+        });
+    }
+    if (accountPanel) {
+        accountPanel.addEventListener('click', function(event) {
+            if (event.target !== accountPanel) return;
             setAccountPanel(false);
             if (identityChip) identityChip.focus();
         });
@@ -3184,6 +3210,11 @@
     });
 
     document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && state.accountPanelOpen) {
+            setAccountPanel(false);
+            if (identityChip) identityChip.focus();
+            return;
+        }
         if (e.key === 'Escape' && state.calendarPanelOpen) {
             setStudentCalendarPanel(false);
             if (calendarButton) calendarButton.focus();
