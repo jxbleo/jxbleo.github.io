@@ -190,6 +190,7 @@ function dashboardScheduleHooks() {
       weeklyFocusModel: weeklyFocusModel,
       renderWeeklyFocusProgress: renderWeeklyFocusProgress,
       studentCalendarModel: studentCalendarModel,
+      calendarButtonDateModel: calendarButtonDateModel,
       studentCalendarCompletionDate: studentCalendarCompletionDate,
       renderStudentCalendarTask: renderStudentCalendarTask,
       renderTeacherReplyItem: renderTeacherReplyItem,
@@ -303,6 +304,11 @@ function testStudentCalendarModel() {
   const expectedMondayIndex = (new Date(Date.UTC(values.year, values.month - 1, 1)).getUTCDay() + 6) % 7;
   assert.equal(model.days.indexOf(firstDay), expectedMondayIndex);
 
+  const calendarButtonDate = hooks.calendarButtonDateModel(new Date("2026-07-27T16:30:00.000Z"));
+  assert.equal(calendarButtonDate.day, 28);
+  assert.equal(calendarButtonDate.isDoubleDigit, true);
+  assert.equal(calendarButtonDate.ariaLabel, "Progress calendar, 28 July");
+
   const finishedSection = hooks.renderStudentMessageSection(
     "Finished",
     null,
@@ -392,16 +398,21 @@ function testStudentModalShellMarkup() {
   const dashboardHtml = fs.readFileSync(path.resolve(__dirname, "../dashboard.html"), "utf8");
   const dashboardJs = fs.readFileSync(path.resolve(__dirname, "../assets/js/dashboard.js"), "utf8");
   const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
+  const liquidGlassCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/liquid-glass-shell.css"), "utf8");
   assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
   assert(dashboardHtml.includes('class="student-account-dialog"'));
   assert(dashboardHtml.includes('id="student-account-close"'));
   assert(dashboardHtml.includes('id="student-replies-button"'));
+  assert(dashboardHtml.includes('id="student-calendar-date" aria-hidden="true"'));
   assert(dashboardHtml.indexOf('id="student-message-button"') < dashboardHtml.indexOf('id="student-replies-button"'));
   assert(appCss.includes("position: sticky;\n    top: 0;\n    z-index: 3;"));
   assert(appCss.includes(".student-calendar-day {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;"));
   assert(appCss.includes("-webkit-appearance: none;\n    appearance: none;"));
   assert(appCss.includes("font-weight: 820;\n    line-height: 1;"));
+  assert(appCss.includes(".student-calendar-date {\n    position: absolute;\n    top: 57%;"));
+  assert(!appCss.includes(".student-todo-button svg {"));
+  assert(!liquidGlassCss.includes(".liquid-glass-dashboard .student-todo-button {"));
   assert(appCss.includes(".student-words-stack,\n.student-calendar-stack"));
   assert(appCss.includes("width: min(720px, 100%);\n    height: min(720px, 86vh);"));
   assert(appCss.includes(".student-words-stack,\n    .student-calendar-stack"));

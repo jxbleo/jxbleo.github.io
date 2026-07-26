@@ -360,26 +360,32 @@ html.teacher-modal-scroll-locked {
     border-color: rgba(19, 118, 109, 0.34);
     background: #fff;
 }
-.student-header-replies-button {
+.student-header-replies-button,
+.student-todo-button {
     width: 42px;
     height: 42px;
     border-color: rgba(19, 118, 109, 0.2);
 }
-.student-todo-button {
-    width: 42px;
-    height: 42px;
-    border-color: rgba(19, 118, 109, 0.24);
-    color: #0d6f63;
-    background: rgba(231, 247, 241, 0.78);
-    box-shadow: 0 10px 24px rgba(19, 118, 109, 0.12);
-}
 .student-todo-button[aria-expanded="true"] {
-    border-color: rgba(19, 118, 109, 0.42);
-    background: rgba(221, 244, 235, 0.96);
+    border-color: rgba(19, 118, 109, 0.34);
+    background: #fff;
 }
-.student-todo-button svg {
-    width: 21px;
-    height: 21px;
+.student-calendar-date {
+    position: absolute;
+    top: 57%;
+    left: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    color: currentColor;
+    font-size: 0.48rem;
+    font-weight: 950;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    pointer-events: none;
+}
+.student-calendar-date.is-double-digit {
+    font-size: 0.43rem;
 }
 .student-calendar-button.active {
     border-color: rgba(19, 118, 109, 0.34);

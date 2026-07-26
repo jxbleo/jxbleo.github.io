@@ -57,6 +57,10 @@
 
 ### Changed
 
+- Added the current `Asia/Shanghai` day number inside the student header's
+  Calendar icon with local midnight/visibility refresh and no backend request.
+  Removed the To Do List button's special green treatment and oversized glyph
+  so it matches the other header controls in color, stroke, and visual scale.
 - Reordered each student Teacher Replies card to show the task title, question
   number, and saved original question text before its decision details. Renamed
   the answer comparison labels from `Before` / `Yours` to `Expected` /

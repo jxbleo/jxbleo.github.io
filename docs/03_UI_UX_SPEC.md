@@ -86,6 +86,13 @@ Navigation:
   single-line overflow-scrolling title in the center, and score plus chevron on
   the right. Activating a row opens the same entry confirmation and practice
   destination; closing the confirmation restores the calendar and row focus.
+- The Calendar button draws the current Shanghai day number inside its calendar
+  outline. It updates at Shanghai midnight and when the page becomes visible,
+  without a backend request; its accessible label includes the full day and
+  month. Single- and double-digit days remain optically centered on Safari.
+- The far-left To Do List button uses the same neutral glass color, stroke
+  weight, and 19px icon footprint as the other student header icons. Its button
+  diameter remains aligned with the adjacent Teacher Replies control.
 - The main header places a plain Teacher Replies speech-bubble button directly
   to the right of the far-left To Do List button. Its three quiet dots contain
   no embedded checkmark, and its badge counts unread replies. Teacher Replies

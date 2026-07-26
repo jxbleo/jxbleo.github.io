@@ -227,7 +227,9 @@ Check:
   to the same To Do List dialog and selected assignment row; choosing `Enter` closes
   both modal layers and opens the task
 - the student assignment entry uses a checklist SVG rather than a bell or a
-  single completion checkmark
+  single completion checkmark; its glass color, stroke weight, and visible icon
+  size match the neighboring Teacher Replies control rather than using a unique
+  green fill or oversized glyph
 - the main header has a plain speech-bubble SVG immediately to the right of To
   Do List; it has no embedded checkmark and opens `Teacher Replies`
   even when the history is empty; all resolved replies appear newest-first,
@@ -252,6 +254,10 @@ Check:
   student-only, Monday-first monthly completion calendar; it contains no `Wxx`
   labels, cannot navigate beyond the current month, and includes both finished
   assignments and self-study STAR records
+- the calendar icon contains today's `Asia/Shanghai` day number. Verify both a
+  single-digit and double-digit date remain centered on Safari, the accessible
+  label includes day/month, and returning to the page after Shanghai midnight
+  refreshes the number without a backend request
 - selecting an active calendar date shows every task completed that day with
   its type, score, and STAR state; empty dates show a quiet empty state, today
   and the selected day remain distinguishable without relying on color alone,

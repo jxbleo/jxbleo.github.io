@@ -216,19 +216,6 @@
     background: rgba(255, 255, 255, 0.46);
 }
 
-.liquid-glass-dashboard .student-todo-button {
-    border-color: rgba(19, 118, 109, 0.28);
-    color: #0d6f63;
-    background:
-        radial-gradient(circle 92px at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.8), transparent 72%),
-        rgba(220, 244, 235, 0.54);
-    box-shadow: 0 10px 24px rgba(19, 118, 109, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.78);
-}
-.liquid-glass-dashboard .student-todo-button[aria-expanded="true"] {
-    border-color: rgba(19, 118, 109, 0.42);
-    background: rgba(218, 242, 234, 0.82);
-}
-
 .liquid-glass-dashboard :is(.icon-pill-button, .student-chip)::after,
 .liquid-glass-teacher :is(.teacher-header-icon-button, .teacher-create-capsule, .student-chip)::after {
     content: "";
