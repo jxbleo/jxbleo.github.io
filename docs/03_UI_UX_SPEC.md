@@ -128,22 +128,18 @@ Assignment access and progress display:
   One randomized motivational sentence remains below it.
 - the top student workspace is one unified luminous surface rather than two
   nested cards. On desktop the greeting and randomized motivation sit on the
-  left and two compact progress rows sit on the right; below 900px they stack
-  without changing their reading order. `OVERDUE` is the first row and appears
-  only when a real assignment remains `to_do` after its required `due_at`; its
-  muted red fill represents overdue tasks as a share of currently actionable
-  open assignments. The second row uses required due weeks. It shows
-  `THIS WEEK` while any assignment due in the current China-standard-time
-  Monday-to-Sunday week remains unfinished. Once all current-week work is
-  finished—or when no work is due this week—the same row becomes a blue
-  `UPCOMING` row when next week has assignments. If neither week has work, it
-  keeps the quiet empty `THIS WEEK` state. Self-study STAR records are not
-  counted in these rows. Each visible section lists its tasks immediately;
-  activating a task opens the standard practice-entry confirmation. An empty
-  `THIS WEEK` section keeps its label and zero progress track without adding
-  `No assignments this week` or another empty-state sentence. The progress fill
-  reveals once after loading without bounce, and reduced motion renders the
-  final value immediately. Color is always accompanied by a text label.
+  left and the fixed `THIS WEEK` and `UPCOMING` progress rows sit on the right;
+  below 900px they stack without changing their reading order. `THIS WEEK`
+  combines assignments due in the current China-standard-time Monday-to-Sunday
+  week with every earlier unfinished assignment. Those overdue tasks count in
+  its denominator, appear first in the focused Assignments list, and receive a
+  restrained red pulse; reduced motion uses a static red border instead.
+  `UPCOMING` represents next week's assignments and remains separate. Self-study
+  STAR records are not counted. Activating either summary opens its focused task
+  list and tasks do not expand inside the hero. Empty rows retain zero progress
+  without explanatory copy. The progress fill reveals once after loading
+  without bounce, and reduced motion renders the final value immediately. Color
+  is always accompanied by task text and status.
 - the Library content starts with a large `Library` heading. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
   side of that heading on desktop and remain adjacent when stacked on mobile.

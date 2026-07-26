@@ -408,6 +408,12 @@
         return Boolean(parts && parts.key > shanghaiWeekKeys(0).end);
     }
 
+    function isOverdueAssignment(item) {
+        if (!isRealAssignment(item) || normalizedStatus(item.status) !== 'to_do') return false;
+        var dueDate = assignmentDueDate(item);
+        return Boolean(dueDate && !isNaN(dueDate.getTime()) && dueDate.getTime() < Date.now());
+    }
+
     function randomItem(items) {
         return items[Math.floor(Math.random() * items.length)];
     }
@@ -698,7 +704,13 @@
             .filter(function(item) {
                 return normalizedStatus(item.status) === 'to_do' && !isUpcomingAssignment(item);
             })
-            .sort(newestFirst);
+            .sort(function(left, right) {
+                var leftOverdue = isOverdueAssignment(left) ? 0 : 1;
+                var rightOverdue = isOverdueAssignment(right) ? 0 : 1;
+                if (leftOverdue !== rightOverdue) return leftOverdue - rightOverdue;
+                if (!leftOverdue) return assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
+                return newestFirst(left, right);
+            });
     }
 
     function upcomingAssignments() {
@@ -1517,20 +1529,9 @@
         var summaryHtml = '';
         var sectionsHtml = '';
 
-        if (scope === 'overdue' || scope === 'week' || scope === 'upcoming') {
+        if (scope === 'week' || scope === 'upcoming') {
             var focusModel = weeklyFocusModel();
-            if (scope === 'overdue') {
-                dialogTitle = 'Overdue';
-                todos = focusModel.overdue;
-                finished = focusModel.overdueFinished;
-                summaryHtml = '';
-                sectionsHtml = renderStudentMessageFlatList(
-                    focusModel.overdueAll.map(function(item) {
-                        return renderStudentMessageTask(item, isFinishedStatus(item.status) ? 'finished' : 'todo');
-                    }).join(''),
-                    'No overdue assignments.'
-                );
-            } else if (scope === 'week') {
+            if (scope === 'week') {
                 dialogTitle = 'This Week';
                 todos = focusModel.thisWeek.filter(function(item) {
                     return normalizedStatus(item.status) === 'to_do';
@@ -1540,6 +1541,7 @@
                 }).sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
                 summaryHtml = '';
                 sectionsHtml = renderStudentMessageFlatList(
+                    focusModel.overdue.map(function(item) { return renderStudentMessageTask(item, 'overdue'); }).join('') +
                     todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join('') +
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'No assignments this week.'
@@ -1563,7 +1565,9 @@
                 renderStudentMessageSection(
                     'This Week',
                     todos.length,
-                    todos.map(function(item) { return renderStudentMessageTask(item, 'todo'); }).join(''),
+                    todos.map(function(item) {
+                        return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
+                    }).join(''),
                     'No unfinished assignments.',
                     'todo'
                 ) +
@@ -1753,27 +1757,11 @@
     }
 
     function weeklyFocusModel() {
-        var now = new Date();
         var currentWeek = shanghaiWeekKeys(0);
         var nextWeek = shanghaiWeekKeys(1);
         var assignments = (state.assignments || []).filter(isRealAssignment);
-        var open = assignments.filter(function(item) {
-            return normalizedStatus(item.status) === 'to_do' && !isUpcomingAssignment(item);
-        });
-        var overdueAll = assignments.filter(function(item) {
-            var dueDate = assignmentDueDate(item);
-            if (!dueDate) return false;
-            return !isNaN(dueDate.getTime()) && dueDate.getTime() < now.getTime();
-        }).sort(function(left, right) {
-            var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
-            var rightFinished = isFinishedStatus(right.status) ? 1 : 0;
-            return leftFinished - rightFinished || assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
-        });
-        var overdue = overdueAll.filter(function(item) {
-            return normalizedStatus(item.status) === 'to_do';
-        });
-        var overdueFinished = overdueAll.filter(function(item) {
-            return isFinishedStatus(item.status);
+        var overdue = assignments.filter(isOverdueAssignment).sort(function(left, right) {
+            return assignmentDueDate(left).getTime() - assignmentDueDate(right).getTime();
         });
         var thisWeek = assignments.filter(function(item) {
             var parts = assignmentDueParts(item);
@@ -1791,10 +1779,7 @@
         });
 
         return {
-            open: open,
-            overdueAll: overdueAll,
             overdue: overdue,
-            overdueFinished: overdueFinished,
             thisWeek: thisWeek,
             weekFinished: weekFinished,
             nextWeek: nextWeekAssignments,
@@ -1849,20 +1834,7 @@
 
         var model = weeklyFocusModel();
         var html = '';
-        var overdueTotal = model.overdueAll.length;
-        var overdueFinished = model.overdueFinished.length;
-        var overduePercent = overdueTotal ? Math.round((overdueFinished / overdueTotal) * 100) : 0;
-        html += renderWeeklyProgressRow({
-            kind: 'overdue' + (!overdueTotal ? ' is-empty' : '') + (overdueTotal && overdueFinished === overdueTotal ? ' is-complete' : ''),
-            label: 'OVERDUE',
-            scope: 'overdue',
-            ariaLabel: overdueTotal
-                ? 'Overdue assignments. ' + overdueFinished + ' of ' + overdueTotal + ' assignments are finished. Open the overdue task list.'
-                : 'No overdue assignments. Open the overdue task list.',
-            progressLabel: 'Overdue assignment completion',
-            percent: overduePercent
-        });
-        var weekTotal = model.thisWeek.length;
+        var weekTotal = model.thisWeek.length + model.overdue.length;
         var weekFinished = model.weekFinished.length;
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
@@ -1870,7 +1842,7 @@
             label: 'THIS WEEK',
             scope: 'week',
             ariaLabel: weekTotal
-                ? 'This week assignments. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished. Open this week task list.'
+                ? 'This week assignments include ' + model.overdue.length + ' overdue. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished. Open this week task list.'
                 : 'No assignments are scheduled for this week. Open this week task list.',
             progressLabel: 'This week assignment completion',
             percent: weekPercent

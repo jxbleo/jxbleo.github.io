@@ -26,10 +26,10 @@
 - Moved Student Personal Center dismissal to one external `Close` capsule below
   the card, and replaced Teacher Replies close controls with a top-left `Back`
   action that returns to the originating Assignments modal.
-- Changed the student hero to always show clickable Overdue, This Week, and
-  Upcoming summaries with true completion bars and numeric percentages. Each
-  summary now opens its focused Assignments list instead of expanding tasks in
-  the homepage card.
+- Changed the student hero to show fixed clickable This Week and Upcoming
+  summaries with true completion bars and numeric percentages. This Week now
+  includes overdue unfinished work in its progress total and focused list,
+  where overdue rows appear first with a restrained red pulse.
 - Retitled the student To Do List modal to a smaller centered purple
   `ASSIGNMENTS` label and removed the translucent rectangular title backing.
 - Simplified the Teacher View assignment-parameter editor to three direct rows:

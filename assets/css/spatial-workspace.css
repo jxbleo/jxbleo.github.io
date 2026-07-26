@@ -217,22 +217,6 @@
     text-align: right;
 }
 
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-label {
-    color: #b84755;
-}
-
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-percent {
-    color: #b84755;
-}
-
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-track {
-    background: rgba(194, 65, 79, 0.12);
-}
-
-.liquid-glass-dashboard .weekly-progress-row.overdue .weekly-progress-track i {
-    background: linear-gradient(90deg, #ef8a91, #c34452);
-}
-
 .liquid-glass-dashboard .weekly-progress-row.upcoming .weekly-progress-label {
     color: #376f9f;
 }
