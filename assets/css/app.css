@@ -569,7 +569,7 @@ html.teacher-modal-scroll-locked {
 }
 .student-calendar-dialog {
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     min-height: 0;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.88);
@@ -579,26 +579,11 @@ html.teacher-modal-scroll-locked {
     backdrop-filter: blur(30px) saturate(160%);
     box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
 }
-.student-calendar-dialog-head {
-    padding: 18px 20px 14px;
-    background: transparent;
-}
-.student-calendar-dialog-head h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-}
-.student-calendar-dialog-head p {
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 0.78rem;
-}
 .student-calendar-scroll {
     min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
-    padding: 16px 18px 20px;
+    padding: 14px 18px 20px;
     scrollbar-gutter: stable;
 }
 .student-calendar-toolbar {
@@ -606,6 +591,7 @@ html.teacher-modal-scroll-locked {
     grid-template-columns: 44px minmax(0, 1fr) 44px;
     align-items: center;
     gap: 8px;
+    margin-bottom: 14px;
 }
 .student-calendar-month-title {
     margin: 0;
@@ -638,19 +624,6 @@ html.teacher-modal-scroll-locked {
     stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
-}
-.student-calendar-summary {
-    display: flex;
-    justify-content: center;
-    gap: 7px;
-    margin: 7px 0 14px;
-    color: var(--muted);
-    font-size: 0.74rem;
-    font-weight: 720;
-}
-.student-calendar-summary span + span::before {
-    content: "\00b7";
-    margin-right: 7px;
 }
 .student-calendar-weekdays,
 .student-calendar-grid {
@@ -865,11 +838,9 @@ html.teacher-modal-scroll-locked {
 .account-panel-head .eyebrow { margin: 0; }
 .account-panel-head h2 { margin: 2px 0 0; font-size: 1.15rem; }
 .student-account-outside-close {
-    position: absolute;
-    top: calc(100% + 12px);
-    left: 50%;
-    z-index: 2;
-    transform: translateX(-50%);
+    position: static;
+    justify-self: center;
+    transform: none;
 }
 .account-panel-actions {
     position: absolute;
@@ -887,6 +858,49 @@ html.teacher-modal-scroll-locked {
 }
 .account-panel .profile-grid { grid-template-columns: 1fr; }
 .teacher-page .account-panel { border-color: rgba(124, 58, 237, 0.18); }
+.student-account-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2160;
+    display: grid;
+    place-items: center;
+    width: auto;
+    padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 0;
+    background: rgba(17, 38, 34, 0.3);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(8px) saturate(118%);
+    backdrop-filter: blur(8px) saturate(118%);
+}
+.student-account-overlay[hidden] { display: none; }
+.student-account-stack {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 11px;
+    width: min(430px, 100%);
+    max-height: min(680px, 86vh);
+    max-height: min(680px, 86dvh);
+}
+.student-account-dialog {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 26px;
+    background: rgba(248,251,249,0.76);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
+    box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
+}
+.student-account-overlay .profile-grid { grid-template-columns: 1fr; }
+.student-account-dialog .profile-card {
+    border-color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.68);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
 .star-counter {
     padding: 9px 13px;
     border: 1px solid rgba(216, 149, 40, 0.24);
@@ -2436,17 +2450,18 @@ body:not(.teacher-page) .tab-button.active {
 }
 
 @media (prefers-reduced-transparency: reduce) {
+    .student-account-dialog,
     .student-words-dialog,
     .student-words-dialog-head,
     .student-words-outside-close,
     .student-calendar-dialog,
-    .student-calendar-dialog-head,
     .student-calendar-outside-close,
     .student-message-dialog {
         background: #f9fbfa;
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
     }
+    .student-account-overlay,
     .student-words-overlay,
     .student-calendar-overlay,
     .student-message-overlay {
@@ -2457,6 +2472,7 @@ body:not(.teacher-page) .tab-button.active {
 }
 
 @media (prefers-contrast: more) {
+    .student-account-dialog,
     .student-words-dialog,
     .student-calendar-dialog,
     .student-message-dialog { border-color: #56746c; background: #fff; }
@@ -2715,15 +2731,6 @@ body:not(.teacher-page) .tab-button.active {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
-.student-account-outside-close:hover {
-    transform: translate(-50%, -1px);
-}
-.student-account-outside-close:active {
-    transform: translateX(-50%) scale(0.97);
-}
-.student-account-outside-close:focus-visible {
-    transform: translateX(-50%);
-}
 @media (prefers-reduced-transparency: reduce) {
     .student-message-close,
     .student-calendar-outside-close {
@@ -2767,10 +2774,10 @@ body:not(.teacher-page) .tab-button.active {
 .student-message-dialog-head h2 {
     width: 100%;
     margin: 0;
-    color: #6d4bb8;
-    font-size: 0.8rem;
-    font-weight: 950;
-    letter-spacing: 0.09em;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 850;
+    letter-spacing: 0.16em;
     line-height: 1.2;
     text-align: center;
     text-transform: uppercase;
@@ -7911,8 +7918,6 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         max-height: min(700px, 84dvh);
     }
     .student-calendar-dialog { border-radius: 25px; }
-    .student-calendar-dialog-head { padding: 15px 17px 12px; }
-    .student-calendar-dialog-head p { display: none; }
     .student-calendar-scroll { padding: 12px 12px 17px; }
     .student-calendar-weekdays,
     .student-calendar-grid { gap: 4px; }
@@ -7936,6 +7941,13 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         top: 72px;
         width: auto;
     }
+    .student-account-overlay {
+        inset: 0;
+        width: auto;
+        padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
+    }
+    .student-account-stack { width: 100%; }
+    .student-account-dialog { padding: 15px 14px; border-radius: 25px; }
     .teacher-header-actions { flex-wrap: wrap; }
     .teacher-updates-panel {
         padding: 12px;

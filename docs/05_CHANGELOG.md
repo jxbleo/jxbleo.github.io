@@ -23,6 +23,21 @@
 
 ### Changed
 
+- Added a red breathing state to the This Week progress track whenever overdue
+  work is included. Empty Upcoming now removes its misleading `0%` track and
+  becomes a non-interactive calendar-check `NO TASKS` state, while populated
+  Upcoming retains its existing blue progress presentation.
+- Converted Student Personal Center from an anchored account dropdown into the
+  same centered thick-glass modal system used by To Do List, Calendar, and My
+  Words, including backdrop/Escape dismissal, scroll locking, focus restoration,
+  and the existing external Close capsule. Focused This Week and Upcoming lists
+  now omit the Teacher Replies icon and use green Personal Center typography.
+- Matched the student `ASSIGNMENTS` heading to the green `PERSONAL CENTER`
+  typography. This Week is now an open-by-default disclosure, Finished remains
+  closed by default and newest-first, and both section count pills were removed.
+- Simplified the student completion calendar by removing its `Progress` header,
+  subtitle, completed total, and active-days total. The month/year navigation
+  now begins at the top of the modal content.
 - Moved Student Personal Center dismissal to one external `Close` capsule below
   the card, and replaced Teacher Replies close controls with a top-left `Back`
   action that returns to the originating Assignments modal.

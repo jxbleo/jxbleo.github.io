@@ -109,6 +109,12 @@ Practice navigation checks:
   denominator combines current-week assignments with every overdue unfinished
   assignment; its numerator is current-week finished work. Upcoming uses next
   week's completed/total values, and both exclude self-study STAR records
+- when at least one overdue task exists, the full This Week progress track uses
+  a slow red breathing halo even at `0%`; reduced motion replaces it with a
+  static red border. Without overdue work it returns to the standard green track
+- populated Upcoming keeps its blue track, percentage, and focused-list action;
+  empty Upcoming has no track, no `0%`, and no click action, and instead shows a
+  quiet calendar-check `NO TASKS` status
 - while current-week work is unfinished, future assignments remain visible in
   the To Do List's Upcoming section but do not contribute to its red badge
 - completing assignments updates the matching fill and numeric percentage
@@ -119,7 +125,7 @@ Practice navigation checks:
   tasks are not expanded directly in the hero, and task activation still opens
   the standard entry confirmation. Reduced motion replaces the pulse with a
   static red emphasis
-- each progress bar and numeric percentage are inline to the right of its section label; no right-side
+- each active progress bar and numeric percentage are inline to the right of its section label; no right-side
   count or empty-state copy such as `6 of 6 open` or `No assignments this week`
   remains, and an empty week renders no fake task row
 - reduced motion shows final progress values without the reveal animation, and
@@ -174,25 +180,31 @@ Check:
 - opening `Change password` from the account panel shows the password dialog
   above the account panel
 - opening Personal Center from the identity chip shows no top-right `×`; its
-  only `Close` capsule is centered outside directly below the card and returns
-  focus to the identity chip
+  centered card uses the same thick glass, softly dimmed backdrop, radius, and
+  depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
+  centered outside directly below the card; Close, Escape, and backdrop all
+  dismiss it, restore focus to the identity chip, and restore background scroll
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
   utility controls and opens a modal titled `ASSIGNMENTS` in small centered
-  purple type, with no translucent rectangular plate behind the title. It shows
+  green Personal Center type, with no translucent rectangular plate behind the title. It shows
   To Do and finished assignment messages and no Teacher Replies section. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
 - the default Assignments modal has no To Do / Upcoming / Finished summary
-  capsules above its sections; its first section reads `THIS WEEK`, and its
-  bottom `FINISHED` section is initially closed, expands from its full 44px
-  disclosure header, and remains keyboard operable
+  capsules above its sections; its centered `ASSIGNMENTS` title matches the
+  green `PERSONAL CENTER` typography. `THIS WEEK` starts expanded and can be
+  collapsed, while `FINISHED` starts collapsed and can be expanded. Neither
+  disclosure header shows a numeric count pill, and Finished rows are ordered
+  by completion time with the newest first; both remain keyboard operable
 - the hero shows This Week and Upcoming completion summaries without inline task
   rows; activating one opens its focused task-list modal. This Week includes
-  overdue unfinished work first, followed by current unfinished and finished work
+  overdue unfinished work first, followed by current unfinished and finished
+  work. Both focused modals use green Personal Center title typography and do
+  not render the Teacher Replies icon or unread badge
 - every untouched assignment has a red `TO DO` pill aligned with the finished
   score position. A failed submission stays in `TO DO` and replaces that label
   with its red best-percentage pill; only `passed` / `mastered` assignments move
@@ -227,8 +239,10 @@ Check:
   its type, score, and STAR state; empty dates show a quiet empty state, today
   and the selected day remain distinguishable without relying on color alone,
   and future dates are disabled
-- the Progress calendar uses the same translucent glass card and external Close
-  capsule as Assignments. Each completed task row matches Assignments with a
+- the completion calendar has no `Progress` header/subtitle, completed total, or
+  active-days total; its month/year navigation begins at the top of the content
+  area. It uses the same translucent glass card and external Close capsule as
+  Assignments. Each completed task row matches Assignments with a
   left category capsule, scrolling one-line middle title, right score and
   chevron; click/Enter/Space opens the shared entry confirmation, closing it
   restores the same calendar row, and Enter opens the correct practice URL

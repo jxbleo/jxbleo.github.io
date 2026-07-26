@@ -726,20 +726,27 @@ Student dashboard navigation:
   List button stands alone so the header keeps maximum usable space. This does
   not change the Teacher header's existing brand mark.
 - The default `To Do List` modal has no top summary capsules. Its first
-  open-work section is labelled `This Week`; the final `Finished` section is a
-  closed disclosure by default and expands only when selected.
-- The hero progress card always renders `Overdue`, `This Week`, and `Upcoming`
-  as three compact summary rows. Each row shows its true completed/total
-  percentage in both an inline progress bar and a numeric percent label.
-  Selecting any row opens a focused Assignments modal containing only that
-  group's task list; concrete task rows are not rendered directly in the hero.
-  The To Do List badge still excludes future Upcoming work.
+  open-work section is labelled `This Week` and is an open-by-default
+  disclosure; the final `Finished` section is a closed disclosure by default.
+  Neither header shows a numeric count pill, and Finished tasks sort by newest
+  completion first. The `ASSIGNMENTS` title uses the same small green accent
+  typography as `PERSONAL CENTER`.
+- The hero progress card always renders `This Week` and `Upcoming` as two compact
+  summary rows. This Week shows completed/total progress and uses a slow red
+  breathing track whenever its total includes overdue unfinished work; reduced
+  motion uses static red emphasis. Upcoming keeps its blue progress bar,
+  percentage, and focused-list action when populated. When empty, it shows no
+  track or `0%` and becomes a non-interactive calendar-check `NO TASKS` state.
+  Concrete task rows are not rendered directly in the hero, and the To Do List
+  badge still excludes future Upcoming work.
 - A calendar icon in the right-side utility group opens the
   authenticated student's own completion history as a Monday-first monthly
   calendar. Date cells summarize completed assignments and self-study STAR
   work; selecting a date reveals that day's tasks. This student surface uses
   calendar months and dates, never the Teacher View `Wxx` week grid. Its modal
-  uses the same translucent glass material as Assignments, and its completed
+  has no separate `Progress` header/subtitle, completed total, or active-days
+  total; the month/year toolbar begins at the top of its content. It uses the
+  same translucent glass material as Assignments, and its completed
   task rows reuse the Assignments row contract: category at left, one-line
   overflow-scrolling title in the middle, score and chevron at right, with the
   same entry confirmation before opening the practice runtime.
@@ -751,7 +758,9 @@ Student dashboard navigation:
   emphasis under reduced motion). Upcoming work never contributes to the To Do
   List badge, which includes only actionable overdue/current-week work.
 - Teacher Replies opens from a plain speech-bubble SVG button in the top-right
-  of the To Do List modal; the icon has no embedded checkmark.
+  of the default To Do List modal; the icon has no embedded checkmark. Focused
+  This Week and Upcoming task-list modals omit this button and use the same green
+  title typography as Personal Center.
   Its red badge counts unseen resolved replies, while its modal retains every
   resolved teacher reply after the student has read it. The reply modal has no
   close icon or bottom Close action; a top-left `Back` control marks current
@@ -767,8 +776,11 @@ Student dashboard navigation:
   after expansion. Do not restore student review states, due filters, or
   reveal-and-rate review controls unless the owner explicitly asks.
 - Profile/account actions open from the top-right identity chip. Student
-  Personal Center has no top-right close icon; its single `Close` capsule is
-  centered outside immediately below the account card.
+  Personal Center is a centered independent thick-glass modal matching To Do
+  List, Calendar, and My Words, with a softly dimmed backdrop and locked
+  background scroll. It has no top-right close icon; its single `Close` capsule
+  is centered outside immediately below the account card. Close, Escape, and
+  backdrop dismissal restore focus to the identity chip.
 
 Do not restore a lower Assignments or My Words navigation capsule unless the
 owner explicitly asks. Do not split completed work into separate `PASSED` and
