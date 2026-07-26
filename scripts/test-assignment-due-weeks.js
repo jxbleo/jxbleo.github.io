@@ -192,6 +192,7 @@ function dashboardScheduleHooks() {
       studentCalendarModel: studentCalendarModel,
       studentCalendarCompletionDate: studentCalendarCompletionDate,
       renderStudentCalendarTask: renderStudentCalendarTask,
+      renderTeacherReplyItem: renderTeacherReplyItem,
       renderStudentMessageTask: renderStudentMessageTask,
       renderStudentMessageSection: renderStudentMessageSection,
       renderDefaultStudentMessageSections: renderDefaultStudentMessageSections,
@@ -339,6 +340,22 @@ function testStudentCalendarModel() {
   assert(defaultSections.includes("No upcoming assignments."));
   assert(!defaultSections.includes("student-message-section-count"));
 
+  const teacherReply = hooks.renderTeacherReplyItem({
+    status: "approved",
+    set_id: "BBC-TEST",
+    set_title: "Test Practice",
+    question_id: "Question_24",
+    question_text: "Which answer is supported by the passage?",
+    answer_snapshot: "B",
+    submitted_answer: "C"
+  });
+  assert(teacherReply.indexOf("Test Practice") < teacherReply.indexOf("Q24"));
+  assert(teacherReply.indexOf("Q24") < teacherReply.indexOf("Which answer is supported by the passage?"));
+  assert(teacherReply.includes("<b>Expected</b><span>B</span>"));
+  assert(teacherReply.includes("<b>Submitted</b><span>C</span>"));
+  assert(!teacherReply.includes("<b>Before</b>"));
+  assert(!teacherReply.includes("<b>Yours</b>"));
+
   const calendarTask = hooks.renderStudentCalendarTask({
     assignment_id: "calendar-task",
     status: "passed",
@@ -373,6 +390,7 @@ function testStudentCalendarModel() {
 
 function testStudentModalShellMarkup() {
   const dashboardHtml = fs.readFileSync(path.resolve(__dirname, "../dashboard.html"), "utf8");
+  const dashboardJs = fs.readFileSync(path.resolve(__dirname, "../assets/js/dashboard.js"), "utf8");
   const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
   assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
@@ -389,6 +407,12 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".student-words-stack,\n    .student-calendar-stack"));
   assert(appCss.includes("height: min(700px, 84vh);"));
   assert(appCss.includes(".student-message-close,\n.student-words-outside-close,\n.student-calendar-outside-close"));
+  assert(dashboardJs.includes('class="teacher-replies-stack" role="dialog" aria-modal="true"'));
+  assert(dashboardJs.includes('class="eyebrow accent" id="teacher-replies-title">Teacher Replies</h2>'));
+  assert(dashboardJs.includes('id="teacher-replies-close"'));
+  assert(!dashboardJs.includes('id="teacher-replies-back"'));
+  assert(!dashboardJs.includes("replies in your history"));
+  assert(appCss.includes(".teacher-replies-stack {\n    display: grid;\n    grid-template-rows: minmax(0, 1fr) auto;"));
   assert(!appCss.includes("height: min(620px, 74vh);"));
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }
