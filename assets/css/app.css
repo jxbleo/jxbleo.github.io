@@ -45,6 +45,10 @@ body {
 
 button, input, select { font: inherit; }
 button { cursor: pointer; }
+html.teacher-modal-scroll-locked {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
 
 .eyebrow {
     margin: 0 0 14px;
@@ -4194,8 +4198,8 @@ body:not(.teacher-page) .tab-button.active {
     min-height: 30px;
     padding-top: 6px;
     padding-bottom: 6px;
-    color: #0d6f58;
-    background: rgba(222,248,236,0.55);
+    color: #62547c;
+    background: rgba(244,241,250,0.84);
     font-size: 0.68rem;
     font-weight: 950;
     text-align: center;
@@ -4208,18 +4212,59 @@ body:not(.teacher-page) .tab-button.active {
     line-height: 1;
     appearance: none;
     cursor: pointer;
-    transition: filter 150ms ease, box-shadow 150ms ease;
+    transition: background 150ms ease;
 }
 .progress-matrix-due-row > button.progress-matrix-due-cell:hover,
 .progress-matrix-due-row > button.progress-matrix-due-cell:focus-visible {
     position: relative;
     z-index: 1;
-    filter: saturate(1.2) brightness(0.98);
-    box-shadow: inset 0 0 0 2px rgba(13,111,88,0.2);
+    background: rgba(237,231,249,0.96);
     outline: none;
 }
+.matrix-due-parameter-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: min(48px, calc(100% - 4px));
+    min-height: 22px;
+    padding: 3px 7px;
+    border: 1px solid rgba(105,82,157,0.28);
+    border-radius: 999px;
+    color: #5d4a87;
+    background: rgba(255,255,255,0.82);
+    box-shadow: 0 3px 9px rgba(76,55,119,0.06);
+    transition: border-color 150ms ease, color 150ms ease, background 150ms ease, transform 100ms ease;
+}
+button.progress-matrix-due-cell:hover .matrix-due-parameter-pill,
+button.progress-matrix-due-cell:focus-visible .matrix-due-parameter-pill {
+    border-color: rgba(105,82,157,0.56);
+    color: #493370;
+    background: #fff;
+}
+button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
+    transform: scale(0.94);
+}
+.matrix-due-parameter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+}
+.matrix-due-parameter-label svg {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+}
+.matrix-density-fit .matrix-due-parameter-label > span {
+    display: none;
+}
 .progress-matrix-due-row > .progress-matrix-student-cell {
-    color: var(--muted);
+    color: #62547c;
     justify-content: flex-start;
     padding-right: 10px;
     padding-left: 10px;
@@ -5733,14 +5778,18 @@ body:not(.teacher-page) .tab-button.active {
     border-color: rgba(31,45,38,0.08);
 }
 .teacher-page .progress-matrix-head > span,
-.teacher-page .progress-matrix-head > a,
-.teacher-page .progress-matrix-due-row > .progress-matrix-student-cell {
+.teacher-page .progress-matrix-head > a {
     color: rgba(23,32,27,0.74);
     background:
         var(--teacher-rainbow-soft),
         rgba(255,255,255,0.78);
     background-size: 280% 100%, auto;
     animation: teacherRainbowFlow 13s linear infinite;
+}
+.teacher-page .progress-matrix-due-row > .progress-matrix-student-cell {
+    color: #62547c;
+    background: rgba(244,241,250,0.94);
+    animation: none;
 }
 .teacher-page .progress-matrix-row > span:first-child {
     box-shadow: inset -1px 0 0 rgba(31,45,38,0.08);
@@ -5837,16 +5886,28 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(24, 20, 43, 0.38);
     backdrop-filter: blur(8px);
 }
+.assignment-edit-shell {
+    display: grid;
+    gap: 12px;
+    width: min(520px, 100%);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+}
 .assignment-edit-dialog {
     position: relative;
-    width: min(520px, 100%);
-    max-height: min(720px, calc(100vh - 40px));
+    width: 100%;
+    max-height: min(720px, calc(100vh - 92px));
+    max-height: min(720px, calc(100dvh - 92px));
     overflow: auto;
     padding: 24px;
     border: 1px solid rgba(124,58,237,0.18);
     border-radius: 18px;
     background: #fff;
     box-shadow: var(--shadow);
+}
+.assignment-edit-external-close,
+.matrix-cell-external-close {
+    justify-self: center;
 }
 .assignment-edit-head {
     margin-bottom: 16px;

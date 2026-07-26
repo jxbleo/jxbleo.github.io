@@ -337,6 +337,13 @@ Student account menu:
 
 ## 4. Teacher Interface
 
+All independent Teacher modals share one background scroll lock. Notifications,
+Argue, Student lookup/details, assignment editors, practice-entry confirmation,
+and success dialogs freeze the workspace at its current document position for
+wheel, trackpad, and touch input. An internal modal scroller remains usable.
+Stacked dialogs keep the lock until the final modal closes, then restore the
+exact pre-modal page position.
+
 The teacher page uses one spatial workspace with a horizontal segmented
 navigation row at the top on desktop, iPad/tablet, and mobile. It must not move
 to a left sidebar at wider breakpoints. Its three destinations, in order, are:
@@ -552,20 +559,25 @@ It should include:
   header. This label uses required `due_at`; legacy tasks temporarily fall back
   to the week derived from `assigned_at` until the due-week backfill is applied.
   It stays aligned with Assign Due week and the Date filter. The
-  sticky `DUE AT` first cell uses the same animated colorful header surface,
-  left alignment, horizontal padding, typography, and column width as the
-  `Student` cell above, while the Wxx cells retain their centered green action
-  treatment. Every cell in the row shares one height and continuous borders.
-  At the phone portrait breakpoint, `Student`, `DUE AT`, and the Wxx cells use
+  matrix's top-left header cell is visually empty instead of displaying
+  `Student`. The sticky `DUE AT` first cell uses a neutral lavender-grey
+  parameter surface with a small sliders icon. Each Wxx value appears inside a
+  white/translucent purple-outline capsule with stronger hover, focus, and
+  press feedback; green remains reserved for passed student task cells. Every
+  cell in the row shares one height and continuous borders.
+  At the phone portrait breakpoint, the empty header, `DUE AT`, and Wxx cells use
   the same compact padding and type scale, and the sticky first-column cells
   fill the shared grid track instead of deriving their rendered width from
-  their own font size.
+  their own font size. Fit may hide the `DUE AT` text while retaining its
+  sliders icon and accessible label.
 - clicking a task's `Wxx` cell in the `DUE AT` row opens assignment management
   for all records
   represented by that visible column. A class/individual filter limits the edit
   scope to that class/student; no class filter means all currently visible
   students in the column. One save can update due week, passing
-  percentage, mastery percentage, and Earn STAR for the complete scope.
+  percentage, mastery percentage, and Earn STAR for the complete scope. This
+  parameter editor has no top-right close icon; its `Close` control is a
+  standalone capsule centered outside and immediately below the dialog card.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. At phone width they divide the available row into three equal tracks
@@ -583,16 +595,24 @@ It should include:
   isolate one student's matrix rows without an `Individual` prefix.
 - the matrix renders every student matching the current filters; do not hide
   later students behind a fixed first-page row cap
-- the matrix student column shows only the student name, without Login ID or class, and sizes to the visible names instead of using a wide fixed column
-- clickable matrix cells open a floating dialog with the close button inside
-  the bottom of the detail card. The dialog shows the practice title, a student
+- the matrix student column shows only the student name, without Login ID or
+  class, and sizes to the currently rendered names instead of using a wide fixed
+  column. Comfortable density levels show the full saved name; the tightest
+  non-Fit level extracts the English name when one is present; Fit shows the
+  surname (the first Chinese character, or the final word of an English-only
+  name). The top-left header stays visually empty and the compact `DUE AT`
+  parameter label shortens with the column, while each row retains the full
+  student name in its tooltip and accessible label.
+- clickable matrix task cells open a floating dialog with a standalone `Close`
+  capsule centered outside and immediately below the detail card. The dialog
+  shows the practice title, a student
   name pill, a lock/best-score pill, an attempt score bar chart, and newest-first
   attempt cards. It must remain an independent page-level overlay and must not
   be clipped by the matrix card or rendered inline beneath the matrix. The
   overlay must sit above page-level progress controls such as the
   `By student` / `By task` capsule.
-- matrix detail close buttons are centered at the bottom inside the dialog
-  card. Attempt history uses compact 48px columns with a 14px Apple
+- matrix task-detail Close stays outside the scrollable card so it remains a
+  distinct dismissal action. Attempt history uses compact 48px columns with a 14px Apple
   Health-style capsule bar rather than stretching one attempt across a wide
   track. The bar top shows the score, followed by `#N`, `P18m42s`, and
   `A12m08s` with tabular numerals and no internal spaces. Durations under one
@@ -723,6 +743,9 @@ Student detail should show:
 - assigned work
 - recent attempts
 - reset password
+- a successful password reset opens the compact centered checkmark confirmation
+  used by assignment success; it states `Password reset`, shows the student
+  Login ID and initial password, and closes by Done, backdrop, or Escape
 - delete account
 - name/class/system editing
 

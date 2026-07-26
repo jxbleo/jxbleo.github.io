@@ -621,6 +621,8 @@ flowchart TD
 - 创建学生 auth user + students profile
 - 更新学生姓名、班级和课程体系
 - reset password
+- reset password 成功后显示与布置作业一致的小型勾选确认弹窗，明确提示密码已重置，
+  并保留 Login ID 与初始密码信息
 - delete student auth user and hide the student profile from teacher views
 - list sets
 - assignment candidates
@@ -853,6 +855,9 @@ flowchart TD
 ### 10.2 老师端
 
 老师端重点不是漂亮，而是高效：
+
+- 任何独立弹窗打开时都必须锁定背后的教师页面；鼠标滚轮、触控板与触摸滑动
+  只能滚动弹窗内部，关闭最后一层弹窗后恢复原页面位置
 
 - Assign
 - Library

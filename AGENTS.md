@@ -240,6 +240,15 @@ profile. Never trust a role, UID, or Student ID sent by browser code.
   correction does not require deleting or recreating the login account.
 - Reset changes the CloudBase auth password to the configured initial password,
   enables the auth user, and sets `must_change_password: true`.
+- After a successful teacher-initiated reset, the Teacher UI opens the same
+  compact checkmark confirmation used by assignment success. It identifies the
+  student Login ID and retains the configured initial-password copy.
+- Every independent Teacher modal—including Notifications, Argue, Student
+  lookup/details, assignment management, practice-entry confirmation, and
+  success confirmations—locks the page behind it against wheel, trackpad, and
+  touch scrolling. Only modal-owned scroll containers may move. Stacked modals
+  keep the lock until the final layer closes, then restore the exact prior page
+  position.
 - Disabling/enabling a student updates both CloudBase Authentication status and
   `students.active`.
 - Student password changes must use an authenticated CloudBase/server flow.
