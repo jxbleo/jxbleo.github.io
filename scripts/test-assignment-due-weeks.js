@@ -238,6 +238,17 @@ function testTeacherAssignmentEditDelegation() {
   const source = fs.readFileSync(teacherPath, "utf8");
   assert(source.includes("event.target.closest('[data-edit-assignment-scope]')"));
   assert(!source.includes("container.querySelectorAll('[data-edit-assignment-scope]')"));
+  const functionStart = source.indexOf("function assignmentStableId(item)");
+  const functionEnd = source.indexOf("\n    function editableAssignments", functionStart);
+  assert(functionStart >= 0 && functionEnd > functionStart);
+  const assignmentStableId = vm.runInNewContext(`(${source.slice(functionStart, functionEnd).trim()})`);
+  assert.equal(assignmentStableId({ assignment_id: "canonical-id", _id: "document-id" }), "canonical-id");
+  assert.equal(assignmentStableId({ _id: "document-id" }), "document-id");
+  assert.equal(assignmentStableId({ progress_id: "assigned::progress-fallback-id" }), "progress-fallback-id");
+  assert.equal(assignmentStableId({ progress_id: "self_study::student::set" }), "");
+  assert(source.includes("assignment_ids: items.map(assignmentStableId)"));
+  assert(source.includes("assignment_ids: cancelableItems.map(assignmentStableId)"));
+  assert(source.includes("assignmentStableId(item) && status !== 'cancelled'"));
 }
 
 function testTeacherPhoneMatrixDensityIsolation() {

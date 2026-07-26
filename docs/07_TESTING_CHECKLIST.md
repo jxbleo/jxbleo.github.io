@@ -478,6 +478,11 @@ Check:
   sticky first column, and make the actual first grid track compact with no
   desktop-width blank area. A manual phone density change may survive preview
   Back navigation, but a fresh phone load must return to Fit.
+- With live progress, an IndexedDB-cached progress item, and a legacy assignment
+  record in turn, confirm the matrix `Wxx` control and the task-cell detail
+  `Edit` action both open the assignment-parameter dialog. The three record
+  shapes may identify the assignment by `assignment_id`, `_id`, or
+  `progress_id: assigned::<id>`; Save and Cancel must send the same resolved ID.
 - after one successful live Teacher load, reload or reopen Teacher on the same
   private device and confirm the redacted IndexedDB matrix snapshot paints
   before the authoritative refresh. Inspect stored data to confirm it has no
