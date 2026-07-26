@@ -142,7 +142,8 @@ Assignment access and progress display:
   percent; reduced motion uses a static red border instead. `UPCOMING`
   represents next week's assignments and remains separate. With tasks it keeps
   its blue track and percentage; without tasks it renders no track or `0%`, but
-  becomes a non-interactive calendar-check plus `NO TASKS` state. Self-study
+  becomes a non-interactive calendar-check plus `NO TASKS` state, with the check
+  centered inside the calendar body rather than attached to a corner. Self-study
   STAR records are not counted. Activating either summary opens its focused task
   list and tasks do not expand inside the hero. Empty rows retain zero progress
   without explanatory copy. The progress fill reveals once after loading
