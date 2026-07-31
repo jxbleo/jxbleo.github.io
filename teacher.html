@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260727-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260731-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
 </head>
@@ -85,37 +85,30 @@
         </section>
 
         <section class="student-lookup-modal teacher-utility-modal" id="student-lookup-panel" data-teacher-modal hidden>
-            <div class="student-lookup-stage teacher-utility-shell" role="dialog" aria-modal="true" aria-labelledby="student-lookup-title">
+            <div class="student-lookup-stage teacher-utility-shell" role="dialog" aria-modal="true" aria-label="Student lookup">
                 <div class="student-lookup-dialog teacher-utility-dialog">
                     <div class="student-lookup-head">
-                        <div>
-                            <p class="eyebrow accent">STUDENTS</p>
-                            <h2 id="student-lookup-title">Student lookup</h2>
+                        <div class="student-lookup-search-state" id="student-lookup-search-state">
+                            <div class="student-picker-searchbar student-lookup-searchbar" id="student-picker-searchbar">
+                                <input class="resource-search" id="student-search" type="search" aria-label="Search students" placeholder="Search students..." autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="student-lookup-title-state" id="student-lookup-title-state" hidden>
+                            <button class="student-lookup-back" id="student-lookup-back" type="button" aria-label="Back to student search" title="Back to student search">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                    <path d="m14.5 6-6 6 6 6"></path>
+                                </svg>
+                            </button>
+                            <h2 id="student-lookup-title">Student</h2>
                         </div>
                         <div class="student-lookup-actions">
                             <button class="teacher-create-capsule student-lookup-create" id="student-lookup-create" type="button" aria-label="Create student account">+</button>
                         </div>
                     </div>
-                    <section class="profile-card student-select-card">
-                        <p class="eyebrow accent">STUDENT</p>
-                        <div class="student-search-actions">
-                            <div class="student-mode-buttons" aria-label="Choose or search for a student">
-                                <button class="student-mode-button" id="choose-student" type="button">Choose</button>
-                                <div class="student-picker-searchbar" id="student-picker-searchbar" hidden>
-                                    <input class="resource-search" id="student-search" type="search" aria-label="Search students" placeholder="Name, Login ID, class..." autocomplete="off">
-                                </div>
-                                <button class="student-search-button" id="search-student" type="button" aria-label="Search students" aria-pressed="false" title="Search students">
-                                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                                        <circle cx="10.8" cy="10.8" r="5.8"></circle>
-                                        <path d="m15.2 15.2 4.3 4.3"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <span class="selected-student-pill" id="selected-student-label">No student selected</span>
-                            <select class="filter-select full-width" id="student-class-filter" hidden>
-                                <option value="">All classes</option>
-                            </select>
-                        </div>
+                    <section class="student-select-card student-lookup-picker-card" aria-label="Student search results">
+                        <select class="filter-select full-width" id="student-class-filter" hidden>
+                            <option value="">All classes</option>
+                        </select>
                         <div class="student-picker-shell" id="student-picker-shell">
                             <div class="student-picker" id="student-list">
                                 <div class="empty-card loading-card">Loading students...</div>
@@ -353,7 +346,7 @@
     <script src="assets/js/config.public.js?v=20260715-3"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260727-3"></script>
+    <script src="assets/js/teacher.js?v=20260731-3"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

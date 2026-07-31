@@ -3,6 +3,24 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-07-31
+
+### Fixed
+
+- Removed the Teacher attempt chart's browser-side 50/90 threshold fallback.
+  Matrix and notification charts now prefer the current backend assignment
+  standards, fall back only to backend attempt snapshots when the assignment is
+  unavailable, and omit missing lines rather than inventing values. Self-study
+  progress responses now include backend-resolved Passing and Mastery fields.
+- Fixed the Teacher View assignment-parameter editor failing before it could
+  create its modal because the click path referenced the nonexistent
+  `assignmentMasteryEnabled` function. The editor now uses the existing
+  `assignmentCanEarnStar` rule, and Wxx/detail Edit triggers carry stable
+  assignment IDs so a matrix re-render cannot invalidate the edit selection.
+  A click-level unit test now executes the real Teacher handler and requires an
+  assignment editor DOM node to be appended, including the legacy document-ID
+  fallback and a cleared transient scope registry.
+
 ## 2026-07-26
 
 ### Fixed

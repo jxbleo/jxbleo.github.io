@@ -235,22 +235,236 @@ function dashboardScheduleHooks() {
   return window.__scheduleTestHooks;
 }
 
+function teacherAssignmentEditHooks() {
+  const teacherPath = path.resolve(__dirname, "../assets/js/teacher.js");
+  const source = fs.readFileSync(teacherPath, "utf8");
+  const cutoffMarker = "\n    document.querySelectorAll('.tab-button').forEach(function(button) {";
+  const cutoff = source.lastIndexOf(cutoffMarker);
+  assert(cutoff > 0, "Unable to locate Teacher bootstrap cutoff");
+  const instrumented = source.slice(0, cutoff) + `
+    window.__assignmentEditTestHooks = {
+      state: state,
+      assignmentStableId: assignmentStableId,
+      assignmentEditTriggerAttributes: assignmentEditTriggerAttributes,
+      handleAssignmentEditTrigger: handleAssignmentEditTrigger,
+      matrixAttemptEntries: matrixAttemptEntries,
+      renderMatrixAttemptChart: renderMatrixAttemptChart
+    };
+})();`;
+
+  const message = { textContent: "", className: "" };
+  const children = [];
+  const classList = { add() {}, remove() {}, toggle() {} };
+  const makeControl = (extra = {}) => ({
+    addEventListener() {},
+    setAttribute() {},
+    focus() {},
+    classList,
+    ...extra,
+  });
+  const body = {
+    style: {},
+    appendChild(element) {
+      element.parentElement = body;
+      element.isConnected = true;
+      children.push(element);
+      return element;
+    },
+  };
+  const root = { style: {}, classList };
+
+  function createOverlay() {
+    const closeButton = makeControl();
+    const masteryInput = makeControl({ checked: true });
+    const masteryShell = { classList };
+    const masteryPicker = makeControl({
+      disabled: false,
+      closest(selector) {
+        return selector === ".assignment-edit-percentage" ? masteryShell : null;
+      },
+    });
+    const form = makeControl({
+      elements: {
+        mastery_enabled: masteryInput,
+        due_week: { value: "" },
+        passing_percentage: { value: "" },
+        mastery_percentage: { value: "" },
+      },
+      querySelector() { return makeControl(); },
+    });
+    const cancelButton = makeControl();
+    return {
+      className: "",
+      innerHTML: "",
+      parentElement: null,
+      isConnected: false,
+      addEventListener() {},
+      querySelectorAll(selector) {
+        return selector === "[data-percent-picker]" ? [] : [];
+      },
+      querySelector(selector) {
+        if (selector === "[data-assignment-edit-close]") return closeButton;
+        if (selector === 'input[name="mastery_enabled"]') return masteryInput;
+        if (selector === '[data-percent-input="mastery_percentage"]') return masteryPicker;
+        if (selector === "form") return form;
+        if (selector === "[data-cancel-assignments]") return cancelButton;
+        return null;
+      },
+      remove() {
+        const index = children.indexOf(this);
+        if (index >= 0) children.splice(index, 1);
+        this.isConnected = false;
+      },
+    };
+  }
+
+  const document = {
+    body,
+    documentElement: root,
+    activeElement: null,
+    getElementById(id) { return id === "teacher-message" ? message : null; },
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    createElement() { return createOverlay(); },
+    addEventListener() {},
+    removeEventListener() {},
+  };
+  const window = {
+    innerWidth: 1200,
+    scrollX: 0,
+    scrollY: 0,
+    localStorage: { getItem() { return null; }, setItem() {}, removeItem() {} },
+    addEventListener() {},
+    removeEventListener() {},
+    scrollTo() {},
+    matchMedia() { return { matches: false }; },
+  };
+  class MutationObserver {
+    observe() {}
+    disconnect() {}
+  }
+
+  vm.runInNewContext(instrumented, {
+    window,
+    document,
+    MutationObserver,
+    console,
+    Date,
+    Intl,
+    Math,
+    Number,
+    Object,
+    Array,
+    String,
+    Set,
+    Map,
+    Promise,
+    URL,
+    URLSearchParams,
+    encodeURIComponent,
+    decodeURIComponent,
+    setTimeout,
+    clearTimeout,
+  });
+  return { hooks: window.__assignmentEditTestHooks, children, message };
+}
+
 function testTeacherAssignmentEditDelegation() {
   const teacherPath = path.resolve(__dirname, "../assets/js/teacher.js");
   const source = fs.readFileSync(teacherPath, "utf8");
-  assert(source.includes("event.target.closest('[data-edit-assignment-scope]')"));
   assert(!source.includes("container.querySelectorAll('[data-edit-assignment-scope]')"));
-  const functionStart = source.indexOf("function assignmentStableId(item)");
-  const functionEnd = source.indexOf("\n    function editableAssignments", functionStart);
-  assert(functionStart >= 0 && functionEnd > functionStart);
-  const assignmentStableId = vm.runInNewContext(`(${source.slice(functionStart, functionEnd).trim()})`);
+  const { hooks, children, message } = teacherAssignmentEditHooks();
+  const assignmentStableId = hooks.assignmentStableId;
   assert.equal(assignmentStableId({ assignment_id: "canonical-id", _id: "document-id" }), "canonical-id");
   assert.equal(assignmentStableId({ _id: "document-id" }), "document-id");
   assert.equal(assignmentStableId({ progress_id: "assigned::progress-fallback-id" }), "progress-fallback-id");
   assert.equal(assignmentStableId({ progress_id: "self_study::student::set" }), "");
+  const assignment = {
+    source: "assigned",
+    progress_id: "assigned::legacy-document-id",
+    student_uid: "student-uid",
+    student_id: "student-login",
+    student_name: "Student",
+    set_id: "TEST-SET",
+    set_title: "Test set",
+    status: "to_do",
+    due_at: "2026-07-26T15:59:59.000Z",
+    passing_percentage: 50,
+    mastery_percentage: 90,
+    mastery_enabled: true,
+  };
+  hooks.state.progressItems = [assignment];
+  hooks.state.assignments = [];
+  hooks.state.assignmentEditScopes = {};
+  const trigger = {
+    dataset: {
+      editAssignmentScope: "matrix-assignment::stale-scope",
+      assignmentEditIds: '["legacy-document-id"]',
+      assignmentEditTitle: "Student",
+      assignmentEditSubtitle: "Test set",
+    },
+    closest(selector) {
+      return selector === "[data-edit-assignment-scope]" ? this : null;
+    },
+  };
+  let prevented = false;
+  let stopped = false;
+  assert.equal(hooks.handleAssignmentEditTrigger({
+    target: trigger,
+    preventDefault() { prevented = true; },
+    stopPropagation() { stopped = true; },
+  }), true);
+  assert.equal(prevented, true);
+  assert.equal(stopped, true);
+  assert.equal(children.length, 1, "click should append the assignment parameter modal");
+  assert.equal(children[0].className, "assignment-edit-overlay");
+  assert(children[0].innerHTML.includes("Student"));
+  assert(children[0].innerHTML.includes("1 selected assignment"));
+
+  children[0].remove();
+  hooks.state.progressItems = [];
+  assert.equal(hooks.handleAssignmentEditTrigger({ target: trigger }), true);
+  assert.equal(children.length, 0, "a missing assignment must not open an empty modal");
+  assert(message.textContent.includes("temporarily unavailable"));
+
+  const triggerAttributes = hooks.assignmentEditTriggerAttributes([assignment], "Student", "Test set");
+  assert(triggerAttributes.includes("data-assignment-edit-ids="));
+  assert(triggerAttributes.includes("legacy-document-id"));
   assert(source.includes("assignment_ids: items.map(assignmentStableId)"));
   assert(source.includes("assignment_ids: cancelableItems.map(assignmentStableId)"));
   assert(source.includes("assignmentStableId(item) && status !== 'cancelled'"));
+}
+
+function testTeacherAttemptChartBackendThresholds() {
+  const { hooks } = teacherAssignmentEditHooks();
+  const attempts = [{
+    attempt_id: "attempt-threshold",
+    attempt_number: 1,
+    percentage: 82,
+    passing_percentage: 61,
+    mastery_percentage: 88,
+    mastery_enabled: true,
+  }];
+  const entries = hooks.matrixAttemptEntries(attempts);
+  const assignmentHtml = hooks.renderMatrixAttemptChart(entries, {
+    passing_percentage: 73,
+    mastery_percentage: 94,
+    mastery_enabled: true,
+  });
+  assert(assignmentHtml.includes("PASS 73%"));
+  assert(assignmentHtml.includes("STAR 94%"));
+  assert(!assignmentHtml.includes("PASS 61%"));
+
+  const attemptFallbackHtml = hooks.renderMatrixAttemptChart(entries, {});
+  assert(attemptFallbackHtml.includes("PASS 61%"));
+  assert(attemptFallbackHtml.includes("STAR 88%"));
+
+  const missingHtml = hooks.renderMatrixAttemptChart(hooks.matrixAttemptEntries([{
+    attempt_id: "attempt-without-thresholds",
+    percentage: 82,
+  }]), {});
+  assert(!missingHtml.includes("PASS "));
+  assert(!missingHtml.includes("STAR "));
 }
 
 function testTeacherPhoneMatrixDensityIsolation() {
@@ -549,6 +763,7 @@ function testAccountStarHistoryModel() {
 
 async function main() {
   testTeacherAssignmentEditDelegation();
+  testTeacherAttemptChartBackendThresholds();
   testTeacherPhoneMatrixDensityIsolation();
   testDashboardScheduleModel();
   testStudentCalendarModel();
@@ -562,6 +777,35 @@ async function main() {
   assert.equal(vocabularyDefaults.mastery_percentage, 100);
   assert.equal(bbcDefaults.passing_percentage, 80);
   assert.equal(bbcDefaults.mastery_percentage, 95);
+
+  collections.attempts.push({
+    _id: "self-study-threshold-attempt",
+    attempt_id: "self-study-threshold-attempt",
+    student_uid: "student-uid",
+    student_id_snapshot: "student-login",
+    set_id: "BBC-DEFAULT",
+    assignment_id: null,
+    attempt_number: 1,
+    percentage: 96,
+    passing_percentage: 80,
+    mastery_percentage: 95,
+    mastery_enabled: true,
+    passed: true,
+    mastered: true,
+    submitted_at: new Date("2026-07-31T10:00:00.000Z"),
+    question_results: [],
+  });
+  const progressResult = await call("listProgress");
+  const selfStudyProgress = progressResult.progress.find((item) =>
+    item.source === "self_study" && item.set_id === "BBC-DEFAULT"
+  );
+  assert(selfStudyProgress);
+  assert.equal(selfStudyProgress.passing_percentage, 80);
+  assert.equal(selfStudyProgress.mastery_percentage, 95);
+  assert.equal(selfStudyProgress.mastery_enabled, true);
+  collections.attempts.splice(collections.attempts.findIndex((item) =>
+    item.attempt_id === "self-study-threshold-attempt"
+  ), 1);
 
   const originalConsoleError = console.error;
   console.error = () => {};
