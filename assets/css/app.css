@@ -3523,7 +3523,7 @@ body:not(.teacher-page) .tab-button.active {
     top: -18px;
     z-index: 32;
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: space-between;
     gap: 14px;
     margin: -18px -18px 0;
@@ -3531,6 +3531,63 @@ body:not(.teacher-page) .tab-button.active {
     border-bottom: 1px solid rgba(124,58,237,0.12);
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(14px);
+}
+.student-lookup-search-state {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.student-lookup-head .student-lookup-searchbar {
+    position: static;
+    width: min(440px, 100%);
+    padding: 0;
+    background: transparent;
+}
+.student-lookup-head .student-lookup-searchbar input {
+    width: 100%;
+    min-height: 40px;
+    border-color: rgba(124, 58, 237, 0.2);
+    border-radius: 13px;
+    background: rgba(255,255,255,0.82);
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.07);
+}
+.student-lookup-title-state {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+}
+.student-lookup-title-state[hidden] { display: none; }
+.student-lookup-title-state h2 {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.student-lookup-back {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    border: 1px solid rgba(124, 58, 237, 0.16);
+    border-radius: 11px;
+    color: var(--accent-dark);
+    background: rgba(255,255,255,0.76);
+}
+.student-lookup-back:hover,
+.student-lookup-back:focus-visible {
+    color: white;
+    background: var(--accent);
+}
+.student-lookup-back svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 .student-lookup-head h2 {
     margin: 2px 0 0;
@@ -3552,9 +3609,17 @@ body:not(.teacher-page) .tab-button.active {
     z-index: 3;
     overflow: visible;
 }
+.teacher-page .student-lookup-dialog .student-lookup-picker-card {
+    min-height: 0;
+    margin: -14px 0 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
 .teacher-page .student-lookup-dialog .student-select-card .student-picker-shell {
     position: absolute;
-    top: calc(100% - 10px);
+    top: 0;
     right: 14px;
     left: 14px;
     z-index: 40;

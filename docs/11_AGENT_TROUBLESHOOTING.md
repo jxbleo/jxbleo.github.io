@@ -33,7 +33,7 @@
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
 | 手机 Teacher View 姓名已缩短但首列仍很宽 | 桌面矩阵 density 存在同一个 localStorage 键中并优先于手机自动 Fit；旧 history 也可能跨断点恢复 density | 发布最新版 `teacher.js` 和 `app.css`；确认手机首次载入 `resolvedMatrixDensityStep()` 为 0，且移动端 Fit 网格使用 `--matrix-student-col-fit` |
 | iPad 第一次打开学生 Calendar 时日期数字靠方格上方 | Safari 首次解析 `aspect-ratio` 时仍可能沿用原生 button 行盒/基线，单靠 Grid `place-items` 不稳定 | 发布最新版 `app.css`；确认 `.student-calendar-day` 重置 `appearance`，使用 Flex 双轴居中和 `line-height: 1` |
-| Teacher View 点击 `Wxx` 没反应，或任务详情的 Edit 不打开参数弹窗 | 静态页面可能已更新，但前端编辑资格仍只认 `assignment_id`；旧缓存/旧记录可能只有 `_id` 或 `progress_id: assigned::<id>` | 发布最新版 `teacher.js`；确认 `assignmentStableId` 同时用于编辑资格、scope、Save 与 Cancel payload；只有保存阶段找不到记录才需要再检查 `teacherAdmin` 部署 |
+| Teacher View 点击 `Wxx` 没反应，或任务详情的 Edit 不打开参数弹窗 | 先查浏览器控制台是否有 `assignmentMasteryEnabled is not defined`；旧实现会在创建 modal 前调用不存在的函数。其次检查重渲染后的临时 scope 是否丢失 | 发布最新版 `teacher.js`；确认编辑器使用已存在的 `assignmentCanEarnStar`，且按钮携带 `data-assignment-edit-ids` 并从当前 progress 恢复记录。不要用只检查源码字符串的测试代替真实点击测试 |
 | 学生铃铛有红色数字但 `THIS WEEK` / `OVERDUE` 都为空 | 旧静态代码仍把所有 `to_do`（包括未来作业）计入红点，或旧 assignment 尚未补齐 `due_at` | 发布最新 Dashboard/Teacher 静态文件与 `getDashboard`/`teacherAdmin`；dry-run `backfillAssignmentDueWeeks`，确认未来任务只在 Upcoming 且不计红点 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |
@@ -126,6 +126,32 @@
 - 至少覆盖状态单调、reassign、STAR、Argue、Vocabulary 计分边界。
 
 ## 3. 按日期整理的技术变更记录
+
+### 2026-07-31：Teacher View 参数弹窗真实点击修复
+
+已做：
+
+- 修复 `openAssignmentEditDialog` 调用未定义
+  `assignmentMasteryEnabled` 导致 modal 创建前抛出 `ReferenceError` 的问题，
+  统一复用矩阵已有的 `assignmentCanEarnStar` 兼容规则。
+- Wxx 与单任务 Edit 按钮写入稳定 assignment ID；点击时从最新
+  `progressItems` / `assignments` 恢复编辑对象，不再只依赖渲染期间的
+  `assignmentEditScopes`。
+- 单元测试执行真实 delegated click handler，并断言 DOM 中实际新增
+  `.assignment-edit-overlay`；同时模拟 scope 被清空和旧记录只有文档 ID。
+
+重复问题：
+
+- “监听器存在”和“源码包含某个函数名”不能证明弹窗可打开。此类 bug 必须让
+  测试执行从点击到 modal 创建的完整同步路径，否则运行时 `ReferenceError`
+  仍会被漏掉。
+- 如果按钮要求多个 assignment ID，而当前数据只能恢复其中一部分，编辑器应
+  明确提示刷新，不能静默对部分学生保存。
+
+部署/数据：
+
+- 仅需发布静态 `teacher.html` / `assets/js/teacher.js`；不需要部署 CloudBase
+  函数或迁移数据。
 
 ### 2026-07-26：学生大量历史记录导致 Dashboard 假空白
 

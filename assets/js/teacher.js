@@ -2818,9 +2818,10 @@
     }
 
     function filteredStudents() {
-        var query = document.getElementById('student-search').value.trim().toLowerCase();
-        var classGroup = document.getElementById('student-class-filter').value;
-        if (state.studentPickerMode !== 'search') query = '';
+        var searchInput = document.getElementById('student-search');
+        var classFilter = document.getElementById('student-class-filter');
+        var query = String(searchInput && searchInput.value || '').trim().toLowerCase();
+        var classGroup = String(classFilter && classFilter.value || '');
         return studentRecords().filter(function(student) {
             var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
                 .join(' ').toLowerCase().indexOf(query) !== -1;
@@ -2829,41 +2830,30 @@
     }
 
     function updateSelectedStudentLabel() {
-        var label = document.getElementById('selected-student-label');
-        if (!label) return;
         var selected = state.students.find(function(item) {
             return item.profile_id === state.selectedStudentProfileId;
         });
-        label.textContent = selected ? selected.name || selected.student_id || 'Selected student' : 'No student selected';
-        label.classList.toggle('empty', !selected);
+        var searchState = document.getElementById('student-lookup-search-state');
+        var titleState = document.getElementById('student-lookup-title-state');
+        var title = document.getElementById('student-lookup-title');
+        if (searchState) searchState.hidden = Boolean(selected);
+        if (titleState) titleState.hidden = !selected;
+        if (title) title.textContent = selected ? selected.name || selected.student_id || 'Selected student' : 'Student';
     }
 
     function setStudentPickerOpen(open, mode) {
         if (mode) state.studentPickerMode = mode;
         var card = document.querySelector('.student-select-card');
-        var input = document.getElementById('student-search');
-        var searchbar = document.getElementById('student-picker-searchbar');
-        var chooseButton = document.getElementById('choose-student');
-        var searchButton = document.getElementById('search-student');
-        var searching = open === true && state.studentPickerMode === 'search';
-        if (card) card.classList.toggle('picker-open', open === true);
+        var selected = state.students.find(function(item) {
+            return item.profile_id === state.selectedStudentProfileId;
+        });
+        var searching = open === true && !selected;
+        if (card) card.classList.toggle('picker-open', searching);
         if (card) {
-            card.classList.toggle('picker-choose', open === true && state.studentPickerMode === 'choose');
-            card.classList.toggle('picker-search', open === true && state.studentPickerMode === 'search');
+            card.classList.remove('picker-choose');
+            card.classList.toggle('picker-search', searching);
         }
-        if (searchbar) searchbar.hidden = !searching;
-        if (chooseButton) chooseButton.hidden = searching;
-        if (chooseButton) chooseButton.classList.toggle('active', open === true && state.studentPickerMode === 'choose');
-        if (searchButton) {
-            searchButton.classList.toggle('active', searching);
-            searchButton.setAttribute('aria-pressed', searching ? 'true' : 'false');
-            searchButton.setAttribute('aria-label', searching ? 'Close student search' : 'Search students');
-            searchButton.title = searching ? 'Close search' : 'Search students';
-        }
-        if (input) {
-            if (!searching) input.value = '';
-        }
-        if (open !== true) state.studentPickerMode = 'choose';
+        state.studentPickerMode = 'search';
         updateSelectedStudentLabel();
     }
 
@@ -2898,9 +2888,22 @@
         renderStudentDetail();
     }
 
+    function returnToStudentSearch() {
+        state.selectedStudentProfileId = '';
+        state.studentProgressView = 'to_do';
+        state.expandedAssignmentSets = {};
+        renderStudentDetail();
+        setStudentPickerOpen(true, 'search');
+        renderStudentList();
+        window.setTimeout(function() {
+            var input = document.getElementById('student-search');
+            if (input) input.focus();
+        }, 0);
+    }
+
     function renderStudentList() {
         var students = filteredStudents();
-        var searchMode = state.studentPickerMode === 'search';
+        var searchMode = true;
         updateSelectedStudentLabel();
         studentList.innerHTML = students.length ? students.map(function(student) {
             if (!student.profile_complete) {
@@ -3524,6 +3527,44 @@
         });
     }
 
+    function assignmentEditStableIds(items) {
+        var seen = {};
+        return editableAssignments(items).map(assignmentStableId).filter(function(id) {
+            if (!id || seen[id]) return false;
+            seen[id] = true;
+            return true;
+        });
+    }
+
+    function assignmentEditTriggerAttributes(items, title, subtitle) {
+        return ' data-assignment-edit-ids="' + escapeHtml(JSON.stringify(assignmentEditStableIds(items))) + '"' +
+            ' data-assignment-edit-title="' + escapeHtml(title || 'Assignments') + '"' +
+            ' data-assignment-edit-subtitle="' + escapeHtml(subtitle || '') + '"';
+    }
+
+    function assignmentEditIdsFromTrigger(trigger) {
+        if (!trigger || !trigger.dataset) return [];
+        try {
+            var parsed = JSON.parse(trigger.dataset.assignmentEditIds || '[]');
+            return Array.isArray(parsed) ? parsed.map(String).filter(Boolean) : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function currentAssignmentsForStableIds(ids) {
+        var wanted = {};
+        (ids || []).forEach(function(id) { wanted[String(id)] = true; });
+        var found = {};
+        (state.progressItems || []).concat(state.assignments || []).forEach(function(item) {
+            var stableId = assignmentStableId(item);
+            if (!stableId || !wanted[stableId] || found[stableId]) return;
+            if (!editableAssignments([item]).length) return;
+            found[stableId] = item;
+        });
+        return (ids || []).map(function(id) { return found[String(id)] || null; }).filter(Boolean);
+    }
+
     function isOpenAssignmentItem(item) {
         var status = String(item && item.status || 'to_do');
         return ['to_do', 'not_done', 'failed'].indexOf(status) !== -1;
@@ -3539,7 +3580,8 @@
                 : 'Edit student assignments';
         return '<div class="assignment-group-tools">' +
             '<span>' + escapeHtml(editable.length) + ' assigned item' + (editable.length === 1 ? '' : 's') + '</span>' +
-            '<button class="outline-button assignment-edit-button" type="button" data-edit-assignment-scope="' + escapeHtml(group.key) + '">' +
+            '<button class="outline-button assignment-edit-button" type="button" data-edit-assignment-scope="' + escapeHtml(group.key) + '"' +
+                assignmentEditTriggerAttributes(editable, group.title, group.subtitle) + '>' +
                 escapeHtml(scopeLabel) +
             '</button>' +
         '</div>';
@@ -3624,13 +3666,27 @@
         '</div>';
     }
 
-    function openAssignmentEditDialog(scopeKey) {
-        var group = state.assignmentEditScopes[scopeKey];
-        if (!group) return;
-        var items = editableAssignments(group.items);
-        if (!items.length) {
-            showMessage('No editable assigned items in this group.', 'error');
-            return;
+    function openAssignmentEditDialog(scopeKey, trigger) {
+        var scopedGroup = state.assignmentEditScopes[scopeKey] || null;
+        var requestedIds = assignmentEditIdsFromTrigger(trigger);
+        var currentItems = currentAssignmentsForStableIds(requestedIds);
+        var items = requestedIds.length
+            ? currentItems
+            : editableAssignments(scopedGroup && scopedGroup.items || []);
+        var group = {
+            key: scopeKey || '',
+            mode: scopedGroup && scopedGroup.mode || 'selection',
+            title: trigger && trigger.dataset && trigger.dataset.assignmentEditTitle
+                || scopedGroup && scopedGroup.title
+                || 'Assignments',
+            subtitle: trigger && trigger.dataset && trigger.dataset.assignmentEditSubtitle
+                || scopedGroup && scopedGroup.subtitle
+                || '',
+            items: items
+        };
+        if (!items.length || (requestedIds.length && items.length !== requestedIds.length)) {
+            showMessage('Assignment parameters are temporarily unavailable. Refresh Teacher View and try again.', 'error');
+            return false;
         }
         var cancelableItems = items.filter(isOpenAssignmentItem);
         var commonDue = commonFieldValue(items, 'due_at');
@@ -3638,7 +3694,7 @@
         var dueWeek = assignmentWeekStartValue(commonDueSource);
         var commonPassing = commonFieldValue(items, 'passing_percentage');
         var commonMastery = commonFieldValue(items, 'mastery_percentage');
-        var masteryEnabledChecked = items.every(assignmentMasteryEnabled);
+        var masteryEnabledChecked = items.every(assignmentCanEarnStar);
         var scopeSubtitle = group.subtitle ? group.subtitle + ' · ' : '';
         var overlay = document.createElement('div');
         overlay.className = 'assignment-edit-overlay';
@@ -3876,6 +3932,19 @@
             document.addEventListener('keydown', handleConfirmationKeydown, true);
             confirmButton.focus();
         }
+        return true;
+    }
+
+    function handleAssignmentEditTrigger(event) {
+        var target = event && event.target;
+        var trigger = target && typeof target.closest === 'function'
+            ? target.closest('[data-edit-assignment-scope]')
+            : null;
+        if (!trigger) return false;
+        if (event.preventDefault) event.preventDefault();
+        if (event.stopPropagation) event.stopPropagation();
+        openAssignmentEditDialog(trigger.dataset.editAssignmentScope || '', trigger);
+        return true;
     }
 
     function renderAssignmentProgressGroup(group) {
@@ -4260,11 +4329,37 @@
         if (attempt && attempt.passed === true) return 'passed';
         var percent = numericPercent(attempt && attempt.percentage);
         if (percent == null) return 'not-passed';
-        var mastery = Number(assignment && assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
-        var passing = Number(assignment && assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
-        if ((!assignment || assignment.mastery_enabled !== false) && isFinite(mastery) && percent >= mastery) return 'mastered';
-        if (isFinite(passing) && percent >= passing) return 'passed';
+        var mastery = numericPercent(assignment && assignment.mastery_percentage);
+        var passing = numericPercent(assignment && assignment.passing_percentage);
+        if (mastery == null) mastery = numericPercent(attempt && attempt.mastery_percentage);
+        if (passing == null) passing = numericPercent(attempt && attempt.passing_percentage);
+        var masteryEnabled = assignment && typeof assignment.mastery_enabled === 'boolean'
+            ? assignment.mastery_enabled
+            : attempt && typeof attempt.mastery_enabled === 'boolean'
+                ? attempt.mastery_enabled
+                : false;
+        if (masteryEnabled && mastery != null && percent >= mastery) return 'mastered';
+        if (passing != null && percent >= passing) return 'passed';
         return 'not-passed';
+    }
+
+    function backendAttemptChartValue(entries, assignment, field) {
+        var assignmentValue = numericPercent(assignment && assignment[field]);
+        if (assignmentValue != null) return assignmentValue;
+        for (var index = entries.length - 1; index >= 0; index -= 1) {
+            var attemptValue = numericPercent(entries[index].attempt && entries[index].attempt[field]);
+            if (attemptValue != null) return attemptValue;
+        }
+        return null;
+    }
+
+    function backendAttemptChartMasteryEnabled(entries, assignment) {
+        if (assignment && typeof assignment.mastery_enabled === 'boolean') return assignment.mastery_enabled;
+        for (var index = entries.length - 1; index >= 0; index -= 1) {
+            var attempt = entries[index].attempt;
+            if (attempt && typeof attempt.mastery_enabled === 'boolean') return attempt.mastery_enabled;
+        }
+        return false;
     }
 
     function renderMatrixScoreLock(item) {
@@ -4278,11 +4373,9 @@
 
     function renderMatrixAttemptChart(entries, assignment) {
         if (!entries.length) return '<div class="matrix-attempt-empty">No attempt records yet.</div>';
-        var passingValue = Number(assignment && assignment.passing_percentage == null ? 50 : assignment.passing_percentage);
-        var masteryValue = Number(assignment && assignment.mastery_percentage == null ? 90 : assignment.mastery_percentage);
-        var passing = isFinite(passingValue) ? Math.max(0, Math.min(100, passingValue)) : 50;
-        var mastery = isFinite(masteryValue) ? Math.max(0, Math.min(100, masteryValue)) : 90;
-        var masteryEnabled = !assignment || assignment.mastery_enabled !== false;
+        var passing = backendAttemptChartValue(entries, assignment, 'passing_percentage');
+        var mastery = backendAttemptChartValue(entries, assignment, 'mastery_percentage');
+        var masteryEnabled = backendAttemptChartMasteryEnabled(entries, assignment);
         var best = numericPercent(assignment && assignment.best_percentage);
         function thresholdLine(label, value, className) {
             var top = 31 + ((100 - value) / 100 * 82);
@@ -4291,8 +4384,8 @@
         }
         return '<div class="matrix-attempt-bars" aria-label="Attempt score history">' +
             '<div class="matrix-attempt-bars-track" style="--attempt-count:' + escapeHtml(entries.length) + '">' +
-                thresholdLine('PASS ' + formatPercent(passing), passing, 'passing') +
-                (masteryEnabled ? thresholdLine('STAR ' + formatPercent(mastery), mastery, 'mastery') : '') +
+                (passing == null ? '' : thresholdLine('PASS ' + formatPercent(passing), passing, 'passing')) +
+                (masteryEnabled && mastery != null ? thresholdLine('STAR ' + formatPercent(mastery), mastery, 'mastery') : '') +
                 entries.map(function(entry) {
                 var attempt = entry.attempt;
                 var percent = Math.max(0, Math.min(100, Number(attempt.percentage || 0)));
@@ -4483,7 +4576,8 @@
         var editButton = '';
         if (item.source !== 'self_study' && assignmentStableId(item) && status !== 'cancelled') {
             editButton = '<button class="matrix-edit-pill" type="button" data-edit-assignment-scope="' +
-                escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '">Edit</button>';
+                escapeHtml(registerMatrixAssignmentEditScope(item, title)) + '"' +
+                assignmentEditTriggerAttributes([item], item.student_name || item.student_id || 'Student', title) + '>Edit</button>';
         }
         return '<div class="progress-matrix-detail">' +
             '<div class="matrix-detail-summary">' +
@@ -4987,7 +5081,12 @@
                 var tag = editScope ? 'button' : 'span';
                 return '<' + tag + ' class="progress-matrix-due-cell"' +
                     (editScope ? ' type="button" data-edit-assignment-scope="' + escapeHtml(editScope) +
-                        '" title="Edit class parameters for ' + escapeHtml(title) +
+                        '"' + assignmentEditTriggerAttributes(
+                            state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].items || [],
+                            title,
+                            state.assignmentEditScopes[editScope] && state.assignmentEditScopes[editScope].subtitle || ''
+                        ) +
+                        ' title="Edit class parameters for ' + escapeHtml(title) +
                         '" aria-label="Edit class parameters for ' + escapeHtml(title) + ', due ' + escapeHtml(dueLabel) + '"' : '') + '>' +
                     '<span class="matrix-due-parameter-pill">' + escapeHtml(dueLabel) + '</span></' + tag + '>';
             }).join('') +
@@ -5539,6 +5638,9 @@
             set_title: setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt',
             status: attempt.mastered ? 'mastered' : attempt.passed ? 'passed' : 'to_do',
             best_percentage: bestAttemptPercentage(attempts),
+            passing_percentage: attempt.passing_percentage,
+            mastery_percentage: attempt.mastery_percentage,
+            mastery_enabled: attempt.mastery_enabled,
             answer_revealed: false,
             mastery_locked: false,
             attempts: attempts
@@ -6532,27 +6634,17 @@
         }).finally(updateSelectedCount);
     });
 
-    document.getElementById('choose-student').addEventListener('click', function() {
-        openStudentSelector('choose');
-    });
-    document.getElementById('search-student').addEventListener('click', function() {
-        var card = document.querySelector('.student-select-card');
-        var searchIsOpen = card && card.classList.contains('picker-open') && state.studentPickerMode === 'search';
-        openStudentSelector(searchIsOpen ? 'choose' : 'search');
+    document.getElementById('student-search').addEventListener('focus', function() {
+        openStudentSelector('search');
     });
     document.getElementById('student-search').addEventListener('input', function() {
         setStudentPickerOpen(true, 'search');
         renderStudentList();
     });
+    document.getElementById('student-lookup-back').addEventListener('click', returnToStudentSearch);
     document.getElementById('student-class-filter').addEventListener('change', renderStudentList);
     document.addEventListener('click', function(event) {
-        var assignmentEditButton = event.target.closest('[data-edit-assignment-scope]');
-        if (assignmentEditButton) {
-            event.preventDefault();
-            event.stopPropagation();
-            openAssignmentEditDialog(assignmentEditButton.dataset.editAssignmentScope);
-            return;
-        }
+        if (handleAssignmentEditTrigger(event)) return;
         var createPanel = document.getElementById('create-student-panel');
         if (createPanel && !createPanel.hidden && event.target === createPanel) {
             setCreateStudentModal(false, true);
@@ -6587,7 +6679,8 @@
             return;
         }
         var card = document.querySelector('.student-select-card');
-        if (card && !card.contains(event.target)) setStudentPickerOpen(false);
+        var lookupHead = event.target.closest('.student-lookup-head');
+        if (card && !card.contains(event.target) && !lookupHead) setStudentPickerOpen(false);
 
         var subTabBtn = event.target.closest('#teacher-sub-tab-bar .sub-tab-btn');
         if (subTabBtn) {

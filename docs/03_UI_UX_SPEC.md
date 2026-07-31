@@ -249,6 +249,11 @@ Frontend rule:
 - Opening a grouped attempt row displays the thread detail at its top with the
   attempt chart visible and no attempt preselected. Selecting a chart bar is
   the only action that scrolls to its matching attempt card below.
+- Passing and enabled STAR reference lines in matrix and notification attempt
+  charts use only thresholds returned by the backend. The current assignment
+  thresholds take precedence; if an assignment record is unavailable, the
+  chart may use the backend attempt snapshot. The browser must not substitute
+  fixed 50/90 thresholds, and it omits a line whose backend value is absent.
 - The teacher bell header includes `Read all`. It marks every currently loaded
   attempt thread read, clears the bell badge/red row treatment, and remains
   disabled when no unread thread exists. Attempts submitted afterward are new
@@ -410,15 +415,16 @@ below share the same left and right edges.
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The top-right circular student ID icon opens a standalone Student
-lookup modal. That modal contains the student search/selection surface,
-selected student info and progress, and an internal `+` action for creating a
-student. The Student lookup, raised-hand Argue, and notification surfaces share
+lookup modal. Its top bar initially contains the student search field and an
+internal `+` action for creating a student. Selecting a search result replaces
+the search field in that same top bar with a back control and the selected
+student's name; returning to the list restores the search field. Student info
+and progress appear directly below. The Student lookup, raised-hand Argue, and
+notification surfaces share
 the notification card's width, viewport-centered position, height cap, and
-centered external `Close` capsule immediately below the card. The picker
-initially shows `Choose`
-beside a magnifying-glass search action. Activating search replaces `Choose` in
-place with the live search field; matching students update immediately and a
-student row is selected directly without a separate Confirm action. The student
+centered external `Close` capsule immediately below the card. The live search
+field updates matching students immediately, and a student row is selected
+directly without a separate Confirm action. The student
 list opens as a floating layer above the student detail/progress cards instead
 of being squeezed into the first card. The floating list uses the available
 dialog height and scrolls internally on pointer and touch input.

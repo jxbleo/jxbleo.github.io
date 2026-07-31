@@ -636,6 +636,12 @@ Check:
   correct score heights; tapping a bar adds the selected outline and still
   scrolls to the matching attempt card below. Reduced motion removes press and
   width transitions without removing selection feedback
+- Set a task to non-default Passing and Mastery values, submit an attempt, then
+  open it from both Teacher View and the notification bell. Both charts must
+  show the backend assignment values. For a historical thread whose assignment
+  is unavailable, the chart must use the backend attempt snapshot; if neither
+  response contains a threshold, the browser omits that line instead of
+  displaying a fixed 50/90 fallback.
 - With enough attempts to require horizontal scrolling, the Passing and enabled
   STAR dashed lines remain visible continuously through the rightmost bar at
   phone, iPad, and desktop widths
@@ -654,6 +660,14 @@ Check:
 - after matrix re-rendering and after a task-detail modal is moved into the
   shared modal root, its Edit button and the visible Wxx parameter button each
   still open exactly one assignment editor
+- `scripts/test-assignment-due-weeks.js` executes the real Teacher delegated
+  click handler with `assignmentEditScopes` cleared and a legacy
+  `assigned::<document-id>` record; the test passes only when one
+  `.assignment-edit-overlay` is appended and reports an explicit retry error
+  rather than opening a partial editor when the requested assignment is absent
+- Student lookup opens with its search field and `+` action in the top bar;
+  selecting a result replaces the search field with the student's name, and
+  the back control restores the searchable student list
 - Argue list loads and groups disputes
 - Argue list does not show student disputes linked to cancelled assignments
 - cancelling open selected assignments in View hides them from teacher View
