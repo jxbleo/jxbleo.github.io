@@ -584,9 +584,11 @@ Check:
 - with Earn STAR off, Mastery % is visibly disabled and may be lower than a new
   Passing % without blocking save; turning Earn STAR on requires Mastery % at
   or above Passing %
-- the footer's red Cancel open assignments button opens a second confirmation
-  modal; Keep assignments, backdrop, or Escape return safely to the editor,
-  while the destructive confirmation affects only currently open assignment IDs
+- the footer's Cancel open assignments control uses muted red text, a pale red
+  tint, and a fine border rather than a solid red fill; hover/focus may gently
+  strengthen the tint, while the second confirmation retains the stronger
+  destructive treatment. Keep assignments, backdrop, or Escape return safely
+  to the editor, and destructive confirmation affects only open assignment IDs
 - opening Edit from one student's assignment detail submits only that student's
   assignment ID, while a task-column Wxx edit submits every visible filtered
   student assignment in that column
