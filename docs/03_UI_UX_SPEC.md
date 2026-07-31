@@ -639,9 +639,12 @@ It should include:
   Mastery %. There are no per-field change checkboxes or explanatory footer
   paragraph. Due week uses a select; both percentages open the draggable
   scroll-wheel picker. The only checkbox is `Earn STAR` beside Mastery %;
-  unchecked disables that picker. The footer contains a red `Cancel open
-  assignments` button and `Save changes`. The red action opens a second
-  confirmation modal with Keep/Cancel choices before calling the backend.
+  unchecked disables that picker. The footer contains a quiet Apple-style
+  destructive `Cancel open assignments` control and the primary `Save changes`
+  action. The cancel entry uses muted red text, a pale translucent red tint,
+  and a fine border instead of a solid red fill; its second confirmation keeps
+  the stronger destructive treatment. The cancel action opens a confirmation
+  modal with Keep/Cancel choices before calling the backend.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. At phone width they divide the available row into three equal tracks

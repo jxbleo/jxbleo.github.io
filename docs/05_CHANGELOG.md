@@ -5,6 +5,14 @@
 
 ## 2026-07-31
 
+### Changed
+
+- Restyled the assignment-parameter editor's first-stage Cancel open
+  assignments action as a restrained Apple-style destructive control: muted
+  red text, a pale translucent tint, a fine border, and immediate press
+  feedback replace the former solid red fill. The second confirmation retains
+  its stronger red treatment so the destructive hierarchy remains explicit.
+
 ### Fixed
 
 - Removed the Teacher attempt chart's browser-side 50/90 threshold fallback.
