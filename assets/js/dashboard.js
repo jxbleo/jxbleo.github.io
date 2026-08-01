@@ -2972,7 +2972,9 @@
                 }).catch(function(error) {
                     button.disabled = false;
                     button.textContent = 'Ask AI';
-                    alert(error.message);
+                    alert(error.result && error.result.code === 'AI_NOT_CONFIGURED'
+                        ? 'AI dictionary lookup is under development.'
+                        : error.message);
                 });
             });
         });

@@ -364,6 +364,9 @@ My Words:
   AI drafts display `AI-generated · Not reviewed by teacher` and a Report
   action. The first confirmed draft is reused by all students; teacher review
   replaces the same current card rather than adding another visible version.
+  Until an AI provider is configured, clicking the action shows that AI
+  dictionary lookup is under development rather than exposing configuration
+  details to the student.
 - saving is immediate. A cache miss shows `Finding definition and part of
   speech...` while backend enrichment continues; a confirmed miss offers a
   quiet Retry action. Lookup failure never removes the saved word.

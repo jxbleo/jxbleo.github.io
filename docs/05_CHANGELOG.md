@@ -25,6 +25,9 @@
 - My Words export dates now use student activity timestamps rather than
   background dictionary-enrichment timestamps. Familiarity-based filters and
   vocabulary Practice export remain deferred.
+- When the optional AI provider is not configured, the student-facing lookup
+  action now presents a simple under-development message instead of backend
+  configuration terminology.
 
 ## 2026-07-31
 
