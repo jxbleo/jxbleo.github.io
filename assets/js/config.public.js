@@ -1,7 +1,7 @@
 window.MRCAT_CONFIG = Object.freeze({
     cloudbaseEnvId: 'mrcat-dev-d9gwy2v1icdfdf597',
     region: 'ap-shanghai',
-    appVersion: '20260715-3',
+    appVersion: '20260801-4',
     defaultPassingPercentage: 50,
     defaultFeedbackPolicy: 'always',
     doneRangeDays: 7

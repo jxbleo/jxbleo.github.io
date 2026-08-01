@@ -18,10 +18,6 @@
 
 ## Medium Priority
 
-- Design the reward exchange system as an append-only transaction ledger that
-  references protected `achievement_id` values. Decide yellow/blue STAR value,
-  reservation/idempotency behavior, reversal rules, teacher authorization,
-  reward inventory, and balance presentation before implementation.
 - Extract shared backend logic into `cloudfunctions/_shared/`.
 - Clean old documentation references to `done/failed`, three-card dashboard, and STAR blocking reassignment.
 - Improve teacher Progress filters by class, student, set, and curriculum track.
@@ -45,6 +41,9 @@
 ## Later / Optional
 
 - Multi-teacher roles and organization model.
+- Bind teachers to students/assignments, then partition Yellow STAR Cash
+  authority so only the responsible teacher can process those requests.
+- Open the Gifts destination after the owner defines inventory and fulfillment.
 - Parent accounts.
 - Notifications or messaging.
 - Commercial billing/subscription features.

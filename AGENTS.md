@@ -268,6 +268,9 @@ All collections use `ADMINONLY`:
 - `grading_keys`: private answers, explanations, and scoring rules
 - `system_config`: defaults such as passing percentage
 - `student_set_achievements`: permanent protected STAR records
+- `star_reward_ledger`: append-only Yellow STAR credit/reservation/redemption/refund entries
+- `star_redemption_requests`: student Cash request state and audit snapshots
+- `star_redemption_evidence`: private permanent Cash evidence metadata
 - `answer_disputes`: student single-question Argue requests
 - `grading_key_history`: immutable teacher grading-rule revisions
 - `student_vocabulary_items`: student-owned saved words and phrases
@@ -403,10 +406,12 @@ Do not reintroduce separate `PASSED` / `MASTERED` dashboard tabs or the old
 MASTERED one-week/one-month/all range selector unless the owner explicitly asks.
 The backend retains all attempts.
 
-Assignment STAR records are backend records keyed by `assignment_id`. A mastered
-assignment must create or repair its protected STAR automatically in backend
-code; `claimStar` may remain as an idempotent fallback, but the dashboard count
-must not depend on localStorage or a purely frontend action. Once recorded:
+New Yellow STAR records are backend records unique by `student_uid + set_id`.
+A mastered assignment creates or repairs that set's protected Yellow STAR only
+when `mastery_enabled` is true. Historical assignment-keyed duplicate Yellow
+STARs remain valid and redeemable, but normal code must not create new duplicates.
+`claimStar` may remain as an idempotent fallback, but the dashboard count and
+wallet must not depend on localStorage or a purely frontend action. Once recorded:
 
 - it can never be revoked or downgraded by normal code
 - later failing attempts cannot remove it
@@ -414,9 +419,28 @@ must not depend on localStorage or a purely frontend action. Once recorded:
 - answer-key changes cannot remove it
 - only the best attempt reference and best percentage may improve
 
-Independent Library/Explore mastery uses a self-study STAR with
-`assignment_id: null`. `getDashboard` may repair missing historical STAR
-records from mastered attempts for both assignment and self-study work.
+Independent Library/Explore mastery uses an active, stable, non-redeemable Blue
+STAR with `assignment_id: null`. If the same student already owns that set's
+Yellow STAR, later self-study does not create another Blue STAR. When a teacher
+later enables Earn STAR for the set, the backend compares the student's verified
+historical best against that assignment's STAR Rate; a qualifying Blue STAR is
+marked converted and linked to the protected Yellow STAR. If Earn STAR is off,
+no comparison or conversion occurs. `getDashboard` may repair missing historical
+STAR records from mastered attempts for both assignment and self-study work.
+
+Yellow STAR spending never changes or deletes achievement rows. The wallet uses
+append-only `star_reward_ledger` entries referencing explicit `achievement_id`
+values. One student may have only one open Cash Request. Creating a request
+reserves its Yellow STARs; teacher completion settles the reservation, while
+student cancellation, teacher rejection, or seven-day expiry releases it.
+Completed requests can only be corrected through an append-only STAR Refund.
+Cash requests record no money amount or exchange rate.
+
+Each Cash Request needs at least one private Evidence Photo before teacher
+completion. Evidence may be uploaded by the owning student or the active teacher,
+is stored privately in CloudBase Storage, and remains visible in request history.
+The browser receives only short-lived upload metadata and temporary read URLs;
+it never directly reads the ADMINONLY redemption collections.
 
 Teacher assignment candidates are not disabled by previous STAR claims.
 

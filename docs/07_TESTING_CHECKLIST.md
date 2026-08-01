@@ -25,7 +25,26 @@ node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
 node --check assets/js/practice-session.js
 npm run test:assignment-schedule
+npm run test:star-rewards
 ```
+
+### STAR reward rule tests
+
+- Blue STAR is non-redeemable, stable, and unique by student/set.
+- Earn STAR off never compares or converts Blue STAR, even at 100%.
+- Earn STAR on converts only when verified best percentage meets that
+  assignment's STAR Rate.
+- New Yellow STAR is unique by student/set; legacy duplicate Yellow credits are
+  preserved.
+- Legacy `source: "assignment"` records remain protected Yellow even if the old
+  row has no `assignment_id`; before migration apply, `total = yellow + blue`.
+- Wallet credits are idempotent and balances are sums of append-only deltas.
+- One open Cash Request reserves explicit available achievement IDs.
+- cancellation, rejection, and expiry release exactly the reservation.
+- confirmation requires active evidence and moves reserved to spent once.
+- refund is append-only, returns available credit once, and does not edit the
+  completed redeem event.
+- stale/repeated browser actions are idempotent and cannot double-spend.
 
 Run after catalog/content changes:
 
@@ -184,14 +203,28 @@ Check:
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
   centered outside directly below the card; Close, Escape, and backdrop all
   dismiss it, restore focus to the identity chip, and restore background scroll
-- the yellow assignment STAR and blue self-study STAR counters are clickable
-  and keyboard operable; each opens only its own newest-first source list in
-  the same card, showing task title/type, earned date, and best score
+- one yellow STAR counter shows Available balance and is clickable/keyboard
+  operable; it dismisses Personal Center and opens an independent My STARs modal
+  with Available, Lifetime earned, and mixed newest-first Yellow/Blue history
+  plus working All/Yellow/Blue filters. Back returns to Personal Center and the
+  external Close action returns to Dashboard
+- in Chrome, opening My STARs paints a normal light standalone wallet surface
+  with visible content, never a blank black block;
+  one malformed legacy history row shows its own unavailable placeholder while
+  the rest of the wallet remains usable
 - a STAR history row opens the linked best historical attempt; Back returns to
-  the account summary and restores focus to the exact yellow/blue counter that
-  opened the list; an empty category shows a quiet empty state
-- the displayed category counts and list lengths match the protected
-  `student_set_achievements` records after assignment/self-study deduplication
+  the account summary and restores focus to the yellow counter; converted Blue
+  rows remain visible and link to their Yellow STAR
+- Cash shows no money amount/rate, its integer slider is exactly 1..available,
+  zero balance disables submission, and Gifts is disabled as Coming soon
+- creating Cash freezes exact Yellow STAR credits and replaces the form with the
+  one open request; cancellation releases them
+- student/teacher evidence upload shows private previews, enforces three active
+  images and 10 MB original size, and moves the request to Awaiting teacher
+- completed/rejected/refunded status becomes an unread My STARs notification;
+  opening the request marks only the current student's result seen
+- displayed counts and list lengths match achievement and append-only ledger
+  projections, including grandfathered legacy duplicate Yellow STARs
 - forced password change appears when expected
 - Dashboard opens directly on the `Library` workspace and has no lower
   Assignments or My Words navigation
@@ -609,6 +642,16 @@ Check:
 - Teacher notification `Read all` clears every current unread thread and bell
   badge, persists after reload, stays disabled when everything is read, and a
   later attempt becomes unread
+- the Teacher header Yellow STAR badge counts Awaiting proof and Awaiting teacher
+  Cash requests; its modal opens in the current viewport, locks background
+  scroll, sorts pending oldest-first, and restores icon focus on close
+- a request with no active evidence cannot be confirmed; after opening evidence,
+  Confirm cash given requires a second confirmation and atomically changes
+  reserved to spent once even after double-click/retry
+- rejection requires a reason and releases reservation; completed records remain
+  immutable, while Refund appends a reasoned correction and returns the credit
+- teacher evidence upload can append a correction after completion; superseding
+  an image never removes the original from authorized history
 - Teacher notification modal has no `NOTIFICATIONS` / `Student attempts` text;
   the left double-check icon exposes a `Read all` tooltip and accessible name,
   spins while saving, briefly turns green on success, and sits in a compact

@@ -7,6 +7,11 @@
 
 ### Added
 
+- Added the V1 Yellow STAR wallet and Cash Request product model: append-only
+  credit/reservation/redemption/refund history, private permanent evidence,
+  student Cash workflow, and teacher approval queue.
+- Added unified My STARs requirements with Available/Lifetime totals and mixed
+  Yellow/Blue provenance, plus the teacher header STAR request badge.
 - Added student My Words editing, personal Notes, conservative base-form
   recommendations, explicit multi-card merge with preserved examples/combined
   Notes, and a 10-second undo.
@@ -17,11 +22,26 @@
   preview before publishing the first shared AI draft; teachers can review and
   replace the current shared entry from a new Dictionary workspace, while old
   versions remain in private history.
+
+### Fixed
+
+- Fixed the student unified My STARs view appearing as a blank black compositor
+  block in Chrome after switching content inside Personal Center. My STARs now
+  opens as an independent opaque modal with its own Close action; it also
+  tolerates malformed legacy history rows individually and shows an explicit
+  recoverable error state if the wallet itself cannot render.
+- Preserved legacy protected STAR rows with `source: "assignment"` and no
+  `assignment_id` as Yellow during wallet migration and normal dashboard
+  classification.
 - Added teacher read-only access to individual student My Words data and a
   review queue for missing, AI-draft, reported, and reviewed shared entries.
 
 ### Changed
 
+- Changed new Yellow STAR uniqueness to one per student and set while preserving
+  historical duplicate Yellow STARs. Blue STARs are now stable, non-redeemable
+  achievements that remain as converted history after a qualifying teacher
+  assignment creates the Yellow STAR.
 - My Words export dates now use student activity timestamps rather than
   background dictionary-enrichment timestamps. Familiarity-based filters and
   vocabulary Practice export remain deferred.

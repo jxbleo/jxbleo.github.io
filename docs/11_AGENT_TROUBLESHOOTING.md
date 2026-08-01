@@ -20,6 +20,7 @@
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |
+| `tcb hosting deploy` 显示成功，但目标 CSS/JS 的 ETag 仍未改变 | 单文件上传只给目录型 `cloudPath` 时，CLI 可能没有覆盖预期对象键 | 单文件部署时把完整目标键写明，例如本地 `assets/js/dashboard.js` 对应云端 `assets/js/dashboard.js`；随后用 `tcb hosting list <完整键> --json` 对比本地 MD5 与 ETag |
 | 练习页面能打开，但提交失败 `GRADING_KEY_NOT_FOUND` | `grading_keys` 没导入对应 `set_id` | CloudBase `grading_keys` 搜索 exact `set_id` |
 | 首页或直接 URL 有内容，但学生 Explore / Library 看不到 | `sets` 没导入或 stale | CloudBase `sets` 搜索 exact `set_id`；`getResources` 返回 |
 | 教师 Library / Assign 看不到刚新增的静态内容 | 静态站点未发布/缓存旧 `teacher.js`、CloudBase `sets` 未导入、Library/Assign fallback 没合并静态 catalog，或 CloudBase 重复导入后记录数超过云函数读取上限 | 先查 `data/home-catalog.json` 和 `teacher.html` cache version，再查 CloudBase `sets` / `grading_keys`。如果记录存在但 Assign 仍显示 import-required，查 `teacherAdmin.listSets` 读取 limit 和线上函数版本；部署最新 `teacherAdmin.zip` |
@@ -47,7 +48,9 @@
 | 学生重复点击提交后 attempts 有多条但 assignment summary 不准 | 旧版 `submitAttempt` 用旧 assignment 快照递增更新 | 部署最新版 `submitAttempt`，它会从 linked attempts 重算 summary |
 | Argue 批准后历史匹配答案没有补分或 STAR 没出现 | 批量向上重算没有扫描到同 set/question/submitted answer，或改判流程没有调用 STAR 保护逻辑 | `teacherAdmin.applyAcceptedAnswerToHistoricalAttempts`、`teacherAdmin.improveAttemptForAcceptedAnswer` |
 | 老师改过答案后再次导入被覆盖 | 本地 `prepare-cloudbase-data.js` 重新生成 `grading_version: "1"` | 需要 grading key reconcile 流程 |
-| `tcb fn code update --dir ...` 对小函数仍报 ZIP 超过 1.5MB，或 COS 60 秒超时 | CloudBase CLI 3.5.7 可能从项目根目录错误打包整个仓库 | 先进入仅含 `index.js`、`package.json` 的函数 bundle 目录，再不带 `--dir` 执行 `tcb fn code update <name> --deployMode zip` |
+| `tcb fn code update --dir ...` 对小函数仍报 ZIP 超过 1.5MB，或 COS 60 秒超时 | CloudBase CLI 3.7.0 仍可能按命令的当前工作目录打包；从仓库根目录传绝对 `--dir` 时，实测会把整个仓库和 `.git` 打进 ZIP | 先进入仅含 `index.js`、`package.json` 的函数 bundle 目录，再执行 `tcb fn code update <name> --dir . --deployMode zip`；若失败，检查系统临时目录中的 `.cloudbase_temp_<name>/<name>.zip` 内容，确认没有仓库文件 |
+| STAR migration apply 在 10 秒处报 `FUNCTIONS_TIME_LIMIT_EXCEEDED` | `teacherAdmin` 可能在超时前已经完成部分幂等 ledger/achievement 写入 | 不要假定整批回滚，也不要盲目连续 apply；先重新运行 `migrateStarRewards` dry-run，只有 pending count 非零时才再次 apply，最后确认两个 pending count 都为 0 |
+| `tcb fn log` 报底层日志接口已下线 | CloudBase CLI 3.7.0 的旧函数日志命令仍调用已废弃接口 | 改用 `tcb logs search -e <env> -q 'function_name:"<name>"' -t 30m --json`；涉及学生数据时增加精确关键词并只输出必要汇总字段 |
 | BBC 填空输入框后面多出下划线 | 数据里用了 6 个或更多 `_` | 扫描 `data/BBC-*.json` 的 `_{6,}` |
 | Vocabulary Learn 模式 Check Answers 弹 `NO_GRADED_QUESTIONS` | `grading_keys.answers` 为空，或页面提交的 `questionKey` 和私有答案 key 不匹配 | 查 CloudBase / `.cloudbase-private/import/grading-keys-cloudbase.json` 中对应 `set_id` 的 `answers`；重新运行 `node scripts/prepare-cloudbase-data.js`，必要时用 `cloudbase:import:content -- --only grading_keys --ids <set_id> --overwrite-existing` 修复已存在的空 grading key |
 | Vocabulary 本地直接打开加载失败 | `fetch` 被 file:// 限制，缺 JS fallback 或本地 server | `content/vocabulary/*.js` fallback；用本地 HTTP server |
@@ -129,6 +132,23 @@
 - 至少覆盖状态单调、reassign、STAR、Argue、Vocabulary 计分边界。
 
 ## 3. 按日期整理的技术变更记录
+
+### 2026-08-01：STAR 钱包、Cash 凭证与部署边界
+
+- 黄色 STAR 成就与可兑换余额是两个概念：成就记录不减，available balance 由
+  `star_reward_ledger` 的 append-only delta 投影。
+- 蓝色 STAR 稳定但不可兑换；新黄色 STAR 每 student + set 唯一，旧的合法重复
+  黄色 STAR 继续保留并产生 credit。
+- Cash 创建必须在 transaction 中锁定具体 achievement IDs；不要只保存一个数字，
+  否则并发请求会重复花同一颗 STAR。
+- Evidence Photo 不能通过 Cloud Function JSON 传 10 MB base64。先由后端签发
+  request-scoped upload metadata，浏览器直传私有 Storage，再由后端校验并登记。
+- 图片查看只返回短期 URL；不要把 bucket 改成 public，也不要把临时 URL保存到
+  数据库。
+- 必须先建三个新 ADMINONLY collection 和 indexes，再部署函数，最后发布静态前端。
+  少任一 collection 时 Cash 应显示不可用，而不能让整个学习 Dashboard 假空白。
+- 老师确认、拒绝、学生取消、过期与 Refund 都必须幂等。重复点击或函数重试不能
+  重复扣除、释放或返还余额。
 
 ### 2026-07-31：Teacher View 参数弹窗真实点击修复
 

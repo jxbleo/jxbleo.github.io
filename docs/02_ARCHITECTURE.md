@@ -123,14 +123,18 @@ Active or relevant functions:
 - `getResources`: visible set catalog for authenticated surfaces
 - `getDashboard`: student assignments, history, latest attempt lookup, all
   resolved teacher replies plus their read state, reveal, STAR fallback, and
-  newest-first assignment/self-study STAR provenance views for Personal Center. Its
+  newest-first unified Yellow/Blue STAR provenance views for Personal Center,
+  plus the current student's wallet, Cash requests, cancellation, evidence
+  upload registration, and redemption read-state actions. Its
   independent student collections are read concurrently, and visible `sets`
   metadata is fetched in bounded `set_id` batches rather than one query per
   historical task so large student histories remain inside the function limit.
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
   progress, disputes, answer-key access, shared dictionary review, and
-  read-only student vocabulary inspection
+  read-only student vocabulary inspection. It also lists and processes Cash
+  requests, issues teacher evidence-upload metadata, and returns authorized
+  temporary evidence URLs
 - `studentVocabulary`: personal My Words editing/merge/export data, dictionary
   enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change
@@ -174,6 +178,9 @@ Main collections:
 - `grading_keys`
 - `system_config`
 - `student_set_achievements`
+- `star_reward_ledger`
+- `star_redemption_requests`
+- `star_redemption_evidence`
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
@@ -184,11 +191,25 @@ Main collections:
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
 
-`student_set_achievements` remains the permanent, protected source of STAR
-provenance. Personal Center reads a redacted view through `getDashboard` rather
-than querying the collection directly. A future reward wallet must be a
-separate append-only transaction boundary that references achievements; reward
-redemption must not mutate achievement history.
+`student_set_achievements` remains the source of STAR provenance. Yellow STARs
+are protected and redeemable; active or converted Blue STARs are stable but
+non-redeemable. New Yellow STARs are unique by student and set, while historical
+assignment-keyed duplicates remain valid. Personal Center reads a redacted
+unified view through `getDashboard` rather than querying the collection directly.
+
+Reward spending is a separate boundary. `star_reward_ledger` is append-only and
+references exact Yellow `achievement_id` values for credit, reserve, release,
+redeem, and refund events. `star_redemption_requests` is the workflow aggregate;
+`star_redemption_evidence` stores private file metadata separately so images do
+not inflate request documents. Achievement rows are never marked spent.
+
+Evidence upload uses a two-phase storage flow. An authenticated student or
+teacher asks the appropriate cloud function for single-use upload metadata for
+a request-scoped path. The browser uploads the original and compressed display
+image directly to CloudBase Storage, then the function verifies file IDs, path,
+type, size, ownership, request state, and the three-image limit before appending
+evidence metadata. Read actions return short-lived URLs only after student-owner
+or active-teacher authorization. Storage remains private.
 
 The student Dashboard renders teacher replies as a dedicated inbox opened from
 the speech-bubble control in the To Do List modal header. `getDashboard`
@@ -300,6 +321,23 @@ their attempt IDs to `teacher_activity_attempt_reviewed_ids`; `Read all` writes
 are read, while later submissions become unread without growing an unbounded
 list of historical IDs.
 
+### STAR Cash Redemption
+
+1. `getDashboard` synchronizes missing Yellow STAR credit entries idempotently
+   and projects available, reserved, spent, and lifetime values.
+2. The student creates one Cash request by choosing `1..available`; a database
+   transaction locks explicit Yellow achievement IDs and appends reserve entries.
+3. Student or teacher uploads at least one request-scoped private Evidence Photo.
+4. `teacherAdmin` lists every pending request for the current single-teacher V1,
+   oldest first. The header badge includes both awaiting-proof and
+   awaiting-teacher requests.
+5. Teacher confirmation atomically settles reserved credits as redeemed.
+   Cancellation, rejection, and seven-day expiry append release entries; refund
+   appends a compensating entry without editing the completed redemption.
+6. Student and teacher history reads project request status and authorized
+   evidence without exposing cash amount, exchange rate, ownership internals, or
+   permanent public file URLs.
+
 ### Argue
 
 1. Student submits a dispute for one wrong recorded question.
@@ -387,6 +425,8 @@ Keep collections `ADMINONLY`.
 - Some public legacy data still contains answers from before the private grading migration.
 - CloudBase function deployment is manual.
 - Grading-key reconciliation after teacher Argue corrections is not fully automated.
+- Multi-teacher/student ownership and per-teacher STAR redemption authority are
+  deferred; the first Cash release assumes the current single active teacher.
 
 ## 13. Recommended Next Architecture Work
 

@@ -1,4 +1,5 @@
 const cloudbase = require("@cloudbase/node-sdk");
+const starRewards = require("../_shared/star-rewards");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -7,6 +8,9 @@ const READ_PAGE_LIMIT = 500;
 const SET_LOOKUP_CHUNK_SIZE = 100;
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
+const STAR_LEDGER_COLLECTION = "star_reward_ledger";
+const STAR_REQUEST_COLLECTION = "star_redemption_requests";
+const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
 
 async function getAuthenticatedStudent() {
   const userInfo = await app.auth().getUserInfo();
@@ -140,7 +144,7 @@ function passingPercentageForAssignment(assignment, set) {
 }
 
 function assignmentMasteryEnabled(assignment) {
-  return !assignment || assignment.mastery_enabled !== false;
+  return Boolean(assignment && assignment.mastery_enabled === true);
 }
 
 function normalizedStatus(status, percentage, passingPercentage, masteryPercentage, assignment) {
@@ -542,44 +546,20 @@ async function starCount(student) {
 }
 
 function isSelfStudyAchievement(item) {
-  return Boolean(
-    item && !item.assignment_id && (item.source === "self_study" || item.source === "explore")
-  );
+  return starRewards.isBlueAchievement(item);
 }
 
 function normalizedStarBuckets(achievements) {
-  const assignmentById = new Map();
-  const assignmentSetIds = new Set();
-  (achievements || []).forEach((item) => {
-    if (!item || !item.assignment_id) return;
-    const key = String(item.assignment_id);
-    if (!assignmentById.has(key)) assignmentById.set(key, item);
-    if (item.set_id) assignmentSetIds.add(item.set_id);
-  });
-
-  const selfStudyBySet = new Map();
-  (achievements || []).forEach((item) => {
-    if (!isSelfStudyAchievement(item)) return;
-    if (item.set_id && assignmentSetIds.has(item.set_id)) return;
-    const key = item.set_id || item.achievement_id || item._id;
-    if (!selfStudyBySet.has(key)) selfStudyBySet.set(key, item);
-  });
-
+  const buckets = starRewards.normalizedStarBuckets(achievements);
   return {
-    assignmentStars: [...assignmentById.values()],
-    selfStudyStars: [...selfStudyBySet.values()],
+    assignmentStars: buckets.yellowStars,
+    selfStudyStars: buckets.activeBlueStars,
+    blueHistory: buckets.blueStars,
   };
 }
 
 function splitStarCounts(achievements) {
-  const buckets = normalizedStarBuckets(achievements);
-  const assignment = buckets.assignmentStars.length;
-  const selfStudy = buckets.selfStudyStars.length;
-  return {
-    assignment_star_count: assignment,
-    self_study_star_count: selfStudy,
-    star_count: assignment + selfStudy,
-  };
+  return starRewards.splitStarCounts(achievements);
 }
 
 function starAchievementView(achievement, set, attempt) {
@@ -593,13 +573,21 @@ function starAchievementView(achievement, set, attempt) {
     : Number(achievement.best_percentage);
   return {
     achievement_id: achievement.achievement_id || achievement._id,
-    star_type: assignmentId ? "assignment" : "self_study",
+    star_type: starRewards.isYellowAchievement(achievement) ? "yellow" : "blue",
+    legacy_star_type: assignmentId ? "assignment" : "self_study",
     source: achievement.source || (assignmentId ? "assignment_claim" : "self_study"),
     set_id: achievement.set_id,
     assignment_id: assignmentId,
     earned_at: earnedAt,
     best_percentage: percentage,
     best_attempt_id: achievement.best_attempt_id || null,
+    status: achievement.status || (assignmentId ? "star" : "active"),
+    reward_eligible: starRewards.isYellowAchievement(achievement),
+    passing_percentage_snapshot: achievement.passing_percentage_snapshot == null ? null : Number(achievement.passing_percentage_snapshot),
+    mastery_percentage_snapshot: achievement.mastery_percentage_snapshot == null ? null : Number(achievement.mastery_percentage_snapshot),
+    converted_to_achievement_id: achievement.converted_to_achievement_id || null,
+    converted_from_achievement_id: achievement.converted_from_achievement_id || null,
+    converted_at: achievement.converted_at || null,
     set: set || {
       set_id: achievement.set_id,
       title: achievement.set_id,
@@ -609,128 +597,429 @@ function starAchievementView(achievement, set, attempt) {
 }
 
 async function protectAssignmentStar(student, assignment, bestAttemptId, bestPercentage, earnedAt) {
-  const assignmentId = assignment.assignment_id || assignment._id;
-  if (!assignmentId) return null;
-  const now = new Date();
-  const percentage = Number(bestPercentage || 0);
-  const existing = await getOne("student_set_achievements", {
-    student_uid: student.auth_uid,
-    assignment_id: assignmentId,
+  const set = await getOne("sets", { set_id: assignment.set_id });
+  return starRewards.protectYellowStar({
+    db,
+    student,
+    assignment,
+    bestAttemptId,
+    bestPercentage,
+    now: earnedAt || new Date(),
+    masteryEnabled: assignmentMasteryEnabled(assignment),
+    passingPercentage: passingPercentageForAssignment(assignment, set),
+    starRate: masteryPercentageForAssignment(assignment, set),
   });
-  if (existing) {
-    const update = {
-      source: "assignment_claim",
-      status: "star",
-      protected: true,
-      updated_at: now,
-    };
-    if (percentage > Number(existing.best_percentage || 0)) {
-      update.best_percentage = percentage;
-      update.best_attempt_id = bestAttemptId || existing.best_attempt_id || null;
-    }
-    await db.collection("student_set_achievements").doc(existing._id).update(update);
-    return { ...existing, ...update };
-  }
-
-  const sameSetResult = await db.collection("student_set_achievements").where({
-    student_uid: student.auth_uid,
-    set_id: assignment.set_id,
-  }).limit(100).get();
-  const selfStudyStar = (sameSetResult.data || []).find(isSelfStudyAchievement);
-  if (selfStudyStar) {
-    const update = {
-      achievement_id: [student.auth_uid, assignmentId].join("::"),
-      assignment_id: assignmentId,
-      source: "assignment_claim",
-      status: "star",
-      protected: true,
-      converted_from_self_study: true,
-      converted_at: now,
-      claimed_at: selfStudyStar.claimed_at || earnedAt || now,
-      first_earned_at: selfStudyStar.first_earned_at || earnedAt || now,
-      first_qualifying_attempt_id: selfStudyStar.first_qualifying_attempt_id
-        || bestAttemptId
-        || assignment.best_attempt_id
-        || assignment.latest_attempt_id
-        || null,
-      best_attempt_id: bestAttemptId
-        || selfStudyStar.best_attempt_id
-        || assignment.best_attempt_id
-        || assignment.latest_attempt_id
-        || null,
-      best_percentage: Math.max(percentage, Number(selfStudyStar.best_percentage || 0)),
-      updated_at: now,
-    };
-    await db.collection("student_set_achievements").doc(selfStudyStar._id).update(update);
-    return { ...selfStudyStar, ...update };
-  }
-
-  const record = {
-    achievement_id: [student.auth_uid, assignmentId].join("::"),
-    student_uid: student.auth_uid,
-    student_id_snapshot: student.student_id,
-    set_id: assignment.set_id,
-    assignment_id: assignmentId,
-    status: "star",
-    protected: true,
-    source: "assignment_claim",
-    claimed_at: earnedAt || now,
-    first_earned_at: earnedAt || now,
-    first_qualifying_attempt_id: bestAttemptId || assignment.best_attempt_id || assignment.latest_attempt_id || null,
-    best_attempt_id: bestAttemptId || assignment.best_attempt_id || assignment.latest_attempt_id || null,
-    best_percentage: percentage,
-    created_at: now,
-    updated_at: now,
-  };
-  await db.collection("student_set_achievements").add(record);
-  return record;
 }
 
 async function protectSelfStudyStar(student, attempt, earnedAt) {
-  const result = await db.collection("student_set_achievements").where({
+  const set = await getOne("sets", { set_id: attempt.set_id });
+  return starRewards.protectBlueStar({
+    db,
+    student,
+    attempt,
+    now: earnedAt || new Date(),
+    passingPercentage: passingPercentageForSet(set),
+    masteryPercentage: masteryPercentageForSet(set),
+  });
+}
+
+function randomRecordId(prefix) {
+  const crypto = require("crypto");
+  return `${prefix}_${crypto.randomBytes(16).toString("hex")}`;
+}
+
+async function appendLedgerEntry(collection, entry) {
+  const existing = await collection.where({ ledger_id: entry.ledger_id }).limit(1).get();
+  if (existing.data && existing.data[0]) return existing.data[0];
+  await collection.add(entry);
+  return entry;
+}
+
+async function syncYellowStarCredits(student, achievementRows) {
+  const achievements = achievementRows || await getAll("student_set_achievements", { where: {
     student_uid: student.auth_uid,
-    set_id: attempt.set_id,
-  }).limit(100).get();
-  const achievements = result.data || [];
-  if (achievements.find((item) => item.assignment_id)) return null;
-  const existing = achievements.find((item) =>
-    !item.assignment_id && (item.source === "self_study" || item.source === "explore")
-  );
+  } });
+  const ledger = await getAll(STAR_LEDGER_COLLECTION, { where: { student_uid: student.auth_uid } });
+  const credited = new Set();
+  ledger.forEach((entry) => {
+    if (entry.entry_type !== "credit") return;
+    (entry.achievement_ids || []).forEach((id) => credited.add(String(id)));
+  });
+  for (const achievement of starRewards.normalizedStarBuckets(achievements).yellowStars) {
+    const id = starRewards.achievementId(achievement);
+    if (!id || credited.has(id)) continue;
+    const entry = starRewards.ledgerEntry({
+      ledgerId: `credit::${id}`,
+      studentUid: student.auth_uid,
+      achievementIds: [id],
+      entryType: "credit",
+      actorUid: "system",
+      reason: "Yellow STAR credit",
+      createdAt: achievement.first_earned_at || achievement.created_at || new Date(),
+    });
+    await appendLedgerEntry(db.collection(STAR_LEDGER_COLLECTION), entry);
+    ledger.push(entry);
+    credited.add(id);
+  }
+  return ledger;
+}
+
+function redemptionRequestView(request) {
+  return {
+    request_id: request.request_id || request._id,
+    reward_type: request.reward_type || "cash",
+    star_count: Number(request.star_count || 0),
+    status: request.status || "awaiting_proof",
+    evidence_count: Number(request.evidence_count || 0),
+    created_at: request.created_at || null,
+    updated_at: request.updated_at || null,
+    expires_at: request.expires_at || null,
+    completed_at: request.completed_at || null,
+    rejected_at: request.rejected_at || null,
+    cancelled_at: request.cancelled_at || null,
+    expired_at: request.expired_at || null,
+    refunded_at: request.refunded_at || null,
+    decision_reason: request.decision_reason || "",
+    student_seen: request.student_seen !== false,
+  };
+}
+
+async function releaseExpiredCashRequest(student, request) {
+  if (!starRewards.isRequestExpired(request, new Date())) return false;
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(STAR_REQUEST_COLLECTION).where({
+      request_id: request.request_id || request._id,
+      student_uid: student.auth_uid,
+    }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current || !starRewards.isRequestExpired(current, new Date())) return;
+    const now = new Date();
+    const entry = starRewards.ledgerEntry({
+      ledgerId: `release::${current.request_id}::expired`,
+      studentUid: student.auth_uid,
+      requestId: current.request_id,
+      achievementIds: current.achievement_ids || [],
+      entryType: "release",
+      actorUid: "system",
+      reason: "Cash Request expired",
+      createdAt: now,
+    });
+    await appendLedgerEntry(transaction.collection(STAR_LEDGER_COLLECTION), entry);
+    await transaction.collection(STAR_REQUEST_COLLECTION).doc(current._id).update({
+      status: "expired",
+      expired_at: now,
+      updated_at: now,
+      student_seen: false,
+      student_seen_at: null,
+    });
+  });
+  return true;
+}
+
+async function expireStudentCashRequests(student) {
+  const rows = await getAll(STAR_REQUEST_COLLECTION, { where: { student_uid: student.auth_uid } });
+  for (const request of rows) await releaseExpiredCashRequest(student, request);
+}
+
+async function createCashRequest(student, event) {
+  const count = starRewards.wholeStarCount(event.star_count);
+  await expireStudentCashRequests(student);
+  const achievements = await getAll("student_set_achievements", { where: { student_uid: student.auth_uid } });
+  await syncYellowStarCredits(student, achievements);
+  const requestId = randomRecordId("cash");
   const now = new Date();
-  const percentage = effectivePercentage(attempt);
-  if (existing) {
-    const update = {
-      source: "self_study",
-      status: "star",
-      protected: true,
+  await db.runTransaction(async (transaction) => {
+    const openResult = await transaction.collection(STAR_REQUEST_COLLECTION).where({
+      student_uid: student.auth_uid,
+      status: _.in([...starRewards.OPEN_REQUEST_STATUSES]),
+    }).limit(1).get();
+    if (openResult.data && openResult.data[0]) throw new Error("CASH_REQUEST_ALREADY_OPEN");
+    const achievementResult = await transaction.collection("student_set_achievements").where({
+      student_uid: student.auth_uid,
+    }).limit(500).get();
+    const ledgerResult = await transaction.collection(STAR_LEDGER_COLLECTION).where({
+      student_uid: student.auth_uid,
+    }).limit(500).get();
+    const available = starRewards.availableYellowAchievements(
+      achievementResult.data || [],
+      ledgerResult.data || []
+    );
+    if (count > available.length) throw new Error("STAR_BALANCE_INSUFFICIENT");
+    const achievementIds = available.slice(0, count).map(starRewards.achievementId);
+    const request = {
+      request_id: requestId,
+      student_uid: student.auth_uid,
+      student_id_snapshot: student.student_id,
+      student_name_snapshot: student.name || student.student_id,
+      reward_type: "cash",
+      star_count: count,
+      achievement_ids: achievementIds,
+      status: "awaiting_proof",
+      evidence_count: 0,
+      expires_at: starRewards.requestExpiresAt(now),
+      student_seen: true,
+      student_seen_at: now,
+      created_at: now,
       updated_at: now,
     };
-    if (percentage > Number(existing.best_percentage || 0)) {
-      update.best_percentage = percentage;
-      update.best_attempt_id = attempt.attempt_id;
-    }
-    await db.collection("student_set_achievements").doc(existing._id).update(update);
-    return { ...existing, ...update };
+    await transaction.collection(STAR_REQUEST_COLLECTION).add(request);
+    await transaction.collection(STAR_LEDGER_COLLECTION).add(starRewards.ledgerEntry({
+      ledgerId: `reserve::${requestId}`,
+      studentUid: student.auth_uid,
+      requestId,
+      achievementIds,
+      entryType: "reserve",
+      actorUid: student.auth_uid,
+      reason: "Cash Request created",
+      createdAt: now,
+    }));
+  });
+  return { success: true, request_id: requestId };
+}
+
+async function cancelCashRequest(student, event) {
+  const requestId = String(event.request_id || "");
+  if (!requestId) throw new Error("CASH_REQUEST_REQUIRED");
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection(STAR_REQUEST_COLLECTION).where({
+      request_id: requestId,
+      student_uid: student.auth_uid,
+    }).limit(1).get();
+    const request = result.data && result.data[0];
+    if (!request) throw new Error("CASH_REQUEST_NOT_FOUND");
+    if (request.status === "cancelled") return;
+    if (!starRewards.isOpenRequest(request)) throw new Error("CASH_REQUEST_NOT_CANCELLABLE");
+    const now = new Date();
+    await appendLedgerEntry(transaction.collection(STAR_LEDGER_COLLECTION), starRewards.ledgerEntry({
+      ledgerId: `release::${requestId}::cancelled`,
+      studentUid: student.auth_uid,
+      requestId,
+      achievementIds: request.achievement_ids || [],
+      entryType: "release",
+      actorUid: student.auth_uid,
+      reason: "Cancelled by student",
+      createdAt: now,
+    }));
+    await transaction.collection(STAR_REQUEST_COLLECTION).doc(request._id).update({
+      status: "cancelled",
+      cancelled_at: now,
+      updated_at: now,
+      student_seen: true,
+      student_seen_at: now,
+    });
+  });
+  return { success: true };
+}
+
+function evidenceExtension(mimeType) {
+  return { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[mimeType] || "";
+}
+
+function uploadMetadataView(metadata, cloudPath) {
+  const data = metadata && metadata.data || {};
+  return {
+    url: data.url,
+    token: data.token,
+    authorization: data.authorization,
+    file_id: data.fileId,
+    cos_file_id: data.cosFileId,
+    cloud_path: cloudPath,
+  };
+}
+
+async function beginCashEvidenceUpload(student, event) {
+  const requestId = String(event.request_id || "");
+  const mimeType = String(event.mime_type || "").toLowerCase();
+  const originalName = String(event.file_name || "image").replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 120);
+  const sizeBytes = Number(event.size_bytes || 0);
+  const extension = evidenceExtension(mimeType);
+  if (!requestId) throw new Error("CASH_REQUEST_REQUIRED");
+  if (!extension || !Number.isFinite(sizeBytes) || sizeBytes < 1 || sizeBytes > starRewards.MAX_EVIDENCE_BYTES) {
+    throw new Error("EVIDENCE_FILE_INVALID");
   }
-  const record = {
-    achievement_id: [student.auth_uid, attempt.set_id, "self"].join("::"),
+  const request = await getOne(STAR_REQUEST_COLLECTION, { request_id: requestId, student_uid: student.auth_uid });
+  if (!request) throw new Error("CASH_REQUEST_NOT_FOUND");
+  if (!starRewards.isOpenRequest(request)) throw new Error("CASH_REQUEST_EVIDENCE_CLOSED");
+  const evidenceRows = await getAll(STAR_EVIDENCE_COLLECTION, { where: { request_id: requestId } });
+  const activeCount = evidenceRows.filter((item) => ["uploading", "active"].includes(item.status)).length;
+  if (activeCount >= starRewards.EVIDENCE_LIMIT) throw new Error("EVIDENCE_LIMIT_REACHED");
+  const evidenceId = randomRecordId("evidence");
+  const root = `star-redemptions/${student.auth_uid}/${requestId}/${evidenceId}`;
+  const originalCloudPath = `${root}/original.${extension}`;
+  const displayCloudPath = `${root}/display.jpg`;
+  const [originalMetadata, displayMetadata] = await Promise.all([
+    app.getUploadMetadata({ cloudPath: originalCloudPath }),
+    app.getUploadMetadata({ cloudPath: displayCloudPath }),
+  ]);
+  const now = new Date();
+  await db.collection(STAR_EVIDENCE_COLLECTION).add({
+    evidence_id: evidenceId,
+    request_id: requestId,
     student_uid: student.auth_uid,
-    student_id_snapshot: student.student_id,
-    set_id: attempt.set_id,
-    assignment_id: null,
-    status: "star",
-    protected: true,
-    source: "self_study",
-    claimed_at: earnedAt || now,
-    first_earned_at: earnedAt || now,
-    first_qualifying_attempt_id: attempt.attempt_id,
-    best_attempt_id: attempt.attempt_id,
-    best_percentage: percentage,
+    uploader_uid: student.auth_uid,
+    uploader_role: "student",
+    status: "uploading",
+    original_file_id: originalMetadata.data.fileId,
+    display_file_id: displayMetadata.data.fileId,
+    original_name: originalName,
+    mime_type: mimeType,
+    expected_size_bytes: sizeBytes,
+    upload_expires_at: new Date(now.getTime() + starRewards.UPLOAD_TTL_MS),
     created_at: now,
     updated_at: now,
+  });
+  return {
+    success: true,
+    evidence_id: evidenceId,
+    original_upload: uploadMetadataView(originalMetadata, originalCloudPath),
+    display_upload: uploadMetadataView(displayMetadata, displayCloudPath),
   };
-  await db.collection("student_set_achievements").add(record);
-  return record;
+}
+
+function fileInfoFor(result, fileId) {
+  return (result && result.fileList || []).find((item) => item.fileID === fileId) || null;
+}
+
+async function finishCashEvidenceUpload(student, event) {
+  const evidenceId = String(event.evidence_id || "");
+  const evidence = await getOne(STAR_EVIDENCE_COLLECTION, { evidence_id: evidenceId, student_uid: student.auth_uid });
+  if (!evidence) throw new Error("EVIDENCE_NOT_FOUND");
+  if (evidence.status === "active") return { success: true };
+  if (evidence.status !== "uploading" || new Date(evidence.upload_expires_at || 0).getTime() < Date.now()) {
+    throw new Error("EVIDENCE_UPLOAD_EXPIRED");
+  }
+  const request = await getOne(STAR_REQUEST_COLLECTION, { request_id: evidence.request_id, student_uid: student.auth_uid });
+  if (!request || !starRewards.isOpenRequest(request)) throw new Error("CASH_REQUEST_EVIDENCE_CLOSED");
+  const info = await app.getFileInfo({ fileList: [evidence.original_file_id, evidence.display_file_id] });
+  const original = fileInfoFor(info, evidence.original_file_id);
+  const display = fileInfoFor(info, evidence.display_file_id);
+  if (!original || !display || Number(original.size || 0) < 1 || Number(original.size || 0) > starRewards.MAX_EVIDENCE_BYTES
+    || Number(display.size || 0) < 1 || Number(display.size || 0) > starRewards.DISPLAY_EVIDENCE_BYTES) {
+    throw new Error("EVIDENCE_UPLOAD_INVALID");
+  }
+  const now = new Date();
+  await db.collection(STAR_EVIDENCE_COLLECTION).doc(evidence._id).update({
+    status: "active",
+    size_bytes: Number(original.size || 0),
+    display_size_bytes: Number(display.size || 0),
+    uploaded_at: now,
+    updated_at: now,
+  });
+  const activeRows = await getAll(STAR_EVIDENCE_COLLECTION, { where: { request_id: request.request_id } });
+  const activeCount = activeRows.filter((item) => item.status === "active" || item.evidence_id === evidenceId).length;
+  await db.collection(STAR_REQUEST_COLLECTION).doc(request._id).update({
+    status: "awaiting_teacher",
+    evidence_count: activeCount,
+    updated_at: now,
+  });
+  return { success: true };
+}
+
+async function cashEvidenceViews(student, event) {
+  const requestId = String(event.request_id || "");
+  const request = await getOne(STAR_REQUEST_COLLECTION, { request_id: requestId, student_uid: student.auth_uid });
+  if (!request) throw new Error("CASH_REQUEST_NOT_FOUND");
+  const evidence = (await getAll(STAR_EVIDENCE_COLLECTION, { where: { request_id: requestId } }))
+    .filter((item) => item.status === "active" || item.status === "superseded")
+    .sort((left, right) => dateValue(left.created_at) - dateValue(right.created_at));
+  if (!evidence.length) return { success: true, evidence: [] };
+  const urls = await app.getTempFileURL({ fileList: evidence.map((item) => ({
+    fileID: item.display_file_id || item.original_file_id,
+    maxAge: 600,
+  })) });
+  const urlMap = new Map((urls.fileList || []).map((item) => [item.fileID, item.tempFileURL]));
+  return {
+    success: true,
+    evidence: evidence.map((item) => ({
+      evidence_id: item.evidence_id || item._id,
+      uploader_role: item.uploader_role,
+      status: item.status,
+      original_name: item.original_name,
+      uploaded_at: item.uploaded_at || item.created_at || null,
+      url: urlMap.get(item.display_file_id || item.original_file_id) || "",
+    })),
+  };
+}
+
+async function supersedeCashEvidence(student, event) {
+  const evidenceId = String(event.evidence_id || "");
+  const evidence = await getOne(STAR_EVIDENCE_COLLECTION, {
+    evidence_id: evidenceId,
+    student_uid: student.auth_uid,
+    uploader_uid: student.auth_uid,
+  });
+  if (!evidence) throw new Error("EVIDENCE_NOT_FOUND");
+  if (evidence.status === "superseded") return { success: true };
+  if (evidence.status !== "active") throw new Error("EVIDENCE_NOT_ACTIVE");
+  const request = await getOne(STAR_REQUEST_COLLECTION, {
+    request_id: evidence.request_id,
+    student_uid: student.auth_uid,
+  });
+  if (!request || !starRewards.isOpenRequest(request)) throw new Error("CASH_REQUEST_EVIDENCE_CLOSED");
+  const now = new Date();
+  await db.collection(STAR_EVIDENCE_COLLECTION).doc(evidence._id).update({
+    status: "superseded",
+    superseded_at: now,
+    superseded_by_uid: student.auth_uid,
+    updated_at: now,
+  });
+  const rows = await getAll(STAR_EVIDENCE_COLLECTION, { where: { request_id: evidence.request_id } });
+  const activeCount = rows.filter((item) => item.status === "active" && item.evidence_id !== evidenceId).length;
+  await db.collection(STAR_REQUEST_COLLECTION).doc(request._id).update({
+    status: activeCount > 0 ? "awaiting_teacher" : "awaiting_proof",
+    evidence_count: activeCount,
+    updated_at: now,
+  });
+  return { success: true };
+}
+
+async function markCashRequestsSeen(student, event) {
+  const ids = new Set((Array.isArray(event.request_ids) ? event.request_ids : []).map(String));
+  const rows = await getAll(STAR_REQUEST_COLLECTION, { where: { student_uid: student.auth_uid } });
+  const now = new Date();
+  let count = 0;
+  for (const request of rows) {
+    if (!ids.has(String(request.request_id || request._id)) || request.student_seen !== false) continue;
+    await db.collection(STAR_REQUEST_COLLECTION).doc(request._id).update({
+      student_seen: true,
+      student_seen_at: now,
+      updated_at: now,
+    });
+    count += 1;
+  }
+  return { success: true, seen_count: count };
+}
+
+async function studentRewardSnapshot(student, achievements) {
+  try {
+    await expireStudentCashRequests(student);
+    const ledger = await syncYellowStarCredits(student, achievements);
+    const requests = await getAll(STAR_REQUEST_COLLECTION, {
+      where: { student_uid: student.auth_uid },
+      orderBy: { field: "created_at", direction: "desc" },
+    });
+    const wallet = starRewards.walletProjection(ledger);
+    return {
+      available: true,
+      wallet: {
+        available_yellow_stars: Math.max(0, wallet.available),
+        reserved_yellow_stars: Math.max(0, wallet.reserved),
+        spent_yellow_stars: Math.max(0, wallet.spent),
+        lifetime_yellow_stars: wallet.lifetimeEarned,
+      },
+      cash_requests: requests.map(redemptionRequestView),
+      unread_count: requests.filter((request) => request.student_seen === false).length,
+    };
+  } catch (error) {
+    console.error("STAR wallet unavailable", error);
+    return {
+      available: false,
+      code: "STAR_WALLET_UNAVAILABLE",
+      wallet: null,
+      cash_requests: [],
+      unread_count: 0,
+    };
+  }
 }
 
 async function claimStar(student, event) {
@@ -821,6 +1110,13 @@ exports.main = async (event = {}) => {
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);
     if (action === "getLatestAttemptForSet") return await getLatestAttemptForSet(student, event);
     if (action === "claimStar") return await claimStar(student, event);
+    if (action === "createCashRequest") return await createCashRequest(student, event);
+    if (action === "cancelCashRequest") return await cancelCashRequest(student, event);
+    if (action === "beginCashEvidenceUpload") return await beginCashEvidenceUpload(student, event);
+    if (action === "finishCashEvidenceUpload") return await finishCashEvidenceUpload(student, event);
+    if (action === "getCashEvidence") return await cashEvidenceViews(student, event);
+    if (action === "supersedeCashEvidence") return await supersedeCashEvidence(student, event);
+    if (action === "markCashRequestsSeen") return await markCashRequestsSeen(student, event);
 
     const [assignmentRows, attempts, disputeRows, achievements] = await Promise.all([
       getAll("assignments", { where: { student_uid: student.auth_uid } }),
@@ -842,7 +1138,7 @@ exports.main = async (event = {}) => {
     const resourceAttempts = progressAttempts.filter((item) => !item.assignment_id && item.set_id);
     const setIds = [...new Set(
       assignments.map((item) => item.set_id)
-        .concat(selfStudyStars.map((item) => item.set_id))
+        .concat(achievements.map((item) => item.set_id))
         .concat(resourceAttempts.map((item) => item.set_id))
         .concat(teacherReplyItems.map((item) => item.set_id))
         .filter(Boolean)
@@ -1046,22 +1342,39 @@ exports.main = async (event = {}) => {
       .filter((attempt) => attempt && attempt.attempt_id)
       .map((attempt) => [attempt.attempt_id, attempt]));
     const starAchievements = finalStarBuckets.assignmentStars
-      .concat(finalStarBuckets.selfStudyStars)
+      .concat(finalStarBuckets.blueHistory)
       .map((achievement) => starAchievementView(
         achievement,
         setMap.get(achievement.set_id),
         attemptMap.get(achievement.best_attempt_id) || null
       ))
       .sort((left, right) => dateValue(right.earned_at) - dateValue(left.earned_at));
+    const rewards = await studentRewardSnapshot(student, achievements);
 
     return {
       success: true,
       assignments: assignmentViews.concat(selfStudyViews),
       star_achievements: starAchievements,
       teacher_replies: teacherReplyItems.map((item) => disputeReplyView(item, setMap.get(item.set_id))),
+      star_rewards: rewards,
+      available_yellow_star_count: rewards.wallet ? rewards.wallet.available_yellow_stars : 0,
       ...splitStarCounts(achievements),
     };
   } catch (error) {
+    const starMessages = {
+      CASH_REQUEST_ALREADY_OPEN: "You already have an open Cash request.",
+      CASH_REQUEST_NOT_FOUND: "This Cash request was not found.",
+      CASH_REQUEST_NOT_CANCELLABLE: "This Cash request can no longer be cancelled.",
+      CASH_REQUEST_EVIDENCE_CLOSED: "Photos can no longer be changed for this Cash request.",
+      STAR_BALANCE_INSUFFICIENT: "You do not have enough available Yellow STARs.",
+      STAR_COUNT_INVALID: "Choose a whole number of available Yellow STARs.",
+      EVIDENCE_FILE_INVALID: "Choose a JPG, PNG, or WebP photo up to 10 MB.",
+      EVIDENCE_LIMIT_REACHED: "A Cash request can keep up to three active photos.",
+      EVIDENCE_UPLOAD_EXPIRED: "The photo upload expired. Please choose the photo again.",
+      EVIDENCE_UPLOAD_INVALID: "The uploaded photo could not be verified.",
+      EVIDENCE_NOT_FOUND: "This proof photo was not found.",
+      EVIDENCE_NOT_ACTIVE: "This proof photo is no longer active.",
+    };
     return {
       success: false,
       code: error.message,
@@ -1069,7 +1382,7 @@ exports.main = async (event = {}) => {
         ? "Please log in."
         : error.message === "VOCABULARY_TEST_DEVICE_BLOCKED"
         ? "This account is taking a vocabulary test on another device or browser tab. Please finish that test first."
-        : "Unable to load assignments.",
+        : starMessages[error.message] || "Unable to load assignments.",
       assignments: [],
     };
   }

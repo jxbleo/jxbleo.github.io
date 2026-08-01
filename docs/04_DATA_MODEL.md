@@ -27,6 +27,9 @@ Only CloudBase cloud functions should read or write private collections.
 | `grading_keys` | private answers and scoring rules |
 | `system_config` | defaults such as passing/mastery |
 | `student_set_achievements` | protected STAR records |
+| `star_reward_ledger` | append-only Yellow STAR wallet entries |
+| `star_redemption_requests` | Cash request workflow and audit snapshots |
+| `star_redemption_evidence` | private Cash evidence metadata |
 | `answer_disputes` | student/teacher Argue requests |
 | `grading_key_history` | answer-rule change history |
 | `student_vocabulary_items` | personal saved words |
@@ -322,31 +325,116 @@ STAR fields:
 | `student_uid` | string | owner |
 | `student_id_snapshot` | string | display snapshot |
 | `set_id` | string | set |
-| `assignment_id` | string/null | assignment STAR or self-study |
-| `status` | string | `star` |
-| `protected` | boolean | should be true |
-| `source` | string | `assignment_claim`, `self_study`, legacy `explore` |
+| `assignment_id` | string/null | qualifying assignment or null for Blue STAR |
+| `star_type` | string | `yellow` or `blue`; legacy rows infer from assignment_id |
+| `status` | string | Yellow `star`; Blue `active` or `converted` |
+| `protected` | boolean | true only for Yellow STAR |
+| `reward_eligible` | boolean | true only for Yellow STAR |
+| `source` | string | `assignment_claim`, `self_study`, legacy `assignment` / `explore`; legacy `assignment` is protected Yellow even when `assignment_id` is absent |
 | `first_earned_at` | Date | first qualifying time |
 | `first_qualifying_attempt_id` | string | first qualifying attempt |
 | `best_attempt_id` | string | best attempt |
 | `best_percentage` | number | best percent |
+| `passing_percentage_snapshot` | number/null | threshold when the achievement was earned |
+| `mastery_percentage_snapshot` | number/null | default Blue threshold or assigned STAR Rate |
+| `converted_to_achievement_id` | string/null | Yellow STAR created from this Blue STAR |
+| `converted_from_achievement_id` | string/null | Blue STAR that led to this Yellow STAR |
+| `converted_at` | Date/null | conversion time |
 
 Rules:
 
-- STAR is backend-owned.
-- STAR is monotonic and protected.
-- Assignment STAR is keyed by `assignment_id`.
-- Self-study STAR has `assignment_id: null`.
-- `getDashboard.star_achievements` is a redacted, newest-first presentation
-  view with `achievement_id`, `star_type`, `source`, `set_id`, `assignment_id`,
-  `earned_at`, `best_percentage`, `best_attempt_id`, and visible `set` metadata.
-  It does not expose ownership internals or grading keys.
-- The idempotent `claimStar` fallback returns the affected redacted
-  `star_achievement` so Personal Center can update immediately without waiting
-  for a full Dashboard reload.
-- Future reward redemption must not update or delete this collection. Store
-  credits/debits in a separate append-only ledger referencing
-  `achievement_id`; the ledger schema and exchange policy remain future work.
+- STAR is backend-owned and never derived from browser storage.
+- New Yellow STARs are protected, reward eligible, and unique by
+  `student_uid + set_id`. Historical assignment-keyed duplicates remain valid.
+- Blue STARs are stable but not reward eligible. Active Blue STARs are unique by
+  `student_uid + set_id`; conversion retains the Blue row as `converted` and
+  links it to the Yellow row.
+- Existing Yellow STAR blocks new Blue creation for the same student and set.
+- Blue-to-Yellow comparison runs only when the assignment has
+  `mastery_enabled: true`; the verified historical percentage is compared with
+  that assignment's mastery snapshot, never merely with the Blue status.
+- `getDashboard.star_achievements` is a redacted, newest-first unified view with
+  type, conversion state, set metadata, score, threshold snapshots, and linked
+  historical attempt.
+- Reward redemption never updates or deletes this collection.
+
+## 8a. `star_reward_ledger`
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `ledger_id` | string | idempotent unique event ID |
+| `student_uid` | string | wallet owner |
+| `request_id` | string/null | related Cash Request |
+| `achievement_ids` | string[] | exact Yellow STAR credits affected |
+| `entry_type` | string | `credit`, `reserve`, `release`, `redeem`, `refund` |
+| `available_delta` | number | signed available-balance change |
+| `reserved_delta` | number | signed reserved-balance change |
+| `spent_delta` | number | signed spent-total change |
+| `actor_uid` | string | authenticated student/teacher or `system` |
+| `reason` | string | bounded audit reason |
+| `created_at` | Date | immutable event time |
+
+Rules:
+
+- Rows are append-only. Never update or delete them in normal code.
+- One Yellow achievement has one idempotent `credit::<achievement_id>` entry.
+- Balance is the sum of deltas, never a number accepted from the browser.
+- Reserve/release/redeem/refund actions run transactionally with request state.
+
+## 8b. `star_redemption_requests`
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `request_id` | string | unique Cash Request ID |
+| `student_uid` | string | owner |
+| `student_id_snapshot` | string | audit Login ID |
+| `student_name_snapshot` | string | audit display name |
+| `reward_type` | string | V1 always `cash` |
+| `star_count` | number | whole Yellow STAR count |
+| `achievement_ids` | string[] | reserved Yellow STAR credits |
+| `status` | string | `awaiting_proof`, `awaiting_teacher`, `completed`, `rejected`, `cancelled`, `expired`, `refunded` |
+| `evidence_count` | number | completed, non-superseded photos |
+| `expires_at` | Date | seven days after creation |
+| `student_seen` | boolean | current result read state |
+| `student_seen_at` | Date/null | result read time |
+| `decision_reason` | string | required rejection/refund reason |
+| `created_at` / `updated_at` | Date | audit times |
+| `completed_at` / `rejected_at` / `cancelled_at` / `expired_at` / `refunded_at` | Date/null | terminal state times |
+| `processed_by_teacher_uid` | string/null | confirming/rejecting/refunding teacher |
+
+Rules:
+
+- A student may have at most one `awaiting_proof` or `awaiting_teacher` request.
+- Cash amount and exchange rate are absent by design.
+- Completion requires at least one completed active Evidence Photo.
+- Terminal state changes are represented in both the request audit fields and
+  append-only ledger; an old terminal record is never reused.
+
+## 8c. `star_redemption_evidence`
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `evidence_id` | string | unique ID |
+| `request_id` | string | owning Cash Request |
+| `student_uid` | string | request owner |
+| `uploader_uid` | string | authenticated uploader |
+| `uploader_role` | string | `student` or `teacher` |
+| `status` | string | `uploading`, `active`, `superseded`, `failed` |
+| `original_file_id` | string | private CloudBase Storage file ID |
+| `display_file_id` | string | compressed display copy file ID |
+| `original_name` | string | sanitized client file-name snapshot |
+| `mime_type` | string | verified image MIME |
+| `size_bytes` | number | verified original size, max 10 MB |
+| `upload_expires_at` | Date | short-lived upload slot expiry |
+| `created_at` / `uploaded_at` / `superseded_at` | Date/null | audit times |
+
+Rules:
+
+- Each request has at most three active/completed Evidence Photos.
+- Upload paths are generated by the backend and scoped to request/evidence IDs.
+- Database rows store file IDs only; authorized reads return short-lived URLs.
+- Evidence is permanent after successful registration. A wrong image is marked
+  superseded and a new row is appended; it is not overwritten.
 
 ## 9. `answer_disputes`
 

@@ -15,6 +15,80 @@
     --shadow: 0 22px 60px rgba(25, 68, 61, 0.12);
 }
 
+/* STAR wallet and teacher Cash confirmation */
+.account-star-wallet {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+}
+.account-star-wallet span {
+    padding: 12px 8px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255,255,255,.62);
+    color: var(--muted);
+    text-align: center;
+    font-size: 12px;
+}
+.account-star-wallet b { display: block; color: var(--ink); font-size: 20px; }
+.account-cash-panel,
+.account-cash-history { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.account-cash-panel h3,
+.account-cash-history h3 { margin: 0 0 10px; }
+.account-reward-options,
+.account-request-actions,
+.teacher-star-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.account-cash-form { display: grid; gap: 12px; }
+.account-cash-form p { margin: 0; color: var(--muted); }
+.account-cash-form output { color: #916900; font-size: 24px; font-weight: 900; }
+.account-cash-form input[type="range"] { width: 100%; accent-color: #e5ae17; }
+.account-cash-request,
+.teacher-star-card {
+    margin-top: 10px;
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255,255,255,.7);
+}
+.account-cash-request > div:first-child,
+.teacher-star-card header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.account-cash-request > div:first-child span,
+.teacher-star-card header span { display: block; color: var(--muted); font-size: 12px; }
+.account-request-status { padding: 4px 8px; border-radius: 999px; background: #fff3be; color: #765600 !important; }
+.account-cash-request small { display: block; margin: 6px 0 10px; color: var(--muted); }
+.account-proof-upload { cursor: pointer; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; font-weight: 800; }
+.account-star-filters,
+.teacher-star-tabs { display: flex; gap: 8px; margin: 18px 0 10px; }
+.account-star-filters button,
+.teacher-star-tabs button { border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; background: transparent; font-weight: 800; }
+.account-star-filters button.active,
+.teacher-star-tabs button.active { background: var(--ink); color: white; border-color: var(--ink); }
+.account-star-history-row.is-self-study .account-star-history-icon { color: #3992f2; }
+.account-star-history-row.is-assignment .account-star-history-icon { color: #e5ae17; }
+.account-evidence-list,
+.teacher-star-evidence { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
+.account-evidence-item { margin: 0; padding: 7px; border: 1px solid var(--line); border-radius: 12px; }
+.account-evidence-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px; }
+.account-evidence-item figcaption { margin-top: 5px; color: var(--muted); font-size: 12px; }
+.account-evidence-item.is-superseded { opacity: .5; }
+.teacher-star-modal { position: fixed; inset: 0; z-index: 230; }
+.teacher-star-shell { min-height: 100%; display: grid; place-items: center; padding: 20px; background: rgba(20,25,35,.32); }
+.teacher-star-dialog { width: min(760px, 100%); max-height: min(760px, calc(100vh - 110px)); overflow: auto; padding: 22px; border-radius: 24px; background: var(--surface, #fff); box-shadow: 0 24px 70px rgba(20,25,35,.22); }
+.teacher-star-list { display: grid; gap: 12px; }
+.teacher-star-card header b { color: #9a7000; font-size: 20px; }
+.teacher-star-card-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 9px 0; color: var(--muted); font-size: 13px; }
+.teacher-star-reason { margin: 8px 0; }
+.teacher-star-button .teacher-header-icon { color: #d49c00; }
+@media (max-width: 620px) {
+    .account-star-wallet { grid-template-columns: 1fr; }
+    .student-star-overlay { padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)); }
+    .student-star-stack { width: 100%; }
+    .student-star-dialog { padding: 14px; border-radius: 25px; }
+    .teacher-star-shell { padding: 10px; }
+    .teacher-star-dialog { padding: 16px; max-height: calc(100vh - 80px); }
+}
+
 * { box-sizing: border-box; }
 
 html { min-height: 100%; }
@@ -983,6 +1057,66 @@ html.teacher-modal-scroll-locked {
 .account-star-history {
     display: grid;
     gap: 12px;
+}
+.student-star-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2180;
+    display: grid;
+    place-items: center;
+    padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+    background: rgba(17, 38, 34, 0.42);
+}
+.student-star-overlay[hidden] { display: none; }
+.student-star-stack {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 11px;
+    width: min(540px, 100%);
+    max-height: min(760px, 90vh);
+    max-height: min(760px, 90dvh);
+}
+.student-star-dialog {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.92);
+    border-radius: 26px;
+    color: var(--ink);
+    background: #f8fbf9;
+    box-shadow: 0 28px 86px rgba(20,54,47,0.28), 0 3px 12px rgba(20,54,47,0.1);
+}
+.student-star-dialog .profile-card {
+    border-color: var(--line);
+    color: var(--ink);
+    background: #fff;
+    box-shadow: none;
+}
+.student-star-outside-close {
+    justify-self: center;
+    min-width: 112px;
+    min-height: 46px;
+    padding: 10px 22px;
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(24,51,47,0.72);
+    font: 850 0.84rem/1 inherit;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(20,54,47,0.2);
+}
+.student-star-outside-close:focus-visible {
+    outline: 3px solid rgba(255,255,255,0.72);
+    outline-offset: 3px;
+}
+.account-star-history-row.is-unavailable {
+    cursor: default;
+    border-style: dashed;
+}
+.account-star-history-row.is-unavailable:hover {
+    transform: none;
+    box-shadow: 0 8px 22px rgba(25, 68, 61, 0.055);
 }
 .account-star-history-head {
     display: grid;
@@ -2107,7 +2241,7 @@ body:not(.teacher-page) .tab-button.active {
 .practice-entry-overlay {
     position: fixed;
     inset: 0;
-    z-index: 1300;
+    z-index: 2300;
     display: grid;
     place-items: center;
     padding: 22px;

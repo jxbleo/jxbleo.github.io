@@ -67,6 +67,9 @@
         accountPanelOpen: false,
         updatesOpen: false,
         reviewOpen: false,
+        starOpen: false,
+        starRequestView: 'pending',
+        starRedemptions: { pending_count: 0, pending: [], history: [] },
         dictionaryOpen: false,
         dictionaryCategory: 'missing',
         dictionarySearch: '',
@@ -411,6 +414,8 @@
     var notificationAttemptRoot = document.getElementById('teacher-notification-attempt-root');
     var teacherAccountPanel = document.getElementById('teacher-account-panel');
     var teacherAccountContent = document.getElementById('teacher-account-content');
+    var teacherStarPanel = document.getElementById('teacher-star-panel');
+    var teacherStarList = document.getElementById('teacher-star-list');
 
     var questionTextCache = {};
 
@@ -713,6 +718,14 @@
             reviewCount.hidden = count <= 0;
         }
         if (reviewButton) reviewButton.classList.toggle('has-updates', count > 0);
+        var starCount = Number(state.starRedemptions && state.starRedemptions.pending_count || 0);
+        var starButton = document.getElementById('teacher-star-button');
+        var starBadge = document.getElementById('teacher-star-count');
+        if (starBadge) {
+            starBadge.textContent = starCount ? String(starCount) : '';
+            starBadge.hidden = starCount <= 0;
+        }
+        if (starButton) starButton.classList.toggle('has-updates', starCount > 0);
         updateActivityBadges();
     }
 
@@ -756,6 +769,7 @@
         var chip = document.getElementById('teacher-chip');
         if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
         if (state.accountPanelOpen) {
+            setStarRedemptionPanel(false);
             if (state.dictionaryOpen) setDictionaryPanel(false);
             state.studentLookupOpen = false;
             var lookupPanel = document.getElementById('student-lookup-panel');
@@ -777,6 +791,7 @@
         if (panel) panel.hidden = !state.reviewOpen;
         if (button) button.setAttribute('aria-expanded', state.reviewOpen ? 'true' : 'false');
         if (state.reviewOpen) {
+            setStarRedemptionPanel(false);
             if (state.dictionaryOpen) setDictionaryPanel(false);
             state.studentLookupOpen = false;
             var lookupPanel = document.getElementById('student-lookup-panel');
@@ -792,6 +807,115 @@
         updateTopBadges();
     }
 
+    function starRequestStatus(status) {
+        return ({ awaiting_proof: 'Awaiting proof', awaiting_teacher: 'Ready to confirm', completed: 'Completed', rejected: 'Rejected', cancelled: 'Cancelled', expired: 'Expired', refunded: 'Refunded' })[status] || status;
+    }
+
+    function starRedemptionCard(request) {
+        var pending = request.status === 'awaiting_proof' || request.status === 'awaiting_teacher';
+        return '<article class="teacher-star-card" data-star-request-id="' + escapeHtml(request.request_id) + '">' +
+            '<header><div><strong>' + escapeHtml(request.student_name || request.student_id || 'Student') + '</strong><span>' + escapeHtml(request.student_id || '') + '</span></div><b>★ ' + escapeHtml(request.star_count) + '</b></header>' +
+            '<div class="teacher-star-card-meta"><span>' + escapeHtml(starRequestStatus(request.status)) + '</span><span>' + escapeHtml(formatDateTime(request.created_at)) + '</span><span>' + escapeHtml(request.evidence_count || 0) + ' photo' + (Number(request.evidence_count || 0) === 1 ? '' : 's') + '</span></div>' +
+            (request.decision_reason ? '<p class="teacher-star-reason">' + escapeHtml(request.decision_reason) + '</p>' : '') +
+            '<div class="teacher-star-actions">' +
+                '<button class="text-button" type="button" data-teacher-star-evidence="' + escapeHtml(request.request_id) + '">View proof</button>' +
+                (Number(request.evidence_count || 0) < 3 ? '<label class="account-proof-upload">Add photo<input type="file" accept="image/jpeg,image/png,image/webp" data-teacher-star-upload="' + escapeHtml(request.request_id) + '" hidden></label>' : '') +
+                (pending && Number(request.evidence_count || 0) > 0 ? '<button class="primary-button" type="button" data-star-confirm="' + escapeHtml(request.request_id) + '">Confirm Cash given</button>' : '') +
+                (pending ? '<button class="danger-button" type="button" data-star-reject="' + escapeHtml(request.request_id) + '">Reject</button>' : '') +
+                (request.status === 'completed' ? '<button class="text-button danger-text-button" type="button" data-star-refund="' + escapeHtml(request.request_id) + '">Refund STARs</button>' : '') +
+            '</div><div class="teacher-star-evidence" id="teacher-star-evidence-' + escapeHtml(request.request_id) + '"></div>' +
+        '</article>';
+    }
+
+    function renderStarRedemptions() {
+        if (!teacherStarList) return;
+        var view = state.starRequestView || 'pending';
+        var items = state.starRedemptions && state.starRedemptions[view] || [];
+        document.querySelectorAll('[data-star-request-view]').forEach(function(button) { button.classList.toggle('active', button.dataset.starRequestView === view); });
+        teacherStarList.innerHTML = items.length ? items.map(starRedemptionCard).join('') : '<div class="empty-card"><strong>No ' + (view === 'pending' ? 'pending requests' : 'request history') + '</strong>Cash requests will appear here.</div>';
+        bindStarRedemptionActions();
+        updateTopBadges();
+    }
+
+    function loadStarRedemptions() {
+        return teacherCall('listStarRedemptions').then(function(result) {
+            state.starRedemptions = result;
+            renderStarRedemptions();
+            return result;
+        }).catch(function(error) {
+            state.starRedemptions = { pending_count: 0, pending: [], history: [] };
+            if (teacherStarList) teacherStarList.innerHTML = '<div class="empty-card">' + escapeHtml(error.message) + '</div>';
+            updateTopBadges();
+            return state.starRedemptions;
+        });
+    }
+
+    function setStarRedemptionPanel(open) {
+        state.starOpen = open === true;
+        if (teacherStarPanel) teacherStarPanel.hidden = !state.starOpen;
+        var button = document.getElementById('teacher-star-button');
+        if (button) button.setAttribute('aria-expanded', state.starOpen ? 'true' : 'false');
+        if (!state.starOpen) return;
+        state.dictionaryOpen = false;
+        var dictionary = document.getElementById('teacher-dictionary-panel');
+        if (dictionary) dictionary.hidden = true;
+        state.reviewOpen = false;
+        var review = document.getElementById('teacher-review-panel');
+        if (review) review.hidden = true;
+        state.studentLookupOpen = false;
+        var lookup = document.getElementById('student-lookup-panel');
+        if (lookup) lookup.hidden = true;
+        state.updatesOpen = false;
+        renderUpdatesPanel();
+        state.accountPanelOpen = false;
+        if (teacherAccountPanel) teacherAccountPanel.hidden = true;
+        renderStarRedemptions();
+        loadStarRedemptions();
+    }
+
+    function loadTeacherStarEvidence(requestId) {
+        var target = document.getElementById('teacher-star-evidence-' + requestId);
+        if (!target) return;
+        target.innerHTML = '<p class="muted">Loading photos...</p>';
+        teacherCall('getStarEvidence', { request_id: requestId }).then(function(result) {
+            target.innerHTML = (result.evidence || []).map(function(item) {
+                return '<figure class="account-evidence-item ' + (item.status === 'superseded' ? 'is-superseded' : '') + '"><img src="' + escapeHtml(item.url) + '" alt="Cash exchange proof"><figcaption>' + escapeHtml(item.uploader_role === 'teacher' ? 'Teacher' : 'Student') + (item.status === 'superseded' ? ' · Replaced' : '') + '</figcaption>' + (item.status === 'active' ? '<button class="text-button" type="button" data-teacher-evidence-supersede="' + escapeHtml(item.evidence_id) + '">Mark replaced</button>' : '') + '</figure>';
+            }).join('') || '<p class="muted">No proof photo yet.</p>';
+            target.querySelectorAll('[data-teacher-evidence-supersede]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    if (!window.confirm('Keep this photo in history but mark it as replaced?')) return;
+                    teacherCall('supersedeStarEvidence', { evidence_id: button.dataset.teacherEvidenceSupersede }).then(function() { return loadStarRedemptions(); }).catch(function(error) { window.alert(error.message); });
+                });
+            });
+        }).catch(function(error) { target.textContent = error.message; });
+    }
+
+    function uploadTeacherStarEvidence(requestId, file) {
+        return window.MrCatCloud.prepareEvidenceImage(file).then(function(prepared) {
+            return teacherCall('beginStarEvidenceUpload', { request_id: requestId, file_name: file.name, mime_type: file.type, size_bytes: file.size }).then(function(start) {
+                return Promise.all([
+                    window.MrCatCloud.uploadWithMetadata(start.original_upload, prepared.original),
+                    window.MrCatCloud.uploadWithMetadata(start.display_upload, prepared.display)
+                ]).then(function() { return teacherCall('finishStarEvidenceUpload', { evidence_id: start.evidence_id }); });
+            });
+        }).then(loadStarRedemptions);
+    }
+
+    function bindStarRedemptionActions() {
+        teacherStarList.querySelectorAll('[data-teacher-star-evidence]').forEach(function(button) { button.addEventListener('click', function() { loadTeacherStarEvidence(button.dataset.teacherStarEvidence); }); });
+        teacherStarList.querySelectorAll('[data-teacher-star-upload]').forEach(function(input) { input.addEventListener('change', function() { if (input.files && input.files[0]) uploadTeacherStarEvidence(input.dataset.teacherStarUpload, input.files[0]).catch(function(error) { window.alert(error.message); }); }); });
+        teacherStarList.querySelectorAll('[data-star-confirm]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                if (!window.confirm('Have you checked the proof and completed the in-person Cash exchange?')) return;
+                if (!window.confirm('Final confirmation: mark this request completed and spend the reserved STARs?')) return;
+                button.disabled = true;
+                teacherCall('confirmStarRedemption', { request_id: button.dataset.starConfirm }).then(loadStarRedemptions).catch(function(error) { window.alert(error.message); button.disabled = false; });
+            });
+        });
+        teacherStarList.querySelectorAll('[data-star-reject]').forEach(function(button) { button.addEventListener('click', function() { var reason = window.prompt('Reason for rejection (required):'); if (reason) teacherCall('rejectStarRedemption', { request_id: button.dataset.starReject, reason: reason }).then(loadStarRedemptions).catch(function(error) { window.alert(error.message); }); }); });
+        teacherStarList.querySelectorAll('[data-star-refund]').forEach(function(button) { button.addEventListener('click', function() { var reason = window.prompt('Reason for refund (required):'); if (reason && window.confirm('Refund these STARs to the student?')) teacherCall('refundStarRedemption', { request_id: button.dataset.starRefund, reason: reason }).then(loadStarRedemptions).catch(function(error) { window.alert(error.message); }); }); });
+    }
+
     function setStudentLookupPanel(open) {
         state.studentLookupOpen = open === true;
         var panel = document.getElementById('student-lookup-panel');
@@ -799,6 +923,7 @@
         if (panel) panel.hidden = !state.studentLookupOpen;
         if (button) button.setAttribute('aria-expanded', state.studentLookupOpen ? 'true' : 'false');
         if (state.studentLookupOpen) {
+            setStarRedemptionPanel(false);
             if (state.dictionaryOpen) setDictionaryPanel(false);
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
@@ -918,7 +1043,7 @@
     }
 
     function setHeaderIconLoading(isLoading) {
-        ['teacher-review-button', 'teacher-updates-button'].forEach(function(id) {
+        ['teacher-review-button', 'teacher-updates-button', 'teacher-star-button'].forEach(function(id) {
             var button = document.getElementById(id);
             if (!button) return;
             button.classList.toggle('is-loading', isLoading === true);
@@ -1057,6 +1182,7 @@
         if (panel) panel.hidden = !state.dictionaryOpen;
         if (button) button.setAttribute('aria-expanded', state.dictionaryOpen ? 'true' : 'false');
         if (!state.dictionaryOpen) return;
+        setStarRedemptionPanel(false);
         setTeacherAccountPanel(false);
         setReviewPanel(false);
         state.updatesOpen = false;
@@ -6449,6 +6575,7 @@
         var attemptsPromise = teacherCall('listAttempts');
         var progressPromise = loadProgressData();
         var activityPromise = loadActivityState();
+        var starPromise = loadStarRedemptions();
         var catalogPromise = loadPublicCatalog().catch(function() {
             teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
         });
@@ -6472,6 +6599,7 @@
             attemptsPromise,
             progressPromise,
             activityPromise,
+            starPromise,
             catalogPromise
         ]).then(function(results) {
             var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
@@ -6584,6 +6712,17 @@
             setTeacherAccountPanel(false);
         });
     }
+    var teacherStarButton = document.getElementById('teacher-star-button');
+    if (teacherStarButton) teacherStarButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        setStarRedemptionPanel(!state.starOpen);
+    });
+    var teacherStarClose = document.getElementById('teacher-star-close');
+    if (teacherStarClose) teacherStarClose.addEventListener('click', function() { setStarRedemptionPanel(false); });
+    if (teacherStarPanel) teacherStarPanel.addEventListener('click', function(event) { if (event.target === teacherStarPanel) setStarRedemptionPanel(false); });
+    document.querySelectorAll('[data-star-request-view]').forEach(function(button) {
+        button.addEventListener('click', function() { state.starRequestView = button.dataset.starRequestView; renderStarRedemptions(); });
+    });
     var teacherReviewButton = document.getElementById('teacher-review-button');
     if (teacherReviewButton) {
         teacherReviewButton.addEventListener('click', function(event) {
@@ -6630,6 +6769,7 @@
         state.updatesOpen = state.updatesOpen !== true;
         if (!state.updatesOpen) state.notificationAttemptId = '';
         if (state.updatesOpen) {
+            setStarRedemptionPanel(false);
             setReviewPanel(false);
         }
         renderUpdatesPanel();
@@ -6918,6 +7058,10 @@
             var passwordResetSuccessPanel = document.getElementById('password-reset-success-panel');
             if (passwordResetSuccessPanel && !passwordResetSuccessPanel.hidden) {
                 setPasswordResetSuccessModal(false);
+                return;
+            }
+            if (state.starOpen) {
+                setStarRedemptionPanel(false);
                 return;
             }
             if (state.updatesOpen && state.notificationAttemptId) {

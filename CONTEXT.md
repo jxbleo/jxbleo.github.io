@@ -124,3 +124,47 @@ The teacher workspace for reviewing, creating, and maintaining Dictionary
 Details used across students. A teacher update replaces the active content of
 the same shared record rather than creating a second student-facing version.
 _Avoid_: Student vocabulary list
+
+## STAR Rewards
+
+**Blue STAR**:
+A stable, non-redeemable achievement earned by mastering a set through
+self-study. It remains active until it is converted to the set's Yellow STAR.
+_Avoid_: Protected STAR, cash credit
+
+**Yellow STAR**:
+A protected, redeemable achievement earned for one set only when a teacher has
+enabled Earn STAR and the student meets that assignment's STAR Rate.
+_Avoid_: Blue STAR, wallet balance
+
+**STAR Rate**:
+The teacher-selected mastery percentage for an assignment whose Earn STAR
+setting is enabled.
+_Avoid_: Passing rate, default mastery rate
+
+**Available STAR Balance**:
+The number of Yellow STAR credits a student can currently place into a Cash
+Request after completed spending and active reservations are accounted for.
+_Avoid_: Lifetime STAR count, achievement count
+
+**Cash Request**:
+A student's request to redeem a selected whole number of available Yellow
+STARs through an in-person exchange confirmed by the teacher. It records no
+cash amount or exchange rate.
+_Avoid_: Cash payment, gift order
+
+**Evidence Photo**:
+A private, permanent image attached by the student or teacher to one Cash
+Request as evidence of the in-person exchange.
+_Avoid_: Teacher authentication, public receipt
+
+**STAR Reservation**:
+The temporary allocation of specific Yellow STAR credits to one pending Cash
+Request so they cannot be spent again before completion, rejection, expiry, or
+cancellation.
+_Avoid_: Redemption, deletion
+
+**STAR Refund**:
+An append-only correction that returns previously redeemed Yellow STAR credits
+without editing or deleting the completed Cash Request.
+_Avoid_: Undo, record deletion
