@@ -151,8 +151,12 @@ function testIntegrationContracts() {
   assert(dashboardHtml.includes('id="student-star-overlay"'), "My STARs must use an independent modal");
   assert(dashboardHtml.includes('id="student-star-content"'));
   assert(appCss.includes(".student-star-dialog"), "wallet must use its own opaque dialog surface");
-  assert(dashboardHtml.includes("assets/css/app.css?v=20260801-6"));
-  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260801-6"));
+  assert(dashboardHtml.includes("assets/css/app.css?v=20260801-8"));
+  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260801-9"));
+  assert(dashboard.includes('<h2 id="student-star-title">STAR WALLET</h2>'));
+  assert(dashboard.includes('account-star-history-count self-study-star-counter'), "wallet header must show the Blue STAR count");
+  assert(!dashboard.includes('<div class="account-star-wallet">'), "wallet must not show Available/Lifetime/Active summary tiles");
+  assert(dashboard.includes("event.stopPropagation();\n            closeStarPanel(true);"), "STAR Back must not bubble into the global Personal Center closer");
   assert(teacher.includes("Final confirmation: mark this request completed"));
   assert(backend.includes('action === "confirmStarRedemption"'));
   assert(backend.includes('action === "migrateStarRewards"'));

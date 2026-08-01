@@ -125,9 +125,11 @@ Assignment access and progress display:
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
   sits directly below the card. The former three top summary capsules are not
-  rendered. `THIS WEEK`, `UPCOMING`, and `FINISHED` are centered disclosures
-  without numeric count pills and all start open while remaining independently
-  collapsible. Their headings are sticky inside the dialog: This Week first
+  rendered. `THIS WEEK`, `UPCOMING`, and `FINISHED` use centered headings with
+  numeric count pills. Sections containing tasks start open and remain
+  independently collapsible. Empty Upcoming shows only its heading and `0`,
+  with no disclosure arrow or `No upcoming assignments` body. Their headings
+  are sticky inside the dialog: This Week first
   occupies the top position, Upcoming pushes it away and replaces it, then
   Finished replaces Upcoming. Finished tasks are sorted newest-completed first.
   Every unfinished row has a red right-side pill in
@@ -345,6 +347,9 @@ My Words:
 - lets the student edit only the English word or phrase through an inline
   Cancel/Done state. Dictionary details remain read-only and are looked up
   again after the edit. A separate personal Note accepts up to 500 characters.
+  The expanded word card stays open when Use base, Edit word, Add/Edit Note,
+  Cancel, or Done re-renders that card; the student never needs to expand it a
+  second time to reach the resulting form or controls.
 - shows a conservative `Base: <headword>` recommendation only for
   high-confidence regular inflections. When both forms already exist, the
   recommendation opens a Merge Group sheet with explicit per-card checkboxes.
@@ -409,12 +414,14 @@ Student account menu:
 - the account summary shows one clickable yellow STAR counter containing the
   current Available STAR Balance. It does not show a separate Blue counter.
 - activating the yellow counter dismisses Personal Center and opens an
-  independent `My STARs` modal. The header shows Available and Lifetime earned;
-  a single newest-first list mixes Yellow and Blue STARs with color, score,
+  independent `STAR WALLET` modal. Its header contains only the `STAR WALLET`
+  title on the left and matching Yellow/Blue STAR count pills on the right; it
+  does not show `My STARs` or the Available/Lifetime/Active summary tiles. A
+  single newest-first list mixes Yellow and Blue STARs with color, score,
   threshold/conversion state, and All / Yellow / Blue filters. Back restores
   Personal Center and counter focus; the external Close capsule returns to the
   Dashboard.
-- My STARs contains Cash and Gifts destinations. Gifts is disabled with
+- STAR Wallet contains Cash and Gifts destinations. Gifts is disabled with
   `Coming soon`. Cash never displays a money amount or exchange rate. It uses a
   whole-number slider whose positions are `1..available`; zero balance disables
   submission. An existing open Cash Request replaces the new-request form.
