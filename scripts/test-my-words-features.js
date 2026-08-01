@@ -49,11 +49,14 @@ async function main() {
 
   const root = path.resolve(__dirname, "..");
   const dashboardHtml = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
+  const dashboardJs = fs.readFileSync(path.join(root, "assets/js/dashboard.js"), "utf8");
   const teacherHtml = fs.readFileSync(path.join(root, "teacher.html"), "utf8");
   const studentFunction = fs.readFileSync(path.join(root, "cloudfunctions/studentVocabulary/index.js"), "utf8");
   const teacherFunction = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");
   assert(dashboardHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
+  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260801-2"));
   assert(dashboardHtml.includes('id="my-words-export-panel"'));
+  assert(dashboardJs.includes("AI dictionary lookup is under development."));
   assert(teacherHtml.includes('id="teacher-dictionary-panel"'));
   ["updateNote", "updateWord", "mergeWords", "undoMerge", "requestAiDraft", "confirmAiDraft", "reportDictionaryIssue"].forEach((action) => {
     assert(studentFunction.includes(`action === "${action}"`), `missing student action ${action}`);
