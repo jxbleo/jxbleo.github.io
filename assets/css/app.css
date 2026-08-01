@@ -16,22 +16,6 @@
 }
 
 /* STAR wallet and teacher Cash confirmation */
-.account-star-wallet {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin: 14px 0;
-}
-.account-star-wallet span {
-    padding: 12px 8px;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: rgba(255,255,255,.62);
-    color: var(--muted);
-    text-align: center;
-    font-size: 12px;
-}
-.account-star-wallet b { display: block; color: var(--ink); font-size: 20px; }
 .account-cash-panel,
 .account-cash-history { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
 .account-cash-panel h3,
@@ -81,7 +65,6 @@
 .teacher-star-reason { margin: 8px 0; }
 .teacher-star-button .teacher-header-icon { color: #d49c00; }
 @media (max-width: 620px) {
-    .account-star-wallet { grid-template-columns: 1fr; }
     .student-star-overlay { padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)); }
     .student-star-stack { width: 100%; }
     .student-star-dialog { padding: 14px; border-radius: 25px; }
@@ -3298,7 +3281,7 @@ body:not(.teacher-page) .tab-button.active {
     top: 0;
     z-index: 3;
     display: grid;
-    grid-template-columns: 28px minmax(0, 1fr) 28px;
+    grid-template-columns: 52px minmax(0, 1fr) 52px;
     align-items: center;
     gap: 8px;
     min-height: 44px;
@@ -3313,6 +3296,21 @@ body:not(.teacher-page) .tab-button.active {
     cursor: pointer;
     list-style: none;
     transition: background 140ms ease, box-shadow 140ms ease;
+}
+.student-message-section.is-heading-only > .student-message-section-head {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) 52px;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin: 0 -24px;
+    padding: 7px 24px;
+    border-bottom: 1px solid rgba(19,118,109,0.1);
+    background: rgba(248,251,249,0.9);
+}
+.student-message-section.is-heading-only > .student-message-section-head::before {
+    content: "";
+    grid-column: 1;
 }
 .student-message-section.is-collapsible > summary::before { content: ""; }
 .student-message-section.is-collapsible > summary::-webkit-details-marker { display: none; }

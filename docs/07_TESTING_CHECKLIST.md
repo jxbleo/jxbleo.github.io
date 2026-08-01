@@ -204,14 +204,18 @@ Check:
   centered outside directly below the card; Close, Escape, and backdrop all
   dismiss it, restore focus to the identity chip, and restore background scroll
 - one yellow STAR counter shows Available balance and is clickable/keyboard
-  operable; it dismisses Personal Center and opens an independent My STARs modal
-  with Available, Lifetime earned, and mixed newest-first Yellow/Blue history
-  plus working All/Yellow/Blue filters. Back returns to Personal Center and the
-  external Close action returns to Dashboard
-- in Chrome, opening My STARs paints a normal light standalone wallet surface
+  operable; it dismisses Personal Center and opens an independent STAR Wallet
+  modal with mixed newest-first Yellow/Blue history and working All/Yellow/Blue
+  filters. Its header shows only `STAR WALLET` plus matching Yellow and Blue
+  count pills; it has no `My STARs` title or Available/Lifetime/Active tiles.
+  Back returns to Personal Center and the external Close action returns to Dashboard
+- in Chrome, opening STAR Wallet paints a normal light standalone wallet surface
   with visible content, never a blank black block;
   one malformed legacy history row shows its own unavailable placeholder while
   the rest of the wallet remains usable
+- STAR Wallet Back returns to the still-open Personal Center and restores focus to
+  the yellow counter; it must not trigger the global outside-click closer. The
+  separate lower Close action dismisses the complete modal flow
 - a STAR history row opens the linked best historical attempt; Back returns to
   the account summary and restores focus to the yellow counter; converted Blue
   rows remain visible and link to their Yellow STAR
@@ -221,7 +225,7 @@ Check:
   one open request; cancellation releases them
 - student/teacher evidence upload shows private previews, enforces three active
   images and 10 MB original size, and moves the request to Awaiting teacher
-- completed/rejected/refunded status becomes an unread My STARs notification;
+- completed/rejected/refunded status becomes an unread STAR Wallet notification;
   opening the request marks only the current student's result seen
 - displayed counts and list lengths match achievement and append-only ledger
   projections, including grandfathered legacy duplicate Yellow STARs
@@ -237,7 +241,9 @@ Check:
   outside the card, while Escape and the backdrop also dismiss the modal
 - the default Assignments modal has no summary capsules above its sections.
   `THIS WEEK`, `UPCOMING`, and `FINISHED` are centered, keyboard-operable
-  disclosures without count pills; all start expanded and each can collapse.
+  headings with accurate count pills. Sections with tasks start expanded and
+  can collapse. When Upcoming is 0, it has no disclosure arrow, cannot expand,
+  and does not render `No upcoming assignments`.
   Scroll the internal task list: This Week sticks first, Upcoming pushes it off
   and occupies the same top position, then Finished does the same. Finished rows
   remain ordered by completion time with the newest first
@@ -898,6 +904,9 @@ Check:
   filters, due review, Reveal, Forgot, A little, or Know controls
 - editing changes only the English word/phrase, re-runs dictionary lookup, and
   leaves dictionary fields read-only; Note accepts at most 500 characters
+- after expanding one word, Use base, Edit word, Add/Edit Note, Cancel, and Done
+  keep that same detail card expanded across every list re-render; if editing
+  changes the vocabulary record ID, the expanded state follows the new record
 - regular high-confidence forms such as `worked` can show `Base: work`, while
   ambiguous or irregular candidates are not guessed automatically
 - selecting a base-form recommendation when both cards exist opens a Merge

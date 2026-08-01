@@ -25,6 +25,11 @@
 
 ### Fixed
 
+- Fixed My STARs Back reopening Personal Center and then immediately closing it
+  again when the same click reached the Dashboard outside-click handler.
+- Fixed expanded My Words details collapsing whenever Use base, Edit word,
+  Add/Edit Note, Cancel, or Done re-rendered the list. Expanded state now follows
+  the vocabulary record, including when an edit changes its record ID.
 - Fixed the student unified My STARs view appearing as a blank black compositor
   block in Chrome after switching content inside Personal Center. My STARs now
   opens as an independent opaque modal with its own Close action; it also
@@ -38,6 +43,12 @@
 
 ### Changed
 
+- Added task counts to the student To Do List's This Week, Upcoming, and
+  Finished headings. Empty Upcoming is now a compact non-expandable `0` heading
+  instead of opening an extra `No upcoming assignments` message.
+- Simplified the student STAR Wallet header to one `STAR WALLET` title plus
+  Yellow and Blue count pills. Removed the redundant `My STARs` title and the
+  Available / Lifetime Yellow / Active Blue summary tiles.
 - Changed new Yellow STAR uniqueness to one per student and set while preserving
   historical duplicate Yellow STARs. Blue STARs are now stable, non-redeemable
   achievements that remain as converted history after a qualifying teacher

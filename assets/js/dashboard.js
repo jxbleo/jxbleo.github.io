@@ -22,6 +22,7 @@
         vocabExportOpen: false,
         vocabExportRange: 'all',
         vocabSelected: {},
+        vocabExpanded: {},
         vocabEditingId: '',
         vocabNoteEditingId: '',
         accountPanelOpen: false,
@@ -1513,7 +1514,11 @@
     }
 
     function renderStudentMessageSection(title, count, body, emptyText, extraClass, collapsible, openByDefault) {
-        var content = body ? '<div class="student-message-list">' + body + '</div>' : '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>';
+        var content = body
+            ? '<div class="student-message-list">' + body + '</div>'
+            : emptyText
+                ? '<div class="student-message-empty">' + escapeHtml(emptyText) + '</div>'
+                : '';
         var head = '<h3>' + escapeHtml(title) + '</h3>' +
             '<span class="student-message-section-head-meta">' +
                 (count == null ? '' : '<span class="student-message-section-count">' + escapeHtml(count) + '</span>') +
@@ -1539,7 +1544,7 @@
     function renderDefaultStudentMessageSections(todos, upcoming, finished) {
         return renderStudentMessageSection(
             'This Week',
-            null,
+            todos.length,
             todos.map(function(item) {
                 return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
             }).join(''),
@@ -1547,17 +1552,25 @@
             'todo',
             true,
             true
-        ) + renderStudentMessageSection(
+        ) + (upcoming.length ? renderStudentMessageSection(
             'Upcoming',
-            null,
+            upcoming.length,
             upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
-            'No upcoming assignments.',
+            '',
             'upcoming',
             true,
             true
-        ) + renderStudentMessageSection(
+        ) : renderStudentMessageSection(
+            'Upcoming',
+            0,
+            '',
+            '',
+            'upcoming is-heading-only',
+            false,
+            false
+        )) + renderStudentMessageSection(
             'Finished',
-            null,
+            finished.length,
             finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
             'Finished assignments will appear here.',
             'finished',
@@ -2610,15 +2623,16 @@
 
     function wordCardHtml(word) {
         var detailId = 'my-word-detail-' + escapeHtml(word.vocab_id || 'word');
+        var detailOpen = Boolean(state.vocabExpanded[word.vocab_id]);
         return '<article class="my-word-item">' +
             '<div class="my-word-summary">' +
                 (state.vocabExportOpen ? '<label class="my-word-select"><input type="checkbox" data-select-word="' + escapeHtml(word.vocab_id || '') + '"' + (state.vocabSelected[word.vocab_id] ? ' checked' : '') + '><span></span></label>' : '') +
-                '<button class="my-word-toggle" type="button" data-toggle-word="' + escapeHtml(word.vocab_id || '') + '" aria-expanded="false" aria-controls="' + detailId + '">' +
+                '<button class="my-word-toggle" type="button" data-toggle-word="' + escapeHtml(word.vocab_id || '') + '" aria-expanded="' + (detailOpen ? 'true' : 'false') + '" aria-controls="' + detailId + '">' +
                     '<span class="my-word-name">' + escapeHtml(word.text || '') + (word.recommended_headword ? '<small>Base: ' + escapeHtml(word.recommended_headword) + '</small>' : '') + (word.personal_note ? '<small>Note</small>' : '') + '</span>' +
                     wordPrimaryHtml(word) +
                 '</button>' +
             '</div>' +
-            '<div class="my-word-detail" id="' + detailId + '" hidden>' + wordDetailHtml(word) + '</div>' +
+            '<div class="my-word-detail" id="' + detailId + '"' + (detailOpen ? '' : ' hidden') + '>' + wordDetailHtml(word) + '</div>' +
         '</article>';
     }
 
@@ -2667,11 +2681,16 @@
     }
 
     function replaceVocabItem(oldId, word) {
+        var wasExpanded = Boolean(state.vocabExpanded[oldId]);
         state.vocabItems = (state.vocabItems || []).filter(function(item) {
             return item.vocab_id !== oldId && (!word || item.vocab_id !== word.vocab_id);
         });
         if (word) state.vocabItems.unshift(word);
-        if (oldId !== (word && word.vocab_id)) delete state.vocabSelected[oldId];
+        if (oldId !== (word && word.vocab_id)) {
+            delete state.vocabSelected[oldId];
+            delete state.vocabExpanded[oldId];
+            if (word && wasExpanded) state.vocabExpanded[word.vocab_id] = true;
+        }
     }
 
     function vocabWord(vocabId) {
@@ -2721,6 +2740,7 @@
         var selected = groupIds.map(vocabWord).filter(Boolean);
         if (selected.length < 2) {
             state.vocabEditingId = word.vocab_id;
+            state.vocabExpanded[word.vocab_id] = true;
             renderMyWordsList();
             var input = myWordsContent.querySelector('[data-edit-form] input');
             if (input) { input.value = headword; input.focus(); }
@@ -2826,6 +2846,7 @@
                 var detail = document.getElementById(button.getAttribute('aria-controls'));
                 if (!detail) return;
                 var open = detail.hidden;
+                state.vocabExpanded[button.dataset.toggleWord] = open;
                 detail.hidden = !open;
                 button.setAttribute('aria-expanded', open ? 'true' : 'false');
             });
@@ -2844,6 +2865,7 @@
                     state.vocabItems = (state.vocabItems || []).filter(function(word) {
                         return word.vocab_id !== vocabId;
                     });
+                    delete state.vocabExpanded[vocabId];
                     renderMyWordsList();
                 }).catch(function(error) {
                     button.disabled = false;
@@ -2890,6 +2912,7 @@
         });
         myWordsContent.querySelectorAll('[data-edit-word]').forEach(function(button) {
             button.addEventListener('click', function() {
+                state.vocabExpanded[button.dataset.editWord] = true;
                 state.vocabEditingId = button.dataset.editWord;
                 state.vocabNoteEditingId = '';
                 renderMyWordsList();
@@ -2899,6 +2922,7 @@
         });
         myWordsContent.querySelectorAll('[data-edit-note]').forEach(function(button) {
             button.addEventListener('click', function() {
+                state.vocabExpanded[button.dataset.editNote] = true;
                 state.vocabNoteEditingId = button.dataset.editNote;
                 state.vocabEditingId = '';
                 renderMyWordsList();
@@ -2951,6 +2975,7 @@
                     return;
                 }
                 state.vocabEditingId = word.vocab_id;
+                state.vocabExpanded[word.vocab_id] = true;
                 renderMyWordsList();
                 var input = myWordsContent.querySelector('[data-edit-form] input');
                 if (input) { input.value = button.dataset.useHeadword; input.focus(); }
@@ -3282,7 +3307,7 @@
                 '<section class="profile-card account-summary-card">' +
                     '<div class="account-name-row">' +
                         '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
-                        '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="Open My STARs. ' + escapeHtml(availableYellowStars()) + ' yellow STARs available">★ ' + escapeHtml(availableYellowStars()) + '</button>' +
+                        '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="Open STAR Wallet. ' + escapeHtml(availableYellowStars()) + ' yellow STARs available">★ ' + escapeHtml(availableYellowStars()) + '</button>' +
                     '</div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
@@ -3402,16 +3427,17 @@
         if (!starContent) return;
         var filter = state.accountStarFilter || 'all';
         var items = accountStarItems(filter);
-        var wallet = state.starRewards && state.starRewards.wallet || {};
         var requests = state.starRewards && state.starRewards.cash_requests || [];
         starContent.innerHTML =
             '<section class="profile-card account-star-history">' +
                 '<div class="account-star-history-head">' +
                     '<button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
-                    '<div><p class="eyebrow accent">STAR WALLET</p><h2 id="student-star-title">My STARs</h2></div>' +
-                    '<span class="star-counter account-star-history-count assignment-star-counter">★ ' + escapeHtml(availableYellowStars()) + '</span>' +
+                    '<h2 id="student-star-title">STAR WALLET</h2>' +
+                    '<strong class="account-star-pair" aria-label="STAR balances">' +
+                        '<span class="star-counter account-star-history-count assignment-star-counter" aria-label="' + escapeHtml(availableYellowStars()) + ' yellow STARs">★ ' + escapeHtml(availableYellowStars()) + '</span>' +
+                        '<span class="star-counter account-star-history-count self-study-star-counter" aria-label="' + escapeHtml(state.selfStudyStarCount) + ' blue STARs">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
+                    '</strong>' +
                 '</div>' +
-                '<div class="account-star-wallet"><span><b>' + escapeHtml(wallet.available_yellow_stars || 0) + '</b> Available</span><span><b>' + escapeHtml(wallet.lifetime_yellow_stars || state.assignmentStarCount || 0) + '</b> Lifetime Yellow</span><span><b>' + escapeHtml(state.selfStudyStarCount) + '</b> Active Blue</span></div>' +
                 '<section class="account-cash-panel"><h3>Redeem</h3>' + cashComposerHtml() + '</section>' +
                 (requests.length ? '<section class="account-cash-history"><h3>Cash requests</h3>' + requests.map(cashRequestCard).join('') + '</section>' : '') +
                 '<nav class="account-star-filters" aria-label="Filter STAR history">' + ['all', 'yellow', 'blue'].map(function(value) { return '<button type="button" data-star-filter="' + value + '" class="' + (filter === value ? 'active' : '') + '">' + (value === 'all' ? 'All' : value.charAt(0).toUpperCase() + value.slice(1)) + '</button>'; }).join('') + '</nav>' +
@@ -3420,7 +3446,8 @@
                 '</div>' +
             '</section>';
         var backButton = document.getElementById('account-star-back');
-        if (backButton) backButton.addEventListener('click', function() {
+        if (backButton) backButton.addEventListener('click', function(event) {
+            event.stopPropagation();
             closeStarPanel(true);
         });
         bindStarWalletActions();
@@ -3438,15 +3465,17 @@
         try {
             renderAccountStarHistory();
         } catch (error) {
-            console.error('Unable to open My STARs.', error);
+            console.error('Unable to open STAR Wallet.', error);
             starContent.innerHTML =
                 '<section class="profile-card account-star-history account-star-error" role="alert">' +
                     '<div class="account-star-history-head"><button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
-                    '<div><p class="eyebrow accent">STAR WALLET</p><h2 id="student-star-title">My STARs</h2></div></div>' +
+                    '<h2 id="student-star-title">STAR WALLET</h2>' +
+                    '<strong class="account-star-pair" aria-label="STAR balances"><span class="star-counter account-star-history-count assignment-star-counter">★ ' + escapeHtml(availableYellowStars()) + '</span><span class="star-counter account-star-history-count self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span></strong></div>' +
                     '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>Unable to display STAR history</strong><p>Your STARs are safe. Close and reopen Personal Center to try again.</p></div>' +
                 '</section>';
             var fallbackBack = document.getElementById('account-star-back');
-            if (fallbackBack) fallbackBack.addEventListener('click', function() {
+            if (fallbackBack) fallbackBack.addEventListener('click', function(event) {
+                event.stopPropagation();
                 closeStarPanel(true);
             });
         }
