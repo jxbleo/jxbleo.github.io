@@ -129,8 +129,10 @@ Active or relevant functions:
   historical task so large student histories remain inside the function limit.
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
-  progress, disputes, answer-key access
-- `studentVocabulary`: personal My Words list
+  progress, disputes, answer-key access, shared dictionary review, and
+  read-only student vocabulary inspection
+- `studentVocabulary`: personal My Words editing/merge/export data, dictionary
+  enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
@@ -145,6 +147,19 @@ the shared `vocabulary_lexicon` collection is checked first, then the fixed
 word completes before the browser starts enrichment. Curated/ECDICT hits are
 shared across students; external results are normalized and cached once. API
 access never comes directly from the browser.
+
+After a confirmed external miss, an optional provider-neutral OpenAI-compatible
+request may generate a student preview from the word and one saved context. The
+student must confirm it before it becomes the single shared AI draft. Teacher
+publication replaces that current shared record, first writing the previous
+record to `vocabulary_lexicon_history`. Reports are stored separately in
+`vocabulary_dictionary_reports`. Personal Notes never enter the AI request or
+the shared lexicon.
+
+Word List export is browser-side. `assets/js/my-words-export.js` builds a real
+OpenXML `.xlsx` without a third-party runtime dependency and creates a
+print-ready HTML table for browser Save as PDF. Neither format contains private
+data beyond the rows and columns the current student explicitly selects.
 
 ## 6. Database and Storage
 
@@ -162,6 +177,9 @@ Main collections:
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
+- `vocabulary_lexicon`
+- `vocabulary_lexicon_history`
+- `vocabulary_dictionary_reports`
 - `vocabulary_test_sessions`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.

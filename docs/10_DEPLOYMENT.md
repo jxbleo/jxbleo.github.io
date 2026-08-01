@@ -43,6 +43,8 @@ All project collections should remain `ADMINONLY`:
 - `grading_key_history`
 - `student_vocabulary_items`
 - `vocabulary_lexicon`
+- `vocabulary_lexicon_history`
+- `vocabulary_dictionary_reports`
 - `vocabulary_test_sessions`
 
 Recommended unique indexes where supported:
@@ -59,6 +61,9 @@ Recommended unique indexes where supported:
 Recommended query index:
 
 - `student_vocabulary_items.student_uid + status + updated_at`
+- `vocabulary_lexicon_history.normalized_word + changed_at`
+- `vocabulary_dictionary_reports.status + updated_at`
+- `vocabulary_dictionary_reports.normalized_word + status`
 - `vocabulary_test_sessions.student_uid + status`
 
 Create required collections before deploying functions that depend on them.
@@ -161,6 +166,36 @@ INITIAL_STUDENT_PASSWORD=<configured in CloudBase only>
 
 Never write this value into Git, frontend code, docs, screenshots, or command
 logs.
+
+The optional AI dictionary fallback requires all three variables on both
+`studentVocabulary` and `teacherAdmin`:
+
+```text
+VOCAB_AI_API_URL=<HTTPS OpenAI-compatible chat-completions endpoint>
+VOCAB_AI_API_KEY=<configured in CloudBase only>
+VOCAB_AI_MODEL=<provider model identifier>
+```
+
+If any value is absent, normal curated/ECDICT/Free Dictionary behavior still
+works and the AI action returns `AI_NOT_CONFIGURED`. Never put the key in static
+site settings or Git. The endpoint must be HTTPS.
+
+### My Words Editing, Export, and Dictionary Review
+
+This release requires two deployment tracks after static publication:
+
+1. Create `vocabulary_lexicon_history` and
+   `vocabulary_dictionary_reports` as `ADMINONLY` collections, then add the
+   recommended indexes above where supported.
+2. Configure the three `VOCAB_AI_*` variables on both functions if AI lookup is
+   wanted immediately.
+3. Upload rebuilt `deploy-packages/studentVocabulary.zip` and
+   `deploy-packages/teacherAdmin.zip` to the development environment.
+
+There is no bulk data migration. Existing personal items receive missing Note,
+example, and activity fields lazily; export falls back to existing save/update
+timestamps. AI can be left unconfigured without blocking edit, merge, Note,
+Excel, PDF, or normal dictionary enrichment.
 
 ### Dashboard Large-History Fix
 
@@ -462,6 +497,8 @@ Student flow:
 - failed, passed, and mastered attempts store correctly
 - later low score does not downgrade completed work
 - personal My Words save works only for logged-in students
+- My Words edit, Note, merge/undo, time/manual selection, Excel, and print-to-PDF work
+- a missing word shows the configured AI preview flow or a clear not-configured error
 
 Teacher flow:
 
@@ -471,6 +508,9 @@ Teacher flow:
 - completed work can be reassigned
 - Library preview can show answers only through teacher session
 - Argue list loads and resolution updates grading/history
+- Dictionary queues load; publishing creates private lexicon history and updates
+  the one current shared entry
+- Student detail My Words view is complete and read-only
 
 Data flow:
 

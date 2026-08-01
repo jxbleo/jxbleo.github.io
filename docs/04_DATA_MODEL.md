@@ -31,6 +31,8 @@ Only CloudBase cloud functions should read or write private collections.
 | `grading_key_history` | answer-rule change history |
 | `student_vocabulary_items` | personal saved words |
 | `vocabulary_lexicon` | shared curated/ECDICT/API dictionary entries |
+| `vocabulary_lexicon_history` | private revision snapshots for shared dictionary entries |
+| `vocabulary_dictionary_reports` | student reports requiring dictionary review |
 | `vocabulary_test_sessions` | active/ended Vocabulary Test integrity sessions |
 
 All collections should remain `ADMINONLY`.
@@ -60,6 +62,8 @@ Core fields:
 | `teacher_activity_attempts_read_all_at` | Date/null | latest teacher `Read all` cutoff; attempts submitted at or before it are read |
 | `teacher_activity_attempt_reviewed_ids` | array | attempt IDs opened from the teacher notification panel |
 | `teacher_activity_attempt_reviewed_at` | Date/null | latest attempt-review marker update |
+| `vocab_ai_day` | string | Shanghai `YYYY-MM-DD` for the student's current AI allowance |
+| `vocab_ai_count` | number | successful student AI previews used on that Shanghai date |
 | `created_at` | Date | created time |
 | `updated_at` | Date | updated time |
 
@@ -461,6 +465,10 @@ Core fields:
 | `source_type` | string | `curated`, `ecdict`, or external provider |
 | `source_name` / `sources` | string/array | attribution |
 | `verified` | boolean | teacher-curated status |
+| `review_status` | string | `external`, `ai_draft`, or `reviewed` |
+| `created_by_student_uid` | string/null | first student who confirmed an AI draft |
+| `reviewed_by_teacher_uid` | string/null | teacher who published the current reviewed version |
+| `updated_at` | Date | current shared-version update time |
 
 Rules:
 
@@ -469,6 +477,10 @@ Rules:
 - Project-curated entries take precedence over ECDICT and external API data.
 - External misses and failures are throttled on the student item rather than
   creating repeated provider requests.
+- One `normalized_word` has one current visible shared record. A confirmed AI
+  draft uses `source_type: "ai_draft"`, `review_status: "ai_draft"`, and
+  `verified: false`; teacher publication overwrites that record with
+  `review_status: "reviewed"` and `verified: true`.
 
 ## 12. `student_vocabulary_items`
 
@@ -486,6 +498,9 @@ Core fields:
 | `source_path` | string | source URL/path |
 | `context` | string | short surrounding text |
 | `times_added` | number | repeat saves |
+| `personal_note` | string | student-only free note, maximum 500 characters |
+| `saved_examples` | array | bounded source/context snapshots preserving the original form |
+| `activity_updated_at` | Date | last student save/resave/edit/note/merge activity used by export filters |
 | `lookup_status` | string | `pending`, `ready`, or `not_found` |
 | `lookup_error` | string | bounded last lookup note |
 | `lookup_retry_after` | Date/null | retry throttle |
@@ -495,6 +510,7 @@ Core fields:
 | `review_interval_days` | number | current rule-based interval |
 | `review_streak` | number | consecutive Know count |
 | `last_reviewed_at` | Date/null | most recent review response |
+| `merge_undo` | object/null | short-lived source snapshots and expiry for the 10-second merge undo |
 
 Rules:
 
@@ -505,6 +521,26 @@ Rules:
   explanation content, or from the manual My Words add form.
 - Forgot schedules one day, A little schedules three days, and Know advances
   through 7, 14, and 30 days. Three consecutive Know responses mark Mastered.
+- Editing changes only `text`/`normalized_text`; dictionary details remain a
+  joined shared view. If the target normalized text already exists, the edit
+  becomes an explicit merge flow rather than creating a duplicate.
+- Merge archives selected source cards under the same student, preserves
+  `saved_examples`, combines Notes with original-form labels, and stores only
+  enough snapshots for the immediate undo operation.
+
+## 12a. `vocabulary_lexicon_history`
+
+Core fields include `lexicon_id`, `normalized_word`, `before`,
+`changed_by_teacher_uid`, and `changed_at`. The replacement is the current
+`vocabulary_lexicon` record. History is
+teacher/backend-only audit data and is never returned to students.
+
+## 12b. `vocabulary_dictionary_reports`
+
+Core fields include `normalized_word`, `lexicon_id`, `student_uid`,
+`student_id_snapshot`, `vocab_id`, `reason`, `status`, `created_at`,
+`resolved_at`, and `resolved_by_teacher_uid`. Reports are teacher-readable; student ownership
+is derived from authentication, never from browser-supplied identity.
 
 ## 13. Browser Storage
 

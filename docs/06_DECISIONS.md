@@ -508,3 +508,35 @@ Review condition:
 
 Revisit the provider only if lookup reliability or licensing no longer fits the
 product, or if contextual sense selection later justifies a bounded AI fallback.
+
+## 2026-08-01: Keep One Current Shared Dictionary Entry With Hidden History
+
+Decision:
+
+Use one current `vocabulary_lexicon` record per normalized word for curated,
+external, student-confirmed AI, and teacher-reviewed content. The first
+student-confirmed AI result becomes the shared draft. A teacher publication
+replaces that current record and stores the old/new snapshot in
+`vocabulary_lexicon_history`; students never see parallel old-version cards.
+
+Reason:
+
+One visible current record keeps frontend rendering and backend lookup
+deterministic while still preserving an audit trail. Personal student Notes
+stay exclusively on `student_vocabulary_items` and are never overwritten by a
+shared dictionary update.
+
+Trade-offs:
+
+- Good: every student resolves a word to the same current shared entry.
+- Good: a teacher correction takes effect immediately without duplicate cards.
+- Good: hidden history supports audit and rollback tooling later.
+- Cost: teacher publication is a replacement operation and therefore requires
+  history to be written before the current record changes.
+- Cost: AI drafts need a visible unreviewed label and issue-report path until a
+  teacher reviews them.
+
+Review condition:
+
+Revisit only if the product later needs side-by-side dictionary editions or
+language/curriculum-specific definitions for the same normalized word.

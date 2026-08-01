@@ -26,6 +26,8 @@
 - Clean old documentation references to `done/failed`, three-card dashboard, and STAR blocking reassignment.
 - Improve teacher Progress filters by class, student, set, and curriculum track.
 - Add browser smoke coverage for visitor mode, student login, and teacher preview.
+- Add automated authenticated CloudBase integration coverage for My Words edit,
+  merge/undo, AI draft races, teacher replacement history, and report resolution.
 - Continue private-answer migration for legacy public runtime JSON.
 - Add checksum/version comparison between cloud-function source and deployed ZIPs.
 
@@ -48,6 +50,12 @@
 - Commercial billing/subscription features.
 - Email/phone/WeChat login binding.
 - Rich analytics dashboard.
+- Add familiarity metadata and familiarity-based My Words export filters after
+  the owner defines the learning model.
+- Finalize the My Words PDF visual design with the owner; the first release uses
+  a clean print-ready table and browser Save as PDF.
+- Consider Vocabulary Practice worksheet export separately from the current
+  Word List-only export.
 - Migration to a frontend framework if static HTML becomes too hard to maintain.
 
 ## Commercial Readiness Checklist

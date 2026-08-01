@@ -141,6 +141,17 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   发音按钮只在展开后显示在音标旁边
 - 英英释义、来源、上下文和删除动作点击单词行后展开；学生端不显示
   New/Learning/Mastered、到期筛选或揭示/评分式复习功能
+- 学生只能修改英文单词或短语本身，并可另写最多 500 字符的个人 Note；修改后按
+  新词重新查共享词典，词典字段本身不可直接编辑
+- 对高置信度的规则变化形显示 `Base: ...` 推荐原形；点击后可直接改为原形，或在
+  已有原形词卡时进入 Merge Group。合并由学生勾选参与词卡，保留原形为主卡，来源
+  例句保留原词形，已有 Note 以原词形标签拼接，并提供 10 秒 Undo
+- Word List 可按上海时区自然周、自然月、自然年或手动勾选导出；时间以学生最近一次
+  保存、再次保存、改词、改 Note 或合并的活动时间为准。Excel 导出为真正的 `.xlsx`，
+  PDF 通过表格预览进入浏览器打印/另存为 PDF；English 必选，其余列可选
+- 共享词典和外部词典都未命中时，学生可请求 AI 草稿并在预览后确认。首位确认的学生
+  将该草稿写成全体复用的共享词条，明确标记 `AI-generated · Not reviewed by teacher`；
+  老师后续发布审核词条时覆盖当前共享版本，历史版本只在后端保留
 
 ### 3.3 访客
 
@@ -534,6 +545,28 @@ flowchart TD
 - 只有共享词库未命中时才由 `studentVocabulary` 后端调用外部英文词典
 - 同一个 normalized word 的外部结果只缓存一次，不能按学生重复调用
 - 外部词典密钥或访问逻辑不得放在浏览器；词典失败不能影响个人生词保存
+- AI 草稿与老师审核词条使用同一 normalized word 的当前共享记录，不在学生端并排显示
+  多个版本；老师发布时覆盖当前记录并把旧版本写入隐藏历史
+
+### 7.9b vocabulary_lexicon_history
+
+用途：保存共享词条被老师覆盖前的不可见修订快照。
+
+规则：
+
+- 只由老师发布共享词条时写入
+- 学生端不读取，也不显示旧版本卡片
+- 保留 normalized word、前后内容、修改老师和修改时间供追溯
+
+### 7.9c vocabulary_dictionary_reports
+
+用途：学生对 AI 草稿或共享词条提交问题报告。
+
+规则：
+
+- 报告必须关联 authenticated student、词条和当前共享版本
+- 老师能看到报告学生的 Login ID，并在 Dictionary 工作区处理
+- 老师发布审核词条后，相关开放报告可标记为已解决
 
 ### 7.10 vocabulary_test_sessions
 
@@ -664,6 +697,8 @@ flowchart TD
 - list / submit / resolve disputes
 - update grading keys
 - write grading key history
+- 分开查看学生个人 My Words 数据与共享词典维护队列
+- 查看 Missing、AI Drafts、Reported、Reviewed 四类词条，使用 AI 起草并发布老师审核版本
 
 要求：
 
@@ -696,6 +731,11 @@ flowchart TD
 - 一个学生重复保存同一 normalized text 时增加次数，不创建重复记录
 - `add` 先完成个人词条保存并返回；`enrich` 自动补充共享词典信息
 - 外部查询超时或失败时保留 pending 状态并延迟重试，不能无限即时重试
+- `updateWord` 只改英文词/短语并重新关联词典；`updateNote` 只写学生个人 Note
+- 规则形态推荐必须保守且高置信度，不自动处理歧义、不规则变化或派生词
+- `mergeWords` 合并学生明确勾选的词卡，保留来源例句并拼接 Note；10 秒内可撤销
+- AI 只接收词/短语及一个学习上下文，不接收学生身份或个人 Note；每名学生每日最多请求
+  10 次，结果必须先预览再确认
 
 ### 8.8 resetStudentPassword
 

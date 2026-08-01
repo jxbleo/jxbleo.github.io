@@ -7,6 +7,7 @@
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",
+    "test:my-words": "node scripts/test-my-words-features.js",
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
     "package:functions": "node scripts/package-cloudfunctions.js",

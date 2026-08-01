@@ -1942,6 +1942,66 @@ body:not(.teacher-page) .tab-button.active {
     .student-library-dock .student-library-label,
     .student-library-search-panel { transition-duration: 1ms; }
 }
+.teacher-dictionary-modal {
+    position: fixed;
+    z-index: 11040;
+    inset: 0;
+    padding: 24px;
+    background: rgba(21,44,39,.36);
+    backdrop-filter: blur(14px) saturate(120%);
+}
+.teacher-dictionary-shell { width: min(1120px, 100%); height: min(780px, calc(100vh - 48px)); margin: 0 auto; }
+.teacher-dictionary-dialog {
+    display: grid;
+    grid-template-rows: auto auto minmax(0,1fr);
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 28px;
+    background: rgba(248,251,249,.96);
+    box-shadow: 0 30px 90px rgba(20,54,47,.28);
+}
+.teacher-dictionary-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 22px 14px; }
+.teacher-dictionary-head h2 { margin: 2px 0 0; }
+.teacher-dictionary-head input { width: min(320px, 46%); padding: 10px 13px; border: 1px solid #cbdad5; border-radius: 999px; background: #fff; }
+.teacher-dictionary-tabs { display: flex; gap: 7px; overflow-x: auto; padding: 0 22px 14px; }
+.teacher-dictionary-tabs button { padding: 8px 12px; border: 0; border-radius: 999px; color: #49635d; background: #e8f0ed; font-weight: 800; cursor: pointer; }
+.teacher-dictionary-tabs button.active { color: #fff; background: #13766d; }
+.teacher-dictionary-body { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.6fr); min-height: 0; border-top: 1px solid #dbe6e2; }
+.teacher-dictionary-list { overflow: auto; padding: 12px; border-right: 1px solid #dbe6e2; }
+.teacher-dictionary-row { display: grid; gap: 3px; width: 100%; padding: 11px 12px; border: 0; border-radius: 13px; color: #18332f; background: transparent; text-align: left; cursor: pointer; }
+.teacher-dictionary-row span { color: #7a8e87; font-size: .72rem; }
+.teacher-dictionary-row:hover,
+.teacher-dictionary-row.active { background: #eaf6f2; }
+.teacher-dictionary-editor { overflow: auto; padding: 20px 22px 28px; }
+.teacher-dictionary-form { display: grid; gap: 13px; }
+.teacher-dictionary-editor-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.teacher-dictionary-editor-title h3 { margin: 2px 0 0; font-size: 1.45rem; }
+.teacher-dictionary-form label { display: grid; gap: 5px; color: #49635d; font-size: .76rem; font-weight: 800; }
+.teacher-dictionary-form input,
+.teacher-dictionary-form textarea { width: 100%; padding: 10px 11px; border: 1px solid #cbdad5; border-radius: 11px; color: #18332f; background: #fff; font: inherit; }
+.teacher-dictionary-form textarea { min-height: 80px; resize: vertical; }
+.teacher-dictionary-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.teacher-dictionary-reports { margin: 0; padding: 10px 12px 10px 28px; border-radius: 12px; color: #7b5146; background: #fff1ed; font-size: .75rem; }
+.teacher-dictionary-form-status { min-height: 1.2em; margin: 0; color: #13766d; font-weight: 760; }
+.student-vocabulary-card { display: grid; gap: 12px; }
+.teacher-student-vocabulary-list { display: grid; gap: 8px; max-height: 360px; overflow: auto; }
+.teacher-student-vocabulary-list article { display: grid; gap: 5px; padding: 10px 12px; border-radius: 12px; background: #f2f7f5; }
+.teacher-student-vocabulary-list article > div { display: flex; justify-content: space-between; gap: 12px; }
+.teacher-student-vocabulary-list article p,
+.teacher-student-vocabulary-list article small { margin: 0; color: #6f837c; }
+.teacher-student-vocabulary-list details { padding-top: 2px; }
+.teacher-student-vocabulary-list summary { cursor: pointer; color: #26766d; font-size: .82rem; }
+.teacher-student-vocabulary-example { display: grid; gap: 3px; margin-top: 7px; padding: 8px 9px; border-left: 2px solid rgba(38,118,109,.24); background: rgba(255,255,255,.62); }
+@media (max-width: 760px) {
+    .teacher-dictionary-modal { padding: 10px; }
+    .teacher-dictionary-shell { height: calc(100vh - 20px); }
+    .teacher-dictionary-body { grid-template-columns: 1fr; grid-template-rows: minmax(150px, .55fr) minmax(0, 1.45fr); }
+    .teacher-dictionary-list { border-right: 0; border-bottom: 1px solid #dbe6e2; }
+    .teacher-dictionary-head { align-items: stretch; flex-direction: column; }
+    .teacher-dictionary-head input { width: 100%; }
+    .teacher-dictionary-form-grid { grid-template-columns: 1fr; }
+}
 
 @media (prefers-reduced-transparency: reduce) {
     .student-library-search-trigger,
@@ -2413,6 +2473,35 @@ body:not(.teacher-page) .tab-button.active {
     text-align: center;
     overflow-wrap: anywhere;
 }
+.my-word-name small {
+    display: block;
+    margin-top: 4px;
+    color: #13766d;
+    font-size: 0.62rem;
+    font-weight: 760;
+    letter-spacing: 0;
+}
+.my-word-select {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    flex: 0 0 42px;
+    cursor: pointer;
+}
+.my-word-select input { position: absolute; opacity: 0; pointer-events: none; }
+.my-word-select span {
+    width: 21px;
+    height: 21px;
+    border: 2px solid #a9bab4;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+.my-word-select input:checked + span {
+    border-color: #13766d;
+    background: #13766d radial-gradient(circle, #fff 0 27%, transparent 30%);
+}
+.my-word-select:active span { transform: scale(0.88); }
 .my-word-primary-copy {
     display: flex;
     align-items: center;
@@ -2456,6 +2545,126 @@ body:not(.teacher-page) .tab-button.active {
     line-height: 1.48;
 }
 .my-word-detail-copy p { margin: 0; }
+.my-word-dictionary-status {
+    justify-self: start;
+    padding: 4px 8px;
+    border-radius: 99px;
+    color: #6b5a18;
+    background: #fff6cf;
+    font-size: 0.66rem;
+    font-weight: 800;
+}
+.my-word-recommendation,
+.my-word-actions button {
+    justify-self: start;
+    border: 0;
+    border-radius: 999px;
+    color: #13766d;
+    background: #eaf6f2;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 850;
+    cursor: pointer;
+}
+.my-word-recommendation { padding: 7px 11px; }
+.my-word-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 3px; }
+.my-word-actions button { padding: 7px 10px; }
+.my-word-actions button:active,
+.my-word-recommendation:active { transform: scale(0.96); }
+.my-word-edit-form,
+.my-word-note-form { display: grid; gap: 8px; }
+.my-word-edit-form input,
+.my-word-note-form textarea {
+    width: 100%;
+    border: 1px solid #bdd4cd;
+    border-radius: 12px;
+    color: #18332f;
+    background: #fff;
+    font: inherit;
+    padding: 10px 11px;
+}
+.my-word-note-form textarea { min-height: 92px; resize: vertical; }
+.my-word-edit-form > div,
+.my-word-note-form > div { display: flex; justify-content: flex-end; gap: 7px; }
+.my-word-note { display: grid; gap: 4px; padding: 10px 11px; border-radius: 12px; background: #f2f7f5; }
+.my-word-note p { white-space: pre-wrap; }
+.my-word-examples { display: grid; gap: 8px; }
+.my-word-examples > div { display: grid; gap: 3px; }
+.my-word-examples small { color: #8a9994; }
+.my-words-undo-toast {
+    position: fixed;
+    z-index: 12000;
+    left: 50%;
+    bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 14px;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(24,51,47,.94);
+    box-shadow: 0 16px 44px rgba(20,54,47,.28);
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+.my-words-undo-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.my-words-undo-toast button { border: 0; color: #9fe4ce; background: transparent; font: inherit; font-weight: 900; cursor: pointer; }
+.my-word-merge-modal {
+    position: fixed;
+    z-index: 12100;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(21,44,39,.38);
+    backdrop-filter: blur(13px);
+}
+.my-word-merge-card {
+    display: grid;
+    gap: 12px;
+    width: min(440px, 100%);
+    max-height: min(620px, calc(100vh - 40px));
+    overflow: auto;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,.78);
+    border-radius: 24px;
+    background: rgba(249,252,250,.97);
+    box-shadow: 0 26px 80px rgba(20,54,47,.28);
+}
+.my-word-merge-card h2,
+.my-word-merge-card p { margin: 0; }
+.my-word-merge-card > p:not(.eyebrow) { color: #637871; font-size: .82rem; }
+.my-word-merge-options { display: grid; gap: 7px; }
+.my-word-merge-options label { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 12px; background: #eef6f3; font-weight: 800; cursor: pointer; }
+.my-word-merge-options input { width: 19px; height: 19px; accent-color: #13766d; }
+.my-word-merge-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.my-word-merge-status { min-height: 1em; color: #a5483f !important; }
+.my-words-export-controls { display: grid; gap: 11px; padding: 12px 16px 14px; }
+.my-words-export-ranges,
+.my-words-export-fields { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; }
+.my-words-export-ranges button,
+.my-words-export-fields label {
+    flex: 0 0 auto;
+    border: 1px solid #d2e0dc;
+    border-radius: 999px;
+    color: #49635d;
+    background: rgba(255,255,255,.86);
+    font: inherit;
+    font-size: .7rem;
+    font-weight: 800;
+}
+.my-words-export-ranges button { padding: 7px 11px; cursor: pointer; }
+.my-words-export-ranges button.active { border-color: #13766d; color: #fff; background: #13766d; }
+.my-words-export-fields label { padding: 6px 10px; cursor: pointer; }
+.my-words-export-fields input { margin: 0 5px 0 0; accent-color: #13766d; }
+.my-words-export-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.my-words-export-actions span { margin-right: auto; color: #637871; font-size: .72rem; font-weight: 800; }
+.my-words-export-status { min-height: 1em; margin: 0; color: #8a5a12; font-size: .7rem; }
+@media (prefers-reduced-motion: reduce) {
+    .my-word-select span,
+    .my-words-undo-toast { transition: none; }
+}
 .my-word-detail-copy blockquote {
     margin: 2px 0;
     padding: 10px 12px;

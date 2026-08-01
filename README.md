@@ -18,7 +18,8 @@ boundaries matter more than visual polish right now.
 - Server-side grading through CloudBase functions
 - Immutable countable attempts
 - Protected STAR/mastery records
-- Personal My Words vocabulary list
+- Personal My Words editing, Notes, merge suggestions, Excel/PDF word-list
+  export, and a teacher-reviewed shared dictionary fallback
 
 ## Current Stack
 
@@ -57,6 +58,7 @@ audio, or JS fallback data.
 ```bash
 npm run verify:release
 npm run test:assignment-schedule
+npm run test:my-words
 npm run package:functions:all
 npm run release:plan
 node scripts/build-home-catalog.js
@@ -116,6 +118,7 @@ Read these first when taking over the project:
 
 Supporting docs:
 
+- [CONTEXT.md](CONTEXT.md): shared product language and domain terms
 - [docs/03_UI_UX_SPEC.md](docs/03_UI_UX_SPEC.md)
 - [docs/05_CHANGELOG.md](docs/05_CHANGELOG.md)
 - [docs/06_DECISIONS.md](docs/06_DECISIONS.md)

@@ -9,7 +9,7 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260727-6">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260801-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260727-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-5">
 </head>
@@ -145,6 +145,11 @@
                             <p id="student-words-subtitle">Your saved words and phrases</p>
                         </div>
                         <div class="student-words-dialog-actions">
+                            <button class="student-words-dialog-icon" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"></path><path d="M5 20h14"></path>
+                                </svg>
+                            </button>
                             <button class="student-words-dialog-icon" id="my-words-search-trigger" type="button" aria-label="Search words" aria-expanded="false" aria-controls="my-words-search-panel">
                                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                                     <circle cx="10.5" cy="10.5" r="5.5"></circle>
@@ -158,6 +163,27 @@
                             </button>
                         </div>
                     </header>
+
+                    <div class="student-words-tool-panel" id="my-words-export-panel" aria-hidden="true" inert>
+                        <div class="student-words-tool-panel-inner">
+                            <div class="my-words-export-controls">
+                                <div class="my-words-export-ranges" role="group" aria-label="Export time range">
+                                    <button type="button" data-export-range="all">All Time</button>
+                                    <button type="button" data-export-range="week">This Week</button>
+                                    <button type="button" data-export-range="month">This Month</button>
+                                    <button type="button" data-export-range="year">This Year</button>
+                                </div>
+                                <div class="my-words-export-fields" id="my-words-export-fields"></div>
+                                <div class="my-words-export-actions">
+                                    <button class="outline-button" id="my-words-select-all" type="button">Select all results</button>
+                                    <span id="my-words-selected-count">0 selected</span>
+                                    <button class="outline-button" id="my-words-export-excel" type="button">Excel</button>
+                                    <button class="primary-button" id="my-words-export-pdf" type="button">PDF</button>
+                                </div>
+                                <p class="my-words-export-status" id="my-words-export-status" role="status"></p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="student-words-tool-panel" id="my-words-add-panel" aria-hidden="true" inert>
                         <div class="student-words-tool-panel-inner">
@@ -214,7 +240,8 @@
     <script src="assets/js/cloudbase-client.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/dashboard.js?v=20260727-4"></script>
+    <script src="assets/js/my-words-export.js?v=20260801-1"></script>
+    <script src="assets/js/dashboard.js?v=20260801-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

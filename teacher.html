@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260731-2">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260801-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
 </head>
@@ -17,6 +17,11 @@
                 <img src="assets/logos/mrcat-leaping-cat.png" alt="" aria-hidden="true" width="942" height="844">
             </span>
             <div class="teacher-header-actions">
+                <button class="teacher-header-icon-button" id="teacher-dictionary-button" type="button" aria-label="Dictionary" aria-expanded="false">
+                    <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M5 4.5h10.5A3.5 3.5 0 0 1 19 8v11.5H8.5A3.5 3.5 0 0 1 5 16V4.5Z"></path><path d="M8.5 19.5A3.5 3.5 0 0 1 5 16c0-1.9 1.6-3.5 3.5-3.5H19"></path>
+                    </svg>
+                </button>
                 <button class="teacher-header-icon-button teacher-updates-button is-loading" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false" aria-busy="true">
                     <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
@@ -342,11 +347,33 @@
         <div id="teacher-notification-attempt-root"></div>
     </section>
 
+    <section class="teacher-dictionary-modal teacher-utility-modal" id="teacher-dictionary-panel" data-teacher-modal hidden>
+        <div class="teacher-dictionary-shell teacher-utility-shell">
+            <div class="teacher-dictionary-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-dictionary-title">
+                <header class="teacher-dictionary-head">
+                    <div><p class="eyebrow accent">DICTIONARY</p><h2 id="teacher-dictionary-title">Shared Dictionary</h2></div>
+                    <input id="teacher-dictionary-search" type="search" placeholder="Search words">
+                </header>
+                <nav class="teacher-dictionary-tabs" aria-label="Dictionary status">
+                    <button class="active" type="button" data-dictionary-category="missing">Missing</button>
+                    <button type="button" data-dictionary-category="ai_drafts">AI Drafts</button>
+                    <button type="button" data-dictionary-category="reported">Reported</button>
+                    <button type="button" data-dictionary-category="reviewed">Reviewed</button>
+                </nav>
+                <div class="teacher-dictionary-body">
+                    <div class="teacher-dictionary-list" id="teacher-dictionary-list"></div>
+                    <div class="teacher-dictionary-editor" id="teacher-dictionary-editor"><p class="muted">Choose a word to review.</p></div>
+                </div>
+            </div>
+            <button class="progress-matrix-modal-close" id="teacher-dictionary-close" type="button">Close</button>
+        </div>
+    </section>
+
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260715-3"></script>
     <script src="assets/js/cloudbase-client.js?v=20260707-7"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260731-3"></script>
+    <script src="assets/js/teacher.js?v=20260801-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

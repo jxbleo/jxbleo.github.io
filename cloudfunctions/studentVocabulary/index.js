@@ -5,9 +5,13 @@ const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const COLLECTION = "student_vocabulary_items";
 const LEXICON_COLLECTION = "vocabulary_lexicon";
+const DICTIONARY_REPORT_COLLECTION = "vocabulary_dictionary_reports";
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
 const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
 const DICTIONARY_LOOKUP_TIMEOUT_MS = 4000;
+const AI_LOOKUP_TIMEOUT_MS = 15000;
+const AI_DAILY_LIMIT = 10;
+const MERGE_UNDO_WINDOW_MS = 10 * 1000;
 
 function compactText(value, limit) {
   return String(value == null ? "" : value)
@@ -41,6 +45,54 @@ function vocabularyId(studentUid, normalizedText) {
     .digest("hex")
     .slice(0, 32);
   return `vocab_${hash}`;
+}
+
+function shanghaiDayKey(value = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
+function savedExampleFromEvent(event, text, now) {
+  const sourceTitle = compactText(event.source_title, 160);
+  const sourcePath = compactText(event.source_path, 300);
+  const context = compactText(event.context, 320);
+  if (!sourceTitle && !sourcePath && !context) return null;
+  return {
+    form: text,
+    source_set_id: compactText(event.source_set_id, 80) || null,
+    source_title: sourceTitle,
+    source_path: sourcePath,
+    context,
+    saved_at: now,
+    count: 1,
+  };
+}
+
+function mergeSavedExamples(current, nextExample) {
+  const examples = Array.isArray(current) ? current.slice(0, 39) : [];
+  if (!nextExample) return examples;
+  const key = [nextExample.form, nextExample.source_set_id, nextExample.source_path, nextExample.context]
+    .map((value) => String(value || "")).join("\n");
+  const index = examples.findIndex((item) => [item.form, item.source_set_id, item.source_path, item.context]
+    .map((value) => String(value || "")).join("\n") === key);
+  if (index >= 0) {
+    examples[index] = {
+      ...examples[index],
+      saved_at: nextExample.saved_at,
+      count: Number(examples[index].count || 1) + 1,
+    };
+    return examples;
+  }
+  examples.unshift(nextExample);
+  return examples.slice(0, 40);
+}
+
+function uniqueSavedExamples(items) {
+  return (items || []).reduce((output, item) => mergeSavedExamples(output, item), []);
 }
 
 function lexiconId(normalizedText) {
@@ -168,6 +220,8 @@ function lexiconView(item) {
     source_name: item.source_name || (Array.isArray(item.sources) ? item.sources.join(" / ") : ""),
     source_url: item.source_url || "",
     verified: item.verified === true,
+    review_status: item.review_status || (item.verified === true ? "reviewed" : "external"),
+    updated_at: item.updated_at || null,
   };
 }
 
@@ -182,10 +236,13 @@ function itemView(item, lexiconItem) {
     source_title: item.source_title || "",
     source_path: item.source_path || "",
     context: item.context || "",
+    personal_note: item.personal_note || "",
+    saved_examples: Array.isArray(item.saved_examples) ? item.saved_examples.slice(0, 40) : [],
     times_added: Number(item.times_added || 1),
     created_at: item.created_at || null,
     updated_at: item.updated_at || null,
     last_added_at: item.last_added_at || null,
+    activity_updated_at: item.activity_updated_at || item.last_added_at || item.created_at || null,
     lookup_status: dictionary ? "ready" : (item.lookup_status || "pending"),
     lookup_error: item.lookup_error || "",
     lookup_retry_after: item.lookup_retry_after || null,
@@ -244,6 +301,50 @@ async function lexiconMapForItems(items) {
   return map;
 }
 
+function regularHeadwordCandidates(value) {
+  const word = normalizeVocabularyText(value);
+  if (!word || word.includes(" ") || !/^[a-z]+(?:'[a-z]+)?$/.test(word)) return [];
+  const output = [];
+  const add = (candidate) => {
+    if (candidate && candidate.length >= 2 && candidate !== word && !output.includes(candidate)) output.push(candidate);
+  };
+  if (word.endsWith("ied") && word.length > 4) add(`${word.slice(0, -3)}y`);
+  if (word.endsWith("ed") && word.length > 4) {
+    const stem = word.slice(0, -2);
+    if (/([b-df-hj-np-tv-z])\1$/.test(stem)) add(stem.slice(0, -1));
+    add(stem);
+    add(word.slice(0, -1));
+  }
+  if (word.endsWith("ing") && word.length > 5) {
+    const stem = word.slice(0, -3);
+    if (/([b-df-hj-np-tv-z])\1$/.test(stem)) add(stem.slice(0, -1));
+    add(stem);
+    add(`${stem}e`);
+  }
+  if (word.endsWith("ies") && word.length > 4) add(`${word.slice(0, -3)}y`);
+  if (word.endsWith("es") && word.length > 4) {
+    add(word.slice(0, -2));
+    add(word.slice(0, -1));
+  } else if (word.endsWith("s") && !word.endsWith("ss") && word.length > 3) {
+    add(word.slice(0, -1));
+  }
+  return output;
+}
+
+async function recommendationMapForItems(items, currentLexicon) {
+  const active = (items || []).filter((item) => (item.status || "active") === "active");
+  const existing = new Set(active.map((item) => item.normalized_text));
+  const candidates = Array.from(new Set(active.flatMap((item) => regularHeadwordCandidates(item.normalized_text))));
+  const candidateRows = candidates.map((normalized_text) => ({ normalized_text }));
+  const candidateLexicon = await lexiconMapForItems(candidateRows);
+  const available = new Set([...existing, ...Object.keys(currentLexicon || {}), ...Object.keys(candidateLexicon || {})]);
+  return active.reduce((map, item) => {
+    const match = regularHeadwordCandidates(item.normalized_text).find((candidate) => available.has(candidate));
+    if (match) map[item.vocab_id] = match;
+    return map;
+  }, {});
+}
+
 async function addWord(student, event) {
   const error = validationErrorForText(event.text);
   if (error) throw new Error(error);
@@ -253,6 +354,7 @@ async function addWord(student, event) {
   const vocabId = vocabularyId(student.auth_uid, normalizedText);
   const now = new Date();
   const sourceSetId = compactText(event.source_set_id, 80) || null;
+  const savedExample = savedExampleFromEvent(event, text, now);
   const update = {
     text,
     normalized_text: normalizedText,
@@ -262,6 +364,7 @@ async function addWord(student, event) {
     source_path: compactText(event.source_path, 300),
     context: compactText(event.context, 320),
     last_added_at: now,
+    activity_updated_at: now,
     updated_at: now,
   };
 
@@ -269,12 +372,14 @@ async function addWord(student, event) {
   if (existing) {
     await db.collection(COLLECTION).doc(existing._id).update({
       ...update,
+      saved_examples: mergeSavedExamples(existing.saved_examples, savedExample),
       times_added: Number(existing.times_added || 1) + 1,
     });
     const nextItem = {
       ...existing,
       ...update,
       lookup_status: existing.lookup_status || "pending",
+      saved_examples: mergeSavedExamples(existing.saved_examples, savedExample),
       times_added: Number(existing.times_added || 1) + 1,
     };
     const lexiconItem = await getLexiconItemOrNull(normalizedText);
@@ -296,6 +401,8 @@ async function addWord(student, event) {
     review_due_at: now,
     review_interval_days: 0,
     review_streak: 0,
+    personal_note: "",
+    saved_examples: savedExample ? [savedExample] : [],
     ...update,
   };
   await db.collection(COLLECTION).add(record);
@@ -320,10 +427,18 @@ async function listWords(student, event) {
     });
   }
   const result = await query.orderBy("updated_at", "desc").limit(limit).get();
-  const lexicon = await lexiconMapForItems(result.data || []);
+  const rows = result.data || [];
+  const lexicon = await lexiconMapForItems(rows);
+  const recommendations = await recommendationMapForItems(rows, lexicon);
   return {
     success: true,
-    words: (result.data || []).map((item) => itemView(item, lexicon[item.normalized_text])),
+    words: rows.map((item) => ({
+      ...itemView(item, lexicon[item.normalized_text]),
+      recommended_headword: recommendations[item.vocab_id] || "",
+      merge_candidate_ids: rows
+        .filter((other) => other.vocab_id !== item.vocab_id && (recommendations[other.vocab_id] || other.normalized_text) === (recommendations[item.vocab_id] || item.normalized_text))
+        .map((other) => other.vocab_id),
+    })),
   };
 }
 
@@ -475,6 +590,306 @@ async function setStatus(student, event, status) {
   };
 }
 
+async function updateNote(student, event) {
+  const vocabId = compactText(event.vocab_id, 80);
+  const item = await getOwnedItem(student, vocabId);
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const note = String(event.personal_note == null ? "" : event.personal_note).trim().slice(0, 500);
+  const now = new Date();
+  const update = { personal_note: note, activity_updated_at: now, updated_at: now };
+  await db.collection(COLLECTION).doc(item._id).update(update);
+  return { success: true, word: itemView({ ...item, ...update }, await getLexiconItemOrNull(item.normalized_text)) };
+}
+
+async function updateWord(student, event) {
+  const vocabId = compactText(event.vocab_id, 80);
+  const item = await getOwnedItem(student, vocabId);
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const error = validationErrorForText(event.text);
+  if (error) throw new Error(error);
+  const nextText = compactText(event.text, 120);
+  const nextNormalized = normalizeVocabularyText(nextText);
+  if (nextNormalized === item.normalized_text) {
+    const now = new Date();
+    const update = { text: nextText, activity_updated_at: now, updated_at: now };
+    await db.collection(COLLECTION).doc(item._id).update(update);
+    return { success: true, word: itemView({ ...item, ...update }, await getLexiconItemOrNull(nextNormalized)) };
+  }
+  const nextVocabId = vocabularyId(student.auth_uid, nextNormalized);
+  const existing = await getOwnedItem(student, nextVocabId);
+  if (existing && existing._id !== item._id && (existing.status || "active") === "active") {
+    return {
+      success: false,
+      code: "MERGE_REQUIRED",
+      message: "This word already exists in My Words. Review the merge before continuing.",
+      merge_vocab_ids: [item.vocab_id, existing.vocab_id],
+      recommended_headword: nextNormalized,
+    };
+  }
+  const now = new Date();
+  const update = {
+    vocab_id: nextVocabId,
+    text: nextText,
+    normalized_text: nextNormalized,
+    lookup_status: "pending",
+    lookup_error: "",
+    lookup_retry_after: null,
+    activity_updated_at: now,
+    updated_at: now,
+  };
+  await db.collection(COLLECTION).doc(item._id).update(update);
+  return { success: true, word: itemView({ ...item, ...update }, await getLexiconItemOrNull(nextNormalized)) };
+}
+
+function mergeNotes(items) {
+  const notes = (items || []).filter((item) => compactText(item.personal_note, 500));
+  if (!notes.length) return "";
+  if (notes.length === 1) return compactText(notes[0].personal_note, 500);
+  return notes.map((item) => `[${compactText(item.text, 80)}]\n${String(item.personal_note || "").trim()}`).join("\n\n").slice(0, 500);
+}
+
+function itemSnapshot(item) {
+  const snapshot = { ...item };
+  delete snapshot._id;
+  delete snapshot.merge_undo;
+  return snapshot;
+}
+
+async function mergeWords(student, event) {
+  const vocabIds = Array.from(new Set((Array.isArray(event.vocab_ids) ? event.vocab_ids : [])
+    .map((value) => compactText(value, 80)).filter(Boolean)));
+  if (vocabIds.length < 2 || vocabIds.length > 12) throw new Error("MERGE_SELECTION_INVALID");
+  const error = validationErrorForText(event.headword);
+  if (error) throw new Error(error);
+  const headword = compactText(event.headword, 120);
+  const normalizedHeadword = normalizeVocabularyText(headword);
+  const items = [];
+  for (const vocabId of vocabIds) {
+    const item = await getOwnedItem(student, vocabId);
+    if (!item || (item.status || "active") !== "active") throw new Error("VOCAB_NOT_FOUND");
+    if (item.normalized_text !== normalizedHeadword && !regularHeadwordCandidates(item.normalized_text).includes(normalizedHeadword)) {
+      throw new Error("MERGE_SELECTION_INVALID");
+    }
+    items.push(item);
+  }
+  const targetVocabId = vocabularyId(student.auth_uid, normalizedHeadword);
+  let target = items.find((item) => item.vocab_id === targetVocabId) || items[0];
+  const now = new Date();
+  const snapshots = items.map((item) => ({ doc_id: item._id, data: itemSnapshot(item) }));
+  const mergedExamples = uniqueSavedExamples(items.flatMap((item) => {
+    const examples = Array.isArray(item.saved_examples) ? item.saved_examples : [];
+    if (examples.length) return examples;
+    const fallback = savedExampleFromEvent(item, item.text, item.last_added_at || item.created_at || now);
+    return fallback ? [fallback] : [];
+  }));
+  const statusRank = { new: 0, learning: 1, mastered: 2 };
+  const learningStatus = items.reduce((best, item) => (statusRank[item.learning_status] || 0) > (statusRank[best] || 0) ? item.learning_status : best, "new");
+  const update = {
+    vocab_id: targetVocabId,
+    text: headword,
+    normalized_text: normalizedHeadword,
+    status: "active",
+    personal_note: mergeNotes(items),
+    saved_examples: mergedExamples,
+    times_added: items.reduce((sum, item) => sum + Number(item.times_added || 1), 0),
+    learning_status: learningStatus,
+    lookup_status: "pending",
+    lookup_error: "",
+    lookup_retry_after: null,
+    activity_updated_at: now,
+    updated_at: now,
+    merge_undo: {
+      expires_at: new Date(now.getTime() + MERGE_UNDO_WINDOW_MS),
+      snapshots,
+    },
+  };
+  await db.collection(COLLECTION).doc(target._id).update(update);
+  for (const item of items) {
+    if (item._id === target._id) continue;
+    await db.collection(COLLECTION).doc(item._id).update({
+      status: "archived",
+      merged_into_vocab_id: targetVocabId,
+      updated_at: now,
+    });
+  }
+  return {
+    success: true,
+    undo_until: update.merge_undo.expires_at,
+    word: itemView({ ...target, ...update }, await getLexiconItemOrNull(normalizedHeadword)),
+  };
+}
+
+async function undoMerge(student, event) {
+  const item = await getOwnedItem(student, compactText(event.vocab_id, 80));
+  if (!item || !item.merge_undo || !Array.isArray(item.merge_undo.snapshots)) throw new Error("MERGE_UNDO_UNAVAILABLE");
+  if (dateValue(item.merge_undo.expires_at) < Date.now()) throw new Error("MERGE_UNDO_EXPIRED");
+  for (const snapshot of item.merge_undo.snapshots) {
+    if (!snapshot.doc_id || !snapshot.data) continue;
+    await db.collection(COLLECTION).doc(snapshot.doc_id).update({
+      ...snapshot.data,
+      merge_undo: null,
+      merged_into_vocab_id: null,
+    });
+  }
+  return { success: true };
+}
+
+function aiConfiguration() {
+  const url = String(process.env.VOCAB_AI_API_URL || "").trim();
+  const key = String(process.env.VOCAB_AI_API_KEY || "").trim();
+  const model = String(process.env.VOCAB_AI_MODEL || "").trim();
+  if (!url || !key || !model || !/^https:\/\//i.test(url)) throw new Error("AI_NOT_CONFIGURED");
+  return { url, key, model };
+}
+
+function jsonFromAiText(value) {
+  const source = String(value || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  const start = source.indexOf("{");
+  const end = source.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("AI_RESPONSE_INVALID");
+  return JSON.parse(source.slice(start, end + 1));
+}
+
+function normalizeAiDraft(payload, normalizedWord) {
+  const senses = (Array.isArray(payload.senses) ? payload.senses : []).slice(0, 3).map((sense) => ({
+    part_of_speech: compactText(sense.part_of_speech || sense.type, 80),
+    english_definition: compactText(sense.english_definition || sense.definition, 500),
+    chinese_meaning: compactText(sense.chinese_meaning, 300),
+  })).filter((sense) => sense.english_definition || sense.chinese_meaning);
+  const first = senses[0] || {};
+  const record = {
+    word: compactText(payload.word || normalizedWord, 120),
+    normalized_word: normalizedWord,
+    phonetic: compactText(payload.phonetic, 120),
+    part_of_speech: compactText(payload.part_of_speech || first.part_of_speech, 120),
+    english_definition: compactText(payload.english_definition || first.english_definition, 500),
+    chinese_meaning: compactText(payload.chinese_meaning || first.chinese_meaning, 300),
+    word_forms: compactText(payload.word_forms, 300),
+    senses,
+  };
+  if (!record.english_definition || !record.chinese_meaning) throw new Error("AI_RESPONSE_INVALID");
+  return record;
+}
+
+function currentAiAllowance(student) {
+  const day = shanghaiDayKey();
+  const current = student.vocab_ai_day === day ? Number(student.vocab_ai_count || 0) : 0;
+  if (current >= AI_DAILY_LIMIT) throw new Error("AI_DAILY_LIMIT");
+  return { day, current };
+}
+
+async function useAiAllowance(student) {
+  const { day, current } = currentAiAllowance(student);
+  await db.collection("students").doc(student._id).update({
+    vocab_ai_day: day,
+    vocab_ai_count: current + 1,
+    updated_at: new Date(),
+  });
+  return AI_DAILY_LIMIT - current - 1;
+}
+
+async function requestAiDraft(student, event) {
+  const item = await getOwnedItem(student, compactText(event.vocab_id, 80));
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const existing = await getLexiconItemOrNull(item.normalized_text);
+  if (existing) return { success: true, already_available: true, word: itemView(item, existing) };
+  currentAiAllowance(student);
+  const config = aiConfiguration();
+  const context = compactText((Array.isArray(item.saved_examples) && item.saved_examples[0] && item.saved_examples[0].context) || item.context, 320);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), AI_LOOKUP_TIMEOUT_MS);
+  let response;
+  try {
+    response = await fetch(config.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.key}` },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: config.model,
+        temperature: 0.2,
+        messages: [
+          { role: "system", content: "You create concise learner dictionary entries. Return JSON only, with word, phonetic, part_of_speech, english_definition, chinese_meaning, word_forms, and senses (up to 3 objects with part_of_speech, english_definition, chinese_meaning). Put the context-relevant sense first, then other common senses. Never include markdown." },
+          { role: "user", content: `Word or phrase: ${item.text}\nSaved example: ${context || "(none)"}` },
+        ],
+      }),
+    });
+  } catch (_error) {
+    throw new Error("AI_LOOKUP_FAILED");
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!response.ok) throw new Error(`AI_HTTP_${response.status}`);
+  const payload = await response.json();
+  const content = payload && payload.choices && payload.choices[0] && payload.choices[0].message && payload.choices[0].message.content;
+  const draft = normalizeAiDraft(jsonFromAiText(content), item.normalized_text);
+  const remaining = await useAiAllowance(student);
+  const token = crypto.randomBytes(18).toString("hex");
+  const pending = { token, draft, expires_at: new Date(Date.now() + 15 * 60 * 1000) };
+  await db.collection(COLLECTION).doc(item._id).update({ pending_ai_draft: pending, updated_at: new Date() });
+  return { success: true, draft_token: token, draft: lexiconView({ ...draft, source_type: "ai_draft", review_status: "ai_draft" }), remaining_today: remaining };
+}
+
+async function confirmAiDraft(student, event) {
+  const item = await getOwnedItem(student, compactText(event.vocab_id, 80));
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const existing = await getLexiconItemOrNull(item.normalized_text);
+  if (existing) return { success: true, already_available: true, word: itemView(item, existing) };
+  const pending = item.pending_ai_draft;
+  if (!pending || pending.token !== compactText(event.draft_token, 80) || dateValue(pending.expires_at) < Date.now()) {
+    throw new Error("AI_DRAFT_EXPIRED");
+  }
+  const now = new Date();
+  const record = {
+    ...pending.draft,
+    lexicon_id: lexiconId(item.normalized_text),
+    normalized_word: item.normalized_text,
+    source_type: "ai_draft",
+    source_name: "AI-generated",
+    sources: ["AI-generated"],
+    source_url: "",
+    verified: false,
+    review_status: "ai_draft",
+    generated_by_student_uid: student.auth_uid,
+    created_at: now,
+    updated_at: now,
+  };
+  const lexiconItem = await cacheLexiconRecord(record);
+  await db.collection(COLLECTION).doc(item._id).update({
+    pending_ai_draft: null,
+    lookup_status: "ready",
+    lookup_error: "",
+    lookup_retry_after: null,
+    updated_at: now,
+  });
+  return { success: true, word: itemView({ ...item, lookup_status: "ready" }, lexiconItem) };
+}
+
+async function reportDictionaryIssue(student, event) {
+  const item = await getOwnedItem(student, compactText(event.vocab_id, 80));
+  if (!item) throw new Error("VOCAB_NOT_FOUND");
+  const lexiconItem = await getLexiconItemOrNull(item.normalized_text);
+  if (!lexiconItem) throw new Error("DICTIONARY_NOT_AVAILABLE");
+  const existing = await db.collection(DICTIONARY_REPORT_COLLECTION).where({
+    student_uid: student.auth_uid,
+    normalized_word: item.normalized_text,
+    status: "open",
+  }).limit(1).get();
+  if (existing.data && existing.data[0]) return { success: true, already_reported: true };
+  const now = new Date();
+  await db.collection(DICTIONARY_REPORT_COLLECTION).add({
+    student_uid: student.auth_uid,
+    student_id_snapshot: student.student_id,
+    vocab_id: item.vocab_id,
+    lexicon_id: lexiconItem.lexicon_id,
+    normalized_word: item.normalized_text,
+    reason: compactText(event.reason, 500),
+    status: "open",
+    created_at: now,
+    updated_at: now,
+  });
+  return { success: true };
+}
+
 function reviewUpdate(item, rating) {
   const now = new Date();
   const currentStreak = Math.max(0, Number(item.review_streak || 0));
@@ -556,6 +971,14 @@ function errorMessage(code) {
   if (code === "TEXT_INVALID") return "Select a word or phrase with letters or numbers.";
   if (code === "VOCAB_ID_REQUIRED") return "Word ID is required.";
   if (code === "VOCAB_NOT_FOUND") return "This word was not found in your list.";
+  if (code === "MERGE_REQUIRED") return "Review the matching word before merging.";
+  if (code === "MERGE_SELECTION_INVALID") return "Choose related word forms from the same merge group.";
+  if (code === "MERGE_UNDO_UNAVAILABLE" || code === "MERGE_UNDO_EXPIRED") return "This merge can no longer be undone.";
+  if (code === "AI_NOT_CONFIGURED") return "AI dictionary help is not configured yet.";
+  if (code === "AI_DAILY_LIMIT") return "You have reached today's AI dictionary limit.";
+  if (code === "AI_DRAFT_EXPIRED") return "This AI preview expired. Please create a new one.";
+  if (code === "AI_LOOKUP_FAILED" || code === "AI_RESPONSE_INVALID" || /^AI_HTTP_/.test(code)) return "AI dictionary help is unavailable right now.";
+  if (code === "DICTIONARY_NOT_AVAILABLE") return "Dictionary details are not available to report.";
   if (code === "REVIEW_RATING_INVALID") return "Choose Forgot, A little, or Know.";
   if (code === "LEARNING_STATUS_INVALID") return "Choose a valid learning status.";
   return `Unable to update your word list (${code || "VOCAB_ERROR"}).`;
@@ -574,6 +997,13 @@ exports.main = async (event = {}) => {
     if (action === "enrich") return await enrichWord(student, event);
     if (action === "review") return await reviewWord(student, event);
     if (action === "setLearningStatus") return await setLearningStatus(student, event);
+    if (action === "updateNote") return await updateNote(student, event);
+    if (action === "updateWord") return await updateWord(student, event);
+    if (action === "mergeWords") return await mergeWords(student, event);
+    if (action === "undoMerge") return await undoMerge(student, event);
+    if (action === "requestAiDraft") return await requestAiDraft(student, event);
+    if (action === "confirmAiDraft") return await confirmAiDraft(student, event);
+    if (action === "reportDictionaryIssue") return await reportDictionaryIssue(student, event);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     const code = String(error && error.message || "VOCAB_ERROR");
