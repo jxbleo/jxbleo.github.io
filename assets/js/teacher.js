@@ -67,6 +67,12 @@
         accountPanelOpen: false,
         updatesOpen: false,
         reviewOpen: false,
+        dictionaryOpen: false,
+        dictionaryCategory: 'missing',
+        dictionarySearch: '',
+        dictionaryWords: [],
+        selectedDictionaryWord: '',
+        studentVocabulary: {},
         studentLookupOpen: false,
         createStudentReturnToLookup: false,
         attemptsSeenAt: null,
@@ -750,6 +756,7 @@
         var chip = document.getElementById('teacher-chip');
         if (chip) chip.setAttribute('aria-expanded', state.accountPanelOpen ? 'true' : 'false');
         if (state.accountPanelOpen) {
+            if (state.dictionaryOpen) setDictionaryPanel(false);
             state.studentLookupOpen = false;
             var lookupPanel = document.getElementById('student-lookup-panel');
             var lookupButton = document.getElementById('toggle-create-student');
@@ -770,6 +777,7 @@
         if (panel) panel.hidden = !state.reviewOpen;
         if (button) button.setAttribute('aria-expanded', state.reviewOpen ? 'true' : 'false');
         if (state.reviewOpen) {
+            if (state.dictionaryOpen) setDictionaryPanel(false);
             state.studentLookupOpen = false;
             var lookupPanel = document.getElementById('student-lookup-panel');
             var lookupButton = document.getElementById('toggle-create-student');
@@ -791,6 +799,7 @@
         if (panel) panel.hidden = !state.studentLookupOpen;
         if (button) button.setAttribute('aria-expanded', state.studentLookupOpen ? 'true' : 'false');
         if (state.studentLookupOpen) {
+            if (state.dictionaryOpen) setDictionaryPanel(false);
             setTeacherAccountPanel(false);
             state.updatesOpen = false;
             state.notificationAttemptId = '';
@@ -1039,6 +1048,151 @@
                 }
                 return result;
             });
+    }
+
+    function setDictionaryPanel(open) {
+        state.dictionaryOpen = open === true;
+        var panel = document.getElementById('teacher-dictionary-panel');
+        var button = document.getElementById('teacher-dictionary-button');
+        if (panel) panel.hidden = !state.dictionaryOpen;
+        if (button) button.setAttribute('aria-expanded', state.dictionaryOpen ? 'true' : 'false');
+        if (!state.dictionaryOpen) return;
+        setTeacherAccountPanel(false);
+        setReviewPanel(false);
+        state.updatesOpen = false;
+        renderUpdatesPanel();
+        loadDictionaryWorkspace();
+    }
+
+    function loadDictionaryWorkspace() {
+        var list = document.getElementById('teacher-dictionary-list');
+        if (list) list.innerHTML = '<div class="empty-card loading-card">Loading dictionary...</div>';
+        return teacherCall('listDictionaryWorkspace').then(function(result) {
+            state.dictionaryWords = result.words || [];
+            renderDictionaryWorkspace();
+        }).catch(function(error) {
+            if (list) list.innerHTML = '<div class="empty-card">' + escapeHtml(error.message) + '</div>';
+        });
+    }
+
+    function filteredDictionaryWords() {
+        var query = String(state.dictionarySearch || '').trim().toLowerCase();
+        return (state.dictionaryWords || []).filter(function(item) {
+            if (item.category !== state.dictionaryCategory) return false;
+            return !query || [item.word, item.normalized_word, item.dictionary && item.dictionary.chinese_meaning].join(' ').toLowerCase().indexOf(query) !== -1;
+        });
+    }
+
+    function selectedDictionaryItem() {
+        return (state.dictionaryWords || []).find(function(item) { return item.normalized_word === state.selectedDictionaryWord; }) || null;
+    }
+
+    function dictionaryEditorHtml(item) {
+        if (!item) return '<p class="muted">Choose a word to review.</p>';
+        var dictionary = item.dictionary || {};
+        var reports = (item.reports || []).map(function(report) {
+            return '<li><strong>' + escapeHtml(report.student_id_snapshot || 'Student') + '</strong>' + (report.reason ? ' — ' + escapeHtml(report.reason) : '') + '</li>';
+        }).join('');
+        return '<form class="teacher-dictionary-form" id="teacher-dictionary-form">' +
+            '<div class="teacher-dictionary-editor-title"><div><p class="eyebrow accent">' + escapeHtml(item.category.replace('_', ' ')) + '</p><h3>' + escapeHtml(item.word) + '</h3></div>' +
+            '<button class="outline-button" id="teacher-dictionary-ai" type="button">Draft with AI</button></div>' +
+            (reports ? '<ul class="teacher-dictionary-reports">' + reports + '</ul>' : '') +
+            '<input type="hidden" name="normalized_word" value="' + escapeHtml(item.normalized_word) + '">' +
+            '<label>English<input name="word" value="' + escapeHtml(dictionary.word || item.word) + '" required></label>' +
+            '<label>Chinese Meaning<textarea name="chinese_meaning" required>' + escapeHtml(dictionary.chinese_meaning || '') + '</textarea></label>' +
+            '<label>English Definition<textarea name="english_definition" required>' + escapeHtml(dictionary.english_definition || '') + '</textarea></label>' +
+            '<div class="teacher-dictionary-form-grid"><label>Part of Speech / Phrase Type<input name="part_of_speech" value="' + escapeHtml(dictionary.part_of_speech || '') + '"></label>' +
+            '<label>Phonetic<input name="phonetic" value="' + escapeHtml(dictionary.phonetic || '') + '"></label></div>' +
+            '<label>Word Forms<input name="word_forms" value="' + escapeHtml(dictionary.word_forms || '') + '"></label>' +
+            '<button class="primary-button" type="submit">Publish reviewed entry</button><p class="teacher-dictionary-form-status" role="status"></p>' +
+        '</form>';
+    }
+
+    function renderDictionaryWorkspace() {
+        document.querySelectorAll('[data-dictionary-category]').forEach(function(button) {
+            button.classList.toggle('active', button.dataset.dictionaryCategory === state.dictionaryCategory);
+        });
+        var list = document.getElementById('teacher-dictionary-list');
+        var editor = document.getElementById('teacher-dictionary-editor');
+        var words = filteredDictionaryWords();
+        if (list) list.innerHTML = words.length ? words.map(function(item) {
+            return '<button class="teacher-dictionary-row' + (item.normalized_word === state.selectedDictionaryWord ? ' active' : '') + '" type="button" data-dictionary-word="' + escapeHtml(item.normalized_word) + '">' +
+                '<strong>' + escapeHtml(item.word) + '</strong><span>' + item.student_count + ' students' + (item.reports && item.reports.length ? ' · ' + item.reports.length + ' reports' : '') + '</span></button>';
+        }).join('') : '<div class="empty-card">No entries in this section.</div>';
+        if (editor) editor.innerHTML = dictionaryEditorHtml(selectedDictionaryItem());
+        if (list) list.querySelectorAll('[data-dictionary-word]').forEach(function(button) {
+            button.addEventListener('click', function() { state.selectedDictionaryWord = button.dataset.dictionaryWord; renderDictionaryWorkspace(); });
+        });
+        var form = document.getElementById('teacher-dictionary-form');
+        if (!form) return;
+        var ai = document.getElementById('teacher-dictionary-ai');
+        if (ai) ai.addEventListener('click', function() {
+            ai.disabled = true;
+            ai.textContent = 'Drafting...';
+            teacherCall('draftDictionaryWithAi', { word: form.elements.word.value }).then(function(result) {
+                var draft = result.draft || {};
+                ['word', 'chinese_meaning', 'english_definition', 'part_of_speech', 'phonetic', 'word_forms'].forEach(function(name) {
+                    if (form.elements[name] && draft[name] != null) form.elements[name].value = draft[name];
+                });
+                ai.disabled = false;
+                ai.textContent = 'Draft with AI';
+            }).catch(function(error) { ai.disabled = false; ai.textContent = 'Draft with AI'; alert(error.message); });
+        });
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var status = form.querySelector('.teacher-dictionary-form-status');
+            var submit = form.querySelector('[type="submit"]');
+            submit.disabled = true;
+            status.textContent = 'Publishing...';
+            teacherCall('saveDictionaryEntry', {
+                normalized_word: form.elements.normalized_word.value,
+                word: form.elements.word.value,
+                chinese_meaning: form.elements.chinese_meaning.value,
+                english_definition: form.elements.english_definition.value,
+                part_of_speech: form.elements.part_of_speech.value,
+                phonetic: form.elements.phonetic.value,
+                word_forms: form.elements.word_forms.value
+            }).then(function() {
+                status.textContent = 'Published for all students.';
+                return loadDictionaryWorkspace();
+            }).catch(function(error) { submit.disabled = false; status.textContent = error.message; });
+        });
+    }
+
+    function loadStudentVocabularyForTeacher(student) {
+        state.studentVocabulary[student.auth_uid] = { loading: true, words: [] };
+        renderStudentDetail();
+        teacherCall('getStudentVocabulary', { auth_uid: student.auth_uid }).then(function(result) {
+            state.studentVocabulary[student.auth_uid] = { loading: false, words: result.words || [] };
+            renderStudentDetail();
+        }).catch(function(error) {
+            state.studentVocabulary[student.auth_uid] = { loading: false, words: [], error: error.message };
+            renderStudentDetail();
+        });
+    }
+
+    function teacherStudentVocabularyHtml(student) {
+        var model = state.studentVocabulary[student.auth_uid];
+        if (!model) return '<button class="outline-button" type="button" data-load-student-vocabulary>View My Words</button>';
+        if (model.loading) return '<p class="muted">Loading My Words...</p>';
+        if (model.error) return '<p class="muted">' + escapeHtml(model.error) + '</p>';
+        if (!model.words.length) return '<p class="muted">No saved words.</p>';
+        return '<div class="teacher-student-vocabulary-list">' + model.words.map(function(word) {
+            var dictionary = word.dictionary || {};
+            var examples = Array.isArray(word.saved_examples) ? word.saved_examples : [];
+            var examplesHtml = examples.length ? '<details><summary>' + examples.length + ' saved example' + (examples.length === 1 ? '' : 's') + '</summary>' + examples.map(function(example) {
+                return '<div class="teacher-student-vocabulary-example"><strong>' + escapeHtml(example.form || word.text) + '</strong>' +
+                    (example.context ? '<p>' + escapeHtml(example.context) + '</p>' : '') +
+                    '<small>' + escapeHtml(example.source_title || example.source_set_id || example.source_path || 'Saved source') + '</small></div>';
+            }).join('') + '</details>' : (word.context ? '<p><b>Context:</b> ' + escapeHtml(word.context) + '</p>' : '');
+            return '<article><div><strong>' + escapeHtml(word.text) + '</strong><span>' + escapeHtml(dictionary.chinese_meaning || 'No dictionary details') + '</span></div>' +
+                (dictionary.part_of_speech ? '<p><b>Part of speech:</b> ' + escapeHtml(dictionary.part_of_speech) + '</p>' : '') +
+                (dictionary.phonetic ? '<p><b>Phonetic:</b> ' + escapeHtml(dictionary.phonetic) + '</p>' : '') +
+                (dictionary.english_definition ? '<p><b>Definition:</b> ' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
+                (word.personal_note ? '<p><b>Note:</b> ' + escapeHtml(word.personal_note) + '</p>' : '') +
+                examplesHtml +
+                '<small>' + escapeHtml(word.source_title || word.source_set_id || 'My Words') + ' · ' + formatDate(word.activity_updated_at, '—', 'compact') + '</small></article>';
+        }).join('') + '</div>';
     }
 
     function loadProgressData() {
@@ -5386,6 +5540,10 @@
                     '<button class="danger-button" id="delete-student-account" type="button">Delete Account</button>' +
                 '</div>' +
             '</section>' +
+            '<section class="profile-card student-vocabulary-card">' +
+                '<p class="eyebrow accent">MY WORDS</p>' +
+                teacherStudentVocabularyHtml(student) +
+            '</section>' +
             '<section class="profile-card student-progress-card">' +
                 '<p class="eyebrow accent">PROGRESS</p>' +
                 progressModeTabs(assignments) + progressHtml +
@@ -5405,6 +5563,8 @@
                 showMessage(error.message, 'error');
             });
         });
+        var loadVocabulary = studentDetail.querySelector('[data-load-student-vocabulary]');
+        if (loadVocabulary) loadVocabulary.addEventListener('click', function() { loadStudentVocabularyForTeacher(student); });
         studentDetail.querySelectorAll('[data-progress-view]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.studentProgressView = button.dataset.progressView;
@@ -6443,6 +6603,29 @@
             if (event.target === teacherReviewPanel) setReviewPanel(false);
         });
     }
+    var teacherDictionaryButton = document.getElementById('teacher-dictionary-button');
+    if (teacherDictionaryButton) teacherDictionaryButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        setDictionaryPanel(!state.dictionaryOpen);
+    });
+    var teacherDictionaryClose = document.getElementById('teacher-dictionary-close');
+    if (teacherDictionaryClose) teacherDictionaryClose.addEventListener('click', function() { setDictionaryPanel(false); });
+    var teacherDictionaryPanel = document.getElementById('teacher-dictionary-panel');
+    if (teacherDictionaryPanel) teacherDictionaryPanel.addEventListener('click', function(event) {
+        if (event.target === teacherDictionaryPanel) setDictionaryPanel(false);
+    });
+    document.querySelectorAll('[data-dictionary-category]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            state.dictionaryCategory = button.dataset.dictionaryCategory;
+            state.selectedDictionaryWord = '';
+            renderDictionaryWorkspace();
+        });
+    });
+    var teacherDictionarySearch = document.getElementById('teacher-dictionary-search');
+    if (teacherDictionarySearch) teacherDictionarySearch.addEventListener('input', function() {
+        state.dictionarySearch = teacherDictionarySearch.value;
+        renderDictionaryWorkspace();
+    });
     document.getElementById('teacher-updates-button').addEventListener('click', function() {
         state.updatesOpen = state.updatesOpen !== true;
         if (!state.updatesOpen) state.notificationAttemptId = '';

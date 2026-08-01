@@ -15,6 +15,11 @@
         teacherReplies: [],
         vocabItems: [],
         vocabSearch: '',
+        vocabExportOpen: false,
+        vocabExportRange: 'all',
+        vocabSelected: {},
+        vocabEditingId: '',
+        vocabNoteEditingId: '',
         accountPanelOpen: false,
         calendarPanelOpen: false,
         calendarYear: null,
@@ -129,6 +134,8 @@
     var wordsOverlay = document.getElementById('student-words-overlay');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
     var wordsSearchTrigger = document.getElementById('my-words-search-trigger');
+    var wordsExportTrigger = document.getElementById('my-words-export-trigger');
+    var wordsExportPanel = document.getElementById('my-words-export-panel');
     var wordsSearchPanel = document.getElementById('my-words-search-panel');
     var wordsSearchInput = document.getElementById('my-words-search');
     var wordsAddTrigger = document.getElementById('my-words-add-trigger');
@@ -2550,22 +2557,47 @@
         var spokenWord = dictionary && dictionary.word || word.text || '';
         var source = wordSourceLabel(word);
         var date = wordTimeLabel(word);
+        var examples = Array.isArray(word && word.saved_examples) ? word.saved_examples : [];
+        var examplesHtml = examples.length ? '<div class="my-word-examples"><strong>Saved examples</strong>' + examples.slice(0, 8).map(function(example) {
+            return '<div><span>' + escapeHtml(example.form || word.text || '') + '</span>' +
+                (example.context ? '<blockquote>' + escapeHtml(example.context) + '</blockquote>' : '') +
+                '<small>' + escapeHtml(example.source_title || example.source_set_id || '') + '</small></div>';
+        }).join('') + '</div>' : (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '');
+        var noteHtml = state.vocabNoteEditingId === word.vocab_id
+            ? '<form class="my-word-note-form" data-note-form="' + escapeHtml(word.vocab_id) + '"><textarea maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea><div><button class="outline-button" type="button" data-cancel-note>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
+            : '<div class="my-word-note"><strong>Note</strong><p>' + escapeHtml(word.personal_note || 'No personal note yet.') + '</p></div>';
+        var editHtml = state.vocabEditingId === word.vocab_id
+            ? '<form class="my-word-edit-form" data-edit-form="' + escapeHtml(word.vocab_id) + '"><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required><div><button class="outline-button" type="button" data-cancel-word-edit>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
+            : '';
+        var recommendation = word.recommended_headword
+            ? '<button class="my-word-recommendation" type="button" data-use-headword="' + escapeHtml(word.recommended_headword) + '" data-vocab-id="' + escapeHtml(word.vocab_id) + '">' +
+                ((word.merge_candidate_ids || []).length ? 'Merge with ' : 'Use ') + escapeHtml(word.recommended_headword) + '</button>'
+            : '';
+        var actions = '<div class="my-word-actions">' +
+            '<button type="button" data-edit-word="' + escapeHtml(word.vocab_id) + '">Edit word</button>' +
+            '<button type="button" data-edit-note="' + escapeHtml(word.vocab_id) + '">' + (word.personal_note ? 'Edit Note' : 'Add Note') + '</button>' +
+            (!dictionary && (word.lookup_status === 'not_found') ? '<button type="button" data-ai-word="' + escapeHtml(word.vocab_id) + '">Ask AI</button>' : '') +
+            (dictionary ? '<button type="button" data-report-word="' + escapeHtml(word.vocab_id) + '">Report issue</button>' : '') +
+            '</div>';
         if (!dictionary) {
             var lookupStatus = word && word.lookup_status || 'pending';
             return '<div class="my-word-detail-copy muted">' +
+                editHtml + recommendation +
                 '<div class="my-word-phonetic-row"><p class="my-word-phonetic">Pronunciation pending</p>' + wordSpeechButtonHtml(word, spokenWord) + '</div>' +
                 '<p>' + (lookupStatus === 'not_found' ? 'Dictionary entry not found yet.' : 'Finding dictionary details...') + '</p>' +
                 (lookupStatus === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id || '') + '">Retry</button>' : '') +
-                (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '') +
+                examplesHtml + noteHtml + actions +
                 '<p class="my-word-detail-meta">' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</p>' +
                 wordArchiveButtonHtml(word) +
             '</div>';
         }
         return '<div class="my-word-detail-copy">' +
+            editHtml + recommendation +
+            '<p class="my-word-dictionary-status">' + (dictionary.review_status === 'ai_draft' ? 'AI-generated · Not reviewed by teacher' : (dictionary.verified ? 'Teacher reviewed' : escapeHtml(dictionary.source_name || 'Dictionary'))) + '</p>' +
             '<div class="my-word-phonetic-row"><p class="my-word-phonetic">' + escapeHtml(dictionary.phonetic || 'Pronunciation') + '</p>' + wordSpeechButtonHtml(word, spokenWord) + '</div>' +
             (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
             (dictionary.word_forms ? '<p><strong>Forms:</strong> ' + escapeHtml(dictionary.word_forms) + '</p>' : '') +
-            (word.context ? '<blockquote>' + escapeHtml(word.context) + '</blockquote>' : '') +
+            examplesHtml + noteHtml + actions +
             '<p class="my-word-detail-meta">' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</p>' +
             wordArchiveButtonHtml(word) +
         '</div>';
@@ -2575,8 +2607,9 @@
         var detailId = 'my-word-detail-' + escapeHtml(word.vocab_id || 'word');
         return '<article class="my-word-item">' +
             '<div class="my-word-summary">' +
+                (state.vocabExportOpen ? '<label class="my-word-select"><input type="checkbox" data-select-word="' + escapeHtml(word.vocab_id || '') + '"' + (state.vocabSelected[word.vocab_id] ? ' checked' : '') + '><span></span></label>' : '') +
                 '<button class="my-word-toggle" type="button" data-toggle-word="' + escapeHtml(word.vocab_id || '') + '" aria-expanded="false" aria-controls="' + detailId + '">' +
-                    '<span class="my-word-name">' + escapeHtml(word.text || '') + '</span>' +
+                    '<span class="my-word-name">' + escapeHtml(word.text || '') + (word.recommended_headword ? '<small>Base: ' + escapeHtml(word.recommended_headword) + '</small>' : '') + (word.personal_note ? '<small>Note</small>' : '') + '</span>' +
                     wordPrimaryHtml(word) +
                 '</button>' +
             '</div>' +
@@ -2626,6 +2659,96 @@
         });
         next.unshift(word);
         state.vocabItems = next;
+    }
+
+    function replaceVocabItem(oldId, word) {
+        state.vocabItems = (state.vocabItems || []).filter(function(item) {
+            return item.vocab_id !== oldId && (!word || item.vocab_id !== word.vocab_id);
+        });
+        if (word) state.vocabItems.unshift(word);
+        if (oldId !== (word && word.vocab_id)) delete state.vocabSelected[oldId];
+    }
+
+    function vocabWord(vocabId) {
+        return (state.vocabItems || []).find(function(item) { return item.vocab_id === vocabId; }) || null;
+    }
+
+    function callStudentVocabulary(payload) {
+        return window.MrCatCloud.callFunction('studentVocabulary', payload).then(function(result) {
+            if (!result || !result.success) {
+                var error = new Error(result && result.message || 'Unable to update My Words.');
+                error.result = result;
+                throw error;
+            }
+            return result;
+        });
+    }
+
+    function reloadMyWords() {
+        return callStudentVocabulary({ action: 'list', status: 'active', limit: 200 }).then(function(result) {
+            state.vocabItems = result.words || [];
+            renderMyWordsList();
+            return result.words || [];
+        });
+    }
+
+    function showMergeUndo(vocabId) {
+        var toast = document.createElement('div');
+        toast.className = 'my-words-undo-toast';
+        toast.innerHTML = '<span>Words merged.</span><button type="button">Undo</button>';
+        document.body.appendChild(toast);
+        window.requestAnimationFrame(function() { toast.classList.add('show'); });
+        var timer = window.setTimeout(function() {
+            toast.classList.remove('show');
+            window.setTimeout(function() { toast.remove(); }, 180);
+        }, 10000);
+        toast.querySelector('button').addEventListener('click', function() {
+            window.clearTimeout(timer);
+            callStudentVocabulary({ action: 'undoMerge', vocab_id: vocabId }).then(function() {
+                toast.remove();
+                return reloadMyWords();
+            }).catch(function(error) { alert(error.message); });
+        });
+    }
+
+    function mergeWordGroup(word, headword, ids) {
+        var groupIds = Array.from(new Set([word.vocab_id].concat(ids || word.merge_candidate_ids || [])));
+        var selected = groupIds.map(vocabWord).filter(Boolean);
+        if (selected.length < 2) {
+            state.vocabEditingId = word.vocab_id;
+            renderMyWordsList();
+            var input = myWordsContent.querySelector('[data-edit-form] input');
+            if (input) { input.value = headword; input.focus(); }
+            return;
+        }
+        var modal = document.createElement('section');
+        modal.className = 'my-word-merge-modal';
+        modal.innerHTML = '<div class="my-word-merge-card" role="dialog" aria-modal="true" aria-labelledby="my-word-merge-title">' +
+            '<p class="eyebrow accent">MERGE WORD FORMS</p><h2 id="my-word-merge-title">Keep ' + escapeHtml(headword) + '</h2>' +
+            '<p>Select the forms to combine. Notes and saved examples will be kept.</p>' +
+            '<div class="my-word-merge-options">' + selected.map(function(item) {
+                return '<label><input type="checkbox" value="' + escapeHtml(item.vocab_id) + '" checked><span>' + escapeHtml(item.text) + '</span></label>';
+            }).join('') + '</div>' +
+            '<p class="my-word-merge-status" role="status"></p><div class="my-word-merge-actions"><button class="outline-button" type="button" data-cancel-merge>Cancel</button><button class="primary-button" type="button" data-confirm-merge>Merge selected</button></div></div>';
+        document.body.appendChild(modal);
+        var cancel = function() { modal.remove(); };
+        modal.querySelector('[data-cancel-merge]').addEventListener('click', cancel);
+        modal.addEventListener('click', function(event) { if (event.target === modal) cancel(); });
+        modal.querySelector('[data-confirm-merge]').addEventListener('click', function() {
+            var checkedIds = Array.from(modal.querySelectorAll('input:checked')).map(function(input) { return input.value; });
+            var status = modal.querySelector('.my-word-merge-status');
+            if (checkedIds.length < 2) { status.textContent = 'Choose at least two word forms.'; return; }
+            var button = modal.querySelector('[data-confirm-merge]');
+            button.disabled = true;
+            status.textContent = 'Merging...';
+            callStudentVocabulary({ action: 'mergeWords', vocab_ids: checkedIds, headword: headword }).then(function(result) {
+            checkedIds.forEach(function(id) { replaceVocabItem(id, null); });
+            upsertVocabItem(result.word);
+            modal.remove();
+            renderMyWordsList();
+            showMergeUndo(result.word.vocab_id);
+            }).catch(function(error) { button.disabled = false; status.textContent = error.message; });
+        });
     }
 
     function manualWordValidation(text) {
@@ -2754,6 +2877,115 @@
                 });
             });
         });
+        myWordsContent.querySelectorAll('[data-select-word]').forEach(function(input) {
+            input.addEventListener('change', function() {
+                state.vocabSelected[input.dataset.selectWord] = input.checked;
+                updateExportSelectionCount();
+            });
+        });
+        myWordsContent.querySelectorAll('[data-edit-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.vocabEditingId = button.dataset.editWord;
+                state.vocabNoteEditingId = '';
+                renderMyWordsList();
+                var input = myWordsContent.querySelector('[data-edit-form] input');
+                if (input) { input.focus(); input.select(); }
+            });
+        });
+        myWordsContent.querySelectorAll('[data-edit-note]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.vocabNoteEditingId = button.dataset.editNote;
+                state.vocabEditingId = '';
+                renderMyWordsList();
+                var textarea = myWordsContent.querySelector('[data-note-form] textarea');
+                if (textarea) textarea.focus();
+            });
+        });
+        myWordsContent.querySelectorAll('[data-cancel-word-edit]').forEach(function(button) {
+            button.addEventListener('click', function() { state.vocabEditingId = ''; renderMyWordsList(); });
+        });
+        myWordsContent.querySelectorAll('[data-cancel-note]').forEach(function(button) {
+            button.addEventListener('click', function() { state.vocabNoteEditingId = ''; renderMyWordsList(); });
+        });
+        myWordsContent.querySelectorAll('[data-edit-form]').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var oldId = form.dataset.editForm;
+                var word = vocabWord(oldId);
+                callStudentVocabulary({ action: 'updateWord', vocab_id: oldId, text: form.elements.text.value }).then(function(result) {
+                    state.vocabEditingId = '';
+                    replaceVocabItem(oldId, result.word);
+                    renderMyWordsList();
+                    if (window.MrCatPersonalVocab) window.MrCatPersonalVocab.enrichWord(result.word, false);
+                }).catch(function(error) {
+                    if (error.result && error.result.code === 'MERGE_REQUIRED' && word) {
+                        mergeWordGroup(word, error.result.recommended_headword, error.result.merge_vocab_ids);
+                        return;
+                    }
+                    alert(error.message);
+                });
+            });
+        });
+        myWordsContent.querySelectorAll('[data-note-form]').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var vocabId = form.dataset.noteForm;
+                callStudentVocabulary({ action: 'updateNote', vocab_id: vocabId, personal_note: form.querySelector('textarea').value }).then(function(result) {
+                    state.vocabNoteEditingId = '';
+                    replaceVocabItem(vocabId, result.word);
+                    renderMyWordsList();
+                }).catch(function(error) { alert(error.message); });
+            });
+        });
+        myWordsContent.querySelectorAll('[data-use-headword]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var word = vocabWord(button.dataset.vocabId);
+                if (!word) return;
+                if ((word.merge_candidate_ids || []).length) {
+                    mergeWordGroup(word, button.dataset.useHeadword, word.merge_candidate_ids);
+                    return;
+                }
+                state.vocabEditingId = word.vocab_id;
+                renderMyWordsList();
+                var input = myWordsContent.querySelector('[data-edit-form] input');
+                if (input) { input.value = button.dataset.useHeadword; input.focus(); }
+            });
+        });
+        myWordsContent.querySelectorAll('[data-ai-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var vocabId = button.dataset.aiWord;
+                button.disabled = true;
+                button.textContent = 'Asking AI...';
+                callStudentVocabulary({ action: 'requestAiDraft', vocab_id: vocabId }).then(function(result) {
+                    if (result.already_available && result.word) {
+                        replaceVocabItem(vocabId, result.word);
+                        renderMyWordsList();
+                        return;
+                    }
+                    var draft = result.draft || {};
+                    var preview = [draft.word, draft.part_of_speech, draft.chinese_meaning, draft.english_definition].filter(Boolean).join('\n\n');
+                    if (!window.confirm(preview + '\n\nUse this shared AI draft? It has not been reviewed by a teacher.')) return;
+                    return callStudentVocabulary({ action: 'confirmAiDraft', vocab_id: vocabId, draft_token: result.draft_token }).then(function(saved) {
+                        replaceVocabItem(vocabId, saved.word);
+                        renderMyWordsList();
+                    });
+                }).catch(function(error) {
+                    button.disabled = false;
+                    button.textContent = 'Ask AI';
+                    alert(error.message);
+                });
+            });
+        });
+        myWordsContent.querySelectorAll('[data-report-word]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var reason = window.prompt('What seems wrong? You may leave this blank.');
+                if (reason === null) return;
+                callStudentVocabulary({ action: 'reportDictionaryIssue', vocab_id: button.dataset.reportWord, reason: reason }).then(function() {
+                    button.textContent = 'Reported';
+                    button.disabled = true;
+                }).catch(function(error) { alert(error.message); });
+            });
+        });
     }
 
     function enrichPendingVocabItems(items) {
@@ -2779,6 +3011,98 @@
         if (!list) return;
         list.innerHTML = myWordsListHtml();
         bindMyWordActions();
+        updateExportSelectionCount();
+    }
+
+    function shanghaiCalendarParts(value) {
+        var parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short'
+        }).formatToParts(value instanceof Date ? value : new Date(value));
+        var output = {};
+        parts.forEach(function(part) { if (part.type !== 'literal') output[part.type] = part.value; });
+        return output;
+    }
+
+    function wordMatchesExportRange(word, range) {
+        if (!range || range === 'all') return true;
+        var source = word && (word.activity_updated_at || word.last_added_at || word.created_at);
+        var date = source ? new Date(source) : null;
+        if (!date || isNaN(date.getTime())) return false;
+        var now = shanghaiCalendarParts(new Date());
+        var item = shanghaiCalendarParts(date);
+        if (range === 'year') return item.year === now.year;
+        if (range === 'month') return item.year === now.year && item.month === now.month;
+        if (range === 'week') {
+            var weekdayIndex = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+            var todayUtc = Date.UTC(Number(now.year), Number(now.month) - 1, Number(now.day));
+            var startUtc = todayUtc - (weekdayIndex[now.weekday] || 0) * 86400000;
+            var itemUtc = Date.UTC(Number(item.year), Number(item.month) - 1, Number(item.day));
+            return itemUtc >= startUtc && itemUtc <= todayUtc;
+        }
+        return true;
+    }
+
+    function exportRangeItems() {
+        return filteredVocabItems().filter(function(word) { return wordMatchesExportRange(word, state.vocabExportRange); });
+    }
+
+    function selectedExportItems() {
+        return (state.vocabItems || []).filter(function(word) {
+            return (word.status || 'active') === 'active' && state.vocabSelected[word.vocab_id];
+        });
+    }
+
+    function selectedExportFields() {
+        var fields = ['english'];
+        var root = document.getElementById('my-words-export-fields');
+        if (!root) return fields;
+        root.querySelectorAll('input[data-export-field]:checked').forEach(function(input) { fields.push(input.dataset.exportField); });
+        return fields;
+    }
+
+    function updateExportSelectionCount() {
+        var count = document.getElementById('my-words-selected-count');
+        var selected = selectedExportItems().length;
+        if (count) count.textContent = selected + ' selected';
+        ['my-words-export-excel', 'my-words-export-pdf'].forEach(function(id) {
+            var button = document.getElementById(id);
+            if (button) button.disabled = selected === 0;
+        });
+    }
+
+    function selectExportRange(range) {
+        state.vocabExportRange = range || 'all';
+        state.vocabSelected = {};
+        exportRangeItems().forEach(function(word) { state.vocabSelected[word.vocab_id] = true; });
+        document.querySelectorAll('[data-export-range]').forEach(function(button) {
+            button.classList.toggle('active', button.dataset.exportRange === state.vocabExportRange);
+        });
+        renderMyWordsList();
+    }
+
+    function renderExportFields() {
+        var root = document.getElementById('my-words-export-fields');
+        if (!root || !window.MrCatMyWordsExport) return;
+        var defaults = { chinese: true, part_of_speech: true, phonetic: true };
+        root.innerHTML = Object.keys(window.MrCatMyWordsExport.FIELD_DEFINITIONS).filter(function(field) { return field !== 'english'; }).map(function(field) {
+            return '<label><input type="checkbox" data-export-field="' + escapeHtml(field) + '"' + (defaults[field] ? ' checked' : '') + '><span>' + escapeHtml(window.MrCatMyWordsExport.FIELD_DEFINITIONS[field].label) + '</span></label>';
+        }).join('');
+    }
+
+    function setExportOpen(open) {
+        state.vocabExportOpen = Boolean(open);
+        if (!wordsExportTrigger || !wordsExportPanel) return;
+        if (open) {
+            setMyWordsToolOpen('add', false);
+            setMyWordsToolOpen('search', false);
+            selectExportRange(state.vocabExportRange || 'all');
+        }
+        wordsExportPanel.classList.toggle('open', open);
+        wordsExportPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (open) wordsExportPanel.removeAttribute('inert');
+        else wordsExportPanel.setAttribute('inert', '');
+        wordsExportTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        renderMyWordsList();
     }
 
     function setMyWordsToolOpen(tool, open) {
@@ -2787,7 +3111,10 @@
         var panel = isAdd ? wordsAddPanel : wordsSearchPanel;
         var input = isAdd ? wordsAddInput : wordsSearchInput;
         if (!trigger || !panel) return;
-        if (open) setMyWordsToolOpen(isAdd ? 'search' : 'add', false);
+        if (open) {
+            setMyWordsToolOpen(isAdd ? 'search' : 'add', false);
+            if (state.vocabExportOpen) setExportOpen(false);
+        }
         panel.classList.toggle('open', open);
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
         if (open) panel.removeAttribute('inert');
@@ -2812,10 +3139,11 @@
     function closeMyWordsTools() {
         setMyWordsToolOpen('add', false);
         setMyWordsToolOpen('search', false);
+        setExportOpen(false);
     }
 
     function setMyWordsToolbarAvailable(available) {
-        [wordsSearchTrigger, wordsAddTrigger, wordsSearchInput, wordsAddInput].forEach(function(control) {
+        [wordsSearchTrigger, wordsAddTrigger, wordsExportTrigger, wordsSearchInput, wordsAddInput].forEach(function(control) {
             if (control) control.disabled = !available;
         });
         if (!available) closeMyWordsTools();
@@ -2827,6 +3155,29 @@
         });
         if (wordsAddTrigger) wordsAddTrigger.addEventListener('click', function() {
             setMyWordsToolOpen('add', wordsAddTrigger.getAttribute('aria-expanded') !== 'true');
+        });
+        if (wordsExportTrigger) wordsExportTrigger.addEventListener('click', function() {
+            setExportOpen(wordsExportTrigger.getAttribute('aria-expanded') !== 'true');
+        });
+        renderExportFields();
+        document.querySelectorAll('[data-export-range]').forEach(function(button) {
+            button.addEventListener('click', function() { selectExportRange(button.dataset.exportRange); });
+        });
+        var selectAll = document.getElementById('my-words-select-all');
+        if (selectAll) selectAll.addEventListener('click', function() {
+            var items = exportRangeItems();
+            var allSelected = items.length && items.every(function(word) { return state.vocabSelected[word.vocab_id]; });
+            items.forEach(function(word) { state.vocabSelected[word.vocab_id] = !allSelected; });
+            renderMyWordsList();
+        });
+        var excel = document.getElementById('my-words-export-excel');
+        if (excel) excel.addEventListener('click', function() {
+            window.MrCatMyWordsExport.downloadExcel(selectedExportItems(), selectedExportFields());
+        });
+        var pdf = document.getElementById('my-words-export-pdf');
+        if (pdf) pdf.addEventListener('click', function() {
+            try { window.MrCatMyWordsExport.printPdf(selectedExportItems(), selectedExportFields()); }
+            catch (error) { alert(error.message); }
         });
         if (wordsSearchInput) wordsSearchInput.addEventListener('input', function() {
             state.vocabSearch = wordsSearchInput.value;
@@ -3111,7 +3462,7 @@
             window.MrCatCloud.callFunction('studentVocabulary', {
                 action: 'list',
                 status: 'active',
-                limit: 100
+                limit: 200
             }).catch(function() {
                 return { success: false, words: [] };
             })

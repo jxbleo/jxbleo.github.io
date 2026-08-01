@@ -342,6 +342,28 @@ My Words:
   only after expansion. Search includes the dictionary fields.
 - does not expose New/Learning/Mastered states, due filters, reveal-and-rate
   review, or any other review controls in the student interface.
+- lets the student edit only the English word or phrase through an inline
+  Cancel/Done state. Dictionary details remain read-only and are looked up
+  again after the edit. A separate personal Note accepts up to 500 characters.
+- shows a conservative `Base: <headword>` recommendation only for
+  high-confidence regular inflections. When both forms already exist, the
+  recommendation opens a Merge Group sheet with explicit per-card checkboxes.
+  The selected base form becomes the surviving card; merged notes retain
+  `[original form]` labels, examples retain their original form and source,
+  and a compact 10-second Undo toast follows success.
+- provides an Export panel inside My Words. All active words begin selected;
+  This Week, This Month, and This Year replace the selection using Shanghai
+  calendar boundaries, while individual row checkboxes allow manual changes.
+  English is always exported. Chinese, POS, phonetic, English definition,
+  source, saved example/context, Note, and saved date are optional columns;
+  Chinese, POS, and phonetic start enabled. Excel downloads `.xlsx`; PDF opens
+  a print-ready table so the student can save it as PDF. The final PDF visual
+  treatment remains intentionally provisional for later owner review.
+- when dictionary enrichment confirms no result, offers a bounded AI lookup.
+  The student reviews up to three senses before confirming the shared draft.
+  AI drafts display `AI-generated · Not reviewed by teacher` and a Report
+  action. The first confirmed draft is reused by all students; teacher review
+  replaces the same current card rather than adding another visible version.
 - saving is immediate. A cache miss shows `Finding definition and part of
   speech...` while backend enrichment continues; a confirmed miss offers a
   quiet Retry action. Lookup failure never removes the saved word.
@@ -355,6 +377,17 @@ My Words:
 - `my-words-modal-preview.html` is an isolated static design reference for this
   compact modal. It is not linked from production navigation, must not call
   CloudBase or contain real student data, and is not a second My Words runtime.
+
+Teacher Dictionary workspace:
+
+- opens from the teacher header and separates `Missing`, `AI Drafts`,
+  `Reported`, and `Reviewed` queues.
+- edits the shared entry only. The teacher may start from an AI draft, revise
+  it, and publish one reviewed current version; previous versions stay hidden
+  in backend history.
+- keeps personal student data in a separate read-only Student Vocabulary view.
+  A teacher may see each student's full saved words, sources, contexts, and
+  Notes but cannot silently edit those personal records.
 
 Student account menu:
 

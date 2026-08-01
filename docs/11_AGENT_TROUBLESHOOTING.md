@@ -37,6 +37,9 @@
 | 学生铃铛有红色数字但 `THIS WEEK` / `OVERDUE` 都为空 | 旧静态代码仍把所有 `to_do`（包括未来作业）计入红点，或旧 assignment 尚未补齐 `due_at` | 发布最新 Dashboard/Teacher 静态文件与 `getDashboard`/`teacherAdmin`；dry-run `backfillAssignmentDueWeeks`，确认未来任务只在 Upcoming 且不计红点 |
 | 学生从 Library 完成已布置任务但老师 View matrix 不统计 | 旧版 `submitAttempt` 把无 `assignment_id` 的提交记为 self-study | 部署最新版 `submitAttempt`；检查 attempt 是否有 assignment_id |
 | 学生从 BBC Library 打开已做过的题但 History 显示没有记录 | BBC 页只看 URL 的 `history`/`prefill` 参数，Library 卡片没有传历史 attempt | 部署最新版 `getDashboard` 和静态 `bbc.html`；确认 `getLatestAttemptForSet` 能返回当前学生自己的 attempt |
+| My Words 可以普通查词，但 AI Lookup 提示未配置 | 两个云函数缺少一个或多个 `VOCAB_AI_*` 环境变量，或 URL 不是 HTTPS | 同时检查 `studentVocabulary` 与 `teacherAdmin` 的 `VOCAB_AI_API_URL`、`VOCAB_AI_API_KEY`、`VOCAB_AI_MODEL`；不要把密钥放进前端 |
+| 学生已确认 AI 草稿，老师 Dictionary 看不到或无法发布 | 新集合未创建、仍非 `ADMINONLY`，或线上 `teacherAdmin` / `studentVocabulary` 版本不一致 | 创建 `vocabulary_lexicon_history`、`vocabulary_dictionary_reports`，部署同一提交打包出的两个 ZIP，并检查 normalized word 当前记录 |
+| My Words 时间筛选看起来被后台查词改变 | 旧代码错误使用 `updated_at` 而不是学生活动时间 | 发布最新静态与 `studentVocabulary`；确认筛选优先读取 `activity_updated_at`，后台 enrich 不更新它 |
 | BBC History 分数已按 Argue 修正但题目仍显示黄色/错误 | 历史渲染时旧的 `wrong`、blank lock、MC lock class 覆盖了服务器返回的 adjusted correct 状态 | 发布最新版静态 `bbc.html`；查 `markHistoryReview` 是否先清理相反状态再加 `correct/wrong` |
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
 | 教师矩阵单格 Edit 或 Wxx 批量无法打开编辑器，或保存后参数不变并提示更新 0 条 | 动态矩阵/独立 modal root 中的按钮失去原容器监听；或旧 assignment 的 stable ID 是文档 `_id`，旧后端却只按 `assignment_id` 字段查询 | 发布使用 delegated edit handler 的静态 `teacher.js`，并部署兼容 stable ID 的最新版 `teacherAdmin`；无需迁移 assignments |

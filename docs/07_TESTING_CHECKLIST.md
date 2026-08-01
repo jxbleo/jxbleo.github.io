@@ -853,6 +853,26 @@ Check:
   production Dashboard or Library navigation
 - the student My Words interface contains no Today/New/Learning/Mastered
   filters, due review, Reveal, Forgot, A little, or Know controls
+- editing changes only the English word/phrase, re-runs dictionary lookup, and
+  leaves dictionary fields read-only; Note accepts at most 500 characters
+- regular high-confidence forms such as `worked` can show `Base: work`, while
+  ambiguous or irregular candidates are not guessed automatically
+- selecting a base-form recommendation when both cards exist opens a Merge
+  Group selector; only checked cards merge, examples preserve original forms,
+  Notes receive original-form labels, and Undo restores all cards within 10 seconds
+- export starts with all active words selected; Shanghai This Week/Month/Year
+  replace the selection using `activity_updated_at`, and manual checkboxes can
+  adjust it afterward
+- `.xlsx` output is a valid OpenXML ZIP and preserves English/Chinese/Note text;
+  PDF opens a printable table containing only the selected rows and fields
+- a confirmed dictionary miss can request AI at most ten times per Shanghai
+  day; the prompt contains only the word and one context, never student identity
+  or Note, and no shared draft is written before preview confirmation
+- the first confirmed AI result becomes the one shared unreviewed record;
+  another student reuses it, and teacher publication replaces it while creating
+  private history and resolving open reports
+- the teacher Dictionary workspace separates Missing, AI Drafts, Reported, and
+  Reviewed; Student Vocabulary is a separate read-only view with student identity
 - BBC, IELTS Reading, IELTS Listening, Vocabulary, Dashboard, and Attempt
   Review load the same cache-versioned My Words selection script
 
@@ -880,6 +900,8 @@ Before saying a deploy is complete:
 - changed cloud functions have rebuilt ZIPs
 - CloudBase development functions are uploaded
 - required collections exist and are `ADMINONLY`
+- `vocabulary_lexicon_history` and `vocabulary_dictionary_reports` exist and
+  remain `ADMINONLY` before deploying the new dictionary actions
 - cache query strings are bumped for changed shared JS
 - at least one development account flow is tested
 

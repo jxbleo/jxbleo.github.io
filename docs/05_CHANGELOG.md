@@ -3,6 +3,29 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-01
+
+### Added
+
+- Added student My Words editing, personal Notes, conservative base-form
+  recommendations, explicit multi-card merge with preserved examples/combined
+  Notes, and a 10-second undo.
+- Added Word List export selection by Shanghai natural week/month/year or
+  manual checkboxes, with configurable fields and `.xlsx` or print-to-PDF
+  table output.
+- Added the bounded AI fallback for confirmed dictionary misses. Students
+  preview before publishing the first shared AI draft; teachers can review and
+  replace the current shared entry from a new Dictionary workspace, while old
+  versions remain in private history.
+- Added teacher read-only access to individual student My Words data and a
+  review queue for missing, AI-draft, reported, and reviewed shared entries.
+
+### Changed
+
+- My Words export dates now use student activity timestamps rather than
+  background dictionary-enrichment timestamps. Familiarity-based filters and
+  vocabulary Practice export remain deferred.
+
 ## 2026-07-31
 
 ### Changed

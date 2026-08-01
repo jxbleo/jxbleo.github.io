@@ -6,6 +6,11 @@ const db = app.database();
 const envId = process.env.TENCENTCLOUD_TCB_ENVID || "mrcat-dev-d9gwy2v1icdfdf597";
 const manager = CloudBaseManager.init({ envId });
 const READ_PAGE_LIMIT = 500;
+const VOCAB_ITEM_COLLECTION = "student_vocabulary_items";
+const LEXICON_COLLECTION = "vocabulary_lexicon";
+const LEXICON_HISTORY_COLLECTION = "vocabulary_lexicon_history";
+const DICTIONARY_REPORT_COLLECTION = "vocabulary_dictionary_reports";
+const AI_LOOKUP_TIMEOUT_MS = 15000;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -66,6 +71,50 @@ async function getPage(collection, options = {}) {
 
 function normalized(value) {
   return text(value).toLowerCase().replace(/\s+/g, " ");
+}
+
+function compact(value, limit) {
+  return String(value == null ? "" : value).replace(/\s+/g, " ").trim().slice(0, limit);
+}
+
+function lexiconPublicView(item) {
+  if (!item) return null;
+  return {
+    lexicon_id: item.lexicon_id || "",
+    normalized_word: item.normalized_word || "",
+    word: item.word || "",
+    phonetic: item.phonetic || "",
+    part_of_speech: item.part_of_speech || "",
+    english_definition: item.english_definition || "",
+    chinese_meaning: item.chinese_meaning || "",
+    word_forms: item.word_forms || "",
+    senses: Array.isArray(item.senses) ? item.senses.slice(0, 8) : [],
+    source_type: item.source_type || "",
+    source_name: item.source_name || "",
+    verified: item.verified === true,
+    review_status: item.review_status || (item.verified === true ? "reviewed" : "external"),
+    created_at: item.created_at || null,
+    updated_at: item.updated_at || null,
+  };
+}
+
+function vocabularyItemTeacherView(item, lexicon) {
+  return {
+    vocab_id: item.vocab_id || "",
+    text: item.text || "",
+    normalized_text: item.normalized_text || "",
+    status: item.status || "active",
+    personal_note: item.personal_note || "",
+    source_set_id: item.source_set_id || null,
+    source_title: item.source_title || "",
+    source_path: item.source_path || "",
+    context: item.context || "",
+    saved_examples: Array.isArray(item.saved_examples) ? item.saved_examples.slice(0, 40) : [],
+    times_added: Number(item.times_added || 1),
+    activity_updated_at: item.activity_updated_at || item.last_added_at || item.created_at || null,
+    created_at: item.created_at || null,
+    dictionary: lexiconPublicView(lexicon),
+  };
 }
 
 function answerList(value) {
@@ -2204,6 +2253,194 @@ async function resolveDispute(event, teacher) {
   return { success: true };
 }
 
+async function lexiconByNormalizedWords(words) {
+  const values = Array.from(new Set((words || []).filter(Boolean)));
+  const output = {};
+  const command = db.command;
+  for (let index = 0; index < values.length; index += 10) {
+    const result = await db.collection(LEXICON_COLLECTION).where({
+      normalized_word: command.in(values.slice(index, index + 10)),
+    }).limit(100).get();
+    (result.data || []).forEach((item) => { output[item.normalized_word] = item; });
+  }
+  return output;
+}
+
+async function getStudentVocabulary(event) {
+  const authUid = text(event.auth_uid);
+  const student = await getOne("students", { auth_uid: authUid });
+  if (!student || isDeletedStudent(student) || student.role === "teacher") throw new Error("STUDENT_NOT_FOUND");
+  const items = await getAll(VOCAB_ITEM_COLLECTION, { where: { student_uid: authUid }, orderBy: { field: "updated_at", direction: "desc" } });
+  const lexicon = await lexiconByNormalizedWords(items.map((item) => item.normalized_text));
+  return {
+    success: true,
+    student: studentView(student),
+    words: items.map((item) => vocabularyItemTeacherView(item, lexicon[item.normalized_text])),
+  };
+}
+
+async function listDictionaryWorkspace() {
+  const [items, lexiconRows, reports] = await Promise.all([
+    getAll(VOCAB_ITEM_COLLECTION, { where: { status: "active" } }),
+    getAll(LEXICON_COLLECTION, { orderBy: { field: "updated_at", direction: "desc" } }),
+    getAll(DICTIONARY_REPORT_COLLECTION, { where: { status: "open" }, orderBy: { field: "updated_at", direction: "desc" } }).catch(() => []),
+  ]);
+  const lexicon = {};
+  lexiconRows.forEach((item) => { lexicon[item.normalized_word] = item; });
+  const aggregates = {};
+  items.forEach((item) => {
+    const key = item.normalized_text;
+    if (!key) return;
+    if (!aggregates[key]) aggregates[key] = { student_uids: new Set(), first_seen_at: item.created_at, last_seen_at: item.activity_updated_at || item.last_added_at || item.updated_at };
+    aggregates[key].student_uids.add(item.student_uid);
+    const first = new Date(aggregates[key].first_seen_at || 0).getTime();
+    const created = new Date(item.created_at || 0).getTime();
+    if (!first || (created && created < first)) aggregates[key].first_seen_at = item.created_at;
+    const last = new Date(aggregates[key].last_seen_at || 0).getTime();
+    const nextLast = item.activity_updated_at || item.last_added_at || item.updated_at;
+    if (new Date(nextLast || 0).getTime() > last) aggregates[key].last_seen_at = nextLast;
+  });
+  const reportsByWord = reports.reduce((map, report) => {
+    const key = report.normalized_word || "";
+    if (!map[key]) map[key] = [];
+    map[key].push({ report_id: report._id, reason: report.reason || "", student_id_snapshot: report.student_id_snapshot || "", created_at: report.created_at || null });
+    return map;
+  }, {});
+  const words = Array.from(new Set([...Object.keys(aggregates), ...Object.keys(lexicon)])).map((key) => {
+    const shared = lexicon[key];
+    const aggregate = aggregates[key] || { student_uids: new Set() };
+    const reportItems = reportsByWord[key] || [];
+    let category = "reviewed";
+    if (!shared) category = "missing";
+    else if (reportItems.length) category = "reported";
+    else if (shared.review_status === "ai_draft" || shared.source_type === "ai_draft") category = "ai_drafts";
+    return {
+      normalized_word: key,
+      word: shared && shared.word || key,
+      category,
+      student_count: aggregate.student_uids.size,
+      first_seen_at: aggregate.first_seen_at || null,
+      last_seen_at: aggregate.last_seen_at || null,
+      reports: reportItems,
+      dictionary: lexiconPublicView(shared),
+    };
+  }).sort((a, b) => String(a.word).localeCompare(String(b.word)));
+  return { success: true, words };
+}
+
+function dictionaryPayload(event, normalizedWord) {
+  const senses = (Array.isArray(event.senses) ? event.senses : []).slice(0, 8).map((sense) => ({
+    part_of_speech: compact(sense.part_of_speech, 80),
+    english_definition: compact(sense.english_definition, 500),
+    chinese_meaning: compact(sense.chinese_meaning, 300),
+  })).filter((sense) => sense.english_definition || sense.chinese_meaning);
+  const englishDefinition = compact(event.english_definition || (senses[0] && senses[0].english_definition), 500);
+  const chineseMeaning = compact(event.chinese_meaning || (senses[0] && senses[0].chinese_meaning), 300);
+  if (!englishDefinition || !chineseMeaning) throw new Error("DICTIONARY_FIELDS_REQUIRED");
+  return {
+    word: compact(event.word || normalizedWord, 120),
+    normalized_word: normalizedWord,
+    phonetic: compact(event.phonetic, 120),
+    part_of_speech: compact(event.part_of_speech || (senses[0] && senses[0].part_of_speech), 120),
+    english_definition: englishDefinition,
+    chinese_meaning: chineseMeaning,
+    word_forms: compact(event.word_forms, 300),
+    senses,
+  };
+}
+
+async function saveDictionaryEntry(event, teacher) {
+  const normalizedWord = normalized(event.normalized_word || event.word).slice(0, 160);
+  if (!normalizedWord) throw new Error("DICTIONARY_WORD_REQUIRED");
+  const payload = dictionaryPayload(event, normalizedWord);
+  const existing = await getOne(LEXICON_COLLECTION, { normalized_word: normalizedWord });
+  const now = new Date();
+  if (existing) {
+    await db.collection(LEXICON_HISTORY_COLLECTION).add({
+      lexicon_id: existing.lexicon_id || existing._id,
+      normalized_word: normalizedWord,
+      before: lexiconPublicView(existing),
+      changed_by_teacher_uid: teacher.auth_uid,
+      changed_at: now,
+    });
+    await db.collection(LEXICON_COLLECTION).doc(existing._id).update({
+      ...payload,
+      source_type: "teacher",
+      source_name: "Mr. Cat Academy teacher",
+      sources: ["Mr. Cat Academy teacher"],
+      verified: true,
+      review_status: "reviewed",
+      reviewed_by_teacher_uid: teacher.auth_uid,
+      reviewed_at: now,
+      updated_at: now,
+    });
+  } else {
+    const crypto = require("crypto");
+    await db.collection(LEXICON_COLLECTION).add({
+      ...payload,
+      lexicon_id: `lex_${crypto.createHash("sha256").update(normalizedWord).digest("hex").slice(0, 32)}`,
+      source_type: "teacher",
+      source_name: "Mr. Cat Academy teacher",
+      sources: ["Mr. Cat Academy teacher"],
+      verified: true,
+      review_status: "reviewed",
+      reviewed_by_teacher_uid: teacher.auth_uid,
+      reviewed_at: now,
+      created_at: now,
+      updated_at: now,
+    });
+  }
+  const openReports = await getAll(DICTIONARY_REPORT_COLLECTION, { where: { normalized_word: normalizedWord, status: "open" } }).catch(() => []);
+  for (const report of openReports) {
+    await db.collection(DICTIONARY_REPORT_COLLECTION).doc(report._id).update({ status: "resolved", resolved_at: now, resolved_by_teacher_uid: teacher.auth_uid, updated_at: now });
+  }
+  return { success: true, dictionary: lexiconPublicView(await getOne(LEXICON_COLLECTION, { normalized_word: normalizedWord })) };
+}
+
+function jsonFromTeacherAi(value) {
+  const source = String(value || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  const start = source.indexOf("{");
+  const end = source.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("AI_RESPONSE_INVALID");
+  return JSON.parse(source.slice(start, end + 1));
+}
+
+async function draftDictionaryWithAi(event) {
+  const word = compact(event.word || event.normalized_word, 120);
+  if (!word) throw new Error("DICTIONARY_WORD_REQUIRED");
+  const url = text(process.env.VOCAB_AI_API_URL);
+  const key = text(process.env.VOCAB_AI_API_KEY);
+  const model = text(process.env.VOCAB_AI_MODEL);
+  if (!url || !key || !model || !/^https:\/\//i.test(url)) throw new Error("AI_NOT_CONFIGURED");
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), AI_LOOKUP_TIMEOUT_MS);
+  let response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model,
+        temperature: 0.2,
+        messages: [
+          { role: "system", content: "Create a concise learner dictionary entry. Return JSON only with word, phonetic, part_of_speech, english_definition, chinese_meaning, word_forms, and senses (up to 3 objects). No markdown." },
+          { role: "user", content: `Word or phrase: ${word}` },
+        ],
+      }),
+    });
+  } catch (_error) {
+    throw new Error("AI_LOOKUP_FAILED");
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!response.ok) throw new Error(`AI_HTTP_${response.status}`);
+  const payload = await response.json();
+  const content = payload && payload.choices && payload.choices[0] && payload.choices[0].message && payload.choices[0].message.content;
+  const draft = jsonFromTeacherAi(content);
+  return { success: true, draft: dictionaryPayload(draft, normalized(word)) };
+}
+
 exports.main = async (event) => {
   try {
     const teacher = await getAuthenticatedTeacher();
@@ -2236,6 +2473,10 @@ exports.main = async (event) => {
     if (action === "backfillAssignmentDueWeeks") {
       return await backfillAssignmentDueWeeks(event, teacher);
     }
+    if (action === "getStudentVocabulary") return await getStudentVocabulary(event);
+    if (action === "listDictionaryWorkspace") return await listDictionaryWorkspace();
+    if (action === "saveDictionaryEntry") return await saveDictionaryEntry(event, teacher);
+    if (action === "draftDictionaryWithAi") return await draftDictionaryWithAi(event);
     throw new Error("UNKNOWN_ACTION");
   } catch (error) {
     console.error("teacherAdmin failed", error);
@@ -2248,6 +2489,16 @@ exports.main = async (event) => {
           ? "This Login ID already exists. Please use a different ID."
           : error.message === "STUDENT_NAME_REQUIRED"
             ? "Student name is required."
+          : error.message === "STUDENT_NOT_FOUND"
+            ? "This student profile was not found."
+          : error.message === "DICTIONARY_FIELDS_REQUIRED"
+            ? "Chinese meaning and English definition are required."
+          : error.message === "DICTIONARY_WORD_REQUIRED"
+            ? "A word or phrase is required."
+          : error.message === "AI_NOT_CONFIGURED"
+            ? "AI dictionary help is not configured yet."
+          : error.message === "AI_LOOKUP_FAILED" || error.message === "AI_RESPONSE_INVALID" || /^AI_HTTP_/.test(error.message || "")
+            ? "AI dictionary help is unavailable right now."
           : error.message === "MASTERY_REQUIRED"
             ? "Mastery percentage is required when Earn STAR is enabled."
             : error.message === "DUE_WEEK_REQUIRED"
