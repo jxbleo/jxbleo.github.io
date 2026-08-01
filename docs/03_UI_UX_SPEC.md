@@ -406,6 +406,26 @@ Student account menu:
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
 - assignment reminders and finished work share the To Do List dialog.
+- the account summary shows one clickable yellow STAR counter containing the
+  current Available STAR Balance. It does not show a separate Blue counter.
+- activating the yellow counter dismisses Personal Center and opens an
+  independent `My STARs` modal. The header shows Available and Lifetime earned;
+  a single newest-first list mixes Yellow and Blue STARs with color, score,
+  threshold/conversion state, and All / Yellow / Blue filters. Back restores
+  Personal Center and counter focus; the external Close capsule returns to the
+  Dashboard.
+- My STARs contains Cash and Gifts destinations. Gifts is disabled with
+  `Coming soon`. Cash never displays a money amount or exchange rate. It uses a
+  whole-number slider whose positions are `1..available`; zero balance disables
+  submission. An existing open Cash Request replaces the new-request form.
+- Cash Request cards show Awaiting proof, Awaiting teacher, Completed, Rejected,
+  Cancelled, Expired, or Refunded. Result changes create an unread badge inside
+  My STARs. Students may cancel before completion and may upload evidence before
+  completion, but each student has only one open request.
+- the evidence control accepts camera capture or a private image selection,
+  previews upload progress, and shows all active/superseded evidence in request
+  history. It explains that either the student or teacher may upload the proof;
+  no photo is presented as teacher identity authentication.
 - Teacher Replies uses a separate plain speech-bubble SVG button immediately to
   the right of the main Dashboard's To Do List button. The default To Do List
   dialog and focused This Week/Upcoming task-list dialogs omit this control.
@@ -428,6 +448,20 @@ and success dialogs freeze the workspace at its current document position for
 wheel, trackpad, and touch input. An internal modal scroller remains usable.
 Stacked dialogs keep the lock until the final modal closes, then restore the
 exact pre-modal page position.
+
+The top-right Teacher utility group adds a yellow STAR button beside
+Notifications. Its red badge counts every `awaiting_proof` and
+`awaiting_teacher` Cash Request. Activating it opens an independent
+`STAR Redemption` utility modal, locks the page, and restores button focus on
+close. Pending requests sort oldest-first; History is newest-first.
+
+Each request row shows student, yellow STAR count, request time, status, and
+evidence readiness. Detail view can open authorized evidence, append teacher
+evidence, reject with a required reason, or confirm `Cash given`. Confirmation
+is disabled until at least one active Evidence Photo exists, and completing it
+requires a second compact confirmation. Completed entries are immutable;
+correction uses a reasoned Refund action that returns STAR credit without
+editing the old request or evidence.
 
 The teacher page uses one spatial workspace with a horizontal segmented
 navigation row at the top on desktop, iPad/tablet, and mobile. It must not move

@@ -732,7 +732,7 @@ function testAccountStarHistoryModel() {
   hooks.state.starAchievements = [
     {
       achievement_id: "star-blue",
-      star_type: "self_study",
+      star_type: "blue",
       set_id: "BBC-260101",
       assignment_id: null,
       earned_at: "2026-07-26T04:00:00.000Z",
@@ -742,7 +742,7 @@ function testAccountStarHistoryModel() {
     },
     {
       achievement_id: "star-yellow",
-      star_type: "assignment",
+      star_type: "yellow",
       set_id: "NGSL-A",
       assignment_id: "assignment-yellow",
       earned_at: "2026-07-25T04:00:00.000Z",
@@ -752,8 +752,8 @@ function testAccountStarHistoryModel() {
     },
   ];
 
-  assert.equal(hooks.accountStarItems("self_study").length, 1);
-  assert.equal(hooks.accountStarItems("assignment")[0].assignment_id, "assignment-yellow");
+  assert.equal(hooks.accountStarItems("blue").length, 1);
+  assert.equal(hooks.accountStarItems("yellow")[0].assignment_id, "assignment-yellow");
   const blueRow = hooks.accountStarHistoryRow(hooks.state.starAchievements[0]);
   assert(blueRow.includes("Blue source"));
   assert(blueRow.includes("history=attempt-blue"));
@@ -887,6 +887,42 @@ async function main() {
   assert.equal(created.due_at.toISOString(), "2026-08-09T15:59:59.000Z");
   assert.equal(legacyDocumentIdAssignment.due_at.toISOString(), "2026-08-09T15:59:59.000Z");
 
+  collections.student_set_achievements.push({
+    _id: "blue-before-earned-star",
+    achievement_id: "student-uid::TEST-SET::blue",
+    student_uid: "student-uid",
+    student_id_snapshot: "student-login",
+    set_id: "TEST-SET",
+    assignment_id: null,
+    star_type: "blue",
+    source: "self_study",
+    status: "active",
+    best_percentage: 95,
+    best_attempt_id: "missing-but-snapshotted-attempt",
+    first_earned_at: new Date("2026-07-01T10:00:00.000Z"),
+  });
+  const enableEarnStar = await call("updateAssignments", {
+    assignment_ids: [created.assignment_id],
+    passing_percentage: 75,
+    mastery_percentage: 95,
+    mastery_enabled: true,
+  });
+  assert.equal(enableEarnStar.success, true);
+  assert.equal(created.status, "mastered", "enabling Earn STAR immediately compares the Blue snapshot");
+  assert.equal(collections.student_set_achievements.find((item) => item._id === "blue-before-earned-star").status, "converted");
+  assert.equal(collections.student_set_achievements.filter((item) => item.set_id === "TEST-SET" && item.star_type === "yellow").length, 1);
+  collections.student_set_achievements = collections.student_set_achievements.filter((item) => item.set_id !== "TEST-SET");
+  Object.assign(created, {
+    status: "to_do",
+    mastery_enabled: false,
+    mastery_percentage: 90,
+    completed_at: null,
+    mastered_at: null,
+    best_percentage: null,
+    raw_best_percentage: null,
+    best_attempt_id: null,
+  });
+
   console.error = () => {};
   const invalidEnabledMasteryUpdate = await call("updateAssignments", {
     assignment_ids: [created.assignment_id],
@@ -961,9 +997,9 @@ async function main() {
   assert.equal(dashboardResult.assignments.length, expectedDashboardAssignmentCount);
   assert.equal(Number(collectionReadCounts.sets || 0) - setReadsBeforeDashboard, 1);
   assert.equal(dashboardResult.star_achievements.length, 2);
-  assert.equal(dashboardResult.star_achievements[0].star_type, "self_study");
+  assert.equal(dashboardResult.star_achievements[0].star_type, "blue");
   assert.equal(dashboardResult.star_achievements[0].set.title, "Self-study history set");
-  assert.equal(dashboardResult.star_achievements[1].star_type, "assignment");
+  assert.equal(dashboardResult.star_achievements[1].star_type, "yellow");
   assert.equal(dashboardResult.star_achievements[1].assignment_id, "history-assignment-0");
   const legacyDashboardAssignment = dashboardResult.assignments.find((item) => item.assignment_id === "legacy-assignment");
   assert.equal(new Date(legacyDashboardAssignment.due_at).toISOString(), "2026-06-21T15:59:59.000Z");

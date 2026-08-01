@@ -90,9 +90,14 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 点击右上角姓名打开居中的独立 Personal Center；它使用与 To Do List、日历、
   生词本一致的苹果式厚玻璃卡片和柔和暗化背景。卡片不显示右上角叉号，唯一的
   `Close` 胶囊独立位于卡片外部正下方；背景点击和 Escape 也可关闭并恢复焦点
-- Personal Center 姓名右侧的黄色 assignment STAR 和蓝色 self-study STAR 均可
-  点击；在同一张卡片内按最新获得时间显示对应任务、获得日期和历史最高分，
-  每条记录可进入关联的最佳历史 attempt。Back 返回账户摘要并把焦点还给原星星
+- Personal Center 姓名右侧只显示当前可兑换的黄色 STAR 余额。点击后在同一张
+  卡片内打开统一 `My STARs`，默认按最新获得时间混合显示黄色 assignment STAR、
+  蓝色 self-study STAR、转换状态、对应任务、获得日期和历史最高分，并提供
+  All / Yellow / Blue 筛选；每条记录可进入关联的最佳历史 attempt。Back 返回
+  账户摘要并把焦点还给黄色 STAR
+- `My STARs` 同时显示 Available、Lifetime earned 和 Cash requests。Cash 只选择
+  要兑换的整数黄色 STAR 数量，不显示或保存现金金额/汇率；Gifts 保留
+  `Coming soon` 不可用状态
 - `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊或
   `ASSIGNMENTS` 标题。`THIS WEEK`、`UPCOMING`、`FINISHED` 三栏标题居中、默认
   展开并可分别收起，向下滚动时依次吸顶并替换前一栏；标题右侧不显示数字计数。
@@ -452,31 +457,89 @@ flowchart TD
 
 ### 7.6 student_set_achievements
 
-用途：永久 STAR 记录。
+用途：稳定的蓝色自主学习成就和永久受保护的黄色任务 STAR 记录。
 
 核心字段：
 
 - `achievement_id`
 - `student_uid`
 - `set_id`
-- `assignment_id`，自主练习 STAR 为 `null`
+- `assignment_id`，蓝色自主练习 STAR 为 `null`
+- `star_type`：`yellow` 或 `blue`
 - `source`
-- `protected: true`
+- `status`：黄色为 `star`，蓝色为 `active` 或 `converted`
+- `protected`：黄色为 true，蓝色为 false
+- `reward_eligible`：只有黄色为 true
 - `first_earned_at`
 - `best_attempt_id`
 - `best_percentage`
+- `passing_percentage_snapshot`
+- `mastery_percentage_snapshot`
+- `converted_to_achievement_id` / `converted_from_achievement_id`
+- `converted_at`
 
 规则：
 
 - STAR 是后端事实，不能依赖 localStorage
-- STAR 一旦创建，普通业务不能删除、撤销或降级
-- 后续低分、改答案、改通过线都不能取消已有 STAR
-- assignment STAR 应按 `assignment_id` 记录
-- self-study STAR 用 `assignment_id: null`
+- 黄色 STAR 一旦创建，普通业务不能删除、撤销或降级；后续低分、改答案、改
+  通过线都不能取消
+- 新黄色 STAR 按 `student_uid + set_id` 终身唯一；历史上已经存在的同 set
+  assignment-keyed 重复黄色 STAR 保留并继续可兑换
+- 蓝色 STAR 按 `student_uid + set_id` 唯一、稳定且不可兑换；它只能从 `active`
+  变成 `converted`，不能被普通业务撤销
+- 已有黄色 STAR 的 set 后续自主学习只更新最佳成绩，不再创建蓝色 STAR
+- self-study 蓝色 STAR 使用 `assignment_id: null`，并保存获得时的默认 passing /
+  mastery 阈值快照
+- 只有 assignment 的 `mastery_enabled` 为 true 时，系统才把历史自主学习最高
+  分与该 assignment 的 `mastery_percentage`（STAR Rate）比较。达标时立即创建或
+  修复黄色 STAR，并把蓝色 STAR 标记为 converted；未开启 Earn STAR 时，即使
+  历史成绩为 100% 也不比较、不转换
 - Personal Center 的来源清单直接读取这些永久记录，不从 assignments 或
   localStorage 临时推导
-- 后续奖励兑换不得消耗或修改这些成就记录；兑换余额与支出必须使用独立的
-  append-only 交易流水，并通过 `achievement_id` 保留审计关系
+- 奖励兑换不得消耗或修改这些成就记录；兑换余额与支出使用独立的 append-only
+  交易流水，并通过具体 `achievement_id` 保留审计关系
+
+### 7.6a star_reward_ledger
+
+用途：黄色 STAR 钱包的只追加交易流水。
+
+规则：
+
+- 每个黄色 STAR 通过唯一 credit entry 产生一个可兑换额度
+- reserve 将具体 achievement IDs 从 available 移到 reserved
+- release 用于学生取消、老师拒绝或七天自动过期
+- redeem 在老师确认 Cash 已当面交付后把 reserved 转为 spent
+- refund 返还已兑换额度；不得修改或删除原 redeem entry
+- available / reserved / spent 全部由流水 delta 投影，浏览器不能提交余额
+
+### 7.6b star_redemption_requests
+
+用途：学生 Cash 兑换申请及其状态审计。
+
+规则：
+
+- 每个学生同时最多一笔 `awaiting_proof` 或 `awaiting_teacher` 申请
+- 创建申请时选择并冻结具体黄色 `achievement_id`，数量必须是 1 到当前
+  available balance 的整数
+- 不保存现金金额或兑换汇率
+- 状态为 `awaiting_proof`、`awaiting_teacher`、`completed`、`rejected`、
+  `cancelled`、`expired` 或 `refunded`
+- 至少一张已完成 Evidence Photo 后老师才能确认；确认需要第二次 UI 确认
+- 七天未完成自动 expired 并释放冻结；学生可在完成前取消；老师拒绝必须写原因
+- 完成后只能通过 refund 流水修正
+
+### 7.6c star_redemption_evidence
+
+用途：Cash 申请的私有永久图片凭证元数据。
+
+规则：
+
+- 学生或老师可在申请完成前上传；每笔至少一张、最多三张
+- 文件存放在私有 CloudBase Storage，单张原图最大 10 MB
+- 浏览器通过后端签发的单次上传元数据直传，后端在登记前校验路径、大小和类型
+- 错误图片不能覆盖或删除，只能标记 `superseded` 并追加新图片
+- 完成后学生不能追加；老师可追加更正凭证
+- 只有所属学生和 active teacher 可取得短期查看 URL
 
 ### 7.7 answer_disputes
 
@@ -627,6 +690,7 @@ flowchart TD
 - historical attempt review
 - claimStar 兼容兜底
 - dispute submit / list
+- STAR wallet summary、Cash requests、学生取消、凭证上传登记和未读状态
 
 要求：
 
@@ -699,6 +763,8 @@ flowchart TD
 - write grading key history
 - 分开查看学生个人 My Words 数据与共享词典维护队列
 - 查看 Missing、AI Drafts、Reported、Reviewed 四类词条，使用 AI 起草并发布老师审核版本
+- list / confirm / reject / refund STAR Cash requests
+- 为 Cash request 签发老师凭证上传元数据并返回受权的短期凭证查看 URL
 
 要求：
 
@@ -847,22 +913,42 @@ sequenceDiagram
 
 STAR 是后端成就记录。
 
-创建时机：
+创建/转换时机：
 
-- assignment attempt 达到 mastery
-- self-study attempt 达到 mastery
+- 开启 Earn STAR 的 assignment attempt 达到 STAR Rate 时创建黄色 STAR
+- self-study attempt 达到当时默认 mastery 时创建蓝色 STAR
+- 老师后来为同 set 开启 Earn STAR 时，只用历史真实最高分对比新 assignment 的
+  STAR Rate；达标立即蓝转黄，未达标保留蓝星
 - dashboard 加载时发现历史 mastered attempt 但缺 STAR，可修复
 - Argue 改判后使某次 attempt 达到 mastery，也应创建或修复 STAR；如果
   assignment 已经因 reveal answers 进入 `mastery_locked`，则只修分和
   passed 状态，不绕过锁升级为 mastered / STAR
 
-保护规则：
+保护与唯一性规则：
 
 - STAR 不因后续低分取消
 - STAR 不因 reveal answers 取消
 - STAR 不因修改通过线取消
 - STAR 不因答案规则变化取消
 - 只能改进 best attempt 和 best percentage
+- 新黄色 STAR 每 student + set 终身最多一颗；重新布置仍可完成/mastered，但不
+  再产生同 set 的新黄色 STAR
+- 蓝色 STAR 不可兑换、不会撤销，转换后保留历史但不再计入 active blue 数量
+- Cash 兑换只改变独立钱包流水，不改变 STAR 成就记录
+
+### 9.6a Cash Redemption
+
+```text
+学生选择 1..available 黄色 STAR -> reserve -> awaiting_proof
+上传至少一张私有凭证 -> awaiting_teacher
+老师查看并二次确认 -> redeem -> completed
+学生取消 / 老师拒绝 / 七天过期 -> release
+老师纠错 -> refund
+```
+
+第一版只有当前唯一老师处理全部申请。Cash 金额和汇率完全在线下处理，系统只
+记录黄色 STAR 数量。Gifts 只显示未开放。多老师与学生绑定、按老师划分余额和
+审批权限留待未来关系模型实现。
 
 ### 9.7 Argue
 

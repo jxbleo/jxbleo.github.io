@@ -18,6 +18,7 @@ boundaries matter more than visual polish right now.
 - Server-side grading through CloudBase functions
 - Immutable countable attempts
 - Protected STAR/mastery records
+- Yellow-STAR Cash requests with private evidence and teacher confirmation
 - Personal My Words editing, Notes, merge suggestions, Excel/PDF word-list
   export, and a teacher-reviewed shared dictionary fallback
 

@@ -39,6 +39,9 @@ All project collections should remain `ADMINONLY`:
 - `grading_keys`
 - `system_config`
 - `student_set_achievements`
+- `star_reward_ledger`
+- `star_redemption_requests`
+- `star_redemption_evidence`
 - `answer_disputes`
 - `grading_key_history`
 - `student_vocabulary_items`
@@ -57,6 +60,9 @@ Recommended unique indexes where supported:
 - `vocabulary_lexicon.lexicon_id`
 - `vocabulary_lexicon.normalized_word`
 - `vocabulary_test_sessions.test_session_id`
+- `star_reward_ledger.ledger_id`
+- `star_redemption_requests.request_id`
+- `star_redemption_evidence.evidence_id`
 
 Recommended query index:
 
@@ -65,6 +71,10 @@ Recommended query index:
 - `vocabulary_dictionary_reports.status + updated_at`
 - `vocabulary_dictionary_reports.normalized_word + status`
 - `vocabulary_test_sessions.student_uid + status`
+- `star_reward_ledger.student_uid + created_at`
+- `star_redemption_requests.student_uid + status + created_at`
+- `star_redemption_requests.status + created_at`
+- `star_redemption_evidence.request_id + status + created_at`
 
 Create required collections before deploying functions that depend on them.
 
@@ -228,6 +238,68 @@ The second command changes the development CloudBase environment and remains
 owner-gated. No collection, data migration, or content import is required.
 After deployment, verify one student with both STAR colors and confirm each
 list item opens that student's linked historical attempt.
+
+### STAR Wallet and Cash Requests
+
+This release requires all three deployment tracks plus private Storage setup.
+
+1. Create `star_reward_ledger`, `star_redemption_requests`, and
+   `star_redemption_evidence` as `ADMINONLY`, then add the indexes listed above.
+2. Keep CloudBase Storage private. Do not expose a public bucket rule; evidence
+   reads must use server-authorized temporary URLs.
+3. Rebuild and deploy `getDashboard`, `teacherAdmin`, and `submitAttempt`:
+
+```bash
+npm run package:functions -- getDashboard teacherAdmin submitAttempt
+```
+
+4. Run the owner-gated STAR wallet migration in dry-run mode first. It reports
+   active Blue rows, Yellow credits, grandfathered duplicate Yellow rows, and
+   existing liability without changing CloudBase. Apply only after reviewing
+   that report. From an authenticated Teacher page browser console:
+
+```js
+await MrCatCloud.callFunction('teacherAdmin', {
+  action: 'migrateStarRewards'
+});
+```
+
+After the owner accepts the report, apply once:
+
+```js
+await MrCatCloud.callFunction('teacherAdmin', {
+  action: 'migrateStarRewards',
+  apply: true
+});
+```
+
+`teacherAdmin` currently has a 10-second execution timeout. An apply call can
+time out in the browser after completing only part of the idempotent migration.
+If that happens, do not infer success or failure from the browser error and do
+not inspect student payloads in broad logs. Run the dry run again: if either
+pending count remains non-zero, rerun apply; otherwise continue to verification.
+Use the supported CLS command for aggregate log checks:
+
+```bash
+tcb logs search -e mrcat-dev-d9gwy2v1icdfdf597 \
+  -q 'function_name:"teacherAdmin" AND "credits_created"' \
+  -t 30m --sort desc --json
+```
+
+Rerun the dry run afterward; `credits_created` and
+`converted_blue_created` should both be `0`.
+5. Publish versioned `dashboard.html`, `teacher.html`, `assets/js/dashboard.js`,
+   `assets/js/teacher.js`, `assets/js/cloudbase-client.js`, and `assets/css/app.css`.
+
+Deploy in that exact order. New functions tolerate a temporarily unavailable
+wallet projection for learning flows, but Cash must remain disabled until the
+collections, indexes, migration, functions, and private Storage policy are all
+ready. No cash amount or exchange-rate configuration is required.
+
+After deployment, verify one student with Yellow and Blue history, one legacy
+duplicate Yellow case if present, request creation/reservation, student and
+teacher evidence upload, teacher reject/confirm, seven-day expiry logic with a
+test timestamp, Refund, unread state, and double-click/idempotent retries.
 
 ### Teacher Matrix Assignment-Parameter Compatibility Fix
 
@@ -499,6 +571,8 @@ Student flow:
 - personal My Words save works only for logged-in students
 - My Words edit, Note, merge/undo, time/manual selection, Excel, and print-to-PDF work
 - a missing word shows the configured AI preview flow or a clear not-configured error
+- Personal Center shows Available Yellow STAR balance and unified My STARs
+- Cash request reserve/cancel/evidence/status flows work without displaying money
 
 Teacher flow:
 
@@ -511,6 +585,8 @@ Teacher flow:
 - Dictionary queues load; publishing creates private lexicon history and updates
   the one current shared entry
 - Student detail My Words view is complete and read-only
+- Teacher STAR badge counts all pending Cash requests; confirm/reject/refund and
+  private evidence history work
 
 Data flow:
 
@@ -518,6 +594,7 @@ Data flow:
 - `.cloudbase-private/` remains ignored
 - `sets` and `grading_keys` exact `set_id` records exist
 - browser does not directly access `ADMINONLY` collections
+- evidence file IDs are not permanent public URLs and Storage remains private
 
 ## 10. Rollback and Risk Notes
 

@@ -3,16 +3,17 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
-## 2026-07-26: Keep STAR Provenance Separate From Future Reward Spending
+## 2026-08-01: Use an Append-Only Yellow STAR Wallet and Teacher-Confirmed Cash Requests
 
 Decision:
 
-Personal Center STAR histories are projections of permanent
-`student_set_achievements` records. Assignment and self-study STARs retain
-their distinct types and link to the best historical attempt. A future reward
-system will record credits and redemptions in a separate append-only ledger
-that references `achievement_id`; it will not mark achievement rows as spent
-or reduce their count.
+Personal Center STAR histories remain projections of `student_set_achievements`.
+Yellow STARs are protected, redeemable, and newly unique by student/set; Blue
+STARs are stable but non-redeemable and retain a converted history. Cash spending
+uses a separate append-only ledger that references exact Yellow
+`achievement_id` values. A request reserves credits, needs private photo
+evidence, and becomes spent only after the current teacher confirms the in-person
+exchange. Cash amount and exchange rate are deliberately outside the system.
 
 Reason:
 
@@ -25,10 +26,11 @@ Trade-offs:
 
 - Good: Personal Center always explains where every displayed STAR came from.
 - Good: future balances and redemptions can be audited independently.
-- Cost: the later reward feature needs a ledger, idempotency rules, and an
-  explicit policy for the value of yellow versus blue STARs.
-- Deferred: no reward collection, balance calculation, or exchange rate is
-  introduced by the STAR-history feature.
+- Cost: the release needs three ADMINONLY collections, transactional/idempotent
+  wallet rules, private storage upload slots, and migration/reporting before the
+  student UI is enabled.
+- Deferred: Gifts, money values, biometrics, and multi-teacher/student reward
+  ownership remain outside V1.
 
 ## 2026-07-25: Use One Native-Scroll Percentage Wheel for Teacher Thresholds
 

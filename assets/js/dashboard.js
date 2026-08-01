@@ -12,6 +12,10 @@
         selfStudyStarCount: 0,
         starAchievements: [],
         accountStarView: '',
+        starPanelOpen: false,
+        accountStarFilter: 'all',
+        accountCashComposer: false,
+        starRewards: { available: false, wallet: null, cash_requests: [], unread_count: 0 },
         teacherReplies: [],
         vocabItems: [],
         vocabSearch: '',
@@ -114,6 +118,8 @@
     var assignmentContent = document.getElementById('assignment-content');
     var resourceList = document.getElementById('resource-list');
     var profileContent = document.getElementById('profile-content');
+    var starOverlay = document.getElementById('student-star-overlay');
+    var starContent = document.getElementById('student-star-content');
     var myWordsContent = document.getElementById('my-words-content');
     var resourceSearch = document.getElementById('resource-search');
     var resourceSearchToggle = document.getElementById('resource-search-toggle');
@@ -687,17 +693,16 @@
 
     function updateStarCounter(animate) {
         if (!starCounter) starCounter = document.getElementById('star-counter');
-        if (!selfStudyStarCounter) selfStudyStarCounter = document.getElementById('self-study-star-counter');
-        if (selfStudyStarCounter) {
-            selfStudyStarCounter.textContent = '★ ' + state.selfStudyStarCount;
-            selfStudyStarCounter.classList.toggle('pop', animate === true);
-            if (animate) window.setTimeout(function() { selfStudyStarCounter.classList.remove('pop'); }, 700);
-        }
         if (starCounter) {
-            starCounter.textContent = '★ ' + state.assignmentStarCount;
+            starCounter.textContent = '★ ' + availableYellowStars();
             starCounter.classList.toggle('pop', animate === true);
             if (animate) window.setTimeout(function() { starCounter.classList.remove('pop'); }, 700);
         }
+    }
+
+    function availableYellowStars() {
+        var wallet = state.starRewards && state.starRewards.wallet;
+        return wallet ? Number(wallet.available_yellow_stars || 0) : 0;
     }
 
     function playStarSound() {
@@ -3268,11 +3273,6 @@
             return;
         }
 
-        if (state.accountStarView) {
-            renderAccountStarHistory(state.accountStarView);
-            return;
-        }
-
         var profile = state.session.profile || {};
         var finishedCount = (state.assignments || []).filter(function(item) {
             return isFinishedStatus(item.status);
@@ -3282,10 +3282,7 @@
                 '<section class="profile-card account-summary-card">' +
                     '<div class="account-name-row">' +
                         '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
-                        '<strong class="account-star-pair">' +
-                            '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="View ' + escapeHtml(state.assignmentStarCount) + ' assignment STAR sources">★ ' + escapeHtml(state.assignmentStarCount) + '</button>' +
-                            '<button class="star-counter self-study-star-counter account-row-star" id="self-study-star-counter" type="button" aria-label="View ' + escapeHtml(state.selfStudyStarCount) + ' self-study STAR sources">★ ' + escapeHtml(state.selfStudyStarCount) + '</button>' +
-                        '</strong>' +
+                        '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="Open My STARs. ' + escapeHtml(availableYellowStars()) + ' yellow STARs available">★ ' + escapeHtml(availableYellowStars()) + '</button>' +
                     '</div>' +
                     '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
                     '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
@@ -3300,13 +3297,9 @@
                 '</section>' +
             '</div>';
         starCounter = document.getElementById('star-counter');
-        selfStudyStarCounter = document.getElementById('self-study-star-counter');
         updateStarCounter(false);
         starCounter.addEventListener('click', function() {
-            openAccountStarHistory('assignment');
-        });
-        selfStudyStarCounter.addEventListener('click', function() {
-            openAccountStarHistory('self_study');
+            openAccountStarHistory();
         });
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
@@ -3316,7 +3309,7 @@
 
     function accountStarItems(starType) {
         return (state.starAchievements || []).filter(function(item) {
-            return item && item.star_type === starType;
+            return item && (starType === 'all' || item.star_type === starType);
         }).sort(function(left, right) {
             return new Date(right.earned_at || 0).getTime() - new Date(left.earned_at || 0).getTime();
         });
@@ -3336,60 +3329,232 @@
         var kind = studentMessageKind({ set: set });
         var href = accountStarHistoryHref(item);
         var earned = formatShortDate(item.earned_at);
-        var isSelfStudy = item.star_type === 'self_study';
-        return '<article class="account-star-history-row ' + (isSelfStudy ? 'is-self-study' : 'is-assignment') + '"' +
+        var isBlue = item.star_type === 'blue';
+        var converted = isBlue && item.status === 'converted';
+        return '<article class="account-star-history-row ' + (isBlue ? 'is-self-study' : 'is-assignment') + '"' +
             ' data-open-href="' + escapeHtml(href) + '" data-entry-kind="' + escapeHtml(kind) + '"' +
             ' data-entry-title="' + escapeHtml(title) + '" data-entry-status="mastered"' +
             ' data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-entry-locked="false" role="link" tabindex="0" aria-label="Open STAR history for ' + escapeHtml(title) + '">' +
                 '<span class="account-star-history-icon" aria-hidden="true">★</span>' +
                 '<span class="account-star-history-copy">' +
-                    '<span class="account-star-history-kind">' + escapeHtml(kind) + '</span>' +
+                    '<span class="account-star-history-kind">' + (isBlue ? 'BLUE STAR · NOT REDEEMABLE' : 'YELLOW STAR · REDEEMABLE') + '</span>' +
                     '<strong>' + escapeHtml(title) + '</strong>' +
                     '<span class="account-star-history-meta">' +
                         (earned ? '<span>Earned ' + escapeHtml(earned) + '</span>' : '<span>Earned STAR</span>') +
                         '<span>Best ' + escapeHtml(formatEntryPercent(item.best_percentage)) + '</span>' +
+                        (converted ? '<span>Converted to Yellow</span>' : '') +
                     '</span>' +
                 '</span>' +
                 '<span class="account-star-history-chevron" aria-hidden="true">›</span>' +
             '</article>';
     }
 
-    function renderAccountStarHistory(starType) {
-        var isSelfStudy = starType === 'self_study';
-        var items = accountStarItems(starType);
-        var title = isSelfStudy ? 'Self-study STARs' : 'Assignment STARs';
-        var description = isSelfStudy ? 'Earned by mastering work you chose yourself.' : 'Earned by mastering assigned work.';
-        profileContent.innerHTML =
+    function safeAccountStarHistoryRow(item) {
+        try {
+            return accountStarHistoryRow(item || {});
+        } catch (error) {
+            console.error('Unable to render STAR history item.', error, item);
+            return '<article class="account-star-history-row is-unavailable" aria-label="STAR history item unavailable">' +
+                '<span class="account-star-history-icon" aria-hidden="true">☆</span>' +
+                '<span class="account-star-history-copy"><span class="account-star-history-kind">STAR RECORD</span>' +
+                '<strong>History item unavailable</strong><span class="account-star-history-meta">This STAR is still saved in your account.</span></span>' +
+            '</article>';
+        }
+    }
+
+    function rewardRequestStatus(status) {
+        return ({ awaiting_proof: 'Upload proof', awaiting_teacher: 'Waiting for teacher', completed: 'Completed', rejected: 'Rejected', cancelled: 'Cancelled', expired: 'Expired', refunded: 'Refunded' })[status] || status;
+    }
+
+    function openCashRequest() {
+        var requests = state.starRewards && state.starRewards.cash_requests || [];
+        return requests.find(function(item) { return item.status === 'awaiting_proof' || item.status === 'awaiting_teacher'; }) || null;
+    }
+
+    function cashRequestCard(request) {
+        var open = request.status === 'awaiting_proof' || request.status === 'awaiting_teacher';
+        return '<article class="account-cash-request" data-request-id="' + escapeHtml(request.request_id) + '">' +
+            '<div><strong>' + escapeHtml(request.star_count) + ' Yellow STAR' + (request.star_count === 1 ? '' : 's') + '</strong><span class="account-request-status">' + escapeHtml(rewardRequestStatus(request.status)) + '</span></div>' +
+            '<small>' + escapeHtml(formatShortDate(request.created_at) || '') + (request.decision_reason ? ' · ' + escapeHtml(request.decision_reason) : '') + '</small>' +
+            '<div class="account-request-actions">' +
+                '<button type="button" class="text-button" data-cash-evidence="' + escapeHtml(request.request_id) + '">View proof (' + escapeHtml(request.evidence_count || 0) + ')</button>' +
+                (open && Number(request.evidence_count || 0) < 3 ? '<label class="account-proof-upload">Add photo<input type="file" accept="image/jpeg,image/png,image/webp" data-cash-upload="' + escapeHtml(request.request_id) + '" hidden></label>' : '') +
+                (open ? '<button type="button" class="text-button danger-text-button" data-cash-cancel="' + escapeHtml(request.request_id) + '">Cancel</button>' : '') +
+            '</div><div class="account-evidence-list" id="cash-evidence-' + escapeHtml(request.request_id) + '"></div></article>';
+    }
+
+    function cashComposerHtml() {
+        var available = availableYellowStars();
+        if (!state.starRewards || !state.starRewards.available) return '<p class="muted">Cash requests are temporarily unavailable.</p>';
+        if (openCashRequest()) return '<p class="muted">You can have only one open Cash request at a time.</p>';
+        if (!available) return '<p class="muted">Earn a Yellow STAR before making a Cash request.</p>';
+        if (!state.accountCashComposer) return '<div class="account-reward-options"><button class="primary-button" id="cash-option" type="button">Cash</button><button class="secondary-button" type="button" disabled>Gifts · Coming soon</button></div>';
+        return '<form class="account-cash-form" id="cash-request-form">' +
+            '<p>Choose how many Yellow STARs to redeem. Confirm the Cash exchange with your teacher in person.</p>' +
+            '<output id="cash-star-output">1 STAR</output>' +
+            '<input id="cash-star-slider" type="range" min="1" max="' + escapeHtml(available) + '" step="1" value="1">' +
+            '<div class="account-request-actions"><button class="primary-button" type="submit">Request Cash</button><button class="text-button" id="cash-compose-cancel" type="button">Back</button></div>' +
+        '</form>';
+    }
+
+    function renderAccountStarHistory() {
+        if (!starContent) return;
+        var filter = state.accountStarFilter || 'all';
+        var items = accountStarItems(filter);
+        var wallet = state.starRewards && state.starRewards.wallet || {};
+        var requests = state.starRewards && state.starRewards.cash_requests || [];
+        starContent.innerHTML =
             '<section class="profile-card account-star-history">' +
                 '<div class="account-star-history-head">' +
                     '<button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
-                    '<div><p class="eyebrow accent">STAR HISTORY</p><h2>' + escapeHtml(title) + '</h2></div>' +
-                    '<span class="star-counter account-star-history-count ' + (isSelfStudy ? 'self-study-star-counter' : 'assignment-star-counter') + '">★ ' + escapeHtml(items.length) + '</span>' +
+                    '<div><p class="eyebrow accent">STAR WALLET</p><h2 id="student-star-title">My STARs</h2></div>' +
+                    '<span class="star-counter account-star-history-count assignment-star-counter">★ ' + escapeHtml(availableYellowStars()) + '</span>' +
                 '</div>' +
-                '<p class="muted account-star-history-description">' + escapeHtml(description) + '</p>' +
+                '<div class="account-star-wallet"><span><b>' + escapeHtml(wallet.available_yellow_stars || 0) + '</b> Available</span><span><b>' + escapeHtml(wallet.lifetime_yellow_stars || state.assignmentStarCount || 0) + '</b> Lifetime Yellow</span><span><b>' + escapeHtml(state.selfStudyStarCount) + '</b> Active Blue</span></div>' +
+                '<section class="account-cash-panel"><h3>Redeem</h3>' + cashComposerHtml() + '</section>' +
+                (requests.length ? '<section class="account-cash-history"><h3>Cash requests</h3>' + requests.map(cashRequestCard).join('') + '</section>' : '') +
+                '<nav class="account-star-filters" aria-label="Filter STAR history">' + ['all', 'yellow', 'blue'].map(function(value) { return '<button type="button" data-star-filter="' + value + '" class="' + (filter === value ? 'active' : '') + '">' + (value === 'all' ? 'All' : value.charAt(0).toUpperCase() + value.slice(1)) + '</button>'; }).join('') + '</nav>' +
                 '<div class="account-star-history-list">' +
-                    (items.length ? items.map(accountStarHistoryRow).join('') : '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>No STARs here yet</strong><p>Master a task to add it to this history.</p></div>') +
+                    (items.length ? items.map(safeAccountStarHistoryRow).join('') : '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>No STARs here yet</strong><p>Master a task to add it to this history.</p></div>') +
                 '</div>' +
             '</section>';
         var backButton = document.getElementById('account-star-back');
         if (backButton) backButton.addEventListener('click', function() {
-            var returnId = isSelfStudy ? 'self-study-star-counter' : 'star-counter';
-            state.accountStarView = '';
-            renderProfile();
-            window.requestAnimationFrame(function() {
-                var returnButton = document.getElementById(returnId);
-                if (returnButton) returnButton.focus({ preventScroll: true });
-            });
+            closeStarPanel(true);
         });
+        bindStarWalletActions();
     }
 
-    function openAccountStarHistory(starType) {
-        state.accountStarView = starType;
-        renderProfile();
+    function openAccountStarHistory() {
+        state.accountStarView = 'wallet';
+        state.starPanelOpen = true;
+        state.accountStarFilter = 'all';
+        state.accountPanelOpen = false;
+        if (accountPanel) accountPanel.hidden = true;
+        if (identityChip) identityChip.setAttribute('aria-expanded', 'false');
+        if (starOverlay) starOverlay.hidden = false;
+        lockStudentMessageBackground();
+        try {
+            renderAccountStarHistory();
+        } catch (error) {
+            console.error('Unable to open My STARs.', error);
+            starContent.innerHTML =
+                '<section class="profile-card account-star-history account-star-error" role="alert">' +
+                    '<div class="account-star-history-head"><button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
+                    '<div><p class="eyebrow accent">STAR WALLET</p><h2 id="student-star-title">My STARs</h2></div></div>' +
+                    '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>Unable to display STAR history</strong><p>Your STARs are safe. Close and reopen Personal Center to try again.</p></div>' +
+                '</section>';
+            var fallbackBack = document.getElementById('account-star-back');
+            if (fallbackBack) fallbackBack.addEventListener('click', function() {
+                closeStarPanel(true);
+            });
+        }
+        var cashRequests = state.starRewards && Array.isArray(state.starRewards.cash_requests) ? state.starRewards.cash_requests : [];
+        var unseen = cashRequests.filter(function(item) { return item && item.student_seen === false; }).map(function(item) { return item.request_id; });
+        if (unseen.length) window.MrCatCloud.callFunction('getDashboard', { action: 'markCashRequestsSeen', request_ids: unseen }).catch(function() {});
         window.requestAnimationFrame(function() {
             var backButton = document.getElementById('account-star-back');
             if (backButton) backButton.focus({ preventScroll: true });
+        });
+    }
+
+    function closeStarPanel(reopenAccount) {
+        if (!state.starPanelOpen) return;
+        state.starPanelOpen = false;
+        state.accountStarView = '';
+        state.accountCashComposer = false;
+        if (starOverlay) starOverlay.hidden = true;
+        if (reopenAccount) {
+            state.accountPanelOpen = true;
+            if (accountPanel) accountPanel.hidden = false;
+            if (identityChip) identityChip.setAttribute('aria-expanded', 'true');
+            renderProfile();
+            window.requestAnimationFrame(function() {
+                var returnButton = document.getElementById('star-counter');
+                if (returnButton) returnButton.focus({ preventScroll: true });
+            });
+            return;
+        }
+        unlockStudentMessageBackground();
+        if (identityChip) identityChip.focus({ preventScroll: true });
+    }
+
+    function refreshStarWallet() {
+        return window.MrCatCloud.callFunction('getDashboard').then(function(result) {
+            if (!result || result.success === false) throw new Error(result && result.message || 'Unable to refresh STARs.');
+            state.assignmentStarCount = Number(result.assignment_star_count || 0);
+            state.selfStudyStarCount = Number(result.self_study_star_count || 0);
+            state.starAchievements = result.star_achievements || [];
+            state.starRewards = result.star_rewards || state.starRewards;
+            updateStarCounter(false);
+            if (state.starPanelOpen) renderAccountStarHistory();
+            else renderProfile();
+        });
+    }
+
+    function dashboardAction(action, data) {
+        return window.MrCatCloud.callFunction('getDashboard', Object.assign({ action: action }, data || {})).then(function(result) {
+            if (!result || result.success === false) throw new Error(result && result.message || 'Unable to complete this STAR action.');
+            return result;
+        });
+    }
+
+    function uploadCashEvidence(requestId, file) {
+        return window.MrCatCloud.prepareEvidenceImage(file).then(function(prepared) {
+            return dashboardAction('beginCashEvidenceUpload', { request_id: requestId, file_name: file.name, mime_type: file.type, size_bytes: file.size }).then(function(start) {
+                return Promise.all([
+                    window.MrCatCloud.uploadWithMetadata(start.original_upload, prepared.original),
+                    window.MrCatCloud.uploadWithMetadata(start.display_upload, prepared.display)
+                ]).then(function() {
+                    return dashboardAction('finishCashEvidenceUpload', { evidence_id: start.evidence_id });
+                });
+            });
+        }).then(refreshStarWallet);
+    }
+
+    function loadCashEvidence(requestId) {
+        var target = document.getElementById('cash-evidence-' + requestId);
+        if (!target) return;
+        target.innerHTML = '<p class="muted">Loading photos...</p>';
+        dashboardAction('getCashEvidence', { request_id: requestId }).then(function(result) {
+            target.innerHTML = (result.evidence || []).map(function(item) {
+                return '<figure class="account-evidence-item ' + (item.status === 'superseded' ? 'is-superseded' : '') + '"><img src="' + escapeHtml(item.url) + '" alt="Cash exchange proof"><figcaption>' + escapeHtml(item.uploader_role === 'teacher' ? 'Teacher' : 'Student') + (item.status === 'superseded' ? ' · Replaced' : '') + '</figcaption>' + (item.status === 'active' && item.uploader_role === 'student' ? '<button type="button" class="text-button" data-evidence-supersede="' + escapeHtml(item.evidence_id) + '">Replace this photo</button>' : '') + '</figure>';
+            }).join('') || '<p class="muted">No proof photo yet.</p>';
+            target.querySelectorAll('[data-evidence-supersede]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    if (!window.confirm('Mark this photo as replaced? It will stay in the permanent record.')) return;
+                    dashboardAction('supersedeCashEvidence', { evidence_id: button.dataset.evidenceSupersede }).then(refreshStarWallet).catch(function(error) { window.alert(error.message); });
+                });
+            });
+        }).catch(function(error) { target.textContent = error.message || 'Unable to load photos.'; });
+    }
+
+    function bindStarWalletActions() {
+        if (!starContent) return;
+        starContent.querySelectorAll('[data-star-filter]').forEach(function(button) {
+            button.addEventListener('click', function() { state.accountStarFilter = button.dataset.starFilter; renderAccountStarHistory(); });
+        });
+        var cashOption = document.getElementById('cash-option');
+        if (cashOption) cashOption.addEventListener('click', function() { state.accountCashComposer = true; renderAccountStarHistory(); });
+        var composeCancel = document.getElementById('cash-compose-cancel');
+        if (composeCancel) composeCancel.addEventListener('click', function() { state.accountCashComposer = false; renderAccountStarHistory(); });
+        var slider = document.getElementById('cash-star-slider');
+        var output = document.getElementById('cash-star-output');
+        if (slider && output) slider.addEventListener('input', function() { output.textContent = slider.value + (slider.value === '1' ? ' STAR' : ' STARs'); });
+        var form = document.getElementById('cash-request-form');
+        if (form) form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (!window.confirm('Please confirm this Cash exchange with your teacher in person. Create the request now?')) return;
+            form.querySelector('button[type="submit"]').disabled = true;
+            dashboardAction('createCashRequest', { star_count: Number(slider.value) }).then(refreshStarWallet).catch(function(error) { window.alert(error.message || 'Unable to create request.'); renderAccountStarHistory(); });
+        });
+        starContent.querySelectorAll('[data-cash-upload]').forEach(function(input) {
+            input.addEventListener('change', function() { if (input.files && input.files[0]) uploadCashEvidence(input.dataset.cashUpload, input.files[0]).catch(function(error) { window.alert(error.message || 'Unable to upload photo.'); }); });
+        });
+        starContent.querySelectorAll('[data-cash-evidence]').forEach(function(button) { button.addEventListener('click', function() { loadCashEvidence(button.dataset.cashEvidence); }); });
+        starContent.querySelectorAll('[data-cash-cancel]').forEach(function(button) {
+            button.addEventListener('click', function() { if (window.confirm('Cancel this Cash request and release its STARs?')) dashboardAction('cancelCashRequest', { request_id: button.dataset.cashCancel }).then(refreshStarWallet).catch(function(error) { window.alert(error.message); }); });
         });
     }
 
@@ -3480,6 +3645,7 @@
             state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
             state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
             state.starAchievements = dashboard.star_achievements || [];
+            state.starRewards = dashboard.star_rewards || state.starRewards;
             state.teacherReplies = dashboard.teacher_replies || [];
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
@@ -3542,6 +3708,13 @@
             if (event.target !== accountPanel) return;
             setAccountPanel(false);
             if (identityChip) identityChip.focus();
+        });
+    }
+    var starClose = document.getElementById('student-star-close');
+    if (starClose) starClose.addEventListener('click', function() { closeStarPanel(false); });
+    if (starOverlay) {
+        starOverlay.addEventListener('click', function(event) {
+            if (event.target === starOverlay) closeStarPanel(false);
         });
     }
     if (messageButton) {
@@ -3708,6 +3881,10 @@
     document.addEventListener('keydown', function(e) {
         var practiceOverlay = document.getElementById('practice-entry-overlay');
         if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
+        if (e.key === 'Escape' && state.starPanelOpen) {
+            closeStarPanel(false);
+            return;
+        }
         if (e.key === 'Escape' && state.accountPanelOpen) {
             setAccountPanel(false);
             if (identityChip) identityChip.focus();

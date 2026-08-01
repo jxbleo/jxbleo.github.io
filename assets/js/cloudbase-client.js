@@ -92,6 +92,78 @@
         });
     }
 
+    function uploadWithMetadata(metadata, file) {
+        if (!metadata || !metadata.url || !metadata.cloud_path || !file) {
+            return Promise.reject(new Error('Upload information is incomplete.'));
+        }
+        return fetch(metadata.url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': metadata.authorization,
+                'Signature': metadata.authorization,
+                'x-cos-security-token': metadata.token,
+                'x-cos-meta-fileid': metadata.cos_file_id || metadata.file_id,
+                'key': encodeURIComponent(metadata.cloud_path)
+            },
+            body: file
+        }).then(function(response) {
+            if (!response.ok) throw new Error('Photo upload failed.');
+            return { success: true, file_id: metadata.file_id };
+        });
+    }
+
+    function imageElementForFile(file) {
+        return new Promise(function(resolve, reject) {
+            var url = URL.createObjectURL(file);
+            var image = new Image();
+            image.onload = function() {
+                URL.revokeObjectURL(url);
+                resolve(image);
+            };
+            image.onerror = function() {
+                URL.revokeObjectURL(url);
+                reject(new Error('This photo could not be read.'));
+            };
+            image.src = url;
+        });
+    }
+
+    function canvasBlob(canvas, quality) {
+        return new Promise(function(resolve, reject) {
+            canvas.toBlob(function(blob) {
+                if (blob) resolve(blob);
+                else reject(new Error('This photo could not be prepared.'));
+            }, 'image/jpeg', quality);
+        });
+    }
+
+    function prepareEvidenceImage(file) {
+        var accepted = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!file || accepted.indexOf(String(file.type || '').toLowerCase()) === -1) {
+            return Promise.reject(new Error('Choose a JPG, PNG, or WebP photo.'));
+        }
+        if (file.size < 1 || file.size > 10 * 1024 * 1024) {
+            return Promise.reject(new Error('The original photo must be 10 MB or smaller.'));
+        }
+        return imageElementForFile(file).then(function(image) {
+            var scale = Math.min(1, 1600 / Math.max(image.naturalWidth || image.width, image.naturalHeight || image.height));
+            var canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round((image.naturalWidth || image.width) * scale));
+            canvas.height = Math.max(1, Math.round((image.naturalHeight || image.height) * scale));
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            function compress(quality) {
+                return canvasBlob(canvas, quality).then(function(blob) {
+                    if (blob.size <= 2 * 1024 * 1024 || quality <= 0.42) return blob;
+                    return compress(quality - 0.1);
+                });
+            }
+            return compress(0.82).then(function(displayBlob) {
+                if (displayBlob.size > 2 * 1024 * 1024) throw new Error('This photo is too large to prepare.');
+                return { original: file, display: displayBlob };
+            });
+        });
+    }
+
     window.MrCatCloud = {
         config: config,
         getApp: getApp,
@@ -100,6 +172,8 @@
         signIn: signIn,
         signOut: signOut,
         callFunction: callFunction,
+        uploadWithMetadata: uploadWithMetadata,
+        prepareEvidenceImage: prepareEvidenceImage,
         getDeviceId: getDeviceId,
         getClientInstanceId: getClientInstanceId
     };
