@@ -70,6 +70,10 @@
 
 ### Changed
 
+- Reworked the student STAR Wallet around the selected Golden Pass / Solid
+  Priority direction: a label-free gold balance card, deep-green Redeem action,
+  and separate soft-green `STAR Source` / `History` capsules. Provenance groups
+  Yellow above Blue, while Cash request status and evidence live in History.
 - Added task counts to the student To Do List's This Week, Upcoming, and
   Finished headings. Empty Upcoming is now a compact non-expandable `0` heading
   instead of opening an extra `No upcoming assignments` message.

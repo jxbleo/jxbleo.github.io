@@ -359,9 +359,12 @@ My Words:
   simple two-column list. Every collapsed row uses two equal halves with a
   centered vertical divider: the English word is centered in the left half,
   while part of speech plus Chinese meaning are centered horizontally and
-  vertically in the right half.
+  vertically in the right half. The green part-of-speech capsule is the only
+  POS label in that half; a repeated POS prefix is removed from the Chinese
+  meaning.
 - expands a row to show phonetic spelling, browser pronunciation, English
   definition, source/context, saved date, retry when applicable, and removal.
+  Student details do not display external dictionary provider branding.
   The speaker is not shown in the collapsed row; it sits beside the phonetic
   only after expansion. Search includes the dictionary fields.
 - does not expose New/Learning/Mastered states, due filters, reveal-and-rate
@@ -436,17 +439,22 @@ Student account menu:
 - the account summary shows one clickable yellow STAR counter containing the
   current Available STAR Balance. It does not show a separate Blue counter.
 - activating the yellow counter dismisses Personal Center and opens an
-  independent `STAR WALLET` modal. Its header contains only the `STAR WALLET`
-  title on the left and matching Yellow/Blue STAR count pills on the right; it
-  does not show `My STARs` or the Available/Lifetime/Active summary tiles. A
-  single newest-first list mixes Yellow and Blue STARs with color, score,
-  threshold/conversion state, and All / Yellow / Blue filters. Back restores
-  Personal Center and counter focus; the external Close capsule returns to the
-  Dashboard.
-- STAR Wallet contains Cash and Gifts destinations. Gifts is disabled with
-  `Coming soon`. Cash never displays a money amount or exchange rate. It uses a
-  whole-number slider whose positions are `1..available`; zero balance disables
-  submission. An existing open Cash Request replaces the new-request form.
+  independent `STAR WALLET` modal. Its landing view uses a gold pass-style card
+  containing only an oversized Yellow STAR and current available number; there
+  is no visible balance label or Blue count. A solid deep-green `Redeem` button
+  is the primary action, visibly separated from the two soft-green capsule
+  destinations, `STAR Source` and `History`. Back restores Personal Center and
+  counter focus; the external Close capsule returns to the Dashboard.
+- `STAR Source` is one level below the Wallet and groups task provenance with
+  Yellow assignment STARs first and Blue self-study STARs second. Entries retain
+  color, score, earned date, conversion state, and the linked best attempt.
+- `History` is one level below the Wallet and shows every Cash Request newest
+  first with its status and permanent evidence. Open-request upload, evidence
+  review, and cancellation controls live with that request in History.
+- `Redeem` opens the Cash request composer directly. Cash never displays a money
+  amount or exchange rate. It uses a whole-number slider whose positions are
+  `1..available`; zero balance disables submission. An existing open Cash Request
+  links the student to History instead of offering a second request.
 - Cash Request cards show Awaiting proof, Awaiting teacher, Completed, Rejected,
   Cancelled, Expired, or Refunded. Result changes create an unread badge inside
   My STARs. Students may cancel before completion and may upload evidence before

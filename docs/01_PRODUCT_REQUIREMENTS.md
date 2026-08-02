@@ -91,14 +91,15 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   生词本一致的苹果式厚玻璃卡片和柔和暗化背景。卡片不显示右上角叉号，唯一的
   `Close` 胶囊独立位于卡片外部正下方；背景点击和 Escape 也可关闭并恢复焦点
 - Personal Center 姓名右侧只显示当前可兑换的黄色 STAR 余额。点击后打开独立
-  `STAR WALLET` 弹窗，默认按最新获得时间混合显示黄色 assignment STAR、
-  蓝色 self-study STAR、转换状态、对应任务、获得日期和历史最高分，并提供
-  All / Yellow / Blue 筛选；每条记录可进入关联的最佳历史 attempt。Back 返回
-  账户摘要并把焦点还给黄色 STAR
-- `STAR WALLET` 顶部只显示标题，右侧并排显示当前黄色可兑换 STAR 数和当前活跃
-  蓝色 STAR 数；不显示 Available / Lifetime Yellow / Active Blue 三格摘要。Cash 只选择
-  要兑换的整数黄色 STAR 数量，不显示或保存现金金额/汇率；Gifts 保留
-  `Coming soon` 不可用状态
+  `STAR WALLET` 弹窗。Wallet 首页最上方使用金色通行证式卡片，只显示放大的黄色
+  STAR 与当前可兑换数字，不显示 `Yellow STARs available` 等说明字段。其下依次为
+  深绿色实心 `Redeem` 主按钮，以及浅绿色 `STAR Source`、`History` 胶囊入口。
+  Back 返回账户摘要并把焦点还给黄色 STAR
+- `Redeem` 直接进入 Cash 兑换并只选择要兑换的整数黄色 STAR 数量，不显示或保存
+  现金金额/汇率。`STAR Source` 显示各 STAR 来自哪些任务，固定先显示黄色 assignment
+  STAR，再显示蓝色 self-study STAR；每条记录保留转换状态、获得日期、历史最高分和
+  关联最佳 attempt 入口。`History` 按最新在前显示每次 Cash request、状态与永久凭证，
+  并承载未完成 request 的追加凭证及取消操作
 - `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊或
   `ASSIGNMENTS` 标题。`THIS WEEK`、`UPCOMING`、`FINISHED` 三栏标题居中并在右侧
   显示各自任务数量；有任务的栏目默认展开并可分别收起，向下滚动时依次吸顶并
