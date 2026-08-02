@@ -225,10 +225,11 @@ Check:
   dismiss it, restore focus to the identity chip, and restore background scroll
 - one yellow STAR counter shows Available balance and is clickable/keyboard
   operable; it dismisses Personal Center and opens an independent STAR Wallet
-  modal with mixed newest-first Yellow/Blue history and working All/Yellow/Blue
-  filters. Its header shows only `STAR WALLET` plus matching Yellow and Blue
-  count pills; it has no `My STARs` title or Available/Lifetime/Active tiles.
-  Back returns to Personal Center and the external Close action returns to Dashboard
+  modal whose landing view has a gold pass containing only a large Yellow STAR
+  and number, with no visible balance label or Blue count. A solid deep-green
+  `Redeem` button is clearly stronger than the soft-green `STAR Source` and
+  `History` capsules. Back returns to Personal Center and the external Close
+  action returns to Dashboard
 - in Chrome, opening STAR Wallet paints a normal light standalone wallet surface
   with visible content, never a blank black block;
   one malformed legacy history row shows its own unavailable placeholder while
@@ -236,17 +237,19 @@ Check:
 - STAR Wallet Back returns to the still-open Personal Center and restores focus to
   the yellow counter; it must not trigger the global outside-click closer. The
   separate lower Close action dismisses the complete modal flow
-- a STAR history row opens the linked best historical attempt; Back returns to
-  the account summary and restores focus to the yellow counter; converted Blue
-  rows remain visible and link to their Yellow STAR
-- Cash shows no money amount/rate, its integer slider is exactly 1..available,
-  zero balance disables submission, and Gifts is disabled as Coming soon
+- `STAR Source` lists Yellow assignment STARs above Blue self-study STARs; each
+  row opens the linked best historical attempt and converted Blue rows remain
+  visible
+- `History` lists every Cash request newest first and keeps View proof, Add photo,
+  and Cancel controls with the applicable request
+- Redeem opens Cash directly, shows no money amount/rate, and its integer slider
+  is exactly 1..available; zero balance disables submission
 - creating Cash freezes exact Yellow STAR credits and replaces the form with the
   one open request; cancellation releases them
 - student/teacher evidence upload shows private previews, enforces three active
   images and 10 MB original size, and moves the request to Awaiting teacher
 - completed/rejected/refunded status becomes an unread STAR Wallet notification;
-  opening the request marks only the current student's result seen
+  opening `History` marks only the current student's results seen
 - displayed counts and list lengths match achievement and append-only ledger
   projections, including grandfathered legacy duplicate Yellow STARs
 - forced password change appears when expected
@@ -915,14 +918,17 @@ Check:
   throttled and offers Retry, and a cached unknown word does not call the
   external provider again for another student
 - My Words search matches Chinese meaning, English definition, and part of speech
+- clicking the My Words search icon visibly expands and focuses the search field
 - pronunciation uses browser speech without exposing a provider key
 - a failed multi-word lexicon query falls back to individual reads, so known
   entries such as `expense`, `details`, and `widespread` still show dictionary data
 - each collapsed row is split into equal English and POS/Chinese halves with a
   visible center divider, and both sides remain vertically centered for short
-  and wrapped content
+  and wrapped content; Chinese meaning does not repeat the POS already shown in
+  the green capsule
 - collapsed rows do not show a speaker; expansion reveals the phonetic with its
-  adjacent speaker plus English definition, source/context, retry, and removal
+  adjacent speaker plus English definition, source/context, retry, and removal;
+  external dictionary provider branding is not shown
 - `my-words-modal-preview.html` loads as a standalone sample-only design
   reference, has no CloudBase/network data calls, and is not linked from the
   production Dashboard or Library navigation

@@ -13,8 +13,6 @@
         starAchievements: [],
         accountStarView: '',
         starPanelOpen: false,
-        accountStarFilter: 'all',
-        accountCashComposer: false,
         starRewards: { available: false, wallet: null, cash_requests: [], unread_count: 0 },
         teacherReplies: [],
         vocabItems: [],
@@ -2548,8 +2546,21 @@
         }
         return '<span class="my-word-primary-copy">' +
             '<span class="my-word-pos">' + escapeHtml(dictionary.part_of_speech || '—') + '</span>' +
-            '<span class="my-word-chinese">' + escapeHtml(dictionary.chinese_meaning || '暂无中文释义') + '</span>' +
+            '<span class="my-word-chinese">' + escapeHtml(wordChineseMeaning(dictionary)) + '</span>' +
         '</span>';
+    }
+
+    function wordChineseMeaning(dictionary) {
+        var meaning = String(dictionary && dictionary.chinese_meaning || '').trim();
+        if (!meaning) return '暂无中文释义';
+        var partOfSpeech = String(dictionary && dictionary.part_of_speech || '').trim();
+        if (partOfSpeech) {
+            var escapedPartOfSpeech = partOfSpeech.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            meaning = meaning.replace(new RegExp('^\\s*' + escapedPartOfSpeech + '\\s*[.:：、，,;；\\-]?\\s*', 'i'), '');
+        }
+        meaning = meaning.replace(/(^|[;；、]\s*)(?:(?:n(?:oun)?|v(?:erb)?|vt|vi|adj(?:ective)?|adv(?:erb)?|prep(?:osition)?|pron(?:oun)?|conj(?:unction)?|det(?:erminer)?|aux(?:iliary)?|modal|num(?:eral)?|art(?:icle)?|int(?:erjection)?)\.?\s*(?:[/,&+]\s*)?)+(?=[\u3400-\u9fff])/gi, '$1');
+        meaning = meaning.replace(/^\s*[.:：、，,;；\-]+\s*/, '').trim();
+        return meaning || '暂无中文释义';
     }
 
     function wordSpeechButtonHtml(word, spokenWord) {
@@ -2609,9 +2620,12 @@
                 wordArchiveButtonHtml(word) +
             '</div>';
         }
+        var dictionaryStatus = dictionary.review_status === 'ai_draft'
+            ? '<p class="my-word-dictionary-status">AI-generated · Not reviewed by teacher</p>'
+            : (dictionary.verified ? '<p class="my-word-dictionary-status">Teacher reviewed</p>' : '');
         return '<div class="my-word-detail-copy">' +
             editHtml + recommendation +
-            '<p class="my-word-dictionary-status">' + (dictionary.review_status === 'ai_draft' ? 'AI-generated · Not reviewed by teacher' : (dictionary.verified ? 'Teacher reviewed' : escapeHtml(dictionary.source_name || 'Dictionary'))) + '</p>' +
+            dictionaryStatus +
             '<div class="my-word-phonetic-row"><p class="my-word-phonetic">' + escapeHtml(dictionary.phonetic || 'Pronunciation') + '</p>' + wordSpeechButtonHtml(word, spokenWord) + '</div>' +
             (dictionary.english_definition ? '<p class="my-word-definition">' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
             (dictionary.word_forms ? '<p><strong>Forms:</strong> ' + escapeHtml(dictionary.word_forms) + '</p>' : '') +
@@ -3412,51 +3426,92 @@
     function cashComposerHtml() {
         var available = availableYellowStars();
         if (!state.starRewards || !state.starRewards.available) return '<p class="muted">Cash requests are temporarily unavailable.</p>';
-        if (openCashRequest()) return '<p class="muted">You can have only one open Cash request at a time.</p>';
+        if (openCashRequest()) return '<div class="account-wallet-message"><strong>You already have an open Cash request.</strong><p>Track it, add proof, or cancel it in History.</p><button class="account-wallet-inline-link" type="button" data-wallet-view="history">Open History</button></div>';
         if (!available) return '<p class="muted">Earn a Yellow STAR before making a Cash request.</p>';
-        if (!state.accountCashComposer) return '<div class="account-reward-options"><button class="primary-button" id="cash-option" type="button">Cash</button><button class="secondary-button" type="button" disabled>Gifts · Coming soon</button></div>';
         return '<form class="account-cash-form" id="cash-request-form">' +
             '<p>Choose how many Yellow STARs to redeem. Confirm the Cash exchange with your teacher in person.</p>' +
             '<output id="cash-star-output">1 STAR</output>' +
             '<input id="cash-star-slider" type="range" min="1" max="' + escapeHtml(available) + '" step="1" value="1">' +
-            '<div class="account-request-actions"><button class="primary-button" type="submit">Request Cash</button><button class="text-button" id="cash-compose-cancel" type="button">Back</button></div>' +
+            '<button class="primary-button account-cash-submit" type="submit">Request Cash</button>' +
         '</form>';
+    }
+
+    function starWalletHeader(title, backTarget, backLabel) {
+        return '<div class="account-star-history-head">' +
+            '<button class="account-star-back" type="button" data-wallet-back="' + escapeHtml(backTarget) + '" aria-label="' + escapeHtml(backLabel) + '">‹</button>' +
+            '<h2 id="student-star-title">' + escapeHtml(title) + '</h2>' +
+        '</div>';
+    }
+
+    function starSourceSection(type, label) {
+        var items = accountStarItems(type);
+        return '<section class="account-star-source-group" data-star-source="' + escapeHtml(type) + '">' +
+            '<div class="account-star-source-heading"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(items.length) + '</strong></div>' +
+            '<div class="account-star-history-list">' +
+                (items.length ? items.map(safeAccountStarHistoryRow).join('') : '<div class="account-star-history-empty compact"><span aria-hidden="true">☆</span><p>No ' + escapeHtml(type) + ' STARs yet.</p></div>') +
+            '</div>' +
+        '</section>';
+    }
+
+    function renderStarWalletHome() {
+        var requestCount = state.starRewards && state.starRewards.cash_requests ? state.starRewards.cash_requests.length : 0;
+        return '<section class="profile-card account-star-history account-wallet-home">' +
+            starWalletHeader('STAR WALLET', 'account', 'Back to Personal Center') +
+            '<div class="account-wallet-pass" aria-label="' + escapeHtml(availableYellowStars()) + ' yellow STARs available">' +
+                '<span class="account-wallet-pass-star" aria-hidden="true">★</span>' +
+                '<strong>' + escapeHtml(availableYellowStars()) + '</strong>' +
+            '</div>' +
+            '<button class="primary-button account-wallet-redeem" type="button" data-wallet-view="redeem">Redeem</button>' +
+            '<nav class="account-wallet-destinations" aria-label="STAR Wallet sections">' +
+                '<button type="button" data-wallet-view="source"><span>STAR Source</span><small>' + escapeHtml((state.starAchievements || []).length) + '</small></button>' +
+                '<button type="button" data-wallet-view="history"><span>History</span><small>' + escapeHtml(requestCount) + '</small></button>' +
+            '</nav>' +
+        '</section>';
+    }
+
+    function renderStarSource() {
+        return '<section class="profile-card account-star-history account-wallet-detail">' +
+            starWalletHeader('STAR SOURCE', 'wallet', 'Back to STAR Wallet') +
+            '<p class="account-wallet-detail-intro">See which tasks earned each STAR. Yellow STARs appear first.</p>' +
+            starSourceSection('yellow', 'YELLOW STAR') +
+            starSourceSection('blue', 'BLUE STAR') +
+        '</section>';
+    }
+
+    function renderStarRedeem() {
+        return '<section class="profile-card account-star-history account-wallet-detail">' +
+            starWalletHeader('REDEEM', 'wallet', 'Back to STAR Wallet') +
+            '<div class="account-wallet-redeem-balance"><span aria-hidden="true">★</span><strong>' + escapeHtml(availableYellowStars()) + '</strong><small>available</small></div>' +
+            '<section class="account-cash-panel">' + cashComposerHtml() + '</section>' +
+        '</section>';
+    }
+
+    function renderRedemptionHistory() {
+        var requests = (state.starRewards && state.starRewards.cash_requests || []).slice().sort(function(left, right) {
+            return new Date(right.created_at || 0).getTime() - new Date(left.created_at || 0).getTime();
+        });
+        return '<section class="profile-card account-star-history account-wallet-detail">' +
+            starWalletHeader('HISTORY', 'wallet', 'Back to STAR Wallet') +
+            '<p class="account-wallet-detail-intro">Every Cash request and its proof stays here.</p>' +
+            '<div class="account-cash-history">' +
+                (requests.length ? requests.map(cashRequestCard).join('') : '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>No redemption history</strong><p>Your Cash requests will appear here.</p></div>') +
+            '</div>' +
+        '</section>';
     }
 
     function renderAccountStarHistory() {
         if (!starContent) return;
-        var filter = state.accountStarFilter || 'all';
-        var items = accountStarItems(filter);
-        var requests = state.starRewards && state.starRewards.cash_requests || [];
-        starContent.innerHTML =
-            '<section class="profile-card account-star-history">' +
-                '<div class="account-star-history-head">' +
-                    '<button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
-                    '<h2 id="student-star-title">STAR WALLET</h2>' +
-                    '<strong class="account-star-pair" aria-label="STAR balances">' +
-                        '<span class="star-counter account-star-history-count assignment-star-counter" aria-label="' + escapeHtml(availableYellowStars()) + ' yellow STARs">★ ' + escapeHtml(availableYellowStars()) + '</span>' +
-                        '<span class="star-counter account-star-history-count self-study-star-counter" aria-label="' + escapeHtml(state.selfStudyStarCount) + ' blue STARs">★ ' + escapeHtml(state.selfStudyStarCount) + '</span>' +
-                    '</strong>' +
-                '</div>' +
-                '<section class="account-cash-panel"><h3>Redeem</h3>' + cashComposerHtml() + '</section>' +
-                (requests.length ? '<section class="account-cash-history"><h3>Cash requests</h3>' + requests.map(cashRequestCard).join('') + '</section>' : '') +
-                '<nav class="account-star-filters" aria-label="Filter STAR history">' + ['all', 'yellow', 'blue'].map(function(value) { return '<button type="button" data-star-filter="' + value + '" class="' + (filter === value ? 'active' : '') + '">' + (value === 'all' ? 'All' : value.charAt(0).toUpperCase() + value.slice(1)) + '</button>'; }).join('') + '</nav>' +
-                '<div class="account-star-history-list">' +
-                    (items.length ? items.map(safeAccountStarHistoryRow).join('') : '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>No STARs here yet</strong><p>Master a task to add it to this history.</p></div>') +
-                '</div>' +
-            '</section>';
-        var backButton = document.getElementById('account-star-back');
-        if (backButton) backButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            closeStarPanel(true);
-        });
+        var view = state.accountStarView || 'wallet';
+        if (view === 'source') starContent.innerHTML = renderStarSource();
+        else if (view === 'redeem') starContent.innerHTML = renderStarRedeem();
+        else if (view === 'history') starContent.innerHTML = renderRedemptionHistory();
+        else starContent.innerHTML = renderStarWalletHome();
         bindStarWalletActions();
     }
 
     function openAccountStarHistory() {
         state.accountStarView = 'wallet';
         state.starPanelOpen = true;
-        state.accountStarFilter = 'all';
         state.accountPanelOpen = false;
         if (accountPanel) accountPanel.hidden = true;
         if (identityChip) identityChip.setAttribute('aria-expanded', 'false');
@@ -3468,22 +3523,15 @@
             console.error('Unable to open STAR Wallet.', error);
             starContent.innerHTML =
                 '<section class="profile-card account-star-history account-star-error" role="alert">' +
-                    '<div class="account-star-history-head"><button class="account-star-back" id="account-star-back" type="button" aria-label="Back to Personal Center">‹</button>' +
+                    '<div class="account-star-history-head"><button class="account-star-back" type="button" data-wallet-back="account" aria-label="Back to Personal Center">‹</button>' +
                     '<h2 id="student-star-title">STAR WALLET</h2>' +
-                    '<strong class="account-star-pair" aria-label="STAR balances"><span class="star-counter account-star-history-count assignment-star-counter">★ ' + escapeHtml(availableYellowStars()) + '</span><span class="star-counter account-star-history-count self-study-star-counter">★ ' + escapeHtml(state.selfStudyStarCount) + '</span></strong></div>' +
+                    '</div>' +
                     '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>Unable to display STAR history</strong><p>Your STARs are safe. Close and reopen Personal Center to try again.</p></div>' +
                 '</section>';
-            var fallbackBack = document.getElementById('account-star-back');
-            if (fallbackBack) fallbackBack.addEventListener('click', function(event) {
-                event.stopPropagation();
-                closeStarPanel(true);
-            });
+            bindStarWalletActions();
         }
-        var cashRequests = state.starRewards && Array.isArray(state.starRewards.cash_requests) ? state.starRewards.cash_requests : [];
-        var unseen = cashRequests.filter(function(item) { return item && item.student_seen === false; }).map(function(item) { return item.request_id; });
-        if (unseen.length) window.MrCatCloud.callFunction('getDashboard', { action: 'markCashRequestsSeen', request_ids: unseen }).catch(function() {});
         window.requestAnimationFrame(function() {
-            var backButton = document.getElementById('account-star-back');
+            var backButton = starContent.querySelector('[data-wallet-back]');
             if (backButton) backButton.focus({ preventScroll: true });
         });
     }
@@ -3492,7 +3540,6 @@
         if (!state.starPanelOpen) return;
         state.starPanelOpen = false;
         state.accountStarView = '';
-        state.accountCashComposer = false;
         if (starOverlay) starOverlay.hidden = true;
         if (reopenAccount) {
             state.accountPanelOpen = true;
@@ -3561,13 +3608,31 @@
 
     function bindStarWalletActions() {
         if (!starContent) return;
-        starContent.querySelectorAll('[data-star-filter]').forEach(function(button) {
-            button.addEventListener('click', function() { state.accountStarFilter = button.dataset.starFilter; renderAccountStarHistory(); });
+        starContent.querySelectorAll('[data-wallet-back]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                if (button.dataset.walletBack === 'account') closeStarPanel(true);
+                else {
+                    state.accountStarView = 'wallet';
+                    renderAccountStarHistory();
+                }
+            });
         });
-        var cashOption = document.getElementById('cash-option');
-        if (cashOption) cashOption.addEventListener('click', function() { state.accountCashComposer = true; renderAccountStarHistory(); });
-        var composeCancel = document.getElementById('cash-compose-cancel');
-        if (composeCancel) composeCancel.addEventListener('click', function() { state.accountCashComposer = false; renderAccountStarHistory(); });
+        starContent.querySelectorAll('[data-wallet-view]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.accountStarView = button.dataset.walletView;
+                renderAccountStarHistory();
+                window.requestAnimationFrame(function() {
+                    var backButton = starContent.querySelector('[data-wallet-back="wallet"]');
+                    if (backButton) backButton.focus({ preventScroll: true });
+                });
+                if (state.accountStarView === 'history') {
+                    var requests = state.starRewards && Array.isArray(state.starRewards.cash_requests) ? state.starRewards.cash_requests : [];
+                    var unseen = requests.filter(function(item) { return item && item.student_seen === false; }).map(function(item) { return item.request_id; });
+                    if (unseen.length) window.MrCatCloud.callFunction('getDashboard', { action: 'markCashRequestsSeen', request_ids: unseen }).catch(function() {});
+                }
+            });
+        });
         var slider = document.getElementById('cash-star-slider');
         var output = document.getElementById('cash-star-output');
         if (slider && output) slider.addEventListener('input', function() { output.textContent = slider.value + (slider.value === '1' ? ' STAR' : ' STARs'); });
@@ -3576,7 +3641,10 @@
             event.preventDefault();
             if (!window.confirm('Please confirm this Cash exchange with your teacher in person. Create the request now?')) return;
             form.querySelector('button[type="submit"]').disabled = true;
-            dashboardAction('createCashRequest', { star_count: Number(slider.value) }).then(refreshStarWallet).catch(function(error) { window.alert(error.message || 'Unable to create request.'); renderAccountStarHistory(); });
+            dashboardAction('createCashRequest', { star_count: Number(slider.value) }).then(function() {
+                state.accountStarView = 'history';
+                return refreshStarWallet();
+            }).catch(function(error) { window.alert(error.message || 'Unable to create request.'); renderAccountStarHistory(); });
         });
         starContent.querySelectorAll('[data-cash-upload]').forEach(function(input) {
             input.addEventListener('change', function() { if (input.files && input.files[0]) uploadCashEvidence(input.dataset.cashUpload, input.files[0]).catch(function(error) { window.alert(error.message || 'Unable to upload photo.'); }); });
