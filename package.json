@@ -9,6 +9,7 @@
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",
     "test:my-words": "node scripts/test-my-words-features.js",
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
+    "test:login-redirect": "node scripts/test-login-redirect.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
     "test:star-rewards": "node scripts/test-star-rewards.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
