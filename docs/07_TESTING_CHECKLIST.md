@@ -85,6 +85,14 @@ Protected topic-bank checks:
 - a logged-out direct function call returns `AUTH_REQUIRED`
 - the generated private payload is ignored by Git and the deployment ZIP contains it
 
+Protected JUPAS report checks:
+
+- visitor/no-session and teacher sessions remain on the metrics/excerpts preview
+- an active student returns directly after login and loads the complete report
+- the public page source does not contain the full caveats or official-source section
+- the private report contains the corrected Lingnan `.pdf` URL with no visible `.pdf)` suffix
+- the backend role policy permits `student` and rejects `teacher` for this resource
+
 Shared shell visual checks:
 
 - the login form does not show a `STUDENT ENTRY` eyebrow, while the Student ID,

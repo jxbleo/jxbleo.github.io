@@ -815,12 +815,13 @@ flowchart TD
 
 ### 8.8 getProtectedResource
 
-用途：向已登录学生或老师提供不应公开进入 GitHub Pages 源码的完整参考资料。
+用途：按资料自身的角色策略，向已登录账号提供不应公开进入 GitHub Pages 源码的完整参考资料。
 
 要求：
 
 - 身份只来自 CloudBase authenticated context
-- 必须匹配 active `students` profile，role 只能是 `student` 或 `teacher`
+- 必须匹配 active `students` profile；每个私有载荷可用 `allowed_roles` 进一步限制角色
+- HKDSE Topic Bank 允许 active `student` 和 `teacher`；港八大 JUPAS 加权报告只允许 active `student`
 - 访客静态页只含预览和马赛克占位，不能含可被 CSS 解锁的全文
 - 私有载荷由仓库外源文件生成，生成文件和部署 ZIP 均不提交 Git
 - 分块响应包含数量、编码和 SHA-256；浏览器组装后必须校验完整性

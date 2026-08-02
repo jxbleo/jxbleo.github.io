@@ -7,10 +7,12 @@
 
 Decision:
 
-GitHub Pages stores only a useful visitor preview. A complete student-only
+GitHub Pages stores only a useful visitor preview. A complete protected
 report is generated from a reviewed local source into an ignored private
 module, bundled only into an ignored CloudBase function ZIP, and returned in
-bounded chunks after the backend verifies an active student or teacher profile.
+bounded chunks after the backend verifies an active profile and the resource's
+own `allowed_roles` policy. A resource may be student-only even when another
+resource in the same bundle permits teachers.
 The browser verifies the SHA-256 manifest before rendering the full report in a
 sandboxed iframe.
 

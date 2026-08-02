@@ -403,7 +403,7 @@ Add `apply: true` only after candidate counts, question counts, and percentage
 changes have been reviewed. The action writes adjusted fields, updates linked
 assignment summaries, repairs eligible STAR records, and is idempotent.
 
-### Protected HKDSE Topic Bank
+### Protected Reference Reports
 
 This feature has two deployment tracks and no database migration:
 
@@ -412,6 +412,7 @@ This feature has two deployment tracks and no database migration:
 
 ```bash
 npm run prepare:dse-topic-bank -- --source /absolute/path/HKDSE-topic-bank.html
+npm run prepare:jupas-report -- --source /absolute/path/HK8-JUPAS-report.html
 npm run test:protected-resources
 npm run package:functions -- getProtectedResource
 ```
@@ -429,11 +430,13 @@ unzip -q deploy-packages/getProtectedResource.zip -d "$MRCAT_PROTECTED_RESOURCE_
 (cd "$MRCAT_PROTECTED_RESOURCE_DIR" && tcb -e mrcat-dev-d9gwy2v1icdfdf597 -r ap-shanghai fn deploy getProtectedResource --dir . --deployMode zip --runtime Nodejs18.15 --force)
 ```
 
-3. Publish `dse-topic-bank.html`, its versioned CSS/JS, the catalog metadata,
-   Login return handling, and Dashboard catalog merge. Verify a logged-out
-   visitor sees only preview content and a dedicated development student sees
-   the complete report. Updating GitHub Pages alone never publishes the full
-   edition; updating the function alone does not add the Library card.
+3. Publish the relevant preview HTML and versioned JS/CSS only after the function
+   bundle contains that resource. For the topic bank, also publish catalog and
+   Dashboard integration. The standalone JUPAS report deliberately has no
+   homepage or Library entry. Verify a logged-out visitor sees only preview
+   content, a dedicated development student sees the complete report, and a
+   teacher remains on the JUPAS preview. Updating GitHub Pages alone never
+   publishes the full edition.
 
 ## 6. Owner-Gated Release Automation
 

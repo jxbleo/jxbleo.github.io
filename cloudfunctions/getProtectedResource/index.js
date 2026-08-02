@@ -1,9 +1,9 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const payloads = require("./protected-payloads.private");
+const { roleCanAccess } = require("./access-policy");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
-const ALLOWED_ROLES = new Set(["student", "teacher"]);
 const MAX_RESOURCE_KEY_LENGTH = 96;
 
 async function getAuthenticatedProfile() {
@@ -17,8 +17,11 @@ async function getAuthenticatedProfile() {
   }).limit(1).get();
   const profile = result.data && result.data[0];
   if (!profile) throw new Error("STUDENT_NOT_LINKED");
-  if (!ALLOWED_ROLES.has(String(profile.role || "student"))) throw new Error("ACCESS_DENIED");
   return profile;
+}
+
+function requireResourceRole(profile, resource) {
+  if (!roleCanAccess(profile, resource)) throw new Error("ACCESS_DENIED");
 }
 
 function requestedResource(event) {
@@ -75,8 +78,9 @@ function errorView(error) {
 
 exports.main = async (event = {}) => {
   try {
-    await getAuthenticatedProfile();
+    const profile = await getAuthenticatedProfile();
     const { key, resource } = requestedResource(event);
+    requireResourceRole(profile, resource);
     if (String(event.action || "manifest") === "chunk") {
       return chunkView(key, resource, event);
     }

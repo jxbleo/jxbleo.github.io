@@ -140,7 +140,7 @@ Active or relevant functions:
   enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change
 - `getProtectedResource`: authenticated, chunked delivery of private reference
-  artifacts to active student/teacher profiles
+  artifacts, with per-resource role policies after active-profile validation
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
 Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git
@@ -156,6 +156,9 @@ function packager bundles that private module into the ignored deployment ZIP.
 GitHub Pages contains only the preview shell. After CloudBase authorization,
 the browser fetches bounded chunks, decompresses them locally, verifies the
 SHA-256 manifest, and renders the report in a sandboxed `srcdoc` iframe.
+The private module may contain multiple named resources. Each resource can
+declare `allowed_roles`; the JUPAS weighting report is student-only while the
+existing HKDSE topic bank retains student/teacher access.
 
 My Words enrichment uses a dictionary-first cascade inside `studentVocabulary`:
 the shared `vocabulary_lexicon` collection is checked first, then the fixed

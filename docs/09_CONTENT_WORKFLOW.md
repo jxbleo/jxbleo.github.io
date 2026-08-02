@@ -329,9 +329,10 @@ When a report should offer only a visitor preview and a student-only full editio
 
 1. Keep the reviewed full source outside the public repository.
 2. Build a public preview page containing only intentionally public excerpts.
-3. Add `access: "student-preview"` catalog metadata for the relevant Library sections.
-4. Generate the ignored private payload with
-   `npm run prepare:dse-topic-bank -- --source /absolute/path/report.html`.
+3. Add `access: "student-preview"` catalog metadata only when the report should appear in Library.
+4. Generate the ignored private payload with the command for that resource:
+   `npm run prepare:dse-topic-bank -- --source /absolute/path/report.html` or
+   `npm run prepare:jupas-report -- --source /absolute/path/report.html`.
 5. Run `npm run test:protected-resources` and package `getProtectedResource`.
 6. Deploy the CloudBase function before publishing the static preview/catalog.
 
