@@ -649,6 +649,9 @@ flowchart TD
 - `submitAttempt` 提交词汇正式测试时必须校验 `test_session_id`
 - 正式测试判分使用 session 中记录的 `question_ids`，不能相信浏览器临时传来的题目范围
 - 同一学生有 active 词汇正式测试时，其他设备或其他浏览器页签不能进入学生云函数功能
+- heartbeat 每 10 秒发送一次。普通网络错误不得因单次请求失败立即作废测试；前端应在
+  60 秒恢复窗口内自动重试并保留当前答案，只有明确的 session/auth/content 错误或
+  连续网络不可用达到恢复窗口时才结束测试
 - 切换 App、切换页签、离开页面、heartbeat 超时或测试过期会把 session 标记为
   `abandoned`
 - `abandoned` / `invalidated` 不写入正式 attempt，不改变 assignment 状态，

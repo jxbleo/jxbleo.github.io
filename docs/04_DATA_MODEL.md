@@ -529,6 +529,9 @@ Rules:
   surfaces while a session is active. The browser must generate this ID in
   memory for each page load rather than storing it in `sessionStorage`, because
   cloned tabs can inherit session storage.
+- `heartbeat_timeout_seconds` is 60. The browser normally heartbeats every 10
+  seconds and retries transient network failures within that window; one failed
+  network request does not itself close or abandon the session.
 - Leaving the page, switching apps/tabs, heartbeat timeout, or timer expiry
   closes the session as `abandoned` and does not create an attempt or change
   assignment status.

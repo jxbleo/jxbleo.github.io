@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-02
+
+### Fixed
+
+- Prevented one transient CloudBase heartbeat failure from immediately
+  interrupting a countable Vocabulary Test. The page now preserves answers,
+  shows a reconnecting state, and retries for up to 60 seconds, while explicit
+  session errors and page/app switching remain terminal integrity events.
+
 ## 2026-08-01
 
 ### Added
