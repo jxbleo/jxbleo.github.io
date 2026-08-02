@@ -1532,8 +1532,23 @@
         }
 
         .test-sticky-score[hidden],
-        .test-sticky-redo[hidden] {
+        .test-sticky-redo[hidden],
+        .test-network-status[hidden] {
             display: none;
+        }
+
+        .test-network-status {
+            width: fit-content;
+            min-height: 28px;
+            margin: 6px auto 0;
+            padding: 5px 12px;
+            border: 1px solid rgba(217, 119, 6, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 247, 214, 0.94);
+            color: #7c4a03;
+            font-size: 0.8rem;
+            font-weight: 850;
+            text-align: center;
         }
 
         .test-set-btn {
@@ -2039,6 +2054,7 @@
                                 <button class="word-bank-redo test-sticky-redo" id="test-sticky-redo-btn" type="button" data-test-sticky-redo hidden>Retry</button>
                             </div>
                         </div>
+                        <div id="test-network-status" class="test-network-status" hidden role="status" aria-live="polite"></div>
                         <div id="test-sticky-score" class="test-sticky-score" hidden aria-live="polite"></div>
                         <div id="test-word-bank" class="test-word-bank" hidden></div>
                     </div>
@@ -2080,6 +2096,15 @@
         var unitData = null;
         var testTimerId = null;
         var testHeartbeatId = null;
+        var testHeartbeatRetryId = null;
+        var testHeartbeatInFlight = false;
+        var testHeartbeatFailureCount = 0;
+        var testLastHeartbeatSuccessAt = 0;
+        var testHeartbeatGeneration = 0;
+        var VOCABULARY_HEARTBEAT_INTERVAL_MS = 10 * 1000;
+        var VOCABULARY_HEARTBEAT_REQUEST_TIMEOUT_MS = 8 * 1000;
+        var VOCABULARY_HEARTBEAT_RECOVERY_WINDOW_MS = 60 * 1000;
+        var VOCABULARY_HEARTBEAT_RETRY_DELAYS_MS = [2 * 1000, 5 * 1000, 10 * 1000];
         var testRemainingSeconds = 0;
         var activeTestSessionId = '';
         var activeTestGroups = [];
@@ -2250,24 +2275,113 @@
             testStartedAt = normalizeDateString(session.started_at);
         }
 
+        function setTestNetworkStatus(message) {
+            var status = document.getElementById('test-network-status');
+            if (!status) return;
+            status.textContent = message || '';
+            status.hidden = !message;
+        }
+
+        function heartbeatErrorMarker(error) {
+            if (!error) return '';
+            return [error.code, error.message, error.errMsg, String(error)]
+                .filter(Boolean)
+                .join(' ');
+        }
+
+        function isTerminalHeartbeatError(error) {
+            return /VOCABULARY_TEST_(SESSION_(EXPIRED|CLOSED|NOT_FOUND)|DEVICE_BLOCKED)|VOCABULARY_CONTENT_OUTDATED|AUTH_REQUIRED|LOGIN_REQUIRED|UNAUTHENTICATED|INVALID_LOGIN_STATE|TOKEN[^ ]*EXPIRED|STUDENT_(NOT_LINKED|REQUIRED)/i.test(heartbeatErrorMarker(error));
+        }
+
+        function heartbeatRequestWithTimeout(sessionId) {
+            var timeoutId = null;
+            var timeout = new Promise(function(resolve, reject) {
+                timeoutId = window.setTimeout(function() {
+                    reject(new Error('Network request timed out.'));
+                }, VOCABULARY_HEARTBEAT_REQUEST_TIMEOUT_MS);
+            });
+            return Promise.race([
+                callVocabularyTestSession('heartbeatVocabularyTestSession', {
+                    test_session_id: sessionId
+                }),
+                timeout
+            ]).then(function(response) {
+                clearTimeout(timeoutId);
+                return response;
+            }, function(error) {
+                clearTimeout(timeoutId);
+                throw error;
+            });
+        }
+
+        function scheduleTestHeartbeatRetry(generation) {
+            if (testHeartbeatRetryId || generation !== testHeartbeatGeneration) return;
+            var delayIndex = Math.min(
+                Math.max(0, testHeartbeatFailureCount - 1),
+                VOCABULARY_HEARTBEAT_RETRY_DELAYS_MS.length - 1
+            );
+            testHeartbeatRetryId = window.setTimeout(function() {
+                testHeartbeatRetryId = null;
+                runTestHeartbeat(generation);
+            }, VOCABULARY_HEARTBEAT_RETRY_DELAYS_MS[delayIndex]);
+        }
+
+        function runTestHeartbeat(generation) {
+            if (generation !== testHeartbeatGeneration || testHeartbeatInFlight || testHeartbeatRetryId) return;
+            if (!activeTestSessionId || !isCountedGroupCount(activeTestGroupCount)) return;
+            var sessionId = activeTestSessionId;
+            testHeartbeatInFlight = true;
+            heartbeatRequestWithTimeout(sessionId).then(function() {
+                if (generation !== testHeartbeatGeneration || sessionId !== activeTestSessionId) return;
+                testHeartbeatFailureCount = 0;
+                testLastHeartbeatSuccessAt = Date.now();
+                setTestNetworkStatus('');
+            }).catch(function(error) {
+                if (generation !== testHeartbeatGeneration || sessionId !== activeTestSessionId) return;
+                if (!testLocked || testSubmitting) return;
+                if (isTerminalHeartbeatError(error)) {
+                    endTestForIntegrity('heartbeat_failed', sessionError(error).message);
+                    return;
+                }
+                testHeartbeatFailureCount += 1;
+                if (Date.now() - testLastHeartbeatSuccessAt >= VOCABULARY_HEARTBEAT_RECOVERY_WINDOW_MS) {
+                    endTestForIntegrity(
+                        'heartbeat_timeout',
+                        'The network was unavailable for too long. This vocabulary quiz was interrupted. Please start again when you are ready.'
+                    );
+                    return;
+                }
+                setTestNetworkStatus('Network unstable — reconnecting…');
+                scheduleTestHeartbeatRetry(generation);
+            }).then(function() {
+                if (generation === testHeartbeatGeneration) testHeartbeatInFlight = false;
+            });
+        }
+
         function startTestHeartbeat() {
             stopTestHeartbeat();
             if (!activeTestSessionId || !isCountedGroupCount(activeTestGroupCount)) return;
+            var generation = testHeartbeatGeneration;
+            testLastHeartbeatSuccessAt = Date.now();
             testHeartbeatId = window.setInterval(function() {
-                callVocabularyTestSession('heartbeatVocabularyTestSession', {
-                    test_session_id: activeTestSessionId
-                }).catch(function(error) {
-                    if (!testLocked || testSubmitting) return;
-                    endTestForIntegrity('heartbeat_failed', sessionError(error).message);
-                });
-            }, 10000);
+                runTestHeartbeat(generation);
+            }, VOCABULARY_HEARTBEAT_INTERVAL_MS);
         }
 
         function stopTestHeartbeat() {
+            testHeartbeatGeneration += 1;
             if (testHeartbeatId) {
                 clearInterval(testHeartbeatId);
                 testHeartbeatId = null;
             }
+            if (testHeartbeatRetryId) {
+                clearTimeout(testHeartbeatRetryId);
+                testHeartbeatRetryId = null;
+            }
+            testHeartbeatInFlight = false;
+            testHeartbeatFailureCount = 0;
+            testLastHeartbeatSuccessAt = 0;
+            setTestNetworkStatus('');
         }
 
         function startVocabularyTestSession(groups) {

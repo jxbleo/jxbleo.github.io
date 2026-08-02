@@ -3,7 +3,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
 const VOCABULARY_TEST_SESSION_COLLECTION = "vocabulary_test_sessions";
-const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 30 * 1000;
+const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 60 * 1000;
 
 async function getAuthenticatedUid() {
   const userInfo = await app.auth().getUserInfo();

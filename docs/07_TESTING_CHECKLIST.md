@@ -873,8 +873,14 @@ Check:
   the session abandoned and does not create an attempt
 - another device or browser tab for the same account is blocked from student
   cloud-backed features while a 5+ group Vocabulary Test is active
-- heartbeat runs about every 10 seconds, and sessions with no heartbeat for
-  more than 30 seconds become abandoned
+- heartbeat runs about every 10 seconds; one transient network failure shows a
+  reconnecting status, preserves entered answers, and retries instead of
+  ending the test
+- a recovered heartbeat inside 60 seconds clears the reconnecting status and
+  keeps the same session active; sessions with no successful heartbeat for
+  more than 60 seconds become abandoned
+- explicit expired/closed/device-blocked/content-outdated heartbeat errors
+  still end the test immediately, and hiding/leaving the page still abandons it
 - group metadata is stored
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons

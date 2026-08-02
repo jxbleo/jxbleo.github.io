@@ -271,11 +271,15 @@ Rules:
    version, private answer/explanation snapshots, server start and expiry times
    based on 90 seconds per selected group, an in-memory page-instance ID
    generated on each page load, and heartbeat state.
-4. The page heartbeats every 10 seconds while visible and active.
+4. The page heartbeats every 10 seconds while visible and active. A transient
+   network failure enters a 60-second recovery window with bounded retries;
+   the current answers remain in place and the page shows a reconnecting
+   status. Explicit session/auth/content errors remain terminal.
 5. `submitAttempt` validates `test_session_id` and grades from the session's
    locked snapshots, treating missing answers as blanks. A grading-key update
    during the test therefore cannot change that test's result.
-6. Switching apps/tabs, leaving the page, heartbeat timeout, or time expiry
+6. Switching apps/tabs, leaving the page, 60 seconds without a successful
+   heartbeat, or time expiry
    closes the session as `abandoned` without creating an attempt or changing
    assignment status.
 

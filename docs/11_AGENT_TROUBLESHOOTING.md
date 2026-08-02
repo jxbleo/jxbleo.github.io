@@ -54,6 +54,7 @@
 | BBC 填空输入框后面多出下划线 | 数据里用了 6 个或更多 `_` | 扫描 `data/BBC-*.json` 的 `_{6,}` |
 | Vocabulary Learn 模式 Check Answers 弹 `NO_GRADED_QUESTIONS` | `grading_keys.answers` 为空，或页面提交的 `questionKey` 和私有答案 key 不匹配 | 查 CloudBase / `.cloudbase-private/import/grading-keys-cloudbase.json` 中对应 `set_id` 的 `answers`；重新运行 `node scripts/prepare-cloudbase-data.js`，必要时用 `cloudbase:import:content -- --only grading_keys --ids <set_id> --overwrite-existing` 修复已存在的空 grading key |
 | Vocabulary 本地直接打开加载失败 | `fetch` 被 file:// 限制，缺 JS fallback 或本地 server | `content/vocabulary/*.js` fallback；用本地 HTTP server |
+| Vocabulary Test 做到一半弹 `Quiz interrupted` / `Network request error` | 旧前端把单次 CloudBase heartbeat 网络错误当成致命错误，或新前端已连续 60 秒无法恢复 | 发布最新版 `vocabulary.html` 与四个 session-aware 云函数；确认页面先显示 reconnecting 并按 2/5/10 秒节奏重试，服务器 timeout 为 60 秒；切换 App/页签仍会按规则立即中断 |
 | Git push 超时或失败 | 网络或 GitHub HTTPS 问题，不一定本地提交失败 | `git log`、`git status`、`rev-parse HEAD origin/main` |
 | 多个 Codex 窗口互相影响 | 同一工作树存在 unrelated dirty files | 每次先 `git status --short`；只 stage 当前任务文件 |
 
