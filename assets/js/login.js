@@ -111,9 +111,11 @@
         message.textContent = text || '';
     }
 
-    window.MrCatCloud.getLoginState().then(function(state) {
-        if (state && !window.MrCatAuth.isVisitor()) {
-            window.location.replace(studentDestination());
+    window.MrCatAuth.getSession().then(function(session) {
+        if (session && (session.mode === 'student' || session.mode === 'teacher')) {
+            window.location.replace(safeReturnTarget() || (session.mode === 'teacher'
+                ? 'teacher.html'
+                : 'dashboard.html'));
         }
     }).catch(function() {});
 
