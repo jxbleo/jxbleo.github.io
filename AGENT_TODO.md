@@ -68,6 +68,10 @@ cp .qa-secrets.example .qa-secrets.local
 
 ### 2026-08-02
 
+- Removed the final `Further Questions` block from the reviewed local HKDSE
+  full-report source, regenerated its private payload, and redeployed
+  `getProtectedResource`. Added a regression assertion that rejects any future
+  payload containing that block; the updated function is Active/Available.
 - Added the HKDSE Writing and Speaking topic-bank preview page and static
   catalog cards. Visitors see the coverage summary and two sample topics;
   authenticated active student/teacher profiles load the private full report

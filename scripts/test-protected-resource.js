@@ -27,10 +27,12 @@ function main() {
   assert(resource.chunks.every((chunk) => chunk.length <= 96000), "A protected chunk is too large.");
 
   const html = zlib.gunzipSync(Buffer.from(resource.chunks.join(""), "base64"));
+  const htmlText = html.toString("utf8");
   assert.strictEqual(html.length, resource.source_bytes);
   assert.strictEqual(crypto.createHash("sha256").update(html).digest("hex"), resource.sha256);
-  assert(html.toString("utf8").includes('data-artifact-block-id="writing-index"'));
-  assert(html.toString("utf8").includes('data-artifact-block-id="speaking-index"'));
+  assert(htmlText.includes('data-artifact-block-id="writing-index"'));
+  assert(htmlText.includes('data-artifact-block-id="speaking-index"'));
+  assert(!htmlText.includes('data-artifact-block-id="further-questions"'), "Further Questions must not be present in the protected report.");
 
   const forbiddenFullText = "Northbound travel and local retail";
   publicFiles.forEach((filePath) => {

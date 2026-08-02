@@ -13,6 +13,11 @@
   report through a new authenticated, integrity-checked CloudBase resource
   function. The complete HTML remains outside the public Git repository.
 
+### Changed
+
+- Removed the final `Further Questions` section from the protected HKDSE topic
+  bank and redeployed the regenerated full report.
+
 ### Fixed
 
 - Prevented one transient CloudBase heartbeat failure from immediately
