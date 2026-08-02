@@ -7,6 +7,9 @@
 
 ### Added
 
+- Added a visitor-preview/student-only access boundary to the standalone港八大
+  DSE/JUPAS weighting report. The complete report now travels through the
+  authenticated protected-resource function instead of public GitHub Pages HTML.
 - Added the HKDSE Writing & Speaking Topic Bank to both DSE Writing and DSE
   Speaking Library categories. Visitors receive a structured preview with
   mosaicked locked content; active students and teachers receive the complete
@@ -20,6 +23,8 @@
 
 ### Fixed
 
+- Fixed the Lingnan University official-source URL that previously left a
+  visible `.pdf)` suffix outside the link.
 - Prevented one transient CloudBase heartbeat failure from immediately
   interrupting a countable Vocabulary Test. The page now preserves answers,
   shows a reconnecting state, and retries for up to 60 seconds, while explicit

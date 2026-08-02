@@ -13,6 +13,7 @@
     "test:star-rewards": "node scripts/test-star-rewards.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
     "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",
+    "prepare:jupas-report": "node scripts/prepare-protected-resource.js --resource hk8-dse-jupas-weighting-2026-27",
     "package:functions": "node scripts/package-cloudfunctions.js",
     "package:functions:all": "node scripts/package-cloudfunctions.js --all",
     "release:plan": "node scripts/generate-deploy-plan.js",

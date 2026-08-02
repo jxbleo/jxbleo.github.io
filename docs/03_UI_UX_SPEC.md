@@ -25,6 +25,7 @@
 | `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
 | `dse-topic-bank.html` | HKDSE Writing/Speaking visitor preview and protected student report |
+| `hk8-dse-jupas-weighting-report-2026-27.html` | Unlisted JUPAS weighting preview and student-only full report |
 
 ### Shared System Shell
 
@@ -59,6 +60,13 @@ target so the student comes directly back to the report.
 Protected reference cards may come from the static catalog even when they are
 intentionally absent from assignable CloudBase `sets`; authenticated students
 still see them in the matching Library category.
+
+The standalone港八大 JUPAS weighting report follows the same preview/full
+transition but has no Library or homepage entry. Visitors see coverage metrics,
+two guidance excerpts, and a mosaicked outline. Only an active student account
+may replace that preview with the complete report; teacher and visitor sessions
+remain on the preview. The public page must not contain the full tables, SQL,
+caveats, or official-source section.
 
 ### Login
 
