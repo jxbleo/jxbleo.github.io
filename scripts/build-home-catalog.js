@@ -64,7 +64,7 @@ function buildSortValue(item, section) {
 }
 
 function buildCatalogItem(item, section) {
-  return {
+  const catalogItem = {
     id: item.id,
     sectionId: item.sectionId,
     title: buildTitle(item, section),
@@ -76,6 +76,8 @@ function buildCatalogItem(item, section) {
     note: item.note || "",
     visible: item.visible !== false,
   };
+  if (item.access && item.access !== "public") catalogItem.access = item.access;
+  return catalogItem;
 }
 
 function main() {

@@ -66,6 +66,23 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-02
+
+- Added the HKDSE Writing and Speaking topic-bank preview page and static
+  catalog cards. Visitors see the coverage summary and two sample topics;
+  authenticated active student/teacher profiles load the private full report
+  through `getProtectedResource`.
+- Verified the public HTML contains no tested full-report phrase, the ignored
+  private payload reconstructs with the expected SHA-256 digest, and the local
+  visitor page renders at desktop and mobile widths without console errors or
+  horizontal overflow.
+- Deployed `getProtectedResource` to the CloudBase development environment on
+  Nodejs18.15 and confirmed it is Active/Available. An unauthenticated invoke
+  returns `AUTH_REQUIRED`; no database records or test accounts were created.
+- Authenticated browser QA was not automated because `.qa-secrets.local` is not
+  present. A future run may smoke the full student path with a dedicated
+  development account after the static site is published.
+
 ### 2026-07-26
 
 - Removed the Assignments modal's redundant top summary capsules, renamed its

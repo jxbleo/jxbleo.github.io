@@ -54,7 +54,7 @@ async function main() {
   const studentFunction = fs.readFileSync(path.join(root, "cloudfunctions/studentVocabulary/index.js"), "utf8");
   const teacherFunction = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");
   assert(dashboardHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
-  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260801-9"));
+  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260802-1"));
   assert(dashboardHtml.includes('id="my-words-export-panel"'));
   assert(dashboardJs.includes("AI dictionary lookup is under development."));
   assert(dashboardJs.includes("vocabExpanded: {}"), "expanded My Words details must survive list rerenders");

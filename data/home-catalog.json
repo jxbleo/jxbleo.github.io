@@ -1098,6 +1098,38 @@
       "visible": true
     },
     {
+      "id": "DSE-TOPIC-BANK-SPEAKING",
+      "sectionId": "dse-english-paper-4",
+      "title": "HKDSE Writing & Speaking Topic Bank",
+      "href": "dse-topic-bank.html",
+      "displayValue": "2012–2026",
+      "sortValue": 1,
+      "topic": "Speaking / Writing",
+      "tags": [
+        "Topic Bank",
+        "Student Access"
+      ],
+      "note": "访客可预览；学生登录后查看完整版",
+      "visible": true,
+      "access": "student-preview"
+    },
+    {
+      "id": "DSE-TOPIC-BANK-WRITING",
+      "sectionId": "dse-english-paper-2",
+      "title": "HKDSE Writing & Speaking Topic Bank",
+      "href": "dse-topic-bank.html",
+      "displayValue": "2012–2026",
+      "sortValue": 1,
+      "topic": "Writing / Speaking",
+      "tags": [
+        "Topic Bank",
+        "Student Access"
+      ],
+      "note": "访客可预览；学生登录后查看完整版",
+      "visible": true,
+      "access": "student-preview"
+    },
+    {
       "id": "C7-T1-S1",
       "sectionId": "ielts-listening",
       "title": "C7-T1-S1 · Transport from Airport to Milton",

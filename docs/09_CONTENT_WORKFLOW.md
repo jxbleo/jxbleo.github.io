@@ -323,6 +323,21 @@ the priority.
 Promote temporary material into the shared content system only when it becomes
 recurring, assignable, or countable.
 
+### Protected reference reports
+
+When a report should offer only a visitor preview and a student-only full edition:
+
+1. Keep the reviewed full source outside the public repository.
+2. Build a public preview page containing only intentionally public excerpts.
+3. Add `access: "student-preview"` catalog metadata for the relevant Library sections.
+4. Generate the ignored private payload with
+   `npm run prepare:dse-topic-bank -- --source /absolute/path/report.html`.
+5. Run `npm run test:protected-resources` and package `getProtectedResource`.
+6. Deploy the CloudBase function before publishing the static preview/catalog.
+
+Never implement this product state by committing the full report and applying
+CSS blur. Removing styles must not reveal protected material.
+
 ## 12. Correction Flow
 
 When the owner reports a content correction:
