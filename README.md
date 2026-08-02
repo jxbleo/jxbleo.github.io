@@ -11,6 +11,7 @@ boundaries matter more than visual polish right now.
 ## What It Does
 
 - Student login and visitor browsing
+- Visitor previews plus authenticated delivery of protected reference reports
 - Student dashboard with assigned work and finished work
 - Teacher page for student management, assignment, library preview, and Argue
 - Shared practice runtimes for BBC, IELTS Reading, IELTS Listening, and

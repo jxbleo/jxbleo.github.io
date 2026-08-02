@@ -146,6 +146,7 @@ Active or relevant functions:
 - `teacherAdmin`
 - `studentVocabulary`
 - `changePassword`
+- `getProtectedResource`
 
 Common validation:
 
@@ -401,6 +402,38 @@ await window.MrCatCloud.callFunction("teacherAdmin", {
 Add `apply: true` only after candidate counts, question counts, and percentage
 changes have been reviewed. The action writes adjusted fields, updates linked
 assignment summaries, repairs eligible STAR records, and is idempotent.
+
+### Protected HKDSE Topic Bank
+
+This feature has two deployment tracks and no database migration:
+
+1. Generate the private payload from the reviewed local report. The generated
+   module is ignored by Git and must never be staged:
+
+```bash
+npm run prepare:dse-topic-bank -- --source /absolute/path/HKDSE-topic-bank.html
+npm run test:protected-resources
+npm run package:functions -- getProtectedResource
+```
+
+2. Create or update the development CloudBase `getProtectedResource` function
+   with Node.js 18 and the generated `deploy-packages/getProtectedResource.zip`.
+   No environment variable or new collection is required. If using CLI, extract
+   the ZIP and run `fn deploy` from inside that narrow bundle directory so the
+   CLI cannot package the repository. `fn deploy` creates the function on first
+   use and `--force` replaces its code on later runs:
+
+```bash
+MRCAT_PROTECTED_RESOURCE_DIR="$(mktemp -d /private/tmp/mrcat-protected-resource.XXXXXX)"
+unzip -q deploy-packages/getProtectedResource.zip -d "$MRCAT_PROTECTED_RESOURCE_DIR"
+(cd "$MRCAT_PROTECTED_RESOURCE_DIR" && tcb -e mrcat-dev-d9gwy2v1icdfdf597 -r ap-shanghai fn deploy getProtectedResource --dir . --deployMode zip --runtime Nodejs18.15 --force)
+```
+
+3. Publish `dse-topic-bank.html`, its versioned CSS/JS, the catalog metadata,
+   Login return handling, and Dashboard catalog merge. Verify a logged-out
+   visitor sees only preview content and a dedicated development student sees
+   the complete report. Updating GitHub Pages alone never publishes the full
+   edition; updating the function alone does not add the Library card.
 
 ## 6. Owner-Gated Release Automation
 

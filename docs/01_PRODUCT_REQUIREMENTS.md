@@ -167,6 +167,7 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 
 - 浏览公开学习内容
 - 打开练习页面查看内容
+- 查看受保护参考资料的明确预览；预览可显示结构、少量示范和马赛克占位
 
 访客不能：
 
@@ -174,6 +175,7 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 提交
 - 保存个人词汇
 - 读取任何 CloudBase 私有数据
+- 通过取消 CSS、查看网页源码或直接请求静态文件取得受保护资料完整版
 
 ### 3.4 Agent
 
@@ -289,6 +291,8 @@ flowchart TD
 - 新增或修订的答案应进入 CloudBase `grading_keys`
 - 公开 runtime 数据只保留题目和展示内容
 - `.cloudbase-private/` 生成的导入文件不得提交
+- 只向登录学生开放的完整参考资料不得出现在 GitHub Pages 静态文件中；公开页
+  只保存预览，完整版由 CloudBase 云函数再次验证 active student/teacher 后返回
 
 ## 7. 主要数据对象
 
@@ -809,7 +813,19 @@ flowchart TD
 - AI 只接收词/短语及一个学习上下文，不接收学生身份或个人 Note；每名学生每日最多请求
   10 次，结果必须先预览再确认
 
-### 8.8 resetStudentPassword
+### 8.8 getProtectedResource
+
+用途：向已登录学生或老师提供不应公开进入 GitHub Pages 源码的完整参考资料。
+
+要求：
+
+- 身份只来自 CloudBase authenticated context
+- 必须匹配 active `students` profile，role 只能是 `student` 或 `teacher`
+- 访客静态页只含预览和马赛克占位，不能含可被 CSS 解锁的全文
+- 私有载荷由仓库外源文件生成，生成文件和部署 ZIP 均不提交 Git
+- 分块响应包含数量、编码和 SHA-256；浏览器组装后必须校验完整性
+
+### 8.9 resetStudentPassword
 
 当前状态：独立函数已禁用，真正 reset 走 `teacherAdmin`。
 

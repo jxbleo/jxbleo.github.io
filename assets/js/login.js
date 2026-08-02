@@ -81,6 +81,23 @@
         'Your practice is becoming your strength.'
     ];
 
+    function safeReturnTarget() {
+        var raw = new URLSearchParams(window.location.search).get('return');
+        if (!raw) return '';
+        try {
+            var target = new URL(raw, window.location.href);
+            if (target.origin !== window.location.origin) return '';
+            if (!/\.html$/i.test(target.pathname)) return '';
+            return target.pathname.split('/').pop() + target.search + target.hash;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function studentDestination() {
+        return safeReturnTarget() || 'dashboard.html';
+    }
+
     if (motivationalQuote) {
         motivationalQuote.textContent = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
     }
@@ -96,7 +113,7 @@
 
     window.MrCatCloud.getLoginState().then(function(state) {
         if (state && !window.MrCatAuth.isVisitor()) {
-            window.location.replace('dashboard.html');
+            window.location.replace(studentDestination());
         }
     }).catch(function() {});
 
@@ -122,9 +139,9 @@
                     throw new Error(result && result.message || 'This login is not linked to a student profile.');
                 }
                 window.MrCatAuth.saveProfile(result.student);
-                window.location.href = result.student.role === 'teacher'
+                window.location.href = safeReturnTarget() || (result.student.role === 'teacher'
                     ? 'teacher.html'
-                    : 'dashboard.html';
+                    : 'dashboard.html');
             })
             .catch(function(error) {
                 showMessage(error && error.message ? error.message : 'Unable to sign in. Check your details and try again.');
@@ -139,7 +156,7 @@
         window.MrCatCloud.signOut().catch(function() {}).finally(function() {
             window.MrCatAuth.clearLocalIdentity();
             window.MrCatAuth.setVisitor(true);
-            window.location.href = 'dashboard.html';
+            window.location.href = studentDestination();
         });
     });
 })();

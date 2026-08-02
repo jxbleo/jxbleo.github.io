@@ -3,6 +3,38 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-02: Keep Protected Reports Out of the Static Repository
+
+Decision:
+
+GitHub Pages stores only a useful visitor preview. A complete student-only
+report is generated from a reviewed local source into an ignored private
+module, bundled only into an ignored CloudBase function ZIP, and returned in
+bounded chunks after the backend verifies an active student or teacher profile.
+The browser verifies the SHA-256 manifest before rendering the full report in a
+sandboxed iframe.
+
+Reason:
+
+CSS blur is presentation, not access control: any full text shipped in public
+HTML can be recovered from source or by disabling styles. Reusing CloudBase
+Authentication provides a real authorization boundary without introducing a
+second account system or a new hosting provider.
+
+Trade-offs:
+
+- Good: visitors cannot recover the complete report from GitHub Pages source.
+- Good: existing student and teacher accounts work without migration.
+- Cost: publishing a revised full report requires regenerating and deploying
+  the function ZIP as well as publishing the static preview.
+- Cost: the browser makes several authenticated chunk requests before the full
+  report appears.
+
+Review condition:
+
+Revisit if protected artifacts become numerous enough to justify private
+CloudBase Storage plus short-lived signed downloads instead of function bundles.
+
 ## 2026-08-01: Use an Append-Only Yellow STAR Wallet and Teacher-Confirmed Cash Requests
 
 Decision:

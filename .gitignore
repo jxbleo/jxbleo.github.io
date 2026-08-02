@@ -9,6 +9,7 @@ config.secret.json
 service-account.json
 cloudbase-secret.json
 .cloudbase-private/
+cloudfunctions/getProtectedResource/protected-payloads.private.js
 deploy-packages/
 node_modules/
 __pycache__/

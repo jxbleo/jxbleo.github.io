@@ -3630,6 +3630,22 @@
             });
     }
 
+    function mergeProtectedCatalogResources(resources, publicItems) {
+        var merged = (resources || []).slice();
+        var seen = {};
+        merged.forEach(function(item) {
+            seen[libraryItemIdentity(item)] = true;
+        });
+        (publicItems || []).forEach(function(item) {
+            if (item.access !== 'student-preview') return;
+            var key = libraryItemIdentity(item);
+            if (!key || seen[key]) return;
+            seen[key] = true;
+            merged.push(item);
+        });
+        return merged;
+    }
+
     function loadPublicCatalogSections() {
         if (libraryCatalog) return Promise.resolve();
         return fetch('data/home-catalog.json?v=' + encodeURIComponent(appVersion()))
@@ -3680,8 +3696,15 @@
             state.resources = results[1] && results[1].resources || [];
             state.vocabItems = results[2] && results[2].words || [];
             enrichPendingVocabItems(state.vocabItems);
-            if (!state.resources.length) return loadPublicCatalog().then(function(items) { state.resources = items; });
-            return loadPublicCatalogSections();
+            var hasCloudResources = state.resources.length > 0;
+            return loadPublicCatalog().then(function(items) {
+                state.resources = hasCloudResources
+                    ? mergeProtectedCatalogResources(state.resources, items)
+                    : items;
+            }).catch(function(error) {
+                if (hasCloudResources) return;
+                throw error;
+            });
         });
     }
 

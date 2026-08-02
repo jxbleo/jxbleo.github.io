@@ -5,6 +5,14 @@
 
 ## 2026-08-02
 
+### Added
+
+- Added the HKDSE Writing & Speaking Topic Bank to both DSE Writing and DSE
+  Speaking Library categories. Visitors receive a structured preview with
+  mosaicked locked content; active students and teachers receive the complete
+  report through a new authenticated, integrity-checked CloudBase resource
+  function. The complete HTML remains outside the public Git repository.
+
 ### Fixed
 
 - Prevented one transient CloudBase heartbeat failure from immediately

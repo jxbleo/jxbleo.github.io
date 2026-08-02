@@ -60,6 +60,7 @@ Important pages:
 - `ielts-listening.html`: IELTS Listening runtime
 - `vocabulary.html`: Vocabulary runtime
 - `attempt-review.html`: attempt history/review helper
+- `dse-topic-bank.html`: public preview shell and authenticated full-report reader
 
 Shared frontend assets:
 
@@ -138,12 +139,23 @@ Active or relevant functions:
 - `studentVocabulary`: personal My Words editing/merge/export data, dictionary
   enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change
+- `getProtectedResource`: authenticated, chunked delivery of private reference
+  artifacts to active student/teacher profiles
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
 Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git
 but still required for CloudBase upload. `package:functions` uses locked
 dependencies and esbuild to include only reachable runtime code, so deployed
 functions do not depend on CloudBase resolving npm ranges during an update.
+
+Protected report payloads use a separate private build boundary. The reviewed
+full HTML stays outside the public repository. `scripts/prepare-protected-resource.js`
+gzip-compresses it into the ignored
+`cloudfunctions/getProtectedResource/protected-payloads.private.js`; the normal
+function packager bundles that private module into the ignored deployment ZIP.
+GitHub Pages contains only the preview shell. After CloudBase authorization,
+the browser fetches bounded chunks, decompresses them locally, verifies the
+SHA-256 manifest, and renders the report in a sandboxed `srcdoc` iframe.
 
 My Words enrichment uses a dictionary-first cascade inside `studentVocabulary`:
 the shared `vocabulary_lexicon` collection is checked first, then the fixed

@@ -534,6 +534,15 @@ random, so these details are required history.
 Public repository/runtime data may contain passages, transcripts, questions,
 choices, IDs, and display metadata.
 
+Premium reference artifacts are different from ordinary public lesson content.
+If visitors receive only a blurred or partial preview, the complete artifact
+must not be committed to the public repository or embedded behind CSS blur.
+Keep the full source outside Git, generate the ignored
+`cloudfunctions/getProtectedResource/protected-payloads.private.js`, and place
+it only inside the ignored CloudBase deployment ZIP. The cloud function must
+derive identity from authenticated context and require an active student or
+teacher profile before returning any protected chunk.
+
 Private CloudBase `grading_keys` contains correct answers, accepted variants,
 explanations/evidence, and scoring rules. Do not add new answers to public
 runtime JSON. Do not commit generated private import files.
@@ -719,6 +728,7 @@ Active backend functions:
 - `getCurrentStudent`: authenticated profile lookup
 - `getDashboard`: assignments and student summary
 - `getResources`: visible practice sets
+- `getProtectedResource`: authenticated delivery of private student/teacher reference artifacts
 - `submitAttempt`: grading, attempt storage, assignment update
 - `studentVocabulary`: authenticated student personal word list
 - `teacherAdmin`: teacher-only account, assignment, and data actions

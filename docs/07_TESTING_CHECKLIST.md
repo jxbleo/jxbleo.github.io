@@ -26,6 +26,7 @@ node --check assets/js/dashboard.js
 node --check assets/js/practice-session.js
 npm run test:assignment-schedule
 npm run test:star-rewards
+npm run test:protected-resources
 ```
 
 ### STAR reward rule tests
@@ -72,6 +73,17 @@ Open:
 - at least one IELTS Reading page
 - at least one IELTS Listening page
 - at least one Vocabulary page
+- `http://127.0.0.1:8000/dse-topic-bank.html`
+
+Protected topic-bank checks:
+
+- visitor/no-session mode shows the metrics, two topic samples, mosaic, and login action
+- the public page source and catalog do not contain a known full-report-only phrase
+- login with a dedicated development student returns directly to the topic bank
+- the full report loads only after `getProtectedResource` succeeds, shows the
+  student full-edition state, and passes the SHA-256 integrity check
+- a logged-out direct function call returns `AUTH_REQUIRED`
+- the generated private payload is ignored by Git and the deployment ZIP contains it
 
 Shared shell visual checks:
 

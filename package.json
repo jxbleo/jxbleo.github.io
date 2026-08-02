@@ -11,6 +11,8 @@
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
     "test:star-rewards": "node scripts/test-star-rewards.js",
+    "test:protected-resources": "node scripts/test-protected-resource.js",
+    "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",
     "package:functions": "node scripts/package-cloudfunctions.js",
     "package:functions:all": "node scripts/package-cloudfunctions.js --all",
     "release:plan": "node scripts/generate-deploy-plan.js",

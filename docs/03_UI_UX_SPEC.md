@@ -24,6 +24,7 @@
 | `ielts-listening.html` | IELTS Listening runtime |
 | `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
+| `dse-topic-bank.html` | HKDSE Writing/Speaking visitor preview and protected student report |
 
 ### Shared System Shell
 
@@ -45,6 +46,19 @@ system blue is reserved for the primary action, focus, and selected state.
 Existing semantic/category colors and green/red learning-result colors remain
 unchanged. The shell must provide reduced-transparency, increased-contrast, and
 reduced-motion fallbacks.
+
+### Protected report preview
+
+The HKDSE topic bank gives visitors useful coverage metrics, two representative
+topic samples, and a visibly mosaicked locked region with a student-login
+action. The public DOM must not contain the hidden full report. After login,
+the same page replaces the preview with the complete report and a clear
+full-edition identity state. Login preserves a validated same-origin `return`
+target so the student comes directly back to the report.
+
+Protected reference cards may come from the static catalog even when they are
+intentionally absent from assignable CloudBase `sets`; authenticated students
+still see them in the matching Library category.
 
 ### Login
 
