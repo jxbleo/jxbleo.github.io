@@ -871,12 +871,19 @@
             backdrop-filter: blur(6px);
         }
 
+        .argue-modal-shell {
+            display: grid;
+            justify-items: center;
+            width: min(460px, 100%);
+        }
+
         .argue-modal-card {
             position: relative;
             overflow: hidden;
-            width: min(460px, 100%);
+            width: 100%;
             min-height: 252px;
             padding: 22px;
+            box-sizing: border-box;
             border-radius: 22px;
             background: #fff;
             box-shadow: 0 24px 80px rgba(17, 54, 48, 0.22);
@@ -1038,19 +1045,25 @@
             font-weight: 850;
         }
         .argue-sent-close {
+            display: none;
             min-height: 38px;
-            margin-top: 16px;
+            margin-top: 14px;
             padding: 8px 18px;
-            border: 1px solid rgba(19, 118, 109, 0.18);
+            border: 1px solid rgba(255,255,255,0.82);
             border-radius: 999px;
             color: #0f5f57;
-            background: rgba(255,255,255,0.78);
-            box-shadow: 0 10px 24px rgba(10,52,47,0.10);
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 10px 28px rgba(10,52,47,0.18);
             font-weight: 850;
+            cursor: pointer;
+        }
+        .argue-modal-card.sent + .argue-sent-close {
+            display: block;
+            animation: argueMessageIn 520ms 430ms cubic-bezier(.2,.82,.2,1) both;
         }
         .argue-sent-close:hover {
-            background: rgba(255,255,255,0.96);
-            border-color: rgba(19, 118, 109, 0.28);
+            background: #fff;
+            border-color: #fff;
         }
         @keyframes argueContentOut {
             0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -4854,29 +4867,31 @@
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
-            '<div class="argue-modal-card">' +
-                '<div class="argue-content">' +
-                    '<h2>Tell me why.</h2>' +
-                    '<p class="argue-modal-status" hidden></p>' +
-                    '<div class="argue-answer-panel' + (submittedAnswer ? '' : ' empty') + '">' +
-                        '<span>Your answer</span>' +
-                        '<strong>' + escapeHtml(submittedAnswer || 'No answer') + '</strong>' +
+            '<div class="argue-modal-shell">' +
+                '<div class="argue-modal-card">' +
+                    '<div class="argue-content">' +
+                        '<h2>Tell me why.</h2>' +
+                        '<p class="argue-modal-status" hidden></p>' +
+                        '<div class="argue-answer-panel' + (submittedAnswer ? '' : ' empty') + '">' +
+                            '<span>Your answer</span>' +
+                            '<strong>' + escapeHtml(submittedAnswer || 'No answer') + '</strong>' +
+                        '</div>' +
+                        '<label class="argue-reason-label" for="' + noteId + '">Why do you think this answer should be accepted?</label>' +
+                        '<textarea id="' + noteId + '" aria-label="Argue note"></textarea>' +
+                        '<div class="argue-modal-actions">' +
+                            '<button class="argue-modal-cancel" type="button">Cancel</button>' +
+                            '<button class="argue-modal-submit" type="button">Submit</button>' +
+                        '</div>' +
                     '</div>' +
-                    '<label class="argue-reason-label" for="' + noteId + '">Why do you think this answer should be accepted?</label>' +
-                    '<textarea id="' + noteId + '" aria-label="Argue note"></textarea>' +
-                    '<div class="argue-modal-actions">' +
-                        '<button class="argue-modal-cancel" type="button">Cancel</button>' +
-                        '<button class="argue-modal-submit" type="button">Submit</button>' +
-                    '</div>' +
+                    '<div class="argue-sent-message" aria-live="polite"><div>' +
+                        '<span class="argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
+                            '<path class="argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
+                            '<path class="argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
+                        '</svg></span>' +
+                        '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
+                    '</div></div>' +
                 '</div>' +
-                '<div class="argue-sent-message" aria-live="polite"><div>' +
-                    '<span class="argue-heart" aria-hidden="true"><svg viewBox="0 0 32 32">' +
-                        '<path class="argue-heart-main" d="M16 27s-9.2-5.7-12-11.5C2.2 11.6 3.4 7 7.8 6.1c2.5-.5 4.8.6 8.2 3.7 3.4-3.1 5.7-4.2 8.2-3.7 4.4.9 5.6 5.5 3.8 9.4C25.2 21.3 16 27 16 27z"/>' +
-                        '<path class="argue-heart-small" d="M25 10.8s-2.8-1.8-3.7-3.5c-.6-1.2-.2-2.5 1.1-2.8.8-.2 1.5.2 2.6 1.1 1.1-.9 1.8-1.3 2.6-1.1 1.3.3 1.7 1.6 1.1 2.8-.9 1.7-3.7 3.5-3.7 3.5z"/>' +
-                    '</svg></span>' +
-                    '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
-                    '<button class="argue-sent-close" type="button">Close</button>' +
-                '</div></div>' +
+                '<button class="argue-sent-close" type="button">Close</button>' +
             '</div>';
         document.body.appendChild(modal);
 

@@ -432,7 +432,8 @@
         .teacher-argue-btn.explain-open,
         .teacher-argue-btn.sent { color: #1d4ed8; border-color: rgba(37,99,235,.36); background: #dbeafe; }
         .teacher-argue-modal { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; padding: 20px; background: rgba(25,35,58,.42); backdrop-filter: blur(6px); }
-        .teacher-argue-card { position: relative; overflow: hidden; width: min(420px, 100%); min-height: 252px; padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
+        .teacher-argue-shell { display: grid; justify-items: center; width: min(420px, 100%); }
+        .teacher-argue-card { position: relative; overflow: hidden; width: 100%; min-height: 252px; padding: 16px; box-sizing: border-box; border-radius: 18px; background: #fff; box-shadow: 0 24px 80px rgba(23,32,58,.24); }
         .teacher-argue-card h2 { margin: 0 0 7px; font-size: 1.2rem; color: var(--primary); }
         .teacher-argue-card p { margin: 0 0 14px; color: var(--text-light); line-height: 1.45; }
         .teacher-argue-card textarea { width: 100%; min-height: 112px; padding: 12px 13px; border: 1px solid var(--border-color); border-radius: 14px; font-family: inherit; resize: vertical; box-sizing: border-box; outline: none; }
@@ -457,6 +458,9 @@
         .teacher-argue-card.sent .teacher-argue-heart-small { animation: argueTinyHeart 1s .96s ease both; }
         .teacher-argue-sent-message strong { display: block; color: #1d4ed8; font-size: 1.45rem; line-height: 1.08; }
         .teacher-argue-sent-message > div > span:not(.teacher-argue-heart) { display: block; margin-top: 10px; color: var(--text-light); font-weight: 800; }
+        .teacher-argue-sent-close { display: none; min-height: 38px; margin-top: 14px; padding: 8px 18px; border: 1px solid rgba(255,255,255,.82); border-radius: 999px; color: #1d4ed8; background: rgba(255,255,255,.94); box-shadow: 0 10px 28px rgba(23,32,58,.2); font-weight: 800; cursor: pointer; }
+        .teacher-argue-card.sent + .teacher-argue-sent-close { display: block; animation: argueMessageIn .52s .43s cubic-bezier(.2,.82,.2,1) both; }
+        .teacher-argue-sent-close:hover { background: #fff; border-color: #fff; }
         @keyframes argueContentOut { 0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 55% { opacity: .32; transform: translateY(-8px) scale(.985); filter: blur(1.6px); } 100% { opacity: 0; transform: translateY(-16px) scale(.97); filter: blur(4px); } }
         @keyframes argueSentWash { 0% { opacity: 0; transform: translateX(-18%); } 52% { opacity: 1; transform: translateX(0); } 100% { opacity: 1; transform: translateX(0); } }
         @keyframes argueSentPop { 0% { transform: translateY(0) scale(1); } 44% { transform: translateY(-8px) scale(1.015); } 100% { transform: translateY(0) scale(1); } }
@@ -1575,7 +1579,7 @@
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
-            '<div class="teacher-argue-card">' +
+            '<div class="teacher-argue-shell"><div class="teacher-argue-card">' +
                 '<div class="teacher-argue-content">' +
                     '<h2>Tell me why.</h2>' +
                     '<textarea aria-label="Argue note"></textarea>' +
@@ -1592,12 +1596,13 @@
                     '</svg></span>' +
                     '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
                 '</div></div>' +
-            '</div>';
+            '</div><button class="teacher-argue-sent-close" type="button">Close</button></div>';
         document.body.appendChild(modal);
         modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
             submitStudentArgue(button, q, modal);
         });
         modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
+        modal.querySelector('.teacher-argue-sent-close').addEventListener('click', function() { modal.remove(); });
         modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
         loadStudentArgueStatus(button, q, modal);
     }
@@ -1623,7 +1628,7 @@
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.innerHTML =
-            '<div class="teacher-argue-card">' +
+            '<div class="teacher-argue-shell"><div class="teacher-argue-card">' +
                 '<div class="teacher-argue-content">' +
                     '<h2>Tell me why.</h2>' +
                     '<textarea aria-label="Argue note"></textarea>' +
@@ -1640,12 +1645,13 @@
                     '</svg></span>' +
                     '<strong>Sent to teacher.</strong><span>Thanks for your feedback.</span>' +
                 '</div></div>' +
-            '</div>';
+            '</div><button class="teacher-argue-sent-close" type="button">Close</button></div>';
         document.body.appendChild(modal);
         modal.querySelector('.teacher-argue-submit').addEventListener('click', function() {
             submitTeacherArgue(button, q, answer, modal);
         });
         modal.querySelector('.teacher-argue-cancel').addEventListener('click', function() { modal.remove(); });
+        modal.querySelector('.teacher-argue-sent-close').addEventListener('click', function() { modal.remove(); });
         modal.addEventListener('click', function(event) { if (event.target === modal) modal.remove(); });
     }
 
