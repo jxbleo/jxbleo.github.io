@@ -185,6 +185,10 @@ Practice navigation checks:
   Library for `teacher=1`
 - BBC and Vocabulary shared practice pages show both `Back` and `Home`; IELTS
   Reading and IELTS Listening show both controls in the exam top bar
+- on BBC practice pages, both leave confirmations show only their matching
+  `Back` or `Home` action inside the white card, with no `Stay here`; one
+  external `Close` button sits directly below the card and dismisses the dialog
+  without navigating
 - static practice data requests use the public app-version query, not
   timestamp cache busting such as `?_=` + `Date.now()`
 - IELTS Reading shows the set code only in the black exam bar, reduces paragraph
@@ -203,8 +207,8 @@ After submitting a representative BBC lesson with both correct and incorrect
 answers, verify correct blanks/matching/MC cards are green, incorrect ones are
 light red, and the yellow MC locked-answer state does not cover either result.
 For a `classroom-worksheet` lesson, also verify Show Answers and History/Explain
-content spans the complete multiple-choice card at phone, iPad, and desktop
-widths instead of collapsing into the question-number column.
+content spans the complete fill-blank or multiple-choice card at phone, iPad,
+and desktop widths instead of collapsing into the question-number column.
 
 Stop the server after testing.
 
