@@ -293,6 +293,13 @@ Do not use display names as keys. In the teacher UI, identify a profile row by
 database document ID (`profile_id`/`_id`) and use `auth_uid` for backend
 ownership. This prevents same-name records from being selected together.
 
+Teacher attempt reports opened from the notification bell show mistake-focused
+paper review for BBC and Vocabulary: correct questions are omitted, and BBC
+wrong questions include the private answer explanation. Recorded Vocabulary
+Cloze attempts identify `Quiz` versus timed `Practice`; timed Practice reports
+also show the selected group IDs. Single-group inline Vocabulary practice is
+unrecorded and therefore does not create a teacher notification.
+
 ## 7. Assignment Rules
 
 The separate `teacher.html` interface has four capsules:
@@ -524,6 +531,11 @@ Only Vocabulary `Test Mode` can count:
 - 1-4 selected groups: self-test only, not stored in `attempts`
 - 5 or more groups: countable and stored
 - Practice Mode: not stored
+
+The separate timed Cloze `Practice` flow is an explicit reporting exception:
+it is stored as `mode: "vocabulary_practice_timed"` solely so it can appear in
+teacher notifications, and it remains excluded from assignment progress, STAR,
+student progress, and future assignment initialization.
 
 Countable vocabulary attempts retain `selected_group_count`,
 `selected_group_ids`, overall score, and per-group `group_results`. Groups are

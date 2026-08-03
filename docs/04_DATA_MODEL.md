@@ -269,6 +269,9 @@ Core fields:
 | `audio_started_at` | Date/null | first successful audio play time for audio-based practice |
 | `audio_to_submit_seconds` | number/null | first-audio-play-to-submit duration for audio-based practice |
 | `practice_context` | string | `assignment`, `resource`, or `practice` |
+| `selected_group_count` | number/null | Vocabulary group count for recorded Quiz/timed Practice |
+| `selected_group_ids` | array | ordered Vocabulary group IDs selected for recorded Quiz/timed Practice |
+| `group_results` | array | per-group score summaries for recorded Quiz/timed Practice |
 
 Rules:
 
@@ -284,6 +287,11 @@ Rules:
   student practiced. They do not update assignment summaries, student dashboard
   progress, Teacher View matrix progress, self-study STAR records, or future
   assignment initialization from self-study history.
+- The teacher-only attempt view returns `selected_group_ids` and redacted
+  per-group summaries for recorded Vocabulary Quiz/timed Practice reports. It
+  also resolves per-question explanations from the current private grading key
+  so BBC mistake reports can display explanations without exposing them in
+  public runtime data.
 - Student historical review may return correct answers and explanations for
   attempts that are already passed/mastered, or when the linked assignment has
   `answer_revealed: true`. Attempts below the passing threshold still return

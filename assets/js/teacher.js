@@ -4594,6 +4594,44 @@
         return attempt && attempt.attempt_number ? attempt.attempt_number : index + 1;
     }
 
+    function isBbcAttempt(attempt, assignment) {
+        return (attempt && attempt.mode === 'bbc') || /^BBC-/i.test(attemptSetId(attempt, assignment));
+    }
+
+    function isVocabularyAttempt(attempt, assignment) {
+        var mode = String(attempt && attempt.mode || '');
+        return mode.indexOf('vocabulary_') === 0 || setMatchesFamily(assignment || {}, 'vocabulary');
+    }
+
+    function vocabularyAttemptModeLabel(attempt, assignment) {
+        if (!isVocabularyAttempt(attempt, assignment)) return '';
+        return attempt && attempt.mode === 'vocabulary_practice_timed' ? 'Practice' : 'Quiz';
+    }
+
+    function vocabularyAttemptGroupLabels(attempt, assignment) {
+        var ids = Array.isArray(attempt && attempt.selected_group_ids) ? attempt.selected_group_ids : [];
+        if (!ids.length) return [];
+        var data = questionTextCache[attemptSetId(attempt, assignment)];
+        var groups = data && Array.isArray(data.quizGroups) ? data.quizGroups : [];
+        return ids.map(function(groupId) {
+            var index = groups.findIndex(function(group) { return sameId(group.id, groupId); });
+            if (index === -1) return String(groupId);
+            var group = groups[index];
+            var range = group.id || group.label || '';
+            return 'Group ' + (index + 1) + (range ? ' (' + range + ')' : '');
+        });
+    }
+
+    function renderVocabularyAttemptContext(attempt, assignment) {
+        var mode = vocabularyAttemptModeLabel(attempt, assignment);
+        if (!mode) return '';
+        var groups = vocabularyAttemptGroupLabels(attempt, assignment);
+        return '<div class="matrix-attempt-context">' +
+            '<span class="mode ' + (mode === 'Practice' ? 'practice' : 'quiz') + '">' + escapeHtml(mode) + '</span>' +
+            (groups.length ? '<span>Groups: ' + escapeHtml(groups.join(', ')) + '</span>' : '') +
+        '</div>';
+    }
+
     function matrixAttemptEntries(attempts) {
         return (attempts || []).map(function(attempt, index) {
             return {
@@ -4733,22 +4771,28 @@
         if (!attempt) return '';
         var duration = attemptDurationLabel(attempt);
         var results = attempt.question_results || [];
+        var mistakesOnly = isBbcAttempt(attempt, assignment) || isVocabularyAttempt(attempt, assignment);
+        var visibleResults = mistakesOnly ? results.filter(function(result) {
+            return result.correct !== true;
+        }) : results;
+        var reportLabel = vocabularyAttemptModeLabel(attempt, assignment);
         return '<section class="matrix-work-review">' +
             '<div class="matrix-work-review-head">' +
                 '<button class="matrix-review-back" type="button" data-matrix-review-back>Back to attempts</button>' +
-                '<div><h3>Attempt #' + escapeHtml(entry.number) + ' full work</h3>' +
+                '<div><h3>Attempt #' + escapeHtml(entry.number) + (reportLabel ? ' · ' + escapeHtml(reportLabel) : '') + ' report</h3>' +
                 '<small>' + escapeHtml(formatDateTime(attempt.submitted_at)) +
                 (duration ? ' · ' + escapeHtml(duration) : '') +
                 ' · ' + escapeHtml(formatPercent(attempt.percentage)) + '</small></div>' +
             '</div>' +
+            renderVocabularyAttemptContext(attempt, assignment) +
             '<div class="matrix-work-history">' +
                 '<strong>Attempt history</strong>' +
                 '<span>' + escapeHtml(entries.map(function(item) {
                     return '#' + item.number + ' ' + formatPercent(item.attempt.percentage);
                 }).join(' · ')) + '</span>' +
             '</div>' +
-            (results.length
-                ? '<div class="matrix-work-question-list">' + results.map(function(result) {
+            (visibleResults.length
+                ? '<div class="matrix-work-question-list">' + visibleResults.map(function(result) {
                     var correct = result.correct === true;
                     var questionText = attemptQuestionText(result, attempt, assignment);
                     return '<article class="matrix-work-question ' + (correct ? 'correct' : 'wrong') + '">' +
@@ -4765,9 +4809,15 @@
                             '<div><small>Correct answer</small><strong>' +
                                 escapeHtml(formatAnswerText(result.correct_answer, 'not available')) + '</strong></div>' +
                         '</div>' +
+                        (isBbcAttempt(attempt, assignment)
+                            ? '<div class="matrix-work-explanation"><small>Answer explanation</small><p>' +
+                                escapeHtml(formatAnswerText(result.explanation, 'No explanation available yet.')) + '</p></div>'
+                            : '') +
                     '</article>';
                 }).join('') + '</div>'
-                : '<div class="matrix-wrong-empty">No per-question records are available for this attempt.</div>') +
+                : '<div class="matrix-wrong-empty">' +
+                    (mistakesOnly && results.length ? 'No wrong answers in this attempt.' : 'No per-question records are available for this attempt.') +
+                '</div>') +
         '</section>';
     }
 
@@ -4796,6 +4846,7 @@
                         '<span class="matrix-score-pill ' + (percent != null && percent < 50 ? 'fail' : '') + '">' +
                         escapeHtml(formatPercent(attempt.percentage)) + '</span>' +
                     '</div></div>' +
+                    renderVocabularyAttemptContext(attempt, assignment) +
                     renderMatrixAttemptWrongRows(attempt) +
                 '</article>';
             }).join('') +
@@ -5746,6 +5797,7 @@
 
     function attemptStatusLabel(attempt) {
         if (attempt && attempt.mode === 'vocabulary_practice_timed') return 'practiced';
+        if (attempt && attempt.mode === 'vocabulary_test') return 'completed a quiz for';
         if (attempt.mastered) return 'mastered';
         if (attempt.passed) return 'finished';
         return 'tried';

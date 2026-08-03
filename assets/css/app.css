@@ -5833,6 +5833,30 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     color: var(--accent);
     background: rgba(244,239,255,0.68);
 }
+.matrix-attempt-context {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 0 14px 11px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+.matrix-attempt-context span {
+    overflow-wrap: anywhere;
+}
+.matrix-attempt-context .mode {
+    border-radius: 999px;
+    padding: 5px 9px;
+    color: #365f4d;
+    background: rgba(6, 214, 160, 0.12);
+    font-weight: 950;
+}
+.matrix-attempt-context .mode.quiz {
+    color: #6b4a08;
+    background: rgba(255, 190, 11, 0.16);
+}
 .matrix-score-pill {
     min-width: 76px;
     padding: 8px 10px;
@@ -6017,6 +6041,27 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .matrix-work-question.wrong .matrix-work-answer-grid > div:first-child strong {
     color: var(--danger);
+}
+.matrix-work-explanation {
+    padding: 11px 12px 13px;
+    border-top: 1px solid var(--line);
+    background: rgba(255, 248, 224, 0.62);
+}
+.matrix-work-explanation small {
+    display: block;
+    margin-bottom: 5px;
+    color: #8a5a00;
+    font-size: 0.64rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+.matrix-work-explanation p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 720;
+    line-height: 1.5;
+    white-space: pre-line;
 }
 .assignment-progress-mode-tabs {
     display: inline-grid;

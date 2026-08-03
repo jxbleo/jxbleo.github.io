@@ -74,6 +74,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   `Read all` 可以一次把当前所有 attempt 线程标记为已读，之后的新提交仍会变成未读
 - 点击教师铃铛中的学生完成线程后，详情先停留在全部 attempts 的柱状图总览；
   不自动跳到某次答案。只有点击某根柱子后，才选中并滚动到下方对应 attempt 详情
+- 教师从铃铛或 View 打开 BBC / Vocabulary 某次提交的试卷报告时，只显示错题，
+  不再重复显示正确题。BBC 错题同时显示教师专用的标准答案和答案解析。
+  Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`；计时 Practice 还显示学生
+  当次选择的具体词组。单组即时 Practice 不保存 attempt，因此不产生教师通知
 - 教师右上角的 Notifications、Review、Dictionary 与 STAR Redemption 都打开
   同尺寸、同结构的独立弹窗：统一的内容卡片、内部滚动区和卡片外正下方 `Close`。
   Review 直接以 Pending / Approved / Rejected 三个状态入口开始，每个入口始终显示

@@ -714,6 +714,15 @@ Check:
   correct score heights; tapping a bar adds the selected outline and still
   scrolls to the matching attempt card below. Reduced motion removes press and
   width transitions without removing selection feedback
+- Open the paper report for a BBC attempt containing both correct and wrong
+  answers: only wrong questions appear, and each shows student answer, correct
+  answer, and the private answer explanation. An all-correct BBC attempt shows
+  the no-wrong-answers state.
+- Open recorded Vocabulary Quiz and timed Practice attempts: both reports show
+  only wrong questions and have the correct `Quiz` / `Practice` label. Timed
+  Practice shows every selected group ID; its notification does not alter the
+  View matrix or assignment summary. Single-group inline Practice creates no
+  notification.
 - Set a task to non-default Passing and Mastery values, submit an attempt, then
   open it from both Teacher View and the notification bell. Both charts must
   show the backend assignment values. For a historical thread whose assignment

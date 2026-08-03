@@ -1169,17 +1169,25 @@ function attemptView(record, gradingKey) {
   const gradingAnswers = gradingKey && gradingKey.answers && typeof gradingKey.answers === "object"
     ? gradingKey.answers
     : {};
+  const gradingExplanations = gradingKey && gradingKey.explanations && typeof gradingKey.explanations === "object"
+    ? gradingKey.explanations
+    : {};
   const questionResults = effectiveQuestionResults(attempt).map((item) => {
     const questionId = item.question_id || item.id || "";
     let correctAnswer = item.correct_answer;
+    let explanation = item.explanation;
     if (questionId && Object.prototype.hasOwnProperty.call(gradingAnswers, questionId)) {
       correctAnswer = gradingAnswers[questionId];
+    }
+    if (questionId && Object.prototype.hasOwnProperty.call(gradingExplanations, questionId)) {
+      explanation = gradingExplanations[questionId];
     }
     return {
       question_id: questionId,
       submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
       correct: item.correct === true,
       correct_answer: correctAnswer == null ? null : correctAnswer,
+      explanation: explanation == null ? "" : explanation,
     };
   });
   return {
@@ -1201,6 +1209,8 @@ function attemptView(record, gradingKey) {
     passed: effectivePassed(attempt),
     mastered: attempt.adjusted_mastered == null ? attempt.mastered === true : attempt.adjusted_mastered === true,
     selected_group_count: attempt.selected_group_count || null,
+    selected_group_ids: Array.isArray(attempt.selected_group_ids) ? attempt.selected_group_ids : [],
+    group_results: Array.isArray(attempt.group_results) ? attempt.group_results : [],
     submitted_at: attempt.submitted_at || null,
     practice_context: attempt.practice_context || "",
     duration_seconds: attempt.duration_seconds == null ? null : Number(attempt.duration_seconds),
