@@ -486,6 +486,14 @@ wheel, trackpad, and touch input. An internal modal scroller remains usable.
 Stacked dialogs keep the lock until the final modal closes, then restore the
 exact pre-modal page position.
 
+The four top-right utility modals—Notifications, Review, Dictionary, and STAR
+Redemption—share the same `760px` card width, viewport-derived card height,
+centered overlay position, internal scrolling boundary, and external `Close`
+capsule directly below the card. STAR Redemption has one centered title and no
+secondary `Cash requests` heading. Review has no `REVIEW` / `Argue requests`
+header; its Pending, Approved, and Rejected filters begin at the top and each
+always shows its current count, including zero.
+
 The top-right Teacher utility group adds a yellow STAR button beside
 Notifications. Its red badge counts every `awaiting_proof` and
 `awaiting_teacher` Cash Request. Activating it opens an independent

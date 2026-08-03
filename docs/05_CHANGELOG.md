@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-03
+
+### Changed
+
+- Unified the Teacher Notifications, Review, Dictionary, and STAR Redemption
+  utilities around one equal-size independent modal and external Close layout.
+- Simplified STAR Redemption to one centered title and moved Review status
+  filters to the top, with visible Pending, Approved, and Rejected totals.
+
 ## 2026-08-02
 
 ### Added

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260801-4">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
 </head>
@@ -80,26 +80,20 @@
 
         <section class="teacher-review-modal teacher-utility-modal" id="teacher-review-panel" data-teacher-modal hidden>
             <div class="teacher-review-shell teacher-utility-shell">
-                <div class="teacher-review-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-review-title">
-                    <div class="teacher-review-head">
-                        <div>
-                            <p class="eyebrow accent">REVIEW</p>
-                            <h2 id="teacher-review-title">Argue requests</h2>
-                        </div>
-                    </div>
+                <div class="teacher-review-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Review requests">
                     <div class="dispute-list" id="dispute-list">
                         <div class="empty-card loading-card">Loading review requests...</div>
                     </div>
                 </div>
-                <button class="progress-matrix-modal-close teacher-review-external-close" id="teacher-review-close" type="button" aria-label="Close review requests">Close</button>
+                <button class="progress-matrix-modal-close" id="teacher-review-close" type="button" aria-label="Close review requests">Close</button>
             </div>
         </section>
 
         <section class="teacher-star-modal teacher-utility-modal" id="teacher-star-panel" data-teacher-modal hidden>
             <div class="teacher-star-shell teacher-utility-shell">
                 <div class="teacher-star-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-star-title">
-                    <div class="teacher-review-head">
-                        <div><p class="eyebrow accent">STAR REDEMPTION</p><h2 id="teacher-star-title">Cash requests</h2></div>
+                    <div class="teacher-review-head teacher-star-head">
+                        <h2 id="teacher-star-title">STAR REDEMPTION</h2>
                     </div>
                     <nav class="teacher-star-tabs" aria-label="Cash request status">
                         <button class="active" type="button" data-star-request-view="pending">Pending</button>
@@ -364,7 +358,7 @@
                     <div class="empty-card loading-card">Loading updates...</div>
                 </div>
             </div>
-            <button class="progress-matrix-modal-close teacher-updates-external-close" id="teacher-updates-close" type="button" aria-label="Close notifications">Close</button>
+            <button class="progress-matrix-modal-close" id="teacher-updates-close" type="button" aria-label="Close notifications">Close</button>
         </div>
         <div id="teacher-notification-attempt-root"></div>
     </section>
@@ -387,7 +381,7 @@
                     <div class="teacher-dictionary-editor" id="teacher-dictionary-editor"><p class="muted">Choose a word to review.</p></div>
                 </div>
             </div>
-            <button class="progress-matrix-modal-close" id="teacher-dictionary-close" type="button">Close</button>
+            <button class="progress-matrix-modal-close" id="teacher-dictionary-close" type="button" aria-label="Close dictionary">Close</button>
         </div>
     </section>
 
@@ -395,7 +389,7 @@
     <script src="assets/js/config.public.js?v=20260801-4"></script>
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260801-4"></script>
+    <script src="assets/js/teacher.js?v=20260803-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

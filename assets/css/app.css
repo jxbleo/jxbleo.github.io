@@ -3853,9 +3853,6 @@ body:not(.teacher-page) .tab-button.active {
     align-items: center;
     gap: 9px;
 }
-.teacher-updates-external-close {
-    justify-self: center;
-}
 .teacher-updates-body {
     display: grid;
     align-content: start;
@@ -3903,6 +3900,14 @@ body:not(.teacher-page) .tab-button.active {
     font-size: 1.18rem;
 }
 .teacher-review-head .eyebrow { margin: 0; }
+.teacher-star-head {
+    justify-content: center;
+    text-align: center;
+}
+.teacher-star-head h2 {
+    color: var(--accent);
+    letter-spacing: 0.08em;
+}
 .student-lookup-modal {
     position: fixed;
     inset: 0;
@@ -4067,22 +4072,43 @@ body:not(.teacher-page) .tab-button.active {
     justify-self: center;
 }
 .teacher-utility-modal {
+    display: grid;
     place-items: center;
     padding: 20px 16px;
+    background: rgba(24, 18, 43, 0.28);
+    backdrop-filter: blur(10px);
 }
+.teacher-utility-modal[hidden] { display: none; }
 .teacher-utility-shell {
     display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: stretch;
+    justify-items: stretch;
     width: min(760px, 100%);
-    max-height: calc(100vh - 40px);
-    max-height: calc(100dvh - 40px);
+    height: min(812px, calc(100vh - 40px));
+    height: min(812px, calc(100dvh - 40px));
+    min-height: 0;
+    margin: 0 auto;
+    padding: 0;
     gap: 12px;
+    background: transparent;
 }
 .teacher-utility-dialog {
     width: 100%;
-    height: min(760px, 75vh, calc(100vh - 92px));
-    height: min(760px, 75dvh, calc(100dvh - 92px));
-    max-height: min(760px, 75vh, calc(100vh - 92px));
-    max-height: min(760px, 75dvh, calc(100dvh - 92px));
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    border: 1px solid rgba(255,255,255,0.82);
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: var(--shadow);
+}
+.teacher-dictionary-dialog.teacher-utility-dialog {
+    overflow: hidden;
+    border-radius: 22px;
+}
+.teacher-utility-shell > .progress-matrix-modal-close {
+    justify-self: center;
 }
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
@@ -8386,12 +8412,30 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 .revise-tabs { margin-bottom: 14px; }
 .revise-tabs .revise-filter {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
     text-align: center;
 }
 .revise-tabs .summary-label { display: block; color: inherit; font-size: 0.82rem; letter-spacing: 0.04em; }
+.review-status-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 950;
+    line-height: 1;
+}
+.review-status-count.pending { background: #d89528; }
+.review-status-count.approved { background: var(--success); }
+.review-status-count.rejected { background: var(--danger); }
 .sub-tab {
     position: relative;
     min-height: 40px;
@@ -8924,16 +8968,16 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .teacher-utility-shell,
     .notification-attempt-modal .teacher-utility-shell {
         width: min(760px, 100%);
-        max-height: calc(100vh - 40px);
-        max-height: calc(100dvh - 40px);
+        height: calc(100vh - 40px);
+        height: calc(100dvh - 40px);
+        min-height: 0;
         gap: 12px;
     }
     .teacher-utility-dialog,
     .notification-attempt-modal .notification-attempt-dialog {
-        height: min(760px, 75vh, calc(100vh - 92px));
-        height: min(760px, 75dvh, calc(100dvh - 92px));
-        max-height: min(760px, 75vh, calc(100vh - 92px));
-        max-height: min(760px, 75dvh, calc(100dvh - 92px));
+        height: 100%;
+        min-height: 0;
+        max-height: none;
         border-radius: 22px;
     }
     .matrix-modal-actions,
