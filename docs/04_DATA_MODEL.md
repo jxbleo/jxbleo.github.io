@@ -295,7 +295,9 @@ Rules:
 - Teacher bootstrap list responses contain attempt summaries only and do not
   embed `question_results`, `group_results`, correct answers, or explanations.
   The full teacher-only attempt view is returned by an explicit single-attempt
-  detail action after teacher authorization.
+  detail action after teacher authorization. Opening one notification thread
+  may call that action once for each attempt in the thread so answer comparison
+  cards start expanded, without changing the summary/bootstrap payload.
 - Student historical review may return correct answers and explanations for
   attempts that are already passed/mastered, or when the linked assignment has
   `answer_revealed: true`. Attempts below the passing threshold still return

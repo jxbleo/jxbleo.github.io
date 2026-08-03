@@ -5873,7 +5873,7 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .matrix-answer-table {
     display: grid;
-    grid-template-columns: 0.65fr 1fr 1fr;
+    grid-template-columns: minmax(54px, 0.32fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 .matrix-answer-table > div {
     min-width: 0;
@@ -9056,10 +9056,10 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         justify-content: flex-start;
     }
     .matrix-answer-table {
-        grid-template-columns: 1fr;
+        grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1fr);
     }
     .matrix-answer-table > div {
-        border-left: 0;
+        padding: 9px 8px;
     }
     .matrix-attempt-head,
     .matrix-work-review-head,

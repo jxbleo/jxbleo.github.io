@@ -793,8 +793,9 @@ flowchart TD
 - profile 创建失败时回滚 auth user
 - 不要返回不必要的私有答案
 - 教师页面初始化的 attempts / progress 列表只返回计数、分数、状态和时间等摘要；
-  逐题提交答案、正确答案和 explanation 只在老师明确打开某个 attempt 报告时，
-  通过 `attempt_id` 单独读取，避免完整历史超过 CloudBase 6 MB 响应上限
+  打开铃铛中的某个完成线程后，前端为该线程的每次 attempt 分别通过 `attempt_id`
+  读取逐题详情，让所有 attempt 默认展开错题答案对比；打开卷子报告复用同一详情。
+  不得把完整历史塞回初始化响应，避免超过 CloudBase 6 MB 响应上限
 
 ### 8.6 changePassword
 

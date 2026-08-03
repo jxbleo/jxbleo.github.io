@@ -575,7 +575,11 @@ assigned task or self study. The attempt detail dialog must use the same
 detail layout as a `View` matrix cell, showing every attempt for the relevant
 assignment or self-study thread at a glance. It opens at the top with the full
 attempt bar chart visible and with no attempt preselected. Only clicking a bar
-highlights that attempt and scrolls to its matching detail card below. The
+highlights that attempt and scrolls to its matching detail card below. Every
+attempt card automatically loads and displays its wrong-answer versus
+correct-answer comparison when the thread opens; the teacher does not need to
+open a paper report and return first. While the bounded per-attempt request is
+running, that card shows a loading state. The
 attempt detail dialog exactly covers the notification card footprint and uses
 its same centered external `Close` position. Closing
 the detail layer by that action, Escape, or its backdrop restores the unchanged
@@ -818,6 +822,9 @@ It should include:
 - Vocabulary attempt cards and reports identify `Quiz` versus timed `Practice`.
   When a timed Practice attempt has selected-group metadata, the report lists
   the chosen group IDs (and their group number when current content is loaded).
+- The wrong-answer comparison table gives its question-number column only the
+  compact width needed for `Q...`; student and correct answers share the
+  remaining width, including on phone layouts.
 - matrix attempt cards show timing as `Page 12m 30s · Audio 8m 10s` when audio
   timing exists, while older or non-audio attempts may show only the page/test
   duration.
