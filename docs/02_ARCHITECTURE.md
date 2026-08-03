@@ -135,7 +135,10 @@ Active or relevant functions:
   progress, disputes, answer-key access, shared dictionary review, and
   read-only student vocabulary inspection. It also lists and processes Cash
   requests, issues teacher evidence-upload metadata, and returns authorized
-  temporary evidence URLs
+  temporary evidence URLs. Teacher bootstrap reads lightweight attempt and
+  progress summaries; private per-question answers and explanations are fetched
+  for one authorized `attempt_id` only when its paper report is opened, keeping
+  growing history responses below CloudBase's 6 MB response limit.
 - `studentVocabulary`: personal My Words editing/merge/export data, dictionary
   enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change

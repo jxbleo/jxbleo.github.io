@@ -16,6 +16,7 @@
     var teacherLiveRefreshPromise = null;
     var teacherLiveDataLoadedAt = 0;
     var teacherRefreshTimer = 0;
+    var attemptDetailPromises = {};
     var pendingTeacherViewportSnapshot = null;
     var restoredTeacherWorkspaceView = '';
 
@@ -3430,6 +3431,64 @@
         });
     }
 
+    function mergeAttemptDetail(detail) {
+        if (!detail || !detail.attempt_id) return detail;
+        var found = false;
+        state.attempts = (state.attempts || []).map(function(attempt) {
+            if (attempt.attempt_id !== detail.attempt_id) return attempt;
+            found = true;
+            return Object.assign({}, attempt, detail, { detail_loaded: true });
+        });
+        if (!found) state.attempts.push(Object.assign({}, detail, { detail_loaded: true }));
+        (state.progressItems || []).forEach(function(item) {
+            if (!Array.isArray(item.attempts)) return;
+            item.attempts = item.attempts.map(function(attempt) {
+                return attempt.attempt_id === detail.attempt_id
+                    ? Object.assign({}, attempt, detail, { detail_loaded: true })
+                    : attempt;
+            });
+        });
+        return detail;
+    }
+
+    function attemptHasDetail(attempt) {
+        return Boolean(attempt && (
+            attempt.detail_loaded === true || Array.isArray(attempt.question_results)
+        ));
+    }
+
+    function loadAttemptDetail(attemptId) {
+        var id = String(attemptId || '');
+        if (!id) return Promise.reject(new Error('Attempt record is unavailable.'));
+        var existing = (state.attempts || []).find(function(attempt) {
+            return String(attempt.attempt_id || '') === id && attemptHasDetail(attempt);
+        });
+        if (existing) return Promise.resolve(existing);
+        if (attemptDetailPromises[id]) return attemptDetailPromises[id];
+        attemptDetailPromises[id] = teacherCall('getAttemptDetail', { attempt_id: id })
+            .then(function(result) { return mergeAttemptDetail(result.attempt); })
+            .then(function(detail) {
+                delete attemptDetailPromises[id];
+                return detail;
+            }, function(error) {
+                delete attemptDetailPromises[id];
+                throw error;
+            });
+        return attemptDetailPromises[id];
+    }
+
+    function openAttemptPaperReview(attemptId, setId, render) {
+        return Promise.all([
+            loadAttemptDetail(attemptId),
+            loadQuestionTextForRecords([{ set_id: setId || '' }])
+        ]).then(function() {
+            state.selectedMatrixReviewAttemptId = attemptId || '';
+            render();
+        }).catch(function(error) {
+            showMessage(error.message || 'Unable to load this attempt report.', 'error');
+        });
+    }
+
     function formatPercent(value) {
         if (value == null || value === '') return '—';
         var number = Number(value);
@@ -3518,6 +3577,9 @@
 
 
     function renderAttemptWrongAnswers(attempt) {
+        if (attempt && !attemptHasDetail(attempt)) {
+            return '<div class="attempt-wrong-list">Open the paper report to load question details.</div>';
+        }
         var wrong = (attempt.question_results || []).filter(function(item) {
             return item.correct !== true;
         });
@@ -3541,6 +3603,9 @@
     function renderLatestAnswerComparison(attempt) {
         if (!attempt) {
             return '<div class="latest-answer-panel empty">No latest attempt recorded yet.</div>';
+        }
+        if (!attemptHasDetail(attempt)) {
+            return '<div class="latest-answer-panel empty">Question details load only when a paper report is opened.</div>';
         }
         var wrong = (attempt.question_results || []).filter(function(item) {
             return item.correct !== true;
@@ -4728,6 +4793,7 @@
     }
 
     function renderMatrixAttemptWrongRows(attempt) {
+        if (attempt && !attemptHasDetail(attempt)) return '';
         var wrong = (attempt.question_results || []).filter(function(result) {
             return result.correct !== true;
         });
@@ -5588,8 +5654,11 @@
         container.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.stopPropagation();
-                state.selectedMatrixReviewAttemptId = button.dataset.matrixReviewAttempt || '';
-                loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderAssignmentOverview);
+                openAttemptPaperReview(
+                    button.dataset.matrixReviewAttempt || '',
+                    button.dataset.matrixReviewSet || '',
+                    renderAssignmentOverview
+                );
             });
         });
         container.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
@@ -5601,8 +5670,11 @@
         container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
                 if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
-                    state.selectedMatrixReviewAttemptId = button.dataset.matrixAttemptId;
-                    loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderAssignmentOverview);
+                    openAttemptPaperReview(
+                        button.dataset.matrixAttemptId,
+                        button.dataset.matrixReviewSet || '',
+                        renderAssignmentOverview
+                    );
                     return;
                 }
                 state.targetMatrixAttemptId = '';
@@ -6072,8 +6144,11 @@
         modalRoot.querySelectorAll('[data-matrix-review-attempt]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.stopPropagation();
-                state.selectedMatrixReviewAttemptId = button.dataset.matrixReviewAttempt || '';
-                loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderUpdatesPanel);
+                openAttemptPaperReview(
+                    button.dataset.matrixReviewAttempt || '',
+                    button.dataset.matrixReviewSet || '',
+                    renderUpdatesPanel
+                );
             });
         });
         modalRoot.querySelectorAll('[data-matrix-review-back]').forEach(function(button) {
@@ -6085,8 +6160,11 @@
         modalRoot.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
                 if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
-                    state.selectedMatrixReviewAttemptId = button.dataset.matrixAttemptId;
-                    loadQuestionTextForRecords([{ set_id: button.dataset.matrixReviewSet || '' }]).then(renderUpdatesPanel);
+                    openAttemptPaperReview(
+                        button.dataset.matrixAttemptId,
+                        button.dataset.matrixReviewSet || '',
+                        renderUpdatesPanel
+                    );
                     return;
                 }
                 var modal = button.closest('.progress-matrix-modal-shell');

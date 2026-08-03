@@ -28,6 +28,13 @@ without explicit owner approval.
 A feature may require one, two, or all three tracks. Always state which tracks
 are still required.
 
+Teacher attempt-response slimming requires both the rebuilt `teacherAdmin`
+function ZIP and the matching static `teacher.html` / `assets/js/teacher.js`.
+Deploy them from the same commit. Publish the backward-compatible static files
+first, then update `teacherAdmin`, so a new browser never requests
+`getAttemptDetail` from an older function version. No database migration is
+required.
+
 ## 3. CloudBase Collections
 
 All project collections should remain `ADMINONLY`:

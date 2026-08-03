@@ -299,6 +299,11 @@ wrong questions include the private answer explanation. Recorded Vocabulary
 Cloze attempts identify `Quiz` versus timed `Practice`; timed Practice reports
 also show the selected group IDs. Single-group inline Vocabulary practice is
 unrecorded and therefore does not create a teacher notification.
+Teacher login/list actions return attempt and progress summaries only. Full
+per-question submitted answers, correct answers, group results, and explanations
+are fetched for one authorized `attempt_id` only when the teacher opens its
+paper report; do not put the complete attempt history back into a bootstrap
+response because CloudBase caps a function response body at 6 MB.
 
 ## 7. Assignment Rules
 

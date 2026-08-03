@@ -20,6 +20,7 @@
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |
+| 登录 Teacher 显示 `The size of HTTP response body exceeds the upper limit (6MB)` | 旧版 `teacherAdmin.listAttempts` / `listProgress` 一次返回全部历史的逐题答案和 explanation，且 progress 重复嵌套 attempts | 部署轻量摘要与 `getAttemptDetail` 版本的 `teacherAdmin.zip`，并发布最新版 `teacher.html` / `teacher.js`；不需要删除 attempts |
 | `tcb hosting deploy` 显示成功，但目标 CSS/JS 的 ETag 仍未改变 | 单文件上传只给目录型 `cloudPath` 时，CLI 可能没有覆盖预期对象键 | 单文件部署时把完整目标键写明，例如本地 `assets/js/dashboard.js` 对应云端 `assets/js/dashboard.js`；随后用 `tcb hosting list <完整键> --json` 对比本地 MD5 与 ETag |
 | 练习页面能打开，但提交失败 `GRADING_KEY_NOT_FOUND` | `grading_keys` 没导入对应 `set_id` | CloudBase `grading_keys` 搜索 exact `set_id` |
 | 首页或直接 URL 有内容，但学生 Explore / Library 看不到 | `sets` 没导入或 stale | CloudBase `sets` 搜索 exact `set_id`；`getResources` 返回 |

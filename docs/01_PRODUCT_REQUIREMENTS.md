@@ -792,6 +792,9 @@ flowchart TD
 - 创建学生时要同时检查 CloudBase Authentication 和 `students.student_id`
 - profile 创建失败时回滚 auth user
 - 不要返回不必要的私有答案
+- 教师页面初始化的 attempts / progress 列表只返回计数、分数、状态和时间等摘要；
+  逐题提交答案、正确答案和 explanation 只在老师明确打开某个 attempt 报告时，
+  通过 `attempt_id` 单独读取，避免完整历史超过 CloudBase 6 MB 响应上限
 
 ### 8.6 changePassword
 
