@@ -3489,6 +3489,25 @@
         });
     }
 
+    function loadNotificationThreadAttemptDetails(attempt, render) {
+        var ids = relatedAttemptIdsForAttempt(attempt);
+        if (!ids.length) return Promise.resolve();
+        var errors = [];
+        var requests = ids.map(function(attemptId) {
+            return loadAttemptDetail(attemptId).catch(function(error) {
+                errors.push(error);
+                return null;
+            });
+        });
+        render();
+        return Promise.all(requests).then(function() {
+            render();
+            if (errors.length) {
+                showMessage('Some answer comparisons could not be loaded. Please try opening the notification again.', 'error');
+            }
+        });
+    }
+
     function formatPercent(value) {
         if (value == null || value === '') return '—';
         var number = Number(value);
@@ -4793,7 +4812,11 @@
     }
 
     function renderMatrixAttemptWrongRows(attempt) {
-        if (attempt && !attemptHasDetail(attempt)) return '';
+        if (attempt && !attemptHasDetail(attempt)) {
+            return attemptDetailPromises[String(attempt.attempt_id || '')]
+                ? '<div class="matrix-wrong-empty loading">Loading answer comparison...</div>'
+                : '';
+        }
         var wrong = (attempt.question_results || []).filter(function(result) {
             return result.correct !== true;
         });
@@ -6096,6 +6119,7 @@
         state.selectedMatrixReviewAttemptId = '';
         markAttemptGroupReviewed(attempt);
         renderUpdatesPanel();
+        loadNotificationThreadAttemptDetails(attempt, renderUpdatesPanel);
     }
 
     function renderUpdatesPanel() {

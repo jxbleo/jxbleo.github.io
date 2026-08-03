@@ -706,6 +706,13 @@ Check:
 - On first opening a teacher notification thread, the detail scroll position is
   at the top with the complete attempt chart visible, no bar/card is preselected,
   and the page does not jump to the latest answer card
+- On that first opening, every attempt card shows a temporary loading state and
+  then its wrong-answer/correct-answer comparison without requiring the paper
+  icon/back round trip. Multiple attempts are fetched as separate authorized
+  detail requests, while `listAttempts` remains summary-only.
+- At desktop and phone widths, the comparison table's Q-number column stays
+  visibly narrower than either answer column; long answers wrap inside the two
+  remaining columns without widening the dialog.
 - The top-right raised-hand Argue dialog and Student lookup dialog use the same
   card bounds, centered position, internal scrolling, and external `Close`
   capsule design as the teacher notification dialog at desktop and phone widths
