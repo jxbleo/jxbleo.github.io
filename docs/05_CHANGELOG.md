@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Simplified Teacher student lookup to a name-only searchable list with class
+  filtering, then aligned both student detail surfaces around Class, STAR, and
+  Completed/Total metrics plus a shared monthly week-band completion calendar.
+  Removed the Attempts/status metadata treatment from the student identity area.
 - Changed Teacher startup to load lightweight attempt/progress summaries and
   keep private question-level report details out of the bootstrap response,
   preventing accumulated history from exceeding CloudBase's 6 MB response-body
