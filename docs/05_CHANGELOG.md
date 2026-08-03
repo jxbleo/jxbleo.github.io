@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Changed Teacher BBC and Vocabulary paper reports to show mistakes only.
+  BBC wrong-question cards now include the private grading explanation.
+- Added explicit Vocabulary `Quiz` / timed `Practice` labels to teacher attempt
+  notifications and reports, and exposed the recorded selected group IDs for
+  timed Practice review without changing its progress/STAR exclusions.
 - Unified the Teacher Notifications, Review, Dictionary, and STAR Redemption
   utilities around one equal-size independent modal and external Close layout.
 - Simplified STAR Redemption to one centered title and moved Review status

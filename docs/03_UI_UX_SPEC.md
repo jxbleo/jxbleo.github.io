@@ -810,9 +810,14 @@ It should include:
   at the initial viewport edge.
 - every attempt card in matrix and notification detail dialogs includes a
   compact paper icon button in the top-right action area. The button opens that
-  attempt's full-work review inside the same dialog without changing attempt
-  history counts, showing all recorded questions, student answers, correctness,
-  correct answers, and a compact attempt-history summary.
+  attempt's report inside the same dialog without changing attempt history
+  counts. BBC and Vocabulary reports are mistake-focused and omit all correct
+  questions. BBC wrong-question cards include the private answer explanation.
+  Other families continue to show all recorded questions, student answers,
+  correctness, correct answers, and a compact attempt-history summary.
+- Vocabulary attempt cards and reports identify `Quiz` versus timed `Practice`.
+  When a timed Practice attempt has selected-group metadata, the report lists
+  the chosen group IDs (and their group number when current content is loaded).
 - matrix attempt cards show timing as `Page 12m 30s · Audio 8m 10s` when audio
   timing exists, while older or non-audio attempts may show only the page/test
   duration.
@@ -1046,7 +1051,8 @@ Shared rules:
 - In the BBC blue render theme, the top lesson tools show `Worksheet` only,
   the exercise body does not show separate `Part 1` / `Part 2` headings, and
   the main submission button reads `Submit`.
-- The BBC Argue sent/thanks dialog must include a visible Close button in both
+- The BBC and IELTS Reading Argue sent/thanks dialogs must show their Close
+  button outside the thank-you card, centered directly below it, in both
   student mode and teacher preview mode.
 - In the `classroom-worksheet` theme, multiple-choice answer, explanation,
   dispute-status, and question-action blocks must span the full question-card
