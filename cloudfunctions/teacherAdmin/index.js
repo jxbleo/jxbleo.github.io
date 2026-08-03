@@ -679,6 +679,10 @@ async function listSets() {
       link: practiceLinkForSet(set),
       passing_percentage: passingPercentageForSet(set),
       mastery_percentage: masteryPercentageForSet(set),
+      edition_family: set.edition_family || "",
+      edition_number: set.edition_number == null ? null : Number(set.edition_number),
+      edition_label: set.edition_label || "",
+      is_latest_edition: set.is_latest_edition === true,
     })).sort((a, b) => a.title.localeCompare(b.title)),
   };
 }
@@ -1173,6 +1177,7 @@ function attemptSummaryView(record) {
     set_id: attempt.set_id,
     assignment_id: attempt.assignment_id || null,
     mode: attempt.mode || "",
+    grading_version: attempt.grading_version || "1",
     attempt_number: Number(attempt.attempt_number || 0),
     correct_count: Number(
       attempt.adjusted_correct_count == null ? attempt.correct_count || 0 : attempt.adjusted_correct_count
@@ -1207,14 +1212,15 @@ function attemptView(record, gradingKey) {
     const questionId = item.question_id || item.id || "";
     let correctAnswer = item.correct_answer;
     let explanation = item.explanation;
-    if (questionId && Object.prototype.hasOwnProperty.call(gradingAnswers, questionId)) {
+    if (correctAnswer == null && questionId && Object.prototype.hasOwnProperty.call(gradingAnswers, questionId)) {
       correctAnswer = gradingAnswers[questionId];
     }
-    if (questionId && Object.prototype.hasOwnProperty.call(gradingExplanations, questionId)) {
+    if (explanation == null && questionId && Object.prototype.hasOwnProperty.call(gradingExplanations, questionId)) {
       explanation = gradingExplanations[questionId];
     }
     return {
       question_id: questionId,
+      question_text_snapshot: item.question_text_snapshot || "",
       submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
       correct: item.correct === true,
       correct_answer: correctAnswer == null ? null : correctAnswer,

@@ -655,3 +655,19 @@ explicitly approves the exact plan.
 The older root-level [CLOUDBASE_DEPLOYMENT.md](../CLOUDBASE_DEPLOYMENT.md)
 contains historical console notes and examples. This `docs/10_DEPLOYMENT.md`
 is the current docs-system entry point.
+
+## 12. Edition Publication Order
+
+An edition spans static files, CloudBase data, and (for the first rollout) cloud
+functions. Publish in this order:
+
+1. Deploy the compatible `getResources`, `getDashboard`, `submitAttempt`, and
+   `teacherAdmin` functions plus static shared edition code.
+2. Prepare and dry-run the new edition's concrete `sets` and `grading_keys` rows.
+3. Owner-apply those missing rows; do not overwrite the original edition.
+4. Publish the catalog/runtime files that expose the new edition.
+5. Verify Student Library switching, independent scores, Teacher Assign rows,
+   direct Assignment entry, and one real submission in development.
+
+No current collection migration or production deployment is authorized by this
+documentation change.

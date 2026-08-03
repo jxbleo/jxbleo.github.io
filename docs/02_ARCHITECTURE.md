@@ -460,3 +460,19 @@ High-value next steps:
 - Add pure rule tests for assignment status, STAR, Argue, and Vocabulary boundaries.
 - Add grading key reconcile workflow before large imports.
 - Keep `AGENTS.md` short and move product/architecture detail into `docs/`.
+- Add pure report-rule tests for time-zone boundaries, membership eligibility,
+  class-task scope, redacted reads, and idempotent timer retries.
+
+## 14. Edition-Aware Content Routing
+
+`assets/js/content-editions.js` is the shared pure helper for explicit edition
+families. Static catalog metadata and CloudBase `sets` carry the same
+`edition_family`, `edition_number`, `edition_label`, and `is_latest_edition`
+fields. The Student Library groups those records for discovery only; Assign,
+attempts, achievements, disputes, and direct practice routes continue to use
+the concrete `set_id`.
+
+`getDashboard.library_progress` returns one redacted best-score/status summary
+per concrete set so the version buttons can display independent scores without
+returning answer details. Unversioned catalog items need no migration and retain
+the existing one-click confirmation flow.

@@ -3,6 +3,16 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-04
+
+### Added
+
+- Added explicit, reusable content editions without renaming existing set IDs.
+- Added one-card Student Library discovery with in-place V1/V2/V3 score buttons,
+  while Teacher Assign and all record-owned entry points remain concrete-set based.
+- Added redacted per-set Library progress, optional stale-content protection, and
+  BBC question-text snapshots for safer historical review after small revisions.
+
 ## 2026-08-03
 
 ### Changed

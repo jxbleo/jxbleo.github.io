@@ -11,6 +11,7 @@
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:login-redirect": "node scripts/test-login-redirect.js",
     "test:assignment-schedule": "node scripts/test-assignment-due-weeks.js",
+    "test:content-editions": "node scripts/test-content-editions.js",
     "test:star-rewards": "node scripts/test-star-rewards.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
     "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",

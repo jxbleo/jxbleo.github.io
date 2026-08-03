@@ -1320,3 +1320,15 @@ Important mobile rules:
 - More consistent modal/dialog style across practice pages.
 - More compact teacher dispute resolution flow.
 - A small deployment/version indicator for teacher troubleshooting.
+
+## 10. Library Edition Selector
+
+- A single-edition Library card opens the existing practice confirmation unchanged.
+- A multi-edition family still renders as one Library card. Its existing confirmation
+  card gains a top row of version buttons; there is no separate intermediate modal.
+- Buttons read `V2 (latest)` / `V1 (previous)` and show that concrete version's score
+  or `Not yet`. Do not add the word `Version` to those labels.
+- No version is preselected. Selecting a button updates the title, status ribbon,
+  score, and Enter destination below it.
+- Teacher Assign shows editions as separate selectable work rows. Concrete Assignment,
+  History, STAR, Argue, and report entries never show the selector.

@@ -340,6 +340,13 @@ function buildSet(meta, overrides = {}) {
     visible: meta.visible !== false,
   };
   if (meta.renderTheme) set.renderTheme = meta.renderTheme;
+  if (meta.edition_family) {
+    set.edition_family = meta.edition_family;
+    set.edition_number = Number(meta.edition_number || 1);
+    set.edition_label = meta.edition_label || `V${set.edition_number}`;
+    set.is_latest_edition = meta.is_latest_edition === true;
+  }
+  if (meta.contentVersion != null) set.content_version = String(meta.contentVersion);
   return set;
 }
 
@@ -354,6 +361,13 @@ function main() {
       const source = readJson(filePath);
       const meta = readJson(path.join(projectRoot, "content", "bbc-six-minute-english", `${source.id}.json`));
       const extracted = extractBbc(source, privateSourceFor("bbc-six-minute-english", source.id));
+      if (meta.contentVersion != null || source.contentVersion != null) {
+        const versions = [meta.contentVersion, source.contentVersion, extracted.gradingKey.grading_version || "1"]
+          .map((value) => String(value == null ? "" : value).trim());
+        if (!versions[0] || !versions[1] || versions.some((value) => value !== versions[0])) {
+          throw new Error(`BBC ${source.id} contentVersion must match in metadata, runtime data, and private grading`);
+        }
+      }
       sets.push(buildSet(meta, { type: "listening", course: "BBC Listening" }));
       gradingKeys.push(extracted.gradingKey);
       writeJson(path.join(publicRoot, "data", path.basename(filePath)), extracted.publicData);

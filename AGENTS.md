@@ -625,6 +625,25 @@ For corrections, update structured content, private grading data, and the
 owner-facing Markdown source when one exists. Never fix only visible text while
 leaving grading inconsistent.
 
+### Content edition rules
+
+- Create V2/V3 only when the owner explicitly identifies the material as a new
+  edition; otherwise treat supplied changes as an update to the current set.
+- Never rename an existing `set_id` that may already be referenced by
+  assignments, attempts, STARs, or disputes. Keep the original ID for V1 and
+  suffix only new editions, for example `BBC-250904-V2`.
+- Relate editions with explicit `edition_family`, `edition_number`,
+  `edition_label`, and `is_latest_edition` metadata in both canonical content
+  metadata and CloudBase `sets`. Do not infer relationships from similar titles.
+- Editions remain independent for Assign, attempts, thresholds, progress, and
+  STARs. Student Library may group them for discovery, but record-owned links
+  always use the concrete `set_id`.
+- Current policy keeps every edition visible to students and assignable by
+  teachers. Do not add archive or new/old-student visibility rules unless the
+  owner explicitly requests them.
+- Same-edition corrections may retain `question_id`. Never downgrade immutable
+  history; accepted-answer repairs may only regrade upward.
+
 Temporary classroom HTML may remain independent until it becomes recurring.
 
 ### BBC review and import gotchas
