@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Changed Teacher startup to load lightweight attempt/progress summaries and
+  fetch private question-level report details only for the attempt the teacher
+  opens, preventing accumulated history from exceeding CloudBase's 6 MB
+  response-body limit.
 - Changed Teacher BBC and Vocabulary paper reports to show mistakes only.
   BBC wrong-question cards now include the private grading explanation.
 - Added explicit Vocabulary `Quiz` / timed `Practice` labels to teacher attempt

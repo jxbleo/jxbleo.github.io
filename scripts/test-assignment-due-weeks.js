@@ -65,6 +65,14 @@ const collections = {
     },
   ],
   attempts: [],
+  grading_keys: [
+    {
+      _id: "bbc-default-grading-key",
+      set_id: "BBC-DEFAULT",
+      answers: { "1": "expected answer" },
+      explanations: { "1": "A detailed private explanation." },
+    },
+  ],
   student_set_achievements: [],
 };
 
@@ -248,7 +256,10 @@ function teacherAssignmentEditHooks() {
       assignmentEditTriggerAttributes: assignmentEditTriggerAttributes,
       handleAssignmentEditTrigger: handleAssignmentEditTrigger,
       matrixAttemptEntries: matrixAttemptEntries,
-      renderMatrixAttemptChart: renderMatrixAttemptChart
+      renderMatrixAttemptChart: renderMatrixAttemptChart,
+      attemptHasDetail: attemptHasDetail,
+      mergeAttemptDetail: mergeAttemptDetail,
+      renderMatrixAttemptWrongRows: renderMatrixAttemptWrongRows
     };
 })();`;
 
@@ -465,6 +476,30 @@ function testTeacherAttemptChartBackendThresholds() {
   }]), {});
   assert(!missingHtml.includes("PASS "));
   assert(!missingHtml.includes("STAR "));
+
+  const summary = {
+    attempt_id: "attempt-summary",
+    percentage: 40,
+    correct_count: 1,
+    question_count: 2,
+    detail_loaded: false,
+  };
+  hooks.state.attempts = [summary];
+  assert.equal(hooks.attemptHasDetail(summary), false);
+  assert.equal(hooks.renderMatrixAttemptWrongRows(summary), "");
+  hooks.mergeAttemptDetail({
+    attempt_id: "attempt-summary",
+    detail_loaded: true,
+    question_results: [{
+      question_id: "1",
+      submitted_answer: "wrong",
+      correct_answer: "right",
+      correct: false,
+      explanation: "Private explanation",
+    }],
+  });
+  assert.equal(hooks.attemptHasDetail(hooks.state.attempts[0]), true);
+  assert(hooks.renderMatrixAttemptWrongRows(hooks.state.attempts[0]).includes("Q1"));
 }
 
 function testTeacherPhoneMatrixDensityIsolation() {
@@ -805,8 +840,21 @@ async function main() {
     passed: true,
     mastered: true,
     submitted_at: new Date("2026-07-31T10:00:00.000Z"),
-    question_results: [],
+    question_results: [{
+      question_id: "1",
+      submitted_answer: "student answer",
+      correct: false,
+    }],
   });
+  const attemptListResult = await call("listAttempts");
+  const attemptSummary = attemptListResult.attempts.find((item) =>
+    item.attempt_id === "self-study-threshold-attempt"
+  );
+  assert(attemptSummary);
+  assert.equal(attemptSummary.detail_loaded, false);
+  assert.equal(Object.prototype.hasOwnProperty.call(attemptSummary, "question_results"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(attemptSummary, "group_results"), false);
+
   const progressResult = await call("listProgress");
   const selfStudyProgress = progressResult.progress.find((item) =>
     item.source === "self_study" && item.set_id === "BBC-DEFAULT"
@@ -815,6 +863,16 @@ async function main() {
   assert.equal(selfStudyProgress.passing_percentage, 80);
   assert.equal(selfStudyProgress.mastery_percentage, 95);
   assert.equal(selfStudyProgress.mastery_enabled, true);
+  assert.equal(Object.prototype.hasOwnProperty.call(selfStudyProgress, "attempts"), false);
+
+  const detailResult = await call("getAttemptDetail", {
+    attempt_id: "self-study-threshold-attempt",
+  });
+  assert.equal(detailResult.success, true);
+  assert.equal(detailResult.attempt.detail_loaded, true);
+  assert.equal(detailResult.attempt.question_results.length, 1);
+  assert.equal(detailResult.attempt.question_results[0].correct_answer, "expected answer");
+  assert.equal(detailResult.attempt.question_results[0].explanation, "A detailed private explanation.");
   collections.attempts.splice(collections.attempts.findIndex((item) =>
     item.attempt_id === "self-study-threshold-attempt"
   ), 1);

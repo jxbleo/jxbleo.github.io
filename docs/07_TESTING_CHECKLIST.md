@@ -29,6 +29,11 @@ npm run test:star-rewards
 npm run test:protected-resources
 ```
 
+Teacher attempt payload checks in `test:assignment-schedule` verify that
+`listAttempts` omits question-level/private report fields, `listProgress` does
+not duplicate nested attempts, and `getAttemptDetail` restores the authorized
+single-attempt answers and BBC explanation.
+
 ### STAR reward rule tests
 
 - Blue STAR is non-redeemable, stable, and unique by student/set.

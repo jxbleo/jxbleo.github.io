@@ -1164,6 +1164,37 @@ async function listAssignments() {
   };
 }
 
+function attemptSummaryView(record) {
+  const attempt = recordData(record);
+  return {
+    attempt_id: attempt.attempt_id || attempt._id,
+    student_uid: attempt.student_uid,
+    student_id: attempt.student_id_snapshot || "",
+    set_id: attempt.set_id,
+    assignment_id: attempt.assignment_id || null,
+    mode: attempt.mode || "",
+    attempt_number: Number(attempt.attempt_number || 0),
+    correct_count: Number(
+      attempt.adjusted_correct_count == null ? attempt.correct_count || 0 : attempt.adjusted_correct_count
+    ),
+    question_count: Number(attempt.question_count || 0),
+    percentage: effectivePercentage(attempt),
+    passing_percentage: Number(attempt.passing_percentage || 50),
+    mastery_percentage: Number(attempt.mastery_percentage || 90),
+    mastery_enabled: attempt.mastery_enabled !== false,
+    passed: effectivePassed(attempt),
+    mastered: attempt.adjusted_mastered == null ? attempt.mastered === true : attempt.adjusted_mastered === true,
+    selected_group_count: attempt.selected_group_count || null,
+    selected_group_ids: Array.isArray(attempt.selected_group_ids) ? attempt.selected_group_ids : [],
+    submitted_at: attempt.submitted_at || null,
+    practice_context: attempt.practice_context || "",
+    duration_seconds: attempt.duration_seconds == null ? null : Number(attempt.duration_seconds),
+    audio_started_at: attempt.audio_started_at || null,
+    audio_to_submit_seconds: attempt.audio_to_submit_seconds == null ? null : Number(attempt.audio_to_submit_seconds),
+    detail_loaded: false,
+  };
+}
+
 function attemptView(record, gradingKey) {
   const attempt = recordData(record);
   const gradingAnswers = gradingKey && gradingKey.answers && typeof gradingKey.answers === "object"
@@ -1191,32 +1222,10 @@ function attemptView(record, gradingKey) {
     };
   });
   return {
-    attempt_id: attempt.attempt_id || attempt._id,
-    student_uid: attempt.student_uid,
-    student_id: attempt.student_id_snapshot || "",
-    set_id: attempt.set_id,
-    assignment_id: attempt.assignment_id || null,
-    mode: attempt.mode || "",
-    attempt_number: Number(attempt.attempt_number || 0),
-    correct_count: Number(
-      attempt.adjusted_correct_count == null ? attempt.correct_count || 0 : attempt.adjusted_correct_count
-    ),
-    question_count: Number(attempt.question_count || 0),
-    percentage: effectivePercentage(attempt),
-    passing_percentage: Number(attempt.passing_percentage || 50),
-    mastery_percentage: Number(attempt.mastery_percentage || 90),
-    mastery_enabled: attempt.mastery_enabled !== false,
-    passed: effectivePassed(attempt),
-    mastered: attempt.adjusted_mastered == null ? attempt.mastered === true : attempt.adjusted_mastered === true,
-    selected_group_count: attempt.selected_group_count || null,
-    selected_group_ids: Array.isArray(attempt.selected_group_ids) ? attempt.selected_group_ids : [],
+    ...attemptSummaryView(attempt),
     group_results: Array.isArray(attempt.group_results) ? attempt.group_results : [],
-    submitted_at: attempt.submitted_at || null,
-    practice_context: attempt.practice_context || "",
-    duration_seconds: attempt.duration_seconds == null ? null : Number(attempt.duration_seconds),
-    audio_started_at: attempt.audio_started_at || null,
-    audio_to_submit_seconds: attempt.audio_to_submit_seconds == null ? null : Number(attempt.audio_to_submit_seconds),
     question_results: questionResults,
+    detail_loaded: true,
   };
 }
 
@@ -1308,7 +1317,6 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     previous_status: assignment.previous_status || null,
     updated_at: assignment.updated_at || null,
     latest_submitted_at: latestDateValue(orderedAttempts, "submitted_at"),
-    attempts: orderedAttempts,
   };
 }
 
@@ -1342,31 +1350,22 @@ function buildSelfStudyProgressItem(studentUid, setId, attempts, student, set) {
     completed_at: completedAt,
     updated_at: latestSubmitted,
     latest_submitted_at: latestSubmitted,
-    attempts: orderedAttempts,
   };
 }
 
 async function listProgress() {
-  const [assignmentRows, attemptRows, studentRows, setRows, gradingKeyRows] = await Promise.all([
+  const [assignmentRows, attemptRows, studentRows, setRows] = await Promise.all([
     getAll("assignments"),
     getAll("attempts"),
     getAll("students"),
     getAll("sets"),
-    getAll("grading_keys"),
   ]);
   const studentMap = new Map(visibleStudentRecords(studentRows).map((student) => [student.auth_uid, student]));
   const assignments = assignmentRows.map(recordData).filter((assignment) =>
     normalizedAssignmentStatus(assignment.status) !== "cancelled"
     && studentMap.has(assignment.student_uid)
   );
-  const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
-    const gradingKey = recordData(record);
-    return [gradingKey.set_id, gradingKey];
-  }));
-  const attempts = attemptRows.map((record) => {
-    const attempt = recordData(record);
-    return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
-  });
+  const attempts = attemptRows.map(attemptSummaryView);
   const progressAttempts = attempts.filter(countsTowardTeacherProgress);
   const setMap = new Map(setRows.map((record) => {
     const set = recordData(record);
@@ -1429,23 +1428,31 @@ async function listProgress() {
 }
 
 async function listAttempts() {
-  const [attemptRows, gradingKeyRows, studentRows] = await Promise.all([
+  const [attemptRows, studentRows] = await Promise.all([
     getAll("attempts"),
-    getAll("grading_keys"),
     getAll("students"),
   ]);
   const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
-  const gradingKeyMap = new Map(gradingKeyRows.map((record) => {
-    const gradingKey = recordData(record);
-    return [gradingKey.set_id, gradingKey];
-  }));
   const attempts = attemptRows.filter((record) => visibleStudentUids.has(recordData(record).student_uid));
   return {
     success: true,
-    attempts: attempts.map((record) => {
-      const attempt = recordData(record);
-      return attemptView(attempt, gradingKeyMap.get(attempt.set_id));
-    }).sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
+    attempts: attempts.map(attemptSummaryView)
+      .sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)),
+  };
+}
+
+async function getAttemptDetail(event) {
+  const attemptId = text(event.attempt_id);
+  if (!attemptId) throw new Error("ATTEMPT_ID_REQUIRED");
+  const attempt = await getOne("attempts", { attempt_id: attemptId })
+    || await getOne("attempts", { _id: attemptId });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  const student = await getOne("students", { auth_uid: attempt.student_uid });
+  if (!student || !visibleStudentRecords([student]).length) throw new Error("ATTEMPT_NOT_FOUND");
+  const gradingKey = await getOne("grading_keys", { set_id: attempt.set_id });
+  return {
+    success: true,
+    attempt: attemptView(attempt, gradingKey),
   };
 }
 
@@ -2737,6 +2744,7 @@ exports.main = async (event) => {
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();
     if (action === "listAttempts") return await listAttempts();
+    if (action === "getAttemptDetail") return await getAttemptDetail(event);
     if (action === "getActivityState") return await getActivityState(teacher);
     if (action === "markAttemptsRead") return await markAttemptsRead(teacher);
     if (action === "markActivityAttemptsReviewed") return await markActivityAttemptsReviewed(event, teacher);
