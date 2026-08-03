@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260803-3">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260803-4">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
 </head>
@@ -112,6 +112,9 @@
                         <div class="student-lookup-search-state" id="student-lookup-search-state">
                             <div class="student-picker-searchbar student-lookup-searchbar" id="student-picker-searchbar">
                                 <input class="resource-search" id="student-search" type="search" aria-label="Search students" placeholder="Search students..." autocomplete="off">
+                                <select class="filter-select student-lookup-class-filter" id="student-class-filter" aria-label="Filter students by class">
+                                    <option value="">All classes</option>
+                                </select>
                             </div>
                         </div>
                         <div class="student-lookup-title-state" id="student-lookup-title-state" hidden>
@@ -127,9 +130,6 @@
                         </div>
                     </div>
                     <section class="student-select-card student-lookup-picker-card" aria-label="Student search results">
-                        <select class="filter-select full-width" id="student-class-filter" hidden>
-                            <option value="">All classes</option>
-                        </select>
                         <div class="student-picker-shell" id="student-picker-shell">
                             <div class="student-picker" id="student-list">
                                 <div class="empty-card loading-card">Loading students...</div>
@@ -389,7 +389,7 @@
     <script src="assets/js/config.public.js?v=20260801-4"></script>
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
-    <script src="assets/js/teacher.js?v=20260803-4"></script>
+    <script src="assets/js/teacher.js?v=20260803-5"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

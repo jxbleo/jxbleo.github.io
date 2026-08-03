@@ -405,7 +405,8 @@ flowchart TD
 - 只应阻止同一学生同一 set 同时存在未完成开放作业
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
-- 教师在 View 矩阵点击学生姓名时，应打开该学生的四周完成表；周、日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度表使用同一展示规则，并包含该学生的自学记录
+- 教师在 View 矩阵点击学生姓名，或从 Students 清单进入学生详情时，应打开该学生的月度完成日历；每一周显示为独立周带，日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度语义一致，并包含该学生的自学记录
+- Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。学生详情顶部只显示姓名，以及同级的 Class、STAR、Completed/Total 摘要；不显示 Attempts 指标或姓名下方的元数据串
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
 - 老师可以开启或关闭单条 assignment 的 `mastery_enabled`。新作业默认关闭
   STAR earning，只有 Assign 时勾选 `Earn STAR` 或后续在 View 中开启后，

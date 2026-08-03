@@ -503,6 +503,15 @@ Check:
   top corners of the View matrix while horizontally scrolled and confirm sticky
   or colored header cells cannot expose a contrasting square tip inside the
   curve
+- Student lookup keeps the `+` action, live name search, and visible class
+  filter. List rows show only student names. Opening a student shows Class,
+  STAR, and Completed/Total as equal-level metrics, with no Attempts or
+  Login ID / class / Active metadata line below the name
+- both Student lookup detail and the View matrix student modal render the same
+  monthly week-band calendar. Previous/next month bounds work, Monday-first
+  dates align correctly across 4/5/6-week months, completion density and STAR
+  markers use progress summaries (including self-study), and selecting a day or
+  Wxx band refreshes the completed-work detail without exposing answer data
 - Assign shows side-by-side Work and Students summaries on desktop, keeps all
   current picker modal designs and behaviors, and retains the per-task parameter
   matrix below; the summaries stack at 390px

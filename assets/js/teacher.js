@@ -101,6 +101,7 @@
         selectedMatrixCell: '',
         selectedMatrixStudentKey: '',
         matrixStudentProgressSelections: {},
+        matrixStudentProgressMonths: {},
         selectedMatrixReviewAttemptId: '',
         selectedProgressDetailKey: '',
         matrixInitialRevealPending: true,
@@ -3194,9 +3195,8 @@
             return '<button class="student-pick' + (searchMode ? '' : ' compact') +
                 (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
                 '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
-                '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
-                (searchMode ? '<small>' + studentMetaHtml(student) + '</small>' : '') + '</span>' +
-                (searchMode ? '<i class="' + (student.active ? 'account-active' : 'account-inactive') + '"></i>' : '') +
+                '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong></span>' +
+                (searchMode ? '<svg class="student-pick-chevron" aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"></path></svg>' : '') +
             '</button>';
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>' +
             (searchMode ? 'Try another search.' : 'No student accounts are available.') + '</div>';
@@ -5060,9 +5060,19 @@
         var finishedItems = items.filter(function(item) {
             return isFinishedAssignmentStatus(normalizedAssignmentStatus(item.status));
         });
+        var starKeys = {};
+        finishedItems.forEach(function(item) {
+            var status = normalizedAssignmentStatus(item.status);
+            var hasStar = item.star_claimed === true || item.star_type === 'yellow' || item.star_type === 'blue' ||
+                (status === 'mastered' && (isSelfStudyMatrixItem(item) || assignmentCanEarnStar(item)));
+            if (!hasStar) return;
+            var key = item.achievement_id || item.progress_id || item.assignment_id || item.set_id;
+            if (key) starKeys[String(key)] = true;
+        });
         return {
             total: total,
             finished: finishedItems.length,
+            stars: Object.keys(starKeys).length,
             average: averageBestPercent(finishedItems)
         };
     }
@@ -5100,12 +5110,46 @@
         return 1 + Math.round((target.getTime() - firstThursday.getTime()) / 604800000);
     }
 
+    function matrixStudentMonthSerial(parts) {
+        return parts.year * 12 + parts.month - 1;
+    }
+
+    function matrixStudentMonthParts(serial) {
+        var year = Math.floor(serial / 12);
+        return { year: year, month: serial - year * 12 + 1, day: 1 };
+    }
+
+    function matrixStudentMonthLabel(parts) {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'UTC', year: 'numeric', month: 'long'
+        }).format(new Date(Date.UTC(parts.year, parts.month - 1, 1)));
+    }
+
+    function matrixStudentSelectionLabel(selected) {
+        if (!selected) return 'Completed work';
+        if (selected.days) return selected.weekLabel;
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: 'UTC', month: 'short', day: 'numeric', weekday: 'short'
+        }).format(new Date(selected.key + 'T12:00:00Z'));
+    }
+
     function matrixStudentProgressModel(studentKey, items) {
         var today = shanghaiDateParts(new Date());
         if (!today) return { days: [], weeks: [], selected: null, weekdayLabels: [] };
-        var mondayOffset = -((shanghaiWeekday(today) + 6) % 7);
-        var currentWeekStart = addShanghaiDays(today, mondayOffset);
-        var firstWeekStart = addShanghaiDays(currentWeekStart, -21);
+        var currentMonthSerial = matrixStudentMonthSerial(today);
+        var itemMonthSerials = (items || []).map(matrixStudentCompletionDate).filter(Boolean).map(function(date) {
+            return matrixStudentMonthSerial(shanghaiDateParts(date));
+        });
+        var earliestMonthSerial = itemMonthSerials.length ? Math.min.apply(Math, itemMonthSerials) : currentMonthSerial;
+        var requestedMonthSerial = Number(state.matrixStudentProgressMonths[studentKey]);
+        if (!isFinite(requestedMonthSerial)) requestedMonthSerial = currentMonthSerial;
+        requestedMonthSerial = Math.max(earliestMonthSerial, Math.min(currentMonthSerial, requestedMonthSerial));
+        state.matrixStudentProgressMonths[studentKey] = requestedMonthSerial;
+        var monthParts = matrixStudentMonthParts(requestedMonthSerial);
+        var firstMonthDay = { year: monthParts.year, month: monthParts.month, day: 1 };
+        var firstWeekStart = addShanghaiDays(firstMonthDay, -((shanghaiWeekday(firstMonthDay) + 6) % 7));
+        var daysInMonth = new Date(Date.UTC(monthParts.year, monthParts.month, 0)).getUTCDate();
+        var gridDayCount = Math.ceil((((shanghaiWeekday(firstMonthDay) + 6) % 7) + daysInMonth) / 7) * 7;
         var todayKey = matrixStudentProgressKey(today);
         var days = [];
         var daysByKey = {};
@@ -5113,7 +5157,7 @@
         var weeksByKey = {};
         var weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-        for (var weekIndex = 0; weekIndex < 4; weekIndex++) {
+        for (var weekIndex = 0; weekIndex < gridDayCount / 7; weekIndex++) {
             var weekParts = addShanghaiDays(firstWeekStart, weekIndex * 7);
             var weekStartKey = matrixStudentProgressKey(weekParts);
             var weekKey = 'week:' + weekStartKey;
@@ -5134,6 +5178,8 @@
                     weekLabel: week.weekLabel,
                     dayLabel: weekdayLabels[dayIndex],
                     items: [],
+                    day: parts.day,
+                    outsideMonth: parts.month !== monthParts.month,
                     isFuture: key > todayKey
                 };
                 days.push(day);
@@ -5146,7 +5192,7 @@
             var date = matrixStudentCompletionDate(item);
             var parts = date && shanghaiDateParts(date);
             var key = parts && matrixStudentProgressKey(parts);
-            if (!key || !daysByKey[key]) return;
+            if (!key || !daysByKey[key] || daysByKey[key].outsideMonth) return;
             daysByKey[key].items.push(item);
         });
 
@@ -5168,13 +5214,24 @@
         });
 
         var selectedKey = state.matrixStudentProgressSelections[studentKey] || '';
-        var selected = weeksByKey[selectedKey] || daysByKey[selectedKey] || daysByKey[todayKey] || days[days.length - 1];
+        var selected = weeksByKey[selectedKey] || daysByKey[selectedKey];
+        if (selected && selected.outsideMonth) selected = null;
+        if (!selected) {
+            var activeDays = days.filter(function(day) { return !day.outsideMonth && !day.isFuture && day.items.length; });
+            selected = activeDays.length ? activeDays[activeDays.length - 1] :
+                (requestedMonthSerial === currentMonthSerial ? daysByKey[todayKey] : null) ||
+                days.find(function(day) { return !day.outsideMonth && !day.isFuture; });
+        }
         state.matrixStudentProgressSelections[studentKey] = selected ? selected.key : '';
         return {
             days: days,
             weeks: weeks,
             selected: selected,
-            weekdayLabels: weekdayLabels
+            weekdayLabels: weekdayLabels,
+            monthParts: monthParts,
+            monthLabel: matrixStudentMonthLabel(monthParts),
+            canGoPrevious: requestedMonthSerial > earliestMonthSerial,
+            canGoNext: requestedMonthSerial < currentMonthSerial
         };
     }
 
@@ -5192,42 +5249,53 @@
 
     function renderMatrixStudentProgressBoard(studentKey, items) {
         var model = matrixStudentProgressModel(studentKey, items);
-        var cells = '';
-        model.days.forEach(function(day, index) {
-            if (index % 7 === 0) {
-                var week = model.weeks[index / 7];
-                var weekClasses = ['progress-week-label', 'progress-week-button'];
-                if (week && model.selected && week.key === model.selected.key) weekClasses.push('active');
-                cells += '<button class="' + weekClasses.join(' ') + '" type="button" data-matrix-student-progress-week="' +
-                    escapeHtml(week ? week.key : '') + '" aria-label="' +
-                    escapeHtml((week ? week.weekLabel : day.weekLabel) + ', ' + (week ? week.items.length : 0) + ' finished this week') + '">' +
-                    escapeHtml(week ? week.weekLabel : day.weekLabel) + '</button>';
-            }
-            var classes = ['progress-dot'];
-            if (day.level) classes.push('l' + day.level);
-            if (day.hasStar) classes.push('star');
-            if (day.isFuture) classes.push('future');
-            if (model.selected && day.key === model.selected.key) classes.push('active');
-            cells += '<button class="' + classes.join(' ') + '" type="button" data-matrix-student-progress-day="' +
-                escapeHtml(day.key) + '" aria-label="' + escapeHtml(day.weekLabel + ' ' + day.dayLabel + ', ' + day.items.length + ' finished') + '"></button>';
-        });
+        var weekBands = model.weeks.map(function(week) {
+            var weekClasses = ['progress-week-band'];
+            if (model.selected && (week.key === model.selected.key || week.key === model.selected.weekKey)) weekClasses.push('active');
+            return '<div class="' + weekClasses.join(' ') + '">' +
+                '<button class="progress-week-button" type="button" data-matrix-student-progress-week="' + escapeHtml(week.key) + '" aria-label="' +
+                    escapeHtml(week.weekLabel + ', ' + week.items.length + ' finished this week') + '">' + escapeHtml(week.weekLabel) + '</button>' +
+                '<div class="progress-week-days">' + week.days.map(function(day) {
+                    var classes = ['progress-dot'];
+                    if (day.level) classes.push('l' + day.level);
+                    if (day.hasStar) classes.push('star');
+                    if (day.isFuture) classes.push('future');
+                    if (day.outsideMonth) classes.push('outside-month');
+                    if (model.selected && day.key === model.selected.key) classes.push('active');
+                    return '<button class="' + classes.join(' ') + '" type="button" data-matrix-student-progress-day="' +
+                        escapeHtml(day.key) + '" aria-label="' + escapeHtml(day.weekLabel + ' ' + day.dayLabel + ' ' + day.day + ', ' + day.items.length + ' finished') + '"' +
+                        (day.isFuture || day.outsideMonth ? ' disabled' : '') + '><span>' + escapeHtml(day.day) + '</span>' +
+                        (day.hasStar ? '<i aria-hidden="true">★</i>' : '') + '</button>';
+                }).join('') + '</div></div>';
+        }).join('');
         var detail = model.selected && model.selected.items.length
             ? model.selected.items.map(renderMatrixStudentProgressTask).join('')
-            : '';
+            : '<p class="matrix-student-progress-empty">No completed work for this selection.</p>';
+        var detailCount = model.selected ? model.selected.items.length : 0;
         return '<div class="progress-board matrix-student-progress-board">' +
             '<section class="progress-map-panel">' +
-                '<div class="progress-dot-map" aria-label="Recent assignment progress">' +
-                    '<span></span>' +
-                    model.weekdayLabels.map(function(label) {
-                        return '<span class="progress-day-label">' + escapeHtml(label) + '</span>';
-                    }).join('') +
-                    cells +
+                '<div class="matrix-student-calendar-toolbar">' +
+                    '<button type="button" data-matrix-student-progress-month="previous" data-student-key="' + escapeHtml(studentKey) + '" aria-label="Previous month"' + (model.canGoPrevious ? '' : ' disabled') + '>‹</button>' +
+                    '<h3>' + escapeHtml(model.monthLabel) + '</h3>' +
+                    '<button type="button" data-matrix-student-progress-month="next" data-student-key="' + escapeHtml(studentKey) + '" aria-label="Next month"' + (model.canGoNext ? '' : ' disabled') + '>›</button>' +
                 '</div>' +
+                '<div class="progress-weekday-row" aria-hidden="true">' + model.weekdayLabels.map(function(label) { return '<span>' + escapeHtml(label) + '</span>'; }).join('') + '</div>' +
+                '<div class="progress-week-band-list" aria-label="Monthly completion calendar">' + weekBands + '</div>' +
             '</section>' +
             '<section class="progress-detail-panel" aria-live="polite">' +
+                '<div class="matrix-student-progress-detail-head"><h3>' + escapeHtml(matrixStudentSelectionLabel(model.selected)) + '</h3><span>' + escapeHtml(detailCount) + '</span></div>' +
                 '<div class="progress-detail-list">' + detail + '</div>' +
             '</section>' +
         '</div>';
+    }
+
+    function shiftMatrixStudentProgressMonth(studentKey, offset) {
+        var today = shanghaiDateParts(new Date());
+        if (!today || !studentKey) return;
+        var current = Number(state.matrixStudentProgressMonths[studentKey]);
+        if (!isFinite(current)) current = matrixStudentMonthSerial(today);
+        state.matrixStudentProgressMonths[studentKey] = current + offset;
+        state.matrixStudentProgressSelections[studentKey] = '';
     }
 
     function renderMatrixStudentTimeline(items) {
@@ -5265,7 +5333,6 @@
         if (!matrixItems.length && !studentItems.length) return '';
         var sample = matrixItems[0] || studentItems[0];
         var name = matrixStudentName(sample);
-        var studentId = matrixStudentId(sample);
         var className = matrixStudentClass(sample) || 'Individual';
         var metrics = matrixStudentOverviewMetrics(studentItems);
         return '<div class="progress-matrix-modal-backdrop" data-matrix-close="backdrop">' +
@@ -5275,13 +5342,12 @@
                         '<div class="matrix-student-overview">' +
                             '<div class="matrix-student-identity">' +
                                 '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(name)) + '</span>' +
-                                '<span><h2>' + escapeHtml(name) + '</h2>' +
-                                '<small>' + escapeHtml(studentId || studentKey) + ' · ' + escapeHtml(className) + '</small></span>' +
+                                '<span><h2>' + escapeHtml(name) + '</h2></span>' +
                             '</div>' +
                             '<div class="matrix-student-stats">' +
-                                '<span><strong>' + escapeHtml(metrics.total) + '</strong><small>Total</small></span>' +
-                                '<span><strong>' + escapeHtml(metrics.finished) + '</strong><small>Done</small></span>' +
-                                '<span><strong>' + escapeHtml(formatPercent(metrics.average)) + '</strong><small>Avg</small></span>' +
+                                '<span><strong>' + escapeHtml(className) + '</strong><small>Class</small></span>' +
+                                '<span><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></span>' +
+                                '<span><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></span>' +
                             '</div>' +
                         '</div>' +
                         renderMatrixStudentProgressBoard(studentKey, studentItems) +
@@ -5654,6 +5720,17 @@
                 restoreMatrixScroll(scrollSnapshot);
             });
         });
+        container.querySelectorAll('[data-matrix-student-progress-month]').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                var studentKey = button.dataset.studentKey || state.selectedMatrixStudentKey || '';
+                if (!studentKey) return;
+                var scrollSnapshot = matrixScrollSnapshot(container);
+                shiftMatrixStudentProgressMonth(studentKey, button.dataset.matrixStudentProgressMonth === 'next' ? 1 : -1);
+                renderAssignmentOverview();
+                restoreMatrixScroll(scrollSnapshot);
+            });
+        });
         container.querySelectorAll('[data-matrix-cell]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixCell;
@@ -5771,14 +5848,43 @@
         var classEditing = state.studentInfoEdit === 'class';
         var systemEditing = state.studentInfoEdit === 'system';
         var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
+        var metrics = matrixStudentOverviewMetrics(assignments);
+        var studentKey = student.auth_uid || student.student_id;
 
         studentDetail.innerHTML =
-            '<section class="profile-card student-profile-card">' +
-                '<div class="student-info-head">' +
-                    '<p class="eyebrow accent">INFO</p>' +
+            '<section class="profile-card student-profile-card student-profile-summary">' +
+                '<div class="student-summary-identity">' +
+                    '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(student.name || student.student_id)) + '</span>' +
                     '<h2 class="student-info-name">' + escapeHtml(student.name || student.student_id || 'Student') + '</h2>' +
-                    '<span></span>' +
                 '</div>' +
+                '<div class="matrix-student-stats student-primary-stats">' +
+                    '<div class="student-primary-stat student-class-stat">' +
+                        '<button class="student-primary-stat-button" type="button" data-edit-student-field="class" aria-label="Edit class">' +
+                            '<strong>' + escapeHtml(student.class_group || '—') + '</strong><small>Class</small>' +
+                        '</button>' +
+                        (classEditing ? '<form class="student-info-editor" data-student-info-editor="class">' +
+                            '<input type="text" name="class_group" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class">' +
+                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                        '</form>' : '') +
+                    '</div>' +
+                    '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></span>' +
+                    '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></span>' +
+                '</div>' +
+            '</section>' +
+            '<section class="profile-card student-calendar-card">' +
+                '<p class="eyebrow accent">PROGRESS CALENDAR</p>' +
+                renderMatrixStudentProgressBoard(studentKey, assignments) +
+            '</section>' +
+            '<section class="profile-card student-progress-card">' +
+                '<p class="eyebrow accent">OVERALL PROGRESS</p>' +
+                progressModeTabs(assignments) + progressHtml +
+            '</section>' +
+            '<section class="profile-card student-vocabulary-card">' +
+                '<p class="eyebrow accent">MY WORDS</p>' +
+                teacherStudentVocabularyHtml(student) +
+            '</section>' +
+            '<details class="profile-card student-account-details"' + (nameEditing || systemEditing ? ' open' : '') + '>' +
+                '<summary>Account settings</summary>' +
                 '<div class="student-info-grid">' +
                     '<div class="student-info-item">' +
                         '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Name</span><strong>' + escapeHtml(student.name || 'Not set') + '</strong></button>' +
@@ -5789,13 +5895,6 @@
                     '</div>' +
                     '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
                     '<div class="student-info-item">' +
-                        '<button class="student-info-edit" type="button" data-info-action="' + (student.class_group ? 'Edit' : 'Assign') + '" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not assigned') + '</strong></button>' +
-                        (classEditing ? '<form class="student-info-editor" data-student-info-editor="class">' +
-                            '<input type="text" name="class_group" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class">' +
-                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
-                        '</form>' : '') +
-                    '</div>' +
-                    '<div class="student-info-item">' +
                         '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
                         (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
                             '<select name="curriculum_track">' + systemOptions.map(function(option) {
@@ -5805,21 +5904,12 @@
                             '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
                         '</form>' : '') +
                     '</div>' +
-                    '<div class="student-info-item"><span>Status</span><strong>' + escapeHtml(student.active ? 'Active' : 'Inactive') + '</strong></div>' +
                 '</div>' +
                 '<div class="student-account-actions">' +
                     '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
                     '<button class="danger-button" id="delete-student-account" type="button">Delete Account</button>' +
                 '</div>' +
-            '</section>' +
-            '<section class="profile-card student-vocabulary-card">' +
-                '<p class="eyebrow accent">MY WORDS</p>' +
-                teacherStudentVocabularyHtml(student) +
-            '</section>' +
-            '<section class="profile-card student-progress-card">' +
-                '<p class="eyebrow accent">PROGRESS</p>' +
-                progressModeTabs(assignments) + progressHtml +
-            '</section>';
+            '</details>';
 
         document.getElementById('delete-student-account').addEventListener('click', function() {
             deleteStudentAccount(student);
@@ -5840,6 +5930,20 @@
         studentDetail.querySelectorAll('[data-progress-view]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.studentProgressView = button.dataset.progressView;
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-matrix-student-progress-day], [data-matrix-student-progress-week]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var key = button.dataset.matrixStudentProgressDay || button.dataset.matrixStudentProgressWeek || '';
+                if (!key) return;
+                state.matrixStudentProgressSelections[studentKey] = key;
+                renderStudentDetail();
+            });
+        });
+        studentDetail.querySelectorAll('[data-matrix-student-progress-month]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                shiftMatrixStudentProgressMonth(studentKey, button.dataset.matrixStudentProgressMonth === 'next' ? 1 : -1);
                 renderStudentDetail();
             });
         });

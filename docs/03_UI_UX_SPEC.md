@@ -532,11 +532,18 @@ below share the same left and right edges.
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The top-right circular student ID icon opens a standalone Student
-lookup modal. Its top bar initially contains the student search field and an
-internal `+` action for creating a student. Selecting a search result replaces
+lookup modal. Its top bar initially contains the student search field, a class
+filter, and an internal `+` action for creating a student. Student rows show the
+name only, without a second Login ID / class / Active metadata line. Selecting a search result replaces
 the search field in that same top bar with a back control and the selected
 student's name; returning to the list restores the search field. Student info
-and progress appear directly below. The Student lookup, raised-hand Argue, and
+and progress appear directly below. The detail begins with the student name and
+three equal-level Class, STAR, and Completed/Total metrics; it does not show an
+Attempts metric or an account-status line. Class remains editable from its
+metric. A monthly progress calendar follows, with one rounded band per week,
+Monday-first day controls, completion-density color, STAR markers, month
+navigation, and a selected-day/week completed-work detail pane. Account fields
+remain available one level deeper in Account settings. The Student lookup, raised-hand Argue, and
 notification surfaces share
 the notification card's width, viewport-centered position, height cap, and
 centered external `Close` capsule immediately below the card. The live search
@@ -840,10 +847,12 @@ It should include:
   smaller status icon above the numeric score and omit only the `%` glyph; the
   full score remains in the cell's accessible label and detail dialog.
 - clicking the left student-name column in the matrix opens an independent
-  four-week progress modal matching the student's Dashboard progress board.
-  Week labels and day squares are selectable, completed-work density and STAR
-  states use the same visual rules, and the detail pane includes both assigned
-  work and self-study completed by that student.
+  monthly progress modal matching the Students detail calendar. Each week is a
+  rounded band; month navigation, selectable week labels and dates,
+  completed-work density, and STAR states use the same rules, and the detail
+  pane includes both assigned work and self-study completed by that student.
+  Its summary uses Class, STAR, and Completed/Total at one level and does not
+  place Login ID, class, Active, or Attempts text under the student's name.
 - matrix attempt cards show only wrong answers, with Q number, student wrong
   answer in red, and correct answer in green. They do not repeat table header
   labels.
