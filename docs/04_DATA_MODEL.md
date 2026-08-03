@@ -687,3 +687,29 @@ It must not be the source of truth for:
 - Grading-key import and teacher Argue updates need reconciliation.
 - Some old status words still exist for compatibility.
 - Shared backend status logic should be extracted to reduce drift.
+- Report membership/cutover dates and Shanghai-time boundaries require dedicated
+  rule tests before historical reports are trusted.
+- A shared report URL is safe only if `learningReports` redacts the response
+  server-side; hiding entries in `reports.js` is not a data boundary.
+
+## 14. Content Editions
+
+Optional `sets` fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `edition_family` | string | stable grouping key shared by V1/V2/V3 |
+| `edition_number` | number | positive edition number |
+| `edition_label` | string | compact label such as `V2` |
+| `is_latest_edition` | boolean | exactly one true when a family has multiple visible editions |
+| `content_version` | string/null | optional public/private compatibility version for stale-client rejection |
+
+The original set keeps its existing `set_id`; edition identity never replaces
+`set_id`. Attempts may additionally store `content_version`, and each
+`question_results[]` entry may store `question_text_snapshot`. Historical
+correct answers and explanations already stored in the attempt are authoritative
+for review; current `grading_keys` are fallback only when a legacy attempt lacks
+those fields.
+
+`getDashboard.library_progress` is a response-only redacted array keyed by
+concrete `set_id`; it is not a new collection.

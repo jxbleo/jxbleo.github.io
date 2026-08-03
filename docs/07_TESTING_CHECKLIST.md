@@ -1036,3 +1036,16 @@ Before saying a deploy is complete:
 High priority improvement:
 
 - Add a lightweight pure JS rule test suite for backend status/STAR/Argue logic.
+
+## 11. Content Edition Checks
+
+- `npm run test:content-editions` passes.
+- Unversioned content opens the existing confirmation with no version buttons.
+- A synthetic V1/V2 family renders one Library card and two unselected buttons,
+  ordered latest first, with independent scores.
+- Selecting a version updates title, score/status ribbon, and Enter URL.
+- Assignment/History/STAR links with a concrete `set_id` bypass the selector.
+- Teacher Assign displays V1 and V2 as separate selectable rows.
+- Catalog build rejects duplicate edition numbers or multiple latest editions.
+- Optional BBC `contentVersion` must match the private grading version; stale
+  submissions are rejected instead of graded with mismatched keys.

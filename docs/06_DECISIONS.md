@@ -576,3 +576,32 @@ Review condition:
 
 Revisit only if the product later needs side-by-side dictionary editions or
 language/curriculum-specific definitions for the same normalized word.
+
+## 2026-08-04: Model Substantive Rewrites as Independent Sets
+
+Decision:
+
+Keep every existing `set_id` immutable. When the owner explicitly declares a
+new edition, create a new suffixed set such as `BBC-250904-V2` and relate it to
+the original through explicit edition metadata. Group editions only in Student
+Library discovery; keep scoring, Assignments, Attempts, and STARs independent.
+
+Reason:
+
+This preserves all current ownership and history keys while allowing students
+and teachers to use V1 and V2 side by side. It avoids a cross-collection rename
+migration and prevents old and new scores from being compared as one exercise.
+
+Trade-offs:
+
+- Good: old assignments and history remain valid without migration.
+- Good: each edition can earn its own STAR and use independent thresholds.
+- Cost: public content, `sets`, and private grading keys must be published for
+  each concrete edition.
+- Cost: small same-edition revisions can still produce different grading
+  versions; history therefore requires immutable snapshots and upward-only repair.
+
+Review condition:
+
+Revisit if the owner later wants archived editions hidden from Student Library
+or Teacher Assign. No archive behavior is part of the current release.

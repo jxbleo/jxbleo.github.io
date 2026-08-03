@@ -1412,3 +1412,16 @@ cloudfunctions/
 - grading key 导入和线上修正建立 reconcile 流程
 
 只要这些稳定，后面新增 BBC、IELTS、Vocabulary、DSE 或更多练习类型，都会更容易维护。
+
+## 19. 内容版本（Edition）
+
+- 只有 owner 明确说明“这是新版/V2”时才创建新版本；普通修改继续更新当前 set。
+- 已产生数据的原始 `set_id` 永不重命名。原始版可继续叫 `BBC-250904`，新版使用 `BBC-250904-V2`。
+- V1、V2 是完全独立的 set、Assignment、Attempt、通过率、STAR Rate 和 STAR 来源，不继承成绩。
+- 学生 Library 对同一 `edition_family` 只显示一个总胶囊。多版本时，现有确认弹窗顶部显示
+  `V2 (latest)`、`V1 (previous)` 等按钮及各自成绩；系统不默认代选。单版本不显示版本按钮。
+- 教师 Assign 将每个版本显示为独立任务。Assignment、History、STAR、Argue 和教师报告已经携带
+  具体 `set_id`，因此直接进入对应版本，不再询问版本。
+- 当前所有版本均对学生可见、对教师可布置；不实现归档，也不区分新老学生。
+- 同一 set 的小修订可保留 `question_id`。旧原始成绩不向下调整；合理答案修正可以向上修复
+  Passed、Mastery 和 STAR。历史报告必须优先使用提交时快照。

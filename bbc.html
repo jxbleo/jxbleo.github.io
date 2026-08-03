@@ -5037,6 +5037,11 @@
             assignment_id: assignmentId || null,
             mode: 'bbc',
             answers: userAnswers,
+            content_version: lessonData.contentVersion || null,
+            question_snapshots: Object.keys(userAnswers).reduce(function(result, questionId) {
+                result[questionId] = questionTextForId(questionId);
+                return result;
+            }, {}),
             started_at: attemptStartedAt,
             duration_seconds: Math.max(0, Math.round((Date.now() - new Date(attemptStartedAt).getTime()) / 1000)),
             audio_started_at: audioStartedAt,
@@ -5098,7 +5103,11 @@
         }).catch(function(error) {
             btn.disabled = false;
             btn.textContent = 'Submit';
-            alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
+            var message = error && error.message ? error.message : 'Unable to submit. Please try again.';
+            if (/CONTENT_OUTDATED/i.test(message)) {
+                message = 'This practice was updated. Reload the page before submitting again.';
+            }
+            alert(message);
         });
     }
 

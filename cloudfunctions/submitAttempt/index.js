@@ -363,6 +363,25 @@ function gradeAnswers(submittedAnswers, gradingKey, mode, allowedQuestionIds) {
   return { results, correctCount, questionCount: questionIds.length, percentage };
 }
 
+function attachQuestionSnapshots(results, snapshots) {
+  const source = snapshots && typeof snapshots === "object" && !Array.isArray(snapshots) ? snapshots : {};
+  return (results || []).map((item) => ({
+    ...item,
+    question_text_snapshot: String(source[item.question_id] || "").trim().slice(0, 2000),
+  }));
+}
+
+function assertSetContentVersion(event, set, gradingKey) {
+  const expected = String(set && set.content_version || "").trim();
+  if (!expected) return null;
+  const submitted = String(event && event.content_version || "").trim();
+  const gradingVersion = String(gradingKey && gradingKey.grading_version || "1").trim();
+  if (!submitted || submitted !== expected || gradingVersion !== expected) {
+    throw new Error("CONTENT_OUTDATED");
+  }
+  return expected;
+}
+
 function isBbcMultipleChoiceQuestion(questionId) {
   return /^mc-/i.test(String(questionId || ""));
 }
@@ -776,6 +795,7 @@ exports.main = async (event = {}) => {
     if (!set) throw new Error("SET_NOT_FOUND");
     const gradingKey = await getOne("grading_keys", { set_id: setId });
     if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+    const setContentVersion = isVocabularySet(set) ? null : assertSetContentVersion(event, set, gradingKey);
 
     const submittedGroupCount = Number(event.selected_group_count || 0);
     const isVocabularyTimedPractice = mode === "vocabulary_practice_timed";
@@ -817,6 +837,7 @@ exports.main = async (event = {}) => {
 
     const effectiveGradingKey = vocabularyTestGradingKey || gradingKey;
     const grading = gradeAnswers(answers, effectiveGradingKey, mode, vocabularyTestQuestionIds);
+    grading.results = attachQuestionSnapshots(grading.results, event.question_snapshots);
     if (!grading.questionCount) throw new Error("NO_GRADED_QUESTIONS");
     const passingPercentage = passingPercentageForAssignment(assignment, set);
     const masteryPercentage = masteryPercentageForAssignment(assignment, set);
@@ -918,6 +939,7 @@ exports.main = async (event = {}) => {
       audio_to_submit_seconds: event.audio_to_submit_seconds == null ? null : Number(event.audio_to_submit_seconds),
       practice_context: isVocabularyTimedPractice ? "practice" : assignmentId ? "assignment" : "resource",
       grading_version: effectiveGradingKey.grading_version || "1",
+      content_version: setContentVersion || event.content_version || null,
       selected_group_count: selectedGroupCountForAttempt,
       selected_group_ids: selectedGroupIdsForAttempt,
       group_results: groupResults,

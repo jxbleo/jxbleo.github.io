@@ -31,6 +31,11 @@ function resourceView(item) {
     link: item.link,
     difficulty: item.difficulty || "",
     estimated_minutes: item.estimated_minutes || null,
+    edition_family: item.edition_family || "",
+    edition_number: item.edition_number == null ? null : Number(item.edition_number),
+    edition_label: item.edition_label || "",
+    is_latest_edition: item.is_latest_edition === true,
+    content_version: item.content_version == null ? null : String(item.content_version),
   };
 }
 

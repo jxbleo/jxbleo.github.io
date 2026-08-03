@@ -77,7 +77,40 @@ function buildCatalogItem(item, section) {
     visible: item.visible !== false,
   };
   if (item.access && item.access !== "public") catalogItem.access = item.access;
+  if (item.edition_family) {
+    catalogItem.edition_family = item.edition_family;
+    catalogItem.edition_number = Number(item.edition_number || 1);
+    catalogItem.edition_label = item.edition_label || `V${catalogItem.edition_number}`;
+    catalogItem.is_latest_edition = item.is_latest_edition === true;
+  }
   return catalogItem;
+}
+
+function validateEditionFamilies(items) {
+  const families = new Map();
+  items.filter((item) => item.edition_family).forEach((item) => {
+    const familyItems = families.get(item.edition_family) || [];
+    familyItems.push(item);
+    families.set(item.edition_family, familyItems);
+  });
+  families.forEach((familyItems, family) => {
+    const versionNumbers = new Set();
+    familyItems.forEach((item) => {
+      if (!Number.isInteger(item.edition_number) || item.edition_number < 1) {
+        throw new Error(`Edition family ${family} has an invalid edition_number on ${item.id}`);
+      }
+      if (versionNumbers.has(item.edition_number)) {
+        throw new Error(`Edition family ${family} repeats edition_number ${item.edition_number}`);
+      }
+      versionNumbers.add(item.edition_number);
+    });
+    if (familyItems.length > 1) {
+      const latest = familyItems.filter((item) => item.is_latest_edition === true);
+      if (latest.length !== 1) {
+        throw new Error(`Edition family ${family} must have exactly one latest edition; found ${latest.length}`);
+      }
+    }
+  });
 }
 
 function main() {
@@ -91,6 +124,7 @@ function main() {
     }
     return buildCatalogItem(item, section);
   });
+  validateEditionFamilies(items);
 
   const catalog = { sections, items };
   fs.writeFileSync(outputPath, JSON.stringify(catalog, null, 2) + "\n");

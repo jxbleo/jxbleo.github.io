@@ -4,6 +4,37 @@ This glossary defines the shared product language for Mr. Cat Academy. It
 describes domain concepts only; implementation rules belong in the numbered
 project documentation.
 
+## Content Editions
+
+**Edition Family**:
+One lesson or learning unit whose alternative complete exercise editions are
+presented together for discovery.
+_Avoid_: Assignment group, grading version
+
+**Content Edition**:
+One independently assignable and gradable exercise set within an Edition
+Family, such as V1 or V2. Each edition owns its own progress and STAR outcomes.
+_Avoid_: Revision, display variant
+
+**Latest Edition**:
+The Content Edition currently identified as the newest choice in an Edition
+Family. Being latest does not invalidate or replace a Previous Edition.
+_Avoid_: Required edition, automatic default
+
+**Previous Edition**:
+A non-latest Content Edition that remains a complete selectable exercise.
+_Avoid_: Deleted content, archived content
+
+**Grading Revision**:
+A limited prompt, answer, accepted-variant, or explanation change within one
+Content Edition. It is not a new Content Edition.
+_Avoid_: V2, replacement set
+
+**Attempt Snapshot**:
+The question, submitted answer, grading result, and grading context retained
+from one countable submission for faithful historical review.
+_Avoid_: Current answer key, live exercise content
+
 ## Personal Vocabulary
 
 **My Words Entry**:

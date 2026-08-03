@@ -359,3 +359,23 @@ Never fix only the visible text while leaving grading inconsistent.
 The older root-level [CONTENT_WORKFLOW.md](../CONTENT_WORKFLOW.md) contains
 historical notes and examples. This `docs/09_CONTENT_WORKFLOW.md` is the
 current docs-system entry point.
+
+## 14. Creating a New Content Edition
+
+Only create an edition when the owner explicitly calls the material a new set or
+V2/V3. Do not infer an edition from the number of edits.
+
+1. Keep the original set's `id` unchanged.
+2. Give the new set a suffix such as `-V2`.
+3. Put matching edition metadata on every member of the family. The original is
+   `edition_number: 1`; exactly one member is `is_latest_edition: true`.
+4. Create independent runtime data and independent private grading data for the
+   new concrete `set_id`. Audio may be shared.
+5. Run the catalog builder, private-data preparation, and edition tests.
+6. Import both the new `sets` and `grading_keys` records before making the new
+   edition discoverable. Never rename historical assignment/attempt records.
+
+For a same-edition BBC correction, optionally add/increment `contentVersion` in
+both public runtime metadata and content metadata and match it to the private
+`grading_version`. A prompt replacement does not regrade old attempts; an
+accepted-answer correction may use the existing upward-only regrade path.

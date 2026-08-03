@@ -1656,9 +1656,10 @@
         var href = teacherPracticeHref(item);
         var itemStatus = practiceEntryStatus({ dataset: { entryStatus: item.status || '' } });
         var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
+        var displayTitle = teacherEditionTitle(item);
         return '<article class="resource-card library-task-card teacher-library-card' + (hidden ? ' year-hidden' : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
-            ' data-entry-kind="' + escapeHtml(meta) + '" data-entry-title="' + escapeHtml(item.title || setId || 'Practice') + '"' +
+            ' data-entry-kind="' + escapeHtml(meta) + '" data-entry-title="' + escapeHtml(displayTitle || setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-entry-locked="' + (itemLocked ? 'true' : 'false') + '"' +
             ' data-open-href="' + escapeHtml(href) + '" role="link" tabindex="0" aria-label="Open ' + escapeHtml(item.title || setId) + '">' +
@@ -2166,10 +2167,17 @@
             var matchesSection = !section || setFilterKey(set) === section;
             var matchesLibrary = prefix !== 'library' || setCategory(set) === state.libraryFilter;
             var matchesBook = prefix !== 'library' || !libraryBook || cambridgeBookId(set) === libraryBook;
-            var haystack = [set.set_id, set.title, set.course, set.type, set.section].join(' ').toLowerCase();
+            var haystack = [set.set_id, set.title, set.course, set.type, set.section,
+                set.edition_family, set.edition_label].join(' ').toLowerCase();
             return matchesSection && matchesLibrary && matchesBook && (!query || haystack.indexOf(query) !== -1);
         });
         return prefix === 'assign' ? sortAssignSets(sets, section) : sets;
+    }
+
+    function teacherEditionTitle(set) {
+        var title = set && (set.title || set.set_id) || 'Task';
+        if (!window.MrCatEditions || !window.MrCatEditions.hasEditionMetadata(set)) return title;
+        return title + ' · ' + window.MrCatEditions.tag(set);
     }
 
     function renderSetOptions() {
@@ -2187,7 +2195,7 @@
                 return '<option value="' + escapeHtml(set.set_id) + '"' +
                     (status.disabled ? ' disabled' : '') +
                     (state.selectedAssignSetIds[set.set_id] ? ' selected' : '') + '>' +
-                    escapeHtml(set.title + ' · ' + status.label) + '</option>';
+                    escapeHtml(teacherEditionTitle(set) + ' · ' + status.label) + '</option>';
             }).join('');
         }
         if (list) {
@@ -2204,7 +2212,7 @@
                         (selected ? ' checked' : '') +
                         (disabled ? ' disabled' : '') + '>' +
                     '<span class="assign-choice-mark" aria-hidden="true"></span>' +
-                    '<span class="assign-choice-copy"><strong>' + escapeHtml(set.title || set.set_id) + '</strong>' +
+                    '<span class="assign-choice-copy"><strong>' + escapeHtml(teacherEditionTitle(set)) + '</strong>' +
                         '<small>' + escapeHtml(meta) + '</small></span>' +
                 '</label>';
             }).join('') : '<div class="empty-card compact-empty"><strong>No matching work</strong>Try another search or column.</div>';
@@ -6731,6 +6739,10 @@
                         topic: item.topic || '',
                         tags: item.tags || [],
                         note: item.note || '',
+                        edition_family: item.edition_family || '',
+                        edition_number: item.edition_number == null ? null : Number(item.edition_number),
+                        edition_label: item.edition_label || '',
+                        is_latest_edition: item.is_latest_edition === true,
                         visible: item.visible !== false,
                         passing_percentage: 50,
                         mastery_percentage: 90,
@@ -6759,6 +6771,10 @@
                 topic: item.topic || '',
                 tags: item.tags || [],
                 note: item.note || '',
+                edition_family: item.edition_family || '',
+                edition_number: item.edition_number == null ? null : Number(item.edition_number),
+                edition_label: item.edition_label || '',
+                is_latest_edition: item.is_latest_edition === true,
                 visible: item.visible !== false,
                 passing_percentage: 50,
                 mastery_percentage: 90,

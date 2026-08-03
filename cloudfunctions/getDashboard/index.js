@@ -377,10 +377,12 @@ async function getAttemptReview(student, event) {
       set_id: attempt.set_id,
       set_title: set && set.title || attempt.set_id,
       percentage: effectivePercentage(attempt),
+      grading_version: attempt.grading_version || "1",
       submitted_at: attempt.submitted_at || null,
       feedback_available: canShowFeedback,
       answers: effectiveQuestionResults(attempt).map((item) => ({
         question_id: item.question_id,
+        question_text_snapshot: item.question_text_snapshot || "",
         submitted_answer: item.submitted_answer == null ? "" : item.submitted_answer,
         correct: item.correct === true,
         feedback_available: canShowFeedback,
@@ -1338,6 +1340,25 @@ exports.main = async (event = {}) => {
       };
     });
     const finalStarBuckets = normalizedStarBuckets(achievements);
+    const libraryProgressBySet = new Map();
+    progressAttempts.forEach((attempt) => {
+      if (!attempt || !attempt.set_id) return;
+      const key = String(attempt.set_id);
+      const current = libraryProgressBySet.get(key) || {
+        set_id: key,
+        best_percentage: null,
+        status: "not-passed",
+        grading_version: null,
+      };
+      const percentage = effectivePercentage(attempt);
+      if (current.best_percentage == null || percentage > current.best_percentage) {
+        current.best_percentage = percentage;
+        current.grading_version = attempt.grading_version || null;
+      }
+      if (attempt.mastered === true || attempt.adjusted_mastered === true) current.status = "mastered";
+      else if (current.status !== "mastered" && effectivePassed(attempt)) current.status = "passed";
+      libraryProgressBySet.set(key, current);
+    });
     const attemptMap = new Map(attempts
       .filter((attempt) => attempt && attempt.attempt_id)
       .map((attempt) => [attempt.attempt_id, attempt]));
@@ -1354,6 +1375,7 @@ exports.main = async (event = {}) => {
     return {
       success: true,
       assignments: assignmentViews.concat(selfStudyViews),
+      library_progress: [...libraryProgressBySet.values()],
       star_achievements: starAchievements,
       teacher_replies: teacherReplyItems.map((item) => disputeReplyView(item, setMap.get(item.set_id))),
       star_rewards: rewards,

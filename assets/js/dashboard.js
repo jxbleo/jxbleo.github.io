@@ -5,6 +5,7 @@
         session: null,
         assignments: [],
         resources: [],
+        libraryProgress: [],
         resourceFilter: 'vocabulary',
         resourceBookFilters: {},
         starCount: 0,
@@ -1261,6 +1262,7 @@
         overlay.innerHTML =
             '<div class="practice-entry-shell">' +
                 '<section class="practice-entry-card" role="dialog" aria-modal="true" aria-label="Practice entry confirmation">' +
+                    '<div class="practice-entry-editions" id="practice-entry-editions" aria-label="Choose a version" hidden></div>' +
                     '<div class="practice-entry-task">' +
                         '<small id="practice-entry-kind">Practice</small>' +
                         '<strong id="practice-entry-title">Practice</strong>' +
@@ -1294,7 +1296,41 @@
                 window.location.href = href;
             }
         });
+        overlay.querySelector('#practice-entry-editions').addEventListener('click', function(event) {
+            var button = event.target.closest('[data-practice-edition-index]');
+            if (!button) return;
+            selectPracticeEdition(overlay, Number(button.dataset.practiceEditionIndex));
+        });
         return overlay;
+    }
+
+    function practiceEntryItemModel(item) {
+        return {
+            item: item,
+            href: practiceHref(item, null),
+            kind: item && (item.course || item.sectionTitle || item.type) || 'Practice',
+            title: item && (item.title || item.set_id || item.id) || 'Practice',
+            status: practiceEntryStatus({ dataset: { entryStatus: item && item.status || '' } }),
+            best: item && item.best_percentage,
+            locked: Boolean(item && (item.answer_revealed === true || item.mastery_locked === true))
+        };
+    }
+
+    function selectPracticeEdition(overlay, index) {
+        var models = overlay.practiceEditionModels || [];
+        var model = models[index];
+        if (!model) return;
+        overlay.dataset.href = model.href || '';
+        overlay.querySelector('#practice-entry-kind').textContent = model.kind;
+        overlay.querySelector('#practice-entry-title').textContent = model.title;
+        overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + model.status;
+        overlay.querySelector('#practice-entry-status').innerHTML = practiceEntryScoreHtml(model.best, model.locked);
+        overlay.querySelector('#practice-entry-enter').disabled = false;
+        overlay.querySelectorAll('[data-practice-edition-index]').forEach(function(button) {
+            var selected = Number(button.dataset.practiceEditionIndex) === index;
+            button.classList.toggle('selected', selected);
+            button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        });
     }
 
     function closePracticeEntryDialog(options) {
@@ -1304,6 +1340,7 @@
         var onDismiss = restoreSource ? overlay.practiceEntryOnDismiss : null;
         overlay.hidden = true;
         delete overlay.dataset.href;
+        overlay.practiceEditionModels = null;
         overlay.practiceEntryOnDismiss = null;
         overlay.practiceEntryOnCommit = null;
         document.removeEventListener('keydown', handlePracticeEntryKeydown);
@@ -1324,16 +1361,42 @@
         var best = element && element.dataset && element.dataset.entryBest;
         var locked = practiceEntryLocked(element);
         options = options || {};
-        overlay.dataset.href = href || '';
+        var editionItems = Array.isArray(options.editions) ? options.editions : [];
+        var editionRoot = overlay.querySelector('#practice-entry-editions');
+        var enterButton = overlay.querySelector('#practice-entry-enter');
+        overlay.practiceEditionModels = editionItems.map(practiceEntryItemModel);
+        editionRoot.hidden = editionItems.length < 2;
+        editionRoot.innerHTML = editionItems.length < 2 ? '' : overlay.practiceEditionModels.map(function(model, index) {
+            var label = window.MrCatEditions ? window.MrCatEditions.tag(model.item) : 'V' + (index + 1);
+            var score = model.best == null || model.best === '' ? 'Not yet' : formatEntryPercent(model.best);
+            return '<button class="practice-entry-edition" type="button" data-practice-edition-index="' + index + '" aria-pressed="false">' +
+                '<strong>' + escapeHtml(label) + '</strong><small>' + escapeHtml(score) + '</small></button>';
+        }).join('');
+        overlay.dataset.href = editionItems.length > 1 ? '' : (href || '');
         overlay.practiceEntryOnDismiss = typeof options.onDismiss === 'function' ? options.onDismiss : null;
         overlay.practiceEntryOnCommit = typeof options.onCommit === 'function' ? options.onCommit : null;
         overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
         overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
         overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
         overlay.querySelector('#practice-entry-status').innerHTML = practiceEntryScoreHtml(best, locked);
+        enterButton.disabled = editionItems.length > 1;
         overlay.hidden = false;
-        overlay.querySelector('#practice-entry-enter').focus();
+        if (editionItems.length > 1) {
+            overlay.querySelector('#practice-entry-status').textContent = 'Choose a version above';
+            var firstEdition = editionRoot.querySelector('button');
+            if (firstEdition) firstEdition.focus();
+        } else {
+            enterButton.focus();
+        }
         document.addEventListener('keydown', handlePracticeEntryKeydown);
+    }
+
+    function libraryEditionsForCard(card) {
+        var family = String(card && card.dataset && card.dataset.editionFamily || '').trim();
+        if (!family || !window.MrCatEditions) return [];
+        return window.MrCatEditions.editionsFor((state.resources || []).filter(function(item) {
+            return item.visible !== false;
+        }), family);
     }
 
     function openHrefCard(card, event) {
@@ -1341,6 +1404,7 @@
         if (event && event.target && event.target.closest('button, a')) return;
         var href = card.dataset.openHref;
         if (href) showPracticeEntryDialog(card, href, {
+            editions: libraryEditionsForCard(card),
             onDismiss: function() {
                 if (card.isConnected) card.focus({ preventScroll: true });
             }
@@ -2082,7 +2146,9 @@
         var sectionId = section && section.id || item.sectionId || item.section_id || '';
         var sectionLabel = vocabularyLibrarySectionLabel(item) ||
             librarySectionLabel(sectionId, section && section.title || item.sectionTitle || item.course || item.type);
-        var setId = vocabularyLibraryRangeLabel(item) || item.set_id || item.id || item.displayValue || '';
+        var setId = item && item._edition_items && item._edition_items.length > 1
+            ? item.edition_family
+            : vocabularyLibraryRangeLabel(item) || item.set_id || item.id || item.displayValue || '';
         return {
             badge: badge,
             sectionLabel: sectionLabel,
@@ -2179,6 +2245,9 @@
         var itemLocked = item.answer_revealed === true || item.mastery_locked === true;
         return '<article class="resource-card library-task-card student-library-card' + (extraClass ? ' ' + extraClass : '') + '"' +
             (itemYear ? ' data-year="' + escapeHtml(itemYear) + '"' : '') +
+            (item.edition_family && item._edition_items && item._edition_items.length > 1
+                ? ' data-edition-family="' + escapeHtml(item.edition_family) + '"'
+                : '') +
             ' data-entry-kind="' + escapeHtml(meta.sectionLabel) + '" data-entry-title="' + escapeHtml(item.title || meta.setId || 'Practice') + '"' +
             ' data-entry-status="' + escapeHtml(itemStatus) + '" data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
             ' data-entry-locked="' + (itemLocked ? 'true' : 'false') + '"' +
@@ -2195,6 +2264,20 @@
                 '</div>' +
             '</div>' +
         '</article>';
+    }
+
+    function libraryDisplayItems(items) {
+        if (!window.MrCatEditions) return (items || []).slice();
+        return window.MrCatEditions.group(items || []).map(function(group) {
+            if (!group.versioned) return group.representative;
+            var representative = Object.assign({}, group.representative);
+            representative.edition_family = group.family;
+            representative._edition_items = group.editions;
+            representative.edition_search_text = group.editions.map(function(item) {
+                return [item.set_id, item.id, item.edition_label].filter(Boolean).join(' ');
+            }).join(' ');
+            return representative;
+        });
     }
 
     function libraryBuildPlaceholderCard(section) {
@@ -2237,6 +2320,7 @@
             item && item.sourceName,
             item && item.source_name,
             item && item.note,
+            item && item.edition_search_text,
             section && section.id,
             section && section.title,
             (item && item.tags || []).join(' ')
@@ -2425,9 +2509,9 @@
         var targetSectionId = activeSubTabConfig.sectionId || activeSubTabConfig.id;
 
         var itemsBySection = {};
-        var visibleItems = (state.resources || []).filter(function(item) {
+        var visibleItems = libraryDisplayItems((state.resources || []).filter(function(item) {
             return item.visible !== false;
-        });
+        }));
         for (var i = 0; i < visibleItems.length; i++) {
             var item = visibleItems[i];
             var sid = item.sectionId || item.section_id;
@@ -3699,7 +3783,15 @@
     }
 
     function mergeProtectedCatalogResources(resources, publicItems) {
-        var merged = (resources || []).slice();
+        var publicById = {};
+        (publicItems || []).forEach(function(item) {
+            var id = item && (item.set_id || item.id);
+            if (id) publicById[id] = item;
+        });
+        var merged = (resources || []).map(function(item) {
+            var publicItem = publicById[item && (item.set_id || item.id)];
+            return publicItem ? Object.assign({}, publicItem, item) : item;
+        });
         var seen = {};
         merged.forEach(function(item) {
             seen[libraryItemIdentity(item)] = true;
@@ -3712,6 +3804,17 @@
             merged.push(item);
         });
         return merged;
+    }
+
+    function applyLibraryProgress(resources, progressItems) {
+        var progressBySet = {};
+        (progressItems || []).forEach(function(item) {
+            if (item && item.set_id) progressBySet[item.set_id] = item;
+        });
+        return (resources || []).map(function(item) {
+            var progress = progressBySet[item.set_id || item.id];
+            return progress ? Object.assign({}, item, progress) : item;
+        });
     }
 
     function loadPublicCatalogSections() {
@@ -3754,6 +3857,7 @@
                 throw dashboardError;
             }
             state.assignments = dashboard.assignments || [];
+            state.libraryProgress = dashboard.library_progress || [];
             state.starCount = Number(dashboard.star_count || 0);
             state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
             state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
@@ -3769,6 +3873,7 @@
                 state.resources = hasCloudResources
                     ? mergeProtectedCatalogResources(state.resources, items)
                     : items;
+                state.resources = applyLibraryProgress(state.resources, state.libraryProgress);
             }).catch(function(error) {
                 if (hasCloudResources) return;
                 throw error;

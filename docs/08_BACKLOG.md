@@ -56,6 +56,8 @@
 - Consider Vocabulary Practice worksheet export separately from the current
   Word List-only export.
 - Migration to a frontend framework if static HTML becomes too hard to maintain.
+- Add explicit student-visible / teacher-assignable edition archive controls only
+  after the owner asks to hide an older edition; all editions remain visible now.
 
 ## Commercial Readiness Checklist
 

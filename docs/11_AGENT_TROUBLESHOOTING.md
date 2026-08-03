@@ -659,6 +659,10 @@ STAR 不阻止未来重新布置同一个 set。
 8. 新词汇打不开：查 JSON/JS fallback 和 local server。
 9. BBC 输入框下划线异常：查 `_____` 数量。
 10. 修改没生效：查 cache version、GitHub Pages 缓存、CloudBase 函数版本。
+11. Library 出现两个重复胶囊：检查两个 set 是否共享完全相同的 `edition_family`，并重新构建目录。
+12. 版本按钮没有成绩：检查 `getDashboard.library_progress` 与具体 `set_id` 是否一致。
+13. 新版能看但不能提交：检查新版 `sets`、`grading_keys` 和可选 `content_version` 是否全部一致。
+14. 旧报告显示新版答案：教师报告必须优先使用 Attempt 内的答案、解释和题目文字快照。
 
 ## 6. 维护规则
 
