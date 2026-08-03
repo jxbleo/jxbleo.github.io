@@ -954,6 +954,10 @@ Review should show `Pending`, `Approved`, and `Rejected` status tabs and group
 requests into task capsules so the teacher can handle one student attempt or
 assignment at a time.
 
+Approved and Rejected counts use quiet, background-free text matching their
+status-label color. Pending uses a red notification count only when unresolved
+requests exist, so the remaining teacher action is the sole visual alert.
+
 Pending items sort first.
 
 Each detail should show:

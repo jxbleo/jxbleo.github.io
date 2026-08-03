@@ -6361,10 +6361,16 @@
         ];
         var tabs = '<div class="summary-grid assignment-filters revise-tabs" role="tablist" aria-label="Review status">' +
             filters.map(function(filter) {
+                var isPending = filter.id === 'pending';
+                var countMarkup = isPending
+                    ? (counts.pending > 0
+                        ? '<span class="notice-dot review-pending-count" aria-label="' + escapeHtml(counts.pending) + ' pending requests">' + escapeHtml(counts.pending) + '</span>'
+                        : '')
+                    : '<span class="review-status-count ' + escapeHtml(filter.id) + '">' + escapeHtml(counts[filter.id]) + '</span>';
                 return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
-                    '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +
-                    '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' +
-                    '<span class="review-status-count ' + escapeHtml(filter.id) + '">' + escapeHtml(counts[filter.id]) + '</span>' +
+                    ' dispute-filter-' + escapeHtml(filter.id) + '" type="button" data-dispute-filter="' + escapeHtml(filter.id) +
+                    '" aria-label="' + escapeHtml(filter.label) + ': ' + escapeHtml(counts[filter.id]) + '">' +
+                    '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' + countMarkup +
                 '</button>';
             }).join('') +
         '</div>';

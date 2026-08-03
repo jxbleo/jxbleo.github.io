@@ -8465,22 +8465,20 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .revise-tabs .summary-label { display: block; color: inherit; font-size: 0.82rem; letter-spacing: 0.04em; }
 .review-status-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 24px;
-    min-height: 24px;
-    padding: 2px 7px;
-    border-radius: 999px;
-    color: #fff;
-    background: var(--muted);
-    font-size: 0.72rem;
+    color: currentColor;
+    font-size: 0.8rem;
     font-weight: 950;
     line-height: 1;
 }
-.review-status-count.pending { background: #d89528; }
-.review-status-count.approved { background: var(--success); }
-.review-status-count.rejected { background: var(--danger); }
+.dispute-filter-approved,
+.review-status-count.approved { color: var(--success); }
+.dispute-filter-rejected,
+.review-status-count.rejected { color: var(--danger); }
+.review-pending-count {
+    top: -8px;
+    right: -5px;
+    box-shadow: 0 7px 16px rgba(181, 71, 71, 0.22);
+}
 .sub-tab {
     position: relative;
     min-height: 40px;
