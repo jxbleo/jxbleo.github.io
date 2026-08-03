@@ -6234,7 +6234,7 @@
                 return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
                     '" type="button" data-dispute-filter="' + escapeHtml(filter.id) + '">' +
                     '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' +
-                    (filter.id === 'pending' && counts.pending ? '<span class="notice-dot danger">' + counts.pending + '</span>' : '') +
+                    '<span class="review-status-count ' + escapeHtml(filter.id) + '">' + escapeHtml(counts[filter.id]) + '</span>' +
                 '</button>';
             }).join('') +
         '</div>';

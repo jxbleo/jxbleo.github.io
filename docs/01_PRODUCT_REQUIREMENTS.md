@@ -74,6 +74,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   `Read all` 可以一次把当前所有 attempt 线程标记为已读，之后的新提交仍会变成未读
 - 点击教师铃铛中的学生完成线程后，详情先停留在全部 attempts 的柱状图总览；
   不自动跳到某次答案。只有点击某根柱子后，才选中并滚动到下方对应 attempt 详情
+- 教师右上角的 Notifications、Review、Dictionary 与 STAR Redemption 都打开
+  同尺寸、同结构的独立弹窗：统一的内容卡片、内部滚动区和卡片外正下方 `Close`。
+  Review 直接以 Pending / Approved / Rejected 三个状态入口开始，每个入口始终显示
+  当前数量，让老师同时看到待处理工作和已经完成的处理成果
 - 在 Library 中预览练习和查看答案
 - 处理学生 Argue 请求
 - 修改答案接受规则
