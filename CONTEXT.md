@@ -35,6 +35,53 @@ The question, submitted answer, grading result, and grading context retained
 from one countable submission for faithful historical review.
 _Avoid_: Current answer key, live exercise content
 
+## Classes and Learning Reports
+
+**Class**:
+A teacher-managed group whose active students receive the same class work and
+appear together in periodic learning comparisons.
+_Avoid_: Class group string, assignment batch
+
+**Class Membership**:
+One student's time-bounded participation in one Class. A student has at most
+one active membership, while ended memberships remain part of report history.
+_Avoid_: Current class label, permanent class ownership
+
+**Reporting Period**:
+A completed Shanghai-calendar week or natural month whose learning facts are
+captured together.
+_Avoid_: Rolling range, live dashboard window
+
+**Learning Report Preview**:
+An incomplete teacher-only view of a Reporting Period that can receive teacher
+comments before the period closes. Its calculated facts may still change.
+_Avoid_: Published report, final snapshot
+
+**Published Learning Report**:
+The fixed class and student learning snapshot created after a Reporting Period
+closes. Later activity does not silently rewrite it.
+_Avoid_: Live progress, protected reference report, attempt report
+
+**Class Task**:
+One assignment batch given to every report-eligible member of the same Class
+under the same due-period expectations.
+_Avoid_: Individual assignment, self-study item
+
+**Completed Class Item**:
+One Class Task that a student reached its Passing standard for by the relevant
+report cutoff. Repeated attempts do not create additional completed items.
+_Avoid_: Submission count, attempt count, mastery count
+
+**Self-Study Activity**:
+A countable unassigned learning attempt kept outside Class Task completion and
+Class ranking.
+_Avoid_: Optional class task, bonus ranking point
+
+**Class Leaderboard**:
+The real-name, period-specific ordering of eligible Class members by Completed
+Class Items, with equal counts sharing the same rank.
+_Avoid_: Overall ability ranking, cross-course score ranking
+
 ## Personal Vocabulary
 
 **My Words Entry**:

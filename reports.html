@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f4f8f5">
+    <title>Learning Reports | Mr. Cat Academy</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
+    <link rel="manifest" href="site-dse.webmanifest">
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260802-2">
+    <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
+</head>
+<body class="reports-page">
+    <main class="reports-shell">
+        <header class="reports-header">
+            <div class="reports-brand-block">
+                <a class="reports-back-link" id="reports-return-link" href="dashboard.html" aria-label="Return to Dashboard">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="m14.5 5-7 7 7 7"></path>
+                        <path d="M8 12h11"></path>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <div>
+                    <p class="eyebrow accent">MR. CAT ACADEMY</p>
+                    <h1>Learning Reports</h1>
+                    <p class="reports-subtitle" id="reports-subtitle">A shared class view, with each learner's own progress.</p>
+                </div>
+            </div>
+            <div class="reports-header-actions">
+                <button class="reports-header-button" id="reports-print-button" type="button" disabled>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M7 8V3.5h10V8"></path>
+                        <rect x="5" y="8" width="14" height="9" rx="2"></rect>
+                        <path d="M7.5 14.5h9V21h-9zM16.2 10.8h.01"></path>
+                    </svg>
+                    <span>Print / PDF</span>
+                </button>
+                <button class="reports-header-button reports-signout-button" id="reports-logout-button" type="button">Sign out</button>
+            </div>
+        </header>
+
+        <div class="reports-workspace">
+            <aside class="reports-sidebar" aria-label="Report navigation">
+                <div class="reports-sidebar-head">
+                    <div>
+                        <p class="eyebrow accent">REPORTS</p>
+                        <h2>Latest &amp; all</h2>
+                    </div>
+                    <button class="reports-icon-button" id="reports-refresh-button" type="button" aria-label="Refresh report list">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                            <path d="M20 11a8 8 0 1 0 1.1 4"></path>
+                            <path d="M20 4v7h-7"></path>
+                        </svg>
+                    </button>
+                </div>
+                <button class="reports-latest-button" id="reports-latest-button" type="button" disabled>Open latest report</button>
+                <div class="reports-list" id="reports-list" aria-live="polite" aria-busy="true">
+                    <div class="reports-list-loading">Loading reports…</div>
+                </div>
+            </aside>
+
+            <section class="reports-stage" aria-labelledby="reports-stage-title">
+                <div class="sr-only" id="reports-stage-title">Learning report</div>
+                <div class="reports-feedback" id="reports-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+                <div class="reports-content" id="reports-content" tabindex="-1">
+                    <section class="reports-loading-card" aria-busy="true">
+                        <span class="reports-spinner" aria-hidden="true"></span>
+                        <p>Loading your reports…</p>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260803-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
+    <script src="assets/js/auth.js?v=20260707-4"></script>
+    <script src="assets/js/reports.js?v=20260803-1"></script>
+</body>
+</html>

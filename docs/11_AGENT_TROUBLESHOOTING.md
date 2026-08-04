@@ -30,6 +30,11 @@
 | 学生删除后用相同 Login ID 重建仍报 `STUDENT_ID_EXISTS` | 线上 `teacherAdmin` 仍是旧版，已删除 profile 的 `student_id` 尚未归档释放；或 Authentication 中同名 end user 仍存在 | 部署最新版 `teacherAdmin`；检查 deleted profile 的 `deleted_student_id_snapshot` 与归档 `student_id`；再查 Authentication username |
 | CloudBase 文档长成 `{ data: { ... } }` | 错用了 `add({ data: record })` | 所有新增都应 `add(record)` |
 | 学生完成后老师端进度仍旧 | `teacherAdmin.listProgress` 聚合逻辑或线上函数版本 stale | `teacherAdmin` 部署版本；assignments/attempts 是否同 assignment_id；是否部署了分页读取和 attempt 兜底版本 |
+| 学生打开共享报告链接却能看到其他学生点评/明细 | 只在前端隐藏 `student_details`，或线上 `learningReports` 仍返回完整 report document | 直接检查学生身份下的函数响应；必须由 `learningReports.getReport` 服务端只投影该学生一条 detail。发布最新函数；不要用 CSS/JS 修补泄露 |
+| 报告链接显示 `REPORT_NOT_AVAILABLE` 或空报告 | 报告集合/索引未创建、报告尚为 preview、学生不在 membership snapshot，或线上函数版本不匹配 | 先查 `learning_reports` 的 class/period/status，再查 `class_memberships` 覆盖期和函数部署；不要把 preview 直接公开 |
+| 周/月报告少了周末或月末学习 | Timer/浏览器按本地时区计算，或 final snapshot 在 Shanghai cutoff 前写入 | 检查 `period_start`、`period_end`、`snapshot_cutoff_at` 和 timer Cron；必须使用 `Asia/Shanghai`，周日 23:59:59/月末最后一秒后才 final |
+| 同一期出现两份报告、点评丢失、或 published 又变回 preview | Timer retry/并发未按 class+period 幂等 upsert，或 preview refresh 覆盖评论 | 查 `class_id + period_type + period_key` 逻辑唯一性、report status transition 和 comment merge；修复后用开发数据重试，不能删历史硬重来 |
+| 新入班/转班学生被排在榜尾或不公平参与排名 | 报告只读取当前 `students.class_group`，没有用 membership history 判断完整周期 | 查 `class_memberships.started_at/ended_at` 和 report `membership_snapshot`；部分周期成员应保留个人详情但明确不参与排名 |
 | 学生有大量历史记录，但 Calendar 和 Finished 同时为空 | `getDashboard` 超过 CloudBase 执行时限；旧前端又把失败响应吞成空 assignments | 先查 `getDashboard` 日志是否为 `调用失败(433)` / `Invoking task timed out`；部署批量 set 查询版本，将执行超时设为至少 10 秒（建议 15 秒），并发布带 Retry 状态的 Dashboard 静态文件 |
 | Personal Center 星星数量正确，但点开来源清单为空 | 静态 Dashboard 已更新但云端 `getDashboard` 仍是未返回 `star_achievements` 的旧版 | 重建并部署 `getDashboard`，发布带最新 cache query 的 `dashboard.html` / `dashboard.js`；不需要迁移 `student_set_achievements` |
 | 教师铃铛里第二/第三次 attempt 点不开矩阵弹窗 | 矩阵日期过滤只看 assignment 完成/最新摘要日期，没有把被点击 attempt 的提交日期纳入匹配 | 发布最新版静态 `teacher.js`；查 `matrixItemMatchesDate` 是否同时检查 `progressAttemptsForAssignment(item)` |
@@ -132,6 +137,20 @@
 
 - 加一个不依赖真实 CloudBase 的规则测试脚本。
 - 至少覆盖状态单调、reassign、STAR、Argue、Vocabulary 计分边界。
+
+### P1：Learning Reports V1 的定时、成员和泄露防护
+
+当前风险：
+
+- 班级迁移、自然周/月边界、定时器重试和同一链接的角色投影会同时影响公平性与学生隐私。
+- 普通微信群的便利性容易误导实现为公开静态报告或非官方个人微信机器人。
+
+目标：
+
+- 以 `classes` / `class_memberships` 取代 report scope 对 `class_group` 的依赖，并只允许一个 active membership。
+- 对 `class_id + period_type + period_key` 做幂等生成/发布，保存 preview 评论，保留 published 审计快照。
+- 为 `learningReports` 添加响应级 redaction 测试、Shanghai 边界/部分成员测试和 CloudBase timer 失败监控。
+- 保持普通微信群为人工复制发送；未获 owner 新授权前不接入个人微信 RPA。
 
 ## 3. 按日期整理的技术变更记录
 
@@ -685,3 +704,18 @@ STAR 不阻止未来重新布置同一个 set。
 ```
 
 如果只是普通 UI 小修，不一定要写这里；如果涉及 CloudBase、数据结构、评分、作业、STAR、Argue、导入、缓存、部署，就应该记录。
+
+### 2026-08-04：CloudBase 事务内并发查询导致 TransactionBusy
+
+已做：
+- 将 `teacherAdmin.promoteClassAssignmentBatch` 事务内的四个读取从 `Promise.all` 改为顺序 `await`。
+
+技术规则：
+- 同一个 CloudBase transaction 内只允许一个进行中的数据库操作；不要并发执行 transaction 查询或写入。
+- 多个班级任务批次的迁移应串行执行，并检查每页返回的 `apply_failures`。
+
+重复问题：
+- 如果迁移返回 `ResourceUnavailable.TransactionBusy`，先检查事务回调内是否存在 `Promise.all` 或其他并发数据库操作，不要盲目高频重试。
+
+部署/数据：
+- 代码修复需要重新部署 `teacherAdmin`；失败的事务不会自动把该批次标记为班级任务，可通过 dry-run 的 `already_scoped` 复核。

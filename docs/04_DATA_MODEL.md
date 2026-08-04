@@ -37,6 +37,9 @@ Only CloudBase cloud functions should read or write private collections.
 | `vocabulary_lexicon_history` | private revision snapshots for shared dictionary entries |
 | `vocabulary_dictionary_reports` | student reports requiring dictionary review |
 | `vocabulary_test_sessions` | active/ended Vocabulary Test integrity sessions |
+| `classes` | stable class entities used by class work and reports |
+| `class_memberships` | current and historical student-class relationships |
+| `learning_reports` | preview and published weekly/monthly report snapshots |
 
 All collections should remain `ADMINONLY`.
 
@@ -93,6 +96,70 @@ Rules:
   clears the now-redundant reviewed-ID list; any later attempt makes the thread
   unread again.
 
+For Learning Reports V1, `name` remains the legacy/canonical whole display
+value. When profiles provide `chinese_name` and `english_name`, membership and
+report snapshots preserve those separately. A legacy `name` may be used as the
+whole display fallback but must not be heuristically split; the owner/teacher
+must backfill a missing English name before a bilingual display is required.
+Later profile corrections may refresh a preview but must not silently rewrite a
+published report.
+
+## 3a. `classes`
+
+Core fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `class_id` | string | stable class identifier |
+| `name` | string | teacher-facing/display class name |
+| `normalized_name` | string | normalized name used to avoid accidental duplicate active classes |
+| `active` | boolean | available for new assignments/memberships |
+| `created_at` | Date | creation audit time |
+| `updated_at` | Date | latest change time |
+| `archived_at` | Date/null | archive time, if retired |
+
+Rules:
+
+- All report and class-scoped assignment relations use `class_id`, never a
+  browser-supplied display string.
+- Archiving preserves membership history and published reports.
+- The legacy `students.class_group` remains a compatibility display mirror only
+  during migration; it is not an authorization, report-scope, or history field.
+
+## 3b. `class_memberships`
+
+Core fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `membership_id` | string | stable membership identifier |
+| `class_id` | string | related class |
+| `student_uid` | string | owning student `auth_uid` |
+| `active` | boolean | whether this is the student's current membership |
+| `started_at` | Date | effective start time |
+| `ended_at` | Date/null | effective end time |
+| `student_id_snapshot` | string | Login ID snapshot for audit/display |
+| `student_name_snapshot` | string | full display-name snapshot |
+| `chinese_name_snapshot` | string/null | stable Chinese-name report display value |
+| `english_name_snapshot` | string/null | stable English-name report display value |
+| `ended_by_teacher_uid` | string/null | teacher who ended/changed membership |
+| `created_at` / `updated_at` | Date | audit timestamps |
+
+Rules:
+
+- There may be at most one active membership for a `student_uid`. The trusted
+  teacher action must close the previous row and open the next row safely; the
+  browser cannot choose membership scope or effective dates.
+- Closed rows are history and are never hard-deleted merely because a student
+  transfers classes.
+- A report's rank eligibility is calculated from membership coverage of the
+  entire Shanghai period. A partial period (new admission, transfer, withdrawal)
+  leaves a student out of the public ranking but retains that student's personal
+  report detail with a machine-readable reason.
+- Cutover migration creates one current membership from a nonempty legacy
+  `class_group`; it must not invent prior membership intervals or backfill
+  reports before cutover.
+
 ## 4. `sets`
 
 Core fields:
@@ -131,6 +198,9 @@ Core fields:
 | --- | --- | --- |
 | `assignment_id` | string | unique assignment instance |
 | `assignment_batch_id` | string/null | shared batch key for assignments created by the same teacher Assign action for the same set |
+| `assignment_scope` | string | server-derived `class` or `individual`; report ranking trusts only `class` |
+| `class_id` | string/null | stable related class for a class-scoped assignment |
+| `class_task_id` | string/null | server-derived common task identity across the class-scoped assignment instances |
 | `student_uid` | string | owner `students.auth_uid` |
 | `set_id` | string | assigned set |
 | `status` | string | `to_do`, `passed`, `mastered`, `cancelled` |
@@ -206,6 +276,16 @@ standard record. It resolves the visible column to explicit `assignment_id`
 values and updates those assignment documents individually, preserving the
 assignment-level ownership and audit model.
 
+Learning Reports V1 adds a derived class-task marker without replacing the
+per-student assignment model. During assignment creation/update, the trusted
+server determines whether the effective recipient set exactly covers the
+class's active membership set. Only then may it store
+`assignment_scope: "class"` with `class_id` and a common `class_task_id`.
+Any individual selection, partial class selection, or ambiguous legacy record
+uses `assignment_scope: "individual"` and is excluded from formal class-report
+ranking. Browser data must never set these fields or turn an individual task
+into class work.
+
 During migration, `getDashboard` and `teacherAdmin` derive an effective
 Sunday-end `due_at` from legacy `assigned_at`, then `created_at`, when the
 canonical field is missing. The authenticated teacher-only
@@ -237,6 +317,62 @@ Reassignment rule:
   `passed` when it meets the assignment passing percentage, `mastered` when it
   meets mastery and `mastery_enabled` is not false. Only mastered conversions
   create or convert an assignment STAR.
+
+## 5a. `learning_reports`
+
+One logical report exists per `class_id + period_type + period_key`. It begins
+as a mutable teacher-only preview and ends as an immutable published snapshot.
+
+Core fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `report_id` | string | stable report identifier used by `reports.html?report=` |
+| `status` | string | `preview` or `published` |
+| `class_id` / `class_name` | string | snapshotted report class identity/display name |
+| `period_type` | string | `weekly` or `monthly` |
+| `period_key` | string | stable Shanghai-period key; display labels are not the authority |
+| `period_start` / `period_end` | Date | inclusive natural Shanghai period boundaries |
+| `snapshot_cutoff_at` | Date | preview generation cutoff or final period cutoff for a published report |
+| `membership_snapshot` | array | report-time member UID, membership identity, dates, and rank eligibility; fixed display names live in the two projections below |
+| `leaderboard` | array | rank-safe class comparison projection |
+| `student_details` | array/object | one per-student detailed snapshot, including teacher comment/goals |
+| `report_url` | string | canonical `reports.html?report=<encoded-id>` relative URL |
+| `snapshot_version` | number | format/version marker for the materialized report snapshot |
+| `generated_at` | Date | latest preview/final materialization time |
+| `published_at` | Date/null | final publication time |
+| `created_at` / `updated_at` | Date | audit timestamps |
+
+`leaderboard` entries expose only safe common fields: frozen Chinese/English
+display fields when supplied (otherwise the frozen whole display fallback),
+rank/rank eligibility, due-period class-task denominator,
+report-cutoff completed count, integer completion delta, and separate self-study
+count. `student_details` additionally holds this student's per-family details,
+non-ranking reason, teacher comment, and at most three next goals. Family keys
+must remain distinct (`bbc`, `vocabulary`,
+`ielts-reading`, `ielts-listening`, and future named families); the report
+cannot manufacture one cross-family average score.
+
+Snapshot rules:
+
+- A preview may be regenerated idempotently, but saved teacher comments/goals
+  must survive the refresh by their authorized student identity.
+- Publishing derives final data at `snapshot_cutoff_at`, preserves comments,
+  and never silently rewrites the resulting report. Preview refresh, comment
+  save, and publish use transactional status checks so a concurrent writer
+  cannot regress `published` to `preview`. A later grading correction requires
+  an explicit audited correction/republication path.
+- Formal rank counts unique `class_task_id` values whose `due_at` belongs to
+  the period and whose first passing completion is on/before that report's
+  snapshot cutoff. A monthly report can therefore count a task completed later
+  in the same month even when its already-published due-week report stays missed.
+  Cancelled assignments do not contribute to the denominator. Equal counts
+  receive the same rank; no score, time, or average-score tiebreaker exists.
+- Countable self-study is a separate distinct-`set_id` measure based on
+  `assignment_id: null` attempts that first pass in the period. Report-excluded
+  Vocabulary modes remain excluded; it never changes class rank.
+- This collection stays `ADMINONLY`. Cloud functions return role-redacted
+  projections rather than a raw report document.
 
 ## 6. `attempts`
 
@@ -680,6 +816,7 @@ It must not be the source of truth for:
 - assignment status
 - grading
 - ownership
+- report ranking, membership, published snapshots, or other students' report details
 
 ## 12. Data Model Risks
 

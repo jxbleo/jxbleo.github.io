@@ -24,6 +24,7 @@
 | `ielts-listening.html` | IELTS Listening runtime |
 | `vocabulary.html` | Vocabulary learning, spelling, use/test |
 | `attempt-review.html` | Attempt review surface |
+| `reports.html` | Authenticated weekly/monthly class reports and teacher preview editing |
 | `dse-topic-bank.html` | HKDSE Writing/Speaking visitor preview and protected student report |
 | `hk8-dse-jupas-weighting-report-2026-27.html` | Unlisted JUPAS weighting preview and student-only full report |
 
@@ -67,6 +68,41 @@ two guidance excerpts, and a mosaicked outline. Only an active student account
 may replace that preview with the complete report; teacher and visitor sessions
 remain on the preview. The public page must not contain the full tables, SQL,
 caveats, or official-source section.
+
+### Learning reports
+
+`reports.html?report=<report_id>` is a shared authenticated destination, not a
+public file or a parent-account portal. The URL may be copied into an ordinary
+WeChat group, but opening it always checks the current CloudBase login and then
+returns the caller's authorized projection.
+
+The page has a compact report list/sidebar, a clear current-period header, and
+a main reading surface. It must work as a phone-friendly HTML report first;
+`Print / PDF` invokes browser printing so the currently authorized report can
+be printed or saved as a PDF. The print stylesheet must omit navigation,
+editing controls, other students' private detail, answers, Argue material, and
+per-question attempt data.
+
+Students and parents using a student's existing login see:
+
+- the published class leaderboard (separate Chinese/English names when the
+  profile has them, otherwise its frozen whole display name; completed class
+  tasks, integer delta, self-study count, and tie ranks);
+- that student's own detailed sections: completed/assigned class tasks,
+  per-family activity, self-study, teacher comment, and up to three next goals;
+- a clear `Not ranked this period` state for partial-period class membership,
+  instead of a last-place row.
+
+They must never receive other students' detailed metrics, comments, goals,
+membership history, attempts, or teacher-only controls in source, DOM, or a
+hidden client-side data object.
+
+Active teachers see the complete report projection. A preview has a visible
+draft state, personal-comment editors, and generation/publish controls. A
+published report has a fixed snapshot state plus `Copy report link` and `Copy
+WeChat text` controls. Personal comments never appear in the public leaderboard.
+The ordinary-WeChat V1 flow ends at copying the text: the teacher manually
+sends it. Do not add unsupported personal-WeChat RPA or a third-party bot.
 
 ### Login
 
@@ -480,6 +516,13 @@ Student account menu:
   no saved question text show an unavailable message and retain `Go to question`.
 
 ## 4. Teacher Interface
+
+The teacher has a `Reports` entry that opens `reports.html` in the same
+authenticated session. It is a separate report workspace rather than a fourth
+matrix destination: the existing View/Assign/Library layout remains focused on
+live operations. Teacher report navigation lists preview and published periods,
+shows full class detail only after the backend authorizes the teacher, and
+returns to `teacher.html` without exposing a report URL as a bypass.
 
 All independent Teacher modals share one background scroll lock. Notifications,
 Argue, Student lookup/details, assignment editors, practice-entry confirmation,

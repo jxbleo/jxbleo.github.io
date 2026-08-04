@@ -15,6 +15,7 @@
 
 | 日期 | 变化 | 说明 |
 | --- | --- | --- |
+| 2026-08-03 | 学习报告 V1 需求冻结 | 新增班级成员历史、周/月固定快照、老师预览点评和登录后共享报告链接；部署仍待 owner 授权 |
 | 2026-06-16 | 初版 | 根据现有文档、CloudBase 后端、内容管线和当前开放问题整理成人类可读 PRD |
 
 ## 1. 一句话目标
@@ -40,6 +41,7 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - 老师能查看进度、处理学生对判分的争议
 - 老师修正答案规则后，未来评分使用新规则
 - 学生可以保存自己的生词或短语
+- 老师可以为一个班级生成周报和月报，并把一条登录后的报告链接手动发到普通微信群
 
 ### 2.2 这个系统不是什么
 
@@ -49,11 +51,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 
 - 多老师组织权限体系
 - 家长账号
-- 排行榜和竞赛
+- 通用竞赛、跨班排行榜或以分数平均值决定名次；V1 只提供按统一班级任务完成数计算的班内报告榜
 - 支付和课程购买
-- 消息系统
-- 邮件、短信、微信登录
-- 复杂报表 BI
+- 通用消息系统、家长独立账号、邮件/短信/微信登录
+- 复杂报表 BI；V1 只提供固定的周报、月报和浏览器打印/PDF
 - 大规模自动排课
 
 系统应保持目的明确：给一个老师稳定管理内容、学生、作业、评分和学习记录。
@@ -671,6 +672,98 @@ flowchart TD
 - `abandoned` / `invalidated` 不写入正式 attempt，不改变 assignment 状态，
   学生可以重新开始
 
+### 7.11 classes（Learning Reports V1）
+
+用途：保存可用于统一布置作业和学习报告的班级实体；它不是浏览器传入的一段
+任意 `class_group` 字符串。
+
+核心字段：
+
+- `class_id`：稳定班级 ID，不能用显示名代替
+- `name` / `normalized_name`：显示名和用于去重的标准化名称
+- `active`：是否可用于新的班级操作
+- `created_at`、`updated_at`、`archived_at`：审计时间
+
+规则：
+
+- 新报告、成员关系和 class-scoped assignment 一律引用 `class_id`。
+- 现有 `students.class_group` 在迁移期只保留为旧 Teacher UI 的兼容显示镜像；它
+  不能成为报告范围、历史成员或权限判断的来源。
+- 班级归档不删除历史成员、assignment、attempt 或已发布报告。
+
+### 7.12 class_memberships（Learning Reports V1）
+
+用途：记录学生在班级中的可追溯成员关系，而不是覆写一个当前班级字段。
+
+核心字段：
+
+- `membership_id`
+- `class_id`
+- `student_uid`：学生 `auth_uid`
+- `active`
+- `started_at`、`ended_at`
+- `student_id_snapshot`、`student_name_snapshot`
+- `chinese_name_snapshot`、`english_name_snapshot`：当 profile 已分别提供中英文名时
+  的稳定显示快照；旧 `name` 只能作为完整显示名 fallback，不能靠猜测拆分
+- `ended_by_teacher_uid`、`created_at`、`updated_at`
+
+规则：
+
+- 一个学生同一时刻只能有一条 active membership。老师调班时，服务器必须在同一
+  受控操作中结束旧 membership 后再开始新 membership；浏览器不能指定或伪造
+  `student_uid`、开始/结束时间。
+- 结束成员关系是历史事实，不硬删。修改学生当前姓名不得改写 membership 快照或已发布
+  报告中的中英文姓名。
+- 一个学生要进入某期公开班级排名，必须有同一班级覆盖整个报告周期的 membership。
+  入班、转班或离班只覆盖部分周期时，其个人数据仍可进入自己的报告，但显示
+  “本期未参与排名”，且不出现在该期公开排行中。
+- 旧 `class_group` 数据迁移时不得猜测过去的成员历史。只从 cutover 时刻创建当前
+  active membership，cutover 以前的报告不回填、不生成；迁移应同时更新旧字段镜像。
+
+### 7.13 learning_reports（Learning Reports V1）
+
+用途：存储可复现的班级学习报告。报告不是由浏览器每次临时重算的页面，而是由服务端
+保存的预览或已发布快照。
+
+核心字段：
+
+- `report_id`
+- `status`：`preview` 或 `published`
+- `class_id`、`class_name`
+- `period_type`：`weekly` 或 `monthly`
+- `period_key`、`period_start`、`period_end`：均按 `Asia/Shanghai` 的自然周期解释
+- `snapshot_cutoff_at`：最终统计截点
+- `membership_snapshot`：本期成员资格快照；详细/排行投影同时保存当次显示名
+- `leaderboard`：仅含可公开班内比较所需的排名投影
+- `student_details`：每位学生的个人报告详情和老师点评；服务端按 authenticated UID 定位
+- `report_url`、`snapshot_version`、`generated_at`、`created_at`、`updated_at`、`published_at`
+
+规则：
+
+- 同一个 `class_id + period_type + period_key` 最多有一个逻辑报告。重复 timer、重试或
+  老师重复点击生成必须幂等，不能产生两份正式报告或重复通知。
+- `preview` 可随新的预览生成刷新事实数据，并允许老师保存个人点评；不能公开给学生。
+  `published` 在最终截点后写成不可静默改写的完整快照。之后发现评分修正时，必须通过
+  明示的更正记录/重新发布流程保留审计，而不是改写原发布事实。
+- Preview 刷新可采用当前 profile 的中英文显示字段；最终 published 投影会冻结当次
+  `chinese_name`、`english_name` 和 `display_name`。若旧 profile 缺少独立英文名，系统
+  只能显示稳定的 `name` fallback，owner/老师应在首次最终发布前补齐 profile，不能让
+  系统猜测姓名拆分。
+- 每位学生详情冻结老师最终点评。未填写点评不阻塞自动发布，公开榜永远不展示个人点评。
+- 正式排名只看本期 `due_at` 落在周期内、`assignment_scope: "class"`、同一
+  `class_id` 的任务；已取消任务不进入分母。排名分子是截止前首次通过的不同
+  `class_task_id` 数量，分母是该期统一班级任务数量。相同数量同名次，不再以分数、
+  完成时间或跨训练类型平均分破同分。
+- 对同一 `class_task_id` 全量修改/取消时必须在事务内统一执行；只选择部分学生时，
+  后端先原子地把整组降级为 individual，再执行个人变更，不能留下半班 Class Task。
+- 超过报告 `snapshot_cutoff_at` 后的通过和 future-due assignment 不进入该期正式
+  排名；同月稍晚完成的本月到期任务可进入月报，但不得回写已经发布的周报。
+  自主学习只统计后端实际保存且 countable 的 `assignment_id: null` attempt：同一
+  `set_id` 首次达到 passing 计一项；Vocabulary 1–4 组 self-test、普通 Practice 和
+  计时 Vocabulary Practice 均不计入报告完成项。自主学习不影响班级名次。
+- 环比只显示整数完成项变化，例如 `+3 项` 或 `-2 项`；上期为零时仍显示实际新增项，
+  不计算百分比。不同训练类型只分别展示成绩/趋势，不能跨类型计算平均分。
+
 ## 8. 云函数职责
 
 ### 8.1 getCurrentStudent
@@ -849,6 +942,45 @@ flowchart TD
 - 保持禁用并从“活跃函数”文档中移除
 - 或恢复为一个只做 reset 的 teacher-only 小函数
 
+### 8.10 learningReports（Learning Reports V1）
+
+用途：报告页面和教师报告工作区的受权读写入口。
+
+Actions：
+
+- `listReports`
+- `getReport`
+- `generatePreview`
+- `saveComment`
+- `publishReport`
+
+要求：
+
+- 所有 action 都从 CloudBase authenticated context 推导身份。学生只可读取自己出现在
+  `membership_snapshot` 中的已发布报告；老师必须是 active teacher。
+- 对学生返回的 payload 只能包含共享 leaderboard 和其本人一个 `student_details` 项；
+  不得以隐藏 DOM、前端筛选或猜测 `student_uid` 的方式下发其他学生明细、点评、attempt
+  或 membership 数据。未登录访客、非本班学生和 preview 请求都必须被拒绝。
+- `generatePreview`、`saveComment`、`publishReport` 仅允许 active teacher；老师也不能
+  通过浏览器指定任意学生、班级范围、最终截点或排名结果。
+- assignment 的 `assignment_scope`、`class_id` 与 `class_task_id` 只能在
+  `teacherAdmin` 创建/更新 assignment 时由服务器推导：只有有效接收人恰好覆盖该班当时
+  的全部 active membership，才标为 `class`；否则是 `individual`。报告函数只相信该
+  服务端标记，不从前端选中的学生列表猜测班级任务。
+
+### 8.11 generateLearningReports（Learning Reports V1）
+
+用途：只供 CloudBase 定时触发器调用的批量报告生成/发布入口。
+
+要求：
+
+- 验证专用内部 token；不接受浏览器调用，也不接受任意 class、日期或 timestamp 参数。
+- 在 `Asia/Shanghai` 下只允许计算当前可预览周期或刚结束的可发布自然周/月；周报
+  预览在周六生成，周日 23:59:59 截止后发布最终快照；月报预览在月末倒数第二天生成，
+  次月 1 日最终发布。具体 Cron 由 owner 在 CloudBase 配置。
+- 对重复触发、超时重试和并发运行保持幂等：同周期报告的快照、点评和发布状态不能
+  被重复创建、丢失或倒退。
+
 ## 9. 核心业务流程
 
 ### 9.1 创建学生
@@ -1019,6 +1151,44 @@ flowchart TD
   并保留全部已解决回复；
   `student_seen` 只控制未读红点，原题 Argue 状态仍是另一处永久查看入口
 
+### 9.8 周报、月报与共享链接
+
+```mermaid
+sequenceDiagram
+  participant Timer as CloudBase Timer
+  participant R as generateLearningReports
+  participant T as 老师
+  participant UI as reports.html
+  participant S as 学生/家长
+
+  Timer->>R: Shanghai-time preview schedule
+  R->>R: snapshot class/membership/task facts
+  R-->>T: preview available
+  T->>UI: save personal comments
+  Timer->>R: period cutoff then publish schedule
+  R->>R: rebuild final facts + preserve comments
+  R-->>UI: immutable published snapshot
+  T->>UI: copy shared report link/text
+  T->>S: manually post one link to ordinary WeChat group
+  S->>UI: sign in with student's existing account
+  UI-->>S: leaderboard + that student's own detail only
+```
+
+统计与发布规则：
+
+- 周期按上海自然周（周一 00:00:00 至周日 23:59:59）和自然月计算；字段中保存明确的
+  起止时间，不能只靠浏览器本地时区或 Wxx 文本判断。
+- 预览允许老师写点评和最多三个下周期目标；周末新增学习进入最终快照。若预览后事实
+  有变化，发布前提示老师复查，但不自动改写老师文字。
+- 教师不确认或未填写点评也不应阻塞固定时间自动发布；发布后页面成为正式版本。老师的
+  预览/发布提醒渠道可后续单独确定，家长无需独立账号或邮箱。
+- `reports.html?report=<report_id>` 是全班可复制的同一条链接，不是无登录的静态 HTML
+  文件。学生/家长使用学生账号登录后，页面只展示本班榜和自己的详情；老师看到全班明细
+  及预览编辑控件。
+- 普通微信群没有受支持的官方自动推送接口。V1 只提供复制链接和复制群文案，由老师
+  手动发送；不接入个人微信 RPA/第三方机器人。报告页面的 `Print / PDF` 走浏览器打印
+  对话框，方便家长按需另存 PDF。
+
 ## 10. 前端产品原则
 
 前端可以小步调整，但要服务后端事实。
@@ -1045,6 +1215,17 @@ flowchart TD
 数字。红色数字只计算逾期、本周未完成任务。未读 Teacher Replies 使用 To Do List 按钮右侧气泡图标
 自己的红点，不计入 To Do List 外部数字。首页这些周进度分区默认直接显示
 摘要而不展开任务行。
+
+#### 学习报告入口（V1）
+
+- Dashboard 和 Teacher 均可进入 `reports.html`。报告列表按当前身份过滤，选择历史
+  报告时 URL 只携带 `report_id`。
+- 学生报告页面固定先显示共享班级排行榜，再显示自己的完成、分类表现、自主学习、整数
+  环比、老师点评和下周期目标；没有资格参加排名时明确显示原因，不把学生放在榜尾。
+- 老师看到相同报告的完整版本：全班明细、未参与排名原因、预览状态、点评编辑、生成/
+  发布与复制分享文案。个人点评不可出现在班级公开榜。
+- `Print / PDF` 必须是当前已授权视图的浏览器打印；学生打印不得把其他学生私有明细带
+  进 PDF。PDF 不存答案、Argue 内容或逐题 attempt 数据。
 
 ### 10.2 老师端
 

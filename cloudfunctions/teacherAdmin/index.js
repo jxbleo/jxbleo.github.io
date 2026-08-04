@@ -15,6 +15,8 @@ const AI_LOOKUP_TIMEOUT_MS = 15000;
 const STAR_LEDGER_COLLECTION = "star_reward_ledger";
 const STAR_REQUEST_COLLECTION = "star_redemption_requests";
 const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
+const CLASS_COLLECTION = "classes";
+const CLASS_MEMBERSHIP_COLLECTION = "class_memberships";
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -423,6 +425,9 @@ function studentView(student) {
     auth_uid: authUid,
     student_id: studentId,
     name: source.name || "",
+    chinese_name: source.chinese_name || "",
+    english_name: source.english_name || "",
+    class_id: source.class_id || "",
     class_group: source.class_group || "",
     curriculum_track: source.curriculum_track || "",
     role: source.role || "student",
@@ -432,6 +437,159 @@ function studentView(student) {
     created_at: source.created_at || null,
     updated_at: source.updated_at || null,
   };
+}
+
+function hasOwnProperty(object, key) {
+  return Object.prototype.hasOwnProperty.call(object || {}, key);
+}
+
+function normalizedClassName(value) {
+  return text(value).toLowerCase().replace(/\s+/g, " ");
+}
+
+function classNameHash(value) {
+  let hash = 2166136261;
+  for (const character of normalizedClassName(value)) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+function generatedClassId(name) {
+  const normalized = normalizedClassName(name);
+  const slug = normalized.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 36) || "class";
+  return `class-${slug}-${classNameHash(normalized)}`;
+}
+
+function membershipIsActive(membership) {
+  return Boolean(membership) && membership.active !== false && !membership.ended_at;
+}
+
+async function activeClassMembershipsForStudent(studentUid) {
+  const memberships = await getAll(CLASS_MEMBERSHIP_COLLECTION, { where: { student_uid: studentUid } });
+  return memberships.map(recordData).filter(membershipIsActive);
+}
+
+async function endActiveClassMemberships(studentUid, now, teacherUid) {
+  const student = await getOne("students", { auth_uid: studentUid });
+  if (!student) return null;
+  return await syncStudentClassMembership({ ...student, active: false }, null, now, teacherUid);
+}
+
+async function resolveClassReference(classIdInput, classNameInput, now, teacherUid) {
+  const requestedClassId = text(classIdInput);
+  const requestedName = text(classNameInput);
+  if (requestedClassId) {
+    const existing = await getOne(CLASS_COLLECTION, { class_id: requestedClassId });
+    if (!existing || existing.active === false) throw new Error("CLASS_NOT_FOUND");
+    return recordData(existing);
+  }
+  if (!requestedName) return null;
+
+  const normalizedName = normalizedClassName(requestedName);
+  let existing = await getOne(CLASS_COLLECTION, { normalized_name: normalizedName });
+  if (!existing) existing = await getOne(CLASS_COLLECTION, { class_id: generatedClassId(requestedName) });
+  if (existing && existing.active === false) throw new Error("CLASS_NOT_FOUND");
+  if (existing) return recordData(existing);
+
+  const classRecord = {
+    class_id: generatedClassId(requestedName),
+    name: requestedName,
+    normalized_name: normalizedName,
+    active: true,
+    created_at: now,
+    updated_at: now,
+    created_by_teacher_uid: text(teacherUid) || null,
+  };
+  const added = await db.collection(CLASS_COLLECTION).add(classRecord);
+  return { ...classRecord, _id: added && added.id };
+}
+
+async function syncStudentClassMembership(student, classRecord, now, teacherUid) {
+  const source = recordData(student);
+  const studentUid = text(source.auth_uid);
+  if (!studentUid) throw new Error("AUTH_UID_REQUIRED");
+  const requestedClassId = source.active === true ? text(classRecord && classRecord.class_id) : "";
+  let outcome = null;
+  await db.runTransaction(async (transaction) => {
+    const profileResult = await transaction.collection("students").where({ auth_uid: studentUid }).limit(1).get();
+    const currentProfile = profileResult.data && profileResult.data[0] ? recordData(profileResult.data[0]) : null;
+    if (!currentProfile) throw new Error("STUDENT_NOT_FOUND");
+    const targetClassId = currentProfile.active === true ? text(currentProfile.class_id) : "";
+    if (targetClassId !== requestedClassId) throw new Error("CLASS_MEMBERSHIP_TARGET_STALE");
+
+    // Every membership synchronization writes the profile lock row. CloudBase
+    // transaction conflict detection then serializes concurrent class changes
+    // for one student, preventing two active membership rows from being added.
+    await transaction.collection("students").doc(currentProfile._id).update({
+      membership_synced_at: now,
+    });
+    const membershipResult = await transaction.collection(CLASS_MEMBERSHIP_COLLECTION)
+      .where({ student_uid: studentUid }).limit(500).get();
+    const activeMemberships = (membershipResult.data || []).map(recordData).filter(membershipIsActive);
+    const matching = targetClassId
+      ? activeMemberships.find((membership) => text(membership.class_id) === targetClassId)
+      : null;
+    for (const membership of activeMemberships) {
+      if (matching && membership._id === matching._id) continue;
+      await transaction.collection(CLASS_MEMBERSHIP_COLLECTION).doc(membership._id).update({
+        active: false,
+        ended_at: now,
+        updated_at: now,
+        ended_by_teacher_uid: text(teacherUid) || null,
+      });
+    }
+    if (!targetClassId) {
+      outcome = null;
+      return;
+    }
+    const snapshot = {
+      student_id_snapshot: text(currentProfile.student_id),
+      student_name_snapshot: text(currentProfile.name),
+      chinese_name_snapshot: text(currentProfile.chinese_name),
+      english_name_snapshot: text(currentProfile.english_name),
+      class_name_snapshot: text(classRecord && classRecord.name) || text(currentProfile.class_group),
+      updated_at: now,
+    };
+    if (matching) {
+      await transaction.collection(CLASS_MEMBERSHIP_COLLECTION).doc(matching._id).update({
+        ...snapshot,
+        active: true,
+      });
+      outcome = { ...matching, ...snapshot };
+      return;
+    }
+    const membership = {
+      membership_id: `${studentUid}-${targetClassId}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      student_uid: studentUid,
+      class_id: targetClassId,
+      active: true,
+      started_at: now,
+      ended_at: null,
+      created_by_teacher_uid: text(teacherUid) || null,
+      created_at: now,
+      ...snapshot,
+    };
+    const added = await transaction.collection(CLASS_MEMBERSHIP_COLLECTION).add(membership);
+    outcome = { ...membership, _id: added && added.id };
+  });
+  return outcome;
+}
+
+async function targetClassForStudentUpdate(event, student, now, teacherUid) {
+  const classWasProvided = hasOwnProperty(event, "class_id") || hasOwnProperty(event, "class_group");
+  if (!classWasProvided) {
+    const currentClassId = text(student.class_id);
+    if (currentClassId) return await resolveClassReference(currentClassId, "", now, teacherUid);
+    if (text(student.class_group)) return await resolveClassReference("", student.class_group, now, teacherUid);
+    return null;
+  }
+  const requestedClassId = hasOwnProperty(event, "class_id") ? text(event.class_id) : "";
+  const requestedClassName = hasOwnProperty(event, "class_group") ? text(event.class_group) : "";
+  if (requestedClassId) return await resolveClassReference(requestedClassId, requestedClassName, now, teacherUid);
+  if (requestedClassName) return await resolveClassReference("", requestedClassName, now, teacherUid);
+  return null;
 }
 
 async function listStudents() {
@@ -477,11 +635,13 @@ async function resolveCreatedEndUser(createResult, username) {
   return null;
 }
 
-async function createStudent(event) {
+async function createStudent(event, teacher) {
   const studentId = text(event.student_id);
   const name = text(event.name);
   const classGroup = text(event.class_group);
   const curriculumTrack = text(event.curriculum_track);
+  const chineseName = text(event.chinese_name);
+  const englishName = text(event.english_name);
 
   if (!studentId || !name) throw new Error("STUDENT_FIELDS_REQUIRED");
   const matchingProfiles = (await getAll("students", { where: { student_id: studentId } })).map(recordData);
@@ -492,6 +652,8 @@ async function createStudent(event) {
     await releaseDeletedStudentId(deletedStudent);
   }
 
+  const now = new Date();
+  const classRecord = await resolveClassReference(event.class_id, classGroup, now, teacher && teacher.auth_uid);
   const password = initialPassword();
   let authUid = "";
   try {
@@ -508,12 +670,14 @@ async function createStudent(event) {
     throw new Error(`AUTH_CREATE_FAILED:${error.code || error.message || "UNKNOWN"}`);
   }
 
-  const now = new Date();
   const student = {
     auth_uid: authUid,
     student_id: studentId,
     name,
-    class_group: classGroup,
+    chinese_name: chineseName,
+    english_name: englishName,
+    class_id: classRecord ? classRecord.class_id : "",
+    class_group: classRecord ? classRecord.name : "",
     curriculum_track: curriculumTrack,
     role: "student",
     active: true,
@@ -530,13 +694,30 @@ async function createStudent(event) {
       student_id: studentId,
     });
     if (!verified) throw new Error("PROFILE_VERIFY_FAILED");
+    await syncStudentClassMembership(
+      verified || { ...student, _id: addResult && addResult.id },
+      classRecord,
+      now,
+      teacher && teacher.auth_uid
+    );
   } catch (error) {
+    let profileRollbackFailed = false;
+    const profileId = verified && verified._id || addResult && addResult.id;
+    if (profileId) {
+      try {
+        await db.collection("students").doc(profileId).remove();
+      } catch (rollbackError) {
+        profileRollbackFailed = true;
+        console.error("Unable to roll back student profile", rollbackError);
+      }
+    }
     try {
       await manager.user.deleteEndUsers({ userList: [authUid] });
     } catch (rollbackError) {
       console.error("Unable to roll back auth user", rollbackError);
       throw new Error("PROFILE_CREATE_FAILED_ROLLBACK_REQUIRED");
     }
+    if (profileRollbackFailed) throw new Error("PROFILE_CREATE_FAILED_ROLLBACK_REQUIRED");
     throw new Error("PROFILE_CREATE_FAILED_AUTH_ROLLED_BACK");
   }
   return {
@@ -546,18 +727,28 @@ async function createStudent(event) {
   };
 }
 
-async function updateStudent(event) {
+async function updateStudent(event, teacher) {
   const authUid = text(event.auth_uid);
   if (!authUid) throw new Error("AUTH_UID_REQUIRED");
   const student = await getOne("students", { auth_uid: authUid });
   if (!student || student.role === "teacher" || isDeletedStudent(student)) throw new Error("STUDENT_NOT_FOUND");
 
-  const update = { updated_at: new Date() };
+  const now = new Date();
+  const classRecord = await targetClassForStudentUpdate(event, student, now, teacher && teacher.auth_uid);
+  const update = { updated_at: now };
   if (Object.prototype.hasOwnProperty.call(event, "name")) {
     update.name = text(event.name);
     if (!update.name) throw new Error("STUDENT_NAME_REQUIRED");
   }
-  if (Object.prototype.hasOwnProperty.call(event, "class_group")) update.class_group = text(event.class_group);
+  if (Object.prototype.hasOwnProperty.call(event, "chinese_name")) update.chinese_name = text(event.chinese_name);
+  if (Object.prototype.hasOwnProperty.call(event, "english_name")) update.english_name = text(event.english_name);
+  if (classRecord) {
+    update.class_id = classRecord.class_id;
+    update.class_group = classRecord.name;
+  } else if (hasOwnProperty(event, "class_id") || hasOwnProperty(event, "class_group")) {
+    update.class_id = "";
+    update.class_group = "";
+  }
   if (Object.prototype.hasOwnProperty.call(event, "curriculum_track")) update.curriculum_track = text(event.curriculum_track);
   if (Object.prototype.hasOwnProperty.call(event, "active")) {
     const active = event.active === true;
@@ -591,7 +782,293 @@ async function updateStudent(event) {
     }
     throw new Error("PROFILE_UPDATE_FAILED");
   }
-  return { success: true };
+  try {
+    if (update.active === false) {
+      await endActiveClassMemberships(authUid, now, teacher && teacher.auth_uid);
+    } else {
+      await syncStudentClassMembership(
+        { ...student, ...update },
+        classRecord,
+        now,
+        teacher && teacher.auth_uid
+      );
+    }
+  } catch (syncError) {
+    if (syncError && syncError.message === "CLASS_MEMBERSHIP_TARGET_STALE") {
+      throw new Error("CLASS_UPDATE_CONFLICT");
+    }
+    let rollbackFailed = false;
+    try {
+      const profileRollback = { updated_at: student.updated_at || now };
+      Object.keys(update).forEach((key) => {
+        if (key === "updated_at") return;
+        profileRollback[key] = Object.prototype.hasOwnProperty.call(student, key) ? student[key] : null;
+      });
+      await db.collection("students").doc(student._id).update(profileRollback);
+      if (Object.prototype.hasOwnProperty.call(update, "active")) {
+        await manager.user.setEndUserStatus({
+          uuid: authUid,
+          status: student.active === true ? "ENABLE" : "DISABLE",
+        });
+      }
+      const previousClass = await targetClassForStudentUpdate({}, student, now, teacher && teacher.auth_uid);
+      await syncStudentClassMembership(student, previousClass, now, teacher && teacher.auth_uid);
+    } catch (rollbackError) {
+      rollbackFailed = true;
+      console.error("Unable to compensate class membership sync", rollbackError);
+    }
+    if (rollbackFailed) throw new Error("CLASS_MEMBERSHIP_SYNC_FAILED_ROLLBACK_REQUIRED");
+    throw new Error("CLASS_MEMBERSHIP_SYNC_FAILED_AUTH_ROLLED_BACK");
+  }
+  return {
+    success: true,
+    class_id: classRecord ? classRecord.class_id : "",
+    class_group: classRecord ? classRecord.name : "",
+  };
+}
+
+function sameStringSet(left, right) {
+  const a = [...new Set((left || []).map(text).filter(Boolean))].sort();
+  const b = [...new Set((right || []).map(text).filter(Boolean))].sort();
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function classPlanForStudent(student, classesById, classesByName) {
+  const currentClassId = text(student.class_id);
+  const currentClass = currentClassId && classesById.get(currentClassId);
+  if (currentClass && currentClass.active !== false) return currentClass;
+  const legacyName = text(student.class_group);
+  if (!legacyName) return null;
+  const existingByName = classesByName.get(normalizedClassName(legacyName));
+  if (existingByName && existingByName.active !== false) return existingByName;
+  return {
+    class_id: generatedClassId(legacyName),
+    name: legacyName,
+    normalized_name: normalizedClassName(legacyName),
+    active: true,
+  };
+}
+
+function activeMembershipMap(rows) {
+  const map = new Map();
+  (rows || []).map(recordData).filter(membershipIsActive).forEach((membership) => {
+    const studentUid = text(membership.student_uid);
+    const entries = map.get(studentUid) || [];
+    entries.push(membership);
+    map.set(studentUid, entries);
+  });
+  return map;
+}
+
+function legacyAssignmentScopePlan(assignments, membersByClassId) {
+  const batches = new Map();
+  (assignments || []).map(recordData).forEach((assignment) => {
+    const batchId = text(assignment.assignment_batch_id);
+    if (!batchId) return;
+    const rows = batches.get(batchId) || [];
+    rows.push(assignment);
+    batches.set(batchId, rows);
+  });
+  const outcomes = [];
+  batches.forEach((rows, batchId) => {
+    const setIds = [...new Set(rows.map((row) => text(row.set_id)).filter(Boolean))];
+    const recipients = rows.map((row) => text(row.student_uid)).filter(Boolean);
+    const recipientSet = [...new Set(recipients)];
+    if (setIds.length !== 1 || recipients.length !== recipientSet.length) {
+      outcomes.push({ assignment_batch_id: batchId, reason: "ambiguous_batch", status: "skipped" });
+      return;
+    }
+    const matchingClasses = [...membersByClassId.entries()]
+      .filter(([, members]) => sameStringSet(recipientSet, [...members]));
+    if (matchingClasses.length !== 1) {
+      outcomes.push({
+        assignment_batch_id: batchId,
+        reason: matchingClasses.length ? "ambiguous_class_coverage" : "partial_or_mixed_recipients",
+        status: "skipped",
+      });
+      return;
+    }
+    const [classId] = matchingClasses[0];
+    const classTaskId = `class-task-${classId}-${batchId}`;
+    const alreadyScoped = rows.every((row) =>
+      row.assignment_scope === "class"
+      && text(row.class_id) === classId
+      && text(row.class_task_id) === classTaskId
+    );
+    if (!alreadyScoped && rows.some((row) => row.assignment_scope || row.class_task_id)) {
+      outcomes.push({ assignment_batch_id: batchId, reason: "existing_scope_not_legacy", status: "skipped" });
+      return;
+    }
+    outcomes.push({
+      assignment_batch_id: batchId,
+      class_id: classId,
+      class_task_id: classTaskId,
+      assignment_ids: rows.map((row) => row._id),
+      assignment_count: rows.length,
+      already_scoped: alreadyScoped,
+      status: "planned",
+    });
+  });
+  outcomes.sort((left, right) => left.assignment_batch_id.localeCompare(right.assignment_batch_id));
+  return {
+    outcomes,
+    planned: outcomes.filter((item) => item.status === "planned"),
+    skipped: outcomes.filter((item) => item.status === "skipped"),
+  };
+}
+
+async function backfillLearningReportModel(event, teacher) {
+  const apply = event.apply === true;
+  const limit = Math.min(Math.max(Number(event.limit || 100), 1), 200);
+  const offset = Math.max(Number(event.offset || 0), 0);
+  const assignmentLimit = Math.min(Math.max(Number(event.assignment_limit || 25), 1), 100);
+  const assignmentOffset = Math.max(Number(event.assignment_offset || 0), 0);
+  const [studentRows, classRows, membershipRows, assignmentRows] = await Promise.all([
+    getAll("students", { where: { active: true } }),
+    getAll(CLASS_COLLECTION),
+    getAll(CLASS_MEMBERSHIP_COLLECTION),
+    getAll("assignments"),
+  ]);
+  const students = visibleStudentRecords(studentRows).filter((student) =>
+    student.active === true && student.role !== "teacher" && text(student.auth_uid)
+  ).sort((left, right) => text(left.student_id).localeCompare(text(right.student_id)));
+  const classesById = new Map(classRows.map(recordData)
+    .filter((classRecord) => text(classRecord.class_id))
+    .map((classRecord) => [text(classRecord.class_id), classRecord]));
+  const classesByName = new Map(classRows.map(recordData)
+    .filter((classRecord) => text(classRecord.normalized_name || classRecord.name))
+    .map((classRecord) => [normalizedClassName(classRecord.normalized_name || classRecord.name), classRecord]));
+  const allPlans = students.map((student) => ({
+    student,
+    classRecord: classPlanForStudent(student, classesById, classesByName),
+  }));
+  const targetPlans = allPlans.slice(offset, offset + limit);
+  const plannedClasses = new Map();
+  allPlans.forEach((plan) => {
+    if (!plan.classRecord || classesById.has(plan.classRecord.class_id)) return;
+    plannedClasses.set(plan.classRecord.class_id, plan.classRecord);
+  });
+  const membershipsByStudent = activeMembershipMap(membershipRows);
+  const membershipChanges = targetPlans.filter((plan) => {
+    const activeMemberships = membershipsByStudent.get(text(plan.student.auth_uid)) || [];
+    const targetClassId = text(plan.classRecord && plan.classRecord.class_id);
+    return activeMemberships.length !== (targetClassId ? 1 : 0)
+      || Boolean(targetClassId) !== activeMemberships.some((membership) => text(membership.class_id) === targetClassId);
+  });
+  const profileChanges = targetPlans.filter((plan) => {
+    const classRecord = plan.classRecord;
+    return text(plan.student.class_id) !== text(classRecord && classRecord.class_id)
+      || text(plan.student.class_group) !== text(classRecord && classRecord.name);
+  });
+  const membersByClassId = new Map();
+  allPlans.forEach((plan) => {
+    if (!plan.classRecord) return;
+    const classId = text(plan.classRecord.class_id);
+    const members = membersByClassId.get(classId) || new Set();
+    members.add(text(plan.student.auth_uid));
+    membersByClassId.set(classId, members);
+  });
+  const assignmentScope = legacyAssignmentScopePlan(assignmentRows, membersByClassId);
+  const assignmentPage = assignmentScope.outcomes.slice(assignmentOffset, assignmentOffset + assignmentLimit);
+  const assignmentPlannedPage = assignmentPage.filter((item) => item.status === "planned");
+  const assignmentSkippedPage = assignmentPage.filter((item) => item.status === "skipped");
+  const proposalSummaries = targetPlans.map((plan) => {
+    const currentMemberships = membershipsByStudent.get(text(plan.student.auth_uid)) || [];
+    const targetClassId = text(plan.classRecord && plan.classRecord.class_id);
+    const membershipChange = currentMemberships.length !== (targetClassId ? 1 : 0)
+      || Boolean(targetClassId) !== currentMemberships.some((membership) => text(membership.class_id) === targetClassId);
+    const profileChange = text(plan.student.class_id) !== targetClassId
+      || text(plan.student.class_group) !== text(plan.classRecord && plan.classRecord.name);
+    return {
+      student_id: text(plan.student.student_id),
+      current_class_id: text(plan.student.class_id),
+      current_class_name: text(plan.student.class_group),
+      target_class_id: targetClassId,
+      target_class_name: text(plan.classRecord && plan.classRecord.name),
+      profile_change: profileChange,
+      membership_change: membershipChange,
+    };
+  });
+  const now = new Date();
+  const assignmentApplyFailures = [];
+  if (apply) {
+    for (const classRecord of plannedClasses.values()) {
+      const existing = await getOne(CLASS_COLLECTION, { class_id: classRecord.class_id });
+      if (!existing) {
+        await db.collection(CLASS_COLLECTION).add({
+          ...classRecord,
+          created_at: now,
+          updated_at: now,
+          created_by_teacher_uid: teacher.auth_uid,
+        });
+      }
+    }
+    for (const plan of targetPlans) {
+      const classRecord = plan.classRecord;
+      const update = {
+        class_id: classRecord ? classRecord.class_id : "",
+        class_group: classRecord ? classRecord.name : "",
+        updated_at: now,
+      };
+      if (text(plan.student.class_id) !== update.class_id || text(plan.student.class_group) !== update.class_group) {
+        await db.collection("students").doc(plan.student._id).update(update);
+      }
+      await syncStudentClassMembership({ ...plan.student, ...update }, classRecord, now, teacher.auth_uid);
+    }
+    for (const scope of assignmentPlannedPage) {
+      try {
+        await promoteClassAssignmentBatch(
+          scope.assignment_batch_id,
+          scope.class_id,
+          now,
+          teacher.auth_uid
+        );
+      } catch (error) {
+        assignmentApplyFailures.push({
+          assignment_batch_id: scope.assignment_batch_id,
+          class_id: scope.class_id,
+          code: error.message || "ASSIGNMENT_SCOPE_ERROR",
+        });
+      }
+    }
+  }
+  const nextOffset = offset + targetPlans.length;
+  const nextAssignmentOffset = assignmentOffset + assignmentPage.length;
+  return {
+    success: true,
+    dry_run: !apply,
+    limit,
+    offset,
+    next_offset: nextOffset < allPlans.length ? nextOffset : null,
+    students: {
+      total_active: allPlans.length,
+      inspected: targetPlans.length,
+      profile_updates: profileChanges.length,
+      membership_updates: membershipChanges.length,
+      proposals: proposalSummaries,
+    },
+    classes: {
+      create_count: plannedClasses.size,
+      classes_to_create: [...plannedClasses.values()].slice(0, 200).map((classRecord) => ({
+        class_id: classRecord.class_id,
+        name: classRecord.name,
+      })),
+    },
+    assignment_scope: {
+      assignment_limit: assignmentLimit,
+      assignment_offset: assignmentOffset,
+      assignment_next_offset: nextAssignmentOffset < assignmentScope.outcomes.length ? nextAssignmentOffset : null,
+      total_batches: assignmentScope.outcomes.length,
+      class_batches: assignmentPlannedPage.map((item) => ({
+        assignment_batch_id: item.assignment_batch_id,
+        class_id: item.class_id,
+        assignment_count: item.assignment_count,
+        already_scoped: item.already_scoped === true,
+      })),
+      skipped_batches: assignmentSkippedPage,
+      apply_failures: assignmentApplyFailures,
+    },
+  };
 }
 
 async function deleteStudentAccount(event, teacher) {
@@ -639,10 +1116,11 @@ async function deleteStudentAccount(event, teacher) {
     deleted_student_id_released_at: now,
     updated_at: now,
   });
+  await endActiveClassMemberships(authUid, now, teacher && teacher.auth_uid);
   return { success: true };
 }
 
-async function resetStudentPassword(event) {
+async function resetStudentPassword(event, teacher) {
   const authUid = text(event.auth_uid);
   if (!authUid) throw new Error("AUTH_UID_REQUIRED");
   const student = await getOne("students", { auth_uid: authUid, role: "student" });
@@ -658,11 +1136,19 @@ async function resetStudentPassword(event) {
   } catch (error) {
     throw new Error(`AUTH_RESET_FAILED:${error.code || error.message || "UNKNOWN"}`);
   }
+  const now = new Date();
+  const classRecord = await targetClassForStudentUpdate({}, student, now, teacher && teacher.auth_uid);
   await db.collection("students").doc(student._id).update({
     active: true,
     must_change_password: true,
-    updated_at: new Date(),
+    updated_at: now,
   });
+  await syncStudentClassMembership(
+    { ...student, active: true, must_change_password: true, updated_at: now },
+    classRecord,
+    now,
+    teacher && teacher.auth_uid
+  );
   return { success: true, initial_password: password };
 }
 
@@ -746,6 +1232,95 @@ async function getAssignmentCandidates(event) {
   return { success: true, candidates };
 }
 
+async function classAssignmentScopesForRecipients(studentUids) {
+  const requested = new Set((studentUids || []).map(text).filter(Boolean));
+  if (!requested.size) return new Map();
+  const [studentRows, classRows, membershipRows] = await Promise.all([
+    getAll("students", { where: { active: true } }),
+    getAll(CLASS_COLLECTION),
+    getAll(CLASS_MEMBERSHIP_COLLECTION),
+  ]);
+  const activeStudentUids = new Set(visibleStudentRecords(studentRows)
+    .filter((student) => student.role !== "teacher" && student.active === true)
+    .map((student) => text(student.auth_uid))
+    .filter(Boolean));
+  const activeClassIds = new Set(classRows.map(recordData)
+    .filter((classRecord) => classRecord.active !== false)
+    .map((classRecord) => text(classRecord.class_id))
+    .filter(Boolean));
+  const membersByClassId = new Map();
+  membershipRows.map(recordData).forEach((membership) => {
+    const classId = text(membership.class_id);
+    const studentUid = text(membership.student_uid);
+    if (!membershipIsActive(membership) || !activeClassIds.has(classId) || !activeStudentUids.has(studentUid)) return;
+    const members = membersByClassId.get(classId) || new Set();
+    members.add(studentUid);
+    membersByClassId.set(classId, members);
+  });
+
+  const scopes = new Map();
+  membersByClassId.forEach((members, classId) => {
+    if (!members.size || ![...members].every((studentUid) => requested.has(studentUid))) return;
+    members.forEach((studentUid) => scopes.set(studentUid, { assignment_scope: "class", class_id: classId }));
+  });
+  return scopes;
+}
+
+async function promoteClassAssignmentBatch(assignmentBatchId, classId, now, teacherUid) {
+  let promotedStudentUids = null;
+  await db.runTransaction(async (transaction) => {
+    // CloudBase transactions allow only one in-flight operation per transaction.
+    // Keep these reads sequential or concurrent requests can fail with
+    // ResourceUnavailable.TransactionBusy before any assignment is updated.
+    const classResult = await transaction.collection(CLASS_COLLECTION)
+      .where({ class_id: classId, active: true }).limit(1).get();
+    const membershipResult = await transaction.collection(CLASS_MEMBERSHIP_COLLECTION)
+      .where({ class_id: classId }).limit(500).get();
+    const profileResult = await transaction.collection("students")
+      .where({ class_id: classId, active: true }).limit(500).get();
+    const assignmentResult = await transaction.collection("assignments")
+      .where({ assignment_batch_id: assignmentBatchId }).limit(500).get();
+    if (!classResult.data || !classResult.data[0]) throw new Error("CLASS_NOT_FOUND");
+    const activeProfiles = new Set(visibleStudentRecords(profileResult.data || [])
+      .filter((student) => student.role !== "teacher")
+      .map((student) => text(student.auth_uid))
+      .filter(Boolean));
+    const roster = [...new Set((membershipResult.data || []).map(recordData)
+      .filter(membershipIsActive)
+      .map((membership) => text(membership.student_uid))
+      .filter((studentUid) => studentUid && activeProfiles.has(studentUid)))].sort();
+    if (!roster.length) throw new Error("CLASS_ROSTER_EMPTY");
+    const assignments = (assignmentResult.data || []).map(recordData);
+    const targetAssignments = assignments.filter((assignment) => roster.includes(text(assignment.student_uid)));
+    const targetStudentUids = targetAssignments.map((assignment) => text(assignment.student_uid)).sort();
+    if (targetAssignments.length !== roster.length || !sameStringSet(targetStudentUids, roster)) {
+      throw new Error("CLASS_ROSTER_CHANGED");
+    }
+    const classTaskId = `class-task-${classId}-${assignmentBatchId}`;
+    if (targetAssignments.some((assignment) =>
+      assignment.assignment_scope === "class"
+        ? text(assignment.class_id) !== classId || text(assignment.class_task_id) !== classTaskId
+        : assignment.assignment_scope && assignment.assignment_scope !== "individual"
+    )) {
+      throw new Error("ASSIGNMENT_SCOPE_CONFLICT");
+    }
+    for (const assignment of targetAssignments) {
+      if (assignment.assignment_scope === "class" && assignment.class_task_id === classTaskId) continue;
+      await transaction.collection("assignments").doc(assignment._id).update({
+        assignment_scope: "class",
+        class_id: classId,
+        class_task_id: classTaskId,
+        scope_derived_at: now,
+        scope_derived_by_teacher_uid: text(teacherUid) || null,
+        updated_at: now,
+      });
+    }
+    promotedStudentUids = roster;
+  });
+  if (!promotedStudentUids) throw new Error("ASSIGNMENT_SCOPE_TRANSACTION_EMPTY");
+  return promotedStudentUids;
+}
+
 async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
@@ -796,6 +1371,9 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
   const assignment = {
     assignment_id: assignmentId,
     assignment_batch_id: assignmentBatchId,
+    assignment_scope: "individual",
+    class_id: null,
+    class_task_id: null,
     student_uid: student.auth_uid,
     set_id: setId,
     status: convertsSelfStudy ? selfStudyStatus : "to_do",
@@ -848,7 +1426,7 @@ function optionOrEventValue(option, event, key) {
   return hasOwn(option, key) ? option[key] : event[key];
 }
 
-async function createAssignments(event) {
+async function createAssignments(event, teacher) {
   const setIds = Array.isArray(event.set_ids)
     ? [...new Set(event.set_ids.map(text).filter(Boolean))]
     : [text(event.set_id)].filter(Boolean);
@@ -893,6 +1471,7 @@ async function createAssignments(event) {
     ].join("-");
     if (passingPercentage > masteryPercentage) throw new Error("PASSING_ABOVE_MASTERY");
     const assignmentsByStudent = await getAssignmentsByStudent(setId);
+    const recipients = [];
     for (const studentUid of studentUids) {
       const student = await getOne("students", {
         auth_uid: studentUid,
@@ -912,15 +1491,61 @@ async function createAssignments(event) {
         });
         continue;
       }
-      const assignmentResult = await createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId);
-      created.push({
-        student_uid: studentUid,
+      recipients.push({ student, assignmentState });
+    }
+    // Scope is derived from the effective recipients after open assignments and
+    // inactive profiles are removed. A browser-supplied class ID can never turn
+    // a partial batch into a Class Task.
+    const scopes = await classAssignmentScopesForRecipients(recipients.map((item) => item.student.auth_uid));
+    const createdForBatch = [];
+    for (const recipient of recipients) {
+      const { student, assignmentState } = recipient;
+      const assignmentResult = await createAssignmentForStudent(
+        student,
+        setId,
+        dueAt,
+        passingPercentage,
+        masteryPercentage,
+        masteryEnabled,
+        assignmentBatchId
+      );
+      const createdItem = {
+        student_uid: student.auth_uid,
         student_id: student.student_id,
         set_id: setId,
         assignment_id: assignmentResult.assignmentId,
+        assignment_scope: "individual",
+        class_id: null,
         reassigned_after_completion: assignmentState.availability === "completed",
         converted_from_self_study: assignmentResult.convertedFromSelfStudy,
-      });
+      };
+      created.push(createdItem);
+      createdForBatch.push(createdItem);
+    }
+    const candidateClassIds = [...new Set([...scopes.values()].map((scope) => text(scope.class_id)).filter(Boolean))];
+    for (const classId of candidateClassIds) {
+      try {
+        const promotedUids = new Set(await promoteClassAssignmentBatch(
+          assignmentBatchId,
+          classId,
+          new Date(),
+          teacher && teacher.auth_uid
+        ));
+        createdForBatch.forEach((item) => {
+          if (!promotedUids.has(text(item.student_uid))) return;
+          item.assignment_scope = "class";
+          item.class_id = classId;
+        });
+      } catch (error) {
+        console.error("Unable to promote assignment batch to class scope", assignmentBatchId, classId, error);
+        skipped.push({
+          set_id: setId,
+          assignment_batch_id: assignmentBatchId,
+          class_id: classId,
+          reason: "class_scope_promotion_failed",
+          code: error.message || "ASSIGNMENT_SCOPE_ERROR",
+        });
+      }
     }
   }
   return { success: true, created, skipped };
@@ -932,6 +1557,51 @@ async function getAssignmentByStableId(assignmentId) {
   const assignment = await getOne("assignments", { assignment_id: stableId });
   if (assignment) return assignment;
   return await getOne("assignments", { _id: stableId });
+}
+
+async function applyClassTaskMutationPlans(plans, now, teacherUid) {
+  const groups = new Map();
+  (plans || []).forEach((plan) => {
+    const taskId = text(plan.assignment && plan.assignment.class_task_id);
+    if (!taskId || plan.assignment.assignment_scope !== "class") return;
+    const entries = groups.get(taskId) || [];
+    entries.push(plan);
+    groups.set(taskId, entries);
+  });
+  const applied = new Set();
+  for (const [classTaskId, taskPlans] of groups.entries()) {
+    await db.runTransaction(async (transaction) => {
+      const result = await transaction.collection("assignments")
+        .where({ class_task_id: classTaskId }).limit(500).get();
+      const taskAssignments = (result.data || []).map(recordData);
+      if (!taskAssignments.length || taskAssignments.length >= 500) {
+        throw new Error("CLASS_TASK_SCOPE_INVALID");
+      }
+      const selectedIds = taskPlans.map((plan) => text(plan.assignment._id));
+      const allIds = taskAssignments.map((assignment) => text(assignment._id));
+      if (sameStringSet(selectedIds, allIds)) {
+        for (const plan of taskPlans) {
+          await transaction.collection("assignments").doc(plan.assignment._id).update(plan.update);
+          applied.add(plan.assignment._id);
+        }
+        return;
+      }
+      // A partial edit/cancellation means the original batch is no longer one
+      // uniform full-roster Class Task. Downgrade every row atomically before
+      // applying the selected personal mutations outside this transaction.
+      for (const assignment of taskAssignments) {
+        await transaction.collection("assignments").doc(assignment._id).update({
+          assignment_scope: "individual",
+          class_id: null,
+          class_task_id: null,
+          scope_downgraded_at: now,
+          scope_downgraded_by_teacher_uid: text(teacherUid) || null,
+          updated_at: now,
+        });
+      }
+    });
+  }
+  return applied;
 }
 
 async function updateAssignments(event, teacher) {
@@ -957,7 +1627,7 @@ async function updateAssignments(event, teacher) {
   }
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
   const missing = assignmentIds.filter((id) => !foundIds.has(id));
-  const updated = [];
+  const plans = [];
   const skipped = [];
 
   for (const assignment of assignments) {
@@ -1001,7 +1671,16 @@ async function updateAssignments(event, teacher) {
       update.standards_updated_by_teacher_uid = teacher.auth_uid;
     }
 
-    await db.collection("assignments").doc(assignment._id).update(update);
+    plans.push({ assignment, update, masteryEnabled, mastery });
+  }
+
+  const transactionallyApplied = await applyClassTaskMutationPlans(plans, now, teacher.auth_uid);
+  const updated = [];
+  for (const plan of plans) {
+    const { assignment, update, masteryEnabled, mastery } = plan;
+    if (!transactionallyApplied.has(assignment._id)) {
+      await db.collection("assignments").doc(assignment._id).update(update);
+    }
     const revisedAssignment = { ...assignment, ...update };
     if (masteryEnabled) {
       const achievementRows = await db.collection("student_set_achievements").where({
@@ -1064,7 +1743,7 @@ async function cancelAssignments(event, teacher) {
   }
   const foundIds = new Set(assignments.map((assignment) => String(assignment.assignment_id || assignment._id)));
   const missing = assignmentIds.filter((id) => !foundIds.has(id));
-  const cancelled = [];
+  const plans = [];
   const skipped = [];
 
   for (const assignment of assignments) {
@@ -1086,7 +1765,17 @@ async function cancelAssignments(event, teacher) {
       updated_at: now,
     };
     if (reason) update.cancel_reason = reason;
-    await db.collection("assignments").doc(assignment._id).update(update);
+    plans.push({ assignment, update });
+  }
+
+  const transactionallyApplied = await applyClassTaskMutationPlans(plans, now, teacher.auth_uid);
+  const cancelled = [];
+  for (const plan of plans) {
+    const { assignment, update } = plan;
+    const assignmentId = assignment.assignment_id || assignment._id;
+    if (!transactionallyApplied.has(assignment._id)) {
+      await db.collection("assignments").doc(assignment._id).update(update);
+    }
     cancelled.push({
       assignment_id: assignmentId,
       student_uid: assignment.student_uid,
@@ -2737,13 +3426,14 @@ exports.main = async (event) => {
     const teacher = await getAuthenticatedTeacher();
     const action = text(event.action);
     if (action === "listStudents") return await listStudents();
-    if (action === "createStudent") return await createStudent(event);
-    if (action === "updateStudent") return await updateStudent(event);
+    if (action === "createStudent") return await createStudent(event, teacher);
+    if (action === "updateStudent") return await updateStudent(event, teacher);
+    if (action === "backfillLearningReportModel") return await backfillLearningReportModel(event, teacher);
     if (action === "deleteStudentAccount") return await deleteStudentAccount(event, teacher);
-    if (action === "resetStudentPassword") return await resetStudentPassword(event);
+    if (action === "resetStudentPassword") return await resetStudentPassword(event, teacher);
     if (action === "listSets") return await listSets();
     if (action === "getAssignmentCandidates") return await getAssignmentCandidates(event);
-    if (action === "createAssignments") return await createAssignments(event);
+    if (action === "createAssignments") return await createAssignments(event, teacher);
     if (action === "updateAssignments") return await updateAssignments(event, teacher);
     if (action === "cancelAssignments") return await cancelAssignments(event, teacher);
     if (action === "getAnswerKeyForSet") return await getAnswerKeyForSet(event);
