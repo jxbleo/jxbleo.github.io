@@ -78,6 +78,9 @@ returns the caller's authorized projection.
 
 The page has a compact report list/sidebar, a clear current-period header, and
 a main reading surface. It must work as a phone-friendly HTML report first;
+an open report has a visible `Close report` header action that clears the
+`report` URL parameter, returns to the report chooser, and restores keyboard
+focus to the report list so another report can be selected immediately;
 `Print / PDF` invokes browser printing so the currently authorized report can
 be printed or saved as a PDF. The print stylesheet must omit navigation,
 editing controls, other students' private detail, answers, Argue material, and
