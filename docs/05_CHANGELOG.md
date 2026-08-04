@@ -13,6 +13,12 @@
 - Added redacted per-set Library progress, optional stale-content protection, and
   BBC question-text snapshots for safer historical review after small revisions.
 
+### Changed
+
+- Made the Learning Reports scheduler consume the SCF timer's private
+  `CustomArgument` from `event.Message`, allowing the daily development timer
+  to remain authenticated without accepting browser-selected report inputs.
+
 ## 2026-08-03
 
 ### Added
