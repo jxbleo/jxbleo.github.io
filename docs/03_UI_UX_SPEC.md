@@ -540,7 +540,7 @@ wheel, trackpad, and touch input. An internal modal scroller remains usable.
 Stacked dialogs keep the lock until the final modal closes, then restore the
 exact pre-modal page position.
 
-The four top-right utility modals—Notifications, Review, Dictionary, and STAR
+The four utility modals—Notifications, Review, Dictionary, and STAR
 Redemption—share the same `760px` card width, viewport-derived card height,
 centered overlay position, internal scrolling boundary, and external `Close`
 capsule directly below the card. STAR Redemption has one centered title and no
@@ -548,11 +548,16 @@ secondary `Cash requests` heading. Review has no `REVIEW` / `Argue requests`
 header; its Pending, Approved, and Rejected filters begin at the top and each
 always shows its current count, including zero.
 
-The top-right Teacher utility group adds a yellow STAR button beside
-Notifications. Its red badge counts every `awaiting_proof` and
-`awaiting_teacher` Cash Request. Activating it opens an independent
+The teacher header omits the cat logo. Notifications and the raised-hand Argue
+control form the left utility group and retain their compact loading states while
+the teacher desk initializes. Dictionary, Student lookup, Reports, and the
+teacher identity chip remain in the right utility group. The yellow STAR button
+sits inside Student lookup, immediately beside the create-student `+` action.
+Its red badge counts every `awaiting_proof` and `awaiting_teacher` Cash Request.
+Activating it opens an independent
 `STAR Redemption` utility modal, locks the page, and restores button focus on
-close. Pending requests sort oldest-first; History is newest-first.
+close; closing it also restores the parent Student lookup surface. Pending
+requests sort oldest-first; History is newest-first.
 
 Each request row shows student, yellow STAR count, request time, status, and
 evidence readiness. Detail view can open authorized evidence, append teacher
@@ -574,12 +579,9 @@ There is no separate teacher greeting/quotation hero or repeated content
 heading. The `View` destination begins directly with the progress matrix; do
 not place `TEACHER`, `View`, or a `New assignment` shortcut above it. Teachers
 switch to assignment creation through the persistent `Assign` navigation item.
-The top-left `Mr. Cat Academy` wordmark remains omitted on this authenticated
-teacher surface. The solid black full-body leaping-cat mark sits at the far
-left as the shared authenticated-workspace logo and matches the `40px`
-footprint of the adjacent circular utility buttons, while the utility controls
-remain aligned to the right. The header glass capsule and the workspace frame
-below share the same left and right edges.
+The top-left `Mr. Cat Academy` wordmark and cat logo remain omitted on this
+authenticated teacher surface. The header glass capsule and the workspace
+frame below share the same left and right edges.
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
@@ -608,11 +610,11 @@ The create-student modal uses a vertical field stack and, after success, shows
 a standalone checkmark confirmation dialog with the new Login ID and initial
 password. Closing or cancelling Create student restores its parent Student
 lookup modal instead of dismissing both layers. Review requests open from a
-separate top-right raised-hand button with a pending-count badge and display in
+separate far-left raised-hand button with a pending-count badge and display in
 the shared-size standalone modal.
 The notification bell opens a standalone student-attempt modal only; Review
 requests must not be duplicated in the bell because they have their own
-top-right Review entry.
+far-left Review entry.
 The notification surface is a page-level fixed overlay, not a descendant whose
 position is resolved against the tall workspace frame. Opening it must place the
 message card immediately in the current viewport without requiring any page

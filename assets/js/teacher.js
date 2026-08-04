@@ -69,6 +69,7 @@
         updatesOpen: false,
         reviewOpen: false,
         starOpen: false,
+        starReturnToStudentLookup: false,
         starRequestView: 'pending',
         starRedemptions: { pending_count: 0, pending: [], history: [] },
         dictionaryOpen: false,
@@ -878,11 +879,18 @@
     }
 
     function setStarRedemptionPanel(open) {
+        var restoreStudentLookup = open !== true && state.starReturnToStudentLookup === true;
         state.starOpen = open === true;
         if (teacherStarPanel) teacherStarPanel.hidden = !state.starOpen;
         var button = document.getElementById('teacher-star-button');
         if (button) button.setAttribute('aria-expanded', state.starOpen ? 'true' : 'false');
-        if (!state.starOpen) return;
+        if (!state.starOpen) {
+            if (restoreStudentLookup) {
+                state.starReturnToStudentLookup = false;
+                setStudentLookupPanel(true);
+            }
+            return;
+        }
         state.dictionaryOpen = false;
         var dictionary = document.getElementById('teacher-dictionary-panel');
         if (dictionary) dictionary.hidden = true;
@@ -1070,7 +1078,7 @@
     }
 
     function setHeaderIconLoading(isLoading) {
-        ['teacher-review-button', 'teacher-updates-button', 'teacher-star-button'].forEach(function(id) {
+        ['teacher-review-button', 'teacher-updates-button'].forEach(function(id) {
             var button = document.getElementById(id);
             if (!button) return;
             button.classList.toggle('is-loading', isLoading === true);
@@ -7039,6 +7047,7 @@
     var teacherStarButton = document.getElementById('teacher-star-button');
     if (teacherStarButton) teacherStarButton.addEventListener('click', function(event) {
         event.stopPropagation();
+        state.starReturnToStudentLookup = state.studentLookupOpen === true;
         setStarRedemptionPanel(!state.starOpen);
     });
     var teacherStarClose = document.getElementById('teacher-star-close');

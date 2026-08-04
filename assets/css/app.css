@@ -805,6 +805,12 @@ html.teacher-modal-scroll-locked {
     justify-content: flex-end;
     gap: 8px;
 }
+.teacher-header-primary-actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+}
 .teacher-header-icon-button,
 .teacher-updates-button,
 .teacher-review-button {
@@ -4090,6 +4096,16 @@ body:not(.teacher-page) .tab-button.active {
     height: 34px;
     min-height: 34px;
     padding: 0;
+}
+.student-lookup-star {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+}
+.student-lookup-star .teacher-header-icon {
+    width: 18px;
+    height: 18px;
 }
 .teacher-page .student-lookup-dialog .student-select-card {
     z-index: 3;
