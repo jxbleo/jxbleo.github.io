@@ -487,13 +487,24 @@ migration without explicit owner approval.
    membership per current student, preserve the old profile field as a
    compatibility mirror, and record cutover time. Do not generate pre-cutover
    reports.
-4. Set `LEARNING_REPORT_CRON_TOKEN` only in the timer/function configuration;
-   never commit or print it. Configure the CloudBase timer to invoke
-   `generateLearningReports` with only its internal token. The timer must not
-   accept browser-provided class IDs, periods, timestamps, or a publish flag.
-   Configure Shanghai-time preview/final schedules: weekly preview on Saturday
-   and finalization after Sunday 23:59:59; monthly preview on the penultimate
-   calendar day and finalization on the first day of the next month.
+4. Set `LEARNING_REPORT_CRON_TOKEN` only in the function environment; never
+   commit or print it. Configure the SCF timer's `CustomArgument` to the same
+   value; SCF delivers that string as `event.Message` to
+   `generateLearningReports`. The CloudBase CLI `fn trigger create` shortcut
+   exposes only the name and Cron expression, so use the official SCF
+   `CreateTrigger` API when setting `CustomArgument`. Suppress or sanitize the
+   API response because `TriggerInfo` may echo `CustomArgument`; rotate the
+   token immediately if it appears in a terminal or agent transcript. The
+   timer must not accept browser-provided class IDs, periods, timestamps, or a
+   publish flag.
+   Run one daily timer at Shanghai `00:05` (`0 5 0 * * * *`) and set function
+   `TZ=Asia/Shanghai`. The function derives the only allowed operations from
+   server Shanghai time: weekly preview on Saturday and finalization after
+   Sunday 23:59:59; monthly preview on the penultimate calendar day and
+   finalization on the first day of the next month. After creation, verify in
+   the SCF trigger details that the next execution resolves to Shanghai
+   `00:05`; function `TZ` controls runtime time handling and must not be assumed
+   to prove the scheduler's displayed next-run timezone.
 5. Run development dry-runs with a disposable class. Verify idempotency for a
    duplicate timer delivery, preview-comment preservation, Shanghai boundary
    behavior, partial membership exclusion, server response redaction, and

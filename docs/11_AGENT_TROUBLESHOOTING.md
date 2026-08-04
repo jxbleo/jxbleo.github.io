@@ -17,6 +17,16 @@
 
 ## 1. 重复出现的问题速查
 
+### CloudBase 定时触发器快捷命令无法设置自定义入参
+
+`tcb fn trigger create` 当前只接受触发器名称和 Cron 表达式。Learning Reports
+还需要私有定时 token，而 SCF 会把定时器的 `CustomArgument` 放进
+`event.Message`。应通过官方 SCF `CreateTrigger` API 创建触发器（包含
+`CustomArgument`），并把同一个值存入函数专用环境变量
+`LEARNING_REPORT_CRON_TOKEN`。不要创建缺少自定义入参的 Cron，否则函数会按预期
+拒绝每一次调用。`CreateTrigger` 的响应可能原样回显 `CustomArgument`；配置时应抑制
+或脱敏响应，一旦回显到终端或 Agent 记录中就立刻轮换 token。
+
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |

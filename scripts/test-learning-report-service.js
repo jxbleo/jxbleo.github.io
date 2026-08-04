@@ -177,6 +177,17 @@ async function main() {
   process.env.LEARNING_REPORT_CRON_TOKEN = "expected-token";
   const unauthorized = await generator.main({ internal_token: "wrong-token" });
   assert.equal(unauthorized.code, "REPORT_CRON_UNAUTHORIZED");
+  const unauthorizedMessage = await generator.main({ Message: "wrong-token" });
+  assert.equal(unauthorizedMessage.code, "REPORT_CRON_UNAUTHORIZED");
+  const timerAuthorized = await generator.main({ Message: "expected-token" });
+  assert.equal(timerAuthorized.success, true, "SCF timer CustomArgument is read from event.Message");
+  const jsonTimerAuthorized = await generator.main({ Message: '{"internal_token":"expected-token"}' });
+  assert.equal(jsonTimerAuthorized.success, true, "JSON timer messages remain compatible");
+  const jsonStringTimerAuthorized = await generator.main({ Message: '"expected-token"' });
+  assert.equal(jsonStringTimerAuthorized.success, true, "JSON-string timer messages remain compatible");
+  process.env.LEARNING_REPORT_CRON_TOKEN = "123456789";
+  const numericTimerAuthorized = await generator.main({ Message: "123456789" });
+  assert.equal(numericTimerAuthorized.success, true, "arbitrary string timer tokens remain compatible");
   delete process.env.LEARNING_REPORT_CRON_TOKEN;
   console.error = originalConsoleError;
 
