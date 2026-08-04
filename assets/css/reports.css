@@ -172,6 +172,8 @@
     opacity: 0.52;
 }
 
+.reports-header-button[hidden] { display: none; }
+
 .reports-signout-button {
     color: var(--report-muted);
     border-color: transparent;

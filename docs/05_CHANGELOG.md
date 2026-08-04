@@ -18,6 +18,9 @@
 - Made the Learning Reports scheduler consume the SCF timer's private
   `CustomArgument` from `event.Message`, allowing the daily development timer
   to remain authenticated without accepting browser-selected report inputs.
+- Added an explicit `Close report` action to the learning-report reader so a
+  teacher, student, or parent can clear the current report and immediately
+  choose another report, including on narrow screens.
 
 ## 2026-08-03
 

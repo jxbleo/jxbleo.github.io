@@ -857,6 +857,9 @@ Check:
 - a shared `reports.html?report=` link sends a signed-out user to login and
   returns after login; a student sees only leaderboard plus their own detail;
   a different class's student, an inactive profile, and a visitor are denied;
+- opening `Close report` removes the `report` query parameter without signing
+  out, returns to the report chooser, focuses the report list, and allows a
+  different weekly/monthly report to open on both desktop and phone widths;
 - inspect the network response and page source after student login: no other
   student comment, goal, attempt, membership history, or `student_details`
   record is delivered and then hidden by JavaScript;

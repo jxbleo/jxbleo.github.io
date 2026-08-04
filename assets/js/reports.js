@@ -8,6 +8,7 @@
         classes: [],
         selectedReportId: '',
         reportResponse: null,
+        reportRequestVersion: 0,
         loadingReport: false,
         loadingList: false
     };
@@ -17,6 +18,7 @@
     var reportsFeedback = document.getElementById('reports-feedback');
     var latestButton = document.getElementById('reports-latest-button');
     var refreshButton = document.getElementById('reports-refresh-button');
+    var closeButton = document.getElementById('reports-close-button');
     var printButton = document.getElementById('reports-print-button');
     var logoutButton = document.getElementById('reports-logout-button');
     var returnLink = document.getElementById('reports-return-link');
@@ -519,7 +521,16 @@
             '</section>' +
             (isTeacher() ? renderTeacherDetails(studentDetails, report) : renderStudentDetail(studentDetail)) +
         '</article>';
+        closeButton.hidden = false;
         printButton.disabled = false;
+    }
+
+    function renderReportChooser() {
+        document.title = 'Learning Reports | Mr. Cat Academy';
+        reportsContent.innerHTML = '<section class="reports-empty-card"><div><h2>Choose a learning report</h2>' +
+            '<p>Select another weekly or monthly report from the report list.</p></div></section>';
+        closeButton.hidden = true;
+        printButton.disabled = true;
     }
 
     function renderEmpty() {
@@ -531,6 +542,7 @@
             '</p>' +
             (isTeacher() ? '<div class="reports-teacher-toolbar"><p>Teacher controls</p><div class="reports-action-row"><button class="reports-action-button primary" type="button" data-report-action="toggle-generate">Generate preview</button></div><div class="reports-generation-panel" id="reports-generation-panel" hidden><form class="reports-generation-form" data-report-generate-form><label>Class<select name="class_id" required>' + classOptionsHtml('') + '</select></label><label>Report type<select name="period_type"><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label><button class="reports-action-button primary" type="submit">Create preview</button></form></div></div>' : '') +
             '</div></section>';
+        closeButton.hidden = true;
         printButton.disabled = true;
     }
 
@@ -541,22 +553,31 @@
 
     function selectReport(reportId, options) {
         var id = String(reportId || '');
+        var requestVersion = ++state.reportRequestVersion;
         if (!id) {
             state.selectedReportId = '';
             state.reportResponse = null;
             updateUrl('', Boolean(options && options.replaceUrl));
             renderReportList();
-            renderEmpty();
+            if (state.reports.length) renderReportChooser();
+            else renderEmpty();
+            if (options && options.focus) {
+                var firstReport = reportList.querySelector('[data-report-id]');
+                if (firstReport) firstReport.focus();
+                else latestButton.focus();
+            }
             return Promise.resolve();
         }
         state.selectedReportId = id;
         state.reportResponse = null;
         state.loadingReport = true;
+        closeButton.hidden = false;
         updateUrl(id, Boolean(options && options.replaceUrl));
         renderReportList();
         clearFeedback();
         showLoading('Loading report…');
         return reportCall('getReport', { report_id: id }).then(function(result) {
+            if (requestVersion !== state.reportRequestVersion || state.selectedReportId !== id) return null;
             state.loadingReport = false;
             state.reportResponse = result;
             state.role = result.role || state.role;
@@ -565,6 +586,7 @@
             if (options && options.focus) reportsContent.focus({ preventScroll: false });
             return result;
         }).catch(function(error) {
+            if (requestVersion !== state.reportRequestVersion || state.selectedReportId !== id) return null;
             state.loadingReport = false;
             setFeedback(error.message || 'Unable to load that report.', 'error');
             renderError(error.message || 'Unable to load that report.');
@@ -808,6 +830,10 @@
         window.print();
     });
 
+    closeButton.addEventListener('click', function() {
+        selectReport('', { focus: true }).catch(function() {});
+    });
+
     logoutButton.addEventListener('click', function() {
         window.MrCatAuth.logout();
     });
@@ -826,10 +852,7 @@
         var id = reportIdFromUrl();
         if (id && id !== state.selectedReportId) selectReport(id, { replaceUrl: true }).catch(function() {});
         if (!id && state.selectedReportId) {
-            state.selectedReportId = '';
-            state.reportResponse = null;
-            renderReportList();
-            renderEmpty();
+            selectReport('', { replaceUrl: true }).catch(function() {});
         }
     });
 

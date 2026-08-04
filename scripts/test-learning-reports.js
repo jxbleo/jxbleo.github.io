@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
 const reports = require("../cloudfunctions/_shared/learning-reports");
+
+const root = path.resolve(__dirname, "..");
 
 function student(uid, name, extra = {}) {
   return {
@@ -179,11 +184,126 @@ function testMonthlyLateCompletionUsesReportCutoff() {
     "the month report counts a due-month task passed later before month end");
 }
 
-function main() {
+function testReportCloseUiContract() {
+  const html = fs.readFileSync(path.join(root, "reports.html"), "utf8");
+  const script = fs.readFileSync(path.join(root, "assets/js/reports.js"), "utf8");
+  assert.match(html, /id="reports-close-button"[^>]*hidden/, "report reader includes a hidden-until-open close action");
+  assert.match(script, /closeButton\.addEventListener\('click'/, "close action has an interaction handler");
+  assert.match(script, /selectReport\('', \{ focus: true \}\)/, "close action clears selection and restores list focus");
+  assert.match(script, /renderReportChooser\(\)/, "closing an available report renders the chooser rather than an empty-data state");
+}
+
+async function testCloseIgnoresStaleReportRequest() {
+  const script = fs.readFileSync(path.join(root, "assets/js/reports.js"), "utf8");
+  let resolveReport;
+  let firstReportFocused = false;
+  const listeners = {};
+  const makeElement = () => ({
+    handlers: {}, innerHTML: "", textContent: "", hidden: true, disabled: false, href: "",
+    classList: { toggle() {} },
+    setAttribute() {},
+    addEventListener(type, handler) { this.handlers[type] = handler; },
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    focus() {},
+  });
+  const elements = Object.fromEntries([
+    "reports-list", "reports-content", "reports-feedback", "reports-latest-button",
+    "reports-refresh-button", "reports-close-button", "reports-print-button",
+    "reports-logout-button", "reports-return-link", "reports-subtitle",
+  ].map((id) => [id, makeElement()]));
+  const firstReportButton = makeElement();
+  firstReportButton.focus = () => { firstReportFocused = true; };
+  elements["reports-list"].querySelector = (selector) => selector === "[data-report-id]" ? firstReportButton : null;
+  const returnLabel = makeElement();
+  elements["reports-return-link"].querySelector = (selector) => selector === "span" ? returnLabel : null;
+
+  const location = {
+    href: "https://example.test/reports.html",
+    pathname: "/reports.html",
+    search: "",
+    hash: "",
+    replace() {},
+  };
+  function setLocation(url) {
+    const next = new URL(url, location.href);
+    location.href = next.href;
+    location.pathname = next.pathname;
+    location.search = next.search;
+    location.hash = next.hash;
+  }
+  const windowObject = {
+    location,
+    history: {
+      pushState(_state, _title, url) { setLocation(url); },
+      replaceState(_state, _title, url) { setLocation(url); },
+    },
+    addEventListener(type, handler) { listeners[type] = handler; },
+    setTimeout,
+    confirm() { return false; },
+    print() {},
+    MrCatAuth: {
+      getSession() { return Promise.resolve({ mode: "teacher" }); },
+      logout() {},
+    },
+    MrCatCloud: {
+      callFunction(_name, data) {
+        if (data.action === "listReports") {
+          return Promise.resolve({
+            success: true,
+            role: "teacher",
+            reports: [{ report_id: "report-one", class_name: "Class A", period_type: "weekly" }],
+            classes: [],
+          });
+        }
+        if (data.action === "getReport") {
+          return new Promise((resolve) => { resolveReport = resolve; });
+        }
+        return Promise.resolve({ success: true });
+      },
+    },
+  };
+  const context = {
+    window: windowObject,
+    document: {
+      title: "",
+      getElementById(id) { return elements[id]; },
+      createElement() { return makeElement(); },
+      body: { appendChild() {} },
+    },
+    navigator: {}, URL, URLSearchParams, Intl, Date, Promise, Object, Array, String,
+    Number, Math, isFinite, setTimeout, clearTimeout, console,
+  };
+  vm.runInNewContext(script, context, { filename: "assets/js/reports.js" });
+  for (let index = 0; index < 6; index += 1) await Promise.resolve();
+  assert.equal(typeof resolveReport, "function", "initial report request is waiting");
+  assert.equal(elements["reports-close-button"].hidden, false, "close is available during loading");
+
+  elements["reports-close-button"].handlers.click();
+  await Promise.resolve();
+  resolveReport({
+    success: true,
+    role: "teacher",
+    report: { report_id: "report-one", class_name: "Class A", period_type: "weekly" },
+  });
+  for (let index = 0; index < 6; index += 1) await Promise.resolve();
+
+  assert.match(elements["reports-content"].innerHTML, /Choose a learning report/, "stale response cannot reopen a closed report");
+  assert.equal(new URLSearchParams(location.search).has("report"), false, "close removes the report URL parameter");
+  assert.equal(firstReportFocused, true, "close returns keyboard focus to the report list");
+  assert.equal(elements["reports-close-button"].hidden, true, "chooser keeps close hidden");
+}
+
+async function main() {
   testShanghaiPeriods();
   testSnapshotRules();
   testMonthlyLateCompletionUsesReportCutoff();
+  testReportCloseUiContract();
+  await testCloseIgnoresStaleReportRequest();
   console.log("Learning report tests passed.");
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
