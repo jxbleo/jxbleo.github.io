@@ -31,6 +31,10 @@ const authUsers = [
   { UUId: "student-uid-old", UserName: "student-login", IsDisabled: false },
 ];
 
+const classes = [];
+const classMemberships = [];
+const assignments = [];
+
 let nextProfileId = 1;
 let nextAuthUid = 1;
 
@@ -69,6 +73,12 @@ function studentCollection() {
           Object.assign(record, update);
           return { updated: 1 };
         },
+        async remove() {
+          const index = students.findIndex((item) => item._id === id);
+          if (index === -1) throw new Error(`Missing student profile ${id}`);
+          students.splice(index, 1);
+          return { deleted: 1 };
+        },
       };
     },
     async add(record) {
@@ -80,10 +90,57 @@ function studentCollection() {
   return query;
 }
 
+function simpleCollection(rows, prefix) {
+  const state = { where: null, offset: 0, limit: null };
+  const query = {
+    where(where) {
+      state.where = where;
+      return query;
+    },
+    orderBy() { return query; },
+    skip(offset) {
+      state.offset = offset;
+      return query;
+    },
+    limit(limit) {
+      state.limit = limit;
+      return query;
+    },
+    async get() {
+      const filtered = rows.filter((record) => matches(record, state.where));
+      const end = state.limit == null ? undefined : state.offset + state.limit;
+      return { data: filtered.slice(state.offset, end) };
+    },
+    doc(id) {
+      return {
+        async update(update) {
+          const record = rows.find((item) => item._id === id);
+          if (!record) throw new Error(`Missing ${prefix} ${id}`);
+          Object.assign(record, update);
+          return { updated: 1 };
+        },
+      };
+    },
+    async add(record) {
+      const stored = { ...record, _id: `${prefix}-${rows.length + 1}` };
+      rows.push(stored);
+      return { id: stored._id };
+    },
+  };
+  return query;
+}
+
 const db = {
   collection(name) {
-    if (name !== "students") throw new Error(`Unexpected collection access: ${name}`);
-    return studentCollection();
+    if (name === "students") return studentCollection();
+    if (name === "classes") return simpleCollection(classes, "class");
+    if (name === "class_memberships") return simpleCollection(classMemberships, "membership");
+    if (name === "assignments") return simpleCollection(assignments, "assignment");
+    throw new Error(`Unexpected collection access: ${name}`);
+  },
+  async runTransaction(callback) {
+    await callback(this);
+    return undefined;
   },
 };
 
@@ -168,6 +225,8 @@ async function main() {
   assert.equal(recreateResult.success, true);
   assert.notEqual(recreateResult.student.auth_uid, "student-uid-old");
   assert.equal(recreateResult.student.student_id, "student-login");
+  assert(recreateResult.student.class_id, "class group should create a canonical class");
+  assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
 
   const renameResult = await call("updateStudent", {
     auth_uid: recreateResult.student.auth_uid,
@@ -178,6 +237,51 @@ async function main() {
     students.find((student) => student.auth_uid === recreateResult.student.auth_uid).name,
     "Corrected Again"
   );
+  assert.equal(
+    classMemberships.find((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).student_name_snapshot,
+    "Corrected Again"
+  );
+
+  const disableResult = await call("updateStudent", { auth_uid: recreateResult.student.auth_uid, active: false });
+  assert.equal(disableResult.success, true);
+  assert.equal(classMemberships.some((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null), false);
+  const enableResult = await call("updateStudent", { auth_uid: recreateResult.student.auth_uid, active: true });
+  assert.equal(enableResult.success, true);
+  assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
+
+  const classId = students.find((student) => student.auth_uid === recreateResult.student.auth_uid).class_id;
+  students.push({
+    _id: "peer-profile",
+    auth_uid: "peer-uid",
+    student_id: "peer-login",
+    name: "Peer",
+    class_id: classId,
+    class_group: "Class A",
+    role: "student",
+    active: true,
+  });
+  classMemberships.push({
+    _id: "peer-membership",
+    membership_id: "peer-membership",
+    student_uid: "peer-uid",
+    class_id: classId,
+    active: true,
+    started_at: new Date("2026-01-01T00:00:00.000Z"),
+    ended_at: null,
+  });
+  assignments.push(
+    { _id: "legacy-a", assignment_batch_id: "legacy-batch", student_uid: recreateResult.student.auth_uid, set_id: "BBC-TEST" },
+    { _id: "legacy-b", assignment_batch_id: "legacy-batch", student_uid: "peer-uid", set_id: "BBC-TEST" }
+  );
+
+  const reportModelDryRun = await call("backfillLearningReportModel", { limit: 10 });
+  assert.equal(reportModelDryRun.success, true);
+  assert.equal(reportModelDryRun.dry_run, true);
+  assert.equal(reportModelDryRun.assignment_scope.class_batches.length, 1, "only exact full-class legacy batches become Class Tasks");
+  const reportModelApply = await call("backfillLearningReportModel", { apply: true, limit: 10 });
+  assert.equal(reportModelApply.success, true);
+  assert.equal(reportModelApply.dry_run, false);
+  assert.equal(assignments.every((assignment) => assignment.assignment_scope === "class" && assignment.class_id === classId), true);
 
   const originalConsoleError = console.error;
   console.error = () => {};

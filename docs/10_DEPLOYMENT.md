@@ -23,7 +23,7 @@ without explicit owner approval.
 | --- | --- | --- |
 | Static site | HTML, CSS, JS, public data, audio | push/publish static files |
 | Cloud functions | trusted backend logic | upload rebuilt ZIP in CloudBase console |
-| CloudBase data | `sets`, `grading_keys`, `system_config` | import JSON Lines files |
+| CloudBase data | `sets`, `grading_keys`, `system_config`, report collections/indexes | import JSON Lines files or create collections/indexes in console |
 
 A feature may require one, two, or all three tracks. Always state which tracks
 are still required.
@@ -56,6 +56,9 @@ All project collections should remain `ADMINONLY`:
 - `vocabulary_lexicon_history`
 - `vocabulary_dictionary_reports`
 - `vocabulary_test_sessions`
+- `classes`
+- `class_memberships`
+- `learning_reports`
 
 Recommended unique indexes where supported:
 
@@ -70,6 +73,11 @@ Recommended unique indexes where supported:
 - `star_reward_ledger.ledger_id`
 - `star_redemption_requests.request_id`
 - `star_redemption_evidence.evidence_id`
+- `classes.class_id`
+- `classes.normalized_name`
+- `class_memberships.membership_id`
+- `learning_reports.report_id`
+- logical unique report identity: `learning_reports.class_id + period_type + period_key`
 
 Recommended query index:
 
@@ -82,6 +90,15 @@ Recommended query index:
 - `star_redemption_requests.student_uid + status + created_at`
 - `star_redemption_requests.status + created_at`
 - `star_redemption_evidence.request_id + status + created_at`
+- `class_memberships.student_uid + ended_at`
+- `class_memberships.class_id + ended_at`
+- `learning_reports.class_id + period_type + period_key`
+- `learning_reports.status + published_at`
+- `assignments.class_id + due_at`
+- `assignments.class_task_id`
+- `assignments.assignment_batch_id`
+- `attempts.student_uid + submitted_at`
+- `attempts.assignment_id + submitted_at`
 
 Create required collections before deploying functions that depend on them.
 
@@ -154,6 +171,8 @@ Active or relevant functions:
 - `studentVocabulary`
 - `changePassword`
 - `getProtectedResource`
+- `learningReports`
+- `generateLearningReports`
 
 Common validation:
 
@@ -445,6 +464,62 @@ unzip -q deploy-packages/getProtectedResource.zip -d "$MRCAT_PROTECTED_RESOURCE_
    teacher remains on the JUPAS preview. Updating GitHub Pages alone never
    publishes the full edition.
 
+### Learning Reports V1
+
+Learning Reports V1 has all of these deployment requirements. They are
+owner-gated; agents may validate/package and prepare a deployment plan, but may
+not create the collections, configure Cron, upload functions, or run the
+migration without explicit owner approval.
+
+1. Create `classes`, `class_memberships`, and `learning_reports` in the
+   development environment with `ADMINONLY` permissions. Add the report,
+   membership, assignment, and attempt indexes listed in section 3 before
+   enabling report reads or timers.
+2. Run `npm run test:learning-reports`, validate `teacherAdmin`,
+   `learningReports`, and `generateLearningReports`, then rebuild and upload all
+   three deployment ZIPs to the development CloudBase environment. The report
+   page, its JavaScript/CSS cache versions, and the three function ZIPs must
+   come from the same reviewed source.
+3. After the new `teacherAdmin` is deployed, run a read-only migration audit of
+   non-deleted student profiles and legacy `class_group` values. Resolve
+   blank/ambiguous class names with the owner; do not guess historical
+   enrolment. After review, create one normalized class and one active
+   membership per current student, preserve the old profile field as a
+   compatibility mirror, and record cutover time. Do not generate pre-cutover
+   reports.
+4. Set `LEARNING_REPORT_CRON_TOKEN` only in the timer/function configuration;
+   never commit or print it. Configure the CloudBase timer to invoke
+   `generateLearningReports` with only its internal token. The timer must not
+   accept browser-provided class IDs, periods, timestamps, or a publish flag.
+   Configure Shanghai-time preview/final schedules: weekly preview on Saturday
+   and finalization after Sunday 23:59:59; monthly preview on the penultimate
+   calendar day and finalization on the first day of the next month.
+5. Run development dry-runs with a disposable class. Verify idempotency for a
+   duplicate timer delivery, preview-comment preservation, Shanghai boundary
+   behavior, partial membership exclusion, server response redaction, and
+   print/PDF output before any real group link is copied.
+6. Publish `reports.html` and its versioned assets. The first ordinary-WeChat
+   release uses `Copy report link` / `Copy WeChat text` followed by teacher
+   manual sending. Do not deploy an unofficial personal-WeChat robot as part of
+   this feature.
+
+The authenticated teacher-only migration action is
+`teacherAdmin.backfillLearningReportModel`. Invoke it with
+`{ "action": "backfillLearningReportModel", "limit": 100, "offset": 0,
+"assignment_limit": 25, "assignment_offset": 0 }`
+first; omission of `apply: true` is the required dry run. Review every proposed
+class, membership, skipped legacy batch, and exact full-class assignment batch.
+Only then repeat each reviewed page with `"apply": true`. Continue student
+pages with `next_offset` and assignment-batch pages with
+`assignment_scope.assignment_next_offset`; each assignment batch is promoted
+transactionally. Never substitute an unauthenticated database script.
+
+Rollback notes: static files and report functions can roll back normally.
+Published `learning_reports` and membership history are audit data; do not
+bulk-delete, rewrite a published snapshot, or run a destructive migration. If
+a report correction is required, use an explicit audited correction/republication
+path after the owner reviews the impact.
+
 ## 6. Owner-Gated Release Automation
 
 The project uses semi-automated deployment helpers. They prepare release
@@ -616,6 +691,8 @@ Student flow:
 - a missing word shows the configured AI preview flow or a clear not-configured error
 - Personal Center shows Available Yellow STAR balance and unified My STARs
 - Cash request reserve/cancel/evidence/status flows work without displaying money
+- published report link requires login; the student sees the shared leaderboard
+  and only their own detail, while browser print/PDF contains only that view
 
 Teacher flow:
 
@@ -630,6 +707,8 @@ Teacher flow:
 - Student detail My Words view is complete and read-only
 - Teacher STAR badge counts all pending Cash requests; confirm/reject/refund and
   private evidence history work
+- teacher report preview saves comments/goals, finalizes once after the cutoff,
+  shows full authorized class detail, and copies a valid ordinary-WeChat link/text
 
 Data flow:
 
@@ -638,6 +717,8 @@ Data flow:
 - `sets` and `grading_keys` exact `set_id` records exist
 - browser does not directly access `ADMINONLY` collections
 - evidence file IDs are not permanent public URLs and Storage remains private
+- report collections remain `ADMINONLY`; unauthenticated, inactive, unrelated,
+  and preview-student reads are denied without returning another student's report data
 
 ## 10. Rollback and Risk Notes
 

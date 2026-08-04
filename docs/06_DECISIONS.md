@@ -3,6 +3,55 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-03: Use Immutable, Role-Redacted Class Learning Reports
+
+Decision:
+
+Learning Reports V1 uses three new `ADMINONLY` collections: `classes`,
+`class_memberships`, and `learning_reports`. A student has one active class
+membership at a time, while prior memberships remain as history. The backend,
+not a browser-selected group, derives whether per-student assignment instances
+make one complete class task. Weekly/monthly report periods use
+`Asia/Shanghai`, begin as teacher-only previews for comments and goals, then
+become immutable published snapshots at the final cutoff.
+
+Formal class ranks compare only the number of due-period unified class tasks
+passed no later than their deadline (and never after the report cutoff). Equal
+counts share a rank. Self-study, category scores, and integer period deltas
+remain separate so no cross-family average or accidental tiebreak changes the
+rank.
+
+The published URL is `reports.html?report=<encoded-id>`. It is a shared
+authenticated link: an active student sees the common leaderboard and only that
+student's personal detail; an active teacher sees the complete teacher view.
+The initial ordinary-WeChat workflow is copy link/text then teacher manual send.
+PDF output uses the browser print dialog.
+
+Reason:
+
+The report needs to be fair after a transfer, reproducible after a deadline,
+and safe when one URL is posted in a parent group. A client-side live
+calculation would be both fragile and an authorization leak; a separate parent
+identity or an unofficial personal-WeChat robot would add disproportionate
+operations and privacy risk.
+
+Trade-offs:
+
+- Good: historical membership and published data can be explained and audited.
+- Good: one simple group link works without creating parent accounts or public
+  per-student URLs.
+- Good: the system does not depend on a fragile personal-WeChat automation.
+- Cost: migration, indexes, a timer, and explicit server-side redaction are
+  mandatory before enabling the feature.
+- Cost: students/parents must log in with the existing student account; teacher
+  comments may need a final review when weekend facts change.
+
+Review condition:
+
+Revisit if the owner adopts an official parent-notification channel, requires
+multiple-teacher ownership, or needs formal correction/version history exposed
+to families at scale.
+
 ## 2026-08-02: Keep Protected Reports Out of the Static Repository
 
 Decision:

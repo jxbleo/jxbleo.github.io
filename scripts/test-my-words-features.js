@@ -55,8 +55,8 @@ async function main() {
   const studentFunction = fs.readFileSync(path.join(root, "cloudfunctions/studentVocabulary/index.js"), "utf8");
   const teacherFunction = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");
   assert(dashboardHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
-  assert(dashboardHtml.includes("assets/css/app.css?v=20260802-2"));
-  assert(dashboardHtml.includes("assets/js/dashboard.js?v=20260802-3"));
+  assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
+  assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(dashboardHtml.includes('id="my-words-export-panel"'));
   assert(appCss.includes("grid-template-rows: auto auto auto auto minmax(0, 1fr);"), "every My Words tool panel needs an explicit grid row");
   assert(dashboardJs.includes("AI dictionary lookup is under development."));

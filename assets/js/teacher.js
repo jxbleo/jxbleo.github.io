@@ -626,6 +626,31 @@
         '</span>';
     }
 
+    function hasChineseNameCharacters(value) {
+        return /[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/.test(String(value || ''));
+    }
+
+    function studentChineseName(student) {
+        var stored = String(student && student.chinese_name || '').trim();
+        if (stored) return stored;
+        var legacy = String(student && student.name || '').trim();
+        return hasChineseNameCharacters(legacy) ? legacy : '';
+    }
+
+    function studentEnglishName(student) {
+        var stored = String(student && student.english_name || '').trim();
+        if (stored) return stored;
+        var legacy = String(student && student.name || '').trim();
+        return legacy && !hasChineseNameCharacters(legacy) ? legacy : '';
+    }
+
+    function studentDisplayName(student) {
+        var chinese = studentChineseName(student);
+        var english = studentEnglishName(student);
+        if (chinese && english && chinese !== english) return chinese + ' · ' + english;
+        return chinese || english || String(student && (student.name || student.student_id) || 'Student');
+    }
+
     function showMessage(text, type) {
         message.textContent = text || '';
         message.className = 'teacher-message' + (type ? ' ' + type : '');
@@ -1668,7 +1693,7 @@
                     '<p class="eyebrow accent">' + escapeHtml(meta) + '</p>' +
                     '<span>' + escapeHtml(setId) + '</span>' +
                 '</div>' +
-                '<h3>' + escapeHtml(item.title || setId) + '</h3>' +
+                '<h3>' + escapeHtml(displayTitle || setId) + '</h3>' +
             '</div>' +
         '</article>';
     }
@@ -3128,7 +3153,7 @@
         var title = document.getElementById('student-lookup-title');
         if (searchState) searchState.hidden = Boolean(selected);
         if (titleState) titleState.hidden = !selected;
-        if (title) title.textContent = selected ? selected.name || selected.student_id || 'Selected student' : 'Student';
+        if (title) title.textContent = selected ? studentDisplayName(selected) || selected.student_id || 'Selected student' : 'Student';
     }
 
     function setStudentPickerOpen(open, mode) {
@@ -3203,7 +3228,7 @@
             return '<button class="student-pick' + (searchMode ? '' : ' compact') +
                 (student.profile_id === state.selectedStudentProfileId ? ' active' : '') +
                 '" type="button" data-profile-id="' + escapeHtml(student.profile_id) + '">' +
-                '<span><strong>' + escapeHtml(student.name || student.student_id) + '</strong></span>' +
+                '<span><strong>' + escapeHtml(studentDisplayName(student) || student.student_id) + '</strong></span>' +
                 (searchMode ? '<svg class="student-pick-chevron" aria-hidden="true" viewBox="0 0 20 20"><path d="m7.5 4.5 5 5.5-5 5.5"></path></svg>' : '') +
             '</button>';
         }).join('') : '<div class="empty-card"><strong>No matching students</strong>' +
@@ -4405,7 +4430,7 @@
         var student = state.students.find(function(profile) {
             return profile.auth_uid === uid || profile.student_id === item.student_id;
         });
-        return item.student_name || (student && student.name) || item.student_id || 'Student';
+        return (student && studentDisplayName(student)) || item.student_name || item.student_id || 'Student';
     }
 
     function matrixStudentId(item) {
@@ -5129,7 +5154,9 @@
 
     function matrixStudentMonthLabel(parts) {
         return new Intl.DateTimeFormat('en-US', {
-            timeZone: 'UTC', year: 'numeric', month: 'long'
+            timeZone: 'UTC',
+            year: 'numeric',
+            month: 'long'
         }).format(new Date(Date.UTC(parts.year, parts.month - 1, 1)));
     }
 
@@ -5137,7 +5164,10 @@
         if (!selected) return 'Completed work';
         if (selected.days) return selected.weekLabel;
         return new Intl.DateTimeFormat('en-US', {
-            timeZone: 'UTC', month: 'short', day: 'numeric', weekday: 'short'
+            timeZone: 'UTC',
+            month: 'short',
+            day: 'numeric',
+            weekday: 'short'
         }).format(new Date(selected.key + 'T12:00:00Z'));
     }
 
@@ -5274,7 +5304,8 @@
                         escapeHtml(day.key) + '" aria-label="' + escapeHtml(day.weekLabel + ' ' + day.dayLabel + ' ' + day.day + ', ' + day.items.length + ' finished') + '"' +
                         (day.isFuture || day.outsideMonth ? ' disabled' : '') + '><span>' + escapeHtml(day.day) + '</span>' +
                         (day.hasStar ? '<i aria-hidden="true">★</i>' : '') + '</button>';
-                }).join('') + '</div></div>';
+                }).join('') + '</div>' +
+            '</div>';
         }).join('');
         var detail = model.selected && model.selected.items.length
             ? model.selected.items.map(renderMatrixStudentProgressTask).join('')
@@ -5287,8 +5318,11 @@
                     '<h3>' + escapeHtml(model.monthLabel) + '</h3>' +
                     '<button type="button" data-matrix-student-progress-month="next" data-student-key="' + escapeHtml(studentKey) + '" aria-label="Next month"' + (model.canGoNext ? '' : ' disabled') + '>›</button>' +
                 '</div>' +
-                '<div class="progress-weekday-row" aria-hidden="true">' + model.weekdayLabels.map(function(label) { return '<span>' + escapeHtml(label) + '</span>'; }).join('') + '</div>' +
-                '<div class="progress-week-band-list" aria-label="Monthly completion calendar">' + weekBands + '</div>' +
+                '<div class="progress-weekday-row" aria-hidden="true">' + model.weekdayLabels.map(function(label) {
+                    return '<span>' + escapeHtml(label) + '</span>';
+                }).join('') + '</div>' +
+                '<div class="progress-week-band-list" aria-label="Monthly completion calendar">' + weekBands +
+                '</div>' +
             '</section>' +
             '<section class="progress-detail-panel" aria-live="polite">' +
                 '<div class="matrix-student-progress-detail-head"><h3>' + escapeHtml(matrixStudentSelectionLabel(model.selected)) + '</h3><span>' + escapeHtml(detailCount) + '</span></div>' +
@@ -5856,14 +5890,17 @@
         var classEditing = state.studentInfoEdit === 'class';
         var systemEditing = state.studentInfoEdit === 'system';
         var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
+        var chineseName = studentChineseName(student);
+        var englishName = studentEnglishName(student);
+        var displayName = studentDisplayName(student);
         var metrics = matrixStudentOverviewMetrics(assignments);
         var studentKey = student.auth_uid || student.student_id;
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card student-profile-summary">' +
                 '<div class="student-summary-identity">' +
-                    '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(student.name || student.student_id)) + '</span>' +
-                    '<h2 class="student-info-name">' + escapeHtml(student.name || student.student_id || 'Student') + '</h2>' +
+                    '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(displayName)) + '</span>' +
+                    '<h2 class="student-info-name">' + escapeHtml(displayName) + '</h2>' +
                 '</div>' +
                 '<div class="matrix-student-stats student-primary-stats">' +
                     '<div class="student-primary-stat student-class-stat">' +
@@ -5895,9 +5932,10 @@
                 '<summary>Account settings</summary>' +
                 '<div class="student-info-grid">' +
                     '<div class="student-info-item">' +
-                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Name</span><strong>' + escapeHtml(student.name || 'Not set') + '</strong></button>' +
-                        (nameEditing ? '<form class="student-info-editor" data-student-info-editor="name">' +
-                            '<input type="text" name="name" value="' + escapeHtml(student.name || '') + '" placeholder="Student name" required>' +
+                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Chinese / English name</span><strong>' + escapeHtml(displayName || 'Not set') + '</strong></button>' +
+                        (nameEditing ? '<form class="student-info-editor student-name-editor" data-student-info-editor="name">' +
+                            '<label>Chinese name<input type="text" name="chinese_name" value="' + escapeHtml(chineseName) + '" placeholder="Chinese name"></label>' +
+                            '<label>English name<input type="text" name="english_name" value="' + escapeHtml(englishName) + '" placeholder="English name"></label>' +
                             '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
                         '</form>' : '') +
                     '</div>' +
@@ -5973,13 +6011,19 @@
                 var field = form.dataset.studentInfoEditor;
                 state.studentInfoEdit = '';
                 if (field === 'name') {
-                    var nextName = form.elements.name.value.trim();
+                    var nextChineseName = form.elements.chinese_name.value.trim();
+                    var nextEnglishName = form.elements.english_name.value.trim();
+                    var nextName = nextChineseName || nextEnglishName || String(student.name || '').trim();
                     if (!nextName) {
-                        showMessage('Student name is required.', 'error');
+                        showMessage('Enter a Chinese name or English name.', 'error');
                         renderStudentDetail();
                         return;
                     }
-                    updateStudent(student.auth_uid, { name: nextName });
+                    updateStudent(student.auth_uid, {
+                        name: nextName,
+                        chinese_name: nextChineseName,
+                        english_name: nextEnglishName
+                    });
                     return;
                 }
                 if (field === 'class') {
@@ -7415,13 +7459,22 @@
     studentForm.addEventListener('submit', function(event) {
         event.preventDefault();
         var button = studentForm.querySelector('button[type="submit"]');
+        var chineseName = document.getElementById('student-chinese-name').value.trim();
+        var englishName = document.getElementById('student-english-name').value.trim();
+        var legacyName = chineseName || englishName;
+        if (!legacyName) {
+            showMessage('Enter a Chinese name or English name.', 'error');
+            return;
+        }
         button.disabled = true;
         showMessage('Creating student account...', '');
         teacherCall('createStudent', {
             student_id: document.getElementById('student-id').value,
-            name: document.getElementById('student-name').value,
-            class_group: document.getElementById('student-class').value
-            ,
+            // `name` remains the legacy display fallback for old surfaces and records.
+            name: legacyName,
+            chinese_name: chineseName,
+            english_name: englishName,
+            class_group: document.getElementById('student-class').value,
             curriculum_track: document.getElementById('student-curriculum').value
         }).then(function(result) {
             studentForm.reset();

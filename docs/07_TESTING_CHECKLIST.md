@@ -27,6 +27,7 @@ node --check assets/js/practice-session.js
 npm run test:assignment-schedule
 npm run test:star-rewards
 npm run test:protected-resources
+npm run test:learning-reports
 ```
 
 Teacher attempt payload checks in `test:assignment-schedule` verify that
@@ -52,6 +53,39 @@ single-attempt answers and BBC explanation.
   completed redeem event.
 - stale/repeated browser actions are idempotent and cannot double-spend.
 
+### Learning-report V1 rule tests
+
+Run `npm run test:learning-reports`; it executes the pure snapshot rules and the
+mocked CloudBase service contract. Keep these cases as non-negotiable coverage:
+
+- period construction uses `Asia/Shanghai`, not the machine/browser zone:
+  Monday 00:00:00 starts a new weekly period, Sunday 23:59:59 ends it, and the
+  first/last instant of every calendar month lands in exactly one monthly
+  report;
+- a retry or concurrent timer invocation creates/reuses one logical
+  `class_id + period_type + period_key` report, does not duplicate leaderboard
+  rows, preserves saved comments, and cannot regress `published` to `preview`;
+- only one active `class_memberships` row is possible per student; transfer
+  closes the old row, opens the new row, and never rewrites old snapshots;
+- a student whose membership covers only part of a period receives personal
+  detail with `not ranked` reason and is absent from the public rank order;
+- server assignment classification marks complete active-class coverage as
+  `class` and partial/individual selections as `individual`; only the former
+  gets a `class_task_id` and enters report ranking;
+- cancelled work is excluded; work passed by the report cutoff counts once by
+  class task; work due in a future period or passed after the report cutoff is
+  excluded from formal ranking; ties share rank;
+- only valid countable self-study attempts contribute once per set, separately
+  from rank. Vocabulary 1–4 group self-test and all Practice exclusions remain
+  excluded;
+- integer delta covers positive, negative, zero, and a zero prior period without
+  rendering a percentage; family-level scores remain separate for `bbc`,
+  `vocabulary`, `ielts-reading`, and `ielts-listening`;
+- role-redaction tests prove a student payload includes no other student's
+  `student_details`, comments, goals, membership rows, or attempt content;
+  visitors, inactive users, unrelated students, and students requesting a
+  preview are denied before any report payload is returned.
+
 Run after catalog/content changes:
 
 ```bash
@@ -74,6 +108,7 @@ Open:
 - `http://127.0.0.1:8000/index.html`
 - `http://127.0.0.1:8000/dashboard.html`
 - `http://127.0.0.1:8000/teacher.html`
+- `http://127.0.0.1:8000/reports.html`
 - at least one BBC page
 - at least one IELTS Reading page
 - at least one IELTS Listening page
@@ -791,6 +826,49 @@ Check:
 - teacher-originated `add`/`replace` with no `attempt_id` still triggers matching historical upward regrade
 - `backfillAcceptedAnswerRegrades` dry run reports matching attempts without writes, and apply mode improves only matching historical answers
 
+## 5a. Learning Reports V1 Checklist
+
+Prepare a dedicated development class with at least: two full-period members
+  who tie, one partial-period transfer, one student with only self-study, a
+  cancelled class task, a due-week completion, a later-in-month completion, and a
+future-due completion. Do not use real parent/student credentials.
+
+Check:
+
+- creating/transferring members preserves exactly one active membership per
+  student and preserves the ended historical row;
+- a complete class assignment is server-labelled with the common class task
+  ID, while a selected subset remains individual and is absent from ranking;
+- weekly and monthly previews use Shanghai dates at Sunday/month-end edges;
+  the preview can be opened by a teacher but not a student;
+- saving a comment and goals, regenerating the preview, and publishing preserve
+  the teacher text while recomputing weekend learning facts;
+- final reporting counts due-period class tasks passed by its own cutoff exactly
+  once, excludes cancelled/individual/after-cutoff/future-due work, and assigns
+  equal ranks for equal completion counts; a later-in-month pass remains missed
+  in the immutable weekly report but counts in the monthly report;
+- the partial-period transfer is not ranked, has an explicit reason in its own
+  view, and does not leak a private detail row to classmates;
+- self-study displays separately and does not change formal rank; score/trend
+  sections distinguish BBC, Vocabulary, IELTS Reading, and IELTS Listening
+  rather than calculating one mixed average;
+- deltas show `+N 项`, `-N 项`, or a neutral zero/new-record state without a
+  percentage, including a zero prior period;
+- a shared `reports.html?report=` link sends a signed-out user to login and
+  returns after login; a student sees only leaderboard plus their own detail;
+  a different class's student, an inactive profile, and a visitor are denied;
+- inspect the network response and page source after student login: no other
+  student comment, goal, attempt, membership history, or `student_details`
+  record is delivered and then hidden by JavaScript;
+- an active teacher sees full report/preview controls; student controls cannot
+  call `generatePreview`, `saveComment`, or `publishReport` successfully;
+- repeated manual preview/publish actions and a simulated duplicate timer run
+  leave one report, one rank projection, one final status, and no lost comments;
+- `Print / PDF` prints only the current authorized projection and has no editor,
+  sidebar, another student's private detail, answers, or Argue content;
+- `Copy report link` and `Copy WeChat text` create a valid same-origin URL and
+  text, but V1 does not send a message or operate a personal-WeChat robot.
+
 ## 6. Visitor Flow Checklist
 
 Check:
@@ -1021,6 +1099,13 @@ Before saying a deploy is complete:
 - changed cloud functions have rebuilt ZIPs
 - CloudBase development functions are uploaded
 - required collections exist and are `ADMINONLY`
+- Learning Reports V1: `classes`, `class_memberships`, and `learning_reports`
+  exist and remain `ADMINONLY`; required uniqueness/query indexes exist before
+  the report functions or timer are enabled
+- Learning Reports V1: the report functions and matching static
+  `reports.html`/`reports.js` release are deployed from the same reviewed
+  source, the timer internal token is configured only in CloudBase, and a
+  development-only dry run proves idempotent preview/final behavior
 - `vocabulary_lexicon_history` and `vocabulary_dictionary_reports` exist and
   remain `ADMINONLY` before deploying the new dictionary actions
 - cache query strings are bumped for changed shared JS
@@ -1032,6 +1117,8 @@ Before saying a deploy is complete:
 - No pure unit tests for assignment status, STAR, and Argue rules yet.
 - No automated browser smoke for teacher/student login yet.
 - No automated grading-key reconcile check yet.
+- No scheduled-report integration harness or production timer monitoring yet;
+  until added, use the Learning Reports V1 checklist against development data.
 
 High priority improvement:
 

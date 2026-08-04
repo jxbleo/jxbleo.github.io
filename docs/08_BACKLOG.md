@@ -15,6 +15,11 @@
 - Build a grading-key reconcile workflow so local imports do not overwrite teacher-approved CloudBase corrections.
 - Pass durable `question_text` from every practice runtime's Argue submission path.
 - Add optional owner-only CloudBase CLI workflow after testing the local release helpers.
+- Learning Reports V1 development collections/indexes, report functions, and
+  the class/membership/assignment-scope migration were completed on 2026-08-04.
+  Before enabling it for a real class, publish the matching static report page,
+  verify timer idempotency and response redaction with development accounts,
+  then obtain explicit owner approval for the timer token and schedules.
 
 ## Medium Priority
 
@@ -26,6 +31,8 @@
   merge/undo, AI draft races, teacher replacement history, and report resolution.
 - Continue private-answer migration for legacy public runtime JSON.
 - Add checksum/version comparison between cloud-function source and deployed ZIPs.
+- Add scheduled-report observability: timer failure alerting, generated/published
+  status dashboard, and an audited correction/republication workflow.
 
 ## Low Priority
 
@@ -46,6 +53,9 @@
 - Open the Gifts destination after the owner defines inventory and fulfillment.
 - Parent accounts.
 - Notifications or messaging.
+- Evaluate an official family notification channel (verified email, WeCom, or
+  Mini Program subscription) only after the report content is proven useful;
+  do not use personal-WeChat RPA/third-party account robots as a shortcut.
 - Commercial billing/subscription features.
 - Email/phone/WeChat login binding.
 - Rich analytics dashboard.

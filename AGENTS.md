@@ -92,6 +92,7 @@ Important entry points:
 - `index.html`: login and visitor entry
 - `dashboard.html`: student dashboard
 - `teacher.html`: separate teacher interface
+- `reports.html`: authenticated shared weekly/monthly learning-report reader
 - `bbc.html`, `ielts-reading.html`, `vocabulary.html`: practice runtimes
 - `assets/js/cloudbase-client.js`: browser CloudBase wrapper
 - `assets/js/practice-session.js`: practice submission integration
@@ -275,6 +276,9 @@ All collections use `ADMINONLY`:
 - `grading_key_history`: immutable teacher grading-rule revisions
 - `student_vocabulary_items`: student-owned saved words and phrases
 - `vocabulary_lexicon`: shared curated/ECDICT/external dictionary cache
+- `classes`: stable teacher-managed class records
+- `class_memberships`: time-bounded student-to-class history
+- `learning_reports`: preview and immutable published learning-report snapshots
 
 Read exact schemas in `docs/04_DATA_MODEL.md` and current code before adding
 fields. `CLOUDBASE_ARCHITECTURE.md` remains a legacy detailed reference, but
@@ -288,6 +292,8 @@ Preserve these stable identifiers:
 - `set_id`: stable content/exercise ID
 - `assignment_id`: unique assignment instance
 - `attempt_id`: unique immutable submission
+- `class_id`: stable class identity; never use `class_group` display text as a key
+- `report_id`: stable class-plus-period learning report identity
 
 Do not use display names as keys. In the teacher UI, identify a profile row by
 database document ID (`profile_id`/`_id`) and use `auth_uid` for backend
@@ -383,6 +389,46 @@ The Students page defaults to a searchable list. Selecting a student shows:
 
 The create form is hidden until `Create Student Account` is selected. Assigning
 a class updates `class_group`.
+
+### Periodic learning reports
+
+Weekly and natural-month reports use Shanghai-calendar boundaries. A preview is
+teacher-only and may refresh its calculated facts while preserving teacher
+comments. Once the period closes and the report is published, its snapshot is
+immutable; later submissions do not silently rewrite it.
+
+Every student has at most one active `class_memberships` record. Ending or
+changing a class keeps the old membership for report history. A student who
+joins or transfers during a period may receive a personal report for that
+period but is not ranked until a complete reporting period begins.
+
+Only server-derived `assignment_scope: "class"` batches that cover every active
+member of one class are Class Tasks. The browser cannot declare a partial batch
+to be class work. Editing/cancelling every row of a Class Task keeps the scope
+and applies the mutation transactionally; a partial mutation atomically
+downgrades the whole task to individual scope before changing selected rows.
+The class leaderboard ranks eligible members by Class Tasks
+due in the report period and passed by that report's cutoff; equal completed
+counts share a rank. Monthly reports may therefore include a later-in-month
+completion that remains missed in an already-published weekly report.
+
+Self-study is reported separately and never changes class rank. Do not average
+scores across BBC, Vocabulary, IELTS Reading, IELTS Listening, or other exercise
+families. Period comparison is an integer completed-item difference only.
+
+`reports.html?report=<report_id>` is a reusable authenticated reader, not a
+public report file. Active students may receive the real-name class leaderboard
+plus only their own detail; active teachers may receive all student details and
+edit preview comments. A report ID is a locator, never an authorization token.
+Published snapshots must not contain answers, grading keys, passwords, full
+attempt answers, Argue details, or another student's private detail.
+
+The first release copies the report link/WeChat text for the teacher to send
+manually. Browser print CSS provides Save as PDF; do not create a permanent
+public PDF URL. Scheduled generation must be idempotent, derive periods from
+server Shanghai time, and require a CloudBase-only environment token. Timer
+configuration, collection creation, migration apply, and function deployment
+remain owner-gated.
 
 ## 8. Submission, Grading, and Status
 

@@ -81,6 +81,14 @@ async function main() {
     'Verified students should return to the requested report.'
   );
   assert.deepStrictEqual(
+    await runLogin(
+      { mode: 'student', profile: { role: 'student' } },
+      '?return=reports.html%3Freport%3Dlr-weekly-2026-W31-class-a'
+    ),
+    ['reports.html?report=lr-weekly-2026-W31-class-a'],
+    'Learning-report links must preserve their report locator after sign-in.'
+  );
+  assert.deepStrictEqual(
     await runLogin({ mode: 'teacher', profile: { role: 'teacher' } }, ''),
     ['teacher.html'],
     'Verified teachers should return to the teacher page by default.'

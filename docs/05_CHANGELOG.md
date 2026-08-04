@@ -15,6 +15,18 @@
 
 ## 2026-08-03
 
+### Added
+
+- Defined Learning Reports V1: stable classes and membership history, trusted
+  class-task scope, Shanghai-time weekly/monthly previews, teacher comments,
+  immutable published snapshots, and due-period completion tie ranks.
+- Added the role-aware shared-report contract: one `reports.html?report=` link
+  can be posted manually to an ordinary WeChat group, while students receive
+  only the leaderboard plus their own detail and teachers receive full report
+  administration. Browser print/PDF is the V1 export path.
+- Recorded the owner-gated CloudBase rollout required for report collections,
+  indexes, functions, timer configuration, migration, and development QA.
+
 ### Changed
 
 - Simplified Teacher student lookup to a name-only searchable list with class
@@ -38,6 +50,13 @@
   utilities around one equal-size independent modal and external Close layout.
 - Simplified STAR Redemption to one centered title and moved Review status
   filters to the top, with visible Pending, Approved, and Rejected totals.
+
+### Fixed
+
+- Made report preview/comment/publish transitions transactional, serialized
+  active membership changes, and promoted complete class assignment batches
+  atomically so concurrent or partial writes cannot corrupt published reports
+  or leaderboard scope.
 
 ## 2026-08-02
 

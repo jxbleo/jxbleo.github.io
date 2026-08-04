@@ -60,6 +60,7 @@ Important pages:
 - `ielts-listening.html`: IELTS Listening runtime
 - `vocabulary.html`: Vocabulary runtime
 - `attempt-review.html`: attempt history/review helper
+- `reports.html`: authenticated weekly/monthly class-report reader and teacher preview workspace
 - `dse-topic-bank.html`: public preview shell and authenticated full-report reader
 
 Shared frontend assets:
@@ -75,6 +76,8 @@ Shared frontend assets:
 - `assets/js/teacher.js`
 - `assets/js/practice-session.js`
 - `assets/js/personal-vocab.js`
+- `assets/js/reports.js`
+- `assets/css/reports.css`
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the
@@ -146,6 +149,11 @@ Active or relevant functions:
 - `changePassword`: authenticated student password change
 - `getProtectedResource`: authenticated, chunked delivery of private reference
   artifacts, with per-resource role policies after active-profile validation
+- `learningReports`: authenticated report list/read plus teacher-only preview,
+  comment, and publish actions; it returns a role-redacted report projection,
+  never raw report documents to the browser
+- `generateLearningReports`: timer-only idempotent generator for Shanghai-time
+  preview/final report phases, protected by an internal trigger token
 - `resetStudentPassword`: currently disabled; reset is handled by `teacherAdmin`
 
 Generated deployment ZIPs live in `deploy-packages/`. They are ignored by Git
@@ -208,6 +216,9 @@ Main collections:
 - `vocabulary_lexicon_history`
 - `vocabulary_dictionary_reports`
 - `vocabulary_test_sessions`
+- `classes`
+- `class_memberships`
+- `learning_reports`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
 
@@ -236,6 +247,22 @@ the speech-bubble control in the To Do List modal header. `getDashboard`
 returns resolved `answer_disputes` regardless of
 `student_seen`; the browser derives the unread badge from that read state and
 `markTeacherRepliesSeen` updates the state without deleting reply history.
+
+### Learning-report storage boundary
+
+`classes`, `class_memberships`, and `learning_reports` are `ADMINONLY`, just
+like the existing learning data. `classes` supplies a stable `class_id`;
+`class_memberships` records one current class relationship plus closed history
+for each student; `learning_reports` stores preview and immutable published
+snapshots. The legacy `students.class_group` field remains a transition/display
+mirror, not a report scope or authorization source.
+
+The report snapshot contains both a shared leaderboard projection and protected
+per-student detail. `learningReports.getReport` derives the caller from the
+CloudBase context. It returns only the relevant one student detail to a student,
+while an active teacher receives the full teacher projection. Thus a copied
+`reports.html?report=<report_id>` link is convenient for a class group but
+cannot become a public or cross-student data API.
 
 ## 7. Auth and Permissions
 
@@ -378,6 +405,36 @@ can be run by an authenticated teacher in bounded batches. It compares
 historical wrong answers against current `grading_keys`, then applies the same
 upward-only attempt, assignment, and STAR repair logic.
 
+### Learning Reports
+
+1. A teacher creates/updates class membership through a trusted teacher action.
+   The server ends any prior active membership and starts the new one as one
+   database transaction that locks the student's profile row. The active member
+   set is therefore canonical even when two teacher requests overlap.
+2. When creating assignments, the server derives `assignment_scope`, `class_id`,
+   and `class_task_id`. An assignment is class-scoped only when recipients
+   cover the class's complete active member set; a browser cannot label an
+   arbitrary subset as a class task. New records are first written safely as
+   individual assignments; only after the complete current roster is re-read
+   are all matching records promoted atomically to one class task.
+   Later full-task edits/cancellations are also atomic; partial mutations first
+   downgrade the entire class task to individual scope so report denominators
+   cannot diverge by student.
+3. `generateLearningReports` runs under the configured CloudBase timer in
+   `Asia/Shanghai`, creates/reuses a preview, and later finalizes the matching
+   weekly/monthly period idempotently. It preserves saved teacher comments when
+   moving from preview facts to final facts. Preview refresh, comment saves,
+   and preview-to-published transitions re-read status and write inside a
+   database transaction, so concurrent requests cannot regress or overwrite a
+   published snapshot.
+4. Finalization derives the due-period class tasks, cutoff-time completed counts,
+   tie ranks, self-study summaries, and membership eligibility from immutable
+   attempts/assignments plus membership history. It writes a published
+   snapshot; the browser does not recompute rankings.
+5. The teacher copies the same authenticated URL into an ordinary WeChat group.
+   Families sign in with the student's existing account. V1 uses manual group
+   sharing rather than an unsupported personal-WeChat automation.
+
 ## 9. Content Pipeline
 
 Public source layers:
@@ -428,6 +485,12 @@ CloudBase data:
 
 See [10_DEPLOYMENT.md](10_DEPLOYMENT.md).
 
+Learning reports add an owner-gated fourth operational concern inside the
+CloudBase track: create the three private collections and indexes, upload the
+two report functions, configure the timer's internal token/cron, then publish
+the matching static report page. No agent should create collections, configure
+Cron, or invoke a production report run without explicit owner approval.
+
 ## 11. Security Notes
 
 Never commit:
@@ -451,6 +514,11 @@ Keep collections `ADMINONLY`.
 - Grading-key reconciliation after teacher Argue corrections is not fully automated.
 - Multi-teacher/student ownership and per-teacher STAR redemption authority are
   deferred; the first Cash release assumes the current single active teacher.
+- Ordinary WeChat groups have no official inbound webhook suitable for V1.
+  Copy-to-clipboard/manual sharing is deliberately retained until an approved
+  official channel exists.
+- Report generation needs CloudBase timer observability and a correction/audit
+  path before a high volume of historical reports is expected.
 
 ## 13. Recommended Next Architecture Work
 

@@ -146,9 +146,18 @@ function collection(name) {
   return query;
 }
 
+const db = {
+  collection,
+  command,
+  async runTransaction(callback) {
+    await callback(this);
+    return undefined;
+  },
+};
+
 const app = {
   database() {
-    return { collection, command };
+    return db;
   },
   auth() {
     return {
@@ -1085,6 +1094,49 @@ async function main() {
   assert.equal(applyResult.updated_count, 1);
   const legacy = collections.assignments.find((item) => item.assignment_id === "legacy-assignment");
   assert.equal(legacy.due_at.toISOString(), "2026-06-21T15:59:59.000Z");
+
+  const classTaskRows = ["a", "b"].map((suffix) => ({
+    _id: `class-task-record-${suffix}`,
+    assignment_id: `class-task-${suffix}`,
+    assignment_batch_id: "class-batch-partial",
+    assignment_scope: "class",
+    class_id: "class-a",
+    class_task_id: "class-task-class-a-partial",
+    student_uid: suffix === "a" ? "student-uid" : "peer-uid",
+    set_id: "TEST-SET",
+    status: "to_do",
+    due_at: new Date("2026-07-05T15:59:59.000Z"),
+    passing_percentage: 50,
+    mastery_percentage: 90,
+    mastery_enabled: false,
+  }));
+  collections.assignments.push(...classTaskRows);
+  const partialEdit = await call("updateAssignments", {
+    assignment_ids: ["class-task-a"],
+    due_at: "2026-07-12T15:59:59.000Z",
+  });
+  assert.equal(partialEdit.success, true);
+  assert(classTaskRows.every((assignment) => assignment.assignment_scope === "individual" && assignment.class_task_id == null),
+    "a partial Class Task edit atomically downgrades every row before the personal edit");
+
+  const cancelRows = ["a", "b"].map((suffix) => ({
+    _id: `cancel-task-record-${suffix}`,
+    assignment_id: `cancel-task-${suffix}`,
+    assignment_batch_id: "class-batch-cancel",
+    assignment_scope: "class",
+    class_id: "class-a",
+    class_task_id: "class-task-class-a-cancel",
+    student_uid: suffix === "a" ? "student-uid" : "peer-uid",
+    set_id: "TEST-SET",
+    status: "to_do",
+    due_at: new Date("2026-07-05T15:59:59.000Z"),
+  }));
+  collections.assignments.push(...cancelRows);
+  const partialCancel = await call("cancelAssignments", { assignment_ids: ["cancel-task-a"] });
+  assert.equal(partialCancel.success, true);
+  assert(cancelRows.every((assignment) => assignment.assignment_scope === "individual" && assignment.class_task_id == null));
+  assert.equal(cancelRows[0].status, "cancelled");
+  assert.equal(cancelRows[1].status, "to_do");
 
   console.log("Assignment due-week tests passed.");
 }

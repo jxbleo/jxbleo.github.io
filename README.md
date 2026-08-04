@@ -22,6 +22,8 @@ boundaries matter more than visual polish right now.
 - Yellow-STAR Cash requests with private evidence and teacher confirmation
 - Personal My Words editing, Notes, merge suggestions, Excel/PDF word-list
   export, and a teacher-reviewed shared dictionary fallback
+- Weekly and monthly class learning reports: one authenticated shared link shows
+  the class leaderboard while each family sees only its own learner's details
 
 ## Current Stack
 
@@ -35,6 +37,7 @@ boundaries matter more than visual polish right now.
 | Runtime content | Public JSON under `data/` and metadata under `content/` |
 | Private grading data | CloudBase `grading_keys` generated from local private sources |
 | Function runtime | Node.js 18 |
+| Scheduled reports | CloudBase timer invokes a trusted report-generation function |
 
 There is no frontend build step at the moment.
 
@@ -62,6 +65,7 @@ npm run verify:release
 npm run test:assignment-schedule
 npm run test:content-editions
 npm run test:my-words
+npm run test:learning-reports
 npm run package:functions:all
 npm run release:plan
 node scripts/build-home-catalog.js
@@ -88,6 +92,11 @@ Static site deployment and CloudBase deployment are separate:
   `npm run cloudbase:import:content -- --apply`.
 - Owner-gated helper: run `npm run release:plan` to create
   `.cloudbase-private/deploy-plan.md` for review.
+
+Learning-report releases additionally require the owner to create the three
+new `ADMINONLY` collections and their indexes, configure the CloudBase timer,
+and deploy the matching report functions. The static `reports.html` page alone
+does not generate or authorize reports.
 
 See [docs/10_DEPLOYMENT.md](docs/10_DEPLOYMENT.md) before deploying backend or
 data changes.
@@ -148,6 +157,8 @@ most important backend principles are:
 - Assignment and STAR progress should be monotonic.
 - Correct answers and explanations belong in private CloudBase grading data,
   not public runtime JSON.
+- Learning-report scope, membership, ranking, snapshots, and access decisions
+  are server-derived; a shared report link is not a public data endpoint.
 
 Known technical risks are tracked in [docs/08_BACKLOG.md](docs/08_BACKLOG.md)
 and [docs/11_AGENT_TROUBLESHOOTING.md](docs/11_AGENT_TROUBLESHOOTING.md).
