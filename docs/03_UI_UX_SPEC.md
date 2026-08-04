@@ -128,6 +128,12 @@ retaining the former fixed 430px minimum height and a large empty lower half.
 
 Navigation:
 
+- every Student Dashboard dialog card uses the same elastic materialization as
+  the task-entry confirmation: a restrained fade, upward settle, and scale from
+  `0.94` over 560ms. This applies to To Do List, focused task lists, Teacher
+  Replies, Calendar, My Words, Personal Center, STAR Wallet, password, and
+  My Words merge dialogs. The backdrop and external Close capsule remain
+  spatially stable, and reduced-motion mode renders the final state immediately
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
 - assignments and finished work open from a standalone far-left `To Do List`

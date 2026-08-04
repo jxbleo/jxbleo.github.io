@@ -161,6 +161,12 @@ Shared shell visual checks:
   scrolling and two-finger pinch zoom continue to work
 - My Words, assignment/notification, account, login, and teacher management
   dialogs remain top-layer, readable, closable surfaces
+- open each Student Dashboard dialog from To Do List, Teacher Replies,
+  Calendar, My Words, Personal Center, STAR Wallet, password change, and My
+  Words merge; each dialog card uses the same elastic fade/scale/lift entrance
+  as task-entry confirmation, while the backdrop and external Close capsule do
+  not jump. With reduced motion enabled, each opens directly in its final
+  position without visible bounce
 - opening any independent Teacher modal from Notifications, Argue, Student
   lookup/cards, assignment tools, practice entry, or success feedback freezes
   the background for mouse wheel, trackpad, and touch gestures while its own
