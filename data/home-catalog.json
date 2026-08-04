@@ -198,6 +198,25 @@
       "visible": true
     },
     {
+      "id": "BBC-241219-V2",
+      "sectionId": "bbc-six-minute-english",
+      "title": "Call Centres: Are You Talking To AI?",
+      "href": "bbc.html?set=BBC-241219-V2",
+      "displayValue": "2024-12-19",
+      "sortValue": "2024-12-19",
+      "topic": "Technology / Work",
+      "tags": [
+        "Technology",
+        "Work"
+      ],
+      "note": "Listening Practice",
+      "visible": true,
+      "edition_family": "BBC-241219",
+      "edition_number": 2,
+      "edition_label": "V2",
+      "is_latest_edition": true
+    },
+    {
       "id": "BBC-241219",
       "sectionId": "bbc-six-minute-english",
       "title": "Call Centres: Are You Talking To AI?",
@@ -210,7 +229,11 @@
         "Work"
       ],
       "note": "Listening Practice",
-      "visible": true
+      "visible": true,
+      "edition_family": "BBC-241219",
+      "edition_number": 1,
+      "edition_label": "V1",
+      "is_latest_edition": false
     },
     {
       "id": "BBC-241226",

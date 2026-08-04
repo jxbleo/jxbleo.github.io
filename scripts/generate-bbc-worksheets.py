@@ -142,6 +142,9 @@ class BbcWorksheetPdf:
         x = CONTENT_X
         width = CONTENT_WIDTH
         title = normalize_text(self.data.get("title") or self.meta.get("title") or self.data.get("id") or "BBC")
+        edition_label = normalize_text(self.meta.get("edition_label") or "")
+        if edition_label and edition_label.lower() not in title.lower():
+            title = f"{title} ({edition_label})"
 
         c.saveState()
         c.setFont("Times-Bold", 11)
@@ -199,6 +202,14 @@ class BbcWorksheetPdf:
         blanks = self.data.get("blanks") or []
         if not blanks:
             return y
+        first_section = normalize_text(blanks[0].get("section") or "")
+        if "NO MORE" in first_section.upper():
+            self.canvas.saveState()
+            self.canvas.setFillColor(RULE)
+            self.canvas.setFont("Times-Bold", 9.4)
+            self.canvas.drawString(CONTENT_X, y, first_section)
+            self.canvas.restoreState()
+            y -= 6 * mm
         y = self.draw_table_header(y)
         sentence_width = CONTENT_WIDTH - NUMBER_COLUMN_WIDTH
         for fallback_number, item in enumerate(blanks, start=1):

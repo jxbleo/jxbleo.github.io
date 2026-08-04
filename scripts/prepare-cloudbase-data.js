@@ -4,9 +4,32 @@ const crypto = require("crypto");
 const { spawnSync } = require("child_process");
 
 const projectRoot = path.resolve(__dirname, "..");
-const outputRoot = path.resolve(process.argv[2] || path.join(projectRoot, ".cloudbase-private"));
+const cliArgs = process.argv.slice(2);
+let outputRootArg = "";
+let selectedIds = null;
+for (let index = 0; index < cliArgs.length; index += 1) {
+  const arg = cliArgs[index];
+  if (arg === "--ids") {
+    const value = cliArgs[++index];
+    if (!value || value.startsWith("--")) throw new Error("--ids requires a comma-separated value");
+    selectedIds = new Set(value.split(",").map((item) => item.trim()).filter(Boolean));
+    if (!selectedIds.size) throw new Error("--ids requires at least one set ID");
+  } else if (arg.startsWith("--")) {
+    throw new Error(`Unknown option: ${arg}`);
+  } else if (!outputRootArg) {
+    outputRootArg = arg;
+  } else {
+    throw new Error(`Unexpected argument: ${arg}`);
+  }
+}
+const outputRoot = path.resolve(outputRootArg || path.join(projectRoot, ".cloudbase-private"));
 const privateRoot = path.join(outputRoot, "import");
 const publicRoot = path.join(outputRoot, "public");
+
+function selectedFile(filePath) {
+  if (!selectedIds) return true;
+  return selectedIds.has(path.basename(filePath, path.extname(filePath)));
+}
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -357,6 +380,7 @@ function main() {
 
   listJson(path.join(projectRoot, "data"))
     .filter((filePath) => /^BBC-/.test(path.basename(filePath)))
+    .filter(selectedFile)
     .forEach((filePath) => {
       const source = readJson(filePath);
       const meta = readJson(path.join(projectRoot, "content", "bbc-six-minute-english", `${source.id}.json`));
@@ -375,6 +399,7 @@ function main() {
 
   listJson(path.join(projectRoot, "data"))
     .filter((filePath) => /^C\d+-T\d+-P\d+/.test(path.basename(filePath)))
+    .filter(selectedFile)
     .forEach((filePath) => {
       const source = readJson(filePath);
       const meta = readJson(path.join(projectRoot, "content", "ielts-reading", `${source.id}.json`));
@@ -385,6 +410,7 @@ function main() {
     });
 
   listJson(path.join(projectRoot, "content", "ielts-listening"))
+    .filter(selectedFile)
     .forEach((metaPath) => {
       const meta = readJson(metaPath);
       const dataPath = path.join(projectRoot, "data", `${meta.id}.json`);
@@ -407,7 +433,7 @@ function main() {
       }
     });
 
-  listJson(path.join(projectRoot, "content", "vocabulary")).forEach((filePath) => {
+  listJson(path.join(projectRoot, "content", "vocabulary")).filter(selectedFile).forEach((filePath) => {
     const source = readJson(filePath);
     addCuratedLexiconWords(vocabularyLexicon, source);
     const extracted = extractVocabulary(source, privateSourceFor("vocabulary", source.id));
@@ -448,6 +474,7 @@ function main() {
   console.log(`Prepared ${sets.length} sets`);
   console.log(`Prepared ${gradingKeys.length} private grading keys`);
   console.log(`Prepared ${vocabularyLexiconCount} shared vocabulary lexicon entries`);
+  if (selectedIds) console.log(`ID filter: ${[...selectedIds].join(", ")}`);
   console.log(`Output: ${outputRoot}`);
   console.log("Do not commit the output directory.");
 }

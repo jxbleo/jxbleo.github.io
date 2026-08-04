@@ -1,8 +1,8 @@
 {
-  "id": "BBC-241219",
+  "id": "BBC-241219-V2",
   "sectionId": "bbc-six-minute-english",
   "title": "Call Centres: Are You Talking To AI?",
-  "href": "bbc.html?set=BBC-241219",
+  "href": "bbc.html?set=BBC-241219-V2",
   "renderTheme": "classroom-worksheet",
   "publishedOn": "2024-12-19",
   "topic": "Technology / Work",
@@ -12,8 +12,8 @@
   ],
   "note": "Listening Practice",
   "edition_family": "BBC-241219",
-  "edition_number": 1,
-  "edition_label": "V1",
-  "is_latest_edition": false,
+  "edition_number": 2,
+  "edition_label": "V2",
+  "is_latest_edition": true,
   "visible": true
 }
