@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <meta name="color-scheme" content="light">
     <title>Teacher | Mr. Cat Academy</title>
-    <link rel="stylesheet" href="assets/css/app.css?v=20260804-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260804-2">
     <link rel="stylesheet" href="assets/css/reports.css?v=20260803-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260715-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260715-6">
@@ -14,21 +14,7 @@
 <body class="app-page teacher-page liquid-glass-shell liquid-glass-teacher">
     <main class="app-shell">
         <header class="app-header">
-            <span class="workspace-cat-logo" role="img" aria-label="Mr. Cat Academy">
-                <img src="assets/logos/mrcat-leaping-cat.png" alt="" aria-hidden="true" width="942" height="844">
-            </span>
-            <div class="teacher-header-actions">
-                <button class="teacher-header-icon-button teacher-star-button is-loading" id="teacher-star-button" type="button" aria-label="STAR cash requests" aria-expanded="false" aria-busy="true">
-                    <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                        <path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8Z"></path>
-                    </svg>
-                    <span class="notice-dot danger" id="teacher-star-count" hidden>0</span>
-                </button>
-                <button class="teacher-header-icon-button" id="teacher-dictionary-button" type="button" aria-label="Dictionary" aria-expanded="false">
-                    <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-                        <path d="M5 4.5h10.5A3.5 3.5 0 0 1 19 8v11.5H8.5A3.5 3.5 0 0 1 5 16V4.5Z"></path><path d="M8.5 19.5A3.5 3.5 0 0 1 5 16c0-1.9 1.6-3.5 3.5-3.5H19"></path>
-                    </svg>
-                </button>
+            <div class="teacher-header-primary-actions">
                 <button class="teacher-header-icon-button teacher-updates-button is-loading" id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false" aria-busy="true">
                     <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
@@ -41,6 +27,13 @@
                         <path d="M28 47V26c0-4 3-7 7-7s7 3 7 7v23 M42 45V20c0-4 3-7 7-7s7 3 7 7v27 M56 47V25c0-4 3-7 7-7s7 3 7 7v31 M70 56V39c0-4 3-7 7-7s7 3 7 7v27c0 18-12 29-29 29H45c-10 0-18-4-24-12L12 70c-3-4-2-9 2-12s9-2 12 2l7 8"></path>
                     </svg>
                     <span class="notice-dot danger" id="teacher-review-count" hidden>0</span>
+                </button>
+            </div>
+            <div class="teacher-header-actions">
+                <button class="teacher-header-icon-button" id="teacher-dictionary-button" type="button" aria-label="Dictionary" aria-expanded="false">
+                    <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M5 4.5h10.5A3.5 3.5 0 0 1 19 8v11.5H8.5A3.5 3.5 0 0 1 5 16V4.5Z"></path><path d="M8.5 19.5A3.5 3.5 0 0 1 5 16c0-1.9 1.6-3.5 3.5-3.5H19"></path>
+                    </svg>
                 </button>
                 <button class="teacher-header-icon-button teacher-create-capsule header-create-student" id="toggle-create-student" type="button" aria-label="Find students" aria-expanded="false">
                     <svg class="teacher-header-icon header-student-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
@@ -133,6 +126,12 @@
                             <h2 id="student-lookup-title">Student</h2>
                         </div>
                         <div class="student-lookup-actions">
+                            <button class="teacher-header-icon-button teacher-star-button student-lookup-star" id="teacher-star-button" type="button" aria-label="STAR cash requests" aria-expanded="false">
+                                <svg class="teacher-header-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                    <path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8Z"></path>
+                                </svg>
+                                <span class="notice-dot danger" id="teacher-star-count" hidden>0</span>
+                            </button>
                             <button class="teacher-create-capsule student-lookup-create" id="student-lookup-create" type="button" aria-label="Create student account">+</button>
                         </div>
                     </div>
@@ -398,7 +397,7 @@
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
     <script src="assets/js/auth.js?v=20260707-7"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/teacher.js?v=20260804-1"></script>
+    <script src="assets/js/teacher.js?v=20260804-2"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>
