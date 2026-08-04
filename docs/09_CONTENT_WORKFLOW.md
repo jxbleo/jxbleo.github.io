@@ -45,6 +45,16 @@ For any new or changed teaching material:
 9. Validate JSON, links, question counts, and grading coverage.
 10. Tell the owner exactly what still needs to be imported or deployed.
 
+When unrelated local private sources prevent a full preparation run, target the
+approved set without altering those sources:
+
+```bash
+node scripts/prepare-cloudbase-data.js --ids BBC-YYMMDD-V2
+```
+
+The resulting import files contain only the selected IDs. Import them with an
+explicit matching `--ids` filter and only the required collections.
+
 ## 4. Stable IDs
 
 Use stable IDs because assignments, attempts, grading keys, and STAR records
@@ -156,6 +166,9 @@ BBC public runtime rules:
   PDFs must use only public exercise content: titles, fill-in sentences, blank
   lines, multiple-choice questions, and options. They must not include answers,
   explanations, accepted variants, evidence, or grading rules.
+- Edition worksheets display the explicit `edition_label`, and a public first
+  blank-section heading containing a word limit such as `NO MORE THAN THREE
+  WORDS` is printed above the note-completion table.
 - Fill-in-the-blank placeholders in `data/BBC-*.json` must be exactly `_____`.
 - If a blank accepts multiple answers, store that answer as an array in the
   ignored private source so the importer can create accepted variants.

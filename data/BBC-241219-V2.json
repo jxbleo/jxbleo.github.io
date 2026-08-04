@@ -1,0 +1,181 @@
+{
+  "id": "BBC-241219-V2",
+  "title": "Call Centres: Are You Talking To AI?",
+  "renderTheme": "classroom-worksheet",
+  "audioSrc": "bbc-audio/241219-call-centres-are-you-talking-to-ai.mp3",
+  "blanks": [
+    {
+      "id": "fill-1",
+      "number": 1,
+      "sentence": "When a customer is finally connected, the worker is described as a _____ rather than a machine.",
+      "section": "Part 1: Note Completion - NO MORE THAN THREE WORDS"
+    },
+    {
+      "id": "fill-2",
+      "number": 2,
+      "sentence": "The call-centre industry is economically _____ in countries such as India and the Philippines.",
+      "section": "Part 1: Note Completion - NO MORE THAN THREE WORDS"
+    },
+    {
+      "id": "fill-3",
+      "number": 3,
+      "sentence": "A customer may already be aggravated and keep on _____.",
+      "section": "Difficulties faced by call-centre workers"
+    },
+    {
+      "id": "fill-4",
+      "number": 4,
+      "sentence": "The worker must _____ the client.",
+      "section": "Difficulties faced by call-centre workers"
+    },
+    {
+      "id": "fill-5",
+      "number": 5,
+      "sentence": "The worker must _____.",
+      "section": "Difficulties faced by call-centre workers"
+    },
+    {
+      "id": "fill-6",
+      "number": 6,
+      "sentence": "At the same time, AI _____ of workers' conversations creates additional pressure.",
+      "section": "Difficulties faced by call-centre workers"
+    },
+    {
+      "id": "fill-7",
+      "number": 7,
+      "sentence": "Some workers believe that AI may replace them in the _____.",
+      "section": "Concerns about employment"
+    },
+    {
+      "id": "fill-8",
+      "number": 8,
+      "sentence": "One study estimated that approximately _____ could be displaced.",
+      "section": "Concerns about employment"
+    },
+    {
+      "id": "fill-9",
+      "number": 9,
+      "sentence": "The speaker believes that these gradual _____ have already begun.",
+      "section": "Concerns about employment"
+    },
+    {
+      "id": "fill-10",
+      "number": 10,
+      "sentence": "AI may not completely replace human workers because it lacks _____.",
+      "section": "A human advantage"
+    }
+  ],
+  "multipleChoice": [
+    {
+      "id": "mc-11",
+      "number": 11,
+      "question": "Why is the increasing use of AI in call centres a wider concern in countries such as India and the Philippines?",
+      "options": [
+        "Call-centre companies there rely mainly on overseas technology.",
+        "Call-centre employment represents an important part of their economies.",
+        "Workers there have received insufficient training in artificial intelligence.",
+        "Customers there are unwilling to communicate with automated systems."
+      ]
+    },
+    {
+      "id": "mc-12",
+      "number": 12,
+      "question": "Which situation does the call-centre worker describe as particularly difficult?",
+      "options": [
+        "Recording personal information from impatient customers",
+        "Persuading customers to accept an automated solution",
+        "Correcting the AI system while continuing the conversation",
+        "Calming an angry customer while dealing with the complaint"
+      ]
+    },
+    {
+      "id": "mc-13",
+      "number": 13,
+      "question": "What additional pressure does the worker experience during a difficult call?",
+      "options": [
+        "Her performance is being monitored by an AI system.",
+        "She may be replaced immediately after the call ends.",
+        "She is expected to train the robot speaking to the customer.",
+        "She is prevented from resolving the customer's concern herself."
+      ]
+    },
+    {
+      "id": "mc-14",
+      "number": 14,
+      "question": "Why may AI monitoring make an already stressful call more difficult?",
+      "options": [
+        "It requires workers to use unfamiliar technical language.",
+        "It causes customers to become more aggressive towards workers.",
+        "It evaluates workers while they are handling a demanding situation.",
+        "It makes workers responsible for repairing failures in the AI system."
+      ]
+    },
+    {
+      "id": "mc-15",
+      "number": 15,
+      "question": "What contrast is presented regarding the role of AI in call centres?",
+      "options": [
+        "AI understands customers well but performs administrative work poorly.",
+        "AI is intended to assist workers but may eventually replace them.",
+        "AI reduces the number of complaints but increases waiting times.",
+        "AI protects existing jobs but makes interactions more stressful."
+      ]
+    },
+    {
+      "id": "mc-16",
+      "number": 16,
+      "question": "How does the worker view the displacement of call-centre employees?",
+      "options": [
+        "It is a near-term process that has already begun gradually.",
+        "It is a distant possibility for which there is currently no evidence.",
+        "It is a temporary development affecting only senior employees.",
+        "It is a completed transition that has affected most workers already."
+      ]
+    },
+    {
+      "id": "mc-17",
+      "number": 17,
+      "question": "Why does the worker believe AI cannot fully replace human call-centre staff?",
+      "options": [
+        "AI cannot monitor several conversations at the same time.",
+        "AI is unable to understand the factual details of complaints.",
+        "AI cannot provide customers with solutions quickly enough.",
+        "AI lacks the empathy and compassion shown by human beings."
+      ]
+    },
+    {
+      "id": "mc-18",
+      "number": 18,
+      "question": "Why does the speaker refer to the study predicting the displacement of 300,000 workers?",
+      "options": [
+        "To explain how the call-centre industry originally developed",
+        "To prove that every call-centre employee will lose their job",
+        "To support her concern with specific numerical evidence",
+        "To compare employment levels in different countries"
+      ]
+    },
+    {
+      "id": "mc-19",
+      "number": 19,
+      "question": "What is illustrated by the comparison between speaking to a person and speaking to a robot?",
+      "options": [
+        "Human workers are generally more technically accurate.",
+        "Human interaction provides a greater sense of compassion.",
+        "Customers behave more politely when AI monitors the call.",
+        "Robots can understand emotions but cannot express them."
+      ]
+    },
+    {
+      "id": "mc-20",
+      "number": 20,
+      "question": "What is the overall implication of the discussion?",
+      "options": [
+        "AI will mainly improve waiting times and make call-centre employment more secure.",
+        "The economic effects of AI will remain limited to the Philippines.",
+        "Human staff will become unnecessary once AI monitoring improves.",
+        "AI may displace workers, but its emotional limitations make full replacement uncertain."
+      ]
+    }
+  ],
+  "matching": []
+}
