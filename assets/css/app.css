@@ -2324,8 +2324,23 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255, 255, 255, 0.95);
     text-align: center;
     box-shadow: 0 28px 78px rgba(24, 53, 47, 0.22);
-    animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;
     overflow: visible;
+}
+
+/* Keep every Student Dashboard dialog as lively as the task-entry confirmation. */
+.practice-entry-card,
+.liquid-glass-dashboard :is(
+    .student-account-dialog,
+    .student-star-dialog,
+    .student-words-dialog,
+    .student-calendar-dialog,
+    .student-message-dialog,
+    .teacher-replies-dialog,
+    .password-dialog,
+    .my-word-merge-card
+) {
+    animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;
+    transform-origin: center;
 }
 .practice-entry-editions {
     display: grid;

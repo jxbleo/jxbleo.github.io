@@ -3,6 +3,14 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-05
+
+### Changed
+
+- Unified every Student Dashboard dialog card with the task-entry
+  confirmation's elastic fade, scale, and upward-settle entrance while keeping
+  backdrops, external Close controls, and reduced-motion behavior stable.
+
 ## 2026-08-04
 
 ### Added

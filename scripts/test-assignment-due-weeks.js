@@ -688,6 +688,18 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".student-words-stack,\n    .student-calendar-stack"));
   assert(appCss.includes("height: min(700px, 84vh);"));
   assert(appCss.includes(".student-message-close,\n.student-words-outside-close,\n.student-calendar-outside-close"));
+  assert(appCss.includes(".practice-entry-card,\n.liquid-glass-dashboard :is("));
+  [
+    ".student-account-dialog",
+    ".student-star-dialog",
+    ".student-words-dialog",
+    ".student-calendar-dialog",
+    ".student-message-dialog",
+    ".teacher-replies-dialog",
+    ".password-dialog",
+    ".my-word-merge-card",
+  ].forEach((selector) => assert(appCss.includes(selector)));
+  assert(appCss.includes("animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;"));
   assert(dashboardJs.includes('class="teacher-replies-stack" role="dialog" aria-modal="true"'));
   assert(dashboardJs.includes('class="eyebrow accent" id="teacher-replies-title">Teacher Replies</h2>'));
   assert(dashboardJs.includes('id="teacher-replies-close"'));
