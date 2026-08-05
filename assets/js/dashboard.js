@@ -1,6 +1,11 @@
 (function() {
     'use strict';
 
+    if (window.location && window.location.hash === '#my-words') {
+        window.location.replace('my-words.html');
+        return;
+    }
+
     var state = {
         session: null,
         assignments: [],
@@ -3829,13 +3834,6 @@
             }),
             window.MrCatCloud.callFunction('getResources').catch(function() {
                 return { success: false, resources: [] };
-            }),
-            window.MrCatCloud.callFunction('studentVocabulary', {
-                action: 'list',
-                status: 'active',
-                limit: 200
-            }).catch(function() {
-                return { success: false, words: [] };
             })
         ]).then(function(results) {
             var dashboard = results[0] || {};
@@ -3854,8 +3852,6 @@
             state.teacherReplies = dashboard.teacher_replies || [];
             updateStarCounter(false);
             state.resources = results[1] && results[1].resources || [];
-            state.vocabItems = results[2] && results[2].words || [];
-            enrichPendingVocabItems(state.vocabItems);
             var hasCloudResources = state.resources.length > 0;
             return loadPublicCatalog().then(function(items) {
                 state.resources = hasCloudResources
@@ -4134,17 +4130,6 @@
         if (e.target.closest('button, a')) return;
         e.preventDefault();
         openHrefCard(openCard, e);
-    });
-
-    window.addEventListener('mrcat:vocab-saved', function(event) {
-        if (!state.session || state.session.mode !== 'student') return;
-        var word = event.detail;
-        if (!word || !word.vocab_id) return;
-        state.vocabItems = (state.vocabItems || []).filter(function(item) {
-            return item.vocab_id !== word.vocab_id;
-        });
-        state.vocabItems.unshift(word);
-        if (state.wordsPanelOpen) renderMyWordsView();
     });
 
     window.MrCatAuth.getSession()

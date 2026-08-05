@@ -50,23 +50,32 @@ async function main() {
   const root = path.resolve(__dirname, "..");
   const dashboardHtml = fs.readFileSync(path.join(root, "dashboard.html"), "utf8");
   const dashboardJs = fs.readFileSync(path.join(root, "assets/js/dashboard.js"), "utf8");
-  const appCss = fs.readFileSync(path.join(root, "assets/css/app.css"), "utf8");
+  const myWordsHtml = fs.readFileSync(path.join(root, "my-words.html"), "utf8");
+  const myWordsJs = fs.readFileSync(path.join(root, "assets/js/my-words.js"), "utf8");
+  const myWordsCss = fs.readFileSync(path.join(root, "assets/css/my-words.css"), "utf8");
   const teacherHtml = fs.readFileSync(path.join(root, "teacher.html"), "utf8");
   const studentFunction = fs.readFileSync(path.join(root, "cloudfunctions/studentVocabulary/index.js"), "utf8");
   const teacherFunction = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");
-  assert(dashboardHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
+  assert(dashboardHtml.includes('href="my-words.html"'), "Dashboard notebook must open the dedicated My Words workspace");
+  assert(!dashboardHtml.includes('id="student-words-overlay"'), "Dashboard must not retain a second My Words runtime");
+  assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");
   assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
-  assert(dashboardHtml.includes('id="my-words-export-panel"'));
-  assert(appCss.includes("grid-template-rows: auto auto auto auto minmax(0, 1fr);"), "every My Words tool panel needs an explicit grid row");
-  assert(dashboardJs.includes("AI dictionary lookup is under development."));
-  assert(dashboardJs.includes("function wordChineseMeaning(dictionary)"), "collapsed Chinese meanings must remove duplicated POS labels");
-  assert(!dashboardJs.includes("escapeHtml(dictionary.source_name || 'Dictionary')"), "student word details must not expose dictionary provider labels");
-  assert(dashboardJs.includes("vocabExpanded: {}"), "expanded My Words details must survive list rerenders");
-  assert(dashboardJs.includes("var detailOpen = Boolean(state.vocabExpanded[word.vocab_id])"));
-  assert(dashboardJs.includes("state.vocabExpanded[button.dataset.toggleWord] = open"));
-  assert(dashboardJs.includes("state.vocabExpanded[button.dataset.editWord] = true"));
-  assert(dashboardJs.includes("state.vocabExpanded[button.dataset.editNote] = true"));
+  assert(myWordsHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
+  assert(myWordsHtml.includes('id="my-words-export-panel"'));
+  assert(myWordsHtml.includes('data-my-words-view="study"'));
+  assert(myWordsHtml.includes('data-my-words-view="word-list"'));
+  assert(myWordsHtml.includes("Study Mode · In design"));
+  assert(myWordsJs.includes("AI dictionary lookup is under development."));
+  assert(myWordsJs.includes("function wordChineseMeaning(dictionary)"), "word details must remove duplicated POS labels");
+  assert(!myWordsJs.includes("escapeHtml(dictionary.source_name || 'Dictionary')"), "student word details must not expose dictionary provider labels");
+  assert(myWordsJs.includes("mrcat_my_words_density"), "mobile column preference must persist on the current browser");
+  assert(myWordsJs.includes("state.view !== 'word-list' && state.search"), "leaving Word List must clear its transient search");
+  assert(myWordsJs.includes("Math.max(7, Math.min(14"), "overflowing mobile words must reuse bounded title-scroll timing");
+  assert(myWordsCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"), "mobile Word List must default to a two-column grid");
+  assert(myWordsCss.includes(".my-words-desktop-detail"), "desktop Word List must retain a separate detail pane");
+  assert(myWordsCss.includes(".my-words-mobile-detail-overlay"), "mobile word details must use an independent modal");
+  assert(!/Forgot|A little|Know|Learning\/Mastered/.test(myWordsHtml), "the placeholder release must not add a learning system");
   assert(teacherHtml.includes('id="teacher-dictionary-panel"'));
   ["updateNote", "updateWord", "mergeWords", "undoMerge", "requestAiDraft", "confirmAiDraft", "reportDictionaryIssue"].forEach((action) => {
     assert(studentFunction.includes(`action === "${action}"`), `missing student action ${action}`);
@@ -75,7 +84,7 @@ async function main() {
     assert(teacherFunction.includes(`action === "${action}"`), `missing teacher action ${action}`);
   });
   assert(studentFunction.includes('timeZone: "Asia/Shanghai"'));
-  assert(!dashboardHtml.includes("VOCAB_AI_API_KEY"), "AI key configuration must not enter static HTML");
+  assert(!myWordsHtml.includes("VOCAB_AI_API_KEY"), "AI key configuration must not enter static HTML");
   console.log(`My Words feature tests passed: ${output}`);
 }
 

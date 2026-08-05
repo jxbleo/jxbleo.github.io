@@ -53,6 +53,7 @@ Important pages:
 
 - `index.html`: login and public entry
 - `dashboard.html`: student dashboard
+- `my-words.html`: authenticated student personal-vocabulary study/list workspace
 - `teacher.html`: teacher interface
 - `library.html`: public/learning library surface
 - `bbc.html`: BBC listening runtime
@@ -72,12 +73,14 @@ Shared frontend assets:
 - `assets/js/cloudbase-client.js`
 - `assets/js/auth.js`
 - `assets/js/dashboard.js`
+- `assets/js/my-words.js`
 - `assets/js/liquid-glass-shell.js`
 - `assets/js/teacher.js`
 - `assets/js/practice-session.js`
 - `assets/js/personal-vocab.js`
 - `assets/js/reports.js`
 - `assets/css/reports.css`
+- `assets/css/my-words.css`
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the
@@ -85,6 +88,14 @@ spatial workspace layer for their current header, navigation, matrix, progress,
 and page-level modal layouts. These layers remain ordinary static CSS and
 vanilla JavaScript; they do not introduce a frontend framework or move trusted
 state out of CloudBase functions.
+
+`my-words.html` is a separate authenticated workspace rather than a Dashboard
+modal. It calls the existing `studentVocabulary` function directly and reuses
+`personal-vocab.js` enrichment plus `my-words-export.js`; no personal word data
+is embedded in static HTML. Desktop renders a persistent word index and detail
+pane, while narrow layouts replace the Sidebar with top tabs and open one word's
+detail in a bounded modal. The Dashboard notebook is only a normal page link and
+does not load the student's word list during Dashboard initialization.
 
 Current frontend philosophy:
 

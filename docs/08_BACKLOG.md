@@ -23,6 +23,9 @@
 
 ## Medium Priority
 
+- Define the My Words Study learning loop before replacing its honest static
+  placeholder; decide prompts, feedback, progress ownership, and whether any
+  review schedule belongs in the backend.
 - Extract shared backend logic into `cloudfunctions/_shared/`.
 - Clean old documentation references to `done/failed`, three-card dashboard, and STAR blocking reassignment.
 - Improve teacher Progress filters by class, student, set, and curriculum track.

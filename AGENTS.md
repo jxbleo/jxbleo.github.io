@@ -91,6 +91,7 @@ Important entry points:
 
 - `index.html`: login and visitor entry
 - `dashboard.html`: student dashboard
+- `my-words.html`: authenticated student My Words study/list workspace
 - `teacher.html`: separate teacher interface
 - `reports.html`: authenticated shared weekly/monthly learning-report reader
 - `bbc.html`, `ielts-reading.html`, `vocabulary.html`: practice runtimes
@@ -888,16 +889,21 @@ Student dashboard navigation:
   replies seen and restores the same Assignments modal and bubble focus.
   Back must appear as a clear arrowed glass capsule with a visible border,
   depth, keyboard focus, and press feedback rather than plain text.
-- My Words opens in an independent modal from the notebook icon in the
-  right-side utility group. Closing and reopening that modal restores
-  its previous internal scroll position.
-- Keep the My Words modal compact and vertically centered on desktop and mobile,
-  with its `Close` capsule outside below the card. Search and Add are matching
-  top-right circular icon buttons; Add exposes one Enter-to-save word field.
-  Collapsed rows split English and POS/Chinese into equal, vertically centered
-  halves with a center divider. Pronunciation appears beside the phonetic only
-  after expansion. Do not restore student review states, due filters, or
-  reveal-and-rate review controls unless the owner explicitly asks.
+- The Dashboard notebook icon opens the separate authenticated
+  `my-words.html` workspace; do not restore the complete My Words modal or load
+  personal vocabulary during Dashboard initialization. Legacy
+  `dashboard.html#my-words` links redirect to the workspace.
+- Desktop My Words uses a fixed Study/Word List Sidebar and a Notebook-style
+  approximately 300px index plus flexible detail pane. Mobile replaces the
+  Sidebar with sticky tabs, defaults to a remembered two-column English-only
+  grid, and opens one word's complete detail in a bounded modal because the
+  split pane does not fit. Overflowing mobile English titles reuse the task
+  title's bounded automatic scroll and reduced-motion ellipsis.
+- Study remains an explicit static placeholder with real totals and recent
+  words until the owner defines the learning model. Do not infer or add review
+  states, due filters, reveal-and-rate controls, quizzes, progress, or database
+  fields. Add is one Enter-to-save field; Word List owns Search, sorting,
+  density, and in-page Export.
 - Profile/account actions open from the top-right identity chip. Student
   Personal Center is a centered independent thick-glass modal matching To Do
   List, Calendar, and My Words, with a softly dimmed backdrop and locked
@@ -1711,7 +1717,7 @@ short so future agents can avoid repeating the same first-pass mistakes.
 ### Current structure snapshot
 
 - Main shell/pages: `index.html`, `library.html`, `dashboard.html`,
-  `teacher.html`, `attempt-review.html`.
+  `my-words.html`, `teacher.html`, `attempt-review.html`.
 - Practice runtimes: `bbc.html`, `ielts-reading.html`, `vocabulary.html`.
 - Shared frontend code: `assets/js/` and `assets/css/app.css`.
 - Source content: `content/bbc-six-minute-english/`,

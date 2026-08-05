@@ -23,7 +23,9 @@ Run after JavaScript changes:
 find cloudfunctions -name index.js -exec node --check {} \;
 node --check assets/js/teacher.js
 node --check assets/js/dashboard.js
+node --check assets/js/my-words.js
 node --check assets/js/practice-session.js
+npm run test:my-words
 npm run test:assignment-schedule
 npm run test:star-rewards
 npm run test:protected-resources
@@ -403,15 +405,14 @@ Check:
   `IELTS Listening`
 - a Library query with no matches shows one global no-results message instead
   of a placeholder card from the previously selected capsule
-- scrolling the My Words modal, closing it, and reopening it restores the prior
-  internal scroll position
-- Open My Words and Calendar in turn at desktop, tablet, and 390px phone widths.
-  Their card plus external `Close` capsule must occupy the exact same centered
-  screen rectangle at each breakpoint; long word lists and calendar details
-  scroll inside that shared-size shell without moving it
-- top-right Search and Add use matching green circular icon controls; Search
-  expands below the header, Add exposes only one Enter-to-save word field, and
-  Escape closes an open tool before it closes the modal
+- the Dashboard notebook icon navigates to `my-words.html`; Dashboard does not
+  load vocabulary data or retain a hidden My Words dialog runtime
+- open My Words at desktop, tablet, and 390px phone widths. Desktop keeps the
+  Sidebar and split notebook; mobile replaces the Sidebar with sticky tabs and
+  keeps the word grid within the viewport
+- Add uses the green circular header control and exposes only one Enter-to-save
+  field. Search belongs to Word List; leaving Word List clears the query while
+  keeping sort and density preferences
 - neither Assignments nor My Words appears as a lower navigation entry
 - student opens assigned work
 - opening a finished Vocabulary assignment from `Show Finished` lands on
@@ -1029,6 +1030,25 @@ Check:
 - explicit expired/closed/device-blocked/content-outdated heartbeat errors
   still end the test immediately, and hiding/leaving the page still abandons it
 - group metadata is stored
+- the Dashboard notebook opens `my-words.html`, legacy
+  `dashboard.html#my-words` redirects there, and Dashboard no longer mounts or
+  fetches a second personal-vocabulary runtime
+- desktop My Words keeps the header and Study/Word List Sidebar visible;
+  Word List uses an approximately 300px index plus a flexible detail pane and
+  automatically selects the first recent word
+- mobile replaces the Sidebar with sticky tabs, initially shows an English-only
+  two-column grid, remembers single/two-column choice in the browser, and does
+  not auto-open a word on first entry
+- truly overflowing mobile words animate only inside their own tile with the
+  existing bounded 7–14 second task-title rhythm; ordinary words remain still
+  and reduced-motion mode uses ellipsis
+- tapping a mobile word opens one bounded detail modal, locks the background,
+  and restores the list/search/sort/density/scroll context on close; desktop
+  updates the right detail pane instead
+- Study contains only an honest static placeholder, real saved/Shanghai-week
+  counts, and recent words; it exposes no learning-state or progress model
+- Add Word expands one line below the header. Word List owns Search,
+  Recent/A–Z/Z–A, mobile density, and in-page Export controls
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons
 - long-pressing selectable lesson text on iPhone and iPad keeps the native
@@ -1042,17 +1062,14 @@ Check:
   throttled and offers Retry, and a cached unknown word does not call the
   external provider again for another student
 - My Words search matches Chinese meaning, English definition, and part of speech
-- clicking the My Words search icon visibly expands and focuses the search field
+- Word List search visibly filters English and dictionary fields without losing
+  the current sort or mobile density preference
 - pronunciation uses browser speech without exposing a provider key
 - a failed multi-word lexicon query falls back to individual reads, so known
   entries such as `expense`, `details`, and `widespread` still show dictionary data
-- each collapsed row is split into equal English and POS/Chinese halves with a
-  visible center divider, and both sides remain vertically centered for short
-  and wrapped content; Chinese meaning does not repeat the POS already shown in
-  the green capsule
-- collapsed rows do not show a speaker; expansion reveals the phonetic with its
-  adjacent speaker plus English definition, source/context, retry, and removal;
-  external dictionary provider branding is not shown
+- desktop selection and mobile detail show phonetic plus adjacent speaker,
+  Chinese/English definitions, source/context, retry, Note, and confirmed
+  removal; external dictionary provider branding is not shown
 - `my-words-modal-preview.html` loads as a standalone sample-only design
   reference, has no CloudBase/network data calls, and is not linked from the
   production Dashboard or Library navigation
@@ -1060,9 +1077,9 @@ Check:
   filters, due review, Reveal, Forgot, A little, or Know controls
 - editing changes only the English word/phrase, re-runs dictionary lookup, and
   leaves dictionary fields read-only; Note accepts at most 500 characters
-- after expanding one word, Use base, Edit word, Add/Edit Note, Cancel, and Done
-  keep that same detail card expanded across every list re-render; if editing
-  changes the vocabulary record ID, the expanded state follows the new record
+- Use base, Edit word, Add/Edit Note, Cancel, and Done keep the same selected
+  word visible across rerenders; if editing changes the record ID, selection
+  follows the new record
 - regular high-confidence forms such as `worked` can show `Base: work`, while
   ambiguous or irregular candidates are not guessed automatically
 - selecting a base-form recommendation when both cards exist opens a Merge

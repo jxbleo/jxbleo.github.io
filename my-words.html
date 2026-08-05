@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f4f8f5">
+    <title>My Words | Mr. Cat Academy</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
+    <link rel="manifest" href="site-dse.webmanifest">
+    <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260805-1">
+</head>
+<body class="my-words-page">
+    <main class="my-words-shell">
+        <header class="my-words-page-header">
+            <a class="my-words-back-link" href="dashboard.html" aria-label="Return to Dashboard">
+                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                    <path d="m14.5 5-7 7 7 7"></path>
+                    <path d="M8 12h11"></path>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <div class="my-words-page-title">
+                <p class="eyebrow accent">MR. CAT ACADEMY</p>
+                <h1>My Words</h1>
+            </div>
+            <div class="my-words-page-actions">
+                <button class="my-words-header-icon" id="my-words-add-trigger" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
+                </button>
+                <span class="my-words-identity" id="my-words-identity">Loading...</span>
+                <button class="my-words-signout" id="my-words-logout" type="button">Sign out</button>
+            </div>
+        </header>
+
+        <section class="my-words-add-panel" id="my-words-add-panel" aria-hidden="true" inert>
+            <form id="my-words-add-form">
+                <label for="my-words-add-input">Add a word or short phrase</label>
+                <input id="my-words-add-input" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
+                <button id="my-words-add-submit" type="submit">Save</button>
+            </form>
+            <p id="my-words-add-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <nav class="my-words-mobile-tabs" aria-label="My Words sections">
+            <button type="button" data-my-words-nav="study" aria-selected="true">Study</button>
+            <button type="button" data-my-words-nav="word-list" aria-selected="false">Word List</button>
+        </nav>
+
+        <div class="my-words-workspace">
+            <aside class="my-words-sidebar" aria-label="My Words navigation">
+                <p>MY WORDS</p>
+                <button type="button" data-my-words-nav="study" aria-selected="true">Study</button>
+                <button type="button" data-my-words-nav="word-list" aria-selected="false">Word List</button>
+                <div class="my-words-sidebar-count"><strong id="my-words-sidebar-total">0</strong><span>saved words</span></div>
+            </aside>
+
+            <div class="my-words-stage">
+                <div class="my-words-feedback" id="my-words-feedback" role="status" aria-live="polite"></div>
+
+                <section class="my-words-view my-words-study-view is-active" data-my-words-view="study" aria-labelledby="my-words-study-title">
+                    <section class="my-words-study-hero">
+                        <p class="eyebrow accent">YOUR LEARNING SPACE</p>
+                        <h2 id="my-words-study-title">Your words are ready when you are.</h2>
+                        <p>The learning experience is still being designed. Your personal vocabulary remains available below.</p>
+                        <span class="my-words-study-placeholder">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M6 4h9a2 2 0 0 1 2 2v14H8a3 3 0 0 1-3-3V5a1 1 0 0 1 1-1Z"></path><path d="M8 4v16"></path></svg>
+                            Study Mode · In design
+                        </span>
+                        <div class="my-words-study-stats">
+                            <div><strong id="my-words-total">0</strong><span>saved words</span></div>
+                            <div><strong id="my-words-week-total">0</strong><span>added this week</span></div>
+                        </div>
+                    </section>
+                    <section class="my-words-recent-section" aria-labelledby="my-words-recent-title">
+                        <div class="my-words-section-head">
+                            <h2 id="my-words-recent-title">Recently saved</h2>
+                            <span>Open a word to see its details</span>
+                        </div>
+                        <div class="my-words-recent-list" id="my-words-recent-list"></div>
+                    </section>
+                </section>
+
+                <section class="my-words-view my-words-list-view" data-my-words-view="word-list" aria-label="Word List">
+                    <div class="my-words-list-toolbar">
+                        <label class="my-words-search-field" for="my-words-search">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                            <input id="my-words-search" type="search" autocomplete="off" placeholder="Search words">
+                        </label>
+                        <label class="sr-only" for="my-words-sort">Sort words</label>
+                        <select id="my-words-sort" aria-label="Sort words">
+                            <option value="recent">Recent</option>
+                            <option value="az">A–Z</option>
+                            <option value="za">Z–A</option>
+                        </select>
+                        <div class="my-words-density" role="group" aria-label="Word List columns">
+                            <button type="button" data-my-words-density="single" aria-label="Single-column view" aria-pressed="false">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>
+                            </button>
+                            <button type="button" data-my-words-density="double" aria-label="Two-column view" aria-pressed="true">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="4" y="5" width="7" height="14" rx="2"></rect><rect x="13" y="5" width="7" height="14" rx="2"></rect></svg>
+                            </button>
+                        </div>
+                        <button class="my-words-toolbar-more" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">•••</button>
+                    </div>
+
+                    <section class="my-words-export-panel" id="my-words-export-panel" aria-hidden="true" inert>
+                        <div class="my-words-export-heading"><strong>Export Word List</strong><span id="my-words-selected-count">0 selected</span></div>
+                        <div class="my-words-export-ranges" role="group" aria-label="Export time range">
+                            <button class="active" type="button" data-export-range="all">All</button>
+                            <button type="button" data-export-range="week">This Week</button>
+                            <button type="button" data-export-range="month">This Month</button>
+                            <button type="button" data-export-range="year">This Year</button>
+                        </div>
+                        <div class="my-words-export-fields" id="my-words-export-fields"></div>
+                        <div class="my-words-export-actions">
+                            <button class="outline-button" id="my-words-select-all" type="button">Select all results</button>
+                            <button class="outline-button" id="my-words-export-excel" type="button">Excel</button>
+                            <button class="primary-button" id="my-words-export-pdf" type="button">PDF</button>
+                        </div>
+                        <p id="my-words-export-status" role="status" aria-live="polite"></p>
+                    </section>
+
+                    <div class="my-words-notebook">
+                        <section class="my-words-index" aria-label="Saved words">
+                            <div class="my-words-index-list" id="my-words-index-list"></div>
+                        </section>
+                        <section class="my-words-desktop-detail" id="my-words-desktop-detail" aria-live="polite"></section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <section class="my-words-mobile-detail-overlay" id="my-words-mobile-detail-overlay" hidden>
+        <div class="my-words-mobile-detail-card" role="dialog" aria-modal="true" aria-labelledby="my-words-mobile-detail-title">
+            <header>
+                <p class="eyebrow accent">WORD DETAILS</p>
+                <button id="my-words-mobile-detail-close" type="button" aria-label="Close word details">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                </button>
+            </header>
+            <div id="my-words-mobile-detail"></div>
+        </div>
+    </section>
+
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
+    <script src="assets/js/config.public.js?v=20260803-1"></script>
+    <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
+    <script src="assets/js/auth.js?v=20260707-4"></script>
+    <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
+    <script src="assets/js/my-words-export.js?v=20260801-1"></script>
+    <script src="assets/js/my-words.js?v=20260805-2"></script>
+</body>
+</html>
