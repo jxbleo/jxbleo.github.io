@@ -80,6 +80,7 @@
         selectedDictionaryWord: '',
         studentLookupOpen: false,
         studentMetricView: null,
+        studentAccountView: null,
         createStudentReturnToLookup: false,
         attemptsSeenAt: null,
         activityReadAllAt: null,
@@ -956,6 +957,7 @@
     function setStudentLookupPanel(open) {
         state.studentLookupOpen = open === true;
         if (!state.studentLookupOpen && state.studentMetricView) closeStudentMetricModal();
+        if (!state.studentLookupOpen && state.studentAccountView) closeStudentAccountModal();
         var panel = document.getElementById('student-lookup-panel');
         var button = document.getElementById('toggle-create-student');
         if (panel) panel.hidden = !state.studentLookupOpen;
@@ -1484,16 +1486,20 @@
         modal.setAttribute('data-teacher-modal', '');
         modal.innerHTML = '<div class="student-metric-detail-shell teacher-utility-shell">' +
             '<div class="student-metric-detail-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="student-metric-detail-title">' +
-                '<header class="student-metric-detail-head"><p class="eyebrow accent">' + escapeHtml(studentDisplayName(student)) + '</p><h2 id="student-metric-detail-title">' + escapeHtml(title) + '</h2></header>' +
+                '<header class="student-metric-detail-head">' +
+                    '<button class="student-lookup-back student-subdialog-back" type="button" data-student-metric-back aria-label="Back to student detail" title="Back to student detail">' +
+                        '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m14.5 6-6 6 6 6"></path></svg>' +
+                    '</button>' +
+                    '<p class="eyebrow accent">' + escapeHtml(studentDisplayName(student)) + '</p><h2 id="student-metric-detail-title">' + escapeHtml(title) + '</h2>' +
+                '</header>' +
                 '<div class="student-metric-detail-body" id="student-metric-detail-body">' + content + '</div>' +
             '</div>' +
-            '<button class="progress-matrix-modal-close" type="button" data-student-metric-close aria-label="Close ' + escapeHtml(title) + '">Close</button>' +
         '</div>';
         teacherModalRoot.appendChild(modal);
         var lookup = document.getElementById('student-lookup-panel');
         if (lookup) lookup.hidden = true;
         modal.addEventListener('click', function(event) {
-            if (event.target === modal || event.target.closest('[data-student-metric-close]')) closeStudentMetricModal();
+            if (event.target === modal || event.target.closest('[data-student-metric-back]')) closeStudentMetricModal();
         });
         if (kind !== 'star') return;
         teacherCall('getStudentStarSources', { auth_uid: student.auth_uid }).then(function(result) {
@@ -1504,6 +1510,167 @@
             var body = document.getElementById('student-metric-detail-body');
             if (body) body.innerHTML = '<div class="empty-card"><strong>Unable to load STAR sources</strong>' + escapeHtml(error.message || 'Please try again.') + '</div>';
         });
+    }
+
+    function closeStudentAccountModal() {
+        var view = state.studentAccountView;
+        state.studentAccountView = null;
+        state.studentInfoEdit = '';
+        var modal = document.getElementById('student-account-detail-modal');
+        if (modal) modal.remove();
+        var lookup = document.getElementById('student-lookup-panel');
+        if (lookup && state.studentLookupOpen) lookup.hidden = false;
+        window.setTimeout(function() {
+            var trigger = view && studentDetail.querySelector('[data-student-account]');
+            if (trigger) trigger.focus();
+        }, 0);
+    }
+
+    function renderStudentAccountModal() {
+        var view = state.studentAccountView;
+        if (!view) return;
+        var student = state.students.find(function(item) { return item.auth_uid === view.studentUid; });
+        if (!student) {
+            closeStudentAccountModal();
+            return;
+        }
+        var existing = document.getElementById('student-account-detail-modal');
+        if (existing) existing.remove();
+        var nameEditing = state.studentInfoEdit === 'name';
+        var classEditing = state.studentInfoEdit === 'class';
+        var systemEditing = state.studentInfoEdit === 'system';
+        var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
+        var chineseName = String(student.chinese_name || '').trim();
+        var englishName = String(student.english_name || '').trim();
+        var displayName = studentDisplayName(student);
+        var modal = document.createElement('section');
+        modal.id = 'student-account-detail-modal';
+        modal.className = 'student-account-detail-modal teacher-utility-modal';
+        modal.setAttribute('data-teacher-modal', '');
+        modal.innerHTML = '<div class="student-metric-detail-shell teacher-utility-shell">' +
+            '<div class="student-metric-detail-dialog student-account-detail-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="student-account-detail-title">' +
+                '<header class="student-metric-detail-head">' +
+                    '<button class="student-lookup-back student-subdialog-back" type="button" data-student-account-back aria-label="Back to student detail" title="Back to student detail">' +
+                        '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m14.5 6-6 6 6 6"></path></svg>' +
+                    '</button>' +
+                    '<p class="eyebrow accent">' + escapeHtml(displayName) + '</p><h2 id="student-account-detail-title">ACCOUNT SETTINGS</h2>' +
+                '</header>' +
+                '<div class="student-account-detail-body">' +
+                    '<div class="student-info-grid">' +
+                        '<div class="student-info-item">' +
+                            '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Chinese / English name</span><strong>' + escapeHtml(displayName || 'Not set') + '</strong></button>' +
+                            (nameEditing ? '<form class="student-info-editor student-name-editor" data-student-info-editor="name">' +
+                                '<label>Chinese name<input type="text" name="chinese_name" value="' + escapeHtml(chineseName) + '" placeholder="Chinese name"></label>' +
+                                '<label>English name<input type="text" name="english_name" value="' + escapeHtml(englishName) + '" placeholder="English name"></label>' +
+                                '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                            '</form>' : '') +
+                        '</div>' +
+                        '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
+                        '<div class="student-info-item student-account-class-item">' +
+                            '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not set') + '</strong></button>' +
+                            (classEditing ? renderStudentClassEditor(student) : '') +
+                        '</div>' +
+                        '<div class="student-info-item">' +
+                            '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
+                            (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
+                                '<select name="curriculum_track">' + systemOptions.map(function(option) {
+                                    return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' + escapeHtml(option || 'Not set') + '</option>';
+                                }).join('') + '</select>' +
+                                '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+                            '</form>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="student-account-actions">' +
+                        '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
+                        '<button class="danger-button" id="delete-student-account" type="button">Delete Account</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        teacherModalRoot.appendChild(modal);
+        var lookup = document.getElementById('student-lookup-panel');
+        if (lookup) lookup.hidden = true;
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal || event.target.closest('[data-student-account-back]')) closeStudentAccountModal();
+        });
+        modal.querySelectorAll('[data-edit-student-field]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentInfoEdit = state.studentInfoEdit === button.dataset.editStudentField ? '' : button.dataset.editStudentField;
+                renderStudentAccountModal();
+            });
+        });
+        modal.querySelectorAll('[data-cancel-student-info]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                state.studentInfoEdit = '';
+                renderStudentAccountModal();
+            });
+        });
+        var classChoice = modal.querySelector('[data-student-info-editor="class"] select[name="class_choice"]');
+        if (classChoice) classChoice.addEventListener('change', function() {
+            var customInput = classChoice.form.elements.custom_class_group;
+            var isCustom = classChoice.value === '__customize__';
+            customInput.hidden = !isCustom;
+            if (isCustom) customInput.focus();
+            else customInput.value = '';
+        });
+        modal.querySelectorAll('[data-student-info-editor]').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var field = form.dataset.studentInfoEditor;
+                var update;
+                if (field === 'name') {
+                    var nextChineseName = form.elements.chinese_name.value.trim();
+                    var nextEnglishName = form.elements.english_name.value.trim();
+                    var nextName = nextChineseName || nextEnglishName || String(student.name || '').trim();
+                    if (!nextName) {
+                        showMessage('Enter a Chinese name or English name.', 'error');
+                        return;
+                    }
+                    update = { name: nextName, chinese_name: nextChineseName, english_name: nextEnglishName };
+                } else if (field === 'class') {
+                    var selectedOption = form.elements.class_choice.options[form.elements.class_choice.selectedIndex];
+                    if (form.elements.class_choice.value === '__customize__') {
+                        var customClassName = form.elements.custom_class_group.value.trim();
+                        if (!customClassName) {
+                            showMessage('Enter a new class name.', 'error');
+                            return;
+                        }
+                        update = { class_group: customClassName };
+                    } else {
+                        var selectedClassId = selectedOption ? String(selectedOption.dataset.classId || '').trim() : '';
+                        var selectedClassName = selectedOption ? String(selectedOption.dataset.className || '').trim() : '';
+                        update = selectedClassId ? { class_id: selectedClassId } : { class_id: '', class_group: selectedClassName };
+                    }
+                } else {
+                    update = { curriculum_track: form.elements.curriculum_track.value };
+                }
+                state.studentInfoEdit = '';
+                updateStudent(student.auth_uid, update).then(function(saved) {
+                    if (!saved) state.studentInfoEdit = field;
+                    renderStudentAccountModal();
+                });
+            });
+        });
+        modal.querySelector('#delete-student-account').addEventListener('click', function() {
+            deleteStudentAccount(student).then(function() {
+                var stillExists = state.students.some(function(item) { return item.auth_uid === student.auth_uid; });
+                if (stillExists) renderStudentAccountModal();
+                else closeStudentAccountModal();
+            });
+        });
+        modal.querySelector('#reset-password').addEventListener('click', function() {
+            if (!confirm('Reset the password for ' + student.student_id + '?')) return;
+            teacherCall('resetStudentPassword', { auth_uid: student.auth_uid }).then(function(result) {
+                showMessage('', '');
+                return refreshStudents().then(function() { setPasswordResetSuccessModal(true, student, result); });
+            }).catch(function(error) { showMessage(error.message, 'error'); });
+        });
+    }
+
+    function openStudentAccountModal(student) {
+        state.studentInfoEdit = '';
+        state.studentAccountView = { studentUid: student.auth_uid };
+        renderStudentAccountModal();
     }
 
     function setCategory(set) {
@@ -6007,84 +6174,47 @@
         var assignments = (state.progressItems.length ? state.progressItems : state.assignments).filter(function(item) {
             return item.student_uid === student.auth_uid;
         });
-        var nameEditing = state.studentInfoEdit === 'name';
-        var classEditing = state.studentInfoEdit === 'class';
-        var systemEditing = state.studentInfoEdit === 'system';
-        var systemOptions = ['', 'DSE', 'IELTS', 'A-Level', 'AP', 'IB', 'Zhongkao', 'Gaokao'];
-        var chineseName = studentChineseName(student);
-        var englishName = studentEnglishName(student);
+        var chineseName = String(student.chinese_name || '').trim();
+        var englishName = String(student.english_name || '').trim();
         var displayName = studentDisplayName(student);
+        var identityChineseName = chineseName || (!englishName ? String(student.name || student.student_id || 'Student').trim() : '中文名未设置');
+        var identityEnglishName = englishName || 'English name not set';
         var metrics = matrixStudentOverviewMetrics(assignments);
         var studentKey = student.auth_uid || student.student_id;
 
         studentDetail.innerHTML =
             '<section class="profile-card student-profile-card student-profile-summary">' +
-                '<div class="student-summary-identity">' +
+                '<div class="student-identity-capsule">' +
                     '<span class="matrix-student-avatar">' + escapeHtml(matrixStudentInitial(displayName)) + '</span>' +
-                    '<h2 class="student-info-name">' + escapeHtml(displayName) + '</h2>' +
+                    '<span class="student-identity-copy"><strong>' + escapeHtml(identityChineseName) + '</strong><small>' + escapeHtml(identityEnglishName) + '</small></span>' +
                 '</div>' +
-                '<div class="matrix-student-stats student-primary-stats">' +
-                    '<span class="student-primary-stat"><strong>' + escapeHtml(student.class_group || '—') + '</strong><small>Class</small></span>' +
-                    '<button class="student-primary-stat student-primary-stat-button" type="button" data-student-metric="star" aria-haspopup="dialog"><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></button>' +
-                    '<button class="student-primary-stat student-primary-stat-button" type="button" data-student-metric="completed" aria-haspopup="dialog"><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></button>' +
+                '<div class="student-summary-actions">' +
+                    '<button class="student-summary-capsule is-star" type="button" data-student-metric="star" aria-haspopup="dialog">' +
+                        '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8Z"></path></svg>' +
+                        '<span><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></span>' +
+                    '</button>' +
+                    '<button class="student-summary-capsule is-completed" type="button" data-student-metric="completed" aria-haspopup="dialog">' +
+                        '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="8.5"></circle><path d="m8.2 12.2 2.4 2.4 5.4-5.5"></path></svg>' +
+                        '<span><strong>' + escapeHtml(metrics.finished + ' / ' + metrics.total) + '</strong><small>COMPLETED</small></span>' +
+                    '</button>' +
+                    '<button class="student-summary-capsule is-account" type="button" data-student-account aria-haspopup="dialog">' +
+                        '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"></rect><circle cx="9.5" cy="11" r="2.2"></circle><path d="M6.6 16.5a3.5 3.5 0 0 1 5.8 0M14.2 10h3.3M14.2 14h3.3"></path></svg>' +
+                        '<span><strong>Account</strong><small>SETTINGS</small></span>' +
+                    '</button>' +
                 '</div>' +
             '</section>' +
             '<section class="profile-card student-calendar-card">' +
                 '<p class="eyebrow accent">PROGRESS CALENDAR</p>' +
                 renderMatrixStudentProgressBoard(studentKey, assignments) +
-            '</section>' +
-            '<details class="profile-card student-account-details"' + (nameEditing || classEditing || systemEditing ? ' open' : '') + '>' +
-                '<summary>Account settings</summary>' +
-                '<div class="student-info-grid">' +
-                    '<div class="student-info-item">' +
-                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="name"><span>Chinese / English name</span><strong>' + escapeHtml(displayName || 'Not set') + '</strong></button>' +
-                        (nameEditing ? '<form class="student-info-editor student-name-editor" data-student-info-editor="name">' +
-                            '<label>Chinese name<input type="text" name="chinese_name" value="' + escapeHtml(chineseName) + '" placeholder="Chinese name"></label>' +
-                            '<label>English name<input type="text" name="english_name" value="' + escapeHtml(englishName) + '" placeholder="English name"></label>' +
-                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
-                        '</form>' : '') +
-                    '</div>' +
-                    '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
-                    '<div class="student-info-item student-account-class-item">' +
-                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not set') + '</strong></button>' +
-                        (classEditing ? renderStudentClassEditor(student) : '') +
-                    '</div>' +
-                    '<div class="student-info-item">' +
-                        '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
-                        (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
-                            '<select name="curriculum_track">' + systemOptions.map(function(option) {
-                                return '<option value="' + escapeHtml(option) + '"' + (option === (student.curriculum_track || '') ? ' selected' : '') + '>' +
-                                    escapeHtml(option || 'Not set') + '</option>';
-                            }).join('') + '</select>' +
-                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
-                        '</form>' : '') +
-                    '</div>' +
-                '</div>' +
-                '<div class="student-account-actions">' +
-                    '<button class="outline-button" id="reset-password" type="button">Reset password</button>' +
-                    '<button class="danger-button" id="delete-student-account" type="button">Delete Account</button>' +
-                '</div>' +
-            '</details>';
+            '</section>';
 
-        document.getElementById('delete-student-account').addEventListener('click', function() {
-            deleteStudentAccount(student);
-        });
-        document.getElementById('reset-password').addEventListener('click', function() {
-            if (!confirm('Reset the password for ' + student.student_id + '?')) return;
-            teacherCall('resetStudentPassword', { auth_uid: student.auth_uid }).then(function(result) {
-                showMessage('', '');
-                return refreshStudents().then(function() {
-                    setPasswordResetSuccessModal(true, student, result);
-                });
-            }).catch(function(error) {
-                showMessage(error.message, 'error');
-            });
-        });
         studentDetail.querySelectorAll('[data-student-metric]').forEach(function(button) {
             button.addEventListener('click', function() {
                 openStudentMetricModal(button.dataset.studentMetric, student, assignments);
             });
         });
+        var accountButton = studentDetail.querySelector('[data-student-account]');
+        if (accountButton) accountButton.addEventListener('click', function() { openStudentAccountModal(student); });
         studentDetail.querySelectorAll('[data-matrix-student-progress-day], [data-matrix-student-progress-week]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixStudentProgressDay || button.dataset.matrixStudentProgressWeek || '';
@@ -6097,70 +6227,6 @@
             button.addEventListener('click', function() {
                 shiftMatrixStudentProgressMonth(studentKey, button.dataset.matrixStudentProgressMonth === 'next' ? 1 : -1);
                 renderStudentDetail();
-            });
-        });
-        studentDetail.querySelectorAll('[data-edit-student-field]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                state.studentInfoEdit = state.studentInfoEdit === button.dataset.editStudentField ? '' : button.dataset.editStudentField;
-                renderStudentDetail();
-            });
-        });
-        studentDetail.querySelectorAll('[data-cancel-student-info]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                state.studentInfoEdit = '';
-                renderStudentDetail();
-            });
-        });
-        var classChoice = studentDetail.querySelector('[data-student-info-editor="class"] select[name="class_choice"]');
-        if (classChoice) classChoice.addEventListener('change', function() {
-            var customInput = classChoice.form.elements.custom_class_group;
-            var isCustom = classChoice.value === '__customize__';
-            customInput.hidden = !isCustom;
-            if (isCustom) customInput.focus();
-            else customInput.value = '';
-        });
-        studentDetail.querySelectorAll('[data-student-info-editor]').forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                var field = form.dataset.studentInfoEditor;
-                state.studentInfoEdit = '';
-                if (field === 'name') {
-                    var nextChineseName = form.elements.chinese_name.value.trim();
-                    var nextEnglishName = form.elements.english_name.value.trim();
-                    var nextName = nextChineseName || nextEnglishName || String(student.name || '').trim();
-                    if (!nextName) {
-                        showMessage('Enter a Chinese name or English name.', 'error');
-                        renderStudentDetail();
-                        return;
-                    }
-                    updateStudent(student.auth_uid, {
-                        name: nextName,
-                        chinese_name: nextChineseName,
-                        english_name: nextEnglishName
-                    });
-                    return;
-                }
-                if (field === 'class') {
-                    var selectedOption = form.elements.class_choice.options[form.elements.class_choice.selectedIndex];
-                    if (form.elements.class_choice.value === '__customize__') {
-                        var customClassName = form.elements.custom_class_group.value.trim();
-                        if (!customClassName) {
-                            showMessage('Enter a new class name.', 'error');
-                            state.studentInfoEdit = 'class';
-                            renderStudentDetail();
-                            return;
-                        }
-                        updateStudent(student.auth_uid, { class_group: customClassName });
-                        return;
-                    }
-                    var selectedClassId = selectedOption ? String(selectedOption.dataset.classId || '').trim() : '';
-                    var selectedClassName = selectedOption ? String(selectedOption.dataset.className || '').trim() : '';
-                    updateStudent(student.auth_uid, selectedClassId
-                        ? { class_id: selectedClassId }
-                        : { class_id: '', class_group: selectedClassName });
-                    return;
-                }
-                updateStudent(student.auth_uid, { curriculum_track: form.elements.curriculum_track.value });
             });
         });
     }
@@ -6805,9 +6871,10 @@
         return teacherCall('updateStudent', Object.assign({ auth_uid: authUid }, update))
             .then(function() {
                 showMessage('Student updated.', 'success');
-                return refreshStudents();
+                return refreshStudents().then(function() { return true; });
             }).catch(function(error) {
                 showMessage(error.message, 'error');
+                return false;
             });
     }
 
@@ -7173,8 +7240,8 @@
         state.starReturnToStudentLookup = state.studentLookupOpen === true;
         setStarRedemptionPanel(!state.starOpen);
     });
-    var teacherStarClose = document.getElementById('teacher-star-close');
-    if (teacherStarClose) teacherStarClose.addEventListener('click', function() { setStarRedemptionPanel(false); });
+    var teacherStarBack = document.getElementById('teacher-star-back');
+    if (teacherStarBack) teacherStarBack.addEventListener('click', function() { setStarRedemptionPanel(false); });
     if (teacherStarPanel) teacherStarPanel.addEventListener('click', function(event) { if (event.target === teacherStarPanel) setStarRedemptionPanel(false); });
     document.querySelectorAll('[data-star-request-view]').forEach(function(button) {
         button.addEventListener('click', function() { state.starRequestView = button.dataset.starRequestView; renderStarRedemptions(); });
@@ -7520,6 +7587,10 @@
                 setPasswordResetSuccessModal(false);
                 return;
             }
+            if (state.studentAccountView) {
+                closeStudentAccountModal();
+                return;
+            }
             if (state.starOpen) {
                 setStarRedemptionPanel(false);
                 return;
@@ -7571,7 +7642,7 @@
     document.getElementById('student-lookup-close').addEventListener('click', function() {
         setStudentLookupPanel(false);
     });
-    document.getElementById('close-create-student').addEventListener('click', function() {
+    document.getElementById('create-student-back').addEventListener('click', function() {
         setCreateStudentModal(false, true);
     });
     var createSuccessClose = document.getElementById('create-student-success-close');

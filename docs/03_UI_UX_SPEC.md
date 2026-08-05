@@ -562,13 +562,15 @@ materialization as the task-entry confirmation: a fade with a short upward
 settle and scale from `0.94` over 560ms. This applies to Personal Center,
 utility dialogs, Student lookup/details, create/success dialogs, assignment
 pickers and editors, percentage and cancellation confirmations, and matrix or
-attempt details. Backdrops and external Close capsules remain spatially stable;
+attempt details. Backdrops and any retained external Close capsules remain spatially stable;
 reduced-motion mode renders the final state immediately.
 
 The four utility modals—Notifications, Review, Dictionary, and STAR
 Redemption—share the same `760px` card width, viewport-derived card height,
-centered overlay position, internal scrolling boundary, and external `Close`
-capsule directly below the card. STAR Redemption has one centered title and no
+centered overlay position, and internal scrolling boundary. Notifications,
+Review, and Dictionary retain the external `Close` capsule directly below the
+card; STAR Redemption instead uses the Student lookup subordinate-flow back
+arrow at the card's top-left. STAR Redemption has one centered title and no
 secondary `Cash requests` heading. Review has no `REVIEW` / `Argue requests`
 header; its Pending, Approved, and Rejected filters begin at the top and each
 always shows its current count, including zero.
@@ -581,7 +583,7 @@ sits inside Student lookup, immediately beside the create-student `+` action.
 Its red badge counts every `awaiting_proof` and `awaiting_teacher` Cash Request.
 Activating it opens an independent
 `STAR Redemption` utility modal, locks the page, and restores button focus on
-close; closing it also restores the parent Student lookup surface. Pending
+return; returning also restores the parent Student lookup surface. Pending
 requests sort oldest-first; History is newest-first.
 
 Each request row shows student, yellow STAR count, request time, status, and
@@ -619,18 +621,22 @@ name only, without a second Login ID / class / Active metadata line. Selecting a
 the search field in that same top bar with only a back control; it does not
 repeat the selected student's name because the first identity card already
 shows it. Returning to the list restores the search field. Student info
-and progress appear directly below. The detail begins with the student name and
-three equal-level Class, STAR, and Completed/Total metrics; it does not show an
-Attempts metric or an account-status line. The Class metric is a read-only
-summary. Class editing lives inside Account settings, where the current class
-and an explicit `Edit` action are shown. Opening that editor shows a selector of active existing classes, with
+and progress appear directly below. The detail begins with a flexible identity
+capsule containing the avatar plus Chinese and English names on separate lines.
+Beside it are exactly three equal action capsules: a gold outline STAR with its
+count, a green check-circle with Completed/Total, and a neutral Account entry.
+It does not show Attempts, class, Login ID, System, or account status in this
+summary. Clicking Account opens an independent subordinate Account Settings
+dialog. Class editing lives there, where the current class and an explicit
+`Edit` action are shown. Opening that editor shows a selector of active existing classes, with
 `No class` first and `Customize` last. The new-class text field is hidden until
 the teacher explicitly chooses `Customize`; saving an existing choice uses its
 stable class ID, while Customize creates or reuses the normalized class through
 the trusted backend. A monthly progress calendar follows, with one rounded band per week,
 Monday-first day controls, completion-density color, STAR markers, month
-navigation, and a selected-day/week completed-work detail pane. Account fields
-remain available one level deeper in Account settings. The teacher-facing
+navigation, and a selected-day/week completed-work detail pane. The old bottom
+Account settings disclosure is removed. Account fields remain available only
+in the Account Settings dialog. The teacher-facing
 student detail does not include a My Words panel. Its dialog stays fixed in the
 viewport and permits vertical internal scrolling only; horizontal pointer,
 trackpad, and touch panning must not shift the card or its content. STAR and
@@ -638,8 +644,12 @@ Completed are interactive metrics: STAR opens an independent, student-bounded
 source dialog grouped into Yellow assignment and Blue self-study records with
 earned date and best score; Completed opens a separate dialog with complete
 To Do and Finished sections. Both metric dialogs remain fixed over the viewport
-while the underlying Student lookup is temporarily hidden. Closing either
+while the underlying Student lookup is temporarily hidden. Returning from either
 restores the Student lookup and returns focus to its source metric.
+STAR Redemption, Create Student, STAR Source, Completed, and Account Settings are all subordinate
+to Student lookup, so each uses an outline back arrow in the card's top-left
+corner. These dialogs do not use an external `Close` capsule; Create
+Student also does not retain its former top-right `x`.
 The former Overall Progress card is removed. The Student lookup, raised-hand Argue, and
 notification surfaces share
 the notification card's width, viewport-centered position, height cap, and
@@ -1056,10 +1066,13 @@ Student detail should show:
   Login ID and initial password, and closes by Done, backdrop, or Escape
 - delete account
 - name/class/system editing
-- class editing inside Account settings, using existing classes plus a final
+- name, class, and system editing inside the independent Account Settings dialog,
+  with class editing using existing classes plus a final
   `Customize` choice for creating or reusing a class
 - independent STAR Source and Completed (To Do / Finished) dialogs opened from
   the summary metrics
+- an Account summary capsule that opens the independent Account Settings dialog;
+  the main detail has no bottom Account settings disclosure
 
 Student detail does not show the student's My Words collection.
 It does not show a separate Overall Progress card.
