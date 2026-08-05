@@ -2629,8 +2629,11 @@ body:not(.teacher-page) .tab-button.active {
 .account-feedback-row > strong,
 .account-finished-row > span { will-change: transform; }
 .account-feedback-row:hover,
+.account-feedback-row:active {
+    background: transparent;
+    transform: none;
+}
 .account-finished-row:hover { background: rgba(19, 118, 109, 0.045); }
-.account-feedback-row:active,
 .account-finished-row:active { transform: scale(0.985); }
 .account-feedback-row:focus-visible,
 .account-finished-row:focus-visible {

@@ -281,8 +281,9 @@ Check:
   `Change Password` heading and shows neither a separate `Account` label nor a
   top-right close button
 - Student ID, Class, and System rows respond to pointer and keyboard activation
-  with a restrained text movement but do not navigate or edit data; reduced
-  motion uses a non-moving response
+  with a restrained text movement but do not navigate or edit data; no row
+  retains a selected background or pressed scale after activation, and reduced
+  motion uses a brief non-moving response
 - activating the Personal Center `Finished` row dismisses Personal Center and
   opens a focused, newest-first completed-task list using the same category,
   title, score, chevron, and task-entry confirmation behavior as Assignments;

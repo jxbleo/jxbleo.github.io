@@ -728,6 +728,9 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes('<p class="eyebrow accent" id="password-dialog-title">Change Password</p>'));
   assert(!dashboardJs.includes('<p class="eyebrow accent">Account</p>'));
   assert(!dashboardJs.includes('class="dialog-close-button"'));
+  assert(appCss.includes(".account-feedback-row:hover,\n.account-feedback-row:active {\n    background: transparent;\n    transform: none;\n}"));
+  assert(!appCss.includes(".account-feedback-row:hover,\n.account-finished-row:hover"));
+  assert(!appCss.includes(".account-feedback-row:active,\n.account-finished-row:active"));
   assert(appCss.includes(".teacher-replies-stack {\n    display: grid;\n    grid-template-rows: minmax(0, 1fr) auto;"));
   assert(appCss.includes(".teacher-reply-item {\n    width: 100%;\n    min-width: 0;"));
   assert(appCss.includes(".teacher-reply-title-window {\n    width: 100%;\n    min-width: 0;"));
