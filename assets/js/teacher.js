@@ -6671,7 +6671,7 @@
                         : '')
                     : '<span class="review-status-count ' + escapeHtml(filter.id) + '">' + escapeHtml(counts[filter.id]) + '</span>';
                 return '<button class="summary-card assignment-filter revise-filter' + (state.disputeFilter === filter.id ? ' active' : '') +
-                    ' dispute-filter-' + escapeHtml(filter.id) + '" type="button" data-dispute-filter="' + escapeHtml(filter.id) +
+                    '" type="button" data-dispute-filter="' + escapeHtml(filter.id) +
                     '" aria-label="' + escapeHtml(filter.label) + ': ' + escapeHtml(counts[filter.id]) + '">' +
                     '<span class="summary-label">' + escapeHtml(filter.label).toUpperCase() + '</span>' + countMarkup +
                 '</button>';

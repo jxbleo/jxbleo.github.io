@@ -8811,22 +8811,23 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 .revise-tabs .revise-filter {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    place-content: center;
+    justify-items: center;
+    gap: 5px;
+    min-height: 64px;
+    padding: 10px 16px;
+    color: var(--ink);
     text-align: center;
 }
 .revise-tabs .summary-label { display: block; color: inherit; font-size: 0.82rem; letter-spacing: 0.04em; }
 .review-status-count {
-    color: currentColor;
-    font-size: 0.8rem;
-    font-weight: 950;
+    display: block;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 850;
     line-height: 1;
 }
-.dispute-filter-approved,
-.review-status-count.approved { color: var(--success); }
-.dispute-filter-rejected,
-.review-status-count.rejected { color: var(--danger); }
 .review-pending-count {
     top: -8px;
     right: -5px;
