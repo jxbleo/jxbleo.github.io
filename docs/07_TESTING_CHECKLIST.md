@@ -276,10 +276,13 @@ Check:
 - profile loads
 - opening `Change password` from the account panel shows the password dialog
   above the account panel; interacting with its fields does not dismiss the
-  account panel underneath, and Escape closes only the password dialog before
-  returning focus to `Change password`; the dialog starts with one eyebrow-style
-  `Change Password` heading and shows neither a separate `Account` label nor a
-  top-right close button
+  account panel underneath. Its `Change Password` heading is centered, the
+  top-left back arrow closes only the password dialog and returns focus to
+  `Change password`, and the centered `Save Password` is the only form action.
+  Confirm there is no separate `Account` label, top-right close button, or
+  Cancel action. Backdrop and Escape do nothing; the external `Close` below the
+  card closes both dialog layers, returns to Dashboard, and restores focus to
+  the identity chip
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; no row
   retains a selected background or pressed scale after activation, and reduced
@@ -312,8 +315,11 @@ Check:
   the yellow counter; it must not trigger the global outside-click closer. The
   separate lower Close action dismisses the complete modal flow
 - `STAR Source` has no explanatory sentence above its groups, lists Yellow
-  assignment STARs above Blue self-study STARs, opens the linked best historical
-  attempt from each row, and keeps converted Blue rows visible
+  assignment STARs above Blue self-study STARs, labels the Yellow heading
+  `REDEEMABLE` and the Blue heading `NOT REDEEMABLE`, and does not repeat those
+  labels inside source capsules. Source rows have no chevron, link semantics,
+  task-entry confirmation, or practice navigation; converted Blue rows remain
+  visible
 - `History` lists every Cash request newest first and keeps View proof, Add photo,
   and Cancel controls with the applicable request
 - Redeem opens Cash directly, shows no money amount/rate, and its integer slider

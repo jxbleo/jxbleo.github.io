@@ -217,6 +217,7 @@ function dashboardScheduleHooks() {
       renderStudentMessageFlatList: renderStudentMessageFlatList,
       accountStarItems: accountStarItems,
       accountStarHistoryRow: accountStarHistoryRow,
+      renderStarSource: renderStarSource,
       setWeeklyFocusProgress: function(target) { weeklyFocusProgress = target; }
     };
 })();`;
@@ -725,7 +726,14 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes('id="teacher-replies-close"'));
   assert(!dashboardJs.includes('id="teacher-replies-back"'));
   assert(!dashboardJs.includes("replies in your history"));
-  assert(dashboardJs.includes('<p class="eyebrow accent" id="password-dialog-title">Change Password</p>'));
+  assert(dashboardJs.includes('class="password-dialog-stack" role="dialog" aria-modal="true"'));
+  assert(dashboardJs.includes('class="eyebrow accent" id="password-dialog-title">Change Password</p>'));
+  assert(dashboardJs.includes('data-dialog-back aria-label="Back to Personal Center"'));
+  assert(dashboardJs.includes('class="student-message-close password-dialog-outside-close"'));
+  assert(!dashboardJs.includes("data-dialog-cancel"));
+  assert(dashboardJs.includes("setAccountPanel(false);\n                if (identityChip) identityChip.focus"));
+  assert(appCss.includes(".password-dialog-title-row {\n    display: grid;\n    grid-template-columns: 38px minmax(0, 1fr) 38px;"));
+  assert(appCss.includes(".password-dialog-actions {\n    grid-template-columns: minmax(180px, 240px);\n    justify-content: center;"));
   assert(!dashboardJs.includes('<p class="eyebrow accent">Account</p>'));
   assert(!dashboardJs.includes('class="dialog-close-button"'));
   assert(appCss.includes(".account-feedback-row:hover,\n.account-feedback-row:active {\n    background: transparent;\n    transform: none;\n}"));
@@ -901,9 +909,15 @@ function testAccountStarHistoryModel() {
   assert.equal(hooks.accountStarItems("yellow")[0].assignment_id, "assignment-yellow");
   const blueRow = hooks.accountStarHistoryRow(hooks.state.starAchievements[0]);
   assert(blueRow.includes("Blue source"));
-  assert(blueRow.includes("history=attempt-blue"));
   assert(blueRow.includes("Best 96%"));
   assert(blueRow.includes("is-self-study"));
+  assert(!blueRow.includes("NOT REDEEMABLE"));
+  assert(!blueRow.includes("data-open-href"));
+  assert(!blueRow.includes('role="link"'));
+  assert(!blueRow.includes("account-star-history-chevron"));
+  const sourceView = hooks.renderStarSource();
+  assert(sourceView.includes("YELLOW STAR<em>REDEEMABLE</em>"));
+  assert(sourceView.includes("BLUE STAR<em>NOT REDEEMABLE</em>"));
 }
 
 async function main() {
