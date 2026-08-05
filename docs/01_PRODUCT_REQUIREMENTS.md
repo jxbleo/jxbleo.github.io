@@ -72,6 +72,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   后才显示新班级名称输入框并创建新班级
 - 学生详情顶部不重复显示已经出现在第一张身份卡中的学生姓名；点击 STAR
   指标打开独立来源弹窗，点击 Completed 指标打开独立 To Do / Finished 明细弹窗
+- 从学生名单进入的 STAR Redemption、添加学生、学生 STAR 来源和 Completed
+  明细弹窗统一使用卡片左上角返回按钮，不在卡片下方放置 `Close`
 - 学生详情不再显示独立的 Overall Progress 卡片
 - 给一个学生、多个学生或一个班级布置练习
 - 查看学生完成情况和最近提交
@@ -85,7 +87,9 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`；计时 Practice 还显示学生
   当次选择的具体词组。单组即时 Practice 不保存 attempt，因此不产生教师通知
 - 教师右上角的 Notifications、Review、Dictionary 与 STAR Redemption 都打开
-  同尺寸、同结构的独立弹窗：统一的内容卡片、内部滚动区和卡片外正下方 `Close`。
+  同尺寸、同结构的独立弹窗并使用统一的内容卡片和内部滚动区。Notifications、
+  Review、Dictionary 使用卡片外正下方 `Close`；从学生名单进入的 STAR Redemption
+  改用卡片左上角返回按钮。
   Review 直接以 Pending / Approved / Rejected 三个状态入口开始，每个入口始终显示
   当前数量，让老师同时看到待处理工作和已经完成的处理成果
 - 在 Library 中预览练习和查看答案
@@ -422,7 +426,7 @@ flowchart TD
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
 - 教师在 View 矩阵点击学生姓名，或从 Students 清单进入学生详情时，应打开该学生的月度完成日历；每一周显示为独立周带，日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度语义一致，并包含该学生的自学记录
-- Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。学生详情顶部只显示姓名，以及同级的 Class、STAR、Completed/Total 摘要；不显示 Attempts 指标或姓名下方的元数据串
+- Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。学生详情顶部使用一个同时显示中文名和英文名的身份胶囊，右侧只保留 STAR、Completed 和 Account 三个功能胶囊；Completed 显示完成数/总数。班级、Login ID、System 和账号操作只在点击 Account 后的独立弹窗中出现，详情底部不再保留 Account settings 展开区
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
 - 老师可以开启或关闭单条 assignment 的 `mastery_enabled`。新作业默认关闭
   STAR earning，只有 Assign 时勾选 `Earn STAR` 或后续在 View 中开启后，

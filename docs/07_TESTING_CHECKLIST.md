@@ -556,16 +556,19 @@ Check:
   or colored header cells cannot expose a contrasting square tip inside the
   curve
 - Student lookup keeps the `+` action, live name search, and visible class
-  filter. List rows show only student names. Opening a student shows Class,
-  STAR, and Completed/Total as equal-level metrics, with no Attempts or
-  Login ID / class / Active metadata line below the name. Dragging or swiping
+  filter. List rows show only student names. Opening a student shows one
+  identity capsule with Chinese and English names plus exactly three action
+  capsules: STAR count with a star icon, Completed/Total with a check-circle,
+  and Account. It shows no Attempts, Login ID, class, System, or Active metadata
+  in the summary. Dragging or swiping
   within the detail moves only vertically; mouse, trackpad, and touch gestures
   cannot pan the card or content horizontally
-- the Student lookup Class metric is read-only. Account settings shows the
-  current class and an `Edit` action; its selector lists existing active classes
+- clicking Account opens an independent dialog containing names, Login ID,
+  class, System, reset password, and delete account. The main student detail has
+  no bottom Account settings disclosure. The dialog's class editor lists existing active classes
   with `No class` first and `Customize` last. The custom class-name input stays
-  hidden until Customize is selected, and the student detail contains no
-  teacher-facing My Words section
+  hidden until Customize is selected; its top-left back arrow restores the same
+  student detail and Account focus. The detail contains no teacher-facing My Words section
 - after selecting a student, the lookup title bar shows only the Back control
   and does not repeat the name already shown in the first identity card
 - clicking STAR opens an independent source dialog grouped into Yellow
@@ -581,6 +584,10 @@ Check:
 - the Student lookup STAR Redemption and create-student actions match the main
   Teacher header controls: 40px circular glass buttons, 20px outline SVGs, and
   the same neutral icon color
+- STAR Redemption, Create Student, STAR Source, and Completed each show a
+  top-left back arrow and no external bottom `Close`; Create Student has no
+  top-right `x`. Returning restores the Student lookup, selected student detail
+  where applicable, scroll lock, and keyboard focus
 - both Student lookup detail and the View matrix student modal render the same
   monthly week-band calendar. Previous/next month bounds work, Monday-first
   dates align correctly across 4/5/6-week months, completion density and STAR

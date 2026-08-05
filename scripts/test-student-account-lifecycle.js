@@ -391,10 +391,19 @@ async function main() {
   assert(teacherSource.includes('<option value="__customize__">Customize'), "class selector should end with Customize");
   assert(teacherSource.includes('name="custom_class_group"') && teacherSource.includes('hidden>'), "custom class input should start hidden");
   assert(teacherSource.includes("classChoice.addEventListener('change'"), "Customize should reveal its input only after selection");
-  const accountSettingsIndex = teacherSource.indexOf('<summary>Account settings</summary>');
+  const accountSettingsIndex = teacherSource.indexOf('id="student-account-detail-title">ACCOUNT SETTINGS');
   const accountClassIndex = teacherSource.indexOf('data-edit-student-field="class"', accountSettingsIndex);
   assert(accountSettingsIndex >= 0 && accountClassIndex > accountSettingsIndex,
-    "class display and Edit action should live inside Account settings");
+    "class display and Edit action should live inside the Account Settings dialog");
+  assert(teacherSource.includes('class="student-identity-capsule"') &&
+    teacherSource.includes('class="student-identity-copy"'),
+    "student detail should show Chinese and English names in one identity capsule");
+  assert(teacherSource.includes('class="student-summary-capsule is-star"') &&
+    teacherSource.includes('class="student-summary-capsule is-completed"') &&
+    teacherSource.includes('class="student-summary-capsule is-account"'),
+    "student detail should show STAR, Completed, and Account as three action capsules");
+  assert(!teacherSource.includes('<details class="profile-card student-account-details"'),
+    "student detail should not retain the bottom Account settings disclosure");
   assert(!teacherSource.includes('<p class="eyebrow accent">MY WORDS</p>'),
     "student detail should not render the teacher-facing My Words panel");
   assert(appCss.includes("overflow-x: hidden;") && appCss.includes("touch-action: pan-y pinch-zoom;"),
@@ -403,14 +412,22 @@ async function main() {
     "selected student name should not be repeated in the lookup title bar");
   assert(teacherSource.includes('data-student-metric="star"') && teacherSource.includes('data-student-metric="completed"'),
     "STAR and Completed metrics should open independent detail dialogs");
-  assert(/\.student-metric-detail-modal\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;/s.test(appCss),
-    "student metric dialogs should stay fixed over the viewport instead of entering document flow");
+  assert(/\.student-metric-detail-modal,\s*\.student-account-detail-modal\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;/s.test(appCss),
+    "student metric and Account dialogs should stay fixed over the viewport instead of entering document flow");
   assert(teacherHtml.includes('class="teacher-header-icon-button student-lookup-create"') &&
     /id="student-lookup-create"[\s\S]*?<svg class="teacher-header-icon"/.test(teacherHtml),
     "student lookup STAR and create actions should use the shared header icon treatment");
   assert(/\.student-lookup-create\s*\{[^}]*width:\s*40px;[^}]*height:\s*40px;/s.test(appCss) &&
     /\.student-lookup-star\s*\{[^}]*width:\s*40px;[^}]*height:\s*40px;/s.test(appCss),
     "student lookup utility icons should match the 40px header navigation controls");
+  assert(teacherHtml.includes('id="teacher-star-back"') && !teacherHtml.includes('id="teacher-star-close"'),
+    "STAR Redemption should use a top-left back button instead of an external Close button");
+  assert(teacherHtml.includes('id="create-student-back"') && !teacherHtml.includes('id="close-create-student"'),
+    "Create Student should use a top-left back button instead of a top-right close control");
+  assert(teacherSource.includes('data-student-metric-back') && !teacherSource.includes('data-student-metric-close'),
+    "student STAR and Completed dialogs should use an in-card back button instead of an external Close button");
+  assert(teacherSource.includes('data-student-account-back') && teacherSource.includes('openStudentAccountModal(student)'),
+    "Account Settings should open as a subordinate dialog with a top-left back button");
   assert(!teacherSource.includes('OVERALL PROGRESS'),
     "student detail should not retain the Overall Progress card");
   assert(teacherAdminSource.includes('if (action === "getStudentStarSources")') &&

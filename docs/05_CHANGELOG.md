@@ -12,6 +12,14 @@
   the requested detail. Both now remain fixed over the viewport, and the
   lookup's STAR Redemption and create-student icons match the main header's
   40px neutral outline controls.
+- Replaced the external Close controls in Student lookup's STAR Redemption,
+  STAR Source, and Completed dialogs, plus Create Student's top-right `x`, with
+  consistent top-left back arrows that restore the originating lookup/detail.
+- Redesigned the Student lookup detail summary around a bilingual identity
+  capsule and three icon-led STAR, Completed/Total, and Account actions. Account
+  fields and edits now live in a dedicated back-navigated dialog, and the old
+  bottom Account settings disclosure has been removed without changing the
+  Progress Calendar.
 - Aligned the Teacher Review Approved and Rejected filters with Pending's
   neutral label styling and moved each handled-request total directly below its
   label, while retaining Pending's red unresolved alert.
