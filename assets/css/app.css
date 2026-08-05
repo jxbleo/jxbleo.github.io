@@ -6121,7 +6121,7 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .matrix-attempt-head {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 12px;
     align-items: center;
     padding: 14px 15px;
@@ -6131,11 +6131,24 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     margin: 0;
     font-size: 0.98rem;
     letter-spacing: 0;
+    white-space: nowrap;
 }
-.matrix-attempt-actions {
+.matrix-attempt-date {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-self: end;
+    min-width: 0;
+    min-height: 28px;
+    padding: 4px 10px;
+    border: 1px solid rgba(124,58,237,0.12);
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.66);
+    font-size: 0.68rem;
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
 }
 .matrix-work-button {
     appearance: none;
@@ -6170,30 +6183,6 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     background: white;
     box-shadow: 0 8px 18px rgba(83, 45, 145, 0.14);
 }
-.matrix-attempt-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 7px;
-}
-.matrix-attempt-meta span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 22px;
-    padding: 3px 8px;
-    border: 1px solid rgba(124,58,237,0.12);
-    border-radius: 999px;
-    color: var(--muted);
-    background: rgba(255,255,255,0.66);
-    font-size: 0.66rem;
-    font-weight: 850;
-    line-height: 1;
-}
-.matrix-attempt-meta .time {
-    color: var(--accent);
-    background: rgba(244,239,255,0.68);
-}
 .matrix-attempt-context {
     display: flex;
     align-items: center;
@@ -6218,19 +6207,30 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     color: #6b4a08;
     background: rgba(255, 190, 11, 0.16);
 }
-.matrix-score-pill {
-    min-width: 76px;
-    padding: 8px 10px;
-    border-radius: 999px;
-    color: var(--success);
-    background: var(--success-soft);
-    font-size: 0.84rem;
-    font-weight: 950;
-    text-align: center;
+.matrix-attempt-context .quiz-set-count {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
 }
-.matrix-score-pill.fail {
-    color: var(--danger);
-    background: var(--danger-soft);
+.matrix-practice-groups {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.matrix-attempt-context .matrix-practice-group-chip {
+    display: inline-grid;
+    min-width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0 11px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: white;
+    background: var(--accent);
+    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.18);
+    font-size: 0.84rem;
+    font-weight: 900;
+    line-height: 1;
 }
 .matrix-answer-table {
     display: grid;
@@ -6260,6 +6260,19 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     color: var(--success);
     background: var(--success-soft);
     font-weight: 850;
+}
+@media (max-width: 520px) {
+    .matrix-attempt-head {
+        gap: 8px;
+        padding: 12px;
+    }
+    .matrix-attempt-date {
+        max-width: 100%;
+        padding-inline: 8px;
+        overflow: hidden;
+        font-size: 0.62rem;
+        text-overflow: ellipsis;
+    }
 }
 .matrix-work-review {
     display: grid;
@@ -9587,15 +9600,11 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .matrix-answer-table > div {
         padding: 9px 8px;
     }
-    .matrix-attempt-head,
     .matrix-work-review-head,
     .matrix-work-history {
         display: flex;
         align-items: stretch;
         flex-direction: column;
-    }
-    .matrix-attempt-actions {
-        justify-content: space-between;
     }
     .matrix-work-review-head h3,
     .matrix-work-review-head small,
