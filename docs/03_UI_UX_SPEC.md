@@ -552,6 +552,14 @@ wheel, trackpad, and touch input. An internal modal scroller remains usable.
 Stacked dialogs keep the lock until the final modal closes, then restore the
 exact pre-modal page position.
 
+Every independent Teacher dialog card uses the same restrained elastic
+materialization as the task-entry confirmation: a fade with a short upward
+settle and scale from `0.94` over 560ms. This applies to Personal Center,
+utility dialogs, Student lookup/details, create/success dialogs, assignment
+pickers and editors, percentage and cancellation confirmations, and matrix or
+attempt details. Backdrops and external Close capsules remain spatially stable;
+reduced-motion mode renders the final state immediately.
+
 The four utility modals—Notifications, Review, Dictionary, and STAR
 Redemption—share the same `760px` card width, viewport-derived card height,
 centered overlay position, internal scrolling boundary, and external `Close`

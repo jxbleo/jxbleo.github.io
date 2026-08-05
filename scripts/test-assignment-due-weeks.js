@@ -710,6 +710,27 @@ function testStudentModalShellMarkup() {
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }
 
+function testTeacherModalEntranceAnimation() {
+  const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
+  const selectorStart = appCss.indexOf(".liquid-glass-teacher :is(");
+  const selectorEnd = appCss.indexOf(") {", selectorStart);
+  assert(selectorStart >= 0 && selectorEnd > selectorStart);
+  const selectorBlock = appCss.slice(selectorStart, selectorEnd);
+  [
+    ".account-panel",
+    ".teacher-utility-dialog",
+    ".create-student-dialog",
+    ".create-student-success-card",
+    ".assign-picker-dialog",
+    ".assignment-edit-dialog",
+    ".percentage-picker-dialog",
+    ".assignment-cancel-confirm-dialog",
+    ".progress-matrix-modal",
+  ].forEach((selector) => assert(selectorBlock.includes(selector)));
+  const animationBlock = appCss.slice(selectorStart, appCss.indexOf("}", selectorEnd) + 1);
+  assert(animationBlock.includes("animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;"));
+}
+
 function relativeDueWeekEnd(weekOffset) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Shanghai",
@@ -837,6 +858,7 @@ async function main() {
   testStudentCalendarModel();
   testAccountStarHistoryModel();
   testStudentModalShellMarkup();
+  testTeacherModalEntranceAnimation();
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);
   const vocabularyDefaults = setsResult.sets.find((set) => set.set_id === "NGSL-DEFAULT");

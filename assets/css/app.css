@@ -2333,7 +2333,7 @@ body:not(.teacher-page) .tab-button.active {
     overflow: visible;
 }
 
-/* Keep every Student Dashboard dialog as lively as the task-entry confirmation. */
+/* Give Student and Teacher dialog cards the task-entry confirmation's materialization. */
 .practice-entry-card,
 .liquid-glass-dashboard :is(
     .student-account-dialog,
@@ -2344,6 +2344,17 @@ body:not(.teacher-page) .tab-button.active {
     .teacher-replies-dialog,
     .password-dialog,
     .my-word-merge-card
+),
+.liquid-glass-teacher :is(
+    .account-panel,
+    .teacher-utility-dialog,
+    .create-student-dialog,
+    .create-student-success-card,
+    .assign-picker-dialog,
+    .assignment-edit-dialog,
+    .percentage-picker-dialog,
+    .assignment-cancel-confirm-dialog,
+    .progress-matrix-modal
 ) {
     animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;
     transform-origin: center;

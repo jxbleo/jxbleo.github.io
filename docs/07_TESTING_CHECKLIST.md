@@ -173,6 +173,12 @@ Shared shell visual checks:
   lookup/cards, assignment tools, practice entry, or success feedback freezes
   the background for mouse wheel, trackpad, and touch gestures while its own
   scroll container remains usable
+- open Teacher Personal Center, each utility, Student lookup and metric detail,
+  create/success flows, assignment pickers/editor, percentage picker, cancel
+  confirmation, matrix detail, and attempt detail; every dialog card uses the
+  same elastic fade/scale/lift entrance as task confirmation, while backdrops
+  and external Close capsules remain still. Reduced motion opens each card
+  directly in its final position
 - stacked Teacher modals remain background-locked until the last modal closes;
   closing it restores the exact pre-modal document position without a jump
 - verify reduced transparency, increased contrast, and reduced motion media
