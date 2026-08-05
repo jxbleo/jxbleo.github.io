@@ -63,6 +63,10 @@ async function main() {
   assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(myWordsHtml.includes("assets/js/my-words-export.js?v=20260801-1"));
   assert(myWordsHtml.includes('id="my-words-export-panel"'));
+  assert(!myWordsHtml.includes('id="my-words-select-all"'), "Export must not retain the Select all results action");
+  assert(myWordsHtml.includes('data-export-format="excel"'), "Export must offer Excel as a format choice");
+  assert(myWordsHtml.includes('data-export-format="pdf"'), "Export must offer PDF as a format choice");
+  assert(myWordsHtml.includes('id="my-words-export-submit"'), "Export must finish with one shared Export action");
   assert(myWordsHtml.includes('data-my-words-view="study"'));
   assert(myWordsHtml.includes('data-my-words-view="word-list"'));
   assert(myWordsHtml.includes("Review Mode · In design"));
@@ -73,7 +77,9 @@ async function main() {
   assert(myWordsHtml.includes('id="my-words-notebook" hidden'), "word content must stay hidden until the first list response is ready");
   assert(myWordsHtml.includes('id="my-words-density-trigger"'), "mobile toolbar must expose one layout picker trigger");
   assert(myWordsHtml.includes('data-my-words-density="triple"'), "layout picker must offer a three-column view");
-  assert(myWordsHtml.includes('class="my-words-toolbar-more my-words-export-trigger"'), "the third mobile toolbar action must remain Export");
+  assert(myWordsHtml.includes('id="my-words-translation-trigger"'), "Word List toolbar must expose the Chinese meaning toggle");
+  assert(myWordsHtml.includes('<text x="12" y="17" text-anchor="middle">中</text>'), "the Chinese meaning toggle must use the requested 中 SVG");
+  assert(myWordsHtml.includes('class="my-words-toolbar-more my-words-export-trigger"'), "the toolbar must retain Export after the Chinese meaning toggle");
   assert(!myWordsHtml.includes('aria-controls="my-words-export-panel">•••</button>'), "Export must use a recognizable icon instead of an ellipsis");
   assert(myWordsHtml.includes('class="my-words-mobile-detail-shell"'), "mobile word detail must group the card with an external close action");
   assert(myWordsHtml.includes('id="my-words-mobile-detail-edit"'), "mobile word detail must expose an external pencil editor");
@@ -85,11 +91,16 @@ async function main() {
   assert(myWordsJs.includes("function wordChineseMeaning(dictionary)"), "word details must remove duplicated POS labels");
   assert(!myWordsJs.includes("escapeHtml(dictionary.source_name || 'Dictionary')"), "student word details must not expose dictionary provider labels");
   assert(myWordsJs.includes("mrcat_my_words_density"), "mobile column preference must persist on the current browser");
+  assert(myWordsJs.includes("mrcat_my_words_show_chinese"), "the Chinese meaning preference must persist on the current browser");
+  assert(myWordsJs.includes("indexList.classList.toggle('show-translations'"), "the toolbar toggle must update every word card together");
   assert(myWordsJs.includes("['single', 'double', 'triple']"), "saved density must accept all three mobile layouts");
   assert(myWordsJs.includes("indexList.addEventListener('touchmove'"), "mobile list motion must dismiss the density picker");
   assert(myWordsJs.includes("if (state.densityMenuOpen) setDensityMenuOpen(false)"), "scrolling must close an open density picker");
   assert(myWordsJs.includes("function positionExportPanel()"), "Export must anchor to the visible download button");
   assert(myWordsJs.includes("triggerRect.bottom + 8"), "Export must open directly below its trigger at any scroll depth");
+  assert(myWordsJs.includes("if (state.exportOpen) setExportOpen(false)"), "moving the word list must dismiss Export");
+  assert(myWordsJs.includes("var defaults = { chinese: true, part_of_speech: true, english_definition: true }"), "Default export must include English, Chinese, POS, and English definition");
+  assert(myWordsJs.includes("if (state.exportFormat === 'pdf')"), "the shared Export action must honor the selected file format");
   assert(myWordsJs.includes("speakWord(word.dictionary && word.dictionary.word || word.text || '')"), "opening a mobile word card must pronounce it automatically");
   assert(myWordsJs.includes("function mobileWordDetailBodyHtml(word)"), "mobile word detail must use its own compact content hierarchy");
   assert(!myWordsJs.includes("return '<div class=\"my-words-detail-head my-words-detail-head-mobile\">' + detailActionsHtml"), "mobile detail must not render the three-dot action menu");
@@ -107,6 +118,8 @@ async function main() {
   assert(myWordsJs.includes("Math.max(7, Math.min(14"), "overflowing mobile words must reuse bounded title-scroll timing");
   assert(myWordsCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"), "mobile Word List must default to a two-column grid");
   assert(myWordsCss.includes(".my-words-index-list.is-triple"), "mobile Word List must provide a three-column grid");
+  assert(myWordsCss.includes('.my-words-translation-trigger[aria-pressed="true"]'), "the active Chinese meaning toggle must have visible pressed feedback");
+  assert(myWordsCss.includes(".my-words-index-list.show-translations .my-words-index-card small"), "word-card POS and Chinese meaning must appear only when requested");
   assert(myWordsCss.includes(".my-words-mobile-detail-close"), "mobile word detail must style an external Close capsule");
   assert(myWordsCss.includes(".my-words-mobile-detail-edit"), "mobile word detail must style its external pencil");
   assert(myWordsCss.includes(".my-words-index-card.is-return-target"), "the close destination must remain easy to relocate");

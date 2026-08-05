@@ -444,12 +444,21 @@ Check:
 - at 390px, confirm the second toolbar action opens one compact picker with
   one-, two-, and three-column choices; each choice changes the word grid,
   closes the picker, updates its pressed state, and survives reload. Confirm the
-  third action is a download icon and still opens the complete Export panel
+  next action is a `中` SVG toggle: the initial grid is English-only, its first
+  press shows `part of speech · Chinese meaning` below every word, its second
+  press hides those lines, and the choice survives reload. Confirm the download
+  icon remains after it and still opens the complete Export panel
 - reopen the one/two/three-column picker, then drag/scroll the word list without
   choosing a density; confirm the picker closes as soon as list motion begins
 - scroll near the middle and bottom of a long word list, open Export at each
   position, and confirm the complete parameter panel appears directly below the
-  visible download button without scrolling upward or moving the word list
+  visible download button without scrolling upward or moving the word list.
+  With it open, drag, wheel, or scroll the word list and confirm it closes
+  immediately
+- confirm Export presents time range first, printable fields second, one
+  Excel/PDF selector third, and one full-width `Export` button last. There is no
+  `Select all results` button. The fields row starts with `Default`; selecting it
+  restores exactly English, Chinese, Part of Speech, and English Definition
 - open a saved word on phone and confirm a circular pencil is outside and above
   the card, while Close is the only control below it. The card has no three-dot
   menu, `WORD DETAILS`, `Saved word`, `Teacher
@@ -1166,7 +1175,8 @@ Check:
 - mobile replaces the Sidebar with sticky tabs, initially shows an English-only
   two-column grid, remembers the single/two/three-column choice in the browser,
   closes the density picker when the word list moves, and does not auto-open a
-  word on first entry
+  word on first entry. The `中` toolbar toggle reveals POS plus Chinese beneath
+  every card together and remembers whether that extra line is visible
 - truly overflowing mobile words animate only inside their own tile with the
   existing bounded 7–14 second task-title rhythm; ordinary words remain still
   and reduced-motion mode uses ellipsis

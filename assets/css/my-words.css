@@ -562,6 +562,19 @@ body.my-words-detail-open {
     stroke-linejoin: round;
 }
 
+.my-words-translation-trigger svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    stroke: none;
+}
+
+.my-words-translation-trigger svg text {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+}
+
 .my-words-search-field {
     display: none;
     flex: 0 1 0;
@@ -679,6 +692,13 @@ body.my-words-detail-open {
     font-weight: 900;
 }
 
+.my-words-translation-trigger[aria-pressed="true"] {
+    border-color: #13766d;
+    color: #fff;
+    background: #13766d;
+    box-shadow: 0 8px 20px rgba(19, 118, 109, 0.18);
+}
+
 .my-words-export-trigger svg {
     width: 19px;
     height: 19px;
@@ -732,7 +752,8 @@ body.my-words-detail-open {
 }
 
 .my-words-export-ranges,
-.my-words-export-fields {
+.my-words-export-fields,
+.my-words-export-formats {
     display: flex;
     gap: 7px;
     overflow-x: auto;
@@ -740,7 +761,9 @@ body.my-words-detail-open {
 }
 
 .my-words-export-ranges button,
-.my-words-export-fields label {
+.my-words-export-fields label,
+.my-words-export-default,
+.my-words-export-formats button {
     flex: 0 0 auto;
     min-height: 34px;
     padding: 7px 10px;
@@ -752,9 +775,21 @@ body.my-words-detail-open {
     font-weight: 800;
 }
 
-.my-words-export-ranges button.active {
+.my-words-export-ranges button.active,
+.my-words-export-default.active,
+.my-words-export-formats button.active {
     color: #fff;
     background: #13766d;
+}
+
+.my-words-export-formats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+}
+
+.my-words-export-formats button {
+    width: 100%;
 }
 
 .my-words-export-fields input {
@@ -762,8 +797,13 @@ body.my-words-detail-open {
     accent-color: #13766d;
 }
 
-.my-words-export-actions .outline-button:first-child {
-    margin-right: auto;
+.my-words-export-actions,
+.my-words-export-actions .primary-button {
+    width: 100%;
+}
+
+.my-words-export-actions .primary-button {
+    min-height: 42px;
 }
 
 #my-words-export-status {
@@ -945,13 +985,17 @@ body.my-words-detail-open {
 }
 
 .my-words-index-card small {
-    display: block;
+    display: none;
     margin-top: 3px;
     overflow: hidden;
     font-size: 0.67rem;
     opacity: 0.72;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.my-words-index-list.show-translations .my-words-index-card small {
+    display: block;
 }
 
 .my-words-desktop-detail {
@@ -1640,10 +1684,6 @@ body.my-words-detail-open {
         color: #214f43;
         background: rgba(255, 255, 255, 0.8);
         box-shadow: 0 8px 22px rgba(20, 72, 58, 0.05);
-    }
-
-    .my-words-index-card small {
-        display: none;
     }
 
     .my-words-title-window.is-overflowing {
