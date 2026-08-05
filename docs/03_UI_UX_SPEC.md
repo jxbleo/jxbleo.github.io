@@ -180,10 +180,8 @@ Navigation:
   one neutral white/gray action style for every status, and the card's bottom
   right shows the Shanghai date and time when the student submitted the Argue
   request.
-- My Words opens `my-words.html` from an A-marked notebook icon in the
-  right-side utility group. The icon uses the same neutral outline color,
-  rounded stroke, and 19px footprint as the other student header controls; it
-  does not render a second My Words runtime inside Dashboard
+- My Words opens `my-words.html` from a notebook icon in the right-side utility
+  group; it does not render a second My Words runtime inside Dashboard
 - the Student Dashboard has no standalone Learning Reports icon. Students open
   published weekly/monthly reports from an authenticated shared report link;
   `reports.html` and its authorization rules remain unchanged
@@ -610,9 +608,9 @@ always shows its current count, including zero.
 
 The teacher header omits the cat logo. Notifications and the raised-hand Argue
 control form the left utility group and retain their compact loading states while
-the teacher desk initializes. Dictionary uses the same A-marked notebook shape
-as the Student My Words entry at the existing 20px footprint, but its entry sits
-at the far right of the Notifications modal toolbar instead of the teacher header.
+the teacher desk initializes. Dictionary uses its original book outline at the
+existing 20px footprint, and its entry sits at the far right of the Notifications
+modal toolbar instead of the teacher header.
 Student lookup, Reports, and the teacher identity chip remain in the right utility
 group. The yellow STAR button
 sits inside Student lookup, immediately beside the create-student `+` action.
