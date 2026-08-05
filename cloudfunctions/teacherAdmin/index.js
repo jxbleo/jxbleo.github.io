@@ -3272,6 +3272,42 @@ async function getStudentVocabulary(event) {
   };
 }
 
+async function getStudentStarSources(event) {
+  const authUid = text(event.auth_uid);
+  const student = await getOne("students", { auth_uid: authUid });
+  if (!student || isDeletedStudent(student) || student.role === "teacher") throw new Error("STUDENT_NOT_FOUND");
+  const achievementRows = await getAll("student_set_achievements", { where: { student_uid: authUid } });
+  const buckets = starRewards.normalizedStarBuckets(achievementRows.map(recordData));
+  const achievements = buckets.yellowStars.concat(buckets.blueStars);
+  const setIds = Array.from(new Set(achievements.map((item) => text(item.set_id)).filter(Boolean)));
+  const setMap = new Map();
+  const command = db.command;
+  for (let index = 0; index < setIds.length; index += 10) {
+    const result = await db.collection("sets").where({
+      set_id: command.in(setIds.slice(index, index + 10)),
+    }).limit(100).get();
+    (result.data || []).map(recordData).forEach((set) => setMap.set(set.set_id, set));
+  }
+  const stars = achievements.map((achievement) => {
+    const assignmentId = achievement.assignment_id || null;
+    const set = setMap.get(achievement.set_id) || {};
+    return {
+      achievement_id: achievement.achievement_id || achievement._id,
+      star_type: starRewards.isYellowAchievement(achievement) ? "yellow" : "blue",
+      source: achievement.source || (assignmentId ? "assignment_claim" : "self_study"),
+      status: achievement.status || (assignmentId ? "star" : "active"),
+      set_id: achievement.set_id,
+      set_title: set.title || achievement.set_id,
+      assignment_id: assignmentId,
+      earned_at: achievement.first_earned_at || achievement.claimed_at || achievement.created_at || null,
+      best_percentage: achievement.best_percentage == null ? null : Number(achievement.best_percentage),
+      converted_at: achievement.converted_at || null,
+      converted_to_achievement_id: achievement.converted_to_achievement_id || null,
+    };
+  }).sort((left, right) => new Date(right.earned_at || 0) - new Date(left.earned_at || 0));
+  return { success: true, student: studentView(student), stars };
+}
+
 async function listDictionaryWorkspace() {
   const [items, lexiconRows, reports] = await Promise.all([
     getAll(VOCAB_ITEM_COLLECTION, { where: { status: "active" } }),
@@ -3478,6 +3514,7 @@ exports.main = async (event) => {
     if (action === "getStarEvidence") return await getTeacherStarEvidence(event);
     if (action === "supersedeStarEvidence") return await supersedeStarEvidence(event, teacher);
     if (action === "migrateStarRewards") return await migrateStarRewards(event, teacher);
+    if (action === "getStudentStarSources") return await getStudentStarSources(event);
     if (action === "getStudentVocabulary") return await getStudentVocabulary(event);
     if (action === "listDictionaryWorkspace") return await listDictionaryWorkspace();
     if (action === "saveDictionaryEntry") return await saveDictionaryEntry(event, teacher);

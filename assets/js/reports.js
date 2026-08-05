@@ -778,6 +778,7 @@
 
     function configureHeader() {
         var teacher = isTeacher();
+        logoutButton.hidden = false;
         returnLink.href = teacher ? 'teacher.html' : 'dashboard.html';
         returnLink.setAttribute('aria-label', teacher ? 'Return to Teacher desk' : 'Return to Dashboard');
         returnLink.querySelector('span').textContent = teacher ? 'Teacher desk' : 'Dashboard';
@@ -786,14 +787,37 @@
             : 'See your class report and your own personal learning details.';
     }
 
+    function renderVisitorEmpty() {
+        state.session = { mode: 'visitor', profile: null };
+        state.role = 'visitor';
+        state.reports = [];
+        state.selectedReportId = '';
+        state.reportResponse = null;
+        document.title = 'Learning Reports | Mr. Cat Academy';
+        returnLink.href = 'dashboard.html';
+        returnLink.setAttribute('aria-label', 'Return to Dashboard');
+        returnLink.querySelector('span').textContent = 'Dashboard';
+        subtitle.textContent = '';
+        reportList.setAttribute('aria-busy', 'false');
+        reportList.innerHTML = '';
+        reportsContent.innerHTML = '';
+        clearFeedback();
+        latestButton.disabled = true;
+        refreshButton.disabled = true;
+        closeButton.hidden = true;
+        printButton.disabled = true;
+        logoutButton.hidden = true;
+    }
+
     function requireAuthenticatedSession() {
         return window.MrCatAuth.getSession().then(function(session) {
-            if (!session || session.mode === 'none' || session.mode === 'visitor') {
-                if (session && session.mode === 'visitor') {
-                    try { window.MrCatAuth.setVisitor(false); } catch (error) {}
-                }
+            if (!session || session.mode === 'none') {
                 var target = 'reports.html' + window.location.search + window.location.hash;
                 window.location.replace('index.html?return=' + encodeURIComponent(target));
+                return null;
+            }
+            if (session.mode === 'visitor') {
+                renderVisitorEmpty();
                 return null;
             }
             state.session = session;

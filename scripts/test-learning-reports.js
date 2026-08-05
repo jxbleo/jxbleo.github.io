@@ -193,6 +193,73 @@ function testReportCloseUiContract() {
   assert.match(script, /renderReportChooser\(\)/, "closing an available report renders the chooser rather than an empty-data state");
 }
 
+async function testVisitorStaysOnBlankReportPage() {
+  const script = fs.readFileSync(path.join(root, "assets/js/reports.js"), "utf8");
+  let redirectTarget = "";
+  let reportCalls = 0;
+  const makeElement = () => ({
+    handlers: {}, innerHTML: "Loading…", textContent: "", hidden: false, disabled: false, href: "",
+    classList: { toggle() {} },
+    setAttribute() {},
+    addEventListener(type, handler) { this.handlers[type] = handler; },
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    focus() {},
+  });
+  const elements = Object.fromEntries([
+    "reports-list", "reports-content", "reports-feedback", "reports-latest-button",
+    "reports-refresh-button", "reports-close-button", "reports-print-button",
+    "reports-logout-button", "reports-return-link", "reports-subtitle",
+  ].map((id) => [id, makeElement()]));
+  const returnLabel = makeElement();
+  elements["reports-return-link"].querySelector = (selector) => selector === "span" ? returnLabel : null;
+  const location = {
+    href: "https://example.test/reports.html?report=private-report",
+    pathname: "/reports.html",
+    search: "?report=private-report",
+    hash: "",
+    replace(target) { redirectTarget = target; },
+  };
+  const windowObject = {
+    location,
+    history: { pushState() {}, replaceState() {} },
+    addEventListener() {},
+    setTimeout,
+    confirm() { return false; },
+    print() {},
+    MrCatAuth: {
+      getSession() { return Promise.resolve({ mode: "visitor", profile: null }); },
+      logout() {},
+    },
+    MrCatCloud: {
+      callFunction() {
+        reportCalls += 1;
+        return Promise.resolve({ success: true });
+      },
+    },
+  };
+  const context = {
+    window: windowObject,
+    document: {
+      title: "",
+      getElementById(id) { return elements[id]; },
+      createElement() { return makeElement(); },
+      body: { appendChild() {} },
+    },
+    navigator: {}, URL, URLSearchParams, Intl, Date, Promise, Object, Array, String,
+    Number, Math, isFinite, setTimeout, clearTimeout, console,
+  };
+  vm.runInNewContext(script, context, { filename: "assets/js/reports.js" });
+  for (let index = 0; index < 6; index += 1) await Promise.resolve();
+
+  assert.equal(redirectTarget, "", "visitor report view must not redirect to login");
+  assert.equal(reportCalls, 0, "visitor report view must not request private report data");
+  assert.equal(elements["reports-list"].innerHTML, "", "visitor report list stays blank");
+  assert.equal(elements["reports-content"].innerHTML, "", "visitor report surface stays blank");
+  assert.equal(elements["reports-logout-button"].hidden, true, "blank visitor view does not show a sign-out action");
+  assert.equal(elements["reports-return-link"].href, "dashboard.html", "visitor can return to the Dashboard");
+}
+
 async function testCloseIgnoresStaleReportRequest() {
   const script = fs.readFileSync(path.join(root, "assets/js/reports.js"), "utf8");
   let resolveReport;
@@ -299,6 +366,7 @@ async function main() {
   testSnapshotRules();
   testMonthlyLateCompletionUsesReportCutoff();
   testReportCloseUiContract();
+  await testVisitorStaysOnBlankReportPage();
   await testCloseIgnoresStaleReportRequest();
   console.log("Learning report tests passed.");
 }

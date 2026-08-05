@@ -78,8 +78,8 @@
         dictionarySearch: '',
         dictionaryWords: [],
         selectedDictionaryWord: '',
-        studentVocabulary: {},
         studentLookupOpen: false,
+        studentMetricView: null,
         createStudentReturnToLookup: false,
         attemptsSeenAt: null,
         activityReadAllAt: null,
@@ -955,6 +955,7 @@
 
     function setStudentLookupPanel(open) {
         state.studentLookupOpen = open === true;
+        if (!state.studentLookupOpen && state.studentMetricView) closeStudentMetricModal();
         var panel = document.getElementById('student-lookup-panel');
         var button = document.getElementById('toggle-create-student');
         if (panel) panel.hidden = !state.studentLookupOpen;
@@ -1322,42 +1323,6 @@
         });
     }
 
-    function loadStudentVocabularyForTeacher(student) {
-        state.studentVocabulary[student.auth_uid] = { loading: true, words: [] };
-        renderStudentDetail();
-        teacherCall('getStudentVocabulary', { auth_uid: student.auth_uid }).then(function(result) {
-            state.studentVocabulary[student.auth_uid] = { loading: false, words: result.words || [] };
-            renderStudentDetail();
-        }).catch(function(error) {
-            state.studentVocabulary[student.auth_uid] = { loading: false, words: [], error: error.message };
-            renderStudentDetail();
-        });
-    }
-
-    function teacherStudentVocabularyHtml(student) {
-        var model = state.studentVocabulary[student.auth_uid];
-        if (!model) return '<button class="outline-button" type="button" data-load-student-vocabulary>View My Words</button>';
-        if (model.loading) return '<p class="muted">Loading My Words...</p>';
-        if (model.error) return '<p class="muted">' + escapeHtml(model.error) + '</p>';
-        if (!model.words.length) return '<p class="muted">No saved words.</p>';
-        return '<div class="teacher-student-vocabulary-list">' + model.words.map(function(word) {
-            var dictionary = word.dictionary || {};
-            var examples = Array.isArray(word.saved_examples) ? word.saved_examples : [];
-            var examplesHtml = examples.length ? '<details><summary>' + examples.length + ' saved example' + (examples.length === 1 ? '' : 's') + '</summary>' + examples.map(function(example) {
-                return '<div class="teacher-student-vocabulary-example"><strong>' + escapeHtml(example.form || word.text) + '</strong>' +
-                    (example.context ? '<p>' + escapeHtml(example.context) + '</p>' : '') +
-                    '<small>' + escapeHtml(example.source_title || example.source_set_id || example.source_path || 'Saved source') + '</small></div>';
-            }).join('') + '</details>' : (word.context ? '<p><b>Context:</b> ' + escapeHtml(word.context) + '</p>' : '');
-            return '<article><div><strong>' + escapeHtml(word.text) + '</strong><span>' + escapeHtml(dictionary.chinese_meaning || 'No dictionary details') + '</span></div>' +
-                (dictionary.part_of_speech ? '<p><b>Part of speech:</b> ' + escapeHtml(dictionary.part_of_speech) + '</p>' : '') +
-                (dictionary.phonetic ? '<p><b>Phonetic:</b> ' + escapeHtml(dictionary.phonetic) + '</p>' : '') +
-                (dictionary.english_definition ? '<p><b>Definition:</b> ' + escapeHtml(dictionary.english_definition) + '</p>' : '') +
-                (word.personal_note ? '<p><b>Note:</b> ' + escapeHtml(word.personal_note) + '</p>' : '') +
-                examplesHtml +
-                '<small>' + escapeHtml(word.source_title || word.source_set_id || 'My Words') + ' · ' + formatDate(word.activity_updated_at, '—', 'compact') + '</small></article>';
-        }).join('') + '</div>';
-    }
-
     function loadProgressData() {
         return teacherCall('listProgress').catch(function() {
             return { progress: [], unavailable: true };
@@ -1430,6 +1395,115 @@
             '</span>' +
             '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
         '</form>';
+    }
+
+    function studentMetricTaskRow(item) {
+        var status = normalizedAssignmentStatus(item.status);
+        var source = item.source === 'self_study' ? 'Self-study' : 'Assigned';
+        var date = status === 'to_do'
+            ? assignmentDueDate(item)
+            : assignmentSortDate(item);
+        var dateLabel = date
+            ? (status === 'to_do' ? 'Due ' : 'Finished ') + formatDate(date, '', 'compact')
+            : (status === 'to_do' ? 'No due date' : 'Finished');
+        return '<article class="student-metric-row">' +
+            '<span class="student-metric-row-copy"><strong>' + escapeHtml(item.set_title || setTitleFor(item.set_id) || item.set_id || 'Task') + '</strong>' +
+                '<small>' + escapeHtml(source) + ' · ' + escapeHtml(dateLabel) + '</small></span>' +
+            '<span class="student-metric-row-value ' + (status === 'to_do' ? 'is-open' : 'is-finished') + '">' +
+                (status === 'to_do' ? escapeHtml(formatPercent(item.best_percentage)) : escapeHtml(formatPercent(item.best_percentage))) +
+            '</span>' +
+        '</article>';
+    }
+
+    function studentCompletedMetricHtml(assignments) {
+        var visible = (assignments || []).filter(function(item) {
+            return normalizedAssignmentStatus(item.status) !== 'cancelled';
+        });
+        var toDo = visible.filter(function(item) {
+            return normalizedAssignmentStatus(item.status) === 'to_do';
+        });
+        var finished = visible.filter(function(item) {
+            return isFinishedAssignmentStatus(normalizedAssignmentStatus(item.status));
+        });
+        function section(label, items) {
+            return '<section class="student-metric-section"><div class="student-metric-section-head"><h3>' + escapeHtml(label) + '</h3><strong>' + escapeHtml(items.length) + '</strong></div>' +
+                '<div class="student-metric-list">' + (items.length
+                    ? items.slice().sort(function(left, right) {
+                        return new Date(assignmentSortDate(right) || 0) - new Date(assignmentSortDate(left) || 0);
+                    }).map(studentMetricTaskRow).join('')
+                    : '<p class="student-metric-empty">No ' + escapeHtml(label.toLowerCase()) + ' work.</p>') +
+                '</div></section>';
+        }
+        return section('TO DO', toDo) + section('FINISHED', finished);
+    }
+
+    function studentStarSourcesHtml(stars) {
+        var items = Array.isArray(stars) ? stars : [];
+        function section(type, label) {
+            var matches = items.filter(function(item) { return item.star_type === type; });
+            return '<section class="student-metric-section"><div class="student-metric-section-head"><h3>' + escapeHtml(label) + '</h3><strong>' + escapeHtml(matches.length) + '</strong></div>' +
+                '<div class="student-metric-list">' + (matches.length ? matches.map(function(item) {
+                    var converted = item.star_type === 'blue' && item.status === 'converted';
+                    return '<article class="student-metric-row student-star-source-row ' + (item.star_type === 'blue' ? 'is-blue' : 'is-yellow') + '">' +
+                        '<span class="student-metric-star" aria-hidden="true">★</span>' +
+                        '<span class="student-metric-row-copy"><strong>' + escapeHtml(item.set_title || item.set_id || 'Practice') + '</strong>' +
+                            '<small>' + escapeHtml(item.source === 'self_study' ? 'Self-study' : 'Assignment') +
+                                ' · Earned ' + escapeHtml(formatDate(item.earned_at, '—', 'compact')) +
+                                ' · Best ' + escapeHtml(formatPercent(item.best_percentage)) +
+                                (converted ? ' · Converted to Yellow' : '') + '</small></span>' +
+                    '</article>';
+                }).join('') : '<p class="student-metric-empty">No ' + escapeHtml(label.toLowerCase()) + '.</p>') +
+                '</div></section>';
+        }
+        return section('yellow', 'YELLOW STAR · ASSIGNMENT') + section('blue', 'BLUE STAR · SELF-STUDY');
+    }
+
+    function closeStudentMetricModal() {
+        var view = state.studentMetricView;
+        state.studentMetricView = null;
+        var modal = document.getElementById('student-metric-detail-modal');
+        if (modal) modal.remove();
+        var lookup = document.getElementById('student-lookup-panel');
+        if (lookup && state.studentLookupOpen) lookup.hidden = false;
+        window.setTimeout(function() {
+            var trigger = view && studentDetail.querySelector('[data-student-metric="' + view.kind + '"]');
+            if (trigger) trigger.focus();
+        }, 0);
+    }
+
+    function openStudentMetricModal(kind, student, assignments) {
+        closeStudentMetricModal();
+        state.studentMetricView = { kind: kind, studentUid: student.auth_uid };
+        var title = kind === 'star' ? 'STAR SOURCE' : 'COMPLETED';
+        var content = kind === 'star'
+            ? '<div class="empty-card loading-card">Loading STAR sources...</div>'
+            : studentCompletedMetricHtml(assignments);
+        var modal = document.createElement('section');
+        modal.id = 'student-metric-detail-modal';
+        modal.className = 'student-metric-detail-modal teacher-utility-modal';
+        modal.setAttribute('data-teacher-modal', '');
+        modal.innerHTML = '<div class="student-metric-detail-shell teacher-utility-shell">' +
+            '<div class="student-metric-detail-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-labelledby="student-metric-detail-title">' +
+                '<header class="student-metric-detail-head"><p class="eyebrow accent">' + escapeHtml(studentDisplayName(student)) + '</p><h2 id="student-metric-detail-title">' + escapeHtml(title) + '</h2></header>' +
+                '<div class="student-metric-detail-body" id="student-metric-detail-body">' + content + '</div>' +
+            '</div>' +
+            '<button class="progress-matrix-modal-close" type="button" data-student-metric-close aria-label="Close ' + escapeHtml(title) + '">Close</button>' +
+        '</div>';
+        teacherModalRoot.appendChild(modal);
+        var lookup = document.getElementById('student-lookup-panel');
+        if (lookup) lookup.hidden = true;
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal || event.target.closest('[data-student-metric-close]')) closeStudentMetricModal();
+        });
+        if (kind !== 'star') return;
+        teacherCall('getStudentStarSources', { auth_uid: student.auth_uid }).then(function(result) {
+            if (!state.studentMetricView || state.studentMetricView.kind !== 'star' || state.studentMetricView.studentUid !== student.auth_uid) return;
+            var body = document.getElementById('student-metric-detail-body');
+            if (body) body.innerHTML = studentStarSourcesHtml(result.stars || []);
+        }).catch(function(error) {
+            var body = document.getElementById('student-metric-detail-body');
+            if (body) body.innerHTML = '<div class="empty-card"><strong>Unable to load STAR sources</strong>' + escapeHtml(error.message || 'Please try again.') + '</div>';
+        });
     }
 
     function setCategory(set) {
@@ -3207,10 +3281,8 @@
         });
         var searchState = document.getElementById('student-lookup-search-state');
         var titleState = document.getElementById('student-lookup-title-state');
-        var title = document.getElementById('student-lookup-title');
         if (searchState) searchState.hidden = Boolean(selected);
         if (titleState) titleState.hidden = !selected;
-        if (title) title.textContent = selected ? studentDisplayName(selected) || selected.student_id || 'Selected student' : 'Student';
     }
 
     function setStudentPickerOpen(open, mode) {
@@ -3227,13 +3299,6 @@
         }
         state.studentPickerMode = 'search';
         updateSelectedStudentLabel();
-    }
-
-    function selectedStudentLabel() {
-        var selected = state.students.find(function(item) {
-            return item.profile_id === state.selectedStudentProfileId;
-        });
-        return selected ? selected.name || selected.student_id || '' : '';
     }
 
     function openStudentSelector(mode) {
@@ -5942,7 +6007,6 @@
         var assignments = (state.progressItems.length ? state.progressItems : state.assignments).filter(function(item) {
             return item.student_uid === student.auth_uid;
         });
-        var progressHtml = renderAssignmentProgress(assignments);
         var nameEditing = state.studentInfoEdit === 'name';
         var classEditing = state.studentInfoEdit === 'class';
         var systemEditing = state.studentInfoEdit === 'system';
@@ -5960,29 +6024,16 @@
                     '<h2 class="student-info-name">' + escapeHtml(displayName) + '</h2>' +
                 '</div>' +
                 '<div class="matrix-student-stats student-primary-stats">' +
-                    '<div class="student-primary-stat student-class-stat">' +
-                        '<button class="student-primary-stat-button" type="button" data-edit-student-field="class" aria-label="Edit class">' +
-                            '<strong>' + escapeHtml(student.class_group || '—') + '</strong><small>Class</small>' +
-                        '</button>' +
-                        (classEditing ? renderStudentClassEditor(student) : '') +
-                    '</div>' +
-                    '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></span>' +
-                    '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></span>' +
+                    '<span class="student-primary-stat"><strong>' + escapeHtml(student.class_group || '—') + '</strong><small>Class</small></span>' +
+                    '<button class="student-primary-stat student-primary-stat-button" type="button" data-student-metric="star" aria-haspopup="dialog"><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></button>' +
+                    '<button class="student-primary-stat student-primary-stat-button" type="button" data-student-metric="completed" aria-haspopup="dialog"><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></button>' +
                 '</div>' +
             '</section>' +
             '<section class="profile-card student-calendar-card">' +
                 '<p class="eyebrow accent">PROGRESS CALENDAR</p>' +
                 renderMatrixStudentProgressBoard(studentKey, assignments) +
             '</section>' +
-            '<section class="profile-card student-progress-card">' +
-                '<p class="eyebrow accent">OVERALL PROGRESS</p>' +
-                progressModeTabs(assignments) + progressHtml +
-            '</section>' +
-            '<section class="profile-card student-vocabulary-card">' +
-                '<p class="eyebrow accent">MY WORDS</p>' +
-                teacherStudentVocabularyHtml(student) +
-            '</section>' +
-            '<details class="profile-card student-account-details"' + (nameEditing || systemEditing ? ' open' : '') + '>' +
+            '<details class="profile-card student-account-details"' + (nameEditing || classEditing || systemEditing ? ' open' : '') + '>' +
                 '<summary>Account settings</summary>' +
                 '<div class="student-info-grid">' +
                     '<div class="student-info-item">' +
@@ -5994,6 +6045,10 @@
                         '</form>' : '') +
                     '</div>' +
                     '<div class="student-info-item"><span>Login ID</span><strong>' + escapeHtml(student.student_id || 'Not set') + '</strong></div>' +
+                    '<div class="student-info-item student-account-class-item">' +
+                        '<button class="student-info-edit" type="button" data-info-action="Edit" data-edit-student-field="class"><span>Class</span><strong>' + escapeHtml(student.class_group || 'Not set') + '</strong></button>' +
+                        (classEditing ? renderStudentClassEditor(student) : '') +
+                    '</div>' +
                     '<div class="student-info-item">' +
                         '<button class="student-info-edit system-info-edit" type="button" data-info-action="' + (student.curriculum_track ? 'Edit' : 'Assign') + '" data-edit-student-field="system"><span>System</span><strong>' + escapeHtml(student.curriculum_track || 'Not set') + '</strong></button>' +
                         (systemEditing ? '<form class="student-info-editor" data-student-info-editor="system">' +
@@ -6025,12 +6080,9 @@
                 showMessage(error.message, 'error');
             });
         });
-        var loadVocabulary = studentDetail.querySelector('[data-load-student-vocabulary]');
-        if (loadVocabulary) loadVocabulary.addEventListener('click', function() { loadStudentVocabularyForTeacher(student); });
-        studentDetail.querySelectorAll('[data-progress-view]').forEach(function(button) {
+        studentDetail.querySelectorAll('[data-student-metric]').forEach(function(button) {
             button.addEventListener('click', function() {
-                state.studentProgressView = button.dataset.progressView;
-                renderStudentDetail();
+                openStudentMetricModal(button.dataset.studentMetric, student, assignments);
             });
         });
         studentDetail.querySelectorAll('[data-matrix-student-progress-day], [data-matrix-student-progress-week]').forEach(function(button) {
@@ -6109,13 +6161,6 @@
                     return;
                 }
                 updateStudent(student.auth_uid, { curriculum_track: form.elements.curriculum_track.value });
-            });
-        });
-        studentDetail.querySelectorAll('[data-assignment-set]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var setId = button.dataset.assignmentSet;
-                state.expandedAssignmentSets[setId] = state.expandedAssignmentSets[setId] !== true;
-                renderStudentDetail();
             });
         });
     }
@@ -7451,6 +7496,10 @@
     });
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
+            if (state.studentMetricView) {
+                closeStudentMetricModal();
+                return;
+            }
             var createPanel = document.getElementById('create-student-panel');
             if (createPanel && !createPanel.hidden) {
                 setCreateStudentModal(false, true);

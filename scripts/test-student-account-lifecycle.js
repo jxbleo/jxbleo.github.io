@@ -35,12 +35,17 @@ const authUsers = [
 const classes = [];
 const classMemberships = [];
 const assignments = [];
+const achievements = [];
+const sets = [];
 
 let nextProfileId = 1;
 let nextAuthUid = 1;
 
 function matches(record, where) {
-  return Object.entries(where || {}).every(([key, value]) => record[key] === value);
+  return Object.entries(where || {}).every(([key, value]) => {
+    if (value && Array.isArray(value.__in)) return value.__in.includes(record[key]);
+    return record[key] === value;
+  });
 }
 
 function studentCollection() {
@@ -137,7 +142,12 @@ const db = {
     if (name === "classes") return simpleCollection(classes, "class");
     if (name === "class_memberships") return simpleCollection(classMemberships, "membership");
     if (name === "assignments") return simpleCollection(assignments, "assignment");
+    if (name === "student_set_achievements") return simpleCollection(achievements, "achievement");
+    if (name === "sets") return simpleCollection(sets, "set");
     throw new Error(`Unexpected collection access: ${name}`);
+  },
+  command: {
+    in(values) { return { __in: values }; },
   },
   async runTransaction(callback) {
     await callback(this);
@@ -228,6 +238,38 @@ async function main() {
   assert.equal(recreateResult.student.student_id, "student-login");
   assert(recreateResult.student.class_id, "class group should create a canonical class");
   assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
+
+  sets.push({ _id: "set-a", set_id: "SET-A", title: "Assignment STAR source" });
+  achievements.push(
+    {
+      _id: "yellow-star",
+      achievement_id: "yellow-star",
+      student_uid: recreateResult.student.auth_uid,
+      set_id: "SET-A",
+      assignment_id: "assignment-star",
+      star_type: "yellow",
+      status: "star",
+      best_percentage: 98,
+      first_earned_at: new Date("2026-07-20T00:00:00.000Z"),
+    },
+    {
+      _id: "blue-star",
+      achievement_id: "blue-star",
+      student_uid: recreateResult.student.auth_uid,
+      set_id: "SELF-STUDY",
+      assignment_id: null,
+      star_type: "blue",
+      source: "self_study",
+      status: "active",
+      best_percentage: 100,
+      first_earned_at: new Date("2026-07-21T00:00:00.000Z"),
+    }
+  );
+  const starSourcesResult = await call("getStudentStarSources", { auth_uid: recreateResult.student.auth_uid });
+  assert.equal(starSourcesResult.success, true);
+  assert.equal(starSourcesResult.stars.length, 2);
+  assert.equal(starSourcesResult.stars.find((star) => star.star_type === "yellow").set_title, "Assignment STAR source");
+  assert.equal(starSourcesResult.stars.find((star) => star.star_type === "blue").source, "self_study");
 
   const renameResult = await call("updateStudent", {
     auth_uid: recreateResult.student.auth_uid,
@@ -342,10 +384,30 @@ async function main() {
   assert.equal(legacyDeletedProfile.deleted_student_id_snapshot, "legacy-login");
 
   const teacherSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
+  const teacherHtml = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
+  const teacherAdminSource = fs.readFileSync(path.resolve(__dirname, "../cloudfunctions/teacherAdmin/index.js"), "utf8");
+  const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
   assert(teacherSource.includes('name="class_choice"'), "student detail should render a class selector");
   assert(teacherSource.includes('<option value="__customize__">Customize'), "class selector should end with Customize");
   assert(teacherSource.includes('name="custom_class_group"') && teacherSource.includes('hidden>'), "custom class input should start hidden");
   assert(teacherSource.includes("classChoice.addEventListener('change'"), "Customize should reveal its input only after selection");
+  const accountSettingsIndex = teacherSource.indexOf('<summary>Account settings</summary>');
+  const accountClassIndex = teacherSource.indexOf('data-edit-student-field="class"', accountSettingsIndex);
+  assert(accountSettingsIndex >= 0 && accountClassIndex > accountSettingsIndex,
+    "class display and Edit action should live inside Account settings");
+  assert(!teacherSource.includes('<p class="eyebrow accent">MY WORDS</p>'),
+    "student detail should not render the teacher-facing My Words panel");
+  assert(appCss.includes("overflow-x: hidden;") && appCss.includes("touch-action: pan-y pinch-zoom;"),
+    "student lookup should allow vertical interaction without horizontal panning");
+  assert(!teacherHtml.includes('id="student-lookup-title"'),
+    "selected student name should not be repeated in the lookup title bar");
+  assert(teacherSource.includes('data-student-metric="star"') && teacherSource.includes('data-student-metric="completed"'),
+    "STAR and Completed metrics should open independent detail dialogs");
+  assert(!teacherSource.includes('OVERALL PROGRESS'),
+    "student detail should not retain the Overall Progress card");
+  assert(teacherAdminSource.includes('if (action === "getStudentStarSources")') &&
+    teacherAdminSource.includes('where: { student_uid: authUid }'),
+    "STAR sources should load through one teacher-authorized student-bounded action");
 
   console.log("Student account lifecycle tests passed.");
 }
