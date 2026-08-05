@@ -722,6 +722,9 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes('id="teacher-replies-close"'));
   assert(!dashboardJs.includes('id="teacher-replies-back"'));
   assert(!dashboardJs.includes("replies in your history"));
+  assert(dashboardJs.includes('<p class="eyebrow accent" id="password-dialog-title">Change Password</p>'));
+  assert(!dashboardJs.includes('<p class="eyebrow accent">Account</p>'));
+  assert(!dashboardJs.includes('class="dialog-close-button"'));
   assert(appCss.includes(".teacher-replies-stack {\n    display: grid;\n    grid-template-rows: minmax(0, 1fr) auto;"));
   assert(appCss.includes(".teacher-reply-item {\n    width: 100%;\n    min-width: 0;"));
   assert(appCss.includes(".teacher-reply-title-window {\n    width: 100%;\n    min-width: 0;"));

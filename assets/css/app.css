@@ -3177,26 +3177,6 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(255, 255, 255, 0.96);
     box-shadow: var(--shadow);
 }
-.password-dialog h2 {
-    margin: 0 0 18px;
-    font-size: 1.45rem;
-}
-.dialog-close-button {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--muted);
-    background: #fff;
-    font-size: 1.3rem;
-    line-height: 1;
-}
-.dialog-close-button:hover { color: var(--ink); border-color: rgba(19, 118, 109, 0.38); }
 .password-form {
     display: grid;
     gap: 10px;

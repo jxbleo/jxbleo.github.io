@@ -277,7 +277,9 @@ Check:
 - opening `Change password` from the account panel shows the password dialog
   above the account panel; interacting with its fields does not dismiss the
   account panel underneath, and Escape closes only the password dialog before
-  returning focus to `Change password`
+  returning focus to `Change password`; the dialog starts with one eyebrow-style
+  `Change Password` heading and shows neither a separate `Account` label nor a
+  top-right close button
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; reduced
   motion uses a non-moving response

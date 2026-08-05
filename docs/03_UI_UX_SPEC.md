@@ -549,7 +549,10 @@ Student account menu:
   chip. Escape and backdrop dismissal behave the same way and background scroll
   remains locked while the modal is open.
 - the `Change password` dialog must layer above the account panel and remain
-  the topmost student-account surface while open.
+  the topmost student-account surface while open. Its only heading is the
+  eyebrow-style `Change Password` label at the top of the card; it has no
+  separate `Account` label and no top-right close button. The explicit Cancel
+  action remains available.
 - Student ID, Class, and System are full-row keyboard/click targets with a
   restrained press-and-settle text response; they do not navigate or change
   profile data. Reduced-motion mode replaces the movement with a static color
