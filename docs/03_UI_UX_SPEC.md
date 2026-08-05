@@ -532,6 +532,14 @@ Student account menu:
   remains locked while the modal is open.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open.
+- Student ID, Class, and System are full-row keyboard/click targets with a
+  restrained press-and-settle text response; they do not navigate or change
+  profile data. Reduced-motion mode replaces the movement with a static color
+  response.
+- `Finished` is a full-row destination with a chevron. Activating it dismisses
+  Personal Center and opens a focused `Finished` task list, newest completion
+  first, using the same task-row component, score, and task-entry confirmation
+  as the student Assignments dialog.
 - assignment reminders and finished work share the To Do List dialog.
 - the account summary shows one clickable yellow STAR counter containing the
   current Available STAR Balance. It does not show a separate Blue counter.
