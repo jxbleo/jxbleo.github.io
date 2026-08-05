@@ -1102,9 +1102,7 @@
         overlay.className = 'password-dialog-overlay';
         overlay.innerHTML =
             '<div class="password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title">' +
-                '<button class="dialog-close-button" type="button" aria-label="Close password dialog">×</button>' +
-                '<p class="eyebrow accent">Account</p>' +
-                '<h2 id="password-dialog-title">Change Password</h2>' +
+                '<p class="eyebrow accent" id="password-dialog-title">Change Password</p>' +
                 '<form class="password-form" id="password-form">' +
                     '<label for="new-password">New password</label>' +
                     '<input id="new-password" name="new-password" type="password" autocomplete="new-password" required>' +
@@ -1125,7 +1123,6 @@
         var confirmInput = overlay.querySelector('#confirm-password');
         var message = overlay.querySelector('#password-message');
         var submitButton = form.querySelector('button[type="submit"]');
-        var closeButton = overlay.querySelector('.dialog-close-button');
         var cancelButton = overlay.querySelector('[data-dialog-cancel]');
 
         function close() {
@@ -1149,7 +1146,6 @@
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close();
         });
-        closeButton.addEventListener('click', close);
         cancelButton.addEventListener('click', close);
         document.addEventListener('keydown', onKeydown);
 
