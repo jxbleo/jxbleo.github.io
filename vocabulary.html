@@ -1208,11 +1208,6 @@
             margin-left: 0;
         }
 
-        .dictation-number {
-            color: var(--muted);
-            font-weight: 900;
-        }
-
         .reveal {
             margin-top: 12px;
             display: none;
@@ -3838,7 +3833,6 @@
                     return '<tr class="dictation-row" data-answer="' + word.word + '">' +
                         '<td>' +
                             '<div class="dictation-spell-head">' +
-                                '<span class="dictation-number">' + word.number + '</span>' +
                                 '<span class="part-of-speech">' + (word.partOfSpeech || '') + '</span>' +
                                 pronunciationButtonHtml(word.word, false) +
                             '</div>' +

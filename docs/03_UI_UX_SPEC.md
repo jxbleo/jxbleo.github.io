@@ -1292,7 +1292,8 @@ Shared rules:
   without repeating each word's source number. A green circular speaker beside
   the visible word uses browser `en-GB` speech so students can hear it without
   loading a separate audio asset.
-- Spell rows show the same speaker beside the number and part of speech. Its
+- Spell rows omit the source word number and show the same speaker beside the
+  part of speech. Its
   accessible label must not contain the hidden answer, and playing it must not
   reveal or fill any spelling letters.
 - When a numbered Study Set is selected, the bottom of Learn shows a
