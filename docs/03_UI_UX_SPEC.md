@@ -171,8 +171,10 @@ Navigation:
   has no top-left Back or in-card close icon. A matching external `Close`
   capsule sits below the dialog, marks current replies seen, returns to the main
   Dashboard, and restores bubble focus.
-- My Words opens `my-words.html` from a notebook icon in the right-side utility
-  group; it does not render a second My Words runtime inside Dashboard
+- My Words opens `my-words.html` from an A-marked notebook icon in the
+  right-side utility group. The icon uses the same neutral outline color,
+  rounded stroke, and 19px footprint as the other student header controls; it
+  does not render a second My Words runtime inside Dashboard
 - the Student Dashboard has no standalone Learning Reports icon. Students open
   published weekly/monthly reports from an authenticated shared report link;
   `reports.html` and its authorization rules remain unchanged
@@ -588,7 +590,9 @@ always shows its current count, including zero.
 
 The teacher header omits the cat logo. Notifications and the raised-hand Argue
 control form the left utility group and retain their compact loading states while
-the teacher desk initializes. Dictionary, Student lookup, Reports, and the
+the teacher desk initializes. Dictionary uses the same A-marked notebook shape
+as the Student My Words entry at the teacher header's existing 20px footprint.
+Dictionary, Student lookup, Reports, and the
 teacher identity chip remain in the right utility group. The yellow STAR button
 sits inside Student lookup, immediately beside the create-student `+` action.
 Its red badge counts every `awaiting_proof` and `awaiting_teacher` Cash Request.
