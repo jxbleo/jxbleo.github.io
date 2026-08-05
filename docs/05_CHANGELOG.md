@@ -3,6 +3,20 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-06
+
+### Changed
+
+- Consolidated the mobile My Words density controls into one layout picker with
+  one-, two-, and three-column choices, preserved the selected layout in the
+  browser, and replaced the ambiguous Export ellipsis with a download icon
+  while retaining all existing export ranges, fields, Excel, and PDF actions.
+- Simplified the mobile My Words detail card around the word, speaker, POS,
+  English definition, optional forms, and labelled Source/Note boxes. Moved
+  Close below the card, removed redundant detail/status/placeholder labels,
+  made the three-dot menu dismiss on outside click, and prevented iOS focus zoom
+  for Edit word and Add/Edit Note.
+
 ## 2026-08-05
 
 ### Fixed

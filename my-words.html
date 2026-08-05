@@ -10,7 +10,7 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
-    <link rel="stylesheet" href="assets/css/my-words.css?v=20260805-3">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-2">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -73,15 +73,25 @@
                         <label class="my-words-search-field" for="my-words-search">
                             <input id="my-words-search" type="search" autocomplete="off" placeholder="Search words">
                         </label>
-                        <div class="my-words-density" role="group" aria-label="Word List columns">
-                            <button type="button" data-my-words-density="single" aria-label="Single-column view" aria-pressed="false">
-                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>
+                        <div class="my-words-density-picker">
+                            <button class="my-words-density-trigger" id="my-words-density-trigger" type="button" aria-label="Choose list layout" aria-expanded="false" aria-controls="my-words-density-menu">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="4" y="5" width="6" height="6" rx="1.5"></rect><rect x="14" y="5" width="6" height="6" rx="1.5"></rect><rect x="4" y="15" width="6" height="4" rx="1.5"></rect><path d="M14 17h6"></path></svg>
                             </button>
-                            <button type="button" data-my-words-density="double" aria-label="Two-column view" aria-pressed="true">
-                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="4" y="5" width="7" height="14" rx="2"></rect><rect x="13" y="5" width="7" height="14" rx="2"></rect></svg>
-                            </button>
+                            <div class="my-words-density-menu" id="my-words-density-menu" role="group" aria-label="List layout" aria-hidden="true" inert>
+                                <button type="button" data-my-words-density="single" aria-label="Single-column view" aria-pressed="false">
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="6" y="4" width="12" height="16" rx="2"></rect></svg>
+                                </button>
+                                <button type="button" data-my-words-density="double" aria-label="Two-column view" aria-pressed="true">
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="3" y="4" width="8" height="16" rx="2"></rect><rect x="13" y="4" width="8" height="16" rx="2"></rect></svg>
+                                </button>
+                                <button type="button" data-my-words-density="triple" aria-label="Three-column view" aria-pressed="false">
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="2" y="4" width="5" height="16" rx="1.5"></rect><rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect><rect x="17" y="4" width="5" height="16" rx="1.5"></rect></svg>
+                                </button>
+                            </div>
                         </div>
-                        <button class="my-words-toolbar-more" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">•••</button>
+                        <button class="my-words-toolbar-more my-words-export-trigger" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 3v11"></path><path d="m8 10 4 4 4-4"></path><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path></svg>
+                        </button>
                         <label class="sr-only" for="my-words-sort">Sort words</label>
                         <select id="my-words-sort" aria-label="Sort words">
                             <option value="recent">Recent</option>
@@ -119,14 +129,11 @@
     </main>
 
     <section class="my-words-mobile-detail-overlay" id="my-words-mobile-detail-overlay" hidden>
-        <div class="my-words-mobile-detail-card" role="dialog" aria-modal="true" aria-labelledby="my-words-mobile-detail-title">
-            <header>
-                <p class="eyebrow accent">WORD DETAILS</p>
-                <button id="my-words-mobile-detail-close" type="button" aria-label="Close word details">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M6 6l12 12M18 6 6 18"></path></svg>
-                </button>
-            </header>
-            <div id="my-words-mobile-detail"></div>
+        <div class="my-words-mobile-detail-shell">
+            <div class="my-words-mobile-detail-card" role="dialog" aria-modal="true" aria-labelledby="my-words-mobile-detail-title">
+                <div id="my-words-mobile-detail"></div>
+            </div>
+            <button class="my-words-mobile-detail-close" id="my-words-mobile-detail-close" type="button">Close</button>
         </div>
     </section>
 
@@ -136,6 +143,6 @@
     <script src="assets/js/auth.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
-    <script src="assets/js/my-words.js?v=20260805-3"></script>
+    <script src="assets/js/my-words.js?v=20260806-2"></script>
 </body>
 </html>

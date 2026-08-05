@@ -424,6 +424,18 @@ Check:
   Words and confirm the toolbar begins directly below the primary navigation;
   expand Export and confirm `All`, `This Week`, `This Month`, and `This Year`
   are fully visible and do not slide underneath the sticky toolbar
+- at 390px, confirm the second toolbar action opens one compact picker with
+  one-, two-, and three-column choices; each choice changes the word grid,
+  closes the picker, updates its pressed state, and survives reload. Confirm the
+  third action is a download icon and still opens the complete Export panel
+- open a saved word on phone and confirm Close is the only control below and
+  outside the card. The card has no `WORD DETAILS`, `Saved word`, `Teacher
+  reviewed`, or `Pronunciation pending`; it shows word plus speaker, then POS
+  plus English definition, optional Forms, a labelled Source box with sentence,
+  origin, and date, and a labelled Note box
+- open the word's three-dot menu and click the card outside it; confirm the menu
+  closes. Open Edit word and Add/Edit Note on iPhone/iPad and confirm focusing
+  the input or textarea does not zoom the page
 - Add uses the green circular header control and exposes only one Enter-to-save
   field. Search belongs to Word List; leaving Word List clears the query while
   keeping sort and density preferences

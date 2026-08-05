@@ -10,6 +10,7 @@
         sort: 'recent',
         selectedId: '',
         density: 'double',
+        densityMenuOpen: false,
         exportOpen: false,
         exportRange: 'all',
         exportSelected: {},
@@ -36,6 +37,8 @@
     var searchInput = document.getElementById('my-words-search');
     var searchTrigger = document.getElementById('my-words-search-trigger');
     var sortSelect = document.getElementById('my-words-sort');
+    var densityTrigger = document.getElementById('my-words-density-trigger');
+    var densityMenu = document.getElementById('my-words-density-menu');
     var exportTrigger = document.getElementById('my-words-export-trigger');
     var exportPanel = document.getElementById('my-words-export-panel');
     var titleResizeObserver = null;
@@ -206,6 +209,39 @@
         if (state.searchOpen && searchInput) window.setTimeout(function() { searchInput.focus(); }, 0);
     }
 
+    function normalizedDensity(value) {
+        return ['single', 'double', 'triple'].indexOf(value) !== -1 ? value : 'double';
+    }
+
+    function syncDensityControls() {
+        document.querySelectorAll('[data-my-words-density]').forEach(function(button) {
+            button.setAttribute('aria-pressed', button.dataset.myWordsDensity === state.density ? 'true' : 'false');
+        });
+        if (densityTrigger) {
+            var labels = { single: 'one column', double: 'two columns', triple: 'three columns' };
+            densityTrigger.setAttribute('aria-label', 'Choose list layout, currently ' + labels[state.density]);
+        }
+    }
+
+    function setDensityMenuOpen(open) {
+        state.densityMenuOpen = Boolean(open);
+        if (!densityMenu || !densityTrigger) return;
+        densityMenu.classList.toggle('open', state.densityMenuOpen);
+        densityMenu.setAttribute('aria-hidden', state.densityMenuOpen ? 'false' : 'true');
+        densityTrigger.setAttribute('aria-expanded', state.densityMenuOpen ? 'true' : 'false');
+        if (state.densityMenuOpen) densityMenu.removeAttribute('inert');
+        else densityMenu.setAttribute('inert', '');
+    }
+
+    function setDensity(value) {
+        state.density = normalizedDensity(value);
+        try { window.localStorage.setItem('mrcat_my_words_density', state.density); } catch (error) {}
+        syncDensityControls();
+        indexList.classList.toggle('is-single', state.density === 'single');
+        indexList.classList.toggle('is-triple', state.density === 'triple');
+        scheduleTitleOverflow();
+    }
+
     function dictionaryPrimary(word) {
         var dictionary = word && word.dictionary;
         if (!dictionary) return word && word.lookup_status === 'not_found' ? 'Definition not found' : 'Finding definition...';
@@ -236,6 +272,7 @@
         if (!words.some(function(word) { return word.vocab_id === state.selectedId; })) state.selectedId = words[0].vocab_id;
         indexList.innerHTML = words.map(indexEntryHtml).join('');
         indexList.classList.toggle('is-single', state.density === 'single');
+        indexList.classList.toggle('is-triple', state.density === 'triple');
         scheduleTitleOverflow();
     }
 
@@ -287,6 +324,52 @@
         '</div></details>';
     }
 
+    function wordSavedDate(word) {
+        return formatShortDate(word.last_added_at || word.updated_at || word.created_at);
+    }
+
+    function mobileSourceHtml(word) {
+        var examples = Array.isArray(word.saved_examples) ? word.saved_examples.slice(0, 8) : [];
+        if (!examples.length && word.context) {
+            examples = [{ context: word.context, source_title: wordSourceLabel(word) }];
+        }
+        var date = wordSavedDate(word);
+        var content = examples.length ? examples.map(function(example) {
+            var source = example.source_title || example.source_set_id || wordSourceLabel(word);
+            return '<div class="my-word-mobile-source-item">' +
+                '<p>' + escapeHtml(example.context || 'No saved sentence.') + '</p>' +
+                '<small>' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</small>' +
+            '</div>';
+        }).join('') : '<div class="my-word-mobile-source-item"><p>No saved sentence.</p><small>' +
+            escapeHtml(wordSourceLabel(word)) + (date ? ' · ' + escapeHtml(date) : '') + '</small></div>';
+        return '<section class="my-word-mobile-section"><h3>Source</h3><div class="my-word-mobile-source">' + content + '</div></section>';
+    }
+
+    function mobileWordDetailBodyHtml(word) {
+        var dictionary = word.dictionary;
+        var editHtml = state.editingId === word.vocab_id
+            ? '<form class="my-word-edit-form" data-edit-form="' + escapeHtml(word.vocab_id) + '"><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required><div><button class="outline-button" type="button" data-cancel-word-edit>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
+            : '';
+        var noteHtml = state.noteEditingId === word.vocab_id
+            ? '<form class="my-word-note-form" data-note-form="' + escapeHtml(word.vocab_id) + '"><textarea maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea><div><button class="outline-button" type="button" data-cancel-note>Cancel</button><button class="primary-button" type="submit">Done</button></div></form>'
+            : '<div class="my-word-mobile-note"><p>' + escapeHtml(word.personal_note || 'No personal note yet.') + '</p></div>';
+        var recommendation = word.recommended_headword
+            ? '<button class="my-word-recommendation" type="button" data-use-headword="' + escapeHtml(word.recommended_headword) + '" data-vocab-id="' + escapeHtml(word.vocab_id) + '">' +
+                ((word.merge_candidate_ids || []).length ? 'Merge with ' : 'Use ') + escapeHtml(word.recommended_headword) + '</button>'
+            : '';
+        var lookupHtml = !dictionary
+            ? '<p class="my-word-mobile-lookup-copy">' + (word.lookup_status === 'not_found' ? 'English definition unavailable.' : 'Finding English definition...') + '</p>' +
+                (word.lookup_status === 'not_found' ? '<button class="my-word-lookup" type="button" data-lookup-word="' + escapeHtml(word.vocab_id) + '">Retry</button>' : '')
+            : '';
+        var formsHtml = dictionary && dictionary.word_forms
+            ? '<p class="my-word-mobile-forms"><strong>Forms</strong><span>' + escapeHtml(dictionary.word_forms) + '</span></p>'
+            : '';
+        return '<div class="my-word-mobile-detail-copy">' + formsHtml + editHtml + recommendation + lookupHtml +
+            mobileSourceHtml(word) +
+            '<section class="my-word-mobile-section"><h3>Note</h3>' + noteHtml + '</section>' +
+        '</div>';
+    }
+
     function wordDetailBodyHtml(word) {
         var dictionary = word.dictionary;
         var spokenWord = dictionary && dictionary.word || word.text || '';
@@ -326,8 +409,18 @@
 
     function detailPanelHtml(word, mobile) {
         var dictionary = word.dictionary || {};
-        return '<div class="my-words-detail-head"><span>' + (mobile ? 'Saved word' : 'Word details') + '</span>' + detailActionsHtml(word, word.dictionary) + '</div>' +
-            '<div class="my-words-detail-title"><p class="eyebrow accent">' + escapeHtml(dictionary.part_of_speech || 'MY WORD') + '</p><h2' + (mobile ? ' id="my-words-mobile-detail-title"' : '') + '>' + escapeHtml(word.text || '') + '</h2></div>' +
+        if (mobile) {
+            var spokenWord = dictionary.word || word.text || '';
+            return '<div class="my-words-detail-head my-words-detail-head-mobile">' + detailActionsHtml(word, word.dictionary) + '</div>' +
+                '<div class="my-word-mobile-title-row"><h2 id="my-words-mobile-detail-title">' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
+                '<div class="my-word-mobile-lexical-line">' +
+                    '<strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong>' +
+                    '<span>' + escapeHtml(dictionary.english_definition || 'English definition unavailable.') + '</span>' +
+                '</div>' +
+                mobileWordDetailBodyHtml(word);
+        }
+        return '<div class="my-words-detail-head"><span>Word details</span>' + detailActionsHtml(word, word.dictionary) + '</div>' +
+            '<div class="my-words-detail-title"><p class="eyebrow accent">' + escapeHtml(dictionary.part_of_speech || 'MY WORD') + '</p><h2>' + escapeHtml(word.text || '') + '</h2></div>' +
             '<div class="my-words-detail-body">' + wordDetailBodyHtml(word) + '</div>';
     }
 
@@ -834,21 +927,26 @@
                 setSearchOpen(false);
                 return;
             }
+            setDensityMenuOpen(false);
             setSearchOpen(true);
         });
         sortSelect.addEventListener('change', function() { state.sort = sortSelect.value; renderIndex(); renderDesktopDetail(); });
+        densityTrigger.addEventListener('click', function() {
+            var open = densityTrigger.getAttribute('aria-expanded') !== 'true';
+            if (open && state.exportOpen) setExportOpen(false);
+            setDensityMenuOpen(open);
+        });
         document.querySelectorAll('[data-my-words-density]').forEach(function(button) {
             button.addEventListener('click', function() {
-                state.density = button.dataset.myWordsDensity === 'single' ? 'single' : 'double';
-                try { window.localStorage.setItem('mrcat_my_words_density', state.density); } catch (error) {}
-                document.querySelectorAll('[data-my-words-density]').forEach(function(peer) {
-                    peer.setAttribute('aria-pressed', peer.dataset.myWordsDensity === state.density ? 'true' : 'false');
-                });
-                indexList.classList.toggle('is-single', state.density === 'single');
-                scheduleTitleOverflow();
+                setDensity(button.dataset.myWordsDensity);
+                setDensityMenuOpen(false);
+                densityTrigger.focus();
             });
         });
-        exportTrigger.addEventListener('click', function() { setExportOpen(exportTrigger.getAttribute('aria-expanded') !== 'true'); });
+        exportTrigger.addEventListener('click', function() {
+            setDensityMenuOpen(false);
+            setExportOpen(exportTrigger.getAttribute('aria-expanded') !== 'true');
+        });
         document.querySelectorAll('[data-export-range]').forEach(function(button) {
             button.addEventListener('click', function() { selectExportRange(button.dataset.exportRange); });
         });
@@ -874,6 +972,14 @@
             updateExportSelectionCount();
         });
         document.addEventListener('click', handleActionClick);
+        document.addEventListener('click', function(event) {
+            if (state.densityMenuOpen && !event.target.closest('.my-words-density-picker')) setDensityMenuOpen(false);
+        });
+        document.addEventListener('click', function(event) {
+            document.querySelectorAll('.my-words-detail-actions[open]').forEach(function(actions) {
+                if (!actions.contains(event.target)) actions.removeAttribute('open');
+            });
+        });
         document.addEventListener('submit', handleDetailSubmit);
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
         mobileOverlay.addEventListener('click', function(event) { if (event.target === mobileOverlay) closeMobileDetail(false); });
@@ -882,6 +988,7 @@
         document.addEventListener('keydown', function(event) {
             if (event.key !== 'Escape') return;
             if (state.mobileDetailOpen) { closeMobileDetail(false); return; }
+            if (state.densityMenuOpen) { setDensityMenuOpen(false); densityTrigger.focus(); return; }
             if (state.searchOpen) {
                 state.search = '';
                 searchInput.value = '';
@@ -915,13 +1022,11 @@
 
     function initialize() {
         try {
-            state.density = window.localStorage.getItem('mrcat_my_words_density') === 'single' ? 'single' : 'double';
+            state.density = normalizedDensity(window.localStorage.getItem('mrcat_my_words_density'));
         } catch (error) {
             state.density = 'double';
         }
-        document.querySelectorAll('[data-my-words-density]').forEach(function(button) {
-            button.setAttribute('aria-pressed', button.dataset.myWordsDensity === state.density ? 'true' : 'false');
-        });
+        syncDensityControls();
         state.view = window.location.hash === '#review' || window.location.hash === '#study' ? 'study' : 'word-list';
         syncViewControls();
         renderExportFields();
