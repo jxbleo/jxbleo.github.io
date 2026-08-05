@@ -612,7 +612,9 @@ The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
 status row. The top-right circular student ID icon opens a standalone Student
 lookup modal. Its top bar initially contains the student search field, a class
-filter, and an internal `+` action for creating a student. Student rows show the
+filter, and internal STAR Redemption and create-student actions. Both actions
+reuse the same 40px circular outline-SVG treatment and neutral color as the
+main Teacher header navigation. Student rows show the
 name only, without a second Login ID / class / Active metadata line. Selecting a search result replaces
 the search field in that same top bar with only a back control; it does not
 repeat the selected student's name because the first identity card already
@@ -635,7 +637,9 @@ trackpad, and touch panning must not shift the card or its content. STAR and
 Completed are interactive metrics: STAR opens an independent, student-bounded
 source dialog grouped into Yellow assignment and Blue self-study records with
 earned date and best score; Completed opens a separate dialog with complete
-To Do and Finished sections. Closing either returns focus to its source metric.
+To Do and Finished sections. Both metric dialogs remain fixed over the viewport
+while the underlying Student lookup is temporarily hidden. Closing either
+restores the Student lookup and returns focus to its source metric.
 The former Overall Progress card is removed. The Student lookup, raised-hand Argue, and
 notification surfaces share
 the notification card's width, viewport-centered position, height cap, and

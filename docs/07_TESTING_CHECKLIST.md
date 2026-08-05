@@ -571,10 +571,16 @@ Check:
 - clicking STAR opens an independent source dialog grouped into Yellow
   assignment and Blue self-study records with title, earned date, best score,
   and conversion state; it makes one selected-student `getStudentStarSources`
-  request and closing it restores the Student lookup and STAR focus
+  request and closing it restores the Student lookup and STAR focus. Confirm
+  the dialog stays centered over the viewport instead of revealing the Teacher
+  homepage or appearing below the current scroll position
 - clicking Completed opens a separate dialog containing both To Do and Finished
-  counts and task rows; closing restores Completed focus. The main student
-  detail contains no Overall Progress card
+  counts and task rows; it also stays centered over the viewport, and closing
+  restores Completed focus. The main student detail contains no Overall
+  Progress card
+- the Student lookup STAR Redemption and create-student actions match the main
+  Teacher header controls: 40px circular glass buttons, 20px outline SVGs, and
+  the same neutral icon color
 - both Student lookup detail and the View matrix student modal render the same
   monthly week-band calendar. Previous/next month bounds work, Monday-first
   dates align correctly across 4/5/6-week months, completion density and STAR

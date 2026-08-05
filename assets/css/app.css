@@ -4091,20 +4091,23 @@ body:not(.teacher-page) .tab-button.active {
     gap: 8px;
 }
 .student-lookup-create {
-    width: 34px;
-    height: 34px;
-    min-height: 34px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
     padding: 0;
 }
 .student-lookup-star {
-    width: 34px;
-    min-width: 34px;
-    height: 34px;
-    min-height: 34px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
 }
-.student-lookup-star .teacher-header-icon {
-    width: 18px;
-    height: 18px;
+.student-lookup-star .teacher-header-icon,
+.student-lookup-create .teacher-header-icon {
+    width: 20px;
+    height: 20px;
+    color: inherit;
 }
 .teacher-page .student-lookup-dialog .student-select-card {
     z-index: 3;
@@ -4149,7 +4152,11 @@ body:not(.teacher-page) .tab-button.active {
 .student-lookup-external-close {
     justify-self: center;
 }
-.student-metric-detail-modal { z-index: 170; }
+.student-metric-detail-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 170;
+}
 .student-metric-detail-shell { width: min(650px, 100%); }
 .student-metric-detail-dialog {
     display: grid;
