@@ -568,7 +568,8 @@ Student account menu:
 - `Finished` is a full-row destination with a chevron. Activating it dismisses
   Personal Center and opens a focused `Finished` task list, newest completion
   first, using the same task-row component, score, and task-entry confirmation
-  as the student Assignments dialog.
+  as the student Assignments dialog. A top-left back arrow closes that list,
+  restores Personal Center, and returns keyboard focus to its `Finished` row.
 - assignment reminders and finished work share the To Do List dialog.
 - the account summary shows one clickable yellow STAR counter containing the
   current Available STAR Balance. It does not show a separate Blue counter.
@@ -577,11 +578,15 @@ Student account menu:
   containing only an oversized Yellow STAR and current available number; there
   is no visible balance label or Blue count. A solid deep-green `Redeem` button
   is the primary action, visibly separated from the two soft-green capsule
-  destinations, `STAR Source` and `History`. Back restores Personal Center and
-  counter focus; the external Close capsule returns to the Dashboard.
+  destinations, `STAR Source` and `History`. Those destinations contain no
+  trailing record counts and use the same type size, weight, and project font
+  as `Redeem`. Back restores Personal Center and counter focus; the external
+  Close capsule matches the other student dialog Close controls and returns to
+  the Dashboard.
 - `STAR Source` is one level below the Wallet and groups task provenance with
-  Yellow assignment STARs first and Blue self-study STARs second. Entries retain
-  color, score, earned date, conversion state, and the linked best attempt.
+  Yellow assignment STARs first and Blue self-study STARs second, without an
+  explanatory sentence above the groups. Entries retain color, score, earned
+  date, conversion state, and the linked best attempt.
 - `History` is one level below the Wallet and shows every Cash Request newest
   first with its status and permanent evidence. Open-request upload, evidence
   review, and cancellation controls live with that request in History.

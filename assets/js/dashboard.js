@@ -1755,8 +1755,10 @@
                 (scope ? ' aria-labelledby="student-message-title"' : ' aria-label="Assignments"') + '>' +
                 '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + '">' +
                     (scope ? '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
-                        '<div class="student-message-dialog-title-row">' +
+                        '<div class="student-message-dialog-title-row' + (scope === 'finished' ? ' has-account-back' : '') + '">' +
+                            (scope === 'finished' ? '<button class="account-star-back student-message-account-back" type="button" data-student-message-account-back aria-label="Back to Personal Center">‹</button>' : '') +
                             '<h2 id="student-message-title">' + escapeHtml(dialogTitle) + '</h2>' +
+                            (scope === 'finished' ? '<span class="student-message-title-spacer" aria-hidden="true"></span>' : '') +
                         '</div>' +
                         (summaryHtml ? '<div class="student-message-summary">' + summaryHtml + '</div>' : '') +
                     '</div>' : '') +
@@ -1798,6 +1800,19 @@
             if (card && card.isConnected) card.focus();
         }
         overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
+        var accountBackButton = overlay.querySelector('[data-student-message-account-back]');
+        if (accountBackButton) {
+            accountBackButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                close(false).then(function() {
+                    setAccountPanel(true);
+                    window.requestAnimationFrame(function() {
+                        var finishedButton = document.getElementById('account-finished');
+                        if (finishedButton) finishedButton.focus({ preventScroll: true });
+                    });
+                });
+            });
+        }
         var messageTabs = Array.prototype.slice.call(overlay.querySelectorAll('[data-message-tab]'));
         function selectMessageTab(tab, moveFocus) {
             if (!tab) return;
@@ -3598,7 +3613,6 @@
     }
 
     function renderStarWalletHome() {
-        var requestCount = state.starRewards && state.starRewards.cash_requests ? state.starRewards.cash_requests.length : 0;
         return '<section class="profile-card account-star-history account-wallet-home">' +
             starWalletHeader('STAR WALLET', 'account', 'Back to Personal Center') +
             '<div class="account-wallet-pass" aria-label="' + escapeHtml(availableYellowStars()) + ' yellow STARs available">' +
@@ -3607,8 +3621,8 @@
             '</div>' +
             '<button class="primary-button account-wallet-redeem" type="button" data-wallet-view="redeem">Redeem</button>' +
             '<nav class="account-wallet-destinations" aria-label="STAR Wallet sections">' +
-                '<button type="button" data-wallet-view="source"><span>STAR Source</span><small>' + escapeHtml((state.starAchievements || []).length) + '</small></button>' +
-                '<button type="button" data-wallet-view="history"><span>History</span><small>' + escapeHtml(requestCount) + '</small></button>' +
+                '<button type="button" data-wallet-view="source"><span>STAR Source</span></button>' +
+                '<button type="button" data-wallet-view="history"><span>History</span></button>' +
             '</nav>' +
         '</section>';
     }
@@ -3616,7 +3630,6 @@
     function renderStarSource() {
         return '<section class="profile-card account-star-history account-wallet-detail">' +
             starWalletHeader('STAR SOURCE', 'wallet', 'Back to STAR Wallet') +
-            '<p class="account-wallet-detail-intro">See which tasks earned each STAR. Yellow STARs appear first.</p>' +
             starSourceSection('yellow', 'YELLOW STAR') +
             starSourceSection('blue', 'BLUE STAR') +
         '</section>';

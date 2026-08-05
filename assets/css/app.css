@@ -1096,14 +1096,16 @@ html.teacher-modal-scroll-locked {
     border-radius: 999px;
     color: var(--accent-dark);
     background: var(--accent-soft);
-    font: 850 0.78rem/1 inherit;
+    font-family: inherit;
+    font-size: 0.94rem;
+    font-weight: 850;
+    line-height: 1;
     cursor: pointer;
     transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 .account-wallet-destinations button:hover { border-color: rgba(19, 118, 109, 0.32); background: #d5efe7; transform: translateY(-1px); }
 .account-wallet-destinations button:active { transform: scale(0.97); }
 .account-wallet-destinations button > span { white-space: nowrap; }
-.account-wallet-destinations small { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: rgba(255,255,255,0.76); font-size: 0.68rem; }
 .account-wallet-detail { gap: 14px; }
 .account-wallet-detail-intro { margin: -2px 0 2px; color: var(--muted); font-size: 0.8rem; line-height: 1.45; }
 .account-star-source-group { display: grid; gap: 9px; }
@@ -3338,7 +3340,8 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-close,
 .student-words-outside-close,
-.student-calendar-outside-close {
+.student-calendar-outside-close,
+.student-star-outside-close {
     min-width: 132px;
     min-height: 44px;
     padding: 0 22px;
@@ -3357,24 +3360,28 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-close:hover,
 .student-words-outside-close:hover,
-.student-calendar-outside-close:hover {
+.student-calendar-outside-close:hover,
+.student-star-outside-close:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 15px 34px rgba(27, 45, 56, 0.2), inset 0 1px 0 #fff;
 }
 .student-message-close:active,
 .student-words-outside-close:active,
-.student-calendar-outside-close:active { transform: scale(0.97); }
+.student-calendar-outside-close:active,
+.student-star-outside-close:active { transform: scale(0.97); }
 .student-message-close:focus-visible,
 .student-words-outside-close:focus-visible,
-.student-calendar-outside-close:focus-visible {
+.student-calendar-outside-close:focus-visible,
+.student-star-outside-close:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
 }
 @media (prefers-reduced-transparency: reduce) {
     .student-message-close,
     .student-words-outside-close,
-    .student-calendar-outside-close {
+    .student-calendar-outside-close,
+    .student-star-outside-close {
         border-color: rgba(38, 52, 59, 0.18);
         background: #f8faf9;
         -webkit-backdrop-filter: none;
@@ -3384,7 +3391,8 @@ body:not(.teacher-page) .tab-button.active {
 @media (prefers-contrast: more) {
     .student-message-close,
     .student-words-outside-close,
-    .student-calendar-outside-close {
+    .student-calendar-outside-close,
+    .student-star-outside-close {
         border-color: #26343b;
         background: #fff;
     }
@@ -3425,6 +3433,16 @@ body:not(.teacher-page) .tab-button.active {
 .student-message-dialog.is-focused-scope .student-message-dialog-title-row {
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
+}
+.student-message-dialog.is-focused-scope .student-message-dialog-title-row.has-account-back {
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+}
+.student-message-account-back { grid-column: 1; }
+.student-message-dialog-title-row.has-account-back h2 { grid-column: 2; }
+.student-message-title-spacer {
+    grid-column: 3;
+    width: 38px;
+    height: 38px;
 }
 .student-message-summary {
     display: flex;

@@ -285,7 +285,9 @@ Check:
   motion uses a non-moving response
 - activating the Personal Center `Finished` row dismisses Personal Center and
   opens a focused, newest-first completed-task list using the same category,
-  title, score, chevron, and task-entry confirmation behavior as Assignments
+  title, score, chevron, and task-entry confirmation behavior as Assignments;
+  its top-left back arrow restores Personal Center and focus to the `Finished`
+  row
 - opening Personal Center from the identity chip shows no top-right `×`; its
   centered card uses the same thick glass, softly dimmed backdrop, radius, and
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
@@ -297,8 +299,10 @@ Check:
   modal whose landing view has a gold pass containing only a large Yellow STAR
   and number, with no visible balance label or Blue count. A solid deep-green
   `Redeem` button is clearly stronger than the soft-green `STAR Source` and
-  `History` capsules. Back returns to Personal Center and the external Close
-  action returns to Dashboard
+  `History` capsules; those two destinations have no trailing numbers and use
+  the same font, size, and weight as `Redeem`. Back returns to Personal Center,
+  and the external Close matches other student dialogs before returning to the
+  Dashboard
 - in Chrome, opening STAR Wallet paints a normal light standalone wallet surface
   with visible content, never a blank black block;
   one malformed legacy history row shows its own unavailable placeholder while
@@ -306,9 +310,9 @@ Check:
 - STAR Wallet Back returns to the still-open Personal Center and restores focus to
   the yellow counter; it must not trigger the global outside-click closer. The
   separate lower Close action dismisses the complete modal flow
-- `STAR Source` lists Yellow assignment STARs above Blue self-study STARs; each
-  row opens the linked best historical attempt and converted Blue rows remain
-  visible
+- `STAR Source` has no explanatory sentence above its groups, lists Yellow
+  assignment STARs above Blue self-study STARs, opens the linked best historical
+  attempt from each row, and keeps converted Blue rows visible
 - `History` lists every Cash request newest first and keeps View proof, Add photo,
   and Cancel controls with the applicable request
 - Redeem opens Cash directly, shows no money amount/rate, and its integer slider
