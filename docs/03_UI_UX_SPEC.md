@@ -401,6 +401,13 @@ Student cards should show:
 - the practice-entry confirmation dialog must close before navigation and must
   not be restored by browser Back/bfcache; returning from a practice page should
   show the page behind the dialog
+- when the confirmation is opened from any task row in the `To Do List`
+  assignment modal, including its `FINISHED` tab and the Personal Center's
+  focused `Finished` list, it shows a top-left Back arrow. Back dismisses only
+  the confirmation and restores the same task list, selected tab, and task
+  focus. The external `Close` below the confirmation closes both the
+  confirmation and its task-list modal, returning directly to the Dashboard
+  home. Other confirmation entry points keep their existing close behavior
 - practice pages expose both `Back` and `Home` controls. `Back` first shows a
   leave-page confirmation, then returns exactly one browser-history step when
   the same-origin referrer path matches the validated `return` target. This
