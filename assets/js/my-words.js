@@ -4,8 +4,9 @@
     var state = {
         session: null,
         items: [],
-        view: 'study',
+        view: 'word-list',
         search: '',
+        searchOpen: false,
         sort: 'recent',
         selectedId: '',
         density: 'double',
@@ -33,6 +34,7 @@
     var mobileDetail = document.getElementById('my-words-mobile-detail');
     var mobileClose = document.getElementById('my-words-mobile-detail-close');
     var searchInput = document.getElementById('my-words-search');
+    var searchTrigger = document.getElementById('my-words-search-trigger');
     var sortSelect = document.getElementById('my-words-sort');
     var exportTrigger = document.getElementById('my-words-export-trigger');
     var exportPanel = document.getElementById('my-words-export-panel');
@@ -194,6 +196,14 @@
 
     function setFeedback(message) {
         if (feedback) feedback.textContent = message || '';
+    }
+
+    function setSearchOpen(open) {
+        state.searchOpen = Boolean(open);
+        var toolbar = searchTrigger && searchTrigger.closest('.my-words-list-toolbar');
+        if (toolbar) toolbar.classList.toggle('search-open', state.searchOpen);
+        if (searchTrigger) searchTrigger.setAttribute('aria-expanded', state.searchOpen ? 'true' : 'false');
+        if (state.searchOpen && searchInput) window.setTimeout(function() { searchInput.focus(); }, 0);
     }
 
     function dictionaryPrimary(word) {
@@ -392,6 +402,7 @@
         if (state.view !== 'word-list' && state.search) {
             state.search = '';
             searchInput.value = '';
+            setSearchOpen(false);
         }
         syncViewControls();
         if (state.view === 'word-list') {
@@ -400,7 +411,7 @@
         }
         if (updateHistory && window.history && window.history.replaceState) {
             var url = new URL(window.location.href);
-            url.hash = state.view === 'word-list' ? 'word-list' : '';
+            url.hash = state.view === 'study' ? 'review' : '';
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
         }
     }
@@ -818,6 +829,13 @@
             });
         });
         searchInput.addEventListener('input', function() { state.search = searchInput.value; renderIndex(); renderDesktopDetail(); });
+        searchTrigger.addEventListener('click', function() {
+            if (state.searchOpen && !state.search) {
+                setSearchOpen(false);
+                return;
+            }
+            setSearchOpen(true);
+        });
         sortSelect.addEventListener('change', function() { state.sort = sortSelect.value; renderIndex(); renderDesktopDetail(); });
         document.querySelectorAll('[data-my-words-density]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -859,10 +877,20 @@
         document.addEventListener('submit', handleDetailSubmit);
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
         mobileOverlay.addEventListener('click', function(event) { if (event.target === mobileOverlay) closeMobileDetail(false); });
-        document.getElementById('my-words-logout').addEventListener('click', window.MrCatAuth.logout);
+        var logoutButton = document.getElementById('my-words-logout');
+        if (logoutButton) logoutButton.addEventListener('click', window.MrCatAuth.logout);
         document.addEventListener('keydown', function(event) {
             if (event.key !== 'Escape') return;
             if (state.mobileDetailOpen) { closeMobileDetail(false); return; }
+            if (state.searchOpen) {
+                state.search = '';
+                searchInput.value = '';
+                setSearchOpen(false);
+                renderIndex();
+                renderDesktopDetail();
+                searchTrigger.focus();
+                return;
+            }
             if (addTrigger.getAttribute('aria-expanded') === 'true') { setAddOpen(false); addTrigger.focus(); return; }
             if (state.exportOpen) { setExportOpen(false); exportTrigger.focus(); }
         });
@@ -894,7 +922,7 @@
         document.querySelectorAll('[data-my-words-density]').forEach(function(button) {
             button.setAttribute('aria-pressed', button.dataset.myWordsDensity === state.density ? 'true' : 'false');
         });
-        state.view = window.location.hash === '#word-list' ? 'word-list' : 'study';
+        state.view = window.location.hash === '#review' || window.location.hash === '#study' ? 'study' : 'word-list';
         syncViewControls();
         renderExportFields();
         bindControls();
@@ -911,12 +939,9 @@
             }
             state.session = session;
             if (session.mode === 'visitor') {
-                document.getElementById('my-words-identity').textContent = 'Visitor';
                 renderVisitor();
                 return null;
             }
-            var profile = session.profile || {};
-            document.getElementById('my-words-identity').textContent = profile.name || profile.student_id || 'Student';
             return reloadWords();
         }).catch(function(error) {
             setFeedback(error.message || 'Unable to start My Words.');

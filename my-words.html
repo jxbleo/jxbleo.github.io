@@ -10,7 +10,7 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
-    <link rel="stylesheet" href="assets/css/my-words.css?v=20260805-1">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260805-2">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -20,20 +20,14 @@
                     <path d="m14.5 5-7 7 7 7"></path>
                     <path d="M8 12h11"></path>
                 </svg>
-                <span>Dashboard</span>
             </a>
-            <div class="my-words-page-title">
-                <p class="eyebrow accent">MR. CAT ACADEMY</p>
-                <h1>My Words</h1>
-            </div>
-            <div class="my-words-page-actions">
-                <button class="my-words-header-icon" id="my-words-add-trigger" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 5v14M5 12h14"></path></svg>
-                </button>
-                <span class="my-words-identity" id="my-words-identity">Loading...</span>
-                <button class="my-words-signout" id="my-words-logout" type="button">Sign out</button>
-            </div>
+            <nav class="my-words-primary-nav" aria-label="My Words sections">
+                <button type="button" data-my-words-nav="word-list" aria-selected="true">My Words</button>
+                <button type="button" data-my-words-nav="study" aria-selected="false">Review</button>
+            </nav>
         </header>
+
+        <button id="my-words-add-trigger" type="button" hidden aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel"></button>
 
         <section class="my-words-add-panel" id="my-words-add-panel" aria-hidden="true" inert>
             <form id="my-words-add-form">
@@ -44,30 +38,18 @@
             <p id="my-words-add-status" role="status" aria-live="polite"></p>
         </section>
 
-        <nav class="my-words-mobile-tabs" aria-label="My Words sections">
-            <button type="button" data-my-words-nav="study" aria-selected="true">Study</button>
-            <button type="button" data-my-words-nav="word-list" aria-selected="false">Word List</button>
-        </nav>
-
         <div class="my-words-workspace">
-            <aside class="my-words-sidebar" aria-label="My Words navigation">
-                <p>MY WORDS</p>
-                <button type="button" data-my-words-nav="study" aria-selected="true">Study</button>
-                <button type="button" data-my-words-nav="word-list" aria-selected="false">Word List</button>
-                <div class="my-words-sidebar-count"><strong id="my-words-sidebar-total">0</strong><span>saved words</span></div>
-            </aside>
-
             <div class="my-words-stage">
                 <div class="my-words-feedback" id="my-words-feedback" role="status" aria-live="polite"></div>
 
-                <section class="my-words-view my-words-study-view is-active" data-my-words-view="study" aria-labelledby="my-words-study-title">
+                <section class="my-words-view my-words-study-view" data-my-words-view="study" aria-labelledby="my-words-study-title">
                     <section class="my-words-study-hero">
                         <p class="eyebrow accent">YOUR LEARNING SPACE</p>
                         <h2 id="my-words-study-title">Your words are ready when you are.</h2>
                         <p>The learning experience is still being designed. Your personal vocabulary remains available below.</p>
                         <span class="my-words-study-placeholder">
                             <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M6 4h9a2 2 0 0 1 2 2v14H8a3 3 0 0 1-3-3V5a1 1 0 0 1 1-1Z"></path><path d="M8 4v16"></path></svg>
-                            Study Mode · In design
+                            Review Mode · In design
                         </span>
                         <div class="my-words-study-stats">
                             <div><strong id="my-words-total">0</strong><span>saved words</span></div>
@@ -83,18 +65,14 @@
                     </section>
                 </section>
 
-                <section class="my-words-view my-words-list-view" data-my-words-view="word-list" aria-label="Word List">
+                <section class="my-words-view my-words-list-view is-active" data-my-words-view="word-list" aria-label="My Words">
                     <div class="my-words-list-toolbar">
-                        <label class="my-words-search-field" for="my-words-search">
+                        <button class="my-words-search-trigger" id="my-words-search-trigger" type="button" aria-label="Search My Words" aria-expanded="false" aria-controls="my-words-search">
                             <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+                        </button>
+                        <label class="my-words-search-field" for="my-words-search">
                             <input id="my-words-search" type="search" autocomplete="off" placeholder="Search words">
                         </label>
-                        <label class="sr-only" for="my-words-sort">Sort words</label>
-                        <select id="my-words-sort" aria-label="Sort words">
-                            <option value="recent">Recent</option>
-                            <option value="az">A–Z</option>
-                            <option value="za">Z–A</option>
-                        </select>
                         <div class="my-words-density" role="group" aria-label="Word List columns">
                             <button type="button" data-my-words-density="single" aria-label="Single-column view" aria-pressed="false">
                                 <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>
@@ -104,6 +82,12 @@
                             </button>
                         </div>
                         <button class="my-words-toolbar-more" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">•••</button>
+                        <label class="sr-only" for="my-words-sort">Sort words</label>
+                        <select id="my-words-sort" aria-label="Sort words">
+                            <option value="recent">Recent</option>
+                            <option value="az">A–Z</option>
+                            <option value="za">Z–A</option>
+                        </select>
                     </div>
 
                     <section class="my-words-export-panel" id="my-words-export-panel" aria-hidden="true" inert>
@@ -152,6 +136,6 @@
     <script src="assets/js/auth.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
-    <script src="assets/js/my-words.js?v=20260805-2"></script>
+    <script src="assets/js/my-words.js?v=20260805-3"></script>
 </body>
 </html>
