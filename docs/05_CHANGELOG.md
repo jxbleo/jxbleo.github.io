@@ -7,6 +7,13 @@
 
 ### Changed
 
+- Standardized independent Student dialogs that place `Close` below the card
+  as Close-only surfaces. Personal Center, STAR Wallet, To Do List, Teacher
+  Replies, Calendar, task-entry confirmation, and mobile My Words detail now
+  ignore backdrop clicks and Escape while preserving explicit workflow actions;
+  Vocabulary worksheet download and student Argue confirmation follow the same
+  rule, as do BBC/Vocabulary result dialogs and Vocabulary quiz notices with
+  explicit actions.
 - Replaced the Student To Do List's three stacked collapsible assignment
   sections with fixed top `This Week`, `Upcoming`, and `Finished` buttons. Each
   button shows its task count, switches one visible list, and supports standard

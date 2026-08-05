@@ -364,8 +364,9 @@ Frontend rule:
   Do not render separate `Start` or `Open` buttons. Clicking or keyboard-opening
   the row temporarily hides the bell and shows the same shared practice-entry
   confirmation used by Library before navigation. Dismissing that confirmation
-  with `Close`, Escape, or the backdrop restores the same To Do List dialog and returns
+  with its external `Close` restores the same To Do List dialog and returns
   focus to the selected assignment row; `Enter` closes both layers and navigates.
+  Escape and backdrop clicks leave the confirmation open.
 - Student STAR counters live inside the top-right account panel, not in the always-visible header.
   Show assigned-task stars as the yellow counter and self-study/library stars
   as the blue counter beside it. Both counters are keyboard-accessible buttons.
@@ -546,8 +547,15 @@ Student account menu:
   List, Calendar, and My Words rather than an anchored dropdown.
 - has no top-right close icon; one centered external `Close` capsule sits
   immediately below the Personal Center card and restores focus to the identity
-  chip. Escape and backdrop dismissal behave the same way and background scroll
-  remains locked while the modal is open.
+  chip. It is the only dismissal action: Escape and backdrop clicks leave the
+  modal open, and background scroll remains locked while the modal is open.
+- every independent student dialog with an external `Close` directly below its
+  card follows the same Close-only dismissal rule, including To Do List,
+  Teacher Replies, Calendar, STAR Wallet, task-entry confirmation, and the
+  mobile My Words detail, Vocabulary worksheet download, and the post-submit
+  Argue confirmation. BBC/Vocabulary result dialogs and Vocabulary quiz notices
+  that provide an explicit Close follow the same rule. Explicit in-dialog Back,
+  Enter, save, and cancel workflow actions retain their own behavior.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open. Its only heading is the
   eyebrow-style `Change Password` label at the top of the card; it has no

@@ -4705,7 +4705,7 @@
         animateResultScore(overlay.querySelector('.result-card'), score, state);
         overlay.addEventListener('click', function(event) {
             var action = event.target && event.target.getAttribute('data-result-action');
-            if (action === 'close' || event.target === overlay) overlay.remove();
+            if (action === 'close') overlay.remove();
         });
     }
 
@@ -4903,9 +4903,6 @@
         }
         modal.querySelector('.argue-modal-cancel').addEventListener('click', closeArgueModal);
         modal.querySelector('.argue-sent-close').addEventListener('click', closeArgueModal);
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) closeArgueModal();
-        });
         loadArgueStatus(questionId, modal, containerEl);
     }
 
