@@ -1101,20 +1101,26 @@
         var overlay = document.createElement('div');
         overlay.className = 'password-dialog-overlay';
         overlay.innerHTML =
-            '<div class="password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title">' +
-                '<p class="eyebrow accent" id="password-dialog-title">Change Password</p>' +
-                '<form class="password-form" id="password-form">' +
-                    '<label for="new-password">New password</label>' +
-                    '<input id="new-password" name="new-password" type="password" autocomplete="new-password" required>' +
-                    '<label for="confirm-password">Confirm password</label>' +
-                    '<input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required>' +
-                    '<p class="password-hint">Minimum 6 characters with uppercase, lowercase, number, and symbol. Avoid repeated digits like 88888888.</p>' +
-                    '<p class="password-message" id="password-message" aria-live="polite"></p>' +
-                    '<div class="dialog-actions">' +
-                        '<button class="outline-button" type="button" data-dialog-cancel>Cancel</button>' +
-                        '<button class="primary-button" type="submit">Save Password</button>' +
+            '<div class="password-dialog-stack" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title">' +
+                '<section class="password-dialog">' +
+                    '<div class="password-dialog-title-row">' +
+                        '<button class="account-star-back password-dialog-back" type="button" data-dialog-back aria-label="Back to Personal Center">‹</button>' +
+                        '<p class="eyebrow accent" id="password-dialog-title">Change Password</p>' +
+                        '<span class="password-dialog-title-spacer" aria-hidden="true"></span>' +
                     '</div>' +
-                '</form>' +
+                    '<form class="password-form" id="password-form">' +
+                        '<label for="new-password">New password</label>' +
+                        '<input id="new-password" name="new-password" type="password" autocomplete="new-password" required>' +
+                        '<label for="confirm-password">Confirm password</label>' +
+                        '<input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required>' +
+                        '<p class="password-hint">Minimum 6 characters with uppercase, lowercase, number, and symbol. Avoid repeated digits like 88888888.</p>' +
+                        '<p class="password-message" id="password-message" aria-live="polite"></p>' +
+                        '<div class="dialog-actions password-dialog-actions">' +
+                            '<button class="primary-button" type="submit">Save Password</button>' +
+                        '</div>' +
+                    '</form>' +
+                '</section>' +
+                '<button class="student-message-close password-dialog-outside-close" type="button" data-dialog-close>Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
 
@@ -1123,11 +1129,16 @@
         var confirmInput = overlay.querySelector('#confirm-password');
         var message = overlay.querySelector('#password-message');
         var submitButton = form.querySelector('button[type="submit"]');
-        var cancelButton = overlay.querySelector('[data-dialog-cancel]');
+        var backButton = overlay.querySelector('[data-dialog-back]');
+        var closeButton = overlay.querySelector('[data-dialog-close]');
 
-        function close() {
-            document.removeEventListener('keydown', onKeydown);
+        function close(closeAccount) {
             overlay.remove();
+            if (closeAccount) {
+                setAccountPanel(false);
+                if (identityChip) identityChip.focus({ preventScroll: true });
+                return;
+            }
             if (opener && opener.isConnected && typeof opener.focus === 'function') {
                 opener.focus({ preventScroll: true });
             }
@@ -1139,15 +1150,8 @@
             message.classList.toggle('error', kind === 'error');
         }
 
-        function onKeydown(event) {
-            if (event.key === 'Escape') close();
-        }
-
-        overlay.addEventListener('click', function(event) {
-            if (event.target === overlay) close();
-        });
-        cancelButton.addEventListener('click', close);
-        document.addEventListener('keydown', onKeydown);
+        backButton.addEventListener('click', function() { close(false); });
+        closeButton.addEventListener('click', function() { close(true); });
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -1174,7 +1178,7 @@
                     state.session.profile.must_change_password = false;
                     setMessage('Password changed.', 'success');
                     window.setTimeout(function() {
-                        close();
+                        close(false);
                         renderProfile();
                     }, 650);
                 }).catch(function(error) {
@@ -3513,30 +3517,15 @@
         });
     }
 
-    function accountStarHistoryHref(item) {
-        var set = assignmentSet(item);
-        return practiceHref(Object.assign({}, set, {
-            history_attempt_id: item.best_attempt_id || null,
-            best_percentage: item.best_percentage
-        }), item.assignment_id || null, item.assignment_id ? 'assignments' : 'resources');
-    }
-
     function accountStarHistoryRow(item) {
         var set = assignmentSet(item);
         var title = set.title || set.set_id || item.set_id || 'Practice';
-        var kind = studentMessageKind({ set: set });
-        var href = accountStarHistoryHref(item);
         var earned = formatShortDate(item.earned_at);
         var isBlue = item.star_type === 'blue';
         var converted = isBlue && item.status === 'converted';
-        return '<article class="account-star-history-row ' + (isBlue ? 'is-self-study' : 'is-assignment') + '"' +
-            ' data-open-href="' + escapeHtml(href) + '" data-entry-kind="' + escapeHtml(kind) + '"' +
-            ' data-entry-title="' + escapeHtml(title) + '" data-entry-status="mastered"' +
-            ' data-entry-best="' + escapeHtml(item.best_percentage == null ? '' : item.best_percentage) + '"' +
-            ' data-entry-locked="false" role="link" tabindex="0" aria-label="Open STAR history for ' + escapeHtml(title) + '">' +
+        return '<article class="account-star-history-row ' + (isBlue ? 'is-self-study' : 'is-assignment') + '" aria-label="STAR source for ' + escapeHtml(title) + '">' +
                 '<span class="account-star-history-icon" aria-hidden="true">★</span>' +
                 '<span class="account-star-history-copy">' +
-                    '<span class="account-star-history-kind">' + (isBlue ? 'BLUE STAR · NOT REDEEMABLE' : 'YELLOW STAR · REDEEMABLE') + '</span>' +
                     '<strong>' + escapeHtml(title) + '</strong>' +
                     '<span class="account-star-history-meta">' +
                         (earned ? '<span>Earned ' + escapeHtml(earned) + '</span>' : '<span>Earned STAR</span>') +
@@ -3544,7 +3533,6 @@
                         (converted ? '<span>Converted to Yellow</span>' : '') +
                     '</span>' +
                 '</span>' +
-                '<span class="account-star-history-chevron" aria-hidden="true">›</span>' +
             '</article>';
     }
 
@@ -3602,10 +3590,10 @@
         '</div>';
     }
 
-    function starSourceSection(type, label) {
+    function starSourceSection(type, label, redeemability) {
         var items = accountStarItems(type);
         return '<section class="account-star-source-group" data-star-source="' + escapeHtml(type) + '">' +
-            '<div class="account-star-source-heading"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(items.length) + '</strong></div>' +
+            '<div class="account-star-source-heading"><span>' + escapeHtml(label) + '<em>' + escapeHtml(redeemability) + '</em></span><strong>' + escapeHtml(items.length) + '</strong></div>' +
             '<div class="account-star-history-list">' +
                 (items.length ? items.map(safeAccountStarHistoryRow).join('') : '<div class="account-star-history-empty compact"><span aria-hidden="true">☆</span><p>No ' + escapeHtml(type) + ' STARs yet.</p></div>') +
             '</div>' +
@@ -3630,8 +3618,8 @@
     function renderStarSource() {
         return '<section class="profile-card account-star-history account-wallet-detail">' +
             starWalletHeader('STAR SOURCE', 'wallet', 'Back to STAR Wallet') +
-            starSourceSection('yellow', 'YELLOW STAR') +
-            starSourceSection('blue', 'BLUE STAR') +
+            starSourceSection('yellow', 'YELLOW STAR', 'REDEEMABLE') +
+            starSourceSection('blue', 'BLUE STAR', 'NOT REDEEMABLE') +
         '</section>';
     }
 

@@ -1111,6 +1111,9 @@ html.teacher-modal-scroll-locked {
 .account-star-source-group { display: grid; gap: 9px; }
 .account-star-source-group + .account-star-source-group { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
 .account-star-source-heading { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.08em; }
+.account-star-source-heading > span { display: inline-flex; align-items: baseline; gap: 7px; }
+.account-star-source-heading em { color: var(--accent-dark); font-size: 0.62rem; font-style: normal; letter-spacing: 0.04em; }
+.account-star-source-group[data-star-source="blue"] .account-star-source-heading em { color: #1f6f87; }
 .account-star-source-heading strong { display: grid; place-items: center; min-width: 24px; height: 24px; border-radius: 999px; color: var(--ink); background: var(--page); font-size: 0.72rem; letter-spacing: 0; }
 .account-wallet-redeem-balance { display: flex; align-items: baseline; justify-content: center; gap: 6px; padding: 18px 8px 8px; color: #9a7000; }
 .account-wallet-redeem-balance > span { font-size: 2.2rem; }
@@ -1214,7 +1217,7 @@ html.teacher-modal-scroll-locked {
 }
 .account-star-history-row {
     display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
+    grid-template-columns: 32px minmax(0, 1fr);
     align-items: center;
     gap: 10px;
     min-height: 72px;
@@ -1223,15 +1226,8 @@ html.teacher-modal-scroll-locked {
     border-radius: 18px;
     background: rgba(255,255,255,0.78);
     box-shadow: 0 8px 22px rgba(25, 68, 61, 0.055);
-    cursor: pointer;
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    cursor: default;
 }
-.account-star-history-row:hover {
-    transform: translateY(-1px);
-    border-color: rgba(19, 118, 109, 0.2);
-    box-shadow: 0 12px 26px rgba(25, 68, 61, 0.09);
-}
-.account-star-history-row:active { transform: scale(0.985); }
 .account-star-history-icon {
     display: grid;
     place-items: center;
@@ -1270,7 +1266,6 @@ html.teacher-modal-scroll-locked {
     font-size: 0.7rem;
     font-weight: 750;
 }
-.account-star-history-chevron { color: #8ba09b; font-size: 1.45rem; line-height: 1; }
 .account-star-history-empty {
     display: grid;
     justify-items: center;
@@ -3173,14 +3168,43 @@ body:not(.teacher-page) .tab-button.active {
     background: rgba(24, 51, 47, 0.34);
     backdrop-filter: blur(8px);
 }
+.password-dialog-stack {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 11px;
+    width: min(440px, 100%);
+    max-height: min(680px, 90vh);
+    max-height: min(680px, 90dvh);
+}
 .password-dialog {
     position: relative;
-    width: min(440px, 100%);
+    width: 100%;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
     padding: 24px;
     border: 1px solid rgba(255, 255, 255, 0.84);
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.96);
     box-shadow: var(--shadow);
+}
+.password-dialog-title-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.password-dialog-title-row .password-dialog-back { grid-column: 1; }
+.password-dialog-title-row .eyebrow {
+    grid-column: 2;
+    margin: 0;
+    text-align: center;
+}
+.password-dialog-title-spacer {
+    grid-column: 3;
+    width: 38px;
+    height: 38px;
 }
 .password-form {
     display: grid;
@@ -3230,6 +3254,11 @@ body:not(.teacher-page) .tab-button.active {
     border-radius: 12px;
     font-weight: 850;
 }
+.password-dialog-actions {
+    grid-template-columns: minmax(180px, 240px);
+    justify-content: center;
+}
+.password-dialog-outside-close { justify-self: center; }
 
 .teacher-replies-card {
     display: grid;

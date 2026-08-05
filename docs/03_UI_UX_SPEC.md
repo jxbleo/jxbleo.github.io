@@ -566,9 +566,13 @@ Student account menu:
   Enter, save, and cancel workflow actions retain their own behavior.
 - the `Change password` dialog must layer above the account panel and remain
   the topmost student-account surface while open. Its only heading is the
-  eyebrow-style `Change Password` label at the top of the card; it has no
-  separate `Account` label and no top-right close button. The explicit Cancel
-  action remains available.
+  centered eyebrow-style `Change Password` label at the top of the card; a
+  top-left back arrow closes only this dialog, restores Personal Center, and
+  returns focus to `Change password`. There is no separate `Account` label,
+  top-right close button, or Cancel action. `Save Password` is centered. One
+  external `Close` capsule below the card closes both layers, returns to the
+  Dashboard, and restores focus to the identity chip; backdrop and Escape do
+  not dismiss the dialog.
 - Student ID, Class, and System are full-row keyboard/click targets with a
   restrained press-and-settle text response; they do not navigate or change
   profile data. Pointer hover and activation must not leave a selected
@@ -595,8 +599,11 @@ Student account menu:
   the Dashboard.
 - `STAR Source` is one level below the Wallet and groups task provenance with
   Yellow assignment STARs first and Blue self-study STARs second, without an
-  explanatory sentence above the groups. Entries retain color, score, earned
-  date, conversion state, and the linked best attempt.
+  explanatory sentence above the groups. The Yellow group heading says
+  `REDEEMABLE`, while the Blue group heading says `NOT REDEEMABLE`; this wording
+  is not repeated inside each source capsule. Entries retain color, score,
+  earned date, and conversion state, but are static records without chevrons,
+  keyboard-link semantics, task-entry confirmation, or practice navigation.
 - `History` is one level below the Wallet and shows every Cash Request newest
   first with its status and permanent evidence. Open-request upload, evidence
   review, and cancellation controls live with that request in History.
