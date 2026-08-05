@@ -3946,7 +3946,7 @@ body:not(.teacher-page) .tab-button.active {
     z-index: 2;
     display: flex;
     align-items: start;
-    justify-content: flex-start;
+    justify-content: space-between;
     gap: 14px;
     margin: -18px -18px 10px;
     padding: 10px 14px;
@@ -3958,6 +3958,9 @@ body:not(.teacher-page) .tab-button.active {
     display: flex;
     align-items: center;
     gap: 9px;
+}
+.updates-panel-dictionary-button {
+    flex: 0 0 auto;
 }
 .teacher-updates-body {
     display: grid;

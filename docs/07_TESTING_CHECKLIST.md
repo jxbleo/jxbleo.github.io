@@ -785,6 +785,9 @@ Check:
 - Teacher notification `Read all` clears every current unread thread and bell
   badge, persists after reload, stays disabled when everything is read, and a
   later attempt becomes unread
+- The Dictionary notebook icon is absent from the teacher page header and sits
+  at the far right of the notification modal toolbar; clicking it opens the
+  unchanged Dictionary workspace
 - the Teacher header Yellow STAR badge counts Awaiting proof and Awaiting teacher
   Cash requests; its modal opens in the current viewport, locks background
   scroll, sorts pending oldest-first, and restores icon focus on close

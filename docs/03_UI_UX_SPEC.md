@@ -347,8 +347,9 @@ Frontend rule:
   unread activity.
 - The teacher notification modal header does not show `NOTIFICATIONS` or
   `Student attempts`. It is reserved as an action toolbar: a circular double-
-  check `Read all` icon sits on the left and future action buttons may occupy
-  the remaining space. The notification card is capped at roughly three-
+  check `Read all` icon sits on the left, while the Dictionary notebook icon
+  sits at the far right and opens the unchanged Dictionary workspace. The
+  notification card is capped at roughly three-
   quarters of the viewport height and scrolls internally. It has no top-right
   `x`; a centered `Close` capsule sits outside and immediately below the card.
   The Read all icon keeps an accessible label/tooltip, shows a spinner while
@@ -599,10 +600,11 @@ always shows its current count, including zero.
 
 The teacher header omits the cat logo. Notifications and the raised-hand Argue
 control form the left utility group and retain their compact loading states while
-the teacher desk initializes. Dictionary uses the same A-marked notebook shape
-as the Student My Words entry at the teacher header's existing 20px footprint.
-Dictionary, Student lookup, Reports, and the
-teacher identity chip remain in the right utility group. The yellow STAR button
+the teacher desk initializes. Dictionary uses its original book outline at the
+existing 20px footprint, and its entry sits at the far right of the Notifications
+modal toolbar instead of the teacher header.
+Student lookup, Reports, and the teacher identity chip remain in the right utility
+group. The yellow STAR button
 sits inside Student lookup, immediately beside the create-student `+` action.
 Its red badge counts every `awaiting_proof` and `awaiting_teacher` Cash Request.
 Activating it opens an independent
