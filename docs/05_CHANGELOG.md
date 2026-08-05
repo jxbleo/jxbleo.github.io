@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Aligned the Teacher Review Approved and Rejected filters with Pending's
+  neutral label styling and moved each handled-request total directly below its
+  label, while retaining Pending's red unresolved alert.
 - Prevented the Visitor Dashboard learning-report entry from clearing Visitor
   mode and bouncing through login. Explicit visitors now remain on an empty
   report surface without calling the private report service; ordinary signed-out
