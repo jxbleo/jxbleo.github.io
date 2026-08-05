@@ -123,11 +123,9 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   STAR，再显示蓝色 self-study STAR；每条记录保留转换状态、获得日期、历史最高分和
   关联最佳 attempt 入口。`History` 按最新在前显示每次 Cash request、状态与永久凭证，
   并承载未完成 request 的追加凭证及取消操作
-- `To Do List` 默认弹窗不显示 To Do / Upcoming / Finished 三个顶部统计胶囊或
-  `ASSIGNMENTS` 标题。`THIS WEEK`、`UPCOMING`、`FINISHED` 三栏标题居中并在右侧
-  显示各自任务数量；有任务的栏目默认展开并可分别收起，向下滚动时依次吸顶并
-  替换前一栏。`UPCOMING` 为 0 时只显示标题和数字 0，不显示展开箭头或
-  `No upcoming assignments` 空状态。
+- `To Do List` 默认弹窗不显示 `ASSIGNMENTS` 标题。顶部固定并排显示
+  `THIS WEEK`、`UPCOMING`、`FINISHED` 三个按钮及各自任务数量，默认选中
+  `THIS WEEK`，一次只显示一个分类的任务；空分类显示简短空状态。
   Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示
   红色 `0%`，尝试但未通过时显示红色历史最高分，不再显示 `TO DO` 文字
 - 首页大卡片固定显示 `THIS WEEK`、`UPCOMING` 两条摘要。`THIS WEEK` 合并
