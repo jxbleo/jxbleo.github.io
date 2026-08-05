@@ -442,15 +442,17 @@ My Words:
   Words defaults to a two-column English-only card grid. One layout button in
   the second toolbar opens a compact one/two/three-column picker; the browser
   remembers the selected density. A separate `中` SVG toggle in that toolbar
-  reveals one compact `part of speech · Chinese meaning` line directly below
-  every English word; pressing it again hides all of those lines. The list is
+  reveals one compact `part of speech Chinese meaning` line directly below
+  every English word. That line is left-aligned and has no middle-dot separator;
+  pressing the toggle again hides all of those lines. The list is
   English-only by default and the browser remembers the student's choice.
   Overflowing English text pauses, automatically travels only inside its own
   card, pauses at the end, and returns, using the task-title 7–14 second timing.
   Reduced-motion mode uses a static ellipsis.
 - the mobile one/two/three-column picker closes as soon as the student scrolls,
   wheels, or drags the word list; it never remains floating over moving words.
-- opens a selected mobile word in a centered, rounded, independently scrolling
+- opens every selected word, including desktop and tablet selections, in a
+  centered, rounded, independently scrolling
   detail modal with a circular external pencil above the card and one external
   `Close` capsule directly below it. The mobile card has no three-dot menu. Its
   background is locked and closing restores the exact
@@ -462,8 +464,8 @@ My Words:
   The word and speaker share the title row; POS and the short English definition
   share the next line; optional Forms follows before two explicitly labelled
   Source and Note boxes. Source contains saved sentence text, original source,
-  and saved date. Desktop never opens this modal and updates its right detail
-  pane instead.
+  and saved date. The desktop detail pane may retain the current selection
+  behind the modal, but it never replaces the explicit card-opening response.
 - opening a mobile word detail immediately speaks that word once using the same
   browser `en-GB` pronunciation used by the visible speaker button.
 - retains the inline Add Word form for contextual empty-state actions, without

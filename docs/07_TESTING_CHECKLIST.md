@@ -451,8 +451,9 @@ Check:
   one-, two-, and three-column choices; each choice changes the word grid,
   closes the picker, updates its pressed state, and survives reload. Confirm the
   next action is a `中` SVG toggle: the initial grid is English-only, its first
-  press shows `part of speech · Chinese meaning` below every word, its second
-  press hides those lines, and the choice survives reload. Confirm the download
+  press shows a left-aligned `part of speech Chinese meaning` line below every
+  word with no middle dot, its second press hides those lines, and the choice
+  survives reload. Confirm the download
   icon remains after it and still opens the complete Export panel
 - reopen the one/two/three-column picker, then drag/scroll the word list without
   choosing a density; confirm the picker closes as soon as list motion begins
@@ -1186,11 +1187,11 @@ Check:
 - truly overflowing mobile words animate only inside their own tile with the
   existing bounded 7–14 second task-title rhythm; ordinary words remain still
   and reduced-motion mode uses ellipsis
-- tapping a mobile word speaks it once and opens one bounded detail modal with an external pencil
-  above it and no three-dot menu, locks the background, and restores the
-  list/search/sort/density/scroll context on close. Closing shrinks to and
-  briefly highlights the originating tile; desktop updates the right detail
-  pane instead
+- selecting a word at phone, tablet, and desktop widths speaks it once and opens
+  one bounded detail modal with an external pencil above it and no three-dot
+  menu. The modal locks the background and restores the list/search/sort/density/
+  scroll context on close. Closing shrinks to and briefly highlights the
+  originating tile; the old 760px-only modal condition must not return
 - Study contains only an honest static placeholder, real saved/Shanghai-week
   counts, and recent words; it exposes no learning-state or progress model
 - Add Word expands one line below the header. Word List owns Search,
