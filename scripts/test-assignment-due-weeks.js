@@ -623,12 +623,18 @@ function testStudentCalendarModel() {
     question_id: "Question_24",
     question_text: "Which answer is supported by the passage?",
     answer_snapshot: "B",
-    submitted_answer: "C"
+    submitted_answer: "C",
+    created_at: "2026-08-05T06:32:00.000Z"
   });
   assert(teacherReply.indexOf("Test Practice") < teacherReply.indexOf("Q24"));
   assert(teacherReply.indexOf("Q24") < teacherReply.indexOf("Which answer is supported by the passage?"));
+  assert(teacherReply.includes('class="student-message-title-window teacher-reply-title-window"'));
+  assert(teacherReply.includes('<strong class="teacher-reply-question-number">Q24.</strong> Which answer is supported by the passage?'));
   assert(teacherReply.includes("<b>Expected</b><span>B</span>"));
-  assert(teacherReply.includes("<b>Submitted</b><span>C</span>"));
+  assert(teacherReply.includes('<div class="teacher-reply-answer-head"><b>Submitted</b><span class="teacher-reply-status approved">'));
+  assert(teacherReply.includes("</div><span>C</span>"));
+  assert(teacherReply.includes("Argued &middot; 2026-08-05 14:32"));
+  assert(!teacherReply.includes("teacher-reply-arrow"));
   assert(!teacherReply.includes("<b>Before</b>"));
   assert(!teacherReply.includes("<b>Yours</b>"));
 
@@ -706,6 +712,11 @@ function testStudentModalShellMarkup() {
   assert(!dashboardJs.includes('id="teacher-replies-back"'));
   assert(!dashboardJs.includes("replies in your history"));
   assert(appCss.includes(".teacher-replies-stack {\n    display: grid;\n    grid-template-rows: minmax(0, 1fr) auto;"));
+  assert(appCss.includes(".teacher-reply-item {\n    width: 100%;\n    min-width: 0;"));
+  assert(appCss.includes(".teacher-reply-title-window {\n    width: 100%;\n    min-width: 0;"));
+  assert(appCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"));
+  assert(appCss.includes(".teacher-reply-flow { grid-template-columns: 1fr; }"));
+  assert(!appCss.includes(".teacher-reply-arrow {"));
   assert(!appCss.includes("height: min(620px, 74vh);"));
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }
@@ -1103,6 +1114,22 @@ async function main() {
       best_attempt_id: "self-study-star-attempt",
     }
   );
+  collections.answer_disputes = [{
+    _id: "resolved-dispute",
+    dispute_id: "resolved-dispute",
+    student_uid: "student-uid",
+    set_id: "TEST-SET",
+    attempt_id: "resolved-attempt",
+    assignment_id: "legacy-assignment",
+    question_id: "Question_1",
+    question_text_snapshot: "Resolved question",
+    submitted_answer: "student answer",
+    answer_snapshot: "expected answer",
+    status: "approved",
+    created_at: new Date("2026-08-05T06:32:00.000Z"),
+    updated_at: new Date("2026-08-05T07:00:00.000Z"),
+    resolved_at: new Date("2026-08-05T07:00:00.000Z"),
+  }];
   const setReadsBeforeDashboard = Number(collectionReadCounts.sets || 0);
   const dashboardResult = await getDashboard.main({});
   currentUid = "teacher-uid";
@@ -1114,6 +1141,7 @@ async function main() {
   assert.equal(dashboardResult.star_achievements[0].set.title, "Self-study history set");
   assert.equal(dashboardResult.star_achievements[1].star_type, "yellow");
   assert.equal(dashboardResult.star_achievements[1].assignment_id, "history-assignment-0");
+  assert.equal(new Date(dashboardResult.teacher_replies[0].created_at).toISOString(), "2026-08-05T06:32:00.000Z");
   const legacyDashboardAssignment = dashboardResult.assignments.find((item) => item.assignment_id === "legacy-assignment");
   assert.equal(new Date(legacyDashboardAssignment.due_at).toISOString(), "2026-06-21T15:59:59.000Z");
 

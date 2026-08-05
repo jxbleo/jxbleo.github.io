@@ -363,11 +363,15 @@ Check:
   items read, clear the bubble badge without changing the To Do List badge,
   restore the main Dashboard and bubble focus, and keep each `Go to question`
   link working
-- each Teacher Replies card shows its task title first, followed by `Qxx` and
-  the saved original question text. The two answer fields read `Expected` and
-  `Submitted`; verify long question text wraps cleanly on phone and iPad. An old
-  reply without a question snapshot shows an unavailable message while its
-  `Go to question` link remains usable
+- each Teacher Replies card shows its task title first on the same bounded
+  overflow-scrolling track used by task rows. The saved question begins with an
+  inline `Qxx.` prefix, and every wrapped line returns to the `Q` edge on phone
+  and iPad. `Expected` and `Submitted` have no arrow between them; the status
+  capsule shares Submitted's header row without narrowing the full-width answer
+  below. The bottom-right `Argued` timestamp matches the dispute's `created_at`
+  in Shanghai time, and the neutral white/gray `Go to question` remains legible
+  and identical on Approved, Rejected, and Pending cards. An old reply without
+  a question snapshot shows an unavailable message while its link remains usable
 - the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
 - the calendar icon remains in the right-side utility group and opens a

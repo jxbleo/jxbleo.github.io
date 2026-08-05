@@ -686,6 +686,30 @@
         return reply.status === 'approved' ? 'Approved' : reply.status === 'rejected' ? 'Rejected' : 'Pending';
     }
 
+    function teacherReplyTime(value) {
+        if (!value) return null;
+        var date = value instanceof Date ? value : new Date(value);
+        if (isNaN(date.getTime())) return null;
+        var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h23'
+        }).formatToParts(date);
+        var values = {};
+        parts.forEach(function(part) {
+            if (part.type !== 'literal') values[part.type] = part.value;
+        });
+        if (!values.year || !values.month || !values.day || values.hour == null || values.minute == null) return null;
+        return {
+            label: values.year + '-' + values.month + '-' + values.day + ' ' + values.hour + ':' + values.minute,
+            datetime: date.toISOString()
+        };
+    }
+
     function answerText(value, fallback) {
         if (Array.isArray(value)) return value.join(' / ');
         if (value == null || value === '') return fallback || '';
@@ -1521,26 +1545,29 @@
         var statusLabel = replyStatusLabel(reply);
         var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
         var title = reply.set_title || reply.set_id || 'Practice';
+        var questionLabel = replyQuestionLabel(reply.question_id).replace(/[.]+$/, '');
         var questionText = String(reply.question_text || '').trim() || 'Question text unavailable. Open the exercise to review it.';
         var expected = answerText(reply.answer_snapshot, 'Not shown');
         var submitted = answerText(reply.submitted_answer, 'Not shown');
         var href = hrefForTeacherReply(reply);
+        var arguedAt = teacherReplyTime(reply.created_at);
         return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
             '<div class="teacher-reply-head">' +
                 '<div class="teacher-reply-question">' +
-                    '<strong>' + escapeHtml(title) + '</strong>' +
-                    '<small>' + escapeHtml(replyQuestionLabel(reply.question_id)) + '</small>' +
-                    '<p>' + escapeHtml(questionText) + '</p>' +
+                    '<div class="student-message-title-window teacher-reply-title-window"><strong class="student-message-title-track teacher-reply-title-track">' + escapeHtml(title) + '</strong></div>' +
+                    '<p><strong class="teacher-reply-question-number">' + escapeHtml(questionLabel) + '.</strong> ' + escapeHtml(questionText) + '</p>' +
                 '</div>' +
-                '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
             '</div>' +
             '<div class="teacher-reply-flow">' +
                 '<div class="teacher-reply-answer"><b>Expected</b><span>' + escapeHtml(expected) + '</span></div>' +
-                '<div class="teacher-reply-arrow" aria-hidden="true">&rarr;</div>' +
-                '<div class="teacher-reply-answer submitted"><b>Submitted</b><span>' + escapeHtml(submitted) + '</span></div>' +
+                '<div class="teacher-reply-answer submitted">' +
+                    '<div class="teacher-reply-answer-head"><b>Submitted</b><span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span></div>' +
+                    '<span>' + escapeHtml(submitted) + '</span>' +
+                '</div>' +
             '</div>' +
             (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
-            '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question</a></div>' +
+            '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question<span aria-hidden="true">&rsaquo;</span></a></div>' +
+            (arguedAt ? '<time class="teacher-reply-timestamp" datetime="' + escapeHtml(arguedAt.datetime) + '">Argued &middot; ' + escapeHtml(arguedAt.label) + '</time>' : '') +
         '</article>';
     }
 
@@ -1823,6 +1850,7 @@
         document.body.appendChild(overlay);
         if (manageScrollLock) lockStudentMessageBackground();
         if (opener) opener.setAttribute('aria-expanded', 'true');
+        var replyTitleObserver = setupStudentMessageTitleTracks(overlay);
 
         var didMarkSeen = false;
         var closed = false;
@@ -1830,6 +1858,7 @@
             if (closed) return Promise.resolve();
             closed = true;
             document.removeEventListener('keydown', onKeydown);
+            if (replyTitleObserver) replyTitleObserver.disconnect();
             overlay.remove();
             if (manageScrollLock) unlockStudentMessageBackground();
             if (opener) opener.setAttribute('aria-expanded', 'false');

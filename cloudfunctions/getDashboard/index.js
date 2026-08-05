@@ -333,6 +333,7 @@ function disputeReplyView(item, set) {
     decision: item.decision || null,
     decision_label: disputeStatusLabel(item),
     teacher_note: item.teacher_note || "",
+    created_at: item.created_at || null,
     resolved_at: item.resolved_at || item.updated_at || null,
     student_seen: disputeSeen(item),
   };
