@@ -17,6 +17,9 @@
 
 ### Changed
 
+- Removed the standalone Learning Reports icon from the Student Dashboard.
+  Published student reports remain accessible through authenticated shared
+  report links, and the report reader and its authorization rules are unchanged.
 - Fixed Student lookup STAR and Completed metrics rendering in normal document
   flow after hiding the lookup, which exposed the Teacher homepage instead of
   the requested detail. Both now remain fixed over the viewport, and the

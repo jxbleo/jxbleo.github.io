@@ -716,14 +716,6 @@
 .reports-copy-actions { margin-top: 12px; }
 .reports-copy-button { min-height: 36px; font-size: 0.74rem; }
 
-.reports-dashboard-link {
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    text-decoration: none;
-}
-
-.reports-dashboard-link svg,
 .reports-header-link svg {
     width: 19px;
     height: 19px;

@@ -915,10 +915,11 @@ Check:
 - a shared `reports.html?report=` link sends a signed-out user to login and
   returns after login; a student sees only leaderboard plus their own detail;
   a different class's student and an inactive profile are denied;
-- after choosing `Continue as Visitor`, opening Learning Reports from the
-  Dashboard stays on `reports.html` with an empty list and reading surface,
-  makes no `learningReports` request, preserves Visitor mode, and does not
-  bounce between the report page and login;
+- the Student Dashboard has no standalone Learning Reports icon;
+- after choosing `Continue as Visitor`, directly opening `reports.html` stays
+  on an empty list and reading surface, makes no `learningReports` request,
+  preserves Visitor mode, and does not bounce between the report page and
+  login;
 - opening `Close report` removes the `report` query parameter without signing
   out, returns to the report chooser, focuses the report list, and allows a
   different weekly/monthly report to open on both desktop and phone widths;

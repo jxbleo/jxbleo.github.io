@@ -173,6 +173,9 @@ Navigation:
   Dashboard, and restores bubble focus.
 - My Words opens `my-words.html` from a notebook icon in the right-side utility
   group; it does not render a second My Words runtime inside Dashboard
+- the Student Dashboard has no standalone Learning Reports icon. Students open
+  published weekly/monthly reports from an authenticated shared report link;
+  `reports.html` and its authorization rules remain unchanged
 - account/profile actions remain in the top-right identity chip
 
 Assignment access and progress display:
