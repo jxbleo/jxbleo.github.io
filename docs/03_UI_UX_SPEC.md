@@ -727,6 +727,13 @@ notification list instead of dismissing the notification surface. The detail
 modal renders outside the notification list's scroll body, and attempt history
 scrolls inside the fixed-size detail card. The notification header keeps its
 double-check `Read all` control in a compact toolbar without a tall empty strip.
+Each BBC or Vocabulary attempt card uses one compact header row containing only
+`No. n`, the Shanghai submission date/time capsule, and the paper-review icon.
+The card does not repeat its score or page/audio durations because the attempt
+chart already carries score comparison. BBC comparison rows normalize internal
+question IDs to `Qn`. Vocabulary metadata shows `Quiz` plus the selected set
+count, or `Practice` plus selected set numbers in the same filled round capsules
+used by the student Practice picker.
 
 The teacher page defaults to `View` on entry, including when a stale
 `?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains

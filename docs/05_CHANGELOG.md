@@ -21,6 +21,11 @@
 
 ### Changed
 
+- Simplified Teacher BBC/Vocabulary notification attempt cards to one header
+  row with submission number, Shanghai date/time, and the paper action. Removed
+  repeated card scores and duration metadata, normalized BBC internal question
+  IDs to `Qn`, and changed Vocabulary context to a Quiz set count or the
+  student's selected Practice-number capsules.
 - Redesigned Student Teacher Replies cards for clearer mobile scanning: titles
   use the existing overflow track, questions use inline `Qn.` prefixes, status
   capsules sit in the Submitted header, answer columns no longer use an arrow,

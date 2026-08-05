@@ -3822,6 +3822,7 @@
                 return null;
             });
         });
+        requests.push(loadQuestionTextForRecords([{ set_id: attempt && attempt.set_id || '' }]));
         return Promise.all(requests).then(function() {
             render();
             if (errors.length) {
@@ -5019,12 +5020,16 @@
         if (!ids.length) return [];
         var data = questionTextCache[attemptSetId(attempt, assignment)];
         var groups = data && Array.isArray(data.quizGroups) ? data.quizGroups : [];
+        if (!groups.length) return [];
         return ids.map(function(groupId) {
             var index = groups.findIndex(function(group) { return sameId(group.id, groupId); });
-            if (index === -1) return String(groupId);
-            var group = groups[index];
-            var range = group.id || group.label || '';
-            return 'Group ' + (index + 1) + (range ? ' (' + range + ')' : '');
+            if (index !== -1) return String(index + 1);
+            var numericSuffix = String(groupId).match(/(?:^|\D)(\d+)$/);
+            return numericSuffix ? String(Number(numericSuffix[1])) : String(groupId);
+        }).sort(function(a, b) {
+            var left = Number(a);
+            var right = Number(b);
+            return isFinite(left) && isFinite(right) ? left - right : String(a).localeCompare(String(b));
         });
     }
 
@@ -5032,10 +5037,28 @@
         var mode = vocabularyAttemptModeLabel(attempt, assignment);
         if (!mode) return '';
         var groups = vocabularyAttemptGroupLabels(attempt, assignment);
+        var groupCount = Number(attempt && attempt.selected_group_count || groups.length || 0);
         return '<div class="matrix-attempt-context">' +
             '<span class="mode ' + (mode === 'Practice' ? 'practice' : 'quiz') + '">' + escapeHtml(mode) + '</span>' +
-            (groups.length ? '<span>Groups: ' + escapeHtml(groups.join(', ')) + '</span>' : '') +
+            (mode === 'Quiz'
+                ? (groupCount ? '<span class="quiz-set-count">' + escapeHtml(groupCount) + ' sets</span>' : '')
+                : (groups.length ? '<span class="matrix-practice-groups" aria-label="Selected practice sets">' +
+                    groups.map(function(group) {
+                        return '<span class="matrix-practice-group-chip">' + escapeHtml(group) + '</span>';
+                    }).join('') + '</span>' : '')) +
         '</div>';
+    }
+
+    function teacherQuestionNumber(questionId) {
+        var raw = String(questionId == null || questionId === '' ? '?' : questionId).trim();
+        var trailingNumber = raw.match(/(\d+)\D*$/);
+        if (trailingNumber) return String(Number(trailingNumber[1]));
+        return raw.replace(/^q(?:uestion)?[\s_:-]*/i, '') || '?';
+    }
+
+    function teacherQuestionLabel(questionId, attempt, assignment) {
+        var value = isBbcAttempt(attempt, assignment) ? teacherQuestionNumber(questionId) : String(questionId || '?');
+        return 'Q' + value;
     }
 
     function matrixAttemptEntries(attempts) {
@@ -5133,7 +5156,7 @@
         '</div>';
     }
 
-    function renderMatrixAttemptWrongRows(attempt) {
+    function renderMatrixAttemptWrongRows(attempt, assignment) {
         if (attempt && !attemptHasDetail(attempt)) {
             return attemptDetailPromises[String(attempt.attempt_id || '')]
                 ? '<div class="matrix-wrong-empty loading">Loading answer comparison...</div>'
@@ -5150,7 +5173,7 @@
                 var answer = result.submitted_answer == null || result.submitted_answer === ''
                     ? 'blank'
                     : result.submitted_answer;
-                return '<div class="q-cell">Q' + escapeHtml(result.question_id || '?') + '</div>' +
+                return '<div class="q-cell">' + escapeHtml(teacherQuestionLabel(result.question_id, attempt, assignment)) + '</div>' +
                     '<div class="student-answer">' + escapeHtml(formatAnswerText(answer, 'blank')) + '</div>' +
                     '<div class="correct-answer">' + escapeHtml(formatAnswerText(result.correct_answer, 'not available')) + '</div>';
             }).join('') +
@@ -5208,7 +5231,7 @@
                     var questionText = attemptQuestionText(result, attempt, assignment);
                     return '<article class="matrix-work-question ' + (correct ? 'correct' : 'wrong') + '">' +
                         '<div class="matrix-work-question-top">' +
-                            '<strong>Q' + escapeHtml(result.question_id || '?') + '</strong>' +
+                            '<strong>' + escapeHtml(teacherQuestionLabel(result.question_id, attempt, assignment)) + '</strong>' +
                             '<span>' + (correct ? 'Correct' : 'Wrong') + '</span>' +
                         '</div>' +
                         (questionText
@@ -5237,28 +5260,21 @@
         return '<div class="matrix-attempt-list">' +
             entries.slice().reverse().map(function(entry) {
                 var attempt = entry.attempt;
-                var duration = attemptDurationLabel(attempt);
-                var percent = numericPercent(attempt.percentage);
                 var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
                 return '<article class="matrix-attempt-card' + (highlighted ? ' highlight' : '') +
                     '" data-matrix-attempt-index="' + escapeHtml(entry.index) + '">' +
-                    '<div class="matrix-attempt-head"><div><h3>Attempt #' + escapeHtml(entry.number) + '</h3>' +
-                    '<div class="matrix-attempt-meta">' +
-                    '<span>' + escapeHtml(formatDateTime(attempt.submitted_at)) + '</span>' +
-                    (duration ? '<span class="time">' + escapeHtml(duration) + '</span>' : '') +
-                    '</div></div>' +
-                    '<div class="matrix-attempt-actions">' +
+                    '<div class="matrix-attempt-head"><h3>No. ' + escapeHtml(entry.number) + '</h3>' +
+                    '<time class="matrix-attempt-date" datetime="' + escapeHtml(attempt.submitted_at || '') + '">' +
+                        escapeHtml(formatDateTime(attempt.submitted_at)) + '</time>' +
                         '<button class="matrix-work-button" type="button" data-matrix-review-attempt="' +
                             escapeHtml(attempt.attempt_id || '') + '" data-matrix-review-set="' +
                             escapeHtml(attemptSetId(attempt, assignment)) + '" aria-label="View full work for attempt ' +
                             escapeHtml(entry.number) + '" title="View full work">' +
                             renderPaperReviewIcon() +
                         '</button>' +
-                        '<span class="matrix-score-pill ' + (percent != null && percent < 50 ? 'fail' : '') + '">' +
-                        escapeHtml(formatPercent(attempt.percentage)) + '</span>' +
-                    '</div></div>' +
+                    '</div>' +
                     renderVocabularyAttemptContext(attempt, assignment) +
-                    renderMatrixAttemptWrongRows(attempt) +
+                    renderMatrixAttemptWrongRows(attempt, assignment) +
                 '</article>';
             }).join('') +
         '</div>';

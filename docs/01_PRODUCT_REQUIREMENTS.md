@@ -86,6 +86,11 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   不再重复显示正确题。BBC 错题同时显示教师专用的标准答案和答案解析。
   Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`；计时 Practice 还显示学生
   当次选择的具体词组。单组即时 Practice 不保存 attempt，因此不产生教师通知
+- BBC / Vocabulary 通知线程的每次提交卡片顶部只显示 `No. n`、上海提交日期时间和
+  卷子入口，不重复显示 `Attempt`、分数、页面耗时或音频耗时。BBC 错题表的题号统一
+  显示为 `Qn`，不暴露 `Blank_`、`Question_` 或 `MC` 等内部题目 ID。Vocabulary
+  `Quiz` 只显示所选 set 数量；计时 `Practice` 用与学生选择器一致的数字胶囊显示
+  当次选择的 set 编号
 - 教师右上角的 Notifications、Review、Dictionary 与 STAR Redemption 都打开
   同尺寸、同结构的独立弹窗并使用统一的内容卡片和内部滚动区。Notifications、
   Review、Dictionary 使用卡片外正下方 `Close`；从学生名单进入的 STAR Redemption
