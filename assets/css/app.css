@@ -2320,6 +2320,12 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: 0 28px 78px rgba(24, 53, 47, 0.22);
     overflow: visible;
 }
+.practice-entry-card.is-question-confirmation {
+    padding-bottom: 26px;
+}
+.practice-entry-ribbon[hidden] {
+    display: none;
+}
 
 /* Give Student and Teacher dialog cards the task-entry confirmation's materialization. */
 .practice-entry-card,
@@ -3226,6 +3232,7 @@ body:not(.teacher-page) .tab-button.active {
     -webkit-backdrop-filter: blur(8px) saturate(118%);
     backdrop-filter: blur(8px) saturate(118%);
 }
+.teacher-replies-overlay[hidden] { display: none; }
 .student-message-overlay {
     background: rgba(17, 38, 34, 0.3);
     -webkit-backdrop-filter: blur(8px) saturate(118%);
@@ -3718,6 +3725,19 @@ body:not(.teacher-page) .tab-button.active {
     border: 1px solid var(--line);
     border-radius: 14px;
     background: #f8fbfa;
+    cursor: pointer;
+    transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+.teacher-reply-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(24, 53, 47, 0.09);
+}
+.teacher-reply-item:active {
+    transform: scale(0.99);
+}
+.teacher-reply-item:focus-visible {
+    outline: 3px solid rgba(19, 118, 109, 0.24);
+    outline-offset: 2px;
 }
 .teacher-reply-item.approved {
     border-color: rgba(35, 122, 82, 0.22);
@@ -3735,17 +3755,15 @@ body:not(.teacher-page) .tab-button.active {
     min-width: 0;
 }
 .teacher-reply-title-track {
+    min-width: 100%;
     color: #101918;
     font-size: 1.02rem;
     font-weight: 950;
+    text-align: center;
 }
 .teacher-reply-title-window {
     width: 100%;
     min-width: 0;
-}
-.teacher-reply-question-number {
-    color: var(--brand-dark);
-    font-weight: 900;
 }
 .teacher-reply-question p {
     max-width: 62ch;
@@ -3842,49 +3860,6 @@ body:not(.teacher-page) .tab-button.active {
     border: 1px solid #efc9c3;
     border-radius: 12px;
     background: #fff;
-}
-.teacher-reply-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 13px;
-}
-.teacher-reply-go {
-    min-height: 38px;
-    padding: 0 10px 0 16px;
-    border: 1px solid rgba(38, 52, 59, 0.13);
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    color: #26343b;
-    background: rgba(255, 255, 255, 0.76);
-    box-shadow: 0 5px 15px rgba(28, 42, 39, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.88);
-    font-size: 0.88rem;
-    font-weight: 850;
-    text-decoration: none;
-    transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
-}
-.teacher-reply-go > span {
-    width: 20px;
-    height: 20px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #26343b;
-    background: rgba(38, 52, 59, 0.08);
-    font-size: 1rem;
-    font-weight: 900;
-    line-height: 1;
-}
-.teacher-reply-go:hover {
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 7px 18px rgba(28, 42, 39, 0.11), inset 0 1px 0 #fff;
-}
-.teacher-reply-go:active {
-    transform: scale(0.97);
-    transition-duration: 80ms;
 }
 .teacher-reply-timestamp {
     display: block;

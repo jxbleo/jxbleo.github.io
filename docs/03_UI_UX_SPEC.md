@@ -171,15 +171,16 @@ Navigation:
   has no top-left Back or in-card close icon. A matching external `Close`
   capsule sits below the dialog, marks current replies seen, returns to the main
   Dashboard, and restores bubble focus.
-- Each Teacher Replies card keeps its exercise title on one single-line
-  overflow-scrolling track. The question begins as ordinary inline text such as
-  `Q7. Question text`; wrapped lines return to the `Q` edge. Expected and
-  Submitted answers have no arrow between them. The Approved, Rejected, or
-  Pending capsule sits inside the Submitted box on the same compact header row
-  as its label, leaving the answer a full-width row below. `Go to question` uses
-  one neutral white/gray action style for every status, and the card's bottom
-  right shows the Shanghai date and time when the student submitted the Argue
-  request.
+- Each Teacher Replies card centers its exercise title on a single-line
+  overflow-scrolling track. The saved question text appears without a `Qxx`
+  prefix. Expected and Submitted answers have no arrow between them. The
+  Approved, Rejected, or Pending capsule sits inside the Submitted box on the
+  same compact header row as its label, leaving the answer a full-width row
+  below. There is no separate `Go to question` control: the complete card is a
+  keyboard-accessible target, and clicking it first opens a confirmation with a
+  `Go to question` action. Cancelling restores focus to that card. The card's
+  bottom right shows the Shanghai date and time when the student submitted the
+  Argue request.
 - My Words opens `my-words.html` from a notebook icon in the right-side utility
   group; it does not render a second My Words runtime inside Dashboard
 - the Student Dashboard has no standalone Learning Reports icon. Students open

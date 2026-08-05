@@ -626,15 +626,19 @@ function testStudentCalendarModel() {
     submitted_answer: "C",
     created_at: "2026-08-05T06:32:00.000Z"
   });
-  assert(teacherReply.indexOf("Test Practice") < teacherReply.indexOf("Q24"));
-  assert(teacherReply.indexOf("Q24") < teacherReply.indexOf("Which answer is supported by the passage?"));
+  assert(teacherReply.indexOf("Test Practice") < teacherReply.indexOf("Which answer is supported by the passage?"));
   assert(teacherReply.includes('class="student-message-title-window teacher-reply-title-window"'));
-  assert(teacherReply.includes('<strong class="teacher-reply-question-number">Q24.</strong> Which answer is supported by the passage?'));
+  assert(teacherReply.includes('role="button" tabindex="0"'));
+  assert(teacherReply.includes('data-open-href="'));
+  assert(teacherReply.includes('focus=Question_24'));
+  assert(teacherReply.includes('<p>Which answer is supported by the passage?</p>'));
+  assert(!teacherReply.includes("Q24."));
   assert(teacherReply.includes("<b>Expected</b><span>B</span>"));
   assert(teacherReply.includes('<div class="teacher-reply-answer-head"><b>Submitted</b><span class="teacher-reply-status approved">'));
   assert(teacherReply.includes("</div><span>C</span>"));
   assert(teacherReply.includes("Argued &middot; 2026-08-05 14:32"));
   assert(!teacherReply.includes("teacher-reply-arrow"));
+  assert(!teacherReply.includes("teacher-reply-go"));
   assert(!teacherReply.includes("<b>Before</b>"));
   assert(!teacherReply.includes("<b>Yours</b>"));
 
@@ -714,9 +718,15 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".teacher-replies-stack {\n    display: grid;\n    grid-template-rows: minmax(0, 1fr) auto;"));
   assert(appCss.includes(".teacher-reply-item {\n    width: 100%;\n    min-width: 0;"));
   assert(appCss.includes(".teacher-reply-title-window {\n    width: 100%;\n    min-width: 0;"));
+  assert(appCss.includes(".teacher-reply-title-track {\n    min-width: 100%;"));
+  assert(appCss.includes("text-align: center;"));
   assert(appCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"));
   assert(appCss.includes(".teacher-reply-flow { grid-template-columns: 1fr; }"));
   assert(!appCss.includes(".teacher-reply-arrow {"));
+  assert(!appCss.includes(".teacher-reply-go {"));
+  assert(dashboardJs.includes("overlay.querySelectorAll('.teacher-reply-item[data-open-href]')"));
+  assert(dashboardJs.includes("enterLabel: 'Go to question'"));
+  assert(dashboardJs.includes("hideStatus: true"));
   assert(!appCss.includes("height: min(620px, 74vh);"));
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }

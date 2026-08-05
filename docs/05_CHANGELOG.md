@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Made each Student Teacher Replies card the question-navigation target: card
+  titles are centered, question prefixes and inline navigation buttons are
+  removed, and clicking or keyboard-activating a card now opens a confirmation
+  before navigating to the original question.
 - Consolidated the mobile My Words density controls into one layout picker with
   one-, two-, and three-column choices, preserved the selected layout in the
   browser, and replaced the ambiguous Export ellipsis with a download icon

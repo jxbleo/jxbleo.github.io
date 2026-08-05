@@ -361,17 +361,18 @@ Check:
   outside and directly below the card in the same style as other independent
   student dialogs. Close, Escape, and backdrop dismissal mark currently unseen
   items read, clear the bubble badge without changing the To Do List badge,
-  restore the main Dashboard and bubble focus, and keep each `Go to question`
-  link working
-- each Teacher Replies card shows its task title first on the same bounded
-  overflow-scrolling track used by task rows. The saved question begins with an
-  inline `Qxx.` prefix, and every wrapped line returns to the `Q` edge on phone
-  and iPad. `Expected` and `Submitted` have no arrow between them; the status
+  restore the main Dashboard and bubble focus, and keep question navigation
+  working from each complete reply card
+- each Teacher Replies card shows its centered task title first on the same
+  bounded overflow-scrolling track used by task rows. The saved question has no
+  `Qxx.` prefix and wraps cleanly on phone and iPad. `Expected` and `Submitted`
+  have no arrow between them; the status
   capsule shares Submitted's header row without narrowing the full-width answer
   below. The bottom-right `Argued` timestamp matches the dispute's `created_at`
-  in Shanghai time, and the neutral white/gray `Go to question` remains legible
-  and identical on Approved, Rejected, and Pending cards. An old reply without
-  a question snapshot shows an unavailable message while its link remains usable
+  in Shanghai time. There is no inline navigation button: clicking a card or
+  pressing Enter/Space opens the shared confirmation with a `Go to question`
+  action; cancelling returns focus to the same card. An old reply without a
+  question snapshot shows an unavailable message while its card remains usable
 - the notebook icon remains in the right-side utility group and opens My
   Words in an independent modal
 - the calendar icon remains in the right-side utility group and opens a
