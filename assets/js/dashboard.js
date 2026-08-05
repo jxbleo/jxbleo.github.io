@@ -674,14 +674,6 @@
         return appendQueryParam(href, 'focus', reply.question_id);
     }
 
-    function replyQuestionLabel(questionId) {
-        var text = String(questionId || 'Question').trim();
-        var match = text.match(/(\d+)\s*$/);
-        if (match) return 'Q' + String(Number(match[1]));
-        if (/^q/i.test(text)) return text.toUpperCase();
-        return text;
-    }
-
     function replyStatusLabel(reply) {
         return reply.status === 'approved' ? 'Approved' : reply.status === 'rejected' ? 'Rejected' : 'Pending';
     }
@@ -1393,6 +1385,8 @@
         var editionItems = Array.isArray(options.editions) ? options.editions : [];
         var editionRoot = overlay.querySelector('#practice-entry-editions');
         var enterButton = overlay.querySelector('#practice-entry-enter');
+        var entryCard = overlay.querySelector('.practice-entry-card');
+        var statusRibbon = overlay.querySelector('#practice-entry-ribbon');
         overlay.practiceEditionModels = editionItems.map(practiceEntryItemModel);
         editionRoot.hidden = editionItems.length < 2;
         editionRoot.innerHTML = editionItems.length < 2 ? '' : overlay.practiceEditionModels.map(function(model, index) {
@@ -1404,9 +1398,13 @@
         overlay.dataset.href = editionItems.length > 1 ? '' : (href || '');
         overlay.practiceEntryOnDismiss = typeof options.onDismiss === 'function' ? options.onDismiss : null;
         overlay.practiceEntryOnCommit = typeof options.onCommit === 'function' ? options.onCommit : null;
+        entryCard.classList.toggle('is-question-confirmation', options.hideStatus === true);
+        entryCard.setAttribute('aria-label', options.dialogLabel || 'Practice entry confirmation');
+        enterButton.querySelector('span').textContent = options.enterLabel || 'Enter';
         overlay.querySelector('#practice-entry-kind').textContent = practiceEntryKind(element);
         overlay.querySelector('#practice-entry-title').textContent = practiceEntryTitle(element);
-        overlay.querySelector('#practice-entry-ribbon').className = 'practice-entry-ribbon ' + status;
+        statusRibbon.className = 'practice-entry-ribbon ' + status;
+        statusRibbon.hidden = options.hideStatus === true;
         overlay.querySelector('#practice-entry-status').innerHTML = practiceEntryScoreHtml(best, locked);
         enterButton.disabled = editionItems.length > 1;
         overlay.hidden = false;
@@ -1545,17 +1543,18 @@
         var statusLabel = replyStatusLabel(reply);
         var statusIcon = statusClass === 'approved' ? '&#10003;' : statusClass === 'rejected' ? '&times;' : '!';
         var title = reply.set_title || reply.set_id || 'Practice';
-        var questionLabel = replyQuestionLabel(reply.question_id).replace(/[.]+$/, '');
         var questionText = String(reply.question_text || '').trim() || 'Question text unavailable. Open the exercise to review it.';
         var expected = answerText(reply.answer_snapshot, 'Not shown');
         var submitted = answerText(reply.submitted_answer, 'Not shown');
         var href = hrefForTeacherReply(reply);
         var arguedAt = teacherReplyTime(reply.created_at);
-        return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '">' +
+        return '<article class="teacher-reply-item ' + escapeHtml(statusClass) + '" role="button" tabindex="0"' +
+            ' data-open-href="' + escapeHtml(href) + '" data-entry-kind="' + escapeHtml(title) + '" data-entry-title="' + escapeHtml(questionText) + '"' +
+            ' aria-label="Go to question: ' + escapeHtml(questionText) + '">' +
             '<div class="teacher-reply-head">' +
                 '<div class="teacher-reply-question">' +
                     '<div class="student-message-title-window teacher-reply-title-window"><strong class="student-message-title-track teacher-reply-title-track">' + escapeHtml(title) + '</strong></div>' +
-                    '<p><strong class="teacher-reply-question-number">' + escapeHtml(questionLabel) + '.</strong> ' + escapeHtml(questionText) + '</p>' +
+                    '<p>' + escapeHtml(questionText) + '</p>' +
                 '</div>' +
             '</div>' +
             '<div class="teacher-reply-flow">' +
@@ -1566,7 +1565,6 @@
                 '</div>' +
             '</div>' +
             (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
-            '<div class="teacher-reply-actions"><a class="teacher-reply-go" href="' + escapeHtml(href) + '">Go to question<span aria-hidden="true">&rsaquo;</span></a></div>' +
             (arguedAt ? '<time class="teacher-reply-timestamp" datetime="' + escapeHtml(arguedAt.datetime) + '">Argued &middot; ' + escapeHtml(arguedAt.label) + '</time>' : '') +
         '</article>';
     }
@@ -1877,21 +1875,43 @@
             if (event.key === 'Escape') close(true);
         }
 
+        function suspend() {
+            document.removeEventListener('keydown', onKeydown);
+            overlay.hidden = true;
+            if (opener) opener.setAttribute('aria-expanded', 'false');
+        }
+
+        function resume(card) {
+            overlay.hidden = false;
+            if (opener) opener.setAttribute('aria-expanded', 'true');
+            document.addEventListener('keydown', onKeydown);
+            if (card && card.isConnected) card.focus({ preventScroll: true });
+        }
+
         overlay.addEventListener('click', function(event) {
             if (event.target === overlay) close(true);
         });
         var closeButton = overlay.querySelector('#teacher-replies-close');
         closeButton.addEventListener('click', function() { close(true); });
         window.setTimeout(function() { closeButton.focus(); }, 0);
-        overlay.querySelectorAll('.teacher-reply-go').forEach(function(link) {
-            link.addEventListener('click', function(event) {
-                var href = link.getAttribute('href');
-                if (!href || href === '#') return;
+        overlay.querySelectorAll('.teacher-reply-item[data-open-href]').forEach(function(card) {
+            function openQuestion(event) {
+                if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
-                Promise.resolve(close(true)).then(function() {
-                    window.location.href = href;
+                event.stopPropagation();
+                var href = card.dataset.openHref;
+                if (!href || href === '#') return;
+                suspend();
+                showPracticeEntryDialog(card, href, {
+                    dialogLabel: 'Go to question confirmation',
+                    enterLabel: 'Go to question',
+                    hideStatus: true,
+                    onDismiss: function() { resume(card); },
+                    onCommit: function() { close(true); }
                 });
-            });
+            }
+            card.addEventListener('click', openQuestion);
+            card.addEventListener('keydown', openQuestion);
         });
         document.addEventListener('keydown', onKeydown);
     }
