@@ -252,7 +252,7 @@ body.my-words-detail-open {
 .my-words-workspace {
     display: block;
     min-height: calc(100vh - 98px);
-    overflow: hidden;
+    overflow: clip;
     border: 1px solid rgba(19, 118, 109, 0.12);
     border-top: 0;
     border-radius: 0 0 28px 28px;

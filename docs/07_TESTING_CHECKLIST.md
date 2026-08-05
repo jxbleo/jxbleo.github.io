@@ -416,6 +416,10 @@ Check:
 - open My Words at desktop, tablet, and 390px phone widths. Desktop keeps the
   Sidebar and split notebook; mobile replaces the Sidebar with sticky tabs and
   keeps the word grid within the viewport
+- while signed in with an empty feedback message, switch from Review to My
+  Words and confirm the toolbar begins directly below the primary navigation;
+  expand Export and confirm `All`, `This Week`, `This Month`, and `This Year`
+  are fully visible and do not slide underneath the sticky toolbar
 - Add uses the green circular header control and exposes only one Enter-to-save
   field. Search belongs to Word List; leaving Word List clears the query while
   keeping sort and density preferences
