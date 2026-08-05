@@ -563,7 +563,9 @@ Student account menu:
   action remains available.
 - Student ID, Class, and System are full-row keyboard/click targets with a
   restrained press-and-settle text response; they do not navigate or change
-  profile data. Reduced-motion mode replaces the movement with a static color
+  profile data. Pointer hover and activation must not leave a selected
+  background or pressed scale on any of these rows; only the text response is
+  shown. Reduced-motion mode replaces the movement with a brief static color
   response.
 - `Finished` is a full-row destination with a chevron. Activating it dismisses
   Personal Center and opens a focused `Finished` task list, newest completion
