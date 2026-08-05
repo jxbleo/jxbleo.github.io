@@ -88,6 +88,7 @@
         activityReadAllPending: false,
         activityReadAllSuccess: false,
         notificationAttemptId: '',
+        notificationAttemptEntering: false,
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
         disputeMerge: false,
@@ -3821,7 +3822,6 @@
                 return null;
             });
         });
-        render();
         return Promise.all(requests).then(function() {
             render();
             if (errors.length) {
@@ -6369,7 +6369,8 @@
         });
         if (!attempt) return '';
         var detailItem = notificationDetailItemForAttempt(attempt);
-        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal teacher-utility-modal" data-notification-attempt-close="backdrop">' +
+        var renderPhaseClass = state.notificationAttemptEntering ? ' is-entering' : ' is-refreshing';
+        return '<div class="progress-matrix-modal-backdrop notification-attempt-modal teacher-utility-modal' + renderPhaseClass + '" data-notification-attempt-close="backdrop">' +
             '<div class="progress-matrix-modal-shell notification-attempt-shell teacher-utility-shell">' +
                 '<section class="progress-matrix-modal notification-attempt-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Attempt details">' +
                     '<div class="progress-matrix-modal-scroll">' +
@@ -6462,8 +6463,10 @@
         state.notificationAttemptId = attemptId;
         state.targetMatrixAttemptId = '';
         state.selectedMatrixReviewAttemptId = '';
+        state.notificationAttemptEntering = true;
         markAttemptGroupReviewed(attempt);
         renderUpdatesPanel();
+        state.notificationAttemptEntering = false;
         loadNotificationThreadAttemptDetails(attempt, renderUpdatesPanel);
     }
 
