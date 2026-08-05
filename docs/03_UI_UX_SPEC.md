@@ -600,9 +600,9 @@ always shows its current count, including zero.
 
 The teacher header omits the cat logo. Notifications and the raised-hand Argue
 control form the left utility group and retain their compact loading states while
-the teacher desk initializes. Dictionary uses its original book outline at the
-existing 20px footprint, and its entry sits at the far right of the Notifications
-modal toolbar instead of the teacher header.
+the teacher desk initializes. Dictionary uses the same A-marked notebook shape
+as the Student My Words entry at the existing 20px footprint, but its entry sits
+at the far right of the Notifications modal toolbar instead of the teacher header.
 Student lookup, Reports, and the teacher identity chip remain in the right utility
 group. The yellow STAR button
 sits inside Student lookup, immediately beside the create-student `+` action.
