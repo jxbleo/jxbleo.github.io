@@ -434,19 +434,26 @@ My Words:
   and Note. Selecting a recent Review word switches desktop to My Words and
   selects that word.
 - uses the same single sticky `My Words / Review` row on narrow screens. My
-  Words defaults to a two-column English-only card grid and
-  offers a single-column alternative; the browser remembers this density.
+  Words defaults to a two-column English-only card grid. One layout button in
+  the second toolbar opens a compact one/two/three-column picker; the browser
+  remembers the selected density.
   Overflowing English text pauses, automatically travels only inside its own
   card, pauses at the end, and returns, using the task-title 7–14 second timing.
   Reduced-motion mode uses a static ellipsis.
 - opens a selected mobile word in a centered, rounded, independently scrolling
-  detail modal no taller than about 88dvh; its background is locked and closing
-  restores the exact list/search/sort/density/scroll context. Desktop never
-  opens this modal and updates its right detail pane instead.
+  detail modal with one external `Close` capsule directly below the card; its
+  background is locked and closing restores the exact
+  list/search/sort/density/scroll context. The card omits `WORD DETAILS`,
+  `Saved word`, dictionary-review status, and pronunciation-placeholder labels.
+  The word and speaker share the title row; POS and the short English definition
+  share the next line; optional Forms follows before two explicitly labelled
+  Source and Note boxes. Source contains saved sentence text, original source,
+  and saved date. Desktop never opens this modal and updates its right detail
+  pane instead.
 - retains the inline Add Word form for contextual empty-state actions, without
   a permanent header `+`. My Words owns a left-edge magnifying-glass Search
-  control, mobile density and `•••` Export controls, plus a compact sort select
-  aligned to the far right. Export expands
+  control, one mobile layout-picker control, a recognizable download/Export
+  icon, and a compact sort select aligned to the far right. Export expands
   inside the current page rather than navigating away. The workspace may clip
   its rounded outer edge but must not become a scroll container: the sticky
   toolbar starts directly below the primary navigation, and the expanded Export
@@ -461,6 +468,9 @@ My Words:
 - lets the student edit only the English word or phrase through an inline
   Cancel/Done state. Dictionary details remain read-only and are looked up
   again after the edit. A separate personal Note accepts up to 500 characters.
+  Mobile word and Note inputs render at 16px so focusing them does not trigger
+  Safari page zoom. The three-dot detail menu closes when the student clicks
+  anywhere outside it.
   The expanded word card stays open when Use base, Edit word, Add/Edit Note,
   Cancel, or Done re-renders that card; the student never needs to expand it a
   second time to reach the resulting form or controls.
