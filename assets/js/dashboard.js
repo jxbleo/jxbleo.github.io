@@ -1096,6 +1096,7 @@
     function openChangePasswordDialog() {
         var existing = document.querySelector('.password-dialog-overlay');
         if (existing) existing.remove();
+        var opener = document.activeElement;
 
         var overlay = document.createElement('div');
         overlay.className = 'password-dialog-overlay';
@@ -1130,6 +1131,9 @@
         function close() {
             document.removeEventListener('keydown', onKeydown);
             overlay.remove();
+            if (opener && opener.isConnected && typeof opener.focus === 'function') {
+                opener.focus({ preventScroll: true });
+            }
         }
 
         function setMessage(text, kind) {
@@ -1715,7 +1719,7 @@
         var summaryHtml = '';
         var sectionsHtml = '';
 
-        if (scope === 'week' || scope === 'upcoming') {
+        if (scope === 'week' || scope === 'upcoming' || scope === 'finished') {
             var focusModel = weeklyFocusModel();
             if (scope === 'week') {
                 dialogTitle = 'This Week';
@@ -1732,7 +1736,7 @@
                     finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'No assignments this week.'
                 );
-            } else {
+            } else if (scope === 'upcoming') {
                 dialogTitle = 'Upcoming';
                 upcoming = focusModel.nextWeek.slice().sort(function(left, right) {
                     var leftFinished = isFinishedStatus(left.status) ? 1 : 0;
@@ -1743,6 +1747,15 @@
                 sectionsHtml = renderStudentMessageFlatList(
                     upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
                     'No assignments are due next week.'
+                );
+            } else {
+                dialogTitle = 'Finished';
+                finished = (state.assignments || []).filter(function(item) {
+                    return isFinishedStatus(item.status);
+                }).sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
+                sectionsHtml = renderStudentMessageFlatList(
+                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                    'Finished assignments will appear here.'
                 );
             }
         } else {
@@ -1782,6 +1795,9 @@
             overlay.remove();
             unlockStudentMessageBackground();
             if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
+            if (scope === 'finished' && markSeen !== false && identityChip) {
+                identityChip.focus({ preventScroll: true });
+            }
             return Promise.resolve();
         }
         overlay.studentMessageClose = close;
@@ -3442,10 +3458,10 @@
                         '<h2 class="account-summary-name">' + escapeHtml(profile.name || profile.student_id) + '</h2>' +
                         '<button class="star-counter assignment-star-counter account-row-star" id="star-counter" type="button" aria-label="Open STAR Wallet. ' + escapeHtml(availableYellowStars()) + ' yellow STARs available">★ ' + escapeHtml(availableYellowStars()) + '</button>' +
                     '</div>' +
-                    '<div class="profile-row"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></div>' +
-                    '<div class="profile-row"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></div>' +
-                    '<div class="profile-row"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></div>' +
-                    '<div class="profile-row account-final-row"><span>Finished</span><strong>' + escapeHtml(finishedCount) + '</strong></div>' +
+                    '<button class="profile-row account-feedback-row" type="button" data-account-feedback aria-label="Student ID ' + escapeHtml(profile.student_id) + '"><span>Student ID</span><strong>' + escapeHtml(profile.student_id) + '</strong></button>' +
+                    '<button class="profile-row account-feedback-row" type="button" data-account-feedback aria-label="Class ' + escapeHtml(profile.class_group || 'Not set') + '"><span>Class</span><strong>' + escapeHtml(profile.class_group || 'Not set') + '</strong></button>' +
+                    '<button class="profile-row account-feedback-row" type="button" data-account-feedback aria-label="System ' + escapeHtml(profile.curriculum_track || 'Not set') + '"><span>System</span><strong>' + escapeHtml(profile.curriculum_track || 'Not set') + '</strong></button>' +
+                    '<button class="profile-row account-final-row account-finished-row" type="button" id="account-finished" aria-label="Open finished assignments. ' + escapeHtml(finishedCount) + ' finished"><span>Finished</span><span class="account-finished-value"><strong>' + escapeHtml(finishedCount) + '</strong><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m7 4 6 6-6 6"></path></svg></span></button>' +
                     '<div class="account-quiet-footer">' +
                         '<div class="account-quiet-actions">' +
                             '<button class="text-button" id="change-password" type="button">Change password</button>' +
@@ -3458,6 +3474,24 @@
         updateStarCounter(false);
         starCounter.addEventListener('click', function() {
             openAccountStarHistory();
+        });
+        profileContent.querySelectorAll('[data-account-feedback]').forEach(function(row) {
+            row.addEventListener('click', function() {
+                window.clearTimeout(row.accountFeedbackTimer);
+                row.classList.remove('is-responding');
+                void row.offsetWidth;
+                row.classList.add('is-responding');
+                row.accountFeedbackTimer = window.setTimeout(function() {
+                    row.classList.remove('is-responding');
+                }, 420);
+            });
+            row.addEventListener('animationend', function() {
+                row.classList.remove('is-responding');
+            });
+        });
+        document.getElementById('account-finished').addEventListener('click', function() {
+            setAccountPanel(false);
+            openStudentMessageCenter('finished');
         });
         document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
         document.getElementById('change-password').addEventListener('click', function() {
@@ -4073,7 +4107,8 @@
 
     document.addEventListener('click', function(e) {
         if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) &&
-            !e.target.closest('#identity-chip') && !e.target.closest('#practice-entry-overlay')) {
+            !e.target.closest('#identity-chip') && !e.target.closest('#practice-entry-overlay') &&
+            !e.target.closest('.password-dialog-overlay')) {
             setAccountPanel(false);
         }
         var categoryTrigger = e.target.closest('#student-library-category-trigger');
@@ -4132,6 +4167,8 @@
     document.addEventListener('keydown', function(e) {
         var practiceOverlay = document.getElementById('practice-entry-overlay');
         if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
+        var passwordOverlay = document.querySelector('.password-dialog-overlay');
+        if (e.key === 'Escape' && passwordOverlay) return;
         if (e.key === 'Escape' && state.starPanelOpen) {
             closeStarPanel(false);
             return;

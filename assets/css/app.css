@@ -2126,10 +2126,18 @@ body:not(.teacher-page) .tab-button.active {
     .star-flyer { animation-duration: 1ms; }
     .star-counter.pop { animation-duration: 1ms; }
     .star-counter,
+    .account-feedback-row,
+    .account-finished-row,
+    .account-finished-value svg,
     .account-star-back,
     .account-star-history-row,
     .account-wallet-destinations button,
-    .account-wallet-redeem { transition-duration: 1ms; }
+    .account-wallet-redeem { transition-duration: 1ms !important; }
+    .account-feedback-row.is-responding > span,
+    .account-feedback-row.is-responding > strong {
+        animation: none !important;
+        color: var(--accent-dark);
+    }
     .student-greeting-track.is-scrolling {
         transform: none;
         animation: none;
@@ -2601,6 +2609,60 @@ body:not(.teacher-page) .tab-button.active {
 .profile-row:last-child { border: 0; }
 .profile-row.account-final-row { border-bottom: 0; }
 .profile-row span { color: var(--muted); }
+.account-feedback-row,
+.account-finished-row {
+    width: 100%;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.account-feedback-row > span,
+.account-feedback-row > strong,
+.account-finished-row > span { will-change: transform; }
+.account-feedback-row:hover,
+.account-finished-row:hover { background: rgba(19, 118, 109, 0.045); }
+.account-feedback-row:active,
+.account-finished-row:active { transform: scale(0.985); }
+.account-feedback-row:focus-visible,
+.account-finished-row:focus-visible {
+    outline: 3px solid rgba(31, 111, 135, 0.24);
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+.account-feedback-row.is-responding > span,
+.account-feedback-row.is-responding > strong {
+    animation: account-row-response 360ms cubic-bezier(.22,.8,.3,1);
+}
+.account-feedback-row.is-responding > strong { animation-delay: 24ms; }
+.account-finished-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink) !important;
+}
+.account-finished-value svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 160ms ease;
+}
+.account-finished-row:hover .account-finished-value svg { transform: translateX(2px); }
+@keyframes account-row-response {
+    0%, 100% { transform: translateX(0); }
+    42% { transform: translateX(-3px); }
+    72% { transform: translateX(1px); }
+}
 .profile-actions { display: grid; gap: 10px; margin-top: 18px; }
 .profile-actions button { min-height: 44px; border-radius: 12px; font-weight: 850; }
 .outline-button { border: 1px solid var(--line); color: var(--ink); background: white; }
@@ -3099,7 +3161,7 @@ body:not(.teacher-page) .tab-button.active {
 .password-dialog-overlay {
     position: fixed;
     inset: 0;
-    z-index: 2000;
+    z-index: 2200;
     display: grid;
     place-items: center;
     padding: 20px;

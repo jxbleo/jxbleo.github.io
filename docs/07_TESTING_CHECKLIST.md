@@ -275,7 +275,15 @@ Check:
 - login succeeds
 - profile loads
 - opening `Change password` from the account panel shows the password dialog
-  above the account panel
+  above the account panel; interacting with its fields does not dismiss the
+  account panel underneath, and Escape closes only the password dialog before
+  returning focus to `Change password`
+- Student ID, Class, and System rows respond to pointer and keyboard activation
+  with a restrained text movement but do not navigate or edit data; reduced
+  motion uses a non-moving response
+- activating the Personal Center `Finished` row dismisses Personal Center and
+  opens a focused, newest-first completed-task list using the same category,
+  title, score, chevron, and task-entry confirmation behavior as Assignments
 - opening Personal Center from the identity chip shows no top-right `×`; its
   centered card uses the same thick glass, softly dimmed backdrop, radius, and
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
