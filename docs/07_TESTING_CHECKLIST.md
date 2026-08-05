@@ -845,8 +845,9 @@ Check:
   selecting a result replaces the search field with the student's name, and
   the back control restores the searchable student list
 - Argue list loads and groups disputes
-- Argue status tabs show Approved/Rejected totals as background-free text in
-  their matching status colors, while Pending shows a red notification count
+- Argue status tabs use the same neutral uppercase label styling; Approved and
+  Rejected show quiet background-free totals directly below their labels, while
+  Pending shows a red notification count
   only when unresolved requests exist
 - Argue list does not show student disputes linked to cancelled assignments
 - cancelling open selected assignments in View hides them from teacher View
