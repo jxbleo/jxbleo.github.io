@@ -289,8 +289,9 @@ Check:
 - opening Personal Center from the identity chip shows no top-right `×`; its
   centered card uses the same thick glass, softly dimmed backdrop, radius, and
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
-  centered outside directly below the card; Close, Escape, and backdrop all
-  dismiss it, restore focus to the identity chip, and restore background scroll
+  centered outside directly below the card; only that Close dismisses it,
+  restores focus to the identity chip, and restores background scroll. Escape
+  and backdrop clicks leave it open
 - one yellow STAR counter shows Available balance and is clickable/keyboard
   operable; it dismisses Personal Center and opens an independent STAR Wallet
   modal whose landing view has a gold pass containing only a large Yellow STAR
@@ -329,7 +330,7 @@ Check:
   `ASSIGNMENTS` heading or Teacher Replies control. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
-  outside the card, while Escape and the backdrop also dismiss the modal
+  outside the card. Escape and backdrop clicks do not dismiss the modal
 - the default Assignments modal has three equal-width, sticky top buttons:
   `THIS WEEK`, `UPCOMING`, and `FINISHED`, each with an accurate count. Only the
   selected category is visible, click and keyboard Left/Right/Home/End switch
@@ -350,9 +351,10 @@ Check:
   overflowing title scrolls to reveal its full text; reduced-motion mode keeps
   it static with an ellipsis. The row opens the shared Library-style entry
   confirmation before navigation
-- closing that entry confirmation with `Close`, Escape, or its backdrop returns
+- closing that entry confirmation with its lower `Close` returns
   to the same To Do List dialog and selected assignment row; choosing `Enter` closes
-  both modal layers and opens the task
+  both modal layers and opens the task. Escape and backdrop clicks keep the
+  confirmation open
 - the student assignment entry uses a checklist SVG rather than a bell or a
   single completion checkmark; its glass color, stroke weight, and visible icon
   size match the neighboring Teacher Replies control rather than using a unique
@@ -366,10 +368,11 @@ Check:
   only `TEACHER REPLIES` in the same green eyebrow typography as Personal Center,
   with no `xx replies in your history` line. A centered `Close` capsule sits
   outside and directly below the card in the same style as other independent
-  student dialogs. Close, Escape, and backdrop dismissal mark currently unseen
-  items read, clear the bubble badge without changing the To Do List badge,
-  restore the main Dashboard and bubble focus, and keep question navigation
-  working from each complete reply card
+  student dialogs. Only Close dismisses the dialog, marks currently unseen
+  items read, clears the bubble badge without changing the To Do List badge,
+  restores the main Dashboard and bubble focus, and keeps question navigation
+  working from each complete reply card. Escape and backdrop clicks leave the
+  dialog open and do not mark replies read
 - each Teacher Replies card shows its centered task title first on the same
   bounded overflow-scrolling track used by task rows. The saved question has no
   `Qxx.` prefix and wraps cleanly on phone and iPad. `Expected` and `Submitted`
@@ -402,8 +405,9 @@ Check:
   chevron; click/Enter/Space opens the shared entry confirmation, closing it
   restores the same calendar row, and Enter opens the correct practice URL
 - at 390px phone, iPad, and desktop widths, all seven date columns remain fully
-  visible with no horizontal page overflow; Close, Escape, and backdrop dismiss
-  the modal and restore focus to the calendar button
+  visible with no horizontal page overflow; only Close dismisses the modal and
+  restores focus to the calendar button, while Escape and backdrop clicks leave
+  it open
 - On iPad Safari, cold-load the Dashboard and open Calendar for the first time.
   Every date number must be vertically and horizontally centered in its square
   before and after changing months, selecting a day, rotating, and reopening

@@ -686,6 +686,9 @@ function testStudentModalShellMarkup() {
   const dashboardJs = fs.readFileSync(path.resolve(__dirname, "../assets/js/dashboard.js"), "utf8");
   const appCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/app.css"), "utf8");
   const liquidGlassCss = fs.readFileSync(path.resolve(__dirname, "../assets/css/liquid-glass-shell.css"), "utf8");
+  const vocabularyHtml = fs.readFileSync(path.resolve(__dirname, "../vocabulary.html"), "utf8");
+  const bbcHtml = fs.readFileSync(path.resolve(__dirname, "../bbc.html"), "utf8");
+  const ieltsReadingHtml = fs.readFileSync(path.resolve(__dirname, "../ielts-reading.html"), "utf8");
   assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
   assert(dashboardHtml.includes('class="student-account-dialog"'));
@@ -737,6 +740,25 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes("overlay.querySelectorAll('.teacher-reply-item[data-open-href]')"));
   assert(dashboardJs.includes("enterLabel: 'Go to question'"));
   assert(dashboardJs.includes("hideStatus: true"));
+  assert(!dashboardJs.includes("if (event.target === overlay) closePracticeEntryDialog();"), "student task-entry confirmation must ignore backdrop clicks");
+  assert(!dashboardJs.includes("function handlePracticeEntryKeydown(event)"), "student task-entry confirmation must ignore Escape");
+  assert(!dashboardJs.includes("if (event.target === overlay) close(true);"), "To Do List and Teacher Replies must ignore backdrop clicks");
+  assert(!dashboardJs.includes("if (event.target !== accountPanel) return;"), "Personal Center must ignore backdrop clicks");
+  assert(!dashboardJs.includes("if (event.target === starOverlay) closeStarPanel(false);"), "STAR Wallet must ignore backdrop clicks");
+  assert(!dashboardJs.includes("if (event.target !== calendarOverlay) return;"), "Calendar must ignore backdrop clicks");
+  assert(!dashboardJs.includes("if (e.key === 'Escape' && state.starPanelOpen)"), "STAR Wallet must ignore Escape");
+  assert(!dashboardJs.includes("if (e.key === 'Escape' && state.accountPanelOpen)"), "Personal Center must ignore Escape");
+  assert(!dashboardJs.includes("if (e.key === 'Escape' && state.calendarPanelOpen)"), "Calendar must ignore Escape");
+  assert(!vocabularyHtml.includes("if (event.target === overlay) {\n                    close();"), "Vocabulary worksheet download must ignore backdrop clicks");
+  assert(!vocabularyHtml.includes("function handleKeydown(event) {\n                if (event.key !== 'Escape') return;"), "Vocabulary worksheet download must ignore Escape");
+  assert(!vocabularyHtml.includes("if (event.target === overlay) close(false);"), "Vocabulary quiz dialogs must ignore backdrop clicks");
+  assert(!vocabularyHtml.includes("if (action === 'close' || event.target === overlay) overlay.remove();"), "Vocabulary results must require their Close action");
+  assert(!bbcHtml.includes("if (action === 'close' || event.target === overlay) overlay.remove();"), "BBC results must require their Close action");
+  assert(!bbcHtml.includes("if (event.target === modal) closeArgueModal();"), "BBC student Argue must ignore backdrop clicks");
+  const studentArgueStart = ieltsReadingHtml.indexOf("function openStudentArgueModal");
+  const studentArgueEnd = ieltsReadingHtml.indexOf("function renderStudentArgueButton", studentArgueStart);
+  assert(studentArgueStart >= 0 && studentArgueEnd > studentArgueStart);
+  assert(!ieltsReadingHtml.slice(studentArgueStart, studentArgueEnd).includes("event.target === modal"), "IELTS Reading student Argue must ignore backdrop clicks");
   assert(!appCss.includes("height: min(620px, 74vh);"));
   assert(!appCss.includes("height: min(590px, 72vh);"));
 }

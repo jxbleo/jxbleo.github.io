@@ -2548,9 +2548,6 @@
                 });
                 var cancel = overlay.querySelector('[data-test-dialog="cancel"]');
                 if (cancel) cancel.addEventListener('click', function() { close(false); });
-                overlay.addEventListener('click', function(event) {
-                    if (event.target === overlay) close(false);
-                });
                 window.setTimeout(function() {
                     var primary = overlay.querySelector('[data-test-dialog="confirm"]');
                     if (primary) primary.focus();
@@ -2827,7 +2824,7 @@
             document.body.appendChild(overlay);
             overlay.addEventListener('click', function(event) {
                 var action = event.target && event.target.getAttribute('data-result-action');
-                if (action === 'close' || event.target === overlay) overlay.remove();
+                if (action === 'close') overlay.remove();
             });
         }
 
@@ -3083,7 +3080,6 @@
 
             function close() {
                 overlay.remove();
-                document.removeEventListener('keydown', handleKeydown);
                 if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
             }
 
@@ -3103,21 +3099,10 @@
                 setError('');
             }
 
-            function handleKeydown(event) {
-                if (event.key !== 'Escape') return;
-                event.preventDefault();
-                close();
-            }
-
             renderGroups();
             renderShuffle();
 
             overlay.addEventListener('click', function(event) {
-                if (event.target === overlay) {
-                    close();
-                    return;
-                }
-
                 var mode = event.target.closest('[data-worksheet-download-dialog]');
                 if (mode) {
                     var action = mode.getAttribute('data-worksheet-download-dialog');
@@ -3181,8 +3166,6 @@
                     return;
                 }
             });
-
-            document.addEventListener('keydown', handleKeydown);
 
             window.setTimeout(function() {
                 var primary = overlay.querySelector('[data-worksheet-download-dialog="confirm"]');

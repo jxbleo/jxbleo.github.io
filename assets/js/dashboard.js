@@ -1304,9 +1304,6 @@
                 '<button class="practice-entry-close" id="practice-entry-close" type="button">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
-        overlay.addEventListener('click', function(event) {
-            if (event.target === overlay) closePracticeEntryDialog();
-        });
         overlay.querySelector('#practice-entry-close').addEventListener('click', closePracticeEntryDialog);
         overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
             var href = overlay.dataset.href;
@@ -1364,17 +1361,12 @@
         overlay.practiceEditionModels = null;
         overlay.practiceEntryOnDismiss = null;
         overlay.practiceEntryOnCommit = null;
-        document.removeEventListener('keydown', handlePracticeEntryKeydown);
         if (typeof onDismiss === 'function') onDismiss();
     }
 
     window.addEventListener('pageshow', function() {
         closePracticeEntryDialog({ restoreSource: false });
     });
-
-    function handlePracticeEntryKeydown(event) {
-        if (event.key === 'Escape') closePracticeEntryDialog();
-    }
 
     function showPracticeEntryDialog(element, href, options) {
         var overlay = ensurePracticeEntryDialog();
@@ -1415,7 +1407,6 @@
         } else {
             enterButton.focus();
         }
-        document.addEventListener('keydown', handlePracticeEntryKeydown);
     }
 
     function libraryEditionsForCard(card) {
@@ -1785,7 +1776,6 @@
         function close(markSeen) {
             if (closed) return Promise.resolve();
             closed = true;
-            document.removeEventListener('keydown', onKeydown);
             if (messageTitleObserver) messageTitleObserver.disconnect();
             overlay.remove();
             unlockStudentMessageBackground();
@@ -1798,7 +1788,6 @@
         overlay.studentMessageClose = close;
 
         function suspend() {
-            document.removeEventListener('keydown', onKeydown);
             overlay.hidden = true;
             if (messageButton) messageButton.setAttribute('aria-expanded', 'false');
         }
@@ -1806,17 +1795,8 @@
         function resume(card) {
             overlay.hidden = false;
             if (messageButton) messageButton.setAttribute('aria-expanded', 'true');
-            document.addEventListener('keydown', onKeydown);
             if (card && card.isConnected) card.focus();
         }
-
-        function onKeydown(event) {
-            if (event.key === 'Escape') close(true);
-        }
-
-        overlay.addEventListener('click', function(event) {
-            if (event.target === overlay) close(true);
-        });
         overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
         var messageTabs = Array.prototype.slice.call(overlay.querySelectorAll('[data-message-tab]'));
         function selectMessageTab(tab, moveFocus) {
@@ -1863,7 +1843,6 @@
             card.addEventListener('click', openTask);
             card.addEventListener('keydown', openTask);
         });
-        document.addEventListener('keydown', onKeydown);
     }
 
     function openTeacherRepliesDialog(replyItems, options) {
@@ -1895,7 +1874,6 @@
         function close(markSeen) {
             if (closed) return Promise.resolve();
             closed = true;
-            document.removeEventListener('keydown', onKeydown);
             if (replyTitleObserver) replyTitleObserver.disconnect();
             overlay.remove();
             if (manageScrollLock) unlockStudentMessageBackground();
@@ -1911,12 +1889,7 @@
             });
         }
 
-        function onKeydown(event) {
-            if (event.key === 'Escape') close(true);
-        }
-
         function suspend() {
-            document.removeEventListener('keydown', onKeydown);
             overlay.hidden = true;
             if (opener) opener.setAttribute('aria-expanded', 'false');
         }
@@ -1924,13 +1897,8 @@
         function resume(card) {
             overlay.hidden = false;
             if (opener) opener.setAttribute('aria-expanded', 'true');
-            document.addEventListener('keydown', onKeydown);
             if (card && card.isConnected) card.focus({ preventScroll: true });
         }
-
-        overlay.addEventListener('click', function(event) {
-            if (event.target === overlay) close(true);
-        });
         var closeButton = overlay.querySelector('#teacher-replies-close');
         closeButton.addEventListener('click', function() { close(true); });
         window.setTimeout(function() { closeButton.focus(); }, 0);
@@ -1953,7 +1921,6 @@
             card.addEventListener('click', openQuestion);
             card.addEventListener('keydown', openQuestion);
         });
-        document.addEventListener('keydown', onKeydown);
     }
 
     function finishedDate(item) {
@@ -4012,20 +3979,8 @@
             if (identityChip) identityChip.focus();
         });
     }
-    if (accountPanel) {
-        accountPanel.addEventListener('click', function(event) {
-            if (event.target !== accountPanel) return;
-            setAccountPanel(false);
-            if (identityChip) identityChip.focus();
-        });
-    }
     var starClose = document.getElementById('student-star-close');
     if (starClose) starClose.addEventListener('click', function() { closeStarPanel(false); });
-    if (starOverlay) {
-        starOverlay.addEventListener('click', function(event) {
-            if (event.target === starOverlay) closeStarPanel(false);
-        });
-    }
     if (messageButton) {
         messageButton.addEventListener('click', function() {
             openStudentMessageCenter();
@@ -4044,13 +3999,6 @@
     var calendarClose = document.getElementById('student-calendar-close');
     if (calendarClose) {
         calendarClose.addEventListener('click', function() {
-            setStudentCalendarPanel(false);
-            if (calendarButton) calendarButton.focus();
-        });
-    }
-    if (calendarOverlay) {
-        calendarOverlay.addEventListener('click', function(event) {
-            if (event.target !== calendarOverlay) return;
             setStudentCalendarPanel(false);
             if (calendarButton) calendarButton.focus();
         });
@@ -4130,11 +4078,6 @@
     });
 
     document.addEventListener('click', function(e) {
-        if (state.accountPanelOpen && accountPanel && !accountPanel.contains(e.target) &&
-            !e.target.closest('#identity-chip') && !e.target.closest('#practice-entry-overlay') &&
-            !e.target.closest('.password-dialog-overlay')) {
-            setAccountPanel(false);
-        }
         var categoryTrigger = e.target.closest('#student-library-category-trigger');
         if (categoryTrigger) {
             setLibraryCategoryMenuOpen(!libraryCategoryMenuOpen, false);
@@ -4193,20 +4136,6 @@
         if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
         var passwordOverlay = document.querySelector('.password-dialog-overlay');
         if (e.key === 'Escape' && passwordOverlay) return;
-        if (e.key === 'Escape' && state.starPanelOpen) {
-            closeStarPanel(false);
-            return;
-        }
-        if (e.key === 'Escape' && state.accountPanelOpen) {
-            setAccountPanel(false);
-            if (identityChip) identityChip.focus();
-            return;
-        }
-        if (e.key === 'Escape' && state.calendarPanelOpen) {
-            setStudentCalendarPanel(false);
-            if (calendarButton) calendarButton.focus();
-            return;
-        }
         if (e.key === 'Escape' && state.wordsPanelOpen) {
             if (wordsAddTrigger && wordsAddTrigger.getAttribute('aria-expanded') === 'true') {
                 setMyWordsToolOpen('add', false);
