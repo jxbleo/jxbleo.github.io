@@ -406,7 +406,7 @@
 
         .worksheet-download-card {
             width: min(620px, 100%);
-            max-height: calc(100vh - 40px);
+            max-height: calc(100vh - 104px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
@@ -418,14 +418,67 @@
         }
 
         .worksheet-download-overlay {
-            place-items: start center;
+            place-items: center;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+        }
+
+        .worksheet-download-shell {
+            display: grid;
+            justify-items: center;
+            width: min(620px, 100%);
+            gap: 12px;
+        }
+
+        .worksheet-download-header {
+            position: relative;
+            display: grid;
+            place-items: center;
+            min-height: 36px;
+            padding: 0 46px;
+        }
+
+        .worksheet-download-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 1px solid rgba(15, 118, 110, 0.18);
+            border-radius: 999px;
+            color: #0f5f57;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .worksheet-download-back:hover,
+        .worksheet-download-back:focus-visible {
+            border-color: rgba(15, 118, 110, 0.42);
+            background: rgba(15, 118, 110, 0.07);
+        }
+
+        .worksheet-download-back[hidden],
+        .worksheet-download-mode-actions[hidden] {
+            display: none;
+        }
+
+        .worksheet-download-back svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .worksheet-download-card h2 {
             margin: 0;
             font-size: 1.25rem;
+            text-align: center;
         }
 
         .worksheet-download-card p {
@@ -448,8 +501,6 @@
 
         .worksheet-custom-panel {
             margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(15, 118, 110, 0.14);
         }
 
         .worksheet-custom-panel[hidden] {
@@ -553,6 +604,26 @@
             justify-content: flex-end;
             gap: 9px;
             margin-top: 18px;
+        }
+
+        .worksheet-download-close {
+            min-height: 40px;
+            padding: 0 20px;
+            border: 1px solid rgba(255,255,255,0.72);
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(15, 56, 52, 0.82);
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 900;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 14px 32px rgba(15,23,42,0.18);
+        }
+
+        .worksheet-download-close:hover,
+        .worksheet-download-close:focus-visible {
+            background: rgba(15, 56, 52, 0.96);
         }
 
         .worksheet-download-error {
@@ -1944,7 +2015,7 @@
             }
 
             .worksheet-download-card {
-                max-height: calc(100dvh - 24px);
+                max-height: calc(100dvh - 84px);
                 padding: 20px 16px;
             }
 
@@ -2934,17 +3005,25 @@
             var seed = window.MrCatVocabularyWorksheetPdf && window.MrCatVocabularyWorksheetPdf.makeSeed
                 ? window.MrCatVocabularyWorksheetPdf.makeSeed()
                 : String(Math.random()).slice(2, 8).toUpperCase();
+            var returnFocus = document.activeElement;
 
             var overlay = document.createElement('div');
             overlay.className = 'test-confirm-overlay worksheet-download-overlay';
             overlay.setAttribute('role', 'dialog');
             overlay.setAttribute('aria-modal', 'true');
+            overlay.setAttribute('aria-labelledby', 'worksheet-download-title');
             overlay.innerHTML =
-                '<div class="worksheet-download-card">' +
-                    '<h2>Download Practice</h2>' +
-                    '<div class="worksheet-download-mode-actions">' +
+                '<div class="worksheet-download-shell">' +
+                    '<div class="worksheet-download-card">' +
+                    '<div class="worksheet-download-header">' +
+                        '<button class="worksheet-download-back" type="button" data-worksheet-download-dialog="back" aria-label="Back" hidden>' +
+                            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>' +
+                        '</button>' +
+                        '<h2 id="worksheet-download-title">Download Practice</h2>' +
+                    '</div>' +
+                    '<div class="worksheet-download-mode-actions" data-worksheet-mode-actions>' +
                         '<button class="btn btn-primary" type="button" data-worksheet-download-dialog="confirm">Confirm</button>' +
-                        '<button class="btn btn-secondary" type="button" data-worksheet-download-dialog="customise">Customise</button>' +
+                        '<button class="btn btn-secondary" type="button" data-worksheet-download-dialog="customize">Customize</button>' +
                     '</div>' +
                     '<div class="worksheet-custom-panel" data-worksheet-custom-panel hidden>' +
                         '<div class="worksheet-custom-row worksheet-set-row">' +
@@ -2957,15 +3036,19 @@
                         '</div>' +
                         '<div class="worksheet-download-error" data-worksheet-error></div>' +
                         '<div class="worksheet-custom-actions">' +
-                            '<button class="btn btn-secondary" type="button" data-worksheet-download-dialog="cancel">Cancel</button>' +
                             '<button class="btn btn-primary" type="button" data-worksheet-download-dialog="download">Download</button>' +
                         '</div>' +
                     '</div>' +
+                    '</div>' +
+                    '<button class="worksheet-download-close" type="button" data-worksheet-download-dialog="close">Close</button>' +
                 '</div>';
 
             document.body.appendChild(overlay);
 
             var panel = overlay.querySelector('[data-worksheet-custom-panel]');
+            var modeActions = overlay.querySelector('[data-worksheet-mode-actions]');
+            var title = overlay.querySelector('#worksheet-download-title');
+            var backButton = overlay.querySelector('[data-worksheet-download-dialog="back"]');
             var groupGrid = overlay.querySelector('[data-worksheet-group-grid]');
             var shuffleButton = overlay.querySelector('[data-worksheet-shuffle]');
             var error = overlay.querySelector('[data-worksheet-error]');
@@ -3000,6 +3083,30 @@
 
             function close() {
                 overlay.remove();
+                document.removeEventListener('keydown', handleKeydown);
+                if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+            }
+
+            function showLanding() {
+                title.textContent = 'Download Practice';
+                backButton.hidden = true;
+                modeActions.hidden = false;
+                panel.hidden = true;
+                setError('');
+            }
+
+            function showCustomize() {
+                title.textContent = 'Customize your download';
+                backButton.hidden = false;
+                modeActions.hidden = true;
+                panel.hidden = false;
+                setError('');
+            }
+
+            function handleKeydown(event) {
+                if (event.key !== 'Escape') return;
+                event.preventDefault();
+                close();
             }
 
             renderGroups();
@@ -3019,17 +3126,25 @@
                             downloadDefaultWorksheet(seed);
                             close();
                         } catch (confirmError) {
-                            panel.hidden = false;
+                            showCustomize();
                             setError(confirmError && confirmError.message ? confirmError.message : 'Unable to create this worksheet.');
                         }
                         return;
                     }
-                    if (action === 'customise') {
-                        panel.hidden = false;
-                        setError('');
+                    if (action === 'customize') {
+                        showCustomize();
+                        window.setTimeout(function() { backButton.focus(); }, 0);
                         return;
                     }
-                    if (action === 'cancel') {
+                    if (action === 'back') {
+                        showLanding();
+                        window.setTimeout(function() {
+                            var customizeButton = overlay.querySelector('[data-worksheet-download-dialog="customize"]');
+                            if (customizeButton) customizeButton.focus();
+                        }, 0);
+                        return;
+                    }
+                    if (action === 'close') {
                         close();
                         return;
                     }
@@ -3066,6 +3181,8 @@
                     return;
                 }
             });
+
+            document.addEventListener('keydown', handleKeydown);
 
             window.setTimeout(function() {
                 var primary = overlay.querySelector('[data-worksheet-download-dialog="confirm"]');

@@ -1059,8 +1059,11 @@ Check:
   such as `t.scope`
 - Vocabulary top `Practice` download opens a dialog; `Confirm` downloads the
   static all-groups worksheet in original order
-- Vocabulary `Practice` download `Customise` opens a group multiselect where
-  removing any group unchecks `All`, and selecting every group rechecks `All`
+- Vocabulary `Practice` download `Customize` opens a dedicated
+  `Customize your download` view: `Confirm` / `Customize` and `Cancel` are not
+  visible, the top-left arrow returns to the landing choices, and the external
+  `Close` action below the card dismisses the full dialog; removing any group
+  unchecks `All`, and selecting every group rechecks `All`
 - Vocabulary custom worksheet download with shuffle off uses static PDFs for
   all-groups and one-group cases, and browser-generates selected multi-group
   PDFs without answers
