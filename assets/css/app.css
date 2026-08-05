@@ -2489,8 +2489,13 @@ body:not(.teacher-page) .tab-button.active {
     line-height: 1;
 }
 .practice-entry-ribbon.not-passed {
-    color: #8b3f0d;
-    background: linear-gradient(90deg, #fff0df, #ffd1a6);
+    color: #68706d;
+    background: linear-gradient(90deg, #f2f4f3, #dfe3e1);
+}
+.practice-entry-ribbon.not-passed .practice-entry-score-lock {
+    border-color: rgba(104, 112, 109, 0.16);
+    color: #68706d;
+    background: rgba(255, 255, 255, 0.54);
 }
 .practice-entry-ribbon.passed {
     color: #0d5e4e;

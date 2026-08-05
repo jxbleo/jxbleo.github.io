@@ -380,7 +380,10 @@ Student cards should show:
   so accidental taps do not immediately leave the dashboard
 - the shared practice-entry confirmation dialog has no top-right stamp; its
   bottom ribbon shows only `Score: 90%` style copy, with the same lock icon
-  treatment as the teacher View matrix when the score is locked
+  treatment as the teacher View matrix when the score is locked. Across
+  Student, Teacher, Library, assignment, calendar, and matrix entry points, a
+  not-yet-passing score uses a neutral gray ribbon and gray text; passing and
+  mastered scores retain their green and gold treatments
 - the practice-entry confirmation dialog must close before navigation and must
   not be restored by browser Back/bfcache; returning from a practice page should
   show the page behind the dialog

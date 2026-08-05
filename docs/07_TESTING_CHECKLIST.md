@@ -645,6 +645,10 @@ Check:
   `Close`, Escape, and backdrop dismissal preserve the unchanged matrix, while
   `Enter` opens its `teacher=1` practice preview and `Back` returns to
   `teacher.html?view=view`
+- Open the shared practice-entry confirmation from Student To Do, Student
+  Library, Student Calendar, Teacher Library, and a Teacher View task header.
+  A not-yet-passing score must use the same neutral gray ribbon and text in
+  every entry point; passing remains green and mastered remains gold
 - before entering a Teacher View preview, select non-default Class/Column/Date
   filters, change matrix density, horizontally scroll the matrix, scroll the
   page into grouped progress, switch By student/By task, and expand a group.
