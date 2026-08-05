@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Fixed Student lookup STAR and Completed metrics rendering in normal document
+  flow after hiding the lookup, which exposed the Teacher homepage instead of
+  the requested detail. Both now remain fixed over the viewport, and the
+  lookup's STAR Redemption and create-student icons match the main header's
+  40px neutral outline controls.
 - Aligned the Teacher Review Approved and Rejected filters with Pending's
   neutral label styling and moved each handled-request total directly below its
   label, while retaining Pending's red unresolved alert.

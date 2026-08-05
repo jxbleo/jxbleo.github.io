@@ -403,6 +403,14 @@ async function main() {
     "selected student name should not be repeated in the lookup title bar");
   assert(teacherSource.includes('data-student-metric="star"') && teacherSource.includes('data-student-metric="completed"'),
     "STAR and Completed metrics should open independent detail dialogs");
+  assert(/\.student-metric-detail-modal\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;/s.test(appCss),
+    "student metric dialogs should stay fixed over the viewport instead of entering document flow");
+  assert(teacherHtml.includes('class="teacher-header-icon-button student-lookup-create"') &&
+    /id="student-lookup-create"[\s\S]*?<svg class="teacher-header-icon"/.test(teacherHtml),
+    "student lookup STAR and create actions should use the shared header icon treatment");
+  assert(/\.student-lookup-create\s*\{[^}]*width:\s*40px;[^}]*height:\s*40px;/s.test(appCss) &&
+    /\.student-lookup-star\s*\{[^}]*width:\s*40px;[^}]*height:\s*40px;/s.test(appCss),
+    "student lookup utility icons should match the 40px header navigation controls");
   assert(!teacherSource.includes('OVERALL PROGRESS'),
     "student detail should not retain the Overall Progress card");
   assert(teacherAdminSource.includes('if (action === "getStudentStarSources")') &&
