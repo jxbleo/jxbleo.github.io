@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const fs = require("fs");
 const Module = require("module");
 const path = require("path");
 
@@ -242,6 +243,30 @@ async function main() {
     "Corrected Again"
   );
 
+  const originalClassId = recreateResult.student.class_id;
+  const initialClassList = await call("listClasses");
+  assert.equal(initialClassList.success, true);
+  assert(initialClassList.classes.some((classRecord) => classRecord.class_id === originalClassId && classRecord.name === "Class A"));
+
+  const customizeClassResult = await call("updateStudent", {
+    auth_uid: recreateResult.student.auth_uid,
+    class_group: "Class B",
+  });
+  assert.equal(customizeClassResult.success, true);
+  assert.equal(customizeClassResult.class_group, "Class B");
+  assert.notEqual(customizeClassResult.class_id, originalClassId);
+  assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
+  assert.equal(classMemberships.find((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).class_id, customizeClassResult.class_id);
+
+  const chooseExistingClassResult = await call("updateStudent", {
+    auth_uid: recreateResult.student.auth_uid,
+    class_id: originalClassId,
+  });
+  assert.equal(chooseExistingClassResult.success, true);
+  assert.equal(chooseExistingClassResult.class_group, "Class A");
+  assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
+  assert.equal(classMemberships.find((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).class_id, originalClassId);
+
   const disableResult = await call("updateStudent", { auth_uid: recreateResult.student.auth_uid, active: false });
   assert.equal(disableResult.success, true);
   assert.equal(classMemberships.some((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null), false);
@@ -315,6 +340,12 @@ async function main() {
   const legacyDeletedProfile = students.find((student) => student._id === "legacy-deleted-profile");
   assert.equal(legacyDeletedProfile.student_id, "__deleted__:legacy-deleted-profile");
   assert.equal(legacyDeletedProfile.deleted_student_id_snapshot, "legacy-login");
+
+  const teacherSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
+  assert(teacherSource.includes('name="class_choice"'), "student detail should render a class selector");
+  assert(teacherSource.includes('<option value="__customize__">Customize'), "class selector should end with Customize");
+  assert(teacherSource.includes('name="custom_class_group"') && teacherSource.includes('hidden>'), "custom class input should start hidden");
+  assert(teacherSource.includes("classChoice.addEventListener('change'"), "Customize should reveal its input only after selection");
 
   console.log("Student account lifecycle tests passed.");
 }

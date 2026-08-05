@@ -49,6 +49,7 @@
     var state = {
         profile: null,
         students: [],
+        classDirectory: [],
         sets: [],
         assignments: [],
         progressItems: [],
@@ -222,6 +223,7 @@
             schema_version: TEACHER_CACHE_SCHEMA_VERSION,
             saved_at: Date.now(),
             students: (state.students || []).map(redactedTeacherCacheValue),
+            classes: (state.classDirectory || []).map(redactedTeacherCacheValue),
             sets: (state.sets || []).map(redactedTeacherCacheValue),
             assignments: (state.assignments || []).map(redactedTeacherCacheValue),
             progress: (state.progressItems || []).map(sanitizedProgressForTeacherCache)
@@ -1381,6 +1383,53 @@
             seen[value] = true;
             return true;
         }).sort();
+    }
+
+    function classChoicesForStudent(student) {
+        var choices = [];
+        var seenIds = {};
+        var seenNames = {};
+        function addChoice(classId, name) {
+            var id = String(classId || '').trim();
+            var label = String(name || '').trim();
+            var normalizedName = label.toLowerCase().replace(/\s+/g, ' ');
+            if (!label || (id && seenIds[id]) || (!id && seenNames[normalizedName])) return;
+            choices.push({ class_id: id, name: label });
+            if (id) seenIds[id] = true;
+            seenNames[normalizedName] = true;
+        }
+        (state.classDirectory || []).forEach(function(classRecord) {
+            addChoice(classRecord.class_id, classRecord.name);
+        });
+        studentRecords().forEach(function(item) {
+            addChoice(item.class_id, item.class_group);
+        });
+        addChoice(student && student.class_id, student && student.class_group);
+        return choices.sort(function(left, right) { return left.name.localeCompare(right.name); });
+    }
+
+    function renderStudentClassEditor(student) {
+        var currentId = String(student.class_id || '').trim();
+        var currentName = String(student.class_group || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        var options = classChoicesForStudent(student).map(function(classRecord, index) {
+            var value = classRecord.class_id || ('__legacy__' + index);
+            var selected = currentId
+                ? classRecord.class_id === currentId
+                : classRecord.name.toLowerCase().replace(/\s+/g, ' ') === currentName;
+            return '<option value="' + escapeHtml(value) + '" data-class-id="' + escapeHtml(classRecord.class_id) +
+                '" data-class-name="' + escapeHtml(classRecord.name) + '"' + (selected ? ' selected' : '') + '>' +
+                escapeHtml(classRecord.name) + '</option>';
+        }).join('');
+        return '<form class="student-info-editor" data-student-info-editor="class">' +
+            '<span style="display:grid;gap:7px">' +
+                '<select name="class_choice" aria-label="Choose class">' +
+                    '<option value="">No class</option>' + options +
+                    '<option value="__customize__">Customize</option>' +
+                '</select>' +
+                '<input type="text" name="custom_class_group" value="" placeholder="New class name" aria-label="New class name" hidden>' +
+            '</span>' +
+            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
+        '</form>';
     }
 
     function setCategory(set) {
@@ -5915,10 +5964,7 @@
                         '<button class="student-primary-stat-button" type="button" data-edit-student-field="class" aria-label="Edit class">' +
                             '<strong>' + escapeHtml(student.class_group || '—') + '</strong><small>Class</small>' +
                         '</button>' +
-                        (classEditing ? '<form class="student-info-editor" data-student-info-editor="class">' +
-                            '<input type="text" name="class_group" value="' + escapeHtml(student.class_group || '') + '" placeholder="Class">' +
-                            '<button class="primary-button" type="submit">Save</button><button class="outline-button" type="button" data-cancel-student-info>Cancel</button>' +
-                        '</form>' : '') +
+                        (classEditing ? renderStudentClassEditor(student) : '') +
                     '</div>' +
                     '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.stars) + '</strong><small>STAR</small></span>' +
                     '<span class="student-primary-stat"><strong>' + escapeHtml(metrics.finished + '/' + metrics.total) + '</strong><small>Completed</small></span>' +
@@ -6013,6 +6059,14 @@
                 renderStudentDetail();
             });
         });
+        var classChoice = studentDetail.querySelector('[data-student-info-editor="class"] select[name="class_choice"]');
+        if (classChoice) classChoice.addEventListener('change', function() {
+            var customInput = classChoice.form.elements.custom_class_group;
+            var isCustom = classChoice.value === '__customize__';
+            customInput.hidden = !isCustom;
+            if (isCustom) customInput.focus();
+            else customInput.value = '';
+        });
         studentDetail.querySelectorAll('[data-student-info-editor]').forEach(function(form) {
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -6035,7 +6089,23 @@
                     return;
                 }
                 if (field === 'class') {
-                    updateStudent(student.auth_uid, { class_group: form.elements.class_group.value.trim() });
+                    var selectedOption = form.elements.class_choice.options[form.elements.class_choice.selectedIndex];
+                    if (form.elements.class_choice.value === '__customize__') {
+                        var customClassName = form.elements.custom_class_group.value.trim();
+                        if (!customClassName) {
+                            showMessage('Enter a new class name.', 'error');
+                            state.studentInfoEdit = 'class';
+                            renderStudentDetail();
+                            return;
+                        }
+                        updateStudent(student.auth_uid, { class_group: customClassName });
+                        return;
+                    }
+                    var selectedClassId = selectedOption ? String(selectedOption.dataset.classId || '').trim() : '';
+                    var selectedClassName = selectedOption ? String(selectedOption.dataset.className || '').trim() : '';
+                    updateStudent(student.auth_uid, selectedClassId
+                        ? { class_id: selectedClassId }
+                        : { class_id: '', class_group: selectedClassName });
                     return;
                 }
                 updateStudent(student.auth_uid, { curriculum_track: form.elements.curriculum_track.value });
@@ -6673,8 +6743,12 @@
     }
 
     function refreshStudents() {
-        return teacherCall('listStudents').then(function(result) {
-            state.students = result.students || [];
+        return Promise.all([
+            teacherCall('listStudents'),
+            teacherCall('listClasses').catch(function() { return { classes: [], unavailable: true }; })
+        ]).then(function(results) {
+            state.students = results[0].students || [];
+            if (!results[1].unavailable) state.classDirectory = results[1].classes || [];
             fillClassFilters();
             renderStudentList();
             renderStudentDetail();
@@ -6890,6 +6964,7 @@
         return readTeacherWorkspaceCache(profile).then(function(record) {
             if (!record) return false;
             state.students = Array.isArray(record.students) ? record.students : [];
+            state.classDirectory = Array.isArray(record.classes) ? record.classes : [];
             state.sets = Array.isArray(record.sets) ? record.sets : [];
             state.assignments = Array.isArray(record.assignments) ? record.assignments : [];
             state.progressItems = Array.isArray(record.progress) ? record.progress : [];
@@ -6901,6 +6976,7 @@
 
     function loadData() {
         var studentsPromise = teacherCall('listStudents');
+        var classesPromise = teacherCall('listClasses').catch(function() { return { classes: [], unavailable: true }; });
         var setsPromise = teacherCall('listSets').catch(function() { return { sets: [], unavailable: true }; });
         var assignmentsPromise = teacherCall('listAssignments');
         var disputesPromise = teacherCall('listDisputes');
@@ -6932,7 +7008,8 @@
             progressPromise,
             activityPromise,
             starPromise,
-            catalogPromise
+            catalogPromise,
+            classesPromise
         ]).then(function(results) {
             var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
             state.students = results[0].students || [];
@@ -6940,6 +7017,7 @@
             state.assignments = results[2].assignments || [];
             state.disputes = results[3].disputes || [];
             state.attempts = results[4].attempts || [];
+            if (!results[9].unavailable) state.classDirectory = results[9].classes || [];
             if (!results[5].unavailable) state.progressItems = results[5].progress || [];
             if (!results[6].unavailable) {
                 state.attemptsSeenAt = results[6].attempts_seen_at || null;

@@ -606,7 +606,11 @@ student's name; returning to the list restores the search field. Student info
 and progress appear directly below. The detail begins with the student name and
 three equal-level Class, STAR, and Completed/Total metrics; it does not show an
 Attempts metric or an account-status line. Class remains editable from its
-metric. A monthly progress calendar follows, with one rounded band per week,
+metric. Opening that editor shows a selector of active existing classes, with
+`No class` first and `Customize` last. The new-class text field is hidden until
+the teacher explicitly chooses `Customize`; saving an existing choice uses its
+stable class ID, while Customize creates or reuses the normalized class through
+the trusted backend. A monthly progress calendar follows, with one rounded band per week,
 Monday-first day controls, completion-density color, STAR markers, month
 navigation, and a selected-day/week completed-work detail pane. Account fields
 remain available one level deeper in Account settings. The Student lookup, raised-hand Argue, and
