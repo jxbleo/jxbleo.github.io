@@ -601,6 +601,31 @@ async function updateNote(student, event) {
   return { success: true, word: itemView({ ...item, ...update }, await getLexiconItemOrNull(item.normalized_text)) };
 }
 
+function editableDetailUpdates(item, event) {
+  const update = {};
+  if (Object.prototype.hasOwnProperty.call(event, "personal_note")) {
+    update.personal_note = String(event.personal_note == null ? "" : event.personal_note).trim().slice(0, 500);
+  }
+  if (Array.isArray(event.source_contexts)) {
+    const contexts = event.source_contexts.slice(0, 8).map((value) => compactText(value, 320));
+    update.context = contexts[0] || "";
+    if (Array.isArray(item.saved_examples) && item.saved_examples.length) {
+      update.saved_examples = item.saved_examples.slice(0, 40).map((example, index) => (
+        index < contexts.length ? { ...example, context: contexts[index] } : example
+      ));
+    }
+  } else if (Object.prototype.hasOwnProperty.call(event, "context")) {
+    const context = compactText(event.context, 320);
+    update.context = context;
+    if (Array.isArray(item.saved_examples) && item.saved_examples.length) {
+      update.saved_examples = item.saved_examples.slice(0, 40).map((example, index) => (
+        index === 0 ? { ...example, context } : example
+      ));
+    }
+  }
+  return update;
+}
+
 async function updateWord(student, event) {
   const vocabId = compactText(event.vocab_id, 80);
   const item = await getOwnedItem(student, vocabId);
@@ -609,9 +634,10 @@ async function updateWord(student, event) {
   if (error) throw new Error(error);
   const nextText = compactText(event.text, 120);
   const nextNormalized = normalizeVocabularyText(nextText);
+  const detailUpdates = editableDetailUpdates(item, event);
   if (nextNormalized === item.normalized_text) {
     const now = new Date();
-    const update = { text: nextText, activity_updated_at: now, updated_at: now };
+    const update = { ...detailUpdates, text: nextText, activity_updated_at: now, updated_at: now };
     await db.collection(COLLECTION).doc(item._id).update(update);
     return { success: true, word: itemView({ ...item, ...update }, await getLexiconItemOrNull(nextNormalized)) };
   }
@@ -628,6 +654,7 @@ async function updateWord(student, event) {
   }
   const now = new Date();
   const update = {
+    ...detailUpdates,
     vocab_id: nextVocabId,
     text: nextText,
     normalized_text: nextNormalized,

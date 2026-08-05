@@ -434,14 +434,29 @@ Check:
   one-, two-, and three-column choices; each choice changes the word grid,
   closes the picker, updates its pressed state, and survives reload. Confirm the
   third action is a download icon and still opens the complete Export panel
-- open a saved word on phone and confirm Close is the only control below and
-  outside the card. The card has no `WORD DETAILS`, `Saved word`, `Teacher
+- reopen the one/two/three-column picker, then drag/scroll the word list without
+  choosing a density; confirm the picker closes as soon as list motion begins
+- scroll near the middle and bottom of a long word list, open Export at each
+  position, and confirm the complete parameter panel appears directly below the
+  visible download button without scrolling upward or moving the word list
+- open a saved word on phone and confirm a circular pencil is outside and above
+  the card, while Close is the only control below it. The card has no three-dot
+  menu, `WORD DETAILS`, `Saved word`, `Teacher
   reviewed`, or `Pronunciation pending`; it shows word plus speaker, then POS
   plus English definition, optional Forms, a labelled Source box with sentence,
   origin, and date, and a labelled Note box
-- open the word's three-dot menu and click the card outside it; confirm the menu
-  closes. Open Edit word and Add/Edit Note on iPhone/iPad and confirm focusing
-  the input or textarea does not zoom the page
+- confirm the word is spoken once automatically when its mobile detail card
+  opens; pressing the speaker afterward still speaks it on demand
+- click the external pencil and confirm the spelling/dictionary-loss warning is
+  shown before editing begins. Continue and verify the English word, Source
+  sentence, and Note are editable together, while source origin/date and
+  dictionary fields remain read-only. Save once and confirm all three changes
+  persist; focusing any input or textarea on iPhone/iPad does not zoom the page
+- close a word with the lower Close action and confirm the card shrinks toward
+  its exact originating word tile, the locked
+  scroll position does not jump, and the destination tile receives a brief
+  highlight/focus. Escape and backdrop clicks leave the detail open.
+  Reduced-motion mode uses a short fade without travel
 - Add uses the green circular header control and exposes only one Enter-to-save
   field. Search belongs to Word List; leaving Word List clears the query while
   keeping sort and density preferences
@@ -1129,22 +1144,31 @@ Check:
 - the Dashboard notebook opens `my-words.html`, legacy
   `dashboard.html#my-words` redirects there, and Dashboard no longer mounts or
   fetches a second personal-vocabulary runtime
+- throttle the first My Words data request and confirm the `My Words / Review`
+  row plus the full Search/layout/Export/sort toolbar are visible immediately
+  and remain at the same coordinates; a full-height, copy-free Teacher-matrix
+  grid/radar wash fills only the area below them until the word list softly
+  replaces it. Reduced-motion mode keeps the grid static
 - desktop My Words keeps the header and Study/Word List Sidebar visible;
   Word List uses an approximately 300px index plus a flexible detail pane and
   automatically selects the first recent word
 - mobile replaces the Sidebar with sticky tabs, initially shows an English-only
-  two-column grid, remembers single/two-column choice in the browser, and does
-  not auto-open a word on first entry
+  two-column grid, remembers the single/two/three-column choice in the browser,
+  closes the density picker when the word list moves, and does not auto-open a
+  word on first entry
 - truly overflowing mobile words animate only inside their own tile with the
   existing bounded 7–14 second task-title rhythm; ordinary words remain still
   and reduced-motion mode uses ellipsis
-- tapping a mobile word opens one bounded detail modal, locks the background,
-  and restores the list/search/sort/density/scroll context on close; desktop
-  updates the right detail pane instead
+- tapping a mobile word speaks it once and opens one bounded detail modal with an external pencil
+  above it and no three-dot menu, locks the background, and restores the
+  list/search/sort/density/scroll context on close. Closing shrinks to and
+  briefly highlights the originating tile; desktop updates the right detail
+  pane instead
 - Study contains only an honest static placeholder, real saved/Shanghai-week
   counts, and recent words; it exposes no learning-state or progress model
 - Add Word expands one line below the header. Word List owns Search,
-  Recent/A–Z/Z–A, mobile density, and in-page Export controls
+  Recent/A–Z/Z–A, mobile density, and an Export panel that anchors below the
+  visible download button at every list scroll depth
 - My Words can save selected text from answer, explanation, feedback, and
   result regions, including disabled answer-feedback buttons
 - long-pressing selectable lesson text on iPhone and iPad keeps the native
@@ -1160,7 +1184,8 @@ Check:
 - My Words search matches Chinese meaning, English definition, and part of speech
 - Word List search visibly filters English and dictionary fields without losing
   the current sort or mobile density preference
-- pronunciation uses browser speech without exposing a provider key
+- pronunciation uses browser speech without exposing a provider key; opening a
+  mobile word detail speaks once automatically and the speaker remains available
 - a failed multi-word lexicon query falls back to individual reads, so known
   entries such as `expense`, `details`, and `widespread` still show dictionary data
 - desktop selection and mobile detail show phonetic plus adjacent speaker,
@@ -1171,8 +1196,10 @@ Check:
   production Dashboard or Library navigation
 - the student My Words interface contains no Today/New/Learning/Mastered
   filters, due review, Reveal, Forgot, A little, or Know controls
-- editing changes only the English word/phrase, re-runs dictionary lookup, and
-  leaves dictionary fields read-only; Note accepts at most 500 characters
+- the mobile pencil warns about spelling/dictionary loss, then edits the English
+  word/phrase, every displayed Source context, and Note in one save; a spelling change
+  re-runs dictionary lookup, provenance/dictionary fields stay read-only,
+  Source accepts at most 320 characters, and Note at most 500 characters
 - Use base, Edit word, Add/Edit Note, Cancel, and Done keep the same selected
   word visible across rerenders; if editing changes the record ID, selection
   follows the new record

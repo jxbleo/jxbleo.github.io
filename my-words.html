@@ -10,7 +10,7 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
-    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-2">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-5">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -117,7 +117,11 @@
                         <p id="my-words-export-status" role="status" aria-live="polite"></p>
                     </section>
 
-                    <div class="my-words-notebook">
+                    <div class="my-words-loading-sheet" id="my-words-loading-sheet" role="status" aria-label="Loading saved words">
+                        <span class="sr-only">Loading saved words</span>
+                    </div>
+
+                    <div class="my-words-notebook" id="my-words-notebook" hidden>
                         <section class="my-words-index" aria-label="Saved words">
                             <div class="my-words-index-list" id="my-words-index-list"></div>
                         </section>
@@ -130,6 +134,9 @@
 
     <section class="my-words-mobile-detail-overlay" id="my-words-mobile-detail-overlay" hidden>
         <div class="my-words-mobile-detail-shell">
+            <button class="my-words-mobile-detail-edit" id="my-words-mobile-detail-edit" type="button" aria-label="Edit word details" aria-pressed="false">
+                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path><path d="m13.8 8.2 3 3"></path></svg>
+            </button>
             <div class="my-words-mobile-detail-card" role="dialog" aria-modal="true" aria-labelledby="my-words-mobile-detail-title">
                 <div id="my-words-mobile-detail"></div>
             </div>
@@ -143,6 +150,6 @@
     <script src="assets/js/auth.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
-    <script src="assets/js/my-words.js?v=20260806-2"></script>
+    <script src="assets/js/my-words.js?v=20260806-6"></script>
 </body>
 </html>

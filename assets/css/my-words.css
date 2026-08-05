@@ -697,11 +697,20 @@ body.my-words-detail-open {
 }
 
 .my-words-export-panel.open {
-    max-height: 520px;
+    position: fixed;
+    z-index: 29;
+    top: var(--my-words-export-top, 130px);
+    left: var(--my-words-export-left, 10px);
+    width: var(--my-words-export-width, min(560px, calc(100vw - 20px)));
+    max-height: min(520px, calc(100dvh - var(--my-words-export-top, 130px) - 12px));
     gap: 10px;
+    overflow-y: auto;
     padding-block: 14px;
-    border-bottom-width: 1px;
+    border: 1px solid rgba(19, 118, 109, 0.14);
+    border-radius: 18px;
     opacity: 1;
+    box-shadow: 0 18px 52px rgba(20, 72, 58, 0.18);
+    overscroll-behavior: contain;
 }
 
 .my-words-export-heading,
@@ -766,6 +775,91 @@ body.my-words-detail-open {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
     min-height: calc(100vh - 171px);
+}
+
+.my-words-notebook.is-revealing {
+    animation: myWordsRevealFadeLift 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.my-words-loading-sheet {
+    position: relative;
+    display: grid;
+    min-height: calc(100vh - 171px);
+    place-items: center;
+    overflow: hidden;
+    border-top: 1px solid rgba(19, 118, 109, 0.08);
+    background:
+        linear-gradient(90deg, transparent 0%, rgba(19, 118, 109, 0.12) 34%, rgba(217, 168, 45, 0.16) 58%, transparent 100%),
+        linear-gradient(rgba(101, 148, 134, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(101, 148, 134, 0.14) 1px, transparent 1px),
+        rgba(249, 253, 251, 0.82);
+    background-size: 220px 100%, 42px 42px, 42px 42px, auto;
+    animation: myWordsGridMove 1.8s linear infinite;
+}
+
+.my-words-loading-sheet::before,
+.my-words-loading-sheet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.my-words-loading-sheet::before {
+    background:
+        linear-gradient(90deg, rgba(249, 253, 251, 0.88), rgba(249, 253, 251, 0.46), rgba(249, 253, 251, 0.88)),
+        radial-gradient(circle at center, rgba(19, 118, 109, 0.13), transparent 34%);
+}
+
+.my-words-loading-sheet::after {
+    background:
+        linear-gradient(90deg, transparent 0%, rgba(19, 118, 109, 0.1) 18%, transparent 36%),
+        linear-gradient(180deg, transparent 0%, rgba(217, 168, 45, 0.1) 42%, transparent 68%);
+    background-size: 260px 100%, 100% 180px;
+    mix-blend-mode: multiply;
+    animation: myWordsColorWash 2.4s ease-in-out infinite;
+}
+
+.my-words-loading-sheet.is-error {
+    padding: 26px;
+    color: #647b74;
+    background: rgba(249, 253, 251, 0.82);
+    text-align: center;
+    animation: none;
+}
+
+.my-words-loading-sheet.is-error::before,
+.my-words-loading-sheet.is-error::after {
+    content: none;
+}
+
+.my-words-loading-sheet.is-error button {
+    margin-top: 12px;
+}
+
+.my-words-loading-sheet[hidden],
+.my-words-notebook[hidden] {
+    display: none;
+}
+
+@keyframes myWordsGridMove {
+    to { background-position: 220px 0, 42px 42px, 42px 42px, 0 0; }
+}
+
+@keyframes myWordsColorWash {
+    0% { background-position: -120px 0, 0 -80px; opacity: 0.62; }
+    50% { background-position: 80px 0, 0 34px; opacity: 0.9; }
+    100% { background-position: 260px 0, 0 180px; opacity: 0.62; }
+}
+
+@keyframes myWordsRevealFadeLift {
+    from { opacity: 0; transform: translateY(10px); filter: blur(2px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes myWordsRevealFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .my-words-index {
@@ -992,6 +1086,14 @@ body.my-words-detail-open {
     background: rgba(17, 44, 37, 0.38);
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
+    transition: background 300ms ease, backdrop-filter 300ms ease;
+}
+
+.my-words-mobile-detail-overlay.is-closing {
+    background: rgba(17, 44, 37, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+    pointer-events: none;
 }
 
 .my-words-mobile-detail-overlay[hidden] {
@@ -1006,9 +1108,51 @@ body.my-words-detail-open {
     gap: 10px;
 }
 
+.my-words-mobile-detail-edit {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    margin-right: 12px;
+    place-items: center;
+    justify-self: end;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 999px;
+    color: #174f42;
+    background: rgba(250, 253, 251, 0.94);
+    box-shadow: 0 14px 34px rgba(17, 60, 49, 0.2);
+    cursor: pointer;
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    transition: opacity 180ms ease, transform 120ms ease, background 160ms ease;
+}
+
+.my-words-mobile-detail-edit:active {
+    transform: scale(0.96);
+}
+
+.my-words-mobile-detail-edit[aria-pressed="true"] {
+    color: #fff;
+    background: #13766d;
+}
+
+.my-words-mobile-detail-edit svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.my-words-mobile-detail-overlay.is-closing :is(.my-words-mobile-detail-edit, .my-words-mobile-detail-close) {
+    opacity: 0;
+}
+
 .my-words-mobile-detail-card {
     width: 100%;
-    max-height: min(80dvh, 700px);
+    max-height: min(calc(100dvh - 144px), 700px);
     padding: 22px;
     overflow: auto;
     border: 1px solid rgba(255, 255, 255, 0.78);
@@ -1090,6 +1234,120 @@ body.my-words-detail-open {
     gap: 15px;
     margin-top: 15px;
     color: #526c65;
+}
+
+.my-word-mobile-edit-form {
+    display: grid;
+    gap: 15px;
+}
+
+.my-word-mobile-edit-word,
+.my-word-mobile-section > label {
+    display: grid;
+    gap: 7px;
+    color: #526c65;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.my-word-mobile-edit-word input {
+    width: 100%;
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 2px solid rgba(19, 118, 109, 0.22);
+    outline: 0;
+    color: #17372f;
+    background: transparent;
+    font-size: clamp(2rem, 11vw, 3.3rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.my-word-mobile-edit-word input:focus {
+    border-bottom-color: #13766d;
+}
+
+.my-word-mobile-edit-warning {
+    margin: -6px 0 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: #795414;
+    background: rgba(250, 224, 154, 0.34);
+    font-size: 0.73rem;
+    line-height: 1.5;
+}
+
+.my-word-mobile-edit-box {
+    display: grid;
+    gap: 7px;
+    padding: 12px 14px;
+    border: 1px solid rgba(19, 118, 109, 0.1);
+    border-radius: 16px;
+    background: rgba(226, 242, 235, 0.72);
+}
+
+.my-word-mobile-edit-box textarea {
+    width: 100%;
+    min-height: 78px;
+    padding: 0;
+    resize: vertical;
+    border: 0;
+    outline: 0;
+    color: #264b42;
+    background: transparent;
+    font: inherit;
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.my-word-mobile-edit-source-item {
+    display: grid;
+    gap: 7px;
+}
+
+.my-word-mobile-edit-source-item + .my-word-mobile-edit-source-item {
+    padding-top: 12px;
+    border-top: 1px solid rgba(19, 118, 109, 0.1);
+}
+
+.my-word-mobile-edit-box small {
+    color: #71867f;
+    font-size: 0.68rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.my-word-mobile-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 2px;
+}
+
+.my-word-mobile-edit-secondary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(19, 118, 109, 0.1);
+}
+
+.my-word-mobile-edit-secondary button {
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 10px;
+    color: #315c51;
+    background: rgba(226, 242, 235, 0.72);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.my-word-mobile-edit-secondary .my-word-archive {
+    color: #a33737;
 }
 
 .my-word-mobile-detail-copy > :is(p, form, button) {
@@ -1177,6 +1435,15 @@ body.my-words-detail-open {
 @keyframes myWordsDetailMaterialize {
     from { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.96); }
     to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.my-words-index-card.is-return-target {
+    animation: myWordsReturnTarget 980ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes myWordsReturnTarget {
+    0%, 100% { box-shadow: 0 8px 22px rgba(20, 72, 58, 0.05); }
+    35% { box-shadow: 0 0 0 4px rgba(19, 118, 109, 0.2), 0 12px 28px rgba(20, 72, 58, 0.14); }
 }
 
 .my-word-merge-modal.my-words-page-merge,
@@ -1311,6 +1578,10 @@ body.my-words-detail-open {
         min-height: calc(100vh - 120px);
     }
 
+    .my-words-loading-sheet {
+        min-height: calc(100vh - 120px);
+    }
+
     .my-words-index {
         min-height: inherit;
         border-right: 0;
@@ -1436,6 +1707,25 @@ body.my-words-detail-open {
         overflow: hidden;
         text-overflow: ellipsis;
         transform: none !important;
+    }
+
+    .my-words-loading-sheet,
+    .my-words-loading-sheet::after {
+        animation: none !important;
+    }
+
+    .my-words-notebook.is-revealing {
+        animation: myWordsRevealFade 120ms ease-out both !important;
+        transform: none !important;
+        filter: none !important;
+    }
+
+    .my-words-mobile-detail-overlay {
+        transition: opacity 120ms ease-out !important;
+    }
+
+    .my-words-mobile-detail-overlay.is-closing {
+        opacity: 0;
     }
 }
 

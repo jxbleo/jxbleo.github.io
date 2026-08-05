@@ -16,7 +16,10 @@
         exportSelected: {},
         editingId: '',
         noteEditingId: '',
+        mobileEditingId: '',
         mobileDetailOpen: false,
+        mobileDetailClosing: false,
+        mobileReturnVocabId: '',
         detailOpener: null,
         lockedScrollY: 0
     };
@@ -28,12 +31,15 @@
     var addSubmit = document.getElementById('my-words-add-submit');
     var addStatus = document.getElementById('my-words-add-status');
     var feedback = document.getElementById('my-words-feedback');
+    var loadingSheet = document.getElementById('my-words-loading-sheet');
+    var notebook = document.getElementById('my-words-notebook');
     var recentList = document.getElementById('my-words-recent-list');
     var indexList = document.getElementById('my-words-index-list');
     var desktopDetail = document.getElementById('my-words-desktop-detail');
     var mobileOverlay = document.getElementById('my-words-mobile-detail-overlay');
     var mobileDetail = document.getElementById('my-words-mobile-detail');
     var mobileClose = document.getElementById('my-words-mobile-detail-close');
+    var mobileEdit = document.getElementById('my-words-mobile-detail-edit');
     var searchInput = document.getElementById('my-words-search');
     var searchTrigger = document.getElementById('my-words-search-trigger');
     var sortSelect = document.getElementById('my-words-sort');
@@ -182,17 +188,47 @@
         if (oldId !== (word && word.vocab_id)) delete state.exportSelected[oldId];
     }
 
+    function setWordsLoading() {
+        if (notebook) {
+            notebook.hidden = true;
+            notebook.classList.remove('is-revealing');
+        }
+        if (loadingSheet) {
+            loadingSheet.hidden = false;
+            loadingSheet.classList.remove('is-error');
+            loadingSheet.setAttribute('aria-label', 'Loading saved words');
+            loadingSheet.innerHTML = '<span class="sr-only">Loading saved words</span>';
+        }
+    }
+
+    function setWordsReady() {
+        if (loadingSheet) loadingSheet.hidden = true;
+        if (!notebook) return;
+        notebook.hidden = false;
+        notebook.classList.remove('is-revealing');
+        window.requestAnimationFrame(function() { notebook.classList.add('is-revealing'); });
+    }
+
+    function setWordsLoadError(message) {
+        if (notebook) notebook.hidden = true;
+        if (!loadingSheet) return;
+        loadingSheet.hidden = false;
+        loadingSheet.classList.add('is-error');
+        loadingSheet.setAttribute('aria-label', 'My Words could not be loaded');
+        loadingSheet.innerHTML = '<div><p>' + escapeHtml(message || 'My Words could not be loaded.') + '</p><button class="outline-button" type="button" data-retry-load>Try again</button></div>';
+    }
+
     function reloadWords() {
-        setFeedback('Refreshing My Words...');
         return callStudentVocabulary({ action: 'list', status: 'active', limit: 200 }).then(function(result) {
             state.items = result.words || [];
             if (!vocabWord(state.selectedId)) state.selectedId = sortedItems(activeItems())[0] && sortedItems(activeItems())[0].vocab_id || '';
             renderAll();
+            setWordsReady();
             enrichPendingItems(state.items);
             setFeedback('');
             return state.items;
         }).catch(function(error) {
-            setFeedback(error.message || 'Unable to load My Words.');
+            setWordsLoadError(error.message || 'Unable to load My Words.');
             throw error;
         });
     }
@@ -314,6 +350,15 @@
             '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg></button>';
     }
 
+    function speakWord(value) {
+        value = String(value || '').trim();
+        if (!value || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+        window.speechSynthesis.cancel();
+        var utterance = new SpeechSynthesisUtterance(value);
+        utterance.lang = 'en-GB';
+        window.speechSynthesis.speak(utterance);
+    }
+
     function detailActionsHtml(word, dictionary) {
         return '<details class="my-words-detail-actions"><summary aria-label="More word actions">•••</summary><div class="my-words-detail-actions-menu">' +
             '<button type="button" data-edit-word="' + escapeHtml(word.vocab_id) + '">Edit word</button>' +
@@ -343,6 +388,37 @@
         }).join('') : '<div class="my-word-mobile-source-item"><p>No saved sentence.</p><small>' +
             escapeHtml(wordSourceLabel(word)) + (date ? ' · ' + escapeHtml(date) : '') + '</small></div>';
         return '<section class="my-word-mobile-section"><h3>Source</h3><div class="my-word-mobile-source">' + content + '</div></section>';
+    }
+
+    function mobileSourceMetaHtml(word, example) {
+        example = example || {};
+        var source = example.source_title || example.source_set_id || wordSourceLabel(word);
+        var date = formatShortDate(example.saved_at) || wordSavedDate(word);
+        return '<small>' + escapeHtml(source) + (date ? ' · ' + escapeHtml(date) : '') + '</small>';
+    }
+
+    function mobileSourceEditorHtml(word) {
+        var examples = Array.isArray(word && word.saved_examples) ? word.saved_examples.slice(0, 8) : [];
+        if (!examples.length) examples = [{ context: word && word.context || '' }];
+        return examples.map(function(example, index) {
+            return '<div class="my-word-mobile-edit-source-item"><textarea data-source-context="' + index + '" maxlength="320" placeholder="Add or edit the saved sentence">' + escapeHtml(example.context || '') + '</textarea>' + mobileSourceMetaHtml(word, example) + '</div>';
+        }).join('');
+    }
+
+    function mobileEditDetailHtml(word) {
+        var dictionary = word.dictionary || {};
+        var secondaryActions = (!dictionary && word.lookup_status === 'not_found' ? '<button type="button" data-ai-word="' + escapeHtml(word.vocab_id) + '">Ask AI</button>' : '') +
+            (dictionary ? '<button type="button" data-report-word="' + escapeHtml(word.vocab_id) + '">Report dictionary issue</button>' : '') +
+            '<button class="my-word-archive" type="button" data-archive-word="' + escapeHtml(word.vocab_id) + '">Remove word</button>';
+        return '<form class="my-word-mobile-edit-form" data-mobile-edit-form="' + escapeHtml(word.vocab_id) + '">' +
+            '<label class="my-word-mobile-edit-word"><span id="my-words-mobile-detail-title">Word or phrase</span><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required></label>' +
+            '<p class="my-word-mobile-edit-warning">Changing the English word may clear its dictionary details when no matching entry is found. Check the spelling carefully.</p>' +
+            '<div class="my-word-mobile-lexical-line"><strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong><span>' + escapeHtml(dictionary.english_definition || 'Dictionary details will refresh after saving.') + '</span></div>' +
+            '<section class="my-word-mobile-section"><h3>Source</h3><div class="my-word-mobile-edit-box my-word-mobile-edit-sources">' + mobileSourceEditorHtml(word) + '</div></section>' +
+            '<section class="my-word-mobile-section"><label for="my-word-mobile-note-edit">Note</label><div class="my-word-mobile-edit-box"><textarea id="my-word-mobile-note-edit" name="personal_note" maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea></div></section>' +
+            '<div class="my-word-mobile-edit-actions"><button class="outline-button" type="button" data-cancel-mobile-edit>Cancel</button><button class="primary-button" type="submit">Save changes</button></div>' +
+            '<div class="my-word-mobile-edit-secondary">' + secondaryActions + '</div>' +
+        '</form>';
     }
 
     function mobileWordDetailBodyHtml(word) {
@@ -410,9 +486,9 @@
     function detailPanelHtml(word, mobile) {
         var dictionary = word.dictionary || {};
         if (mobile) {
+            if (state.mobileEditingId === word.vocab_id) return mobileEditDetailHtml(word);
             var spokenWord = dictionary.word || word.text || '';
-            return '<div class="my-words-detail-head my-words-detail-head-mobile">' + detailActionsHtml(word, word.dictionary) + '</div>' +
-                '<div class="my-word-mobile-title-row"><h2 id="my-words-mobile-detail-title">' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
+            return '<div class="my-word-mobile-title-row"><h2 id="my-words-mobile-detail-title">' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
                 '<div class="my-word-mobile-lexical-line">' +
                     '<strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong>' +
                     '<span>' + escapeHtml(dictionary.english_definition || 'English definition unavailable.') + '</span>' +
@@ -442,6 +518,7 @@
             return;
         }
         mobileDetail.innerHTML = detailPanelHtml(word, true);
+        if (mobileEdit) mobileEdit.setAttribute('aria-pressed', state.mobileEditingId === word.vocab_id ? 'true' : 'false');
     }
 
     function renderAll() {
@@ -518,6 +595,7 @@
         renderDesktopDetail();
         if (isMobileLayout()) {
             openMobileDetail();
+            speakWord(word.dictionary && word.dictionary.word || word.text || '');
             return;
         }
         if (fromRecent) setView('word-list', true);
@@ -542,6 +620,8 @@
     }
 
     function openMobileDetail() {
+        state.mobileDetailClosing = false;
+        state.mobileReturnVocabId = state.selectedId;
         state.mobileDetailOpen = true;
         renderMobileDetail();
         mobileOverlay.hidden = false;
@@ -550,25 +630,66 @@
     }
 
     function hasUnsavedDetailEdit() {
-        return Boolean(state.editingId || state.noteEditingId);
+        return Boolean(state.editingId || state.noteEditingId || state.mobileEditingId);
     }
 
     function activeDetailRoot() {
         return state.mobileDetailOpen ? mobileDetail : desktopDetail;
     }
 
-    function closeMobileDetail(force) {
-        if (!state.mobileDetailOpen) return true;
-        if (!force && hasUnsavedDetailEdit() && !window.confirm('Discard your unsaved changes?')) return false;
+    function selectedMobileWordCard() {
+        return Array.prototype.slice.call(indexList.querySelectorAll('[data-open-word]')).find(function(button) {
+            return button.dataset.openWord === (state.mobileReturnVocabId || state.selectedId);
+        }) || null;
+    }
+
+    function finishMobileDetailClose(target) {
         state.editingId = '';
         state.noteEditingId = '';
+        state.mobileEditingId = '';
         state.mobileDetailOpen = false;
+        state.mobileDetailClosing = false;
+        state.mobileReturnVocabId = '';
         mobileOverlay.hidden = true;
+        mobileOverlay.classList.remove('is-closing');
         unlockPageForDetail();
         renderDesktopDetail();
-        var opener = state.detailOpener;
+        var focusTarget = target && target.isConnected ? target : selectedMobileWordCard();
+        if (focusTarget) {
+            focusTarget.classList.add('is-return-target');
+            window.setTimeout(function() { focusTarget.classList.remove('is-return-target'); }, 1100);
+            focusTarget.focus({ preventScroll: true });
+        } else if (state.detailOpener && typeof state.detailOpener.focus === 'function') {
+            state.detailOpener.focus({ preventScroll: true });
+        }
         state.detailOpener = null;
-        if (opener && typeof opener.focus === 'function') opener.focus({ preventScroll: true });
+    }
+
+    function closeMobileDetail(force) {
+        if (!state.mobileDetailOpen) return true;
+        if (state.mobileDetailClosing) return true;
+        if (!force && hasUnsavedDetailEdit() && !window.confirm('Discard your unsaved changes?')) return false;
+        state.mobileDetailClosing = true;
+        var card = mobileOverlay.querySelector('.my-words-mobile-detail-card');
+        var target = selectedMobileWordCard();
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        mobileOverlay.classList.add('is-closing');
+        if (!card || !card.animate || reduceMotion) {
+            window.setTimeout(function() { finishMobileDetailClose(target); }, reduceMotion ? 120 : 0);
+            return true;
+        }
+        var cardRect = card.getBoundingClientRect();
+        var targetRect = target && target.getBoundingClientRect();
+        var hasVisibleTarget = targetRect && targetRect.width > 0 && targetRect.height > 0;
+        var translateX = hasVisibleTarget ? targetRect.left + targetRect.width / 2 - (cardRect.left + cardRect.width / 2) : 0;
+        var translateY = hasVisibleTarget ? targetRect.top + targetRect.height / 2 - (cardRect.top + cardRect.height / 2) : 12;
+        var scaleX = hasVisibleTarget ? Math.max(0.12, targetRect.width / cardRect.width) : 0.92;
+        var scaleY = hasVisibleTarget ? Math.max(0.08, targetRect.height / cardRect.height) : 0.92;
+        var cardAnimation = card.animate([
+            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1, 1)', borderRadius: '27px' },
+            { opacity: 0.12, transform: 'translate3d(' + translateX + 'px, ' + translateY + 'px, 0) scale(' + scaleX + ', ' + scaleY + ')', borderRadius: '16px' }
+        ], { duration: 390, easing: 'cubic-bezier(0.32, 0, 0.2, 1)', fill: 'forwards' });
+        Promise.resolve(cardAnimation.finished).catch(function() {}).then(function() { finishMobileDetailClose(target); });
         return true;
     }
 
@@ -578,6 +699,10 @@
         if (clean.length > 120 || clean.split(/\s+/).filter(Boolean).length > 16) return 'Please add one word or a short phrase at a time.';
         if (!/[\p{L}\p{N}]/u.test(clean)) return 'Use letters or numbers in the word.';
         return '';
+    }
+
+    function normalizeVocabularyTextForComparison(value) {
+        return String(value || '').replace(/\s+/g, ' ').trim().normalize('NFKC').toLowerCase();
     }
 
     function setAddOpen(open) {
@@ -648,12 +773,23 @@
         exportPanel.setAttribute('aria-hidden', state.exportOpen ? 'false' : 'true');
         if (state.exportOpen) {
             exportPanel.removeAttribute('inert');
+            positionExportPanel();
             selectExportRange(state.exportRange || 'all');
         } else {
             exportPanel.setAttribute('inert', '');
             renderIndex();
         }
         exportTrigger.setAttribute('aria-expanded', state.exportOpen ? 'true' : 'false');
+    }
+
+    function positionExportPanel() {
+        if (!state.exportOpen || !exportPanel || !exportTrigger) return;
+        var triggerRect = exportTrigger.getBoundingClientRect();
+        var panelWidth = Math.min(560, Math.max(280, window.innerWidth - 20));
+        var panelLeft = Math.max(10, Math.min(triggerRect.right - panelWidth, window.innerWidth - panelWidth - 10));
+        exportPanel.style.setProperty('--my-words-export-top', Math.round(triggerRect.bottom + 8) + 'px');
+        exportPanel.style.setProperty('--my-words-export-left', Math.round(panelLeft) + 'px');
+        exportPanel.style.setProperty('--my-words-export-width', Math.round(panelWidth) + 'px');
     }
 
     function showMergeUndo(vocabId) {
@@ -739,13 +875,7 @@
         if (wordButton) { openWord(wordButton.dataset.openWord, wordButton, false); return; }
         var speak = event.target.closest('[data-speak-word]');
         if (speak) {
-            var value = speak.dataset.speakWord || '';
-            if (value && window.speechSynthesis && window.SpeechSynthesisUtterance) {
-                window.speechSynthesis.cancel();
-                var utterance = new SpeechSynthesisUtterance(value);
-                utterance.lang = 'en-GB';
-                window.speechSynthesis.speak(utterance);
-            }
+            speakWord(speak.dataset.speakWord || '');
             return;
         }
         var archive = event.target.closest('[data-archive-word]');
@@ -795,6 +925,12 @@
             renderMobileDetail();
             var textarea = activeDetailRoot().querySelector('[data-note-form] textarea');
             if (textarea) textarea.focus();
+            return;
+        }
+        if (event.target.closest('[data-cancel-mobile-edit]')) {
+            state.mobileEditingId = '';
+            renderMobileDetail();
+            if (mobileEdit) mobileEdit.focus({ preventScroll: true });
             return;
         }
         if (event.target.closest('[data-cancel-word-edit]')) {
@@ -861,6 +997,48 @@
     }
 
     function handleDetailSubmit(event) {
+        var mobileEditForm = event.target.closest('[data-mobile-edit-form]');
+        if (mobileEditForm) {
+            event.preventDefault();
+            var mobileOldId = mobileEditForm.dataset.mobileEditForm;
+            var mobileWord = vocabWord(mobileOldId);
+            var mobileText = String(mobileEditForm.elements.text.value || '').replace(/\s+/g, ' ').trim();
+            var mobileValidation = manualWordValidation(mobileText);
+            if (mobileValidation) {
+                window.alert(mobileValidation);
+                mobileEditForm.elements.text.focus();
+                return;
+            }
+            var mobileSubmit = mobileEditForm.querySelector('[type="submit"]');
+            mobileSubmit.disabled = true;
+            mobileSubmit.textContent = 'Saving...';
+            callStudentVocabulary({
+                action: 'updateWord',
+                vocab_id: mobileOldId,
+                text: mobileText,
+                source_contexts: Array.prototype.slice.call(mobileEditForm.querySelectorAll('[data-source-context]')).map(function(textarea) { return textarea.value; }),
+                personal_note: mobileEditForm.elements.personal_note.value
+            }).then(function(result) {
+                state.mobileEditingId = '';
+                replaceItem(mobileOldId, result.word);
+                state.selectedId = result.word.vocab_id;
+                state.mobileReturnVocabId = result.word.vocab_id;
+                renderAll();
+                if (mobileWord && normalizeVocabularyTextForComparison(mobileWord.text) !== normalizeVocabularyTextForComparison(mobileText) && window.MrCatPersonalVocab) {
+                    window.MrCatPersonalVocab.enrichWord(result.word, false);
+                }
+            }).catch(function(error) {
+                mobileSubmit.disabled = false;
+                mobileSubmit.textContent = 'Save changes';
+                if (error.result && error.result.code === 'MERGE_REQUIRED' && mobileWord) {
+                    state.mobileEditingId = '';
+                    mergeWordGroup(mobileWord, error.result.recommended_headword, error.result.merge_vocab_ids);
+                    return;
+                }
+                window.alert(error.message);
+            });
+            return;
+        }
         var editForm = event.target.closest('[data-edit-form]');
         if (editForm) {
             event.preventDefault();
@@ -975,19 +1153,46 @@
         document.addEventListener('click', function(event) {
             if (state.densityMenuOpen && !event.target.closest('.my-words-density-picker')) setDensityMenuOpen(false);
         });
+        window.addEventListener('scroll', function() {
+            if (state.densityMenuOpen) setDensityMenuOpen(false);
+            if (state.exportOpen) positionExportPanel();
+        }, { passive: true });
+        indexList.addEventListener('touchmove', function() {
+            if (state.densityMenuOpen) setDensityMenuOpen(false);
+        }, { passive: true });
+        indexList.addEventListener('wheel', function() {
+            if (state.densityMenuOpen) setDensityMenuOpen(false);
+        }, { passive: true });
+        window.addEventListener('resize', function() {
+            if (state.exportOpen) positionExportPanel();
+        });
         document.addEventListener('click', function(event) {
             document.querySelectorAll('.my-words-detail-actions[open]').forEach(function(actions) {
                 if (!actions.contains(event.target)) actions.removeAttribute('open');
             });
         });
         document.addEventListener('submit', handleDetailSubmit);
+        mobileEdit.addEventListener('click', function() {
+            if (!state.mobileDetailOpen || state.mobileDetailClosing) return;
+            if (state.mobileEditingId === state.selectedId) {
+                var currentInput = mobileDetail.querySelector('[data-mobile-edit-form] input[name="text"]');
+                if (currentInput) currentInput.focus();
+                return;
+            }
+            if (!window.confirm('Changing the English word may clear its dictionary details if no matching entry is found. Check the spelling carefully. Continue editing?')) return;
+            state.editingId = '';
+            state.noteEditingId = '';
+            state.mobileEditingId = state.selectedId;
+            renderMobileDetail();
+            var wordInput = mobileDetail.querySelector('[data-mobile-edit-form] input[name="text"]');
+            if (wordInput) { wordInput.focus(); wordInput.select(); }
+        });
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
-        mobileOverlay.addEventListener('click', function(event) { if (event.target === mobileOverlay) closeMobileDetail(false); });
         var logoutButton = document.getElementById('my-words-logout');
         if (logoutButton) logoutButton.addEventListener('click', window.MrCatAuth.logout);
         document.addEventListener('keydown', function(event) {
             if (event.key !== 'Escape') return;
-            if (state.mobileDetailOpen) { closeMobileDetail(false); return; }
+            if (state.mobileDetailOpen) return;
             if (state.densityMenuOpen) { setDensityMenuOpen(false); densityTrigger.focus(); return; }
             if (state.searchOpen) {
                 state.search = '';
@@ -1018,6 +1223,7 @@
         addTrigger.disabled = true;
         searchInput.disabled = true;
         sortSelect.disabled = true;
+        setWordsReady();
     }
 
     function initialize() {
@@ -1031,8 +1237,8 @@
         syncViewControls();
         renderExportFields();
         bindControls();
+        setWordsLoading();
         recentList.innerHTML = '<div class="my-words-loading-state"><p>Loading My Words...</p></div>';
-        indexList.innerHTML = '<div class="my-words-loading-state"><p>Loading saved words...</p></div>';
         window.MrCatAuth.getSession().then(function(session) {
             if (session.mode === 'none') {
                 window.location.replace('index.html');
@@ -1049,12 +1255,12 @@
             }
             return reloadWords();
         }).catch(function(error) {
-            setFeedback(error.message || 'Unable to start My Words.');
             recentList.innerHTML = '<div class="my-words-loading-state"><div><p>My Words could not be loaded.</p><button class="outline-button" type="button" data-retry-load>Try again</button></div></div>';
-            indexList.innerHTML = '<div class="my-words-loading-state"><p>My Words could not be loaded.</p></div>';
+            setWordsLoadError(error.message || 'Unable to start My Words.');
         });
         document.addEventListener('click', function(event) {
             if (!event.target.closest('[data-retry-load]')) return;
+            setWordsLoading();
             reloadWords().catch(function() {});
         });
     }
