@@ -399,23 +399,24 @@ Student cards should show:
 My Words:
 
 - opens `my-words.html` from the Dashboard notebook icon as a separate
-  authenticated workspace, not a Dashboard modal. A fixed header provides the
-  Dashboard return, Add Word, current student, and sign-out actions.
-- uses a report-like desktop shell: a fixed `Study / Word List` Sidebar remains
-  visible while the right stage scrolls. Every fresh Dashboard entry opens
-  `Study`; `#word-list` preserves a refreshed Word List view. Leaving Word List
-  clears its transient Search query while keeping sort and density choices.
-- keeps Study intentionally honest in the first release: one static `Study Mode
+  authenticated workspace, not a Dashboard modal. One compact sticky row holds
+  only the Dashboard back icon and the `My Words / Review` navigation; the old
+  academy/title row, header Add button, identity, sign-out, and desktop Sidebar
+  are not rendered.
+- every fresh Dashboard entry opens `My Words`; `#review` preserves the Review
+  view. Leaving My Words clears its transient Search query while keeping sort
+  and density choices.
+- keeps Review intentionally honest in the first release: one static `Review Mode
   · In design` surface plus real saved-total, Shanghai-week-added, and recent
   words. It contains no clickable fake learning button and no familiarity,
   due-review, quiz, or progress model.
-- renders desktop Word List as a fixed approximately 300px word index plus a
+- renders desktop My Words as a fixed approximately 300px word index plus a
   flexible right detail pane. Recent is the default sort, with A–Z and Z–A
   available. Search covers English, Chinese, definition, POS, source, context,
-  and Note. Selecting a recent Study word switches desktop to Word List and
+  and Note. Selecting a recent Review word switches desktop to My Words and
   selects that word.
-- hides the Sidebar on narrow screens and uses one sticky `Study / Word List`
-  tab row. The Word List defaults to a two-column English-only card grid and
+- uses the same single sticky `My Words / Review` row on narrow screens. My
+  Words defaults to a two-column English-only card grid and
   offers a single-column alternative; the browser remembers this density.
   Overflowing English text pauses, automatically travels only inside its own
   card, pauses at the end, and returns, using the task-title 7–14 second timing.
@@ -424,9 +425,10 @@ My Words:
   detail modal no taller than about 88dvh; its background is locked and closing
   restores the exact list/search/sort/density/scroll context. Desktop never
   opens this modal and updates its right detail pane instead.
-- places Add Word in the page header. It expands one word/short-phrase field
-  below the header; Enter saves immediately with no optional context. Word List
-  owns Search, sort, mobile density, and `•••` Export controls. Export expands
+- retains the inline Add Word form for contextual empty-state actions, without
+  a permanent header `+`. My Words owns a left-edge magnifying-glass Search
+  control, mobile density and `•••` Export controls, plus a compact sort select
+  aligned to the far right. Export expands
   inside the current page rather than navigating away.
 - shows phonetic spelling, browser pronunciation, Chinese and English meaning,
   source/context, saved date, retry when applicable, and Note in the detail

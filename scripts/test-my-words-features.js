@@ -65,7 +65,10 @@ async function main() {
   assert(myWordsHtml.includes('id="my-words-export-panel"'));
   assert(myWordsHtml.includes('data-my-words-view="study"'));
   assert(myWordsHtml.includes('data-my-words-view="word-list"'));
-  assert(myWordsHtml.includes("Study Mode · In design"));
+  assert(myWordsHtml.includes("Review Mode · In design"));
+  assert(myWordsHtml.includes('data-my-words-nav="word-list" aria-selected="true">My Words</button>'));
+  assert(myWordsHtml.includes('id="my-words-search-trigger"'));
+  assert(!myWordsHtml.includes('class="my-words-page-title"'));
   assert(myWordsJs.includes("AI dictionary lookup is under development."));
   assert(myWordsJs.includes("function wordChineseMeaning(dictionary)"), "word details must remove duplicated POS labels");
   assert(!myWordsJs.includes("escapeHtml(dictionary.source_name || 'Dictionary')"), "student word details must not expose dictionary provider labels");
