@@ -2150,10 +2150,6 @@
         };
     }
 
-    function libraryShouldShowNote(item) {
-        return item.note && item.note !== 'Listening Practice' && item.note !== 'Passage Practice';
-    }
-
     function libraryItemIdentity(item) {
         return String(item && (item.set_id || item.id || item.displayValue || item.href || item.title) || '');
     }
@@ -2252,9 +2248,6 @@
                     '<span>' + escapeHtml(meta.setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(item.title || meta.setId) + '</h3>' +
-                (libraryShouldShowNote(item)
-                    ? '<div class="library-task-foot"><p class="card-note">' + escapeHtml(item.note) + '</p></div>'
-                    : '') +
             '</div>' +
         '</article>';
     }
