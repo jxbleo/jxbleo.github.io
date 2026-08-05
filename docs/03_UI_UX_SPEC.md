@@ -422,6 +422,12 @@ My Words:
 - every fresh Dashboard entry opens `My Words`; `#review` preserves the Review
   view. Leaving My Words clears its transient Search query while keeping sort
   and density choices.
+- on first entry, the compact `My Words / Review` navigation and the complete
+  Word List toolbar render immediately in their final sticky positions. While
+  saved words load, the entire workspace below the toolbar uses the same quiet,
+  copy-free animated grid/radar wash as the Teacher View matrix; the two fixed
+  rows do not move when the real word list fades and lifts into place. Reduced
+  motion keeps the grid static and uses only the content reveal cross-fade.
 - keeps Review intentionally honest in the first release: one static `Review Mode
   · In design` surface plus real saved-total, Shanghai-week-added, and recent
   words. It contains no clickable fake learning button and no familiarity,
@@ -438,37 +444,51 @@ My Words:
   Overflowing English text pauses, automatically travels only inside its own
   card, pauses at the end, and returns, using the task-title 7–14 second timing.
   Reduced-motion mode uses a static ellipsis.
+- the mobile one/two/three-column picker closes as soon as the student scrolls,
+  wheels, or drags the word list; it never remains floating over moving words.
 - opens a selected mobile word in a centered, rounded, independently scrolling
-  detail modal with one external `Close` capsule directly below the card; its
+  detail modal with a circular external pencil above the card and one external
+  `Close` capsule directly below it. The mobile card has no three-dot menu. Its
   background is locked and closing restores the exact
-  list/search/sort/density/scroll context. The card omits `WORD DETAILS`,
+  list/search/sort/density/scroll context. Closing also shrinks and travels to
+  the originating My Words tile, then briefly highlights that tile so the
+  student can immediately find and reopen it; reduced motion uses a short fade.
+  The card omits `WORD DETAILS`,
   `Saved word`, dictionary-review status, and pronunciation-placeholder labels.
   The word and speaker share the title row; POS and the short English definition
   share the next line; optional Forms follows before two explicitly labelled
   Source and Note boxes. Source contains saved sentence text, original source,
   and saved date. Desktop never opens this modal and updates its right detail
   pane instead.
+- opening a mobile word detail immediately speaks that word once using the same
+  browser `en-GB` pronunciation used by the visible speaker button.
 - retains the inline Add Word form for contextual empty-state actions, without
   a permanent header `+`. My Words owns a left-edge magnifying-glass Search
   control, one mobile layout-picker control, a recognizable download/Export
-  icon, and a compact sort select aligned to the far right. Export expands
-  inside the current page rather than navigating away. The workspace may clip
-  its rounded outer edge but must not become a scroll container: the sticky
-  toolbar starts directly below the primary navigation, and the expanded Export
-  heading and time-range capsules remain entirely below that toolbar.
+  icon, and a compact sort select aligned to the far right. Export opens as a
+  bounded floating panel anchored directly below the download button's current
+  on-screen position rather than navigating away or expanding at the document's
+  original top position. It must open in place at every word-list scroll depth
+  without moving the list. The workspace may clip its rounded outer edge but
+  must not become a scroll container: the sticky toolbar starts directly below
+  the primary navigation.
 - shows phonetic spelling, browser pronunciation, Chinese and English meaning,
   source/context, saved date, retry when applicable, and Note in the detail
-  surface. Edit word, Edit Note, merge, report/AI, and confirmed removal remain
-  available from the detail action menu; external dictionary provider branding
-  remains hidden.
+  surface. The external pencil opens one unified mobile editing state for the
+  English word/phrase, saved Source sentence, and personal Note. Source origin
+  and date remain read-only provenance. Before editing begins, the student must
+  acknowledge that changing the English spelling may clear dictionary details
+  when no matching entry exists. Report/AI and confirmed removal remain
+  available in the edit surface; external dictionary provider branding remains
+  hidden. Desktop retains its detail action menu.
 - does not expose New/Learning/Mastered states, due filters, reveal-and-rate
   review, or any other review controls in the student interface.
-- lets the student edit only the English word or phrase through an inline
-  Cancel/Done state. Dictionary details remain read-only and are looked up
-  again after the edit. A separate personal Note accepts up to 500 characters.
-  Mobile word and Note inputs render at 16px so focusing them does not trigger
-  Safari page zoom. The three-dot detail menu closes when the student clicks
-  anywhere outside it.
+- lets the student edit the English word/phrase, every Source context currently
+  displayed in the bounded mobile card, and personal Note in the unified mobile
+  editor. Dictionary details remain
+  read-only and are looked up again after a spelling change. Source context is
+  limited to 320 characters and Note to 500 characters. Mobile inputs render at
+  16px or larger so focusing them does not trigger Safari page zoom.
   The expanded word card stays open when Use base, Edit word, Add/Edit Note,
   Cancel, or Done re-renders that card; the student never needs to expand it a
   second time to reach the resulting form or controls.

@@ -763,9 +763,15 @@ Rules:
   explanation content, or from the manual My Words add form.
 - Forgot schedules one day, A little schedules three days, and Know advances
   through 7, 14, and 30 days. Three consecutive Know responses mark Mastered.
-- Editing changes only `text`/`normalized_text`; dictionary details remain a
-  joined shared view. If the target normalized text already exists, the edit
-  becomes an explicit merge flow rather than creating a duplicate.
+- Editing may update `text`/`normalized_text`, `personal_note`, and up to eight
+  displayed saved Source contexts in one `updateWord` request. A Source edit
+  updates the corresponding `saved_examples` snapshots while preserving their
+  source identities and saved dates; the first context is also mirrored to the
+  top-level `context` compatibility field. Dictionary
+  details remain a joined shared view; a spelling change without a matching
+  lexicon record returns pending/empty dictionary details for enrichment. If
+  the target normalized text already exists, the edit becomes an explicit merge
+  flow rather than creating a duplicate.
 - Merge archives selected source cards under the same student, preserves
   `saved_examples`, combines Notes with original-form labels, and stores only
   enough snapshots for the immediate undo operation.
