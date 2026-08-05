@@ -751,6 +751,12 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes("overlay.querySelectorAll('.teacher-reply-item[data-open-href]')"));
   assert(dashboardJs.includes("enterLabel: 'Go to question'"));
   assert(dashboardJs.includes("hideStatus: true"));
+  assert(dashboardJs.includes('id="practice-entry-back" type="button" aria-label="Back to task list" hidden'));
+  assert(dashboardJs.includes("closePracticeEntryDialog({ callback: 'back' });"));
+  assert(dashboardJs.includes("closePracticeEntryDialog({ callback: 'close' });"));
+  assert(dashboardJs.includes("showBack: true,\n                    onBack: function() { resume(card); },\n                    onClose: function() { close(true); }"));
+  assert(appCss.includes(".practice-entry-card.has-back {\n    padding-top: 72px;"));
+  assert(appCss.includes(".practice-entry-back[hidden] { display: none; }"));
   assert(!dashboardJs.includes("if (event.target === overlay) closePracticeEntryDialog();"), "student task-entry confirmation must ignore backdrop clicks");
   assert(!dashboardJs.includes("function handlePracticeEntryKeydown(event)"), "student task-entry confirmation must ignore Escape");
   assert(!dashboardJs.includes("if (event.target === overlay) close(true);"), "To Do List and Teacher Replies must ignore backdrop clicks");
