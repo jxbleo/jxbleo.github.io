@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Changed the Teacher student-detail Class editor from unrestricted immediate
+  text entry to an active-class selector with a final `Customize` option; the
+  new-class input appears only after Customize is chosen.
 - Replaced the Student Dashboard My Words modal with a dedicated authenticated
   `my-words.html` workspace. Desktop now combines a fixed Study/Word List
   Sidebar with a Notebook-style index/detail split; mobile uses sticky tabs,

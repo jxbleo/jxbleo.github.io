@@ -457,6 +457,10 @@ Check:
   dialog with the Login ID after creation
 - editing a student's Name saves the corrected display name without changing
   Login ID, auth UID, assignments, or attempts
+- clicking Class in a student detail shows existing active classes in a select,
+  keeps the manual name field hidden initially, and reveals it only after the
+  bottom `Customize` option is selected; choosing an existing class or saving a
+  custom class updates the profile and leaves exactly one active membership
 - reset password enables the auth user, sets `must_change_password`, and then
   opens the compact checkmark confirmation with the Login ID and initial
   password; Done, backdrop, and Escape close it and restore reset-button focus

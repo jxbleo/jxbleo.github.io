@@ -155,6 +155,9 @@ Active or relevant functions:
   `attempt_id` requests; notification threads issue one request per attempt so
   their comparison cards can start expanded. Growing history therefore remains
   outside the bootstrap response and below CloudBase's 6 MB response limit.
+  Its lightweight `listClasses` action supplies active stable class IDs and
+  names to the Student detail selector; class changes still pass through the
+  trusted `updateStudent` membership-history synchronization.
 - `studentVocabulary`: personal My Words editing/merge/export data, dictionary
   enrichment, bounded AI fallback, and dictionary issue reporting
 - `changePassword`: authenticated student password change

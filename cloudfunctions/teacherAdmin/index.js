@@ -602,6 +602,19 @@ async function listStudents() {
   };
 }
 
+async function listClasses() {
+  const classes = (await getAll(CLASS_COLLECTION))
+    .map(recordData)
+    .filter((classRecord) => text(classRecord.class_id) && classRecord.active !== false)
+    .map((classRecord) => ({
+      class_id: text(classRecord.class_id),
+      name: text(classRecord.name),
+    }))
+    .filter((classRecord) => classRecord.name)
+    .sort((left, right) => left.name.localeCompare(right.name));
+  return { success: true, classes };
+}
+
 function uidFromEndUser(user) {
   return text(user && (
     user.UUId || user.Uuid || user.UUID || user.uuid || user.Uid || user.uid || user.UserId
@@ -3426,6 +3439,7 @@ exports.main = async (event) => {
     const teacher = await getAuthenticatedTeacher();
     const action = text(event.action);
     if (action === "listStudents") return await listStudents();
+    if (action === "listClasses") return await listClasses();
     if (action === "createStudent") return await createStudent(event, teacher);
     if (action === "updateStudent") return await updateStudent(event, teacher);
     if (action === "backfillLearningReportModel") return await backfillLearningReportModel(event, teacher);
