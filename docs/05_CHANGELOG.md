@@ -7,6 +7,10 @@
 
 ### Fixed
 
+- Matched Teacher STAR Redemption to the Notifications utility footprint on
+  desktop and mobile, corrected the centered title and top-left return control,
+  and brought its dialog, header, backdrop, and request cards into the shared
+  translucent glass hierarchy.
 - Prevented Teacher notification attempt details from replaying their entrance
   animation when the authorized per-attempt detail requests or reviewed-state
   update re-render the open dialog.

@@ -776,6 +776,10 @@ Check:
 - the Teacher header Yellow STAR badge counts Awaiting proof and Awaiting teacher
   Cash requests; its modal opens in the current viewport, locks background
   scroll, sorts pending oldest-first, and restores icon focus on close
+- STAR Redemption matches the Notifications card width and viewport footprint
+  at desktop and phone sizes. Its title remains mathematically centered, its
+  back arrow stays inset at the card's top-left, and the backdrop, dialog,
+  sticky header, and request cards retain distinct translucent glass depths
 - a request with no active evidence cannot be confirmed; after opening evidence,
   Confirm cash given requires a second confirmation and atomically changes
   reserved to spent once even after double-click/retry
