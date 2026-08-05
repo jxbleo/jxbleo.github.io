@@ -299,9 +299,9 @@
     function dictionaryPrimary(word) {
         var dictionary = word && word.dictionary;
         if (!dictionary) {
-            return '— · ' + (word && word.lookup_status === 'not_found' ? '暂无中文释义' : '释义加载中…');
+            return '— ' + (word && word.lookup_status === 'not_found' ? '暂无中文释义' : '释义加载中…');
         }
-        return [dictionary.part_of_speech || '—', wordChineseMeaning(dictionary)].join(' · ');
+        return [dictionary.part_of_speech || '—', wordChineseMeaning(dictionary)].join(' ');
     }
 
     function titleWindowHtml(word) {
@@ -614,12 +614,9 @@
         state.detailOpener = opener || document.activeElement;
         renderIndex();
         renderDesktopDetail();
-        if (isMobileLayout()) {
-            openMobileDetail();
-            speakWord(word.dictionary && word.dictionary.word || word.text || '');
-            return;
-        }
         if (fromRecent) setView('word-list', true);
+        openMobileDetail();
+        speakWord(word.dictionary && word.dictionary.word || word.text || '');
     }
 
     function lockPageForDetail() {

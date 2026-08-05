@@ -93,6 +93,7 @@ async function main() {
   assert(myWordsJs.includes("mrcat_my_words_density"), "mobile column preference must persist on the current browser");
   assert(myWordsJs.includes("mrcat_my_words_show_chinese"), "the Chinese meaning preference must persist on the current browser");
   assert(myWordsJs.includes("indexList.classList.toggle('show-translations'"), "the toolbar toggle must update every word card together");
+  assert(myWordsJs.includes("wordChineseMeaning(dictionary)].join(' ')"), "word-card Chinese text must not retain a middle-dot separator");
   assert(myWordsJs.includes("['single', 'double', 'triple']"), "saved density must accept all three mobile layouts");
   assert(myWordsJs.includes("indexList.addEventListener('touchmove'"), "mobile list motion must dismiss the density picker");
   assert(myWordsJs.includes("if (state.densityMenuOpen) setDensityMenuOpen(false)"), "scrolling must close an open density picker");
@@ -102,6 +103,8 @@ async function main() {
   assert(myWordsJs.includes("var defaults = { chinese: true, part_of_speech: true, english_definition: true }"), "Default export must include English, Chinese, POS, and English definition");
   assert(myWordsJs.includes("if (state.exportFormat === 'pdf')"), "the shared Export action must honor the selected file format");
   assert(myWordsJs.includes("speakWord(word.dictionary && word.dictionary.word || word.text || '')"), "opening a mobile word card must pronounce it automatically");
+  assert(!/if\s*\(isMobileLayout\(\)\)\s*\{\s*openMobileDetail\(\)/.test(myWordsJs), "word detail must not be blocked by the former 760px-only modal condition");
+  assert(/renderDesktopDetail\(\);[\s\S]{0,160}openMobileDetail\(\);/.test(myWordsJs), "every word-card click must open the independent detail card");
   assert(myWordsJs.includes("function mobileWordDetailBodyHtml(word)"), "mobile word detail must use its own compact content hierarchy");
   assert(!myWordsJs.includes("return '<div class=\"my-words-detail-head my-words-detail-head-mobile\">' + detailActionsHtml"), "mobile detail must not render the three-dot action menu");
   assert(myWordsJs.includes("data-mobile-edit-form"), "mobile detail must edit word, Source, and Note in one form");
@@ -120,6 +123,7 @@ async function main() {
   assert(myWordsCss.includes(".my-words-index-list.is-triple"), "mobile Word List must provide a three-column grid");
   assert(myWordsCss.includes('.my-words-translation-trigger[aria-pressed="true"]'), "the active Chinese meaning toggle must have visible pressed feedback");
   assert(myWordsCss.includes(".my-words-index-list.show-translations .my-words-index-card small"), "word-card POS and Chinese meaning must appear only when requested");
+  assert(/\.my-words-index-card small\s*\{[^}]*text-align:\s*left;/.test(myWordsCss), "word-card POS and Chinese meaning must align to the left");
   assert(myWordsCss.includes(".my-words-mobile-detail-close"), "mobile word detail must style an external Close capsule");
   assert(myWordsCss.includes(".my-words-mobile-detail-edit"), "mobile word detail must style its external pencil");
   assert(myWordsCss.includes(".my-words-index-card.is-return-target"), "the close destination must remain easy to relocate");
