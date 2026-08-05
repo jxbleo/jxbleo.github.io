@@ -19,6 +19,10 @@
 - Unified every Student Dashboard dialog card with the task-entry
   confirmation's elastic fade, scale, and upward-settle entrance while keeping
   backdrops, external Close controls, and reduced-motion behavior stable.
+- Extended the same restrained elastic entrance to every independent Teacher
+  dialog card, including utilities, student/detail flows, assignment tools,
+  confirmations, and matrix details, without moving their backdrops or external
+  Close controls.
 
 ## 2026-08-04
 
