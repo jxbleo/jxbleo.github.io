@@ -40,12 +40,12 @@
                     </svg>
                     <span class="student-calendar-date" id="student-calendar-date" aria-hidden="true"></span>
                 </button>
-                <button class="icon-pill-button student-words-button" id="student-words-button" type="button" aria-label="My Words" aria-expanded="false">
+                <a class="icon-pill-button student-words-button" href="my-words.html" aria-label="My Words">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M6 3.5h10.5A1.5 1.5 0 0 1 18 5v14.5H7.5A2.5 2.5 0 0 1 5 17V5.5a2 2 0 0 1 1-2Z"></path>
                         <path d="M8 3.5v16M10.5 8h4.5M10.5 11.5h4.5"></path>
                     </svg>
-                </button>
+                </a>
                 <a class="icon-pill-button reports-dashboard-link" href="reports.html" aria-label="Learning reports">
                     <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
                         <path d="M6.5 3.5h8.7l3.3 3.3v13.7H6.5z"></path>
@@ -149,96 +149,6 @@
             </div>
         </section>
 
-        <section class="student-words-overlay" id="student-words-overlay" hidden>
-            <div class="student-words-stack" role="dialog" aria-modal="true" aria-labelledby="student-words-title" aria-describedby="student-words-subtitle">
-                <section class="student-words-dialog">
-                    <header class="student-words-dialog-head">
-                        <div class="student-words-title-block">
-                            <div class="student-words-title-line">
-                                <h2 id="student-words-title">My Words</h2>
-                                <span class="student-words-count" id="my-words-count">0 words</span>
-                            </div>
-                            <p id="student-words-subtitle">Your saved words and phrases</p>
-                        </div>
-                        <div class="student-words-dialog-actions">
-                            <button class="student-words-dialog-icon" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                    <path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"></path><path d="M5 20h14"></path>
-                                </svg>
-                            </button>
-                            <button class="student-words-dialog-icon" id="my-words-search-trigger" type="button" aria-label="Search words" aria-expanded="false" aria-controls="my-words-search-panel">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                    <circle cx="10.5" cy="10.5" r="5.5"></circle>
-                                    <path d="m15 15 4.5 4.5"></path>
-                                </svg>
-                            </button>
-                            <button class="student-words-dialog-icon" id="my-words-add-trigger" type="button" aria-label="Add a word" aria-expanded="false" aria-controls="my-words-add-panel">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                    <path d="M12 5v14M5 12h14"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </header>
-
-                    <div class="student-words-tool-panel" id="my-words-export-panel" aria-hidden="true" inert>
-                        <div class="student-words-tool-panel-inner">
-                            <div class="my-words-export-controls">
-                                <div class="my-words-export-ranges" role="group" aria-label="Export time range">
-                                    <button type="button" data-export-range="all">All Time</button>
-                                    <button type="button" data-export-range="week">This Week</button>
-                                    <button type="button" data-export-range="month">This Month</button>
-                                    <button type="button" data-export-range="year">This Year</button>
-                                </div>
-                                <div class="my-words-export-fields" id="my-words-export-fields"></div>
-                                <div class="my-words-export-actions">
-                                    <button class="outline-button" id="my-words-select-all" type="button">Select all results</button>
-                                    <span id="my-words-selected-count">0 selected</span>
-                                    <button class="outline-button" id="my-words-export-excel" type="button">Excel</button>
-                                    <button class="primary-button" id="my-words-export-pdf" type="button">PDF</button>
-                                </div>
-                                <p class="my-words-export-status" id="my-words-export-status" role="status"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="student-words-tool-panel" id="my-words-add-panel" aria-hidden="true" inert>
-                        <div class="student-words-tool-panel-inner">
-                            <form class="my-words-manual" id="my-words-manual-form">
-                                <label class="my-words-input-shell" for="my-words-manual-text">
-                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                        <path d="M12 5v14M5 12h14"></path>
-                                    </svg>
-                                    <input id="my-words-manual-text" type="text" maxlength="120" autocomplete="off" placeholder="Type a word or short phrase">
-                                    <span>Press Enter</span>
-                                </label>
-                                <button class="sr-only" id="my-words-manual-submit" type="submit">Add word</button>
-                                <p class="my-words-manual-status" id="my-words-manual-status" role="status" aria-live="polite"></p>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="student-words-tool-panel" id="my-words-search-panel" aria-hidden="true" inert>
-                        <div class="student-words-tool-panel-inner">
-                            <div class="my-words-search-wrap">
-                                <label class="my-words-search-box" for="my-words-search">
-                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                        <circle cx="11" cy="11" r="6.5"></circle>
-                                        <path d="m16 16 4 4"></path>
-                                    </svg>
-                                    <input id="my-words-search" type="search" autocomplete="off" placeholder="Search words">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="student-words-dialog-scroll" id="student-words-dialog-scroll" tabindex="0" aria-label="Saved words">
-                        <div id="my-words-content"></div>
-                    </div>
-                </section>
-                <button class="student-words-outside-close" id="student-words-close" type="button">Close</button>
-            </div>
-        </section>
-
         <section class="student-calendar-overlay" id="student-calendar-overlay" hidden>
             <div class="student-calendar-stack" role="dialog" aria-modal="true" aria-label="Completion calendar">
                 <section class="student-calendar-dialog">
@@ -256,9 +166,8 @@
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
-    <script src="assets/js/my-words-export.js?v=20260801-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/dashboard.js?v=20260804-1"></script>
+    <script src="assets/js/dashboard.js?v=20260805-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

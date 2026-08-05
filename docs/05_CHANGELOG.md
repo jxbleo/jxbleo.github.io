@@ -7,6 +7,12 @@
 
 ### Changed
 
+- Replaced the Student Dashboard My Words modal with a dedicated authenticated
+  `my-words.html` workspace. Desktop now combines a fixed Study/Word List
+  Sidebar with a Notebook-style index/detail split; mobile uses sticky tabs,
+  remembered one/two-column English grids, bounded long-word scrolling, and an
+  independent word-detail modal while retaining all edit, Note, dictionary,
+  merge, report, removal, and export capabilities.
 - Unified every Student Dashboard dialog card with the task-entry
   confirmation's elastic fade, scale, and upward-settle entrance while keeping
   backdrops, external Close controls, and reduced-motion behavior stable.

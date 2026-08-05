@@ -20,8 +20,9 @@ boundaries matter more than visual polish right now.
 - Immutable countable attempts
 - Protected STAR/mastery records
 - Yellow-STAR Cash requests with private evidence and teacher confirmation
-- Personal My Words editing, Notes, merge suggestions, Excel/PDF word-list
-  export, and a teacher-reviewed shared dictionary fallback
+- Dedicated personal My Words workspace with editing, Notes, merge suggestions,
+  responsive word browsing, Excel/PDF export, and a teacher-reviewed shared
+  dictionary fallback
 - Weekly and monthly class learning reports: one authenticated shared link shows
   the class leaderboard while each family sees only its own learner's details
 

@@ -3,6 +3,40 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-05: Move My Words Into a Dedicated Responsive Workspace
+
+Decision:
+
+Student My Words uses one authenticated `my-words.html` runtime instead of a
+full Dashboard modal. Desktop follows the Learning Reports workspace pattern
+with a persistent Study/Word List Sidebar and a Notebook index/detail split.
+Mobile preserves the same information architecture with sticky top tabs, a
+remembered English-only one/two-column index, and a bounded modal for one word's
+complete detail. Study remains an explicit static placeholder until the owner
+defines a learning model; no familiarity state or backend fields are inferred.
+
+Reason:
+
+The personal vocabulary feature has become a durable learning destination with
+editing, Notes, merge, dictionary review, AI fallback, and export. Constraining
+the entire feature to a compact Dashboard modal limits browsing and future
+learning design, while using the desktop split unchanged on a phone wastes most
+of the screen.
+
+Trade-offs:
+
+- Good: one production runtime owns personal-vocabulary management.
+- Good: desktop density and mobile reachability are optimized independently.
+- Good: the existing `studentVocabulary` boundary and data model remain intact.
+- Cost: a separate page adds another static CSS/JavaScript entry point.
+- Deferred: Study logic, progress, review scheduling, and assessment remain
+  intentionally undefined.
+
+Review condition:
+
+Revisit when the owner defines the actual learning loop or when cross-device
+view preferences justify a server-owned preference field.
+
 ## 2026-08-03: Use Immutable, Role-Redacted Class Learning Reports
 
 Decision:

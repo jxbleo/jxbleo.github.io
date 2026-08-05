@@ -16,7 +16,7 @@
 | Page | Purpose |
 | --- | --- |
 | `index.html` | Login and visitor entry |
-| `dashboard.html` | Student assignments, My Words, Library, account menu |
+| `dashboard.html` | Student assignments, Library, My Words entry, account menu |
 | `teacher.html` | Teacher admin desk |
 | `library.html` | Learning library / content entry |
 | `bbc.html` | BBC listening practice runtime |
@@ -166,9 +166,8 @@ Navigation:
   has no top-left Back or in-card close icon. A matching external `Close`
   capsule sits below the dialog, marks current replies seen, returns to the main
   Dashboard, and restores bubble focus.
-- My Words opens in an independent modal from a notebook icon in the right-side
-  utility group; closing and reopening restores the modal's previous
-  internal scroll position
+- My Words opens `my-words.html` from a notebook icon in the right-side utility
+  group; it does not render a second My Words runtime inside Dashboard
 - account/profile actions remain in the top-right identity chip
 
 Assignment access and progress display:
@@ -394,26 +393,41 @@ Student cards should show:
 
 My Words:
 
-- opens as a vertically centered independent modal from the notebook icon
-  beside the calendar. Its outer stack uses exactly the same width, height,
-  viewport position, responsive breakpoints, and external `Close` spacing as
-  the Calendar modal; only the content and internal scrolling differ.
-- places matching green circular Search and Add icon buttons in the top-right.
-  Search expands in place below the header. Add expands one word/short-phrase
-  field only; Enter saves it, with no optional context field or visible Add
-  text button.
-- shows saved student-owned words and phrases from `studentVocabulary` in a
-  simple two-column list. Every collapsed row uses two equal halves with a
-  centered vertical divider: the English word is centered in the left half,
-  while part of speech plus Chinese meaning are centered horizontally and
-  vertically in the right half. The green part-of-speech capsule is the only
-  POS label in that half; a repeated POS prefix is removed from the Chinese
-  meaning.
-- expands a row to show phonetic spelling, browser pronunciation, English
-  definition, source/context, saved date, retry when applicable, and removal.
-  Student details do not display external dictionary provider branding.
-  The speaker is not shown in the collapsed row; it sits beside the phonetic
-  only after expansion. Search includes the dictionary fields.
+- opens `my-words.html` from the Dashboard notebook icon as a separate
+  authenticated workspace, not a Dashboard modal. A fixed header provides the
+  Dashboard return, Add Word, current student, and sign-out actions.
+- uses a report-like desktop shell: a fixed `Study / Word List` Sidebar remains
+  visible while the right stage scrolls. Every fresh Dashboard entry opens
+  `Study`; `#word-list` preserves a refreshed Word List view. Leaving Word List
+  clears its transient Search query while keeping sort and density choices.
+- keeps Study intentionally honest in the first release: one static `Study Mode
+  · In design` surface plus real saved-total, Shanghai-week-added, and recent
+  words. It contains no clickable fake learning button and no familiarity,
+  due-review, quiz, or progress model.
+- renders desktop Word List as a fixed approximately 300px word index plus a
+  flexible right detail pane. Recent is the default sort, with A–Z and Z–A
+  available. Search covers English, Chinese, definition, POS, source, context,
+  and Note. Selecting a recent Study word switches desktop to Word List and
+  selects that word.
+- hides the Sidebar on narrow screens and uses one sticky `Study / Word List`
+  tab row. The Word List defaults to a two-column English-only card grid and
+  offers a single-column alternative; the browser remembers this density.
+  Overflowing English text pauses, automatically travels only inside its own
+  card, pauses at the end, and returns, using the task-title 7–14 second timing.
+  Reduced-motion mode uses a static ellipsis.
+- opens a selected mobile word in a centered, rounded, independently scrolling
+  detail modal no taller than about 88dvh; its background is locked and closing
+  restores the exact list/search/sort/density/scroll context. Desktop never
+  opens this modal and updates its right detail pane instead.
+- places Add Word in the page header. It expands one word/short-phrase field
+  below the header; Enter saves immediately with no optional context. Word List
+  owns Search, sort, mobile density, and `•••` Export controls. Export expands
+  inside the current page rather than navigating away.
+- shows phonetic spelling, browser pronunciation, Chinese and English meaning,
+  source/context, saved date, retry when applicable, and Note in the detail
+  surface. Edit word, Edit Note, merge, report/AI, and confirmed removal remain
+  available from the detail action menu; external dictionary provider branding
+  remains hidden.
 - does not expose New/Learning/Mastered states, due filters, reveal-and-rate
   review, or any other review controls in the student interface.
 - lets the student edit only the English word or phrase through an inline
@@ -450,10 +464,8 @@ My Words:
 - is available across student learning and attempt-review pages. Single-letter
   words such as `a` and `I` are valid vocabulary items.
 - visitors see a login prompt instead of personal data.
-- its header notebook icon follows the same circular SVG treatment as the other
-  right-side utility buttons; the standalone assignment button uses a checklist SVG.
-- closing and reopening restores the modal's previous internal list scroll
-  position; closing Search or Add does not close the modal.
+- its Dashboard notebook entry follows the same circular SVG treatment as the
+  other right-side utility controls but is a normal page link.
 - `my-words-modal-preview.html` is an isolated static design reference for this
   compact modal. It is not linked from production navigation, must not call
   CloudBase or contain real student data, and is not a second My Words runtime.
