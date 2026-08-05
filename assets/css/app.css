@@ -58,8 +58,7 @@
 .account-evidence-item figcaption { margin-top: 5px; color: var(--muted); font-size: 12px; }
 .account-evidence-item.is-superseded { opacity: .5; }
 .teacher-star-modal { position: fixed; inset: 0; z-index: 230; }
-.teacher-star-shell { min-height: 100%; display: grid; place-items: center; padding: 20px; background: rgba(20,25,35,.32); }
-.teacher-star-dialog { width: min(760px, 100%); max-height: min(760px, calc(100vh - 110px)); overflow: auto; padding: 22px; border-radius: 24px; background: var(--surface, #fff); box-shadow: 0 24px 70px rgba(20,25,35,.22); }
+.teacher-star-dialog { overflow: auto; padding: 18px; }
 .teacher-star-list { display: grid; gap: 12px; }
 .teacher-star-card header b { color: #9a7000; font-size: 20px; }
 .teacher-star-card-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 9px 0; color: var(--muted); font-size: 13px; }
@@ -69,8 +68,6 @@
     .student-star-overlay { padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)); }
     .student-star-stack { width: 100%; }
     .student-star-dialog { padding: 14px; border-radius: 25px; }
-    .teacher-star-shell { padding: 10px; }
-    .teacher-star-dialog { padding: 16px; max-height: calc(100vh - 80px); }
 }
 
 * { box-sizing: border-box; }
@@ -3966,13 +3963,33 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-review-head .eyebrow { margin: 0; }
 .teacher-star-head {
-    position: relative;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 12px 18px;
     text-align: center;
 }
 .teacher-star-head h2 {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    margin: 0;
     color: var(--accent);
+    line-height: 1.2;
     letter-spacing: 0.08em;
+}
+.teacher-star-head .student-subdialog-back {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    transform: none;
+}
+.teacher-star-head .student-subdialog-back:hover,
+.teacher-star-head .student-subdialog-back:focus-visible {
+    transform: none;
 }
 .student-lookup-modal {
     position: fixed;
@@ -4269,6 +4286,12 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-utility-shell > .progress-matrix-modal-close {
     justify-self: center;
+}
+.teacher-star-shell::after {
+    content: "";
+    display: block;
+    height: 40px;
+    visibility: hidden;
 }
 .activity-sub-tabs { margin: 0; }
 .updates-feed-tools {
