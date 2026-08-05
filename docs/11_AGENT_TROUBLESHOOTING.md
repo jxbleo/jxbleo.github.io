@@ -57,6 +57,7 @@
 | My Words 可以普通查词，但 AI Lookup 提示未配置 | 两个云函数缺少一个或多个 `VOCAB_AI_*` 环境变量，或 URL 不是 HTTPS | 同时检查 `studentVocabulary` 与 `teacherAdmin` 的 `VOCAB_AI_API_URL`、`VOCAB_AI_API_KEY`、`VOCAB_AI_MODEL`；不要把密钥放进前端 |
 | 学生已确认 AI 草稿，老师 Dictionary 看不到或无法发布 | 新集合未创建、仍非 `ADMINONLY`，或线上 `teacherAdmin` / `studentVocabulary` 版本不一致 | 创建 `vocabulary_lexicon_history`、`vocabulary_dictionary_reports`，部署同一提交打包出的两个 ZIP，并检查 normalized word 当前记录 |
 | My Words 时间筛选看起来被后台查词改变 | 旧代码错误使用 `updated_at` 而不是学生活动时间 | 发布最新静态与 `studentVocabulary`；确认筛选优先读取 `activity_updated_at`，后台 enrich 不更新它 |
+| My Words 顶部工具栏前有大块空白，Export 时间胶囊被挡住 | 外层 workspace 使用 `overflow: hidden` 成为 sticky 参照容器，工具栏的 `top` 偏移被重复计算 | workspace 使用不创建滚动容器的圆角裁剪；在已登录、feedback 为空时检查工具栏紧贴主导航，并展开 Export 验证全部时间胶囊 |
 | BBC History 分数已按 Argue 修正但题目仍显示黄色/错误 | 历史渲染时旧的 `wrong`、blank lock、MC lock class 覆盖了服务器返回的 adjusted correct 状态 | 发布最新版静态 `bbc.html`；查 `markHistoryReview` 是否先清理相反状态再加 `correct/wrong` |
 | 完成或 STAR 后无法再次布置 | 当前前后端仍有旧规则阻止 completed | `teacherAdmin.getAssignmentState`、`createAssignments`、`teacher.js candidateStatus` |
 | 教师矩阵单格 Edit 或 Wxx 批量无法打开编辑器，或保存后参数不变并提示更新 0 条 | 动态矩阵/独立 modal root 中的按钮失去原容器监听；或旧 assignment 的 stable ID 是文档 `_id`，旧后端却只按 `assignment_id` 字段查询 | 发布使用 delegated edit handler 的静态 `teacher.js`，并部署兼容 stable ID 的最新版 `teacherAdmin`；无需迁移 assignments |

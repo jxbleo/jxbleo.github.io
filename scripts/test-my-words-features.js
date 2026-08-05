@@ -76,6 +76,8 @@ async function main() {
   assert(myWordsJs.includes("state.view !== 'word-list' && state.search"), "leaving Word List must clear its transient search");
   assert(myWordsJs.includes("Math.max(7, Math.min(14"), "overflowing mobile words must reuse bounded title-scroll timing");
   assert(myWordsCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"), "mobile Word List must default to a two-column grid");
+  assert(/\.my-words-workspace\s*\{[^}]*overflow:\s*clip;/.test(myWordsCss), "workspace clipping must not create a scroll container that offsets the sticky toolbar");
+  assert(!/\.my-words-workspace\s*\{[^}]*overflow:\s*hidden;/.test(myWordsCss), "workspace overflow must not trap the sticky toolbar above the export panel");
   assert(myWordsCss.includes(".my-words-desktop-detail"), "desktop Word List must retain a separate detail pane");
   assert(myWordsCss.includes(".my-words-mobile-detail-overlay"), "mobile word details must use an independent modal");
   assert(!/Forgot|A little|Know|Learning\/Mastered/.test(myWordsHtml), "the placeholder release must not add a learning system");

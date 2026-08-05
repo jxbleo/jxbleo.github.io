@@ -7,6 +7,10 @@
 
 ### Fixed
 
+- Fixed the dedicated My Words workspace treating its rounded clipping surface
+  as the sticky toolbar's scroll container. My Words now opens without a blank
+  toolbar offset, and the expanded Export time-range capsules remain fully
+  visible instead of sliding underneath the toolbar.
 - Matched Teacher STAR Redemption to the Notifications utility footprint on
   desktop and mobile, corrected the centered title and top-left return control,
   and brought its dialog, header, backdrop, and request cards into the shared

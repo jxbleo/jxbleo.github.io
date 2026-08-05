@@ -435,7 +435,10 @@ My Words:
   a permanent header `+`. My Words owns a left-edge magnifying-glass Search
   control, mobile density and `•••` Export controls, plus a compact sort select
   aligned to the far right. Export expands
-  inside the current page rather than navigating away.
+  inside the current page rather than navigating away. The workspace may clip
+  its rounded outer edge but must not become a scroll container: the sticky
+  toolbar starts directly below the primary navigation, and the expanded Export
+  heading and time-range capsules remain entirely below that toolbar.
 - shows phonetic spelling, browser pronunciation, Chinese and English meaning,
   source/context, saved date, retry when applicable, and Note in the detail
   surface. Edit word, Edit Note, merge, report/AI, and confirmed removal remain
