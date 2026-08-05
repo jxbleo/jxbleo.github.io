@@ -1313,7 +1313,11 @@ Shared rules:
   badge instead of emoji or visible `Download` wording. Individual Study Set
   practice cards do not show per-set download buttons. Clicking `Practice`
   opens a download dialog. `Confirm` downloads the static all-groups worksheet
-  in original order. `Customise` opens a group multiselect with an `All` chip
+  in original order. `Customize` replaces the landing choices with a dedicated
+  `Customize your download` view. That view has a top-left back arrow returning
+  to the `Confirm` / `Customize` landing view, omits those landing buttons and
+  the former `Cancel` action, and keeps one external `Close` action below the
+  dialog card. Its group multiselect has an `All` chip
   that unchecks when any group is removed and rechecks when every group is
   selected again. The `Shuffle` control keeps group numbers and group order in
   place, but randomises each selected group's word bank and question order with

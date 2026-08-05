@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Split the Vocabulary Practice download dialog into a landing view and a
+  dedicated `Customize your download` view with a back arrow, removed the
+  redundant custom-view choices and Cancel action, and added one external
+  `Close` action below the dialog card.
 - Made each Student Teacher Replies card the question-navigation target: card
   titles are centered, question prefixes and inline navigation buttons are
   removed, and clicking or keyboard-activating a card now opens a confirmation
