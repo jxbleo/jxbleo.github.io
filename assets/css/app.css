@@ -2184,15 +2184,6 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-dictionary-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .teacher-dictionary-reports { margin: 0; padding: 10px 12px 10px 28px; border-radius: 12px; color: #7b5146; background: #fff1ed; font-size: .75rem; }
 .teacher-dictionary-form-status { min-height: 1.2em; margin: 0; color: #13766d; font-weight: 760; }
-.student-vocabulary-card { display: grid; gap: 12px; }
-.teacher-student-vocabulary-list { display: grid; gap: 8px; max-height: 360px; overflow: auto; }
-.teacher-student-vocabulary-list article { display: grid; gap: 5px; padding: 10px 12px; border-radius: 12px; background: #f2f7f5; }
-.teacher-student-vocabulary-list article > div { display: flex; justify-content: space-between; gap: 12px; }
-.teacher-student-vocabulary-list article p,
-.teacher-student-vocabulary-list article small { margin: 0; color: #6f837c; }
-.teacher-student-vocabulary-list details { padding-top: 2px; }
-.teacher-student-vocabulary-list summary { cursor: pointer; color: #26766d; font-size: .82rem; }
-.teacher-student-vocabulary-example { display: grid; gap: 3px; margin-top: 7px; padding: 8px 9px; border-left: 2px solid rgba(38,118,109,.24); background: rgba(255,255,255,.62); }
 @media (max-width: 760px) {
     .teacher-dictionary-modal { padding: 10px; }
     .teacher-dictionary-shell { height: calc(100vh - 20px); }
@@ -4001,7 +3992,10 @@ body:not(.teacher-page) .tab-button.active {
     width: 100%;
     max-height: min(630px, calc(100vh - 148px));
     max-height: min(630px, calc(100dvh - 148px));
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
     display: grid;
     gap: 14px;
     padding: 18px;
@@ -4060,12 +4054,6 @@ body:not(.teacher-page) .tab-button.active {
     gap: 8px;
 }
 .student-lookup-title-state[hidden] { display: none; }
-.student-lookup-title-state h2 {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
 .student-lookup-back {
     display: grid;
     place-items: center;
@@ -4161,6 +4149,53 @@ body:not(.teacher-page) .tab-button.active {
 .student-lookup-external-close {
     justify-self: center;
 }
+.student-metric-detail-modal { z-index: 170; }
+.student-metric-detail-shell { width: min(650px, 100%); }
+.student-metric-detail-dialog {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+    padding: 0;
+}
+.student-metric-detail-head {
+    padding: 21px 22px 16px;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+    text-align: center;
+}
+.student-metric-detail-head .eyebrow { margin: 0 0 5px; }
+.student-metric-detail-head h2 { margin: 0; color: var(--accent); font-size: 1.15rem; letter-spacing: 0.08em; }
+.student-metric-detail-body {
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 18px 20px 24px;
+    touch-action: pan-y pinch-zoom;
+}
+.student-metric-section { display: grid; gap: 9px; }
+.student-metric-section + .student-metric-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.student-metric-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.student-metric-section-head h3 { margin: 0; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.08em; }
+.student-metric-section-head > strong { display: grid; min-width: 25px; height: 25px; place-items: center; border-radius: 999px; background: var(--page); font-size: 0.72rem; }
+.student-metric-list { display: grid; gap: 8px; }
+.student-metric-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid rgba(31,45,38,0.08);
+    border-radius: 15px;
+    background: rgba(255,255,255,0.84);
+}
+.student-metric-row-copy { display: grid; min-width: 0; gap: 3px; flex: 1 1 auto; }
+.student-metric-row-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.student-metric-row-copy small { color: var(--muted); font-size: 0.69rem; line-height: 1.4; }
+.student-metric-row-value { flex: 0 0 auto; color: var(--success); font-size: 0.82rem; font-weight: 950; }
+.student-metric-row-value.is-open { color: var(--danger); }
+.student-metric-star { flex: 0 0 auto; color: #e2ae18; font-size: 1.2rem; }
+.student-star-source-row.is-blue .student-metric-star { color: #397bc0; }
+.student-metric-empty { margin: 0; padding: 18px 10px; color: var(--muted); text-align: center; }
 .teacher-utility-modal {
     display: grid;
     place-items: center;
@@ -8181,27 +8216,23 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     font-weight: 850;
 }
 .student-primary-stat-button {
-    width: 100%;
-    min-height: 0;
-    padding: 0;
-    border: 0;
-    color: inherit;
-    background: transparent;
+    color: var(--ink);
     font: inherit;
+    cursor: pointer;
+    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+.student-primary-stat-button:hover,
+.student-primary-stat-button:focus-visible {
+    border-color: rgba(124,58,237,0.28);
+    background: #fff;
+    outline: 3px solid rgba(124,58,237,0.10);
+    outline-offset: 2px;
 }
 .student-primary-stat-button:active { transform: scale(0.97); }
-.student-class-stat .student-info-editor {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    z-index: 12;
-    width: min(360px, 72vw);
-    padding: 10px;
-    border: 1px solid rgba(124,58,237,0.16);
-    border-radius: 14px;
-    background: rgba(255,255,255,0.98);
-    box-shadow: 0 14px 34px rgba(36,24,64,0.16);
-}
+.student-detail,
+.student-detail > *,
+.student-info-grid,
+.student-info-item { min-width: 0; }
 .student-calendar-card > .eyebrow { margin: 0 0 14px; }
 .student-calendar-card .matrix-student-progress-board { margin-top: 0; }
 .student-account-details { min-height: 0; }

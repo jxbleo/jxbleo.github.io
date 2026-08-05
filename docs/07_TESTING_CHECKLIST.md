@@ -558,7 +558,23 @@ Check:
 - Student lookup keeps the `+` action, live name search, and visible class
   filter. List rows show only student names. Opening a student shows Class,
   STAR, and Completed/Total as equal-level metrics, with no Attempts or
-  Login ID / class / Active metadata line below the name
+  Login ID / class / Active metadata line below the name. Dragging or swiping
+  within the detail moves only vertically; mouse, trackpad, and touch gestures
+  cannot pan the card or content horizontally
+- the Student lookup Class metric is read-only. Account settings shows the
+  current class and an `Edit` action; its selector lists existing active classes
+  with `No class` first and `Customize` last. The custom class-name input stays
+  hidden until Customize is selected, and the student detail contains no
+  teacher-facing My Words section
+- after selecting a student, the lookup title bar shows only the Back control
+  and does not repeat the name already shown in the first identity card
+- clicking STAR opens an independent source dialog grouped into Yellow
+  assignment and Blue self-study records with title, earned date, best score,
+  and conversion state; it makes one selected-student `getStudentStarSources`
+  request and closing it restores the Student lookup and STAR focus
+- clicking Completed opens a separate dialog containing both To Do and Finished
+  counts and task rows; closing restores Completed focus. The main student
+  detail contains no Overall Progress card
 - both Student lookup detail and the View matrix student modal render the same
   monthly week-band calendar. Previous/next month bounds work, Monday-first
   dates align correctly across 4/5/6-week months, completion density and STAR
@@ -873,7 +889,11 @@ Check:
   percentage, including a zero prior period;
 - a shared `reports.html?report=` link sends a signed-out user to login and
   returns after login; a student sees only leaderboard plus their own detail;
-  a different class's student, an inactive profile, and a visitor are denied;
+  a different class's student and an inactive profile are denied;
+- after choosing `Continue as Visitor`, opening Learning Reports from the
+  Dashboard stays on `reports.html` with an empty list and reading surface,
+  makes no `learningReports` request, preserves Visitor mode, and does not
+  bounce between the report page and login;
 - opening `Close report` removes the `report` query parameter without signing
   out, returns to the report chooser, focuses the report list, and allows a
   different weekly/monthly report to open on both desktop and phone widths;

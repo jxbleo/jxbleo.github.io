@@ -7,9 +7,20 @@
 
 ### Changed
 
-- Changed the Teacher student-detail Class editor from unrestricted immediate
-  text entry to an active-class selector with a final `Customize` option; the
-  new-class input appears only after Customize is chosen.
+- Prevented the Visitor Dashboard learning-report entry from clearing Visitor
+  mode and bouncing through login. Explicit visitors now remain on an empty
+  report surface without calling the private report service; ordinary signed-out
+  shared links still require login.
+- Moved Teacher student-detail Class editing into Account settings, using an
+  active-class selector with a final `Customize` option whose new-class input
+  appears only after selection. The top Class metric is now read-only, the
+  student My Words panel is removed, and the lookup detail is constrained to
+  vertical internal scrolling without horizontal panning.
+- Removed the duplicated selected-student name from the Student lookup title
+  bar and removed its Overall Progress card. STAR and Completed summary metrics
+  now open independent dialogs for authoritative Yellow/Blue STAR provenance
+  and To Do/Finished task detail; STAR history loads only on click for the
+  selected student.
 - Replaced the Student Dashboard My Words modal with a dedicated authenticated
   `my-words.html` workspace. Desktop now combines a fixed Study/Word List
   Sidebar with a Notebook-style index/detail split; mobile uses sticky tabs,

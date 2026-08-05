@@ -147,7 +147,9 @@ Active or relevant functions:
 - `submitAttempt`: trusted grading and attempt storage
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
   progress, disputes, answer-key access, shared dictionary review, and
-  read-only student vocabulary inspection. It also lists and processes Cash
+  read-only student vocabulary inspection. Its student-detail STAR source action
+  is a bounded, click-triggered read for one authorized `auth_uid`; STAR history
+  remains outside teacher bootstrap/progress responses. It also lists and processes Cash
   requests, issues teacher evidence-upload metadata, and returns authorized
   temporary evidence URLs. Teacher bootstrap reads lightweight attempt and
   progress summaries. Opening a notification thread or paper report fetches

@@ -76,6 +76,11 @@ public file or a parent-account portal. The URL may be copied into an ordinary
 WeChat group, but opening it always checks the current CloudBase login and then
 returns the caller's authorized projection.
 
+An explicit Visitor session opened from the student Dashboard stays on the
+report page with an empty report list and reading surface. It must not clear
+Visitor mode, redirect to login, or call the private report service. A normally
+signed-out shared-link visitor still goes to login and returns after signing in.
+
 The page has a compact report list/sidebar, a clear current-period header, and
 a main reading surface. It must work as a phone-friendly HTML report first;
 an open report has a visible `Close report` header action that clears the
@@ -609,19 +614,29 @@ status row. The top-right circular student ID icon opens a standalone Student
 lookup modal. Its top bar initially contains the student search field, a class
 filter, and an internal `+` action for creating a student. Student rows show the
 name only, without a second Login ID / class / Active metadata line. Selecting a search result replaces
-the search field in that same top bar with a back control and the selected
-student's name; returning to the list restores the search field. Student info
+the search field in that same top bar with only a back control; it does not
+repeat the selected student's name because the first identity card already
+shows it. Returning to the list restores the search field. Student info
 and progress appear directly below. The detail begins with the student name and
 three equal-level Class, STAR, and Completed/Total metrics; it does not show an
-Attempts metric or an account-status line. Class remains editable from its
-metric. Opening that editor shows a selector of active existing classes, with
+Attempts metric or an account-status line. The Class metric is a read-only
+summary. Class editing lives inside Account settings, where the current class
+and an explicit `Edit` action are shown. Opening that editor shows a selector of active existing classes, with
 `No class` first and `Customize` last. The new-class text field is hidden until
 the teacher explicitly chooses `Customize`; saving an existing choice uses its
 stable class ID, while Customize creates or reuses the normalized class through
 the trusted backend. A monthly progress calendar follows, with one rounded band per week,
 Monday-first day controls, completion-density color, STAR markers, month
 navigation, and a selected-day/week completed-work detail pane. Account fields
-remain available one level deeper in Account settings. The Student lookup, raised-hand Argue, and
+remain available one level deeper in Account settings. The teacher-facing
+student detail does not include a My Words panel. Its dialog stays fixed in the
+viewport and permits vertical internal scrolling only; horizontal pointer,
+trackpad, and touch panning must not shift the card or its content. STAR and
+Completed are interactive metrics: STAR opens an independent, student-bounded
+source dialog grouped into Yellow assignment and Blue self-study records with
+earned date and best score; Completed opens a separate dialog with complete
+To Do and Finished sections. Closing either returns focus to its source metric.
+The former Overall Progress card is removed. The Student lookup, raised-hand Argue, and
 notification surfaces share
 the notification card's width, viewport-centered position, height cap, and
 centered external `Close` capsule immediately below the card. The live search
@@ -1037,6 +1052,13 @@ Student detail should show:
   Login ID and initial password, and closes by Done, backdrop, or Escape
 - delete account
 - name/class/system editing
+- class editing inside Account settings, using existing classes plus a final
+  `Customize` choice for creating or reusing a class
+- independent STAR Source and Completed (To Do / Finished) dialogs opened from
+  the summary metrics
+
+Student detail does not show the student's My Words collection.
+It does not show a separate Overall Progress card.
 
 Use name editing for spelling corrections. Account deletion is for ending the
 account lifecycle; after deletion the same Login ID may be used to create a new
