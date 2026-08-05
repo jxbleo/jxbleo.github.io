@@ -248,7 +248,8 @@ Assignment access and progress display:
   without explanatory copy. The progress fill reveals once after loading
   without bounce, and reduced motion renders the final value immediately. Color
   is always accompanied by task text and status.
-- the Library content starts with a large `Library` heading. Its compact search
+- the Library content starts directly with a large `Library` heading, without
+  a separate `EXPLORE` eyebrow above it. Its compact search
   control and `Practice` / `Exam` segmented control sit together at the right
   side of that heading on desktop and remain adjacent when stacked on mobile.
   They use a soft translucent glass treatment; active and primary states use
