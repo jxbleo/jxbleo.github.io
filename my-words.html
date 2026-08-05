@@ -10,7 +10,7 @@
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
-    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-5">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-7">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -89,6 +89,9 @@
                                 </button>
                             </div>
                         </div>
+                        <button class="my-words-toolbar-more my-words-translation-trigger" id="my-words-translation-trigger" type="button" aria-label="Show parts of speech and Chinese meanings" aria-pressed="false">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><text x="12" y="17" text-anchor="middle">中</text></svg>
+                        </button>
                         <button class="my-words-toolbar-more my-words-export-trigger" id="my-words-export-trigger" type="button" aria-label="Export words" aria-expanded="false" aria-controls="my-words-export-panel">
                             <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 3v11"></path><path d="m8 10 4 4 4-4"></path><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path></svg>
                         </button>
@@ -109,12 +112,14 @@
                             <button type="button" data-export-range="year">This Year</button>
                         </div>
                         <div class="my-words-export-fields" id="my-words-export-fields"></div>
-                        <div class="my-words-export-actions">
-                            <button class="outline-button" id="my-words-select-all" type="button">Select all results</button>
-                            <button class="outline-button" id="my-words-export-excel" type="button">Excel</button>
-                            <button class="primary-button" id="my-words-export-pdf" type="button">PDF</button>
+                        <div class="my-words-export-formats" role="radiogroup" aria-label="Export format">
+                            <button class="active" type="button" role="radio" data-export-format="excel" aria-checked="true">Excel</button>
+                            <button type="button" role="radio" data-export-format="pdf" aria-checked="false">PDF</button>
                         </div>
                         <p id="my-words-export-status" role="status" aria-live="polite"></p>
+                        <div class="my-words-export-actions">
+                            <button class="primary-button" id="my-words-export-submit" type="button">Export</button>
+                        </div>
                     </section>
 
                     <div class="my-words-loading-sheet" id="my-words-loading-sheet" role="status" aria-label="Loading saved words">
@@ -150,6 +155,6 @@
     <script src="assets/js/auth.js?v=20260707-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
-    <script src="assets/js/my-words.js?v=20260806-6"></script>
+    <script src="assets/js/my-words.js?v=20260806-8"></script>
 </body>
 </html>

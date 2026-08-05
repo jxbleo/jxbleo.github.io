@@ -441,7 +441,10 @@ My Words:
 - uses the same single sticky `My Words / Review` row on narrow screens. My
   Words defaults to a two-column English-only card grid. One layout button in
   the second toolbar opens a compact one/two/three-column picker; the browser
-  remembers the selected density.
+  remembers the selected density. A separate `中` SVG toggle in that toolbar
+  reveals one compact `part of speech · Chinese meaning` line directly below
+  every English word; pressing it again hides all of those lines. The list is
+  English-only by default and the browser remembers the student's choice.
   Overflowing English text pauses, automatically travels only inside its own
   card, pauses at the end, and returns, using the task-title 7–14 second timing.
   Reduced-motion mode uses a static ellipsis.
@@ -470,7 +473,12 @@ My Words:
   bounded floating panel anchored directly below the download button's current
   on-screen position rather than navigating away or expanding at the document's
   original top position. It must open in place at every word-list scroll depth
-  without moving the list. The workspace may clip its rounded outer edge but
+  without moving the list, then close immediately when the student scrolls,
+  wheels, or drags the word list. Its rows are time range, printable fields,
+  and one Excel/PDF format choice, followed by one full-width `Export` action.
+  The fields row begins with a `Default` preset for English, Chinese, part of
+  speech, and English definition. There is no `Select all results` action.
+  The workspace may clip its rounded outer edge but
   must not become a scroll container: the sticky toolbar starts directly below
   the primary navigation.
 - shows phonetic spelling, browser pronunciation, Chinese and English meaning,

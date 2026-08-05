@@ -11,8 +11,10 @@
         selectedId: '',
         density: 'double',
         densityMenuOpen: false,
+        showTranslations: false,
         exportOpen: false,
         exportRange: 'all',
+        exportFormat: 'excel',
         exportSelected: {},
         editingId: '',
         noteEditingId: '',
@@ -45,6 +47,7 @@
     var sortSelect = document.getElementById('my-words-sort');
     var densityTrigger = document.getElementById('my-words-density-trigger');
     var densityMenu = document.getElementById('my-words-density-menu');
+    var translationTrigger = document.getElementById('my-words-translation-trigger');
     var exportTrigger = document.getElementById('my-words-export-trigger');
     var exportPanel = document.getElementById('my-words-export-panel');
     var titleResizeObserver = null;
@@ -278,10 +281,27 @@
         scheduleTitleOverflow();
     }
 
+    function syncTranslationControl() {
+        if (!translationTrigger) return;
+        translationTrigger.setAttribute('aria-pressed', state.showTranslations ? 'true' : 'false');
+        translationTrigger.setAttribute('aria-label', state.showTranslations
+            ? 'Hide parts of speech and Chinese meanings'
+            : 'Show parts of speech and Chinese meanings');
+    }
+
+    function setTranslationsVisible(visible) {
+        state.showTranslations = Boolean(visible);
+        try { window.localStorage.setItem('mrcat_my_words_show_chinese', state.showTranslations ? 'true' : 'false'); } catch (error) {}
+        syncTranslationControl();
+        if (indexList) indexList.classList.toggle('show-translations', state.showTranslations);
+    }
+
     function dictionaryPrimary(word) {
         var dictionary = word && word.dictionary;
-        if (!dictionary) return word && word.lookup_status === 'not_found' ? 'Definition not found' : 'Finding definition...';
-        return [dictionary.part_of_speech, wordChineseMeaning(dictionary)].filter(Boolean).join(' · ');
+        if (!dictionary) {
+            return '— · ' + (word && word.lookup_status === 'not_found' ? '暂无中文释义' : '释义加载中…');
+        }
+        return [dictionary.part_of_speech || '—', wordChineseMeaning(dictionary)].join(' · ');
     }
 
     function titleWindowHtml(word) {
@@ -300,6 +320,7 @@
     function renderIndex() {
         var words = filteredItems();
         if (!indexList) return;
+        indexList.classList.toggle('show-translations', state.showTranslations);
         if (!words.length) {
             indexList.innerHTML = '<div class="my-words-empty-state"><div><p>' + (state.search ? 'No saved words match this search.' : 'Your saved words will appear here.') + '</p>' + (!state.search ? '<button class="primary-button" type="button" data-open-add>Add your first word</button>' : '') + '</div></div>';
             renderDesktopDetail();
@@ -722,12 +743,35 @@
     function renderExportFields() {
         var root = document.getElementById('my-words-export-fields');
         if (!root || !window.MrCatMyWordsExport) return;
-        var defaults = { chinese: true, part_of_speech: true, phonetic: true };
-        root.innerHTML = Object.keys(window.MrCatMyWordsExport.FIELD_DEFINITIONS).filter(function(field) {
+        var defaults = { chinese: true, part_of_speech: true, english_definition: true };
+        root.innerHTML = '<button class="my-words-export-default active" type="button" data-export-default aria-pressed="true">Default</button>' + Object.keys(window.MrCatMyWordsExport.FIELD_DEFINITIONS).filter(function(field) {
             return field !== 'english';
         }).map(function(field) {
             return '<label><input type="checkbox" data-export-field="' + escapeHtml(field) + '"' + (defaults[field] ? ' checked' : '') + '><span>' + escapeHtml(window.MrCatMyWordsExport.FIELD_DEFINITIONS[field].label) + '</span></label>';
         }).join('');
+    }
+
+    function syncExportDefault() {
+        var defaultFields = ['chinese', 'part_of_speech', 'english_definition'];
+        var selectedFields = Array.prototype.slice.call(document.querySelectorAll('#my-words-export-fields input[data-export-field]:checked')).map(function(input) {
+            return input.dataset.exportField;
+        });
+        var isDefault = selectedFields.length === defaultFields.length && defaultFields.every(function(field) {
+            return selectedFields.indexOf(field) !== -1;
+        });
+        var button = document.querySelector('[data-export-default]');
+        if (button) {
+            button.classList.toggle('active', isDefault);
+            button.setAttribute('aria-pressed', isDefault ? 'true' : 'false');
+        }
+    }
+
+    function selectDefaultExportFields() {
+        var defaults = { chinese: true, part_of_speech: true, english_definition: true };
+        document.querySelectorAll('#my-words-export-fields input[data-export-field]').forEach(function(input) {
+            input.checked = Boolean(defaults[input.dataset.exportField]);
+        });
+        syncExportDefault();
     }
 
     function exportRangeItems() {
@@ -750,9 +794,16 @@
         var selected = selectedExportItems().length;
         var count = document.getElementById('my-words-selected-count');
         if (count) count.textContent = selected + ' selected';
-        ['my-words-export-excel', 'my-words-export-pdf'].forEach(function(id) {
-            var button = document.getElementById(id);
-            if (button) button.disabled = selected === 0;
+        var button = document.getElementById('my-words-export-submit');
+        if (button) button.disabled = selected === 0;
+    }
+
+    function setExportFormat(format) {
+        state.exportFormat = format === 'pdf' ? 'pdf' : 'excel';
+        document.querySelectorAll('[data-export-format]').forEach(function(button) {
+            var selected = button.dataset.exportFormat === state.exportFormat;
+            button.classList.toggle('active', selected);
+            button.setAttribute('aria-checked', selected ? 'true' : 'false');
         });
     }
 
@@ -1121,6 +1172,10 @@
                 densityTrigger.focus();
             });
         });
+        translationTrigger.addEventListener('click', function() {
+            setDensityMenuOpen(false);
+            setTranslationsVisible(!state.showTranslations);
+        });
         exportTrigger.addEventListener('click', function() {
             setDensityMenuOpen(false);
             setExportOpen(exportTrigger.getAttribute('aria-expanded') !== 'true');
@@ -1128,20 +1183,22 @@
         document.querySelectorAll('[data-export-range]').forEach(function(button) {
             button.addEventListener('click', function() { selectExportRange(button.dataset.exportRange); });
         });
-        document.getElementById('my-words-select-all').addEventListener('click', function() {
-            var items = exportRangeItems();
-            var allSelected = items.length && items.every(function(word) { return state.exportSelected[word.vocab_id]; });
-            items.forEach(function(word) { state.exportSelected[word.vocab_id] = !allSelected; });
-            renderIndex();
-            updateExportSelectionCount();
+        document.getElementById('my-words-export-fields').addEventListener('change', function(event) {
+            if (event.target.matches('input[data-export-field]')) syncExportDefault();
         });
-        document.getElementById('my-words-export-excel').addEventListener('click', function() {
-            try { window.MrCatMyWordsExport.downloadExcel(selectedExportItems(), selectedExportFields()); }
-            catch (error) { document.getElementById('my-words-export-status').textContent = error.message; }
+        document.getElementById('my-words-export-fields').addEventListener('click', function(event) {
+            if (event.target.closest('[data-export-default]')) selectDefaultExportFields();
         });
-        document.getElementById('my-words-export-pdf').addEventListener('click', function() {
-            try { window.MrCatMyWordsExport.printPdf(selectedExportItems(), selectedExportFields()); }
-            catch (error) { document.getElementById('my-words-export-status').textContent = error.message; }
+        document.querySelectorAll('[data-export-format]').forEach(function(button) {
+            button.addEventListener('click', function() { setExportFormat(button.dataset.exportFormat); });
+        });
+        document.getElementById('my-words-export-submit').addEventListener('click', function() {
+            try {
+                if (state.exportFormat === 'pdf') window.MrCatMyWordsExport.printPdf(selectedExportItems(), selectedExportFields());
+                else window.MrCatMyWordsExport.downloadExcel(selectedExportItems(), selectedExportFields());
+            } catch (error) {
+                document.getElementById('my-words-export-status').textContent = error.message;
+            }
         });
         indexList.addEventListener('change', function(event) {
             var input = event.target.closest('[data-select-word]');
@@ -1155,13 +1212,15 @@
         });
         window.addEventListener('scroll', function() {
             if (state.densityMenuOpen) setDensityMenuOpen(false);
-            if (state.exportOpen) positionExportPanel();
+            if (state.exportOpen) setExportOpen(false);
         }, { passive: true });
         indexList.addEventListener('touchmove', function() {
             if (state.densityMenuOpen) setDensityMenuOpen(false);
+            if (state.exportOpen) setExportOpen(false);
         }, { passive: true });
         indexList.addEventListener('wheel', function() {
             if (state.densityMenuOpen) setDensityMenuOpen(false);
+            if (state.exportOpen) setExportOpen(false);
         }, { passive: true });
         window.addEventListener('resize', function() {
             if (state.exportOpen) positionExportPanel();
@@ -1229,10 +1288,13 @@
     function initialize() {
         try {
             state.density = normalizedDensity(window.localStorage.getItem('mrcat_my_words_density'));
+            state.showTranslations = window.localStorage.getItem('mrcat_my_words_show_chinese') === 'true';
         } catch (error) {
             state.density = 'double';
+            state.showTranslations = false;
         }
         syncDensityControls();
+        syncTranslationControl();
         state.view = window.location.hash === '#review' || window.location.hash === '#study' ? 'study' : 'word-list';
         syncViewControls();
         renderExportFields();
