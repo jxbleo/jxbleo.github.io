@@ -2098,17 +2098,6 @@
         ]
     };
 
-    function libraryBuildTags(tags, topic) {
-        var html = '';
-        if (topic) html += '<span class="tag tag-topic">' + escapeHtml(topic) + '</span>';
-        if (tags && tags.length) {
-            for (var i = 0; i < tags.length; i++) {
-                html += '<span class="tag tag-bbc">' + escapeHtml(tags[i]) + '</span>';
-            }
-        }
-        return html;
-    }
-
     function librarySectionLabel(sectionId, fallback) {
         var labels = {
             'ielts-reading': 'ielts-reading',
@@ -2258,10 +2247,9 @@
                     '<span>' + escapeHtml(meta.setId) + '</span>' +
                 '</div>' +
                 '<h3>' + escapeHtml(item.title || meta.setId) + '</h3>' +
-                '<div class="library-task-foot">' +
-                    '<div class="tags">' + libraryBuildTags(item.tags, item.topic) + '</div>' +
-                    (libraryShouldShowNote(item) ? '<p class="card-note">' + escapeHtml(item.note) + '</p>' : '') +
-                '</div>' +
+                (libraryShouldShowNote(item)
+                    ? '<div class="library-task-foot"><p class="card-note">' + escapeHtml(item.note) + '</p></div>'
+                    : '') +
             '</div>' +
         '</article>';
     }
