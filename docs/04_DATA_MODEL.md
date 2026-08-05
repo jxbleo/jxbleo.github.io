@@ -609,6 +609,7 @@ Core fields:
 | `teacher_note` | string | teacher reply |
 | `student_seen` | boolean | whether the student has opened this resolved reply |
 | `student_seen_at` | Date/null | when the resolved reply was marked seen |
+| `created_at` / `updated_at` / `resolved_at` | Date/null | request, latest-update, and resolution audit times; Teacher Replies displays `created_at` as the student's Argue submission time |
 | `auto_regrade_scanned_attempt_count` | number | attempts scanned after `add`/`replace` |
 | `auto_regrade_adjusted_attempt_count` | number | attempts improved after `add`/`replace` |
 

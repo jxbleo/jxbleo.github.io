@@ -21,6 +21,11 @@
 
 ### Changed
 
+- Redesigned Student Teacher Replies cards for clearer mobile scanning: titles
+  use the existing overflow track, questions use inline `Qn.` prefixes, status
+  capsules sit in the Submitted header, answer columns no longer use an arrow,
+  actions are status-neutral, and each card shows the original Argue submission
+  time in Shanghai time.
 - Removed the standalone Learning Reports icon from the Student Dashboard.
   Published student reports remain accessible through authenticated shared
   report links, and the report reader and its authorization rules are unchanged.

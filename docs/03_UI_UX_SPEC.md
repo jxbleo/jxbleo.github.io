@@ -171,6 +171,15 @@ Navigation:
   has no top-left Back or in-card close icon. A matching external `Close`
   capsule sits below the dialog, marks current replies seen, returns to the main
   Dashboard, and restores bubble focus.
+- Each Teacher Replies card keeps its exercise title on one single-line
+  overflow-scrolling track. The question begins as ordinary inline text such as
+  `Q7. Question text`; wrapped lines return to the `Q` edge. Expected and
+  Submitted answers have no arrow between them. The Approved, Rejected, or
+  Pending capsule sits inside the Submitted box on the same compact header row
+  as its label, leaving the answer a full-width row below. `Go to question` uses
+  one neutral white/gray action style for every status, and the card's bottom
+  right shows the Shanghai date and time when the student submitted the Argue
+  request.
 - My Words opens `my-words.html` from an A-marked notebook icon in the
   right-side utility group. The icon uses the same neutral outline color,
   rounded stroke, and 19px footprint as the other student header controls; it
