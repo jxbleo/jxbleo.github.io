@@ -2350,6 +2350,11 @@ body:not(.teacher-page) .tab-button.active {
     animation: practiceEntryPop 560ms cubic-bezier(.18,.95,.26,1.16) both;
     transform-origin: center;
 }
+.liquid-glass-teacher
+.notification-attempt-modal.is-refreshing
+.notification-attempt-dialog {
+    animation: none;
+}
 .practice-entry-editions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));

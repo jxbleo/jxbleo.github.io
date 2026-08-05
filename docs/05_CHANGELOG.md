@@ -5,6 +5,12 @@
 
 ## 2026-08-05
 
+### Fixed
+
+- Prevented Teacher notification attempt details from replaying their entrance
+  animation when the authorized per-attempt detail requests or reviewed-state
+  update re-render the open dialog.
+
 ### Changed
 
 - Fixed Student lookup STAR and Completed metrics rendering in normal document

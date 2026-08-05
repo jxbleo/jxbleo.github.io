@@ -767,6 +767,9 @@ Check:
 - Opening a teacher notification attempt for the first time shows the full
   attempt-detail dialog height; closing and reopening should not be required
   to get the normal modal size
+- Opening a teacher notification attempt plays the dialog entrance exactly
+  once. Loading the authorized per-attempt comparisons and persisting the
+  reviewed state update the open dialog without replaying its scale/lift motion
 - Teacher notification `Read all` clears every current unread thread and bell
   badge, persists after reload, stays disabled when everything is read, and a
   later attempt becomes unread
