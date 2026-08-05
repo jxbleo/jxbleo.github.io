@@ -597,24 +597,31 @@ function testStudentCalendarModel() {
     [],
     [{ assignment_id: "finished", status: "passed", best_percentage: 90 }]
   );
-  assert.equal((defaultSections.match(/<details /g) || []).length, 2);
-  assert.equal((defaultSections.match(/ open>/g) || []).length, 2);
+  assert(defaultSections.includes('role="tablist"'));
+  assert.equal((defaultSections.match(/role="tab"/g) || []).length, 3);
+  assert.equal((defaultSections.match(/role="tabpanel"/g) || []).length, 3);
+  assert(defaultSections.includes('data-message-tab="week"'));
+  assert(defaultSections.includes('data-message-tab="upcoming"'));
+  assert(defaultSections.includes('data-message-tab="finished"'));
+  assert(defaultSections.includes('id="student-message-panel-week" role="tabpanel"'));
+  assert(defaultSections.includes('id="student-message-panel-upcoming" role="tabpanel" aria-labelledby="student-message-tab-upcoming" data-message-panel="upcoming" hidden'));
+  assert(defaultSections.includes('id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" hidden'));
   assert(defaultSections.indexOf("This Week") < defaultSections.indexOf("Upcoming"));
   assert(defaultSections.indexOf("Upcoming") < defaultSections.indexOf("Finished"));
-  assert(!defaultSections.includes("No upcoming assignments."));
-  assert(defaultSections.includes('student-message-section upcoming is-heading-only'));
-  assert.equal((defaultSections.match(/student-message-section-count/g) || []).length, 3);
-  assert(defaultSections.includes('<span class="student-message-section-count">0</span>'));
+  assert(defaultSections.includes("No upcoming assignments."));
+  assert.equal((defaultSections.match(/student-message-tab-count/g) || []).length, 3);
+  assert(defaultSections.includes('<span class="student-message-tab-count">0</span>'));
+  assert.equal((defaultSections.match(/aria-selected="true"/g) || []).length, 1);
 
   const populatedSections = hooks.renderDefaultStudentMessageSections(
     [{ assignment_id: "current", status: "to_do" }],
     [{ assignment_id: "upcoming", status: "to_do" }],
     [{ assignment_id: "finished", status: "passed", best_percentage: 90 }]
   );
-  assert.equal((populatedSections.match(/<details /g) || []).length, 3);
-  assert.equal((populatedSections.match(/ open>/g) || []).length, 3);
-  assert(!populatedSections.includes("is-heading-only"));
-  assert.equal((populatedSections.match(/<span class="student-message-section-count">1<\/span>/g) || []).length, 3);
+  assert.equal((populatedSections.match(/<span class="student-message-tab-count">1<\/span>/g) || []).length, 3);
+  assert(populatedSections.includes('data-message-panel="week"'));
+  assert(populatedSections.includes('data-message-panel="upcoming" hidden'));
+  assert(populatedSections.includes('data-message-panel="finished" hidden'));
 
   const teacherReply = hooks.renderTeacherReplyItem({
     status: "approved",

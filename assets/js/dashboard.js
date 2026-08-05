@@ -1638,41 +1638,40 @@
     }
 
     function renderDefaultStudentMessageSections(todos, upcoming, finished) {
-        return renderStudentMessageSection(
-            'This Week',
-            todos.length,
-            todos.map(function(item) {
-                return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo');
-            }).join(''),
-            'No unfinished assignments.',
-            'todo',
-            true,
-            true
-        ) + (upcoming.length ? renderStudentMessageSection(
-            'Upcoming',
-            upcoming.length,
-            upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
-            '',
-            'upcoming',
-            true,
-            true
-        ) : renderStudentMessageSection(
-            'Upcoming',
-            0,
-            '',
-            '',
-            'upcoming is-heading-only',
-            false,
-            false
-        )) + renderStudentMessageSection(
-            'Finished',
-            finished.length,
-            finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
-            'Finished assignments will appear here.',
-            'finished',
-            true,
-            true
-        );
+        var tabs = [
+            { id: 'week', label: 'This Week', count: todos.length },
+            { id: 'upcoming', label: 'Upcoming', count: upcoming.length },
+            { id: 'finished', label: 'Finished', count: finished.length }
+        ];
+        var tabMarkup = tabs.map(function(tab, index) {
+            return '<button class="student-message-tab" id="student-message-tab-' + tab.id + '" type="button" role="tab"' +
+                ' aria-selected="' + (index === 0 ? 'true' : 'false') + '" aria-controls="student-message-panel-' + tab.id + '"' +
+                ' tabindex="' + (index === 0 ? '0' : '-1') + '" data-message-tab="' + tab.id + '">' +
+                '<span>' + escapeHtml(tab.label) + '</span>' +
+                '<span class="student-message-tab-count">' + escapeHtml(tab.count) + '</span>' +
+            '</button>';
+        }).join('');
+        var panels = [
+            '<section class="student-message-tab-panel" id="student-message-panel-week" role="tabpanel" aria-labelledby="student-message-tab-week" data-message-panel="week">' +
+                renderStudentMessageFlatList(
+                    todos.map(function(item) { return renderStudentMessageTask(item, isOverdueAssignment(item) ? 'overdue' : 'todo'); }).join(''),
+                    'No unfinished assignments.'
+                ) +
+            '</section>',
+            '<section class="student-message-tab-panel" id="student-message-panel-upcoming" role="tabpanel" aria-labelledby="student-message-tab-upcoming" data-message-panel="upcoming" hidden>' +
+                renderStudentMessageFlatList(
+                    upcoming.map(function(item) { return renderStudentMessageTask(item, 'upcoming'); }).join(''),
+                    'No upcoming assignments.'
+                ) +
+            '</section>',
+            '<section class="student-message-tab-panel" id="student-message-panel-finished" role="tabpanel" aria-labelledby="student-message-tab-finished" data-message-panel="finished" hidden>' +
+                renderStudentMessageFlatList(
+                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                    'Finished assignments will appear here.'
+                ) +
+            '</section>'
+        ].join('');
+        return '<div class="student-message-tabs" role="tablist" aria-label="Assignment sections">' + tabMarkup + '</div>' + panels;
     }
 
     function setupStudentMessageTitleTracks(overlay) {
@@ -1823,6 +1822,35 @@
             if (event.target === overlay) close(true);
         });
         overlay.querySelector('#student-message-close').addEventListener('click', function() { close(true); });
+        var messageTabs = Array.prototype.slice.call(overlay.querySelectorAll('[data-message-tab]'));
+        function selectMessageTab(tab, moveFocus) {
+            if (!tab) return;
+            var tabId = tab.dataset.messageTab;
+            messageTabs.forEach(function(candidate) {
+                var selected = candidate === tab;
+                candidate.setAttribute('aria-selected', selected ? 'true' : 'false');
+                candidate.tabIndex = selected ? 0 : -1;
+            });
+            overlay.querySelectorAll('[data-message-panel]').forEach(function(panel) {
+                panel.hidden = panel.dataset.messagePanel !== tabId;
+            });
+            if (moveFocus) tab.focus();
+            var dialog = overlay.querySelector('.student-message-dialog');
+            if (dialog) dialog.scrollTop = 0;
+        }
+        messageTabs.forEach(function(tab, index) {
+            tab.addEventListener('click', function() { selectMessageTab(tab, false); });
+            tab.addEventListener('keydown', function(event) {
+                var nextIndex = null;
+                if (event.key === 'ArrowRight') nextIndex = (index + 1) % messageTabs.length;
+                if (event.key === 'ArrowLeft') nextIndex = (index - 1 + messageTabs.length) % messageTabs.length;
+                if (event.key === 'Home') nextIndex = 0;
+                if (event.key === 'End') nextIndex = messageTabs.length - 1;
+                if (nextIndex == null) return;
+                event.preventDefault();
+                selectMessageTab(messageTabs[nextIndex], true);
+            });
+        });
         overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
             function openTask(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;

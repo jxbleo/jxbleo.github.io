@@ -323,18 +323,15 @@ Check:
   Assignments or My Words navigation
 - the far-left checklist button is visually separated from the right-side
   utility controls, with the Teacher Replies bubble immediately to its right.
-  It opens a modal whose first visible row is `THIS WEEK`, with no separate
+  It opens a modal whose initially selected button is `THIS WEEK`, with no separate
   `ASSIGNMENTS` heading or Teacher Replies control. Its shorter,
   internally scrolling card has no
   top-right `×` or in-card footer button; a single `Close` pill sits below and
   outside the card, while Escape and the backdrop also dismiss the modal
-- the default Assignments modal has no summary capsules above its sections.
-  `THIS WEEK`, `UPCOMING`, and `FINISHED` are centered, keyboard-operable
-  headings with accurate count pills. Sections with tasks start expanded and
-  can collapse. When Upcoming is 0, it has no disclosure arrow, cannot expand,
-  and does not render `No upcoming assignments`.
-  Scroll the internal task list: This Week sticks first, Upcoming pushes it off
-  and occupies the same top position, then Finished does the same. Finished rows
+- the default Assignments modal has three equal-width, sticky top buttons:
+  `THIS WEEK`, `UPCOMING`, and `FINISHED`, each with an accurate count. Only the
+  selected category is visible, click and keyboard Left/Right/Home/End switch
+  categories, and empty categories show a compact empty state. Finished rows
   remain ordered by completion time with the newest first
 - the hero shows This Week and Upcoming completion summaries without inline task
   rows; activating one opens its focused task-list modal. This Week includes

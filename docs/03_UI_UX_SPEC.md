@@ -205,17 +205,15 @@ Assignment access and progress display:
   expand directly inside the hero; focused lists place unfinished work before
   finished work.
 - the default modal opened from `To Do List` has no separate `ASSIGNMENTS`
-  heading; `THIS WEEK` is its first visible row. Its assignment card is approximately
+  heading. Its assignment card is approximately
   three quarters of the previous maximum height and scrolls internally. It has
   no top-right `×` or in-card footer action; one pill-shaped `Close` control
-  sits directly below the card. The former three top summary capsules are not
-  rendered. `THIS WEEK`, `UPCOMING`, and `FINISHED` use centered headings with
-  numeric count pills. Sections containing tasks start open and remain
-  independently collapsible. Empty Upcoming shows only its heading and `0`,
-  with no disclosure arrow or `No upcoming assignments` body. Their headings
-  are sticky inside the dialog: This Week first
-  occupies the top position, Upcoming pushes it away and replaces it, then
-  Finished replaces Upcoming. Finished tasks are sorted newest-completed first.
+  sits directly below the card. `THIS WEEK`, `UPCOMING`, and `FINISHED` are
+  three equal-width buttons fixed at the top of the card, each with a numeric
+  count. `THIS WEEK` is selected by default and only the selected category's
+  task list is visible; keyboard Left/Right, Home, and End also switch tabs.
+  Empty categories show their own compact empty state. Finished tasks are
+  sorted newest-completed first.
   Every unfinished row has a red right-side pill in
   the same position as a finished score: it reads `0%` before any attempt and
   shows the best failed percentage after an unsuccessful submission. The task

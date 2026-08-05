@@ -3470,10 +3470,72 @@ body:not(.teacher-page) .tab-button.active {
 }
 .student-message-sections {
     display: grid;
-    gap: 14px;
+    gap: 0;
 }
 .student-message-dialog:not(.is-focused-scope) {
     padding: 0 24px 24px;
+}
+.student-message-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0 -24px;
+    padding: 12px 24px;
+    border-bottom: 1px solid rgba(19,118,109,0.1);
+    background: rgba(248,251,249,0.92);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(22px) saturate(150%);
+}
+.student-message-tab {
+    display: inline-flex;
+    min-width: 0;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 9px;
+    border: 1px solid rgba(19,118,109,0.12);
+    border-radius: 999px;
+    color: #465a54;
+    background: rgba(255,255,255,0.58);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: color 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+.student-message-tab:hover { background: rgba(239,248,245,0.96); }
+.student-message-tab:active { transform: scale(0.98); }
+.student-message-tab[aria-selected="true"] {
+    border-color: rgba(19,118,109,0.28);
+    color: #075f58;
+    background: #e7f4ef;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 5px 14px rgba(20,54,47,0.08);
+}
+.student-message-tab:focus-visible {
+    outline: 3px solid rgba(19,118,109,0.22);
+    outline-offset: 2px;
+}
+.student-message-tab-count {
+    display: inline-flex;
+    min-width: 23px;
+    height: 23px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border-radius: 999px;
+    color: inherit;
+    background: rgba(255,255,255,0.72);
+    font-size: 0.72rem;
+    font-weight: 950;
+}
+.student-message-tab-panel { min-width: 0; padding-top: 14px; }
+.student-message-tab-panel[hidden] { display: none; }
+@media (prefers-reduced-transparency: reduce) {
+    .student-message-tabs { background: #f9fbfa; -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 .student-message-flat-list { min-width: 0; }
 .student-message-section {
@@ -9389,6 +9451,13 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .teacher-replies-card .primary-button { width: auto; }
     .teacher-replies-dialog { padding: 22px 18px; }
     .student-message-dialog:not(.is-focused-scope) { padding: 0 18px 18px; }
+    .student-message-dialog:not(.is-focused-scope) .student-message-tabs {
+        margin-right: -18px;
+        margin-left: -18px;
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+    .student-message-tab { gap: 5px; padding: 7px 6px; font-size: 0.74rem; }
     .student-message-dialog:not(.is-focused-scope) .student-message-section.is-collapsible > summary {
         margin-right: -18px;
         margin-left: -18px;

@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Replaced the Student To Do List's three stacked collapsible assignment
+  sections with fixed top `This Week`, `Upcoming`, and `Finished` buttons. Each
+  button shows its task count, switches one visible list, and supports standard
+  keyboard tab navigation while preserving existing due-week grouping.
 - Split the Vocabulary Practice download dialog into a landing view and a
   dedicated `Customize your download` view with a back arrow, removed the
   redundant custom-view choices and Cancel action, and added one external
