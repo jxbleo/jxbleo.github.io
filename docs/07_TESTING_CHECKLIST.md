@@ -291,10 +291,12 @@ Check:
   sits directly on the shared glass surface with no nested white profile card,
   and `STAR WALLET` uses the same centered green eyebrow typography as
   `PERSONAL CENTER`
-- clicking `Log out` opens the same-footprint confirmation instead of signing
-  out immediately. Cancel and Back restore Personal Center and focus to
-  `Log out`; the lower Close dismisses the whole account flow; only the red
-  `Log out` confirmation clears the session and returns to the login page
+- clicking `Log out` opens a visibly smaller, centered confirmation card instead
+  of signing out immediately. It keeps the Personal Center glass material and
+  control styling without retaining the full Personal Center width or height.
+  Cancel and Back restore Personal Center and focus to `Log out`; the lower
+  Close dismisses the whole account flow; only the red `Log out` confirmation
+  clears the session and returns to the login page
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; no row
   retains a selected background or pressed scale after activation, and reduced

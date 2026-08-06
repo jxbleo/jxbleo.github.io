@@ -749,6 +749,7 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes('.account-star-history-head > .eyebrow {'));
   assert(appCss.includes(".student-account-stack,\n.student-star-stack,\n.password-dialog-stack,\n.logout-confirm-stack"));
   assert(appCss.includes("height: min(490px, 86dvh);"));
+  assert(appCss.includes(".logout-confirm-stack {\n    width: min(390px, calc(100% - 20px));\n    height: min(330px, 72vh);\n    height: min(330px, 72dvh);"));
   assert(appCss.includes(".student-account-outside-close,\n.student-star-outside-close,\n.password-dialog-outside-close,\n.logout-confirm-outside-close"));
   assert(liquidGlassCss.includes(".student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog"));
   assert(appCss.includes(".account-feedback-row:hover,\n.account-feedback-row:active {\n    background: transparent;\n    transform: none;\n}"));
