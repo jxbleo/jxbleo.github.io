@@ -21,7 +21,7 @@
         mobileEditingId: '',
         mobileDetailOpen: false,
         mobileDetailClosing: false,
-        mobileDetailAnimation: null,
+        mobileSpeechTimer: null,
         mobileReturnVocabId: '',
         detailOpener: null,
         lockedScrollY: 0
@@ -381,6 +381,23 @@
         window.speechSynthesis.speak(utterance);
     }
 
+    function cancelMobileAutoSpeech() {
+        if (!state.mobileSpeechTimer) return;
+        window.clearTimeout(state.mobileSpeechTimer);
+        state.mobileSpeechTimer = null;
+    }
+
+    function scheduleMobileAutoSpeech(word) {
+        cancelMobileAutoSpeech();
+        var vocabId = word && word.vocab_id;
+        var spokenWord = word && (word.dictionary && word.dictionary.word || word.text) || '';
+        state.mobileSpeechTimer = window.setTimeout(function() {
+            state.mobileSpeechTimer = null;
+            if (!state.mobileDetailOpen || state.mobileDetailClosing || !isMobileLayout() || state.selectedId !== vocabId) return;
+            speakWord(spokenWord);
+        }, 1000);
+    }
+
     function detailActionsHtml(word, dictionary) {
         return '<details class="my-words-detail-actions"><summary aria-label="More word actions">•••</summary><div class="my-words-detail-actions-menu">' +
             '<button type="button" data-edit-word="' + escapeHtml(word.vocab_id) + '">Edit word</button>' +
@@ -616,8 +633,10 @@
         renderIndex();
         renderDesktopDetail();
         if (fromRecent) setView('word-list', true);
-        openMobileDetail();
-        speakWord(word.dictionary && word.dictionary.word || word.text || '');
+        if (isMobileLayout()) {
+            openMobileDetail();
+            scheduleMobileAutoSpeech(word);
+        }
     }
 
     function lockPageForDetail() {
@@ -643,15 +662,9 @@
         state.mobileReturnVocabId = state.selectedId;
         state.mobileDetailOpen = true;
         renderMobileDetail();
-        mobileOverlay.classList.remove('is-closing');
-        mobileOverlay.classList.add('is-opening');
         mobileOverlay.hidden = false;
         lockPageForDetail();
-        window.requestAnimationFrame(function() {
-            mobileOverlay.classList.remove('is-opening');
-            animateMobileDetailOpen();
-            if (mobileClose) mobileClose.focus({ preventScroll: true });
-        });
+        if (mobileClose) mobileClose.focus({ preventScroll: true });
     }
 
     function hasUnsavedDetailEdit() {
@@ -668,51 +681,19 @@
         }) || null;
     }
 
-    function mobileDetailTargetMotion(card, target) {
-        var cardRect = card && card.getBoundingClientRect();
-        var targetRect = target && target.getBoundingClientRect();
-        var targetIsVisible = cardRect && targetRect && targetRect.width > 0 && targetRect.height > 0 &&
-            targetRect.right > 0 && targetRect.left < window.innerWidth && targetRect.bottom > 0 && targetRect.top < window.innerHeight;
-        if (!targetIsVisible) return { transform: 'translate3d(0, 10px, 0) scale(0.96)', opacity: 0 };
-        var translateX = targetRect.left + targetRect.width / 2 - (cardRect.left + cardRect.width / 2);
-        var translateY = targetRect.top + targetRect.height / 2 - (cardRect.top + cardRect.height / 2);
-        var scale = Math.max(0.18, Math.min(0.34, targetRect.width / cardRect.width, targetRect.height / cardRect.height));
-        return {
-            transform: 'translate3d(' + translateX + 'px, ' + translateY + 'px, 0) scale(' + scale + ')',
-            opacity: 0.12
-        };
-    }
-
-    function animateMobileDetailOpen() {
-        var card = mobileOverlay.querySelector('.my-words-mobile-detail-card');
-        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!card || !card.animate || reduceMotion) return;
-        var sourceMotion = mobileDetailTargetMotion(card, selectedMobileWordCard());
-        state.mobileDetailAnimation = card.animate([
-            { opacity: sourceMotion.opacity, transform: sourceMotion.transform },
-            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }
-        ], { duration: 340, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
-        Promise.resolve(state.mobileDetailAnimation.finished).catch(function() {}).then(function() {
-            state.mobileDetailAnimation = null;
-        });
-    }
-
     function finishMobileDetailClose(target) {
+        cancelMobileAutoSpeech();
         state.editingId = '';
         state.noteEditingId = '';
         state.mobileEditingId = '';
         state.mobileDetailOpen = false;
         state.mobileDetailClosing = false;
-        state.mobileDetailAnimation = null;
         state.mobileReturnVocabId = '';
         mobileOverlay.hidden = true;
-        mobileOverlay.classList.remove('is-closing');
         unlockPageForDetail();
         renderDesktopDetail();
         var focusTarget = target && target.isConnected ? target : selectedMobileWordCard();
         if (focusTarget) {
-            focusTarget.classList.add('is-return-target');
-            window.setTimeout(function() { focusTarget.classList.remove('is-return-target'); }, 1100);
             focusTarget.focus({ preventScroll: true });
         } else if (state.detailOpener && typeof state.detailOpener.focus === 'function') {
             state.detailOpener.focus({ preventScroll: true });
@@ -725,24 +706,8 @@
         if (state.mobileDetailClosing) return true;
         if (!force && hasUnsavedDetailEdit() && !window.confirm('Discard your unsaved changes?')) return false;
         state.mobileDetailClosing = true;
-        var card = mobileOverlay.querySelector('.my-words-mobile-detail-card');
         var target = selectedMobileWordCard();
-        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        mobileOverlay.classList.add('is-closing');
-        if (state.mobileDetailAnimation) {
-            state.mobileDetailAnimation.cancel();
-            state.mobileDetailAnimation = null;
-        }
-        if (!card || !card.animate || reduceMotion) {
-            window.setTimeout(function() { finishMobileDetailClose(target); }, reduceMotion ? 120 : 0);
-            return true;
-        }
-        var targetMotion = mobileDetailTargetMotion(card, target);
-        var cardAnimation = card.animate([
-            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)', borderRadius: '27px' },
-            { opacity: targetMotion.opacity, transform: targetMotion.transform, borderRadius: '16px' }
-        ], { duration: 320, easing: 'cubic-bezier(0.32, 0, 0.2, 1)', fill: 'forwards' });
-        Promise.resolve(cardAnimation.finished).catch(function() {}).then(function() { finishMobileDetailClose(target); });
+        finishMobileDetailClose(target);
         return true;
     }
 
@@ -958,6 +923,7 @@
         if (wordButton) { openWord(wordButton.dataset.openWord, wordButton, false); return; }
         var speak = event.target.closest('[data-speak-word]');
         if (speak) {
+            cancelMobileAutoSpeech();
             speakWord(speak.dataset.speakWord || '');
             return;
         }
@@ -1256,6 +1222,7 @@
         }, { passive: true });
         window.addEventListener('resize', function() {
             if (state.exportOpen) positionExportPanel();
+            if (state.mobileDetailOpen && !isMobileLayout()) closeMobileDetail(true);
         });
         document.addEventListener('click', function(event) {
             document.querySelectorAll('.my-words-detail-actions[open]').forEach(function(actions) {
