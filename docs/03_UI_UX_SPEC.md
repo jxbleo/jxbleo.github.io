@@ -441,7 +441,12 @@ My Words:
   remaining viewport and the left word index scrolls independently. Moving deep
   into that list never moves the right detail pane or requires returning to the
   page top; each newly selected word starts at the top of the fixed detail pane,
-  and only an overflowing right-side detail scrolls within its own pane.
+  and only an overflowing right-side detail scrolls within its own pane. The
+  iPad/desktop pane uses the same current detail hierarchy as the phone card:
+  word plus speaker, POS plus English definition, optional Forms, and labelled
+  Source and Note boxes. A circular pencil replaces the old three-dot menu and
+  opens the same combined Word, Source, and Note editor with the spelling-loss
+  warning; wide layouts do not wrap this shared content in a modal.
 - uses the same single sticky `My Words / Review` row on narrow screens. My
   Words defaults to a two-column English-only card grid. One layout button in
   the second toolbar opens a compact one/two/three-column picker; the browser
