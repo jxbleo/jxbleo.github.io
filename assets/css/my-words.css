@@ -1041,11 +1041,46 @@ body.my-words-detail-open {
     max-width: 760px;
 }
 
-.my-words-desktop-detail-card .my-word-mobile-title-row {
-    margin-top: 0;
+.my-words-desktop-detail-heading {
+    position: sticky;
+    z-index: 4;
+    top: 0;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 10px;
+    background: linear-gradient(180deg, rgba(249, 253, 251, 0.98) 0%, rgba(249, 253, 251, 0.92) 78%, transparent 100%);
 }
 
-.my-words-desktop-detail-card .my-word-mobile-title-row h2,
+.my-word-desktop-title-cluster {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+}
+
+.my-word-desktop-title-cluster h2 {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: #17372f;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    overflow-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.my-word-desktop-title-cluster .my-word-speak {
+    flex: 0 0 38px;
+}
+
 .my-words-desktop-detail-card .my-word-mobile-edit-word input {
     font-size: clamp(2.5rem, 5vw, 4rem);
 }
@@ -1276,13 +1311,17 @@ body.my-words-detail-open {
 }
 
 .my-word-mobile-title-row h2 {
+    flex: 1 1 auto;
     min-width: 0;
     margin: 0;
+    overflow: hidden;
     color: #17372f;
     font-size: clamp(2.25rem, 13vw, 3.65rem);
     line-height: 0.98;
     letter-spacing: -0.05em;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .my-word-mobile-title-row .my-word-speak {

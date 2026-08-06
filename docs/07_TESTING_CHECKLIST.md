@@ -469,6 +469,11 @@ Check:
   in the fixed right pane, has a circular pencil instead of the old three-dot
   menu, and never opens a modal. Its pencil shows the same spelling warning and
   edits Word, every Source sentence, and Note together without auto-focusing
+- open phone detail cards for long words and multi-word phrases and confirm the
+  title always stays on one line, reducing its font size to fit rather than
+  wrapping. At iPad/desktop widths, confirm the word occupies the first row, the
+  speaker sits immediately beside it, and the pencil is at the far right of that
+  same row instead of consuming a separate row above the word
 - while signed in with an empty feedback message, switch from Review to My
   Words and confirm the toolbar begins directly below the primary navigation;
   expand Export and confirm `All`, `This Week`, `This Month`, and `This Year`

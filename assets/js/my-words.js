@@ -529,7 +529,10 @@
         var dictionary = word.dictionary || {};
         if (state.mobileEditingId === word.vocab_id) return mobileEditDetailHtml(word, mobile);
         var spokenWord = dictionary.word || word.text || '';
-        return '<div class="my-word-mobile-title-row"><h2' + (mobile ? ' id="my-words-mobile-detail-title"' : '') + '>' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
+        var titleHtml = mobile
+            ? '<div class="my-word-mobile-title-row"><h2 id="my-words-mobile-detail-title" data-fit-detail-title>' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>'
+            : '<div class="my-words-desktop-detail-heading"><div class="my-word-desktop-title-cluster"><h2 data-fit-detail-title>' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' + desktopDetailEditButtonHtml(word) + '</div>';
+        return titleHtml +
             '<div class="my-word-mobile-lexical-line">' +
                 '<strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong>' +
                 '<span>' + escapeHtml(dictionary.english_definition || 'English definition unavailable.') + '</span>' +
@@ -537,12 +540,37 @@
             mobileWordDetailBodyHtml(word);
     }
 
+    function desktopDetailEditButtonHtml(word) {
+        return '<button class="my-words-mobile-detail-edit my-words-desktop-detail-edit" type="button" data-start-detail-edit aria-label="Edit word details" aria-pressed="' + (state.mobileEditingId === word.vocab_id ? 'true' : 'false') + '">' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path><path d="m13.8 8.2 3 3"></path></svg></button>';
+    }
+
     function detailPanelHtml(word, mobile) {
         var content = updatedDetailContentHtml(word, mobile);
         if (mobile) return content;
-        return '<div class="my-words-desktop-detail-toolbar"><button class="my-words-mobile-detail-edit my-words-desktop-detail-edit" type="button" data-start-detail-edit aria-label="Edit word details" aria-pressed="' + (state.mobileEditingId === word.vocab_id ? 'true' : 'false') + '">' +
-            '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path><path d="m13.8 8.2 3 3"></path></svg></button></div>' +
-            '<div class="my-words-desktop-detail-card">' + content + '</div>';
+        var editingToolbar = state.mobileEditingId === word.vocab_id ? '<div class="my-words-desktop-detail-toolbar">' + desktopDetailEditButtonHtml(word) + '</div>' : '';
+        return editingToolbar + '<div class="my-words-desktop-detail-card">' + content + '</div>';
+    }
+
+    function fitDetailTitles(root) {
+        if (!root) return;
+        window.requestAnimationFrame(function() {
+            root.querySelectorAll('[data-fit-detail-title]').forEach(function(title) {
+                title.style.fontSize = '';
+                if (!title.clientWidth || title.scrollWidth <= title.clientWidth) return;
+                var maximum = parseFloat(window.getComputedStyle(title).fontSize) || 48;
+                var minimum = 9;
+                var low = minimum;
+                var high = maximum;
+                for (var step = 0; step < 9; step += 1) {
+                    var candidate = (low + high) / 2;
+                    title.style.fontSize = candidate + 'px';
+                    if (title.scrollWidth <= title.clientWidth) low = candidate;
+                    else high = candidate;
+                }
+                title.style.fontSize = low + 'px';
+            });
+        });
     }
 
     function renderDesktopDetail() {
@@ -557,6 +585,7 @@
         state.desktopRenderedId = word.vocab_id;
         desktopDetail.innerHTML = detailPanelHtml(word, false);
         if (selectedWordChanged) desktopDetail.scrollTop = 0;
+        fitDetailTitles(desktopDetail);
     }
 
     function renderMobileDetail() {
@@ -568,6 +597,7 @@
         }
         mobileDetail.innerHTML = detailPanelHtml(word, true);
         if (mobileEdit) mobileEdit.setAttribute('aria-pressed', state.mobileEditingId === word.vocab_id ? 'true' : 'false');
+        fitDetailTitles(mobileDetail);
     }
 
     function renderAll() {
@@ -1250,6 +1280,8 @@
         window.addEventListener('resize', function() {
             if (state.exportOpen) positionExportPanel();
             if (state.mobileDetailOpen && !isMobileLayout()) closeMobileDetail(true);
+            fitDetailTitles(desktopDetail);
+            fitDetailTitles(mobileDetail);
         });
         document.addEventListener('click', function(event) {
             document.querySelectorAll('.my-words-detail-actions[open]').forEach(function(actions) {
