@@ -290,11 +290,8 @@ Check:
 - activating the Personal Center `Finished` row dismisses Personal Center and
   opens a focused, newest-first completed-task list using the same category,
   title, score, chevron, and task-entry confirmation behavior as Assignments;
-  the focused list's top-left back arrow restores Personal Center and focus to
-  the `Finished` row. Opening a task adds a Back arrow to its confirmation;
-  that arrow restores the focused Finished list and task focus, while the
-  confirmation's lower external `Close` closes both layers and returns to the
-  Dashboard
+  its top-left back arrow restores Personal Center and focus to the `Finished`
+  row
 - opening Personal Center from the identity chip shows no top-right `×`; its
   centered card uses the same thick glass, softly dimmed backdrop, radius, and
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is
@@ -365,11 +362,10 @@ Check:
   overflowing title scrolls to reveal its full text; reduced-motion mode keeps
   it static with an ellipsis. The row opens the shared Library-style entry
   confirmation before navigation
-- that entry confirmation shows a top-left Back arrow; Back returns to the same
-  To Do List dialog, selected tab, and selected assignment row. Its lower
-  external `Close` closes both modal layers and returns to the Dashboard;
-  choosing `Enter` also closes both modal layers and opens the task. Escape and
-  backdrop clicks keep the confirmation open
+- closing that entry confirmation with its lower `Close` returns
+  to the same To Do List dialog and selected assignment row; choosing `Enter` closes
+  both modal layers and opens the task. Escape and backdrop clicks keep the
+  confirmation open
 - the student assignment entry uses a checklist SVG rather than a bell or a
   single completion checkmark; its glass color, stroke weight, and visible icon
   size match the neighboring Teacher Replies control rather than using a unique

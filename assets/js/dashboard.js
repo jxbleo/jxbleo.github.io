@@ -1287,9 +1287,6 @@
         overlay.innerHTML =
             '<div class="practice-entry-shell">' +
                 '<section class="practice-entry-card" role="dialog" aria-modal="true" aria-label="Practice entry confirmation">' +
-                    '<button class="practice-entry-back" id="practice-entry-back" type="button" aria-label="Back to task list" hidden>' +
-                        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14.5 5-7 7 7 7"></path></svg>' +
-                    '</button>' +
                     '<div class="practice-entry-editions" id="practice-entry-editions" aria-label="Choose a version" hidden></div>' +
                     '<div class="practice-entry-task">' +
                         '<small id="practice-entry-kind">Practice</small>' +
@@ -1311,12 +1308,7 @@
                 '<button class="practice-entry-close" id="practice-entry-close" type="button">Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
-        overlay.querySelector('#practice-entry-back').addEventListener('click', function() {
-            closePracticeEntryDialog({ callback: 'back' });
-        });
-        overlay.querySelector('#practice-entry-close').addEventListener('click', function() {
-            closePracticeEntryDialog({ callback: 'close' });
-        });
+        overlay.querySelector('#practice-entry-close').addEventListener('click', closePracticeEntryDialog);
         overlay.querySelector('#practice-entry-enter').addEventListener('click', function() {
             var href = overlay.dataset.href;
             if (href) {
@@ -1367,19 +1359,11 @@
         var overlay = document.getElementById('practice-entry-overlay');
         if (!overlay) return;
         var restoreSource = !options || options.restoreSource !== false;
-        var callback = options && options.callback;
-        var onDismiss = null;
-        if (restoreSource) {
-            if (callback === 'back') onDismiss = overlay.practiceEntryOnBack || overlay.practiceEntryOnDismiss;
-            else if (callback === 'close') onDismiss = overlay.practiceEntryOnClose || overlay.practiceEntryOnDismiss;
-            else onDismiss = overlay.practiceEntryOnDismiss;
-        }
+        var onDismiss = restoreSource ? overlay.practiceEntryOnDismiss : null;
         overlay.hidden = true;
         delete overlay.dataset.href;
         overlay.practiceEditionModels = null;
         overlay.practiceEntryOnDismiss = null;
-        overlay.practiceEntryOnBack = null;
-        overlay.practiceEntryOnClose = null;
         overlay.practiceEntryOnCommit = null;
         if (typeof onDismiss === 'function') onDismiss();
     }
@@ -1398,7 +1382,6 @@
         var editionRoot = overlay.querySelector('#practice-entry-editions');
         var enterButton = overlay.querySelector('#practice-entry-enter');
         var entryCard = overlay.querySelector('.practice-entry-card');
-        var backButton = overlay.querySelector('#practice-entry-back');
         var statusRibbon = overlay.querySelector('#practice-entry-ribbon');
         overlay.practiceEditionModels = editionItems.map(practiceEntryItemModel);
         editionRoot.hidden = editionItems.length < 2;
@@ -1410,11 +1393,7 @@
         }).join('');
         overlay.dataset.href = editionItems.length > 1 ? '' : (href || '');
         overlay.practiceEntryOnDismiss = typeof options.onDismiss === 'function' ? options.onDismiss : null;
-        overlay.practiceEntryOnBack = typeof options.onBack === 'function' ? options.onBack : null;
-        overlay.practiceEntryOnClose = typeof options.onClose === 'function' ? options.onClose : null;
         overlay.practiceEntryOnCommit = typeof options.onCommit === 'function' ? options.onCommit : null;
-        backButton.hidden = options.showBack !== true;
-        entryCard.classList.toggle('has-back', options.showBack === true);
         entryCard.classList.toggle('is-question-confirmation', options.hideStatus === true);
         entryCard.setAttribute('aria-label', options.dialogLabel || 'Practice entry confirmation');
         enterButton.querySelector('span').textContent = options.enterLabel || 'Enter';
@@ -1876,9 +1855,7 @@
                 if (!href) return;
                 suspend();
                 showPracticeEntryDialog(card, href, {
-                    showBack: true,
-                    onBack: function() { resume(card); },
-                    onClose: function() { close(true); },
+                    onDismiss: function() { resume(card); },
                     onCommit: function() { close(true); }
                 });
             }
