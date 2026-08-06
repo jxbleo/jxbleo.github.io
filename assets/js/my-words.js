@@ -445,18 +445,20 @@
         }).join('');
     }
 
-    function mobileEditDetailHtml(word) {
+    function mobileEditDetailHtml(word, mobile) {
         var dictionary = word.dictionary || {};
+        var titleId = mobile ? 'my-words-mobile-detail-title' : 'my-words-desktop-detail-title';
+        var noteId = mobile ? 'my-word-mobile-note-edit' : 'my-word-desktop-note-edit';
         var secondaryActions = (!dictionary && word.lookup_status === 'not_found' ? '<button type="button" data-ai-word="' + escapeHtml(word.vocab_id) + '">Ask AI</button>' : '') +
             (dictionary ? '<button type="button" data-report-word="' + escapeHtml(word.vocab_id) + '">Report dictionary issue</button>' : '') +
             '<button class="my-word-archive" type="button" data-archive-word="' + escapeHtml(word.vocab_id) + '">Remove word</button>';
         return '<form class="my-word-mobile-edit-form" data-mobile-edit-form="' + escapeHtml(word.vocab_id) + '">' +
-            '<label class="my-word-mobile-edit-word"><span id="my-words-mobile-detail-title">Word or phrase</span><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required></label>' +
+            '<label class="my-word-mobile-edit-word"><span id="' + titleId + '">Word or phrase</span><input name="text" maxlength="120" value="' + escapeHtml(word.text || '') + '" required></label>' +
             '<p class="my-word-mobile-edit-warning">Changing the English word may clear its dictionary details when no matching entry is found. Check the spelling carefully.</p>' +
             '<div class="my-word-mobile-lexical-line"><strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong><span>' + escapeHtml(dictionary.english_definition || 'Dictionary details will refresh after saving.') + '</span></div>' +
             '<section class="my-word-mobile-section"><h3>Source</h3><div class="my-word-mobile-edit-box my-word-mobile-edit-sources">' + mobileSourceEditorHtml(word) + '</div></section>' +
-            '<section class="my-word-mobile-section"><label for="my-word-mobile-note-edit">Note</label><div class="my-word-mobile-edit-box"><textarea id="my-word-mobile-note-edit" name="personal_note" maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea></div></section>' +
-            '<div class="my-word-mobile-edit-actions"><button class="outline-button" type="button" data-cancel-mobile-edit>Cancel</button><button class="primary-button" type="submit">Save changes</button></div>' +
+            '<section class="my-word-mobile-section"><label for="' + noteId + '">Note</label><div class="my-word-mobile-edit-box"><textarea id="' + noteId + '" name="personal_note" maxlength="500" placeholder="Add a personal note">' + escapeHtml(word.personal_note || '') + '</textarea></div></section>' +
+            '<div class="my-word-mobile-edit-actions"><button class="outline-button" type="button" data-cancel-detail-edit>Cancel</button><button class="primary-button" type="submit">Save changes</button></div>' +
             '<div class="my-word-mobile-edit-secondary">' + secondaryActions + '</div>' +
         '</form>';
     }
@@ -523,21 +525,24 @@
         '</div>';
     }
 
-    function detailPanelHtml(word, mobile) {
+    function updatedDetailContentHtml(word, mobile) {
         var dictionary = word.dictionary || {};
-        if (mobile) {
-            if (state.mobileEditingId === word.vocab_id) return mobileEditDetailHtml(word);
-            var spokenWord = dictionary.word || word.text || '';
-            return '<div class="my-word-mobile-title-row"><h2 id="my-words-mobile-detail-title">' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
-                '<div class="my-word-mobile-lexical-line">' +
-                    '<strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong>' +
-                    '<span>' + escapeHtml(dictionary.english_definition || 'English definition unavailable.') + '</span>' +
-                '</div>' +
-                mobileWordDetailBodyHtml(word);
-        }
-        return '<div class="my-words-detail-head"><span>Word details</span>' + detailActionsHtml(word, word.dictionary) + '</div>' +
-            '<div class="my-words-detail-title"><p class="eyebrow accent">' + escapeHtml(dictionary.part_of_speech || 'MY WORD') + '</p><h2>' + escapeHtml(word.text || '') + '</h2></div>' +
-            '<div class="my-words-detail-body">' + wordDetailBodyHtml(word) + '</div>';
+        if (state.mobileEditingId === word.vocab_id) return mobileEditDetailHtml(word, mobile);
+        var spokenWord = dictionary.word || word.text || '';
+        return '<div class="my-word-mobile-title-row"><h2' + (mobile ? ' id="my-words-mobile-detail-title"' : '') + '>' + escapeHtml(word.text || '') + '</h2>' + wordSpeechButtonHtml(spokenWord) + '</div>' +
+            '<div class="my-word-mobile-lexical-line">' +
+                '<strong>' + escapeHtml(dictionary.part_of_speech || 'Word') + '</strong>' +
+                '<span>' + escapeHtml(dictionary.english_definition || 'English definition unavailable.') + '</span>' +
+            '</div>' +
+            mobileWordDetailBodyHtml(word);
+    }
+
+    function detailPanelHtml(word, mobile) {
+        var content = updatedDetailContentHtml(word, mobile);
+        if (mobile) return content;
+        return '<div class="my-words-desktop-detail-toolbar"><button class="my-words-mobile-detail-edit my-words-desktop-detail-edit" type="button" data-start-detail-edit aria-label="Edit word details" aria-pressed="' + (state.mobileEditingId === word.vocab_id ? 'true' : 'false') + '">' +
+            '<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0-3-3L4 16Z"></path><path d="m13.8 8.2 3 3"></path></svg></button></div>' +
+            '<div class="my-words-desktop-detail-card">' + content + '</div>';
     }
 
     function renderDesktopDetail() {
@@ -981,10 +986,23 @@
             if (textarea) textarea.focus();
             return;
         }
-        if (event.target.closest('[data-cancel-mobile-edit]')) {
-            state.mobileEditingId = '';
+        var startDetailEdit = event.target.closest('[data-start-detail-edit]');
+        if (startDetailEdit) {
+            if (state.mobileEditingId === state.selectedId) return;
+            if (!window.confirm('Changing the English word may clear its dictionary details if no matching entry is found. Check the spelling carefully. Continue editing?')) return;
+            state.editingId = '';
+            state.noteEditingId = '';
+            state.mobileEditingId = state.selectedId;
+            renderDesktopDetail();
             renderMobileDetail();
-            if (mobileEdit) mobileEdit.focus({ preventScroll: true });
+            return;
+        }
+        if (event.target.closest('[data-cancel-detail-edit]')) {
+            state.mobileEditingId = '';
+            renderDesktopDetail();
+            renderMobileDetail();
+            var detailEditButton = isMobileLayout() ? mobileEdit : desktopDetail.querySelector('[data-start-detail-edit]');
+            if (detailEditButton) detailEditButton.focus({ preventScroll: true });
             return;
         }
         if (event.target.closest('[data-cancel-word-edit]')) {
@@ -1239,15 +1257,6 @@
             });
         });
         document.addEventListener('submit', handleDetailSubmit);
-        mobileEdit.addEventListener('click', function() {
-            if (!state.mobileDetailOpen || state.mobileDetailClosing) return;
-            if (state.mobileEditingId === state.selectedId) return;
-            if (!window.confirm('Changing the English word may clear its dictionary details if no matching entry is found. Check the spelling carefully. Continue editing?')) return;
-            state.editingId = '';
-            state.noteEditingId = '';
-            state.mobileEditingId = state.selectedId;
-            renderMobileDetail();
-        });
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
         var logoutButton = document.getElementById('my-words-logout');
         if (logoutButton) logoutButton.addEventListener('click', window.MrCatAuth.logout);

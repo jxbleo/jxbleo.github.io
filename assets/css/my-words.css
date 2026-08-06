@@ -1015,9 +1015,43 @@ body.my-words-detail-open {
     min-width: 0;
     min-height: 0;
     overflow-y: auto;
-    padding: 27px;
+    padding: 18px 27px 27px;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
+}
+
+.my-words-desktop-detail-toolbar {
+    position: sticky;
+    z-index: 5;
+    top: 0;
+    display: flex;
+    justify-content: flex-end;
+    max-width: 760px;
+    margin-bottom: 10px;
+    background: linear-gradient(180deg, rgba(249, 253, 251, 0.98) 0%, rgba(249, 253, 251, 0.9) 72%, transparent 100%);
+}
+
+.my-words-desktop-detail-edit {
+    flex: 0 0 44px;
+    margin-right: 0;
+    box-shadow: 0 12px 30px rgba(17, 60, 49, 0.13);
+}
+
+.my-words-desktop-detail-card {
+    max-width: 760px;
+}
+
+.my-words-desktop-detail-card .my-word-mobile-title-row {
+    margin-top: 0;
+}
+
+.my-words-desktop-detail-card .my-word-mobile-title-row h2,
+.my-words-desktop-detail-card .my-word-mobile-edit-word input {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.my-words-desktop-detail-card .my-word-mobile-detail-copy {
+    max-width: 760px;
 }
 
 .my-words-detail-head {

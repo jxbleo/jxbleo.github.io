@@ -111,6 +111,10 @@ async function main() {
   assert(!/renderDesktopDetail\(\);\s*openMobileDetail\(\);/.test(myWordsJs), "tablet and desktop split layouts must update the right detail pane without opening a modal");
   assert(myWordsJs.includes("if (state.mobileDetailOpen && !isMobileLayout()) closeMobileDetail(true)"), "crossing into the split layout must remove any phone detail overlay");
   assert(myWordsJs.includes("function mobileWordDetailBodyHtml(word)"), "mobile word detail must use its own compact content hierarchy");
+  assert(myWordsJs.includes("function updatedDetailContentHtml(word, mobile)"), "phone, tablet, and desktop details must share the updated content hierarchy");
+  assert(myWordsJs.includes("class=\"my-words-desktop-detail-toolbar\""), "the desktop detail pane must expose its own pencil toolbar");
+  assert(myWordsJs.includes("data-start-detail-edit"), "phone and desktop pencils must enter the same unified editor");
+  assert(!/return '<div class="my-words-detail-head"><span>Word details<\/span>' \+ detailActionsHtml/.test(myWordsJs), "the desktop detail pane must not retain the old three-dot layout");
   assert(!myWordsJs.includes("return '<div class=\"my-words-detail-head my-words-detail-head-mobile\">' + detailActionsHtml"), "mobile detail must not render the three-dot action menu");
   assert(myWordsJs.includes("data-mobile-edit-form"), "mobile detail must edit word, Source, and Note in one form");
   assert(myWordsJs.includes("source_contexts: Array.prototype.slice.call"), "the unified editor must save every displayed Source context");
@@ -140,6 +144,9 @@ async function main() {
   assert(/\.my-words-workspace\s*\{[^}]*overflow:\s*clip;/.test(myWordsCss), "workspace clipping must not create a scroll container that offsets the sticky toolbar");
   assert(!/\.my-words-workspace\s*\{[^}]*overflow:\s*hidden;/.test(myWordsCss), "workspace overflow must not trap the sticky toolbar above the export panel");
   assert(myWordsCss.includes(".my-words-desktop-detail"), "desktop Word List must retain a separate detail pane");
+  assert(myWordsCss.includes(".my-words-desktop-detail-card .my-word-mobile-title-row"), "desktop detail must reuse the updated phone title and lexical presentation");
+  assert(myWordsCss.includes(".my-words-desktop-detail-edit"), "desktop detail must style the shared pencil editor");
+  assert(/\.my-words-desktop-detail-toolbar\s*\{[^}]*position:\s*sticky;/.test(myWordsCss), "the desktop pencil must remain available while its detail pane scrolls");
   assert(/\.my-words-notebook\s*\{[^}]*height:\s*calc\(100dvh - 171px\);[^}]*overflow:\s*hidden;/.test(myWordsCss), "desktop My Words must stay within the visible workspace instead of scrolling both columns together");
   assert(/\.my-words-index-list\s*\{[^}]*height:\s*100%;[^}]*overflow-y:\s*auto;/.test(myWordsCss), "the desktop word index must scroll independently");
   assert(/\.my-words-desktop-detail\s*\{[^}]*height:\s*100%;[^}]*overflow-y:\s*auto;/.test(myWordsCss), "the desktop detail pane must remain fixed and own any necessary detail scrolling");
