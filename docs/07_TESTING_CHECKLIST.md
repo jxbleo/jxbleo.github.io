@@ -476,8 +476,9 @@ Check:
   reviewed`, or `Pronunciation pending`; it shows word plus speaker, then POS
   plus English definition, optional Forms, a labelled Source box with sentence,
   origin, and date, and a labelled Note box
-- confirm the word is spoken once automatically when its mobile detail card
-  opens; pressing the speaker afterward still speaks it on demand
+- confirm the mobile detail card appears first and the word is spoken once only
+  after approximately one second; pressing the speaker during that delay speaks
+  it on demand and cancels the pending automatic playback
 - click the external pencil and confirm the spelling/dictionary-loss warning is
   shown before editing begins. Continue and confirm the card remains at the same
   scale and scroll position with no input focused or selected automatically.
@@ -485,12 +486,14 @@ Check:
   sentence, and Note are editable together, while source origin/date and
   dictionary fields remain read-only. Save once and confirm all three changes
   persist; focusing any input or textarea on iPhone/iPad does not zoom the page
-- close a word with the lower Close action and confirm the card shrinks toward
-  its exact originating word tile along the reverse of its opening path, without
-  horizontal/vertical stretching. Confirm the locked
-  scroll position does not jump, and the destination tile receives a brief
-  highlight/focus. Escape and backdrop clicks leave the detail open.
-  Reduced-motion mode uses a short fade without travel
+- open and close words on a phone-width layout and confirm both state changes
+  are immediate: the modal does not travel, scale, shrink, materialize, fade, or
+  flash its destination. Confirm the locked scroll position does not jump and
+  the originating word remains visibly selected after Close. Escape and
+  backdrop clicks leave the detail open. At iPad and desktop split widths,
+  confirm clicking a word never opens an overlay or locks the page: it selects
+  the left-side word and updates only the right-side detail. Resize an open phone
+  modal into the split layout and confirm it closes while preserving selection
 - Add uses the green circular header control and exposes only one Enter-to-save
   field. Search belongs to Word List; leaving Word List clears the query while
   keeping sort and density preferences
@@ -1194,11 +1197,13 @@ Check:
 - truly overflowing mobile words animate only inside their own tile with the
   existing bounded 7–14 second task-title rhythm; ordinary words remain still
   and reduced-motion mode uses ellipsis
-- selecting a word at phone, tablet, and desktop widths speaks it once and opens
-  one bounded detail modal with an external pencil above it and no three-dot
-  menu. The modal locks the background and restores the list/search/sort/density/
-  scroll context on close. Closing shrinks to and briefly highlights the
-  originating tile; the old 760px-only modal condition must not return
+- selecting a word at phone width opens one bounded detail modal with an
+  external pencil above it and no three-dot menu, then speaks the word once after
+  approximately one second. The modal locks
+  the background, closes without animation, restores the list/search/sort/
+  density/scroll context, and leaves the originating tile selected. At iPad and
+  desktop split widths, selection does not auto-play or open a modal; it updates
+  the right detail pane and keeps the selected word highlighted in the left list
 - Study contains only an honest static placeholder, real saved/Shanghai-week
   counts, and recent words; it exposes no learning-state or progress model
 - Add Word expands one line below the header. Word List owns Search,
@@ -1220,7 +1225,8 @@ Check:
 - Word List search visibly filters English and dictionary fields without losing
   the current sort or mobile density preference
 - pronunciation uses browser speech without exposing a provider key; opening a
-  mobile word detail speaks once automatically and the speaker remains available
+  mobile word detail speaks once automatically after approximately one second
+  and the speaker remains available
 - a failed multi-word lexicon query falls back to individual reads, so known
   entries such as `expense`, `details`, and `widespread` still show dictionary data
 - desktop selection and mobile detail show phonetic plus adjacent speaker,

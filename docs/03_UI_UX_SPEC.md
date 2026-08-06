@@ -458,25 +458,28 @@ My Words:
   Reduced-motion mode uses a static ellipsis.
 - the mobile one/two/three-column picker closes as soon as the student scrolls,
   wheels, or drags the word list; it never remains floating over moving words.
-- opens every selected word, including desktop and tablet selections, in a
-  centered, rounded, independently scrolling
-  detail modal with a circular external pencil above the card and one external
-  `Close` capsule directly below it. The mobile card has no three-dot menu. Its
-  background is locked and closing restores the exact
-  list/search/sort/density/scroll context. Closing also shrinks and travels to
-  the originating My Words tile, then briefly highlights that tile so the
-  student can immediately find and reopen it. Opening follows the exact reverse
-  path from that same tile, using one uniform scale so the card never stretches
-  or changes direction unexpectedly; reduced motion uses a short fade.
+- opens a selected word in a centered, rounded, independently scrolling detail
+  modal only in the narrow phone single-column layout. The modal has a circular
+  external pencil above the card and one external `Close` capsule directly
+  below it; it has no three-dot menu. Its background is locked and closing
+  restores the exact list/search/sort/density/scroll context. Opening and
+  closing are immediate, with no travel, scaling, shrinking, materializing, or
+  return-target flash. After Close, the originating word remains selected with
+  a stable highlighted card so the student can find and reopen it. iPad and
+  desktop split layouts never open this modal: clicking a word selects it in
+  the left index and updates the existing right detail pane. Crossing from the
+  phone layout into the split layout closes any open phone modal while retaining
+  that selection.
   The card omits `WORD DETAILS`,
   `Saved word`, dictionary-review status, and pronunciation-placeholder labels.
   The word and speaker share the title row; POS and the short English definition
   share the next line; optional Forms follows before two explicitly labelled
   Source and Note boxes. Source contains saved sentence text, original source,
-  and saved date. The desktop detail pane may retain the current selection
-  behind the modal, but it never replaces the explicit card-opening response.
-- opening a mobile word detail immediately speaks that word once using the same
-  browser `en-GB` pronunciation used by the visible speaker button.
+  and saved date.
+- opening a mobile word detail waits approximately one second, then speaks that
+  word once using the same browser `en-GB` pronunciation used by the visible
+  speaker button. Closing the modal, crossing into the split layout, or pressing
+  the speaker manually before that delay cancels the pending automatic playback.
 - retains the inline Add Word form for contextual empty-state actions, without
   a permanent header `+`. My Words owns a left-edge magnifying-glass Search
   control, one mobile layout-picker control, a recognizable download/Export
