@@ -1143,6 +1143,12 @@ body.my-words-detail-open {
     pointer-events: none;
 }
 
+.my-words-mobile-detail-overlay.is-opening {
+    background: rgba(17, 44, 37, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+}
+
 .my-words-mobile-detail-overlay[hidden] {
     display: none;
 }
@@ -1207,7 +1213,7 @@ body.my-words-detail-open {
     color: #17372f;
     background: rgba(250, 253, 251, 0.97);
     box-shadow: 0 28px 84px rgba(17, 60, 49, 0.29);
-    animation: myWordsDetailMaterialize 320ms cubic-bezier(.2,.8,.2,1) both;
+    will-change: transform, opacity;
 }
 
 .my-words-mobile-detail-close {
@@ -1477,11 +1483,6 @@ body.my-words-detail-open {
 .my-word-mobile-lookup-copy {
     color: #71867f;
     font-size: 0.78rem;
-}
-
-@keyframes myWordsDetailMaterialize {
-    from { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.96); }
-    to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 .my-words-index-card.is-return-target {
