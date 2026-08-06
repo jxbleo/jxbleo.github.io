@@ -136,6 +136,7 @@
     var studentLibraryCategoryLabel = document.getElementById('student-library-category-label');
     var studentLibraryCategoryPopover = document.getElementById('student-sub-tab-bar');
     var accountPanel = document.getElementById('student-account-panel');
+    var logoutConfirmOverlay = document.getElementById('logout-confirm-overlay');
     var calendarButton = document.getElementById('student-calendar-button');
     var calendarDateLabel = document.getElementById('student-calendar-date');
     var calendarOverlay = document.getElementById('student-calendar-overlay');
@@ -1123,6 +1124,8 @@
                 '<button class="student-message-close password-dialog-outside-close" type="button" data-dialog-close>Close</button>' +
             '</div>';
         document.body.appendChild(overlay);
+        if (accountPanel) accountPanel.hidden = true;
+        if (identityChip) identityChip.setAttribute('aria-expanded', 'false');
 
         var form = overlay.querySelector('#password-form');
         var passwordInput = overlay.querySelector('#new-password');
@@ -1139,6 +1142,8 @@
                 if (identityChip) identityChip.focus({ preventScroll: true });
                 return;
             }
+            if (accountPanel) accountPanel.hidden = false;
+            if (identityChip) identityChip.setAttribute('aria-expanded', 'true');
             if (opener && opener.isConnected && typeof opener.focus === 'function') {
                 opener.focus({ preventScroll: true });
             }
@@ -1191,6 +1196,33 @@
         window.setTimeout(function() {
             passwordInput.focus();
         }, 0);
+    }
+
+    function setLogoutConfirmOpen(open, closeAccount) {
+        if (!logoutConfirmOverlay) return;
+        logoutConfirmOverlay.hidden = open !== true;
+        if (open === true) {
+            if (accountPanel) accountPanel.hidden = true;
+            if (identityChip) identityChip.setAttribute('aria-expanded', 'false');
+            window.requestAnimationFrame(function() {
+                var cancelButton = document.getElementById('logout-confirm-cancel');
+                if (cancelButton) cancelButton.focus({ preventScroll: true });
+            });
+            return;
+        }
+        if (closeAccount) {
+            setAccountPanel(false);
+            if (identityChip) identityChip.focus({ preventScroll: true });
+            return;
+        }
+        if (accountPanel) accountPanel.hidden = false;
+        if (identityChip) identityChip.setAttribute('aria-expanded', 'true');
+        var logoutButton = document.getElementById('logout-button');
+        if (logoutButton) logoutButton.focus({ preventScroll: true });
+    }
+
+    function openLogoutConfirmDialog() {
+        setLogoutConfirmOpen(true, false);
     }
 
     function taskCard(item) {
@@ -3503,7 +3535,7 @@
             setAccountPanel(false);
             openStudentMessageCenter('finished');
         });
-        document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout);
+        document.getElementById('logout-button').addEventListener('click', openLogoutConfirmDialog);
         document.getElementById('change-password').addEventListener('click', function() {
             openChangePasswordDialog();
         });
@@ -3982,6 +4014,21 @@
     }
     var starClose = document.getElementById('student-star-close');
     if (starClose) starClose.addEventListener('click', function() { closeStarPanel(false); });
+    var logoutConfirmBack = document.getElementById('logout-confirm-back');
+    var logoutConfirmCancel = document.getElementById('logout-confirm-cancel');
+    var logoutConfirmClose = document.getElementById('logout-confirm-close');
+    var logoutConfirmSubmit = document.getElementById('logout-confirm-submit');
+    if (logoutConfirmBack) logoutConfirmBack.addEventListener('click', function() { setLogoutConfirmOpen(false, false); });
+    if (logoutConfirmCancel) logoutConfirmCancel.addEventListener('click', function() { setLogoutConfirmOpen(false, false); });
+    if (logoutConfirmClose) logoutConfirmClose.addEventListener('click', function() { setLogoutConfirmOpen(false, true); });
+    if (logoutConfirmSubmit) {
+        logoutConfirmSubmit.addEventListener('click', function() {
+            logoutConfirmSubmit.disabled = true;
+            logoutConfirmSubmit.textContent = 'Logging out...';
+            logoutConfirmOverlay.setAttribute('aria-busy', 'true');
+            window.MrCatAuth.logout();
+        });
+    }
     if (messageButton) {
         messageButton.addEventListener('click', function() {
             openStudentMessageCenter();

@@ -578,7 +578,10 @@ Student account menu:
   that provide an explicit Close follow the same rule. Explicit in-dialog Back,
   Enter, save, and cancel workflow actions retain their own behavior.
 - the `Change password` dialog must layer above the account panel and remain
-  the topmost student-account surface while open. Its only heading is the
+  the topmost student-account surface while open. It occupies the exact same
+  centered card width, card height, outer-stack height, and external Close
+  position and dimensions as Personal Center, fully replacing that card in the
+  same spatial footprint. Its only heading is the
   centered eyebrow-style `Change Password` label at the top of the card; a
   top-left back arrow closes only this dialog, restores Personal Center, and
   returns focus to `Change password`. There is no separate `Account` label,
@@ -586,6 +589,15 @@ Student account menu:
   external `Close` capsule below the card closes both layers, returns to the
   Dashboard, and restores focus to the identity chip; backdrop and Escape do
   not dismiss the dialog.
+- STAR Wallet uses the same fixed Personal Center spatial footprint and the
+  same external Close geometry at phone, iPad, and desktop widths. Its content
+  scrolls inside that shared card when necessary; opening it replaces rather
+  than visually stacking translucent cards.
+- `Log out` never ends the session immediately. It opens a confirmation card in
+  the same Personal Center footprint with `Cancel`, a destructive `Log out`, a
+  back arrow that restores Personal Center, and the same external Close that
+  closes the whole account flow. Only the destructive confirmation clears the
+  local identity, signs out, and returns to login.
 - Student ID, Class, and System are full-row keyboard/click targets with a
   restrained press-and-settle text response; they do not navigate or change
   profile data. Pointer hover and activation must not leave a selected

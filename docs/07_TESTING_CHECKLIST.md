@@ -275,14 +275,23 @@ Check:
 - login succeeds
 - profile loads
 - opening `Change password` from the account panel shows the password dialog
-  above the account panel; interacting with its fields does not dismiss the
-  account panel underneath. Its `Change Password` heading is centered, the
+  exactly over the Personal Center footprint: card width/height and the lower
+  Close position/size match pixel-for-pixel at phone, iPad, and desktop widths,
+  and the Personal Center card is not visibly stacked underneath. Its `Change
+  Password` heading is centered, the
   top-left back arrow closes only the password dialog and returns focus to
   `Change password`, and the centered `Save Password` is the only form action.
   Confirm there is no separate `Account` label, top-right close button, or
   Cancel action. Backdrop and Escape do nothing; the external `Close` below the
   card closes both dialog layers, returns to Dashboard, and restores focus to
   the identity chip
+- opening STAR Wallet replaces Personal Center in the exact same card and Close
+  footprint at phone, iPad, and desktop widths; long wallet views scroll inside
+  the card without moving or resizing the lower Close
+- clicking `Log out` opens the same-footprint confirmation instead of signing
+  out immediately. Cancel and Back restore Personal Center and focus to
+  `Log out`; the lower Close dismisses the whole account flow; only the red
+  `Log out` confirmation clears the session and returns to the login page
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; no row
   retains a selected background or pressed scale after activation, and reduced
