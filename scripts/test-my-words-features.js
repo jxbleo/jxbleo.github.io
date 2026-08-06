@@ -110,7 +110,11 @@ async function main() {
   assert(myWordsJs.includes("data-mobile-edit-form"), "mobile detail must edit word, Source, and Note in one form");
   assert(myWordsJs.includes("source_contexts: Array.prototype.slice.call"), "the unified editor must save every displayed Source context");
   assert(myWordsJs.includes("Changing the English word may clear its dictionary details"), "mobile spelling edit must warn about dictionary loss");
-  assert(myWordsJs.includes("targetRect.left + targetRect.width / 2"), "mobile detail close must animate toward the originating word tile");
+  assert(myWordsJs.includes("function mobileDetailTargetMotion(card, target)"), "detail opening and closing must share one source-card motion calculation");
+  assert(myWordsJs.includes("animateMobileDetailOpen();"), "detail opening must originate from its selected word tile");
+  assert(myWordsJs.includes("var scale = Math.max(0.18, Math.min(0.34"), "detail travel must use one uniform scale without card distortion");
+  assert(!myWordsJs.includes("scaleX"), "detail close must not stretch width and height independently");
+  assert(!myWordsJs.includes("var wordInput = mobileDetail.querySelector"), "entering pencil edit mode must not autofocus or auto-select the word field");
   assert(!myWordsJs.includes("mobileOverlay.addEventListener('click'"), "mobile word detail must ignore backdrop clicks");
   assert(myWordsJs.includes("if (state.mobileDetailOpen) return;"), "mobile word detail must ignore Escape");
   assert(myWordsJs.includes("if (!actions.contains(event.target)) actions.removeAttribute('open')"), "word action menus must close when the student clicks elsewhere");
@@ -135,6 +139,7 @@ async function main() {
   assert(myWordsCss.includes(".my-words-loading-sheet::after"), "loading must reuse the Teacher matrix grid/radar wash language");
   assert(/\.my-words-export-panel\.open\s*\{[^}]*position:\s*fixed;/.test(myWordsCss), "Export parameters must float at the current viewport position");
   assert(myWordsCss.includes("@keyframes myWordsGridMove"), "loading grid must animate while data is pending");
+  assert(!myWordsCss.includes("@keyframes myWordsDetailMaterialize"), "detail card must not compete with the shared source-card animation");
   assert(myWordsJs.includes("function setWordsReady()"), "loaded words must replace the reserved loading surface without moving the toolbar");
   assert(!/Forgot|A little|Know|Learning\/Mastered/.test(myWordsHtml), "the placeholder release must not add a learning system");
   assert(teacherHtml.includes('id="teacher-dictionary-panel"'));

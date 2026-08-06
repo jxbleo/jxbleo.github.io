@@ -465,7 +465,9 @@ My Words:
   background is locked and closing restores the exact
   list/search/sort/density/scroll context. Closing also shrinks and travels to
   the originating My Words tile, then briefly highlights that tile so the
-  student can immediately find and reopen it; reduced motion uses a short fade.
+  student can immediately find and reopen it. Opening follows the exact reverse
+  path from that same tile, using one uniform scale so the card never stretches
+  or changes direction unexpectedly; reduced motion uses a short fade.
   The card omits `WORD DETAILS`,
   `Saved word`, dictionary-review status, and pronunciation-placeholder labels.
   The word and speaker share the title row; POS and the short English definition
@@ -496,7 +498,9 @@ My Words:
   English word/phrase, saved Source sentence, and personal Note. Source origin
   and date remain read-only provenance. Before editing begins, the student must
   acknowledge that changing the English spelling may clear dictionary details
-  when no matching entry exists. Report/AI and confirmed removal remain
+  when no matching entry exists. Entering the editor does not automatically
+  focus, select, scroll to, or zoom the English field; the student chooses which
+  field to edit. Report/AI and confirmed removal remain
   available in the edit surface; external dictionary provider branding remains
   hidden. Desktop retains its detail action menu.
 - does not expose New/Learning/Mastered states, due filters, reveal-and-rate

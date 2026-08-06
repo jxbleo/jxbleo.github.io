@@ -21,6 +21,7 @@
         mobileEditingId: '',
         mobileDetailOpen: false,
         mobileDetailClosing: false,
+        mobileDetailAnimation: null,
         mobileReturnVocabId: '',
         detailOpener: null,
         lockedScrollY: 0
@@ -642,9 +643,15 @@
         state.mobileReturnVocabId = state.selectedId;
         state.mobileDetailOpen = true;
         renderMobileDetail();
+        mobileOverlay.classList.remove('is-closing');
+        mobileOverlay.classList.add('is-opening');
         mobileOverlay.hidden = false;
         lockPageForDetail();
-        window.requestAnimationFrame(function() { if (mobileClose) mobileClose.focus({ preventScroll: true }); });
+        window.requestAnimationFrame(function() {
+            mobileOverlay.classList.remove('is-opening');
+            animateMobileDetailOpen();
+            if (mobileClose) mobileClose.focus({ preventScroll: true });
+        });
     }
 
     function hasUnsavedDetailEdit() {
@@ -661,12 +668,42 @@
         }) || null;
     }
 
+    function mobileDetailTargetMotion(card, target) {
+        var cardRect = card && card.getBoundingClientRect();
+        var targetRect = target && target.getBoundingClientRect();
+        var targetIsVisible = cardRect && targetRect && targetRect.width > 0 && targetRect.height > 0 &&
+            targetRect.right > 0 && targetRect.left < window.innerWidth && targetRect.bottom > 0 && targetRect.top < window.innerHeight;
+        if (!targetIsVisible) return { transform: 'translate3d(0, 10px, 0) scale(0.96)', opacity: 0 };
+        var translateX = targetRect.left + targetRect.width / 2 - (cardRect.left + cardRect.width / 2);
+        var translateY = targetRect.top + targetRect.height / 2 - (cardRect.top + cardRect.height / 2);
+        var scale = Math.max(0.18, Math.min(0.34, targetRect.width / cardRect.width, targetRect.height / cardRect.height));
+        return {
+            transform: 'translate3d(' + translateX + 'px, ' + translateY + 'px, 0) scale(' + scale + ')',
+            opacity: 0.12
+        };
+    }
+
+    function animateMobileDetailOpen() {
+        var card = mobileOverlay.querySelector('.my-words-mobile-detail-card');
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!card || !card.animate || reduceMotion) return;
+        var sourceMotion = mobileDetailTargetMotion(card, selectedMobileWordCard());
+        state.mobileDetailAnimation = card.animate([
+            { opacity: sourceMotion.opacity, transform: sourceMotion.transform },
+            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }
+        ], { duration: 340, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+        Promise.resolve(state.mobileDetailAnimation.finished).catch(function() {}).then(function() {
+            state.mobileDetailAnimation = null;
+        });
+    }
+
     function finishMobileDetailClose(target) {
         state.editingId = '';
         state.noteEditingId = '';
         state.mobileEditingId = '';
         state.mobileDetailOpen = false;
         state.mobileDetailClosing = false;
+        state.mobileDetailAnimation = null;
         state.mobileReturnVocabId = '';
         mobileOverlay.hidden = true;
         mobileOverlay.classList.remove('is-closing');
@@ -692,21 +729,19 @@
         var target = selectedMobileWordCard();
         var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         mobileOverlay.classList.add('is-closing');
+        if (state.mobileDetailAnimation) {
+            state.mobileDetailAnimation.cancel();
+            state.mobileDetailAnimation = null;
+        }
         if (!card || !card.animate || reduceMotion) {
             window.setTimeout(function() { finishMobileDetailClose(target); }, reduceMotion ? 120 : 0);
             return true;
         }
-        var cardRect = card.getBoundingClientRect();
-        var targetRect = target && target.getBoundingClientRect();
-        var hasVisibleTarget = targetRect && targetRect.width > 0 && targetRect.height > 0;
-        var translateX = hasVisibleTarget ? targetRect.left + targetRect.width / 2 - (cardRect.left + cardRect.width / 2) : 0;
-        var translateY = hasVisibleTarget ? targetRect.top + targetRect.height / 2 - (cardRect.top + cardRect.height / 2) : 12;
-        var scaleX = hasVisibleTarget ? Math.max(0.12, targetRect.width / cardRect.width) : 0.92;
-        var scaleY = hasVisibleTarget ? Math.max(0.08, targetRect.height / cardRect.height) : 0.92;
+        var targetMotion = mobileDetailTargetMotion(card, target);
         var cardAnimation = card.animate([
-            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1, 1)', borderRadius: '27px' },
-            { opacity: 0.12, transform: 'translate3d(' + translateX + 'px, ' + translateY + 'px, 0) scale(' + scaleX + ', ' + scaleY + ')', borderRadius: '16px' }
-        ], { duration: 390, easing: 'cubic-bezier(0.32, 0, 0.2, 1)', fill: 'forwards' });
+            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)', borderRadius: '27px' },
+            { opacity: targetMotion.opacity, transform: targetMotion.transform, borderRadius: '16px' }
+        ], { duration: 320, easing: 'cubic-bezier(0.32, 0, 0.2, 1)', fill: 'forwards' });
         Promise.resolve(cardAnimation.finished).catch(function() {}).then(function() { finishMobileDetailClose(target); });
         return true;
     }
@@ -1230,18 +1265,12 @@
         document.addEventListener('submit', handleDetailSubmit);
         mobileEdit.addEventListener('click', function() {
             if (!state.mobileDetailOpen || state.mobileDetailClosing) return;
-            if (state.mobileEditingId === state.selectedId) {
-                var currentInput = mobileDetail.querySelector('[data-mobile-edit-form] input[name="text"]');
-                if (currentInput) currentInput.focus();
-                return;
-            }
+            if (state.mobileEditingId === state.selectedId) return;
             if (!window.confirm('Changing the English word may clear its dictionary details if no matching entry is found. Check the spelling carefully. Continue editing?')) return;
             state.editingId = '';
             state.noteEditingId = '';
             state.mobileEditingId = state.selectedId;
             renderMobileDetail();
-            var wordInput = mobileDetail.querySelector('[data-mobile-edit-form] input[name="text"]');
-            if (wordInput) { wordInput.focus(); wordInput.select(); }
         });
         mobileClose.addEventListener('click', function() { closeMobileDetail(false); });
         var logoutButton = document.getElementById('my-words-logout');

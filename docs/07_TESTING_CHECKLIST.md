@@ -479,12 +479,15 @@ Check:
 - confirm the word is spoken once automatically when its mobile detail card
   opens; pressing the speaker afterward still speaks it on demand
 - click the external pencil and confirm the spelling/dictionary-loss warning is
-  shown before editing begins. Continue and verify the English word, Source
+  shown before editing begins. Continue and confirm the card remains at the same
+  scale and scroll position with no input focused or selected automatically.
+  Then tap the desired field and verify the English word, Source
   sentence, and Note are editable together, while source origin/date and
   dictionary fields remain read-only. Save once and confirm all three changes
   persist; focusing any input or textarea on iPhone/iPad does not zoom the page
 - close a word with the lower Close action and confirm the card shrinks toward
-  its exact originating word tile, the locked
+  its exact originating word tile along the reverse of its opening path, without
+  horizontal/vertical stretching. Confirm the locked
   scroll position does not jump, and the destination tile receives a brief
   highlight/focus. Escape and backdrop clicks leave the detail open.
   Reduced-motion mode uses a short fade without travel
