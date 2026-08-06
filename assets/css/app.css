@@ -3292,6 +3292,11 @@ body:not(.teacher-page) .tab-button.active {
     height: min(490px, 86dvh);
     max-height: none;
 }
+.logout-confirm-stack {
+    width: min(390px, calc(100% - 20px));
+    height: min(330px, 72vh);
+    height: min(330px, 72dvh);
+}
 .student-account-dialog,
 .student-star-dialog,
 .password-dialog,
@@ -9505,6 +9510,7 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .student-star-stack,
     .password-dialog-stack,
     .logout-confirm-stack { width: 100%; }
+    .logout-confirm-stack { width: min(390px, calc(100% - 20px)); }
     .student-account-dialog,
     .student-star-dialog,
     .password-dialog,
