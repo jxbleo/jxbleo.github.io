@@ -287,7 +287,10 @@ Check:
   the identity chip
 - opening STAR Wallet replaces Personal Center in the exact same card and Close
   footprint at phone, iPad, and desktop widths; long wallet views scroll inside
-  the card without moving or resizing the lower Close
+  the card without moving or resizing the lower Close. Confirm wallet content
+  sits directly on the shared glass surface with no nested white profile card,
+  and `STAR WALLET` uses the same centered green eyebrow typography as
+  `PERSONAL CENTER`
 - clicking `Log out` opens the same-footprint confirmation instead of signing
   out immediately. Cancel and Back restore Personal Center and focus to
   `Log out`; the lower Close dismisses the whole account flow; only the red

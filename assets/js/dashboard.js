@@ -3618,7 +3618,7 @@
     function starWalletHeader(title, backTarget, backLabel) {
         return '<div class="account-star-history-head">' +
             '<button class="account-star-back" type="button" data-wallet-back="' + escapeHtml(backTarget) + '" aria-label="' + escapeHtml(backLabel) + '">‹</button>' +
-            '<h2 id="student-star-title">' + escapeHtml(title) + '</h2>' +
+            '<p class="eyebrow accent" id="student-star-title">' + escapeHtml(title) + '</p>' +
         '</div>';
     }
 
@@ -3633,7 +3633,7 @@
     }
 
     function renderStarWalletHome() {
-        return '<section class="profile-card account-star-history account-wallet-home">' +
+        return '<section class="account-star-history account-wallet-home">' +
             starWalletHeader('STAR WALLET', 'account', 'Back to Personal Center') +
             '<div class="account-wallet-pass" aria-label="' + escapeHtml(availableYellowStars()) + ' yellow STARs available">' +
                 '<span class="account-wallet-pass-star" aria-hidden="true">★</span>' +
@@ -3648,7 +3648,7 @@
     }
 
     function renderStarSource() {
-        return '<section class="profile-card account-star-history account-wallet-detail">' +
+        return '<section class="account-star-history account-wallet-detail">' +
             starWalletHeader('STAR SOURCE', 'wallet', 'Back to STAR Wallet') +
             starSourceSection('yellow', 'YELLOW STAR', 'REDEEMABLE') +
             starSourceSection('blue', 'BLUE STAR', 'NOT REDEEMABLE') +
@@ -3656,7 +3656,7 @@
     }
 
     function renderStarRedeem() {
-        return '<section class="profile-card account-star-history account-wallet-detail">' +
+        return '<section class="account-star-history account-wallet-detail">' +
             starWalletHeader('REDEEM', 'wallet', 'Back to STAR Wallet') +
             '<div class="account-wallet-redeem-balance"><span aria-hidden="true">★</span><strong>' + escapeHtml(availableYellowStars()) + '</strong><small>available</small></div>' +
             '<section class="account-cash-panel">' + cashComposerHtml() + '</section>' +
@@ -3667,7 +3667,7 @@
         var requests = (state.starRewards && state.starRewards.cash_requests || []).slice().sort(function(left, right) {
             return new Date(right.created_at || 0).getTime() - new Date(left.created_at || 0).getTime();
         });
-        return '<section class="profile-card account-star-history account-wallet-detail">' +
+        return '<section class="account-star-history account-wallet-detail">' +
             starWalletHeader('HISTORY', 'wallet', 'Back to STAR Wallet') +
             '<p class="account-wallet-detail-intro">Every Cash request and its proof stays here.</p>' +
             '<div class="account-cash-history">' +
@@ -3699,9 +3699,9 @@
         } catch (error) {
             console.error('Unable to open STAR Wallet.', error);
             starContent.innerHTML =
-                '<section class="profile-card account-star-history account-star-error" role="alert">' +
+                '<section class="account-star-history account-star-error" role="alert">' +
                     '<div class="account-star-history-head"><button class="account-star-back" type="button" data-wallet-back="account" aria-label="Back to Personal Center">‹</button>' +
-                    '<h2 id="student-star-title">STAR WALLET</h2>' +
+                    '<p class="eyebrow accent" id="student-star-title">STAR WALLET</p>' +
                     '</div>' +
                     '<div class="account-star-history-empty"><span aria-hidden="true">☆</span><strong>Unable to display STAR history</strong><p>Your STARs are safe. Close and reopen Personal Center to try again.</p></div>' +
                 '</section>';

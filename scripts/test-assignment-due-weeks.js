@@ -743,6 +743,10 @@ function testStudentModalShellMarkup() {
   assert(dashboardJs.includes("document.getElementById('logout-button').addEventListener('click', openLogoutConfirmDialog)"));
   assert(!dashboardJs.includes("document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout)"));
   assert(dashboardJs.includes("window.MrCatAuth.logout();"));
+  assert(dashboardJs.includes('<p class="eyebrow accent" id="student-star-title">'));
+  assert(!dashboardJs.includes('<section class="profile-card account-star-history'));
+  assert(!appCss.includes('.student-star-dialog .profile-card'));
+  assert(appCss.includes('.account-star-history-head > .eyebrow {'));
   assert(appCss.includes(".student-account-stack,\n.student-star-stack,\n.password-dialog-stack,\n.logout-confirm-stack"));
   assert(appCss.includes("height: min(490px, 86dvh);"));
   assert(appCss.includes(".student-account-outside-close,\n.student-star-outside-close,\n.password-dialog-outside-close,\n.logout-confirm-outside-close"));
@@ -929,6 +933,8 @@ function testAccountStarHistoryModel() {
   const sourceView = hooks.renderStarSource();
   assert(sourceView.includes("YELLOW STAR<em>REDEEMABLE</em>"));
   assert(sourceView.includes("BLUE STAR<em>NOT REDEEMABLE</em>"));
+  assert(!sourceView.includes("profile-card"));
+  assert(sourceView.includes('class="eyebrow accent" id="student-star-title"'));
 }
 
 async function main() {
