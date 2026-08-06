@@ -596,8 +596,11 @@ Student account menu:
   not dismiss the dialog.
 - STAR Wallet uses the same fixed Personal Center spatial footprint and the
   same external Close geometry at phone, iPad, and desktop widths. Its content
-  scrolls inside that shared card when necessary; opening it replaces rather
-  than visually stacking translucent cards.
+  is rendered directly on that shared glass card, with no nested white
+  `profile-card` wrapper. Its content scrolls inside the shared card when
+  necessary; opening it replaces rather than visually stacking translucent
+  cards. `STAR WALLET` and its subordinate view titles use the same centered
+  green eyebrow typography as `PERSONAL CENTER`.
 - `Log out` never ends the session immediately. It opens a confirmation card in
   the same Personal Center footprint with `Cancel`, a destructive `Log out`, a
   back arrow that restores Personal Center, and the same external Close that
