@@ -693,6 +693,10 @@ function testStudentModalShellMarkup() {
   assert(dashboardHtml.includes('class="account-panel student-account-overlay"'));
   assert(dashboardHtml.includes('class="student-account-stack" role="dialog" aria-modal="true"'));
   assert(dashboardHtml.includes('class="student-account-dialog"'));
+  assert(dashboardHtml.includes('class="logout-confirm-overlay" id="logout-confirm-overlay" hidden'));
+  assert(dashboardHtml.includes('id="logout-confirm-cancel"'));
+  assert(dashboardHtml.includes('id="logout-confirm-submit"'));
+  assert(dashboardHtml.includes('class="student-message-close logout-confirm-outside-close"'));
   assert(dashboardHtml.includes('id="student-account-close"'));
   assert(dashboardHtml.includes('id="student-replies-button"'));
   assert(dashboardHtml.includes('id="student-calendar-date" aria-hidden="true"'));
@@ -736,6 +740,13 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".password-dialog-actions {\n    grid-template-columns: minmax(180px, 240px);\n    justify-content: center;"));
   assert(!dashboardJs.includes('<p class="eyebrow accent">Account</p>'));
   assert(!dashboardJs.includes('class="dialog-close-button"'));
+  assert(dashboardJs.includes("document.getElementById('logout-button').addEventListener('click', openLogoutConfirmDialog)"));
+  assert(!dashboardJs.includes("document.getElementById('logout-button').addEventListener('click', window.MrCatAuth.logout)"));
+  assert(dashboardJs.includes("window.MrCatAuth.logout();"));
+  assert(appCss.includes(".student-account-stack,\n.student-star-stack,\n.password-dialog-stack,\n.logout-confirm-stack"));
+  assert(appCss.includes("height: min(490px, 86dvh);"));
+  assert(appCss.includes(".student-account-outside-close,\n.student-star-outside-close,\n.password-dialog-outside-close,\n.logout-confirm-outside-close"));
+  assert(liquidGlassCss.includes(".student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog"));
   assert(appCss.includes(".account-feedback-row:hover,\n.account-feedback-row:active {\n    background: transparent;\n    transform: none;\n}"));
   assert(!appCss.includes(".account-feedback-row:hover,\n.account-finished-row:hover"));
   assert(!appCss.includes(".account-feedback-row:active,\n.account-finished-row:active"));

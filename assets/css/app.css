@@ -2342,6 +2342,7 @@ body:not(.teacher-page) .tab-button.active {
     .student-message-dialog,
     .teacher-replies-dialog,
     .password-dialog,
+    .logout-confirm-dialog,
     .my-word-merge-card
 ),
 .liquid-glass-teacher :is(
@@ -3259,6 +3260,150 @@ body:not(.teacher-page) .tab-button.active {
     justify-content: center;
 }
 .password-dialog-outside-close { justify-self: center; }
+
+/* Personal Center descendants share one spatial footprint and one Close anchor. */
+.student-star-overlay,
+.password-dialog-overlay,
+.logout-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+    border: 0;
+    background: rgba(17, 38, 34, 0.3);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(8px) saturate(118%);
+    backdrop-filter: blur(8px) saturate(118%);
+}
+.logout-confirm-overlay { z-index: 2200; }
+.logout-confirm-overlay[hidden] { display: none; }
+.student-account-stack,
+.student-star-stack,
+.password-dialog-stack,
+.logout-confirm-stack {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 11px;
+    width: min(430px, 100%);
+    height: min(490px, 86vh);
+    height: min(490px, 86dvh);
+    max-height: none;
+}
+.student-account-dialog,
+.student-star-dialog,
+.password-dialog,
+.logout-confirm-dialog {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 26px;
+    color: var(--ink);
+    background: rgba(248,251,249,0.76);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+    backdrop-filter: blur(30px) saturate(160%);
+    box-shadow: 0 24px 80px rgba(20,54,47,0.24), 0 3px 12px rgba(20,54,47,0.08);
+}
+.student-account-outside-close,
+.student-star-outside-close,
+.password-dialog-outside-close,
+.logout-confirm-outside-close {
+    width: 132px;
+    min-width: 132px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 22px;
+    justify-self: center;
+}
+.account-flow-title-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.account-flow-title-row .account-star-back { grid-column: 1; }
+.account-flow-title-row .eyebrow {
+    grid-column: 2;
+    margin: 0;
+    text-align: center;
+}
+.account-flow-title-spacer {
+    grid-column: 3;
+    width: 38px;
+    height: 38px;
+}
+.logout-confirm-dialog {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.logout-confirm-copy {
+    align-self: center;
+    padding: 24px 18px;
+    text-align: center;
+}
+.logout-confirm-copy strong {
+    display: block;
+    color: var(--ink);
+    font-size: 1.2rem;
+}
+.logout-confirm-copy p {
+    max-width: 300px;
+    margin: 10px auto 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+.logout-confirm-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+.logout-confirm-actions button {
+    min-height: 44px;
+    border-radius: 12px;
+    font-weight: 850;
+}
+#logout-confirm-submit {
+    border-color: transparent;
+    color: #fff;
+    background: var(--danger);
+}
+#logout-confirm-submit:disabled { opacity: 0.62; cursor: wait; }
+@media (prefers-reduced-motion: reduce) {
+    .logout-confirm-dialog { animation-duration: 1ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+    .student-account-dialog,
+    .student-star-dialog,
+    .password-dialog,
+    .logout-confirm-dialog {
+        background: #f9fbfa;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+    .student-account-overlay,
+    .student-star-overlay,
+    .password-dialog-overlay,
+    .logout-confirm-overlay {
+        background: rgba(17,38,34,0.52);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+@media (prefers-contrast: more) {
+    .student-account-dialog,
+    .student-star-dialog,
+    .password-dialog,
+    .logout-confirm-dialog {
+        border-color: #56746c;
+        background: #fff;
+    }
+}
 
 .teacher-replies-card {
     display: grid;
@@ -9346,13 +9491,22 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         top: 72px;
         width: auto;
     }
-    .student-account-overlay {
+    .student-account-overlay,
+    .student-star-overlay,
+    .password-dialog-overlay,
+    .logout-confirm-overlay {
         inset: 0;
         width: auto;
         padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
     }
-    .student-account-stack { width: 100%; }
-    .student-account-dialog { padding: 15px 14px; border-radius: 25px; }
+    .student-account-stack,
+    .student-star-stack,
+    .password-dialog-stack,
+    .logout-confirm-stack { width: 100%; }
+    .student-account-dialog,
+    .student-star-dialog,
+    .password-dialog,
+    .logout-confirm-dialog { padding: 15px 14px; border-radius: 25px; }
     .teacher-header-actions { flex-wrap: wrap; }
     .teacher-updates-panel {
         padding: 12px;
@@ -9465,7 +9619,7 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .profile-grid { grid-template-columns: 1fr; }
     .my-word-toggle { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; }
     .my-word-chinese { font-size: 0.77rem; }
-    .password-dialog { padding: 22px 18px; }
+    .password-dialog { padding: 15px 14px; }
     .practice-entry-overlay { padding: 18px; }
     .practice-entry-card {
         padding: 28px 20px 0;
