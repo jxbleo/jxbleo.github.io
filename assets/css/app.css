@@ -2325,44 +2325,6 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: 0 28px 78px rgba(24, 53, 47, 0.22);
     overflow: visible;
 }
-.practice-entry-card.has-back {
-    padding-top: 72px;
-}
-.practice-entry-back {
-    position: absolute;
-    top: 17px;
-    left: 17px;
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: 1px solid rgba(24, 53, 47, 0.12);
-    border-radius: 999px;
-    color: var(--ink);
-    background: rgba(246, 250, 247, 0.9);
-    box-shadow: 0 8px 18px rgba(24, 53, 47, 0.1);
-    cursor: pointer;
-    transition: transform .16s ease, background .16s ease, border-color .16s ease;
-}
-.practice-entry-back[hidden] { display: none; }
-.practice-entry-back svg {
-    width: 23px;
-    height: 23px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.practice-entry-back:hover {
-    border-color: rgba(19, 118, 109, .28);
-    background: #fff;
-    transform: translateX(-1px);
-}
-.practice-entry-back:active { transform: scale(.96); }
 .practice-entry-card.is-question-confirmation {
     padding-bottom: 26px;
 }
@@ -2491,7 +2453,6 @@ body:not(.teacher-page) .tab-button.active {
     box-shadow: none;
 }
 .practice-entry-enter:focus-visible,
-.practice-entry-back:focus-visible,
 .practice-entry-close:focus-visible {
     outline: 3px solid rgba(19, 118, 109, 0.24);
     outline-offset: 3px;
