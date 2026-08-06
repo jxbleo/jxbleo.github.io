@@ -444,7 +444,11 @@ My Words:
   flexible right detail pane. Recent is the default sort, with A–Z and Z–A
   available. Search covers English, Chinese, definition, POS, source, context,
   and Note. Selecting a recent Review word switches desktop to My Words and
-  selects that word.
+  selects that word. At iPad and desktop split widths, the notebook fits the
+  remaining viewport and the left word index scrolls independently. Moving deep
+  into that list never moves the right detail pane or requires returning to the
+  page top; each newly selected word starts at the top of the fixed detail pane,
+  and only an overflowing right-side detail scrolls within its own pane.
 - uses the same single sticky `My Words / Review` row on narrow screens. My
   Words defaults to a two-column English-only card grid. One layout button in
   the second toolbar opens a compact one/two/three-column picker; the browser

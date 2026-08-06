@@ -447,6 +447,12 @@ Check:
 - open My Words at desktop, tablet, and 390px phone widths. Desktop keeps the
   Sidebar and split notebook; mobile replaces the Sidebar with sticky tabs and
   keeps the word grid within the viewport
+- at iPad and desktop split widths, scroll the left word index to its middle and
+  bottom and select words there. Confirm only the left index moves, while the
+  right detail remains anchored, updates immediately, and starts the newly
+  selected word at the top of its pane.
+  If the detail is taller than its pane, confirm it has its own independent
+  scroll; the phone layout must continue using normal document scrolling
 - while signed in with an empty feedback message, switch from Review to My
   Words and confirm the toolbar begins directly below the primary navigation;
   expand Export and confirm `All`, `This Week`, `This Month`, and `This Year`

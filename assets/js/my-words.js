@@ -22,6 +22,7 @@
         mobileDetailOpen: false,
         mobileDetailClosing: false,
         mobileSpeechTimer: null,
+        desktopRenderedId: '',
         mobileReturnVocabId: '',
         detailOpener: null,
         lockedScrollY: 0
@@ -543,10 +544,14 @@
         if (!desktopDetail) return;
         var word = vocabWord(state.selectedId);
         if (!word) {
+            state.desktopRenderedId = '';
             desktopDetail.innerHTML = '<div class="my-words-detail-empty"><p>Select a saved word to see its details.</p></div>';
             return;
         }
+        var selectedWordChanged = state.desktopRenderedId !== word.vocab_id;
+        state.desktopRenderedId = word.vocab_id;
         desktopDetail.innerHTML = detailPanelHtml(word, false);
+        if (selectedWordChanged) desktopDetail.scrollTop = 0;
     }
 
     function renderMobileDetail() {
@@ -1217,6 +1222,10 @@
             if (state.exportOpen) setExportOpen(false);
         }, { passive: true });
         indexList.addEventListener('wheel', function() {
+            if (state.densityMenuOpen) setDensityMenuOpen(false);
+            if (state.exportOpen) setExportOpen(false);
+        }, { passive: true });
+        indexList.addEventListener('scroll', function() {
             if (state.densityMenuOpen) setDensityMenuOpen(false);
             if (state.exportOpen) setExportOpen(false);
         }, { passive: true });

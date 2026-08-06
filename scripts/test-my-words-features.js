@@ -96,6 +96,7 @@ async function main() {
   assert(myWordsJs.includes("wordChineseMeaning(dictionary)].join(' ')"), "word-card Chinese text must not retain a middle-dot separator");
   assert(myWordsJs.includes("['single', 'double', 'triple']"), "saved density must accept all three mobile layouts");
   assert(myWordsJs.includes("indexList.addEventListener('touchmove'"), "mobile list motion must dismiss the density picker");
+  assert(myWordsJs.includes("indexList.addEventListener('scroll'"), "independent desktop list scrolling must dismiss floating toolbar panels");
   assert(myWordsJs.includes("if (state.densityMenuOpen) setDensityMenuOpen(false)"), "scrolling must close an open density picker");
   assert(myWordsJs.includes("function positionExportPanel()"), "Export must anchor to the visible download button");
   assert(myWordsJs.includes("triggerRect.bottom + 8"), "Export must open directly below its trigger at any scroll depth");
@@ -139,6 +140,11 @@ async function main() {
   assert(/\.my-words-workspace\s*\{[^}]*overflow:\s*clip;/.test(myWordsCss), "workspace clipping must not create a scroll container that offsets the sticky toolbar");
   assert(!/\.my-words-workspace\s*\{[^}]*overflow:\s*hidden;/.test(myWordsCss), "workspace overflow must not trap the sticky toolbar above the export panel");
   assert(myWordsCss.includes(".my-words-desktop-detail"), "desktop Word List must retain a separate detail pane");
+  assert(/\.my-words-notebook\s*\{[^}]*height:\s*calc\(100dvh - 171px\);[^}]*overflow:\s*hidden;/.test(myWordsCss), "desktop My Words must stay within the visible workspace instead of scrolling both columns together");
+  assert(/\.my-words-index-list\s*\{[^}]*height:\s*100%;[^}]*overflow-y:\s*auto;/.test(myWordsCss), "the desktop word index must scroll independently");
+  assert(/\.my-words-desktop-detail\s*\{[^}]*height:\s*100%;[^}]*overflow-y:\s*auto;/.test(myWordsCss), "the desktop detail pane must remain fixed and own any necessary detail scrolling");
+  assert(myWordsJs.includes("if (selectedWordChanged) desktopDetail.scrollTop = 0"), "a newly selected desktop word must begin at the top of the fixed detail pane");
+  assert(/@media \(max-width: 760px\)[\s\S]*\.my-words-notebook\s*\{[^}]*height:\s*auto;[^}]*overflow:\s*visible;/.test(myWordsCss), "phone My Words must retain its document-scrolling layout");
   assert(myWordsCss.includes(".my-words-mobile-detail-overlay"), "mobile word details must use an independent modal");
   assert(myWordsCss.includes(".my-words-loading-sheet::after"), "loading must reuse the Teacher matrix grid/radar wash language");
   assert(/\.my-words-export-panel\.open\s*\{[^}]*position:\s*fixed;/.test(myWordsCss), "Export parameters must float at the current viewport position");
