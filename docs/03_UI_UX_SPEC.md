@@ -446,7 +446,12 @@ My Words:
   word plus speaker, POS plus English definition, optional Forms, and labelled
   Source and Note boxes. A circular pencil replaces the old three-dot menu and
   opens the same combined Word, Source, and Note editor with the spelling-loss
-  warning; wide layouts do not wrap this shared content in a modal.
+  warning; wide layouts do not wrap this shared content in a modal. In the
+  iPad/desktop read view, the first row contains the word with its speaker
+  immediately adjacent, while the pencil stays at the far right; the pencil no
+  longer consumes a separate row. Phone detail titles are always one line: long
+  words and phrases reduce their title size to fit, with truncation reserved as
+  a fallback only after the readable sizing floor is reached.
 - uses the same single sticky `My Words / Review` row on narrow screens. My
   Words defaults to a two-column English-only card grid. One layout button in
   the second toolbar opens a compact one/two/three-column picker; the browser
