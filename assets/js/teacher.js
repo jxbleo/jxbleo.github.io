@@ -89,6 +89,7 @@
         activityReadAllSuccess: false,
         notificationAttemptId: '',
         notificationAttemptEntering: false,
+        notificationAttemptRevealIds: [],
         targetMatrixAttemptId: '',
         disputeFilter: 'pending',
         disputeMerge: false,
@@ -3815,6 +3816,11 @@
     function loadNotificationThreadAttemptDetails(attempt, render) {
         var ids = relatedAttemptIdsForAttempt(attempt);
         if (!ids.length) return Promise.resolve();
+        var revealIds = ids.filter(function(attemptId) {
+            return !(state.attempts || []).some(function(item) {
+                return String(item.attempt_id || '') === String(attemptId) && attemptHasDetail(item);
+            });
+        });
         var errors = [];
         var requests = ids.map(function(attemptId) {
             return loadAttemptDetail(attemptId).catch(function(error) {
@@ -3824,7 +3830,12 @@
         });
         requests.push(loadQuestionTextForRecords([{ set_id: attempt && attempt.set_id || '' }]));
         return Promise.all(requests).then(function() {
+            if (!attempt || state.notificationAttemptId !== attempt.attempt_id) return;
+            state.notificationAttemptRevealIds = revealIds;
             render();
+            window.requestAnimationFrame(function() {
+                state.notificationAttemptRevealIds = [];
+            });
             if (errors.length) {
                 showMessage('Some answer comparisons could not be loaded. Please try opening the notification again.', 'error');
             }
@@ -5038,14 +5049,15 @@
         if (!mode) return '';
         var groups = vocabularyAttemptGroupLabels(attempt, assignment);
         var groupCount = Number(attempt && attempt.selected_group_count || groups.length || 0);
+        var compactGroups = groups.map(function(group) {
+            return String(group) === '10' ? 'X' : String(group);
+        }).join('');
         return '<div class="matrix-attempt-context">' +
             '<span class="mode ' + (mode === 'Practice' ? 'practice' : 'quiz') + '">' + escapeHtml(mode) + '</span>' +
             (mode === 'Quiz'
                 ? (groupCount ? '<span class="quiz-set-count">' + escapeHtml(groupCount) + ' sets</span>' : '')
-                : (groups.length ? '<span class="matrix-practice-groups" aria-label="Selected practice sets">' +
-                    groups.map(function(group) {
-                        return '<span class="matrix-practice-group-chip">' + escapeHtml(group) + '</span>';
-                    }).join('') + '</span>' : '')) +
+                : (compactGroups ? '<span class="matrix-practice-group-sequence" aria-label="Selected practice groups: ' +
+                    escapeHtml(groups.join(', ')) + '">' + escapeHtml(compactGroups) + '</span>' : '')) +
         '</div>';
     }
 
@@ -5257,13 +5269,23 @@
 
     function renderMatrixAttemptDetails(entries, assignment) {
         if (!entries.length) return '';
+        var revealIds = state.notificationAttemptRevealIds || [];
         return '<div class="matrix-attempt-list">' +
             entries.slice().reverse().map(function(entry) {
                 var attempt = entry.attempt;
                 var highlighted = state.targetMatrixAttemptId && attempt.attempt_id === state.targetMatrixAttemptId;
+                var revealIndex = revealIds.findIndex(function(attemptId) {
+                    return String(attemptId || '') === String(attempt.attempt_id || '');
+                });
+                var answerRevealClass = revealIndex === -1 ? '' : ' is-revealing';
+                var answerRevealStyle = revealIndex === -1
+                    ? ''
+                    : ' style="--attempt-reveal-order:' + escapeHtml(Math.min(revealIndex, 6)) + '"';
                 return '<article class="matrix-attempt-card' + (highlighted ? ' highlight' : '') +
                     '" data-matrix-attempt-index="' + escapeHtml(entry.index) + '">' +
-                    '<div class="matrix-attempt-head"><h3>No. ' + escapeHtml(entry.number) + '</h3>' +
+                    '<div class="matrix-attempt-head"><div class="matrix-attempt-identity"><h3>#' + escapeHtml(entry.number) + '</h3>' +
+                        renderVocabularyAttemptContext(attempt, assignment) +
+                    '</div>' +
                     '<time class="matrix-attempt-date" datetime="' + escapeHtml(attempt.submitted_at || '') + '">' +
                         escapeHtml(formatDateTime(attempt.submitted_at)) + '</time>' +
                         '<button class="matrix-work-button" type="button" data-matrix-review-attempt="' +
@@ -5273,8 +5295,9 @@
                             renderPaperReviewIcon() +
                         '</button>' +
                     '</div>' +
-                    renderVocabularyAttemptContext(attempt, assignment) +
-                    renderMatrixAttemptWrongRows(attempt, assignment) +
+                    '<div class="matrix-attempt-answer-region' + answerRevealClass + '"' + answerRevealStyle + '>' +
+                        renderMatrixAttemptWrongRows(attempt, assignment) +
+                    '</div>' +
                 '</article>';
             }).join('') +
         '</div>';

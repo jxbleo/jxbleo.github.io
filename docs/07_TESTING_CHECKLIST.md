@@ -604,14 +604,19 @@ Check:
   assignment thread, or the same student/set self-study thread, into one row
 - a grouped notification shows its attempt count and opens the complete attempt
   history for that thread
-- each BBC/Vocabulary attempt card header keeps `No. n`, Shanghai date/time,
-  and the paper icon on one row, with no repeated `Attempt` label, percentage,
-  page duration, or audio duration; the bar chart still shows percentages
+- each BBC/Vocabulary attempt card header keeps `#n`, Shanghai date/time, and
+  the paper icon on one row, with no repeated `Attempt` label, percentage, page
+  duration, or audio duration; the bar chart still shows percentages
 - BBC wrong-answer rows show compact sequential labels such as `Q6` even when
   stored IDs use `Blank_06`, `Question_06`, or `MC_06`
-- Vocabulary Quiz cards show only `Quiz` plus the selected set count; timed
-  Practice cards show `Practice` followed by the selected set numbers in the
-  same filled rounded style as the student Practice picker
+- Vocabulary Quiz cards place `Quiz` plus the selected set count below `#n` in
+  the header's first column; timed Practice cards place `Practice` followed by
+  one ascending, separator-free group sequence there, use `X` for group 10,
+  and remain on one line (for example, groups 1/2/3/5/10 show `1235X`)
+- the notification attempt-detail card exactly matches the underlying
+  notification card footprint on desktop as well as mobile; newly loaded answer
+  comparisons reveal once with a restrained transition, do not replay during
+  later interaction, and use opacity only when reduced motion is requested
 - teacher notification task labels stay on one line with ellipsis overflow;
   latest score remains fixed at the far right, while the attempt-count capsule
   sits before date/time and changes blue/amber/rose for 1/2/3+ attempts

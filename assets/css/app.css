@@ -5784,10 +5784,9 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     background: transparent;
 }
 .notification-attempt-dialog {
-    height: min(760px, 75vh, calc(100vh - 92px));
-    height: min(760px, 75dvh, calc(100dvh - 92px));
-    max-height: min(760px, 75vh, calc(100vh - 92px));
-    max-height: min(760px, 75dvh, calc(100dvh - 92px));
+    height: 100%;
+    min-height: 0;
+    max-height: none;
 }
 .matrix-student-modal {
     display: grid;
@@ -6416,6 +6415,25 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     border-radius: 16px;
     background: white;
 }
+.matrix-attempt-answer-region {
+    min-width: 0;
+}
+.matrix-attempt-answer-region.is-revealing {
+    transform-origin: top center;
+    will-change: opacity, transform;
+    animation: matrixAttemptAnswerReveal 460ms cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: calc(var(--attempt-reveal-order, 0) * 45ms);
+}
+@keyframes matrixAttemptAnswerReveal {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 .matrix-attempt-card:target,
 .matrix-attempt-card.highlight {
     border-color: rgba(124,58,237,0.42);
@@ -6423,11 +6441,17 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 .matrix-attempt-head {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 12px;
     align-items: center;
     padding: 14px 15px;
     background: rgba(124,58,237,0.06);
+}
+.matrix-attempt-identity {
+    display: grid;
+    min-width: 0;
+    gap: 7px;
+    justify-items: start;
 }
 .matrix-attempt-head h3 {
     margin: 0;
@@ -6513,26 +6537,21 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     color: var(--muted);
     font-variant-numeric: tabular-nums;
 }
-.matrix-practice-groups {
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.matrix-attempt-context .matrix-practice-group-chip {
-    display: inline-grid;
-    min-width: 34px;
-    height: 34px;
-    place-items: center;
-    padding: 0 11px;
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    color: white;
-    background: var(--accent);
-    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.18);
-    font-size: 0.84rem;
-    font-weight: 900;
+.matrix-attempt-context .matrix-practice-group-sequence {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 950;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.045em;
     line-height: 1;
+    white-space: nowrap;
+}
+.matrix-attempt-identity .matrix-attempt-context {
+    gap: 6px;
+    padding: 0;
+}
+.matrix-attempt-identity .matrix-attempt-context .mode {
+    padding: 4px 8px;
 }
 .matrix-answer-table {
     display: grid;
@@ -6575,6 +6594,18 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
         font-size: 0.62rem;
         text-overflow: ellipsis;
     }
+}
+@media (prefers-reduced-motion: reduce) {
+    .matrix-attempt-answer-region.is-revealing {
+        transform: none;
+        will-change: opacity;
+        animation: matrixAttemptAnswerFade 140ms ease-out both;
+        animation-delay: 0ms;
+    }
+}
+@keyframes matrixAttemptAnswerFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 .matrix-work-review {
     display: grid;
