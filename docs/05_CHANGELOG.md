@@ -3,6 +3,23 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-07
+
+### Fixed
+
+- Removed the stale desktop-only `75vh` cap from Teacher notification attempt
+  details, so the stacked detail card now exactly covers the Notifications card
+  footprint on desktop as it already did on mobile.
+
+### Changed
+
+- Restored compact `#n` attempt labels, moved Vocabulary Quiz/Practice and
+  selected-set metadata into the attempt header's first column, compressed
+  Practice group selections into an ascending sequence with `X` for group 10,
+  and added a one-time restrained reveal for answer comparisons after their
+  authorized detail requests finish, with an opacity-only reduced-motion
+  fallback.
+
 ## 2026-08-06
 
 ### Changed

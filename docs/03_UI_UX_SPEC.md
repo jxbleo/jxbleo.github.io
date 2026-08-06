@@ -840,13 +840,19 @@ notification list instead of dismissing the notification surface. The detail
 modal renders outside the notification list's scroll body, and attempt history
 scrolls inside the fixed-size detail card. The notification header keeps its
 double-check `Read all` control in a compact toolbar without a tall empty strip.
-Each BBC or Vocabulary attempt card uses one compact header row containing only
-`No. n`, the Shanghai submission date/time capsule, and the paper-review icon.
+Each BBC or Vocabulary attempt card uses one compact header row containing
+`#n` in its first column, the Shanghai submission date/time capsule, and the
+paper-review icon. Vocabulary cards place their `Quiz` / `Practice` capsule and
+the selected set count / compact Practice group sequence below `#n` in that
+same first column instead of using a separate metadata row. Practice groups are
+sorted ascending and concatenated without separators; group 10 is represented
+by `X` (for example, groups 1, 2, 3, 5, and 10 render as `1235X`).
 The card does not repeat its score or page/audio durations because the attempt
 chart already carries score comparison. BBC comparison rows normalize internal
-question IDs to `Qn`. Vocabulary metadata shows `Quiz` plus the selected set
-count, or `Practice` plus selected set numbers in the same filled round capsules
-used by the student Practice picker.
+question IDs to `Qn`. When authorized per-attempt details finish loading, the
+newly available answer comparison settles into place once with a restrained
+fade, lift, and scale transition; later interaction must not replay that reveal.
+Reduced-motion mode uses a short opacity-only transition.
 
 The teacher page defaults to `View` on entry, including when a stale
 `?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains
