@@ -9,8 +9,8 @@
     <title>Dashboard | Mr. Cat Academy</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260806-11">
-    <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260806-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260807-1">
+    <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260807-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-5">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
@@ -73,23 +73,17 @@
         </section>
 
         <section class="logout-confirm-overlay" id="logout-confirm-overlay" hidden>
-            <div class="logout-confirm-stack" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title" aria-describedby="logout-confirm-message">
-                <section class="logout-confirm-dialog">
-                    <div class="account-flow-title-row">
-                        <button class="account-star-back" id="logout-confirm-back" type="button" aria-label="Back to Personal Center">‹</button>
-                        <p class="eyebrow accent" id="logout-confirm-title">LOG OUT</p>
-                        <span class="account-flow-title-spacer" aria-hidden="true"></span>
-                    </div>
+            <div class="logout-confirm-stack">
+                <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="logout-confirm-title" aria-describedby="logout-confirm-message">
                     <div class="logout-confirm-copy">
-                        <strong>Log out of your account?</strong>
-                        <p id="logout-confirm-message">You will return to the login page and need to sign in again.</p>
+                        <strong id="logout-confirm-title">Ready to leave?</strong>
+                        <p id="logout-confirm-message">Your progress is saved. You can sign in again anytime.</p>
                     </div>
                     <div class="logout-confirm-actions">
                         <button class="outline-button" id="logout-confirm-cancel" type="button">Cancel</button>
                         <button class="danger-button" id="logout-confirm-submit" type="button">Log out</button>
                     </div>
                 </section>
-                <button class="student-message-close logout-confirm-outside-close" id="logout-confirm-close" type="button" aria-label="Close logout confirmation and Personal Center">Close</button>
             </div>
         </section>
 
@@ -180,7 +174,7 @@
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/auth.js?v=20260707-4"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/dashboard.js?v=20260806-11"></script>
+    <script src="assets/js/dashboard.js?v=20260807-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>
