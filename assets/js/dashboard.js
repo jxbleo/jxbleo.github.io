@@ -1785,11 +1785,12 @@
             sectionsHtml = renderDefaultStudentMessageSections(todos, upcoming, finished);
         }
         var overlay = document.createElement('div');
-        overlay.className = 'teacher-replies-overlay student-message-overlay';
+        var isAccountFinishedFlow = scope === 'finished';
+        overlay.className = 'teacher-replies-overlay student-message-overlay' + (isAccountFinishedFlow ? ' is-account-finished' : '');
         overlay.innerHTML =
-            '<div class="student-message-shell" role="dialog" aria-modal="true"' +
+            '<div class="student-message-shell' + (isAccountFinishedFlow ? ' is-account-finished' : '') + '" role="dialog" aria-modal="true"' +
                 (scope ? ' aria-labelledby="student-message-title"' : ' aria-label="Assignments"') + '>' +
-                '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + '">' +
+                '<div class="teacher-replies-dialog student-message-dialog' + (scope ? ' is-focused-scope' : '') + (isAccountFinishedFlow ? ' is-account-finished' : '') + '">' +
                     (scope ? '<div class="teacher-replies-dialog-head student-message-dialog-head">' +
                         '<div class="student-message-dialog-title-row' + (scope === 'finished' ? ' has-account-back' : '') + '">' +
                             (scope === 'finished' ? '<button class="account-star-back student-message-account-back" type="button" data-student-message-account-back aria-label="Back to Personal Center">‹</button>' : '') +
@@ -4014,13 +4015,9 @@
     }
     var starClose = document.getElementById('student-star-close');
     if (starClose) starClose.addEventListener('click', function() { closeStarPanel(false); });
-    var logoutConfirmBack = document.getElementById('logout-confirm-back');
     var logoutConfirmCancel = document.getElementById('logout-confirm-cancel');
-    var logoutConfirmClose = document.getElementById('logout-confirm-close');
     var logoutConfirmSubmit = document.getElementById('logout-confirm-submit');
-    if (logoutConfirmBack) logoutConfirmBack.addEventListener('click', function() { setLogoutConfirmOpen(false, false); });
     if (logoutConfirmCancel) logoutConfirmCancel.addEventListener('click', function() { setLogoutConfirmOpen(false, false); });
-    if (logoutConfirmClose) logoutConfirmClose.addEventListener('click', function() { setLogoutConfirmOpen(false, true); });
     if (logoutConfirmSubmit) {
         logoutConfirmSubmit.addEventListener('click', function() {
             logoutConfirmSubmit.disabled = true;

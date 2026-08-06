@@ -291,21 +291,22 @@ Check:
   sits directly on the shared glass surface with no nested white profile card,
   and `STAR WALLET` uses the same centered green eyebrow typography as
   `PERSONAL CENTER`
-- clicking `Log out` opens a visibly smaller, centered confirmation card instead
-  of signing out immediately. It keeps the Personal Center glass material and
-  control styling without retaining the full Personal Center width or height.
-  Cancel and Back restore Personal Center and focus to `Log out`; the lower
-  Close dismisses the whole account flow; only the red `Log out` confirmation
-  clears the session and returns to the login page
+- clicking `Log out` opens a centered Apple-style alert, 320 pixels wide and
+  approximately 165 pixels tall, instead of signing out immediately. It has no
+  heading bar, back arrow, or external Close. A hairline-separated bottom row
+  contains `Cancel` and a red-text `Log out`; Cancel restores Personal Center
+  and focus to `Log out`, while only confirmation clears the session and
+  returns to login
 - Student ID, Class, and System rows respond to pointer and keyboard activation
   with a restrained text movement but do not navigate or edit data; no row
   retains a selected background or pressed scale after activation, and reduced
   motion uses a brief non-moving response
-- activating the Personal Center `Finished` row dismisses Personal Center and
-  opens a focused, newest-first completed-task list using the same category,
-  title, score, chevron, and task-entry confirmation behavior as Assignments;
-  its top-left back arrow restores Personal Center and focus to the `Finished`
-  row
+- activating the Personal Center `Finished` row replaces Personal Center with
+  a focused, newest-first completed-task list in the exact same 430-by-490-pixel
+  maximum card footprint and the same lower Close position and size. It uses
+  the same category, title, score, chevron, and task-entry confirmation behavior
+  as Assignments; its top-left back arrow restores Personal Center and focus to
+  the `Finished` row
 - opening Personal Center from the identity chip shows no top-right `×`; its
   centered card uses the same thick glass, softly dimmed backdrop, radius, and
   depth as To Do List, Calendar, and My Words. Its only `Close` capsule is

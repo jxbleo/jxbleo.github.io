@@ -607,12 +607,16 @@ Student account menu:
   cards. `STAR WALLET` and its subordinate view titles use the same centered
   green eyebrow typography as `PERSONAL CENTER`.
 - `Log out` never ends the session immediately. It opens a confirmation card in
-  the same centered glass family but uses a deliberately smaller, content-sized
-  footprint than Personal Center because it contains only a short confirmation.
-  It retains `Cancel`, a destructive `Log out`, a back arrow that restores
-  Personal Center, and the same external Close style that closes the whole
-  account flow. Only the destructive confirmation clears the local identity,
-  signs out, and returns to login.
+  the same centered glass family but uses a compact Apple-style alert, 320
+  pixels wide and approximately 165 pixels tall. It has no heading bar, back
+  arrow, or external Close. A hairline-separated bottom action row contains
+  `Cancel` and a red-text `Log out`; Cancel restores Personal Center, while only
+  the destructive confirmation clears the local identity, signs out, and
+  returns to login.
+- Opening `Finished` from Personal Center replaces that card in the exact same
+  centered 430-by-490-pixel maximum spatial footprint, including the external
+  Close capsule position and dimensions. Its top-left back arrow restores
+  Personal Center and focus to the `Finished` row.
 - Student ID, Class, and System are full-row keyboard/click targets with a
   restrained press-and-settle text response; they do not navigate or change
   profile data. Pointer hover and activation must not leave a selected

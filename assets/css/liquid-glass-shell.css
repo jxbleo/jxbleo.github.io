@@ -317,7 +317,7 @@
 }
 
 /* Account, notification, and notebook surfaces are the thickest glass layer. */
-.liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
+.liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
 .liquid-glass-teacher :is(.account-panel, .teacher-updates-dialog, .teacher-review-dialog, .teacher-star-dialog, .student-lookup-dialog, .notification-attempt-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog) {
     border-color: rgba(255, 255, 255, 0.72);
     background:
@@ -718,7 +718,7 @@
     .liquid-glass-teacher .dashboard-tabs,
     .liquid-glass-library .global-search-card,
     .liquid-glass-library :is(.tab-bar, .sub-tab-bar, .year-tabs),
-    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
+    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
     .liquid-glass-teacher :is(.account-panel, .teacher-updates-dialog, .teacher-review-dialog, .teacher-star-dialog, .student-lookup-dialog, .notification-attempt-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog),
     .liquid-glass-library :is(.modal-box, .dropdown-menu) {
         background: #f8faf9;
@@ -737,7 +737,7 @@
     .liquid-glass-dashboard .app-header::before,
     .liquid-glass-teacher .app-header::before,
     .liquid-glass-library .global-search-card,
-    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog),
+    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog),
     .liquid-glass-teacher :is(.account-panel, .teacher-updates-dialog, .teacher-review-dialog, .teacher-star-dialog),
     .liquid-glass-library .modal-box {
         background: rgba(255, 255, 255, 0.90);
@@ -771,7 +771,7 @@
         border-left: 0;
     }
 
-    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .logout-confirm-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
+    .liquid-glass-dashboard :is(.student-account-dialog, .student-star-dialog, .password-dialog, .student-words-dialog, .student-message-dialog, .student-calendar-dialog, .teacher-replies-dialog),
     .liquid-glass-teacher :is(.teacher-review-dialog, .teacher-star-dialog, .student-lookup-dialog, .notification-attempt-dialog, .create-student-dialog, .create-student-success-card, .assign-picker-dialog, .assignment-edit-dialog),
     .liquid-glass-library .modal-box {
         border-radius: 26px;
