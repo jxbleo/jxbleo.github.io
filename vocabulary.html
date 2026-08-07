@@ -1430,6 +1430,31 @@
             background: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
         }
 
+        .cloze-mode-row.test-row {
+            border-color: rgba(245, 158, 11, 0.35);
+            background: linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%);
+            box-shadow: 0 8px 20px rgba(146, 64, 14, 0.08);
+        }
+
+        .cloze-mode-row.test-row .cloze-mode-label {
+            color: var(--use-gold-deep);
+        }
+
+        .cloze-mode-row.test-row select {
+            border-color: rgba(245, 158, 11, 0.35);
+            background: linear-gradient(180deg, #fffdf3, var(--use-gold-soft));
+            color: var(--use-gold-deep);
+        }
+
+        .cloze-mode-row.test-row .btn-primary {
+            border: 1px solid rgba(245, 158, 11, 0.42);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
+            font-weight: 900;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.82), 0 9px 20px var(--use-gold-glow);
+        }
+
         .cloze-mode-main {
             display: flex;
             align-items: center;
@@ -2110,7 +2135,6 @@
                             <button class="btn btn-primary" id="start-test-btn" type="button">Start Quiz</button>
                         </div>
                     </div>
-                    <p id="test-count-note" style="margin:10px 0 0;color:var(--text-muted);font-size:0.9rem;"></p>
                     <div class="test-sticky" id="test-sticky" hidden>
                         <div class="test-sticky-row">
                             <div id="test-word-bank-toggle-slot" class="word-bank-toggle-slot" hidden></div>
@@ -4112,7 +4136,6 @@
                 var count = index + 5;
                 return '<option value="' + count + '">' + count + ' sets · ' + formatTestDurationLabel(testDurationSecondsForGroupCount(count)) + '</option>';
             }).join('');
-            updateTestCountNote();
         }
 
         function renderClozePracticeOptions(groups) {
@@ -4144,11 +4167,6 @@
                 button.setAttribute('aria-pressed', active ? 'true' : 'false');
             });
             updateClozePracticeButton();
-        }
-
-        function updateTestCountNote() {
-            var note = document.getElementById('test-count-note');
-            note.textContent = 'This is a counted quiz. Your answers, group accuracy, and overall result will be saved.';
         }
 
         function renderTestQuestion(group, question, index) {
@@ -4345,7 +4363,6 @@
             document.getElementById('test-summary').classList.remove('show');
             document.getElementById('test-setup').classList.add('locked');
             document.getElementById('test-setup').style.display = 'none';
-            document.getElementById('test-count-note').style.display = 'none';
             root.innerHTML = selected.map(function(group, groupIndex) {
                 var questions = (group.questions || []).map(function(question, index) {
                     return renderTestQuestion(group, question, index);
@@ -4575,7 +4592,6 @@
             var root = document.getElementById('test-groups');
             var summary = document.getElementById('test-summary');
             var setup = document.getElementById('test-setup');
-            var note = document.getElementById('test-count-note');
             var sticky = document.getElementById('test-sticky');
             var filter = document.getElementById('test-set-filter');
             var testWordBank = document.getElementById('test-word-bank');
@@ -4591,7 +4607,6 @@
                 setup.classList.remove('locked');
                 setup.style.display = '';
             }
-            if (note) note.style.display = '';
             if (sticky) {
                 sticky.hidden = true;
                 sticky.classList.remove('has-word-bank');
@@ -4624,7 +4639,6 @@
             setStartTestButtonStarting(false);
             setStartPracticeButtonStarting(false);
             if (redoButton) redoButton.style.display = 'none';
-            updateTestCountNote();
             if (setup) setup.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
@@ -4807,7 +4821,6 @@
             document.getElementById('start-test-btn').addEventListener('click', requestStartTest);
             document.getElementById('submit-test-btn').addEventListener('click', requestSubmitTest);
             document.getElementById('redo-test-btn').addEventListener('click', requestRedoTest);
-            document.getElementById('test-group-count').addEventListener('change', updateTestCountNote);
             document.getElementById('test-sticky').addEventListener('click', function(e) {
                 var redoControl = e.target.closest('[data-test-sticky-redo]');
                 if (redoControl) {
