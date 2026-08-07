@@ -1484,8 +1484,10 @@ Shared rules:
   in teacher notifications, but never affects assignments, STAR, student
   progress, FINISHED, the student calendar, learning reports, or the Teacher
   View matrix.
-- Starting a Vocabulary Test opens a confirmation dialog warning that the timer
-  cannot be paused or stopped.
+- Starting a Vocabulary Test opens a gold confirmation dialog matching the Quiz
+  setup bar and in-quiz controls, warning that the timer cannot be paused or
+  stopped. Its `Start Quiz` action remains visually primary while `Cancel`
+  remains secondary.
 - Cloze-mode timing gives each selected group 90 seconds, or 1.5 minutes.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a

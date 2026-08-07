@@ -1852,6 +1852,36 @@
         .test-confirm-card h2 { margin: 0 0 8px; }
         .test-confirm-card p { margin: 0; color: var(--muted); line-height: 1.48; }
         .test-confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+
+        .test-confirm-overlay.quiz-gold {
+            background: rgba(63, 38, 0, 0.28);
+        }
+
+        .test-confirm-overlay.quiz-gold .test-confirm-card {
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            background: linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.72), 0 24px 70px rgba(146, 64, 14, 0.28);
+        }
+
+        .test-confirm-overlay.quiz-gold .test-confirm-card h2 {
+            color: var(--use-gold-deep);
+        }
+
+        .test-confirm-overlay.quiz-gold [data-test-dialog="cancel"] {
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            background: rgba(255,255,255,0.72);
+            color: var(--use-gold-deep);
+        }
+
+        .test-confirm-overlay.quiz-gold [data-test-dialog="confirm"] {
+            border: 1px solid rgba(245, 158, 11, 0.42);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fde68a 0%, var(--use-gold) 100%);
+            color: #3f2600;
+            font-weight: 900;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.82), 0 9px 20px var(--use-gold-glow);
+        }
+
         body.test-locked .history-toolbar { display: none; }
 
         .history-toolbar {
@@ -2550,7 +2580,7 @@
         function showTestDialog(options) {
             return new Promise(function(resolve) {
                 var overlay = document.createElement('div');
-                overlay.className = 'test-confirm-overlay';
+                overlay.className = 'test-confirm-overlay' + (options.tone === 'quiz-gold' ? ' quiz-gold' : '');
                 overlay.setAttribute('role', 'dialog');
                 overlay.setAttribute('aria-modal', 'true');
                 overlay.innerHTML =
@@ -2593,7 +2623,8 @@
                 title: 'Start timed quiz?',
                 copy: 'Before you start, turn on Do Not Disturb if you can. Once the quiz begins, switching windows, tabs, or apps will interrupt and end the quiz.',
                 primary: 'Start Quiz',
-                secondary: 'Cancel'
+                secondary: 'Cancel',
+                tone: 'quiz-gold'
             }).then(function(confirmed) {
                 if (confirmed) startTest();
             });
