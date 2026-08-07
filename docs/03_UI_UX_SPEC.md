@@ -213,7 +213,12 @@ Assignment access and progress display:
   count. `THIS WEEK` is selected by default and only the selected category's
   task list is visible; keyboard Left/Right, Home, and End also switch tabs.
   Empty categories show their own compact empty state. Finished tasks are
-  sorted newest-completed first.
+  sorted newest-completed first. FINISHED includes both passed/mastered
+  assignments and distinct countable self-study sets whose recorded best has
+  reached the set passing standard. Self-study uses its first passing time for
+  ordering and calendar placement, does not require a teacher assignment, and
+  is deduplicated when a completed assignment already represents the same set.
+  Timed Vocabulary Practice activity attempts never appear here.
   Every unfinished row has a red right-side pill in
   the same position as a finished score: it reads `0%` before any attempt and
   shows the best failed percentage after an unsuccessful submission. The task
@@ -1085,9 +1090,9 @@ It should include:
   questions. BBC wrong-question cards include the private answer explanation.
   Other families continue to show all recorded questions, student answers,
   correctness, correct answers, and a compact attempt-history summary.
-- Vocabulary attempt cards and reports identify `Quiz` versus timed `Practice`.
-  When a timed Practice attempt has selected-group metadata, the report lists
-  the chosen group IDs (and their group number when current content is loaded).
+- Vocabulary attempt cards and reports identify `Quiz` versus timed `Practice`
+  and list the chosen group IDs when that metadata is available. Practice cards
+  are teacher activity only and never imply student completion.
 - The wrong-answer comparison table gives its question-number column only the
   compact width needed for `Q...`; student and correct answers share the
   remaining width, including on phone layouts.
@@ -1471,10 +1476,11 @@ Shared rules:
   `Quiz`; internal code, session actions, and stored attempt modes retain their
   existing `Test` identifiers for compatibility.
 - Cloze Practice uses the same 90-second-per-selected-group timer, sticky set
-  navigation, word bank, shuffled in-group question order, submission feedback,
-  and teacher notification visibility as Cloze Test. Its recorded attempts are
-  practice-only and do not update assignments, STAR, student progress, or the
-  Teacher View matrix.
+  navigation, word bank, shuffled in-group question order, and submission
+  feedback as Quiz. It stores a notification-only activity attempt and appears
+  in teacher notifications, but never affects assignments, STAR, student
+  progress, FINISHED, the student calendar, learning reports, or the Teacher
+  View matrix.
 - Starting a Vocabulary Test opens a confirmation dialog warning that the timer
   cannot be paused or stopped.
 - Cloze-mode timing gives each selected group 90 seconds, or 1.5 minutes.

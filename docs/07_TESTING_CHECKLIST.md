@@ -78,8 +78,7 @@ mocked CloudBase service contract. Keep these cases as non-negotiable coverage:
   class task; work due in a future period or passed after the report cutoff is
   excluded from formal ranking; ties share rank;
 - only valid countable self-study attempts contribute once per set, separately
-  from rank. Vocabulary 1–4 group self-test and all Practice exclusions remain
-  excluded;
+  from rank. Vocabulary Practice at every selected-group count remains excluded;
 - integer delta covers positive, negative, zero, and a zero prior period without
   rendering a percentage; family-level scores remain separate for `bbc`,
   `vocabulary`, `ielts-reading`, and `ielts-listening`;
@@ -249,7 +248,7 @@ Practice navigation checks:
   matching choices to letters, resizes typed blanks with their content, and
   restores passage/question highlights after submission or reload; `Clear` and
   `Clear All` remove the expected saved highlight records
-- Vocabulary 5+ group countable Test still abandons the active server session
+- Vocabulary Quiz still abandons the active server session
   on page hide/leave and must not be restored as an ordinary draft
 
 For BBC pages with worksheet PDFs, verify the top-corner `Download Practice`
@@ -362,6 +361,15 @@ Check:
   selected category is visible, click and keyboard Left/Right/Home/End switch
   categories, and empty categories show a compact empty state. Finished rows
   remain ordered by completion time with the newest first
+- a countable self-study attempt that reaches the set passing standard appears
+  once in To Do List FINISHED, the Personal Center Finished count/list, and the
+  completion calendar on its first passing date without waiting for assignment
+- a later better self-study attempt updates the displayed best score without
+  moving the first completion date; a finished assignment for the same set
+  suppresses the duplicate self-study row, while an open higher-standard
+  assignment may coexist with the prior self-study completion
+- `vocabulary_practice_timed` activity attempts continue to notify the teacher
+  but never appear in FINISHED, Personal Center counts, or the student calendar
 - the hero shows This Week and Upcoming completion summaries without inline task
   rows; activating one opens its focused task-list modal. This Week includes
   overdue unfinished work first, followed by current unfinished and finished
@@ -612,7 +620,7 @@ Check:
 - Vocabulary Quiz cards place `Quiz` plus the selected set count below `#n` in
   the header's first column; timed Practice cards place `Practice` followed by
   one ascending, separator-free group sequence there, use `X` for group 10,
-  and remain on one line (for example, groups 1/2/3/5/10 show `1235X`)
+  and remain on one line (for example, groups 1/2/3/5/10 show `1235X`).
 - the notification attempt-detail card exactly matches the underlying
   notification card footprint on desktop as well as mobile; newly loaded answer
   comparisons reveal once with a restrained transition, do not replay during
@@ -954,10 +962,9 @@ Check:
   answer, and the private answer explanation. An all-correct BBC attempt shows
   the no-wrong-answers state.
 - Open recorded Vocabulary Quiz and timed Practice attempts: both reports show
-  only wrong questions and have the correct `Quiz` / `Practice` label. Timed
-  Practice shows every selected group ID; its notification does not alter the
-  View matrix or assignment summary. Single-group inline Practice creates no
-  notification.
+  only wrong questions, use the correct `Quiz` / `Practice` label, and retain
+  every selected group ID. Practice creates a teacher notification but does not
+  alter the View matrix, assignment summary, FINISHED, or student calendar.
 - Set a task to non-default Passing and Mastery values, submit an attempt, then
   open it from both Teacher View and the notification bell. Both charts must
   show the backend assignment values. For a historical thread whose assignment
@@ -1172,11 +1179,12 @@ Check:
 - counted-flow confirmation, in-progress, interruption, submit, and redo copy
   consistently says `Quiz`, while stored test/session identifiers are unchanged
 - Cloze Practice starts a timer using 90 seconds per selected group, shuffles
-  question order inside each selected group, records a
-  `vocabulary_practice_timed` attempt with `assignment_id: null`, and appears in
-  the teacher notification bell.
-- Cloze Practice attempts do not update assignment status, student progress,
-  self-study STAR records, or Teacher View matrix scores.
+  question order inside each selected group, writes a
+  `vocabulary_practice_timed` activity attempt with `assignment_id: null`, and
+  appears in the teacher notification bell.
+- Cloze Practice at 1-4, 5, or more selected groups does not update assignment
+  status, student progress, FINISHED, self-study STAR records, learning reports,
+  or Teacher View matrix scores.
 - running Test mode shows a sticky top bar with numbered test-set capsules and
   the timer centered in the same row; clicking a number jumps to that set
 - Test set numbers remain gold, while Practice set numbers and set badges are
@@ -1192,8 +1200,9 @@ Check:
   not above them
 - student Vocabulary views do not show a bottom-right floating `Retry` capsule
 - student Vocabulary views do not show a bottom-right `Show Answers` capsule
-- 1-4 selected Test groups do not create CloudBase attempt
-- 5+ selected Test groups create attempt
+- Timed Cloze Practice at any selected-group count creates only a
+  notification-only CloudBase activity attempt
+- Quiz creates a countable attempt and retains its selected-group details
 - 5+ selected Test groups create a `vocabulary_test_sessions` record before
   questions appear and submit with its `test_session_id`
 - countable Vocabulary Test submission grades the session's recorded question

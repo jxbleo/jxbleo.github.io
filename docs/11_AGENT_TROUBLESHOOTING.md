@@ -442,7 +442,9 @@
 - NGSL 和 NAWL 是两套独立词库编号。NAWL 不接在 NGSL 的末尾继续按
   字母排，而是从 `NAWL-A` 开始，对应 NAWL `1-100`。
 - Test mode 不显示原始组号或 Words 范围，避免学生对照 Learn mode 找答案。
-- 1-4 groups 是 self-test，不记录 attempt；5+ groups 才 countable。
+- 是否计入完成由模式决定，不由 Practice 选择的组数决定：计时 Practice 无论选择
+  多少组都只记录教师通知用 activity attempt，不计入学生完成或进度；只有 Quiz
+  attempt 可计入成绩。当前 Quiz UI 从 5 组开始，Learn inline practice 完全不记录。
 
 重复问题：
 

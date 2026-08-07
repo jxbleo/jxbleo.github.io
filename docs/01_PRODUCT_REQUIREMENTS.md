@@ -84,12 +84,13 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   不自动跳到某次答案。只有点击某根柱子后，才选中并滚动到下方对应 attempt 详情
 - 教师从铃铛或 View 打开 BBC / Vocabulary 某次提交的试卷报告时，只显示错题，
   不再重复显示正确题。BBC 错题同时显示教师专用的标准答案和答案解析。
-  Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`；计时 Practice 还显示学生
-  当次选择的具体词组。单组即时 Practice 不保存 attempt，因此不产生教师通知
+  Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`，并显示学生当次选择的具体词组。
+  计时 Practice 无论选择多少组都会保存仅供教师通知的 activity attempt，但不计入
+  学生完成记录；Learn 内的 inline Practice 不保存 attempt
 - BBC / Vocabulary 通知线程的每次提交卡片顶部只显示 `No. n`、上海提交日期时间和
   卷子入口，不重复显示 `Attempt`、分数、页面耗时或音频耗时。BBC 错题表的题号统一
   显示为 `Qn`，不暴露 `Blank_`、`Question_` 或 `MC` 等内部题目 ID。Vocabulary
-  `Quiz` 只显示所选 set 数量；计时 `Practice` 用与学生选择器一致的数字胶囊显示
+  `Quiz` 显示所选 set 数量；计时 `Practice` 用与学生选择器一致的数字胶囊显示
   当次选择的 set 编号
 - 教师右上角的 Notifications、Review、Dictionary 与 STAR Redemption 都打开
   同尺寸、同结构的独立弹窗并使用统一的内容卡片和内部滚动区。Notifications、
@@ -130,6 +131,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
 - `To Do List` 默认弹窗不显示 `ASSIGNMENTS` 标题。顶部固定并排显示
   `THIS WEEK`、`UPCOMING`、`FINISHED` 三个按钮及各自任务数量，默认选中
   `THIS WEEK`，一次只显示一个分类的任务；空分类显示简短空状态。
+  Finished 同时包含已通过的 assignment，以及无需等待老师布置、已达到该 set
+  passing 标准的 countable self-study；同一 set 已有完成 assignment 时不重复显示。
   Finished 任务按完成时间倒序，最新完成的置顶。未尝试任务右侧统一显示
   红色 `0%`，尝试但未通过时显示红色历史最高分，不再显示 `TO DO` 文字
 - 首页大卡片固定显示 `THIS WEEK`、`UPCOMING` 两条摘要。`THIS WEEK` 合并
@@ -148,7 +151,8 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   `THIS WEEK` 或 `UPCOMING` 打开的聚焦任务弹窗不显示 Teacher Replies 图标，
   两者标题使用与 `PERSONAL CENTER` 一致的绿色字体
 - 从右侧工具区的日历图标打开个人完成记录；以周一为首日的自然月日历展示每天
-  完成的 assignment 和自主练习 STAR，点击日期查看当天任务，不显示教师端的
+  完成的 assignment 和首次达到 passing 的 countable self-study，点击日期查看当天
+  任务；自主学习达到 mastery 时仍显示 STAR 标记。日历不显示教师端的
   `Wxx` 周编号；弹窗使用与 Assignments 一致的透明玻璃材质，任务行也复用
   Assignments 的“左侧栏目—中间滚动标题—右侧分数”样式并可进入习题。弹窗
   不显示 `Progress` 标题、说明文字、Completed 总数或 Active days 统计，月份和
@@ -677,17 +681,17 @@ flowchart TD
 
 ### 7.10 vocabulary_test_sessions
 
-用途：只服务词汇正式 Test 的防作弊 session。
+用途：只服务词汇正式 Quiz 的防作弊 session。
 
 规则：
 
-- 只在 Vocabulary Test 选择 5 组或以上、会计入成绩时创建
-- 1-4 组 self-test、Vocabulary Practice、BBC、IELTS 不创建该 session
-- Vocabulary Test 计时按每组 90 秒计算，即每组选中组 1.5 分钟
+- 只在 Vocabulary Quiz 开始时创建；当前 Quiz 选择器从 5 组开始
+- Vocabulary Practice 无论选择多少组都不创建该 session；BBC、IELTS 也不创建
+- Vocabulary Quiz 计时按每组 90 秒计算，即每组选中组 1.5 分钟
 - session 记录本次正式测试的 group IDs、question IDs、开始时间、截止时间、
   最后 heartbeat、页面实例 ID 和状态；页面实例 ID 必须是每次页面加载生成的内存标识，
   不能用会被新标签继承的持久存储
-- `submitAttempt` 提交词汇正式测试时必须校验 `test_session_id`
+- `submitAttempt` 提交词汇 Quiz 时必须校验 `test_session_id`
 - 正式测试判分使用 session 中记录的 `question_ids`，不能相信浏览器临时传来的题目范围
 - 同一学生有 active 词汇正式测试时，其他设备或其他浏览器页签不能进入学生云函数功能
 - heartbeat 每 10 秒发送一次。普通网络错误不得因单次请求失败立即作废测试；前端应在
@@ -785,8 +789,9 @@ flowchart TD
 - 超过报告 `snapshot_cutoff_at` 后的通过和 future-due assignment 不进入该期正式
   排名；同月稍晚完成的本月到期任务可进入月报，但不得回写已经发布的周报。
   自主学习只统计后端实际保存且 countable 的 `assignment_id: null` attempt：同一
-  `set_id` 首次达到 passing 计一项；Vocabulary 1–4 组 self-test、普通 Practice 和
-  计时 Vocabulary Practice 均不计入报告完成项。自主学习不影响班级名次。
+  `set_id` 首次达到 passing 计一项。Vocabulary 只有 Quiz attempt 会计入完成项；
+  计时 Practice 虽保存通知用 activity attempt，但无论选择多少组都不计入报告完成项。
+  自主学习不影响班级名次。
 - 环比只显示整数完成项变化，例如 `+3 项` 或 `-2 项`；上期为零时仍显示实际新增项，
   不计算百分比。不同训练类型只分别展示成绩/趋势，不能跨类型计算平均分。
 
@@ -864,18 +869,17 @@ flowchart TD
 - 浏览器提交的是答案，不是分数
 - 所有可计分提交都要记录
 - 状态不能因为后续低分而向下回退
-- Vocabulary 1-4 组选 Test Mode 不记录 attempt
-- Vocabulary 5 组及以上才记录
-- Vocabulary Cloze 的学生 Test 选择器只显示 5 组及以上选项；1-4 组继续作为
-  后端兼容规则保留，但不再从当前界面开放
+- Vocabulary 只有 Quiz attempt 可以计入成绩、完成记录和进度
+- Vocabulary 计时 Practice 无论选择多少组都保存 notification-only activity attempt，
+  但不计入作业状态、FINISHED、日历、STAR、学习报告或后续作业初始化
+- Vocabulary Cloze 的学生 Quiz 选择器只显示 5 组及以上选项
 - Vocabulary 5 组及以上提交必须带有效 `vocabulary_test_sessions.test_session_id`
 - Vocabulary 5 组及以上的题目范围以后端 session 中的 `question_ids` 为准
 - Vocabulary Learn 中的 inline practice 不记录 attempt；学生在 inline practice 中
   点击单题 `?` 时，可以在未点击 `Check` 的情况下请求该题正确答案和解析用于自学反馈
-- Vocabulary Cloze 内的计时 Practice 会记录 `mode: "vocabulary_practice_timed"`
-  attempt，供教师铃铛显示学生练习动态；它强制 `assignment_id: null`，不更新作业
-  状态、学生/教师进度矩阵、自学 STAR 或后续作业初始化成绩
-- Vocabulary Test 提交后应立即返回错题复盘所需的正确答案和解析；
+- Vocabulary Cloze 内的计时 Practice 记录 `mode: "vocabulary_practice_timed"`
+  activity attempt，供教师铃铛和试卷查看；它强制 `assignment_id: null`
+- Vocabulary Quiz 提交后应立即返回错题复盘所需的正确答案和解析；
   这不改变 attempt 记录规则，只改变学生提交后的反馈可见性
 
 ### 8.5 teacherAdmin

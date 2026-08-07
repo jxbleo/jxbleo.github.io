@@ -139,6 +139,9 @@ Active or relevant functions:
 - `getDashboard`: student assignments, history, latest attempt lookup, all
   resolved teacher replies plus their read state, reveal, STAR fallback, and
   newest-first unified Yellow/Blue STAR provenance views for Personal Center,
+  plus distinct-set self-study completion projections once a countable resource
+  attempt first passes (excluding timed Vocabulary Practice and deduplicating a
+  completed assignment for the same set),
   plus the current student's wallet, Cash requests, cancellation, evidence
   upload registration, and redemption read-state actions. Its
   independent student collections are read concurrently, and visible `sets`

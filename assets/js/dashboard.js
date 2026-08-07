@@ -827,9 +827,17 @@
             (sectionId ? librarySectionLabel(sectionId, set.course || set.type || 'Assignment') : (set.course || set.type || 'Assignment'));
     }
 
+    function finishedCompletionValue(item) {
+        if (!item) return null;
+        if (item.source === 'self_study') {
+            return item.completed_at || item.mastered_at || item.updated_at || item.latest_submitted_at || null;
+        }
+        return item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
+    }
+
     function studentCalendarCompletionDate(item) {
         if (!item || !isFinishedStatus(item.status) || normalizedStatus(item.status) === 'cancelled') return null;
-        var value = item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
+        var value = finishedCompletionValue(item);
         var date = value ? new Date(value) : null;
         return date && !isNaN(date.getTime()) ? date : null;
     }
@@ -1976,7 +1984,7 @@
     }
 
     function finishedDate(item) {
-        return new Date(item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || 0).getTime();
+        return new Date(finishedCompletionValue(item) || 0).getTime();
     }
 
     function isRealAssignment(item) {
