@@ -147,10 +147,12 @@ Navigation:
   student's own completion history in an independent modal. It uses a
   Monday-first natural-month grid rather than Teacher View's `Wxx` columns.
   Each date cell uses restrained green intensity for 1/2/3+ completed items,
-  adds a small gold STAR when applicable, outlines today and the selected day,
-  and reveals that date's task names, type, score, and STAR state below the
-  month grid. Previous/next controls stay within the student's recorded range
-  and never navigate beyond the current month. The modal omits a separate
+  adds a small gold STAR when applicable, and outlines today. The selected day
+  keeps its completion-intensity fill and gains the same animated flowing-gold
+  edge used by the Vocabulary `Start Quiz` confirmation; reduced-motion mode
+  keeps that edge gold but static. Selecting a day reveals its task names, type,
+  score, and STAR state below the month grid. Previous/next controls stay within
+  the student's recorded range and never navigate beyond the current month. The modal omits a separate
   `Progress` heading, subtitle, completed total, and active-days total, so the
   month/year toolbar sits directly at the top of the content area. The modal
   and external Close capsule share the Assignments glass material. Completed task rows are the
@@ -429,11 +431,18 @@ My Words:
   view. Leaving My Words clears its transient Search query while keeping sort
   and density choices.
 - on first entry, the compact `My Words / Review` navigation and the complete
-  Word List toolbar render immediately in their final sticky positions. While
-  saved words load, the entire workspace below the toolbar uses the same quiet,
-  copy-free animated grid/radar wash as the Teacher View matrix; the two fixed
-  rows do not move when the real word list fades and lifts into place. Reduced
-  motion keeps the grid static and uses only the content reveal cross-fade.
+  Word List toolbar render immediately in their final sticky positions. The
+  Dashboard notebook capsule expands into the My Words header as a same-origin
+  shared page surface, and Dashboard return follows the same path in reverse.
+  Browsers without that capability use a restrained top-right material expansion
+  and shell fade; reduced motion removes spatial travel.
+- the word index and desktop detail pane are present at first paint. Only the
+  visible card/detail positions use quiet local skeletons while the first 18
+  records load; there is no full-height batch-loading sheet and no whole-list
+  reveal. Real cards replace their own reserved positions, then 30-row pages
+  append near the scroll boundary without moving the header or toolbar. A valid
+  owner-scoped Dashboard warm cache may fill the first page immediately while a
+  fresh page-zero response revalidates it.
 - keeps Review intentionally honest in the first release: one static `Review Mode
   · In design` surface plus real saved-total, Shanghai-week-added, and recent
   words. It contains no clickable fake learning button and no familiarity,

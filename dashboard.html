@@ -7,11 +7,15 @@
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#f4f8f5">
     <title>Dashboard | Mr. Cat Academy</title>
+    <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260807-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260808-1">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260807-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-5">
+    <link rel="prefetch" href="my-words.html" as="document">
+    <link rel="prefetch" href="assets/css/my-words.css?v=20260808-1" as="style">
+    <link rel="prefetch" href="assets/js/my-words.js?v=20260808-1" as="script">
 </head>
 <body class="app-page liquid-glass-shell liquid-glass-dashboard">
     <main class="app-shell">
@@ -39,7 +43,7 @@
                     </svg>
                     <span class="student-calendar-date" id="student-calendar-date" aria-hidden="true"></span>
                 </button>
-                <a class="icon-pill-button student-words-button" href="my-words.html" aria-label="My Words">
+                <a class="icon-pill-button student-words-button" id="student-words-button" href="my-words.html" aria-label="My Words">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M6 3.5h10.5A1.5 1.5 0 0 1 18 5v14.5H7.5A2.5 2.5 0 0 1 5 17V5.5a2 2 0 0 1 1-2Z"></path>
                         <path d="M8 3.5v16M10.5 8h4.5M10.5 11.5h4.5"></path>
@@ -172,9 +176,9 @@
     <script src="assets/js/config.public.js?v=20260803-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
-    <script src="assets/js/auth.js?v=20260707-4"></script>
+    <script src="assets/js/auth.js?v=20260808-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/dashboard.js?v=20260807-2"></script>
+    <script src="assets/js/dashboard.js?v=20260808-1"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

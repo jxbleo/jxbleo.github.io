@@ -416,7 +416,12 @@ async function addWord(student, event) {
 
 async function listWords(student, event) {
   const status = compactText(event.status || "active", 32);
-  const limit = Math.max(1, Math.min(Number(event.limit || 100), 200));
+  const paginated = event.paginated === true || event.cursor !== undefined || event.page_size !== undefined;
+  const requestedLimit = Number(event.page_size || event.limit || (paginated ? 18 : 100));
+  const limit = Math.max(1, Math.min(requestedLimit, paginated ? 50 : 200));
+  const cursor = paginated
+    ? Math.max(0, Number.parseInt(String(event.cursor || "0"), 10) || 0)
+    : 0;
   let query = db.collection(COLLECTION).where({
     student_uid: student.auth_uid,
   });
@@ -426,8 +431,18 @@ async function listWords(student, event) {
       status,
     });
   }
-  const result = await query.orderBy("updated_at", "desc").limit(limit).get();
-  const rows = result.data || [];
+  const countQuery = query;
+  query = query.orderBy("updated_at", "desc");
+  if (cursor) query = query.skip(cursor);
+  const [result, countResult] = await Promise.all([
+    query.limit(paginated ? limit + 1 : limit).get(),
+    paginated && cursor === 0 && typeof countQuery.count === "function"
+      ? countQuery.count().catch(() => null)
+      : Promise.resolve(null),
+  ]);
+  const fetchedRows = result.data || [];
+  const hasMore = paginated && fetchedRows.length > limit;
+  const rows = hasMore ? fetchedRows.slice(0, limit) : fetchedRows;
   const lexicon = await lexiconMapForItems(rows);
   const recommendations = await recommendationMapForItems(rows, lexicon);
   return {
@@ -439,6 +454,12 @@ async function listWords(student, event) {
         .filter((other) => other.vocab_id !== item.vocab_id && (recommendations[other.vocab_id] || other.normalized_text) === (recommendations[item.vocab_id] || item.normalized_text))
         .map((other) => other.vocab_id),
     })),
+    ...(paginated ? {
+      cursor,
+      next_cursor: hasMore ? cursor + rows.length : null,
+      has_more: hasMore,
+      total_count: countResult && Number.isFinite(Number(countResult.total)) ? Number(countResult.total) : null,
+    } : {}),
   };
 }
 

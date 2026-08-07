@@ -1,6 +1,11 @@
 (function(window, document) {
     'use strict';
 
+    var FIRST_PAGE_SIZE = 18;
+    var NEXT_PAGE_SIZE = 30;
+    var FIRST_PAGE_CACHE_KEY = 'mrcat_my_words_first_page_v1';
+    var FIRST_PAGE_CACHE_MAX_AGE = 10 * 60 * 1000;
+
     var state = {
         session: null,
         items: [],
@@ -25,7 +30,16 @@
         desktopRenderedId: '',
         mobileReturnVocabId: '',
         detailOpener: null,
-        lockedScrollY: 0
+        lockedScrollY: 0,
+        totalCount: null,
+        nextCursor: null,
+        hasMore: false,
+        allLoaded: false,
+        loadingMore: false,
+        loadMorePromise: null,
+        initialLoadPromise: null,
+        completeLoadPromise: null,
+        revalidatingFirstPage: false
     };
 
     var addTrigger = document.getElementById('my-words-add-trigger');
@@ -35,7 +49,6 @@
     var addSubmit = document.getElementById('my-words-add-submit');
     var addStatus = document.getElementById('my-words-add-status');
     var feedback = document.getElementById('my-words-feedback');
-    var loadingSheet = document.getElementById('my-words-loading-sheet');
     var notebook = document.getElementById('my-words-notebook');
     var recentList = document.getElementById('my-words-recent-list');
     var indexList = document.getElementById('my-words-index-list');
@@ -53,6 +66,8 @@
     var exportTrigger = document.getElementById('my-words-export-trigger');
     var exportPanel = document.getElementById('my-words-export-panel');
     var titleResizeObserver = null;
+    var loadMoreObserver = null;
+    var searchLoadTimer = null;
 
     function escapeHtml(value) {
         return String(value == null ? '' : value)
@@ -182,6 +197,7 @@
         if (!word || !word.vocab_id) return;
         state.items = activeItems().filter(function(item) { return item.vocab_id !== word.vocab_id; });
         state.items.unshift(word);
+        if (state.hasMore) state.nextCursor = activeItems().length;
     }
 
     function replaceItem(oldId, word) {
@@ -191,51 +207,169 @@
         if (word) state.items.unshift(word);
         if (state.selectedId === oldId) state.selectedId = word && word.vocab_id || '';
         if (oldId !== (word && word.vocab_id)) delete state.exportSelected[oldId];
+        if (state.hasMore) state.nextCursor = activeItems().length;
+    }
+
+    function sessionOwnerKey(session) {
+        var profile = session && session.profile || {};
+        return String(profile.auth_uid || profile.student_id || '');
+    }
+
+    function readFirstPageCache() {
+        try {
+            var cached = JSON.parse(window.sessionStorage.getItem(FIRST_PAGE_CACHE_KEY) || 'null');
+            var owner = sessionOwnerKey(state.session);
+            if (!owner || !cached || cached.owner !== owner) return null;
+            if (!cached.saved_at || Date.now() - Number(cached.saved_at) > FIRST_PAGE_CACHE_MAX_AGE) return null;
+            if (!Array.isArray(cached.words)) return null;
+            return cached;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function writeFirstPageCache(result) {
+        if (!state.session || state.session.mode !== 'student') return;
+        try {
+            window.sessionStorage.setItem(FIRST_PAGE_CACHE_KEY, JSON.stringify({
+                owner: sessionOwnerKey(state.session),
+                saved_at: Date.now(),
+                words: (result.words || []).slice(0, FIRST_PAGE_SIZE),
+                next_cursor: result.next_cursor == null ? null : result.next_cursor,
+                has_more: result.has_more === true,
+                total_count: result.total_count != null && Number.isFinite(Number(result.total_count)) ? Number(result.total_count) : null
+            }));
+        } catch (error) {}
+    }
+
+    function initialSkeletonHtml() {
+        return Array.from({ length: 10 }, function(_, index) {
+            return '<div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true">' +
+                '<span class="my-words-skeleton-card"><span></span><small></small></span>' +
+            '</div>';
+        }).join('');
     }
 
     function setWordsLoading() {
-        if (notebook) {
-            notebook.hidden = true;
-            notebook.classList.remove('is-revealing');
+        if (!notebook) return;
+        notebook.hidden = false;
+        notebook.classList.add('is-loading-first-page');
+        if (indexList) {
+            indexList.setAttribute('aria-busy', 'true');
+            if (!state.items.length) indexList.innerHTML = initialSkeletonHtml();
         }
-        if (loadingSheet) {
-            loadingSheet.hidden = false;
-            loadingSheet.classList.remove('is-error');
-            loadingSheet.setAttribute('aria-label', 'Loading saved words');
-            loadingSheet.innerHTML = '<span class="sr-only">Loading saved words</span>';
+        if (desktopDetail && !state.items.length) {
+            desktopDetail.innerHTML = '<div class="my-words-detail-skeleton" aria-hidden="true"><span></span><strong></strong><p></p><p></p></div>';
         }
     }
 
     function setWordsReady() {
-        if (loadingSheet) loadingSheet.hidden = true;
         if (!notebook) return;
         notebook.hidden = false;
-        notebook.classList.remove('is-revealing');
-        window.requestAnimationFrame(function() { notebook.classList.add('is-revealing'); });
+        notebook.classList.remove('is-loading-first-page');
+        if (indexList) indexList.setAttribute('aria-busy', 'false');
     }
 
     function setWordsLoadError(message) {
-        if (notebook) notebook.hidden = true;
-        if (!loadingSheet) return;
-        loadingSheet.hidden = false;
-        loadingSheet.classList.add('is-error');
-        loadingSheet.setAttribute('aria-label', 'My Words could not be loaded');
-        loadingSheet.innerHTML = '<div><p>' + escapeHtml(message || 'My Words could not be loaded.') + '</p><button class="outline-button" type="button" data-retry-load>Try again</button></div>';
+        setWordsReady();
+        if (state.items.length) {
+            setFeedback((message || 'My Words could not be refreshed.') + ' Showing the saved copy.');
+            return;
+        }
+        if (indexList) indexList.innerHTML = '<div class="my-words-empty-state"><div><p>' + escapeHtml(message || 'My Words could not be loaded.') + '</p><button class="outline-button" type="button" data-retry-load>Try again</button></div></div>';
+        if (desktopDetail) desktopDetail.innerHTML = '<div class="my-words-detail-empty"><p>Reconnect to load word details.</p></div>';
+    }
+
+    function pageRequest(cursor, limit) {
+        return callStudentVocabulary({
+            action: 'list',
+            status: 'active',
+            paginated: true,
+            cursor: cursor || 0,
+            page_size: limit
+        });
+    }
+
+    function appendPage(words) {
+        var seen = {};
+        state.items = state.items.concat(words || []).filter(function(word) {
+            if (!word || !word.vocab_id || seen[word.vocab_id]) return false;
+            seen[word.vocab_id] = true;
+            return true;
+        });
+    }
+
+    function applyPageState(result) {
+        state.nextCursor = result.next_cursor == null ? null : result.next_cursor;
+        state.hasMore = result.has_more === true;
+        state.allLoaded = !state.hasMore;
+        if (result.total_count != null && Number.isFinite(Number(result.total_count))) state.totalCount = Number(result.total_count);
+        else if (state.allLoaded) state.totalCount = activeItems().length;
     }
 
     function reloadWords() {
-        return callStudentVocabulary({ action: 'list', status: 'active', limit: 200 }).then(function(result) {
+        if (state.initialLoadPromise) return state.initialLoadPromise;
+        state.revalidatingFirstPage = true;
+        state.initialLoadPromise = pageRequest(0, FIRST_PAGE_SIZE).then(function(result) {
             state.items = result.words || [];
+            applyPageState(result);
             if (!vocabWord(state.selectedId)) state.selectedId = sortedItems(activeItems())[0] && sortedItems(activeItems())[0].vocab_id || '';
             renderAll();
             setWordsReady();
-            enrichPendingItems(state.items);
+            writeFirstPageCache(result);
+            enrichPendingItems(result.words || []);
             setFeedback('');
             return state.items;
         }).catch(function(error) {
             setWordsLoadError(error.message || 'Unable to load My Words.');
             throw error;
+        }).finally(function() {
+            state.revalidatingFirstPage = false;
+            state.initialLoadPromise = null;
+            renderIndex();
         });
+        return state.initialLoadPromise;
+    }
+
+    function loadMoreWords() {
+        if (!state.hasMore) return Promise.resolve(state.items);
+        if (state.loadingMore) return state.loadMorePromise || Promise.resolve(state.items);
+        state.loadingMore = true;
+        var cursor = state.nextCursor;
+        renderIndex();
+        state.loadMorePromise = pageRequest(cursor, NEXT_PAGE_SIZE).then(function(result) {
+            appendPage(result.words || []);
+            applyPageState(result);
+            renderAll();
+            enrichPendingItems(result.words || []);
+            return state.items;
+        }).catch(function(error) {
+            setFeedback(error.message || 'Unable to load more words.');
+            throw error;
+        }).finally(function() {
+            state.loadingMore = false;
+            state.loadMorePromise = null;
+            renderIndex();
+        });
+        return state.loadMorePromise;
+    }
+
+    function ensureAllWordsLoaded(message) {
+        if (state.allLoaded) return Promise.resolve(state.items);
+        if (state.completeLoadPromise) return state.completeLoadPromise;
+        if (message) setFeedback(message);
+        function next() {
+            if (!state.hasMore) return state.items;
+            return loadMoreWords().then(next);
+        }
+        state.completeLoadPromise = Promise.resolve(state.initialLoadPromise).then(next).then(function(items) {
+            setFeedback('');
+            renderAll();
+            return items;
+        }).finally(function() {
+            state.completeLoadPromise = null;
+        });
+        return state.completeLoadPromise;
     }
 
     function setFeedback(message) {
@@ -319,20 +453,38 @@
             '</button></div>';
     }
 
+    function observeLoadMoreSentinel() {
+        if (loadMoreObserver) loadMoreObserver.disconnect();
+        var sentinel = indexList && indexList.querySelector('[data-load-more-words]');
+        if (!sentinel || !window.IntersectionObserver) return;
+        loadMoreObserver = new IntersectionObserver(function(entries) {
+            if (entries.some(function(entry) { return entry.isIntersecting; })) {
+                loadMoreWords().catch(function() {});
+            }
+        }, { root: isMobileLayout() ? null : indexList, rootMargin: '240px 0px' });
+        loadMoreObserver.observe(sentinel);
+    }
+
     function renderIndex() {
         var words = filteredItems();
         if (!indexList) return;
         indexList.classList.toggle('show-translations', state.showTranslations);
         if (!words.length) {
-            indexList.innerHTML = '<div class="my-words-empty-state"><div><p>' + (state.search ? 'No saved words match this search.' : 'Your saved words will appear here.') + '</p>' + (!state.search ? '<button class="primary-button" type="button" data-open-add>Add your first word</button>' : '') + '</div></div>';
+            var emptyMessage = state.search && !state.allLoaded
+                ? 'Searching all saved words…'
+                : (state.search ? 'No saved words match this search.' : 'Your saved words will appear here.');
+            indexList.innerHTML = '<div class="my-words-empty-state"><div><p>' + emptyMessage + '</p>' + (!state.search ? '<button class="primary-button" type="button" data-open-add>Add your first word</button>' : '') + '</div></div>';
             renderDesktopDetail();
             return;
         }
         if (!words.some(function(word) { return word.vocab_id === state.selectedId; })) state.selectedId = words[0].vocab_id;
-        indexList.innerHTML = words.map(indexEntryHtml).join('');
+        indexList.innerHTML = words.map(indexEntryHtml).join('') + (state.hasMore && !state.revalidatingFirstPage && !state.search && state.sort === 'recent'
+            ? '<div class="my-words-load-more" data-load-more-words role="status"><span></span><small>' + (state.loadingMore ? 'Loading more words…' : 'Scroll for more') + '</small></div>'
+            : '');
         indexList.classList.toggle('is-single', state.density === 'single');
         indexList.classList.toggle('is-triple', state.density === 'triple');
         scheduleTitleOverflow();
+        observeLoadMoreSentinel();
     }
 
     function renderRecent() {
@@ -358,10 +510,10 @@
         var weekCount = words.filter(function(word) { return wordMatchesRange(word, 'week'); }).length;
         ['my-words-total', 'my-words-sidebar-total'].forEach(function(id) {
             var element = document.getElementById(id);
-            if (element) element.textContent = String(words.length);
+            if (element) element.textContent = String(Number.isFinite(state.totalCount) ? state.totalCount : words.length);
         });
         var week = document.getElementById('my-words-week-total');
-        if (week) week.textContent = String(weekCount);
+        if (week) week.textContent = state.allLoaded ? String(weekCount) : '…';
     }
 
     function wordSourceLabel(word) {
@@ -657,6 +809,8 @@
         if (state.view === 'word-list') {
             renderIndex();
             renderDesktopDetail();
+        } else if (!state.allLoaded) {
+            ensureAllWordsLoaded('Updating your word totals…').catch(function() {});
         }
         if (updateHistory && window.history && window.history.replaceState) {
             var url = new URL(window.location.href);
@@ -862,7 +1016,21 @@
         if (state.exportOpen) {
             exportPanel.removeAttribute('inert');
             positionExportPanel();
-            selectExportRange(state.exportRange || 'all');
+            if (state.allLoaded) {
+                selectExportRange(state.exportRange || 'all');
+            } else {
+                var exportStatus = document.getElementById('my-words-export-status');
+                if (exportStatus) exportStatus.textContent = 'Preparing your complete word list…';
+                document.getElementById('my-words-export-submit').disabled = true;
+                ensureAllWordsLoaded().then(function() {
+                    if (!state.exportOpen) return;
+                    if (exportStatus) exportStatus.textContent = '';
+                    selectExportRange(state.exportRange || 'all');
+                    positionExportPanel();
+                }).catch(function(error) {
+                    if (exportStatus) exportStatus.textContent = error.message || 'Unable to prepare the complete list.';
+                });
+            }
         } else {
             exportPanel.setAttribute('inert', '');
             renderIndex();
@@ -1174,6 +1342,17 @@
     }
 
     function bindControls() {
+        var backLink = document.querySelector('.my-words-back-link');
+        if (backLink) backLink.addEventListener('click', function(event) {
+            if (typeof document.startViewTransition === 'function') return;
+            if (window.CSS && window.CSS.supports && window.CSS.supports('view-transition-name: my-words-surface')) return;
+            if (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            event.preventDefault();
+            document.documentElement.classList.add('my-words-fallback-leaving');
+            try { window.sessionStorage.setItem('mrcat_dashboard_fallback_arrival', '1'); } catch (error) {}
+            window.setTimeout(function() { window.location.href = backLink.href; }, 240);
+        });
         document.querySelectorAll('[data-my-words-nav]').forEach(function(button) {
             button.addEventListener('click', function() { setView(button.dataset.myWordsNav, true); });
         });
@@ -1201,7 +1380,17 @@
                 addSubmit.textContent = 'Save';
             });
         });
-        searchInput.addEventListener('input', function() { state.search = searchInput.value; renderIndex(); renderDesktopDetail(); });
+        searchInput.addEventListener('input', function() {
+            state.search = searchInput.value;
+            renderIndex();
+            renderDesktopDetail();
+            window.clearTimeout(searchLoadTimer);
+            if (state.search.trim() && !state.allLoaded) {
+                searchLoadTimer = window.setTimeout(function() {
+                    ensureAllWordsLoaded('Searching all saved words…').catch(function() {});
+                }, 180);
+            }
+        });
         searchTrigger.addEventListener('click', function() {
             if (state.searchOpen && !state.search) {
                 setSearchOpen(false);
@@ -1210,7 +1399,14 @@
             setDensityMenuOpen(false);
             setSearchOpen(true);
         });
-        sortSelect.addEventListener('change', function() { state.sort = sortSelect.value; renderIndex(); renderDesktopDetail(); });
+        sortSelect.addEventListener('change', function() {
+            state.sort = sortSelect.value;
+            renderIndex();
+            renderDesktopDetail();
+            if (state.sort !== 'recent' && !state.allLoaded) {
+                ensureAllWordsLoaded('Sorting your complete word list…').catch(function() {});
+            }
+        });
         densityTrigger.addEventListener('click', function() {
             var open = densityTrigger.getAttribute('aria-expanded') !== 'true';
             if (open && state.exportOpen) setExportOpen(false);
@@ -1322,6 +1518,7 @@
         setFeedback('Log in as a student to open your personal My Words.');
         recentList.innerHTML = '<div class="my-words-empty-state"><div><p>Your personal words are available after login.</p><a class="primary-button" href="index.html">Log In</a></div></div>';
         indexList.innerHTML = '<div class="my-words-empty-state"><p>Student login required.</p></div>';
+        desktopDetail.innerHTML = '<div class="my-words-detail-empty"><p>Log in to open word details.</p></div>';
         addTrigger.disabled = true;
         searchInput.disabled = true;
         sortSelect.disabled = true;
@@ -1358,7 +1555,19 @@
                 renderVisitor();
                 return null;
             }
-            return reloadWords();
+            var cached = readFirstPageCache();
+            if (cached) {
+                state.revalidatingFirstPage = true;
+                state.items = cached.words || [];
+                applyPageState(cached);
+                if (!vocabWord(state.selectedId)) state.selectedId = sortedItems(activeItems())[0] && sortedItems(activeItems())[0].vocab_id || '';
+                renderAll();
+                setWordsReady();
+            }
+            return reloadWords().catch(function(error) {
+                if (cached) return state.items;
+                throw error;
+            });
         }).catch(function(error) {
             recentList.innerHTML = '<div class="my-words-loading-state"><div><p>My Words could not be loaded.</p><button class="outline-button" type="button" data-retry-load>Try again</button></div></div>';
             setWordsLoadError(error.message || 'Unable to start My Words.');

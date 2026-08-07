@@ -35,6 +35,7 @@
         localStorage.removeItem(profileKey);
         localStorage.removeItem('opencode_user');
         localStorage.removeItem('opencode_visitor');
+        sessionStorage.removeItem('mrcat_my_words_first_page_v1');
     }
 
     function getSession() {

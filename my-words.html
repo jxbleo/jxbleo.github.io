@@ -6,11 +6,12 @@
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#f4f8f5">
     <title>My Words | Mr. Cat Academy</title>
+    <script>try{if(sessionStorage.getItem('mrcat_my_words_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_my_words_fallback_arrival');document.documentElement.classList.add('my-words-fallback-arrival');}}catch(error){}</script>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
     <link rel="stylesheet" href="assets/css/touch-behavior.css?v=20260723-1">
     <link rel="stylesheet" href="assets/css/app.css?v=20260805-1">
-    <link rel="stylesheet" href="assets/css/my-words.css?v=20260806-13">
+    <link rel="stylesheet" href="assets/css/my-words.css?v=20260808-1">
 </head>
 <body class="my-words-page">
     <main class="my-words-shell">
@@ -122,15 +123,20 @@
                         </div>
                     </section>
 
-                    <div class="my-words-loading-sheet" id="my-words-loading-sheet" role="status" aria-label="Loading saved words">
-                        <span class="sr-only">Loading saved words</span>
-                    </div>
-
-                    <div class="my-words-notebook" id="my-words-notebook" hidden>
+                    <div class="my-words-notebook is-loading-first-page" id="my-words-notebook">
                         <section class="my-words-index" aria-label="Saved words">
-                            <div class="my-words-index-list" id="my-words-index-list"></div>
+                            <div class="my-words-index-list" id="my-words-index-list" aria-busy="true">
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                                <div class="my-words-index-entry my-words-skeleton-entry" aria-hidden="true"><span class="my-words-skeleton-card"><span></span><small></small></span></div>
+                            </div>
                         </section>
-                        <section class="my-words-desktop-detail" id="my-words-desktop-detail" aria-live="polite"></section>
+                        <section class="my-words-desktop-detail" id="my-words-desktop-detail" aria-live="polite">
+                            <div class="my-words-detail-skeleton" aria-hidden="true"><span></span><strong></strong><p></p><p></p></div>
+                        </section>
                     </div>
                 </section>
             </div>
@@ -152,9 +158,9 @@
     <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
     <script src="assets/js/config.public.js?v=20260803-1"></script>
     <script src="assets/js/cloudbase-client.js?v=20260801-4"></script>
-    <script src="assets/js/auth.js?v=20260707-4"></script>
+    <script src="assets/js/auth.js?v=20260808-1"></script>
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/my-words-export.js?v=20260801-1"></script>
-    <script src="assets/js/my-words.js?v=20260806-15"></script>
+    <script src="assets/js/my-words.js?v=20260808-1"></script>
 </body>
 </html>

@@ -461,8 +461,9 @@ Check:
   `IELTS Listening`
 - a Library query with no matches shows one global no-results message instead
   of a placeholder card from the previously selected capsule
-- the Dashboard notebook icon navigates to `my-words.html`; Dashboard does not
-  load vocabulary data or retain a hidden My Words dialog runtime
+- the Dashboard notebook icon navigates to `my-words.html`, retains no hidden My
+  Words dialog runtime, and warms at most the bounded first page after primary
+  Dashboard content is ready
 - open My Words at desktop, tablet, and 390px phone widths. Desktop keeps the
   Sidebar and split notebook; mobile replaces the Sidebar with sticky tabs and
   keeps the word grid within the viewport
@@ -1222,12 +1223,20 @@ Check:
 - group metadata is stored
 - the Dashboard notebook opens `my-words.html`, legacy
   `dashboard.html#my-words` redirects there, and Dashboard no longer mounts or
-  fetches a second personal-vocabulary runtime
+  renders a second personal-vocabulary runtime
 - throttle the first My Words data request and confirm the `My Words / Review`
   row plus the full Search/layout/Export/sort toolbar are visible immediately
-  and remain at the same coordinates; a full-height, copy-free Teacher-matrix
-  grid/radar wash fills only the area below them until the word list softly
-  replaces it. Reduced-motion mode keeps the grid static
+  and remain at the same coordinates; stable card/detail skeletons occupy only
+  the future content positions and are replaced in place by the first 18 real
+  words. There is no full-height loading sheet or whole-list reveal
+- with more than 18 saved words, confirm scrolling near the index bottom appends
+  30-row pages without resetting selection or moving the detail pane. Search,
+  A–Z/Z–A, Review totals, and Export must finish all remaining pages before
+  presenting a complete result
+- enter and return between Dashboard and My Words in a browser with same-origin
+  document transitions and in the fallback path. The notebook/header surface
+  follows the same top-right route both ways; reduced motion uses no spatial
+  travel, and rapid Back still navigates even if the previous transition skips
 - desktop My Words keeps the header and Study/Word List Sidebar visible;
   Word List uses an approximately 300px index plus a flexible detail pane and
   automatically selects the first recent word
