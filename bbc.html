@@ -159,6 +159,16 @@
             margin-top: 0;
         }
 
+        body:not(.bbc-theme-blue-studio):not(.bbc-theme-classroom-worksheet) .lesson-hero.has-download {
+            padding-top: 34px;
+            padding-bottom: 78px;
+        }
+
+        body:not(.bbc-theme-blue-studio):not(.bbc-theme-classroom-worksheet) .hero-tools.has-download {
+            top: auto;
+            bottom: 18px;
+        }
+
         .hero-tool-btn {
             display: inline-flex;
             align-items: center;
@@ -397,7 +407,7 @@
             position: relative;
             margin-bottom: 12px;
             line-height: 1.85;
-            padding: 14px 52px 14px 16px;
+            padding: 14px 16px;
             background: rgba(255,255,255,0.76);
             border: 1px solid rgba(15, 118, 110, 0.12);
             border-radius: 16px;
@@ -600,7 +610,7 @@
             width: 100%;
         }
 
-        .mc-options label > span {
+        .mc-options label > .option-text {
             flex: 1 1 auto;
             min-width: 0;
             overflow-wrap: anywhere;
@@ -622,9 +632,11 @@
         }
 
         .option-label {
+            flex: 0 0 auto;
             font-weight: bold;
             margin-right: 8px;
             color: var(--accent);
+            white-space: nowrap;
         }
 
         @keyframes mcChoiceSpark {
@@ -2634,6 +2646,14 @@
                 top: 14px;
                 right: 14px;
             }
+            body:not(.bbc-theme-blue-studio):not(.bbc-theme-classroom-worksheet) .lesson-hero.has-download {
+                padding-top: 34px;
+                padding-bottom: 70px;
+            }
+            body:not(.bbc-theme-blue-studio):not(.bbc-theme-classroom-worksheet) .hero-tools.has-download {
+                top: auto;
+                bottom: 14px;
+            }
             body.bbc-theme-blue-studio .hero-tools {
                 justify-content: flex-start;
             }
@@ -3331,7 +3351,7 @@
             '<a class="hero-tool-btn hero-tool-download" id="lesson-worksheet-download" href="' + escapeHtml(href) + '" download="' + escapeHtml(href.split('/').pop() || '') + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
                     '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>' +
-                '</svg>Download Practice</a>';
+                '</svg>Download Worksheet</a>';
     }
 
     function renderLessonWords(words, message) {
