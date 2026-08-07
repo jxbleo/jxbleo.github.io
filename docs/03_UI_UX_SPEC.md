@@ -1468,7 +1468,10 @@ Shared rules:
   Practice starts with no groups selected and its action disabled. The Quiz
   dropdown starts at five groups and does not expose the legacy 1-4 group
   self-study choices; each dropdown option shows only the set count and test
-  duration, without a `Counts toward results` suffix. On mobile, both bars and
+  duration, without a `Counts toward results` suffix or a separate counted-quiz
+  explanation below the setup area. The complete Quiz bar—including its
+  surface, label, dropdown, and action—uses the same gold visual language as
+  the in-quiz numbered capsules and Submit action. On mobile, both bars and
   their horizontally scrollable controls must remain inside the Cloze panel
   width. The Practice chip scroller must reserve its full content height so
   every numbered capsule is completely visible and touchable.
