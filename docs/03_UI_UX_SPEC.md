@@ -1471,10 +1471,11 @@ Shared rules:
   duration, without a `Counts toward results` suffix or a separate counted-quiz
   explanation below the setup area. The complete Quiz bar—including its
   surface, label, dropdown, and action—uses the same gold visual language as
-  the in-quiz numbered capsules and Submit action. On mobile, both bars and
-  their horizontally scrollable controls must remain inside the Cloze panel
-  width. The Practice chip scroller must reserve its full content height so
-  every numbered capsule is completely visible and touchable.
+  the in-quiz numbered capsules and Submit action. A restrained highlight moves
+  continuously around the Quiz bar's gold edge. On mobile, both bars and their
+  horizontally scrollable controls must remain inside the Cloze panel width.
+  The Practice chip scroller must reserve its full content height so every
+  numbered capsule is completely visible and touchable.
 - All student-facing dialogs and status messages in the counted flow use
   `Quiz`; internal code, session actions, and stored attempt modes retain their
   existing `Test` identifiers for compatibility.
@@ -1487,7 +1488,9 @@ Shared rules:
 - Starting a Vocabulary Test opens a gold confirmation dialog matching the Quiz
   setup bar and in-quiz controls, warning that the timer cannot be paused or
   stopped. Its `Start Quiz` action remains visually primary while `Cancel`
-  remains secondary.
+  remains secondary. The dialog uses the same slow traveling gold-edge
+  highlight as the Quiz setup bar. Both edge animations become static when the
+  user requests reduced motion.
 - Cloze-mode timing gives each selected group 90 seconds, or 1.5 minutes.
 - While a Vocabulary Test is running, the top of the Test view uses a sticky
   capsule bar like Vocabulary Learn. Numbered test-set capsules sit in a
