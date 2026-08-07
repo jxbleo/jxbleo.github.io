@@ -13,6 +13,16 @@
 
 ### Changed
 
+- Added passed self-study sets to the shared Student FINISHED projection, so To
+  Do List, Personal Center, and the monthly calendar count them without waiting
+  for assignment. Completion uses the first passing date, score/review uses the
+  best attempt, completed assignments deduplicate the same set, and timed
+  Vocabulary Practice remains teacher-notification-only.
+- Clarified the Vocabulary recording boundary: selected-group count never makes
+  Practice count toward student completion. Timed Cloze Practice keeps its
+  notification-only activity attempt for teacher visibility, while only Quiz
+  attempts can count toward scores, FINISHED, the student calendar, STAR, or
+  learning reports.
 - Restored compact `#n` attempt labels, moved Vocabulary Quiz/Practice and
   selected-set metadata into the attempt header's first column, compressed
   Practice group selections into an ascending sequence with `X` for group 10,

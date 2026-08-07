@@ -558,20 +558,20 @@ must never reduce a score or revoke an existing STAR.
 
 ## 10. Vocabulary Rules
 
-Only Vocabulary `Test Mode` can create a countable attempt.
+Only Vocabulary `Quiz` mode can create a countable attempt.
 
 The student chooses the number of groups. The actual groups are randomly
 selected.
 
-### 1-4 groups
+### Practice
 
-- self-test only
-- no database attempt
-- no assignment status change
-- frontend warning states that four groups or fewer do not count
+- timed Cloze Practice creates a notification-only activity attempt regardless
+  of selected group count
+- does not change assignment status or any student completion/progress surface
 
-### 5 or more groups
+### Quiz
 
+- the current selector starts at five groups
 - countable submission
 - server-side grading
 - stored in `attempts`
@@ -819,8 +819,8 @@ Also verify:
 - voluntary Resource attempts are stored
 - Visitor submissions are impossible
 - one student cannot access another student's data
-- four-group Vocabulary tests create no database records
-- five-group Vocabulary tests do create records
+- Vocabulary timed Practice creates only notification activity records
+- Vocabulary Quiz creates records with its selected-group metadata
 - dashboard date filters do not delete data
 
 ### Phase 6: Owner-reviewed production preparation

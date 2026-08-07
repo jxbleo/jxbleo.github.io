@@ -245,10 +245,10 @@ Rules to preserve:
   private grading together. Old clients are rejected before a test starts, and
   already-started countable tests continue against their server-side snapshot.
 
-- Practice Mode does not write attempts.
-- Test Mode with 1-4 selected groups is self-test only and does not write
-  attempts.
-- Test Mode with 5 or more selected groups is countable.
+- Timed Cloze Practice writes a notification-only activity attempt regardless
+  of selected group count; Learn inline practice writes no attempt.
+- Only Quiz mode writes a countable Vocabulary progress attempt. The current
+  Quiz selector starts at five groups.
 - Vocabulary sets default to `passing_percentage: 90` and
   `mastery_percentage: 100`; BBC sets default to `80` / `95`; other current
   content families keep `50` / `90` unless a set or assignment overrides them.

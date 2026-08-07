@@ -303,9 +303,9 @@ ownership. This prevents same-name records from being selected together.
 Teacher attempt reports opened from the notification bell show mistake-focused
 paper review for BBC and Vocabulary: correct questions are omitted, and BBC
 wrong questions include the private answer explanation. Recorded Vocabulary
-Cloze attempts identify `Quiz` versus timed `Practice`; timed Practice reports
-also show the selected group IDs. Single-group inline Vocabulary practice is
-unrecorded and therefore does not create a teacher notification.
+Cloze attempts identify `Quiz` versus timed `Practice`; Practice activity
+attempts retain the selected group IDs and create teacher notifications, but
+never count toward student completion. Learn inline practice is unrecorded.
 Teacher login/list actions return attempt and progress summaries only. Full
 per-question submitted answers, correct answers, group results, and explanations
 are fetched through one authorized `attempt_id` request at a time. Opening a
@@ -464,6 +464,9 @@ assignment/resource context. Independent Resources work uses
 The student dashboard groups assignments into `TO DO` and `FINISHED`. Backend
 statuses may still be `to_do`, `passed`, or `mastered`, but the student
 Assignments screen intentionally merges passed/mastered work into `FINISHED`.
+Countable self-study work also enters `FINISHED` once its best recorded attempt
+meets the set's passing standard; it does not require a later teacher
+assignment. Timed Vocabulary Practice activity attempts remain excluded.
 Do not reintroduce separate `PASSED` / `MASTERED` dashboard tabs or the old
 MASTERED one-week/one-month/all range selector unless the owner explicitly asks.
 The backend retains all attempts.
@@ -581,16 +584,15 @@ history may also show a collapsed per-question `Explain` action.
 
 ### Vocabulary
 
-Only Vocabulary `Test Mode` can count:
-
-- 1-4 selected groups: self-test only, not stored in `attempts`
-- 5 or more groups: countable and stored
-- Practice Mode: not stored
-
-The separate timed Cloze `Practice` flow is an explicit reporting exception:
-it is stored as `mode: "vocabulary_practice_timed"` solely so it can appear in
-teacher notifications, and it remains excluded from assignment progress, STAR,
-student progress, and future assignment initialization.
+Only Vocabulary `Quiz` mode can create a countable progress attempt. The
+current Quiz selector offers 5 or more groups; those Quiz submissions are
+countable and stored. Timed Cloze `Practice` also stores an activity attempt as
+`mode: "vocabulary_practice_timed"`, regardless of whether the student selects
+1-4, 5, or more groups, solely so it can appear in teacher notifications and
+paper review. Practice activity attempts remain excluded from assignment
+progress, FINISHED, the student calendar, STAR, learning reports, student
+progress, and future assignment initialization. Learn inline practice remains
+unrecorded.
 
 Countable vocabulary attempts retain `selected_group_count`,
 `selected_group_ids`, overall score, and per-group `group_results`. Groups are
@@ -863,8 +865,9 @@ Student dashboard navigation:
   badge still excludes future Upcoming work.
 - A calendar icon in the right-side utility group opens the
   authenticated student's own completion history as a Monday-first monthly
-  calendar. Date cells summarize completed assignments and self-study STAR
-  work; selecting a date reveals that day's tasks. This student surface uses
+  calendar. Date cells summarize completed assignments and countable self-study
+  work from its first passing date; STAR markers remain limited to mastered
+  work. Selecting a date reveals that day's tasks. This student surface uses
   calendar months and dates, never the Teacher View `Wxx` week grid. Its modal
   has no separate `Progress` header/subtitle, completed total, or active-days
   total; the month/year toolbar begins at the top of its content. It uses the
@@ -999,8 +1002,9 @@ For backend/data work verify at least:
 - failed attempts are stored and keep or mark assignments `to_do`
 - passing retries are stored and move assignments to `passed` or `mastered`
 - independent practice uses `assignment_id: null`
-- vocabulary 1-4 groups are not recorded
-- vocabulary 5+ groups are recorded with group details
+- vocabulary Quiz submissions are countable and retain selected-group details
+- timed Cloze Practice stores notification-only activity attempts at any group
+  count and remains excluded from every student completion/progress surface
 - personal vocabulary saves are owned by authenticated `auth_uid`
 - visitors and teacher preview cannot save personal vocabulary
 - catalog links and practice pages load

@@ -416,13 +416,19 @@ Rules:
 - Failed attempts are still stored.
 - Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.
 - If a student submits a Library/Explore entry that matches an open assignment, `submitAttempt` stores the attempt with that `assignment_id`.
-- Vocabulary Cloze timed Practice attempts use
-  `mode: "vocabulary_practice_timed"` and `practice_context: "practice"`.
-  They are stored with `assignment_id: null` even when the student has an open
-  assignment for the same `set_id`, so teacher notifications can show that the
-  student practiced. They do not update assignment summaries, student dashboard
-  progress, Teacher View matrix progress, self-study STAR records, or future
-  assignment initialization from self-study history.
+- `getDashboard` derives one self-study completion projection per distinct
+  visible `set_id` once a countable `assignment_id: null` attempt reaches the
+  set passing standard. It uses the first passing submission as `completed_at`,
+  the best attempt for score/review, and the latest attempt for recent activity.
+  A completed assignment projection for the same set suppresses the duplicate
+  self-study row; an open assignment with a higher teacher threshold does not
+  erase the already-earned self-study completion.
+- Vocabulary timed Practice writes a notification-only activity attempt using
+  `mode: "vocabulary_practice_timed"` and `practice_context: "practice"`, at
+  any selected-group count. It is forced to `assignment_id: null` and excluded
+  from assignment summaries, FINISHED, the student calendar, learning reports,
+  STAR, student progress, and future assignment initialization. Learn inline
+  practice writes no attempt.
 - The teacher-only attempt view returns `selected_group_ids` and redacted
   per-group summaries for recorded Vocabulary Quiz/timed Practice reports. It
   also resolves per-question explanations from the current private grading key
@@ -632,8 +638,8 @@ Rules:
 
 ## 10. `vocabulary_test_sessions`
 
-Purpose: server-side integrity session for countable Vocabulary Test mode
-only. A session is created before a 5+ group Vocabulary Test begins, receives
+Purpose: server-side integrity session for countable Vocabulary Quiz mode
+only. A session is created before a Vocabulary Quiz begins, receives
 heartbeats while the page remains active, and is closed when the test submits,
 is abandoned, expires, or is replaced by another same-page test.
 
@@ -666,10 +672,11 @@ Core fields:
 
 Rules:
 
-- Only 5+ group Vocabulary Test mode creates a session.
-- Vocabulary Test `due_at` is based on 90 seconds, or 1.5 minutes, per selected
+- Only Vocabulary Quiz mode creates a session; Practice never does. The current
+  Quiz selector starts at five groups.
+- Vocabulary Quiz `due_at` is based on 90 seconds, or 1.5 minutes, per selected
   group.
-- `submitAttempt` grades countable Vocabulary Tests from the session's
+- `submitAttempt` grades countable Vocabulary Quizzes from the session's
   `question_ids` and private grading snapshots, not from a browser-provided
   question list or a grading key that changed after the test started.
 - The browser must send the public unit `contentVersion` when starting,

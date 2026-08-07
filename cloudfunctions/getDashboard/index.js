@@ -1,5 +1,6 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const starRewards = require("../_shared/star-rewards");
+const { summarizeSelfStudyAttempts } = require("./self-study-completions");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -1300,46 +1301,81 @@ exports.main = async (event = {}) => {
         },
       });
     }
-    const selfStudyViews = selfStudyStars.map((achievement) => {
-      const set = setMap.get(achievement.set_id);
-      const attempt = attempts.find((item) => item.attempt_id === achievement.best_attempt_id) || null;
-      const percentage = achievement.best_percentage == null
-        ? (attempt ? effectivePercentage(attempt) : null)
-        : Number(achievement.best_percentage);
-      const teacherReplies = (teacherRepliesBySelfStudySet.get(String(achievement.set_id)) || [])
+    const representedFinishedAssignmentSetIds = new Set(assignmentViews
+      .filter((assignment) => assignment && (assignment.status === "passed" || assignment.status === "mastered"))
+      .map((assignment) => String(assignment.set && assignment.set.set_id || ""))
+      .filter(Boolean));
+    const selfStudyStarBySet = new Map(selfStudyStars
+      .filter((achievement) => achievement && achievement.set_id)
+      .map((achievement) => [String(achievement.set_id), achievement]));
+    const resourceAttemptsBySet = new Map();
+    resourceAttempts.forEach((attempt) => {
+      const key = String(attempt.set_id);
+      const items = resourceAttemptsBySet.get(key) || [];
+      items.push(attempt);
+      resourceAttemptsBySet.set(key, items);
+    });
+    const selfStudyCompletionSetIds = new Set([
+      ...resourceAttemptsBySet.keys(),
+      ...selfStudyStarBySet.keys(),
+    ]);
+    const selfStudyViews = [];
+    for (const setId of selfStudyCompletionSetIds) {
+      if (representedFinishedAssignmentSetIds.has(setId)) continue;
+      const set = setMap.get(setId);
+      if (!set) continue;
+      const passingPercentage = passingPercentageForSet(set);
+      const masteryPercentage = masteryPercentageForSet(set);
+      const setAttempts = resourceAttemptsBySet.get(setId) || [];
+      const summary = summarizeSelfStudyAttempts(setAttempts, passingPercentage);
+      const achievement = selfStudyStarBySet.get(setId) || null;
+      if (!summary && !achievement) continue;
+      const bestAttempt = summary && summary.best || null;
+      const latestAttempt = summary && summary.latest || null;
+      const bestAttemptId = bestAttempt && bestAttempt.attempt_id || achievement && achievement.best_attempt_id || null;
+      const achievementPercentage = achievement && achievement.best_percentage == null
+        ? null
+        : Number(achievement && achievement.best_percentage);
+      const percentage = achievementPercentage == null
+        ? summary && summary.best_percentage
+        : Math.max(Number(summary && summary.best_percentage || 0), achievementPercentage);
+      const completedAt = summary && summary.completed_at
+        || achievement && (achievement.first_earned_at || achievement.created_at)
+        || null;
+      const masteredAt = achievement
+        ? achievement.first_earned_at || achievement.created_at || completedAt
+        : null;
+      const teacherReplies = (teacherRepliesBySelfStudySet.get(setId) || [])
         .map((item) => disputeReplyView(item, set));
-      return {
+      selfStudyViews.push({
         assignment_id: null,
-        achievement_id: achievement.achievement_id || achievement._id,
+        achievement_id: achievement && (achievement.achievement_id || achievement._id) || null,
         source: "self_study",
-        status: "mastered",
-        assigned_at: achievement.first_earned_at || achievement.created_at || null,
+        status: achievement ? "mastered" : "passed",
+        assigned_at: completedAt,
         due_at: null,
-        completed_at: achievement.first_earned_at || achievement.created_at || null,
-        mastered_at: achievement.first_earned_at || achievement.created_at || null,
-        updated_at: achievement.updated_at || achievement.created_at || null,
-        attempt_count: 1,
-        latest_percentage: percentage,
+        completed_at: completedAt,
+        mastered_at: masteredAt,
+        updated_at: latestAttempt && latestAttempt.submitted_at || masteredAt || completedAt,
+        attempt_count: summary ? summary.attempt_count : 1,
+        latest_percentage: summary ? summary.latest_percentage : percentage,
         best_percentage: percentage,
-        best_correct_count: attempt ? attemptCorrectCount(attempt) : null,
-        best_question_count: attempt ? attemptQuestionCount(attempt) : null,
-        review_attempt_id: achievement.best_attempt_id || null,
-        history_attempt_id: achievement.best_attempt_id || null,
-        prefill_attempt_id: achievement.best_attempt_id || null,
+        best_correct_count: bestAttempt ? attemptCorrectCount(bestAttempt) : null,
+        best_question_count: bestAttempt ? attemptQuestionCount(bestAttempt) : null,
+        review_attempt_id: bestAttemptId,
+        history_attempt_id: bestAttemptId,
+        prefill_attempt_id: bestAttemptId,
         answer_revealed: false,
         mastery_locked: false,
-        star_claimed: true,
-        passing_percentage: set ? passingPercentageForSet(set) : 50,
-        mastery_percentage: set ? masteryPercentageForSet(set) : 90,
+        star_claimed: Boolean(achievement),
+        passing_percentage: passingPercentage,
+        mastery_percentage: masteryPercentage,
+        mastery_enabled: true,
         teacher_replies: teacherReplies,
         teacher_reply_count: teacherReplies.length,
-        set: set || {
-          set_id: achievement.set_id,
-          title: achievement.set_id,
-          link: "#",
-        },
-      };
-    });
+        set,
+      });
+    }
     const finalStarBuckets = normalizedStarBuckets(achievements);
     const libraryProgressBySet = new Map();
     progressAttempts.forEach((attempt) => {
