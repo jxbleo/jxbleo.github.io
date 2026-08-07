@@ -2,6 +2,10 @@
     color-scheme: light;
 }
 
+@view-transition {
+    navigation: auto;
+}
+
 html,
 body.my-words-page {
     min-height: 100%;
@@ -18,6 +22,27 @@ body.my-words-page {
 
 body.my-words-detail-open {
     overflow: hidden;
+}
+
+.my-words-fallback-arrival .my-words-shell {
+    animation: myWordsFallbackArrival 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: top right;
+}
+
+.my-words-fallback-leaving .my-words-shell {
+    animation: myWordsFallbackDeparture 240ms cubic-bezier(0.64, 0, 0.78, 0) both;
+    transform-origin: top right;
+    pointer-events: none;
+}
+
+@keyframes myWordsFallbackArrival {
+    from { opacity: 0; transform: translateY(-7px) scale(0.988); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes myWordsFallbackDeparture {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0.18; transform: translateY(-7px) scale(0.978); }
 }
 
 .my-words-shell {
@@ -42,6 +67,31 @@ body.my-words-detail-open {
     box-shadow: 0 14px 38px rgba(20, 72, 58, 0.08);
     backdrop-filter: blur(24px) saturate(155%);
     -webkit-backdrop-filter: blur(24px) saturate(155%);
+    view-transition-name: my-words-surface;
+}
+
+::view-transition-group(my-words-surface) {
+    z-index: 1000;
+    overflow: clip;
+    border-radius: 25px;
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(my-words-surface) {
+    animation: myWordsSharedOld 220ms ease-out both;
+}
+
+::view-transition-new(my-words-surface) {
+    animation: myWordsSharedNew 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-old(root) {
+    animation: myWordsRouteOld 220ms ease-out both;
+}
+
+::view-transition-new(root) {
+    animation: myWordsRouteNew 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .my-words-back-link,
@@ -819,89 +869,39 @@ body.my-words-detail-open {
     overflow: hidden;
 }
 
-.my-words-notebook.is-revealing {
-    animation: myWordsRevealFadeLift 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.my-words-notebook.is-loading-first-page .my-words-index,
+.my-words-notebook.is-loading-first-page .my-words-desktop-detail {
+    cursor: progress;
 }
 
-.my-words-loading-sheet {
-    position: relative;
-    display: grid;
-    min-height: calc(100vh - 171px);
-    place-items: center;
-    overflow: hidden;
-    border-top: 1px solid rgba(19, 118, 109, 0.08);
-    background:
-        linear-gradient(90deg, transparent 0%, rgba(19, 118, 109, 0.12) 34%, rgba(217, 168, 45, 0.16) 58%, transparent 100%),
-        linear-gradient(rgba(101, 148, 134, 0.14) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(101, 148, 134, 0.14) 1px, transparent 1px),
-        rgba(249, 253, 251, 0.82);
-    background-size: 220px 100%, 42px 42px, 42px 42px, auto;
-    animation: myWordsGridMove 1.8s linear infinite;
-}
-
-.my-words-loading-sheet::before,
-.my-words-loading-sheet::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
-
-.my-words-loading-sheet::before {
-    background:
-        linear-gradient(90deg, rgba(249, 253, 251, 0.88), rgba(249, 253, 251, 0.46), rgba(249, 253, 251, 0.88)),
-        radial-gradient(circle at center, rgba(19, 118, 109, 0.13), transparent 34%);
-}
-
-.my-words-loading-sheet::after {
-    background:
-        linear-gradient(90deg, transparent 0%, rgba(19, 118, 109, 0.1) 18%, transparent 36%),
-        linear-gradient(180deg, transparent 0%, rgba(217, 168, 45, 0.1) 42%, transparent 68%);
-    background-size: 260px 100%, 100% 180px;
-    mix-blend-mode: multiply;
-    animation: myWordsColorWash 2.4s ease-in-out infinite;
-}
-
-.my-words-loading-sheet.is-error {
-    padding: 26px;
-    color: #647b74;
-    background: rgba(249, 253, 251, 0.82);
-    text-align: center;
-    animation: none;
-}
-
-.my-words-loading-sheet.is-error::before,
-.my-words-loading-sheet.is-error::after {
-    content: none;
-}
-
-.my-words-loading-sheet.is-error button {
-    margin-top: 12px;
-}
-
-.my-words-loading-sheet[hidden],
 .my-words-notebook[hidden] {
     display: none;
 }
 
-@keyframes myWordsGridMove {
-    to { background-position: 220px 0, 42px 42px, 42px 42px, 0 0; }
+@keyframes myWordsSharedOld {
+    from { opacity: 1; }
+    to { opacity: 0.22; }
 }
 
-@keyframes myWordsColorWash {
-    0% { background-position: -120px 0, 0 -80px; opacity: 0.62; }
-    50% { background-position: 80px 0, 0 34px; opacity: 0.9; }
-    100% { background-position: 260px 0, 0 180px; opacity: 0.62; }
-}
-
-@keyframes myWordsRevealFadeLift {
-    from { opacity: 0; transform: translateY(10px); filter: blur(2px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-
-@keyframes myWordsRevealFade {
+@keyframes myWordsSharedNew {
     from { opacity: 0; }
+    24% { opacity: 0.18; }
     to { opacity: 1; }
+}
+
+@keyframes myWordsRouteOld {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0.72; transform: scale(0.992); }
+}
+
+@keyframes myWordsRouteNew {
+    from { opacity: 0; transform: translateY(7px) scale(0.994); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes myWordsSkeletonSweep {
+    from { background-position: 130% 0; }
+    to { background-position: -130% 0; }
 }
 
 .my-words-index {
@@ -927,6 +927,89 @@ body.my-words-detail-open {
     display: flex;
     min-width: 0;
     align-items: stretch;
+}
+
+.my-words-skeleton-card {
+    display: grid;
+    flex: 1 1 auto;
+    min-height: 56px;
+    align-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.48);
+}
+
+.my-words-skeleton-card span,
+.my-words-skeleton-card small,
+.my-words-detail-skeleton span,
+.my-words-detail-skeleton strong,
+.my-words-detail-skeleton p {
+    display: block;
+    border-radius: 999px;
+    background: linear-gradient(100deg, rgba(117, 159, 147, 0.1) 25%, rgba(255, 255, 255, 0.72) 45%, rgba(117, 159, 147, 0.1) 65%);
+    background-size: 240% 100%;
+    animation: myWordsSkeletonSweep 1.6s ease-in-out infinite;
+}
+
+.my-words-skeleton-card span {
+    width: 58%;
+    height: 13px;
+}
+
+.my-words-skeleton-card small {
+    width: 76%;
+    height: 8px;
+}
+
+.my-words-detail-skeleton {
+    display: grid;
+    gap: 18px;
+    padding: 42px clamp(24px, 5vw, 72px);
+}
+
+.my-words-detail-skeleton span {
+    width: 18%;
+    height: 10px;
+}
+
+.my-words-detail-skeleton strong {
+    width: 44%;
+    height: 42px;
+}
+
+.my-words-detail-skeleton p {
+    width: min(640px, 82%);
+    height: 15px;
+    margin: 0;
+}
+
+.my-words-load-more {
+    display: grid;
+    grid-column: 1 / -1;
+    min-height: 72px;
+    place-items: center;
+    align-content: center;
+    gap: 7px;
+    color: #6b817a;
+}
+
+.my-words-load-more span {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(19, 118, 109, 0.16);
+    border-top-color: #13766d;
+    border-radius: 50%;
+    animation: myWordsLoadMoreSpin 760ms linear infinite;
+}
+
+.my-words-load-more small {
+    font-size: 0.68rem;
+    font-weight: 750;
+}
+
+@keyframes myWordsLoadMoreSpin {
+    to { transform: rotate(360deg); }
 }
 
 .my-words-export-select {
@@ -1687,10 +1770,6 @@ body.my-words-detail-open {
         overflow: visible;
     }
 
-    .my-words-loading-sheet {
-        min-height: calc(100vh - 120px);
-    }
-
     .my-words-index {
         min-height: inherit;
         border-right: 0;
@@ -1812,21 +1891,25 @@ body.my-words-detail-open {
         max-width: 100%;
     }
 
+    .my-words-fallback-arrival .my-words-shell,
+    .my-words-fallback-leaving .my-words-shell {
+        animation: none !important;
+        transform: none !important;
+    }
+
     .my-words-title-track {
         overflow: hidden;
         text-overflow: ellipsis;
         transform: none !important;
     }
 
-    .my-words-loading-sheet,
-    .my-words-loading-sheet::after {
-        animation: none !important;
-    }
-
-    .my-words-notebook.is-revealing {
-        animation: myWordsRevealFade 120ms ease-out both !important;
+    ::view-transition-group(my-words-surface),
+    ::view-transition-old(my-words-surface),
+    ::view-transition-new(my-words-surface),
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 120ms !important;
         transform: none !important;
-        filter: none !important;
     }
 
 }

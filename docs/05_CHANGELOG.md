@@ -3,6 +3,24 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-08
+
+### Changed
+
+- Replaced the Student completion calendar's white/green selected-day outline
+  with the Vocabulary Quiz confirmation's flowing gold-edge treatment while
+  preserving each day's completion fill, STAR marker, and a static reduced-motion
+  fallback.
+- Connected the Dashboard notebook to the dedicated My Words header with a
+  reversible same-origin shared-surface transition, plus a top-right material
+  fallback and reduced-motion path. The transition begins immediately and never
+  waits for personal vocabulary data.
+- Replaced the blocking full-workspace My Words loading sheet and one-shot
+  200-row startup request with a visible shell, local card/detail skeletons, an
+  18-row owner-scoped warm first page, and 30-row continuation pages. Complete
+  Search, A–Z/Z–A, Review statistics, and Export now finish remaining pages only
+  when those features need them; logout clears the session cache.
+
 ## 2026-08-07
 
 ### Fixed

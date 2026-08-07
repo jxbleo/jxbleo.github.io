@@ -766,6 +766,10 @@ Rules:
 - Only active students can save.
 - Visitors and teachers cannot save.
 - Browser must call `studentVocabulary`, not write database directly.
+- Paginated list responses use an integer read cursor over the existing
+  `student_uid + status + updated_at` ordering and return `next_cursor`,
+  `has_more`, and page-zero `total_count`. These are response controls, not
+  stored fields. Mutations continue to use stable `vocab_id` ownership checks.
 - Words may be saved either from selected page text, including answer and
   explanation content, or from the manual My Words add form.
 - Forgot schedules one day, A little schedules three days, and Know advances

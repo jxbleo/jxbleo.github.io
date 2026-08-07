@@ -72,9 +72,10 @@ async function main() {
   assert(myWordsHtml.includes("Review Mode · In design"));
   assert(myWordsHtml.includes('data-my-words-nav="word-list" aria-selected="true">My Words</button>'));
   assert(myWordsHtml.includes('id="my-words-search-trigger"'));
-  assert(myWordsHtml.includes('id="my-words-loading-sheet"'), "My Words must reserve a dedicated loading surface below its toolbar");
-  assert(myWordsHtml.indexOf('id="my-words-sort"') < myWordsHtml.indexOf('id="my-words-loading-sheet"'), "the complete toolbar must render before the loading surface");
-  assert(myWordsHtml.includes('id="my-words-notebook" hidden'), "word content must stay hidden until the first list response is ready");
+  assert(!myWordsHtml.includes('id="my-words-loading-sheet"'), "My Words must not block the page behind a batch loading surface");
+  assert(myWordsHtml.includes('id="my-words-notebook"'), "the word workspace shell must exist at first paint");
+  assert(!myWordsHtml.includes('id="my-words-notebook" hidden'), "the word workspace must stay visible while its first page loads");
+  assert(myWordsHtml.includes('class="my-words-skeleton-card"'), "first paint must reserve stable word-card positions");
   assert(myWordsHtml.includes('id="my-words-density-trigger"'), "mobile toolbar must expose one layout picker trigger");
   assert(myWordsHtml.includes('data-my-words-density="triple"'), "layout picker must offer a three-column view");
   assert(myWordsHtml.includes('id="my-words-translation-trigger"'), "Word List toolbar must expose the Chinese meaning toggle");
@@ -159,11 +160,20 @@ async function main() {
   assert(myWordsJs.includes("if (selectedWordChanged) desktopDetail.scrollTop = 0"), "a newly selected desktop word must begin at the top of the fixed detail pane");
   assert(/@media \(max-width: 760px\)[\s\S]*\.my-words-notebook\s*\{[^}]*height:\s*auto;[^}]*overflow:\s*visible;/.test(myWordsCss), "phone My Words must retain its document-scrolling layout");
   assert(myWordsCss.includes(".my-words-mobile-detail-overlay"), "mobile word details must use an independent modal");
-  assert(myWordsCss.includes(".my-words-loading-sheet::after"), "loading must reuse the Teacher matrix grid/radar wash language");
+  assert(myWordsCss.includes(".my-words-skeleton-card"), "loading must happen inside stable word-card placeholders");
   assert(/\.my-words-export-panel\.open\s*\{[^}]*position:\s*fixed;/.test(myWordsCss), "Export parameters must float at the current viewport position");
-  assert(myWordsCss.includes("@keyframes myWordsGridMove"), "loading grid must animate while data is pending");
+  assert(myWordsCss.includes("@view-transition"), "My Words must opt into same-origin document transitions");
+  assert(myWordsCss.includes("view-transition-name: my-words-surface"), "the page header must share the Dashboard notebook transition surface");
+  assert(myWordsCss.includes("@keyframes myWordsSkeletonSweep"), "word placeholders must use a restrained local loading treatment");
   assert(!myWordsCss.includes(".my-words-mobile-detail-overlay.is-closing"), "detail overlay must not retain a closing animation state");
   assert(myWordsJs.includes("function setWordsReady()"), "loaded words must replace the reserved loading surface without moving the toolbar");
+  assert(myWordsJs.includes("var FIRST_PAGE_SIZE = 18"), "My Words must request a bounded first page");
+  assert(myWordsJs.includes("function loadMoreWords()"), "My Words must load later pages progressively");
+  assert(myWordsJs.includes("function ensureAllWordsLoaded(message)"), "search, sorting, and export must be able to complete the full collection on demand");
+  assert(myWordsJs.includes("mrcat_my_words_first_page_v1"), "My Words must hydrate an owner-scoped warm first page");
+  assert(dashboardJs.includes("function warmMyWordsFirstPage()"), "Dashboard must warm the first page after its primary content is ready");
+  assert(studentFunction.includes("next_cursor"), "studentVocabulary must return a pagination cursor");
+  assert(studentFunction.includes("has_more"), "studentVocabulary must report whether another page exists");
   assert(!/Forgot|A little|Know|Learning\/Mastered/.test(myWordsHtml), "the placeholder release must not add a learning system");
   assert(teacherHtml.includes('id="teacher-dictionary-panel"'));
   ["updateNote", "updateWord", "mergeWords", "undoMerge", "requestAiDraft", "confirmAiDraft", "reportDictionaryIssue"].forEach((action) => {

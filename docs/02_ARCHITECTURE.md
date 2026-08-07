@@ -94,8 +94,20 @@ modal. It calls the existing `studentVocabulary` function directly and reuses
 `personal-vocab.js` enrichment plus `my-words-export.js`; no personal word data
 is embedded in static HTML. Desktop renders a persistent word index and detail
 pane, while narrow layouts replace the Sidebar with top tabs and open one word's
-detail in a bounded modal. The Dashboard notebook is only a normal page link and
-does not load the student's word list during Dashboard initialization.
+detail in a bounded modal. The Dashboard notebook remains a normal same-origin
+page link, but after primary Dashboard content settles it may issue one bounded
+18-item `studentVocabulary` page request and store that owner-keyed response in
+`sessionStorage`. My Words validates the signed-in owner before hydrating that
+cache, revalidates page zero in the background, and clears the cache on logout.
+
+`studentVocabulary.list` keeps its legacy bounded non-paginated response for old
+callers. Requests with `paginated`, `cursor`, or `page_size` use ordered offset
+pages, return `next_cursor`, `has_more`, and a page-zero `total_count`, and join
+lexicon/recommendation data only for the current page. My Words requests 18 rows
+for first paint and 30-row continuation pages near the scroll boundary. Search,
+non-recent sorting, Review period statistics, and Export explicitly finish the
+remaining pages before claiming complete results; ordinary entry never waits for
+the full collection.
 
 Current frontend philosophy:
 

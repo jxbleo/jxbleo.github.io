@@ -411,6 +411,117 @@ html.teacher-modal-scroll-locked {
     stroke-linecap: round;
     stroke-linejoin: round;
 }
+
+@view-transition {
+    navigation: auto;
+}
+
+.student-words-button {
+    view-transition-name: my-words-surface;
+    transform-origin: center;
+    transition: transform 100ms ease-out, background-color 140ms ease-out, border-color 140ms ease-out;
+}
+
+.student-words-button:active,
+.student-words-button.is-pressing {
+    transform: scale(0.96);
+    border-color: rgba(19, 118, 109, 0.34);
+    background: rgba(255, 255, 255, 0.96);
+}
+
+.my-words-route-surface {
+    position: fixed;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(19, 118, 109, 0.16);
+    border-radius: 999px;
+    color: #174f42;
+    background: rgba(244, 250, 247, 0.82);
+    box-shadow: 0 24px 70px rgba(20, 72, 58, 0.18);
+    backdrop-filter: blur(24px) saturate(155%);
+    -webkit-backdrop-filter: blur(24px) saturate(155%);
+    pointer-events: none;
+    transition: top 300ms cubic-bezier(0.22, 1, 0.36, 1), left 300ms cubic-bezier(0.22, 1, 0.36, 1), width 300ms cubic-bezier(0.22, 1, 0.36, 1), height 300ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 300ms cubic-bezier(0.22, 1, 0.36, 1), background-color 300ms ease-out;
+}
+
+.my-words-route-surface svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 160ms ease-out, transform 240ms ease-out;
+}
+
+.my-words-route-surface.is-expanding {
+    border-radius: 25px;
+    background: rgba(244, 250, 247, 0.94);
+}
+
+.my-words-route-surface.is-expanding svg {
+    opacity: 0;
+    transform: scale(1.12);
+}
+
+.my-words-fallback-return .app-shell {
+    animation: dashboardWordsFallbackArrival 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: top right;
+}
+
+@keyframes dashboardWordsFallbackArrival {
+    from { opacity: 0; transform: translateY(-5px) scale(0.992); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+::view-transition-group(my-words-surface) {
+    z-index: 1000;
+    overflow: clip;
+    border-radius: 25px;
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(my-words-surface) {
+    animation: dashboardWordsSharedOld 220ms ease-out both;
+}
+
+::view-transition-new(my-words-surface) {
+    animation: dashboardWordsSharedNew 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes dashboardWordsSharedOld {
+    from { opacity: 1; }
+    to { opacity: 0.22; }
+}
+
+@keyframes dashboardWordsSharedNew {
+    from { opacity: 0; }
+    24% { opacity: 0.18; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .student-words-button {
+        transition-duration: 0.001ms !important;
+    }
+
+    .my-words-route-surface,
+    .my-words-fallback-return .app-shell {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    ::view-transition-group(my-words-surface),
+    ::view-transition-old(my-words-surface),
+    ::view-transition-new(my-words-surface) {
+        animation-duration: 120ms !important;
+        transform: none !important;
+    }
+}
 .student-replies-button[aria-expanded="true"] {
     border-color: rgba(19, 118, 109, 0.34);
     background: #fff;
@@ -703,7 +814,15 @@ html.teacher-modal-scroll-locked {
     min-width: 0;
     border-radius: 14px;
 }
+
+@property --student-calendar-gold-edge-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
 .student-calendar-day {
+    --student-calendar-day-fill: rgba(224,233,229,0.48);
     position: relative;
     display: flex;
     align-items: center;
@@ -713,7 +832,7 @@ html.teacher-modal-scroll-locked {
     -webkit-appearance: none;
     appearance: none;
     color: #315149;
-    background: rgba(224,233,229,0.48);
+    background: var(--student-calendar-day-fill);
     font: inherit;
     font-size: 0.77rem;
     font-weight: 820;
@@ -723,14 +842,26 @@ html.teacher-modal-scroll-locked {
 }
 .student-calendar-day:hover { transform: translateY(-1px); }
 .student-calendar-day:active { transform: scale(0.96); }
-.student-calendar-day[data-level="1"] { background: #d9eee7; }
-.student-calendar-day[data-level="2"] { color: #164f46; background: #a9d9cc; }
+.student-calendar-day[data-level="1"] { --student-calendar-day-fill: #d9eee7; }
+.student-calendar-day[data-level="2"] { --student-calendar-day-fill: #a9d9cc; color: #164f46; }
 .student-calendar-day[data-level="3"],
-.student-calendar-day[data-level="4"] { color: #fff; background: #247d70; }
+.student-calendar-day[data-level="4"] { --student-calendar-day-fill: #247d70; color: #fff; }
 .student-calendar-day.is-today { border-color: rgba(19,118,109,0.62); }
 .student-calendar-day.is-selected {
-    border-color: #0f665d;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.92), 0 0 0 4px rgba(19,118,109,0.24);
+    --student-calendar-gold-edge-angle: 0deg;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--student-calendar-day-fill), var(--student-calendar-day-fill)) padding-box,
+        conic-gradient(
+            from var(--student-calendar-gold-edge-angle),
+            rgba(245,158,11,0.42) 0 72%,
+            rgba(255,255,255,0.86) 78%,
+            #fff1a6 84%,
+            #f59e0b 90%,
+            rgba(245,158,11,0.42) 96% 100%
+        ) border-box;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.72), 0 0 14px rgba(245,158,11,0.34);
+    animation: studentCalendarGoldEdgeOrbit 7s linear infinite;
 }
 .student-calendar-day:disabled {
     color: rgba(78,108,100,0.36);
@@ -746,6 +877,10 @@ html.teacher-modal-scroll-locked {
     font-size: 0.58rem;
     line-height: 1;
     text-shadow: 0 1px 1px rgba(57,40,9,0.22);
+}
+
+@keyframes studentCalendarGoldEdgeOrbit {
+    to { --student-calendar-gold-edge-angle: 360deg; }
 }
 .student-calendar-detail {
     margin-top: 17px;
@@ -3122,6 +3257,8 @@ body:not(.teacher-page) .tab-button.active {
     .student-calendar-outside-close,
     .student-message-section-toggle,
     .student-message-task { transition-duration: 1ms; }
+
+    .student-calendar-day.is-selected { animation: none; }
 }
 
 @media (prefers-reduced-transparency: reduce) {

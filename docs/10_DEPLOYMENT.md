@@ -234,6 +234,14 @@ example, and activity fields lazily; export falls back to existing save/update
 timestamps. AI can be left unconfigured without blocking edit, merge, Note,
 Excel, PDF, or normal dictionary enrichment.
 
+The progressive My Words first-page release changes both the versioned static
+Dashboard/My Words files and `studentVocabulary`. Publish the static files and
+upload a rebuilt `deploy-packages/studentVocabulary.zip` from the same commit.
+No collection or field migration is required; the existing recommended
+`student_vocabulary_items.student_uid + status + updated_at` query index supports
+the paginated read. Until the function ZIP is updated, the new static page cannot
+consume `next_cursor` / `has_more` and should not be released independently.
+
 ### Dashboard Large-History Fix
 
 The large-history fix requires both tracks below:

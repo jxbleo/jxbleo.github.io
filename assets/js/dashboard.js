@@ -143,6 +143,66 @@
     var calendarContent = document.getElementById('student-calendar-content');
     var calendarScroll = document.getElementById('student-calendar-scroll');
     var wordsButton = document.getElementById('student-words-button');
+    var myWordsWarmPromise = null;
+
+    function warmMyWordsFirstPage() {
+        if (myWordsWarmPromise) return myWordsWarmPromise;
+        if (!state.session || state.session.mode !== 'student') return Promise.resolve(null);
+        var profile = state.session.profile || {};
+        var owner = String(profile.auth_uid || profile.student_id || '');
+        if (!owner) return Promise.resolve(null);
+        myWordsWarmPromise = window.MrCatCloud.callFunction('studentVocabulary', {
+            action: 'list',
+            status: 'active',
+            paginated: true,
+            cursor: 0,
+            page_size: 18
+        }).then(function(result) {
+            if (!result || !result.success) return null;
+            try {
+                window.sessionStorage.setItem('mrcat_my_words_first_page_v1', JSON.stringify({
+                    owner: owner,
+                    saved_at: Date.now(),
+                    words: (result.words || []).slice(0, 18),
+                    next_cursor: result.next_cursor == null ? null : result.next_cursor,
+                    has_more: result.has_more === true,
+                    total_count: result.total_count != null && Number.isFinite(Number(result.total_count)) ? Number(result.total_count) : null
+                }));
+            } catch (error) {}
+            return result;
+        }).catch(function() {
+            myWordsWarmPromise = null;
+            return null;
+        });
+        return myWordsWarmPromise;
+    }
+
+    function useMyWordsFallbackTransition(event) {
+        if (!wordsButton || typeof document.startViewTransition === 'function') return false;
+        if (window.CSS && window.CSS.supports && window.CSS.supports('view-transition-name: my-words-surface')) return false;
+        if (event && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return false;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+        var rect = wordsButton.getBoundingClientRect();
+        var surface = document.createElement('div');
+        surface.className = 'my-words-route-surface';
+        surface.setAttribute('aria-hidden', 'true');
+        surface.innerHTML = wordsButton.innerHTML;
+        surface.style.top = rect.top + 'px';
+        surface.style.left = rect.left + 'px';
+        surface.style.width = rect.width + 'px';
+        surface.style.height = rect.height + 'px';
+        document.body.appendChild(surface);
+        try { window.sessionStorage.setItem('mrcat_my_words_fallback_arrival', '1'); } catch (error) {}
+        window.requestAnimationFrame(function() {
+            surface.classList.add('is-expanding');
+            surface.style.top = '12px';
+            surface.style.left = '12px';
+            surface.style.width = Math.max(0, window.innerWidth - 24) + 'px';
+            surface.style.height = Math.max(0, window.innerHeight - 24) + 'px';
+        });
+        window.setTimeout(function() { window.location.href = wordsButton.href; }, 300);
+        return true;
+    }
     var wordsOverlay = document.getElementById('student-words-overlay');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
     var wordsSearchTrigger = document.getElementById('my-words-search-trigger');
@@ -4098,7 +4158,15 @@
     }
     bindMyWordsToolbar();
     if (wordsButton) {
-        wordsButton.addEventListener('click', function() {
+        ['pointerenter', 'focus', 'touchstart'].forEach(function(eventName) {
+            wordsButton.addEventListener(eventName, warmMyWordsFirstPage, { passive: true, once: eventName !== 'focus' });
+        });
+        wordsButton.addEventListener('pointerdown', function() { wordsButton.classList.add('is-pressing'); }, { passive: true });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(eventName) {
+            wordsButton.addEventListener(eventName, function() { wordsButton.classList.remove('is-pressing'); }, { passive: true });
+        });
+        wordsButton.addEventListener('click', function(event) {
+            if (useMyWordsFallbackTransition(event)) event.preventDefault();
             setWordsPanel(true);
         });
     }
@@ -4251,6 +4319,9 @@
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();
             activateView(initialDashboardView(), true);
+            var warm = function() { warmMyWordsFirstPage(); };
+            if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 2400 });
+            else window.setTimeout(warm, 900);
             if (new URLSearchParams(window.location.search).get('view') === 'words') {
                 setWordsPanel(true);
             }
