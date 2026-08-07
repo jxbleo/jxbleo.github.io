@@ -1431,9 +1431,20 @@
         }
 
         .cloze-mode-row.test-row {
-            border-color: rgba(245, 158, 11, 0.35);
-            background: linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%);
+            --quiz-gold-edge-angle: 0deg;
+            border-color: transparent;
+            background:
+                linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%) padding-box,
+                conic-gradient(
+                    from var(--quiz-gold-edge-angle),
+                    rgba(245, 158, 11, 0.34) 0 72%,
+                    rgba(255, 255, 255, 0.76) 78%,
+                    #fff1a6 84%,
+                    var(--use-gold) 90%,
+                    rgba(245, 158, 11, 0.34) 96% 100%
+                ) border-box;
             box-shadow: 0 8px 20px rgba(146, 64, 14, 0.08);
+            animation: quizGoldEdgeOrbit 7s linear infinite;
         }
 
         .cloze-mode-row.test-row .cloze-mode-label {
@@ -1858,9 +1869,20 @@
         }
 
         .test-confirm-overlay.quiz-gold .test-confirm-card {
-            border: 1px solid rgba(245, 158, 11, 0.38);
-            background: linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%);
+            --quiz-gold-edge-angle: 0deg;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, #fffdf3 0%, var(--use-gold-soft) 100%) padding-box,
+                conic-gradient(
+                    from var(--quiz-gold-edge-angle),
+                    rgba(245, 158, 11, 0.38) 0 72%,
+                    rgba(255, 255, 255, 0.82) 78%,
+                    #fff1a6 84%,
+                    var(--use-gold) 90%,
+                    rgba(245, 158, 11, 0.38) 96% 100%
+                ) border-box;
             box-shadow: 0 0 0 1px rgba(255,255,255,0.72), 0 24px 70px rgba(146, 64, 14, 0.28);
+            animation: resultPop 320ms ease-out both, quizGoldEdgeOrbit 7s linear infinite;
         }
 
         .test-confirm-overlay.quiz-gold .test-confirm-card h2 {
@@ -1920,9 +1942,26 @@
         .history-dispute-note span { margin-top: 3px; font-weight: 850; }
         .history-dispute-note small { margin-top: 4px; color: var(--muted); }
 
+        @property --quiz-gold-edge-angle {
+            syntax: "<angle>";
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        @keyframes quizGoldEdgeOrbit {
+            to { --quiz-gold-edge-angle: 360deg; }
+        }
+
         @keyframes resultPop {
             from { opacity: 0; transform: translateY(18px) scale(.94); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cloze-mode-row.test-row,
+            .test-confirm-overlay.quiz-gold .test-confirm-card {
+                animation: none;
+            }
         }
 
         .dictation-empty {
