@@ -1296,10 +1296,17 @@ Shared rules:
 - BBC lessons may opt into a front-end-only render theme through
   `renderTheme` in their runtime JSON. The theme must not change grading IDs,
   submission behavior, History/Clear, Explain, Argue, or answer feedback rules.
-- BBC practice pages show a top-corner `Download Practice` control when the
-  current set has a generated worksheet PDF under
+- BBC practice pages show a `Download Worksheet` control when the current set
+  has a generated worksheet PDF under
   `assets/pdf/bbc-six-minute-english/<set_id>/<set_id>-worksheet.pdf`. The
   download target is a static no-answer exercise PDF, not a browser print view.
+  In the default green-glass theme, the control sits at the bottom-right of the
+  lesson hero without overlapping its title or subtitle.
+- In the default green-glass theme, fill-in question cards use the full
+  available line width before wrapping; they must not reserve permanent right
+  padding for Explain or Argue controls. Multiple-choice option markers keep
+  the letter and period together (for example, `A.`) on mobile, while only the
+  option text wraps into additional lines.
 - The BBC `classroom-worksheet` render theme presents the runtime as a
   worksheet-style handout: clean paper surface without ruled background lines,
   thick outer worksheet border, compact low-noise question numbers, full-width
