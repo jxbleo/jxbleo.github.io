@@ -633,13 +633,18 @@ Check:
   or red unread row styling
 - opening a grouped attempt notification clears its red state; a later attempt
   in the same thread makes it red again while unopened threads remain red
-- in-progress assignment cannot be duplicated
+- an ordinary in-progress assignment cannot be duplicated; a complete Class
+  Assign reuses an existing open individual record and promotes it into the
+  class batch with the new class parameters
 - completed/mastered/STAR work can be reassigned
-- reassignment creates a new `assignment_id`
+- completed reassignment creates a new `assignment_id`; class integration of an
+  open individual record preserves its `assignment_id`
 - Assign supports choosing Students before Work and Work before Students; the
   opposite picker color-codes prior assignment state
-- Assign marks open `in_progress` student/work pairs with color and disables
-  selection, while completed/mastered pairs stay colored but selectable
+- Assign marks open `in_progress` student/work pairs as mergeable for a complete
+  Class Assign, while completed/mastered pairs stay colored and selectable
+- every selected task previews Not started, Existing progress, and Already
+  finished counts with student details before confirmation
 - Assign selected Work and Students render one row per item, each with a small
   remove control that clears that selection without reopening the picker
 - Student picker no longer shows a `Select filtered` bulk-select button
@@ -663,6 +668,12 @@ Check:
 - Library opens practice pages in `teacher=1`
 - Show Answers uses teacher route and does not lock student mastery
 - Progress reflects recent attempts
+- a 96% assigned Vocabulary Quiz followed by a 100% Library/other Quiz updates
+  student FINISHED and Teacher View to 100%, regardless of selected group count
+- a later equal or lower countable score remains in History but does not change
+  `best_improved_at` or move the FINISHED row forward
+- a BBC attempt submitted after answer reveal/mastery lock remains History and
+  cannot increase the effective Best Score
 - Teacher page opens to View by default, and the initial matrix loading state
   shows only the animated grid/radar wash without visible loading copy or a
   centered spinner

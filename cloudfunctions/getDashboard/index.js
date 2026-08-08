@@ -1,5 +1,6 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const starRewards = require("../_shared/star-rewards");
+const exerciseProgress = require("../_shared/exercise-progress");
 const { summarizeSelfStudyAttempts } = require("./self-study-completions");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
@@ -1155,16 +1156,29 @@ exports.main = async (event = {}) => {
       .map((item) => item.set_id)
       .filter(Boolean));
     const selfStudySetIds = new Set(selfStudyStars.map((item) => item.set_id).filter(Boolean));
+    const scoreLockBySet = new Map();
+    assignments.forEach((assignment) => {
+      const set = setMap.get(assignment.set_id);
+      if (!isBbcSet(set) || (assignment.mastery_locked !== true && assignment.answer_revealed !== true)) return;
+      const value = assignment.mastery_locked_at || assignment.answer_revealed_at;
+      if (!value) return;
+      const current = scoreLockBySet.get(String(assignment.set_id));
+      if (!current || dateValue(value) < dateValue(current)) scoreLockBySet.set(String(assignment.set_id), value);
+    });
     const bestResourceAttemptsBySet = new Map();
-    resourceAttempts.forEach((attempt) => {
-      const set = setMap.get(attempt.set_id);
+    [...new Set(resourceAttempts.map((attempt) => String(attempt.set_id)))].forEach((setId) => {
+      const set = setMap.get(setId);
       const masteryPercentage = set ? masteryPercentageForSet(set) : 90;
-      const percentage = effectivePercentage(attempt);
-      if (percentage < masteryPercentage) return;
-      const existing = bestResourceAttemptsBySet.get(attempt.set_id);
-      if (!existing || percentage > effectivePercentage(existing)) {
-        bestResourceAttemptsBySet.set(attempt.set_id, attempt);
-      }
+      const progress = exerciseProgress.summarizeExerciseProgress(
+        resourceAttempts.filter((attempt) => String(attempt.set_id) === setId),
+        {
+          passingPercentage: set ? passingPercentageForSet(set) : 50,
+          masteryPercentage,
+          masteryEnabled: true,
+          scoreLockedAt: scoreLockBySet.get(setId) || null,
+        }
+      );
+      if (progress && progress.mastered && progress.best) bestResourceAttemptsBySet.set(setId, progress.best);
     });
     for (const [setId, attempt] of bestResourceAttemptsBySet.entries()) {
       if (assignmentStarSetIds.has(setId) || selfStudySetIds.has(setId)) continue;
@@ -1180,12 +1194,13 @@ exports.main = async (event = {}) => {
       }
     }
 
-    const attemptsByAssignment = new Map();
+    const attemptsBySet = new Map();
     progressAttempts.forEach((attempt) => {
-      if (!attempt.assignment_id) return;
-      const items = attemptsByAssignment.get(attempt.assignment_id) || [];
-      items.push(attempt);
-      attemptsByAssignment.set(attempt.assignment_id, items);
+      if (attempt.set_id) {
+        const setItems = attemptsBySet.get(String(attempt.set_id)) || [];
+        setItems.push(attempt);
+        attemptsBySet.set(String(attempt.set_id), setItems);
+      }
     });
     const teacherRepliesByAssignment = new Map();
     const teacherRepliesBySelfStudySet = new Map();
@@ -1212,26 +1227,24 @@ exports.main = async (event = {}) => {
       const passingPercentage = passingPercentageForAssignment(assignment, set);
       const masteryPercentage = masteryPercentageForAssignment(assignment, set);
       const assignmentId = assignment.assignment_id || assignment._id;
-      const assignmentAttempts = attemptsByAssignment.get(assignmentId) || [];
-      const computedBestAttempt = bestAttempt(assignmentAttempts);
-      const computedLatestAttempt = newestAttempt(assignmentAttempts);
+      const assignmentAttempts = attemptsBySet.get(String(assignment.set_id)) || [];
+      const globalProgress = exerciseProgress.summarizeExerciseProgress(assignmentAttempts, {
+        passingPercentage,
+        masteryPercentage,
+        masteryEnabled: assignmentMasteryEnabled(assignment),
+        scoreLockedAt: scoreLockBySet.get(String(assignment.set_id)) || null,
+      });
+      const computedBestAttempt = globalProgress && globalProgress.best || bestAttempt(assignmentAttempts);
+      const computedLatestAttempt = globalProgress && globalProgress.latest || newestAttempt(assignmentAttempts);
       const computedBestPercentage = computedBestAttempt ? effectivePercentage(computedBestAttempt) : null;
-      const savedBestPercentage = assignment.best_percentage == null ? null : Number(assignment.best_percentage);
-      const useComputedBest = computedBestAttempt && (
-        !assignment.best_attempt_id
-        || savedBestPercentage == null
-        || computedBestPercentage >= savedBestPercentage
-      );
-      const bestSource = useComputedBest ? computedBestAttempt : null;
+      const bestSource = computedBestAttempt || null;
       const fallbackLatestSource = computedLatestAttempt || null;
       const bestAttemptId = bestSource
         ? bestSource.attempt_id
         : (assignment.best_attempt_id || assignment.latest_attempt_id || (fallbackLatestSource && fallbackLatestSource.attempt_id) || null);
       const bestValue = bestSource
         ? computedBestPercentage
-        : (assignment.best_percentage == null
-          ? (computedBestPercentage == null ? assignment.latest_percentage : computedBestPercentage)
-          : assignment.best_percentage);
+        : (assignment.best_percentage == null ? assignment.latest_percentage : assignment.best_percentage);
       const percentage = displayPercentage(bestValue);
       const status = normalizedStatus(assignment.status, Number(percentage || 0), passingPercentage, masteryPercentage, assignment);
       const completedAt = assignment.completed_at
@@ -1271,8 +1284,14 @@ exports.main = async (event = {}) => {
         created_at: assignment.created_at || null,
         completed_at: completedAt,
         mastered_at: masteredAt,
-        updated_at: assignment.updated_at || (computedLatestAttempt && computedLatestAttempt.submitted_at) || null,
-        attempt_count: Math.max(Number(assignment.attempt_count || 0), assignmentAttempts.length),
+        updated_at: globalProgress && globalProgress.best_improved_at
+          || assignment.best_improved_at
+          || assignment.progress_updated_at
+          || completedAt
+          || null,
+        best_improved_at: globalProgress && globalProgress.best_improved_at || assignment.best_improved_at || null,
+        latest_submitted_at: globalProgress && globalProgress.latest_submitted_at || null,
+        attempt_count: globalProgress ? globalProgress.attempt_count : Math.max(Number(assignment.attempt_count || 0), assignmentAttempts.length),
         latest_percentage: assignment.latest_percentage == null
           ? (computedLatestAttempt ? effectivePercentage(computedLatestAttempt) : null)
           : assignment.latest_percentage,
@@ -1288,6 +1307,9 @@ exports.main = async (event = {}) => {
         prefill_attempt_id: status === "passed" || status === "mastered" ? bestAttemptId : null,
         answer_revealed: assignment.answer_revealed === true,
         mastery_locked: assignment.mastery_locked === true,
+        completed_before_assignment: Boolean(
+          completedAt && assignment.created_at && dateValue(completedAt) < dateValue(assignment.created_at)
+        ),
         star_claimed: claimedAssignmentIds.has(assignment.assignment_id || assignment._id),
         passing_percentage: passingPercentage,
         mastery_percentage: masteryPercentage,
@@ -1301,7 +1323,26 @@ exports.main = async (event = {}) => {
         },
       });
     }
-    const representedFinishedAssignmentSetIds = new Set(assignmentViews
+    const visibleAssignmentViews = [...assignmentViews.reduce((groups, item) => {
+      const setId = String(item && item.set && item.set.set_id || "");
+      if (!setId) return groups;
+      const current = groups.get(setId);
+      if (!current) {
+        groups.set(setId, item);
+        return groups;
+      }
+      const itemOpen = item.status === "to_do";
+      const currentOpen = current.status === "to_do";
+      if (itemOpen !== currentOpen) {
+        if (itemOpen) groups.set(setId, item);
+        return groups;
+      }
+      if (dateValue(item.created_at || item.due_at) > dateValue(current.created_at || current.due_at)) {
+        groups.set(setId, item);
+      }
+      return groups;
+    }, new Map()).values()];
+    const representedFinishedAssignmentSetIds = new Set(visibleAssignmentViews
       .filter((assignment) => assignment && (assignment.status === "passed" || assignment.status === "mastered"))
       .map((assignment) => String(assignment.set && assignment.set.set_id || ""))
       .filter(Boolean));
@@ -1347,6 +1388,7 @@ exports.main = async (event = {}) => {
         : null;
       const teacherReplies = (teacherRepliesBySelfStudySet.get(setId) || [])
         .map((item) => disputeReplyView(item, set));
+      const bestImprovedAt = bestAttempt && bestAttempt.submitted_at || completedAt;
       selfStudyViews.push({
         assignment_id: null,
         achievement_id: achievement && (achievement.achievement_id || achievement._id) || null,
@@ -1356,7 +1398,10 @@ exports.main = async (event = {}) => {
         due_at: null,
         completed_at: completedAt,
         mastered_at: masteredAt,
-        updated_at: latestAttempt && latestAttempt.submitted_at || masteredAt || completedAt,
+        updated_at: bestImprovedAt || masteredAt || completedAt,
+        best_improved_at: bestImprovedAt || null,
+        progress_updated_at: bestImprovedAt || null,
+        latest_submitted_at: latestAttempt && latestAttempt.submitted_at || null,
         attempt_count: summary ? summary.attempt_count : 1,
         latest_percentage: summary ? summary.latest_percentage : percentage,
         best_percentage: percentage,
@@ -1411,7 +1456,7 @@ exports.main = async (event = {}) => {
 
     return {
       success: true,
-      assignments: assignmentViews.concat(selfStudyViews),
+      assignments: visibleAssignmentViews.concat(selfStudyViews),
       library_progress: [...libraryProgressBySet.values()],
       star_achievements: starAchievements,
       teacher_replies: teacherReplyItems.map((item) => disputeReplyView(item, setMap.get(item.set_id))),

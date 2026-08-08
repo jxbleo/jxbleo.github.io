@@ -7,6 +7,16 @@
 
 ### Changed
 
+- Unified assigned and self-study results into one highest-score Exercise
+  Progress per student and set. Already-completed work now enters a new
+  assignment as Finished immediately, Vocabulary can keep improving, BBC obeys
+  its score lock, and tied/lower retries no longer move FINISHED ordering.
+- Changed complete Class Assign so an existing open individual assignment is
+  integrated into the class batch instead of skipped, and added per-task Assign
+  previews for Not started, Existing progress, and Already finished students.
+- Kept Yellow STAR authority assignment-owned: historical mastery produces a
+  Yellow STAR only when the teacher enables Earn STAR.
+
 - Changed the Dashboard notebook from immediate navigation into a unified
   glass quick-preview dialog showing the seven most recent words, pronunciation,
   the saved/remaining counts, and a fixed `Open My Words` route to the complete

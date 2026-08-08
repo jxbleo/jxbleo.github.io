@@ -69,7 +69,7 @@ function testAdjustedPassAndThresholdFallback() {
 function testDashboardIntegrationContract() {
   const backend = fs.readFileSync(path.resolve(__dirname, "../cloudfunctions/getDashboard/index.js"), "utf8");
   const frontend = fs.readFileSync(path.resolve(__dirname, "../assets/js/dashboard.js"), "utf8");
-  assert(backend.includes("assignmentViews.concat(selfStudyViews)"), "self-study completions must use the shared assignment projection");
+  assert(backend.includes("visibleAssignmentViews.concat(selfStudyViews)"), "self-study completions must use the deduplicated assignment projection");
   assert(backend.includes("representedFinishedAssignmentSetIds"), "a finished assignment must deduplicate the same completed set");
   assert(frontend.includes("function finishedAssignments()"));
   assert(frontend.includes("function studentCalendarFinishedItems()"));

@@ -222,6 +222,8 @@ Core fields:
 | `best_percentage` | number/null | best display percentage |
 | `raw_best_percentage` | number/null | best raw percentage |
 | `best_attempt_id` | string/null | best attempt |
+| `best_improved_at` | Date/null | time the set-wide effective best score last increased strictly |
+| `progress_updated_at` | Date/null | compatibility ordering timestamp; changes only with a strict best-score improvement |
 | `answer_revealed` | boolean | answers shown |
 | `mastery_locked` | boolean | mastery blocked after reveal |
 | `completed_at` | Date/null | first passed time |
@@ -233,6 +235,10 @@ Core fields:
 | `converted_from_self_study` | boolean | assignment was initialized from prior Explore/Library completion |
 | `converted_self_study_attempt_id` | string/null | self-study attempt used for initial assignment summary |
 | `converted_self_study_achievement_id` | string/null | self-study STAR converted to assignment STAR, when applicable |
+| `completed_before_assignment` | boolean | assignment was already passed from prior set-wide Exercise Progress when created/integrated |
+| `promoted_from_individual` | boolean | open individual assignment was reused by a later complete Class Assign |
+| `promoted_to_class_batch_at` | Date/null | time the individual participation entered the class batch |
+| `previous_individual_assignment_snapshot` | object/null | audit snapshot of the prior individual schedule/standards before class integration |
 
 Status rule:
 
@@ -242,11 +248,17 @@ to_do -> passed -> mastered
 
 Status is monotonic. Later lower-scoring attempts update latest fields but do not downgrade assignment completion.
 Assignment summary fields such as `attempt_count`, `latest_attempt_id`,
-`latest_percentage`, `best_attempt_id`, and `best_percentage` are derived from
-immutable attempts. `submitAttempt` should recompute those summary fields from
-the linked assignment attempts after recording a countable assignment attempt.
-Teacher progress views may use linked attempts as a fallback if stored summary
-fields are missing or stale.
+`latest_percentage`, `best_attempt_id`, and `best_percentage` project the
+student's authoritative Exercise Progress for the same `student_uid + set_id`
+from all countable immutable attempts, regardless of `assignment_id`.
+`assignment_id` remains the attempt's historical submission context. Timed
+Vocabulary Practice is excluded. BBC attempts after the earliest answer reveal
+or mastery lock remain history but cannot improve effective Best. The first
+attempt establishing a score wins ties, so `best_improved_at` changes only on a
+strict increase and drives FINISHED recency.
+Class learning-report snapshots apply the same set-wide pool at the report
+cutoff; a qualifying attempt does not need to be bound to that Class Task's
+assignment row.
 
 Teachers must choose a due week during Assign. `teacherAdmin` normalizes it to
 that Shanghai-time week's Sunday 23:59:59 and stores it in `due_at`, which
@@ -302,7 +314,10 @@ assignments and protected STAR records are skipped by normal cancellation.
 
 Reassignment rule:
 
-- Open assignment (`to_do`, legacy `not_done`, legacy `failed`) blocks duplicate assignment.
+- Open assignment (`to_do`, legacy `not_done`, legacy `failed`) blocks an
+  ordinary duplicate assignment. Exception: a later server-verified complete
+  Class Assign reuses an open individual row, replaces its assignment parameters
+  with the class parameters, and promotes the common batch transactionally.
 - Completed history (`passed`, `mastered`, legacy `done`) does not block future reassignment.
 - Cancelled history (`cancelled`) does not block future reassignment.
 - Reassignment creates a new `assignment_id`.
@@ -317,6 +332,9 @@ Reassignment rule:
   `passed` when it meets the assignment passing percentage, `mastered` when it
   meets mastery and `mastery_enabled` is not false. Only mastered conversions
   create or convert an assignment STAR.
+- More generally, any prior countable attempt for that `student_uid + set_id`
+  initializes the new participation's global best. If it meets the selected
+  Passing %, `completed_before_assignment: true` and Finished are immediate.
 
 ## 5a. `learning_reports`
 

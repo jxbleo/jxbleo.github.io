@@ -341,14 +341,19 @@ mastery/STAR upgrades.
 For the same student and `set_id`:
 
 - no previous assignment: `available`, selectable
-- existing `not_done`, `failed`, or `to_do`: `in_progress`, not selectable
+- existing `not_done`, `failed`, or `to_do`: `in_progress`; ordinary duplicate
+  individual assignment is not allowed, but a complete Class Assign may select
+  it so the server can reuse and promote that open individual record
 - previous `done`, `passed`, or `mastered`: `completed`, visibly marked but
   selectable for reassignment
 - previous `cancelled`: available for reassignment and not treated as open
 
-The server revalidates this. A duplicate open assignment is skipped even if
-the browser sends it. Reassignment after completion creates a new assignment
-and preserves the old one.
+The server revalidates this. A duplicate open individual assignment is skipped
+even if the browser sends it. Exception: when the effective recipients cover a
+complete Class, an existing open individual assignment is moved into that new
+class batch, keeps its `assignment_id`, adopts the class assignment parameters,
+and is promoted with the other class rows. Reassignment after completion creates
+a new assignment and preserves the old one.
 
 Teachers can edit selected assignment records after assignment by explicit
 `assignment_id` selections. This is assignment-level editing, not a separate
@@ -433,7 +438,12 @@ remain owner-gated.
 
 ## 8. Submission, Grading, and Status
 
-All grading happens in `submitAttempt`, never in trusted browser logic.
+All grading happens in `submitAttempt`, never in trusted browser logic. The
+authoritative learning result is one Exercise Progress per
+`student_uid + set_id`, derived from every countable attempt regardless of its
+`assignment_id`. Assignment rows project that global best against their own
+Passing/Earn STAR standards; `assignment_id` remains submission context and
+audit history, not a separate score silo.
 
 The server derives the student from authentication, loads the visible `set`
 and private `grading_keys`, grades normalized answers, calculates a percentage,
@@ -448,8 +458,13 @@ these family defaults. Passing means:
 percentage >= passing_percentage
 ```
 
-Countable submissions update the linked assignment with `to_do`, `passed`, or
-`mastered`. Assignment status is monotonic: once an assignment is `passed`, a
+Countable submissions update every non-cancelled assignment for the same
+student/set with the global latest/best summary and its resulting `to_do`,
+`passed`, or `mastered` status. A strict best-score increase updates
+`best_improved_at`; equal or lower retries remain history and do not move
+FINISHED ordering. Vocabulary Quiz may improve indefinitely. BBC attempts after
+the earliest answer-reveal/mastery lock remain history but cannot improve the
+effective best. Assignment status is monotonic: once an assignment is `passed`, a
 later lower-scoring attempt must not move it back to `to_do`; once it is
 `mastered`, normal code must not downgrade it. `cancelled` is a terminal soft
 withdrawal state for open assignments and should not be revived by normal

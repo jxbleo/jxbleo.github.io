@@ -15,6 +15,7 @@
     "test:learning-reports": "node scripts/test-learning-reports.js && node scripts/test-learning-report-service.js",
     "test:star-rewards": "node scripts/test-star-rewards.js",
     "test:self-study-completions": "node scripts/test-self-study-completions.js",
+    "test:global-progress": "node scripts/test-global-exercise-progress.js",
     "test:protected-resources": "node scripts/test-protected-resource.js",
     "prepare:dse-topic-bank": "node scripts/prepare-protected-resource.js",
     "prepare:jupas-report": "node scripts/prepare-protected-resource.js --resource hk8-dse-jupas-weighting-2026-27",

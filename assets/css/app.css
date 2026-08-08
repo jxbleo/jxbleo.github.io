@@ -8371,6 +8371,78 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     border-radius: 8px;
     background: rgba(255,255,255,0.86);
 }
+.assign-progress-preview {
+    margin: -3px 10px 6px;
+    border-radius: 10px;
+    color: var(--ink);
+    background: rgba(244, 249, 247, 0.86);
+}
+.assign-progress-preview summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 11px;
+    cursor: pointer;
+    font-size: 0.74rem;
+    font-weight: 860;
+    list-style: none;
+}
+.assign-progress-preview summary::-webkit-details-marker { display: none; }
+.assign-progress-preview summary:focus-visible {
+    border-radius: 10px;
+    outline: 3px solid rgba(19, 118, 109, 0.12);
+}
+.assign-progress-preview-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 6px;
+}
+.assign-progress-preview-chips span {
+    padding: 4px 7px;
+    border-radius: 999px;
+    color: rgba(24, 53, 47, 0.72);
+    background: rgba(79, 96, 90, 0.08);
+    font-size: 0.66rem;
+    font-weight: 880;
+}
+.assign-progress-preview-chips .is-progress {
+    color: #805c14;
+    background: rgba(224, 172, 54, 0.14);
+}
+.assign-progress-preview-chips .is-finished {
+    color: #116b58;
+    background: rgba(19, 118, 109, 0.12);
+}
+.assign-progress-preview-detail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 0 11px 11px;
+}
+.assign-progress-preview-detail section {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    min-width: 0;
+    padding: 9px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.76);
+}
+.assign-progress-preview-detail section > strong {
+    color: var(--muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+.assign-progress-preview-detail p {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+}
+.assign-progress-preview-detail p span { font-size: 0.74rem; font-weight: 850; }
+.assign-progress-preview-detail p small { color: var(--muted); font-size: 0.66rem; font-weight: 720; }
 .assign-params-header {
     padding: 0 10px 2px;
     border: 0;
@@ -10072,6 +10144,10 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     .assign-params-row {
         grid-template-columns: 1fr;
     }
+    .assign-progress-preview { margin-inline: 0; }
+    .assign-progress-preview summary { align-items: start; flex-direction: column; }
+    .assign-progress-preview-chips { justify-content: start; }
+    .assign-progress-preview-detail { grid-template-columns: 1fr; }
     .assign-params-header { display: none; }
     .assign-custom-date-controls {
         grid-template-columns: 1fr;

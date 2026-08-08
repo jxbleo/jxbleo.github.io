@@ -706,7 +706,8 @@ function testStudentModalShellMarkup() {
   assert(dashboardHtml.includes('id="student-calendar-date" aria-hidden="true"'));
   assert(dashboardHtml.indexOf('id="student-message-button"') < dashboardHtml.indexOf('id="student-replies-button"'));
   assert(appCss.includes("position: sticky;\n    top: 0;\n    z-index: 3;"));
-  assert(appCss.includes(".student-calendar-day {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;"));
+  assert(appCss.includes(".student-calendar-day {\n    --student-calendar-day-fill:"));
+  assert(appCss.includes("position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;"));
   assert(appCss.includes("-webkit-appearance: none;\n    appearance: none;"));
   assert(appCss.includes("font-weight: 820;\n    line-height: 1;"));
   assert(appCss.includes(".student-calendar-date {\n    position: absolute;\n    top: 57%;"));
@@ -1044,6 +1045,121 @@ async function main() {
   const created = collections.assignments.find((item) => item.assignment_id === createResult.created[0].assignment_id);
   assert.equal(created.due_at.toISOString(), "2026-07-19T15:59:59.000Z");
   assert.equal(created.assigned_at.toISOString(), created.due_at.toISOString());
+  const duplicateIndividualResult = await call("createAssignments", {
+    set_ids: ["TEST-SET"],
+    student_uids: ["student-uid"],
+    set_options: [{
+      set_id: "TEST-SET",
+      due_at: "2026-07-20T00:00:00+08:00",
+      passing_percentage: 50,
+      mastery_enabled: false,
+    }],
+  });
+  assert.equal(duplicateIndividualResult.created.length, 0);
+  assert.equal(duplicateIndividualResult.skipped[0].reason, "in_progress");
+
+  collections.sets.push({
+    _id: "class-merge-set-record",
+    set_id: "CLASS-MERGE-SET",
+    title: "Class merge set",
+    visible: true,
+    passing_percentage: 50,
+    mastery_percentage: 90,
+  });
+  collections.students.push({
+    _id: "student-two-profile",
+    auth_uid: "student-two-uid",
+    student_id: "student-two-login",
+    name: "Student Two",
+    role: "student",
+    active: true,
+    class_id: "class-one",
+  });
+  collections.students.find((item) => item.auth_uid === "student-uid").class_id = "class-one";
+  collections.classes = [{ _id: "class-one-record", class_id: "class-one", name: "Class One", active: true }];
+  collections.class_memberships = [
+    { _id: "membership-one", class_id: "class-one", student_uid: "student-uid", active: true },
+    { _id: "membership-two", class_id: "class-one", student_uid: "student-two-uid", active: true },
+  ];
+  const originalIndividualAssignment = {
+    _id: "individual-before-class",
+    assignment_id: "individual-before-class",
+    assignment_batch_id: "old-individual-batch",
+    assignment_scope: "individual",
+    class_id: null,
+    class_task_id: null,
+    student_uid: "student-uid",
+    set_id: "CLASS-MERGE-SET",
+    status: "to_do",
+    due_at: new Date("2026-07-19T15:59:59.000Z"),
+    assigned_at: new Date("2026-07-19T15:59:59.000Z"),
+    passing_percentage: 50,
+    mastery_percentage: 90,
+    mastery_enabled: false,
+    created_at: new Date("2026-07-01T02:00:00.000Z"),
+    updated_at: new Date("2026-07-01T02:00:00.000Z"),
+  };
+  collections.assignments.push(originalIndividualAssignment);
+  const classMergeResult = await call("createAssignments", {
+    set_ids: ["CLASS-MERGE-SET"],
+    student_uids: ["student-uid", "student-two-uid"],
+    set_options: [{
+      set_id: "CLASS-MERGE-SET",
+      due_at: "2026-08-10T00:00:00+08:00",
+      passing_percentage: 72,
+      mastery_percentage: 96,
+      mastery_enabled: true,
+    }],
+  });
+  assert.equal(classMergeResult.success, true);
+  assert.equal(classMergeResult.created.length, 2);
+  const integratedResult = classMergeResult.created.find((item) => item.student_uid === "student-uid");
+  assert.equal(integratedResult.assignment_id, "individual-before-class", "class Assign must preserve the open individual assignment ID");
+  assert.equal(integratedResult.integrated_existing_assignment, true);
+  const mergedRows = collections.assignments.filter((item) => item.set_id === "CLASS-MERGE-SET");
+  assert.equal(mergedRows.length, 2, "class integration must not skip or duplicate a student");
+  assert(mergedRows.every((item) => item.assignment_scope === "class" && item.class_id === "class-one"));
+  assert(mergedRows.every((item) => item.class_task_id === mergedRows[0].class_task_id));
+  assert.equal(originalIndividualAssignment.passing_percentage, 72);
+  assert.equal(originalIndividualAssignment.mastery_percentage, 96);
+  assert.equal(originalIndividualAssignment.promoted_from_individual, true);
+
+  collections.sets.push({
+    _id: "prior-progress-set-record",
+    set_id: "PRIOR-PROGRESS-SET",
+    title: "Prior progress set",
+    visible: true,
+    passing_percentage: 90,
+    mastery_percentage: 100,
+  });
+  collections.attempts.push({
+    _id: "prior-assigned-attempt-record",
+    attempt_id: "prior-assigned-attempt",
+    student_uid: "student-uid",
+    set_id: "PRIOR-PROGRESS-SET",
+    assignment_id: "historical-assignment-context",
+    mode: "vocabulary_test",
+    percentage: 93,
+    raw_percentage: 93,
+    submitted_at: new Date("2026-07-02T04:00:00.000Z"),
+  });
+  const priorProgressAssignResult = await call("createAssignments", {
+    set_ids: ["PRIOR-PROGRESS-SET"],
+    student_uids: ["student-uid"],
+    set_options: [{
+      set_id: "PRIOR-PROGRESS-SET",
+      due_at: "2026-08-17T00:00:00+08:00",
+      passing_percentage: 90,
+      mastery_enabled: false,
+    }],
+  });
+  assert.equal(priorProgressAssignResult.created[0].completed_before_assignment, true);
+  const priorProgressAssignment = collections.assignments.find((item) =>
+    item.assignment_id === priorProgressAssignResult.created[0].assignment_id
+  );
+  assert.equal(priorProgressAssignment.status, "passed");
+  assert.equal(priorProgressAssignment.best_percentage, 93);
+  assert.equal(priorProgressAssignment.best_attempt_id, "prior-assigned-attempt");
 
   const updateResult = await call("updateAssignments", {
     assignment_ids: [created.assignment_id],
@@ -1147,7 +1263,9 @@ async function main() {
   assert.equal(invalidEnabledMasteryUpdate.code, "PASSING_ABOVE_MASTERY");
 
   currentUid = "student-uid";
-  const expectedDashboardAssignmentCount = collections.assignments.length + 61;
+  const expectedDashboardAssignmentCount = new Set(
+    collections.assignments.filter((item) => item.status !== "cancelled").map((item) => item.set_id)
+  ).size + 61;
   for (let index = 0; index < 60; index += 1) {
     const setId = `HISTORY-${String(index + 1).padStart(2, "0")}`;
     collections.sets.push({
@@ -1230,8 +1348,11 @@ async function main() {
   assert.equal(dashboardResult.star_achievements[1].star_type, "yellow");
   assert.equal(dashboardResult.star_achievements[1].assignment_id, "history-assignment-0");
   assert.equal(new Date(dashboardResult.teacher_replies[0].created_at).toISOString(), "2026-08-05T06:32:00.000Z");
-  const legacyDashboardAssignment = dashboardResult.assignments.find((item) => item.assignment_id === "legacy-assignment");
-  assert.equal(new Date(legacyDashboardAssignment.due_at).toISOString(), "2026-06-21T15:59:59.000Z");
+  assert.equal(
+    dashboardResult.assignments.filter((item) => item.set && item.set.set_id === "TEST-SET").length,
+    1,
+    "the student dashboard must project one visible participation per set"
+  );
 
   const dryRun = await call("backfillAssignmentDueWeeks", { limit: 100 });
   assert.equal(dryRun.success, true);
