@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Changed the Dashboard notebook from immediate navigation into a unified
+  glass quick-preview dialog showing the seven most recent words, pronunciation,
+  the saved/remaining counts, and a fixed `Open My Words` route to the complete
+  workspace. Full search, editing, Notes, sorting, and export remain outside the
+  Dashboard preview.
 - Replaced the Student completion calendar's white/green selected-day outline
   with the Vocabulary Quiz confirmation's flowing gold-edge treatment while
   preserving each day's completion fill, STAR marker, and a static reduced-motion

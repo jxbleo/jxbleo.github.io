@@ -1221,9 +1221,18 @@ Check:
 - explicit expired/closed/device-blocked/content-outdated heartbeat errors
   still end the test immediately, and hiding/leaving the page still abandons it
 - group metadata is stored
-- the Dashboard notebook opens `my-words.html`, legacy
-  `dashboard.html#my-words` redirects there, and Dashboard no longer mounts or
-  renders a second personal-vocabulary runtime
+- the Dashboard notebook opens a glass preview with no more than the seven most
+  recent active words. Each row shows English, POS, a one-line Chinese meaning,
+  and pronunciation; the header uses the true total, and the fixed footer shows
+  the remaining count plus `Open My Words`
+- the preview shares the Dashboard modal width/material, external `Close`, and
+  exact-position page lock. On a short phone only the seven-word body scrolls;
+  the header, full-workspace action, and external Close remain available.
+  Backdrop and Escape do not dismiss it, and explicit Close restores notebook
+  focus
+- `Open My Words` enters `my-words.html`; legacy `dashboard.html#my-words`
+  redirects there, and Dashboard never mounts search, add, edit, delete, Notes,
+  sorting, export, or a second complete personal-vocabulary runtime
 - throttle the first My Words data request and confirm the `My Words / Review`
   row plus the full Search/layout/Export/sort toolbar are visible immediately
   and remain at the same coordinates; stable card/detail skeletons occupy only
