@@ -10,7 +10,7 @@
     <script>try{if(sessionStorage.getItem('mrcat_dashboard_fallback_arrival')==='1'){sessionStorage.removeItem('mrcat_dashboard_fallback_arrival');document.documentElement.classList.add('my-words-fallback-return');}}catch(error){}</script>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/dse-apple-touch-icon.png">
     <link rel="manifest" href="site-dse.webmanifest">
-    <link rel="stylesheet" href="assets/css/app.css?v=20260808-1">
+    <link rel="stylesheet" href="assets/css/app.css?v=20260808-2">
     <link rel="stylesheet" href="assets/css/liquid-glass-shell.css?v=20260807-1">
     <link rel="stylesheet" href="assets/css/spatial-workspace.css?v=20260726-5">
     <link rel="prefetch" href="my-words.html" as="document">
@@ -43,7 +43,7 @@
                     </svg>
                     <span class="student-calendar-date" id="student-calendar-date" aria-hidden="true"></span>
                 </button>
-                <a class="icon-pill-button student-words-button" id="student-words-button" href="my-words.html" aria-label="My Words">
+                <a class="icon-pill-button student-words-button" id="student-words-button" href="my-words.html" aria-label="Preview My Words" aria-expanded="false" aria-controls="student-words-overlay">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M6 3.5h10.5A1.5 1.5 0 0 1 18 5v14.5H7.5A2.5 2.5 0 0 1 5 17V5.5a2 2 0 0 1 1-2Z"></path>
                         <path d="M8 3.5v16M10.5 8h4.5M10.5 11.5h4.5"></path>
@@ -160,6 +160,35 @@
             </div>
         </section>
 
+        <section class="student-words-overlay" id="student-words-overlay" hidden>
+            <div class="student-words-stack" role="dialog" aria-modal="true" aria-labelledby="student-words-title">
+                <section class="student-words-dialog">
+                    <header class="student-words-dialog-head">
+                        <div class="student-words-title-block">
+                            <div class="student-words-title-line">
+                                <h2 class="eyebrow accent" id="student-words-title">My Words</h2>
+                                <span class="student-words-count" id="student-words-count" aria-live="polite"></span>
+                            </div>
+                            <p>Recently saved</p>
+                        </div>
+                    </header>
+                    <div class="student-words-dialog-scroll" id="student-words-dialog-scroll">
+                        <div class="student-words-preview" id="student-words-preview" aria-live="polite" aria-busy="true">
+                            <div class="student-words-preview-loading">Loading your recent words…</div>
+                        </div>
+                    </div>
+                    <footer class="student-words-dialog-footer">
+                        <p class="student-words-remainder" id="student-words-remainder" hidden></p>
+                        <a class="student-words-open-button" href="my-words.html">
+                            <span>Open My Words</span>
+                            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m7 4 6 6-6 6"></path></svg>
+                        </a>
+                    </footer>
+                </section>
+                <button class="student-words-outside-close" id="student-words-close" type="button">Close</button>
+            </div>
+        </section>
+
         <section class="student-calendar-overlay" id="student-calendar-overlay" hidden>
             <div class="student-calendar-stack" role="dialog" aria-modal="true" aria-label="Completion calendar">
                 <section class="student-calendar-dialog">
@@ -178,7 +207,7 @@
     <script src="assets/js/personal-vocab.js?v=20260725-1"></script>
     <script src="assets/js/auth.js?v=20260808-1"></script>
     <script src="assets/js/content-editions.js?v=20260804-1"></script>
-    <script src="assets/js/dashboard.js?v=20260808-1"></script>
+    <script src="assets/js/dashboard.js?v=20260808-2"></script>
     <script src="assets/js/liquid-glass-shell.js?v=20260713-1"></script>
 </body>
 </html>

@@ -22,6 +22,7 @@
         starRewards: { available: false, wallet: null, cash_requests: [], unread_count: 0 },
         teacherReplies: [],
         vocabItems: [],
+        vocabTotalCount: 0,
         vocabSearch: '',
         vocabExportOpen: false,
         vocabExportRange: 'all',
@@ -143,6 +144,7 @@
     var calendarContent = document.getElementById('student-calendar-content');
     var calendarScroll = document.getElementById('student-calendar-scroll');
     var wordsButton = document.getElementById('student-words-button');
+    var wordsOpenLink = document.querySelector('.student-words-open-button');
     var myWordsWarmPromise = null;
 
     function warmMyWordsFirstPage() {
@@ -205,6 +207,8 @@
     }
     var wordsOverlay = document.getElementById('student-words-overlay');
     var wordsScroll = document.getElementById('student-words-dialog-scroll');
+    var wordsPreview = document.getElementById('student-words-preview');
+    var wordsRemainder = document.getElementById('student-words-remainder');
     var wordsSearchTrigger = document.getElementById('my-words-search-trigger');
     var wordsExportTrigger = document.getElementById('my-words-export-trigger');
     var wordsExportPanel = document.getElementById('my-words-export-panel');
@@ -3523,24 +3527,114 @@
         } catch (error) {}
     }
 
+    function myWordsPreviewItemHtml(word) {
+        var dictionary = word && word.dictionary;
+        var spokenWord = dictionary && dictionary.word || word && word.text || '';
+        var partOfSpeech = dictionary && dictionary.part_of_speech || '—';
+        var meaning = dictionary
+            ? wordChineseMeaning(dictionary)
+            : ((word && word.lookup_status) === 'not_found' ? '暂未找到中文释义' : '正在查找释义…');
+        return '<article class="student-words-preview-item">' +
+            '<div class="student-words-preview-copy">' +
+                '<strong>' + escapeHtml(word && word.text || '') + '</strong>' +
+                '<span><b>' + escapeHtml(partOfSpeech) + '</b><span>' + escapeHtml(meaning) + '</span></span>' +
+            '</div>' +
+            '<button class="student-words-preview-speak" type="button" data-preview-speak="' + escapeHtml(spokenWord) + '" aria-label="Pronounce ' + escapeHtml(spokenWord) + '">' +
+                '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 10v4h3l4 3V7l-4 3H5Z"></path><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7 7 0 0 1 0 10"></path></svg>' +
+            '</button>' +
+        '</article>';
+    }
+
+    function bindMyWordsPreviewActions() {
+        if (!wordsPreview) return;
+        wordsPreview.querySelectorAll('[data-preview-speak]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var value = button.dataset.previewSpeak || '';
+                if (!value || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+                window.speechSynthesis.cancel();
+                var utterance = new SpeechSynthesisUtterance(value);
+                utterance.lang = 'en-GB';
+                window.speechSynthesis.speak(utterance);
+            });
+        });
+        var retry = wordsPreview.querySelector('[data-preview-retry]');
+        if (retry) retry.addEventListener('click', loadMyWordsPreview);
+    }
+
+    function renderMyWordsPreview() {
+        if (!wordsPreview) return;
+        var activeWords = sortedVocabItems(state.vocabItems || []).filter(function(word) {
+            return (word.status || 'active') === 'active';
+        });
+        var visibleWords = activeWords.slice(0, 7);
+        var reportedTotal = Number(state.vocabTotalCount || 0);
+        var total = Math.max(Number.isFinite(reportedTotal) ? reportedTotal : 0, activeWords.length);
+        var count = document.getElementById('student-words-count');
+        if (count) count.textContent = total + (total === 1 ? ' word' : ' words');
+        wordsPreview.setAttribute('aria-busy', 'false');
+
+        if (!visibleWords.length) {
+            wordsPreview.innerHTML = '<div class="student-words-preview-empty"><strong>Your notebook is ready.</strong><p>Select a word or short phrase in a learning page to save it here.</p></div>';
+        } else {
+            wordsPreview.innerHTML = '<div class="student-words-preview-list" aria-label="Seven most recently saved words">' +
+                visibleWords.map(myWordsPreviewItemHtml).join('') +
+            '</div>';
+        }
+
+        var remainder = Math.max(0, total - visibleWords.length);
+        if (wordsRemainder) {
+            wordsRemainder.hidden = remainder === 0;
+            wordsRemainder.textContent = remainder + (remainder === 1 ? ' more word' : ' more words');
+        }
+        bindMyWordsPreviewActions();
+    }
+
+    function loadMyWordsPreview() {
+        if (!wordsPreview) return Promise.resolve();
+        if (!state.session) return Promise.resolve();
+        if (state.session.mode === 'visitor') {
+            state.vocabItems = [];
+            state.vocabTotalCount = 0;
+            wordsPreview.setAttribute('aria-busy', 'false');
+            wordsPreview.innerHTML = '<div class="student-words-preview-empty"><strong>Sign in to use My Words.</strong><p>Your saved vocabulary is available from a student account.</p></div>';
+            return Promise.resolve();
+        }
+        if (state.vocabItems.length) renderMyWordsPreview();
+        else {
+            wordsPreview.setAttribute('aria-busy', 'true');
+            wordsPreview.innerHTML = '<div class="student-words-preview-loading">Loading your recent words…</div>';
+        }
+        return warmMyWordsFirstPage().then(function(result) {
+            if (!result || !result.success) throw new Error('Unable to load My Words.');
+            state.vocabItems = result.words || [];
+            state.vocabTotalCount = result.total_count != null ? Number(result.total_count) : state.vocabItems.length;
+            renderMyWordsPreview();
+        }).catch(function() {
+            if (state.vocabItems.length) return;
+            wordsPreview.setAttribute('aria-busy', 'false');
+            wordsPreview.innerHTML = '<div class="student-words-preview-empty"><strong>Unable to load My Words.</strong><p>Please check your connection and try again.</p><button class="outline-button" type="button" data-preview-retry>Retry</button></div>';
+            bindMyWordsPreviewActions();
+        });
+    }
+
     function setWordsPanel(open) {
+        var wasOpen = state.wordsPanelOpen;
         state.wordsPanelOpen = open === true;
         if (!wordsOverlay) return;
-        if (!state.wordsPanelOpen) {
-            saveMyWordsScrollPosition();
-            closeMyWordsTools();
-        }
         wordsOverlay.hidden = !state.wordsPanelOpen;
-        document.body.style.overflow = state.wordsPanelOpen ? 'hidden' : '';
         if (wordsButton) {
             wordsButton.classList.toggle('active', state.wordsPanelOpen);
             wordsButton.setAttribute('aria-expanded', state.wordsPanelOpen ? 'true' : 'false');
         }
-        if (!state.wordsPanelOpen) return;
+        if (!state.wordsPanelOpen) {
+            if (wasOpen) unlockStudentMessageBackground();
+            return;
+        }
         setAccountPanel(false);
-        renderMyWordsView();
+        lockStudentMessageBackground();
+        if (wordsScroll) wordsScroll.scrollTop = 0;
+        loadMyWordsPreview();
         window.requestAnimationFrame(function() {
-            if (wordsScroll) wordsScroll.scrollTop = rememberedMyWordsScrollTop();
             var close = document.getElementById('student-words-close');
             if (close) close.focus({ preventScroll: true });
         });
@@ -4166,20 +4260,21 @@
             wordsButton.addEventListener(eventName, function() { wordsButton.classList.remove('is-pressing'); }, { passive: true });
         });
         wordsButton.addEventListener('click', function(event) {
-            if (useMyWordsFallbackTransition(event)) event.preventDefault();
+            if (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
             setWordsPanel(true);
+        });
+    }
+    if (wordsOpenLink) {
+        wordsOpenLink.addEventListener('click', function(event) {
+            if (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            setWordsPanel(false);
+            if (useMyWordsFallbackTransition(event)) event.preventDefault();
         });
     }
     var wordsClose = document.getElementById('student-words-close');
     if (wordsClose) {
         wordsClose.addEventListener('click', function() {
-            setWordsPanel(false);
-            if (wordsButton) wordsButton.focus();
-        });
-    }
-    if (wordsOverlay) {
-        wordsOverlay.addEventListener('click', function(event) {
-            if (event.target !== wordsOverlay) return;
             setWordsPanel(false);
             if (wordsButton) wordsButton.focus();
         });
@@ -4257,21 +4352,6 @@
         if (e.key === 'Escape' && practiceOverlay && !practiceOverlay.hidden) return;
         var passwordOverlay = document.querySelector('.password-dialog-overlay');
         if (e.key === 'Escape' && passwordOverlay) return;
-        if (e.key === 'Escape' && state.wordsPanelOpen) {
-            if (wordsAddTrigger && wordsAddTrigger.getAttribute('aria-expanded') === 'true') {
-                setMyWordsToolOpen('add', false);
-                wordsAddTrigger.focus();
-                return;
-            }
-            if (wordsSearchTrigger && wordsSearchTrigger.getAttribute('aria-expanded') === 'true') {
-                setMyWordsToolOpen('search', false);
-                wordsSearchTrigger.focus();
-                return;
-            }
-            setWordsPanel(false);
-            if (wordsButton) wordsButton.focus();
-            return;
-        }
         if (e.key === 'Escape' && libraryCategoryMenuOpen) {
             e.preventDefault();
             setLibraryCategoryMenuOpen(false, true);

@@ -56,8 +56,12 @@ async function main() {
   const teacherHtml = fs.readFileSync(path.join(root, "teacher.html"), "utf8");
   const studentFunction = fs.readFileSync(path.join(root, "cloudfunctions/studentVocabulary/index.js"), "utf8");
   const teacherFunction = fs.readFileSync(path.join(root, "cloudfunctions/teacherAdmin/index.js"), "utf8");
-  assert(dashboardHtml.includes('href="my-words.html"'), "Dashboard notebook must open the dedicated My Words workspace");
-  assert(!dashboardHtml.includes('id="student-words-overlay"'), "Dashboard must not retain a second My Words runtime");
+  assert(dashboardHtml.includes('id="student-words-overlay"'), "Dashboard notebook must open the My Words quick preview");
+  assert(dashboardHtml.includes('class="student-words-open-button" href="my-words.html"'), "the preview must link to the dedicated My Words workspace");
+  assert(dashboardHtml.includes('id="student-words-preview"'), "the preview must expose a bounded recent-word surface");
+  assert(!dashboardHtml.includes('id="my-words-search-trigger"'), "Dashboard must not retain the complete My Words runtime");
+  assert(dashboardJs.includes("activeWords.slice(0, 7)"), "the Dashboard preview must show at most seven recent active words");
+  assert(dashboardJs.includes("data-preview-speak"), "preview rows must provide pronunciation");
   assert(dashboardJs.includes("window.location.hash === '#my-words'"), "legacy Dashboard My Words links must redirect");
   assert(/assets\/css\/app\.css\?v=\d{8}-\d+/.test(dashboardHtml));
   assert(/assets\/js\/dashboard\.js\?v=\d{8}-\d+/.test(dashboardHtml));

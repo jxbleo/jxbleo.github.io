@@ -183,8 +183,19 @@ Navigation:
   `Go to question` action. Cancelling restores focus to that card. The card's
   bottom right shows the Shanghai date and time when the student submitted the
   Argue request.
-- My Words opens `my-words.html` from a notebook icon in the right-side utility
-  group; it does not render a second My Words runtime inside Dashboard
+- the My Words notebook icon in the right-side utility group opens a read-only
+  quick-preview dialog rather than navigating immediately. The dialog shares
+  the Calendar/Assignments width, glass material, backdrop, materialization,
+  page-scroll lock, and external `Close` capsule. Its fixed header shows the
+  total saved-word count; its independently scrollable body shows at most the
+  seven most recently active words, each reduced to English, part of speech, a
+  single-line Chinese meaning, and pronunciation. Its fixed footer reports the
+  remaining count and provides one full-width `Open My Words` action to
+  `my-words.html`. Search, add, edit, delete, export, sorting, Notes, and full
+  dictionary detail remain exclusive to the dedicated workspace, so Dashboard
+  never mounts a second complete My Words runtime. Backdrop and Escape do not
+  dismiss the preview; explicit Close restores focus and the exact prior page
+  position
 - the Student Dashboard has no standalone Learning Reports icon. Students open
   published weekly/monthly reports from an authenticated shared report link;
   `reports.html` and its authorization rules remain unchanged
