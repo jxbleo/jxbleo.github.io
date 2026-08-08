@@ -238,10 +238,10 @@ Practice navigation checks:
   Library for `teacher=1`
 - BBC and Vocabulary shared practice pages show both `Back` and `Home`; IELTS
   Reading and IELTS Listening show both controls in the exam top bar
-- on BBC practice pages, both leave confirmations show only their matching
-  `Back` or `Home` action inside the white card, with no `Stay here`; one
-  external `Close` button sits directly below the card and dismisses the dialog
-  without navigating
+- on BBC and Vocabulary practice pages, both leave confirmations show one
+  bottom action row inside the white card: `Cancel` on the left dismisses the
+  dialog without navigating, while `Confirm` on the right performs the selected
+  `Back` or `Home` navigation; neither dialog shows a separate `Close` action
 - static practice data requests use the public app-version query, not
   timestamp cache busting such as `?_=` + `Date.now()`
 - IELTS Reading shows the set code only in the black exam bar, reduces paragraph

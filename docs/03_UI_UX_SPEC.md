@@ -416,9 +416,11 @@ Student cards should show:
   verified, `Back` navigates to the safe `return` URL or the appropriate home
   fallback rather than risking older login or unrelated tab history. `Home`
   always goes directly to the student's dashboard, or to Teacher Library for
-  `teacher=1` preview pages. On BBC practice pages, the confirmation card keeps
-  only the selected `Back` or `Home` action inside it; a separate `Close`
-  control sits directly below and outside the card, replacing `Stay here`.
+  `teacher=1` preview pages. On BBC and Vocabulary practice pages, both leave
+  confirmations use one bottom action row inside the card: `Cancel` on the left
+  dismisses the dialog, and `Confirm` on the right performs the selected
+  `Back` or `Home` navigation. These dialogs do not show a separate `Close`
+  action.
 
 My Words:
 
