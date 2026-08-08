@@ -6,6 +6,8 @@
         || localStorage.getItem('mrcat_visitor') === 'true';
     var teacherMode = params.get('teacher') === '1';
     var bbcPractice = /(?:^|\/)bbc\.html$/.test(window.location.pathname);
+    var vocabularyPractice = /(?:^|\/)vocabulary\.html$/.test(window.location.pathname);
+    var standardLeaveActions = bbcPractice || vocabularyPractice;
     var profile = null;
 
     window.addEventListener('pageshow', function(event) {
@@ -39,11 +41,8 @@
             '.mrcat-back-modal{position:fixed;z-index:10001;inset:0;display:none;place-items:center;padding:20px;background:rgba(10,35,32,.48);backdrop-filter:blur(7px)}' +
             '.mrcat-back-modal.show{display:grid}.mrcat-back-box{width:min(390px,100%);padding:26px;border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.22);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}' +
             '.mrcat-back-box h2{margin:0 0 8px;color:#18332f;font-size:1.35rem}.mrcat-back-box p{margin:0 0 20px;color:#647b75;line-height:1.55}.mrcat-back-actions{display:grid;gap:9px}.mrcat-back-actions button{min-height:44px;border-radius:12px;font-weight:800}' +
+            '.mrcat-back-actions.mrcat-leave-actions{grid-template-columns:repeat(2,minmax(0,1fr))}' +
             '.mrcat-back-confirm{border:0;color:#fff;background:#13766d}.mrcat-back-cancel{border:1px solid #dce8e3;color:#18332f;background:#fff}' +
-            '.mrcat-bbc-leave-modal .mrcat-back-dialog{display:grid;gap:12px;width:min(390px,100%)}' +
-            '.mrcat-bbc-leave-modal .mrcat-back-box{box-sizing:border-box;width:100%}' +
-            '.mrcat-bbc-leave-modal .mrcat-back-close{justify-self:center;min-width:112px;min-height:42px;padding:0 22px;border:1px solid rgba(255,255,255,.7);border-radius:999px;color:#18332f;background:rgba(255,255,255,.96);box-shadow:0 12px 30px rgba(0,0,0,.18);font:800 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}' +
-            '.mrcat-bbc-leave-modal .mrcat-back-close:hover{transform:translateY(-1px);background:#fff}' +
             '.mrcat-visitor-modal{position:fixed;z-index:10000;inset:0;display:none;place-items:center;padding:20px;background:rgba(10,35,32,.48);backdrop-filter:blur(7px)}' +
             '.mrcat-visitor-modal.show{display:grid}.mrcat-visitor-box{width:min(390px,100%);padding:26px;border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.22);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}' +
             '.mrcat-visitor-box h2{margin:0 0 8px;color:#18332f;font-size:1.35rem}.mrcat-visitor-box p{margin:0 0 20px;color:#647b75;line-height:1.55}.mrcat-visitor-actions{display:grid;gap:9px}.mrcat-visitor-actions button{min-height:44px;border-radius:12px;font-weight:800}' +
@@ -151,18 +150,15 @@
         modal.className = 'mrcat-back-modal';
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
-        if (bbcPractice) {
-            modal.classList.add('mrcat-bbc-leave-modal');
+        if (standardLeaveActions) {
             modal.innerHTML =
-                '<div class="mrcat-back-dialog">' +
-                    '<div class="mrcat-back-box">' +
-                        '<h2 id="mrcat-leave-title">Leave this page?</h2>' +
-                        '<p id="mrcat-leave-copy">Unsaved answers on this page may be lost.</p>' +
-                        '<div class="mrcat-back-actions">' +
-                            '<button class="mrcat-back-confirm" type="button">Back</button>' +
-                        '</div>' +
+                '<div class="mrcat-back-box">' +
+                    '<h2 id="mrcat-leave-title">Leave this page?</h2>' +
+                    '<p id="mrcat-leave-copy">Unsaved answers on this page may be lost.</p>' +
+                    '<div class="mrcat-back-actions mrcat-leave-actions">' +
+                        '<button class="mrcat-back-cancel" type="button">Cancel</button>' +
+                        '<button class="mrcat-back-confirm" type="button">Confirm</button>' +
                     '</div>' +
-                    '<button class="mrcat-back-cancel mrcat-back-close" type="button">Close</button>' +
                 '</div>';
         } else {
             modal.innerHTML =
@@ -195,7 +191,7 @@
         var confirm = modal.querySelector('.mrcat-back-confirm');
         if (title) title.textContent = 'Leave this page?';
         if (text) text.textContent = copy;
-        if (confirm) confirm.textContent = label;
+        if (confirm) confirm.textContent = standardLeaveActions ? 'Confirm' : label;
         modal.classList.add('show');
     }
 
