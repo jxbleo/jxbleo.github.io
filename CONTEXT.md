@@ -35,6 +35,41 @@ The question, submitted answer, grading result, and grading context retained
 from one countable submission for faithful historical review.
 _Avoid_: Current answer key, live exercise content
 
+## Exercise Progress and Assignment Participation
+
+**Exercise Progress**:
+One student's authoritative, set-wide learning result for one Content Edition,
+derived from every countable attempt regardless of which assignment or Library
+entry created it.
+_Avoid_: Assignment score, latest submission
+
+**Best Score**:
+The highest eligible score in Exercise Progress. A tie or lower retry remains
+history but does not replace the attempt that first established that score.
+_Avoid_: Latest score, average score
+
+**Best Score Improved At**:
+The submission time when Best Score last increased strictly. FINISHED ordering
+uses this learning event, not an assignment creation time or a lower retry.
+_Avoid_: Last attempted at, assigned at
+
+**Assignment Participation**:
+A teacher-created reporting and reward context for an exercise. It applies its
+Passing, Earn STAR, mastery, due-week, and class-report rules to the student's
+existing Exercise Progress without becoming a separate learning record.
+_Avoid_: Exercise Progress, attempt owner
+
+**Completed Before Assignment**:
+An Assignment Participation that is already Finished when created because the
+student's prior Exercise Progress meets its Passing standard.
+_Avoid_: Auto-completed attempt, teacher-awarded pass
+
+**Promoted Class Participation**:
+An open individual Assignment Participation reused in a later whole-class
+Assign operation and moved into that Class Task instead of being duplicated or
+skipped.
+_Avoid_: Duplicate class assignment, reassignment
+
 ## Classes and Learning Reports
 
 **Class**:

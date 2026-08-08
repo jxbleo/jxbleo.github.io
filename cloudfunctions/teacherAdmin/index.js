@@ -1,6 +1,7 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const CloudBaseManager = require("@cloudbase/manager-node");
 const starRewards = require("../_shared/star-rewards");
+const exerciseProgress = require("../_shared/exercise-progress");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -372,24 +373,26 @@ function safeBoolean(value, fallback) {
   throw new Error("INVALID_BOOLEAN");
 }
 
-async function bestCompletedSelfStudyAttempt(studentUid, setId, passingPercentage, masteryPercentage) {
-  const attempts = await getAll("attempts", {
-    where: {
-      student_uid: studentUid,
-      set_id: setId,
-    },
+async function globalExerciseProgress(studentUid, set, passingPercentage, masteryPercentage, masteryEnabled) {
+  const setId = text(set && set.set_id || set);
+  const [attempts, assignments] = await Promise.all([
+    getAll("attempts", { where: { student_uid: studentUid, set_id: setId } }),
+    isBbcSet(set) ? getAll("assignments", { where: { student_uid: studentUid, set_id: setId } }) : [],
+  ]);
+  const scoreLockedAt = assignments.reduce((earliest, row) => {
+    const assignment = recordData(row);
+    if (assignment.mastery_locked !== true && assignment.answer_revealed !== true) return earliest;
+    const value = assignment.mastery_locked_at || assignment.answer_revealed_at;
+    if (!value) return earliest;
+    if (!earliest || attemptDateValue({ submitted_at: value }) < attemptDateValue({ submitted_at: earliest })) return value;
+    return earliest;
+  }, null);
+  return exerciseProgress.summarizeExerciseProgress(attempts.map(recordData), {
+    passingPercentage,
+    masteryPercentage,
+    masteryEnabled: masteryEnabled === true,
+    scoreLockedAt,
   });
-  return attempts
-    .map(recordData)
-    .filter((attempt) => !attempt.assignment_id)
-    .filter((attempt) =>
-      statusRank(statusForPercentage(effectivePercentage(attempt), passingPercentage, masteryPercentage, null)) >= statusRank("passed")
-    )
-    .sort((left, right) => {
-      const scoreDiff = effectivePercentage(right) - effectivePercentage(left);
-      if (scoreDiff) return scoreDiff;
-      return attemptDateValue(right) - attemptDateValue(left);
-    })[0] || null;
 }
 
 function hasOwn(object, key) {
@@ -1334,7 +1337,8 @@ async function promoteClassAssignmentBatch(assignmentBatchId, classId, now, teac
   return promotedStudentUids;
 }
 
-async function createAssignmentForStudent(student, setId, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
+async function createAssignmentForStudent(student, set, dueAt, passingPercentage, masteryPercentage, masteryEnabled, assignmentBatchId) {
+  const setId = text(set && set.set_id);
   const now = new Date();
   const achievementResult = await db.collection("student_set_achievements").where({
     student_uid: student.auth_uid,
@@ -1349,15 +1353,17 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
         student_uid: student.auth_uid,
       })
     : null;
-  const bestSelfStudyAttempt = await bestCompletedSelfStudyAttempt(
+  const progress = await globalExerciseProgress(
     student.auth_uid,
-    setId,
+    set,
     passingPercentage,
-    masteryPercentage
+    masteryPercentage,
+    masteryEnabled
   );
+  const bestProgressAttempt = progress && progress.best || null;
   const selfStudyPercentage = Number(
-    bestSelfStudyAttempt
-      ? effectivePercentage(bestSelfStudyAttempt)
+    progress
+      ? progress.best_percentage
       : selfStudyStar && selfStudyStar.best_percentage != null
         ? selfStudyStar.best_percentage
         : (selfStudyAttempt ? effectivePercentage(selfStudyAttempt) : 0)
@@ -1366,7 +1372,7 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
   const selfStudyStatus = statusForPercentage(selfStudyPercentage, passingPercentage, masteryPercentage, assignmentRules);
   const convertsSelfStudy = statusRank(selfStudyStatus) >= statusRank("passed");
   const convertsToMastery = selfStudyStatus === "mastered";
-  const conversionAttempt = bestSelfStudyAttempt || selfStudyAttempt || (selfStudyStar ? {
+  const conversionAttempt = bestProgressAttempt || selfStudyAttempt || (selfStudyStar ? {
     attempt_id: selfStudyStar.best_attempt_id || null,
     set_id: setId,
     percentage: selfStudyPercentage,
@@ -1396,19 +1402,23 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
     passing_percentage: passingPercentage,
     mastery_percentage: masteryPercentage,
     mastery_enabled: masteryEnabled,
-    completed_at: convertsSelfStudy ? convertedAt : null,
-    latest_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
-    attempt_count: convertsSelfStudy ? 1 : 0,
-    latest_percentage: convertsSelfStudy ? selfStudyPercentage : null,
-    best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
-    raw_best_percentage: convertsSelfStudy ? selfStudyPercentage : null,
-    best_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
-    best_correct_count: convertsSelfStudy && conversionAttempt ? conversionAttempt.correct_count : null,
-    best_question_count: convertsSelfStudy && conversionAttempt ? conversionAttempt.question_count : null,
+    completed_at: convertsSelfStudy ? progress && progress.completed_at || convertedAt : null,
+    latest_attempt_id: progress ? progress.latest_attempt_id : conversionAttempt && conversionAttempt.attempt_id || null,
+    attempt_count: progress ? progress.attempt_count : conversionAttempt ? 1 : 0,
+    latest_percentage: progress ? progress.latest_percentage : conversionAttempt ? selfStudyPercentage : null,
+    latest_raw_percentage: progress ? progress.latest_raw_percentage : conversionAttempt ? selfStudyPercentage : null,
+    best_percentage: progress ? progress.best_percentage : conversionAttempt ? selfStudyPercentage : null,
+    raw_best_percentage: progress ? progress.raw_best_percentage : conversionAttempt ? selfStudyPercentage : null,
+    best_attempt_id: progress ? progress.best_attempt_id : conversionAttempt && conversionAttempt.attempt_id || null,
+    best_correct_count: bestProgressAttempt ? bestProgressAttempt.correct_count : conversionAttempt ? conversionAttempt.correct_count : null,
+    best_question_count: bestProgressAttempt ? bestProgressAttempt.question_count : conversionAttempt ? conversionAttempt.question_count : null,
+    best_improved_at: progress ? progress.best_improved_at : conversionAttempt && conversionAttempt.submitted_at || null,
+    progress_updated_at: progress ? progress.best_improved_at : conversionAttempt && conversionAttempt.submitted_at || null,
     answer_revealed: false,
     mastery_locked: false,
-    mastered_at: convertsToMastery ? convertedAt : null,
-    converted_from_self_study: convertsSelfStudy,
+    mastered_at: convertsToMastery ? progress && progress.mastered_at || convertedAt : null,
+    completed_before_assignment: convertsSelfStudy,
+    converted_from_self_study: convertsSelfStudy && Boolean(bestProgressAttempt && !bestProgressAttempt.assignment_id || selfStudyStar),
     converted_self_study_achievement_id: convertsSelfStudy && selfStudyStar ? selfStudyStar.achievement_id || selfStudyStar._id : null,
     converted_self_study_attempt_id: convertsSelfStudy && conversionAttempt ? conversionAttempt.attempt_id || null : null,
     created_at: now,
@@ -1419,7 +1429,86 @@ async function createAssignmentForStudent(student, setId, dueAt, passingPercenta
   if (convertsToMastery && conversionAttempt) {
     await protectAssignmentStar(student, assignment, conversionAttempt, convertedAt);
   }
-  return { assignmentId, convertedFromSelfStudy: convertsSelfStudy };
+  return {
+    assignmentId,
+    convertedFromSelfStudy: assignment.converted_from_self_study,
+    completedBeforeAssignment: convertsSelfStudy,
+    bestPercentage: progress && progress.best_percentage,
+  };
+}
+
+async function integrateOpenAssignmentIntoBatch(
+  assignment,
+  student,
+  set,
+  dueAt,
+  passingPercentage,
+  masteryPercentage,
+  masteryEnabled,
+  assignmentBatchId,
+  teacher
+) {
+  const setId = text(set && set.set_id);
+  const now = new Date();
+  const progress = await globalExerciseProgress(
+    student.auth_uid,
+    set,
+    passingPercentage,
+    masteryPercentage,
+    masteryEnabled
+  );
+  const status = progress ? progress.status : "to_do";
+  const update = {
+    assignment_batch_id: assignmentBatchId,
+    assignment_scope: "individual",
+    class_id: null,
+    class_task_id: null,
+    due_at: dueAt,
+    assigned_at: dueAt,
+    passing_percentage: passingPercentage,
+    mastery_percentage: masteryPercentage,
+    mastery_enabled: masteryEnabled,
+    status,
+    attempt_count: progress ? progress.attempt_count : Number(assignment.attempt_count || 0),
+    latest_attempt_id: progress ? progress.latest_attempt_id : assignment.latest_attempt_id || null,
+    latest_percentage: progress ? progress.latest_percentage : assignment.latest_percentage || null,
+    latest_raw_percentage: progress ? progress.latest_raw_percentage : assignment.latest_raw_percentage || null,
+    best_attempt_id: progress ? progress.best_attempt_id : assignment.best_attempt_id || null,
+    best_percentage: progress ? progress.best_percentage : assignment.best_percentage || null,
+    raw_best_percentage: progress ? progress.raw_best_percentage : assignment.raw_best_percentage || null,
+    best_correct_count: progress && progress.best ? progress.best.correct_count : assignment.best_correct_count || null,
+    best_question_count: progress && progress.best ? progress.best.question_count : assignment.best_question_count || null,
+    best_improved_at: progress ? progress.best_improved_at : assignment.best_improved_at || null,
+    progress_updated_at: progress ? progress.best_improved_at : assignment.progress_updated_at || null,
+    completed_at: progress && progress.passed ? progress.completed_at : null,
+    mastered_at: progress && progress.mastered ? progress.mastered_at : null,
+    completed_before_assignment: Boolean(progress && progress.passed),
+    promoted_from_individual: true,
+    promoted_from_individual_at: now,
+    promoted_from_individual_by_teacher_uid: teacher && teacher.auth_uid || null,
+    previous_individual_assignment_snapshot: {
+      assignment_batch_id: assignment.assignment_batch_id || null,
+      assignment_scope: assignment.assignment_scope || "individual",
+      class_id: assignment.class_id || null,
+      class_task_id: assignment.class_task_id || null,
+      due_at: assignment.due_at || null,
+      passing_percentage: assignment.passing_percentage == null ? null : assignment.passing_percentage,
+      mastery_percentage: assignment.mastery_percentage == null ? null : assignment.mastery_percentage,
+      mastery_enabled: assignmentMasteryEnabled(assignment),
+    },
+    updated_at: now,
+  };
+  await db.collection("assignments").doc(assignment._id).update(update);
+  const revised = { ...assignment, ...update };
+  if (progress && progress.mastered && progress.best) {
+    await protectAssignmentStar(student, revised, progress.best, progress.mastered_at || now);
+  }
+  return {
+    assignmentId: assignment.assignment_id || assignment._id,
+    integratedExisting: true,
+    completedBeforeAssignment: Boolean(progress && progress.passed),
+    bestPercentage: progress && progress.best_percentage,
+  };
 }
 
 function createAssignmentOptionsBySet(event, setIds) {
@@ -1494,34 +1583,54 @@ async function createAssignments(event, teacher) {
         skipped.push({ student_uid: studentUid, set_id: setId, reason: "inactive_or_missing" });
         continue;
       }
-      const assignmentState = getAssignmentState(assignmentsByStudent.get(studentUid) || []);
-      if (assignmentState.availability === "in_progress") {
-        skipped.push({
-          student_uid: studentUid,
-          student_id: student.student_id,
-          set_id: setId,
-          reason: "in_progress",
-        });
-        continue;
-      }
-      recipients.push({ student, assignmentState });
+      const studentAssignments = (assignmentsByStudent.get(studentUid) || []).map(recordData);
+      const assignmentState = getAssignmentState(studentAssignments);
+      const openAssignment = studentAssignments.find((item) => isOpenAssignmentStatus(item.status)) || null;
+      recipients.push({ student, assignmentState, openAssignment });
     }
     // Scope is derived from the effective recipients after open assignments and
     // inactive profiles are removed. A browser-supplied class ID can never turn
     // a partial batch into a Class Task.
     const scopes = await classAssignmentScopesForRecipients(recipients.map((item) => item.student.auth_uid));
+    const blockedClassIds = new Set(recipients.map((item) => {
+      const scope = scopes.get(item.student.auth_uid);
+      return item.openAssignment && item.openAssignment.assignment_scope === "class" && scope
+        ? text(scope.class_id)
+        : "";
+    }).filter(Boolean));
     const createdForBatch = [];
     for (const recipient of recipients) {
-      const { student, assignmentState } = recipient;
-      const assignmentResult = await createAssignmentForStudent(
-        student,
-        setId,
-        dueAt,
-        passingPercentage,
-        masteryPercentage,
-        masteryEnabled,
-        assignmentBatchId
-      );
+      const { student, assignmentState, openAssignment } = recipient;
+      const targetScope = scopes.get(student.auth_uid);
+      if (targetScope && blockedClassIds.has(text(targetScope.class_id))) {
+        skipped.push({ student_uid: student.auth_uid, student_id: student.student_id, set_id: setId, reason: "in_progress_class_task" });
+        continue;
+      }
+      if (openAssignment && !targetScope) {
+        skipped.push({ student_uid: student.auth_uid, student_id: student.student_id, set_id: setId, reason: "in_progress" });
+        continue;
+      }
+      const assignmentResult = openAssignment
+        ? await integrateOpenAssignmentIntoBatch(
+            openAssignment,
+            student,
+            set,
+            dueAt,
+            passingPercentage,
+            masteryPercentage,
+            masteryEnabled,
+            assignmentBatchId,
+            teacher
+          )
+        : await createAssignmentForStudent(
+            student,
+            set,
+            dueAt,
+            passingPercentage,
+            masteryPercentage,
+            masteryEnabled,
+            assignmentBatchId
+          );
       const createdItem = {
         student_uid: student.auth_uid,
         student_id: student.student_id,
@@ -1531,11 +1640,16 @@ async function createAssignments(event, teacher) {
         class_id: null,
         reassigned_after_completion: assignmentState.availability === "completed",
         converted_from_self_study: assignmentResult.convertedFromSelfStudy,
+        integrated_existing_assignment: assignmentResult.integratedExisting === true,
+        completed_before_assignment: assignmentResult.completedBeforeAssignment === true,
+        best_percentage: assignmentResult.bestPercentage == null ? null : assignmentResult.bestPercentage,
       };
       created.push(createdItem);
       createdForBatch.push(createdItem);
     }
-    const candidateClassIds = [...new Set([...scopes.values()].map((scope) => text(scope.class_id)).filter(Boolean))];
+    const candidateClassIds = [...new Set([...scopes.values()]
+      .map((scope) => text(scope.class_id))
+      .filter((classId) => classId && !blockedClassIds.has(classId)))];
     for (const classId of candidateClassIds) {
       try {
         const promotedUids = new Set(await promoteClassAssignmentBatch(
@@ -1975,21 +2089,30 @@ function progressStatusFromAssignment(assignment, set, bestPercentage) {
   return monotonicAssignmentStatus(assignment.status, attemptStatus);
 }
 
-function buildProgressItemFromAssignment(assignment, student, set, attempts) {
+function buildProgressItemFromAssignment(assignment, student, set, attempts, scoreLockedAt) {
   const orderedAttempts = sortAttemptsAscending(attempts);
-  const newestAttempt = latestAttempt(orderedAttempts);
-  const attemptBestPercentage = bestAttemptPercentage(orderedAttempts);
+  const progress = exerciseProgress.summarizeExerciseProgress(orderedAttempts, {
+    passingPercentage: passingPercentageForAssignment(assignment, set),
+    masteryPercentage: masteryPercentageForAssignment(assignment, set),
+    masteryEnabled: assignmentMasteryEnabled(assignment),
+    scoreLockedAt,
+  });
+  const newestAttempt = progress && progress.latest || latestAttempt(orderedAttempts);
+  const attemptBestPercentage = progress ? progress.best_percentage : bestAttemptPercentage(orderedAttempts);
   const savedBestPercentage = assignment.best_percentage == null ? null : Number(assignment.best_percentage);
-  const bestPercentage = savedBestPercentage == null
+  const bestPercentage = progress
     ? attemptBestPercentage
-    : attemptBestPercentage == null
-      ? savedBestPercentage
-      : Math.max(savedBestPercentage, attemptBestPercentage);
+    : savedBestPercentage == null
+      ? attemptBestPercentage
+      : attemptBestPercentage == null
+        ? savedBestPercentage
+        : Math.max(savedBestPercentage, attemptBestPercentage);
   const status = progressStatusFromAssignment(assignment, set, bestPercentage);
   const finishedAttempts = orderedAttempts.filter((attempt) =>
     attempt.mastered === true || attempt.passed === true || normalizedAssignmentStatus(status) !== "to_do"
   );
   const completedAt = assignment.completed_at
+    || progress && progress.completed_at
     || (normalizedAssignmentStatus(status) !== "to_do" ? latestDateValue(finishedAttempts, "submitted_at") : null);
   return {
     progress_id: `assigned::${assignment.assignment_id || assignment._id}`,
@@ -2003,9 +2126,9 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     set_id: assignment.set_id,
     set_title: set.title || assignment.set_id,
     status,
-    attempt_count: Math.max(Number(assignment.attempt_count || 0), orderedAttempts.length),
+    attempt_count: progress ? progress.attempt_count : Math.max(Number(assignment.attempt_count || 0), orderedAttempts.length),
     latest_attempt_id: assignment.latest_attempt_id || (newestAttempt && newestAttempt.attempt_id) || null,
-    latest_percentage: assignment.latest_percentage == null
+    latest_percentage: progress ? progress.latest_percentage : assignment.latest_percentage == null
       ? (newestAttempt ? newestAttempt.percentage : null)
       : assignment.latest_percentage,
     best_percentage: bestPercentage,
@@ -2019,12 +2142,18 @@ function buildProgressItemFromAssignment(assignment, student, set, attempts) {
     answer_revealed_at: assignment.answer_revealed_at || null,
     mastery_locked: assignment.mastery_locked === true,
     completed_at: completedAt || null,
+    best_improved_at: progress && progress.best_improved_at || assignment.best_improved_at || null,
+    progress_updated_at: progress && progress.best_improved_at || assignment.progress_updated_at || null,
+    completed_before_assignment: assignment.completed_before_assignment === true || Boolean(
+      completedAt && assignment.created_at && attemptDateValue({ submitted_at: completedAt }) < attemptDateValue({ submitted_at: assignment.created_at })
+    ),
+    promoted_from_individual: assignment.promoted_from_individual === true,
     cancelled_at: assignment.cancelled_at || null,
     cancelled_by_teacher_uid: assignment.cancelled_by_teacher_uid || null,
     cancel_reason: assignment.cancel_reason || "",
     previous_status: assignment.previous_status || null,
-    updated_at: assignment.updated_at || null,
-    latest_submitted_at: latestDateValue(orderedAttempts, "submitted_at"),
+    updated_at: progress && progress.best_improved_at || assignment.updated_at || null,
+    latest_submitted_at: progress && progress.latest_submitted_at || latestDateValue(orderedAttempts, "submitted_at"),
   };
 }
 
@@ -2079,15 +2208,33 @@ async function listProgress() {
     const set = recordData(record);
     return [set.set_id, set];
   }));
-  const attemptsByAssignment = new Map();
   const attemptsById = new Map();
+  const attemptsByStudentSet = new Map();
   const selfStudyGroups = new Map();
+  const assignedStudentSetKeys = new Set(assignments.map((assignment) =>
+    `${assignment.student_uid}::${assignment.set_id}`
+  ));
+  const scoreLockByStudentSet = new Map();
+  assignments.forEach((assignment) => {
+    const set = setMap.get(assignment.set_id);
+    if (!isBbcSet(set) || (assignment.mastery_locked !== true && assignment.answer_revealed !== true)) return;
+    const value = assignment.mastery_locked_at || assignment.answer_revealed_at;
+    if (!value) return;
+    const key = `${assignment.student_uid}::${assignment.set_id}`;
+    const current = scoreLockByStudentSet.get(key);
+    if (!current || attemptDateValue({ submitted_at: value }) < attemptDateValue({ submitted_at: current })) {
+      scoreLockByStudentSet.set(key, value);
+    }
+  });
 
   progressAttempts.forEach((attempt) => {
     if (attempt.attempt_id) attemptsById.set(attempt.attempt_id, attempt);
+    if (attempt.student_uid && attempt.set_id) {
+      const progressKey = `${attempt.student_uid}::${attempt.set_id}`;
+      if (!attemptsByStudentSet.has(progressKey)) attemptsByStudentSet.set(progressKey, []);
+      attemptsByStudentSet.get(progressKey).push(attempt);
+    }
     if (attempt.assignment_id) {
-      if (!attemptsByAssignment.has(attempt.assignment_id)) attemptsByAssignment.set(attempt.assignment_id, []);
-      attemptsByAssignment.get(attempt.assignment_id).push(attempt);
       return;
     }
     if (!attempt.student_uid || !attempt.set_id || !studentMap.has(attempt.student_uid)) return;
@@ -2098,7 +2245,8 @@ async function listProgress() {
 
   const progress = assignments.map((assignment) => {
     const assignmentId = assignment.assignment_id || assignment._id;
-    const linkedAttempts = (attemptsByAssignment.get(assignmentId) || []).slice();
+    const progressKey = `${assignment.student_uid}::${assignment.set_id}`;
+    const linkedAttempts = (attemptsByStudentSet.get(progressKey) || []).slice();
     if (assignment.latest_attempt_id && attemptsById.has(assignment.latest_attempt_id)) {
       const latestAttempt = attemptsById.get(assignment.latest_attempt_id);
       if (!linkedAttempts.some((attempt) => attempt.attempt_id === latestAttempt.attempt_id)) {
@@ -2109,11 +2257,13 @@ async function listProgress() {
       assignment,
       studentMap.get(assignment.student_uid) || {},
       setMap.get(assignment.set_id) || {},
-      linkedAttempts
+      linkedAttempts,
+      scoreLockByStudentSet.get(progressKey) || null
     );
   });
 
   selfStudyGroups.forEach((groupAttempts, key) => {
+    if (assignedStudentSetKeys.has(key)) return;
     const [studentUid, setId] = key.split("::");
     const item = buildSelfStudyProgressItem(
       studentUid,

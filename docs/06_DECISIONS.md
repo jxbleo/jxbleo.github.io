@@ -3,6 +3,42 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-08: Separate Set-Wide Exercise Progress From Assignment Participation
+
+Decision:
+
+One student has one authoritative Exercise Progress per `student_uid + set_id`.
+It uses the highest eligible countable attempt across assigned and self-study
+entry points. Vocabulary Quiz may improve indefinitely; BBC stops accepting
+score improvements after its answer-reveal/mastery lock. A tie or lower retry
+does not change the Best Score owner or Finished ordering.
+
+Assignments remain immutable/auditable participation contexts for due dates,
+teacher statistics, Passing standards, Class Tasks, and Yellow STAR authority.
+Creating an assignment applies those standards to existing progress immediately.
+A whole-class Assign reuses an existing open individual participation for the
+same student/set and promotes it into the common class batch.
+
+Reason:
+
+The student's learning result should not depend on whether the same exercise was
+opened from a five-group Quiz, ten-group Quiz, Library, or an old assignment URL.
+At the same time, teachers need assignment-specific deadlines, reporting scope,
+and exclusive control of Yellow STAR rewards.
+
+Trade-offs:
+
+- Good: teacher and student views agree on one explainable highest score.
+- Good: assigning already-completed work produces immediate, honest statistics.
+- Good: class aggregation no longer loses a student who first received the work individually.
+- Cost: assignment summary fields are projections and must be repaired together.
+- Cost: BBC lock state must be consulted anywhere historical progress is rebuilt.
+
+Review condition:
+
+Revisit only if a future exercise family needs intentionally separate progress
+per assignment instance rather than per Content Edition.
+
 ## 2026-08-05: Move My Words Into a Dedicated Responsive Workspace
 
 Decision:

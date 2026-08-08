@@ -899,6 +899,11 @@
         return item.mastered_at || item.completed_at || item.updated_at || item.latest_submitted_at || null;
     }
 
+    function finishedSortValue(item) {
+        if (!item) return null;
+        return item.best_improved_at || item.progress_updated_at || finishedCompletionValue(item);
+    }
+
     function studentCalendarCompletionDate(item) {
         if (!item || !isFinishedStatus(item.status) || normalizedStatus(item.status) === 'cancelled') return null;
         var value = finishedCompletionValue(item);
@@ -2048,7 +2053,7 @@
     }
 
     function finishedDate(item) {
-        return new Date(finishedCompletionValue(item) || 0).getTime();
+        return new Date(finishedSortValue(item) || 0).getTime();
     }
 
     function isRealAssignment(item) {

@@ -336,8 +336,19 @@ Rules:
 5. Function loads private `grading_keys`.
 6. Function grades on the server.
 7. Function writes an immutable `attempts` record.
-8. Function recomputes assignment latest/best/status summary from assignment-bound attempts.
-9. Function creates or repairs STAR if mastered.
+8. Shared `cloudfunctions/_shared/exercise-progress.js` recomputes the student's
+   set-wide latest/best/status summary from every countable attempt for the same
+   `student_uid + set_id`. Vocabulary timed Practice is excluded. For BBC, the
+   earliest answer-reveal/mastery lock caps which attempts may improve Best.
+9. Every non-cancelled assignment for that student/set receives the same global
+   score summary evaluated against its own Passing/Earn STAR thresholds. A tie
+   or lower retry updates latest history but not `best_improved_at`.
+10. Function creates or repairs STAR if mastered.
+
+Learning Report snapshot projection uses the same student/set attempt pool and
+BBC lock boundary when deciding whether each Class Task participation was
+passed by its cutoff. It does not require the qualifying attempt to carry that
+Class Task's `assignment_id`.
 
 ### Vocabulary Test Integrity Session
 
@@ -371,7 +382,10 @@ linked attempts as a display fallback when an assignment summary is stale.
 1. Teacher page calls `teacherAdmin`.
 2. Function verifies active teacher profile.
 3. Function checks set and student eligibility.
-4. Open duplicate assignments are skipped.
+4. Ordinary open duplicates are skipped. When the effective recipients exactly
+   cover one Class and a student already has an open individual assignment for
+   the set, that assignment is moved into the new batch and promoted with its
+   classmates instead of being skipped or duplicated.
 5. Completed/passed/mastered history can be reassigned with a new `assignment_id`.
    Assignments created for the same set in one teacher Assign action also share
    an `assignment_batch_id` for teacher matrix grouping.
@@ -393,6 +407,10 @@ linked attempts as a display fallback when an assignment summary is stale.
    sets `status: "cancelled"` with audit fields, hides the item from the
    student dashboard, and prevents old assignment links from recording new
    submissions against that assignment.
+8. Assign previews use server-derived global progress to show Not started,
+   Existing progress, and Already finished counts per selected task. Prior
+   completion initializes the participation as Finished immediately; the
+   student's FINISHED ordering still uses the last strict score improvement.
 
 ### Teacher Attempt Notifications
 

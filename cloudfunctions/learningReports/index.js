@@ -138,7 +138,7 @@ async function reportInputs(classRecord) {
   const studentUids = memberships.map((membership) => membership.student_uid);
   const [students, assignments, attempts] = await Promise.all([
     getByFieldIn("students", "auth_uid", studentUids),
-    getAll("assignments", { where: { class_id: classRecord.class_id } }).then((rows) => rows.map(recordData)),
+    getByFieldIn("assignments", "student_uid", studentUids),
     getByFieldIn("attempts", "student_uid", studentUids),
   ]);
   const setIds = [...new Set(assignments.concat(attempts).map((item) => text(item.set_id)).filter(Boolean))];

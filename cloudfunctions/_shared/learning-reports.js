@@ -1,5 +1,7 @@
 "use strict";
 
+const exerciseProgress = require("./exercise-progress");
+
 // The report domain deliberately has no CloudBase dependency. Keeping period
 // math and snapshot projection here makes the security-sensitive functions
 // small and gives us deterministic unit tests around Shanghai calendar rules.
@@ -177,6 +179,17 @@ function countableAttempt(attempt) {
   return Boolean(attempt) && attempt.mode !== "vocabulary_practice_timed";
 }
 
+function passingPercentageForAssignment(assignment, set) {
+  const stored = Number(assignment && assignment.passing_percentage);
+  if (Number.isFinite(stored)) return stored;
+  const setValue = Number(set && set.passing_percentage);
+  if (Number.isFinite(setValue)) return setValue;
+  const family = familyForSet(set, assignment && assignment.set_id);
+  if (family === "vocabulary") return 90;
+  if (family === "bbc") return 80;
+  return 50;
+}
+
 function familyForSet(set, fallbackSetId = "") {
   const source = set || {};
   const values = [
@@ -276,13 +289,30 @@ function assignmentDueInPeriod(assignment, period) {
   return dateInRange(assignment && assignment.due_at, period.start_at, period.end_at);
 }
 
-function assignmentPassedAt(assignment, attemptsByAssignmentId, cutoffAt) {
-  const assignmentId = text(assignment && (assignment.assignment_id || assignment._id));
+function assignmentPassedAt(assignment, attemptsByStudentSet, set, cutoffAt, scoreLockedAt) {
   const cutoff = dateValue(cutoffAt);
-  const matching = (attemptsByAssignmentId.get(assignmentId) || [])
-    .filter((attempt) => effectivePassed(attempt) && dateValue(attempt.submitted_at) <= cutoff)
-    .sort((left, right) => dateValue(left.submitted_at) - dateValue(right.submitted_at));
-  if (matching[0]) return matching[0].submitted_at;
+  const key = `${text(assignment && assignment.student_uid)}::${text(assignment && assignment.set_id)}`;
+  const eligibleAttempts = (attemptsByStudentSet.get(key) || []).filter((attempt) =>
+    dateValue(attempt.submitted_at) <= cutoff
+    && (!scoreLockedAt || dateValue(attempt.submitted_at) <= dateValue(scoreLockedAt))
+  );
+  const progress = exerciseProgress.summarizeExerciseProgress(
+    eligibleAttempts,
+    {
+      passingPercentage: passingPercentageForAssignment(assignment, set),
+      masteryPercentage: 101,
+      masteryEnabled: false,
+      scoreLockedAt,
+    }
+  );
+  if (progress && progress.passed) return progress.completed_at;
+  const legacyPassed = eligibleAttempts
+    .filter((attempt) => effectivePassed(attempt)
+      && attempt.adjusted_percentage == null
+      && attempt.display_percentage == null
+      && attempt.percentage == null)
+    .sort((left, right) => dateValue(left.submitted_at) - dateValue(right.submitted_at))[0];
+  if (legacyPassed) return legacyPassed.submitted_at;
   const status = normalizedAssignmentStatus(assignment && assignment.status);
   if (status === "passed" && dateValue(assignment && assignment.completed_at) <= cutoff) {
     return assignment.completed_at;
@@ -322,7 +352,7 @@ function selfStudySummary(attempts, setById) {
   };
 }
 
-function classTaskItemsForStudent(studentUid, classAssignments, attemptsByAssignmentId, setById, cutoffAt) {
+function classTaskItemsForStudent(studentUid, classAssignments, attemptsByStudentSet, scoreLockByStudentSet, setById, cutoffAt) {
   const tasks = new Map();
   classAssignments.filter((assignment) => text(assignment.student_uid) === studentUid).forEach((assignment) => {
     const taskId = text(assignment.class_task_id || assignment.assignment_batch_id || assignment.assignment_id || assignment._id);
@@ -336,10 +366,17 @@ function classTaskItemsForStudent(studentUid, classAssignments, attemptsByAssign
     const representative = assignments.slice().sort((left, right) =>
       dateValue(left.due_at) - dateValue(right.due_at)
     )[0];
-    const passedDates = assignments.map((assignment) => assignmentPassedAt(assignment, attemptsByAssignmentId, cutoffAt))
+    const set = setById.get(representative.set_id) || {};
+    const progressKey = `${studentUid}::${text(representative.set_id)}`;
+    const passedDates = assignments.map((assignment) => assignmentPassedAt(
+      assignment,
+      attemptsByStudentSet,
+      set,
+      cutoffAt,
+      scoreLockByStudentSet.get(progressKey) || null
+    ))
       .filter(Boolean)
       .sort((left, right) => dateValue(left) - dateValue(right));
-    const set = setById.get(representative.set_id) || {};
     return {
       class_task_id: classTaskId,
       set_id: representative.set_id || "",
@@ -404,18 +441,28 @@ function buildReportSnapshot(options = {}) {
   const attempts = (options.attempts || []).map(recordData)
     .filter((attempt) => memberUids.has(text(attempt.student_uid)));
   const attemptsByStudentUid = new Map();
-  const attemptsByAssignmentId = new Map();
+  const attemptsByStudentSet = new Map();
   attempts.forEach((attempt) => {
     const studentUid = text(attempt.student_uid);
     const ownAttempts = attemptsByStudentUid.get(studentUid) || [];
     ownAttempts.push(attempt);
     attemptsByStudentUid.set(studentUid, ownAttempts);
-    const assignmentId = text(attempt.assignment_id);
-    if (assignmentId) {
-      const assignmentAttempts = attemptsByAssignmentId.get(assignmentId) || [];
-      assignmentAttempts.push(attempt);
-      attemptsByAssignmentId.set(assignmentId, assignmentAttempts);
-    }
+    const progressKey = `${studentUid}::${text(attempt.set_id)}`;
+    const setAttempts = attemptsByStudentSet.get(progressKey) || [];
+    setAttempts.push(attempt);
+    attemptsByStudentSet.set(progressKey, setAttempts);
+  });
+
+  const scoreLockByStudentSet = new Map();
+  (options.assignments || []).map(recordData).forEach((assignment) => {
+    const set = setById.get(text(assignment.set_id));
+    if (familyForSet(set, assignment.set_id) !== "bbc"
+      || (assignment.mastery_locked !== true && assignment.answer_revealed !== true)) return;
+    const value = assignment.mastery_locked_at || assignment.answer_revealed_at;
+    if (!value) return;
+    const key = `${text(assignment.student_uid)}::${text(assignment.set_id)}`;
+    const current = scoreLockByStudentSet.get(key);
+    if (!current || dateValue(value) < dateValue(current)) scoreLockByStudentSet.set(key, value);
   });
 
   const classAssignments = (options.assignments || []).map(recordData).filter((assignment) =>
@@ -434,7 +481,8 @@ function buildReportSnapshot(options = {}) {
     const classTaskItems = classTaskItemsForStudent(
       studentUid,
       classAssignments,
-      attemptsByAssignmentId,
+      attemptsByStudentSet,
+      scoreLockByStudentSet,
       setById,
       cutoffAt
     );

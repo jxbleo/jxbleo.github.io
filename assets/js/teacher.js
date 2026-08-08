@@ -2602,7 +2602,25 @@
             return {
                 availability: 'in_progress',
                 assignment_id: open.assignment_id || open._id || '',
-                status: open.status || 'to_do'
+                status: open.status || 'to_do',
+                best_percentage: studentSetBestPercentage(studentUid, setId)
+            };
+        }
+        var globalBest = studentSetBestPercentage(studentUid, setId);
+        var set = state.sets.find(function(item) { return item.set_id === setId; }) || { set_id: setId };
+        var passing = Number(assignParamForSet(set).passingPercentage || defaultPassingForSet(set));
+        if (globalBest != null && globalBest >= passing) {
+            return {
+                availability: 'completed',
+                completed_count: 1,
+                best_percentage: globalBest,
+                completed_before_assignment: true
+            };
+        }
+        if (globalBest != null) {
+            return {
+                availability: 'existing_progress',
+                best_percentage: globalBest
             };
         }
         var completed = matching.filter(function(assignment) {
@@ -2620,11 +2638,28 @@
         return { availability: 'available' };
     }
 
+    function studentSetBestPercentage(studentUid, setId) {
+        var values = [];
+        (state.progressItems || []).forEach(function(item) {
+            if (String(item.student_uid || '') !== String(studentUid || '') || String(item.set_id || '') !== String(setId || '')) return;
+            var value = numericPercent(item.best_percentage);
+            if (value != null) values.push(value);
+        });
+        (state.assignments || []).forEach(function(item) {
+            if (String(item.student_uid || '') !== String(studentUid || '') || String(item.set_id || '') !== String(setId || '')) return;
+            var value = numericPercent(item.best_percentage);
+            if (value != null) values.push(value);
+        });
+        return values.length ? Math.max.apply(Math, values) : null;
+    }
+
     function mergedAssignmentAvailability(states) {
         var hasProgress = states.some(function(item) { return item.availability === 'in_progress'; });
         if (hasProgress) return 'in_progress';
         var hasCompleted = states.some(function(item) { return item.availability === 'completed'; });
         if (hasCompleted) return 'completed';
+        var hasExistingProgress = states.some(function(item) { return item.availability === 'existing_progress'; });
+        if (hasExistingProgress) return 'existing_progress';
         return 'available';
     }
 
@@ -2650,7 +2685,10 @@
             return { label: 'Import to CloudBase before assigning', css: 'catalog-only', disabled: true };
         }
         if (availability === 'in_progress') {
-            return { label: 'In Progress', css: 'progress', disabled: true };
+            return { label: 'Assigned · class Assign can merge', css: 'progress', disabled: false };
+        }
+        if (availability === 'existing_progress') {
+            return { label: 'Existing progress', css: 'progress', disabled: false };
         }
         if (availability === 'completed' || availability === 'starred') {
             return { label: 'Completed · can reassign', css: 'starred', disabled: false };
@@ -3105,6 +3143,58 @@
         return html;
     }
 
+    function assignProgressPreview(set) {
+        var setId = String(set && set.set_id || '');
+        var passing = Number(assignParamForSet(set).passingPercentage || defaultPassingForSet(set));
+        var groups = { not_started: [], existing: [], finished: [] };
+        selectedCandidateRecords().forEach(function(student) {
+            var stateForPair = assignmentStateForPair(student.auth_uid, setId);
+            var best = stateForPair.best_percentage == null
+                ? studentSetBestPercentage(student.auth_uid, setId)
+                : numericPercent(stateForPair.best_percentage);
+            var open = stateForPair.availability === 'in_progress';
+            var item = {
+                name: student.name || student.student_id || student.auth_uid,
+                best: best,
+                open: open
+            };
+            if (best != null && best >= passing) groups.finished.push(item);
+            else if (best != null || open) groups.existing.push(item);
+            else groups.not_started.push(item);
+        });
+        return groups;
+    }
+
+    function renderAssignProgressPreview(set) {
+        var groups = assignProgressPreview(set);
+        var total = groups.not_started.length + groups.existing.length + groups.finished.length;
+        if (!total) return '';
+        var chips = [
+            '<span class="is-new">' + groups.not_started.length + ' not started</span>',
+            '<span class="is-progress">' + groups.existing.length + ' existing progress</span>',
+            '<span class="is-finished">' + groups.finished.length + ' already finished</span>'
+        ].join('');
+        var details = [];
+        if (groups.existing.length) {
+            details.push('<section><strong>Existing progress</strong>' + groups.existing.map(function(item) {
+                return '<p><span>' + escapeHtml(item.name) + '</span><small>' +
+                    escapeHtml(item.best == null ? 'Previously assigned · complete Class Assign can merge it' :
+                        'Best ' + formatPercent(item.best) + (item.open ? ' · complete Class Assign can merge it' : ' · will remain To Do')) +
+                '</small></p>';
+            }).join('') + '</section>');
+        }
+        if (groups.finished.length) {
+            details.push('<section><strong>Already finished</strong>' + groups.finished.map(function(item) {
+                return '<p><span>' + escapeHtml(item.name) + '</span><small>Best ' +
+                    escapeHtml(formatPercent(item.best)) + ' · Finished immediately</small></p>';
+            }).join('') + '</section>');
+        }
+        return '<details class="assign-progress-preview">' +
+            '<summary><span>Class progress preview</span><span class="assign-progress-preview-chips">' + chips + '</span></summary>' +
+            (details.length ? '<div class="assign-progress-preview-detail">' + details.join('') + '</div>' : '') +
+        '</details>';
+    }
+
     function renderAssignParamRow(set) {
         var setId = String(set && set.set_id || '');
         var params = assignParamForSet(set);
@@ -3183,7 +3273,9 @@
             '<div role="columnheader">Due week</div>' +
             '<div role="columnheader">Passing %</div>' +
             '<div role="columnheader">STAR</div>' +
-        '</div>' + sets.map(renderAssignParamRow).join('');
+        '</div>' + sets.map(function(set) {
+            return renderAssignParamRow(set) + renderAssignProgressPreview(set);
+        }).join('');
         bindAssignParameterTable();
         updateAssignOptionsSummary();
     }
@@ -3567,7 +3659,7 @@
     }
 
     function assignmentSortDate(assignment) {
-        return assignment.latest_submitted_at || assignment.completed_at || assignment.updated_at || assignment.due_at || assignment.assigned_at || null;
+        return assignment.best_improved_at || assignment.progress_updated_at || assignment.completed_at || assignment.updated_at || assignment.due_at || assignment.assigned_at || null;
     }
 
     function legacyAssignmentDueDate(assignment) {

@@ -425,6 +425,9 @@ flowchart TD
 - `best_attempt_id`
 - `latest_percentage`
 - `best_percentage`
+- `best_improved_at`：该学生同一 `set_id` 的最高分最后一次严格提高的时间
+- `progress_updated_at`：排序兼容字段；只随最高分严格提高而变化
+- `completed_before_assignment`：布置时全局最高分已经达到本 assignment 的 passing 标准
 - `answer_revealed`
 - `mastery_locked`
 - `due_at`：必填 due week 的周日 23:59:59（上海时区）；学生 Dashboard、
@@ -437,7 +440,9 @@ flowchart TD
 规则：
 
 - 同一个学生可以被重复布置同一个 `set_id`
-- 每次重新布置必须创建新的 `assignment_id`
+- 已完成后的普通重新布置必须创建新的 `assignment_id`；但同一学生已有开放的个人
+  assignment、老师随后向其完整班级布置同一 set 时，应复用并提升该记录进入新的
+  Class Task，而不是跳过或重复创建
 - 同一次老师 Assign 操作中，同一个 set 给多个学生创建的作业应共享
   `assignment_batch_id`，供教师 View 矩阵按布置批次显示；同一个 set 即使在
   同一周重复布置，也应显示为不同 column
@@ -446,7 +451,13 @@ flowchart TD
   可以把不同 task 设置到不同截止周；缺少 due week 时服务器拒绝创建。
 - 旧作业和旧提交不能被覆盖
 - 已完成或已 STAR 的历史记录不应阻止未来重新布置
-- 只应阻止同一学生同一 set 同时存在未完成开放作业
+- 单独 Assign 仍阻止同一学生同一 set 同时存在重复开放作业；完整班级 Assign 可把
+  已有开放个人作业整合进班级批次，并采用本次班级作业的 due / passing / mastery 参数
+- Assignment 只定义教师统计、截止时间、达标线和黄色 STAR 奖励权。学生同一
+  `student_uid + set_id` 的学习进度只有一份，以所有 countable attempts 的历史最高分为准
+- Vocabulary Quiz 可以反复提高全局最高分；BBC 在答案 reveal / mastery lock 后锁分，
+  锁分后的提交仍保留为 attempt 历史，但不能提高有效最高分
+- FINISHED 只在全局最高分严格提高时按 `best_improved_at` 向前移动；同分或低分重做不改排序
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
 - 教师在 View 矩阵点击学生姓名，或从 Students 清单进入学生详情时，应打开该学生的月度完成日历；每一周显示为独立周带，日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度语义一致，并包含该学生的自学记录
@@ -488,7 +499,9 @@ flowchart TD
 - attempt 是事实记录，不能覆盖
 - Try Again 会创建新 attempt
 - 失败 attempt 也必须保存
-- assignment 的 latest / best / count / status summary 是从不可变 attempts 派生的汇总，不能替代 attempts 本身
+- assignment 的 latest / best / count / status summary 是从该学生同一 `set_id` 的全部
+  countable attempts 派生的全局汇总，不能替代 attempts 本身；`assignment_id` 仍保留提交
+  当时的上下文和审计归属，不再隔离学习分数
 - 自主 Explore / Library attempt 只有在同一学生同一 `set_id` 没有开放作业时才使用 `assignment_id: null`
 - 如果学生从 Library 打开已布置但未完成的同一 `set_id`，`submitAttempt` 必须在后端自动绑定该开放作业
 - 学生从 BBC Library 入口打开同一 `set_id` 时，即使 URL 没有
@@ -1060,7 +1073,8 @@ flowchart TD
   B --> C["检查 set visible"]
   C --> D["检查学生 active 且 role=student"]
   D --> E{"是否已有开放作业?"}
-  E -->|是: to_do / 未完成| F["跳过，避免重复开放作业"]
+  E -->|是: 个人 to_do 且本次为完整班级| F["复用记录并提升为 Class Task"]
+  E -->|是: 其他重复开放| L["跳过，避免重复开放作业"]
   E -->|否| G["创建新 assignment"]
   G --> H{"是否已有 self-study completed attempt?"}
   H -->|passed| I["初始化为 passed assignment"]
@@ -1071,11 +1085,13 @@ flowchart TD
 当前目标规则：
 
 - 已完成或已 STAR 不能阻止未来重新布置
-- 只阻止重复开放作业
+- 只阻止普通重复开放作业；完整班级布置应整合已有开放个人记录
 - 重新布置后必须是新的 `assignment_id`
 - 如果学生先在 Explore / Library 自主完成同一个 `set_id`，老师之后布置时应直接创建
   已完成 assignment。达到 passing 的自学 attempt 初始化为 `passed`，达到 mastery 的自学
   attempt 初始化为 `mastered` 并创建或转换 assignment STAR。
+- 任何来源的 countable 历史最高分都可初始化 Finished。教师 Assign 界面同时按任务
+  展示 Not started、Existing progress、Already finished 人数和学生明细。
 
 ### 9.3 学生提交作业
 
@@ -1095,7 +1111,7 @@ sequenceDiagram
   CF->>GK: 读取私有答案
   CF->>CF: 服务器评分
   CF->>A: 新增 attempt
-  CF->>AS: 更新 latest / best / status
+  CF->>AS: 按 student_uid + set_id 全局最高分更新所有相关 assignment summary
   CF->>ST: 如果 mastered，创建或修复 STAR
   CF-->>P: 返回允许显示的反馈
 ```
