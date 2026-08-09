@@ -4478,14 +4478,16 @@ body:not(.teacher-page) .tab-button.active {
 .teacher-reply-status.rejected span { background: var(--danger); }
 .teacher-reply-status.pending span { background: #d89528; }
 .teacher-reply-flow {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     min-width: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     align-items: stretch;
 }
 .teacher-reply-answer {
-    min-width: 0;
+    flex: 1 0 max-content;
+    min-width: min(100%, 160px);
+    max-width: 100%;
     min-height: 74px;
     padding: 10px;
     border: 1px solid #e4eee9;
@@ -4497,7 +4499,6 @@ body:not(.teacher-page) .tab-button.active {
     background: #eef4ff;
 }
 .teacher-reply-answer > b,
-.teacher-reply-answer-head b,
 .teacher-reply-note b {
     display: block;
     margin-bottom: 5px;
@@ -4514,17 +4515,13 @@ body:not(.teacher-page) .tab-button.active {
     font-weight: 800;
     overflow-wrap: anywhere;
 }
-.teacher-reply-answer-head {
+.teacher-reply-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     min-width: 0;
-    margin-bottom: 5px;
-}
-.teacher-reply-answer-head b {
-    min-width: 0;
-    margin: 0;
+    margin-top: 8px;
 }
 .teacher-reply-note {
     margin-top: 12px;
@@ -4535,13 +4532,13 @@ body:not(.teacher-page) .tab-button.active {
 }
 .teacher-reply-timestamp {
     display: block;
-    margin-top: 4px;
+    min-width: 0;
     color: rgba(72, 87, 83, 0.68);
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.015em;
     line-height: 1.25;
-    text-align: right;
+    text-align: left;
 }
 
 .teacher-hero {
@@ -10127,7 +10124,8 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     }
     .student-message-task { min-height: 50px; }
     .student-message-kicker { max-width: 72px; }
-    .teacher-reply-flow { grid-template-columns: 1fr; }
+    .teacher-reply-flow { flex-direction: column; }
+    .teacher-reply-answer { width: 100%; }
     .dialog-actions { grid-template-columns: 1fr; }
     .teacher-grid { grid-template-columns: 1fr; }
     .teacher-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }

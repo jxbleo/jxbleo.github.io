@@ -410,10 +410,11 @@ Check:
 - each Teacher Replies card shows its centered task title first on the same
   bounded overflow-scrolling track used by task rows. The saved question has no
   `Qxx.` prefix and wraps cleanly on phone and iPad. `Expected` and `Submitted`
-  have no arrow between them; the status
-  capsule shares Submitted's header row without narrowing the full-width answer
-  below. The bottom-right `Argued` timestamp matches the dispute's `created_at`
-  in Shanghai time. There is no inline navigation button: clicking a card or
+  have no arrow between them; short values place their boxes side by side, while
+  long values or narrow screens wrap them into full-width rows. The bottom row
+  places the `Argued` timestamp on the left and the status capsule on the right;
+  the timestamp matches the dispute's `created_at` in Shanghai time. There is
+  no inline navigation button: clicking a card or
   pressing Enter/Space opens the shared confirmation with a `Go to question`
   action; cancelling returns focus to the same card. An old reply without a
   question snapshot shows an unavailable message while its card remains usable

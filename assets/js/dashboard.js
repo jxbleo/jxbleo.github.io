@@ -1664,12 +1664,15 @@
             '<div class="teacher-reply-flow">' +
                 '<div class="teacher-reply-answer"><b>Expected</b><span>' + escapeHtml(expected) + '</span></div>' +
                 '<div class="teacher-reply-answer submitted">' +
-                    '<div class="teacher-reply-answer-head"><b>Submitted</b><span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span></div>' +
+                    '<b>Submitted</b>' +
                     '<span>' + escapeHtml(submitted) + '</span>' +
                 '</div>' +
             '</div>' +
             (statusClass === 'rejected' && reply.teacher_note ? '<div class="teacher-reply-note"><b>Teacher note</b><span>' + escapeHtml(reply.teacher_note) + '</span></div>' : '') +
-            (arguedAt ? '<time class="teacher-reply-timestamp" datetime="' + escapeHtml(arguedAt.datetime) + '">Argued &middot; ' + escapeHtml(arguedAt.label) + '</time>' : '') +
+            '<div class="teacher-reply-footer">' +
+                (arguedAt ? '<time class="teacher-reply-timestamp" datetime="' + escapeHtml(arguedAt.datetime) + '">Argued &middot; ' + escapeHtml(arguedAt.label) + '</time>' : '<span></span>') +
+                '<span class="teacher-reply-status ' + escapeHtml(statusClass) + '"><span>' + statusIcon + '</span>' + escapeHtml(statusLabel) + '</span>' +
+            '</div>' +
         '</article>';
     }
 
