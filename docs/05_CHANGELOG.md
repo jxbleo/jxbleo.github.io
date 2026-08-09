@@ -3,6 +3,19 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-09
+
+### Changed
+
+- Replaced Teacher startup's all-history Notifications and Argue reads with
+  five-item pages. The bell automatically advances until every unread thread is
+  cached, then silently prefetches authorized answer details from newest to
+  oldest with two-request concurrency; earlier read history and each Argue
+  status advance through `Load 5 more`.
+- Removed visible spinner states from the Teacher bell and Argue controls,
+  separated notification feed IDs from matrix attempt history, and kept all
+  prefetched answers/explanations in current-tab memory only.
+
 ## 2026-08-08
 
 ### Changed

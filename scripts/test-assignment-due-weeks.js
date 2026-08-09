@@ -84,11 +84,15 @@ const command = {
   in(values) {
     return { __testOperator: "in", values };
   },
+  gt(value) {
+    return { __testOperator: "gt", value };
+  },
 };
 
 function matches(record, where) {
   return Object.entries(where || {}).every(([key, value]) => {
     if (value && value.__testOperator === "in") return value.values.includes(record[key]);
+    if (value && value.__testOperator === "gt") return new Date(record[key] || 0) > new Date(value.value || 0);
     return record[key] === value;
   });
 }
@@ -126,6 +130,9 @@ function collection(name) {
       }
       const end = state.limit == null ? undefined : state.offset + state.limit;
       return { data: result.slice(state.offset, end) };
+    },
+    async count() {
+      return { total: rows.filter((record) => matches(record, state.where)).length };
     },
     doc(id) {
       return {
@@ -961,6 +968,15 @@ async function main() {
   testAccountStarHistoryModel();
   testStudentModalShellMarkup();
   testTeacherModalEntranceAnimation();
+  const teacherFeedSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
+  const teacherFeedHtml = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
+  assert(teacherFeedSource.includes("var TEACHER_FEED_PAGE_SIZE = 5;"));
+  assert(teacherFeedSource.includes("cacheAllUnreadNotificationPages"));
+  assert(teacherFeedSource.includes("prefetchNotificationItems(activityItems().filter(function(item) { return item.unread; }))"));
+  assert(teacherFeedSource.includes("data-notification-load-more>Load 5 more"));
+  assert(teacherFeedSource.includes("data-dispute-load-more>Load 5 more"));
+  assert(!teacherFeedHtml.includes("teacher-updates-button is-loading"));
+  assert(!teacherFeedHtml.includes("teacher-review-button is-loading"));
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);
   const vocabularyDefaults = setsResult.sets.find((set) => set.set_id === "NGSL-DEFAULT");
@@ -1021,6 +1037,66 @@ async function main() {
   collections.attempts.splice(collections.attempts.findIndex((item) =>
     item.attempt_id === "self-study-threshold-attempt"
   ), 1);
+
+  const notificationAttempts = Array.from({ length: 7 }, (_, index) => ({
+    _id: `notification-attempt-record-${index}`,
+    attempt_id: `notification-attempt-${index}`,
+    student_uid: "student-uid",
+    student_id_snapshot: "student-login",
+    set_id: "TEST-SET",
+    assignment_id: `notification-assignment-${index}`,
+    percentage: 70 + index,
+    passed: true,
+    submitted_at: new Date(Date.UTC(2026, 7, 9, 10, 0, index)),
+  }));
+  collections.attempts.push(...notificationAttempts);
+  const notificationPageOne = await call("listAttemptNotifications", { cursor: 0 });
+  assert.equal(notificationPageOne.attempts.length, 5, "notification pages contain five newest threads");
+  assert.equal(notificationPageOne.attempts[0].attempt_id, "notification-attempt-6");
+  assert.equal(notificationPageOne.has_more, true);
+  const notificationPageTwo = await call("listAttemptNotifications", {
+    cursor: notificationPageOne.next_cursor,
+    exclude_thread_keys: notificationPageOne.thread_keys,
+  });
+  assert.equal(notificationPageTwo.attempts.length, 2);
+  assert.equal(notificationPageTwo.has_more, false);
+  const activityState = await call("getActivityState");
+  assert.equal(activityState.unread_thread_count, 7);
+  const teacherProfile = collections.students.find((item) => item.auth_uid === "teacher-uid");
+  teacherProfile.teacher_activity_attempts_read_all_at = new Date(Date.UTC(2026, 7, 9, 10, 0, 2));
+  teacherProfile.teacher_activity_attempt_reviewed_ids = ["notification-attempt-6"];
+  const boundedActivityState = await call("getActivityState");
+  assert.equal(boundedActivityState.unread_thread_count, 3, "the unread count honors the read-all cutoff and reviewed IDs");
+  delete teacherProfile.teacher_activity_attempts_read_all_at;
+  delete teacherProfile.teacher_activity_attempt_reviewed_ids;
+  const notificationThread = await call("listAttemptThread", {
+    student_uid: "student-uid",
+    assignment_id: "notification-assignment-6",
+    set_id: "TEST-SET",
+  });
+  assert.equal(notificationThread.attempts.length, 1);
+  collections.attempts.splice(0, collections.attempts.length);
+
+  collections.answer_disputes = Array.from({ length: 7 }, (_, index) => ({
+    _id: `paged-dispute-record-${index}`,
+    dispute_id: `paged-dispute-${index}`,
+    student_uid: "student-uid",
+    set_id: "TEST-SET",
+    assignment_id: null,
+    question_id: `Question_${index + 1}`,
+    submitted_answer: "student answer",
+    answer_snapshot: "expected answer",
+    status: "pending",
+    created_at: new Date(Date.UTC(2026, 7, 9, 11, 0, index)),
+  }));
+  const disputePageOne = await call("listDisputePage", { status: "pending", cursor: 0 });
+  assert.equal(disputePageOne.disputes.length, 5, "Argue pages contain five requests");
+  assert.equal(disputePageOne.counts.pending, 7);
+  assert.equal(disputePageOne.has_more, true);
+  const disputePageTwo = await call("listDisputePage", { status: "pending", cursor: disputePageOne.next_cursor });
+  assert.equal(disputePageTwo.disputes.length, 2);
+  assert.equal(disputePageTwo.has_more, false);
+  collections.answer_disputes = [];
 
   const originalConsoleError = console.error;
   console.error = () => {};

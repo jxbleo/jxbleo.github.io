@@ -18,6 +18,7 @@ const STAR_REQUEST_COLLECTION = "star_redemption_requests";
 const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
 const CLASS_COLLECTION = "classes";
 const CLASS_MEMBERSHIP_COLLECTION = "class_memberships";
+const TEACHER_FEED_PAGE_SIZE = 5;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -74,6 +75,26 @@ async function getPage(collection, options = {}) {
   if (options.orderBy) query = query.orderBy(options.orderBy.field, options.orderBy.direction || "asc");
   const result = await query.skip(offset).limit(pageSize).get();
   return result.data || [];
+}
+
+async function getCount(collection, where) {
+  let query = db.collection(collection);
+  if (where) query = query.where(where);
+  const result = await query.count();
+  return Number(result && result.total || 0);
+}
+
+function feedCursor(value) {
+  const cursor = Number(value || 0);
+  return Number.isInteger(cursor) && cursor >= 0 ? cursor : 0;
+}
+
+function activityThreadKey(attempt) {
+  const studentKey = text(attempt && (attempt.student_uid || attempt.student_id)) || "unknown-student";
+  if (attempt && attempt.assignment_id) {
+    return `${studentKey}::assignment::${text(attempt.assignment_id)}`;
+  }
+  return `${studentKey}::self-study::${text(attempt && attempt.set_id) || "unknown-set"}`;
 }
 
 function normalized(value) {
@@ -2299,6 +2320,73 @@ async function listAttempts() {
   };
 }
 
+async function listAttemptNotifications(event) {
+  const cursor = feedCursor(event.cursor);
+  const excludedThreadKeys = new Set(Array.isArray(event.exclude_thread_keys)
+    ? event.exclude_thread_keys.map(text).filter(Boolean).slice(0, 500)
+    : []);
+  const studentRows = await getAll("students");
+  const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
+  const collected = [];
+  const collectedThreadKeys = new Set();
+  let rawOffset = cursor;
+  let exhausted = false;
+
+  // Deleted profiles are intentionally invisible. Read small raw windows until
+  // we have one extra visible row, so the browser receives a truthful cursor
+  // without turning the five-row notification page back into an all-history read.
+  while (collected.length <= TEACHER_FEED_PAGE_SIZE && !exhausted) {
+    const rows = await getPage("attempts", {
+      offset: rawOffset,
+      limit: TEACHER_FEED_PAGE_SIZE + 1,
+      orderBy: { field: "submitted_at", direction: "desc" },
+    });
+    if (!rows.length) {
+      exhausted = true;
+      break;
+    }
+    rows.forEach((record, index) => {
+      const attempt = recordData(record);
+      if (!visibleStudentUids.has(attempt.student_uid)) return;
+      const threadKey = activityThreadKey(attempt);
+      if (excludedThreadKeys.has(threadKey) || collectedThreadKeys.has(threadKey)) return;
+      collectedThreadKeys.add(threadKey);
+      collected.push({ attempt, threadKey, nextCursor: rawOffset + index + 1 });
+    });
+    rawOffset += rows.length;
+    if (rows.length < TEACHER_FEED_PAGE_SIZE + 1) exhausted = true;
+  }
+
+  const page = collected.slice(0, TEACHER_FEED_PAGE_SIZE);
+  return {
+    success: true,
+    attempts: page.map((item) => attemptSummaryView(item.attempt)),
+    thread_keys: page.map((item) => item.threadKey),
+    next_cursor: page.length ? page[page.length - 1].nextCursor : null,
+    has_more: collected.length > TEACHER_FEED_PAGE_SIZE || !exhausted,
+    page_size: TEACHER_FEED_PAGE_SIZE,
+  };
+}
+
+async function listAttemptThread(event) {
+  const studentUid = text(event.student_uid);
+  const assignmentId = text(event.assignment_id);
+  const setId = text(event.set_id);
+  if (!studentUid || (!assignmentId && !setId)) throw new Error("ATTEMPT_THREAD_REQUIRED");
+  const student = await getOne("students", { auth_uid: studentUid });
+  if (!student || !visibleStudentRecords([student]).length) throw new Error("ATTEMPT_NOT_FOUND");
+  const where = assignmentId
+    ? { student_uid: studentUid, assignment_id: assignmentId }
+    : { student_uid: studentUid, set_id: setId };
+  const attempts = (await getAll("attempts", { where }))
+    .filter((attempt) => assignmentId || !recordData(attempt).assignment_id)
+    .sort((left, right) => attemptDateValue(left) - attemptDateValue(right));
+  return {
+    success: true,
+    attempts: attempts.map(attemptSummaryView),
+  };
+}
+
 async function getAttemptDetail(event) {
   const attemptId = text(event.attempt_id);
   if (!attemptId) throw new Error("ATTEMPT_ID_REQUIRED");
@@ -2314,6 +2402,33 @@ async function getAttemptDetail(event) {
   };
 }
 
+async function getUnreadActivityThreadCount(teacher) {
+  const readAllAt = teacher.teacher_activity_attempts_read_all_at
+    ? new Date(teacher.teacher_activity_attempts_read_all_at)
+    : null;
+  const readAllTime = readAllAt && Number.isFinite(readAllAt.getTime()) ? readAllAt.getTime() : null;
+  const [attemptRows, studentRows] = await Promise.all([
+    getAll("attempts", readAllTime == null ? {} : {
+      where: { submitted_at: db.command.gt(readAllAt) },
+    }),
+    getAll("students"),
+  ]);
+  const visibleStudentUids = new Set(visibleStudentRecords(studentRows).map((student) => student.auth_uid));
+  const reviewed = new Set(Array.isArray(teacher.teacher_activity_attempt_reviewed_ids)
+    ? teacher.teacher_activity_attempt_reviewed_ids.map(text).filter(Boolean)
+    : []);
+  const unreadThreads = new Set();
+  attemptRows.forEach((record) => {
+    const attempt = recordData(record);
+    if (!visibleStudentUids.has(attempt.student_uid)) return;
+    if (reviewed.has(text(attempt.attempt_id || attempt._id))) return;
+    const submitted = new Date(attempt.submitted_at || 0).getTime();
+    if (readAllTime != null && Number.isFinite(submitted) && submitted <= readAllTime) return;
+    unreadThreads.add(activityThreadKey(attempt));
+  });
+  return unreadThreads.size;
+}
+
 async function getActivityState(teacher) {
   return {
     success: true,
@@ -2322,6 +2437,7 @@ async function getActivityState(teacher) {
     reviewed_attempt_ids: Array.isArray(teacher.teacher_activity_attempt_reviewed_ids)
       ? teacher.teacher_activity_attempt_reviewed_ids.map(text).filter(Boolean)
       : [],
+    unread_thread_count: await getUnreadActivityThreadCount(teacher),
   };
 }
 
@@ -2422,6 +2538,76 @@ async function submitTeacherDispute(event, teacher) {
   return { success: true, dispute_id: disputeId };
 }
 
+function disputeVisibleToTeacher(dispute, studentMap, assignmentMap) {
+  if (dispute.requester_role !== "teacher" && !studentMap.has(dispute.student_uid)) return false;
+  if (!dispute.assignment_id) return true;
+  const assignment = assignmentMap.get(dispute.assignment_id);
+  return !assignment || normalizedAssignmentStatus(assignment.status) !== "cancelled";
+}
+
+function disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap) {
+  const student = studentMap.get(dispute.student_uid) || {};
+  const set = setMap.get(dispute.set_id) || {};
+  const gradingKey = gradingKeysMap.get(dispute.set_id) || {};
+  const explanations = gradingKey.explanations || {};
+  return {
+    dispute_id: dispute.dispute_id || dispute._id,
+    requester_role: dispute.requester_role || "student",
+    student_uid: dispute.student_uid,
+    student_id: student.student_id || dispute.student_id_snapshot || "",
+    student_name: student.name || dispute.student_name_snapshot || "",
+    set_id: dispute.set_id,
+    set_title: set.title || dispute.set_id,
+    attempt_id: dispute.attempt_id,
+    assignment_id: dispute.assignment_id || null,
+    question_id: dispute.question_id,
+    question_text_snapshot: dispute.question_text_snapshot || "",
+    submitted_answer: dispute.submitted_answer,
+    answer_snapshot: dispute.answer_snapshot,
+    student_reason: dispute.student_reason || "",
+    status: dispute.status || "pending",
+    decision: dispute.decision || null,
+    teacher_note: dispute.teacher_note || "",
+    auto_regrade_scanned_attempt_count: Number(dispute.auto_regrade_scanned_attempt_count || 0),
+    auto_regrade_adjusted_attempt_count: Number(dispute.auto_regrade_adjusted_attempt_count || 0),
+    created_at: dispute.created_at || null,
+    updated_at: dispute.updated_at || null,
+    resolved_at: dispute.resolved_at || null,
+    explanation_snapshot: dispute.explanation_snapshot || "",
+    explanation: explanations[dispute.question_id] || "",
+  };
+}
+
+function normalizedDisputeStatus(dispute) {
+  return dispute && (dispute.status === "approved" || dispute.status === "rejected")
+    ? dispute.status
+    : "pending";
+}
+
+async function disputeReferenceMaps(disputeRows, options = {}) {
+  const [studentRows, assignmentRows] = await Promise.all([
+    getAll("students"),
+    getAll("assignments"),
+  ]);
+  const studentMap = new Map(visibleStudentRecords(studentRows).map((item) => [item.auth_uid, item]));
+  const assignmentMap = new Map(assignmentRows.map((item) => [item.assignment_id || item._id, item]));
+  const referenced = (disputeRows || []).filter((item) => disputeVisibleToTeacher(item, studentMap, assignmentMap));
+  const setIds = [...new Set(referenced.map((item) => item.set_id).filter(Boolean))];
+  const [setRows, gradingKeyRows] = options.includeDetails === false || !setIds.length
+    ? [[], []]
+    : await Promise.all([
+        getAll("sets", { where: { set_id: db.command.in(setIds) } }),
+        getAll("grading_keys", { where: { set_id: db.command.in(setIds) } }),
+      ]);
+  return {
+    studentMap,
+    assignmentMap,
+    setMap: new Map(setRows.map((item) => [item.set_id, item])),
+    gradingKeysMap: new Map(gradingKeyRows.map((item) => [item.set_id, item])),
+    visible: referenced,
+  };
+}
+
 async function listDisputes() {
   const [disputeRows, studentRows, setRows, gradingKeyRows, assignmentRows] = await Promise.all([
     getAll("answer_disputes"),
@@ -2436,47 +2622,68 @@ async function listDisputes() {
   const assignmentMap = new Map(assignmentRows.map((item) => [item.assignment_id || item._id, item]));
   return {
     success: true,
-    disputes: disputeRows.filter((dispute) => {
-      if (dispute.requester_role !== "teacher" && !studentMap.has(dispute.student_uid)) return false;
-      if (!dispute.assignment_id) return true;
-      const assignment = assignmentMap.get(dispute.assignment_id);
-      return !assignment || normalizedAssignmentStatus(assignment.status) !== "cancelled";
-    }).map((dispute) => {
-      const student = studentMap.get(dispute.student_uid) || {};
-      const set = setMap.get(dispute.set_id) || {};
-      const gradingKey = gradingKeysMap.get(dispute.set_id) || {};
-      const explanations = gradingKey.explanations || {};
-      return {
-        dispute_id: dispute.dispute_id || dispute._id,
-        requester_role: dispute.requester_role || "student",
-        student_uid: dispute.student_uid,
-        student_id: student.student_id || dispute.student_id_snapshot || "",
-        student_name: student.name || dispute.student_name_snapshot || "",
-        set_id: dispute.set_id,
-        set_title: set.title || dispute.set_id,
-        attempt_id: dispute.attempt_id,
-        assignment_id: dispute.assignment_id || null,
-        question_id: dispute.question_id,
-        question_text_snapshot: dispute.question_text_snapshot || "",
-        submitted_answer: dispute.submitted_answer,
-        answer_snapshot: dispute.answer_snapshot,
-        student_reason: dispute.student_reason || "",
-        status: dispute.status || "pending",
-        decision: dispute.decision || null,
-        teacher_note: dispute.teacher_note || "",
-        auto_regrade_scanned_attempt_count: Number(dispute.auto_regrade_scanned_attempt_count || 0),
-        auto_regrade_adjusted_attempt_count: Number(dispute.auto_regrade_adjusted_attempt_count || 0),
-        created_at: dispute.created_at || null,
-        updated_at: dispute.updated_at || null,
-        resolved_at: dispute.resolved_at || null,
-        explanation_snapshot: dispute.explanation_snapshot || "",
-        explanation: explanations[dispute.question_id] || "",
-      };
-    }).sort((a, b) => {
+    disputes: disputeRows.filter((dispute) => disputeVisibleToTeacher(dispute, studentMap, assignmentMap))
+      .map((dispute) => disputeTeacherView(dispute, studentMap, setMap, gradingKeysMap)).sort((a, b) => {
       if (a.status === "pending" && b.status !== "pending") return -1;
       if (a.status !== "pending" && b.status === "pending") return 1;
       return new Date(b.created_at || 0) - new Date(a.created_at || 0);
     }),
+  };
+}
+
+async function listDisputePage(event) {
+  const status = ["pending", "approved", "rejected"].includes(text(event.status))
+    ? text(event.status)
+    : "pending";
+  const cursor = feedCursor(event.cursor);
+  const [references, totalCount, approvedCount, rejectedCount] = await Promise.all([
+    disputeReferenceMaps([], { includeDetails: false }),
+    getCount("answer_disputes"),
+    getCount("answer_disputes", { status: "approved" }),
+    getCount("answer_disputes", { status: "rejected" }),
+  ]);
+  const collected = [];
+  let rawOffset = cursor;
+  let exhausted = false;
+  while (collected.length <= TEACHER_FEED_PAGE_SIZE && !exhausted) {
+    const rows = await getPage("answer_disputes", {
+      offset: rawOffset,
+      limit: TEACHER_FEED_PAGE_SIZE + 1,
+      orderBy: { field: "created_at", direction: "desc" },
+    });
+    if (!rows.length) {
+      exhausted = true;
+      break;
+    }
+    rows.forEach((row, index) => {
+      if (normalizedDisputeStatus(row) !== status) return;
+      if (!disputeVisibleToTeacher(row, references.studentMap, references.assignmentMap)) return;
+      collected.push({ dispute: row, nextCursor: rawOffset + index + 1 });
+    });
+    rawOffset += rows.length;
+    if (rows.length < TEACHER_FEED_PAGE_SIZE + 1) exhausted = true;
+  }
+  const page = collected.slice(0, TEACHER_FEED_PAGE_SIZE);
+  const pageRows = page.map((item) => item.dispute);
+  const pageReferences = await disputeReferenceMaps(pageRows);
+  const counts = {
+    pending: Math.max(0, totalCount - approvedCount - rejectedCount),
+    approved: approvedCount,
+    rejected: rejectedCount,
+  };
+  return {
+    success: true,
+    disputes: pageReferences.visible.map((item) => disputeTeacherView(
+      item,
+      pageReferences.studentMap,
+      pageReferences.setMap,
+      pageReferences.gradingKeysMap
+    )),
+    counts,
+    next_cursor: page.length ? page[page.length - 1].nextCursor : null,
+    has_more: collected.length > TEACHER_FEED_PAGE_SIZE || !exhausted,
+    page_size: TEACHER_FEED_PAGE_SIZE,
+    status,
   };
 }
 
@@ -3640,12 +3847,15 @@ exports.main = async (event) => {
     if (action === "listAssignments") return await listAssignments();
     if (action === "listProgress") return await listProgress();
     if (action === "listAttempts") return await listAttempts();
+    if (action === "listAttemptNotifications") return await listAttemptNotifications(event);
+    if (action === "listAttemptThread") return await listAttemptThread(event);
     if (action === "getAttemptDetail") return await getAttemptDetail(event);
     if (action === "getActivityState") return await getActivityState(teacher);
     if (action === "markAttemptsRead") return await markAttemptsRead(teacher);
     if (action === "markActivityAttemptsReviewed") return await markActivityAttemptsReviewed(event, teacher);
     if (action === "markActivityAttemptsReadAll") return await markActivityAttemptsReadAll(teacher);
     if (action === "listDisputes") return await listDisputes();
+    if (action === "listDisputePage") return await listDisputePage(event);
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);
     if (action === "backfillAcceptedAnswerRegrades") return await backfillAcceptedAnswerRegrades(event, teacher);
