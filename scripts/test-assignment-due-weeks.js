@@ -642,8 +642,9 @@ function testStudentCalendarModel() {
   assert(teacherReply.includes('<p>Which answer is supported by the passage?</p>'));
   assert(!teacherReply.includes("Q24."));
   assert(teacherReply.includes("<b>Expected</b><span>B</span>"));
-  assert(teacherReply.includes('<div class="teacher-reply-answer-head"><b>Submitted</b><span class="teacher-reply-status approved">'));
-  assert(teacherReply.includes("</div><span>C</span>"));
+  assert(teacherReply.includes('<div class="teacher-reply-answer submitted"><b>Submitted</b><span>C</span></div>'));
+  assert(teacherReply.includes('<div class="teacher-reply-footer"><time class="teacher-reply-timestamp"'));
+  assert(teacherReply.indexOf("Argued &middot; 2026-08-05 14:32") < teacherReply.indexOf('class="teacher-reply-status approved"'));
   assert(teacherReply.includes("Argued &middot; 2026-08-05 14:32"));
   assert(!teacherReply.includes("teacher-reply-arrow"));
   assert(!teacherReply.includes("teacher-reply-go"));
@@ -772,8 +773,9 @@ function testStudentModalShellMarkup() {
   assert(appCss.includes(".teacher-reply-title-window {\n    width: 100%;\n    min-width: 0;"));
   assert(appCss.includes(".teacher-reply-title-track {\n    min-width: 100%;"));
   assert(appCss.includes("text-align: center;"));
-  assert(appCss.includes("grid-template-columns: repeat(2, minmax(0, 1fr));"));
-  assert(appCss.includes(".teacher-reply-flow { grid-template-columns: 1fr; }"));
+  assert(appCss.includes("flex: 1 0 max-content;"));
+  assert(appCss.includes("min-width: min(100%, 160px);"));
+  assert(appCss.includes(".teacher-reply-flow { flex-direction: column; }"));
   assert(!appCss.includes(".teacher-reply-arrow {"));
   assert(!appCss.includes(".teacher-reply-go {"));
   assert(dashboardJs.includes("overlay.querySelectorAll('.teacher-reply-item[data-open-href]')"));

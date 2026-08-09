@@ -175,13 +175,15 @@ Navigation:
   Dashboard, and restores bubble focus.
 - Each Teacher Replies card centers its exercise title on a single-line
   overflow-scrolling track. The saved question text appears without a `Qxx`
-  prefix. Expected and Submitted answers have no arrow between them. The
-  Approved, Rejected, or Pending capsule sits inside the Submitted box on the
-  same compact header row as its label, leaving the answer a full-width row
-  below. There is no separate `Go to question` control: the complete card is a
+  prefix. Expected and Submitted answers have no arrow between them. Their
+  answer boxes sit side by side when both values fit comfortably, then wrap
+  into full-width rows when the answer content or viewport needs more room.
+  The bottom metadata row keeps the Shanghai Argue date on the left and the
+  Approved, Rejected, or Pending capsule on the right. There is no separate
+  `Go to question` control: the complete card is a
   keyboard-accessible target, and clicking it first opens a confirmation with a
   `Go to question` action. Cancelling restores focus to that card. The card's
-  bottom right shows the Shanghai date and time when the student submitted the
+  bottom row shows the Shanghai date and time when the student submitted the
   Argue request.
 - the My Words notebook icon in the right-side utility group opens a read-only
   quick-preview dialog rather than navigating immediately. The dialog shares
