@@ -166,12 +166,16 @@ Active or relevant functions:
   is a bounded, click-triggered read for one authorized `auth_uid`; STAR history
   remains outside teacher bootstrap/progress responses. It also lists and processes Cash
   requests, issues teacher evidence-upload metadata, and returns authorized
-  temporary evidence URLs. Teacher bootstrap reads lightweight attempt and
-  progress summaries. Opening a notification thread or paper report fetches
-  private per-question detail through bounded, individually authorized
-  `attempt_id` requests; notification threads issue one request per attempt so
-  their comparison cards can start expanded. Growing history therefore remains
-  outside the bootstrap response and below CloudBase's 6 MB response limit.
+  temporary evidence URLs. Teacher bootstrap no longer waits for complete
+  notification or Argue history. Notification summaries use five-thread cursor
+  pages; after the lightweight unread-thread count arrives, the browser silently
+  continues only until every unread thread is represented. A two-request in-memory
+  queue then prefetches each unread thread's private per-question detail through
+  bounded, individually authorized `attempt_id` requests. Earlier read history
+  advances only through `Load 5 more`. Argue uses independent five-record status
+  pages. Private details never enter the persistent Teacher IndexedDB snapshot,
+  and growing history remains outside bootstrap responses and below CloudBase's
+  6 MB response limit.
   Its lightweight `listClasses` action supplies active stable class IDs and
   names to the Student detail selector; class changes still pass through the
   trusted `updateStudent` membership-history synchronization.
@@ -420,6 +424,13 @@ their attempt IDs to `teacher_activity_attempt_reviewed_ids`; `Read all` writes
 `teacher_activity_attempts_read_all_at`. Attempts at or before that timestamp
 are read, while later submissions become unread without growing an unbounded
 list of historical IDs.
+
+The browser keeps a separate notification-thread ID set instead of treating the
+matrix's attempt collection as the feed. `listAttemptNotifications` returns five
+newest unseen thread summaries at a time, `listAttemptThread` supplies the bounded
+summary history for one authorized thread, and `getAttemptDetail` remains the only
+source of full answers and explanations. Matrix cells also use the thread action
+on demand so notification pagination cannot hide older progress history.
 
 ### STAR Cash Redemption
 

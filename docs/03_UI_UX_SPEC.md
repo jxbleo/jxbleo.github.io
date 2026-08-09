@@ -332,6 +332,12 @@ Frontend rule:
 - The teacher notification bell groups attempts by student assignment thread,
   or by student and set for self-study. Each row shows the latest result and
   total attempt count, and its detail dialog shows the complete thread history.
+- Notification summaries load in newest-first pages of five. The header may show
+  the server-derived unread count while an invisible current-tab queue continues
+  through additional five-thread pages until every unread thread is cached. It
+  then stops before older read history; `Load 5 more` advances one read-history
+  page. Cached unread threads prefetch their answer comparisons from top to
+  bottom with at most two detail requests active, without a visible spinner.
 - Teacher notification rows keep the student/action/task name on one line and
   truncate overflow with an ellipsis. A By-student-style latest-score capsule
   stays fixed on the far right. Below the title, the colored attempt-count
@@ -913,11 +919,9 @@ Selected tabs and primary actions use system blue without continuous rainbow
 animation. Completion states remain functionally colored: passed/mastered stay
 green, low scores stay red, and empty/not-yet cells stay neutral.
 
-The top-right Review and Notifications icon buttons show compact spinner loading states
-while the teacher desk is initializing. The create-student and account capsules
-stay in their normal state. Header capsules should not use a
-separate rainbow underline; keep their shape stable and remove the spinner once
-the desk data has loaded or failed.
+The top-right Review and Notifications icon buttons keep their normal stable
+appearance while their counts and first five-record caches initialize. Do not
+show a spinner or `aria-busy` state for the invisible background queues.
 
 ### Assign Tab
 
@@ -1270,6 +1274,10 @@ standalone modal from the top-right `!` Review icon, not as a Tasks sub-tab.
 Review should show `Pending`, `Approved`, and `Rejected` status tabs and group
 requests into task capsules so the teacher can handle one student attempt or
 assignment at a time.
+
+Each Review status loads five records at a time. Pending is warmed silently after
+teacher authentication; Approved and Rejected start when their tab is first used.
+`Load 5 more` appends the next page without replacing already visible records.
 
 Approved and Rejected use the same neutral uppercase label treatment as Pending,
 with a quiet, background-free total centered directly below each label. Pending

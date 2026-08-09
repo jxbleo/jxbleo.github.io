@@ -306,14 +306,18 @@ wrong questions include the private answer explanation. Recorded Vocabulary
 Cloze attempts identify `Quiz` versus timed `Practice`; Practice activity
 attempts retain the selected group IDs and create teacher notifications, but
 never count toward student completion. Learn inline practice is unrecorded.
-Teacher login/list actions return attempt and progress summaries only. Full
+Teacher startup returns progress separately and does not wait for complete
+notification or Argue history. Notification summaries load newest-first in
+five-thread pages. The browser automatically continues only until every unread
+thread is represented, then a two-request current-tab queue silently prefetches
+each unread thread's authorized per-attempt details from top to bottom. Earlier
+read history and each Argue status advance through `Load 5 more`. Full
 per-question submitted answers, correct answers, group results, and explanations
-are fetched through one authorized `attempt_id` request at a time. Opening a
-notification thread automatically makes those bounded detail requests for each
-attempt in that thread so every attempt card expands its wrong/correct answer
-comparison by default; the paper report reuses the same detail. Do not put the
-complete attempt history back into a bootstrap response because CloudBase caps
-a function response body at 6 MB.
+still come from one authorized `attempt_id` request at a time, remain outside
+the persistent Teacher IndexedDB cache, and are reused by notification cards and
+paper reports. Do not put complete attempt history back into a bootstrap
+response because CloudBase caps a function response body at 6 MB. The Teacher
+bell and Argue header controls never show a spinner for these invisible queues.
 
 ## 7. Assignment Rules
 

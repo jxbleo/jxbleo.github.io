@@ -12,11 +12,16 @@
     var TEACHER_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
     var TEACHER_PROGRESS_REFRESH_MS = 2 * 60 * 1000;
     var TEACHER_RETURN_REFRESH_AGE_MS = 30 * 1000;
+    var TEACHER_FEED_PAGE_SIZE = 5;
+    var NOTIFICATION_DETAIL_CONCURRENCY = 2;
     var teacherCacheDbPromise = null;
     var teacherLiveRefreshPromise = null;
     var teacherLiveDataLoadedAt = 0;
     var teacherRefreshTimer = 0;
     var attemptDetailPromises = {};
+    var notificationThreadPromises = {};
+    var notificationDetailQueue = [];
+    var notificationDetailActive = 0;
     var pendingTeacherViewportSnapshot = null;
     var restoredTeacherWorkspaceView = '';
 
@@ -54,7 +59,19 @@
         assignments: [],
         progressItems: [],
         attempts: [],
+        notificationAttemptIds: {},
         disputes: [],
+        notificationCursor: 0,
+        notificationHasMore: false,
+        notificationPageLoading: false,
+        notificationFeedReady: false,
+        notificationUnreadThreadCount: null,
+        disputeCounts: { pending: 0, approved: 0, rejected: 0 },
+        disputePages: {
+            pending: { cursor: 0, hasMore: false, loading: false, loaded: false },
+            approved: { cursor: 0, hasMore: false, loading: false, loaded: false },
+            rejected: { cursor: 0, hasMore: false, loading: false, loaded: false }
+        },
         candidates: [],
         selectedAssignSetIds: {},
         selectedAssignStudentUids: {},
@@ -663,13 +680,18 @@
     }
 
     function pendingReviewCount() {
+        if (state.disputeCounts && Number.isFinite(Number(state.disputeCounts.pending))) {
+            return Number(state.disputeCounts.pending || 0);
+        }
         return (state.disputes || []).filter(function(item) {
             return item.status !== 'approved' && item.status !== 'rejected';
         }).length;
     }
 
     function sortedAttempts() {
-        return (state.attempts || []).slice().sort(function(a, b) {
+        return (state.attempts || []).filter(function(attempt) {
+            return attempt && state.notificationAttemptIds[String(attempt.attempt_id || '')] === true;
+        }).sort(function(a, b) {
             return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
         });
     }
@@ -733,13 +755,16 @@
 
     function updateActivityBadges() {
         var attemptCounts = activityAttemptCounts();
+        var unreadCount = state.notificationUnreadThreadCount == null
+            ? attemptCounts.unread
+            : Number(state.notificationUnreadThreadCount || 0);
         var count = document.getElementById('teacher-updates-count');
         var button = document.getElementById('teacher-updates-button');
         if (count) {
-            count.textContent = attemptCounts.unread ? String(attemptCounts.unread) : '';
-            count.hidden = attemptCounts.unread <= 0;
+            count.textContent = unreadCount ? String(unreadCount) : '';
+            count.hidden = unreadCount <= 0;
         }
-        if (button) button.classList.toggle('has-updates', attemptCounts.unread > 0);
+        if (button) button.classList.toggle('has-updates', unreadCount > 0);
     }
 
     function updateTopBadges() {
@@ -835,7 +860,12 @@
             state.updatesOpen = false;
             state.notificationAttemptId = '';
             renderUpdatesPanel();
-            loadQuestionTextForDisputes().then(renderDisputes);
+            renderDisputes();
+            if (!state.disputePages[state.disputeFilter].loaded) {
+                loadDisputePage(state.disputeFilter, { reset: true });
+            } else {
+                loadQuestionTextForDisputes().then(renderDisputes);
+            }
         }
         updateTopBadges();
     }
@@ -1335,8 +1365,141 @@
 
     function loadActivityState() {
         return teacherCall('getActivityState').catch(function() {
-            return { attempts_seen_at: null, read_all_at: null, reviewed_attempt_ids: [], unavailable: true };
+            return { attempts_seen_at: null, read_all_at: null, reviewed_attempt_ids: [], unread_thread_count: null, unavailable: true };
         });
+    }
+
+    function applyActivityState(result) {
+        if (!result || result.unavailable) return;
+        state.attemptsSeenAt = result.attempts_seen_at || null;
+        state.activityReadAllAt = result.read_all_at || null;
+        state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
+        if (result.unread_thread_count != null && Number.isFinite(Number(result.unread_thread_count))) {
+            state.notificationUnreadThreadCount = Number(result.unread_thread_count);
+        }
+        updateTopBadges();
+    }
+
+    function loadNotificationPage(options) {
+        options = options || {};
+        if (state.notificationPageLoading) return Promise.resolve([]);
+        state.notificationPageLoading = true;
+        var cursor = options.reset === true ? 0 : Number(state.notificationCursor || 0);
+        if (options.reset === true) {
+            state.notificationCursor = 0;
+            state.notificationHasMore = false;
+            state.notificationFeedReady = false;
+            state.notificationAttemptIds = {};
+        }
+        return teacherCall('listAttemptNotifications', {
+            cursor: cursor,
+            page_size: TEACHER_FEED_PAGE_SIZE,
+            exclude_thread_keys: options.reset === true ? [] : groupedAttemptThreads().map(function(group) { return group.key; })
+        }).then(function(result) {
+            var attempts = result.attempts || [];
+            mergeAttemptSummaries(attempts, true);
+            state.notificationCursor = result.next_cursor == null ? cursor : Number(result.next_cursor);
+            state.notificationHasMore = result.has_more === true;
+            state.notificationFeedReady = true;
+            renderUpdatesPanel();
+            return attempts;
+        }).catch(function() {
+            return [];
+        }).finally(function() {
+            state.notificationPageLoading = false;
+        });
+    }
+
+    function cacheAllUnreadNotificationPages() {
+        var target = Number(state.notificationUnreadThreadCount || 0);
+        function next() {
+            if (activityAttemptCounts().unread >= target || !state.notificationHasMore) return Promise.resolve();
+            return loadNotificationPage().then(function(attempts) {
+                return attempts && attempts.length ? next() : undefined;
+            });
+        }
+        return next().then(function() {
+            return prefetchNotificationItems(activityItems().filter(function(item) { return item.unread; }));
+        });
+    }
+
+    function initializeNotificationFeed() {
+        return Promise.all([
+            loadActivityState(),
+            loadNotificationPage({ reset: true })
+        ]).then(function(results) {
+            applyActivityState(results[0]);
+            return cacheAllUnreadNotificationPages();
+        }).then(function() {
+            renderUpdatesPanel();
+            return true;
+        }).catch(function() {
+            return false;
+        });
+    }
+
+    function refreshNotificationFeedFromActivityState() {
+        return loadNotificationPage({ reset: true }).then(function() {
+            return cacheAllUnreadNotificationPages();
+        }).then(function() {
+            renderUpdatesPanel();
+        });
+    }
+
+    function mergeDisputePage(result, reset) {
+        var status = result && result.status || state.disputeFilter || 'pending';
+        var incomingIds = {};
+        (result.disputes || []).forEach(function(item) { incomingIds[item.dispute_id] = true; });
+        state.disputes = (state.disputes || []).filter(function(item) {
+            var itemStatus = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
+            if (reset && itemStatus === status) return false;
+            return !incomingIds[item.dispute_id];
+        }).concat(result.disputes || []);
+        if (result.counts) state.disputeCounts = result.counts;
+        var page = state.disputePages[status];
+        page.cursor = result.next_cursor == null ? page.cursor : Number(result.next_cursor);
+        page.hasMore = result.has_more === true;
+        page.loaded = true;
+        return result.disputes || [];
+    }
+
+    function loadDisputePage(status, options) {
+        status = status || 'pending';
+        options = options || {};
+        var page = state.disputePages[status];
+        if (!page || page.loading) return Promise.resolve([]);
+        if (options.reset === true) {
+            page.cursor = 0;
+            page.hasMore = false;
+            page.loaded = false;
+        }
+        page.loading = true;
+        return teacherCall('listDisputePage', {
+            status: status,
+            cursor: page.cursor,
+            page_size: TEACHER_FEED_PAGE_SIZE
+        }).then(function(result) {
+            var disputes = mergeDisputePage(result, options.reset === true);
+            return loadQuestionTextForRecords(disputes).then(function() {
+                renderDisputes();
+                return disputes;
+            });
+        }).catch(function() {
+            return [];
+        }).finally(function() {
+            page.loading = false;
+            updateTopBadges();
+        });
+    }
+
+    function initializeDisputeFeed() {
+        return loadDisputePage('pending', { reset: true });
+    }
+
+    function initializeTeacherMessageCaches() {
+        setHeaderIconLoading(false);
+        initializeNotificationFeed();
+        initializeDisputeFeed();
     }
 
     function studentRecords() {
@@ -3847,6 +4010,25 @@
         });
     }
 
+    function mergeAttemptSummaries(items, includeInNotifications) {
+        (items || []).forEach(function(summary) {
+            if (!summary || !summary.attempt_id) return;
+            var id = String(summary.attempt_id);
+            var index = state.attempts.findIndex(function(item) {
+                return String(item && item.attempt_id || '') === id;
+            });
+            if (index === -1) {
+                state.attempts.push(summary);
+            } else if (attemptHasDetail(state.attempts[index])) {
+                state.attempts[index] = Object.assign({}, summary, state.attempts[index], { detail_loaded: true });
+            } else {
+                state.attempts[index] = Object.assign({}, state.attempts[index], summary);
+            }
+            if (includeInNotifications) state.notificationAttemptIds[id] = true;
+        });
+        return items || [];
+    }
+
     function mergeAttemptDetail(detail) {
         if (!detail || !detail.attempt_id) return detail;
         var found = false;
@@ -3893,6 +4075,106 @@
         return attemptDetailPromises[id];
     }
 
+    function runNotificationDetailQueue() {
+        while (notificationDetailActive < NOTIFICATION_DETAIL_CONCURRENCY && notificationDetailQueue.length) {
+            var item = notificationDetailQueue.shift();
+            if (!item) continue;
+            notificationDetailActive += 1;
+            loadAttemptDetail(item.id).then(item.resolve, function(error) {
+                if (item.retries < 1) {
+                    item.retries += 1;
+                    notificationDetailQueue.push(item);
+                    return null;
+                }
+                item.reject(error);
+                return null;
+            }).then(function() {
+                notificationDetailActive -= 1;
+                runNotificationDetailQueue();
+            });
+        }
+    }
+
+    function queueNotificationAttemptDetail(attemptId, priority) {
+        var id = String(attemptId || '');
+        if (!id) return Promise.resolve(null);
+        var existing = (state.attempts || []).find(function(item) {
+            return String(item && item.attempt_id || '') === id && attemptHasDetail(item);
+        });
+        if (existing) return Promise.resolve(existing);
+        var queued = notificationDetailQueue.find(function(item) { return item.id === id; });
+        if (queued) {
+            if (priority) {
+                notificationDetailQueue = notificationDetailQueue.filter(function(item) { return item !== queued; });
+                notificationDetailQueue.unshift(queued);
+            }
+            return queued.promise;
+        }
+        var resolveItem;
+        var rejectItem;
+        var promise = new Promise(function(resolve, reject) {
+            resolveItem = resolve;
+            rejectItem = reject;
+        });
+        var item = { id: id, retries: 0, promise: promise, resolve: resolveItem, reject: rejectItem };
+        if (priority) notificationDetailQueue.unshift(item);
+        else notificationDetailQueue.push(item);
+        runNotificationDetailQueue();
+        return promise;
+    }
+
+    function ensureNotificationThread(attempt) {
+        if (!attempt) return Promise.resolve([]);
+        var key = attemptThreadKey(attempt);
+        if (notificationThreadPromises[key]) return notificationThreadPromises[key];
+        notificationThreadPromises[key] = teacherCall('listAttemptThread', {
+            student_uid: attempt.student_uid || '',
+            assignment_id: attempt.assignment_id || '',
+            set_id: attempt.set_id || ''
+        }).then(function(result) {
+            return mergeAttemptSummaries(result.attempts || [], true);
+        }).finally(function() {
+            delete notificationThreadPromises[key];
+        });
+        return notificationThreadPromises[key];
+    }
+
+    function loadProgressAttemptThread(item) {
+        if (!item || !item.student_uid || !item.set_id) return Promise.resolve([]);
+        return teacherCall('listAttemptThread', {
+            student_uid: item.student_uid,
+            assignment_id: item.assignment_id || '',
+            set_id: item.set_id || ''
+        }).then(function(result) {
+            return mergeAttemptSummaries(result.attempts || [], false);
+        }).catch(function() {
+            return [];
+        });
+    }
+
+    function prefetchNotificationThread(attempt, priority) {
+        return ensureNotificationThread(attempt).then(function(attempts) {
+            var ordered = (attempts || []).slice().sort(function(left, right) {
+                return new Date(right.submitted_at || 0) - new Date(left.submitted_at || 0);
+            });
+            var requests = ordered.map(function(item) {
+                return queueNotificationAttemptDetail(item.attempt_id, priority).catch(function() { return null; });
+            });
+            requests.push(loadQuestionTextForRecords([{ set_id: attempt.set_id || '' }]).catch(function() { return null; }));
+            return Promise.all(requests);
+        });
+    }
+
+    function prefetchNotificationItems(items) {
+        var chain = Promise.resolve();
+        (items || []).forEach(function(item) {
+            chain = chain.then(function() {
+                return prefetchNotificationThread(item.attempt, false);
+            });
+        });
+        return chain;
+    }
+
     function openAttemptPaperReview(attemptId, setId, render) {
         return Promise.all([
             loadAttemptDetail(attemptId),
@@ -3906,31 +4188,32 @@
     }
 
     function loadNotificationThreadAttemptDetails(attempt, render) {
-        var ids = relatedAttemptIdsForAttempt(attempt);
-        if (!ids.length) return Promise.resolve();
-        var revealIds = ids.filter(function(attemptId) {
-            return !(state.attempts || []).some(function(item) {
-                return String(item.attempt_id || '') === String(attemptId) && attemptHasDetail(item);
-            });
-        });
         var errors = [];
-        var requests = ids.map(function(attemptId) {
-            return loadAttemptDetail(attemptId).catch(function(error) {
-                errors.push(error);
-                return null;
+        return ensureNotificationThread(attempt).then(function(threadAttempts) {
+            var ids = (threadAttempts || []).map(function(item) { return item.attempt_id; }).filter(Boolean);
+            var revealIds = ids.filter(function(attemptId) {
+                return !(state.attempts || []).some(function(item) {
+                    return String(item.attempt_id || '') === String(attemptId) && attemptHasDetail(item);
+                });
             });
-        });
-        requests.push(loadQuestionTextForRecords([{ set_id: attempt && attempt.set_id || '' }]));
-        return Promise.all(requests).then(function() {
-            if (!attempt || state.notificationAttemptId !== attempt.attempt_id) return;
-            state.notificationAttemptRevealIds = revealIds;
-            render();
-            window.requestAnimationFrame(function() {
-                state.notificationAttemptRevealIds = [];
+            var requests = ids.map(function(attemptId) {
+                return queueNotificationAttemptDetail(attemptId, true).catch(function(error) {
+                    errors.push(error);
+                    return null;
+                });
             });
-            if (errors.length) {
-                showMessage('Some answer comparisons could not be loaded. Please try opening the notification again.', 'error');
-            }
+            requests.push(loadQuestionTextForRecords([{ set_id: attempt && attempt.set_id || '' }]));
+            return Promise.all(requests).then(function() {
+                if (!attempt || state.notificationAttemptId !== attempt.attempt_id) return;
+                state.notificationAttemptRevealIds = revealIds;
+                render();
+                window.requestAnimationFrame(function() {
+                    state.notificationAttemptRevealIds = [];
+                });
+                if (errors.length) {
+                    showMessage('Some answer comparisons could not be loaded. Please try opening the notification again.', 'error');
+                }
+            });
         });
     }
 
@@ -6196,6 +6479,7 @@
         container.querySelectorAll('[data-matrix-cell]').forEach(function(button) {
             button.addEventListener('click', function() {
                 var key = button.dataset.matrixCell;
+                var item = items.find(function(candidate) { return matrixCellKey(candidate) === key; });
                 var scrollSnapshot = matrixScrollSnapshot(container);
                 state.selectedMatrixCell = state.selectedMatrixCell === key ? '' : key;
                 state.selectedMatrixStudentKey = '';
@@ -6204,6 +6488,11 @@
                 state.selectedMatrixReviewAttemptId = '';
                 renderAssignmentOverview();
                 restoreMatrixScroll(scrollSnapshot);
+                if (state.selectedMatrixCell && item) {
+                    loadProgressAttemptThread(item).then(function() {
+                        if (state.selectedMatrixCell === key) renderAssignmentOverview();
+                    });
+                }
             });
         });
         container.querySelectorAll('[data-matrix-close]').forEach(function(button) {
@@ -6281,10 +6570,18 @@
         container.querySelectorAll('[data-student-history-progress]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.selectedProgressDetailKey = button.dataset.studentHistoryProgress || '';
+                var item = items.find(function(candidate) {
+                    return assignmentProgressKey(candidate) === state.selectedProgressDetailKey;
+                });
                 state.selectedMatrixCell = '';
                 state.selectedMatrixStudentKey = '';
                 state.targetMatrixAttemptId = '';
                 renderAssignmentOverview();
+                if (item) {
+                    loadProgressAttemptThread(item).then(function() {
+                        if (state.selectedProgressDetailKey === assignmentProgressKey(item)) renderAssignmentOverview();
+                    });
+                }
             });
         });
         mountTeacherMatrixModals(container);
@@ -6435,9 +6732,12 @@
 
     function renderActivityFeed() {
         var items = activityItems();
+        var unreadTarget = Number(state.notificationUnreadThreadCount || 0);
+        var canLoadMore = state.notificationHasMore && activityAttemptCounts().unread >= unreadTarget;
         return '<div class="activity-list compact-activity-list">' +
             (items.length ? items.map(renderActivityFeedRow).join('') :
                 '<div class="empty-card compact-empty"><strong>No attempts</strong>Student attempt activity will appear here.</div>') +
+            (canLoadMore ? '<button class="outline-button teacher-feed-load-more" type="button" data-notification-load-more>Load 5 more</button>' : '') +
             '</div>';
     }
 
@@ -6473,9 +6773,16 @@
     }
 
     function markAttemptGroupReviewed(attempt) {
+        var wasUnread = relatedAttemptIdsForAttempt(attempt).some(function(id) {
+            var item = (state.attempts || []).find(function(candidate) { return candidate.attempt_id === id; });
+            return item && isAttemptReviewUnread(item);
+        });
         var ids = relatedAttemptIdsForAttempt(attempt);
         if (!ids.length) return;
         setReviewedAttemptIds(ids);
+        if (wasUnread && state.notificationUnreadThreadCount != null) {
+            state.notificationUnreadThreadCount = Math.max(0, Number(state.notificationUnreadThreadCount || 0) - 1);
+        }
         var batches = [];
         for (var index = 0; index < ids.length; index += 100) {
             batches.push(ids.slice(index, index + 100));
@@ -6595,10 +6902,15 @@
         state.targetMatrixAttemptId = '';
         state.selectedMatrixReviewAttemptId = '';
         state.notificationAttemptEntering = true;
-        markAttemptGroupReviewed(attempt);
         renderUpdatesPanel();
         state.notificationAttemptEntering = false;
-        loadNotificationThreadAttemptDetails(attempt, renderUpdatesPanel);
+        ensureNotificationThread(attempt).then(function() {
+            markAttemptGroupReviewed(attempt);
+            renderUpdatesPanel();
+            return loadNotificationThreadAttemptDetails(attempt, renderUpdatesPanel);
+        }).catch(function() {
+            return loadNotificationThreadAttemptDetails(attempt, renderUpdatesPanel);
+        });
     }
 
     function renderUpdatesPanel() {
@@ -6609,7 +6921,9 @@
         var readAllButton = document.getElementById('teacher-updates-read-all');
         if (button) button.setAttribute('aria-expanded', state.updatesOpen ? 'true' : 'false');
         if (readAllButton) {
-            var unreadCount = activityAttemptCounts().unread;
+            var unreadCount = state.notificationUnreadThreadCount == null
+                ? activityAttemptCounts().unread
+                : Number(state.notificationUnreadThreadCount || 0);
             readAllButton.disabled = state.activityReadAllPending || unreadCount <= 0;
             readAllButton.classList.toggle('has-unread', unreadCount > 0);
             readAllButton.classList.toggle('is-pending', state.activityReadAllPending);
@@ -6635,6 +6949,17 @@
                 openAttemptFromNotification(row);
             });
         });
+        var loadMore = updatesBody.querySelector('[data-notification-load-more]');
+        if (loadMore) {
+            loadMore.addEventListener('click', function() {
+                loadMore.disabled = true;
+                loadNotificationPage().then(function(attempts) {
+                    return prefetchNotificationItems((attempts || []).map(function(attempt) {
+                        return { attempt: attempt };
+                    }));
+                }).then(renderUpdatesPanel);
+            });
+        }
         modalRoot.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;
@@ -6715,6 +7040,13 @@
     }
 
     function disputeCounts() {
+        if (state.disputeCounts) {
+            return {
+                pending: Number(state.disputeCounts.pending || 0),
+                approved: Number(state.disputeCounts.approved || 0),
+                rejected: Number(state.disputeCounts.rejected || 0)
+            };
+        }
         var counts = { pending: 0, approved: 0, rejected: 0 };
         (state.disputes || []).forEach(function(item) {
             var status = item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending';
@@ -6914,15 +7246,30 @@
         }).join('') : '<div class="empty-card"><strong>No ' + escapeHtml(state.disputeFilter) + ' requests</strong>' +
             (state.disputeFilter === 'pending' ? 'New requests will appear here.' : 'Handled requests will appear here.') +
             '</div>');
-        list.innerHTML = tabs + mergeToggle + body;
+        var disputePage = state.disputePages[state.disputeFilter];
+        var loadMore = disputePage && disputePage.hasMore
+            ? '<button class="outline-button teacher-feed-load-more" type="button" data-dispute-load-more>Load 5 more</button>'
+            : '';
+        list.innerHTML = tabs + mergeToggle + body + loadMore;
 
         list.querySelectorAll('[data-dispute-filter]').forEach(function(button) {
             button.addEventListener('click', function() {
                 state.disputeFilter = button.dataset.disputeFilter;
                 if (state.disputeFilter === 'pending') state.disputeMerge = false;
                 renderDisputes();
+                if (!state.disputePages[state.disputeFilter].loaded) {
+                    loadDisputePage(state.disputeFilter, { reset: true });
+                }
             });
         });
+
+        var disputeLoadMore = list.querySelector('[data-dispute-load-more]');
+        if (disputeLoadMore) {
+            disputeLoadMore.addEventListener('click', function() {
+                disputeLoadMore.disabled = true;
+                loadDisputePage(state.disputeFilter);
+            });
+        }
 
         list.querySelectorAll('[data-review-merge]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -6963,16 +7310,14 @@
                 }).then(function() {
                     showMessage('Argue request resolved.', 'success');
                     return Promise.all([
-                        teacherCall('listDisputes'),
                         teacherCall('listAssignments'),
-                        teacherCall('listAttempts'),
-                        loadProgressData()
+                        loadProgressData(),
+                        loadDisputePage(state.disputeFilter, { reset: true }),
+                        initializeNotificationFeed()
                     ]);
                 }).then(function(results) {
-                    state.disputes = results[0].disputes || [];
-                    state.assignments = results[1].assignments || [];
-                    state.attempts = results[2].attempts || [];
-                    state.progressItems = results[3].progress || [];
+                    state.assignments = results[0].assignments || [];
+                    state.progressItems = results[1].progress || [];
                     return loadQuestionTextForDisputes();
                 }).then(function() {
                     renderDisputes();
@@ -7225,14 +7570,12 @@
         var classesPromise = teacherCall('listClasses').catch(function() { return { classes: [], unavailable: true }; });
         var setsPromise = teacherCall('listSets').catch(function() { return { sets: [], unavailable: true }; });
         var assignmentsPromise = teacherCall('listAssignments');
-        var disputesPromise = teacherCall('listDisputes');
-        var attemptsPromise = teacherCall('listAttempts');
         var progressPromise = loadProgressData();
-        var activityPromise = loadActivityState();
         var starPromise = loadStarRedemptions();
         var catalogPromise = loadPublicCatalog().catch(function() {
             teacherLibraryCatalog = teacherLibraryCatalog || { sections: [], items: [] };
         });
+        initializeTeacherMessageCaches();
 
         Promise.all([setsPromise, progressPromise, catalogPromise]).then(function(results) {
             var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
@@ -7249,10 +7592,7 @@
             studentsPromise,
             setsPromise,
             assignmentsPromise,
-            disputesPromise,
-            attemptsPromise,
             progressPromise,
-            activityPromise,
             starPromise,
             catalogPromise,
             classesPromise
@@ -7261,15 +7601,8 @@
             state.students = results[0].students || [];
             if (!results[1].unavailable) state.sets = mergeCloudAndPublicSets(results[1].sets || []);
             state.assignments = results[2].assignments || [];
-            state.disputes = results[3].disputes || [];
-            state.attempts = results[4].attempts || [];
-            if (!results[9].unavailable) state.classDirectory = results[9].classes || [];
-            if (!results[5].unavailable) state.progressItems = results[5].progress || [];
-            if (!results[6].unavailable) {
-                state.attemptsSeenAt = results[6].attempts_seen_at || null;
-                state.activityReadAllAt = results[6].read_all_at || null;
-                state.activityReviewedAttemptIds = results[6].reviewed_attempt_ids || [];
-            }
+            if (!results[6].unavailable) state.classDirectory = results[6].classes || [];
+            if (!results[3].unavailable) state.progressItems = results[3].progress || [];
             teacherLiveDataLoadedAt = Date.now();
             afterDataLoaded();
             restoreMatrixScroll(viewport);
@@ -7285,19 +7618,14 @@
         }
         teacherLiveRefreshPromise = Promise.all([
             teacherCall('listAssignments').catch(function() { return { assignments: [], unavailable: true }; }),
-            teacherCall('listAttempts').catch(function() { return { attempts: [], unavailable: true }; }),
             loadProgressData(),
             loadActivityState()
         ]).then(function(results) {
             var viewport = matrixScrollSnapshot(document.getElementById('assignment-overview'));
             if (!results[0].unavailable) state.assignments = results[0].assignments || [];
-            if (!results[1].unavailable) state.attempts = results[1].attempts || [];
-            if (!results[2].unavailable) state.progressItems = results[2].progress || [];
-            if (!results[3].unavailable) {
-                state.attemptsSeenAt = results[3].attempts_seen_at || null;
-                state.activityReadAllAt = results[3].read_all_at || null;
-                state.activityReviewedAttemptIds = results[3].reviewed_attempt_ids || [];
-            }
+            if (!results[1].unavailable) state.progressItems = results[1].progress || [];
+            applyActivityState(results[2]);
+            refreshNotificationFeedFromActivityState();
             teacherLiveDataLoadedAt = Date.now();
             renderAssignmentOverview();
             if (state.updatesOpen) updateTopBadges();
@@ -7333,15 +7661,7 @@
         renderAssignmentOverview();
         updateAssignView();
         renderUpdatesPanel();
-        loadQuestionTextForDisputes().then(function() {
-            renderDisputes();
-            renderUpdatesPanel();
-        }).catch(function() {
-            renderDisputes();
-            renderUpdatesPanel();
-        }).then(function() {
-            setHeaderIconLoading(false);
-        });
+        renderDisputes();
     }
 
     document.querySelectorAll('.tab-button').forEach(function(button) {
@@ -7439,12 +7759,16 @@
     var teacherUpdatesReadAll = document.getElementById('teacher-updates-read-all');
     if (teacherUpdatesReadAll) {
         teacherUpdatesReadAll.addEventListener('click', function() {
-            if (state.activityReadAllPending || activityAttemptCounts().unread <= 0) return;
+            var unreadCount = state.notificationUnreadThreadCount == null
+                ? activityAttemptCounts().unread
+                : Number(state.notificationUnreadThreadCount || 0);
+            if (state.activityReadAllPending || unreadCount <= 0) return;
             state.activityReadAllPending = true;
             renderUpdatesPanel();
             teacherCall('markActivityAttemptsReadAll').then(function(result) {
                 state.activityReadAllAt = result.read_all_at || new Date().toISOString();
                 state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
+                state.notificationUnreadThreadCount = 0;
                 state.activityReadAllSuccess = true;
                 showMessage('All student attempt notifications marked as read.', 'success');
             }).catch(function(error) {

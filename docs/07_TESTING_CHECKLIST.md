@@ -632,6 +632,15 @@ Check:
   sits before date/time and changes blue/amber/rose for 1/2/3+ attempts
 - opening the teacher notification bell alone does not clear the header badge
   or red unread row styling
+- Teacher startup never shows a spinner on the Notifications or Argue header
+  buttons and does not wait for either full list before rendering the desk
+- notification summaries arrive in newest-first five-thread pages; when 6, 10,
+  or more unread threads exist, background paging continues until all unread
+  threads are represented, then stops before older read history
+- unread notification details and public question text prefetch top-to-bottom in
+  current-tab memory; no more than two private detail requests run concurrently
+- `Load 5 more` retrieves exactly the next notification history page and warms
+  those five threads without persisting answers or explanations
 - opening a grouped attempt notification clears its red state; a later attempt
   in the same thread makes it red again while unopened threads remain red
 - an ordinary in-progress assignment cannot be duplicated; a complete Class
@@ -1010,7 +1019,8 @@ Check:
 - Student lookup opens with its search field and `+` action in the top bar;
   selecting a result replaces the search field with the student's name, and
   the back control restores the searchable student list
-- Argue list loads and groups disputes
+- Argue list loads and groups disputes in five-record status pages; `Load 5 more`
+  appends the next page and status totals remain complete
 - Argue status tabs use the same neutral uppercase label styling; Approved and
   Rejected show quiet background-free totals directly below their labels, while
   Pending shows a red notification count
