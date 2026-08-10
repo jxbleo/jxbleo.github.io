@@ -47,6 +47,17 @@
 
     var replayingCloseButtons = new WeakSet();
     var closingModalRoots = new WeakSet();
+    var activeModalAnimations = new WeakMap();
+
+    function cancelModalAnimations(root) {
+        var animations = activeModalAnimations.get(root) || [];
+        animations.forEach(function (animation) {
+            try {
+                animation.cancel();
+            } catch (error) {}
+        });
+        activeModalAnimations.delete(root);
+    }
 
     function isModalCloseButton(button) {
         var label = button.getAttribute("aria-label") || button.textContent || "";
@@ -65,6 +76,8 @@
         var duration = reduceMotion ? 140 : 260;
         var easing = reduceMotion ? "ease-out" : "cubic-bezier(.32, 0, .2, 1)";
         var animations = [];
+
+        cancelModalAnimations(root);
 
         if (surface) {
             var liveStyle = window.getComputedStyle(surface);
@@ -115,9 +128,13 @@
             }));
         }
 
-        return new Promise(function (resolve) {
-            window.setTimeout(resolve, duration + 20);
-        });
+        activeModalAnimations.set(root, animations);
+        return {
+            animations: animations,
+            finished: new Promise(function (resolve) {
+                window.setTimeout(resolve, duration + 20);
+            })
+        };
     }
 
     document.addEventListener("click", function (event) {
@@ -132,19 +149,17 @@
         closingModalRoots.add(root);
         button.disabled = true;
 
-        playModalClose(root, visibleSurface(root), button).then(function () {
+        var exit = playModalClose(root, visibleSurface(root), button);
+        exit.finished.then(function () {
             replayingCloseButtons.add(button);
             button.disabled = false;
-            button.click();
-            replayingCloseButtons.delete(button);
-            closingModalRoots.delete(root);
-
-            window.setTimeout(function () {
-                if (!root.isConnected || root.hidden || typeof root.getAnimations !== "function") return;
-                Array.prototype.forEach.call(root.getAnimations({ subtree: true }), function (animation) {
-                    animation.cancel();
-                });
-            }, 0);
+            try {
+                button.click();
+            } finally {
+                cancelModalAnimations(root);
+                replayingCloseButtons.delete(button);
+                closingModalRoots.delete(root);
+            }
         });
     }, true);
 

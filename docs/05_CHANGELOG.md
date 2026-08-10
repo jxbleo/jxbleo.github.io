@@ -5,6 +5,14 @@
 
 ## 2026-08-10
 
+### Fixed
+
+- Fixed shared Student/Teacher Close animations retaining their invisible final
+  frame after a reusable dialog was hidden. Reopening Calendar, Library task
+  confirmation, Teacher utilities, and other persistent dialogs now restores
+  the complete visible surface and never leaves a transparent input-blocking
+  overlay behind.
+
 ### Changed
 
 - Added a shared Student/Teacher modal close transition: explicit Close
