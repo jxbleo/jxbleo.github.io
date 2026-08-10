@@ -3,6 +3,28 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-10: Student Dashboard Uses Redacted Stale-While-Revalidate Startup
+
+Decision:
+
+Keep CloudBase authoritative while allowing a separate owner-scoped,
+maximum-24-hour Student IndexedDB summary snapshot. Startup requests ten To Do
+and ten Finished assignment summaries plus counts; complete attempts, reply
+history, STAR provenance, wallet history, self-study reconstruction, and
+protected resource merging wait until after first paint.
+
+Privacy boundary:
+
+Never persist Teacher Reply bodies, per-attempt detail, submitted/correct
+answers, explanations, grading keys, credentials, or auth tokens. Explicit
+logout deletes the cache.
+
+Reason:
+
+This improves perceived and actual first-use latency without adding a
+collection, weakening authorization, or turning browser state into learning
+truth.
+
 ## 2026-08-08: Separate Set-Wide Exercise Progress From Assignment Participation
 
 Decision:

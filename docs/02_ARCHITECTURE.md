@@ -140,6 +140,24 @@ account cache. Live CloudBase results replace the snapshot, remain authoritative
 and are refreshed periodically while View is visible. Re-rendering preserves
 the current matrix column anchor, grouped-progress anchor, and scroll offsets.
 
+### Student Dashboard Startup and Local Cache
+
+After student authentication, `dashboard.js` first hydrates an owner-scoped
+IndexedDB snapshot that expires after 24 hours, then calls
+`getDashboard.dashboardBootstrap`. The snapshot and bootstrap contain only
+redacted assignment/set summaries, ten-row To Do/Finished pages, aggregate
+counts, weekly counts, and STAR totals. The bootstrap additionally returns the
+authorized unread Teacher Reply summaries so an immediate click does not wait;
+those reply bodies remain current-tab memory only and never enter IndexedDB.
+
+First paint does not wait for complete attempts, wallet history, STAR
+provenance, self-study reconstruction, or protected resource merging. A silent
+queue prefetches public data for the first ten actionable To Do items, continues
+the remaining To Do summary pages, hydrates Teacher Replies, and finally runs
+the authoritative full Dashboard/resource refresh. Visible To Do and Finished
+lists append ten rows near their internal scroll edge. Full CloudBase results
+replace cached summaries and explicit logout deletes the Student cache.
+
 ## 5. Backend Structure
 
 Cloud function source lives in `cloudfunctions/<function>/`.

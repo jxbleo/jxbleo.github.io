@@ -713,6 +713,14 @@ function testStudentModalShellMarkup() {
   assert(dashboardHtml.includes('id="student-replies-button"'));
   assert(dashboardHtml.includes('id="student-calendar-date" aria-hidden="true"'));
   assert(dashboardHtml.indexOf('id="student-message-button"') < dashboardHtml.indexOf('id="student-replies-button"'));
+  assert(dashboardJs.includes("studentDashboardCacheName = 'mrcat-student-dashboard-v1'"));
+  assert(dashboardJs.includes("action: 'dashboardBootstrap'"));
+  assert(dashboardJs.includes("action: 'listAssignmentPage'"));
+  assert(dashboardJs.includes("action: 'listTeacherReplies'"));
+  assert(dashboardJs.includes("todos.slice(0, 10)"));
+  assert(dashboardJs.includes("finished.slice(0, 10)"));
+  assert(dashboardJs.includes("rendered + 10"));
+  assert(dashboardJs.includes("visibleReplyCount + 5"));
   assert(appCss.includes("position: sticky;\n    top: 0;\n    z-index: 3;"));
   assert(appCss.includes(".student-calendar-day {\n    --student-calendar-day-fill:"));
   assert(appCss.includes("position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;"));
@@ -1426,7 +1434,6 @@ async function main() {
   }];
   const setReadsBeforeDashboard = Number(collectionReadCounts.sets || 0);
   const dashboardResult = await getDashboard.main({});
-  currentUid = "teacher-uid";
   assert.equal(dashboardResult.success, true);
   assert.equal(dashboardResult.assignments.length, expectedDashboardAssignmentCount);
   assert.equal(Number(collectionReadCounts.sets || 0) - setReadsBeforeDashboard, 1);
@@ -1441,6 +1448,33 @@ async function main() {
     1,
     "the student dashboard must project one visible participation per set"
   );
+  const dashboardBootstrap = await getDashboard.main({ action: "dashboardBootstrap" });
+  assert.equal(dashboardBootstrap.success, true);
+  assert.equal(dashboardBootstrap.bootstrap, true);
+  assert.equal(dashboardBootstrap.assignment_pages.finished.items.length, 10);
+  assert.equal(dashboardBootstrap.assignment_pages.finished.has_more, true);
+  assert.equal(dashboardBootstrap.assignment_pages.finished.next_cursor, 10);
+  assert.equal(dashboardBootstrap.assignments.length <= 20, true);
+  assert.equal(Object.prototype.hasOwnProperty.call(dashboardBootstrap, "library_progress"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(dashboardBootstrap, "star_rewards"), false);
+  assert.equal(dashboardBootstrap.teacher_reply_unread_count, 1);
+  assert.equal(dashboardBootstrap.teacher_replies.length, 1);
+  assert.equal(dashboardBootstrap.teacher_replies[0].dispute_id, "resolved-dispute");
+
+  const secondFinishedPage = await getDashboard.main({
+    action: "listAssignmentPage",
+    kind: "finished",
+    cursor: 10,
+  });
+  assert.equal(secondFinishedPage.success, true);
+  assert.equal(secondFinishedPage.page.items.length, 10);
+  assert.equal(secondFinishedPage.page.next_cursor, 20);
+
+  const studentReplyPage = await getDashboard.main({ action: "listTeacherReplies" });
+  assert.equal(studentReplyPage.success, true);
+  assert.equal(studentReplyPage.teacher_replies.length, 1);
+  assert.equal(studentReplyPage.teacher_replies[0].dispute_id, "resolved-dispute");
+  currentUid = "teacher-uid";
 
   const dryRun = await call("backfillAssignmentDueWeeks", { limit: 100 });
   assert.equal(dryRun.success, true);

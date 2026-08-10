@@ -4380,6 +4380,10 @@ body:not(.teacher-page) .tab-button.active {
     min-width: 0;
     gap: 10px;
 }
+.teacher-replies-load-more {
+    justify-self: center;
+    margin-top: 12px;
+}
 .teacher-replies-empty {
     padding: 28px 18px;
     border: 1px dashed rgba(19, 118, 109, 0.24);

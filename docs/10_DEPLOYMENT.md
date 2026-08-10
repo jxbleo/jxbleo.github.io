@@ -35,6 +35,14 @@ first, then update `teacherAdmin`, so a new browser never requests
 `getAttemptDetail` from an older function version. No database migration is
 required.
 
+Student Dashboard staged startup requires the rebuilt `getDashboard` function
+ZIP plus `dashboard.html`, `assets/js/dashboard.js`, `assets/js/auth.js`, and
+their cache-version updates. The new browser remains backward-compatible with
+an older function because an unrecognized `dashboardBootstrap` action falls
+back to the complete Dashboard response, but the latency improvement begins
+only after the new function is deployed. No database migration or permission
+change is required.
+
 ## 3. CloudBase Collections
 
 All project collections should remain `ADMINONLY`:

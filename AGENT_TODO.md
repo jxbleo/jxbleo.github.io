@@ -66,6 +66,20 @@ cp .qa-secrets.example .qa-secrets.local
 
 ## Done
 
+### 2026-08-10
+
+- Added Student Dashboard stale-while-revalidate startup: a redacted,
+  owner-scoped 24-hour IndexedDB snapshot; lightweight 10-row To Do/Finished
+  bootstrap pages; silent first-task, remaining To Do, Teacher Reply, and full
+  Dashboard warming; 10-row scroll continuation; and `Load 5 more` for earlier
+  read replies. Explicit logout deletes the Student cache.
+- Verified Dashboard/auth/getDashboard syntax, assignment scheduling, student
+  account lifecycle, STAR rewards, self-study completions, release checks, ZIP
+  contents, and a local Visitor Dashboard/Assignments browser smoke with no
+  console errors. Authenticated pagination remains an owner/dev-account smoke.
+- Owner action: deploy rebuilt `getDashboard.zip`, then publish the matching
+  static files. No database migration or permission change is required.
+
 ### 2026-08-02
 
 - Removed the final `Further Questions` block from the reviewed local HKDSE

@@ -858,6 +858,15 @@ auth tokens must not be cached there. Explicit teacher logout deletes the
 account snapshot. Cache hydration is presentation-only and must immediately
 revalidate against CloudBase.
 
+The Student Dashboard uses a separate owner-keyed IndexedDB snapshot with the
+same 24-hour maximum age. Allowed fields are redacted assignment and public-set
+summaries, To Do/Finished/Upcoming counts, weekly aggregate counts, assignment
+and self-study STAR totals, the unread Teacher Reply count, and cache timestamps.
+Teacher Reply bodies, per-attempt detail payloads, submitted/correct answers,
+question results, explanations, grading keys, passwords, and tokens are
+excluded. This cache is presentation-only, is replaced by live CloudBase data,
+and is deleted on explicit logout. No collection schema or migration is added.
+
 It must not be the source of truth for:
 
 - completion

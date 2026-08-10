@@ -251,6 +251,15 @@ Assignment access and progress display:
   list never uses `TO DO` text as a row score.
   Failed work remains in `TO DO`; only `passed` or `mastered` work appears in
   `FINISHED`, where the score pill remains green.
+- The default Assignments surface initially renders at most 10 To Do rows and
+  10 Finished rows. Reaching the active list's internal scroll edge appends the
+  next 10 without replacing rows or moving the header. A valid owner-scoped
+  warm cache may paint those rows immediately while CloudBase revalidates in
+  the background; refresh never clears usable cached rows or exposes a spinner.
+- Teacher Replies keeps every unread reply represented in its first in-memory
+  view. Earlier read history stays newest-first and advances through an explicit
+  `Load 5 more` action. The header shows only the unread count while the silent
+  queue prepares reply content.
 - the student header omits the cat logo so it does not consume horizontal
   space. The far-left To Do List control stands alone opposite the right-side
   utilities. The header glass capsule shares the exact left and right edges of

@@ -1000,6 +1000,14 @@ authoritative and refreshes automatically. Never cache passwords, auth tokens,
 nested attempts, submitted/correct answers, explanations, or grading keys;
 explicit logout must delete the account cache.
 
+The authenticated Student Dashboard uses a separate owner-scoped,
+maximum-24-hour IndexedDB snapshot. It may persist only redacted assignment/set
+summaries, page and weekly counts, STAR totals, and the unread Teacher Reply
+count. It must not persist reply bodies, attempt answers, correct answers,
+explanations, grading keys, credentials, or auth tokens. Startup requests ten
+To Do and ten Finished summaries; lists append ten at a time, live CloudBase
+data silently replaces the snapshot, and explicit logout deletes it.
+
 Teacher preview pages opened from `teacher.html` must not call `teacherAdmin`
 directly from `Show Answers` or teacher-originated Argue buttons. First verify
 `window.MrCatCloud.getLoginState()` and wrap CloudBase SDK failures such as
