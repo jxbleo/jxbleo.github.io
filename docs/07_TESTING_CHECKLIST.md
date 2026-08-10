@@ -179,6 +179,11 @@ Shared shell visual checks:
   as task-entry confirmation, while the backdrop and external Close capsule do
   not jump. With reduced motion enabled, each opens directly in its final
   position without visible bounce
+- close each Student Dashboard dialog with its explicit `Close` control and
+  confirm the control responds on press, the card fades/downshifts/scales
+  without bounce, the backdrop releases with it, and only then do focus, page
+  scroll, and the underlying control return. With reduced motion enabled,
+  confirm the exit is a short opacity-only fade
 - opening any independent Teacher modal from Notifications, Argue, Student
   lookup/cards, assignment tools, practice entry, or success feedback freezes
   the background for mouse wheel, trackpad, and touch gestures while its own
@@ -189,6 +194,9 @@ Shared shell visual checks:
   same elastic fade/scale/lift entrance as task confirmation, while backdrops
   and external Close capsules remain still. Reduced motion opens each card
   directly in its final position
+- use every explicit Teacher `Close` control above and confirm the same shared
+  no-bounce exit runs before the existing close handler, including nested
+  attempt/matrix dialogs and the anchored Personal Center popover
 - stacked Teacher modals remain background-locked until the last modal closes;
   closing it restores the exact pre-modal document position without a jump
 - verify reduced transparency, increased contrast, and reduced motion media

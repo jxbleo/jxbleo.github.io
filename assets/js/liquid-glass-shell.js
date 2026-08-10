@@ -1,6 +1,153 @@
 (function () {
     "use strict";
 
+    var modalRootSelector = [
+        ".student-account-overlay",
+        ".student-star-overlay",
+        ".password-dialog-overlay",
+        ".logout-confirm-overlay",
+        ".student-words-overlay",
+        ".student-message-overlay",
+        ".student-calendar-overlay",
+        ".teacher-replies-overlay",
+        ".practice-entry-overlay",
+        ".my-word-merge-modal",
+        ".teacher-utility-modal",
+        ".create-student-modal",
+        ".create-student-success-modal",
+        ".assign-picker-modal",
+        ".assignment-edit-overlay",
+        ".percentage-picker-overlay",
+        ".assignment-cancel-confirm-overlay",
+        ".progress-matrix-modal-backdrop",
+        ".account-panel"
+    ].join(",");
+
+    var modalSurfaceSelector = [
+        ".practice-entry-card",
+        ".student-account-dialog",
+        ".student-star-dialog",
+        ".student-words-dialog",
+        ".student-calendar-dialog",
+        ".student-message-dialog",
+        ".teacher-replies-dialog",
+        ".password-dialog",
+        ".logout-confirm-dialog",
+        ".my-word-merge-card",
+        ".teacher-utility-dialog",
+        ".create-student-dialog",
+        ".create-student-success-card",
+        ".assign-picker-dialog",
+        ".assignment-edit-dialog",
+        ".percentage-picker-dialog",
+        ".assignment-cancel-confirm-dialog",
+        ".progress-matrix-modal",
+        ".account-panel"
+    ].join(",");
+
+    var replayingCloseButtons = new WeakSet();
+    var closingModalRoots = new WeakSet();
+
+    function isModalCloseButton(button) {
+        var label = button.getAttribute("aria-label") || button.textContent || "";
+        return /^close\b/i.test(label.trim());
+    }
+
+    function visibleSurface(root) {
+        if (root.matches(".account-panel:not(.student-account-overlay)")) return root;
+        return Array.prototype.find.call(root.querySelectorAll(modalSurfaceSelector), function (surface) {
+            return surface.getClientRects().length > 0;
+        }) || null;
+    }
+
+    function playModalClose(root, surface, button) {
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var duration = reduceMotion ? 140 : 260;
+        var easing = reduceMotion ? "ease-out" : "cubic-bezier(.32, 0, .2, 1)";
+        var animations = [];
+
+        if (surface) {
+            var liveStyle = window.getComputedStyle(surface);
+            if (typeof surface.getAnimations === "function") {
+                Array.prototype.forEach.call(surface.getAnimations(), function (animation) {
+                    animation.cancel();
+                });
+            }
+            animations.push(surface.animate(reduceMotion ? [
+                { opacity: liveStyle.opacity },
+                { opacity: 0 }
+            ] : [
+                { opacity: liveStyle.opacity, transform: liveStyle.transform === "none" ? "translateY(0) scale(1)" : liveStyle.transform },
+                { opacity: 0, transform: "translateY(8px) scale(.97)" }
+            ], {
+                duration: duration,
+                easing: easing,
+                fill: "forwards"
+            }));
+        }
+
+        if (root !== surface) {
+            var rootStyle = window.getComputedStyle(root);
+            animations.push(root.animate([
+                {
+                    backgroundColor: rootStyle.backgroundColor,
+                    backdropFilter: reduceMotion ? "none" : rootStyle.backdropFilter
+                },
+                {
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    backdropFilter: reduceMotion ? "none" : "blur(0px) saturate(100%)"
+                }
+            ], {
+                duration: duration,
+                easing: "ease-out",
+                fill: "forwards"
+            }));
+        }
+
+        if (button && (!surface || !surface.contains(button))) {
+            animations.push(button.animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ], {
+                duration: Math.min(duration, 210),
+                easing: "ease-out",
+                fill: "forwards"
+            }));
+        }
+
+        return new Promise(function (resolve) {
+            window.setTimeout(resolve, duration + 20);
+        });
+    }
+
+    document.addEventListener("click", function (event) {
+        var button = event.target.closest && event.target.closest("button");
+        if (!button || replayingCloseButtons.has(button) || !isModalCloseButton(button)) return;
+
+        var root = button.closest(modalRootSelector);
+        if (!root || root.hidden || closingModalRoots.has(root) || typeof root.animate !== "function") return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closingModalRoots.add(root);
+        button.disabled = true;
+
+        playModalClose(root, visibleSurface(root), button).then(function () {
+            replayingCloseButtons.add(button);
+            button.disabled = false;
+            button.click();
+            replayingCloseButtons.delete(button);
+            closingModalRoots.delete(root);
+
+            window.setTimeout(function () {
+                if (!root.isConnected || root.hidden || typeof root.getAnimations !== "function") return;
+                Array.prototype.forEach.call(root.getAnimations({ subtree: true }), function (animation) {
+                    animation.cancel();
+                });
+            }, 0);
+        });
+    }, true);
+
     if (!window.matchMedia("(pointer: fine)").matches ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         return;
