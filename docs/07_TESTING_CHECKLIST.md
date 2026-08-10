@@ -632,15 +632,21 @@ Check:
   sits before date/time and changes blue/amber/rose for 1/2/3+ attempts
 - opening the teacher notification bell alone does not clear the header badge
   or red unread row styling
-- Teacher startup never shows a spinner on the Notifications or Argue header
-  buttons and does not wait for either full list before rendering the desk
+- Teacher startup shows the circular loading state on Notifications until the
+  lightweight unread count resolves, then atomically replaces it with the final
+  badge or plain bell; Argue remains non-blocking and the desk does not wait for
+  either full list before rendering
 - notification summaries arrive in newest-first five-thread pages; when 6, 10,
   or more unread threads exist, background paging continues until all unread
   threads are represented, then stops before older read history
 - unread notification details and public question text prefetch top-to-bottom in
   current-tab memory; no more than two private detail requests run concurrently
-- `Load 5 more` retrieves exactly the next notification history page and warms
-  those five threads without persisting answers or explanations
+- opening Notifications loads five-thread summary pages until the internal card
+  is filled; scrolling near its bottom appends exactly the next five-thread page,
+  with no `Load more` button and no duplicate request while a page is pending
+- scroll-loaded read-history threads do not prefetch attempt details; only unread
+  threads warm answer comparisons, while opening any row still loads its complete
+  authorized thread on demand
 - opening a grouped attempt notification clears its red state; a later attempt
   in the same thread makes it red again while unopened threads remain red
 - an ordinary in-progress assignment cannot be duplicated; a complete Class

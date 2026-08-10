@@ -171,8 +171,10 @@ Active or relevant functions:
   pages; after the lightweight unread-thread count arrives, the browser silently
   continues only until every unread thread is represented. A two-request in-memory
   queue then prefetches each unread thread's private per-question detail through
-  bounded, individually authorized `attempt_id` requests. Earlier read history
-  advances only through `Load 5 more`. Argue uses independent five-record status
+  bounded, individually authorized `attempt_id` requests. When the bell is open,
+  earlier read-history summaries advance in five-thread pages as its internal
+  scroll reaches the end; those read pages do not trigger private-detail prefetch.
+  Argue uses independent five-record status
   pages. Private details never enter the persistent Teacher IndexedDB snapshot,
   and growing history remains outside bootstrap responses and below CloudBase's
   6 MB response limit.

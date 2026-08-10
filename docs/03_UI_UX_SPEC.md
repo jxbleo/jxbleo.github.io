@@ -332,12 +332,16 @@ Frontend rule:
 - The teacher notification bell groups attempts by student assignment thread,
   or by student and set for self-study. Each row shows the latest result and
   total attempt count, and its detail dialog shows the complete thread history.
-- Notification summaries load in newest-first pages of five. The header may show
-  the server-derived unread count while an invisible current-tab queue continues
-  through additional five-thread pages until every unread thread is cached. It
-  then stops before older read history; `Load 5 more` advances one read-history
-  page. Cached unread threads prefetch their answer comparisons from top to
-  bottom with at most two detail requests active, without a visible spinner.
+- Notification summaries load in newest-first pages of five. Until the lightweight
+  server-derived unread count resolves, the header bell shows its existing circular
+  loading indicator; the final badge replaces that state without a delayed visual
+  jump. An invisible current-tab queue continues through additional five-thread
+  pages until every unread thread is cached. When opened, the list loads further
+  five-thread summary pages until the card is filled, then continues automatically
+  near the internal scroll edge; Notifications has no `Load more` button. Cached
+  unread threads prefetch their answer comparisons from top to bottom with at most
+  two detail requests active. Read-history pages load summaries only until the
+  teacher opens a thread.
 - Teacher notification rows keep the student/action/task name on one line and
   truncate overflow with an ellipsis. A By-student-style latest-score capsule
   stays fixed on the far right. Below the title, the colored attempt-count
