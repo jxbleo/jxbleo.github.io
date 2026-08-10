@@ -158,7 +158,10 @@ Navigation:
   adds a small gold STAR when applicable, and outlines today. The selected day
   keeps its completion-intensity fill and gains the same animated flowing-gold
   edge used by the Vocabulary `Start Quiz` confirmation; reduced-motion mode
-  keeps that edge gold but static. Selecting a day reveals its task names, type,
+  keeps that edge gold but static. Date cells retain their existing width but
+  use a `4:3` width-to-height ratio, making them three-quarters as tall as the
+  former square cells; the day number remains centered on both axes. Selecting
+  a day reveals its task names, type,
   score, and STAR state below the month grid. Previous/next controls stay within
   the student's recorded range and never navigate beyond the current month. The modal omits a separate
   `Progress` heading, subtitle, completed total, and active-days total, so the

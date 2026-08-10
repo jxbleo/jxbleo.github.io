@@ -1014,7 +1014,7 @@ html.teacher-modal-scroll-locked {
 }
 .student-calendar-day,
 .student-calendar-day-empty {
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 3;
     min-width: 0;
     border-radius: 14px;
 }
