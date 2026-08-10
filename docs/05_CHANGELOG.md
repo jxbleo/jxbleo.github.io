@@ -7,6 +7,10 @@
 
 ### Changed
 
+- Standardized BBC and Vocabulary post-submit result audio into two states:
+  not-passed uses the selected low descending “sigh,” while Passed and Mastered
+  share the existing bright rising success sound. Vocabulary result dialogs now
+  play the same score-based feedback as BBC.
 - Changed Teacher Notifications to fill and extend the bell list in automatic
   five-thread scroll pages, removing its manual `Load more` control. The header
   bell now keeps a circular loading state until the unread count resolves, and

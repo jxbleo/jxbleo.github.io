@@ -1373,6 +1373,9 @@ Shared rules:
 - On desktop, pressing Space toggles the BBC audio player only when focus is
   not inside an answer input, choice, button, select, textarea, or modal.
 - A submitted BBC attempt should mark wrong questions even when answer feedback is still locked because the attempt did not pass.
+- When the BBC result dialog appears, a not-passed result uses the shared low,
+  descending result sound. Passed and Mastered retain distinct visual states
+  but use the same shared bright, rising result sound.
 - After a BBC answer is checked, correct blanks, matching fields, MC question
   cards, and the selected correct MC option use the same green result family as
   Vocabulary (`#f0fdf4` surface). Incorrect results use the same light-red
@@ -1570,6 +1573,10 @@ Shared rules:
   ask again. The visible button label is `Submit`, and the bottom Submit button
   uses the same gold glowing treatment as the Cloze-mode numbered capsules.
 - The Vocabulary Test result modal has one action only: `Close`.
+- When the Vocabulary result modal appears, it uses the same two result sounds
+  as BBC: the low descending sound for not passed, and one bright rising sound
+  shared by Passed and Mastered. Timed Practice uses the same score-based sound
+  mapping when its result modal appears.
 - After submission, Vocabulary Test answer feedback is written directly into
   each question blank using the same inline answer treatment as Vocabulary
   Learn. The countdown timer disappears completely and its right-side position
