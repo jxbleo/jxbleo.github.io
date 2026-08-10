@@ -7,6 +7,12 @@
 
 ### Fixed
 
+- Normalized student identity handling so Chinese and English names remain
+  separate authoritative fields, while `name` is a server-derived bilingual
+  compatibility display. Teacher lists, search, Assign, Account editing, and
+  the student identity card now share the same rule; legacy unsplit names are
+  shown as one review-required value instead of falsely reporting that their
+  embedded English name is absent.
 - Fixed shared Student/Teacher Close animations retaining their invisible final
   frame after a reusable dialog was hidden. Reopening Calendar, Library task
   confirmation, Teacher utilities, and other persistent dialogs now restores

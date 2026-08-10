@@ -743,6 +743,11 @@ Check:
   in the summary. Dragging or swiping
   within the detail moves only vertically; mouse, trackpad, and touch gestures
   cannot pan the card or content horizontally
+- Create and edit one bilingual student and verify CloudBase stores separate
+  `chinese_name` / `english_name` values while server-derived `name` is
+  `Chinese · English`. Search must match either language in Students and Assign.
+  A legacy profile with only a mixed `name` must remain one fallback label with
+  a review hint; it must never be heuristically assigned to the Chinese field
 - clicking Account opens an independent dialog containing names, Login ID,
   class, System, reset password, and delete account. The main student detail has
   no bottom Account settings disclosure. The dialog's class editor lists existing active classes

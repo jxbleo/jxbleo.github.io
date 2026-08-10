@@ -650,29 +650,39 @@
         '</span>';
     }
 
-    function hasChineseNameCharacters(value) {
-        return /[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/.test(String(value || ''));
-    }
-
     function studentChineseName(student) {
-        var stored = String(student && student.chinese_name || '').trim();
-        if (stored) return stored;
-        var legacy = String(student && student.name || '').trim();
-        return hasChineseNameCharacters(legacy) ? legacy : '';
+        return String(student && student.chinese_name || '').trim();
     }
 
     function studentEnglishName(student) {
-        var stored = String(student && student.english_name || '').trim();
-        if (stored) return stored;
-        var legacy = String(student && student.name || '').trim();
-        return legacy && !hasChineseNameCharacters(legacy) ? legacy : '';
+        return String(student && student.english_name || '').trim();
+    }
+
+    function joinedStudentName(chineseName, englishName, legacyName) {
+        var chinese = String(chineseName || '').trim();
+        var english = String(englishName || '').trim();
+        if (chinese && english) return chinese + ' · ' + english;
+        return chinese || english || String(legacyName || '').trim();
     }
 
     function studentDisplayName(student) {
-        var chinese = studentChineseName(student);
-        var english = studentEnglishName(student);
-        if (chinese && english && chinese !== english) return chinese + ' · ' + english;
-        return chinese || english || String(student && (student.name || student.student_id) || 'Student');
+        return joinedStudentName(
+            studentChineseName(student),
+            studentEnglishName(student),
+            student && (student.name || student.student_id) || 'Student'
+        );
+    }
+
+    function studentSearchText(student) {
+        return [
+            studentDisplayName(student),
+            student && student.name,
+            studentChineseName(student),
+            studentEnglishName(student),
+            student && student.student_id,
+            student && student.class_group,
+            student && student.curriculum_track
+        ].filter(Boolean).join(' ').toLowerCase();
     }
 
     function showMessage(text, type) {
@@ -1798,7 +1808,7 @@
                 if (field === 'name') {
                     var nextChineseName = form.elements.chinese_name.value.trim();
                     var nextEnglishName = form.elements.english_name.value.trim();
-                    var nextName = nextChineseName || nextEnglishName || String(student.name || '').trim();
+                    var nextName = joinedStudentName(nextChineseName, nextEnglishName, '');
                     if (!nextName) {
                         showMessage('Enter a Chinese name or English name.', 'error');
                         return;
@@ -3329,7 +3339,7 @@
                 : numericPercent(stateForPair.best_percentage);
             var open = stateForPair.availability === 'in_progress';
             var item = {
-                name: student.name || student.student_id || student.auth_uid,
+                name: studentDisplayName(student) || student.student_id || student.auth_uid,
                 best: best,
                 open: open
             };
@@ -3579,7 +3589,7 @@
             return set.set_id;
         }, 'set');
         renderAssignChips('assign-student-chips', students, function(student) {
-            return [student.name || student.student_id || student.auth_uid, student.class_group || 'No class'].filter(Boolean).join(' · ');
+            return [studentDisplayName(student) || student.student_id || student.auth_uid, student.class_group || 'No class'].filter(Boolean).join(' · ');
         }, function(student) {
             return student.auth_uid;
         }, 'student');
@@ -3610,8 +3620,7 @@
         var query = document.getElementById('assign-search').value.trim().toLowerCase();
         var classGroup = document.getElementById('assign-class-filter').value;
         return state.candidates.filter(function(student) {
-            var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
-                .join(' ').toLowerCase().indexOf(query) !== -1;
+            var matchesQuery = !query || studentSearchText(student).indexOf(query) !== -1;
             return matchesQuery && (!classGroup || student.class_group === classGroup);
         });
     }
@@ -3646,7 +3655,7 @@
                     (selected ? ' checked' : '') +
                     (status.disabled ? ' disabled' : '') + '>' +
                 '<span class="assign-choice-mark" aria-hidden="true"></span>' +
-                '<span class="candidate-copy assign-choice-copy"><strong>' + escapeHtml(student.name || student.student_id) + '</strong>' +
+                '<span class="candidate-copy assign-choice-copy"><strong>' + escapeHtml(studentDisplayName(student) || student.student_id) + '</strong>' +
                     '<small>' + escapeHtml([student.class_group || 'No class', status.label === 'Available' ? '' : status.label].filter(Boolean).join(' · ')) + '</small></span>' +
             '</label>';
         }).join('') : '<div class="empty-card compact-empty"><strong>No matching students</strong>Try another search or class.</div>';
@@ -3705,8 +3714,7 @@
         var query = String(searchInput && searchInput.value || '').trim().toLowerCase();
         var classGroup = String(classFilter && classFilter.value || '');
         return studentRecords().filter(function(student) {
-            var matchesQuery = !query || [student.name, student.student_id, student.class_group, student.curriculum_track]
-                .join(' ').toLowerCase().indexOf(query) !== -1;
+            var matchesQuery = !query || studentSearchText(student).indexOf(query) !== -1;
             return matchesQuery && (!classGroup || student.class_group === classGroup);
         });
     }
@@ -6617,8 +6625,9 @@
         var chineseName = String(student.chinese_name || '').trim();
         var englishName = String(student.english_name || '').trim();
         var displayName = studentDisplayName(student);
-        var identityChineseName = chineseName || (!englishName ? String(student.name || student.student_id || 'Student').trim() : '中文名未设置');
-        var identityEnglishName = englishName || 'English name not set';
+        var legacyName = !chineseName && !englishName ? String(student.name || '').trim() : '';
+        var identityChineseName = chineseName || legacyName || '中文名未设置';
+        var identityEnglishName = englishName || (legacyName ? 'Legacy name · review in Account' : 'English name not set');
         var metrics = matrixStudentOverviewMetrics(assignments);
         var studentKey = student.auth_uid || student.student_id;
 
@@ -6689,7 +6698,7 @@
 
     function attemptActivityItem(attempt) {
         var student = studentForUid(attempt.student_uid);
-        var name = student.name || attempt.student_id || 'Student';
+        var name = studentDisplayName(student) || attempt.student_id || 'Student';
         var action = attemptStatusLabel(attempt);
         return {
             type: 'attempt',
@@ -6867,7 +6876,7 @@
             detail.attempts = attempts;
             if (!detail.student_name) {
                 var matchedStudent = studentForUid(attempt.student_uid);
-                detail.student_name = matchedStudent.name || attempt.student_id || 'Student';
+                detail.student_name = studentDisplayName(matchedStudent) || attempt.student_id || 'Student';
             }
             if (!detail.set_title) detail.set_title = setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt';
             return detail;
@@ -6878,7 +6887,7 @@
             assignment_id: assignmentId || null,
             student_uid: attempt.student_uid || '',
             student_id: attempt.student_id || '',
-            student_name: student.name || attempt.student_id || 'Student',
+            student_name: studentDisplayName(student) || attempt.student_id || 'Student',
             set_id: attempt.set_id || '',
             set_title: setTitleFor(attempt.set_id) || attempt.set_id || 'Attempt',
             status: attempt.mastered ? 'mastered' : attempt.passed ? 'passed' : 'to_do',
@@ -7377,7 +7386,7 @@
 
     function deleteStudentAccount(student) {
         if (!student || !student.auth_uid) return Promise.resolve();
-        var label = student.name || student.student_id || 'this student';
+        var label = studentDisplayName(student) || student.student_id || 'this student';
         if (!confirm('Delete student account for ' + label + '? This removes the login account and hides the student from teacher views. Attempts and assignment history stay saved.')) {
             return Promise.resolve();
         }
@@ -8144,7 +8153,7 @@
         var button = studentForm.querySelector('button[type="submit"]');
         var chineseName = document.getElementById('student-chinese-name').value.trim();
         var englishName = document.getElementById('student-english-name').value.trim();
-        var legacyName = chineseName || englishName;
+        var legacyName = joinedStudentName(chineseName, englishName, '');
         if (!legacyName) {
             showMessage('Enter a Chinese name or English name.', 'error');
             return;

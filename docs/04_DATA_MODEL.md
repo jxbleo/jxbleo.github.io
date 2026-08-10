@@ -51,7 +51,9 @@ Core fields:
 | --- | --- | --- |
 | `auth_uid` | string | CloudBase Auth user ID |
 | `student_id` | string | human-facing Login ID for current profiles; internal `__deleted__:<profile-id>` archive key after deletion |
-| `name` | string | display name |
+| `name` | string | compatibility whole display name derived from the separate name fields when they exist |
+| `chinese_name` | string | teacher-confirmed Chinese name; may be empty for English-only students |
+| `english_name` | string | teacher-confirmed English name; may be empty for Chinese-only students |
 | `class_group` | string | class/group |
 | `curriculum_track` | string | DSE, IELTS, etc. |
 | `role` | string | `student` or `teacher` |
@@ -105,11 +107,13 @@ Rules:
   details remain on demand. Persistent Teacher IndexedDB records continue to omit
   attempts, submitted answers, correct answers, explanations, and grading keys.
 
-For Learning Reports V1, `name` remains the legacy/canonical whole display
-value. When profiles provide `chinese_name` and `english_name`, membership and
-report snapshots preserve those separately. A legacy `name` may be used as the
-whole display fallback but must not be heuristically split; the owner/teacher
-must backfill a missing English name before a bilingual display is required.
+For Learning Reports V1, `chinese_name` and `english_name` are the authoritative
+editable name parts. `name` remains a compatibility whole display value and is
+server-derived as `Chinese · English` when both parts exist, or as the one
+available part otherwise. A legacy `name` may be used as the whole display
+fallback but must not be heuristically split; the owner/teacher must explicitly
+backfill separate fields before a bilingual display is required. Teacher lists,
+search, assignment selection, and student detail use one shared display rule.
 Later profile corrections may refresh a preview but must not silently rewrite a
 published report.
 
