@@ -372,7 +372,7 @@ flowchart TD
 - `auth_uid`：CloudBase Authentication 用户 ID，所有权限判断使用它
 - `student_id`：学生登录 ID，给人看的唯一 Login ID
 - `chinese_name`、`english_name`：分别保存经老师确认的中英文名，是姓名编辑的权威字段
-- `name`：由后端从中英文名生成的兼容完整显示值；两者都有时显示为 `中文名 · English name`
+- `name`：由后端从中英文名生成的兼容完整显示值；两者都有时直接显示为 `中文名English name`，中间不加分隔符
 - `class_group`：班级
 - `curriculum_track`：课程体系，例如 DSE、IELTS 等
 - `role`：`student` 或 `teacher`

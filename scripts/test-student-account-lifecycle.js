@@ -238,7 +238,7 @@ async function main() {
   assert.equal(recreateResult.success, true);
   assert.notEqual(recreateResult.student.auth_uid, "student-uid-old");
   assert.equal(recreateResult.student.student_id, "student-login");
-  assert.equal(recreateResult.student.name, "正确姓名 · Correct Name", "server should derive the compatibility display name");
+  assert.equal(recreateResult.student.name, "正确姓名Correct Name", "server should derive the compatibility display name");
   assert.equal(recreateResult.student.chinese_name, "正确姓名");
   assert.equal(recreateResult.student.english_name, "Correct Name");
   assert(recreateResult.student.class_id, "class group should create a canonical class");
@@ -285,7 +285,7 @@ async function main() {
   assert.equal(renameResult.success, true);
   assert.equal(
     students.find((student) => student.auth_uid === recreateResult.student.auth_uid).name,
-    "再次更正 · Corrected Again"
+    "再次更正Corrected Again"
   );
   assert.equal(
     students.find((student) => student.auth_uid === recreateResult.student.auth_uid).chinese_name,
@@ -297,7 +297,7 @@ async function main() {
   );
   assert.equal(
     classMemberships.find((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).student_name_snapshot,
-    "再次更正 · Corrected Again"
+    "再次更正Corrected Again"
   );
 
   const originalClassId = recreateResult.student.class_id;

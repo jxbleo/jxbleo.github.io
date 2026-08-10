@@ -745,7 +745,7 @@ Check:
   cannot pan the card or content horizontally
 - Create and edit one bilingual student and verify CloudBase stores separate
   `chinese_name` / `english_name` values while server-derived `name` is
-  `Chinese · English`. Search must match either language in Students and Assign.
+  direct `ChineseEnglish` concatenation. Search must match either language in Students and Assign.
   A legacy profile with only a mixed `name` must remain one fallback label with
   a review hint; it must never be heuristically assigned to the Chinese field
 - On a returning student account, verify cached assignment summaries and counts

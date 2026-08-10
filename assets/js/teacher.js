@@ -661,7 +661,7 @@
     function joinedStudentName(chineseName, englishName, legacyName) {
         var chinese = String(chineseName || '').trim();
         var english = String(englishName || '').trim();
-        if (chinese && english) return chinese + ' · ' + english;
+        if (chinese && english) return chinese + english;
         return chinese || english || String(legacyName || '').trim();
     }
 

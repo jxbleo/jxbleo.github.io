@@ -28,7 +28,7 @@ function text(value) {
 function joinedStudentName(chineseName, englishName, legacyName = "") {
   const chinese = text(chineseName);
   const english = text(englishName);
-  if (chinese && english) return `${chinese} · ${english}`;
+  if (chinese && english) return `${chinese}${english}`;
   return chinese || english || text(legacyName);
 }
 
