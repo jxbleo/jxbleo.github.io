@@ -25,7 +25,7 @@
   share the existing bright rising success sound. Vocabulary result dialogs now
   play the same score-based feedback as BBC.
 - Changed Teacher Notifications to fill and extend the bell list in automatic
-  five-thread scroll pages, removing its manual `Load more` control. The header
+  ten-thread scroll pages, removing its manual `Load more` control. The header
   bell now keeps a circular loading state until the unread count resolves, and
   background private-detail prefetch remains limited to unread threads; older
   read history loads summaries only until a teacher opens a thread.

@@ -167,12 +167,12 @@ Active or relevant functions:
   remains outside teacher bootstrap/progress responses. It also lists and processes Cash
   requests, issues teacher evidence-upload metadata, and returns authorized
   temporary evidence URLs. Teacher bootstrap no longer waits for complete
-  notification or Argue history. Notification summaries use five-thread cursor
+  notification or Argue history. Notification summaries use ten-thread cursor
   pages; after the lightweight unread-thread count arrives, the browser silently
   continues only until every unread thread is represented. A two-request in-memory
   queue then prefetches each unread thread's private per-question detail through
   bounded, individually authorized `attempt_id` requests. When the bell is open,
-  earlier read-history summaries advance in five-thread pages as its internal
+  earlier read-history summaries advance in ten-thread pages as its internal
   scroll reaches the end; those read pages do not trigger private-detail prefetch.
   Argue uses independent five-record status
   pages. Private details never enter the persistent Teacher IndexedDB snapshot,
@@ -428,7 +428,7 @@ are read, while later submissions become unread without growing an unbounded
 list of historical IDs.
 
 The browser keeps a separate notification-thread ID set instead of treating the
-matrix's attempt collection as the feed. `listAttemptNotifications` returns five
+matrix's attempt collection as the feed. `listAttemptNotifications` returns ten
 newest unseen thread summaries at a time, `listAttemptThread` supplies the bounded
 summary history for one authorized thread, and `getAttemptDetail` remains the only
 source of full answers and explanations. Matrix cells also use the thread action

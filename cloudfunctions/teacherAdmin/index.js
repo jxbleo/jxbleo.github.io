@@ -18,7 +18,8 @@ const STAR_REQUEST_COLLECTION = "star_redemption_requests";
 const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
 const CLASS_COLLECTION = "classes";
 const CLASS_MEMBERSHIP_COLLECTION = "class_memberships";
-const TEACHER_FEED_PAGE_SIZE = 5;
+const NOTIFICATION_FEED_PAGE_SIZE = 10;
+const DISPUTE_FEED_PAGE_SIZE = 5;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
@@ -2334,11 +2335,11 @@ async function listAttemptNotifications(event) {
 
   // Deleted profiles are intentionally invisible. Read small raw windows until
   // we have one extra visible row, so the browser receives a truthful cursor
-  // without turning the five-row notification page back into an all-history read.
-  while (collected.length <= TEACHER_FEED_PAGE_SIZE && !exhausted) {
+  // without turning the ten-row notification page back into an all-history read.
+  while (collected.length <= NOTIFICATION_FEED_PAGE_SIZE && !exhausted) {
     const rows = await getPage("attempts", {
       offset: rawOffset,
-      limit: TEACHER_FEED_PAGE_SIZE + 1,
+      limit: NOTIFICATION_FEED_PAGE_SIZE + 1,
       orderBy: { field: "submitted_at", direction: "desc" },
     });
     if (!rows.length) {
@@ -2354,17 +2355,17 @@ async function listAttemptNotifications(event) {
       collected.push({ attempt, threadKey, nextCursor: rawOffset + index + 1 });
     });
     rawOffset += rows.length;
-    if (rows.length < TEACHER_FEED_PAGE_SIZE + 1) exhausted = true;
+    if (rows.length < NOTIFICATION_FEED_PAGE_SIZE + 1) exhausted = true;
   }
 
-  const page = collected.slice(0, TEACHER_FEED_PAGE_SIZE);
+  const page = collected.slice(0, NOTIFICATION_FEED_PAGE_SIZE);
   return {
     success: true,
     attempts: page.map((item) => attemptSummaryView(item.attempt)),
     thread_keys: page.map((item) => item.threadKey),
     next_cursor: page.length ? page[page.length - 1].nextCursor : null,
-    has_more: collected.length > TEACHER_FEED_PAGE_SIZE || !exhausted,
-    page_size: TEACHER_FEED_PAGE_SIZE,
+    has_more: collected.length > NOTIFICATION_FEED_PAGE_SIZE || !exhausted,
+    page_size: NOTIFICATION_FEED_PAGE_SIZE,
   };
 }
 
@@ -2645,10 +2646,10 @@ async function listDisputePage(event) {
   const collected = [];
   let rawOffset = cursor;
   let exhausted = false;
-  while (collected.length <= TEACHER_FEED_PAGE_SIZE && !exhausted) {
+  while (collected.length <= DISPUTE_FEED_PAGE_SIZE && !exhausted) {
     const rows = await getPage("answer_disputes", {
       offset: rawOffset,
-      limit: TEACHER_FEED_PAGE_SIZE + 1,
+      limit: DISPUTE_FEED_PAGE_SIZE + 1,
       orderBy: { field: "created_at", direction: "desc" },
     });
     if (!rows.length) {
@@ -2661,9 +2662,9 @@ async function listDisputePage(event) {
       collected.push({ dispute: row, nextCursor: rawOffset + index + 1 });
     });
     rawOffset += rows.length;
-    if (rows.length < TEACHER_FEED_PAGE_SIZE + 1) exhausted = true;
+    if (rows.length < DISPUTE_FEED_PAGE_SIZE + 1) exhausted = true;
   }
-  const page = collected.slice(0, TEACHER_FEED_PAGE_SIZE);
+  const page = collected.slice(0, DISPUTE_FEED_PAGE_SIZE);
   const pageRows = page.map((item) => item.dispute);
   const pageReferences = await disputeReferenceMaps(pageRows);
   const counts = {
@@ -2681,8 +2682,8 @@ async function listDisputePage(event) {
     )),
     counts,
     next_cursor: page.length ? page[page.length - 1].nextCursor : null,
-    has_more: collected.length > TEACHER_FEED_PAGE_SIZE || !exhausted,
-    page_size: TEACHER_FEED_PAGE_SIZE,
+    has_more: collected.length > DISPUTE_FEED_PAGE_SIZE || !exhausted,
+    page_size: DISPUTE_FEED_PAGE_SIZE,
     status,
   };
 }

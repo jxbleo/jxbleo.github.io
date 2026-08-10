@@ -970,11 +970,18 @@ async function main() {
   testTeacherModalEntranceAnimation();
   const teacherFeedSource = fs.readFileSync(path.resolve(__dirname, "../assets/js/teacher.js"), "utf8");
   const teacherFeedHtml = fs.readFileSync(path.resolve(__dirname, "../teacher.html"), "utf8");
-  assert(teacherFeedSource.includes("var TEACHER_FEED_PAGE_SIZE = 5;"));
+  assert(teacherFeedSource.includes("var NOTIFICATION_FEED_PAGE_SIZE = 10;"));
+  assert(teacherFeedSource.includes("var DISPUTE_FEED_PAGE_SIZE = 5;"));
   assert(teacherFeedSource.includes("cacheAllUnreadNotificationPages"));
   assert(teacherFeedSource.includes("prefetchNotificationItems(activityItems().filter(function(item) { return item.unread; }))"));
   assert(teacherFeedSource.includes("bindNotificationInfiniteScroll"));
   assert(teacherFeedSource.includes("loadNextNotificationPageForScroll"));
+  const notificationScrollSource = teacherFeedSource.slice(
+    teacherFeedSource.indexOf("function loadNextNotificationPageForScroll"),
+    teacherFeedSource.indexOf("function relatedAttemptIdsForAttempt")
+  );
+  assert(!notificationScrollSource.includes("prefetchNotificationItems"), "read-history scrolling must not prefetch private attempt details");
+  assert(!notificationScrollSource.includes("requestAnimationFrame"), "opening the bell must not recursively fill beyond the first ten-row page");
   assert(!teacherFeedSource.includes("data-notification-load-more>Load 5 more"));
   assert(teacherFeedSource.includes("data-dispute-load-more>Load 5 more"));
   assert(teacherFeedHtml.includes("teacher-updates-button is-loading"));
@@ -1041,7 +1048,7 @@ async function main() {
     item.attempt_id === "self-study-threshold-attempt"
   ), 1);
 
-  const notificationAttempts = Array.from({ length: 7 }, (_, index) => ({
+  const notificationAttempts = Array.from({ length: 12 }, (_, index) => ({
     _id: `notification-attempt-record-${index}`,
     attempt_id: `notification-attempt-${index}`,
     student_uid: "student-uid",
@@ -1054,8 +1061,8 @@ async function main() {
   }));
   collections.attempts.push(...notificationAttempts);
   const notificationPageOne = await call("listAttemptNotifications", { cursor: 0 });
-  assert.equal(notificationPageOne.attempts.length, 5, "notification pages contain five newest threads");
-  assert.equal(notificationPageOne.attempts[0].attempt_id, "notification-attempt-6");
+  assert.equal(notificationPageOne.attempts.length, 10, "notification pages contain ten newest threads");
+  assert.equal(notificationPageOne.attempts[0].attempt_id, "notification-attempt-11");
   assert.equal(notificationPageOne.has_more, true);
   const notificationPageTwo = await call("listAttemptNotifications", {
     cursor: notificationPageOne.next_cursor,
@@ -1064,17 +1071,17 @@ async function main() {
   assert.equal(notificationPageTwo.attempts.length, 2);
   assert.equal(notificationPageTwo.has_more, false);
   const activityState = await call("getActivityState");
-  assert.equal(activityState.unread_thread_count, 7);
+  assert.equal(activityState.unread_thread_count, 12);
   const teacherProfile = collections.students.find((item) => item.auth_uid === "teacher-uid");
   teacherProfile.teacher_activity_attempts_read_all_at = new Date(Date.UTC(2026, 7, 9, 10, 0, 2));
-  teacherProfile.teacher_activity_attempt_reviewed_ids = ["notification-attempt-6"];
+  teacherProfile.teacher_activity_attempt_reviewed_ids = ["notification-attempt-11"];
   const boundedActivityState = await call("getActivityState");
-  assert.equal(boundedActivityState.unread_thread_count, 3, "the unread count honors the read-all cutoff and reviewed IDs");
+  assert.equal(boundedActivityState.unread_thread_count, 8, "the unread count honors the read-all cutoff and reviewed IDs");
   delete teacherProfile.teacher_activity_attempts_read_all_at;
   delete teacherProfile.teacher_activity_attempt_reviewed_ids;
   const notificationThread = await call("listAttemptThread", {
     student_uid: "student-uid",
-    assignment_id: "notification-assignment-6",
+    assignment_id: "notification-assignment-11",
     set_id: "TEST-SET",
   });
   assert.equal(notificationThread.attempts.length, 1);

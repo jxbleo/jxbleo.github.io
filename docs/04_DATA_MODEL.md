@@ -96,10 +96,11 @@ Rules:
   clears the now-redundant reviewed-ID list; any later attempt makes the thread
   unread again.
 - Notification and Argue pagination adds no collection fields. The Teacher client
-  requests five summary records/threads per page with opaque numeric cursors,
+  requests ten notification summary threads per page and five Argue records per
+  status page with opaque numeric cursors,
   keeps full notification detail only in current-tab memory. It first continues
   notification pagination automatically until the server-derived unread thread
-  count is covered, then may fetch older five-thread summary pages as the teacher
+  count is covered, then may fetch older ten-thread summary pages as the teacher
   scrolls the open bell list. Only unread threads are prefetched; older read-thread
   details remain on demand. Persistent Teacher IndexedDB records continue to omit
   attempts, submitted answers, correct answers, explanations, and grading keys.
