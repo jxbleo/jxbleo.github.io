@@ -343,13 +343,13 @@ Frontend rule:
 - The teacher notification bell groups attempts by student assignment thread,
   or by student and set for self-study. Each row shows the latest result and
   total attempt count, and its detail dialog shows the complete thread history.
-- Notification summaries load in newest-first pages of five. Until the lightweight
+- Notification summaries load in newest-first pages of ten. Until the lightweight
   server-derived unread count resolves, the header bell shows its existing circular
   loading indicator; the final badge replaces that state without a delayed visual
-  jump. An invisible current-tab queue continues through additional five-thread
-  pages until every unread thread is cached. When opened, the list loads further
-  five-thread summary pages until the card is filled, then continues automatically
-  near the internal scroll edge; Notifications has no `Load more` button. Cached
+  jump. An invisible current-tab queue continues through additional ten-thread
+  pages until every unread thread is cached. When opened, the list starts with
+  one ten-thread summary page; each later arrival at the internal scroll edge
+  appends exactly one more ten-thread page. Notifications has no `Load more` button. Cached
   unread threads prefetch their answer comparisons from top to bottom with at most
   two detail requests active. Read-history pages load summaries only until the
   teacher opens a thread.
@@ -934,9 +934,11 @@ Selected tabs and primary actions use system blue without continuous rainbow
 animation. Completion states remain functionally colored: passed/mastered stay
 green, low scores stay red, and empty/not-yet cells stay neutral.
 
-The top-right Review and Notifications icon buttons keep their normal stable
-appearance while their counts and first five-record caches initialize. Do not
-show a spinner or `aria-busy` state for the invisible background queues.
+The top-right Review icon keeps its normal stable appearance while its first
+five-record cache initializes. Notifications shows its circular loading state
+only until the lightweight unread count resolves, then displays the final badge
+or plain bell while its first ten-record summary page and invisible unread-detail
+queue continue without a spinner or `aria-busy` state.
 
 ### Assign Tab
 

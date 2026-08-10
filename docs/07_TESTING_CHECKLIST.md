@@ -659,14 +659,16 @@ Check:
   lightweight unread count resolves, then atomically replaces it with the final
   badge or plain bell; Argue remains non-blocking and the desk does not wait for
   either full list before rendering
-- notification summaries arrive in newest-first five-thread pages; when 6, 10,
+- notification summaries arrive in newest-first ten-thread pages; when 11, 20,
   or more unread threads exist, background paging continues until all unread
   threads are represented, then stops before older read history
 - unread notification details and public question text prefetch top-to-bottom in
   current-tab memory; no more than two private detail requests run concurrently
-- opening Notifications loads five-thread summary pages until the internal card
-  is filled; scrolling near its bottom appends exactly the next five-thread page,
+- opening Notifications shows the first ten-thread summary page; scrolling near
+  its bottom appends exactly the next ten-thread page,
   with no `Load more` button and no duplicate request while a page is pending
+- opening Notifications does not recursively fetch extra read-history pages just
+  to fill a tall desktop card; each actual scroll-edge arrival requests one page
 - scroll-loaded read-history threads do not prefetch attempt details; only unread
   threads warm answer comparisons, while opening any row still loads its complete
   authorized thread on demand

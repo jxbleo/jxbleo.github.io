@@ -308,10 +308,10 @@ attempts retain the selected group IDs and create teacher notifications, but
 never count toward student completion. Learn inline practice is unrecorded.
 Teacher startup returns progress separately and does not wait for complete
 notification or Argue history. Notification summaries load newest-first in
-five-thread pages. The browser automatically continues only until every unread
+ten-thread pages. The browser automatically continues only until every unread
 thread is represented, then a two-request current-tab queue silently prefetches
 each unread thread's authorized per-attempt details from top to bottom. Earlier
-notification history advances in five-thread pages as the teacher scrolls the
+notification history advances in ten-thread pages as the teacher scrolls the
 bell list; each Argue status still advances through `Load 5 more`. Full
 per-question submitted answers, correct answers, group results, and explanations
 still come from one authorized `attempt_id` request at a time, remain outside

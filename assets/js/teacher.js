@@ -12,7 +12,8 @@
     var TEACHER_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
     var TEACHER_PROGRESS_REFRESH_MS = 2 * 60 * 1000;
     var TEACHER_RETURN_REFRESH_AGE_MS = 30 * 1000;
-    var TEACHER_FEED_PAGE_SIZE = 5;
+    var NOTIFICATION_FEED_PAGE_SIZE = 10;
+    var DISPUTE_FEED_PAGE_SIZE = 5;
     var NOTIFICATION_DETAIL_CONCURRENCY = 2;
     var teacherCacheDbPromise = null;
     var teacherLiveRefreshPromise = null;
@@ -1404,7 +1405,7 @@
         renderUpdatesPanel();
         return teacherCall('listAttemptNotifications', {
             cursor: cursor,
-            page_size: TEACHER_FEED_PAGE_SIZE,
+            page_size: NOTIFICATION_FEED_PAGE_SIZE,
             exclude_thread_keys: options.reset === true ? [] : groupedAttemptThreads().map(function(group) { return group.key; })
         }).then(function(result) {
             var attempts = result.attempts || [];
@@ -1488,7 +1489,7 @@
         return teacherCall('listDisputePage', {
             status: status,
             cursor: page.cursor,
-            page_size: TEACHER_FEED_PAGE_SIZE
+            page_size: DISPUTE_FEED_PAGE_SIZE
         }).then(function(result) {
             var disputes = mergeDisputePage(result, options.reset === true);
             return loadQuestionTextForRecords(disputes).then(function() {
@@ -6758,14 +6759,7 @@
 
     function loadNextNotificationPageForScroll(dialog) {
         if (!notificationScrollNeedsMore(dialog)) return;
-        loadNotificationPage().then(function() {
-            window.requestAnimationFrame(function() {
-                var currentDialog = updatesPanel && updatesPanel.querySelector('.teacher-updates-dialog');
-                if (state.updatesOpen && notificationScrollNeedsMore(currentDialog)) {
-                    loadNextNotificationPageForScroll(currentDialog);
-                }
-            });
-        });
+        loadNotificationPage();
     }
 
     function bindNotificationInfiniteScroll(dialog) {
@@ -6773,9 +6767,6 @@
         dialog.onscroll = function() {
             loadNextNotificationPageForScroll(dialog);
         };
-        window.requestAnimationFrame(function() {
-            if (state.updatesOpen) loadNextNotificationPageForScroll(dialog);
-        });
     }
 
     function relatedAttemptIdsForAttempt(attempt) {
