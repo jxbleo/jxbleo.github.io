@@ -229,13 +229,18 @@ async function main() {
 
   const recreateResult = await call("createStudent", {
     student_id: "student-login",
-    name: "Correct Name",
+    name: "browser-supplied fallback",
+    chinese_name: "正确姓名",
+    english_name: "Correct Name",
     class_group: "Class A",
     curriculum_track: "IELTS",
   });
   assert.equal(recreateResult.success, true);
   assert.notEqual(recreateResult.student.auth_uid, "student-uid-old");
   assert.equal(recreateResult.student.student_id, "student-login");
+  assert.equal(recreateResult.student.name, "正确姓名 · Correct Name", "server should derive the compatibility display name");
+  assert.equal(recreateResult.student.chinese_name, "正确姓名");
+  assert.equal(recreateResult.student.english_name, "Correct Name");
   assert(recreateResult.student.class_id, "class group should create a canonical class");
   assert.equal(classMemberships.filter((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).length, 1);
 
@@ -273,16 +278,26 @@ async function main() {
 
   const renameResult = await call("updateStudent", {
     auth_uid: recreateResult.student.auth_uid,
-    name: "Corrected Again",
+    name: "stale browser value",
+    chinese_name: "再次更正",
+    english_name: "Corrected Again",
   });
   assert.equal(renameResult.success, true);
   assert.equal(
     students.find((student) => student.auth_uid === recreateResult.student.auth_uid).name,
+    "再次更正 · Corrected Again"
+  );
+  assert.equal(
+    students.find((student) => student.auth_uid === recreateResult.student.auth_uid).chinese_name,
+    "再次更正"
+  );
+  assert.equal(
+    students.find((student) => student.auth_uid === recreateResult.student.auth_uid).english_name,
     "Corrected Again"
   );
   assert.equal(
     classMemberships.find((membership) => membership.student_uid === recreateResult.student.auth_uid && membership.ended_at == null).student_name_snapshot,
-    "Corrected Again"
+    "再次更正 · Corrected Again"
   );
 
   const originalClassId = recreateResult.student.class_id;
@@ -398,6 +413,12 @@ async function main() {
   assert(teacherSource.includes('class="student-identity-capsule"') &&
     teacherSource.includes('class="student-identity-copy"'),
     "student detail should show Chinese and English names in one identity capsule");
+  assert(teacherSource.includes("function joinedStudentName(chineseName, englishName, legacyName)"),
+    "teacher displays should share one bilingual name formatter");
+  assert(!teacherSource.includes("function hasChineseNameCharacters"),
+    "legacy names must not be heuristically split by character type");
+  assert(teacherAdminSource.includes("const name = joinedStudentName(chineseName, englishName, event.name)"),
+    "teacherAdmin should derive the compatibility name from separate fields");
   assert(teacherSource.includes('class="student-summary-capsule is-star"') &&
     teacherSource.includes('class="student-summary-capsule is-completed"') &&
     teacherSource.includes('class="student-summary-capsule is-account"'),

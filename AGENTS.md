@@ -161,7 +161,9 @@ Canonical student profile:
 {
   "auth_uid": "CLOUDBASE_AUTH_USER_ID",
   "student_id": "unique-login-id",
-  "name": "Student Name",
+  "name": "Chinese Name · English Name",
+  "chinese_name": "Chinese Name",
+  "english_name": "English Name",
   "class_group": "",
   "curriculum_track": "",
   "role": "student",
@@ -171,6 +173,11 @@ Canonical student profile:
   "updated_at": "Date"
 }
 ```
+
+`chinese_name` and `english_name` are the authoritative editable parts. The
+trusted backend derives compatibility `name` as `Chinese · English`, or the one
+available part. A legacy unsplit `name` is a whole display fallback only; never
+heuristically split it by spaces or character ranges.
 
 All fields must be top-level. With `@cloudbase/node-sdk`, add documents using:
 

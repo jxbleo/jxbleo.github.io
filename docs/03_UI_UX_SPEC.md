@@ -812,6 +812,10 @@ repeat the selected student's name because the first identity card already
 shows it. Returning to the list restores the search field. Student info
 and progress appear directly below. The detail begins with a flexible identity
 capsule containing the avatar plus Chinese and English names on separate lines.
+Teacher lists and assignment pickers use the same `Chinese · English` display
+rule, and search matches either separate field. A legacy unsplit `name` remains
+one whole fallback label with an Account-review hint; the UI never guesses a
+split from spaces or character ranges.
 Beside it are exactly three equal action capsules: a gold outline STAR with its
 count, a green check-circle with Completed/Total, and a neutral Account entry.
 It does not show Attempts, class, Login ID, System, or account status in this

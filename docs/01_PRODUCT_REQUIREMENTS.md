@@ -371,7 +371,8 @@ flowchart TD
 
 - `auth_uid`：CloudBase Authentication 用户 ID，所有权限判断使用它
 - `student_id`：学生登录 ID，给人看的唯一 Login ID
-- `name`：学生姓名
+- `chinese_name`、`english_name`：分别保存经老师确认的中英文名，是姓名编辑的权威字段
+- `name`：由后端从中英文名生成的兼容完整显示值；两者都有时显示为 `中文名 · English name`
 - `class_group`：班级
 - `curriculum_track`：课程体系，例如 DSE、IELTS 等
 - `role`：`student` 或 `teacher`
@@ -473,7 +474,7 @@ flowchart TD
 - 老师撤销作业时只能软撤销开放作业，写入 `status: "cancelled"` 和撤销审计字段；不能删除 assignment 或旧 attempts
 - 已撤销作业从学生 Dashboard 的 To Do / Finished 和教师 View 进度中隐藏，并且旧 assignment URL 不能继续提交到这条作业
 - 教师在 View 矩阵点击学生姓名，或从 Students 清单进入学生详情时，应打开该学生的月度完成日历；每一周显示为独立周带，日期、完成密度、STAR 和完成项目明细与学生 Dashboard 的进度语义一致，并包含该学生的自学记录
-- Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。学生详情顶部使用一个同时显示中文名和英文名的身份胶囊，右侧只保留 STAR、Completed 和 Account 三个功能胶囊；Completed 显示完成数/总数。班级、Login ID、System 和账号操作只在点击 Account 后的独立弹窗中出现，详情底部不再保留 Account settings 展开区
+- Students 清单只保留搜索、班级筛选、右上角新增入口和学生姓名，不在姓名下重复显示 Login ID、班级或 Active 状态。姓名搜索同时匹配中文名、英文名和兼容完整姓名。学生详情顶部使用一个同时显示中文名和英文名的身份胶囊，右侧只保留 STAR、Completed 和 Account 三个功能胶囊；Completed 显示完成数/总数。旧记录只有完整 `name` 时只按一条旧姓名显示并提示老师在 Account 中确认，绝不按字符或空格自动拆分。班级、Login ID、System 和账号操作只在点击 Account 后的独立弹窗中出现，详情底部不再保留 Account settings 展开区
 - 已完成、已 mastered 或已有 STAR 的作业不会被普通撤销操作降级或移除；未来需要时应重新布置一条新的 assignment
 - 老师可以开启或关闭单条 assignment 的 `mastery_enabled`。新作业默认关闭
   STAR earning，只有 Assign 时勾选 `Earn STAR` 或后续在 View 中开启后，

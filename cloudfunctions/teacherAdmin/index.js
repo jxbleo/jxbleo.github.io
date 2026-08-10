@@ -25,6 +25,13 @@ function text(value) {
   return String(value == null ? "" : value).trim();
 }
 
+function joinedStudentName(chineseName, englishName, legacyName = "") {
+  const chinese = text(chineseName);
+  const english = text(englishName);
+  if (chinese && english) return `${chinese} · ${english}`;
+  return chinese || english || text(legacyName);
+}
+
 function initialPassword() {
   const password = text(process.env.INITIAL_STUDENT_PASSWORD);
   if (!password) throw new Error("INITIAL_PASSWORD_NOT_CONFIGURED");
@@ -675,11 +682,11 @@ async function resolveCreatedEndUser(createResult, username) {
 
 async function createStudent(event, teacher) {
   const studentId = text(event.student_id);
-  const name = text(event.name);
   const classGroup = text(event.class_group);
   const curriculumTrack = text(event.curriculum_track);
   const chineseName = text(event.chinese_name);
   const englishName = text(event.english_name);
+  const name = joinedStudentName(chineseName, englishName, event.name);
 
   if (!studentId || !name) throw new Error("STUDENT_FIELDS_REQUIRED");
   const matchingProfiles = (await getAll("students", { where: { student_id: studentId } })).map(recordData);
@@ -774,12 +781,17 @@ async function updateStudent(event, teacher) {
   const now = new Date();
   const classRecord = await targetClassForStudentUpdate(event, student, now, teacher && teacher.auth_uid);
   const update = { updated_at: now };
-  if (Object.prototype.hasOwnProperty.call(event, "name")) {
+  const updatesChineseName = Object.prototype.hasOwnProperty.call(event, "chinese_name");
+  const updatesEnglishName = Object.prototype.hasOwnProperty.call(event, "english_name");
+  if (updatesChineseName || updatesEnglishName) {
+    update.chinese_name = updatesChineseName ? text(event.chinese_name) : text(student.chinese_name);
+    update.english_name = updatesEnglishName ? text(event.english_name) : text(student.english_name);
+    update.name = joinedStudentName(update.chinese_name, update.english_name);
+    if (!update.name) throw new Error("STUDENT_NAME_REQUIRED");
+  } else if (Object.prototype.hasOwnProperty.call(event, "name")) {
     update.name = text(event.name);
     if (!update.name) throw new Error("STUDENT_NAME_REQUIRED");
   }
-  if (Object.prototype.hasOwnProperty.call(event, "chinese_name")) update.chinese_name = text(event.chinese_name);
-  if (Object.prototype.hasOwnProperty.call(event, "english_name")) update.english_name = text(event.english_name);
   if (classRecord) {
     update.class_id = classRecord.class_id;
     update.class_group = classRecord.name;
