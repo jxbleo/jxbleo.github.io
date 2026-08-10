@@ -183,7 +183,9 @@ Shared shell visual checks:
   confirm the control responds on press, the card fades/downshifts/scales
   without bounce, the backdrop releases with it, and only then do focus, page
   scroll, and the underlying control return. With reduced motion enabled,
-  confirm the exit is a short opacity-only fade
+  confirm the exit is a short opacity-only fade. Reopen and close each dialog
+  at least three times; every cycle must restore full opacity and working Close
+  controls, and no transparent overlay may intercept the Dashboard afterward
 - opening any independent Teacher modal from Notifications, Argue, Student
   lookup/cards, assignment tools, practice entry, or success feedback freezes
   the background for mouse wheel, trackpad, and touch gestures while its own
@@ -196,7 +198,9 @@ Shared shell visual checks:
   directly in its final position
 - use every explicit Teacher `Close` control above and confirm the same shared
   no-bounce exit runs before the existing close handler, including nested
-  attempt/matrix dialogs and the anchored Personal Center popover
+  attempt/matrix dialogs and the anchored Personal Center popover. Reopen each
+  reusable utility at least three times and confirm the toolbar and workspace
+  remain clickable after every close
 - stacked Teacher modals remain background-locked until the last modal closes;
   closing it restores the exact pre-modal document position without a jump
 - verify reduced transparency, increased contrast, and reduced motion media
