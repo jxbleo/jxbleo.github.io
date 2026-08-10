@@ -139,6 +139,14 @@ Navigation:
   Replies, Calendar, My Words, Personal Center, STAR Wallet, password, and
   My Words merge dialogs. The backdrop and external Close capsule remain
   spatially stable, and reduced-motion mode renders the final state immediately
+- Student and Teacher modal `Close` controls use one shared, deliberate exit.
+  Pressing the control gives immediate `0.96` scale feedback; the dialog then
+  fades, settles downward by 8px, and scales to `0.97` over 260ms without
+  overshoot while its dimming/blur layer releases. The modal remains mounted
+  and keeps the background locked until that exit completes, then runs the
+  existing close, focus-restoration, and scroll-restoration behavior. Exit
+  begins from the dialog's live presentation state so closing during entrance
+  does not jump. Reduced-motion mode uses a 140ms opacity-only exit
 - the main content opens directly on `Library`; do not restore lower
   Assignments or My Words navigation
 - assignments and finished work open from a standalone far-left `To Do List`

@@ -368,6 +368,19 @@
     backdrop-filter: blur(14px) saturate(145%);
 }
 
+.liquid-glass-shell button:is(
+    [aria-label^="Close"],
+    .student-account-outside-close,
+    .student-star-outside-close,
+    .student-words-outside-close,
+    .student-calendar-outside-close,
+    .student-message-close,
+    .practice-entry-close
+):active {
+    transform: scale(.96);
+    transition-duration: 90ms;
+}
+
 .liquid-glass-dashboard :is(.student-message-task, .teacher-reply-item, .my-word-item),
 .liquid-glass-teacher :is(.activity-thread, .dispute-item) {
     border-color: rgba(255, 255, 255, 0.58);

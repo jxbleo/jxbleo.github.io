@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Added a shared Student/Teacher modal close transition: explicit Close
+  controls now respond immediately, then dismiss dialog material and backdrop
+  through a restrained no-bounce fade, downshift, and scale before existing
+  focus and scroll restoration runs. Reduced-motion mode uses a short
+  opacity-only exit.
 - Standardized BBC and Vocabulary post-submit result audio into two states:
   not-passed uses the selected low descending “sigh,” while Passed and Mastered
   share the existing bright rising success sound. Vocabulary result dialogs now
