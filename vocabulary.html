@@ -2280,6 +2280,17 @@
         var testStartedAt = null;
         var testLocked = false;
         var testSubmitting = false;
+        var resultAudioCtx = null;
+        var RESULT_SOUND_FAILED_TONES = [
+            { freq: 392, start: 0, duration: .42, volume: .1, type: 'triangle', to: 293.66 },
+            { freq: 261.63, start: .38, duration: .58, volume: .125, type: 'triangle', to: 174.61 },
+            { freq: 130.81, start: .43, duration: .52, volume: .04, type: 'sine', to: 98 }
+        ];
+        var RESULT_SOUND_PASSED_TONES = [
+            { freq: 392, start: 0, duration: .13, volume: .11 },
+            { freq: 523.25, start: .11, duration: .14, volume: .13 },
+            { freq: 783.99, start: .24, duration: .28, volume: .16 }
+        ];
         var testHistoryArmed = false;
         var testReviewMode = false;
         var testIntegrityEnded = false;
@@ -2665,7 +2676,10 @@
                 secondary: 'Cancel',
                 tone: 'quiz-gold'
             }).then(function(confirmed) {
-                if (confirmed) startTest();
+                if (confirmed) {
+                    unlockResultAudio();
+                    startTest();
+                }
             });
         }
 
@@ -2677,7 +2691,10 @@
                 primary: 'Practice',
                 secondary: 'Cancel'
             }).then(function(confirmed) {
-                if (confirmed) startClozePractice();
+                if (confirmed) {
+                    unlockResultAudio();
+                    startClozePractice();
+                }
             });
         }
 
@@ -2690,7 +2707,10 @@
                 primary: 'Submit Now',
                 secondary: 'Keep Working'
             }).then(function(confirmed) {
-                if (confirmed) submitTest({ manual: true });
+                if (confirmed) {
+                    unlockResultAudio();
+                    submitTest({ manual: true });
+                }
             });
         }
 
@@ -2901,7 +2921,58 @@
             return Array.isArray(value) ? value.join(' / ') : String(value == null ? '' : value);
         }
 
+        function getResultAudioContext() {
+            var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return null;
+            if (!resultAudioCtx) resultAudioCtx = new AudioContextClass();
+            return resultAudioCtx;
+        }
+
+        function unlockResultAudio() {
+            try {
+                var ctx = getResultAudioContext();
+                if (ctx && ctx.state === 'suspended') ctx.resume();
+            } catch (e) {}
+        }
+
+        function playResultTone(freq, start, duration, options) {
+            var ctx = getResultAudioContext();
+            if (!ctx) return;
+            options = options || {};
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            var filter = ctx.createBiquadFilter();
+            var now = ctx.currentTime;
+            osc.type = options.type || 'sine';
+            osc.frequency.setValueAtTime(freq, now + start);
+            if (options.to) osc.frequency.exponentialRampToValueAtTime(options.to, now + start + duration);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(9000, now + start);
+            gain.gain.setValueAtTime(.0001, now + start);
+            gain.gain.exponentialRampToValueAtTime(options.volume || .14, now + start + .018);
+            gain.gain.exponentialRampToValueAtTime(.0001, now + start + duration);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + start);
+            osc.stop(now + start + duration + .02);
+        }
+
+        function playResultSequence(tones) {
+            tones.forEach(function(tone) {
+                playResultTone(tone.freq, tone.start, tone.duration, tone);
+            });
+        }
+
+        function playResultSound(state) {
+            try {
+                unlockResultAudio();
+                playResultSequence(state === 'failed' ? RESULT_SOUND_FAILED_TONES : RESULT_SOUND_PASSED_TONES);
+            } catch (e) {}
+        }
+
         function showResultOverlay(response) {
+            var state = response.mastered ? 'mastered' : response.passed ? 'passed' : 'failed';
             var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Not Passed';
             var emoji = response.mastered ? '⭐' : response.passed ? '🎉' : '😅';
             var score = response.correct_count + ' / ' + response.question_count;
@@ -2916,6 +2987,7 @@
                 '<p class="result-score">' + score + '</p><p class="result-copy">' + copy + '</p><div class="result-actions">' +
                 actions + '</div></div>';
             document.body.appendChild(overlay);
+            playResultSound(state);
             overlay.addEventListener('click', function(event) {
                 var action = event.target && event.target.getAttribute('data-result-action');
                 if (action === 'close') overlay.remove();

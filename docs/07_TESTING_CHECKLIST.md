@@ -32,6 +32,17 @@ npm run test:protected-resources
 npm run test:learning-reports
 ```
 
+BBC/Vocabulary result-audio checks:
+
+- submit below the passing threshold in each runtime and confirm the result
+  dialog plays the same low descending “sigh” sound;
+- submit a Passed result in each runtime and confirm both play the same bright
+  rising sound;
+- submit a Mastered result and confirm its visual STAR/mastery treatment remains
+  distinct while its audio exactly matches Passed;
+- verify Vocabulary timed Practice uses the same pass/not-passed mapping and a
+  browser without Web Audio still shows and closes the result dialog normally.
+
 Teacher attempt payload checks in `test:assignment-schedule` verify that
 `listAttempts` omits question-level/private report fields, `listProgress` does
 not duplicate nested attempts, and `getAttemptDetail` restores the authorized

@@ -2852,6 +2852,16 @@
     var isDragging = false;
     var resultAudioCtx = null;
     var lastEncouragementIndex = -1;
+    var RESULT_SOUND_FAILED_TONES = [
+        { freq: 392, start: 0, duration: .42, volume: .1, type: 'triangle', to: 293.66 },
+        { freq: 261.63, start: .38, duration: .58, volume: .125, type: 'triangle', to: 174.61 },
+        { freq: 130.81, start: .43, duration: .52, volume: .04, type: 'sine', to: 98 }
+    ];
+    var RESULT_SOUND_PASSED_TONES = [
+        { freq: 392, start: 0, duration: .13, volume: .11 },
+        { freq: 523.25, start: .11, duration: .14, volume: .13 },
+        { freq: 783.99, start: .24, duration: .28, volume: .16 }
+    ];
     var blankAttemptLimit = 0;
     var blankAttemptState = {};
     var mcLockedAnswers = {};
@@ -4593,52 +4603,16 @@
         osc.stop(now + start + duration + 0.02);
     }
 
-    function playResultNoise(start, duration, options) {
-        var ctx = getResultAudioContext();
-        if (!ctx) return;
-        options = options || {};
-        var buffer = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * duration)), ctx.sampleRate);
-        var data = buffer.getChannelData(0);
-        var decay = options.decay || 2;
-        var last = 0;
-        for (var i = 0; i < data.length; i++) {
-            var t = i / Math.max(1, data.length);
-            var raw = Math.random() * 2 - 1;
-            last = last * 0.82 + raw * 0.18;
-            data[i] = last * Math.pow(1 - t, decay);
-        }
-        var source = ctx.createBufferSource();
-        var gain = ctx.createGain();
-        var filter = ctx.createBiquadFilter();
-        var now = ctx.currentTime;
-        source.buffer = buffer;
-        filter.type = options.filter || 'lowpass';
-        filter.frequency.setValueAtTime(options.filterFreq || 1200, now + start);
-        gain.gain.setValueAtTime(options.volume || 0.08, now + start);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + start + duration);
-        source.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-        source.start(now + start);
+    function playResultSequence(tones) {
+        tones.forEach(function(tone) {
+            playResultTone(tone.freq, tone.start, tone.duration, tone);
+        });
     }
 
     function playResultSound(state) {
         try {
             unlockResultAudio();
-            if (state === 'passed') {
-                playResultTone(392, 0, .13, { volume: .11 });
-                playResultTone(523.25, .11, .14, { volume: .13 });
-                playResultTone(783.99, .24, .28, { volume: .16 });
-            } else if (state === 'mastered') {
-                playResultTone(523.25, 0, .13, { volume: .12, type: 'triangle' });
-                playResultTone(659.25, .12, .13, { volume: .12, type: 'triangle' });
-                playResultTone(783.99, .24, .15, { volume: .135, type: 'triangle' });
-                playResultTone(1046.5, .39, .34, { volume: .16, type: 'triangle' });
-                playResultTone(1318.51, .54, .22, { volume: .065 });
-            } else {
-                playResultTone(392, 0, .16, { volume: .08, to: 329.63, type: 'triangle' });
-                playResultTone(440, .2, .18, { volume: .075, type: 'triangle' });
-            }
+            playResultSequence(state === 'failed' ? RESULT_SOUND_FAILED_TONES : RESULT_SOUND_PASSED_TONES);
         } catch (e) {}
     }
 

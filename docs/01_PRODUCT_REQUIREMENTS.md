@@ -168,6 +168,9 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   当天日号，并在上海午夜或页面重新激活时更新；该显示不调用后端。最左侧 To Do
   List 与相邻 Teacher Replies 使用相同玻璃颜色、线宽和 19px 图形视觉尺寸
 - 打开作业并提交答案
+- BBC 与 Vocabulary 的提交结果弹窗统一使用两类短音效：未通过播放低沉下降的
+  “叹气”音；Passed 与 Mastered 统一播放同一个明亮上升音，不再把 Mastered
+  作为第三种结果音效
 - 不及格时继续 Try Again
 - 通过后可以选择继续挑战更高分，或查看答案
 - 达到 mastery 后获得 STAR

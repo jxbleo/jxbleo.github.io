@@ -50,6 +50,47 @@ assert.throws(
 
 const root = path.resolve(__dirname, "..");
 const vocabularyPage = fs.readFileSync(path.join(root, "vocabulary.html"), "utf8");
+const bbcPage = fs.readFileSync(path.join(root, "bbc.html"), "utf8");
+
+function readResultToneArray(source, name) {
+  const match = source.match(new RegExp(`var ${name} = (\\[[\\s\\S]*?\\n\\s*\\]);`));
+  assert(match, `${name} must be declared as a result-tone array`);
+  return Function(`"use strict"; return (${match[1]});`)();
+}
+
+const expectedFailedTones = [
+  { freq: 392, start: 0, duration: 0.42, volume: 0.1, type: "triangle", to: 293.66 },
+  { freq: 261.63, start: 0.38, duration: 0.58, volume: 0.125, type: "triangle", to: 174.61 },
+  { freq: 130.81, start: 0.43, duration: 0.52, volume: 0.04, type: "sine", to: 98 },
+];
+const expectedPassedTones = [
+  { freq: 392, start: 0, duration: 0.13, volume: 0.11 },
+  { freq: 523.25, start: 0.11, duration: 0.14, volume: 0.13 },
+  { freq: 783.99, start: 0.24, duration: 0.28, volume: 0.16 },
+];
+
+for (const [label, page] of [["Vocabulary", vocabularyPage], ["BBC", bbcPage]]) {
+  assert.deepStrictEqual(
+    readResultToneArray(page, "RESULT_SOUND_FAILED_TONES"),
+    expectedFailedTones,
+    `${label} must use the selected low sad not-passed sound`
+  );
+  assert.deepStrictEqual(
+    readResultToneArray(page, "RESULT_SOUND_PASSED_TONES"),
+    expectedPassedTones,
+    `${label} must use the selected current passed sound`
+  );
+  assert.match(
+    page,
+    /playResultSequence\(state === 'failed' \? RESULT_SOUND_FAILED_TONES : RESULT_SOUND_PASSED_TONES\)/,
+    `${label} must map Passed and Mastered to one shared passed sound`
+  );
+}
+assert.match(
+  vocabularyPage,
+  /document\.body\.appendChild\(overlay\);\s*playResultSound\(state\);/,
+  "Vocabulary must play its result sound when the result dialog appears"
+);
 assert.match(
   vocabularyPage,
   /VOCABULARY_HEARTBEAT_RECOVERY_WINDOW_MS\s*=\s*60\s*\*\s*1000/,
@@ -85,4 +126,4 @@ for (const functionName of ["submitAttempt", "getDashboard", "getCurrentStudent"
   );
 }
 
-console.log("Vocabulary versioning and heartbeat tests passed.");
+console.log("Vocabulary versioning, result sound, and heartbeat tests passed.");
