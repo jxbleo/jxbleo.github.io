@@ -59,7 +59,17 @@
 
     function logout() {
         clearLocalIdentity();
-        return window.MrCatCloud.signOut().catch(function() {}).then(function() {
+        var cacheClear = Promise.resolve();
+        if (window.indexedDB) {
+            cacheClear = new Promise(function(resolve) {
+                var request = window.indexedDB.deleteDatabase('mrcat-student-dashboard-v1');
+                request.onsuccess = request.onerror = request.onblocked = function() { resolve(); };
+            });
+        }
+        return Promise.all([
+            window.MrCatCloud.signOut().catch(function() {}),
+            cacheClear
+        ]).then(function() {
             window.location.href = 'index.html';
         });
     }

@@ -748,6 +748,15 @@ Check:
   `Chinese · English`. Search must match either language in Students and Assign.
   A legacy profile with only a mixed `name` must remain one fallback label with
   a review hint; it must never be heuristically assigned to the Chinese field
+- On a returning student account, verify cached assignment summaries and counts
+  paint before the live Dashboard response, then update silently without a
+  spinner or blank reset. Explicit logout must delete the Student IndexedDB
+  snapshot, and inspecting that store must show no reply body, attempt answers,
+  correct answers, explanations, grading keys, credentials, or auth tokens
+- With more than 20 assignments, verify bootstrap returns no more than 10 To Do
+  and 10 Finished rows, each list appends exactly 10 at its internal scroll edge,
+  all unread Teacher Replies are ready in memory, and earlier read replies use
+  `Load 5 more`
 - clicking Account opens an independent dialog containing names, Login ID,
   class, System, reset password, and delete account. The main student detail has
   no bottom Account settings disclosure. The dialog's class editor lists existing active classes

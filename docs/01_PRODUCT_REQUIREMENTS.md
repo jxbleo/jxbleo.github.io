@@ -875,6 +875,14 @@ flowchart TD
 - dispute submit / list
 - STAR wallet summary、Cash requests、学生取消、凭证上传登记和未读状态
 
+学生 Dashboard 启动采用缓存优先的分层读取：账号隔离、最长 24 小时的
+IndexedDB 快照可立即显示脱敏作业摘要、周进度数量、STAR 数量和未读老师回复
+数量，同时后台向 CloudBase 重新验证。首次网络响应只返回 10 条 To Do 与
+10 条 Finished 摘要；两个列表滚动到底后每次追加 10 条。首屏稳定后依次
+静默预取首批 To Do 的公开练习数据、其余 To Do 摘要、完整未读老师回复、
+最近 Finished，以及 STAR/完整历史。缓存不能持久化回复正文、答题内容、
+正确答案、解析、grading key、密码或 token；明确登出必须删除该账号缓存。
+
 要求：
 
 - 只返回当前 authenticated student 的数据

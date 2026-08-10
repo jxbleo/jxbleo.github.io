@@ -9,6 +9,13 @@
     var state = {
         session: null,
         assignments: [],
+        assignmentCounts: null,
+        weeklySummary: null,
+        assignmentsComplete: false,
+        assignmentPages: {
+            todo: { nextCursor: null, hasMore: false, loading: false },
+            finished: { nextCursor: null, hasMore: false, loading: false }
+        },
         resources: [],
         libraryProgress: [],
         resourceFilter: 'vocabulary',
@@ -21,6 +28,8 @@
         starPanelOpen: false,
         starRewards: { available: false, wallet: null, cash_requests: [], unread_count: 0 },
         teacherReplies: [],
+        teacherReplyUnreadCount: 0,
+        teacherRepliesComplete: false,
         vocabItems: [],
         vocabTotalCount: 0,
         vocabSearch: '',
@@ -146,6 +155,119 @@
     var wordsButton = document.getElementById('student-words-button');
     var wordsOpenLink = document.querySelector('.student-words-open-button');
     var myWordsWarmPromise = null;
+    var studentDashboardWarmPromise = null;
+    var studentDashboardCacheName = 'mrcat-student-dashboard-v1';
+    var studentDashboardCacheStore = 'snapshots';
+    var studentDashboardCacheMaxAge = 24 * 60 * 60 * 1000;
+
+    function studentDashboardOwner() {
+        var profile = state.session && state.session.profile || {};
+        return String(profile.auth_uid || profile.student_id || '');
+    }
+
+    function openStudentDashboardCache() {
+        if (!window.indexedDB) return Promise.reject(new Error('IndexedDB unavailable'));
+        return new Promise(function(resolve, reject) {
+            var request = window.indexedDB.open(studentDashboardCacheName, 1);
+            request.onupgradeneeded = function() {
+                var database = request.result;
+                if (!database.objectStoreNames.contains(studentDashboardCacheStore)) {
+                    database.createObjectStore(studentDashboardCacheStore, { keyPath: 'owner' });
+                }
+            };
+            request.onsuccess = function() { resolve(request.result); };
+            request.onerror = function() { reject(request.error || new Error('Unable to open Dashboard cache')); };
+        });
+    }
+
+    function withStudentDashboardCache(mode, callback) {
+        return openStudentDashboardCache().then(function(database) {
+            return new Promise(function(resolve, reject) {
+                var transaction = database.transaction(studentDashboardCacheStore, mode);
+                var store = transaction.objectStore(studentDashboardCacheStore);
+                var result;
+                try {
+                    result = callback(store);
+                } catch (error) {
+                    database.close();
+                    reject(error);
+                    return;
+                }
+                transaction.oncomplete = function() {
+                    database.close();
+                    resolve(result && result.result);
+                };
+                transaction.onerror = function() {
+                    database.close();
+                    reject(transaction.error || new Error('Dashboard cache transaction failed'));
+                };
+            });
+        });
+    }
+
+    function safeCachedAssignment(item) {
+        if (!item || typeof item !== 'object') return null;
+        var safe = {};
+        [
+            'assignment_id', 'achievement_id', 'source', 'status', 'assigned_at',
+            'due_at', 'created_at', 'completed_at', 'mastered_at', 'updated_at',
+            'best_improved_at', 'progress_updated_at', 'latest_submitted_at',
+            'attempt_count', 'latest_percentage', 'best_percentage',
+            'best_correct_count', 'best_question_count', 'review_attempt_id',
+            'history_attempt_id', 'prefill_attempt_id', 'answer_revealed',
+            'mastery_locked', 'completed_before_assignment', 'star_claimed',
+            'passing_percentage', 'mastery_percentage', 'mastery_enabled'
+        ].forEach(function(key) {
+            if (Object.prototype.hasOwnProperty.call(item, key)) safe[key] = item[key];
+        });
+        safe.teacher_replies = [];
+        safe.teacher_reply_count = Number(item.teacher_reply_count || 0);
+        var sourceSet = item.set && typeof item.set === 'object' ? item.set : {};
+        safe.set = {};
+        [
+            'set_id', 'id', 'title', 'link', 'href', 'section_id', 'sectionId',
+            'section', 'course', 'type', 'category', 'sourceName', 'edition_label',
+            'edition_number', 'edition_family'
+        ].forEach(function(key) {
+            if (Object.prototype.hasOwnProperty.call(sourceSet, key)) safe.set[key] = sourceSet[key];
+        });
+        return safe;
+    }
+
+    function studentDashboardCacheSnapshot() {
+        var owner = studentDashboardOwner();
+        if (!owner) return null;
+        return {
+            owner: owner,
+            saved_at: Date.now(),
+            assignments: (state.assignments || []).map(safeCachedAssignment).filter(Boolean),
+            assignment_counts: Object.assign({}, state.assignmentCounts || {}),
+            weekly_summary: state.weeklySummary ? Object.assign({}, state.weeklySummary) : null,
+            assignment_star_count: Number(state.assignmentStarCount || 0),
+            self_study_star_count: Number(state.selfStudyStarCount || 0),
+            teacher_reply_unread_count: Number(state.teacherReplyUnreadCount || 0)
+        };
+    }
+
+    function saveStudentDashboardCache() {
+        var snapshot = studentDashboardCacheSnapshot();
+        if (!snapshot) return Promise.resolve();
+        return withStudentDashboardCache('readwrite', function(store) {
+            return store.put(snapshot);
+        }).catch(function() {});
+    }
+
+    function readStudentDashboardCache() {
+        var owner = studentDashboardOwner();
+        if (!owner) return Promise.resolve(null);
+        return withStudentDashboardCache('readonly', function(store) {
+            return store.get(owner);
+        }).then(function(snapshot) {
+            if (!snapshot || snapshot.owner !== owner) return null;
+            if (Date.now() - Number(snapshot.saved_at || 0) > studentDashboardCacheMaxAge) return null;
+            return snapshot;
+        }).catch(function() { return null; });
+    }
 
     function warmMyWordsFirstPage() {
         if (myWordsWarmPromise) return myWordsWarmPromise;
@@ -1551,12 +1673,14 @@
     }
 
     function teacherReplyUnreadTotal() {
+        if (!state.teacherRepliesComplete) return Number(state.teacherReplyUnreadCount || 0);
         return (state.teacherReplies || []).filter(function(reply) {
             return reply && reply.student_seen !== true;
         }).length;
     }
 
     function studentMessageTotal() {
+        if (!state.assignmentsComplete && state.assignmentCounts) return Number(state.assignmentCounts.todo || 0);
         return todoAssignments().length;
     }
 
@@ -1741,10 +1865,15 @@
     }
 
     function renderDefaultStudentMessageSections(todos, upcoming, finished) {
+        var counts = state.assignmentCounts || {
+            todo: todos.length,
+            upcoming: upcoming.length,
+            finished: finished.length
+        };
         var tabs = [
-            { id: 'week', label: 'This Week', count: todos.length },
-            { id: 'upcoming', label: 'Upcoming', count: upcoming.length },
-            { id: 'finished', label: 'Finished', count: finished.length }
+            { id: 'week', label: 'This Week', count: Number(counts.todo || 0) },
+            { id: 'upcoming', label: 'Upcoming', count: Number(counts.upcoming || 0) },
+            { id: 'finished', label: 'Finished', count: Number(counts.finished || 0) }
         ];
         var tabMarkup = tabs.map(function(tab, index) {
             return '<button class="student-message-tab" id="student-message-tab-' + tab.id + '" type="button" role="tab"' +
@@ -1856,13 +1985,17 @@
                     return isFinishedStatus(item.status);
                 }).sort(function(left, right) { return finishedDate(right) - finishedDate(left); });
                 sectionsHtml = renderStudentMessageFlatList(
-                    finished.map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
+                    finished.slice(0, 10).map(function(item) { return renderStudentMessageTask(item, 'finished'); }).join(''),
                     'Finished assignments will appear here.'
                 );
             }
         } else {
             summaryHtml = '';
-            sectionsHtml = renderDefaultStudentMessageSections(todos, upcoming, finished);
+            sectionsHtml = renderDefaultStudentMessageSections(
+                todos.slice(0, 10),
+                upcoming.slice(0, 10),
+                finished.slice(0, 10)
+            );
         }
         var overlay = document.createElement('div');
         var isAccountFinishedFlow = scope === 'finished';
@@ -1959,7 +2092,9 @@
                 selectMessageTab(messageTabs[nextIndex], true);
             });
         });
-        overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(function(card) {
+        function bindStudentMessageCard(card) {
+            if (!card || card.dataset.messageBound === 'true') return;
+            card.dataset.messageBound = 'true';
             function openTask(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
@@ -1974,12 +2109,58 @@
             }
             card.addEventListener('click', openTask);
             card.addEventListener('keydown', openTask);
-        });
+        }
+        overlay.querySelectorAll('.student-message-task[data-open-href]').forEach(bindStudentMessageCard);
+
+        function assignmentItemsForPanel(panelName) {
+            if (panelName === 'upcoming') return upcomingAssignments();
+            if (panelName === 'finished') return finishedAssignments();
+            return todoAssignments();
+        }
+
+        function appendNextAssignmentBatch() {
+            if (scope && scope !== 'finished') return;
+            var activePanel = scope === 'finished'
+                ? overlay.querySelector('.student-message-sections')
+                : overlay.querySelector('[data-message-panel]:not([hidden])');
+            if (!activePanel) return;
+            var list = activePanel.querySelector('.student-message-list');
+            if (!list) return;
+            var panelName = scope === 'finished' ? 'finished' : activePanel.dataset.messagePanel || 'week';
+            var items = assignmentItemsForPanel(panelName);
+            var rendered = list.querySelectorAll('.student-message-task').length;
+            var nextItems = items.slice(rendered, rendered + 10);
+            if (!nextItems.length) return;
+            list.insertAdjacentHTML('beforeend', nextItems.map(function(item) {
+                return renderStudentMessageTask(item, panelName === 'finished'
+                    ? 'finished'
+                    : panelName === 'upcoming'
+                        ? 'upcoming'
+                        : isOverdueAssignment(item) ? 'overdue' : 'todo');
+            }).join(''));
+            list.querySelectorAll('.student-message-task[data-open-href]').forEach(bindStudentMessageCard);
+            if (messageTitleObserver) messageTitleObserver.disconnect();
+            messageTitleObserver = setupStudentMessageTitleTracks(overlay);
+        }
+
+        var messageDialog = overlay.querySelector('.student-message-dialog');
+        if (messageDialog && (!scope || scope === 'finished')) {
+            messageDialog.addEventListener('scroll', function() {
+                if (messageDialog.scrollHeight - messageDialog.scrollTop - messageDialog.clientHeight <= 96) {
+                    appendNextAssignmentBatch();
+                }
+            }, { passive: true });
+        }
     }
 
     function openTeacherRepliesDialog(replyItems, options) {
         options = options || {};
         var replies = Array.isArray(replyItems) ? replyItems : (state.teacherReplies || []);
+        var lastUnreadIndex = -1;
+        replies.forEach(function(reply, index) {
+            if (reply && reply.student_seen !== true) lastUnreadIndex = index;
+        });
+        var visibleReplyCount = Math.min(replies.length, Math.max(5, lastUnreadIndex + 1));
         var opener = options.opener || repliesButton;
         var manageScrollLock = options.manageScrollLock !== false;
         var overlay = document.createElement('div');
@@ -1991,8 +2172,11 @@
                         '<h2 class="eyebrow accent" id="teacher-replies-title">Teacher Replies</h2>' +
                     '</div>' +
                     '<div class="teacher-replies-list">' + (replies.length
-                        ? replies.map(renderTeacherReplyItem).join('')
+                        ? replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('')
                         : '<div class="teacher-replies-empty">No teacher replies yet.</div>') + '</div>' +
+                    (visibleReplyCount < replies.length
+                        ? '<button class="outline-button teacher-replies-load-more" type="button" data-teacher-replies-load-more>Load 5 more</button>'
+                        : '') +
                 '</section>' +
                 '<button class="student-message-close teacher-replies-outside-close" id="teacher-replies-close" type="button" aria-label="Close Teacher Replies">Close</button>' +
             '</div>';
@@ -2033,8 +2217,23 @@
         }
         var closeButton = overlay.querySelector('#teacher-replies-close');
         closeButton.addEventListener('click', function() { close(true); });
+        var loadMoreButton = overlay.querySelector('[data-teacher-replies-load-more]');
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', function() {
+                visibleReplyCount = Math.min(replies.length, visibleReplyCount + 5);
+                var list = overlay.querySelector('.teacher-replies-list');
+                if (list) list.innerHTML = replies.slice(0, visibleReplyCount).map(renderTeacherReplyItem).join('');
+                if (visibleReplyCount >= replies.length) loadMoreButton.remove();
+                if (replyTitleObserver) replyTitleObserver.disconnect();
+                replyTitleObserver = setupStudentMessageTitleTracks(overlay);
+                bindTeacherReplyCards();
+            });
+        }
         window.setTimeout(function() { closeButton.focus(); }, 0);
-        overlay.querySelectorAll('.teacher-reply-item[data-open-href]').forEach(function(card) {
+        function bindTeacherReplyCards() {
+            overlay.querySelectorAll('.teacher-reply-item[data-open-href]').forEach(function(card) {
+                if (card.dataset.replyBound === 'true') return;
+                card.dataset.replyBound = 'true';
             function openQuestion(event) {
                 if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
@@ -2052,7 +2251,9 @@
             }
             card.addEventListener('click', openQuestion);
             card.addEventListener('keydown', openQuestion);
-        });
+            });
+        }
+        bindTeacherReplyCards();
     }
 
     function finishedDate(item) {
@@ -2143,22 +2344,24 @@
         }
 
         var model = weeklyFocusModel();
+        var summary = !state.assignmentsComplete && state.weeklySummary ? state.weeklySummary : null;
         var html = '';
-        var weekTotal = model.thisWeek.length + model.overdue.length;
-        var weekFinished = model.weekFinished.length;
+        var weekTotal = summary ? Number(summary.this_week_total || 0) : model.thisWeek.length + model.overdue.length;
+        var weekFinished = summary ? Number(summary.this_week_finished || 0) : model.weekFinished.length;
+        var overdueCount = summary ? Number(summary.overdue_count || 0) : model.overdue.length;
         var weekPercent = weekTotal ? Math.round((weekFinished / weekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
-            kind: 'this-week' + (model.overdue.length ? ' has-overdue' : '') + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
+            kind: 'this-week' + (overdueCount ? ' has-overdue' : '') + (weekTotal && weekFinished === weekTotal ? ' is-complete' : '') + (!weekTotal ? ' is-empty' : ''),
             label: 'THIS WEEK',
             scope: 'week',
             ariaLabel: weekTotal
-                ? 'This week assignments include ' + model.overdue.length + ' overdue. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished. Open this week task list.'
+                ? 'This week assignments include ' + overdueCount + ' overdue. ' + weekFinished + ' of ' + weekTotal + ' assignments are finished. Open this week task list.'
                 : 'No assignments are scheduled for this week. Open this week task list.',
             progressLabel: 'This week assignment completion',
             percent: weekPercent
         });
-        var nextWeekTotal = model.nextWeek.length;
-        var nextWeekFinished = model.nextWeekFinished.length;
+        var nextWeekTotal = summary ? Number(summary.next_week_total || 0) : model.nextWeek.length;
+        var nextWeekFinished = summary ? Number(summary.next_week_finished || 0) : model.nextWeekFinished.length;
         var upcomingPercent = nextWeekTotal ? Math.round((nextWeekFinished / nextWeekTotal) * 100) : 0;
         html += renderWeeklyProgressRow({
             kind: 'upcoming' + (nextWeekTotal && nextWeekFinished === nextWeekTotal ? ' is-complete' : '') + (!nextWeekTotal ? ' is-empty has-empty-status' : ''),
@@ -2186,7 +2389,7 @@
         var todo = assignments.filter(function(item) { return normalizedStatus(item.status) === 'to_do'; }).sort(newestFirst);
 
         var html = '';
-        if (todo.length) html += '<div class="task-list">' + todo.map(taskCard).join('') + '</div>';
+        if (todo.length) html += '<div class="task-list">' + todo.slice(0, 10).map(taskCard).join('') + '</div>';
         if (!assignments.length) {
             html += '<div class="empty-card"><strong>No assignments yet</strong>Your teacher has not assigned any work to this account.</div>';
         } else if (!todo.length) {
@@ -4094,18 +4297,203 @@
             .catch(function() {});
     }
 
+    function assignmentIdentity(item) {
+        if (!item) return '';
+        if (item.assignment_id) return 'assignment:' + item.assignment_id;
+        return 'self:' + assignmentSetId(item);
+    }
+
+    function mergeAssignmentItems(items) {
+        var byIdentity = new Map();
+        (state.assignments || []).concat(items || []).forEach(function(item) {
+            var key = assignmentIdentity(item);
+            if (key) byIdentity.set(key, item);
+        });
+        state.assignments = Array.from(byIdentity.values());
+    }
+
+    function deriveAssignmentCounts() {
+        state.assignmentCounts = {
+            todo: todoAssignments().length,
+            upcoming: upcomingAssignments().length,
+            finished: finishedAssignments().length
+        };
+    }
+
+    function applyDashboardCache(snapshot) {
+        if (!snapshot) return false;
+        state.assignments = (snapshot.assignments || []).map(safeCachedAssignment).filter(Boolean);
+        state.assignmentCounts = Object.assign({ todo: 0, upcoming: 0, finished: 0 }, snapshot.assignment_counts || {});
+        state.weeklySummary = snapshot.weekly_summary || null;
+        state.assignmentStarCount = Number(snapshot.assignment_star_count || 0);
+        state.selfStudyStarCount = Number(snapshot.self_study_star_count || 0);
+        state.starCount = state.assignmentStarCount + state.selfStudyStarCount;
+        state.teacherReplyUnreadCount = Number(snapshot.teacher_reply_unread_count || 0);
+        state.assignmentsComplete = false;
+        updateStarCounter(false);
+        return state.assignments.length > 0 || state.assignmentCounts.todo > 0 || state.assignmentCounts.finished > 0;
+    }
+
+    function applyDashboardBootstrap(dashboard) {
+        if (!dashboard.bootstrap) {
+            applyFullDashboard(dashboard);
+            return;
+        }
+        state.assignments = dashboard.assignments || [];
+        state.assignmentCounts = Object.assign({ todo: 0, upcoming: 0, finished: 0 }, dashboard.assignment_counts || {});
+        state.weeklySummary = dashboard.weekly_summary || null;
+        state.assignmentsComplete = false;
+        ['todo', 'finished'].forEach(function(kind) {
+            var page = dashboard.assignment_pages && dashboard.assignment_pages[kind] || {};
+            state.assignmentPages[kind] = {
+                nextCursor: page.next_cursor == null ? null : Number(page.next_cursor),
+                hasMore: page.has_more === true,
+                loading: false
+            };
+        });
+        state.assignmentStarCount = Number(dashboard.assignment_star_count || 0);
+        state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
+        state.starCount = Number(dashboard.star_count == null
+            ? state.assignmentStarCount + state.selfStudyStarCount
+            : dashboard.star_count);
+        state.teacherReplyUnreadCount = Number(dashboard.teacher_reply_unread_count || 0);
+        state.teacherReplies = dashboard.teacher_replies || [];
+        state.teacherRepliesComplete = Number(dashboard.teacher_reply_count || 0) === state.teacherReplies.length;
+        updateStarCounter(false);
+        saveStudentDashboardCache();
+    }
+
+    function applyFullDashboard(dashboard) {
+        state.assignments = dashboard.assignments || [];
+        state.assignmentsComplete = true;
+        state.weeklySummary = null;
+        deriveAssignmentCounts();
+        state.libraryProgress = dashboard.library_progress || [];
+        state.starCount = Number(dashboard.star_count || 0);
+        state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
+        state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
+        state.starAchievements = dashboard.star_achievements || [];
+        state.starRewards = dashboard.star_rewards || state.starRewards;
+        state.teacherReplies = dashboard.teacher_replies || state.teacherReplies || [];
+        state.teacherReplyUnreadCount = state.teacherReplies.filter(function(reply) {
+            return reply && reply.student_seen !== true;
+        }).length;
+        state.teacherRepliesComplete = true;
+        updateStarCounter(false);
+        saveStudentDashboardCache();
+    }
+
+    function renderStudentDashboardState() {
+        if (!state.session) return;
+        renderWeeklyFocusProgress();
+        renderAssignments();
+        libraryLoadTabContent(libraryActiveTab);
+        renderProfile();
+        updateDashboardTabNotices();
+    }
+
+    function publicExerciseDataUrl(item) {
+        var setId = assignmentSetId(item);
+        if (!setId) return '';
+        if (/^(BBC-|C\d+-T\d+-(?:P|S)\d+)/i.test(setId)) return 'data/' + encodeURIComponent(setId) + '.json';
+        var set = assignmentSet(item);
+        var category = String(set.section_id || set.sectionId || set.course || set.type || '').toLowerCase();
+        if (category === 'vocabulary' || /^(?:NGSL|NAWL)-/i.test(setId)) {
+            return 'content/vocabulary/' + encodeURIComponent(setId) + '.json';
+        }
+        return '';
+    }
+
+    function prefetchFirstTodoContent() {
+        var urls = todoAssignments().slice(0, 10).map(publicExerciseDataUrl).filter(Boolean);
+        var cursor = 0;
+        function worker() {
+            var url = urls[cursor++];
+            if (!url) return Promise.resolve();
+            return fetch(url, { credentials: 'same-origin' }).catch(function() {}).then(worker);
+        }
+        return Promise.all([worker(), worker()]);
+    }
+
+    function prefetchAssignmentPages(kind) {
+        var pageState = state.assignmentPages[kind];
+        if (!pageState || pageState.loading || !pageState.hasMore || pageState.nextCursor == null) return Promise.resolve();
+        pageState.loading = true;
+        return window.MrCatCloud.callFunction('getDashboard', {
+            action: 'listAssignmentPage',
+            kind: kind,
+            cursor: pageState.nextCursor,
+            page_size: 10
+        }).then(function(result) {
+            if (!result || result.success === false) return;
+            var page = result.page || {};
+            mergeAssignmentItems(page.items || []);
+            pageState.nextCursor = page.next_cursor == null ? null : Number(page.next_cursor);
+            pageState.hasMore = page.has_more === true;
+            saveStudentDashboardCache();
+        }).catch(function() {}).then(function() {
+            pageState.loading = false;
+            if (pageState.hasMore) return prefetchAssignmentPages(kind);
+        });
+    }
+
+    function prefetchTeacherReplies() {
+        return window.MrCatCloud.callFunction('getDashboard', {
+            action: 'listTeacherReplies'
+        }).then(function(result) {
+            if (!result || result.success === false) return;
+            state.teacherReplies = result.teacher_replies || [];
+            state.teacherReplyUnreadCount = state.teacherReplies.filter(function(reply) {
+                return reply && reply.student_seen !== true;
+            }).length;
+            state.teacherRepliesComplete = true;
+            updateDashboardTabNotices();
+            saveStudentDashboardCache();
+        }).catch(function() {});
+    }
+
+    function refreshFullStudentDashboard() {
+        return Promise.all([
+            window.MrCatCloud.callFunction('getDashboard'),
+            window.MrCatCloud.callFunction('getResources').catch(function() {
+                return { success: false, resources: [] };
+            })
+        ]).then(function(results) {
+            var dashboard = results[0] || {};
+            if (dashboard.success === false) return;
+            applyFullDashboard(dashboard);
+            var cloudResources = results[1] && results[1].resources || [];
+            return loadPublicCatalog().then(function(items) {
+                state.resources = cloudResources.length
+                    ? mergeProtectedCatalogResources(cloudResources, items)
+                    : items;
+                state.resources = applyLibraryProgress(state.resources, state.libraryProgress);
+            }).catch(function() {
+                if (cloudResources.length) state.resources = applyLibraryProgress(cloudResources, state.libraryProgress);
+            }).then(renderStudentDashboardState);
+        }).catch(function() {});
+    }
+
+    function warmStudentDashboard() {
+        if (studentDashboardWarmPromise) return studentDashboardWarmPromise;
+        studentDashboardWarmPromise = prefetchFirstTodoContent()
+            .then(function() { return prefetchAssignmentPages('todo'); })
+            .then(prefetchTeacherReplies)
+            .then(function() { return prefetchAssignmentPages('finished'); })
+            .then(refreshFullStudentDashboard);
+        return studentDashboardWarmPromise;
+    }
+
     function loadStudentData() {
         return Promise.all([
-            window.MrCatCloud.callFunction('getDashboard').catch(function(error) {
+            window.MrCatCloud.callFunction('getDashboard', { action: 'dashboardBootstrap' }).catch(function(error) {
                 return {
                     success: false,
                     code: error && error.code || 'DASHBOARD_REQUEST_FAILED',
                     message: error && error.message || 'Unable to load assignments.'
                 };
             }),
-            window.MrCatCloud.callFunction('getResources').catch(function() {
-                return { success: false, resources: [] };
-            })
+            loadPublicCatalog().catch(function() { return []; })
         ]).then(function(results) {
             var dashboard = results[0] || {};
             if (dashboard.success === false) {
@@ -4113,26 +4501,8 @@
                 dashboardError.code = dashboard.code || 'DASHBOARD_LOAD_FAILED';
                 throw dashboardError;
             }
-            state.assignments = dashboard.assignments || [];
-            state.libraryProgress = dashboard.library_progress || [];
-            state.starCount = Number(dashboard.star_count || 0);
-            state.assignmentStarCount = Number(dashboard.assignment_star_count == null ? state.starCount : dashboard.assignment_star_count);
-            state.selfStudyStarCount = Number(dashboard.self_study_star_count || 0);
-            state.starAchievements = dashboard.star_achievements || [];
-            state.starRewards = dashboard.star_rewards || state.starRewards;
-            state.teacherReplies = dashboard.teacher_replies || [];
-            updateStarCounter(false);
-            state.resources = results[1] && results[1].resources || [];
-            var hasCloudResources = state.resources.length > 0;
-            return loadPublicCatalog().then(function(items) {
-                state.resources = hasCloudResources
-                    ? mergeProtectedCatalogResources(state.resources, items)
-                    : items;
-                state.resources = applyLibraryProgress(state.resources, state.libraryProgress);
-            }).catch(function(error) {
-                if (hasCloudResources) return;
-                throw error;
-            });
+            applyDashboardBootstrap(dashboard);
+            state.resources = applyLibraryProgress(results[1] || [], state.libraryProgress);
         });
     }
 
@@ -4398,7 +4768,15 @@
             updateAppIconForSystem(session.profile && session.profile.curriculum_track);
             identityChip.textContent = preferredName;
             setStudentGreeting(greetingFor(preferredName));
-            return loadStudentData();
+            return readStudentDashboardCache().then(function(snapshot) {
+                if (applyDashboardCache(snapshot)) {
+                    renderWeeklyFocusProgress();
+                    renderAssignments();
+                    renderProfile();
+                    activateView(initialDashboardView(), true);
+                }
+                return loadStudentData();
+            });
         })
         .then(function() {
             if (!state.session) return;
@@ -4407,6 +4785,9 @@
             libraryLoadTabContent(libraryActiveTab);
             renderProfile();
             activateView(initialDashboardView(), true);
+            window.requestAnimationFrame(function() {
+                window.setTimeout(warmStudentDashboard, 0);
+            });
             var warm = function() { warmMyWordsFirstPage(); };
             if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 2400 });
             else window.setTimeout(warm, 900);

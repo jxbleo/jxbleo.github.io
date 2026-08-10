@@ -13,6 +13,7 @@ const VOCABULARY_TEST_HEARTBEAT_TIMEOUT_MS = 60 * 1000;
 const STAR_LEDGER_COLLECTION = "star_reward_ledger";
 const STAR_REQUEST_COLLECTION = "star_redemption_requests";
 const STAR_EVIDENCE_COLLECTION = "star_redemption_evidence";
+const DASHBOARD_ASSIGNMENT_PAGE_SIZE = 10;
 
 async function getAuthenticatedStudent() {
   const userInfo = await app.auth().getUserInfo();
@@ -480,12 +481,216 @@ async function listTeacherReplies(student) {
   } });
   const resolved = resolvedTeacherReplyItems(rows, student);
   const setIds = [...new Set(resolved.map((item) => item.set_id).filter(Boolean))];
-  const setMap = new Map();
-  await Promise.all(setIds.map(async (setId) => {
-    const set = await getOne("sets", { set_id: setId });
-    if (set) setMap.set(setId, set);
-  }));
+  const setMap = new Map((await getVisibleSetsByIds(setIds)).map((set) => [set.set_id, set]));
   return resolved.map((item) => disputeReplyView(item, setMap.get(item.set_id)));
+}
+
+function assignmentViewFromStoredSummary(assignment, set, claimedAssignmentIds) {
+  const passingPercentage = passingPercentageForAssignment(assignment, set);
+  const masteryPercentage = masteryPercentageForAssignment(assignment, set);
+  const assignmentId = assignment.assignment_id || assignment._id;
+  const bestValue = assignment.best_percentage == null
+    ? assignment.latest_percentage
+    : assignment.best_percentage;
+  const percentage = bestValue == null ? null : displayPercentage(bestValue);
+  const status = normalizedStatus(
+    assignment.status,
+    Number(percentage || 0),
+    passingPercentage,
+    masteryPercentage,
+    assignment
+  );
+  const completedAt = assignment.completed_at
+    || (status === "passed" || status === "mastered" ? assignment.progress_updated_at || null : null);
+  const masteredAt = assignment.mastered_at || (status === "mastered" ? completedAt : null);
+  const bestAttemptId = assignment.best_attempt_id || assignment.latest_attempt_id || null;
+  return {
+    assignment_id: assignmentId,
+    status,
+    assigned_at: assignment.assigned_at || null,
+    due_at: effectiveAssignmentDueAt(assignment),
+    created_at: assignment.created_at || null,
+    completed_at: completedAt,
+    mastered_at: masteredAt,
+    updated_at: assignment.best_improved_at || assignment.progress_updated_at || completedAt || null,
+    best_improved_at: assignment.best_improved_at || null,
+    latest_submitted_at: assignment.latest_submitted_at || null,
+    attempt_count: Number(assignment.attempt_count || 0),
+    latest_percentage: assignment.latest_percentage == null ? null : assignment.latest_percentage,
+    best_percentage: percentage,
+    best_correct_count: assignment.best_correct_count == null ? null : assignment.best_correct_count,
+    best_question_count: assignment.best_question_count == null ? null : assignment.best_question_count,
+    review_attempt_id: bestAttemptId,
+    history_attempt_id: bestAttemptId,
+    prefill_attempt_id: status === "passed" || status === "mastered" ? bestAttemptId : null,
+    answer_revealed: assignment.answer_revealed === true,
+    mastery_locked: assignment.mastery_locked === true,
+    completed_before_assignment: Boolean(
+      completedAt && assignment.created_at && dateValue(completedAt) < dateValue(assignment.created_at)
+    ),
+    star_claimed: claimedAssignmentIds.has(assignmentId),
+    passing_percentage: passingPercentage,
+    mastery_percentage: masteryPercentage,
+    mastery_enabled: assignmentMasteryEnabled(assignment),
+    teacher_replies: [],
+    teacher_reply_count: 0,
+    set: set || {
+      set_id: assignment.set_id,
+      title: assignment.set_id,
+      link: "#",
+    },
+  };
+}
+
+function dedupeStoredAssignmentViews(views) {
+  return [...views.reduce((groups, item) => {
+    const setId = String(item && item.set && item.set.set_id || "");
+    if (!setId) return groups;
+    const current = groups.get(setId);
+    if (!current) {
+      groups.set(setId, item);
+      return groups;
+    }
+    const itemOpen = item.status === "to_do";
+    const currentOpen = current.status === "to_do";
+    if (itemOpen !== currentOpen) {
+      if (itemOpen) groups.set(setId, item);
+      return groups;
+    }
+    if (dateValue(item.created_at || item.due_at) > dateValue(current.created_at || current.due_at)) {
+      groups.set(setId, item);
+    }
+    return groups;
+  }, new Map()).values()];
+}
+
+function shanghaiDateKey(value) {
+  const parts = shanghaiDateParts(value);
+  return parts
+    ? `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`
+    : "";
+}
+
+function shanghaiWeekKeysFrom(value, offset = 0) {
+  const parts = shanghaiDateParts(value);
+  const today = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+  const mondayIndex = (today.getUTCDay() + 6) % 7;
+  const start = new Date(today.getTime());
+  start.setUTCDate(start.getUTCDate() - mondayIndex + (Number(offset || 0) * 7));
+  const end = new Date(start.getTime());
+  end.setUTCDate(end.getUTCDate() + 6);
+  const key = (date) => `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+  return { start: key(start), end: key(end) };
+}
+
+function storedAssignmentBuckets(views) {
+  const currentWeek = shanghaiWeekKeysFrom(new Date(), 0);
+  const nextWeek = shanghaiWeekKeysFrom(new Date(), 1);
+  const todo = views.filter((item) => item.status === "to_do").sort((left, right) => {
+    const leftKey = shanghaiDateKey(left.due_at);
+    const rightKey = shanghaiDateKey(right.due_at);
+    const leftUpcoming = leftKey && leftKey > currentWeek.end ? 1 : 0;
+    const rightUpcoming = rightKey && rightKey > currentWeek.end ? 1 : 0;
+    if (leftUpcoming !== rightUpcoming) return leftUpcoming - rightUpcoming;
+    return dateValue(left.due_at || left.created_at) - dateValue(right.due_at || right.created_at);
+  });
+  const finished = views.filter((item) => item.status === "passed" || item.status === "mastered")
+    .sort((left, right) => dateValue(
+      right.best_improved_at || right.completed_at || right.updated_at
+    ) - dateValue(
+      left.best_improved_at || left.completed_at || left.updated_at
+    ));
+  const realAssignments = views.filter((item) => item.assignment_id);
+  const overdue = realAssignments.filter((item) =>
+    item.status === "to_do" && dateValue(item.due_at) > 0 && dateValue(item.due_at) < Date.now()
+  );
+  const thisWeek = realAssignments.filter((item) => {
+    const key = shanghaiDateKey(item.due_at);
+    return key && key >= currentWeek.start && key <= currentWeek.end;
+  });
+  const nextWeekItems = realAssignments.filter((item) => {
+    const key = shanghaiDateKey(item.due_at);
+    return key && key >= nextWeek.start && key <= nextWeek.end;
+  });
+  return {
+    todo,
+    finished,
+    counts: {
+      todo: todo.filter((item) => {
+        const key = shanghaiDateKey(item.due_at);
+        return !key || key <= currentWeek.end;
+      }).length,
+      upcoming: todo.filter((item) => {
+        const key = shanghaiDateKey(item.due_at);
+        return key && key > currentWeek.end;
+      }).length,
+      finished: finished.length,
+    },
+    weekly: {
+      overdue_count: overdue.length,
+      this_week_total: thisWeek.length + overdue.length,
+      this_week_finished: thisWeek.filter((item) => item.status === "passed" || item.status === "mastered").length,
+      next_week_total: nextWeekItems.length,
+      next_week_finished: nextWeekItems.filter((item) => item.status === "passed" || item.status === "mastered").length,
+    },
+  };
+}
+
+async function storedAssignmentSnapshot(student, claimedAssignmentIds = new Set(), providedAssignmentRows) {
+  const assignmentRows = providedAssignmentRows || await getAll("assignments", { where: { student_uid: student.auth_uid } });
+  const activeRows = assignmentRows.filter((assignment) => !isCancelledAssignment(assignment));
+  const visibleSets = await getVisibleSetsByIds(activeRows.map((assignment) => assignment.set_id));
+  const setMap = new Map(visibleSets.map((set) => [set.set_id, set]));
+  return storedAssignmentBuckets(dedupeStoredAssignmentViews(activeRows.map((assignment) =>
+    assignmentViewFromStoredSummary(assignment, setMap.get(assignment.set_id), claimedAssignmentIds)
+  )));
+}
+
+function assignmentPage(bucket, cursorValue) {
+  const cursor = Math.max(0, Number(cursorValue || 0));
+  const items = bucket.slice(cursor, cursor + DASHBOARD_ASSIGNMENT_PAGE_SIZE);
+  const nextCursor = cursor + items.length;
+  return {
+    items,
+    total_count: bucket.length,
+    next_cursor: nextCursor < bucket.length ? nextCursor : null,
+    has_more: nextCursor < bucket.length,
+  };
+}
+
+async function dashboardBootstrap(student) {
+  const [assignmentRows, achievements, disputeRows] = await Promise.all([
+    getAll("assignments", { where: { student_uid: student.auth_uid } }),
+    getAll("student_set_achievements", { where: { student_uid: student.auth_uid } }),
+    getAll("answer_disputes", { where: { student_uid: student.auth_uid } }),
+  ]);
+  const claimedAssignmentIds = new Set(normalizedStarBuckets(achievements).assignmentStars
+    .map((item) => item.assignment_id)
+    .filter(Boolean));
+  const buckets = await storedAssignmentSnapshot(student, claimedAssignmentIds, assignmentRows);
+  const resolvedReplies = resolvedTeacherReplyItems(disputeRows, student);
+  const unreadReplies = resolvedReplies.filter((item) => !disputeSeen(item));
+  return {
+    success: true,
+    bootstrap: true,
+    assignments: assignmentPage(buckets.todo, 0).items.concat(assignmentPage(buckets.finished, 0).items),
+    assignment_pages: {
+      todo: assignmentPage(buckets.todo, 0),
+      finished: assignmentPage(buckets.finished, 0),
+    },
+    assignment_counts: buckets.counts,
+    weekly_summary: buckets.weekly,
+    teacher_reply_count: resolvedReplies.length,
+    teacher_reply_unread_count: unreadReplies.length,
+    teacher_replies: unreadReplies.map((item) => disputeReplyView(item, null)),
+    ...splitStarCounts(achievements),
+  };
+}
+
+async function listAssignmentPage(student, event) {
+  const kind = String(event.kind || "todo") === "finished" ? "finished" : "todo";
+  const buckets = await storedAssignmentSnapshot(student);
+  return { success: true, kind, page: assignmentPage(buckets[kind], event.cursor) };
 }
 
 async function markTeacherRepliesSeen(student, event) {
@@ -1110,6 +1315,12 @@ exports.main = async (event = {}) => {
     if (action === "getAttemptReview") return await getAttemptReview(student, event);
     if (action === "submitDispute") return await submitDispute(student, event);
     if (action === "listDisputesForAttempt") return await listDisputesForAttempt(student, event);
+    if (action === "dashboardBootstrap") return await dashboardBootstrap(student);
+    if (action === "listAssignmentPage") return await listAssignmentPage(student, event);
+    if (action === "listTeacherReplies") return {
+      success: true,
+      teacher_replies: await listTeacherReplies(student),
+    };
     if (action === "markTeacherRepliesSeen") return await markTeacherRepliesSeen(student, event);
     if (action === "revealAnswers") return await revealAnswers(student, event);
     if (action === "getAttemptForRetry") return await getAttemptForRetry(student, event);

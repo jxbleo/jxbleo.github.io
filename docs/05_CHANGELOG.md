@@ -7,6 +7,11 @@
 
 ### Fixed
 
+- Reduced Student Dashboard time-to-first-use with an owner-scoped redacted
+  warm cache and a lightweight `getDashboard.dashboardBootstrap` response.
+  To Do and Finished now start with 10 rows and append 10 at the scroll edge;
+  public first-task data, unread Teacher Replies, remaining summaries, STAR,
+  self-study, wallet, and complete history hydrate silently after first paint.
 - Normalized student identity handling so Chinese and English names remain
   separate authoritative fields, while `name` is a server-derived bilingual
   compatibility display. Teacher lists, search, Assign, Account editing, and
