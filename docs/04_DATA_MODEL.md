@@ -109,7 +109,7 @@ Rules:
 
 For Learning Reports V1, `chinese_name` and `english_name` are the authoritative
 editable name parts. `name` remains a compatibility whole display value and is
-server-derived as `Chinese · English` when both parts exist, or as the one
+server-derived as direct `ChineseEnglish` concatenation when both parts exist, or as the one
 available part otherwise. A legacy `name` may be used as the whole display
 fallback but must not be heuristically split; the owner/teacher must explicitly
 backfill separate fields before a bilingual display is required. Teacher lists,

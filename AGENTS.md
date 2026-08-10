@@ -161,7 +161,7 @@ Canonical student profile:
 {
   "auth_uid": "CLOUDBASE_AUTH_USER_ID",
   "student_id": "unique-login-id",
-  "name": "Chinese Name · English Name",
+  "name": "Chinese NameEnglish Name",
   "chinese_name": "Chinese Name",
   "english_name": "English Name",
   "class_group": "",
@@ -175,7 +175,7 @@ Canonical student profile:
 ```
 
 `chinese_name` and `english_name` are the authoritative editable parts. The
-trusted backend derives compatibility `name` as `Chinese · English`, or the one
+trusted backend derives compatibility `name` as `ChineseEnglish`, or the one
 available part. A legacy unsplit `name` is a whole display fallback only; never
 heuristically split it by spaces or character ranges.
 
