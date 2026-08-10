@@ -1127,6 +1127,14 @@
         });
     }
 
+    function setNotificationHeaderLoading(isLoading) {
+        var button = document.getElementById('teacher-updates-button');
+        if (!button) return;
+        button.classList.toggle('is-loading', isLoading === true);
+        if (isLoading === true) button.setAttribute('aria-busy', 'true');
+        else button.removeAttribute('aria-busy');
+    }
+
     function formatDate(value, fallback, mode) {
         if (!value) return fallback || '—';
         var date = new Date(value);
@@ -1370,13 +1378,15 @@
     }
 
     function applyActivityState(result) {
-        if (!result || result.unavailable) return;
-        state.attemptsSeenAt = result.attempts_seen_at || null;
-        state.activityReadAllAt = result.read_all_at || null;
-        state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
-        if (result.unread_thread_count != null && Number.isFinite(Number(result.unread_thread_count))) {
-            state.notificationUnreadThreadCount = Number(result.unread_thread_count);
+        if (result && !result.unavailable) {
+            state.attemptsSeenAt = result.attempts_seen_at || null;
+            state.activityReadAllAt = result.read_all_at || null;
+            state.activityReviewedAttemptIds = result.reviewed_attempt_ids || [];
+            if (result.unread_thread_count != null && Number.isFinite(Number(result.unread_thread_count))) {
+                state.notificationUnreadThreadCount = Number(result.unread_thread_count);
+            }
         }
+        setNotificationHeaderLoading(false);
         updateTopBadges();
     }
 
@@ -1391,6 +1401,7 @@
             state.notificationFeedReady = false;
             state.notificationAttemptIds = {};
         }
+        renderUpdatesPanel();
         return teacherCall('listAttemptNotifications', {
             cursor: cursor,
             page_size: TEACHER_FEED_PAGE_SIZE,
@@ -1401,12 +1412,12 @@
             state.notificationCursor = result.next_cursor == null ? cursor : Number(result.next_cursor);
             state.notificationHasMore = result.has_more === true;
             state.notificationFeedReady = true;
-            renderUpdatesPanel();
             return attempts;
         }).catch(function() {
             return [];
         }).finally(function() {
             state.notificationPageLoading = false;
+            renderUpdatesPanel();
         });
     }
 
@@ -1497,7 +1508,7 @@
     }
 
     function initializeTeacherMessageCaches() {
-        setHeaderIconLoading(false);
+        setNotificationHeaderLoading(true);
         initializeNotificationFeed();
         initializeDisputeFeed();
     }
@@ -6732,13 +6743,39 @@
 
     function renderActivityFeed() {
         var items = activityItems();
-        var unreadTarget = Number(state.notificationUnreadThreadCount || 0);
-        var canLoadMore = state.notificationHasMore && activityAttemptCounts().unread >= unreadTarget;
         return '<div class="activity-list compact-activity-list">' +
             (items.length ? items.map(renderActivityFeedRow).join('') :
                 '<div class="empty-card compact-empty"><strong>No attempts</strong>Student attempt activity will appear here.</div>') +
-            (canLoadMore ? '<button class="outline-button teacher-feed-load-more" type="button" data-notification-load-more>Load 5 more</button>' : '') +
+            (state.notificationPageLoading ? '<div class="notification-feed-loading" role="status"><span aria-hidden="true"></span><span class="sr-only">Loading more notifications</span></div>' : '') +
             '</div>';
+    }
+
+    function notificationScrollNeedsMore(dialog) {
+        if (!dialog || !state.notificationHasMore || state.notificationPageLoading || state.notificationAttemptId) return false;
+        return dialog.scrollHeight <= dialog.clientHeight + 2 ||
+            dialog.scrollTop + dialog.clientHeight >= dialog.scrollHeight - 72;
+    }
+
+    function loadNextNotificationPageForScroll(dialog) {
+        if (!notificationScrollNeedsMore(dialog)) return;
+        loadNotificationPage().then(function() {
+            window.requestAnimationFrame(function() {
+                var currentDialog = updatesPanel && updatesPanel.querySelector('.teacher-updates-dialog');
+                if (state.updatesOpen && notificationScrollNeedsMore(currentDialog)) {
+                    loadNextNotificationPageForScroll(currentDialog);
+                }
+            });
+        });
+    }
+
+    function bindNotificationInfiniteScroll(dialog) {
+        if (!dialog) return;
+        dialog.onscroll = function() {
+            loadNextNotificationPageForScroll(dialog);
+        };
+        window.requestAnimationFrame(function() {
+            if (state.updatesOpen) loadNextNotificationPageForScroll(dialog);
+        });
     }
 
     function relatedAttemptIdsForAttempt(attempt) {
@@ -6949,17 +6986,7 @@
                 openAttemptFromNotification(row);
             });
         });
-        var loadMore = updatesBody.querySelector('[data-notification-load-more]');
-        if (loadMore) {
-            loadMore.addEventListener('click', function() {
-                loadMore.disabled = true;
-                loadNotificationPage().then(function(attempts) {
-                    return prefetchNotificationItems((attempts || []).map(function(attempt) {
-                        return { attempt: attempt };
-                    }));
-                }).then(renderUpdatesPanel);
-            });
-        }
+        bindNotificationInfiniteScroll(updatesDialog);
         modalRoot.querySelectorAll('[data-notification-attempt-close]').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 if (button.dataset.notificationAttemptClose === 'backdrop' && event.target !== button) return;

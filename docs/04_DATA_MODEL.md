@@ -97,9 +97,11 @@ Rules:
   unread again.
 - Notification and Argue pagination adds no collection fields. The Teacher client
   requests five summary records/threads per page with opaque numeric cursors,
-  keeps full notification detail only in current-tab memory, and continues
-  notification pagination automatically only until the server-derived unread
-  thread count is covered. Persistent Teacher IndexedDB records continue to omit
+  keeps full notification detail only in current-tab memory. It first continues
+  notification pagination automatically until the server-derived unread thread
+  count is covered, then may fetch older five-thread summary pages as the teacher
+  scrolls the open bell list. Only unread threads are prefetched; older read-thread
+  details remain on demand. Persistent Teacher IndexedDB records continue to omit
   attempts, submitted answers, correct answers, explanations, and grading keys.
 
 For Learning Reports V1, `name` remains the legacy/canonical whole display

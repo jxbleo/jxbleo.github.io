@@ -973,9 +973,12 @@ async function main() {
   assert(teacherFeedSource.includes("var TEACHER_FEED_PAGE_SIZE = 5;"));
   assert(teacherFeedSource.includes("cacheAllUnreadNotificationPages"));
   assert(teacherFeedSource.includes("prefetchNotificationItems(activityItems().filter(function(item) { return item.unread; }))"));
-  assert(teacherFeedSource.includes("data-notification-load-more>Load 5 more"));
+  assert(teacherFeedSource.includes("bindNotificationInfiniteScroll"));
+  assert(teacherFeedSource.includes("loadNextNotificationPageForScroll"));
+  assert(!teacherFeedSource.includes("data-notification-load-more>Load 5 more"));
   assert(teacherFeedSource.includes("data-dispute-load-more>Load 5 more"));
-  assert(!teacherFeedHtml.includes("teacher-updates-button is-loading"));
+  assert(teacherFeedHtml.includes("teacher-updates-button is-loading"));
+  assert(teacherFeedHtml.includes('id="teacher-updates-button" type="button" aria-label="Notifications" aria-expanded="false" aria-busy="true"'));
   assert(!teacherFeedHtml.includes("teacher-review-button is-loading"));
   const setsResult = await call("listSets");
   assert.equal(setsResult.success, true);

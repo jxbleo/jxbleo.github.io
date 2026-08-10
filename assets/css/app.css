@@ -5054,6 +5054,19 @@ body:not(.teacher-page) .tab-button.active {
     display: grid;
     gap: 8px;
 }
+.notification-feed-loading {
+    display: grid;
+    min-height: 38px;
+    place-items: center;
+}
+.notification-feed-loading > span[aria-hidden="true"] {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(124,58,237,0.20);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: teacherHeaderLoadingSpin 0.8s linear infinite;
+}
 .activity-row {
     width: 100%;
     display: grid;
@@ -7713,6 +7726,12 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
 }
 @keyframes teacherHeaderLoadingSpin {
     to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .teacher-page .teacher-updates-button.is-loading::before,
+    .notification-feed-loading > span[aria-hidden="true"] {
+        animation: none;
+    }
 }
 .assignment-edit-overlay {
     position: fixed;
