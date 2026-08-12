@@ -7,6 +7,9 @@
 
 ### Changed
 
+- Added an allowlisted CloudBase static-site build so GitHub `main` can publish
+  the public frontend to Tencent hosting without exposing backend source,
+  repository documentation, scripts, or private local artifacts.
 - Added the official ICP registration number and Ministry of Industry and
   Information Technology link to the public homepage footer.
 - IELTS Listening now defaults to a seekable, speed-adjustable Practice Mode;

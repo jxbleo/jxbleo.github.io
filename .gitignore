@@ -11,6 +11,7 @@ cloudbase-secret.json
 .cloudbase-private/
 cloudfunctions/getProtectedResource/protected-payloads.private.js
 deploy-packages/
+dist/
 node_modules/
 __pycache__/
 *.py[cod]
