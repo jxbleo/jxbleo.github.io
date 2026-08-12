@@ -99,20 +99,29 @@ const rendered = notifications.renderAttemptEmail({
 });
 
 assert.strictEqual(rendered.subject, "李奥Leo | A BBC lesson | Best 85%");
-assert(rendered.html.indexOf("Attempt #2") < rendered.html.indexOf("Attempt #1"));
+assert(rendered.html.indexOf(">#2</strong>") < rendered.html.indexOf(">#1</strong>"));
 assert(rendered.text.indexOf("Attempt #2") < rendered.text.indexOf("Attempt #1"));
-assert(rendered.html.includes("Attempt #1"));
-assert(rendered.html.includes("Attempt #2"));
+assert(rendered.html.includes(">#1</strong>"));
+assert(rendered.html.includes(">#2</strong>"));
 assert(rendered.html.includes("60%"));
 assert(rendered.html.includes("85%"));
 assert(rendered.html.includes("Q1"));
-assert(rendered.html.includes("Submitted:</strong> cat"));
-assert(rendered.html.includes("Expected:</strong> lion"));
+assert(rendered.html.includes("<strong>Submitted</strong><br>cat"));
+assert(rendered.html.includes("<strong>Expected</strong><br>lion"));
 assert(rendered.html.includes("The transcript uses lion."));
 assert(rendered.html.includes("Q3 · What changed?"));
 assert(!rendered.html.includes("Q2"));
 assert(!rendered.html.includes("Already correct."));
-assert(rendered.html.includes("Open Teacher notifications"));
+assert(!rendered.html.includes("MR. CAT ACADEMY"));
+assert(!rendered.html.includes("Login ID"));
+assert(!rendered.html.includes("Open Teacher notifications"));
+assert(!rendered.html.includes("<a "));
+assert(rendered.html.includes('<meta charset="utf-8">'));
+assert(rendered.html.includes("Best 85%"));
+assert(rendered.html.includes("PASS 80%"));
+assert(rendered.html.includes("STAR 95%"));
+assert(rendered.html.includes("background:#fff2f3"));
+assert(rendered.html.includes("background:#f6f2ff"));
 
 const vocabularySecondEmail = notifications.renderAttemptEmail({
   policy: notifications.EMAIL_POLICIES.VOCABULARY_IMMEDIATE,
@@ -144,9 +153,9 @@ const vocabularySecondEmail = notifications.renderAttemptEmail({
   ],
   newAttemptIds: ["vocab-2"],
 });
-assert(vocabularySecondEmail.html.includes("Attempt #1"));
-assert(vocabularySecondEmail.html.includes("Attempt #2"));
-assert(vocabularySecondEmail.html.indexOf("Attempt #2") < vocabularySecondEmail.html.indexOf("Attempt #1"));
+assert(vocabularySecondEmail.html.includes(">#1</strong>"));
+assert(vocabularySecondEmail.html.includes(">#2</strong>"));
+assert(vocabularySecondEmail.html.indexOf(">#2</strong>") < vocabularySecondEmail.html.indexOf(">#1</strong>"));
 assert.strictEqual(vocabularySecondEmail.subject, "Amy | NGSL A | Best 90%");
 assert(vocabularySecondEmail.html.includes("70%"));
 assert(vocabularySecondEmail.html.includes("90%"));

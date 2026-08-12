@@ -14,6 +14,8 @@
   Exercise Progress, completion timestamps, historical best scores, and
   protected STARs. Reassignment still initializes from the historical global
   best and may therefore be immediately complete.
+- Changed the development attempt-email sender display name to `猫先生英语`
+  while retaining the existing iCloud sender address.
 
 ## 2026-08-11
 
@@ -43,6 +45,9 @@
   source and deployment transcripts.
 - Changed attempt-email subjects to student name, exercise title, and historical
   best score only, and reversed chart/detail/plain-text history to newest first.
+- Matched the email body to the approved static Teacher attempt-card preview:
+  identity plus threshold capsules, newest-first chart/cards, and distinct
+  submitted/expected/explanation surfaces, without branding or website links.
 
 ### Fixed
 
