@@ -128,8 +128,32 @@ html.teacher-modal-scroll-locked {
 
 .auth-page {
     display: grid;
-    place-items: center;
+    grid-template-rows: minmax(0, 1fr) auto;
+    justify-items: center;
+    align-items: center;
+    gap: 18px;
     padding: 24px;
+}
+
+.site-filing-footer {
+    align-self: end;
+    width: 100%;
+    text-align: center;
+}
+
+.site-filing-footer a {
+    display: inline-block;
+    padding: 6px 10px;
+    color: rgba(27, 37, 43, 0.62);
+    font-size: 0.76rem;
+    line-height: 1.4;
+    text-decoration: none;
+}
+
+.site-filing-footer a:hover {
+    color: rgba(27, 37, 43, 0.9);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .auth-shell {
