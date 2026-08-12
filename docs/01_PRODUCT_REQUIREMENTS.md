@@ -743,6 +743,11 @@ flowchart TD
   最后 heartbeat、页面实例 ID 和状态；页面实例 ID 必须是每次页面加载生成的内存标识，
   不能用会被新标签继承的持久存储
 - `submitAttempt` 提交词汇 Quiz 时必须校验 `test_session_id`
+- 开始 Quiz 时选定的 assignment 或 self-study 关系由 session 锁定。提交和草稿恢复必须沿用
+  该关系，不能再次自动选择当前开放 assignment；Quiz 期间新建、重排或完成其他
+  assignment 不得改变本次 attempt 的归属
+- 若锁定的 assignment 在 Quiz 期间被取消或删除，拒绝提交并返回明确的 assignment
+  session 错误，不得静默改绑另一条 assignment，也不得写入 attempt
 - 正式测试判分使用 session 中记录的 `question_ids`，不能相信浏览器临时传来的题目范围
 - 同一学生有 active 词汇正式测试时，其他设备或其他浏览器页签不能进入学生云函数功能
 - heartbeat 每 10 秒发送一次。普通网络错误不得因单次请求失败立即作废测试；前端应在

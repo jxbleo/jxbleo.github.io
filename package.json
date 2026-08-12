@@ -7,6 +7,7 @@
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",
+    "test:vocabulary-session": "node scripts/test-vocabulary-session-assignment.js",
     "test:my-words": "node scripts/test-my-words-features.js",
     "test:student-accounts": "node scripts/test-student-account-lifecycle.js",
     "test:login-redirect": "node scripts/test-login-redirect.js",

@@ -394,7 +394,12 @@ Class Task's `assignment_id`.
 5. `submitAttempt` validates `test_session_id` and grades from the session's
    locked snapshots, treating missing answers as blanks. A grading-key update
    during the test therefore cannot change that test's result.
-6. Switching apps/tabs, leaving the page, 60 seconds without a successful
+6. Counted Quiz submission resolves assignment ownership from the session's
+   locked `assignment_id` / `assignment_doc_id`, not from a second open-assignment
+   search. A session that started as self-study remains self-study even if a
+   teacher assigns the set before submission. A cancelled or missing locked
+   assignment ends the session without recording an attempt.
+7. Switching apps/tabs, leaving the page, 60 seconds without a successful
    heartbeat, or time expiry
    closes the session as `abandoned` without creating an attempt or changing
    assignment status.
