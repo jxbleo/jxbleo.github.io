@@ -1531,6 +1531,29 @@ async function main() {
   assert.equal(cancelRows[0].status, "cancelled");
   assert.equal(cancelRows[1].status, "to_do");
 
+  const completedAssignment = {
+    _id: "cancel-completed-record",
+    assignment_id: "cancel-completed",
+    assignment_scope: "individual",
+    student_uid: "student-uid",
+    set_id: "TEST-SET",
+    status: "mastered",
+    best_percentage: 100,
+    completed_at: new Date("2026-06-20T10:00:00.000Z"),
+    mastered_at: new Date("2026-06-20T10:00:00.000Z"),
+    best_attempt_id: "completed-attempt",
+  };
+  collections.assignments.push(completedAssignment);
+  const completedCancel = await call("cancelAssignments", { assignment_ids: ["cancel-completed"] });
+  assert.equal(completedCancel.success, true);
+  assert.deepEqual(completedCancel.skipped, []);
+  assert.equal(completedAssignment.status, "cancelled");
+  assert.equal(completedAssignment.previous_status, "mastered");
+  assert.equal(completedAssignment.best_percentage, 100);
+  assert.equal(completedAssignment.best_attempt_id, "completed-attempt");
+  assert.equal(completedAssignment.completed_at.toISOString(), "2026-06-20T10:00:00.000Z");
+  assert.equal(completedAssignment.mastered_at.toISOString(), "2026-06-20T10:00:00.000Z");
+
   console.log("Assignment due-week tests passed.");
 }
 

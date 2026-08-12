@@ -24,6 +24,7 @@ Only CloudBase cloud functions should read or write private collections.
 | `sets` | assignable/public learning resources |
 | `assignments` | one assigned task instance |
 | `attempts` | immutable countable submissions |
+| `teacher_attempt_email_events` | private idempotent outbox and delivery audit for teacher attempt email |
 | `grading_keys` | private answers and scoring rules |
 | `system_config` | defaults such as passing/mastery |
 | `student_set_achievements` | protected STAR records |
@@ -70,6 +71,7 @@ Core fields:
 | `teacher_activity_attempts_read_all_at` | Date/null | latest teacher `Read all` cutoff; attempts submitted at or before it are read |
 | `teacher_activity_attempt_reviewed_ids` | array | attempt IDs opened from the teacher notification panel |
 | `teacher_activity_attempt_reviewed_at` | Date/null | latest attempt-review marker update |
+| `attempt_email_recipients` | array | teacher-only notification addresses; each item has `email_id`, normalized `email`, `enabled`, `created_at`, and `updated_at`; maximum 10 |
 | `vocab_ai_day` | string | Shanghai `YYYY-MM-DD` for the student's current AI allowance |
 | `vocab_ai_count` | number | successful student AI previews used on that Shanghai date |
 | `created_at` | Date | created time |
@@ -81,6 +83,11 @@ Rules:
 - `student_id` is unique among non-deleted profiles but is not used for
   authorization.
 - Teacher actions require `role: "teacher"` and `active: true`.
+- Only an authenticated active teacher may read or mutate their own
+  `attempt_email_recipients` through `teacherAdmin`. New addresses are
+  normalized, validated, deduplicated, and enabled by default. These addresses
+  are returned only to that Teacher Personal Center and are never included in
+  student/public responses.
 - Student-facing functions should require `role: "student"`.
 - Teacher deletion removes the CloudBase Auth end user, sets `active:false`
   plus deletion audit fields on the profile, archives `student_id` as
@@ -318,12 +325,15 @@ canonical field is missing. The authenticated teacher-only
 normalized weeks in bounded batches. Records with none of those date sources
 are reported and never silently assigned an invented week.
 
-Teachers may cancel selected open assignments by `assignment_id`. Cancellation
-is a soft state change to `status: "cancelled"`, never a delete. Cancelled
-assignments are hidden from the student dashboard and teacher View progress,
-and rejected by `submitAttempt`, but old attempts remain immutable history and
-can still be found through set-level History. Completed `passed` / `mastered`
-assignments and protected STAR records are skipped by normal cancellation.
+Teachers may cancel any selected non-cancelled assignment by `assignment_id`,
+including `passed`, `mastered`, and legacy `done` records. Cancellation is a
+soft state change to `status: "cancelled"`, never a delete. Cancelled assignments
+are hidden from the student dashboard and teacher View progress and rejected by
+`submitAttempt`, but old attempts remain immutable history and still contribute
+to the authoritative set-wide Exercise Progress. Completion facts and protected
+STAR records are not revoked. Reassignment creates a new row initialized from
+that historical global best, so it may be immediately complete under the new
+assignment's standards.
 
 Reassignment rule:
 
@@ -482,6 +492,69 @@ Rules:
   mastery percentage, and `mastery_locked` state.
 - The manual `backfillAcceptedAnswerRegrades` action may add the same adjusted
   fields with `bulk_regrade_source: "grading_key_backfill"`.
+
+## 6a. `teacher_attempt_email_events`
+
+Purpose: private outbox and bounded delivery audit for ordinary-email copies of
+Teacher attempt notifications. One recorded eligible `attempt_id` owns one
+event document and repeated queue writes overwrite that same pending identity
+rather than creating duplicates.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `event_id` | string | idempotent event identity; equal to `attempt_id` |
+| `attempt_id` | string | immutable source attempt |
+| `thread_key` | string | same assignment/self-study grouping used by the Teacher bell |
+| `student_uid` | string | source student owner |
+| `set_id` | string | source set |
+| `assignment_id` | string/null | assignment thread or self-study |
+| `mode` | string | `bbc`, `vocabulary_test`, or `vocabulary_practice_timed` |
+| `delivery_policy` | string | `bbc_batch_7m` or `vocabulary_immediate` |
+| `status` | string | `pending`, `processing`, `sent`, `failed`, or `skipped` |
+| `retry_count` | number | bounded SMTP retry count |
+| `submitted_at` | Date | source attempt time |
+| `window_started_at` | Date | fixed batch anchor for this event |
+| `window_ends_at` | Date | seven-minute BBC end or immediate Vocabulary time |
+| `due_at` | Date | next eligible dispatch time, advanced only for retry backoff |
+| `processing_token` | string/null | transactional claim token |
+| `processing_started_at` | Date/null | claim audit time |
+| `sent_at` | Date/null | successful SMTP handoff time |
+| `provider_message_id` | string | SMTP message identifier used for email threading |
+| `last_error` | string | bounded non-secret provider error code/message |
+| `last_failed_at` | Date/null | most recent failed delivery |
+| `skipped_at` | Date/null | due time at which no enabled teacher address existed |
+| `skip_reason` | string | bounded reason such as `NO_ENABLED_TEACHER_EMAIL` |
+| `created_at` / `updated_at` | Date | outbox audit timestamps |
+
+Rules:
+
+- The collection remains `ADMINONLY`; no browser reads or writes it.
+- `event_id` is unique. `submitAttempt` writes the event only after the attempt
+  exists, and an outbox failure never changes the successful grading response.
+- BBC delivery claims all pending events in the same thread whose timestamps
+  fall inside the first event's fixed seven-minute window. Vocabulary claims
+  one due event at a time.
+- Email rendering reads immutable attempts through the event cutoff. Therefore
+  every Vocabulary email is cumulative without accidentally showing a later
+  attempt that had not happened at that event's timestamp.
+- A transaction moves claimed rows from `pending` to `processing` before SMTP.
+  Success moves them to `sent`; failure returns them to `pending` with
+  exponential backoff, up to five tries, then `failed`. A claim still in
+  `processing` after ten minutes is returned to `pending` so a crashed function
+  invocation cannot strand the event.
+- Each claimed batch derives a deterministic SMTP `Message-ID`. This reduces
+  duplicates and preserves mailbox threading across retries, but SMTP cannot
+  guarantee strict exactly-once delivery if the provider accepts the message
+  and the following database update fails.
+- The outbox never stores SMTP passwords, timer tokens, recipient addresses, or
+  rendered email bodies. Those settings remain function environment values.
+- The current allowlist is for teacher-owned inboxes only and uses BCC. Future
+  guardian delivery requires an authorized student-to-guardian mapping and
+  per-student routing, not a shared global recipient list.
+- Delivery resolves enabled recipients from active teacher profiles at send
+  time. When none exist, the claimed event becomes `skipped`; re-enabling an
+  address affects future events and does not send the skipped history.
+- Sent email does not update any Teacher bell read marker.
 
 ## 7. `grading_keys`
 

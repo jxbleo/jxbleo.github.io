@@ -3,6 +3,53 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-11: Use a Private Outbox and SMTP for Teacher Attempt Email
+
+Decision:
+
+Recorded BBC and Vocabulary attempts create idempotent private outbox events
+after attempt storage. A separate token-authenticated timer function claims and
+sends them through ordinary-email SMTP. BBC uses a fixed seven-minute window
+anchored to the first submission. Every Vocabulary Quiz and timed Practice
+event is immediately due and renders cumulative history through that event.
+Email reuses the Teacher bell's thread key and mistake-only private projection,
+but never changes bell read state.
+
+Nodemailer 9.0.5 is the only new runtime dependency. It is bundled into the
+`sendTeacherAttemptEmails` deployment ZIP. SMTP credentials remain CloudBase
+environment variables; recipient addresses are authenticated teacher-profile
+settings managed from Personal Center. The dispatcher resolves only enabled
+addresses at send time and uses BCC. With no enabled address, a due event is
+marked skipped rather than retained for later backfill.
+
+Reason:
+
+The owner needs timely ordinary-email visibility without adopting WeCom.
+Calling SMTP directly inside student grading would make an external provider a
+submission dependency, while sending every BBC retry separately would hide the
+short correction sequence in noise. An outbox separates learning truth from
+delivery, supports bounded retries, and gives Vocabulary the requested
+attempt-by-attempt cumulative comparison.
+
+Trade-offs:
+
+- Good: student submission remains successful when SMTP is unavailable.
+- Good: one event per `attempt_id` plus transactional claims limits duplicates.
+- Good: later Vocabulary messages include all earlier attempts in the thread.
+- Cost: a new `ADMINONLY` collection, indexes, timer, environment settings, and
+  delivery monitoring are required.
+- Cost: “immediate” means the next one-minute dispatcher tick plus provider
+  delivery latency; BBC means seven minutes plus the next tick.
+- Cost: private wrong-answer comparisons leave CloudBase and enter the owner's
+  enabled teacher mailbox, so mailbox security and retention become part of the
+  privacy boundary.
+
+Review condition:
+
+Revisit if the owner adopts an official push channel, needs multiple teachers
+with different student scopes, or requires a managed transactional-email API
+instead of mailbox SMTP.
+
 ## 2026-08-10: Student Dashboard Uses Redacted Stale-While-Revalidate Startup
 
 Decision:

@@ -18,6 +18,10 @@ boundaries matter more than visual polish right now.
   Vocabulary
 - Server-side grading through CloudBase functions
 - Immutable countable attempts
+- Near-real-time private teacher attempt emails: BBC retries batch for seven
+  minutes, while every recorded Vocabulary Quiz/Timed Practice sends promptly
+  with cumulative thread history; Teacher Personal Center controls which of up
+  to ten private BCC inboxes are enabled
 - Protected STAR/mastery records
 - Yellow-STAR Cash requests with private evidence and teacher confirmation
 - Dedicated personal My Words workspace with editing, Notes, merge suggestions,
@@ -67,6 +71,7 @@ npm run test:assignment-schedule
 npm run test:content-editions
 npm run test:my-words
 npm run test:learning-reports
+npm run test:attempt-emails
 npm run package:functions:all
 npm run release:plan
 node scripts/build-home-catalog.js
@@ -106,7 +111,7 @@ data changes.
 
 | Path | Purpose |
 | --- | --- |
-| `cloudfunctions/` | CloudBase function source |
+| `cloudfunctions/` | CloudBase function source, including scheduled private teacher-email dispatch |
 | `deploy-packages/` | Generated function ZIPs for manual upload |
 | `assets/js/` | Shared browser logic |
 | `assets/css/` | Shared styling |

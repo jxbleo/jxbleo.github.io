@@ -1,6 +1,7 @@
 const cloudbase = require("@cloudbase/node-sdk");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
+const attemptEmailNotifications = require("../_shared/attempt-email-notifications");
 const {
   assertVocabularyContentVersion,
   buildVocabularyGradingSnapshot,
@@ -971,6 +972,21 @@ exports.main = async (event = {}) => {
         attempt_id: attemptId,
         submitted_at: submittedAt,
       });
+    }
+
+    const emailEvent = attemptEmailNotifications.eventForAttempt(attempt, submittedAt);
+    if (emailEvent) {
+      try {
+        await db.collection(attemptEmailNotifications.EVENT_COLLECTION).doc(attemptId).set(emailEvent);
+      } catch (emailQueueError) {
+        // Email delivery is deliberately isolated from grading. A missing
+        // collection or temporary queue failure must never turn a successfully
+        // recorded student attempt into a failed submission response.
+        console.error("Unable to queue teacher attempt email", {
+          attempt_id: attemptId,
+          code: emailQueueError && (emailQueueError.code || emailQueueError.message) || "EMAIL_QUEUE_ERROR",
+        });
+      }
     }
 
     return {

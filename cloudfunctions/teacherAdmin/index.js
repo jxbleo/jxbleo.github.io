@@ -2,6 +2,7 @@ const cloudbase = require("@cloudbase/node-sdk");
 const CloudBaseManager = require("@cloudbase/manager-node");
 const starRewards = require("../_shared/star-rewards");
 const exerciseProgress = require("../_shared/exercise-progress");
+const teacherEmailSettings = require("../_shared/teacher-email-settings");
 
 const app = cloudbase.init({ env: cloudbase.SYMBOL_CURRENT_ENV });
 const db = app.database();
@@ -23,6 +24,11 @@ const DISPUTE_FEED_PAGE_SIZE = 5;
 
 function text(value) {
   return String(value == null ? "" : value).trim();
+}
+
+function randomRecordId(prefix) {
+  const crypto = require("crypto");
+  return `${prefix}_${crypto.randomBytes(16).toString("hex")}`;
 }
 
 function joinedStudentName(chineseName, englishName, legacyName = "") {
@@ -51,6 +57,69 @@ async function getAuthenticatedTeacher() {
 
   if (!result.data || !result.data[0]) throw new Error("TEACHER_REQUIRED");
   return result.data[0];
+}
+
+function teacherEmailSettingsResponse(profile) {
+  const recipients = teacherEmailSettings.teacherEmailRecipients(profile);
+  return {
+    success: true,
+    recipients,
+    enabled_count: recipients.filter((item) => item.enabled).length,
+    limit: teacherEmailSettings.MAX_TEACHER_EMAIL_RECIPIENTS,
+  };
+}
+
+async function getTeacherEmailSettings(teacher) {
+  return teacherEmailSettingsResponse(teacher);
+}
+
+async function mutateTeacherEmailSettings(event, teacher, operation) {
+  const now = new Date();
+  let updatedProfile = null;
+  await db.runTransaction(async (transaction) => {
+    const result = await transaction.collection("students").where({
+      auth_uid: teacher.auth_uid,
+      active: true,
+      role: "teacher",
+    }).limit(1).get();
+    const current = result.data && result.data[0];
+    if (!current) throw new Error("TEACHER_REQUIRED");
+    const recipients = teacherEmailSettings.teacherEmailRecipients(current);
+
+    if (operation === "add") {
+      const email = teacherEmailSettings.normalizeEmail(event.email);
+      if (!email) throw new Error("TEACHER_EMAIL_INVALID");
+      if (recipients.some((item) => item.email === email)) throw new Error("TEACHER_EMAIL_EXISTS");
+      if (recipients.length >= teacherEmailSettings.MAX_TEACHER_EMAIL_RECIPIENTS) {
+        throw new Error("TEACHER_EMAIL_LIMIT_REACHED");
+      }
+      recipients.push({
+        email_id: randomRecordId("teacher_email"),
+        email,
+        enabled: event.enabled !== false,
+        created_at: now,
+        updated_at: now,
+      });
+    } else {
+      const emailId = text(event.email_id);
+      const index = recipients.findIndex((item) => item.email_id === emailId);
+      if (index < 0) throw new Error("TEACHER_EMAIL_NOT_FOUND");
+      if (operation === "toggle") {
+        recipients[index] = { ...recipients[index], enabled: event.enabled === true, updated_at: now };
+      } else if (operation === "delete") {
+        recipients.splice(index, 1);
+      } else {
+        throw new Error("UNKNOWN_ACTION");
+      }
+    }
+
+    await transaction.collection("students").doc(current._id).update({
+      attempt_email_recipients: recipients,
+      updated_at: now,
+    });
+    updatedProfile = { ...current, attempt_email_recipients: recipients };
+  });
+  return teacherEmailSettingsResponse(updatedProfile);
 }
 
 async function getOne(collection, query) {
@@ -1912,10 +1981,6 @@ async function cancelAssignments(event, teacher) {
     const status = normalizedAssignmentStatus(assignment.status);
     if (status === "cancelled") {
       skipped.push({ assignment_id: assignmentId, reason: "already_cancelled" });
-      continue;
-    }
-    if (!isOpenAssignmentStatus(assignment.status)) {
-      skipped.push({ assignment_id: assignmentId, reason: "completed" });
       continue;
     }
     const update = {
@@ -3846,6 +3911,10 @@ exports.main = async (event) => {
     const action = text(event.action);
     if (action === "listStudents") return await listStudents();
     if (action === "listClasses") return await listClasses();
+    if (action === "getTeacherEmailSettings") return await getTeacherEmailSettings(teacher);
+    if (action === "addTeacherEmail") return await mutateTeacherEmailSettings(event, teacher, "add");
+    if (action === "setTeacherEmailEnabled") return await mutateTeacherEmailSettings(event, teacher, "toggle");
+    if (action === "deleteTeacherEmail") return await mutateTeacherEmailSettings(event, teacher, "delete");
     if (action === "createStudent") return await createStudent(event, teacher);
     if (action === "updateStudent") return await updateStudent(event, teacher);
     if (action === "backfillLearningReportModel") return await backfillLearningReportModel(event, teacher);
@@ -3914,6 +3983,14 @@ exports.main = async (event) => {
             ? "AI dictionary help is not configured yet."
           : error.message === "AI_LOOKUP_FAILED" || error.message === "AI_RESPONSE_INVALID" || /^AI_HTTP_/.test(error.message || "")
             ? "AI dictionary help is unavailable right now."
+          : error.message === "TEACHER_EMAIL_INVALID"
+            ? "Enter a valid email address."
+          : error.message === "TEACHER_EMAIL_EXISTS"
+            ? "This email is already in Personal Center."
+          : error.message === "TEACHER_EMAIL_LIMIT_REACHED"
+            ? "You can keep up to 10 notification emails."
+          : error.message === "TEACHER_EMAIL_NOT_FOUND"
+            ? "This email is no longer available. Refresh Personal Center."
           : error.message === "CASH_EVIDENCE_REQUIRED"
             ? "At least one active proof photo is required before confirmation."
           : error.message === "STAR_DECISION_REASON_REQUIRED"

@@ -274,6 +274,7 @@ All collections use `ADMINONLY`:
 - `sets`: assignable exercise metadata
 - `assignments`: assigned task instances
 - `attempts`: immutable countable submissions
+- `teacher_attempt_email_events`: private idempotent attempt-email outbox and delivery audit
 - `grading_keys`: private answers, explanations, and scoring rules
 - `system_config`: defaults such as passing percentage
 - `student_set_achievements`: permanent protected STAR records
@@ -327,6 +328,24 @@ paper reports. Do not put complete attempt history back into a bootstrap
 response because CloudBase caps a function response body at 6 MB. The Teacher
 bell and Argue header controls never show a spinner for these invisible queues.
 
+Recorded BBC and Vocabulary attempts may also create private teacher-email
+events after the immutable attempt is stored. BBC uses one fixed seven-minute
+window anchored to the first submission; every recorded Vocabulary Quiz and
+timed Practice event is immediately due. Vocabulary email #2 includes attempts
+#1 and #2, email #3 includes #1 through #3, and so on. Email uses the same
+assignment/self-study thread key, cumulative chart data, Shanghai timestamps,
+threshold snapshots, and mistake-only answer comparison as the Teacher bell.
+Email delivery is asynchronous and must never make a successful student
+submission fail. It does not mark the bell read. SMTP credentials, recipients,
+and timer tokens must never enter Git. SMTP transport credentials and timer
+tokens remain CloudBase-only environment values. Recipient addresses belong to
+the authenticated teacher profile's `attempt_email_recipients` array and are
+managed only through Teacher Personal Center. Only entries with `enabled: true`
+receive new mail; disabling all addresses skips newly due events instead of
+backfilling them after a later re-enable. Multiple enabled teacher addresses use
+BCC. Parent delivery requires a future student-to-guardian authorization map
+and must never reuse the global teacher recipient projection.
+
 ## 7. Assignment Rules
 
 The separate `teacher.html` interface has four capsules:
@@ -377,16 +396,21 @@ percentages use the scroll-wheel picker. `Earn STAR` is the only checkbox and
 controls whether Mastery % is enabled. Saving a matrix task-column scope
 updates every explicit assignment represented by the current class/individual
 filter; saving from one student's detail updates only that assignment. The
-footer pairs a red `Cancel open assignments` action with `Save changes`;
+footer pairs a red `Cancel assignments` action with `Save changes`;
 cancellation always requires a second dedicated confirmation modal.
 
-Teachers can soft-cancel selected open assignments. Cancellation sets
+Teachers can soft-cancel any selected non-cancelled assignment, including
+`passed` and `mastered` records, when they need to clean up assignment
+participation or the Teacher View matrix after class membership changes.
+Cancellation sets
 `status: "cancelled"` plus audit fields such as `cancelled_at` and
 `cancelled_by_teacher_uid`; never hard-delete assignment records. Cancelled
 assignments are hidden from the student dashboard, rejected by `submitAttempt`
 when an old assignment URL is used, and do not block future reassignment.
-Completed `passed` / `mastered` assignments and protected STAR records must not
-be revoked by normal cancellation.
+Cancellation changes only the assignment participation: immutable attempts,
+set-wide Exercise Progress, completion history, and protected STAR records
+remain intact. A later reassignment still initializes from the student's
+historical global best and may therefore be immediately `passed` or `mastered`.
 When `mastery_enabled` is false, Mastery % is not required and the stored
 mastery threshold must not block a higher Passing % update.
 

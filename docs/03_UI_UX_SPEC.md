@@ -810,7 +810,15 @@ frame below share the same left and right edges.
 
 The top-right teacher chip opens a Personal Center panel. Its title is centered
 as `PERSONAL CENTER`, without a separate `Teacher Account` heading or account
-status row. The top-right circular student ID icon opens a standalone Student
+status row. Beneath teacher identity, one blue `EMAIL NOTIFICATIONS` heading
+leads directly into a compact address field and `Add`, followed by one row per
+saved address. Explanatory copy, enabled/count badges, refresh, status labels,
+and delete actions stay absent from this intentionally minimal surface. Each
+row shows only the address and an accessible enable/pause switch. A newly added
+address starts enabled. The switch responds immediately, retains keyboard
+focus treatment, and uses no motion in reduced-motion mode. Success is conveyed
+by the changed row or switch state; only errors add temporary inline copy. Only
+enabled addresses receive new attempt mail. The top-right circular student ID icon opens a standalone Student
 lookup modal. Its top bar initially contains the student search field, a class
 filter, and internal STAR Redemption and create-student actions. Both actions
 reuse the same 40px circular outline-SVG treatment and neutral color as the
@@ -916,6 +924,18 @@ question IDs to `Qn`. When authorized per-attempt details finish loading, the
 newly available answer comparison settles into place once with a restrained
 fade, lift, and scale transition; later interaction must not replay that reveal.
 Reduced-motion mode uses a short opacity-only transition.
+
+The ordinary-email projection uses the same reader-facing information order,
+adapted to static HTML email clients: student/task identity, newest/best/status
+summary, cumulative attempt bar chart, Passing and enabled STAR references,
+then chronological attempt cards containing only wrong-answer comparisons.
+The current email's new attempt bars/cards are labelled `NEW`. BBC internal
+question IDs remain normalized to `Qn`; Vocabulary shows `Quiz` or `Practice`,
+set count, and selected group labels. Each task keeps one stable subject, and
+later deliveries use reply metadata so compatible mailboxes group the task as
+one conversation. Email contains no JavaScript and its Teacher-page button
+still leads to an authenticated page. Sending or opening email never changes
+the in-app bell read state.
 
 The teacher page defaults to `View` on entry, including when a stale
 `?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains
@@ -1090,11 +1110,15 @@ It should include:
   paragraph. Due week uses a select; both percentages open the draggable
   scroll-wheel picker. The only checkbox is `Earn STAR` beside Mastery %;
   unchecked disables that picker. The footer contains a quiet Apple-style
-  destructive `Cancel open assignments` control and the primary `Save changes`
+  destructive `Cancel assignments` control and the primary `Save changes`
   action. The cancel entry uses muted red text, a pale translucent red tint,
   and a fine border instead of a solid red fill; its second confirmation keeps
   the stronger destructive treatment. The cancel action opens a confirmation
-  modal with Keep/Cancel choices before calling the backend.
+  modal with Keep/Cancel choices before calling the backend. The control is
+  available for every non-cancelled assignment in the selected scope, including
+  Passed and Mastered rows. Its confirmation explains that the assignment will
+  leave active views while attempts, learning progress, completed work, and
+  STARs remain saved.
 - matrix filters appear as compact unlabeled `Class`, `Column`, and `Date`
   select capsules on one row with equal visual width; all three default to all
   records. At phone width they divide the available row into three equal tracks

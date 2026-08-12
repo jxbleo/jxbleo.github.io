@@ -15,6 +15,13 @@
 - Build a grading-key reconcile workflow so local imports do not overwrite teacher-approved CloudBase corrections.
 - Pass durable `question_text` from every practice runtime's Argue submission path.
 - Add optional owner-only CloudBase CLI workflow after testing the local release helpers.
+- Attempt-email outbox/indexes, `submitAttempt`, `teacherAdmin`,
+  `sendTeacherAttemptEmails`, and the matching Personal Center UI were deployed
+  to development on 2026-08-11. The owner still needs to enter the iCloud SMTP
+  app password and non-secret mail settings in the CloudBase console, add and
+  enable the two test inboxes in Personal Center, and verify delivery with a
+  development student. The authorized one-minute timer was enabled on
+  2026-08-12.
 - Learning Reports V1 development collections/indexes, report functions, and
   the class/membership/assignment-scope migration were completed on 2026-08-04.
   Before enabling it for a real class, publish the matching static report page,
@@ -36,6 +43,13 @@
 - Add checksum/version comparison between cloud-function source and deployed ZIPs.
 - Add scheduled-report observability: timer failure alerting, generated/published
   status dashboard, and an audited correction/republication workflow.
+- Add attempt-email delivery observability for failed/retried events, SMTP
+  rejection/bounce visibility, and a teacher-only resend/recovery action.
+- Track Tencent CloudBase Node SDK updates that replace its legacy Axios and
+  lodash database dependencies. The 2026-08-11 production-dependency audit of
+  `@cloudbase/node-sdk@3.18.1` reports upstream high-severity advisories; npm's
+  suggested `3.0.0` is an invalid downgrade here, so do not apply
+  `npm audit fix --force`. Reassess when Tencent publishes a compatible refresh.
 
 ## Low Priority
 
@@ -55,7 +69,12 @@
   authority so only the responsible teacher can process those requests.
 - Open the Gifts destination after the owner defines inventory and fulfillment.
 - Parent accounts.
-- Notifications or messaging.
+- Add verified student-to-guardian email bindings, consent/audit state, and
+  per-student delivery before any parent address receives attempt mail. Never
+  reuse the global teacher inbox allowlist for unrelated parents.
+- Consider additional official notification channels only after ordinary-email
+  delivery is stable; preserve the shared private outbox rather than coupling a
+  new channel to student grading.
 - Evaluate an official family notification channel (verified email, WeCom, or
   Mini Program subscription) only after the report content is proven useful;
   do not use personal-WeChat RPA/third-party account robots as a shortcut.
