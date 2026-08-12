@@ -931,11 +931,13 @@ summary, cumulative attempt bar chart, Passing and enabled STAR references,
 then chronological attempt cards containing only wrong-answer comparisons.
 The current email's new attempt bars/cards are labelled `NEW`. BBC internal
 question IDs remain normalized to `Qn`; Vocabulary shows `Quiz` or `Practice`,
-set count, and selected group labels. Each task keeps one stable subject, and
-later deliveries use reply metadata so compatible mailboxes group the task as
-one conversation. Email contains no JavaScript and its Teacher-page button
-still leads to an authenticated page. Sending or opening email never changes
-the in-app bell read state.
+set count, and selected group labels. BBC keeps a stable subject and uses reply
+metadata for compatible mailboxes to group its batches as one conversation.
+Every Vocabulary Quiz and timed Practice submission instead uses an independent
+message with `Quiz No. n` or `Practice No. n` in the subject and no reply
+metadata; its body still includes cumulative earlier attempts. Email contains
+no JavaScript and its Teacher-page button still leads to an authenticated page.
+Sending or opening email never changes the in-app bell read state.
 
 The teacher page defaults to `View` on entry, including when a stale
 `?view=tasks` URL is refreshed. The explicit `?view=library` return URL remains
