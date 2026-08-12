@@ -799,3 +799,31 @@ Review condition:
 
 Revisit if the owner later wants archived editions hidden from Student Library
 or Teacher Assign. No archive behavior is part of the current release.
+## 2026-08-12: Publish the GitHub Main Branch to CloudBase Static Hosting
+
+Decision:
+
+Keep GitHub as the source of truth and automatically publish successful
+`main`-branch static builds to Tencent CloudBase hosting. Build an explicit
+`dist/` allowlist rather than serving the repository root.
+
+Reason:
+
+The owner wants an ordinary Git push to update the student-facing custom domain
+and wants rollback to remain a normal Git revert. The repository also contains
+cloud-function source, internal documentation, scripts, and deployment files
+that must not become static website resources.
+
+Trade-offs:
+
+- Good: one reviewed Git history drives both collaboration and static release.
+- Good: the hosted artifact contains only intended public frontend resources.
+- Cost: every new public top-level file type or public directory must be added
+  deliberately to `scripts/build-static-site.js`.
+- Cost: automatic static publication does not deploy CloudBase functions or
+  apply database changes; those remain separately owner-gated.
+
+Review condition:
+
+Revisit if the project adopts a frontend bundler, needs staged promotion, or
+adds public resources outside the current allowlist.
