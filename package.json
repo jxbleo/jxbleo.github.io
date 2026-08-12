@@ -4,6 +4,7 @@
   "private": true,
   "description": "Static English learning app with CloudBase backend.",
   "scripts": {
+    "build:static": "node scripts/build-static-site.js",
     "verify": "node scripts/verify-release.js",
     "verify:release": "node scripts/verify-release.js",
     "test:vocabulary": "node scripts/test-vocabulary-versioning.js",

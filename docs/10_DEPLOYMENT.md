@@ -683,9 +683,23 @@ The first import command is a dry run. This changes defaults for new
 assignments and independent practice; it does not rewrite threshold snapshots
 already stored on existing assignments.
 
-Do not configure automatic CloudBase deployment on every Git push. If CI/CD is
-added later, it should use a manually triggered workflow and owner approval
-before secrets are released.
+CloudBase static hosting may automatically publish successful builds from the
+GitHub `main` branch, as explicitly selected by the owner. This authorization
+applies only to the public static artifact produced by:
+
+```bash
+npm run build:static
+```
+
+Configure the Git deployment with target directory `./`, no install command,
+build command `npm run build:static`, artifact directory `./dist`, and deploy
+path `/`. The allowlist contains root HTML/web-manifest files plus `assets/`,
+`bbc-audio/`, `content/`, and `data/`; it excludes cloud functions, scripts,
+documentation, deployment packages, and local/private files.
+
+Automatic static publication does not authorize function deployment, database
+imports, DNS changes, secrets, environment variables, timers, billing changes,
+or other CloudBase resource mutations. Those remain separately owner-gated.
 
 ## 7. CloudBase Data Import
 
