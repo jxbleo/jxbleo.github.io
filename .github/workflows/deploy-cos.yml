@@ -1,0 +1,52 @@
+name: Deploy static site to Tencent COS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cos-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build public static artifact
+        run: npm run build:static
+
+      - name: Verify public artifact boundary
+        run: |
+          test -f dist/index.html
+          test ! -e dist/cloudfunctions
+          test ! -e dist/scripts
+          test ! -e dist/docs
+          test ! -e dist/AGENTS.md
+
+      - name: Upload public artifact to COS
+        uses: TencentCloud/cos-action@v1
+        with:
+          secret_id: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
+          secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
+          cos_bucket: mrcatenglish-web-1441914554
+          cos_region: ap-shanghai
+          local_path: dist
+          remote_path: /
+          clean: true
