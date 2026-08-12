@@ -333,9 +333,13 @@ async function findOpenAssignmentForSet(studentUid, setId) {
   const openAssignments = (result.data || [])
     .map(normalizeRecord)
     .filter(isOpenAssignment)
-    .sort((left, right) =>
-      dateValue(right.due_at || right.assigned_at || right.created_at) - dateValue(left.due_at || left.assigned_at || left.created_at)
-    );
+    .sort((left, right) => {
+      const byDueDate = dateValue(right.due_at || right.assigned_at || right.created_at)
+        - dateValue(left.due_at || left.assigned_at || left.created_at);
+      if (byDueDate) return byDueDate;
+      return String(right.assignment_id || right._id || "")
+        .localeCompare(String(left.assignment_id || left._id || ""));
+    });
   return openAssignments[0] || null;
 }
 
@@ -535,6 +539,42 @@ async function resolveAssignment(student, setId, assignmentId) {
   return { assignment, assignmentId: resolvedAssignmentId };
 }
 
+async function resolveVocabularySessionAssignment(student, setId, session) {
+  if (String(session.set_id || "") !== String(setId || "")) {
+    throw new Error("VOCABULARY_TEST_SESSION_MISMATCH");
+  }
+  const lockedAssignmentId = session.assignment_id ? String(session.assignment_id) : null;
+  if (!lockedAssignmentId) return { assignment: null, assignmentId: null };
+  let assignment = null;
+  if (session.assignment_doc_id) {
+    const result = await db.collection("assignments").doc(String(session.assignment_doc_id)).get();
+    assignment = result.data && result.data[0] ? normalizeRecord(result.data[0]) : null;
+  } else {
+    assignment = await getOne("assignments", {
+      assignment_id: lockedAssignmentId,
+      student_uid: student.auth_uid,
+      set_id: setId,
+    });
+  }
+  if (!assignment) {
+    await markVocabularySessionEnded(session, "invalidated", "assignment_missing");
+    throw new Error("VOCABULARY_TEST_ASSIGNMENT_NOT_FOUND");
+  }
+  if (
+    String(assignment.student_uid || "") !== String(student.auth_uid || "")
+    || String(assignment.set_id || "") !== String(setId || "")
+    || String(assignment.assignment_id || assignment._id || "") !== lockedAssignmentId
+  ) {
+    await markVocabularySessionEnded(session, "invalidated", "assignment_identity_mismatch");
+    throw new Error("VOCABULARY_TEST_SESSION_MISMATCH");
+  }
+  if (isCancelledAssignment(assignment)) {
+    await markVocabularySessionEnded(session, "abandoned", "assignment_cancelled");
+    throw new Error("VOCABULARY_TEST_ASSIGNMENT_CANCELLED");
+  }
+  return { assignment, assignmentId: lockedAssignmentId };
+}
+
 function vocabularySessionId(student, setId) {
   return [
     "vocabtest",
@@ -722,10 +762,8 @@ async function abandonVocabularyTestSession(student, event) {
   };
 }
 
-async function validateVocabularyTestSessionForSubmit(student, event, setId, assignmentId, answers) {
-  const session = await ensureActiveOwnedVocabularySession(student, event);
+function validateVocabularyTestSessionForSubmit(session, event, setId, answers) {
   if (String(session.set_id || "") !== String(setId || "")) throw new Error("VOCABULARY_TEST_SESSION_MISMATCH");
-  if (String(session.assignment_id || "") !== String(assignmentId || "")) throw new Error("VOCABULARY_TEST_SESSION_MISMATCH");
   const sessionGroupIds = uniqueStrings(session.selected_group_ids, 80);
   const sessionQuestionIds = uniqueStrings(session.question_ids, 1000);
   if (Number(session.selected_group_count || 0) < VOCABULARY_TEST_MIN_GROUPS) {
@@ -783,9 +821,14 @@ exports.main = async (event = {}) => {
     const isVocabularySelfCheck = mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && submittedGroupCount < VOCABULARY_TEST_MIN_GROUPS);
 
+    if (isCountedVocabularyTest) {
+      vocabularyTestSession = await ensureActiveOwnedVocabularySession(student, event);
+    }
     const resolvedAssignment = isVocabularyTimedPractice
       ? { assignment: null, assignmentId: null }
-      : await resolveAssignment(student, setId, assignmentId);
+      : isCountedVocabularyTest
+        ? await resolveVocabularySessionAssignment(student, setId, vocabularyTestSession)
+        : await resolveAssignment(student, setId, assignmentId);
     const assignment = resolvedAssignment.assignment;
     assignmentId = resolvedAssignment.assignmentId;
 
@@ -794,8 +837,7 @@ exports.main = async (event = {}) => {
       await assertNoActiveVocabularySelfTestLeak(student, event, setId);
     }
     if (isCountedVocabularyTest) {
-      const validatedSession = await validateVocabularyTestSessionForSubmit(student, event, setId, assignmentId, answers);
-      vocabularyTestSession = validatedSession.session;
+      const validatedSession = validateVocabularyTestSessionForSubmit(vocabularyTestSession, event, setId, answers);
       vocabularyTestQuestionIds = validatedSession.questionIds;
       vocabularyTestGradingKey = validatedSession.gradingKey;
       answers = validatedSession.answers;

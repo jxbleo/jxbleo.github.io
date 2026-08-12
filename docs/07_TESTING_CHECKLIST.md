@@ -1323,6 +1323,15 @@ Check:
 - Quiz creates a countable attempt and retains its selected-group details
 - 5+ selected Test groups create a `vocabulary_test_sessions` record before
   questions appear and submit with its `test_session_id`
+- a Library/self-study Quiz remains self-study if an assignment for the same set
+  is created before submission
+- a Quiz opened without an assignment URL remains attached to the exact
+  assignment selected at start even if another open assignment becomes newer;
+  equal due dates use a stable assignment-ID tie-breaker
+- restoring a Quiz draft uses the server session's locked assignment, not the
+  current page URL or a fresh open-assignment lookup
+- cancelling the locked assignment during a Quiz returns
+  `VOCABULARY_TEST_ASSIGNMENT_CANCELLED`, closes the session, and writes no attempt
 - countable Vocabulary Test submission grades the session's recorded question
   IDs, not a browser-edited question list
 - switching apps/tabs or hiding/leaving the page during a 5+ group Test marks

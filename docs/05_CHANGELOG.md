@@ -7,6 +7,12 @@
 
 ### Changed
 
+- Counted Vocabulary Quiz sessions now lock the exact assignment or self-study
+  context from start through draft restore and submission. A second open-task
+  lookup can no longer move the first submission to another assignment.
+- Equal-due assignments use a stable ID tie-breaker. Mid-Quiz assignment
+  creation does not capture self-study work, while cancelled or missing locked
+  assignments stop before any attempt is recorded.
 - Teacher View can now soft-cancel any non-cancelled assignment, including
   Passed and Mastered rows, so obsolete participation can be removed from the
   matrix after class membership or assignment-scope changes.

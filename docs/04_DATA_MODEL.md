@@ -756,6 +756,7 @@ Core fields:
 | `student_id_snapshot` | string | display snapshot |
 | `set_id` | string | Vocabulary set |
 | `assignment_id` | string/null | linked assignment if any |
+| `assignment_doc_id` | string/null | exact locked assignment document used to prevent submit-time rebinding |
 | `status` | string | `active`, `submitted`, `abandoned`, or `invalidated` |
 | `selected_group_count` | number | official group count |
 | `selected_group_ids` | array | official selected groups |
@@ -787,6 +788,11 @@ Rules:
   resuming, heartbeating, and submitting. A missing or mismatched version is
   rejected with `VOCABULARY_CONTENT_OUTDATED` before grading.
 - Missing submitted answers for session questions count as blank answers.
+- `assignment_id: null` is an intentional self-study lock, not a request to
+  auto-bind an assignment at submit time. A counted Quiz submit loads the exact
+  `assignment_doc_id`, then verifies the stable assignment ID, student owner,
+  set, and non-cancelled state. A missing, replaced, or cancelled locked
+  assignment closes the session and does not create an attempt.
 - A different `client_instance_id` is blocked from student cloud-function
   surfaces while a session is active. The browser must generate this ID in
   memory for each page load rather than storing it in `sessionStorage`, because

@@ -2266,6 +2266,7 @@
         var VOCABULARY_HEARTBEAT_RETRY_DELAYS_MS = [2 * 1000, 5 * 1000, 10 * 1000];
         var testRemainingSeconds = 0;
         var activeTestSessionId = '';
+        var activeTestAssignmentId = '';
         var activeTestGroups = [];
         var activeTestGroupCount = 0;
         var activeTestSetIndex = 0;
@@ -2354,6 +2355,7 @@
                     group_ids: activeTestGroups.map(function(group) { return group.id; }),
                     group_count: activeTestGroupCount,
                     test_session_id: activeTestSessionId || '',
+                    assignment_id: activeTestAssignmentId || null,
                     started_at: testStartedAt,
                     total_seconds: testDurationSecondsForGroupCount(activeTestGroupCount),
                     answers: answers
@@ -2415,6 +2417,12 @@
             if (/VOCABULARY_CONTENT_OUTDATED/i.test(message)) {
                 return new Error('This exercise has been updated. Reload the page before starting or submitting the test.');
             }
+            if (/VOCABULARY_TEST_ASSIGNMENT_CANCELLED/i.test(message)) {
+                return new Error('This assignment was cancelled while the Quiz was in progress. No attempt was recorded. Return to the Dashboard to continue.');
+            }
+            if (/VOCABULARY_TEST_ASSIGNMENT_NOT_FOUND|VOCABULARY_TEST_SESSION_MISMATCH/i.test(message)) {
+                return new Error('This Quiz can no longer verify the assignment it started with. No attempt was recorded. Return to the Dashboard and start again.');
+            }
             return error instanceof Error ? error : new Error(message || fallback || 'Unable to manage this vocabulary test session.');
         }
 
@@ -2442,6 +2450,7 @@
         function applyTestSession(session) {
             session = session || {};
             activeTestSessionId = session.test_session_id || '';
+            activeTestAssignmentId = session.assignment_id || '';
             testStartedAt = normalizeDateString(session.started_at);
         }
 
@@ -2460,7 +2469,7 @@
         }
 
         function isTerminalHeartbeatError(error) {
-            return /VOCABULARY_TEST_(SESSION_(EXPIRED|CLOSED|NOT_FOUND)|DEVICE_BLOCKED)|VOCABULARY_CONTENT_OUTDATED|AUTH_REQUIRED|LOGIN_REQUIRED|UNAUTHENTICATED|INVALID_LOGIN_STATE|TOKEN[^ ]*EXPIRED|STUDENT_(NOT_LINKED|REQUIRED)/i.test(heartbeatErrorMarker(error));
+            return /VOCABULARY_TEST_(SESSION_(EXPIRED|CLOSED|NOT_FOUND|MISMATCH)|ASSIGNMENT_(CANCELLED|NOT_FOUND)|DEVICE_BLOCKED)|VOCABULARY_CONTENT_OUTDATED|AUTH_REQUIRED|LOGIN_REQUIRED|UNAUTHENTICATED|INVALID_LOGIN_STATE|TOKEN[^ ]*EXPIRED|STUDENT_(NOT_LINKED|REQUIRED)/i.test(heartbeatErrorMarker(error));
         }
 
         function heartbeatRequestWithTimeout(sessionId) {
@@ -2557,6 +2566,7 @@
         function startVocabularyTestSession(groups) {
             if (!isCountedGroupCount(groups.length)) {
                 activeTestSessionId = '';
+                activeTestAssignmentId = '';
                 testStartedAt = new Date().toISOString();
                 return Promise.resolve(null);
             }
@@ -4571,16 +4581,19 @@
                     return Promise.resolve(false);
                 }
                 activeTestSessionId = draft.test_session_id;
+                activeTestAssignmentId = draft.assignment_id || '';
                 return resumeVocabularyTestSession(draft.test_session_id).then(function(response) {
                     var seconds = response.remaining_seconds == null ? remaining : Math.max(1, Number(response.remaining_seconds || 0));
                     return renderStartedTest(selected, draft.answers || {}, seconds, false, 'test');
                 }).catch(function() {
                     activeTestSessionId = '';
+                    activeTestAssignmentId = '';
                     clearTestDraft();
                     return false;
                 });
             }
             activeTestSessionId = '';
+            activeTestAssignmentId = '';
             return Promise.resolve(renderStartedTest(selected, draft.answers || {}, remaining, false, 'test'));
         }
 
@@ -4819,7 +4832,7 @@
 
             window.MrCatCloud.callFunction('submitAttempt', {
                 set_id: setId,
-                assignment_id: activeTestMode === 'practice' ? null : assignmentId || null,
+                assignment_id: activeTestMode === 'practice' ? null : activeTestAssignmentId || null,
                 mode: activeTestMode === 'practice' ? 'vocabulary_practice_timed' : 'vocabulary_test',
                 content_version: vocabularyContentVersion(),
                 test_session_id: activeTestMode === 'practice' ? null : activeTestSessionId || null,
@@ -4880,13 +4893,21 @@
                 setTestLocked(false);
                 stopTestHeartbeat();
                 activeTestSessionId = '';
+                activeTestAssignmentId = '';
                 testSubmitting = false;
                 clearTestDraft();
             }).catch(function(error) {
                 testSubmitting = false;
                 submitButton.disabled = false;
                 submitButton.textContent = activeTestMode === 'practice' ? 'Submit Practice' : 'Submit';
-                if (testLocked && options.remaining_seconds > 0) {
+                if (isTerminalHeartbeatError(error)) {
+                    stopTestHeartbeat();
+                    clearInterval(testTimerId);
+                    setTestLocked(false);
+                    activeTestSessionId = '';
+                    activeTestAssignmentId = '';
+                    clearTestDraft();
+                } else if (testLocked && options.remaining_seconds > 0) {
                     startTimer(options.remaining_seconds);
                     startTestHeartbeat();
                 }

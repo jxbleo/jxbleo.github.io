@@ -108,6 +108,11 @@ assert.match(
 );
 assert.match(
   vocabularyPage,
+  /ASSIGNMENT_\(CANCELLED\|NOT_FOUND\)/,
+  "a cancelled or missing locked assignment must be treated as a terminal Quiz error"
+);
+assert.match(
+  vocabularyPage,
   /Network unstable — reconnecting…/,
   "students must see a reconnecting state during transient failures"
 );
@@ -115,6 +120,28 @@ assert.doesNotMatch(
   vocabularyPage,
   /callVocabularyTestSession\('heartbeatVocabularyTestSession'[\s\S]{0,240}\.catch\(function\(error\)[\s\S]{0,180}endTestForIntegrity\('heartbeat_failed'/,
   "one raw heartbeat rejection must not immediately interrupt the test"
+);
+assert.match(
+  vocabularyPage,
+  /activeTestAssignmentId\s*=\s*session\.assignment_id\s*\|\|\s*''/,
+  "the browser must restore the assignment locked by the server session"
+);
+assert.match(
+  vocabularyPage,
+  /assignment_id:\s*activeTestMode === 'practice' \? null : activeTestAssignmentId \|\| null/,
+  "Quiz submission must send the session-locked assignment rather than re-read the page URL"
+);
+
+const submitSource = fs.readFileSync(path.join(root, "cloudfunctions", "submitAttempt", "index.js"), "utf8");
+assert.match(
+  submitSource,
+  /isCountedVocabularyTest[\s\S]*ensureActiveOwnedVocabularySession\(student, event\)[\s\S]*resolveVocabularySessionAssignment\(student, setId, vocabularyTestSession\)/,
+  "counted Vocabulary Quiz submission must resolve assignment ownership from the active server session"
+);
+assert.doesNotMatch(
+  submitSource,
+  /validateVocabularyTestSessionForSubmit\(student, event, setId, assignmentId/,
+  "session validation must not compare against a separately auto-selected assignment"
 );
 
 for (const functionName of ["submitAttempt", "getDashboard", "getCurrentStudent", "studentVocabulary"]) {
