@@ -24,13 +24,13 @@ This is a good fit for the current project because the owner needs a maintainabl
 | Layer | Current choice |
 | --- | --- |
 | Frontend | Static HTML, CSS, vanilla JavaScript |
-| Hosting | GitHub Pages / static web hosting |
+| Hosting | Tencent CloudBase static hosting for the custom domain; GitHub remains the source repository |
 | Backend | Tencent CloudBase cloud functions |
 | Auth | CloudBase username/password Authentication |
 | Database | CloudBase database collections |
 | Runtime data | `data/*.json`, `content/**/*.json`, JS fallback files |
 | Cloud functions | Node.js 18 |
-| Build system | No frontend build step |
+| Build system | `npm run build:static` copies the public static allowlist into `dist/` |
 | Deployment package | ZIP files under `deploy-packages/` |
 
 ## 3. High-Level System Flow
@@ -81,6 +81,12 @@ Shared frontend assets:
 - `assets/js/reports.js`
 - `assets/css/reports.css`
 - `assets/css/my-words.css`
+
+CloudBase Git deployment tracks the GitHub `main` branch. Its static build
+copies only root HTML/web-manifest files plus `assets/`, `bbc-audio/`,
+`content/`, and `data/` into `dist/`. Cloud functions, deployment packages,
+scripts, repository documentation, and local/private configuration are not
+published as website files.
 
 The shared Liquid Glass layer is presentation-only on login and public Library.
 The authenticated Student Dashboard and Teacher desk additionally use the
