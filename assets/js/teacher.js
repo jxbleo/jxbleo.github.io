@@ -85,6 +85,16 @@
         studentProgressView: 'to_do',
         studentInfoEdit: '',
         accountPanelOpen: false,
+        teacherEmailSettings: {
+            recipients: [],
+            limit: 10,
+            loaded: false,
+            loading: false,
+            saving: '',
+            draft: '',
+            notice: '',
+            noticeType: ''
+        },
         updatesOpen: false,
         reviewOpen: false,
         starOpen: false,
@@ -807,9 +817,95 @@
         updateTopBadges();
     }
 
+    function teacherEmailRowsHtml() {
+        var settings = state.teacherEmailSettings;
+        if ((settings.loading && !settings.loaded) || !settings.recipients.length) return '';
+        return settings.recipients.map(function(recipient) {
+            var enabled = recipient.enabled === true;
+            var busy = Boolean(settings.saving || settings.loading);
+            return '<div class="teacher-email-row">' +
+                '<div class="teacher-email-address"><strong>' + escapeHtml(recipient.email) + '</strong></div>' +
+                '<button class="teacher-email-switch' + (enabled ? ' is-enabled' : '') + '" type="button" role="switch" aria-checked="' + (enabled ? 'true' : 'false') + '" aria-label="' + (enabled ? 'Disable ' : 'Enable ') + escapeHtml(recipient.email) + '" data-teacher-email-toggle="' + escapeHtml(recipient.email_id) + '"' + (busy ? ' disabled' : '') + '><span aria-hidden="true"></span></button>' +
+            '</div>';
+        }).join('');
+    }
+
+    function applyTeacherEmailSettings(result) {
+        var settings = state.teacherEmailSettings;
+        settings.recipients = result.recipients || [];
+        settings.limit = Number(result.limit || 10);
+        settings.loaded = true;
+        settings.loading = false;
+        settings.saving = '';
+    }
+
+    function loadTeacherEmailSettings(force) {
+        var settings = state.teacherEmailSettings;
+        if (settings.loading || (settings.loaded && force !== true)) return Promise.resolve();
+        settings.loading = true;
+        renderTeacherAccount();
+        return teacherCall('getTeacherEmailSettings').then(function(result) {
+            applyTeacherEmailSettings(result);
+            settings.notice = '';
+            settings.noticeType = '';
+        }).catch(function(error) {
+            settings.loading = false;
+            settings.notice = error.message;
+            settings.noticeType = 'error';
+        }).then(renderTeacherAccount);
+    }
+
+    function saveTeacherEmailSetting(action, data, savingKey) {
+        var settings = state.teacherEmailSettings;
+        if (settings.saving) return;
+        settings.saving = savingKey;
+        settings.notice = '';
+        settings.noticeType = '';
+        renderTeacherAccount();
+        teacherCall(action, data).then(function(result) {
+            applyTeacherEmailSettings(result);
+            settings.draft = '';
+            settings.notice = '';
+            settings.noticeType = '';
+        }).catch(function(error) {
+            settings.saving = '';
+            settings.notice = error.message;
+            settings.noticeType = 'error';
+        }).then(renderTeacherAccount);
+    }
+
+    function bindTeacherEmailControls() {
+        var settings = state.teacherEmailSettings;
+        var form = document.getElementById('teacher-email-form');
+        var input = document.getElementById('teacher-email-input');
+        if (input) input.addEventListener('input', function() { settings.draft = input.value; });
+        if (form) form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (!input || !input.reportValidity()) return;
+            settings.draft = input.value.trim();
+            saveTeacherEmailSetting('addTeacherEmail', { email: settings.draft, enabled: true }, 'new');
+        });
+        teacherAccountContent.querySelectorAll('[data-teacher-email-toggle]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var emailId = button.dataset.teacherEmailToggle;
+                var recipient = settings.recipients.find(function(item) { return item.email_id === emailId; });
+                if (!recipient) return;
+                saveTeacherEmailSetting('setTeacherEmailEnabled', {
+                    email_id: emailId,
+                    enabled: recipient.enabled !== true
+                }, emailId);
+            });
+        });
+    }
+
     function renderTeacherAccount() {
         if (!teacherAccountContent) return;
         var profile = state.profile || {};
+        var settings = state.teacherEmailSettings;
+        var addDisabled = settings.loading || settings.saving || settings.recipients.length >= settings.limit;
+        var emailNotice = settings.notice
+            ? '<p class="teacher-email-notice ' + escapeHtml(settings.noticeType) + '" aria-live="polite">' + escapeHtml(settings.notice) + '</p>'
+            : '';
         teacherAccountContent.innerHTML =
             '<div class="profile-grid">' +
                 '<section class="profile-card">' +
@@ -820,7 +916,18 @@
                         '<button class="danger-button teacher-logout" id="teacher-logout" type="button">Log Out</button>' +
                     '</div>' +
                 '</section>' +
+                '<section class="profile-card teacher-email-card">' +
+                    '<h2 class="teacher-email-title">EMAIL NOTIFICATIONS</h2>' +
+                    '<form class="teacher-email-form" id="teacher-email-form">' +
+                        '<label class="sr-only" for="teacher-email-input">Email address</label>' +
+                        '<input id="teacher-email-input" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="name@example.com" value="' + escapeHtml(settings.draft) + '" required' + (addDisabled ? ' disabled' : '') + '>' +
+                        '<button class="primary-button" type="submit"' + (addDisabled ? ' disabled' : '') + '>' + (settings.saving === 'new' ? 'Adding...' : 'Add') + '</button>' +
+                    '</form>' +
+                    '<div class="teacher-email-list">' + teacherEmailRowsHtml() + '</div>' +
+                    emailNotice +
+                '</section>' +
             '</div>';
+        bindTeacherEmailControls();
         var logout = document.getElementById('teacher-logout');
         if (logout) {
             logout.addEventListener('click', function() {
@@ -850,6 +957,7 @@
             renderUpdatesPanel();
             setReviewPanel(false);
             renderTeacherAccount();
+            loadTeacherEmailSettings();
         }
     }
 
@@ -4658,9 +4766,8 @@
         return (ids || []).map(function(id) { return found[String(id)] || null; }).filter(Boolean);
     }
 
-    function isOpenAssignmentItem(item) {
-        var status = String(item && item.status || 'to_do');
-        return ['to_do', 'not_done', 'failed'].indexOf(status) !== -1;
+    function isCancellableAssignmentItem(item) {
+        return Boolean(item) && normalizedAssignmentStatus(item.status) !== 'cancelled';
     }
 
     function renderAssignmentGroupTools(group) {
@@ -4781,7 +4888,7 @@
             showMessage('Assignment parameters are temporarily unavailable. Refresh Teacher View and try again.', 'error');
             return false;
         }
-        var cancelableItems = items.filter(isOpenAssignmentItem);
+        var cancelableItems = items.filter(isCancellableAssignmentItem);
         var commonDue = commonFieldValue(items, 'due_at');
         var commonDueSource = commonDue || (items.length === 1 ? assignmentDueDate(items[0]) : null);
         var dueWeek = assignmentWeekStartValue(commonDueSource);
@@ -4833,7 +4940,7 @@
                         '</div>' +
                     '</div>' +
                     '<div class="dialog-actions">' +
-                        '<button class="danger-button assignment-cancel-open-button" type="button" data-cancel-assignments' + (cancelableItems.length ? '' : ' disabled') + '>Cancel open assignments</button>' +
+                        '<button class="danger-button assignment-cancel-open-button" type="button" data-cancel-assignments' + (cancelableItems.length ? '' : ' disabled') + '>Cancel assignments</button>' +
                         '<button class="primary-button" type="submit">Save changes</button>' +
                     '</div>' +
                 '</form>' +
@@ -4948,7 +5055,7 @@
         if (cancelAssignmentsButton) {
             cancelAssignmentsButton.addEventListener('click', function() {
                 if (!cancelableItems.length) {
-                    showMessage('No open assignment can be cancelled in this selection.', 'error');
+                    showMessage('No assignment can be cancelled in this selection.', 'error');
                     return;
                 }
                 openCancelAssignmentsConfirmation();
@@ -4962,9 +5069,9 @@
             confirmOverlay.innerHTML =
                 '<section class="assignment-cancel-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="assignment-cancel-confirm-title">' +
                     '<span class="assignment-cancel-confirm-icon" aria-hidden="true">!</span>' +
-                    '<h2 id="assignment-cancel-confirm-title">Cancel open assignments?</h2>' +
-                    '<p>This will cancel ' + escapeHtml(cancelableItems.length) + ' open assignment' + (cancelableItems.length === 1 ? '' : 's') +
-                        ' for this selection. Existing attempts and completed work will stay saved.</p>' +
+                    '<h2 id="assignment-cancel-confirm-title">Cancel assignments?</h2>' +
+                    '<p>This will remove ' + escapeHtml(cancelableItems.length) + ' assignment' + (cancelableItems.length === 1 ? '' : 's') +
+                        ' from active assignment views. Existing attempts, learning progress, completed work, and STARs will stay saved.</p>' +
                     '<div class="assignment-cancel-confirm-actions">' +
                         '<button class="outline-button" type="button" data-keep-assignments>Keep assignments</button>' +
                         '<button class="danger-button" type="button" data-confirm-cancel-assignments>Cancel assignments</button>' +

@@ -178,6 +178,8 @@ Active or relevant functions:
   metadata is fetched in bounded `set_id` batches rather than one query per
   historical task so large student histories remain inside the function limit.
 - `submitAttempt`: trusted grading and attempt storage
+- `sendTeacherAttemptEmails`: timer-only SMTP dispatcher for private BBC
+  seven-minute batches and cumulative immediate Vocabulary attempt emails
 - `teacherAdmin`: teacher-only student account deletion/admin, assignment,
   progress, disputes, answer-key access, shared dictionary review, and
   read-only student vocabulary inspection. Its student-detail STAR source action
@@ -274,6 +276,7 @@ Main collections:
 - `classes`
 - `class_memberships`
 - `learning_reports`
+- `teacher_attempt_email_events`
 
 See [04_DATA_MODEL.md](04_DATA_MODEL.md) for fields and relationships.
 
@@ -451,6 +454,33 @@ newest unseen thread summaries at a time, `listAttemptThread` supplies the bound
 summary history for one authorized thread, and `getAttemptDetail` remains the only
 source of full answers and explanations. Matrix cells also use the thread action
 on demand so notification pagination cannot hide older progress history.
+
+External teacher email is an asynchronous outbox projection of the same
+attempt threads. After `submitAttempt` stores a recorded BBC, Vocabulary Quiz,
+or timed Vocabulary Practice attempt, it idempotently writes one
+`teacher_attempt_email_events` document keyed by `attempt_id`. A queue-write
+failure is logged but does not change the successful grading response.
+
+`sendTeacherAttemptEmails` is callable only by a token-authenticated CloudBase
+timer. It transactionally claims due events before SMTP delivery. BBC events
+use a fixed seven-minute first-attempt window and one claimed batch contains
+every pending event in that thread/window. Vocabulary events are due at their
+submission time and are claimed separately. Before rendering, the dispatcher
+loads the same assignment/self-study thread through the current event cutoff,
+joins the private grading key for legacy missing snapshots, and builds the
+cumulative score chart plus mistake-only comparisons. Stable subjects and
+`In-Reply-To` metadata encourage email clients to keep one task together.
+Sent/retry/failed audit state remains in the outbox; email never changes the
+teacher profile's bell read markers.
+
+Before each dispatch, the function reads active teacher profiles and derives a
+deduplicated BCC list from their enabled `attempt_email_recipients`. If the list
+is empty, due events are transactionally claimed and marked `skipped` so a
+later re-enable does not send stale notifications. SMTP user/password, sender,
+Teacher URL, and timer token exist only as function environment variables. The
+function uses Nodemailer as the bounded SMTP transport dependency. The browser
+may manage only the authenticated teacher's recipient array through
+`teacherAdmin`; no public collection can invoke or configure delivery.
 
 ### STAR Cash Redemption
 

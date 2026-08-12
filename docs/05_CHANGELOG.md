@@ -3,6 +3,53 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-12
+
+### Changed
+
+- Teacher View can now soft-cancel any non-cancelled assignment, including
+  Passed and Mastered rows, so obsolete participation can be removed from the
+  matrix after class membership or assignment-scope changes.
+- Completed-assignment cancellation preserves immutable attempts, set-wide
+  Exercise Progress, completion timestamps, historical best scores, and
+  protected STARs. Reassignment still initializes from the historical global
+  best and may therefore be immediately complete.
+
+## 2026-08-11
+
+### Added
+
+- Added a private teacher attempt-email outbox and timer-only SMTP dispatcher.
+- Added fixed seven-minute BBC batching and immediately due cumulative
+  Vocabulary Quiz/Timed Practice emails with complete history bars and
+  mistake-only answer comparisons.
+- Added bounded retry/audit state, stable email conversation metadata, and pure
+  notification rendering/policy tests.
+- Added Teacher Personal Center Email management with add, delete, enable/pause,
+  a ten-address limit, private BCC delivery, and no-recipient skip behavior.
+
+### Changed
+
+- `submitAttempt` now queues eligible email events after immutable attempt
+  storage without making email delivery part of grading success.
+- Added Nodemailer 9.0.5 as a bundled CloudBase-function dependency; SMTP
+  transport, sender, Teacher URL, and timer settings remain environment-only,
+  while recipient addresses are teacher-owned profile settings.
+- Simplified the Teacher Personal Center email surface to one blue `EMAIL
+  NOTIFICATIONS` heading, one add control, and address-level enable/pause
+  switches; removed explanatory, count, refresh, status, and delete chrome.
+- Activated the explicitly authorized development email dispatcher with a
+  server-only token and enabled one-minute SCF timer; the token is absent from
+  source and deployment transcripts.
+- Changed attempt-email subjects to student name, exercise title, and historical
+  best score only, and reversed chart/detail/plain-text history to newest first.
+
+### Fixed
+
+- Fixed Teacher Personal Center email creation failing because its private
+  recipient-record ID helper was missing; the development `teacherAdmin`
+  function was redeployed with a regression assertion.
+
 ## 2026-08-10
 
 ### Fixed

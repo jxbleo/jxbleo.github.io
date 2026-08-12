@@ -28,6 +28,7 @@ node --check assets/js/practice-session.js
 npm run test:my-words
 npm run test:assignment-schedule
 npm run test:star-rewards
+npm run test:attempt-emails
 npm run test:protected-resources
 npm run test:learning-reports
 ```
@@ -47,6 +48,47 @@ Teacher attempt payload checks in `test:assignment-schedule` verify that
 `listAttempts` omits question-level/private report fields, `listProgress` does
 not duplicate nested attempts, and `getAttemptDetail` restores the authorized
 single-attempt answers and BBC explanation.
+
+### Teacher attempt-email tests
+
+Run `npm run test:attempt-emails` and keep these cases:
+
+- BBC creates one `bbc_batch_7m` event due exactly seven minutes after the
+  source attempt; Vocabulary Quiz and timed Practice are immediately due;
+  unrecorded inline Practice and IELTS create no email event.
+- assignment and self-study thread keys exactly match the Teacher bell rule.
+- a two-attempt email contains both scores and both attempt cards, labels the
+  current event `NEW`, omits correct questions from mistake detail, and places
+  attempt #2 before attempt #1 in HTML and plain-text output.
+- legacy missing per-question answers/explanations are joined only from the
+  private grading key inside the trusted function.
+- a second Vocabulary email contains both attempts and their selected-group
+  context; its subject contains only student name, exercise title, and
+  historical best score, while stable reply metadata supports one mailbox
+  thread.
+- `submitAttempt` catches outbox errors after the recorded attempt, while the
+  dispatcher transactionally claims work, recovers claims older than ten
+  minutes, assigns a deterministic SMTP `Message-ID`, and requires the private
+  timer token.
+
+Development CloudBase verification after owner deployment:
+
+- one BBC attempt produces no email before the seven-minute boundary; retries
+  in that window produce one email with all new bars and complete prior history;
+- one Vocabulary Quiz/Timed Practice email arrives on the next minute tick;
+  a second submission produces a second email containing attempts #1 and #2;
+- an SMTP failure leaves the student submission successful, advances bounded
+  retry state, and does not normally resend an event already marked `sent`;
+- simulate a provider-accepted/database-update-failed edge case and confirm the
+  deterministic `Message-ID` is reused so mailbox-side duplicate handling has
+  the best available signal; do not claim SMTP provides strict exactly-once;
+- email/opening email does not clear or review the Teacher bell thread;
+- a deleted or paused Personal Center address receives nothing, and no SMTP
+  credential, recipient address, or rendered body is stored in the event row;
+- when every address is paused/deleted, the due event becomes `skipped` and is
+  not sent after a later re-enable;
+- two teacher-owned test inboxes receive the same message through BCC and
+  neither rendered message exposes the other inbox address.
 
 ### STAR reward rule tests
 
@@ -943,11 +985,16 @@ Check:
 - with Earn STAR off, Mastery % is visibly disabled and may be lower than a new
   Passing % without blocking save; turning Earn STAR on requires Mastery % at
   or above Passing %
-- the footer's Cancel open assignments control uses muted red text, a pale red
+- the footer's Cancel assignments control uses muted red text, a pale red
   tint, and a fine border rather than a solid red fill; hover/focus may gently
   strengthen the tint, while the second confirmation retains the stronger
   destructive treatment. Keep assignments, backdrop, or Escape return safely
-  to the editor, and destructive confirmation affects only open assignment IDs
+  to the editor, and destructive confirmation affects every explicit
+  non-cancelled assignment ID in scope, including passed/mastered records
+- cancelling a passed/mastered assignment removes it from active Student and
+  Teacher View assignment projections without deleting immutable attempts,
+  set-wide completion progress, best score, completion timestamps, or protected
+  STARs; a later reassignment still initializes from the historical global best
 - opening Edit from one student's assignment detail submits only that student's
   assignment ID, while a task-column Wxx edit submits every visible filtered
   student assignment in that column
@@ -1416,6 +1463,8 @@ Before saying a deploy is complete:
 - changed cloud functions have rebuilt ZIPs
 - CloudBase development functions are uploaded
 - required collections exist and are `ADMINONLY`
+- `teacher_attempt_email_events` exists and remains `ADMINONLY`; its event ID
+  uniqueness and due/thread query indexes exist before the email timer is enabled
 - Learning Reports V1: `classes`, `class_memberships`, and `learning_reports`
   exist and remain `ADMINONLY`; required uniqueness/query indexes exist before
   the report functions or timer are enabled

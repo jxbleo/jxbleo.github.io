@@ -1265,6 +1265,79 @@ html.teacher-modal-scroll-locked {
 }
 .account-panel .profile-grid { grid-template-columns: 1fr; }
 .teacher-page .account-panel { border-color: rgba(124, 58, 237, 0.18); }
+.teacher-email-card { display: grid; gap: 10px; }
+.teacher-email-title {
+    margin: 0;
+    color: #0878e8;
+    font-size: 0.84rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    line-height: 1.15;
+}
+.teacher-email-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.teacher-email-form input {
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid rgba(8, 120, 232, 0.2);
+    border-radius: 12px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.82);
+    font: 750 0.8rem/1 system-ui, sans-serif;
+    outline: none;
+}
+.teacher-email-form input:focus { border-color: #0878e8; box-shadow: 0 0 0 3px rgba(8, 120, 232, 0.12); }
+.teacher-email-form button { min-width: 64px; min-height: 42px; padding: 0 14px; border-radius: 12px; }
+.teacher-email-form input:disabled,
+.teacher-email-form button:disabled { opacity: 0.58; cursor: wait; }
+.teacher-email-list { display: grid; gap: 8px; }
+.teacher-email-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    min-height: 54px;
+    padding: 8px 9px 8px 12px;
+    border: 1px solid rgba(8, 120, 232, 0.12);
+    border-radius: 14px;
+    background: rgba(248, 247, 255, 0.72);
+}
+.teacher-email-address { min-width: 0; }
+.teacher-email-address strong { overflow: hidden; font-size: 0.78rem; text-overflow: ellipsis; white-space: nowrap; }
+.teacher-email-switch {
+    position: relative;
+    width: 44px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #cdd3d0;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+}
+.teacher-email-switch > span {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(31,45,38,0.22);
+    transform: translateX(0);
+    transition: transform 220ms cubic-bezier(.2,.8,.3,1);
+}
+.teacher-email-switch.is-enabled { background: #0878e8; }
+.teacher-email-switch.is-enabled > span { transform: translateX(18px); }
+.teacher-email-switch:active > span { width: 23px; }
+.teacher-email-switch:disabled { opacity: 0.55; cursor: wait; }
+.teacher-email-switch:focus-visible { outline: 3px solid rgba(8, 120, 232, 0.25); outline-offset: 2px; }
+.teacher-email-notice { margin: 0; color: var(--muted); font-size: 0.7rem; font-weight: 750; }
+.teacher-email-notice.error { color: #b73542; }
+@media (prefers-reduced-motion: reduce) {
+    .teacher-email-switch,
+    .teacher-email-switch > span { transition: none !important; }
+}
 .student-account-overlay {
     position: fixed;
     inset: 0;

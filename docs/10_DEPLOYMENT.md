@@ -67,6 +67,7 @@ All project collections should remain `ADMINONLY`:
 - `classes`
 - `class_memberships`
 - `learning_reports`
+- `teacher_attempt_email_events`
 
 Recommended unique indexes where supported:
 
@@ -86,6 +87,7 @@ Recommended unique indexes where supported:
 - `class_memberships.membership_id`
 - `learning_reports.report_id`
 - logical unique report identity: `learning_reports.class_id + period_type + period_key`
+- `teacher_attempt_email_events.event_id`
 
 Recommended query index:
 
@@ -107,6 +109,9 @@ Recommended query index:
 - `assignments.assignment_batch_id`
 - `attempts.student_uid + submitted_at`
 - `attempts.assignment_id + submitted_at`
+- `teacher_attempt_email_events.status + due_at`
+- `teacher_attempt_email_events.thread_key + status + submitted_at`
+- `teacher_attempt_email_events.status + processing_started_at`
 
 Create required collections before deploying functions that depend on them.
 
@@ -181,6 +186,7 @@ Active or relevant functions:
 - `getProtectedResource`
 - `learningReports`
 - `generateLearningReports`
+- `sendTeacherAttemptEmails`
 
 Common validation:
 
@@ -547,6 +553,87 @@ bulk-delete, rewrite a published snapshot, or run a destructive migration. If
 a report correction is required, use an explicit audited correction/republication
 path after the owner reviews the impact.
 
+### Teacher Attempt Email Notifications
+
+This release uses CloudBase data, cloud functions, and the Teacher Personal
+Center static UI. Deployment is owner-gated. Local validation and ZIP packaging
+do not authorize creating the collection, setting SMTP credentials, deploying
+the functions/static files, or enabling the timer.
+
+Development rollout status (2026-08-11): the `ADMINONLY` outbox and indexes,
+all three functions, and the three matching static files are deployed to
+`mrcat-dev-d9gwy2v1icdfdf597`. The dispatcher timeout is 300 seconds. At that
+deployment checkpoint, SMTP variables, recipient settings, and the timer were
+intentionally left unconfigured; see the activation status below.
+
+Activation status (2026-08-12): the owner configured the iCloud SMTP variables,
+added and enabled the two development recipient addresses, and explicitly
+authorized the one-minute timer. The private token and enabled SCF timer are now
+configured in development; delivery still requires a real development-student
+submission for end-to-end verification.
+
+1. Create `teacher_attempt_email_events` with `ADMINONLY` permissions and add
+   the unique/query indexes listed in section 3. Do not give the browser direct
+   access to the outbox.
+2. Configure these variables on `sendTeacherAttemptEmails` only:
+
+   ```text
+   TEACHER_ATTEMPT_EMAIL_CRON_TOKEN=<random server-only value>
+   TEACHER_ATTEMPT_SMTP_HOST=smtp.mail.me.com
+   TEACHER_ATTEMPT_SMTP_PORT=587
+   TEACHER_ATTEMPT_SMTP_SECURE=false
+   TEACHER_ATTEMPT_SMTP_USER=jxbleo@icloud.com
+   TEACHER_ATTEMPT_SMTP_PASS=<SMTP authorization code or app password>
+   TEACHER_ATTEMPT_EMAIL_FROM=Mr. Cat Academy <jxbleo@icloud.com>
+   TEACHER_ATTEMPT_EMAIL_REPLY_TO=<optional reply address>
+   TEACHER_ATTEMPT_EMAIL_TEACHER_URL=<optional authenticated teacher-page HTTPS URL>
+   TZ=Asia/Shanghai
+   ```
+
+   For providers such as QQ Mail or 163 Mail, use the provider's SMTP
+   authorization code/app password, not the ordinary mailbox password. Never
+   commit, print, or place these values in frontend settings. Recipient
+   addresses are not function environment values: after deployment, the
+   authenticated teacher adds up to ten addresses in Personal Center and
+   enables the desired ones. Multiple enabled teacher-owned inboxes receive one
+   BCC message and cannot see each other's address. Do not add parent addresses
+   here; guardian delivery requires a separate student-specific authorization
+   mapping.
+3. Validate and package all affected functions from the same source:
+
+   ```bash
+   npm run test:attempt-emails
+   npm run package:functions -- submitAttempt teacherAdmin sendTeacherAttemptEmails
+   ```
+
+4. Deploy `sendTeacherAttemptEmails` first, then the rebuilt `teacherAdmin` and
+   `submitAttempt`, and publish matching `teacher.html`, `assets/js/teacher.js`,
+   and `assets/css/app.css` cache versions. Only submissions accepted by the
+   new `submitAttempt` enqueue email events; this rollout intentionally does not
+   backfill old attempts.
+5. Create a one-minute SCF timer (`0 * * * * * *`) for
+   `sendTeacherAttemptEmails`. Put the same server token in `CustomArgument`;
+   SCF delivers it as `event.Message`. As with Learning Reports, use the
+   official SCF `CreateTrigger` API if the console/CLI shortcut cannot set
+   `CustomArgument`, and sanitize any response that might echo the token.
+6. Enable the timer last and test with a dedicated development student. A
+   Vocabulary email normally arrives on the next timer tick. A BBC email is
+   eligible seven minutes after the first submission in its fixed batch, then
+   sends on the next tick. SMTP/network failures retry with bounded backoff;
+   a processing claim older than ten minutes is automatically recovered.
+7. In Teacher Personal Center, add the owner's QQ and iCloud addresses and keep
+   both enabled for the comparison period. Submit one development Vocabulary
+   attempt, confirm both inboxes receive the same BCC message, then pause one
+   address and verify only the remaining enabled inbox receives the next test.
+
+For rollback, disable the timer first and redeploy the previous
+`submitAttempt`. Keep existing outbox rows as delivery/audit evidence; do not
+bulk-delete them. SMTP cannot provide strict exactly-once delivery when the
+provider accepts a message but the following database update fails. The
+dispatcher uses a deterministic `Message-ID`, transactional claims, and sent
+state to reduce duplicate delivery, but the teacher should treat the attempt
+history—not the number of email copies—as authoritative.
+
 ## 6. Owner-Gated Release Automation
 
 The project uses semi-automated deployment helpers. They prepare release
@@ -736,6 +823,13 @@ Teacher flow:
   private evidence history work
 - teacher report preview saves comments/goals, finalizes once after the cutoff,
   shows full authorized class detail, and copies a valid ordinary-WeChat link/text
+- a Vocabulary Quiz and timed Practice submission each create a prompt email;
+  retry emails contain the earlier attempts and comparison chart
+- BBC retries submitted within the fixed first-submission-plus-seven-minute
+  window produce one email containing the complete batch history
+- email mistake rows match the Teacher bell's authorized paper view: correct
+  questions are omitted and BBC mistakes include expected answers/explanations
+- opening or receiving an email does not mark the Teacher bell thread as read
 
 Data flow:
 
@@ -746,6 +840,9 @@ Data flow:
 - evidence file IDs are not permanent public URLs and Storage remains private
 - report collections remain `ADMINONLY`; unauthenticated, inactive, unrelated,
   and preview-student reads are denied without returning another student's report data
+- attempt-email outbox and SMTP credentials remain server-only; recipient
+  settings are visible/mutable only to the authenticated owning teacher, and
+  delivery failures do not roll back submissions
 
 ## 10. Rollback and Risk Notes
 

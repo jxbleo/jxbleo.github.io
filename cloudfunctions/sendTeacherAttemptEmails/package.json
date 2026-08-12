@@ -1,0 +1,10 @@
+{
+  "name": "send-teacher-attempt-emails",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "3.18.1",
+    "nodemailer": "9.0.5"
+  }
+}
