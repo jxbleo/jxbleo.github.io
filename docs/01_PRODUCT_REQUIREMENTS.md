@@ -108,6 +108,10 @@ Mr. Cat Academy 不是单纯的做题网页，而是一个轻量级学习管理�
   Vocabulary 报告明确标识 `Quiz` 或计时 `Practice`，并显示学生当次选择的具体词组。
   计时 Practice 无论选择多少组都会保存仅供教师通知的 activity attempt，但不计入
   学生完成记录；Learn 内的 inline Practice 不保存 attempt
+- 教师从铃铛打开某次提交的试卷报告时，当前仍判错、答案非空且学生尚未对该题
+  发起 Argue 的题目提供 `Add as accepted answer`。点击后由可信后端直接把该答案
+  加入 accepted answers，并沿用 Argue `add` 的审计、历史向上重判、assignment 与
+  STAR 修复规则；已有任何 Argue 的题目不显示该快捷入口
 - BBC / Vocabulary 通知线程的每次提交卡片顶部只显示 `No. n`、上海提交日期时间和
   卷子入口，不重复显示 `Attempt`、分数、页面耗时或音频耗时。BBC 错题表的题号统一
   显示为 `Qn`，不暴露 `Blank_`、`Question_` 或 `MC` 等内部题目 ID。Vocabulary
