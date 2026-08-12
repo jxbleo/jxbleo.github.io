@@ -1761,3 +1761,11 @@ Important mobile rules:
   score, and Enter destination below it.
 - Teacher Assign shows editions as separate selectable work rows. Concrete Assignment,
   History, STAR, Argue, and report entries never show the selector.
+### ICP registration footer
+
+- The public login/home page ends with a centered, low-emphasis registration
+  link displaying `粤ICP备2026107102号-1`.
+- The link opens `https://beian.miit.gov.cn/` in a new tab and remains visible
+  below the main login panel on desktop and mobile.
+- The public homepage is the canonical registration display surface;
+  individual practice and authenticated application pages do not repeat it.

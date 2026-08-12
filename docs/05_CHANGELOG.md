@@ -7,6 +7,8 @@
 
 ### Changed
 
+- Added the official ICP registration number and Ministry of Industry and
+  Information Technology link to the public homepage footer.
 - IELTS Listening now defaults to a seekable, speed-adjustable Practice Mode;
   the locked one-pass flow is named Test Mode and is the only recorded path.
 - New IELTS Reading and Listening Argue requests are disabled in runtime UI and
