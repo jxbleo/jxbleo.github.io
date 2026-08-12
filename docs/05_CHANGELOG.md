@@ -7,6 +7,11 @@
 
 ### Changed
 
+- Vocabulary Quiz and timed Practice now send every recorded submission as an
+  independent mailbox message. Subjects include `Quiz No. n` or
+  `Practice No. n`, while second and later messages retain cumulative history
+  for the same assignment/self-study set. BBC keeps its existing reply-threaded
+  seven-minute batches.
 - Counted Vocabulary Quiz sessions now lock the exact assignment or self-study
   context from start through draft restore and submission. A second open-task
   lookup can no longer move the first submission to another assignment.

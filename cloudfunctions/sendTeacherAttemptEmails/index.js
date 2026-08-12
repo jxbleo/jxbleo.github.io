@@ -206,11 +206,16 @@ async function emailContext(claimed) {
     assignmentForJob(anchor),
     getOne("grading_keys", { set_id: anchor.set_id }),
     attemptThreadForJob(anchor, cutoffAt),
-    getAll(EVENT_COLLECTION, { thread_key: anchor.thread_key }),
+    anchor.delivery_policy === notifications.EMAIL_POLICIES.BBC_BATCH
+      ? getAll(EVENT_COLLECTION, { thread_key: anchor.thread_key })
+      : Promise.resolve([]),
   ]);
   if (!student || student.deleted === true || student.deleted_at) throw new Error("ATTEMPT_EMAIL_STUDENT_NOT_AVAILABLE");
   if (!set) throw new Error("ATTEMPT_EMAIL_SET_NOT_FOUND");
   if (!rawAttempts.length) throw new Error("ATTEMPT_EMAIL_THREAD_EMPTY");
+  // Only BBC's seven-minute batches continue an SMTP conversation. Every
+  // Vocabulary Quiz/Practice submission must appear as a separate mailbox
+  // message, while its body still projects the cumulative attempt history.
   const previousMessage = threadEvents
     .filter((item) => item.status === "sent" && text(item.provider_message_id))
     .sort((left, right) => dateValue(right.sent_at) - dateValue(left.sent_at))[0];
@@ -303,7 +308,7 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
         "X-Mr-Cat-Thread": text(claimed.jobs[0].thread_key),
       },
     };
-    if (context.previousMessageId) {
+    if (context.policy === notifications.EMAIL_POLICIES.BBC_BATCH && context.previousMessageId) {
       mail.inReplyTo = context.previousMessageId;
       mail.references = context.previousMessageId;
     }
