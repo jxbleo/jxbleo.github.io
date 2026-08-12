@@ -1379,6 +1379,41 @@ Shared rules:
 - A sticky lesson header at the top of the workspace shows the lesson title and source, above the questions.
 - The header stays visible while scrolling through questions.
 
+### Intensive Listening
+
+- Intensive Listening targets desktop and keyboard-equipped iPad use; a separate
+  phone interaction is not required.
+- One teacher-approved Intensive Listening Unit is active at a time. A unit
+  follows a natural speech boundary and manageable transcription length rather
+  than requiring a grammatical sentence ending.
+- The active unit reveals its expected word count as one equal-width Word Slot
+  per reviewed word. Slot width must not reveal the expected word's character
+  count. Sentence punctuation—including commas, periods, question marks,
+  exclamation marks, colons, semicolons, and dashes—is visible in its reviewed
+  position outside the slots and is not typed or graded. Apostrophes and hyphens
+  inside a word remain part of that Word Slot's required answer.
+- Typing fills the focused Word Slot. `Space` advances to the next slot, and
+  `Enter` checks the complete active unit.
+- Checking is deterministic and positional: each slot is compared only with its
+  corresponding reviewed word. Correct slots turn green and incorrect slots turn
+  red; comparison ignores letter case but otherwise requires the reviewed word,
+  including any internal apostrophe or hyphen. The page does not realign answers
+  or generate AI explanations.
+- After a check, an incorrect Word Slot keeps the student's entry and turns red;
+  it does not reveal or replace it with the reviewed word. The student may replay,
+  edit, and check the unit again. Only an explicit `Show Answer` action reveals
+  the complete reviewed text.
+- The top bar defaults to `Practice Mode`, with pause/play, a draggable progress
+  bar, elapsed/total time, and `0.75× / 1× / 1.25× / 1.5× / 2×` speed choices.
+- `Test Mode` requires confirmation, clears Practice answers/feedback, restarts
+  audio at `1×`, and locks pause, seeking, speed, and mode switching until the
+  student submits or explicitly exits the unfinished test.
+- An interrupted Test may expose `Resume Audio` from the stopped position. Test
+  submission changes the player to unlocked Review controls; `Try Again`
+  returns to a clean Practice Mode at `1×`.
+- IELTS Reading and IELTS Listening expose no Argue entry point in student,
+  History, or teacher-preview surfaces.
+
 ### BBC Practice
 
 - BBC lessons may opt into a front-end-only render theme through

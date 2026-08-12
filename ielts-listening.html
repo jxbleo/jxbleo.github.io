@@ -91,7 +91,8 @@
         }
         .top-audio-start,
         .top-audio-resume,
-        .top-audio-play {
+        .top-audio-play,
+        .top-audio-exit {
             min-height: 30px;
             padding: 0 14px;
             border: 1px solid rgba(255,255,255,.36);
@@ -107,6 +108,11 @@
             color: #7f1d1d;
             border-color: rgba(248,113,113,.64);
             background: linear-gradient(180deg, #fff7f7, #fecaca);
+        }
+        .top-audio-exit {
+            color: #fee2e2;
+            border-color: rgba(248,113,113,.55);
+            background: rgba(127,29,29,.48);
         }
         .top-audio-status {
             color: #cbd5e1;
@@ -133,6 +139,38 @@
             text-align: right;
             white-space: nowrap;
         }
+        .top-audio-speed {
+            min-height: 30px;
+            padding: 0 7px;
+            border: 1px solid rgba(255,255,255,.32);
+            border-radius: 4px;
+            color: #f8fafc;
+            background: #26354a;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .mode-switch {
+            display: inline-flex;
+            gap: 2px;
+            padding: 2px;
+            border-radius: 6px;
+            background: rgba(15,23,42,.72);
+        }
+        .mode-switch button {
+            min-height: 27px;
+            padding: 0 10px;
+            border: 0;
+            border-radius: 4px;
+            color: #cbd5e1;
+            background: transparent;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .mode-switch button.active { color: #0f172a; background: #f8fafc; }
+        .mode-switch button.test-active { color: #fff; background: #b91c1c; }
+        .mode-switch button:disabled { cursor: default; opacity: .62; }
         .top-actions {
             display: flex;
             justify-content: flex-end;
@@ -591,6 +629,8 @@
             .top-audio-review { min-width: 0; gap: 5px; }
             .top-audio-progress { width: 86px; }
             .top-audio-time { min-width: 58px; font-size: 10px; }
+            .top-audio-speed { min-height: 27px; padding: 0 4px; font-size: 10px; }
+            .mode-switch button { min-height: 25px; padding: 0 6px; font-size: 10px; }
             .top-actions { gap: 4px; }
             .top-actions button {
                 min-height: 27px;
@@ -621,6 +661,21 @@
             .q-nav { width: 26px; height: 26px; padding: 0; }
             .submit-btn { min-width: 92px; }
         }
+        @media (max-width: 560px) {
+            .exam-shell { grid-template-rows: 76px minmax(0, 1fr) 112px; }
+            .exam-topbar {
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-rows: 32px 44px;
+            }
+            .candidate { grid-column: 1; grid-row: 1; visibility: visible; }
+            .top-actions { grid-column: 2; grid-row: 1; }
+            .top-audio { grid-column: 1 / -1; grid-row: 2; justify-content: center; gap: 5px; }
+            .top-audio-review { flex: 1 1 auto; }
+            .top-audio-progress { flex: 1 1 auto; width: min(120px, 30vw); }
+            .top-audio-time { display: none; }
+            .mode-switch button { padding: 0 5px; }
+            .top-audio-exit { padding: 0 6px; font-size: 10px; }
+        }
     </style>
 </head>
 <body data-practice-nav="manual">
@@ -629,13 +684,21 @@
         <div class="candidate" id="set-code">C7-T1-S1</div>
         <div class="top-audio" id="top-audio">
             <audio id="listening-audio" preload="metadata" controls></audio>
-            <button class="top-audio-start" id="top-audio-start" type="button" hidden>Start Audio</button>
+            <div class="mode-switch" id="mode-switch" aria-label="Listening mode">
+                <button id="practice-mode-btn" class="active" type="button">Practice Mode</button>
+                <button id="test-mode-btn" type="button">Test Mode</button>
+            </div>
             <button class="top-audio-resume" id="top-audio-resume" type="button" hidden>Resume Audio</button>
             <div class="timer" id="timer-display" aria-live="polite" hidden><strong id="time-left">--</strong><span id="time-left-label">minutes left</span></div>
+            <button class="top-audio-exit" id="top-audio-exit" type="button" hidden>Exit Test</button>
             <div class="top-audio-review" id="top-audio-review">
                 <button class="top-audio-play" id="top-audio-play" type="button" aria-label="Play or pause">▶</button>
                 <input class="top-audio-progress" id="top-audio-progress" type="range" min="0" max="1000" value="0" aria-label="Audio progress">
                 <div class="top-audio-time" id="top-audio-time">0:00 / 0:00</div>
+                <select class="top-audio-speed" id="top-audio-speed" aria-label="Playback speed">
+                    <option value="0.75">0.75×</option><option value="1" selected>1×</option>
+                    <option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option>
+                </select>
             </div>
             <div class="top-audio-status" id="top-audio-status" hidden>Audio pending</div>
         </div>
@@ -650,7 +713,7 @@
     <nav class="bottom-nav" aria-label="Question navigation">
         <label class="review"><input id="review-checkbox" type="checkbox"> Review</label>
         <div class="question-map" id="question-map"></div>
-        <button class="submit-btn" id="submit-btn" type="button">Submit</button>
+        <button class="submit-btn" id="submit-btn" type="button">Check Answers</button>
     </nav>
 </main>
 <div class="toolbar" id="teacher-toolbar">
@@ -659,11 +722,11 @@
 <div class="result-bar" id="result-bar" role="status" aria-live="polite"></div>
 <div class="audio-start-modal" id="audio-start-modal" role="dialog" aria-modal="true" aria-labelledby="audio-start-title">
     <div class="audio-start-box">
-        <h2 id="audio-start-title">Start IELTS Listening Audio</h2>
-        <p>Once the audio starts, it cannot be paused, replayed, or dragged back during the exam. After you submit, the audio controls will unlock for review.</p>
+        <h2 id="audio-start-title">Start Test Mode?</h2>
+        <p>Your Practice answers and feedback will be cleared. The audio will restart at 1× and cannot be paused, replayed, or dragged during the test.</p>
         <div class="audio-start-actions">
             <button class="audio-start-cancel" id="audio-start-cancel" type="button">Not Yet</button>
-            <button class="audio-start-confirm" id="audio-start-confirm" type="button">Start Audio</button>
+            <button class="audio-start-confirm" id="audio-start-confirm" type="button">Start Test</button>
         </div>
     </div>
 </div>
@@ -856,6 +919,7 @@
         if (!audio) return;
         audio.src = lesson.audioSrc || '';
         audioMode = lesson.audioSrc ? 'ready' : 'missing';
+        audio.playbackRate = 1;
         updateAudioUi();
         audio.addEventListener('loadedmetadata', syncAudioUi);
         audio.addEventListener('timeupdate', syncAudioUi);
@@ -898,19 +962,28 @@
     }
 
     function updateAudioUi() {
-        var start = document.getElementById('top-audio-start');
         var resume = document.getElementById('top-audio-resume');
         var timer = document.getElementById('timer-display');
         var review = document.getElementById('top-audio-review');
         var status = document.getElementById('top-audio-status');
-        if (!start || !resume || !timer || !review || !status) return;
-        setControlVisible(start, audioMode === 'ready');
+        var exit = document.getElementById('top-audio-exit');
+        var practiceButton = document.getElementById('practice-mode-btn');
+        var testButton = document.getElementById('test-mode-btn');
+        if (!resume || !timer || !review || !status || !exit || !practiceButton || !testButton) return;
+        var testRunning = audioMode === 'confirming' || audioMode === 'exam' || audioMode === 'resume';
         setControlVisible(resume, audioMode === 'resume');
         setControlVisible(timer, audioMode === 'confirming' || audioMode === 'exam');
-        review.classList.toggle('show', audioMode === 'review');
-        setControlVisible(review, audioMode === 'review');
+        setControlVisible(exit, audioMode === 'exam' || audioMode === 'resume');
+        review.classList.toggle('show', audioMode === 'ready' || audioMode === 'review');
+        setControlVisible(review, audioMode === 'ready' || audioMode === 'review');
         setControlVisible(status, audioMode === 'missing');
         if (audioMode === 'missing') status.textContent = 'Audio pending';
+        practiceButton.classList.toggle('active', !testRunning);
+        practiceButton.disabled = testRunning;
+        testButton.classList.toggle('test-active', testRunning);
+        testButton.classList.toggle('active', false);
+        testButton.disabled = testRunning || audioMode === 'missing';
+        setControlVisible(testButton, !(window.MrCatPractice && window.MrCatPractice.isVisitor && window.MrCatPractice.isVisitor()));
         syncAudioUi();
     }
 
@@ -981,6 +1054,7 @@
         audioStarted = false;
         audioStartInFlight = false;
         audioMode = 'resume';
+        updateSubmitButton();
         updateAudioUi();
     }
 
@@ -989,6 +1063,9 @@
         audioStarted = true;
         audioStartInFlight = false;
         audioMode = 'exam';
+        var audio = audioEl();
+        if (audio) audio.playbackRate = 1;
+        updateSubmitButton();
         updateAudioUi();
     }
 
@@ -1004,7 +1081,9 @@
         if (audioStartInFlight) return;
         var attemptId = ++audioStartAttemptId;
         audioStartInFlight = true;
+        clearAnswersAndFeedback();
         startedAt = new Date().toISOString();
+        audio.playbackRate = 1;
         try { audio.currentTime = 0; } catch (error) {}
         var promise = null;
         try {
@@ -1065,6 +1144,7 @@
     function enterReviewAudioMode() {
         var audio = audioEl();
         if (!audio || !lesson || !lesson.audioSrc) return;
+        audio.pause();
         audioMode = 'review';
         updateAudioUi();
         syncAudioUi();
@@ -1074,6 +1154,7 @@
         var audio = audioEl();
         if (audio) {
             audio.pause();
+            audio.playbackRate = 1;
             try { audio.currentTime = 0; } catch (error) {}
         }
         audioMode = lesson && lesson.audioSrc ? 'ready' : 'missing';
@@ -1083,7 +1164,15 @@
         audioStartAttemptId += 1;
         audioStartPromptShown = false;
         startedAt = new Date().toISOString();
+        var speed = document.getElementById('top-audio-speed');
+        if (speed) speed.value = '1';
         updateAudioUi();
+    }
+
+    function updateSubmitButton() {
+        var submit = document.getElementById('submit-btn');
+        if (!submit || submit.disabled || teacherMode) return;
+        submit.textContent = audioMode === 'exam' || audioMode === 'resume' ? 'Submit Test' : 'Check Answers';
     }
 
     function draftKey() {
@@ -1225,21 +1314,21 @@
         });
         var submit = document.getElementById('submit-btn');
         submit.disabled = true;
-        submit.textContent = 'Submitted';
+        submit.textContent = response.recorded === false ? 'Checked' : 'Submitted';
         var status = response.mastered ? 'Mastered' : response.passed ? 'Passed' : 'Keep trying';
         var score = response.passed ? response.percentage + '%' : response.correct_count + ' / ' + response.question_count;
         var bar = document.getElementById('result-bar');
         bar.innerHTML = '<strong>' + escapeHtml(status) + '</strong><span>' + escapeHtml(score) + '</span>' +
             '<div class="result-actions"><button type="button" id="try-again-btn">Try Again</button></div>';
         bar.classList.add('show');
-        enterReviewAudioMode();
+        if (response.recorded !== false) enterReviewAudioMode();
     }
 
     function submitAttempt() {
         if (teacherMode) return;
-        if (lesson && lesson.audioSrc && !audioStarted) {
-            showAudioStartDialog(true);
-            alert('Please start the listening audio before submitting.');
+        var isTest = audioMode === 'exam' || audioMode === 'resume';
+        if (isTest && !audioStarted) {
+            alert('Please resume the listening audio before submitting the test.');
             return;
         }
         if (!allAnswered()) {
@@ -1252,7 +1341,8 @@
         window.MrCatCloud.callFunction('submitAttempt', {
             set_id: setId,
             assignment_id: assignmentId || null,
-            mode: 'ielts_listening',
+            mode: isTest ? 'ielts_listening_test' : 'ielts_listening_practice',
+            practice_mode: isTest ? 'test' : 'practice',
             answers: collectAnswers(),
             started_at: startedAt,
             duration_seconds: Math.max(0, Math.round((Date.now() - new Date(startedAt).getTime()) / 1000)),
@@ -1263,12 +1353,12 @@
             applyFeedback(response);
         }).catch(function(error) {
             submit.disabled = false;
-            submit.textContent = 'Submit';
+            updateSubmitButton();
             alert(error && error.message ? error.message : 'Unable to submit. Please try again.');
         });
     }
 
-    function clearAttemptForRetry() {
+    function clearAnswersAndFeedback() {
         lesson.questions.forEach(function(question) {
             setQuestionDisabled(question, false);
             document.querySelectorAll('[name="' + CSS.escape(question.id) + '"]').forEach(function(input) {
@@ -1283,7 +1373,7 @@
         document.querySelectorAll('[data-feedback]').forEach(function(el) { el.remove(); });
         var submit = document.getElementById('submit-btn');
         submit.disabled = false;
-        submit.textContent = 'Submit';
+        submit.textContent = 'Check Answers';
         var bar = document.getElementById('result-bar');
         bar.classList.remove('show');
         bar.innerHTML = '';
@@ -1292,8 +1382,19 @@
         var reviewCheckbox = document.getElementById('review-checkbox');
         if (reviewCheckbox) reviewCheckbox.checked = false;
         try { localStorage.removeItem(draftKey()); } catch (error) {}
-        resetAudioForRetry();
         updateNavState();
+    }
+
+    function clearAttemptForRetry() {
+        clearAnswersAndFeedback();
+        resetAudioForRetry();
+        updateSubmitButton();
+    }
+
+    function exitTestMode() {
+        if (!(audioMode === 'exam' || audioMode === 'resume')) return;
+        if (!confirm('Exit Test? This unfinished test will not be recorded.')) return;
+        clearAttemptForRetry();
     }
 
     function teacherFriendlyError(error) {
@@ -1412,13 +1513,15 @@
                 window.location.href = teacherMode ? 'teacher.html?view=library' : 'dashboard.html';
             }
         });
-        document.getElementById('top-audio-start').addEventListener('click', function() {
+        document.getElementById('test-mode-btn').addEventListener('click', function() {
             showAudioStartDialog(true);
         });
+        document.getElementById('practice-mode-btn').addEventListener('click', function() {});
         document.getElementById('top-audio-resume').addEventListener('click', resumeExamAudio);
+        document.getElementById('top-audio-exit').addEventListener('click', exitTestMode);
         document.getElementById('top-audio-play').addEventListener('click', function() {
             var audio = audioEl();
-            if (!audio || audioMode !== 'review') return;
+            if (!audio || (audioMode !== 'ready' && audioMode !== 'review')) return;
             if (audio.paused) {
                 var promise = audio.play();
                 if (promise && promise.catch) promise.catch(function() {});
@@ -1428,9 +1531,16 @@
         });
         document.getElementById('top-audio-progress').addEventListener('input', function(event) {
             var audio = audioEl();
-            if (!audio || audioMode !== 'review' || !audio.duration) return;
+            if (!audio || (audioMode !== 'ready' && audioMode !== 'review') || !audio.duration) return;
             audio.currentTime = Number(event.target.value || 0) / 1000 * audio.duration;
             syncAudioUi();
+        });
+        document.getElementById('top-audio-speed').addEventListener('change', function(event) {
+            var audio = audioEl();
+            if (!audio || (audioMode !== 'ready' && audioMode !== 'review')) return;
+            var rate = Number(event.target.value || 1);
+            audio.defaultPlaybackRate = rate;
+            audio.playbackRate = rate;
         });
         var audioStartConfirm = document.getElementById('audio-start-confirm');
         audioStartConfirm.addEventListener(window.PointerEvent ? 'pointerup' : 'click', startExamAudio);
@@ -1469,6 +1579,11 @@
         document.getElementById('workspace').addEventListener('focusin', function(event) {
             var questionId = event.target && event.target.getAttribute('data-question');
             if (questionId) setActiveQuestion(questionId);
+        });
+        window.addEventListener('beforeunload', function(event) {
+            if (!(audioMode === 'exam' || audioMode === 'resume')) return;
+            event.preventDefault();
+            event.returnValue = '';
         });
     }
 

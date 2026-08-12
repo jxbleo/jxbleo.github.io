@@ -277,6 +277,14 @@ Agent 需要：
 - IELTS Listening
 - Vocabulary
 
+IELTS Listening 默认进入 `Practice Mode`。Practice 允许暂停、拖动音频及
+选择 `0.75×`、`1×`、`1.25×`、`1.5×`、`2×` 倍速，检查答案只返回
+即时评分，不创建 attempt，也不推进 Assignment、Exercise Progress 或 STAR。
+学生主动确认进入 `Test Mode` 后，当前答案和反馈会清空，音频从头以
+`1×` 播放；测试进行中不得暂停、拖动、切换模式或调速。只有 Test 提交
+属于正式可计数成绩。所有 IELTS Reading / Listening 题目均不允许新建
+Argue，包括学生、History 和 teacher preview；历史 Argue 审计记录保留。
+
 以后可以扩展：
 
 - Grammar

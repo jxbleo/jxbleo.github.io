@@ -1208,7 +1208,6 @@
                 (dispute ? '<span>' + historyDisputeLabel(dispute) + '</span>' : '') +
                 (dispute && dispute.teacher_note ? '<small>Teacher note: ' + escapeHtml(dispute.teacher_note) + '</small>' : '');
             holder.parentNode.insertBefore(note, holder.nextSibling);
-            if (!item.correct && question) renderStudentArgueButton(question, holder);
         });
     }
 
@@ -1706,7 +1705,6 @@
                 evidence.setAttribute('data-teacher-answer', '1');
                 showEvidenceAnswer(evidence);
                 renderExplainButton(q, evidence);
-                renderTeacherArgueButton(q, answer, evidence);
             }
             applyCorrectAnswerToQuestion(q, primaryAnswerValue(answer), true);
         });
@@ -2382,7 +2380,6 @@
                 evidence.removeAttribute('data-answer-visible');
                 evidence.setAttribute('data-answer-reveal', '1');
                 if (answerRevealAvailable) renderExplainButton(q, evidence);
-                renderStudentArgueButton(q, evidence);
             }
         });
 

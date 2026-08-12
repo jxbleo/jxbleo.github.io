@@ -94,6 +94,14 @@ function isBbcSet(set) {
   });
 }
 
+function isIeltsListeningSet(set) {
+  if (!set) return false;
+  return [set.section_id, set.section, set.type, set.course, set.category].some((value) => {
+    const normalized = String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+    return normalized === "ielts-listening";
+  });
+}
+
 function defaultPassingPercentageForSet(set) {
   if (isVocabularySet(set)) return 90;
   if (isBbcSet(set)) return 80;
@@ -814,6 +822,11 @@ exports.main = async (event = {}) => {
     const gradingKey = await getOne("grading_keys", { set_id: setId });
     if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
     const setContentVersion = isVocabularySet(set) ? null : assertSetContentVersion(event, set, gradingKey);
+    const isIeltsListening = isIeltsListeningSet(set);
+    const isIeltsListeningPractice = isIeltsListening && mode === "ielts_listening_practice";
+    if (isIeltsListening && !["ielts_listening", "ielts_listening_test", "ielts_listening_practice"].includes(mode)) {
+      throw new Error("IELTS_LISTENING_MODE_REQUIRED");
+    }
 
     const submittedGroupCount = Number(event.selected_group_count || 0);
     const isVocabularyTimedPractice = mode === "vocabulary_practice_timed";
@@ -876,7 +889,7 @@ exports.main = async (event = {}) => {
       : attemptStatus;
     const passed = attemptStatus === "passed" || attemptStatus === "mastered";
     const mastered = attemptStatus === "mastered";
-    const isUnrecordedPractice = mode === "vocabulary_practice"
+    const isUnrecordedPractice = isIeltsListeningPractice || mode === "vocabulary_practice"
       || (mode === "vocabulary_test" && Number(event.selected_group_count || 0) < 5);
     const feedbackPolicy = set.feedback_policy || "always";
     const mayShowFeedback = mode === "vocabulary_test" || isVocabularyTimedPractice
@@ -942,6 +955,7 @@ exports.main = async (event = {}) => {
       set_id: setId,
       assignment_id: assignmentId,
       mode,
+      practice_mode: isIeltsListening ? "test" : null,
       attempt_number: attemptNumber,
       answers,
       question_results: grading.results,
