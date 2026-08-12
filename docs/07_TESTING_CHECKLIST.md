@@ -66,6 +66,9 @@ Run `npm run test:attempt-emails` and keep these cases:
   context; its subject contains only student name, exercise title, and
   historical best score, while stable reply metadata supports one mailbox
   thread.
+- the approved static email body has no product-brand heading, Login ID, or
+  website/paper link; it contains Best/PASS/eligible STAR capsules and distinct
+  submitted, expected, and explanation surfaces.
 - `submitAttempt` catches outbox errors after the recorded attempt, while the
   dispatcher transactionally claims work, recovers claims older than ten
   minutes, assigns a deterministic SMTP `Message-ID`, and requires the private

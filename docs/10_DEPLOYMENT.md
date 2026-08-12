@@ -584,7 +584,7 @@ submission for end-to-end verification.
    TEACHER_ATTEMPT_SMTP_SECURE=false
    TEACHER_ATTEMPT_SMTP_USER=jxbleo@icloud.com
    TEACHER_ATTEMPT_SMTP_PASS=<SMTP authorization code or app password>
-   TEACHER_ATTEMPT_EMAIL_FROM=Mr. Cat Academy <jxbleo@icloud.com>
+   TEACHER_ATTEMPT_EMAIL_FROM=猫先生英语 <jxbleo@icloud.com>
    TEACHER_ATTEMPT_EMAIL_REPLY_TO=<optional reply address>
    TEACHER_ATTEMPT_EMAIL_TEACHER_URL=<optional authenticated teacher-page HTTPS URL>
    TZ=Asia/Shanghai
