@@ -7226,6 +7226,31 @@ button.progress-matrix-due-cell:active .matrix-due-parameter-pill {
     line-height: 1.5;
     white-space: pre-line;
 }
+.matrix-work-question-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 12px 12px;
+    border-top: 1px solid var(--line);
+    background: rgba(245, 250, 248, 0.76);
+}
+.matrix-accept-answer-button {
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid rgba(19, 118, 109, 0.22);
+    border-radius: 999px;
+    color: #0d6f58;
+    background: #def8ec;
+    font-size: 0.72rem;
+    font-weight: 900;
+}
+.matrix-accept-answer-button:hover:not(:disabled) {
+    border-color: rgba(19, 118, 109, 0.38);
+    background: #c9f2df;
+}
+.matrix-accept-answer-button:disabled {
+    cursor: wait;
+    opacity: 0.68;
+}
 .assignment-progress-mode-tabs {
     display: inline-grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

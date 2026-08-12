@@ -923,6 +923,11 @@ chart already carries score comparison. BBC comparison rows normalize internal
 question IDs to `Qn`. When authorized per-attempt details finish loading, the
 newly available answer comparison settles into place once with a restrained
 fade, lift, and scale transition; later interaction must not replay that reveal.
+Inside a paper report opened from Notifications, each non-empty answer that is
+still wrong and has no existing student or teacher Argue shows a compact
+`Add as accepted answer` action. The action enters a disabled pending state,
+then refreshes the report after the backend applies the accepted-answer rule.
+It is absent from View-opened paper reports and from questions with any Argue.
 Reduced-motion mode uses a short opacity-only transition.
 
 The ordinary-email projection uses the same reader-facing information order,

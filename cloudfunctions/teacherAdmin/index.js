@@ -2122,7 +2122,7 @@ function attemptSummaryView(record) {
   };
 }
 
-function attemptView(record, gradingKey) {
+function attemptView(record, gradingKey, disputedQuestionIds = new Set()) {
   const attempt = recordData(record);
   const gradingAnswers = gradingKey && gradingKey.answers && typeof gradingKey.answers === "object"
     ? gradingKey.answers
@@ -2147,6 +2147,7 @@ function attemptView(record, gradingKey) {
       correct: item.correct === true,
       correct_answer: correctAnswer == null ? null : correctAnswer,
       explanation: explanation == null ? "" : explanation,
+      has_argue: disputedQuestionIds.has(String(questionId)),
     };
   });
   return {
@@ -2480,10 +2481,14 @@ async function getAttemptDetail(event) {
   if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
   const student = await getOne("students", { auth_uid: attempt.student_uid });
   if (!student || !visibleStudentRecords([student]).length) throw new Error("ATTEMPT_NOT_FOUND");
-  const gradingKey = await getOne("grading_keys", { set_id: attempt.set_id });
+  const [gradingKey, disputes] = await Promise.all([
+    getOne("grading_keys", { set_id: attempt.set_id }),
+    getAll("answer_disputes", { where: { attempt_id: attempt.attempt_id || attempt._id } }),
+  ]);
+  const disputedQuestionIds = new Set(disputes.map((item) => text(recordData(item).question_id)).filter(Boolean));
   return {
     success: true,
-    attempt: attemptView(attempt, gradingKey),
+    attempt: attemptView(attempt, gradingKey, disputedQuestionIds),
   };
 }
 
@@ -2621,6 +2626,84 @@ async function submitTeacherDispute(event, teacher) {
     created_at: now,
     updated_at: now,
   });
+  return { success: true, dispute_id: disputeId };
+}
+
+async function acceptAttemptAnswer(event, teacher) {
+  const attemptId = text(event.attempt_id);
+  const questionId = text(event.question_id);
+  if (!attemptId || !questionId) throw new Error("ATTEMPT_QUESTION_REQUIRED");
+
+  const attempt = await getOne("attempts", { attempt_id: attemptId })
+    || await getOne("attempts", { _id: attemptId });
+  if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  const student = await getOne("students", { auth_uid: attempt.student_uid });
+  if (!student || !visibleStudentRecords([student]).length) throw new Error("ATTEMPT_NOT_FOUND");
+
+  const result = effectiveQuestionResults(attempt).find((item) =>
+    text(item.question_id || item.id) === questionId
+  );
+  if (!result) throw new Error("ATTEMPT_QUESTION_NOT_FOUND");
+  if (result.correct === true) throw new Error("ANSWER_ALREADY_CORRECT");
+  const submittedAnswer = text(result.submitted_answer).slice(0, 1000);
+  if (!submittedAnswer) throw new Error("EMPTY_ANSWER_NOT_ACCEPTABLE");
+
+  const existing = await getOne("answer_disputes", {
+    attempt_id: attempt.attempt_id || attempt._id,
+    question_id: questionId,
+  });
+  if (existing) {
+    if (existing.source === "teacher_attempt_review_quick_accept" && existing.status === "approved") {
+      return { success: true, dispute_id: existing.dispute_id || existing._id, already_applied: true };
+    }
+    if (existing.source === "teacher_attempt_review_quick_accept" && existing.status === "pending") {
+      await resolveDispute({
+        dispute_id: existing.dispute_id || existing._id,
+        decision: "add",
+        teacher_note: "Added as an accepted answer from the attempt report.",
+      }, teacher);
+      return { success: true, dispute_id: existing.dispute_id || existing._id, resumed: true };
+    }
+    throw new Error("ARGUE_ALREADY_EXISTS");
+  }
+
+  const set = await getOne("sets", { set_id: attempt.set_id });
+  if (!set) throw new Error("SET_NOT_FOUND");
+  if (isIeltsSet(set)) throw new Error("IELTS_ARGUE_NOT_AVAILABLE");
+  const gradingKey = await getOne("grading_keys", { set_id: attempt.set_id });
+  if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
+  const disputeId = ["teacher-accepted", attempt.attempt_id || attempt._id, questionId].join("::");
+  const answers = gradingKey.answers || {};
+  const explanations = gradingKey.explanations || {};
+  const now = new Date();
+  await db.collection("answer_disputes").add({
+    dispute_id: disputeId,
+    requester_role: "teacher",
+    student_uid: teacher.auth_uid,
+    student_id_snapshot: teacher.student_id || "",
+    student_name_snapshot: teacher.name || teacher.student_id || "",
+    affected_student_uid: attempt.student_uid,
+    affected_student_id_snapshot: attempt.student_id_snapshot || student.student_id || "",
+    affected_student_name_snapshot: student.name || student.student_id || "",
+    set_id: attempt.set_id,
+    attempt_id: attempt.attempt_id || attempt._id,
+    assignment_id: attempt.assignment_id || null,
+    question_id: questionId,
+    question_text_snapshot: text(result.question_text_snapshot).slice(0, 2000),
+    submitted_answer: submittedAnswer,
+    answer_snapshot: answers[questionId] == null ? null : answers[questionId],
+    explanation_snapshot: explanations[questionId] || "",
+    student_reason: "",
+    status: "pending",
+    source: "teacher_attempt_review_quick_accept",
+    created_at: now,
+    updated_at: now,
+  });
+  await resolveDispute({
+    dispute_id: disputeId,
+    decision: "add",
+    teacher_note: "Added as an accepted answer from the attempt report.",
+  }, teacher);
   return { success: true, dispute_id: disputeId };
 }
 
@@ -3947,6 +4030,7 @@ exports.main = async (event) => {
     if (action === "listDisputes") return await listDisputes();
     if (action === "listDisputePage") return await listDisputePage(event);
     if (action === "submitTeacherDispute") return await submitTeacherDispute(event, teacher);
+    if (action === "acceptAttemptAnswer") return await acceptAttemptAnswer(event, teacher);
     if (action === "resolveDispute") return await resolveDispute(event, teacher);
     if (action === "backfillAcceptedAnswerRegrades") return await backfillAcceptedAnswerRegrades(event, teacher);
     if (action === "backfillVocabularyContentVersionMismatch") {

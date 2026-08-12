@@ -735,6 +735,12 @@ Rules:
 - One student dispute per `attempt_id + question_id`.
 - Only wrong recorded questions can be disputed by students.
 - Teacher-originated disputes may have no `attempt_id`.
+- A teacher quick acceptance from a Notification paper report creates an
+  immediately approved teacher-originated dispute linked to the attempt, with
+  `source: teacher_attempt_review_quick_accept`; this preserves one durable
+  audit path for grading-rule changes. Its requester ownership remains the
+  teacher, while `affected_student_uid` and display snapshots identify the
+  reviewed learner; it does not create a student Teacher Replies inbox item.
 - Resolved student-originated disputes remain in the student's permanent
   Teacher Replies history after `student_seen` becomes true; that flag controls
   only the standalone reply button's unread badge.

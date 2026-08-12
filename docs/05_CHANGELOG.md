@@ -3,6 +3,15 @@
 > Product-level and architecture-level changes only.
 > Do not record every tiny CSS tweak or variable rename here.
 
+## 2026-08-13
+
+### Added
+
+- Added a teacher-only `Add as accepted answer` shortcut to eligible wrong
+  questions in Notification paper reports. It uses the existing audited Argue
+  `add` semantics and upward-only historical regrade, assignment, and STAR
+  repair flow.
+
 ## 2026-08-12
 
 ### Changed

@@ -136,6 +136,7 @@
         matrixStudentProgressSelections: {},
         matrixStudentProgressMonths: {},
         selectedMatrixReviewAttemptId: '',
+        acceptingAttemptAnswers: {},
         selectedProgressDetailKey: '',
         matrixInitialRevealPending: true,
         assignmentEditScopes: {},
@@ -5714,7 +5715,7 @@
             '';
     }
 
-    function renderMatrixAttemptReview(entry, entries, assignment) {
+    function renderMatrixAttemptReview(entry, entries, assignment, options) {
         var attempt = entry && entry.attempt;
         if (!attempt) return '';
         var duration = attemptDurationLabel(attempt);
@@ -5743,6 +5744,11 @@
                 ? '<div class="matrix-work-question-list">' + visibleResults.map(function(result) {
                     var correct = result.correct === true;
                     var questionText = attemptQuestionText(result, attempt, assignment);
+                    var acceptKey = String(attempt.attempt_id || '') + '::' + String(result.question_id || '');
+                    var canQuickAccept = options && options.allowQuickAccept === true &&
+                        !correct && result.has_argue !== true &&
+                        result.submitted_answer != null && String(result.submitted_answer).trim() !== '';
+                    var acceptPending = state.acceptingAttemptAnswers[acceptKey] === true;
                     return '<article class="matrix-work-question ' + (correct ? 'correct' : 'wrong') + '">' +
                         '<div class="matrix-work-question-top">' +
                             '<strong>' + escapeHtml(teacherQuestionLabel(result.question_id, attempt, assignment)) + '</strong>' +
@@ -5761,12 +5767,56 @@
                             ? '<div class="matrix-work-explanation"><small>Answer explanation</small><p>' +
                                 escapeHtml(formatAnswerText(result.explanation, 'No explanation available yet.')) + '</p></div>'
                             : '') +
+                        (canQuickAccept
+                            ? '<div class="matrix-work-question-actions"><button class="matrix-accept-answer-button" type="button" ' +
+                                'data-accept-attempt-answer data-attempt-id="' + escapeHtml(attempt.attempt_id || '') +
+                                '" data-question-id="' + escapeHtml(result.question_id || '') + '"' +
+                                (acceptPending ? ' disabled aria-busy="true"' : '') + '>' +
+                                (acceptPending ? 'Adding...' : 'Add as accepted answer') + '</button></div>'
+                            : '') +
                     '</article>';
                 }).join('') + '</div>'
                 : '<div class="matrix-wrong-empty">' +
                     (mistakesOnly && results.length ? 'No wrong answers in this attempt.' : 'No per-question records are available for this attempt.') +
                 '</div>') +
         '</section>';
+    }
+
+    function bindAttemptAnswerAcceptance(root, render) {
+        if (!root) return;
+        root.querySelectorAll('[data-accept-attempt-answer]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var attemptId = button.dataset.attemptId || '';
+                var questionId = button.dataset.questionId || '';
+                var key = attemptId + '::' + questionId;
+                if (!attemptId || !questionId || state.acceptingAttemptAnswers[key]) return;
+                state.acceptingAttemptAnswers[key] = true;
+                render();
+                showMessage('Adding accepted answer...', '');
+                teacherCall('acceptAttemptAnswer', {
+                    attempt_id: attemptId,
+                    question_id: questionId
+                }).then(function() {
+                    return Promise.all([
+                        teacherCall('listAssignments'),
+                        loadProgressData(),
+                        initializeNotificationFeed()
+                    ]);
+                }).then(function(results) {
+                    state.assignments = results[0].assignments || [];
+                    state.progressItems = results[1].progress || [];
+                    return teacherCall('getAttemptDetail', { attempt_id: attemptId });
+                }).then(function(result) {
+                    mergeAttemptDetail(result.attempt);
+                    showMessage('Student answer added as an accepted answer.', 'success');
+                }).catch(function(error) {
+                    showMessage(error.message || 'Unable to add this accepted answer.', 'error');
+                }).finally(function() {
+                    delete state.acceptingAttemptAnswers[key];
+                    render();
+                });
+            });
+        });
     }
 
     function renderMatrixAttemptDetails(entries, assignment) {
@@ -5845,7 +5895,7 @@
         return key;
     }
 
-    function renderMatrixCellDetail(item) {
+    function renderMatrixCellDetail(item, options) {
         if (!item) return '';
         var attempts = matrixAttemptsForItem(item);
         var entries = matrixAttemptEntries(attempts);
@@ -5872,7 +5922,7 @@
                 '</div>' +
             '</div>' +
             renderMatrixAttemptChart(entries, item) +
-            (reviewEntry ? renderMatrixAttemptReview(reviewEntry, entries, item) : renderMatrixAttemptDetails(entries, item)) +
+            (reviewEntry ? renderMatrixAttemptReview(reviewEntry, entries, item, options) : renderMatrixAttemptDetails(entries, item)) +
         '</div>';
     }
 
@@ -6645,6 +6695,7 @@
                 renderAssignmentOverview();
             });
         });
+        bindAttemptAnswerAcceptance(container, renderAssignmentOverview);
         container.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
                 if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {
@@ -6956,7 +7007,7 @@
             '<div class="progress-matrix-modal-shell notification-attempt-shell teacher-utility-shell">' +
                 '<section class="progress-matrix-modal notification-attempt-dialog teacher-utility-dialog" role="dialog" aria-modal="true" aria-label="Attempt details">' +
                     '<div class="progress-matrix-modal-scroll">' +
-                        renderMatrixCellDetail(detailItem) +
+                        renderMatrixCellDetail(detailItem, { allowQuickAccept: true }) +
                     '</div>' +
                 '</section>' +
                 '<button class="progress-matrix-modal-close notification-attempt-external-close" type="button" data-notification-attempt-close="button" aria-label="Close attempt details">Close</button>' +
@@ -7119,6 +7170,7 @@
                 renderUpdatesPanel();
             });
         });
+        bindAttemptAnswerAcceptance(modalRoot, renderUpdatesPanel);
         modalRoot.querySelectorAll('[data-matrix-attempt-target]').forEach(function(button) {
             button.addEventListener('click', function() {
                 if (state.selectedMatrixReviewAttemptId && button.dataset.matrixAttemptId) {

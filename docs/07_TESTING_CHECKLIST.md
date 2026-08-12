@@ -1106,6 +1106,14 @@ Check:
   only wrong questions, use the correct `Quiz` / `Practice` label, and retain
   every selected group ID. Practice creates a teacher notification but does not
   alter the View matrix, assignment summary, FINISHED, or student calendar.
+- From a Notification paper report, a wrong non-empty answer with no Argue shows
+  `Add as accepted answer`. Clicking once disables the button, adds the variant
+  to the private grading key, writes approved dispute/history audit rows,
+  upward-regrades matching historical attempts, refreshes assignment/STAR
+  projections, removes the button, and does not create a student Teacher Replies
+  inbox item. Blank, already-correct, IELTS, and any
+  existing-Argue question must not expose or accept this action. The same paper
+  opened from View does not show the shortcut.
 - Set a task to non-default Passing and Mastery values, submit an attempt, then
   open it from both Teacher View and the notification bell. Both charts must
   show the backend assignment values. For a historical thread whose assignment
