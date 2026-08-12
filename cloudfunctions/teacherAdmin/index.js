@@ -372,6 +372,13 @@ function isBbcSet(set) {
   });
 }
 
+function isIeltsSet(set) {
+  if (!set) return false;
+  return [set.section_id, set.section, set.type, set.course, set.category].some((value) =>
+    String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-").startsWith("ielts-")
+  );
+}
+
 function defaultPassingPercentageForSet(set) {
   if (isVocabularySet(set)) return 90;
   if (isBbcSet(set)) return 80;
@@ -2582,6 +2589,7 @@ async function submitTeacherDispute(event, teacher) {
     getOne("grading_keys", { set_id: setId }),
   ]);
   if (!set) throw new Error("SET_NOT_FOUND");
+  if (isIeltsSet(set)) throw new Error("IELTS_ARGUE_NOT_AVAILABLE");
   if (!gradingKey) throw new Error("GRADING_KEY_NOT_FOUND");
 
   const disputeId = [

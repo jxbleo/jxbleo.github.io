@@ -427,6 +427,7 @@ Core fields:
 | `set_id` | string | set |
 | `assignment_id` | string/null | assignment or self-study |
 | `mode` | string | runtime mode |
+| `practice_mode` | string/null | `test` for recorded IELTS Listening Test attempts; old `ielts_listening` attempts are treated as Test compatibility records |
 | `answers` | object | submitted answers |
 | `question_results` | array | per-question result |
 | `correct_count` | number | correct count |
@@ -453,6 +454,9 @@ Core fields:
 Rules:
 
 - Attempts are append-only.
+- IELTS Listening Practice self-checks use `mode: "ielts_listening_practice"`
+  only for the grading request and never create an attempt. Recorded Test
+  submissions use `mode: "ielts_listening_test"` and `practice_mode: "test"`.
 - Try Again creates a new attempt.
 - Failed attempts are still stored.
 - Self-study attempts use `assignment_id: null` only when the student has no open assignment for the same `set_id`.

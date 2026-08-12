@@ -172,6 +172,28 @@ Open:
 - at least one IELTS Reading page
 - at least one IELTS Listening page
 - at least one Vocabulary page
+
+IELTS Listening mode checks:
+
+- a fresh student, assignment, visitor, or teacher-preview entry defaults to
+  Practice Mode; Practice can pause, seek, replay, and select 0.75×, 1×, 1.25×,
+  1.5×, or 2×;
+- `Check Answers` returns feedback without creating an attempt, changing an
+  assignment, entering FINISHED, or creating a STAR;
+- starting Test confirms the destructive transition, clears Practice answers
+  and feedback, restarts audio at 1×, and hides/disables pause, seek, and speed;
+- an OS/browser interruption exposes Resume without enabling seeking; exiting
+  Test creates no attempt; Test submit records `ielts_listening_test` plus
+  `practice_mode: test` and unlocks Review playback controls;
+- Try Again returns to clean Practice Mode at 1×, and refresh/leave during a
+  running Test warns before discarding the unfinished test.
+
+IELTS Argue checks:
+
+- IELTS Reading and Listening show no new Argue control in student results,
+  History, or teacher preview;
+- direct student and teacher dispute calls for an IELTS set return
+  `IELTS_ARGUE_NOT_AVAILABLE`, while existing historical disputes remain stored.
 - `http://127.0.0.1:8000/dse-topic-bank.html`
 
 Protected topic-bank checks:

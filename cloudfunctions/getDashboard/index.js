@@ -114,6 +114,13 @@ function isBbcSet(set) {
   });
 }
 
+function isIeltsSet(set) {
+  if (!set) return false;
+  return [set.section_id, set.section, set.type, set.course, set.category].some((value) =>
+    String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-").startsWith("ielts-")
+  );
+}
+
 function defaultPassingPercentageForSet(set) {
   if (isVocabularySet(set)) return 90;
   if (isBbcSet(set)) return 80;
@@ -410,6 +417,8 @@ async function submitDispute(student, event) {
     student_uid: student.auth_uid,
   });
   if (!attempt) throw new Error("ATTEMPT_NOT_FOUND");
+  const attemptSet = await getOne("sets", { set_id: attempt.set_id });
+  if (isIeltsSet(attemptSet)) throw new Error("IELTS_ARGUE_NOT_AVAILABLE");
   const question = effectiveQuestionResults(attempt).find((item) =>
     String(item.question_id) === questionId
   );

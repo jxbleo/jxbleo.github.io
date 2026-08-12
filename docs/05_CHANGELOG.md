@@ -7,6 +7,10 @@
 
 ### Changed
 
+- IELTS Listening now defaults to a seekable, speed-adjustable Practice Mode;
+  the locked one-pass flow is named Test Mode and is the only recorded path.
+- New IELTS Reading and Listening Argue requests are disabled in runtime UI and
+  trusted backend actions while historical dispute records remain intact.
 - Vocabulary Quiz and timed Practice now send every recorded submission as an
   independent mailbox message. Subjects include `Quiz No. n` or
   `Practice No. n`, while second and later messages retain cumulative history
