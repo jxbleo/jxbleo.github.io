@@ -133,6 +133,22 @@ npm run cloudbase:import:content -- --apply --only vocabulary_lexicon
 
 ## 4. Static Site Deployment
 
+The production static frontend is built from `main` and uploaded to Tencent
+COS by `.github/workflows/deploy-cos.yml`. The workflow runs
+`npm run build:static`, verifies the public-only `dist/` boundary, and then runs
+`scripts/deploy-static-to-cos.js`. COS object keys never begin with `/`, so the
+bucket website's default `index.html` remains reachable at the domain root.
+
+The repository must define these GitHub Actions secrets:
+
+- `TENCENT_CLOUD_SECRET_ID`
+- `TENCENT_CLOUD_SECRET_KEY`
+
+They belong to a programming-access-only CAM sub-user with the minimum required
+permissions for this one bucket: `GetBucket`, `PutObject`, and `DeleteObject`.
+The deployment script logs only COS error codes, HTTP status, and request IDs;
+it must never print either credential.
+
 Static changes include:
 
 - `*.html`
