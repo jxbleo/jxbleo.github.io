@@ -524,13 +524,6 @@ rather than creating duplicates.
 | `processing_started_at` | Date/null | claim audit time |
 | `sent_at` | Date/null | successful SMTP handoff time |
 | `provider_message_id` | string | SMTP message identifier used for email threading |
-| `smtp_accepted_count` | number | recipients accepted during the SMTP envelope exchange |
-| `smtp_rejected_count` | number | recipients rejected during the SMTP envelope exchange |
-| `smtp_pending_count` | number | recipients left pending by the SMTP transport |
-| `smtp_response` | string | bounded, non-secret SMTP final response including the provider queue ID when supplied |
-| `smtp_response_code` | number/null | parsed three-digit SMTP response code, normally `250` after a successful handoff |
-| `smtp_envelope_time_ms` / `smtp_message_time_ms` | number/null | transport timing for the SMTP envelope and message body |
-| `smtp_message_size_bytes` | number/null | message size reported by the SMTP transport |
 | `last_error` | string | bounded non-secret provider error code/message |
 | `last_failed_at` | Date/null | most recent failed delivery |
 | `skipped_at` | Date/null | due time at which no enabled teacher address existed |

@@ -23,27 +23,6 @@ function compact(value, limit = 500) {
   return String(value == null ? "" : value).replace(/\s+/g, " ").trim().slice(0, limit);
 }
 
-function smtpReceipt(result) {
-  const accepted = Array.isArray(result && result.accepted) ? result.accepted.filter(Boolean) : [];
-  const rejected = Array.isArray(result && result.rejected) ? result.rejected.filter(Boolean) : [];
-  const pending = Array.isArray(result && result.pending) ? result.pending.filter(Boolean) : [];
-  const response = compact(result && result.response, 500);
-  const responseCodeMatch = response.match(/^(\d{3})\b/);
-  const optionalNumber = (value) => value == null || value === "" || !Number.isFinite(Number(value))
-    ? null
-    : Number(value);
-  return {
-    accepted_count: accepted.length,
-    rejected_count: rejected.length,
-    pending_count: pending.length,
-    response,
-    response_code: responseCodeMatch ? Number(responseCodeMatch[1]) : null,
-    envelope_time_ms: optionalNumber(result && result.envelopeTime),
-    message_time_ms: optionalNumber(result && result.messageTime),
-    message_size_bytes: optionalNumber(result && result.messageSize),
-  };
-}
-
 function dateValue(value) {
   const date = value ? new Date(value) : null;
   return date && !Number.isNaN(date.getTime()) ? date.getTime() : 0;
@@ -252,21 +231,12 @@ async function emailContext(claimed) {
   };
 }
 
-async function finishJobs(claimed, result, messageId, now) {
-  const receipt = smtpReceipt(result);
+async function finishJobs(claimed, messageId, now) {
   for (const job of claimed.jobs) {
     await db.collection(EVENT_COLLECTION).doc(job._id).update({
       status: "sent",
       sent_at: now,
       provider_message_id: compact(messageId, 300),
-      smtp_accepted_count: receipt.accepted_count,
-      smtp_rejected_count: receipt.rejected_count,
-      smtp_pending_count: receipt.pending_count,
-      smtp_response: receipt.response,
-      smtp_response_code: receipt.response_code,
-      smtp_envelope_time_ms: receipt.envelope_time_ms,
-      smtp_message_time_ms: receipt.message_time_ms,
-      smtp_message_size_bytes: receipt.message_size_bytes,
       processing_token: null,
       last_error: "",
       updated_at: now,
@@ -343,7 +313,7 @@ async function sendClaimedBatch(claimed, transporter, config, recipients, now) {
       mail.references = context.previousMessageId;
     }
     const result = await transporter.sendMail(mail);
-    await finishJobs(claimed, result, result && result.messageId || mail.messageId, now);
+    await finishJobs(claimed, result && result.messageId || mail.messageId, now);
     return { success: true, event_count: claimed.jobs.length };
   } catch (error) {
     await failJobs(claimed, error, now);
@@ -422,6 +392,5 @@ exports.main = async (event = {}) => {
 module.exports._test = {
   authorizedTimerEvent,
   deterministicMessageId,
-  smtpReceipt,
   smtpConfiguration,
 };
