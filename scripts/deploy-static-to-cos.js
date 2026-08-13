@@ -7,7 +7,8 @@ const root = path.resolve(__dirname, "..");
 const sourceDirectory = path.join(root, "dist");
 const bucket = process.env.COS_BUCKET || "mrcatenglish-web-1441914554";
 const region = process.env.COS_REGION || "ap-shanghai";
-const concurrency = 8;
+const concurrency = 4;
+const maximumUploadAttempts = 5;
 
 function normalizeCredential(value, name) {
   if (!value) {
@@ -57,6 +58,49 @@ function cosRequest(method, parameters) {
       resolve(data);
     });
   });
+}
+
+function delay(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+function isRetryableUploadError(error) {
+  return new Set([
+    "ConnectionReset",
+    "ECONNRESET",
+    "ETIMEDOUT",
+    "RequestTimeout",
+    "SlowDown",
+    "UserNetworkTooSlow",
+  ]).has(error?.code);
+}
+
+async function uploadFile(file) {
+  for (let attempt = 1; attempt <= maximumUploadAttempts; attempt += 1) {
+    try {
+      await cosRequest("putObject", {
+        Bucket: bucket,
+        Region: region,
+        Key: file.key,
+        Body: fs.createReadStream(file.absolutePath),
+        ContentLength: file.size,
+        ContentType: contentTypeFor(file.key),
+        CacheControl: file.key.endsWith(".html")
+          ? "no-cache"
+          : "public, max-age=3600",
+      });
+      return;
+    } catch (error) {
+      if (!isRetryableUploadError(error) || attempt === maximumUploadAttempts) {
+        throw error;
+      }
+      console.warn(
+        `Retrying ${file.key} after ${error.code} ` +
+          `(attempt ${attempt + 1}/${maximumUploadAttempts}).`
+      );
+      await delay(1000 * attempt * attempt);
+    }
+  }
 }
 
 function listLocalFiles(directory, relativeDirectory = "") {
@@ -150,17 +194,7 @@ async function deploy() {
       `${filesToUpload.length} changed, ${files.length - filesToUpload.length} unchanged.`
   );
   await runConcurrent(filesToUpload, async (file) => {
-    await cosRequest("putObject", {
-      Bucket: bucket,
-      Region: region,
-      Key: file.key,
-      Body: fs.createReadStream(file.absolutePath),
-      ContentLength: file.size,
-      ContentType: contentTypeFor(file.key),
-      CacheControl: file.key.endsWith(".html")
-        ? "no-cache"
-        : "public, max-age=3600",
-    });
+    await uploadFile(file);
     uploaded += 1;
     if (uploaded % 100 === 0 || uploaded === filesToUpload.length) {
       console.log(`Uploaded ${uploaded}/${filesToUpload.length} changed files.`);
