@@ -30,6 +30,7 @@
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 学生提交成功但教师邮箱没有新通知 | outbox 集合/索引未创建、`submitAttempt` 或 dispatcher 未部署、Cron/token/SMTP 未配置、教师个人中心没有启用邮箱，或事件正在 7 分钟 BBC 窗口内 | 先确认个人中心地址为 `Receiving notifications`，再查 `teacher_attempt_email_events` 是否有该 `attempt_id` 及其 `status`/`due_at`/`last_error`/`skip_reason`；用精确 event ID 查函数日志，不输出答案或 SMTP 值 |
+| SMTP 显示 `250 queued`，测试邮件能到 QQ，但某次重试/补发完全看不到 | 重复使用已投递过的 `Message-ID`，QQ 在收件端静默去重；这不是 BCC、主题或 iCloud SMTP 拒收 | 对同一正文做单变量测试：新 ID 可见、旧 ID 不可见即可确认。每次 SMTP handoff 生成新 ID；不要用固定 per-event ID 实现幂等，改由 outbox `event_id` 和事务 claim 防重复 |
 | Vocabulary 邮件重复或第二封没有第 1 次记录 | 同一 `event_id` 被重复插入、dispatcher 未事务认领、线程 key/cutoff 规则漂移，或线上仍是旧函数 | 确认事件文档 ID 等于 `attempt_id`、状态只走 pending/processing/sent、第二封 cutoff 为第二次 `submitted_at`，并部署同一源码打包的三个函数 |
 | BBC 每次重试各发一封，或超过 7 分钟仍没有邮件 | dispatcher 没按第一条 due event 的固定 `window_ends_at` 合并，Cron 没有每分钟运行，或 SMTP 重试改写了原窗口 | 查同一 `thread_key` 的事件；`window_ends_at` 保持原值，只有失败时 `due_at` 可以后移 |
 | 页面已经修了，本地正常，线上仍报旧错 | CloudBase 云函数没有重新部署，或静态站点缓存旧 JS | `deploy-packages/*.zip` 是否重建；CloudBase 控制台函数版本；HTML query string |

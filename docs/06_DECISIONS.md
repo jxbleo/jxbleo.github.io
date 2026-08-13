@@ -3,6 +3,32 @@
 > Architecture Decision Records for important product and technical choices.
 > Add a record when introducing a new dependency, platform, architecture pattern, data model rule, or major product constraint.
 
+## 2026-08-13: Separate Outbox Idempotency From SMTP Message Identity
+
+Decision:
+
+Keep one unique outbox `event_id` per attempt and transactional claims as the
+system's duplicate-send control. Generate a fresh SMTP `Message-ID` for every
+actual handoff, including retries or explicit resends. Keep task grouping with
+stable subjects plus `In-Reply-To` / `References` to a prior successfully sent
+event; do not reuse that prior message's identity.
+
+Reason:
+
+Controlled delivery tests showed that iCloud SMTP returned `250 queued` for a
+message with a previously delivered ID, while QQ Mail did not surface it. The
+same content, BCC envelope, subject, and threading metadata arrived when the ID
+was new. A deterministic per-event ID therefore converted a recoverable retry
+into a silent recipient-side loss.
+
+Trade-offs:
+
+- Good: an accepted retry or manual resend remains visible to QQ Mail.
+- Good: database idempotency and mailbox conversation grouping remain intact.
+- Cost: if SMTP accepts a message but the following outbox update fails, the
+  retry can create a visible duplicate. That is preferable to silently losing
+  the teacher notification and remains bounded by retry limits.
+
 ## 2026-08-11: Use a Private Outbox and SMTP for Teacher Attempt Email
 
 Decision:

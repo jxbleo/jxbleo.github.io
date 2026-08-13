@@ -5,6 +5,13 @@
 
 ## 2026-08-13
 
+### Fixed
+
+- Fixed QQ Mail silently suppressing attempt-email retries or resends whose
+  `Message-ID` had already been delivered. Every SMTP handoff now uses a fresh
+  ID while the private outbox event and transactional claim retain business
+  idempotency and `In-Reply-To` retains task conversation grouping.
+
 ### Added
 
 - Added a teacher-only `Add as accepted answer` shortcut to eligible wrong

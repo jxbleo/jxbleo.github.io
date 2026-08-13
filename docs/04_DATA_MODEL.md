@@ -523,7 +523,7 @@ rather than creating duplicates.
 | `processing_token` | string/null | transactional claim token |
 | `processing_started_at` | Date/null | claim audit time |
 | `sent_at` | Date/null | successful SMTP handoff time |
-| `provider_message_id` | string | SMTP message identifier used for email threading |
+| `provider_message_id` | string | SMTP message identifier returned for the successful handoff; earlier sent events supply threading references |
 | `last_error` | string | bounded non-secret provider error code/message |
 | `last_failed_at` | Date/null | most recent failed delivery |
 | `skipped_at` | Date/null | due time at which no enabled teacher address existed |
@@ -546,10 +546,14 @@ Rules:
   exponential backoff, up to five tries, then `failed`. A claim still in
   `processing` after ten minutes is returned to `pending` so a crashed function
   invocation cannot strand the event.
-- Each claimed batch derives a deterministic SMTP `Message-ID`. This reduces
-  duplicates and preserves mailbox threading across retries, but SMTP cannot
-  guarantee strict exactly-once delivery if the provider accepts the message
-  and the following database update fails.
+- Each SMTP handoff derives a fresh `Message-ID`, including bounded retries or
+  an explicit resend. QQ Mail may silently discard a second accepted handoff
+  with an already-seen ID. Business idempotency instead comes from the unique
+  outbox `event_id` and transactional claim. `In-Reply-To` / `References` use a
+  prior sent event's `provider_message_id` to retain task threading. SMTP still
+  cannot guarantee strict exactly-once delivery if the provider accepts a
+  message and the following database update fails; in that rare case a retry
+  may produce a visible duplicate rather than an invisible lost notification.
 - The outbox never stores SMTP passwords, timer tokens, recipient addresses, or
   rendered email bodies. Those settings remain function environment values.
 - The current allowlist is for teacher-owned inboxes only and uses BCC. Future
