@@ -138,6 +138,11 @@ COS by `.github/workflows/deploy-cos.yml`. The workflow runs
 `npm run build:static`, verifies the public-only `dist/` boundary, and then runs
 `scripts/deploy-static-to-cos.js`. COS object keys never begin with `/`, so the
 bucket website's default `index.html` remains reachable at the domain root.
+Before upload, the script lists existing COS objects and compares their ETags
+with local MD5 hashes. Unchanged files are skipped, changed files are uploaded,
+and obsolete public objects are removed after successful uploads. This keeps
+later GitHub-to-Shanghai deployments incremental rather than retransmitting the
+complete audio library.
 
 The repository must define these GitHub Actions secrets:
 

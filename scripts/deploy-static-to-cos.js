@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const COS = require("cos-nodejs-sdk-v5");
 
 const root = path.resolve(__dirname, "..");
@@ -70,6 +71,7 @@ function listLocalFiles(directory, relativeDirectory = "") {
         absolutePath,
         key: relativePath,
         size: fs.statSync(absolutePath).size,
+        etag: crypto.createHash("md5").update(fs.readFileSync(absolutePath)).digest("hex"),
       });
     }
   }
@@ -111,8 +113,8 @@ async function runConcurrent(items, worker) {
   );
 }
 
-async function listRemoteKeys() {
-  const keys = [];
+async function listRemoteObjects() {
+  const objects = [];
   let marker;
   do {
     const response = await cosRequest("getBucket", {
@@ -121,20 +123,33 @@ async function listRemoteKeys() {
       ...(marker ? { Marker: marker } : {}),
     });
     for (const object of response.Contents || []) {
-      keys.push(object.Key);
+      objects.push({
+        key: object.Key,
+        etag: String(object.ETag || "").replace(/^\"|\"$/g, "").toLowerCase(),
+      });
     }
     marker = response.IsTruncated === "true" ? response.NextMarker : undefined;
   } while (marker);
-  return keys;
+  return objects;
 }
 
 async function deploy() {
   const files = listLocalFiles(sourceDirectory);
   const localKeys = new Set(files.map((file) => file.key));
+  const remoteObjects = await listRemoteObjects();
+  const remoteEtags = new Map(
+    remoteObjects.map((object) => [object.key, object.etag])
+  );
+  const filesToUpload = files.filter(
+    (file) => remoteEtags.get(file.key) !== file.etag
+  );
   let uploaded = 0;
 
-  console.log(`Uploading ${files.length} public files to cos://${bucket}/ ...`);
-  await runConcurrent(files, async (file) => {
+  console.log(
+    `Deploying ${files.length} public files to cos://${bucket}/: ` +
+      `${filesToUpload.length} changed, ${files.length - filesToUpload.length} unchanged.`
+  );
+  await runConcurrent(filesToUpload, async (file) => {
     await cosRequest("putObject", {
       Bucket: bucket,
       Region: region,
@@ -147,13 +162,14 @@ async function deploy() {
         : "public, max-age=3600",
     });
     uploaded += 1;
-    if (uploaded % 100 === 0 || uploaded === files.length) {
-      console.log(`Uploaded ${uploaded}/${files.length} files.`);
+    if (uploaded % 100 === 0 || uploaded === filesToUpload.length) {
+      console.log(`Uploaded ${uploaded}/${filesToUpload.length} changed files.`);
     }
   });
 
-  const remoteKeys = await listRemoteKeys();
-  const obsoleteKeys = remoteKeys.filter((key) => !localKeys.has(key));
+  const obsoleteKeys = remoteObjects
+    .map((object) => object.key)
+    .filter((key) => !localKeys.has(key));
   if (obsoleteKeys.length > 0) {
     console.log(`Removing ${obsoleteKeys.length} obsolete remote files ...`);
     await runConcurrent(obsoleteKeys, (key) =>
@@ -166,7 +182,8 @@ async function deploy() {
   }
 
   console.log(
-    `COS deployment complete: ${files.length} uploaded, ${obsoleteKeys.length} removed.`
+    `COS deployment complete: ${filesToUpload.length} uploaded, ` +
+      `${files.length - filesToUpload.length} unchanged, ${obsoleteKeys.length} removed.`
   );
 }
 
