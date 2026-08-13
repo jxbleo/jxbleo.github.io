@@ -6,15 +6,38 @@ const root = path.resolve(__dirname, "..");
 const sourceDirectory = path.join(root, "dist");
 const bucket = process.env.COS_BUCKET || "mrcatenglish-web-1441914554";
 const region = process.env.COS_REGION || "ap-shanghai";
-const secretId = process.env.TENCENT_CLOUD_SECRET_ID;
-const secretKey = process.env.TENCENT_CLOUD_SECRET_KEY;
 const concurrency = 8;
 
-if (!secretId || !secretKey) {
-  throw new Error(
-    "Missing TENCENT_CLOUD_SECRET_ID or TENCENT_CLOUD_SECRET_KEY GitHub secret."
-  );
+function normalizeCredential(value, name) {
+  if (!value) {
+    throw new Error(`Missing ${name} GitHub secret.`);
+  }
+
+  let normalized = value.trim();
+  const firstCharacter = normalized[0];
+  const lastCharacter = normalized[normalized.length - 1];
+  if (
+    normalized.length >= 2 &&
+    ((firstCharacter === '"' && lastCharacter === '"') ||
+      (firstCharacter === "'" && lastCharacter === "'"))
+  ) {
+    normalized = normalized.slice(1, -1).trim();
+  }
+
+  if (!normalized || /[\r\n]/.test(normalized)) {
+    throw new Error(`${name} contains an invalid line break.`);
+  }
+  return normalized;
 }
+
+const secretId = normalizeCredential(
+  process.env.TENCENT_CLOUD_SECRET_ID,
+  "TENCENT_CLOUD_SECRET_ID"
+);
+const secretKey = normalizeCredential(
+  process.env.TENCENT_CLOUD_SECRET_KEY,
+  "TENCENT_CLOUD_SECRET_KEY"
+);
 
 if (!fs.existsSync(path.join(sourceDirectory, "index.html"))) {
   throw new Error("dist/index.html is missing. Run npm run build:static first.");
