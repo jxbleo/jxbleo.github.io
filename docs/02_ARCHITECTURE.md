@@ -480,11 +480,7 @@ submission time and are claimed separately. Before rendering, the dispatcher
 loads the same assignment/self-study thread through the current event cutoff,
 joins the private grading key for legacy missing snapshots, and builds the
 cumulative score chart plus mistake-only comparisons. Stable subjects and
-deterministic `Message-ID` values keep retries idempotent. Only BBC batches use
-`In-Reply-To` / `References` to continue one mailbox conversation. Each
-Vocabulary Quiz or timed Practice event is a separate mailbox message whose
-subject includes its mode and current attempt number, while its body remains a
-cumulative projection through that event.
+`In-Reply-To` metadata encourage email clients to keep one task together.
 Sent/retry/failed audit state remains in the outbox; email never changes the
 teacher profile's bell read markers.
 

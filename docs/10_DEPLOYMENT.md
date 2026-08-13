@@ -641,13 +641,10 @@ submission for end-to-end verification.
    official SCF `CreateTrigger` API if the console/CLI shortcut cannot set
    `CustomArgument`, and sanitize any response that might echo the token.
 6. Enable the timer last and test with a dedicated development student. A
-   Vocabulary email normally arrives on the next timer tick. Every Quiz/timed
-   Practice submission must be a separate mailbox message; its subject carries
-   the mode and current `No.`, while second and later submissions include prior
-   attempts in the body. A BBC email is eligible seven minutes after the first
-   submission in its fixed batch, then sends on the next tick. SMTP/network
-   failures retry with bounded backoff; a processing claim older than ten
-   minutes is automatically recovered.
+   Vocabulary email normally arrives on the next timer tick. A BBC email is
+   eligible seven minutes after the first submission in its fixed batch, then
+   sends on the next tick. SMTP/network failures retry with bounded backoff;
+   a processing claim older than ten minutes is automatically recovered.
 7. In Teacher Personal Center, add the owner's QQ and iCloud addresses and keep
    both enabled for the comparison period. Submit one development Vocabulary
    attempt, confirm both inboxes receive the same BCC message, then pause one
@@ -864,9 +861,8 @@ Teacher flow:
   private evidence history work
 - teacher report preview saves comments/goals, finalizes once after the cutoff,
   shows full authorized class detail, and copies a valid ordinary-WeChat link/text
-- every Vocabulary Quiz and timed Practice submission creates a separately
-  visible prompt email with mode/current `No.` in its subject; second and later
-  emails contain the earlier attempts and comparison chart
+- a Vocabulary Quiz and timed Practice submission each create a prompt email;
+  retry emails contain the earlier attempts and comparison chart
 - BBC retries submitted within the fixed first-submission-plus-seven-minute
   window produce one email containing the complete batch history
 - email mistake rows match the Teacher bell's authorized paper view: correct
