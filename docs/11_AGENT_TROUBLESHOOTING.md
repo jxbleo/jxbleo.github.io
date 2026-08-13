@@ -30,6 +30,7 @@
 | 现象 | 最常见原因 | 先查哪里 |
 | --- | --- | --- |
 | 学生提交成功但教师邮箱没有新通知 | outbox 集合/索引未创建、`submitAttempt` 或 dispatcher 未部署、Cron/token/SMTP 未配置、教师个人中心没有启用邮箱，或事件正在 7 分钟 BBC 窗口内 | 先确认个人中心地址为 `Receiving notifications`，再查 `teacher_attempt_email_events` 是否有该 `attempt_id` 及其 `status`/`due_at`/`last_error`/`skip_reason`；用精确 event ID 查函数日志，不输出答案或 SMTP 值 |
+| 邮件事件显示 `sent`，但 QQ 和 iCloud 都没有收到 | 旧 dispatcher 只保存本地生成的 Message-ID，无法证明 SMTP 是否接受收件人；CloudBase 实例或出网链路也可能出现瞬时异常 | 查 `smtp_accepted_count`、`smtp_rejected_count`、`smtp_response_code` 和 `smtp_response` 中的 provider queue ID。若没有这些字段，先部署带 SMTP 回执审计的 dispatcher；不要把本地生成的 `provider_message_id` 当成投递凭证 |
 | Vocabulary 邮件重复或第二封没有第 1 次记录 | 同一 `event_id` 被重复插入、dispatcher 未事务认领、线程 key/cutoff 规则漂移，或线上仍是旧函数 | 确认事件文档 ID 等于 `attempt_id`、状态只走 pending/processing/sent、第二封 cutoff 为第二次 `submitted_at`，并部署同一源码打包的三个函数 |
 | Vocabulary 第 3/4 次提交在铃铛可见但邮箱像是没收到 | 旧 dispatcher 为后续邮件写入 `In-Reply-To` / `References`，邮箱把多次提交折叠进同一会话；主题也可能过于相似 | 部署独立邮件版本的 `sendTeacherAttemptEmails`；确认 Vocabulary 主题带 `Quiz No. n` / `Practice No. n` 且原始邮件无 reply/reference 头。正文仍应累计同一线程此前 attempts |
 | BBC 每次重试各发一封，或超过 7 分钟仍没有邮件 | dispatcher 没按第一条 due event 的固定 `window_ends_at` 合并，Cron 没有每分钟运行，或 SMTP 重试改写了原窗口 | 查同一 `thread_key` 的事件；`window_ends_at` 保持原值，只有失败时 `due_at` 可以后移 |

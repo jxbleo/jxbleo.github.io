@@ -1509,6 +1509,8 @@ Before saying a deploy is complete:
 - required collections exist and are `ADMINONLY`
 - `teacher_attempt_email_events` exists and remains `ADMINONLY`; its event ID
   uniqueness and due/thread query indexes exist before the email timer is enabled
+- a newly sent attempt-email event records the SMTP accepted/rejected counts,
+  final response code, and provider queue response without storing credentials
 - Learning Reports V1: `classes`, `class_memberships`, and `learning_reports`
   exist and remain `ADMINONLY`; required uniqueness/query indexes exist before
   the report functions or timer are enabled
