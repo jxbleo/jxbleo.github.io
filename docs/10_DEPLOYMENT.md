@@ -143,6 +143,9 @@ with local MD5 hashes. Unchanged files are skipped, changed files are uploaded,
 and obsolete public objects are removed after successful uploads. This keeps
 later GitHub-to-Shanghai deployments incremental rather than retransmitting the
 complete audio library.
+Uploads use bounded concurrency and retry transient COS/network failures per
+file. A failed or cancelled first publication can therefore resume safely on
+the next `main` run without retransmitting completed objects.
 
 The repository must define these GitHub Actions secrets:
 
