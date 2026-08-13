@@ -9,6 +9,8 @@ const bucket = process.env.COS_BUCKET || "mrcatenglish-web-1441914554";
 const region = process.env.COS_REGION || "ap-shanghai";
 const concurrency = 4;
 const maximumUploadAttempts = 5;
+const multipartThreshold = 5 * 1024 * 1024;
+const multipartChunkSize = 1024 * 1024;
 
 function normalizeCredential(value, name) {
   if (!value) {
@@ -78,17 +80,29 @@ function isRetryableUploadError(error) {
 async function uploadFile(file) {
   for (let attempt = 1; attempt <= maximumUploadAttempts; attempt += 1) {
     try {
-      await cosRequest("putObject", {
+      const commonParameters = {
         Bucket: bucket,
         Region: region,
         Key: file.key,
-        Body: fs.createReadStream(file.absolutePath),
-        ContentLength: file.size,
         ContentType: contentTypeFor(file.key),
         CacheControl: file.key.endsWith(".html")
           ? "no-cache"
           : "public, max-age=3600",
-      });
+      };
+      if (file.size >= multipartThreshold) {
+        await cosRequest("sliceUploadFile", {
+          ...commonParameters,
+          FilePath: file.absolutePath,
+          ChunkSize: multipartChunkSize,
+          AsyncLimit: 1,
+        });
+      } else {
+        await cosRequest("putObject", {
+          ...commonParameters,
+          Body: fs.createReadStream(file.absolutePath),
+          ContentLength: file.size,
+        });
+      }
       return;
     } catch (error) {
       if (!isRetryableUploadError(error) || attempt === maximumUploadAttempts) {
@@ -193,6 +207,15 @@ async function deploy() {
     `Deploying ${files.length} public files to cos://${bucket}/: ` +
       `${filesToUpload.length} changed, ${files.length - filesToUpload.length} unchanged.`
   );
+  const multipartFiles = filesToUpload.filter(
+    (file) => file.size >= multipartThreshold
+  ).length;
+  if (multipartFiles > 0) {
+    console.log(
+      `Using ${multipartChunkSize / 1024 / 1024} MB multipart chunks for ` +
+        `${multipartFiles} files of at least ${multipartThreshold / 1024 / 1024} MB.`
+    );
+  }
   await runConcurrent(filesToUpload, async (file) => {
     await uploadFile(file);
     uploaded += 1;
