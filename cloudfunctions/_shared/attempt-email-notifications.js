@@ -258,11 +258,6 @@ function emailSubject(context) {
   const best = attempts.length
     ? Math.max(...attempts.map((attempt) => effectivePercentage(attempt)))
     : effectivePercentage(latest);
-  if (text(latest.mode).startsWith("vocabulary_")) {
-    const mode = latest.mode === "vocabulary_practice_timed" ? "Practice" : "Quiz";
-    const attemptNumber = latest.attempt_number || attempts.length || 1;
-    return `${studentName} | ${title} | ${mode} No. ${attemptNumber} | Best ${formatPercent(best)}`;
-  }
   return `${studentName} | ${title} | Best ${formatPercent(best)}`;
 }
 

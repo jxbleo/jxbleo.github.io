@@ -156,28 +156,10 @@ const vocabularySecondEmail = notifications.renderAttemptEmail({
 assert(vocabularySecondEmail.html.includes(">#1</strong>"));
 assert(vocabularySecondEmail.html.includes(">#2</strong>"));
 assert(vocabularySecondEmail.html.indexOf(">#2</strong>") < vocabularySecondEmail.html.indexOf(">#1</strong>"));
-assert.strictEqual(vocabularySecondEmail.subject, "Amy | NGSL A | Quiz No. 2 | Best 90%");
+assert.strictEqual(vocabularySecondEmail.subject, "Amy | NGSL A | Best 90%");
 assert(vocabularySecondEmail.html.includes("70%"));
 assert(vocabularySecondEmail.html.includes("90%"));
 assert(vocabularySecondEmail.html.includes("5 sets"));
-
-const vocabularyPracticeEmail = notifications.renderAttemptEmail({
-  policy: notifications.EMAIL_POLICIES.VOCABULARY_IMMEDIATE,
-  student: { student_id: "amy", name: "Amy" },
-  set: { set_id: "NGSL-A", title: "NGSL A" },
-  assignment: null,
-  attempts: [notifications.attemptDetail(attempt({
-    attempt_id: "vocab-practice-3",
-    assignment_id: null,
-    set_id: "NGSL-A",
-    mode: "vocabulary_practice_timed",
-    attempt_number: 3,
-    percentage: 80,
-    selected_group_count: 5,
-  }), {})],
-  newAttemptIds: ["vocab-practice-3"],
-});
-assert.strictEqual(vocabularyPracticeEmail.subject, "Amy | NGSL A | Practice No. 3 | Best 80%");
 
 const submitSource = fs.readFileSync(path.join(root, "cloudfunctions/submitAttempt/index.js"), "utf8");
 const dispatcherSource = fs.readFileSync(path.join(root, "cloudfunctions/sendTeacherAttemptEmails/index.js"), "utf8");
@@ -189,7 +171,6 @@ assert(dispatcherSource.includes("db.runTransaction"));
 assert(dispatcherSource.includes("TEACHER_ATTEMPT_EMAIL_CRON_TOKEN"));
 assert(dispatcherSource.includes("TEACHER_ATTEMPT_SMTP_PASS"));
 assert(dispatcherSource.includes("inReplyTo"));
-assert(dispatcherSource.includes("context.policy === notifications.EMAIL_POLICIES.BBC_BATCH"));
 assert(dispatcherSource.includes("STALE_PROCESSING_CLAIM_RECOVERED"));
 assert(dispatcherSource.includes("messageId: deterministicMessageId"));
 assert(dispatcherSource.includes('to: "undisclosed-recipients:;"'));

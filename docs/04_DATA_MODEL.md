@@ -540,17 +540,14 @@ Rules:
   one due event at a time.
 - Email rendering reads immutable attempts through the event cutoff. Therefore
   every Vocabulary email is cumulative without accidentally showing a later
-  attempt that had not happened at that event's timestamp. Each Vocabulary
-  event is nevertheless sent as its own mailbox message, with `Quiz No. n` or
-  `Practice No. n` in the subject and no SMTP reply/reference headers.
+  attempt that had not happened at that event's timestamp.
 - A transaction moves claimed rows from `pending` to `processing` before SMTP.
   Success moves them to `sent`; failure returns them to `pending` with
   exponential backoff, up to five tries, then `failed`. A claim still in
   `processing` after ten minutes is returned to `pending` so a crashed function
   invocation cannot strand the event.
 - Each claimed batch derives a deterministic SMTP `Message-ID`. This reduces
-  duplicates across retries. Only BBC batches carry reply/reference metadata
-  for mailbox threading; Vocabulary messages intentionally do not. SMTP cannot
+  duplicates and preserves mailbox threading across retries, but SMTP cannot
   guarantee strict exactly-once delivery if the provider accepts the message
   and the following database update fails.
 - The outbox never stores SMTP passwords, timer tokens, recipient addresses, or

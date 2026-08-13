@@ -13,11 +13,7 @@ sends them through ordinary-email SMTP. BBC uses a fixed seven-minute window
 anchored to the first submission. Every Vocabulary Quiz and timed Practice
 event is immediately due and renders cumulative history through that event.
 Email reuses the Teacher bell's thread key and mistake-only private projection,
-but never changes bell read state. The thread key remains a data-grouping key:
-only BBC batches continue an SMTP conversation with `In-Reply-To` and
-`References`. Every Vocabulary Quiz and timed Practice event sends as an
-independent mailbox message with its mode and attempt number in the subject,
-while retaining cumulative thread history in the body.
+but never changes bell read state.
 
 Nodemailer 9.0.5 is the only new runtime dependency. It is bundled into the
 `sendTeacherAttemptEmails` deployment ZIP. SMTP credentials remain CloudBase
@@ -40,8 +36,6 @@ Trade-offs:
 - Good: student submission remains successful when SMTP is unavailable.
 - Good: one event per `attempt_id` plus transactional claims limits duplicates.
 - Good: later Vocabulary messages include all earlier attempts in the thread.
-- Good: every Vocabulary submission remains individually visible instead of
-  being hidden inside an email client's conversation fold.
 - Cost: a new `ADMINONLY` collection, indexes, timer, environment settings, and
   delivery monitoring are required.
 - Cost: “immediate” means the next one-minute dispatcher tick plus provider
